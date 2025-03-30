@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -260,22 +261,41 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 		EndpointBundle map[string]map[string]interface{} `json:"endpoint_bundle"`
 	}
 
-	bundlesData, err := getCachedResponse(ctx, r.provCtx, "bundles", func() (interface{}, error) {
-		tflog.Debug(ctx, "Making API call to fetch bundles")
-		resp, err := r.client.BundlesAPI.BundlesGet(ctx).Execute()
-		if err != nil {
-			return nil, fmt.Errorf("error reading bundle: %v", err)
-		}
-		defer resp.Body.Close()
+	var result BundleResponse
+	var err error
+	maxRetries := 3
 
-		var result BundleResponse
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			return nil, fmt.Errorf("failed to decode bundles response: %v", err)
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		if attempt > 0 {
+			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
+			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch bundles on attempt %d, retrying in %v", attempt, sleepTime))
+			time.Sleep(sleepTime)
 		}
 
-		tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d bundles from API", len(result.EndpointBundle)))
-		return result, nil
-	})
+		bundlesData, fetchErr := getCachedResponse(ctx, r.provCtx, "bundles", func() (interface{}, error) {
+			tflog.Debug(ctx, "Making API call to fetch bundles")
+			resp, err := r.client.BundlesAPI.BundlesGet(ctx).Execute()
+			if err != nil {
+				return nil, fmt.Errorf("error reading bundle: %v", err)
+			}
+			defer resp.Body.Close()
+
+			var result BundleResponse
+			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+				return nil, fmt.Errorf("failed to decode bundles response: %v", err)
+			}
+
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d bundles from API", len(result.EndpointBundle)))
+			return result, nil
+		})
+
+		if fetchErr == nil {
+			result = bundlesData.(BundleResponse)
+			break
+		}
+		err = fetchErr
+	}
+
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Bundle",
@@ -284,7 +304,6 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 
-	result := bundlesData.(BundleResponse)
 	tflog.Debug(ctx, fmt.Sprintf("Looking for bundle with ID: %s", bundleName))
 
 	bundleData, exists := result.EndpointBundle[bundleName]

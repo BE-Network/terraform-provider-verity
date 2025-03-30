@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -12,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
@@ -270,21 +272,40 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 		GatewayProfile map[string]map[string]interface{} `json:"gateway_profile"`
 	}
 
-	profilesData, err := getCachedResponse(ctx, r.provCtx, "gateway_profiles", func() (interface{}, error) {
-		req := r.client.GatewayProfilesAPI.GatewayprofilesGet(ctx)
-		resp, err := req.Execute()
-		if err != nil {
-			return nil, fmt.Errorf("error reading gateway profiles: %v", err)
-		}
-		defer resp.Body.Close()
+	var result GatewayProfileResponse
+	var err error
+	maxRetries := 3
 
-		var result GatewayProfileResponse
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			return nil, fmt.Errorf("error decoding gateway profile response: %v", err)
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		if attempt > 0 {
+			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
+			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch gateway profiles on attempt %d, retrying in %v", attempt, sleepTime))
+			time.Sleep(sleepTime)
 		}
 
-		return result, nil
-	})
+		profilesData, fetchErr := getCachedResponse(ctx, r.provCtx, "gateway_profiles", func() (interface{}, error) {
+			req := r.client.GatewayProfilesAPI.GatewayprofilesGet(ctx)
+			resp, err := req.Execute()
+			if err != nil {
+				return nil, fmt.Errorf("error reading gateway profiles: %v", err)
+			}
+			defer resp.Body.Close()
+
+			var result GatewayProfileResponse
+			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+				return nil, fmt.Errorf("error decoding gateway profile response: %v", err)
+			}
+
+			return result, nil
+		})
+
+		if fetchErr == nil {
+			result = profilesData.(GatewayProfileResponse)
+			break
+		}
+		err = fetchErr
+	}
+
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Gateway Profile",
@@ -292,8 +313,6 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 		)
 		return
 	}
-
-	result := profilesData.(GatewayProfileResponse)
 
 	profileData, exists := result.GatewayProfile[profileName]
 	if !exists {

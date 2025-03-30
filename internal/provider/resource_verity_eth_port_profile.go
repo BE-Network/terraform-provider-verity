@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -265,11 +266,10 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	err := ensureAuthenticated(ctx, r.provCtx)
-	if err != nil {
+	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %s", err),
+			fmt.Sprintf("Error authenticating with API: %v", err),
 		)
 		return
 	}
@@ -287,22 +287,41 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 		EthPortProfile map[string]map[string]interface{} `json:"eth_port_profile_"`
 	}
 
-	profilesData, err := getCachedResponse(ctx, r.provCtx, "eth_port_profiles", func() (interface{}, error) {
-		tflog.Debug(ctx, "Making API call to fetch Ethernet port profiles")
-		resp, err := r.client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
-		if err != nil {
-			return nil, fmt.Errorf("error reading EthPort profiles: %v", err)
-		}
-		defer resp.Body.Close()
+	var result EthPortProfileResponse
+	var err error
+	maxRetries := 3
 
-		var result EthPortProfileResponse
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			return nil, fmt.Errorf("error decoding EthPort profiles response: %v", err)
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		if attempt > 0 {
+			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
+			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch eth port profiles on attempt %d, retrying in %v", attempt, sleepTime))
+			time.Sleep(sleepTime)
 		}
 
-		tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Ethernet port profiles from API", len(result.EthPortProfile)))
-		return result, nil
-	})
+		profilesData, fetchErr := getCachedResponse(ctx, r.provCtx, "eth_port_profiles", func() (interface{}, error) {
+			tflog.Debug(ctx, "Making API call to fetch Ethernet port profiles")
+			resp, err := r.client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
+			if err != nil {
+				return nil, fmt.Errorf("error reading EthPort profiles: %v", err)
+			}
+			defer resp.Body.Close()
+
+			var result EthPortProfileResponse
+			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+				return nil, fmt.Errorf("error decoding EthPort profiles response: %v", err)
+			}
+
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Ethernet port profiles from API", len(result.EthPortProfile)))
+			return result, nil
+		})
+
+		if fetchErr == nil {
+			result = profilesData.(EthPortProfileResponse)
+			break
+		}
+		err = fetchErr
+	}
+
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Read Eth Port Profiles",
@@ -310,8 +329,6 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 		)
 		return
 	}
-
-	result := profilesData.(EthPortProfileResponse)
 
 	tflog.Debug(ctx, fmt.Sprintf("Looking for Ethernet port profile with ID: %s", profileName))
 

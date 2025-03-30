@@ -264,13 +264,13 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 
 	var result ServicesResponse
 	var err error
-	retryConfig := utils.DefaultRetryConfig()
+	maxRetries := 3
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			backoffDuration := utils.CalculateBackoff(retry-1, retryConfig)
-			tflog.Debug(ctx, fmt.Sprintf("Retrying service read after %v", backoffDuration))
-			time.Sleep(backoffDuration)
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		if attempt > 0 {
+			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
+			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch services on attempt %d, retrying in %v", attempt, sleepTime))
+			time.Sleep(sleepTime)
 		}
 
 		servicesData, fetchErr := getCachedResponse(ctx, provCtx, "services", func() (interface{}, error) {
@@ -294,15 +294,14 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 			result = servicesData.(ServicesResponse)
 			break
 		}
-		if !utils.IsRetriableError(fetchErr) {
-			resp.Diagnostics.AddError("Failed to Read Service", fetchErr.Error())
-			return
-		}
 		err = fetchErr
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to Read Service", err.Error())
+		resp.Diagnostics.AddError(
+			"Failed to Read Service",
+			fmt.Sprintf("Error reading service %s: %v", serviceName, err),
+		)
 		return
 	}
 
