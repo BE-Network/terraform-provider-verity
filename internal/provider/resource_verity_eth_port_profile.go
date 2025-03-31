@@ -215,15 +215,11 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 				s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
 			}
 
-			if service.RowNumExternalVlan.IsNull() {
-				s.SetRowNumExternalVlanNil()
-				tflog.Debug(ctx, fmt.Sprintf("Setting external VLAN to NULL for service %d",
-					service.Index.ValueInt64()))
-			} else {
+			if !service.RowNumExternalVlan.IsNull() {
 				intVal := int32(service.RowNumExternalVlan.ValueInt64())
-				s.RowNumExternalVlan.Set(&intVal)
-				tflog.Debug(ctx, fmt.Sprintf("Setting external VLAN to %d for service %d",
-					intVal, service.Index.ValueInt64()))
+				s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
+			} else {
+				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
 			}
 
 			if !service.Index.IsNull() {
@@ -580,11 +576,9 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 				if !service.RowNumExternalVlan.IsNull() {
 					intVal := int32(service.RowNumExternalVlan.ValueInt64())
-					s.RowNumExternalVlan.Set(&intVal)
-					tflog.Debug(ctx, fmt.Sprintf("Setting external VLAN to %d for service %d", intVal, index))
+					s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
 				} else {
-					tflog.Debug(ctx, fmt.Sprintf("Setting external VLAN to NULL for service %d", index))
-					s.SetRowNumExternalVlanNil()
+					s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
 				}
 
 				changedServices = append(changedServices, s)

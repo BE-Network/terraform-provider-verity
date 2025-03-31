@@ -191,11 +191,10 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		}
 	}
 	if !plan.PeerLinkVlan.IsNull() {
-		peerLinkVlan := plan.PeerLinkVlan.ValueInt64()
-		if peerLinkVlan != 0 {
-			val := int32(peerLinkVlan)
-			lagReq.PeerLinkVlan = *openapi.NewNullableInt32(&val)
-		}
+		peerLinkVlan := int32(plan.PeerLinkVlan.ValueInt64())
+		lagReq.PeerLinkVlan = *openapi.NewNullableInt32(&peerLinkVlan)
+	} else {
+		lagReq.PeerLinkVlan = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.Fallback.IsNull() {
 		lagReq.Fallback = openapi.PtrBool(plan.Fallback.ValueBool())
@@ -465,14 +464,18 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	if !plan.PeerLinkVlan.Equal(state.PeerLinkVlan) {
-		peerLinkVlan := plan.PeerLinkVlan.ValueInt64()
-		if peerLinkVlan != 0 {
-			val := int32(peerLinkVlan)
-			lagReq.PeerLinkVlan = *openapi.NewNullableInt32(&val)
+		if !plan.PeerLinkVlan.IsNull() {
+			peerLinkVlan := int32(plan.PeerLinkVlan.ValueInt64())
+			lagReq.PeerLinkVlan = *openapi.NewNullableInt32(&peerLinkVlan)
 		} else {
 			lagReq.PeerLinkVlan = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
+	} else if !state.PeerLinkVlan.IsNull() {
+		peerLinkVlan := int32(state.PeerLinkVlan.ValueInt64())
+		lagReq.PeerLinkVlan = *openapi.NewNullableInt32(&peerLinkVlan)
+	} else {
+		lagReq.PeerLinkVlan = *openapi.NewNullableInt32(nil)
 	}
 
 	if !hasChanges {

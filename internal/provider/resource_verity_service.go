@@ -205,6 +205,8 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	if !plan.Mtu.IsNull() {
 		mtuVal := int32(plan.Mtu.ValueInt64())
 		serviceReq.Mtu = *openapi.NewNullableInt32(&mtuVal)
+	} else {
+		serviceReq.Mtu = *openapi.NewNullableInt32(nil)
 	}
 
 	provCtx := r.provCtx
@@ -510,13 +512,18 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	if !plan.Mtu.Equal(state.Mtu) {
-		if !plan.Mtu.IsNull() && plan.Mtu.ValueInt64() != 0 {
+		if !plan.Mtu.IsNull() {
 			mtuVal := int32(plan.Mtu.ValueInt64())
 			serviceReq.Mtu = *openapi.NewNullableInt32(&mtuVal)
 		} else {
 			serviceReq.Mtu = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
+	} else if !state.Mtu.IsNull() {
+		mtuVal := int32(state.Mtu.ValueInt64())
+		serviceReq.Mtu = *openapi.NewNullableInt32(&mtuVal)
+	} else {
+		serviceReq.Mtu = *openapi.NewNullableInt32(nil)
 	}
 
 	if !hasChanges {
