@@ -184,11 +184,7 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 
 		if !data.ObjectProperties[0].Group.IsNull() {
 			groupVal := data.ObjectProperties[0].Group.ValueString()
-			if groupVal != "" {
-				objProps.Group = openapi.PtrString(groupVal)
-			} else {
-				objProps.Group = nil
-			}
+			objProps.Group = openapi.PtrString(groupVal)
 		} else {
 			objProps.Group = nil
 		}
@@ -464,11 +460,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 
 			if !data.ObjectProperties[0].Group.IsNull() {
 				groupVal := data.ObjectProperties[0].Group.ValueString()
-				if groupVal != "" {
-					objProps.Group = openapi.PtrString(groupVal)
-				} else {
-					objProps.Group = nil
-				}
+				objProps.Group = openapi.PtrString(groupVal)
 			} else {
 				objProps.Group = nil
 			}

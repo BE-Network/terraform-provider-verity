@@ -329,7 +329,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
-		if !op.Group.IsNull() && op.Group.ValueString() != "" {
+		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
 			objProps.Group = nil
@@ -689,7 +689,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 
 	if len(plan.ObjectProperties) > 0 {
 		objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
-		if !plan.ObjectProperties[0].Group.IsNull() && plan.ObjectProperties[0].Group.ValueString() != "" {
+		if !plan.ObjectProperties[0].Group.IsNull() {
 			objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 		} else {
 			objProps.Group = nil
