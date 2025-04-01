@@ -141,7 +141,6 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 						"row_num_external_vlan": schema.Int64Attribute{
 							Description: "Choose an external vlan. A value of 0 will make the VLAN untagged, while null will use service VLAN.",
 							Optional:    true,
-							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
