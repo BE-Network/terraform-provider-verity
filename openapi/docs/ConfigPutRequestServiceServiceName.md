@@ -6,8 +6,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
-**Vlan** | Pointer to **int32** | A Value between 1 and 4096 | [optional] 
-**Vni** | Pointer to **int32** | Indication of the outgoing VLAN layer 2 service | [optional] 
+**Vlan** | Pointer to **NullableInt32** | A Value between 1 and 4096 | [optional] 
+**Vni** | Pointer to **NullableInt32** | Indication of the outgoing VLAN layer 2 service | [optional] 
 **VniAutoAssigned** | Pointer to **bool** | Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit. | [optional] 
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
@@ -110,6 +110,16 @@ SetVlan sets Vlan field to given value.
 
 HasVlan returns a boolean if a field has been set.
 
+### SetVlanNil
+
+`func (o *ConfigPutRequestServiceServiceName) SetVlanNil(b bool)`
+
+ SetVlanNil sets the value for Vlan to be an explicit nil
+
+### UnsetVlan
+`func (o *ConfigPutRequestServiceServiceName) UnsetVlan()`
+
+UnsetVlan ensures that no value is present for Vlan, not even an explicit nil
 ### GetVni
 
 `func (o *ConfigPutRequestServiceServiceName) GetVni() int32`
@@ -135,6 +145,16 @@ SetVni sets Vni field to given value.
 
 HasVni returns a boolean if a field has been set.
 
+### SetVniNil
+
+`func (o *ConfigPutRequestServiceServiceName) SetVniNil(b bool)`
+
+ SetVniNil sets the value for Vni to be an explicit nil
+
+### UnsetVni
+`func (o *ConfigPutRequestServiceServiceName) UnsetVni()`
+
+UnsetVni ensures that no value is present for Vni, not even an explicit nil
 ### GetVniAutoAssigned
 
 `func (o *ConfigPutRequestServiceServiceName) GetVniAutoAssigned() bool`

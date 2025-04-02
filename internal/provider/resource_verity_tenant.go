@@ -224,8 +224,6 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	tenantReq := openapi.ConfigPutRequestTenantTenantName{
 		Name:                     openapi.PtrString(name),
 		Enable:                   openapi.PtrBool(plan.Enable.ValueBool()),
-		Layer3Vni:                openapi.PtrInt32(int32(plan.Layer3Vni.ValueInt64())),
-		Layer3Vlan:               openapi.PtrInt32(int32(plan.Layer3Vlan.ValueInt64())),
 		DhcpRelaySourceIpsSubnet: openapi.PtrString(plan.DhcpRelaySourceIpsSubnet.ValueString()),
 		RouteDistinguisher:       openapi.PtrString(plan.RouteDistinguisher.ValueString()),
 		RouteTargetImport:        openapi.PtrString(plan.RouteTargetImport.ValueString()),
@@ -248,6 +246,18 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		tenantReq.ObjectProperties = nil
 	}
 
+	if !plan.Layer3Vni.IsNull() {
+		val := int32(plan.Layer3Vni.ValueInt64())
+		tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
+	} else {
+		tenantReq.Layer3Vni = *openapi.NewNullableInt32(nil)
+	}
+	if !plan.Layer3Vlan.IsNull() {
+		val := int32(plan.Layer3Vlan.ValueInt64())
+		tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
+	} else {
+		tenantReq.Layer3Vlan = *openapi.NewNullableInt32(nil)
+	}
 	if !plan.Layer3VniAutoAssigned.IsNull() {
 		tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(plan.Layer3VniAutoAssigned.ValueBool())
 	}
@@ -591,10 +601,11 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	if !plan.Layer3Vni.Equal(state.Layer3Vni) {
-		if !plan.Layer3Vni.IsNull() && plan.Layer3Vni.ValueInt64() != 0 {
-			tenantReq.Layer3Vni = openapi.PtrInt32(int32(plan.Layer3Vni.ValueInt64()))
+		if !plan.Layer3Vni.IsNull() {
+			val := int32(plan.Layer3Vni.ValueInt64())
+			tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
 		} else {
-			tenantReq.Layer3Vni = openapi.PtrInt32(0)
+			tenantReq.Layer3Vni = *openapi.NewNullableInt32(nil)
 		}
 		if plan.Layer3VniAutoAssigned.IsNull() {
 			if !state.Layer3VniAutoAssigned.IsNull() {
@@ -612,10 +623,11 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	if !plan.Layer3Vlan.Equal(state.Layer3Vlan) {
-		if !plan.Layer3Vlan.IsNull() && plan.Layer3Vlan.ValueInt64() != 0 {
-			tenantReq.Layer3Vlan = openapi.PtrInt32(int32(plan.Layer3Vlan.ValueInt64()))
+		if !plan.Layer3Vlan.IsNull() {
+			val := int32(plan.Layer3Vlan.ValueInt64())
+			tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
 		} else {
-			tenantReq.Layer3Vlan = openapi.PtrInt32(0)
+			tenantReq.Layer3Vlan = *openapi.NewNullableInt32(nil)
 		}
 		if plan.Layer3VlanAutoAssigned.IsNull() {
 			if !state.Layer3VlanAutoAssigned.IsNull() {

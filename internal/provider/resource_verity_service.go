@@ -182,10 +182,16 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	if !plan.Vlan.IsNull() {
-		serviceReq.Vlan = openapi.PtrInt32(int32(plan.Vlan.ValueInt64()))
+		vlanVal := int32(plan.Vlan.ValueInt64())
+		serviceReq.Vlan = *openapi.NewNullableInt32(&vlanVal)
+	} else {
+		serviceReq.Vlan = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.Vni.IsNull() {
-		serviceReq.Vni = openapi.PtrInt32(int32(plan.Vni.ValueInt64()))
+		vniVal := int32(plan.Vni.ValueInt64())
+		serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+	} else {
+		serviceReq.Vni = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.VniAutoAssigned.IsNull() {
 		serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
@@ -471,22 +477,32 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	if !plan.Vlan.Equal(state.Vlan) {
-		if !plan.Vlan.IsNull() && plan.Vlan.ValueInt64() != 0 {
-			serviceReq.Vlan = openapi.PtrInt32(int32(plan.Vlan.ValueInt64()))
+		if !plan.Vlan.IsNull() {
+			vlanVal := int32(plan.Vlan.ValueInt64())
+			serviceReq.Vlan = *openapi.NewNullableInt32(&vlanVal)
 		} else {
-			var zeroVal int32 = 0
-			serviceReq.Vlan = openapi.PtrInt32(zeroVal)
+			serviceReq.Vlan = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
+	} else if !state.Vlan.IsNull() {
+		vlanVal := int32(state.Vlan.ValueInt64())
+		serviceReq.Vlan = *openapi.NewNullableInt32(&vlanVal)
+	} else {
+		serviceReq.Vlan = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.Vni.Equal(state.Vni) {
-		if !plan.Vni.IsNull() && plan.Vni.ValueInt64() != 0 {
-			serviceReq.Vni = openapi.PtrInt32(int32(plan.Vni.ValueInt64()))
+		if !plan.Vni.IsNull() {
+			vniVal := int32(plan.Vni.ValueInt64())
+			serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
 		} else {
-			var zeroVal int32 = 0
-			serviceReq.Vni = openapi.PtrInt32(zeroVal)
+			serviceReq.Vni = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
+	} else if !state.Vni.IsNull() {
+		vniVal := int32(state.Vni.ValueInt64())
+		serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+	} else {
+		serviceReq.Vni = *openapi.NewNullableInt32(nil)
 	}
 
 	if !plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {

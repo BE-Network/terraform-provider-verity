@@ -16,7 +16,7 @@ Name | Type | Description | Notes
 **ConnectTimer** | Pointer to **int32** | Time in seconds between sucessive attempts to Establish BGP session | [optional] 
 **AdvertisementInterval** | Pointer to **int32** | The minimum time in seconds between sending route updates to BGP neighbor  | [optional] 
 **EbgpMultihop** | Pointer to **int32** | Allows external BGP neighbors to establish peering session multiple network hops away.  | [optional] 
-**EgressVlan** | Pointer to **int32** | VLAN used to carry BGP TCP session | [optional] 
+**EgressVlan** | Pointer to **NullableInt32** | VLAN used to carry BGP TCP session | [optional] 
 **SourceIpAddress** | Pointer to **string** | Source IP address used to override the default source address calculation for BGP TCP session | [optional] [default to ""]
 **AnycastIpMask** | Pointer to **string** | The Anycast Address will be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router. | [optional] [default to ""]
 **Md5Password** | Pointer to **string** | MD5 password | [optional] [default to ""]
@@ -25,7 +25,7 @@ Name | Type | Description | Notes
 **ExportRouteMap** | Pointer to **string** | A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ExportRouteMapRefType** | Pointer to **string** | Object type for export_route_map field | [optional] 
 **GatewayMode** | Pointer to **string** | Gateway Mode. Can be BGP, Static, or Default | [optional] [default to "Static BGP"]
-**LocalAsNumber** | Pointer to **int32** | Local AS Number | [optional] 
+**LocalAsNumber** | Pointer to **NullableInt32** | Local AS Number | [optional] 
 **LocalAsNoPrepend** | Pointer to **bool** | Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set. | [optional] [default to false]
 **ReplaceAs** | Pointer to **bool** | Prepend only Local AS in updates to EBGP peers. | [optional] [default to false]
 **MaxLocalAsOccurrences** | Pointer to **NullableInt32** | Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or &#39;0&#39; to disable. | [optional] 
@@ -395,6 +395,16 @@ SetEgressVlan sets EgressVlan field to given value.
 
 HasEgressVlan returns a boolean if a field has been set.
 
+### SetEgressVlanNil
+
+`func (o *ConfigPutRequestGatewayGatewayName) SetEgressVlanNil(b bool)`
+
+ SetEgressVlanNil sets the value for EgressVlan to be an explicit nil
+
+### UnsetEgressVlan
+`func (o *ConfigPutRequestGatewayGatewayName) UnsetEgressVlan()`
+
+UnsetEgressVlan ensures that no value is present for EgressVlan, not even an explicit nil
 ### GetSourceIpAddress
 
 `func (o *ConfigPutRequestGatewayGatewayName) GetSourceIpAddress() string`
@@ -620,6 +630,16 @@ SetLocalAsNumber sets LocalAsNumber field to given value.
 
 HasLocalAsNumber returns a boolean if a field has been set.
 
+### SetLocalAsNumberNil
+
+`func (o *ConfigPutRequestGatewayGatewayName) SetLocalAsNumberNil(b bool)`
+
+ SetLocalAsNumberNil sets the value for LocalAsNumber to be an explicit nil
+
+### UnsetLocalAsNumber
+`func (o *ConfigPutRequestGatewayGatewayName) UnsetLocalAsNumber()`
+
+UnsetLocalAsNumber ensures that no value is present for LocalAsNumber, not even an explicit nil
 ### GetLocalAsNoPrepend
 
 `func (o *ConfigPutRequestGatewayGatewayName) GetLocalAsNoPrepend() bool`

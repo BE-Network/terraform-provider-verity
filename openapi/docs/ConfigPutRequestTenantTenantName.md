@@ -6,9 +6,9 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
-**Layer3Vni** | Pointer to **int32** | VNI value used to transport traffic between services of a Tenant  | [optional] 
+**Layer3Vni** | Pointer to **NullableInt32** | VNI value used to transport traffic between services of a Tenant  | [optional] 
 **Layer3VniAutoAssigned** | Pointer to **bool** | Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit. | [optional] 
-**Layer3Vlan** | Pointer to **int32** | VLAN value used to transport traffic between services of a Tenant  | [optional] 
+**Layer3Vlan** | Pointer to **NullableInt32** | VLAN value used to transport traffic between services of a Tenant  | [optional] 
 **Layer3VlanAutoAssigned** | Pointer to **bool** | Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit. | [optional] 
 **DhcpRelaySourceIpsSubnet** | Pointer to **string** | Range of IP addresses (represented in IP subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on. | [optional] [default to ""]
 **RouteDistinguisher** | Pointer to **string** | Route Distinguishers are used to maintain uniqueness among identical routes from different routers.  If set, then routes from this Tenant will be identified with this Route Distinguisher (BGP Community).  It should be two numbers separated by a colon. | [optional] [default to ""]
@@ -117,6 +117,16 @@ SetLayer3Vni sets Layer3Vni field to given value.
 
 HasLayer3Vni returns a boolean if a field has been set.
 
+### SetLayer3VniNil
+
+`func (o *ConfigPutRequestTenantTenantName) SetLayer3VniNil(b bool)`
+
+ SetLayer3VniNil sets the value for Layer3Vni to be an explicit nil
+
+### UnsetLayer3Vni
+`func (o *ConfigPutRequestTenantTenantName) UnsetLayer3Vni()`
+
+UnsetLayer3Vni ensures that no value is present for Layer3Vni, not even an explicit nil
 ### GetLayer3VniAutoAssigned
 
 `func (o *ConfigPutRequestTenantTenantName) GetLayer3VniAutoAssigned() bool`
@@ -167,6 +177,16 @@ SetLayer3Vlan sets Layer3Vlan field to given value.
 
 HasLayer3Vlan returns a boolean if a field has been set.
 
+### SetLayer3VlanNil
+
+`func (o *ConfigPutRequestTenantTenantName) SetLayer3VlanNil(b bool)`
+
+ SetLayer3VlanNil sets the value for Layer3Vlan to be an explicit nil
+
+### UnsetLayer3Vlan
+`func (o *ConfigPutRequestTenantTenantName) UnsetLayer3Vlan()`
+
+UnsetLayer3Vlan ensures that no value is present for Layer3Vlan, not even an explicit nil
 ### GetLayer3VlanAutoAssigned
 
 `func (o *ConfigPutRequestTenantTenantName) GetLayer3VlanAutoAssigned() bool`

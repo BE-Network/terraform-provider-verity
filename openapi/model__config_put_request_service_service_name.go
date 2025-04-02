@@ -24,9 +24,9 @@ type ConfigPutRequestServiceServiceName struct {
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// A Value between 1 and 4096
-	Vlan *int32 `json:"vlan,omitempty"`
+	Vlan NullableInt32 `json:"vlan,omitempty"`
 	// Indication of the outgoing VLAN layer 2 service
-	Vni *int32 `json:"vni,omitempty"`
+	Vni NullableInt32 `json:"vni,omitempty"`
 	// Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit.
 	VniAutoAssigned *bool `json:"vni_auto_assigned_,omitempty"`
 	// Tenant
@@ -143,68 +143,88 @@ func (o *ConfigPutRequestServiceServiceName) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetVlan returns the Vlan field value if set, zero value otherwise.
+// GetVlan returns the Vlan field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConfigPutRequestServiceServiceName) GetVlan() int32 {
-	if o == nil || IsNil(o.Vlan) {
+	if o == nil || IsNil(o.Vlan.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.Vlan
+	return *o.Vlan.Get()
 }
 
 // GetVlanOk returns a tuple with the Vlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConfigPutRequestServiceServiceName) GetVlanOk() (*int32, bool) {
-	if o == nil || IsNil(o.Vlan) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Vlan, true
+	return o.Vlan.Get(), o.Vlan.IsSet()
 }
 
 // HasVlan returns a boolean if a field has been set.
 func (o *ConfigPutRequestServiceServiceName) HasVlan() bool {
-	if o != nil && !IsNil(o.Vlan) {
+	if o != nil && o.Vlan.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetVlan gets a reference to the given int32 and assigns it to the Vlan field.
+// SetVlan gets a reference to the given NullableInt32 and assigns it to the Vlan field.
 func (o *ConfigPutRequestServiceServiceName) SetVlan(v int32) {
-	o.Vlan = &v
+	o.Vlan.Set(&v)
+}
+// SetVlanNil sets the value for Vlan to be an explicit nil
+func (o *ConfigPutRequestServiceServiceName) SetVlanNil() {
+	o.Vlan.Set(nil)
 }
 
-// GetVni returns the Vni field value if set, zero value otherwise.
+// UnsetVlan ensures that no value is present for Vlan, not even an explicit nil
+func (o *ConfigPutRequestServiceServiceName) UnsetVlan() {
+	o.Vlan.Unset()
+}
+
+// GetVni returns the Vni field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConfigPutRequestServiceServiceName) GetVni() int32 {
-	if o == nil || IsNil(o.Vni) {
+	if o == nil || IsNil(o.Vni.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.Vni
+	return *o.Vni.Get()
 }
 
 // GetVniOk returns a tuple with the Vni field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConfigPutRequestServiceServiceName) GetVniOk() (*int32, bool) {
-	if o == nil || IsNil(o.Vni) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Vni, true
+	return o.Vni.Get(), o.Vni.IsSet()
 }
 
 // HasVni returns a boolean if a field has been set.
 func (o *ConfigPutRequestServiceServiceName) HasVni() bool {
-	if o != nil && !IsNil(o.Vni) {
+	if o != nil && o.Vni.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetVni gets a reference to the given int32 and assigns it to the Vni field.
+// SetVni gets a reference to the given NullableInt32 and assigns it to the Vni field.
 func (o *ConfigPutRequestServiceServiceName) SetVni(v int32) {
-	o.Vni = &v
+	o.Vni.Set(&v)
+}
+// SetVniNil sets the value for Vni to be an explicit nil
+func (o *ConfigPutRequestServiceServiceName) SetVniNil() {
+	o.Vni.Set(nil)
+}
+
+// UnsetVni ensures that no value is present for Vni, not even an explicit nil
+func (o *ConfigPutRequestServiceServiceName) UnsetVni() {
+	o.Vni.Unset()
 }
 
 // GetVniAutoAssigned returns the VniAutoAssigned field value if set, zero value otherwise.
@@ -457,11 +477,11 @@ func (o ConfigPutRequestServiceServiceName) ToMap() (map[string]interface{}, err
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Vlan) {
-		toSerialize["vlan"] = o.Vlan
+	if o.Vlan.IsSet() {
+		toSerialize["vlan"] = o.Vlan.Get()
 	}
-	if !IsNil(o.Vni) {
-		toSerialize["vni"] = o.Vni
+	if o.Vni.IsSet() {
+		toSerialize["vni"] = o.Vni.Get()
 	}
 	if !IsNil(o.VniAutoAssigned) {
 		toSerialize["vni_auto_assigned_"] = o.VniAutoAssigned

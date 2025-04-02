@@ -2049,6 +2049,7 @@ components:
             Tenant '
           maximum: 16777215
           minimum: 1
+          nullable: true
           type: integer
         layer_3_vni_auto_assigned_:
           description: Whether or not the value in layer_3_vni field has been automatically
@@ -2059,6 +2060,7 @@ components:
             Tenant '
           maximum: 4096
           minimum: 1
+          nullable: true
           type: integer
         layer_3_vlan_auto_assigned_:
           description: Whether or not the value in layer_3_vlan field has been automatically
@@ -3373,11 +3375,13 @@ components:
           description: A Value between 1 and 4096
           maximum: 4096
           minimum: 1
+          nullable: true
           type: integer
         vni:
           description: Indication of the outgoing VLAN layer 2 service
           maximum: 16777215
           minimum: 1
+          nullable: true
           type: integer
         vni_auto_assigned_:
           description: Whether or not the value in vni field has been automatically
@@ -4213,6 +4217,7 @@ components:
           description: VLAN used to carry BGP TCP session
           maximum: 4096
           minimum: 1
+          nullable: true
           type: integer
         source_ip_address:
           default: ""
@@ -4271,6 +4276,7 @@ components:
           description: Local AS Number
           maximum: 4294967295
           minimum: 1
+          nullable: true
           type: integer
         local_as_no_prepend:
           default: false

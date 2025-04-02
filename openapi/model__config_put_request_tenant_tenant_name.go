@@ -24,11 +24,11 @@ type ConfigPutRequestTenantTenantName struct {
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// VNI value used to transport traffic between services of a Tenant 
-	Layer3Vni *int32 `json:"layer_3_vni,omitempty"`
+	Layer3Vni NullableInt32 `json:"layer_3_vni,omitempty"`
 	// Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit.
 	Layer3VniAutoAssigned *bool `json:"layer_3_vni_auto_assigned_,omitempty"`
 	// VLAN value used to transport traffic between services of a Tenant 
-	Layer3Vlan *int32 `json:"layer_3_vlan,omitempty"`
+	Layer3Vlan NullableInt32 `json:"layer_3_vlan,omitempty"`
 	// Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit.
 	Layer3VlanAutoAssigned *bool `json:"layer_3_vlan_auto_assigned_,omitempty"`
 	// Range of IP addresses (represented in IP subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
@@ -172,36 +172,46 @@ func (o *ConfigPutRequestTenantTenantName) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetLayer3Vni returns the Layer3Vni field value if set, zero value otherwise.
+// GetLayer3Vni returns the Layer3Vni field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConfigPutRequestTenantTenantName) GetLayer3Vni() int32 {
-	if o == nil || IsNil(o.Layer3Vni) {
+	if o == nil || IsNil(o.Layer3Vni.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.Layer3Vni
+	return *o.Layer3Vni.Get()
 }
 
 // GetLayer3VniOk returns a tuple with the Layer3Vni field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConfigPutRequestTenantTenantName) GetLayer3VniOk() (*int32, bool) {
-	if o == nil || IsNil(o.Layer3Vni) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Layer3Vni, true
+	return o.Layer3Vni.Get(), o.Layer3Vni.IsSet()
 }
 
 // HasLayer3Vni returns a boolean if a field has been set.
 func (o *ConfigPutRequestTenantTenantName) HasLayer3Vni() bool {
-	if o != nil && !IsNil(o.Layer3Vni) {
+	if o != nil && o.Layer3Vni.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLayer3Vni gets a reference to the given int32 and assigns it to the Layer3Vni field.
+// SetLayer3Vni gets a reference to the given NullableInt32 and assigns it to the Layer3Vni field.
 func (o *ConfigPutRequestTenantTenantName) SetLayer3Vni(v int32) {
-	o.Layer3Vni = &v
+	o.Layer3Vni.Set(&v)
+}
+// SetLayer3VniNil sets the value for Layer3Vni to be an explicit nil
+func (o *ConfigPutRequestTenantTenantName) SetLayer3VniNil() {
+	o.Layer3Vni.Set(nil)
+}
+
+// UnsetLayer3Vni ensures that no value is present for Layer3Vni, not even an explicit nil
+func (o *ConfigPutRequestTenantTenantName) UnsetLayer3Vni() {
+	o.Layer3Vni.Unset()
 }
 
 // GetLayer3VniAutoAssigned returns the Layer3VniAutoAssigned field value if set, zero value otherwise.
@@ -236,36 +246,46 @@ func (o *ConfigPutRequestTenantTenantName) SetLayer3VniAutoAssigned(v bool) {
 	o.Layer3VniAutoAssigned = &v
 }
 
-// GetLayer3Vlan returns the Layer3Vlan field value if set, zero value otherwise.
+// GetLayer3Vlan returns the Layer3Vlan field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConfigPutRequestTenantTenantName) GetLayer3Vlan() int32 {
-	if o == nil || IsNil(o.Layer3Vlan) {
+	if o == nil || IsNil(o.Layer3Vlan.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.Layer3Vlan
+	return *o.Layer3Vlan.Get()
 }
 
 // GetLayer3VlanOk returns a tuple with the Layer3Vlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConfigPutRequestTenantTenantName) GetLayer3VlanOk() (*int32, bool) {
-	if o == nil || IsNil(o.Layer3Vlan) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Layer3Vlan, true
+	return o.Layer3Vlan.Get(), o.Layer3Vlan.IsSet()
 }
 
 // HasLayer3Vlan returns a boolean if a field has been set.
 func (o *ConfigPutRequestTenantTenantName) HasLayer3Vlan() bool {
-	if o != nil && !IsNil(o.Layer3Vlan) {
+	if o != nil && o.Layer3Vlan.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLayer3Vlan gets a reference to the given int32 and assigns it to the Layer3Vlan field.
+// SetLayer3Vlan gets a reference to the given NullableInt32 and assigns it to the Layer3Vlan field.
 func (o *ConfigPutRequestTenantTenantName) SetLayer3Vlan(v int32) {
-	o.Layer3Vlan = &v
+	o.Layer3Vlan.Set(&v)
+}
+// SetLayer3VlanNil sets the value for Layer3Vlan to be an explicit nil
+func (o *ConfigPutRequestTenantTenantName) SetLayer3VlanNil() {
+	o.Layer3Vlan.Set(nil)
+}
+
+// UnsetLayer3Vlan ensures that no value is present for Layer3Vlan, not even an explicit nil
+func (o *ConfigPutRequestTenantTenantName) UnsetLayer3Vlan() {
+	o.Layer3Vlan.Unset()
 }
 
 // GetLayer3VlanAutoAssigned returns the Layer3VlanAutoAssigned field value if set, zero value otherwise.
@@ -700,14 +720,14 @@ func (o ConfigPutRequestTenantTenantName) ToMap() (map[string]interface{}, error
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Layer3Vni) {
-		toSerialize["layer_3_vni"] = o.Layer3Vni
+	if o.Layer3Vni.IsSet() {
+		toSerialize["layer_3_vni"] = o.Layer3Vni.Get()
 	}
 	if !IsNil(o.Layer3VniAutoAssigned) {
 		toSerialize["layer_3_vni_auto_assigned_"] = o.Layer3VniAutoAssigned
 	}
-	if !IsNil(o.Layer3Vlan) {
-		toSerialize["layer_3_vlan"] = o.Layer3Vlan
+	if o.Layer3Vlan.IsSet() {
+		toSerialize["layer_3_vlan"] = o.Layer3Vlan.Get()
 	}
 	if !IsNil(o.Layer3VlanAutoAssigned) {
 		toSerialize["layer_3_vlan_auto_assigned_"] = o.Layer3VlanAutoAssigned

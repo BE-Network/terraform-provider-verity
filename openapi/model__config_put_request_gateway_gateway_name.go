@@ -44,7 +44,7 @@ type ConfigPutRequestGatewayGatewayName struct {
 	// Allows external BGP neighbors to establish peering session multiple network hops away. 
 	EbgpMultihop *int32 `json:"ebgp_multihop,omitempty"`
 	// VLAN used to carry BGP TCP session
-	EgressVlan *int32 `json:"egress_vlan,omitempty"`
+	EgressVlan NullableInt32 `json:"egress_vlan,omitempty"`
 	// Source IP address used to override the default source address calculation for BGP TCP session
 	SourceIpAddress *string `json:"source_ip_address,omitempty"`
 	// The Anycast Address will be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
@@ -62,7 +62,7 @@ type ConfigPutRequestGatewayGatewayName struct {
 	// Gateway Mode. Can be BGP, Static, or Default
 	GatewayMode *string `json:"gateway_mode,omitempty"`
 	// Local AS Number
-	LocalAsNumber *int32 `json:"local_as_number,omitempty"`
+	LocalAsNumber NullableInt32 `json:"local_as_number,omitempty"`
 	// Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
 	LocalAsNoPrepend *bool `json:"local_as_no_prepend,omitempty"`
 	// Prepend only Local AS in updates to EBGP peers.
@@ -574,36 +574,46 @@ func (o *ConfigPutRequestGatewayGatewayName) SetEbgpMultihop(v int32) {
 	o.EbgpMultihop = &v
 }
 
-// GetEgressVlan returns the EgressVlan field value if set, zero value otherwise.
+// GetEgressVlan returns the EgressVlan field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConfigPutRequestGatewayGatewayName) GetEgressVlan() int32 {
-	if o == nil || IsNil(o.EgressVlan) {
+	if o == nil || IsNil(o.EgressVlan.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.EgressVlan
+	return *o.EgressVlan.Get()
 }
 
 // GetEgressVlanOk returns a tuple with the EgressVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConfigPutRequestGatewayGatewayName) GetEgressVlanOk() (*int32, bool) {
-	if o == nil || IsNil(o.EgressVlan) {
+	if o == nil {
 		return nil, false
 	}
-	return o.EgressVlan, true
+	return o.EgressVlan.Get(), o.EgressVlan.IsSet()
 }
 
 // HasEgressVlan returns a boolean if a field has been set.
 func (o *ConfigPutRequestGatewayGatewayName) HasEgressVlan() bool {
-	if o != nil && !IsNil(o.EgressVlan) {
+	if o != nil && o.EgressVlan.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEgressVlan gets a reference to the given int32 and assigns it to the EgressVlan field.
+// SetEgressVlan gets a reference to the given NullableInt32 and assigns it to the EgressVlan field.
 func (o *ConfigPutRequestGatewayGatewayName) SetEgressVlan(v int32) {
-	o.EgressVlan = &v
+	o.EgressVlan.Set(&v)
+}
+// SetEgressVlanNil sets the value for EgressVlan to be an explicit nil
+func (o *ConfigPutRequestGatewayGatewayName) SetEgressVlanNil() {
+	o.EgressVlan.Set(nil)
+}
+
+// UnsetEgressVlan ensures that no value is present for EgressVlan, not even an explicit nil
+func (o *ConfigPutRequestGatewayGatewayName) UnsetEgressVlan() {
+	o.EgressVlan.Unset()
 }
 
 // GetSourceIpAddress returns the SourceIpAddress field value if set, zero value otherwise.
@@ -862,36 +872,46 @@ func (o *ConfigPutRequestGatewayGatewayName) SetGatewayMode(v string) {
 	o.GatewayMode = &v
 }
 
-// GetLocalAsNumber returns the LocalAsNumber field value if set, zero value otherwise.
+// GetLocalAsNumber returns the LocalAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConfigPutRequestGatewayGatewayName) GetLocalAsNumber() int32 {
-	if o == nil || IsNil(o.LocalAsNumber) {
+	if o == nil || IsNil(o.LocalAsNumber.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.LocalAsNumber
+	return *o.LocalAsNumber.Get()
 }
 
 // GetLocalAsNumberOk returns a tuple with the LocalAsNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConfigPutRequestGatewayGatewayName) GetLocalAsNumberOk() (*int32, bool) {
-	if o == nil || IsNil(o.LocalAsNumber) {
+	if o == nil {
 		return nil, false
 	}
-	return o.LocalAsNumber, true
+	return o.LocalAsNumber.Get(), o.LocalAsNumber.IsSet()
 }
 
 // HasLocalAsNumber returns a boolean if a field has been set.
 func (o *ConfigPutRequestGatewayGatewayName) HasLocalAsNumber() bool {
-	if o != nil && !IsNil(o.LocalAsNumber) {
+	if o != nil && o.LocalAsNumber.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLocalAsNumber gets a reference to the given int32 and assigns it to the LocalAsNumber field.
+// SetLocalAsNumber gets a reference to the given NullableInt32 and assigns it to the LocalAsNumber field.
 func (o *ConfigPutRequestGatewayGatewayName) SetLocalAsNumber(v int32) {
-	o.LocalAsNumber = &v
+	o.LocalAsNumber.Set(&v)
+}
+// SetLocalAsNumberNil sets the value for LocalAsNumber to be an explicit nil
+func (o *ConfigPutRequestGatewayGatewayName) SetLocalAsNumberNil() {
+	o.LocalAsNumber.Set(nil)
+}
+
+// UnsetLocalAsNumber ensures that no value is present for LocalAsNumber, not even an explicit nil
+func (o *ConfigPutRequestGatewayGatewayName) UnsetLocalAsNumber() {
+	o.LocalAsNumber.Unset()
 }
 
 // GetLocalAsNoPrepend returns the LocalAsNoPrepend field value if set, zero value otherwise.
@@ -1438,8 +1458,8 @@ func (o ConfigPutRequestGatewayGatewayName) ToMap() (map[string]interface{}, err
 	if !IsNil(o.EbgpMultihop) {
 		toSerialize["ebgp_multihop"] = o.EbgpMultihop
 	}
-	if !IsNil(o.EgressVlan) {
-		toSerialize["egress_vlan"] = o.EgressVlan
+	if o.EgressVlan.IsSet() {
+		toSerialize["egress_vlan"] = o.EgressVlan.Get()
 	}
 	if !IsNil(o.SourceIpAddress) {
 		toSerialize["source_ip_address"] = o.SourceIpAddress
@@ -1465,8 +1485,8 @@ func (o ConfigPutRequestGatewayGatewayName) ToMap() (map[string]interface{}, err
 	if !IsNil(o.GatewayMode) {
 		toSerialize["gateway_mode"] = o.GatewayMode
 	}
-	if !IsNil(o.LocalAsNumber) {
-		toSerialize["local_as_number"] = o.LocalAsNumber
+	if o.LocalAsNumber.IsSet() {
+		toSerialize["local_as_number"] = o.LocalAsNumber.Get()
 	}
 	if !IsNil(o.LocalAsNoPrepend) {
 		toSerialize["local_as_no_prepend"] = o.LocalAsNoPrepend

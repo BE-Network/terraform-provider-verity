@@ -332,7 +332,10 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		gatewayProps.SetEbgpMultihop(int32(plan.EbgpMultihop.ValueInt64()))
 	}
 	if !plan.EgressVlan.IsNull() {
-		gatewayProps.EgressVlan = openapi.PtrInt32(int32(plan.EgressVlan.ValueInt64()))
+		val := int32(plan.EgressVlan.ValueInt64())
+		gatewayProps.EgressVlan = *openapi.NewNullableInt32(&val)
+	} else {
+		gatewayProps.EgressVlan = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.SourceIpAddress.IsNull() {
 		gatewayProps.SourceIpAddress = openapi.PtrString(plan.SourceIpAddress.ValueString())
@@ -356,7 +359,10 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		gatewayProps.GatewayMode = openapi.PtrString(plan.GatewayMode.ValueString())
 	}
 	if !plan.LocalAsNumber.IsNull() {
-		gatewayProps.LocalAsNumber = openapi.PtrInt32(int32(plan.LocalAsNumber.ValueInt64()))
+		val := int32(plan.LocalAsNumber.ValueInt64())
+		gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(&val)
+	} else {
+		gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.LocalAsNoPrepend.IsNull() {
 		gatewayProps.LocalAsNoPrepend = openapi.PtrBool(plan.LocalAsNoPrepend.ValueBool())
@@ -905,12 +911,32 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 	if !plan.EgressVlan.Equal(state.EgressVlan) {
-		gatewayProps.EgressVlan = openapi.PtrInt32(int32(plan.EgressVlan.ValueInt64()))
+		if !plan.EgressVlan.IsNull() {
+			val := int32(plan.EgressVlan.ValueInt64())
+			gatewayProps.EgressVlan = *openapi.NewNullableInt32(&val)
+		} else {
+			gatewayProps.EgressVlan = *openapi.NewNullableInt32(nil)
+		}
 		hasChanges = true
+	} else if !state.EgressVlan.IsNull() {
+		val := int32(state.EgressVlan.ValueInt64())
+		gatewayProps.EgressVlan = *openapi.NewNullableInt32(&val)
+	} else {
+		gatewayProps.EgressVlan = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.LocalAsNumber.Equal(state.LocalAsNumber) {
-		gatewayProps.LocalAsNumber = openapi.PtrInt32(int32(plan.LocalAsNumber.ValueInt64()))
+		if !plan.LocalAsNumber.IsNull() {
+			val := int32(plan.LocalAsNumber.ValueInt64())
+			gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(&val)
+		} else {
+			gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(nil)
+		}
 		hasChanges = true
+	} else if !state.LocalAsNumber.IsNull() {
+		val := int32(state.LocalAsNumber.ValueInt64())
+		gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(&val)
+	} else {
+		gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.MaxLocalAsOccurrences.Equal(state.MaxLocalAsOccurrences) {
 		if !plan.MaxLocalAsOccurrences.IsNull() {
