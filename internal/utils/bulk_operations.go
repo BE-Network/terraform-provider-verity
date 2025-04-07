@@ -197,6 +197,32 @@ func GetBulkOperationManager(client *openapi.APIClient, clearCacheFunc ClearCach
 	return NewBulkOperationManager(client, contextProvider, clearCacheFunc)
 }
 
+func (b *BulkOperationManager) FailAllPendingOperations(ctx context.Context, err error) {
+	b.operationMutex.Lock()
+	defer b.operationMutex.Unlock()
+
+	failCount := 0
+	for opID, op := range b.pendingOperations {
+		if op.Status == OperationPending {
+			op.Status = OperationFailed
+			op.Error = fmt.Errorf("Operation aborted due to previous failure: %v", err)
+			b.operationErrors[opID] = op.Error
+			b.operationResults[opID] = false
+
+			if waitCh, ok := b.operationWaitChannels[opID]; ok {
+				close(waitCh)
+			}
+			failCount++
+		}
+	}
+
+	if failCount > 0 {
+		tflog.Error(ctx, fmt.Sprintf("Failed %d pending operations due to a previous operation failure", failCount), map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+}
+
 func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
 
@@ -256,7 +282,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		putDiags := b.ExecuteBulkTenantPut(ctx)
 		diagnostics.Append(putDiags...)
-		if diagnostics.HasError() {
+
+		if putDiags.HasError() {
+			err := fmt.Errorf("bulk tenant PUT operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -268,7 +297,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		putDiags := b.ExecuteBulkGatewayPut(ctx)
 		diagnostics.Append(putDiags...)
-		if diagnostics.HasError() {
+
+		if putDiags.HasError() {
+			err := fmt.Errorf("bulk gateway PUT operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -280,7 +312,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		putDiags := b.ExecuteBulkGatewayProfilePut(ctx)
 		diagnostics.Append(putDiags...)
-		if diagnostics.HasError() {
+
+		if putDiags.HasError() {
+			err := fmt.Errorf("bulk gateway profile PUT operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -292,7 +327,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		putDiags := b.ExecuteBulkServicePut(ctx)
 		diagnostics.Append(putDiags...)
-		if diagnostics.HasError() {
+
+		if putDiags.HasError() {
+			err := fmt.Errorf("bulk service PUT operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -304,7 +342,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		putDiags := b.ExecuteBulkEthPortProfilePut(ctx)
 		diagnostics.Append(putDiags...)
-		if diagnostics.HasError() {
+
+		if putDiags.HasError() {
+			err := fmt.Errorf("bulk eth port profile PUT operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -316,7 +357,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		putDiags := b.ExecuteBulkEthPortSettingsPut(ctx)
 		diagnostics.Append(putDiags...)
-		if diagnostics.HasError() {
+
+		if putDiags.HasError() {
+			err := fmt.Errorf("bulk eth port settings PUT operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -328,7 +372,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		putDiags := b.ExecuteBulkLagPut(ctx)
 		diagnostics.Append(putDiags...)
-		if diagnostics.HasError() {
+
+		if putDiags.HasError() {
+			err := fmt.Errorf("bulk LAG PUT operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -351,7 +398,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		patchDiags := b.ExecuteBulkTenantPatch(ctx)
 		diagnostics.Append(patchDiags...)
-		if diagnostics.HasError() {
+
+		if patchDiags.HasError() {
+			err := fmt.Errorf("bulk tenant PATCH operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -363,7 +413,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		patchDiags := b.ExecuteBulkGatewayPatch(ctx)
 		diagnostics.Append(patchDiags...)
-		if diagnostics.HasError() {
+
+		if patchDiags.HasError() {
+			err := fmt.Errorf("bulk gateway PATCH operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -375,7 +428,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		patchDiags := b.ExecuteBulkGatewayProfilePatch(ctx)
 		diagnostics.Append(patchDiags...)
-		if diagnostics.HasError() {
+
+		if patchDiags.HasError() {
+			err := fmt.Errorf("bulk gateway profile PATCH operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -387,7 +443,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		patchDiags := b.ExecuteBulkServicePatch(ctx)
 		diagnostics.Append(patchDiags...)
-		if diagnostics.HasError() {
+
+		if patchDiags.HasError() {
+			err := fmt.Errorf("bulk service PATCH operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -399,7 +458,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		patchDiags := b.ExecuteBulkEthPortProfilePatch(ctx)
 		diagnostics.Append(patchDiags...)
-		if diagnostics.HasError() {
+
+		if patchDiags.HasError() {
+			err := fmt.Errorf("bulk eth port profile PATCH operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -411,7 +473,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		patchDiags := b.ExecuteBulkEthPortSettingsPatch(ctx)
 		diagnostics.Append(patchDiags...)
-		if diagnostics.HasError() {
+
+		if patchDiags.HasError() {
+			err := fmt.Errorf("bulk eth port settings PATCH operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -423,7 +488,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		patchDiags := b.ExecuteBulkLagPatch(ctx)
 		diagnostics.Append(patchDiags...)
-		if diagnostics.HasError() {
+
+		if patchDiags.HasError() {
+			err := fmt.Errorf("bulk lag PATCH operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -435,7 +503,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		patchDiags := b.ExecuteBulkBundlePatch(ctx)
 		diagnostics.Append(patchDiags...)
-		if diagnostics.HasError() {
+
+		if patchDiags.HasError() {
+			err := fmt.Errorf("bulk bundle PATCH operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -460,7 +531,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		deleteDiags := b.ExecuteBulkLagDelete(ctx)
 		diagnostics.Append(deleteDiags...)
-		if diagnostics.HasError() {
+
+		if deleteDiags.HasError() {
+			err := fmt.Errorf("bulk lag DELETE operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -472,7 +546,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		deleteDiags := b.ExecuteBulkEthPortSettingsDelete(ctx)
 		diagnostics.Append(deleteDiags...)
-		if diagnostics.HasError() {
+
+		if deleteDiags.HasError() {
+			err := fmt.Errorf("bulk eth port settings DELETE operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -484,7 +561,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		deleteDiags := b.ExecuteBulkEthPortProfileDelete(ctx)
 		diagnostics.Append(deleteDiags...)
-		if diagnostics.HasError() {
+
+		if deleteDiags.HasError() {
+			err := fmt.Errorf("bulk eth port profile DELETE operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -496,7 +576,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		deleteDiags := b.ExecuteBulkServiceDelete(ctx)
 		diagnostics.Append(deleteDiags...)
-		if diagnostics.HasError() {
+
+		if deleteDiags.HasError() {
+			err := fmt.Errorf("bulk service DELETE operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -508,7 +591,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		deleteDiags := b.ExecuteBulkGatewayProfileDelete(ctx)
 		diagnostics.Append(deleteDiags...)
-		if diagnostics.HasError() {
+
+		if deleteDiags.HasError() {
+			err := fmt.Errorf("bulk gateway profile DELETE operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -520,7 +606,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		deleteDiags := b.ExecuteBulkGatewayDelete(ctx)
 		diagnostics.Append(deleteDiags...)
-		if diagnostics.HasError() {
+
+		if deleteDiags.HasError() {
+			err := fmt.Errorf("bulk gateway DELETE operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
@@ -532,7 +621,10 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		})
 		deleteDiags := b.ExecuteBulkTenantDelete(ctx)
 		diagnostics.Append(deleteDiags...)
-		if diagnostics.HasError() {
+
+		if deleteDiags.HasError() {
+			err := fmt.Errorf("bulk tenant DELETE operation failed")
+			b.FailAllPendingOperations(ctx, err)
 			return diagnostics
 		}
 		operationsPerformed = true
