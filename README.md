@@ -87,3 +87,33 @@ export TF_CLI_ARGS_apply="-parallelism=1000"
 ```powershell
 $env:TF_CLI_ARGS_apply="-parallelism=1000"
 ```
+
+## Regenerating the OpenAPI Go SDK
+
+If there are changes to the Verity API (reflected in a new swagger.json file), you'll need to regenerate the OpenAPI Go SDK. Follow these steps:
+
+1. Save the new swagger.json file
+
+2. Run the tools/transform_swagger.py script to prepare the swagger file for code generation:
+   ```bash
+   python3 tools/transform_swagger.py
+   ```
+
+3. Install the OpenAPI Generator CLI (if not already installed):
+   ```bash
+   npm install @openapitools/openapi-generator-cli -g
+   ```
+
+4. Generate the Go SDK using openapi-generator-cli:
+   ```bash
+   openapi-generator-cli generate -i swagger_transformed.json -g go -o ./openapi
+   ```
+
+5. Replace the existing openapi folder with the newly generated one
+
+### Updating Provider Resource Files
+
+After regenerating the SDK, you need to update the provider resource files:
+
+- For fields deleted from the API: Remove them from the corresponding provider resource files
+- For new fields added to the API: Add them to the appropriate provider resource files
