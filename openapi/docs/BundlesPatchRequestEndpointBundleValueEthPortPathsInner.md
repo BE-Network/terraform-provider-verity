@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **EthPortNumGatewayProfile** | Pointer to **string** | Gateway Profile or LAG for Eth Port | [optional] [default to ""]
 **EthPortNumGatewayProfileRefType** | Pointer to **string** | Object type for eth_port_num_gateway_profile field | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
-**PortName** | Pointer to **string** | The name identifying the port | [optional] 
+**PortName** | Pointer to **string** | The name identifying the port. Used for reference only, it won&#39;t actually change the port name. | [optional] 
 
 ## Methods
 

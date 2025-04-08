@@ -21,7 +21,7 @@ var _ MappedNullable = &ConfigPutRequestTenantTenantName{}
 type ConfigPutRequestTenantTenantName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	// VNI value used to transport traffic between services of a Tenant 
 	Layer3Vni NullableInt32 `json:"layer_3_vni,omitempty"`

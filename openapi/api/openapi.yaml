@@ -1292,7 +1292,6 @@ paths:
         schema:
           description: The name of the pod to update.
           items:
-            description: TODO default missing array inner type to string
             type: string
           type: array
         style: form
@@ -1303,7 +1302,6 @@ paths:
         schema:
           description: The name of the switchpoint to update.
           items:
-            description: TODO default missing array inner type to string
             type: string
           type: array
         style: form
@@ -1641,12 +1639,14 @@ components:
           $ref: '#/components/schemas/_config_put_request_device_controller'
         sfp_breakouts:
           $ref: '#/components/schemas/_config_put_request_sfp_breakouts'
-        thresholds:
-          $ref: '#/components/schemas/_config_put_request_thresholds'
         site:
           $ref: '#/components/schemas/_config_put_request_site'
+        ipv4_prefix_list:
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list'
         eth_device_profiles:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles'
+        ipv4_filter:
+          $ref: '#/components/schemas/_config_put_request_ipv4_filter'
         gateway_profile:
           $ref: '#/components/schemas/_config_put_request_gateway_profile'
         endpoint_view:
@@ -1657,14 +1657,10 @@ components:
           $ref: '#/components/schemas/_config_put_request_ipv6_filter'
         route_map_clause:
           $ref: '#/components/schemas/_config_put_request_route_map_clause'
-        ipv4_fliter:
-          $ref: '#/components/schemas/_config_put_request_ipv4_fliter'
-        threshold_rules:
-          $ref: '#/components/schemas/_config_put_request_threshold_rules'
-        ip_prefix_list:
-          $ref: '#/components/schemas/_config_put_request_ip_prefix_list'
-        as_path_access_list:
-          $ref: '#/components/schemas/_config_put_request_as_path_access_list'
+        service:
+          $ref: '#/components/schemas/_config_put_request_service'
+        route_map:
+          $ref: '#/components/schemas/_config_put_request_route_map'
         bizd_config:
           $ref: '#/components/schemas/_config_put_request_bizd_config'
         pb_egress_profile:
@@ -1677,14 +1673,14 @@ components:
           $ref: '#/components/schemas/_config_put_request_static_ip'
         community_list:
           $ref: '#/components/schemas/_config_put_request_community_list'
-        route_map:
-          $ref: '#/components/schemas/_config_put_request_route_map'
         tenant:
           $ref: '#/components/schemas/_config_put_request_tenant'
-        service:
-          $ref: '#/components/schemas/_config_put_request_service'
+        ipv6_prefix_list:
+          $ref: '#/components/schemas/_config_put_request_ipv6_prefix_list'
         ipv4_list_filter:
           $ref: '#/components/schemas/_config_put_request_ipv4_list_filter'
+        as_path_access_list:
+          $ref: '#/components/schemas/_config_put_request_as_path_access_list'
         ipv6_list_filter:
           $ref: '#/components/schemas/_config_put_request_ipv6_list_filter'
         eth_port_profile_:
@@ -1706,11 +1702,10 @@ components:
           default: ""
           description: TOI Switchpoint
           type: string
-          example: null
         toi_switchpoint_ref_type_:
           description: Object type for toi_switchpoint field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -1741,7 +1736,6 @@ components:
           default: ""
           description: Match AS Path Access List
           type: string
-          example: null
         match_as_path_access_list_ref_type_:
           description: Object type for match_as_path_access_list field
           enum:
@@ -1751,7 +1745,6 @@ components:
           default: ""
           description: Match Community List
           type: string
-          example: null
         match_community_list_ref_type_:
           description: Object type for match_community_list field
           enum:
@@ -1761,7 +1754,6 @@ components:
           default: ""
           description: Match Extended Community List
           type: string
-          example: null
         match_extended_community_list_ref_type_:
           description: Object type for match_extended_community_list field
           enum:
@@ -1781,23 +1773,21 @@ components:
           type: integer
         match_ipv4_address_ip_prefix_list:
           default: ""
-          description: Match IPv4 Address IP Prefix List
+          description: Match IPv4 Address IPv4 Prefix List
           type: string
-          example: null
         match_ipv4_address_ip_prefix_list_ref_type_:
           description: Object type for match_ipv4_address_ip_prefix_list field
           enum:
-          - prefix_list
+          - ipv4_prefix_list
           type: string
         match_ipv4_next_hop_ip_prefix_list:
           default: ""
-          description: Match IPv4 Next Hop IP Prefix List
+          description: Match IPv4 Next Hop IPv4 Prefix List
           type: string
-          example: null
         match_ipv4_next_hop_ip_prefix_list_ref_type_:
           description: Object type for match_ipv4_next_hop_ip_prefix_list field
           enum:
-          - prefix_list
+          - ipv4_prefix_list
           type: string
         match_local_preference:
           description: 'Match BGP Local Preference value on the route '
@@ -1850,7 +1840,6 @@ components:
           default: ""
           description: 'Match VRF the route is associated with '
           type: string
-          example: null
         match_vrf_ref_type_:
           description: Object type for match_vrf field
           enum:
@@ -1863,7 +1852,6 @@ components:
           nullable: true
           type: integer
         match_evpn_route_type_default:
-          default: false
           description: Match based on the type of EVPN Route Type being Default"
           type: boolean
         match_evpn_route_type:
@@ -1883,6 +1871,24 @@ components:
           type: integer
         object_properties:
           $ref: '#/components/schemas/_config_put_request_route_map_clause_route_map_clause_name_object_properties'
+        match_ipv6_address_ipv6_prefix_list:
+          default: ""
+          description: Match IPv4 Address IPv6 Prefix List
+          type: string
+        match_ipv6_address_ipv6_prefix_list_ref_type_:
+          description: Object type for match_ipv6_address_ipv6_prefix_list field
+          enum:
+          - ipv6_prefix_list
+          type: string
+        match_ipv6_next_hop_ipv6_prefix_list:
+          default: ""
+          description: Match IPv6 Next Hop IPv6 Prefix List
+          type: string
+        match_ipv6_next_hop_ipv6_prefix_list_ref_type_:
+          description: Object type for match_ipv6_next_hop_ipv6_prefix_list field
+          enum:
+          - ipv6_prefix_list
+          type: string
       type: object
     _config_put_request_switchpoint_switchpoint_name_object_properties_eths:
       properties:
@@ -1901,11 +1907,10 @@ components:
           default: ""
           description: Switchpoint associated with the Child
           type: string
-          example: null
         child_num_endpoint_ref_type_:
           description: Object type for child_num_endpoint field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         child_num_device:
           default: ""
@@ -1915,16 +1920,6 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
-      type: object
-    _config_put_request_ipv4_fliter:
-      properties:
-        ipv4_fliter_name:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name'
-      type: object
-    _config_put_request_threshold_rules:
-      properties:
-        threshold_rules_name:
-          $ref: '#/components/schemas/_config_put_request_threshold_rules_threshold_rules_name'
       type: object
     _config_put_request_switchpoint_switchpoint_name_eths_inner:
       properties:
@@ -2030,7 +2025,7 @@ components:
             $ref: '#/components/schemas/_config_put_request_community_list_community_list_name_lists_inner'
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name_object_properties'
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object
     _config_put_request_tenant_tenant_name:
       properties:
@@ -2042,7 +2037,9 @@ components:
           type: string
         enable:
           default: true
-          description: Enable object.
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
         layer_3_vni:
           description: 'VNI value used to transport traffic between services of a
@@ -2097,7 +2094,6 @@ components:
           description: A route-map applied to routes imported into the current tenant
             from other tenants with the purpose of filtering or modifying the routes
           type: string
-          example: null
         import_route_map_ref_type_:
           description: Object type for import_route_map field
           enum:
@@ -2108,7 +2104,6 @@ components:
           description: A route-map applied to routes exported into the current tenant
             from other tenants with the purpose of filtering or modifying the routes
           type: string
-          example: null
         export_route_map_ref_type_:
           description: Object type for export_route_map field
           enum:
@@ -2138,11 +2133,10 @@ components:
           default: ""
           description: Enable of this POTS port
           type: string
-          example: null
         badge_ref_type_:
           description: Object type for badge field
           enum:
-          - badges
+          - badge
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -2160,31 +2154,28 @@ components:
           default: ""
           description: Switchpoint
           type: string
-          example: null
         switchpoint_1_ref_type_:
           description: Object type for switchpoint_1 field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         switchpoint_2:
           default: ""
           description: Switchpoint
           type: string
-          example: null
         switchpoint_2_ref_type_:
           description: Object type for switchpoint_2 field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         lag_group:
           default: ""
           description: LAG Group
           type: string
-          example: null
         lag_group_ref_type_:
           description: Object type for lag_group field
           enum:
-          - lagg_group
+          - lag
           type: string
         is_whitebox_pair:
           default: false
@@ -2205,7 +2196,6 @@ components:
           default: ""
           description: Tenant
           type: string
-          example: null
         tenant_ref_type_:
           description: Object type for tenant field
           type: string
@@ -2250,7 +2240,6 @@ components:
           default: ""
           description: Choose a Service to connect
           type: string
-          example: null
         row_num_service_ref_type_:
           description: Object type for row_num_service field
           enum:
@@ -2278,7 +2267,7 @@ components:
           minLength: 1
           type: string
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name_object_properties'
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object
     _config_put_request_eth_port_profile__eth_port_profile__name_object_properties:
       properties:
@@ -2317,6 +2306,11 @@ components:
             object to the list.
           type: integer
       type: object
+    _config_put_request_ipv4_prefix_list:
+      properties:
+        ipv4_prefix_list_name:
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name'
+      type: object
     _config_put_request_endpoint_bundle:
       properties:
         endpoint_bundle_name:
@@ -2332,11 +2326,10 @@ components:
           default: ""
           description: Expected Parent Endpoint
           type: string
-          example: null
         expected_parent_endpoint_ref_type_:
           description: Object type for expected_parent_endpoint field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         number_of_multipoints:
           description: Number of Multipoints
@@ -2450,12 +2443,11 @@ components:
           default: ""
           description: Filter
           type: string
-          example: null
         filter_ref_type_:
           description: Object type for filter field
           enum:
-          - ipv6_access_list
-          - ipv6_list
+          - ipv6_filter
+          - ipv6_list_filter
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -2474,17 +2466,20 @@ components:
           enum:
           - ""
           - productClass
-          - endpoint
+          - endpoint_type
           - isPreprovisioned
-          - badge_color
+          - endpoint
           - followsSelector
+          - deviceSerialNumber
+          - badge_color
           - softwareVersion
           - managementIP
+          - upgraderStatus
           - softwareVersionFreeform
           - noEndpoint
           - modelName
           - badge
-          - deviceSerialNumber
+          - pod
           - modelNameFreeform
           type: string
         rule_num_subrule_1_value:
@@ -2492,10 +2487,9 @@ components:
           description: Subrule 1 Value
           type: string
         rule_num_subrule_1_reference_path:
-          default: "0"
+          default: ""
           description: Subrule 1 Reference Path
           type: string
-          example: null
         rule_num_subrule_1_reference_path_ref_type_:
           description: Object type for rule_num_subrule_1_reference_path field
           type: string
@@ -2509,17 +2503,20 @@ components:
           enum:
           - ""
           - productClass
-          - endpoint
+          - endpoint_type
           - isPreprovisioned
-          - badge_color
+          - endpoint
           - followsSelector
+          - deviceSerialNumber
+          - badge_color
           - softwareVersion
           - managementIP
+          - upgraderStatus
           - softwareVersionFreeform
           - noEndpoint
           - modelName
           - badge
-          - deviceSerialNumber
+          - pod
           - modelNameFreeform
           type: string
         rule_num_subrule_2_value:
@@ -2527,10 +2524,9 @@ components:
           description: Subrule 2 Value
           type: string
         rule_num_subrule_2_reference_path:
-          default: "0"
+          default: ""
           description: Subrule 2 Reference Path
           type: string
-          example: null
         rule_num_subrule_2_reference_path_ref_type_:
           description: Object type for rule_num_subrule_2_reference_path field
           type: string
@@ -2544,17 +2540,20 @@ components:
           enum:
           - ""
           - productClass
-          - endpoint
+          - endpoint_type
           - isPreprovisioned
-          - badge_color
+          - endpoint
           - followsSelector
+          - deviceSerialNumber
+          - badge_color
           - softwareVersion
           - managementIP
+          - upgraderStatus
           - softwareVersionFreeform
           - noEndpoint
           - modelName
           - badge
-          - deviceSerialNumber
+          - pod
           - modelNameFreeform
           type: string
         rule_num_subrule_3_value:
@@ -2562,10 +2561,9 @@ components:
           description: Subrule 3 Value
           type: string
         rule_num_subrule_3_reference_path:
-          default: "0"
+          default: ""
           description: Subrule 3 Reference Path
           type: string
-          example: null
         rule_num_subrule_3_reference_path_ref_type_:
           description: Object type for rule_num_subrule_3_reference_path field
           type: string
@@ -2589,47 +2587,50 @@ components:
           default: ""
           description: Eth Port Profile Or LAG for Eth Port
           type: string
-          example: null
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
-          - eth_port
-          - lagg_group
-          - pb_spigot
+          - eth_port_profile_
+          - lag
+          - pb_egress_profile
           type: string
         eth_port_num_eth_port_settings:
           default: ""
           description: Choose an Eth Port Settings
           type: string
-          example: null
         eth_port_num_eth_port_settings_ref_type_:
           description: Object type for eth_port_num_eth_port_settings field
           enum:
-          - eth_port_profile
+          - eth_port_settings
           type: string
         eth_port_num_gateway_profile:
           default: ""
           description: Gateway Profile or LAG for Eth Port
           type: string
-          example: null
         eth_port_num_gateway_profile_ref_type_:
           description: Object type for eth_port_num_gateway_profile field
           enum:
-          - external_gateway_profile
-          - lagg_group
+          - gateway_profile
+          - lag
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
         port_name:
-          description: The name identifying the port
+          description: "The name identifying the port. Used for reference only, it\
+            \ won't actually change the port name."
           type: string
       type: object
     _config_put_request_device_controller:
       properties:
         device_controller_name:
           $ref: '#/components/schemas/_config_put_request_device_controller_device_controller_name'
+      type: object
+    _config_put_request_ipv6_prefix_list:
+      properties:
+        ipv6_prefix_list_name:
+          $ref: '#/components/schemas/_config_put_request_ipv6_prefix_list_ipv6_prefix_list_name'
       type: object
     _config_put_request_community_list_community_list_name_lists_inner:
       properties:
@@ -2803,11 +2804,10 @@ components:
           default: ""
           description: Switchpoint reference
           type: string
-          example: null
         switchpoint_ref_type_:
           description: Object type for switchpoint field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         security_type:
           default: noAuthNoPriv
@@ -2874,6 +2874,13 @@ components:
           format: password
           type: string
       type: object
+    _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties:
+      properties:
+        notes:
+          default: ""
+          description: User Notes.
+          type: string
+      type: object
     _config_put_request_endpoint_view:
       properties:
         endpoint_view_name:
@@ -2891,11 +2898,10 @@ components:
           default: eth_device_profile|(Default)|
           description: Device Settings for device
           type: string
-          example: null
         device_settings_ref_type_:
           description: Object type for device_settings field
           enum:
-          - eth_device_profile
+          - eth_device_profiles
           type: string
         cli_commands:
           default: ""
@@ -2911,43 +2917,6 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_object_properties'
-      type: object
-    _config_put_request_ip_prefix_list_ip_prefix_list_name_lists_inner:
-      properties:
-        enable:
-          default: false
-          description: Enable of this IP Prefix List
-          type: boolean
-        permit_deny:
-          default: permit
-          description: Action upon match of Community Strings.
-          enum:
-          - permit
-          - deny
-          minLength: 1
-          type: string
-        ipv4_prefix:
-          default: ""
-          description: 'IP address and subnet to match against '
-          format: ipv4
-          minLength: 1
-          type: string
-        greater_than_equal_value:
-          description: 'Match IP routes with a subnet mask greater than or equal to
-            the value indicated '
-          maximum: 32
-          nullable: true
-          type: integer
-        less_than_equal_value:
-          description: Match IP routes with a subnet mask less than or equal to the
-            value indicated
-          maximum: 32
-          nullable: true
-          type: integer
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
       type: object
     _tenants_put_request:
       properties:
@@ -2974,14 +2943,7 @@ components:
             $ref: '#/components/schemas/_config_put_request_route_map_route_map_name_route_map_clauses_inner'
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name_object_properties'
-      type: object
-    _config_put_request_ipv6_filter_ipv6_filter_name_object_properties:
-      properties:
-        notes:
-          default: ""
-          description: User Notes.
-          type: string
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object
     _auth_post_request_auth:
       properties:
@@ -3028,6 +2990,25 @@ components:
         route_map_clause_name:
           $ref: '#/components/schemas/_config_put_request_route_map_clause_route_map_clause_name'
       type: object
+    _config_put_request_ipv6_prefix_list_ipv6_prefix_list_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        lists:
+          items:
+            $ref: '#/components/schemas/_config_put_request_ipv6_prefix_list_ipv6_prefix_list_name_lists_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+      type: object
     _config_put_request_site_site_name:
       properties:
         name:
@@ -3044,7 +3025,6 @@ components:
           default: service|Management|
           description: Service for Site
           type: string
-          example: null
         service_for_site_ref_type_:
           description: Object type for service_for_site field
           enum:
@@ -3099,8 +3079,9 @@ components:
             value to edit.
           type: boolean
         mac_address_aging_time:
-          description: MAC Address Aging Time
+          description: MAC Address Aging Time (between 1-100000)
           maximum: 100000
+          minimum: 1
           type: integer
         mlag_delay_restore_timer:
           description: MLAG Delay Restore Timer
@@ -3159,10 +3140,6 @@ components:
           description: MAC Holdtime
           nullable: true
           type: integer
-        evpn_neighbor_holdtime:
-          description: Neighbor Holdtime
-          nullable: true
-          type: integer
         aggressive_reporting:
           default: true
           description: "Fast Reporting of Switch Communications, Link Up/Down, and\
@@ -3201,11 +3178,10 @@ components:
           default: ""
           description: BGP Gateway referenced for port profile
           type: string
-          example: null
         gateway_ref_type_:
           description: Object type for gateway field
           enum:
-          - external_gateway
+          - gateway
           type: string
         source_ip_mask:
           default: ""
@@ -3235,7 +3211,9 @@ components:
           type: string
         enable:
           default: false
-          description: Enable object.
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
         tenant_slice_managed:
           default: false
@@ -3248,117 +3226,6 @@ components:
         object_properties:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
       type: object
-    _config_put_request_threshold_rules_threshold_rules_name_rules_inner:
-      properties:
-        rule_num_enabled:
-          default: false
-          description: Enable/Disable the threshold
-          type: boolean
-        rule_num_type:
-          default: ""
-          description: Type
-          type: string
-        rule_num_value:
-          default: ""
-          description: Value
-          type: string
-        rule_num_thresholds:
-          default: ""
-          description: Choose a Thresholds
-          type: string
-          example: null
-        rule_num_thresholds_ref_type_:
-          description: Object type for rule_num_thresholds field
-          enum:
-          - thresholds
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
-      type: object
-    _config_put_request_threshold_rules_threshold_rules_name:
-      properties:
-        name:
-          default: ""
-          description: Object Name. Must be unique.
-          format: name
-          minLength: 1
-          type: string
-        enable:
-          default: false
-          description: Enable object.
-          type: boolean
-        rules:
-          items:
-            $ref: '#/components/schemas/_config_put_request_threshold_rules_threshold_rules_name_rules_inner'
-          type: array
-      type: object
-    _config_put_request_lag_lag_name:
-      properties:
-        name:
-          default: ""
-          description: Object Name. Must be unique.
-          format: name
-          minLength: 1
-          type: string
-        enable:
-          default: false
-          description: Enable object.
-          type: boolean
-        is_peer_link:
-          default: false
-          description: Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link
-          type: boolean
-        color:
-          default: anakiwa
-          description: Choose the color to display the connectors on the network view
-          enum:
-          - anakiwa
-          - chardonnay
-          - lavender
-          - cornflower
-          - emerald
-          - starship
-          minLength: 1
-          type: string
-        lacp:
-          default: true
-          description: LACP
-          type: boolean
-        eth_port_profile:
-          default: ""
-          description: Choose an Eth Port Profile
-          type: string
-          example: null
-        eth_port_profile_ref_type_:
-          description: Object type for eth_port_profile field
-          enum:
-          - eth_port
-          - external_gateway_profile
-          - pb_spigot
-          type: string
-        peer_link_vlan:
-          description: For peer-peer LAGs. The VLAN used for control
-          maximum: 4096
-          minimum: 1
-          nullable: true
-          type: integer
-        fallback:
-          default: false
-          description: Allows an active member interface to establish a connection
-            with a peer interface before the port channel receives the LACP protocol
-            negotiation from the peer.
-          type: boolean
-        fast_rate:
-          default: false
-          description: "Send LACP packets every second (if disabled, packets are sent\
-            \ every 30 seconds)"
-          type: boolean
-        object_properties:
-          properties: {}
-          type: object
-      type: object
     _config_put_request_service_service_name:
       properties:
         name:
@@ -3369,7 +3236,9 @@ components:
           type: string
         enable:
           default: false
-          description: Enable object.
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
         vlan:
           description: A Value between 1 and 4096
@@ -3391,7 +3260,6 @@ components:
           default: ""
           description: Tenant
           type: string
-          example: null
         tenant_ref_type_:
           description: Object type for tenant field
           enum:
@@ -3420,6 +3288,72 @@ components:
         object_properties:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
       type: object
+    _config_put_request_lag_lag_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
+          type: boolean
+        is_peer_link:
+          default: false
+          description: Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link
+          type: boolean
+        color:
+          default: anakiwa
+          description: Choose the color to display the connectors on the network view
+          enum:
+          - anakiwa
+          - chardonnay
+          - lavender
+          - cornflower
+          - emerald
+          - starship
+          minLength: 1
+          type: string
+        lacp:
+          default: true
+          description: LACP
+          type: boolean
+        eth_port_profile:
+          default: ""
+          description: Choose an Eth Port Profile
+          type: string
+        eth_port_profile_ref_type_:
+          description: Object type for eth_port_profile field
+          enum:
+          - eth_port_profile_
+          - gateway_profile
+          - pb_egress_profile
+          type: string
+        peer_link_vlan:
+          description: For peer-peer LAGs. The VLAN used for control
+          maximum: 4096
+          minimum: 1
+          nullable: true
+          type: integer
+        fallback:
+          default: false
+          description: Allows an active member interface to establish a connection
+            with a peer interface before the port channel receives the LACP protocol
+            negotiation from the peer.
+          type: boolean
+        fast_rate:
+          default: false
+          description: "Send LACP packets every second (if disabled, packets are sent\
+            \ every 30 seconds)"
+          type: boolean
+        object_properties:
+          properties: {}
+          type: object
+      type: object
     _config_put_request_switchpoint_switchpoint_name:
       properties:
         name:
@@ -3436,11 +3370,10 @@ components:
           default: ""
           description: Connected Bundle
           type: string
-          example: null
         connected_bundle_ref_type_:
           description: Object type for connected_bundle field
           enum:
-          - bundle
+          - endpoint_bundle
           type: string
         read_only_mode:
           default: false
@@ -3543,11 +3476,6 @@ components:
         bizd_config_name:
           $ref: '#/components/schemas/_config_put_request_bizd_config_bizd_config_name'
       type: object
-    _config_put_request_thresholds:
-      properties:
-        thresholds_name:
-          $ref: '#/components/schemas/_config_put_request_thresholds_thresholds_name'
-      type: object
     _config_put_request_ipv6_list_filter:
       properties:
         ipv6_list_filter_name:
@@ -3572,7 +3500,7 @@ components:
           type: boolean
         ipv6_list:
           default: ""
-          description: Comma seperated list of IPv6 addresses
+          description: Comma separated list of IPv6 addresses
           pattern: /^.*$/
           type: string
       type: object
@@ -3626,7 +3554,6 @@ components:
           default: ""
           description: Route Map Clause is a collection match and set rules
           type: string
-          example: null
         route_map_clause_ref_type_:
           description: Object type for route_map_clause field
           enum:
@@ -3636,11 +3563,6 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
-      type: object
-    _config_put_request_ip_prefix_list:
-      properties:
-        ip_prefix_list_name:
-          $ref: '#/components/schemas/_config_put_request_ip_prefix_list_ip_prefix_list_name'
       type: object
     _config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner:
       properties:
@@ -3663,11 +3585,11 @@ components:
           minLength: 1
           type: string
         traffic_mirror_num_inbound_traffic:
-          default: true
+          default: false
           description: Boolean value indicating if the mirror is for inbound traffic
           type: boolean
         traffic_mirror_num_outbound_traffic:
-          default: true
+          default: false
           description: Boolean value indicating if the mirror is for outbound traffic
           type: boolean
       type: object
@@ -3681,7 +3603,9 @@ components:
           type: string
         enable:
           default: false
-          description: Enable object.
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
         auto_negotiation:
           default: true
@@ -3842,37 +3766,6 @@ components:
           description: Ports with this setting will be disabled when link state tracking
             takes effect
           type: boolean
-        minimum_wred_threshold:
-          description: A value between 0 to 133168898
-          maximum: 133168898
-          type: integer
-        maximum_wred_threshold:
-          description: A value between 0 to 133168898
-          maximum: 133168898
-          type: integer
-        wred_drop_probability:
-          description: A value between 0 to 100
-          maximum: 100
-          type: integer
-        priority_flow_control_watchdog_action:
-          default: DROP
-          description: Ports with this setting will be disabled when link state tracking
-            takes effect
-          enum:
-          - DROP
-          - FORWARD
-          minLength: 1
-          type: string
-        priority_flow_control_watchdog_detect_time:
-          description: A value between 100 to 5000
-          maximum: 5000
-          minimum: 100
-          type: integer
-        priority_flow_control_watchdog_restore_time:
-          description: A value between 100 to 60000
-          maximum: 60000
-          minimum: 100
-          type: integer
         object_properties:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
       type: object
@@ -3947,7 +3840,7 @@ components:
             $ref: '#/components/schemas/_config_put_request_as_path_access_list_as_path_access_list_name_lists_inner'
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name_object_properties'
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object
     _config_put_request_extended_community_list_extended_community_list_name:
       properties:
@@ -3990,7 +3883,7 @@ components:
             $ref: '#/components/schemas/_config_put_request_extended_community_list_extended_community_list_name_lists_inner'
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name_object_properties'
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object
     _config_put_request_endpoint_view_endpoint_view_name:
       properties:
@@ -4057,12 +3950,11 @@ components:
           default: ""
           description: Filter
           type: string
-          example: null
         filter_ref_type_:
           description: Object type for filter field
           enum:
-          - ip_access_list
-          - ip_list
+          - ipv4_filter
+          - ipv4_list_filter
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -4081,7 +3973,7 @@ components:
         lag_name:
           $ref: '#/components/schemas/_config_put_request_lag_lag_name'
       type: object
-    _config_put_request_thresholds_thresholds_name:
+    _config_put_request_ipv4_filter_ipv4_filter_name:
       properties:
         name:
           default: ""
@@ -4093,20 +3985,80 @@ components:
           default: false
           description: Enable object.
           type: boolean
-        inherited_thresholds:
+        protocol:
           default: ""
-          description: Choose a Thresholds
+          description: "IP protocol type (0-255) to match packets on. Ip indicates\
+            \ ipv4, ipv4 indicates ipv6"
+          minLength: 1
           type: string
-          example: null
-        inherited_thresholds_ref_type_:
-          description: Object type for inherited_thresholds field
+        bidirectional:
+          default: false
+          description: "If bidirectional is selected, packets will be selected that\
+            \ match the source filters in either the source or destination fields\
+            \ of the packet."
+          type: boolean
+        source_ip:
+          default: ""
+          description: This field matches the source IP address of an IPv4 packet
+          format: ipv4
+          type: string
+        source_port_operator:
+          default: ""
+          description: "This field determines which match operation will be applied\
+            \ to TCP/UDP ports. The choices are equal, greater-than, less-than or\
+            \ range."
           enum:
-          - thresholds
+          - ""
+          - equal
+          - greater
+          - less
+          - range
           type: string
-        threshold:
-          items:
-            $ref: '#/components/schemas/_config_put_request_thresholds_thresholds_name_threshold_inner'
-          type: array
+        source_port_1:
+          description: "This field is used for equal, greater-than or less-than TCP/UDP\
+            \ port value in match operation. This field is also used for the lower\
+            \ value in the range port match operation."
+          maximum: 65535
+          nullable: true
+          type: integer
+        source_port_2:
+          description: This field will only be used in the range TCP/UDP port value
+            match operation to define the top value in the range.
+          maximum: 65535
+          nullable: true
+          type: integer
+        destination_ip:
+          default: ""
+          description: This field matches the destination IP address of an IPv4 packet.
+          format: ipv4
+          type: string
+        destination_port_operator:
+          default: ""
+          description: "This field determines which match operation will be applied\
+            \ to TCP/UDP ports. The choices are equal, greater-than, less-than or\
+            \ range."
+          enum:
+          - ""
+          - equal
+          - greater
+          - less
+          - range
+          type: string
+        destination_port_1:
+          description: "This field is used for equal, greater-than or less-than TCP/UDP\
+            \ port value in match operation. This field is also used for the lower\
+            \ value in the range port match operation."
+          maximum: 65535
+          nullable: true
+          type: integer
+        destination_port_2:
+          description: This field will only be used in the range TCP/UDP port value
+            match operation to define the top value in the range.
+          maximum: 65535
+          nullable: true
+          type: integer
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object
     _services_put_request:
       properties:
@@ -4142,12 +4094,7 @@ components:
         pb_egress_profile_name:
           $ref: '#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name'
       type: object
-    _config_put_request_as_path_access_list:
-      properties:
-        as_path_access_list_name:
-          $ref: '#/components/schemas/_config_put_request_as_path_access_list_as_path_access_list_name'
-      type: object
-    _config_put_request_gateway_gateway_name:
+    _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name:
       properties:
         name:
           default: ""
@@ -4159,16 +4106,78 @@ components:
           default: false
           description: Enable object.
           type: boolean
+        lists:
+          items:
+            $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_lists_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+      type: object
+    _config_put_request_as_path_access_list:
+      properties:
+        as_path_access_list_name:
+          $ref: '#/components/schemas/_config_put_request_as_path_access_list_as_path_access_list_name'
+      type: object
+    _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_lists_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable of this IPv4 Prefix List
+          type: boolean
+        permit_deny:
+          default: permit
+          description: Action upon match of Community Strings.
+          enum:
+          - permit
+          - deny
+          minLength: 1
+          type: string
+        ipv4_prefix:
+          default: ""
+          description: 'IPv4 address and subnet to match against '
+          format: ipv4
+          minLength: 1
+          type: string
+        greater_than_equal_value:
+          description: 'Match IP routes with a subnet mask greater than or equal to
+            the value indicated '
+          maximum: 32
+          nullable: true
+          type: integer
+        less_than_equal_value:
+          description: Match IP routes with a subnet mask less than or equal to the
+            value indicated
+          maximum: 32
+          nullable: true
+          type: integer
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _config_put_request_gateway_gateway_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
+          type: boolean
         tenant:
           default: ""
           description: Tenant
           type: string
-          example: null
         tenant_ref_type_:
           description: Object type for tenant field
           enum:
           - tenant
-          - archipelago
+          - site
           type: string
         neighbor_ip_address:
           default: ""
@@ -4244,7 +4253,6 @@ components:
             from the targeted BGP router with the purpose of filtering or modifying
             the routes
           type: string
-          example: null
         import_route_map_ref_type_:
           description: Object type for import_route_map field
           enum:
@@ -4256,7 +4264,6 @@ components:
             from the targeted BGP router with the purpose of filtering or modifying
             the routes
           type: string
-          example: null
         export_route_map_ref_type_:
           description: Object type for export_route_map field
           enum:
@@ -4346,12 +4353,11 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
-        md5_password_encrypted:
-          default: ""
-          description: MD5 password
-          format: password
-          maxLength: 64
-          type: string
+        bfd_multihop:
+          default: false
+          description: Enable BFD Multi-Hop for Neighbor. This is used to detect failures
+            in the forwarding path between the BGP peers.
+          type: boolean
       type: object
     _bundles_patch_request:
       properties:
@@ -4360,6 +4366,41 @@ components:
             $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value'
           properties: {}
           type: object
+      type: object
+    _config_put_request_ipv6_prefix_list_ipv6_prefix_list_name_lists_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable of this IPv6 Prefix List
+          type: boolean
+        permit_deny:
+          default: permit
+          description: Action upon match of Community Strings.
+          enum:
+          - permit
+          - deny
+          minLength: 1
+          type: string
+        ipv6_prefix:
+          default: ""
+          description: 'IPv6 address and subnet to match against '
+          format: ipv6
+          minLength: 1
+          type: string
+        greater_than_equal_value:
+          description: 'Match IP routes with a subnet mask greater than or equal to
+            the value indicated '
+          maximum: 128
+          minimum: 1
+          nullable: true
+          type: integer
+        less_than_equal_value:
+          description: Match IP routes with a subnet mask less than or equal to the
+            value indicated
+          maximum: 128
+          minimum: 1
+          nullable: true
+          type: integer
       type: object
     _config_put_request_ipv6_filter_ipv6_filter_name:
       properties:
@@ -4387,8 +4428,8 @@ components:
           type: boolean
         source_ip:
           default: ""
-          description: This field matches the source IP address of an IPv4 packet
-          format: ipv4
+          description: This field matches the source IP address of an IPv6 packet
+          format: ipv6
           type: string
         source_port_operator:
           default: ""
@@ -4417,8 +4458,8 @@ components:
           type: integer
         destination_ip:
           default: ""
-          description: This field matches the destination IP address of an IPv4 packet.
-          format: ipv4
+          description: This field matches the destination IP address of an IPv6 packet.
+          format: ipv6
           type: string
         destination_port_operator:
           default: ""
@@ -4446,7 +4487,12 @@ components:
           nullable: true
           type: integer
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name_object_properties'
+          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+      type: object
+    _config_put_request_ipv4_filter:
+      properties:
+        ipv4_filter_name:
+          $ref: '#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name'
       type: object
     _changesets_post_request:
       properties:
@@ -4482,25 +4528,6 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
-      type: object
-    _config_put_request_ip_prefix_list_ip_prefix_list_name:
-      properties:
-        name:
-          default: ""
-          description: Object Name. Must be unique.
-          format: name
-          minLength: 1
-          type: string
-        enable:
-          default: false
-          description: Enable object.
-          type: boolean
-        lists:
-          items:
-            $ref: '#/components/schemas/_config_put_request_ip_prefix_list_ip_prefix_list_name_lists_inner'
-          type: array
-        object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name_object_properties'
       type: object
     _config_put_request_tenant:
       properties:
@@ -4582,44 +4609,9 @@ components:
           type: boolean
         ipv4_list:
           default: ""
-          description: Comma seperated list of IPv4 addresses
+          description: Comma separated list of IPv4 addresses
           minLength: 1
           type: string
-      type: object
-    _config_put_request_thresholds_thresholds_name_threshold_inner:
-      properties:
-        threshold_num_enabled:
-          default: false
-          description: Enable/Disable the threshold
-          type: boolean
-        threshold_num_stat_type:
-          default: ""
-          description: Stat Type
-          type: string
-        threshold_num_method:
-          default: ""
-          description: Method
-          type: string
-        threshold_num_value:
-          default: ""
-          description: Value
-          type: string
-        threshold_num_action:
-          default: ""
-          description: Action
-          type: string
-        threshold_num_alarm_clear_method:
-          default: ""
-          description: Alarm clear method
-          type: string
-        threshold_num_alarm_clear_value:
-          default: ""
-          description: Alarm clear value
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
       type: object
     _config_put_request_eth_port_profile__eth_port_profile__name:
       properties:
@@ -4631,7 +4623,9 @@ components:
           type: string
         enable:
           default: false
-          description: Enable object.
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
         tenant_slice_managed:
           default: false
@@ -4662,17 +4656,15 @@ components:
           default: ""
           description: 1st Switchpoint for a Static Connection
           type: string
-          example: null
         endpoint1_for_a_static_connection_ref_type_:
           description: Object type for endpoint1_for_a_static_connection field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         port1_for_a_static_connection:
           default: ""
           description: 1st Port Number for a Static Connection
           type: string
-          example: null
         port1_for_a_static_connection_ref_type_:
           description: Object type for port1_for_a_static_connection field
           type: string
@@ -4680,17 +4672,15 @@ components:
           default: ""
           description: 2nd Switchpoint for a Static Connection
           type: string
-          example: null
         endpoint2_for_a_static_connection_ref_type_:
           description: Object type for endpoint2_for_a_static_connection field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         port2_for_a_static_connection:
           default: ""
           description: 2nd Port Number for a Static Connection
           type: string
-          example: null
         port2_for_a_static_connection_ref_type_:
           description: Object type for port2_for_a_static_connection field
           type: string
@@ -4714,7 +4704,6 @@ components:
           default: ""
           description: Service connected to this User application
           type: string
-          example: null
         row_app_connected_service_ref_type_:
           description: Object type for row_app_connected_service field
           enum:
@@ -4772,7 +4761,6 @@ components:
           default: ""
           description: Service
           type: string
-          example: null
         service_ref_type_:
           description: Object type for service field
           enum:
@@ -4788,21 +4776,19 @@ components:
           default: ""
           description: LAG
           type: string
-          example: null
         lag_ref_type_:
           description: Object type for lag field
           enum:
-          - lagg_group
+          - lag
           type: string
         switch:
           default: ""
           description: ""
           type: string
-          example: null
         switch_ref_type_:
           description: Object type for switch field
           enum:
-          - endpoint
+          - switchpoint
           type: string
         port:
           default: ""

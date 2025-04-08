@@ -21,7 +21,7 @@ var _ MappedNullable = &ConfigPutRequestGatewayGatewayName{}
 type ConfigPutRequestGatewayGatewayName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	// Tenant
 	Tenant *string `json:"tenant,omitempty"`
@@ -87,8 +87,8 @@ type ConfigPutRequestGatewayGatewayName struct {
 	NextHopSelf *bool `json:"next_hop_self,omitempty"`
 	StaticRoutes []ConfigPutRequestGatewayGatewayNameStaticRoutesInner `json:"static_routes,omitempty"`
 	ObjectProperties *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties `json:"object_properties,omitempty"`
-	// MD5 password
-	Md5PasswordEncrypted *string `json:"md5_password_encrypted,omitempty"`
+	// Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers.
+	BfdMultihop *bool `json:"bfd_multihop,omitempty"`
 }
 
 // NewConfigPutRequestGatewayGatewayName instantiates a new ConfigPutRequestGatewayGatewayName object
@@ -131,8 +131,8 @@ func NewConfigPutRequestGatewayGatewayName() *ConfigPutRequestGatewayGatewayName
 	this.EnableBfd = &enableBfd
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
-	var md5PasswordEncrypted string = ""
-	this.Md5PasswordEncrypted = &md5PasswordEncrypted
+	var bfdMultihop bool = false
+	this.BfdMultihop = &bfdMultihop
 	return &this
 }
 
@@ -175,8 +175,8 @@ func NewConfigPutRequestGatewayGatewayNameWithDefaults() *ConfigPutRequestGatewa
 	this.EnableBfd = &enableBfd
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
-	var md5PasswordEncrypted string = ""
-	this.Md5PasswordEncrypted = &md5PasswordEncrypted
+	var bfdMultihop bool = false
+	this.BfdMultihop = &bfdMultihop
 	return &this
 }
 
@@ -1380,36 +1380,36 @@ func (o *ConfigPutRequestGatewayGatewayName) SetObjectProperties(v ConfigPutRequ
 	o.ObjectProperties = &v
 }
 
-// GetMd5PasswordEncrypted returns the Md5PasswordEncrypted field value if set, zero value otherwise.
-func (o *ConfigPutRequestGatewayGatewayName) GetMd5PasswordEncrypted() string {
-	if o == nil || IsNil(o.Md5PasswordEncrypted) {
-		var ret string
+// GetBfdMultihop returns the BfdMultihop field value if set, zero value otherwise.
+func (o *ConfigPutRequestGatewayGatewayName) GetBfdMultihop() bool {
+	if o == nil || IsNil(o.BfdMultihop) {
+		var ret bool
 		return ret
 	}
-	return *o.Md5PasswordEncrypted
+	return *o.BfdMultihop
 }
 
-// GetMd5PasswordEncryptedOk returns a tuple with the Md5PasswordEncrypted field value if set, nil otherwise
+// GetBfdMultihopOk returns a tuple with the BfdMultihop field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestGatewayGatewayName) GetMd5PasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.Md5PasswordEncrypted) {
+func (o *ConfigPutRequestGatewayGatewayName) GetBfdMultihopOk() (*bool, bool) {
+	if o == nil || IsNil(o.BfdMultihop) {
 		return nil, false
 	}
-	return o.Md5PasswordEncrypted, true
+	return o.BfdMultihop, true
 }
 
-// HasMd5PasswordEncrypted returns a boolean if a field has been set.
-func (o *ConfigPutRequestGatewayGatewayName) HasMd5PasswordEncrypted() bool {
-	if o != nil && !IsNil(o.Md5PasswordEncrypted) {
+// HasBfdMultihop returns a boolean if a field has been set.
+func (o *ConfigPutRequestGatewayGatewayName) HasBfdMultihop() bool {
+	if o != nil && !IsNil(o.BfdMultihop) {
 		return true
 	}
 
 	return false
 }
 
-// SetMd5PasswordEncrypted gets a reference to the given string and assigns it to the Md5PasswordEncrypted field.
-func (o *ConfigPutRequestGatewayGatewayName) SetMd5PasswordEncrypted(v string) {
-	o.Md5PasswordEncrypted = &v
+// SetBfdMultihop gets a reference to the given bool and assigns it to the BfdMultihop field.
+func (o *ConfigPutRequestGatewayGatewayName) SetBfdMultihop(v bool) {
+	o.BfdMultihop = &v
 }
 
 func (o ConfigPutRequestGatewayGatewayName) MarshalJSON() ([]byte, error) {
@@ -1527,8 +1527,8 @@ func (o ConfigPutRequestGatewayGatewayName) ToMap() (map[string]interface{}, err
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
 	}
-	if !IsNil(o.Md5PasswordEncrypted) {
-		toSerialize["md5_password_encrypted"] = o.Md5PasswordEncrypted
+	if !IsNil(o.BfdMultihop) {
+		toSerialize["bfd_multihop"] = o.BfdMultihop
 	}
 	return toSerialize, nil
 }

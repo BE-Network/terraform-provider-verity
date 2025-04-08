@@ -37,34 +37,28 @@ type verityEthPortSettingsResource struct {
 }
 
 type verityEthPortSettingsResourceModel struct {
-	Name                                   types.String                                 `tfsdk:"name"`
-	Enable                                 types.Bool                                   `tfsdk:"enable"`
-	ObjectProperties                       []verityEthPortSettingsObjectPropertiesModel `tfsdk:"object_properties"`
-	AutoNegotiation                        types.Bool                                   `tfsdk:"auto_negotiation"`
-	MaxBitRate                             types.String                                 `tfsdk:"max_bit_rate"`
-	DuplexMode                             types.String                                 `tfsdk:"duplex_mode"`
-	StpEnable                              types.Bool                                   `tfsdk:"stp_enable"`
-	FastLearningMode                       types.Bool                                   `tfsdk:"fast_learning_mode"`
-	BpduGuard                              types.Bool                                   `tfsdk:"bpdu_guard"`
-	BpduFilter                             types.Bool                                   `tfsdk:"bpdu_filter"`
-	GuardLoop                              types.Bool                                   `tfsdk:"guard_loop"`
-	PoeEnable                              types.Bool                                   `tfsdk:"poe_enable"`
-	Priority                               types.String                                 `tfsdk:"priority"`
-	AllocatedPower                         types.String                                 `tfsdk:"allocated_power"`
-	BspEnable                              types.Bool                                   `tfsdk:"bsp_enable"`
-	Broadcast                              types.Bool                                   `tfsdk:"broadcast"`
-	Multicast                              types.Bool                                   `tfsdk:"multicast"`
-	MaxAllowedValue                        types.Int64                                  `tfsdk:"max_allowed_value"`
-	MaxAllowedUnit                         types.String                                 `tfsdk:"max_allowed_unit"`
-	Action                                 types.String                                 `tfsdk:"action"`
-	Fec                                    types.String                                 `tfsdk:"fec"`
-	SingleLink                             types.Bool                                   `tfsdk:"single_link"`
-	MinimumWredThreshold                   types.Int64                                  `tfsdk:"minimum_wred_threshold"`
-	MaximumWredThreshold                   types.Int64                                  `tfsdk:"maximum_wred_threshold"`
-	WredDropProbability                    types.Int64                                  `tfsdk:"wred_drop_probability"`
-	PriorityFlowControlWatchdogAction      types.String                                 `tfsdk:"priority_flow_control_watchdog_action"`
-	PriorityFlowControlWatchdogDetectTime  types.Int64                                  `tfsdk:"priority_flow_control_watchdog_detect_time"`
-	PriorityFlowControlWatchdogRestoreTime types.Int64                                  `tfsdk:"priority_flow_control_watchdog_restore_time"`
+	Name             types.String                                 `tfsdk:"name"`
+	Enable           types.Bool                                   `tfsdk:"enable"`
+	ObjectProperties []verityEthPortSettingsObjectPropertiesModel `tfsdk:"object_properties"`
+	AutoNegotiation  types.Bool                                   `tfsdk:"auto_negotiation"`
+	MaxBitRate       types.String                                 `tfsdk:"max_bit_rate"`
+	DuplexMode       types.String                                 `tfsdk:"duplex_mode"`
+	StpEnable        types.Bool                                   `tfsdk:"stp_enable"`
+	FastLearningMode types.Bool                                   `tfsdk:"fast_learning_mode"`
+	BpduGuard        types.Bool                                   `tfsdk:"bpdu_guard"`
+	BpduFilter       types.Bool                                   `tfsdk:"bpdu_filter"`
+	GuardLoop        types.Bool                                   `tfsdk:"guard_loop"`
+	PoeEnable        types.Bool                                   `tfsdk:"poe_enable"`
+	Priority         types.String                                 `tfsdk:"priority"`
+	AllocatedPower   types.String                                 `tfsdk:"allocated_power"`
+	BspEnable        types.Bool                                   `tfsdk:"bsp_enable"`
+	Broadcast        types.Bool                                   `tfsdk:"broadcast"`
+	Multicast        types.Bool                                   `tfsdk:"multicast"`
+	MaxAllowedValue  types.Int64                                  `tfsdk:"max_allowed_value"`
+	MaxAllowedUnit   types.String                                 `tfsdk:"max_allowed_unit"`
+	Action           types.String                                 `tfsdk:"action"`
+	Fec              types.String                                 `tfsdk:"fec"`
+	SingleLink       types.Bool                                   `tfsdk:"single_link"`
 }
 
 type verityEthPortSettingsObjectPropertiesModel struct {
@@ -186,30 +180,6 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Description: "Ports with this setting will be disabled when link state tracking takes effect",
 				Optional:    true,
 			},
-			"minimum_wred_threshold": schema.Int64Attribute{
-				Description: "A value between 0 to 133168898",
-				Optional:    true,
-			},
-			"maximum_wred_threshold": schema.Int64Attribute{
-				Description: "A value between 0 to 133168898",
-				Optional:    true,
-			},
-			"wred_drop_probability": schema.Int64Attribute{
-				Description: "A value between 0 to 100",
-				Optional:    true,
-			},
-			"priority_flow_control_watchdog_action": schema.StringAttribute{
-				Description: "Action taken by the priority flow control watchdog",
-				Optional:    true,
-			},
-			"priority_flow_control_watchdog_detect_time": schema.Int64Attribute{
-				Description: "A value between 100 to 5000",
-				Optional:    true,
-			},
-			"priority_flow_control_watchdog_restore_time": schema.Int64Attribute{
-				Description: "A value between 100 to 60000",
-				Optional:    true,
-			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
@@ -306,24 +276,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	}
 	if !plan.SingleLink.IsNull() {
 		ethPortSettingsReq.SingleLink = openapi.PtrBool(plan.SingleLink.ValueBool())
-	}
-	if !plan.MinimumWredThreshold.IsNull() {
-		ethPortSettingsReq.MinimumWredThreshold = openapi.PtrInt32(int32(plan.MinimumWredThreshold.ValueInt64()))
-	}
-	if !plan.MaximumWredThreshold.IsNull() {
-		ethPortSettingsReq.MaximumWredThreshold = openapi.PtrInt32(int32(plan.MaximumWredThreshold.ValueInt64()))
-	}
-	if !plan.WredDropProbability.IsNull() {
-		ethPortSettingsReq.WredDropProbability = openapi.PtrInt32(int32(plan.WredDropProbability.ValueInt64()))
-	}
-	if !plan.PriorityFlowControlWatchdogAction.IsNull() {
-		ethPortSettingsReq.PriorityFlowControlWatchdogAction = openapi.PtrString(plan.PriorityFlowControlWatchdogAction.ValueString())
-	}
-	if !plan.PriorityFlowControlWatchdogDetectTime.IsNull() {
-		ethPortSettingsReq.PriorityFlowControlWatchdogDetectTime = openapi.PtrInt32(int32(plan.PriorityFlowControlWatchdogDetectTime.ValueInt64()))
-	}
-	if !plan.PriorityFlowControlWatchdogRestoreTime.IsNull() {
-		ethPortSettingsReq.PriorityFlowControlWatchdogRestoreTime = openapi.PtrInt32(int32(plan.PriorityFlowControlWatchdogRestoreTime.ValueInt64()))
 	}
 
 	if len(plan.ObjectProperties) > 0 {
@@ -591,71 +543,6 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 	} else {
 		state.SingleLink = types.BoolNull()
 	}
-	if val, ok := settings["minimum_wred_threshold"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MinimumWredThreshold = types.Int64Value(int64(v))
-		case int:
-			state.MinimumWredThreshold = types.Int64Value(int64(v))
-		default:
-			state.MinimumWredThreshold = types.Int64Null()
-		}
-	} else {
-		state.MinimumWredThreshold = types.Int64Null()
-	}
-	if val, ok := settings["maximum_wred_threshold"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MaximumWredThreshold = types.Int64Value(int64(v))
-		case int:
-			state.MaximumWredThreshold = types.Int64Value(int64(v))
-		default:
-			state.MaximumWredThreshold = types.Int64Null()
-		}
-	} else {
-		state.MaximumWredThreshold = types.Int64Null()
-	}
-	if val, ok := settings["wred_drop_probability"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.WredDropProbability = types.Int64Value(int64(v))
-		case int:
-			state.WredDropProbability = types.Int64Value(int64(v))
-		default:
-			state.WredDropProbability = types.Int64Null()
-		}
-	} else {
-		state.WredDropProbability = types.Int64Null()
-	}
-	if val, ok := settings["priority_flow_control_watchdog_action"].(string); ok {
-		state.PriorityFlowControlWatchdogAction = types.StringValue(val)
-	} else {
-		state.PriorityFlowControlWatchdogAction = types.StringNull()
-	}
-	if val, ok := settings["priority_flow_control_watchdog_detect_time"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.PriorityFlowControlWatchdogDetectTime = types.Int64Value(int64(v))
-		case int:
-			state.PriorityFlowControlWatchdogDetectTime = types.Int64Value(int64(v))
-		default:
-			state.PriorityFlowControlWatchdogDetectTime = types.Int64Null()
-		}
-	} else {
-		state.PriorityFlowControlWatchdogDetectTime = types.Int64Null()
-	}
-	if val, ok := settings["priority_flow_control_watchdog_restore_time"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.PriorityFlowControlWatchdogRestoreTime = types.Int64Value(int64(v))
-		case int:
-			state.PriorityFlowControlWatchdogRestoreTime = types.Int64Value(int64(v))
-		default:
-			state.PriorityFlowControlWatchdogRestoreTime = types.Int64Null()
-		}
-	} else {
-		state.PriorityFlowControlWatchdogRestoreTime = types.Int64Null()
-	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -853,13 +740,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 				ethPortSettingsReq.Fec = openapi.PtrString(val)
 			},
 		},
-		{
-			planValue:  plan.PriorityFlowControlWatchdogAction,
-			stateValue: state.PriorityFlowControlWatchdogAction,
-			setter: func(val string) {
-				ethPortSettingsReq.PriorityFlowControlWatchdogAction = openapi.PtrString(val)
-			},
-		},
 	}
 
 	for _, field := range stringFields {
@@ -879,41 +759,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 			stateValue: state.MaxAllowedValue,
 			setter: func(val int32) {
 				ethPortSettingsReq.MaxAllowedValue = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.MinimumWredThreshold,
-			stateValue: state.MinimumWredThreshold,
-			setter: func(val int32) {
-				ethPortSettingsReq.MinimumWredThreshold = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.MaximumWredThreshold,
-			stateValue: state.MaximumWredThreshold,
-			setter: func(val int32) {
-				ethPortSettingsReq.MaximumWredThreshold = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.WredDropProbability,
-			stateValue: state.WredDropProbability,
-			setter: func(val int32) {
-				ethPortSettingsReq.WredDropProbability = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.PriorityFlowControlWatchdogDetectTime,
-			stateValue: state.PriorityFlowControlWatchdogDetectTime,
-			setter: func(val int32) {
-				ethPortSettingsReq.PriorityFlowControlWatchdogDetectTime = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.PriorityFlowControlWatchdogRestoreTime,
-			stateValue: state.PriorityFlowControlWatchdogRestoreTime,
-			setter: func(val int32) {
-				ethPortSettingsReq.PriorityFlowControlWatchdogRestoreTime = openapi.PtrInt32(val)
 			},
 		},
 	}

@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
-**Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
+**Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **TenantSliceManaged** | Pointer to **bool** | Profiles that Tenant Slice creates and manages | [optional] [default to false]
 **Services** | Pointer to [**[]ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner**](ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties**](ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties.md) |  | [optional] 

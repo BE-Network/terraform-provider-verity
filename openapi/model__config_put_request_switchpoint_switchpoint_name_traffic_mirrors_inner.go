@@ -47,9 +47,9 @@ func NewConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner() *ConfigP
 	this.TrafficMirrorNumSourceLagIndicator = &trafficMirrorNumSourceLagIndicator
 	var trafficMirrorNumDestinationPort string = ""
 	this.TrafficMirrorNumDestinationPort = &trafficMirrorNumDestinationPort
-	var trafficMirrorNumInboundTraffic bool = true
+	var trafficMirrorNumInboundTraffic bool = false
 	this.TrafficMirrorNumInboundTraffic = &trafficMirrorNumInboundTraffic
-	var trafficMirrorNumOutboundTraffic bool = true
+	var trafficMirrorNumOutboundTraffic bool = false
 	this.TrafficMirrorNumOutboundTraffic = &trafficMirrorNumOutboundTraffic
 	return &this
 }
@@ -67,9 +67,9 @@ func NewConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInnerWithDefault
 	this.TrafficMirrorNumSourceLagIndicator = &trafficMirrorNumSourceLagIndicator
 	var trafficMirrorNumDestinationPort string = ""
 	this.TrafficMirrorNumDestinationPort = &trafficMirrorNumDestinationPort
-	var trafficMirrorNumInboundTraffic bool = true
+	var trafficMirrorNumInboundTraffic bool = false
 	this.TrafficMirrorNumInboundTraffic = &trafficMirrorNumInboundTraffic
-	var trafficMirrorNumOutboundTraffic bool = true
+	var trafficMirrorNumOutboundTraffic bool = false
 	this.TrafficMirrorNumOutboundTraffic = &trafficMirrorNumOutboundTraffic
 	return &this
 }

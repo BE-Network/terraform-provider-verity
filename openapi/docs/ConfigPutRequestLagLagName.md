@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
-**Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
+**Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **IsPeerLink** | Pointer to **bool** | Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link | [optional] [default to false]
 **Color** | Pointer to **string** | Choose the color to display the connectors on the network view | [optional] [default to "anakiwa"]
 **Lacp** | Pointer to **bool** | LACP | [optional] [default to true]

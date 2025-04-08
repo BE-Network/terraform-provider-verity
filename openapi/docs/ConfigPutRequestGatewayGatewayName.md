@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
-**Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
+**Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
 **NeighborIpAddress** | Pointer to **string** | IP address of remote BGP peer | [optional] [default to ""]
@@ -39,7 +39,7 @@ Name | Type | Description | Notes
 **NextHopSelf** | Pointer to **bool** | Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself. | [optional] [default to false]
 **StaticRoutes** | Pointer to [**[]ConfigPutRequestGatewayGatewayNameStaticRoutesInner**](ConfigPutRequestGatewayGatewayNameStaticRoutesInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties**](ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties.md) |  | [optional] 
-**Md5PasswordEncrypted** | Pointer to **string** | MD5 password | [optional] [default to ""]
+**BfdMultihop** | Pointer to **bool** | Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers. | [optional] [default to false]
 
 ## Methods
 
@@ -1015,30 +1015,30 @@ SetObjectProperties sets ObjectProperties field to given value.
 
 HasObjectProperties returns a boolean if a field has been set.
 
-### GetMd5PasswordEncrypted
+### GetBfdMultihop
 
-`func (o *ConfigPutRequestGatewayGatewayName) GetMd5PasswordEncrypted() string`
+`func (o *ConfigPutRequestGatewayGatewayName) GetBfdMultihop() bool`
 
-GetMd5PasswordEncrypted returns the Md5PasswordEncrypted field if non-nil, zero value otherwise.
+GetBfdMultihop returns the BfdMultihop field if non-nil, zero value otherwise.
 
-### GetMd5PasswordEncryptedOk
+### GetBfdMultihopOk
 
-`func (o *ConfigPutRequestGatewayGatewayName) GetMd5PasswordEncryptedOk() (*string, bool)`
+`func (o *ConfigPutRequestGatewayGatewayName) GetBfdMultihopOk() (*bool, bool)`
 
-GetMd5PasswordEncryptedOk returns a tuple with the Md5PasswordEncrypted field if it's non-nil, zero value otherwise
+GetBfdMultihopOk returns a tuple with the BfdMultihop field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetMd5PasswordEncrypted
+### SetBfdMultihop
 
-`func (o *ConfigPutRequestGatewayGatewayName) SetMd5PasswordEncrypted(v string)`
+`func (o *ConfigPutRequestGatewayGatewayName) SetBfdMultihop(v bool)`
 
-SetMd5PasswordEncrypted sets Md5PasswordEncrypted field to given value.
+SetBfdMultihop sets BfdMultihop field to given value.
 
-### HasMd5PasswordEncrypted
+### HasBfdMultihop
 
-`func (o *ConfigPutRequestGatewayGatewayName) HasMd5PasswordEncrypted() bool`
+`func (o *ConfigPutRequestGatewayGatewayName) HasBfdMultihop() bool`
 
-HasMd5PasswordEncrypted returns a boolean if a field has been set.
+HasBfdMultihop returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

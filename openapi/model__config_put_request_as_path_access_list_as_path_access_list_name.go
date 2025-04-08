@@ -26,7 +26,7 @@ type ConfigPutRequestAsPathAccessListAsPathAccessListName struct {
 	// Action upon match of Community Strings.
 	PermitDeny *string `json:"permit_deny,omitempty"`
 	Lists []ConfigPutRequestAsPathAccessListAsPathAccessListNameListsInner `json:"lists,omitempty"`
-	ObjectProperties *ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewConfigPutRequestAsPathAccessListAsPathAccessListName instantiates a new ConfigPutRequestAsPathAccessListAsPathAccessListName object
@@ -187,9 +187,9 @@ func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) SetLists(v []Conf
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectProperties() ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties {
+func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties
+		var ret ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -197,7 +197,7 @@ func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectProperti
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectPropertiesOk() (*ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties, bool) {
+func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectPropertiesOk() (*ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -213,8 +213,8 @@ func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) HasObjectProperti
 	return false
 }
 
-// SetObjectProperties gets a reference to the given ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties and assigns it to the ObjectProperties field.
-func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) SetObjectProperties(v ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties) {
+// SetObjectProperties gets a reference to the given ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties and assigns it to the ObjectProperties field.
+func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) SetObjectProperties(v ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties) {
 	o.ObjectProperties = &v
 }
 

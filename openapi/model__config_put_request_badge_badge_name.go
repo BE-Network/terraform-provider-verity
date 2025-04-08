@@ -21,7 +21,7 @@ var _ MappedNullable = &ConfigPutRequestBadgeBadgeName{}
 type ConfigPutRequestBadgeBadgeName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
-	ObjectProperties *ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewConfigPutRequestBadgeBadgeName instantiates a new ConfigPutRequestBadgeBadgeName object
@@ -78,9 +78,9 @@ func (o *ConfigPutRequestBadgeBadgeName) SetName(v string) {
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *ConfigPutRequestBadgeBadgeName) GetObjectProperties() ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties {
+func (o *ConfigPutRequestBadgeBadgeName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties
+		var ret ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -88,7 +88,7 @@ func (o *ConfigPutRequestBadgeBadgeName) GetObjectProperties() ConfigPutRequestI
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestBadgeBadgeName) GetObjectPropertiesOk() (*ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties, bool) {
+func (o *ConfigPutRequestBadgeBadgeName) GetObjectPropertiesOk() (*ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -104,8 +104,8 @@ func (o *ConfigPutRequestBadgeBadgeName) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties and assigns it to the ObjectProperties field.
-func (o *ConfigPutRequestBadgeBadgeName) SetObjectProperties(v ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties) {
+// SetObjectProperties gets a reference to the given ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties and assigns it to the ObjectProperties field.
+func (o *ConfigPutRequestBadgeBadgeName) SetObjectProperties(v ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties) {
 	o.ObjectProperties = &v
 }
 

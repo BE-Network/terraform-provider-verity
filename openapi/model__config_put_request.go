@@ -21,28 +21,27 @@ var _ MappedNullable = &ConfigPutRequest{}
 type ConfigPutRequest struct {
 	DeviceController *ConfigPutRequestDeviceController `json:"device_controller,omitempty"`
 	SfpBreakouts *ConfigPutRequestSfpBreakouts `json:"sfp_breakouts,omitempty"`
-	Thresholds *ConfigPutRequestThresholds `json:"thresholds,omitempty"`
 	Site *ConfigPutRequestSite `json:"site,omitempty"`
+	Ipv4PrefixList *ConfigPutRequestIpv4PrefixList `json:"ipv4_prefix_list,omitempty"`
 	EthDeviceProfiles *ConfigPutRequestEthDeviceProfiles `json:"eth_device_profiles,omitempty"`
+	Ipv4Filter *ConfigPutRequestIpv4Filter `json:"ipv4_filter,omitempty"`
 	GatewayProfile *ConfigPutRequestGatewayProfile `json:"gateway_profile,omitempty"`
 	EndpointView *ConfigPutRequestEndpointView `json:"endpoint_view,omitempty"`
 	Gateway *ConfigPutRequestGateway `json:"gateway,omitempty"`
 	Ipv6Filter *ConfigPutRequestIpv6Filter `json:"ipv6_filter,omitempty"`
 	RouteMapClause *ConfigPutRequestRouteMapClause `json:"route_map_clause,omitempty"`
-	Ipv4Fliter *ConfigPutRequestIpv4Fliter `json:"ipv4_fliter,omitempty"`
-	ThresholdRules *ConfigPutRequestThresholdRules `json:"threshold_rules,omitempty"`
-	IpPrefixList *ConfigPutRequestIpPrefixList `json:"ip_prefix_list,omitempty"`
-	AsPathAccessList *ConfigPutRequestAsPathAccessList `json:"as_path_access_list,omitempty"`
+	Service *ConfigPutRequestService `json:"service,omitempty"`
+	RouteMap *ConfigPutRequestRouteMap `json:"route_map,omitempty"`
 	BizdConfig *ConfigPutRequestBizdConfig `json:"bizd_config,omitempty"`
 	PbEgressProfile *ConfigPutRequestPbEgressProfile `json:"pb_egress_profile,omitempty"`
 	Badge *ConfigPutRequestBadge `json:"badge,omitempty"`
 	Lag *ConfigPutRequestLag `json:"lag,omitempty"`
 	StaticIp *ConfigPutRequestStaticIp `json:"static_ip,omitempty"`
 	CommunityList *ConfigPutRequestCommunityList `json:"community_list,omitempty"`
-	RouteMap *ConfigPutRequestRouteMap `json:"route_map,omitempty"`
 	Tenant *ConfigPutRequestTenant `json:"tenant,omitempty"`
-	Service *ConfigPutRequestService `json:"service,omitempty"`
+	Ipv6PrefixList *ConfigPutRequestIpv6PrefixList `json:"ipv6_prefix_list,omitempty"`
 	Ipv4ListFilter *ConfigPutRequestIpv4ListFilter `json:"ipv4_list_filter,omitempty"`
+	AsPathAccessList *ConfigPutRequestAsPathAccessList `json:"as_path_access_list,omitempty"`
 	Ipv6ListFilter *ConfigPutRequestIpv6ListFilter `json:"ipv6_list_filter,omitempty"`
 	EthPortProfile *ConfigPutRequestEthPortProfile `json:"eth_port_profile_,omitempty"`
 	EthPortSettings *ConfigPutRequestEthPortSettings `json:"eth_port_settings,omitempty"`
@@ -133,38 +132,6 @@ func (o *ConfigPutRequest) SetSfpBreakouts(v ConfigPutRequestSfpBreakouts) {
 	o.SfpBreakouts = &v
 }
 
-// GetThresholds returns the Thresholds field value if set, zero value otherwise.
-func (o *ConfigPutRequest) GetThresholds() ConfigPutRequestThresholds {
-	if o == nil || IsNil(o.Thresholds) {
-		var ret ConfigPutRequestThresholds
-		return ret
-	}
-	return *o.Thresholds
-}
-
-// GetThresholdsOk returns a tuple with the Thresholds field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequest) GetThresholdsOk() (*ConfigPutRequestThresholds, bool) {
-	if o == nil || IsNil(o.Thresholds) {
-		return nil, false
-	}
-	return o.Thresholds, true
-}
-
-// HasThresholds returns a boolean if a field has been set.
-func (o *ConfigPutRequest) HasThresholds() bool {
-	if o != nil && !IsNil(o.Thresholds) {
-		return true
-	}
-
-	return false
-}
-
-// SetThresholds gets a reference to the given ConfigPutRequestThresholds and assigns it to the Thresholds field.
-func (o *ConfigPutRequest) SetThresholds(v ConfigPutRequestThresholds) {
-	o.Thresholds = &v
-}
-
 // GetSite returns the Site field value if set, zero value otherwise.
 func (o *ConfigPutRequest) GetSite() ConfigPutRequestSite {
 	if o == nil || IsNil(o.Site) {
@@ -197,6 +164,38 @@ func (o *ConfigPutRequest) SetSite(v ConfigPutRequestSite) {
 	o.Site = &v
 }
 
+// GetIpv4PrefixList returns the Ipv4PrefixList field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetIpv4PrefixList() ConfigPutRequestIpv4PrefixList {
+	if o == nil || IsNil(o.Ipv4PrefixList) {
+		var ret ConfigPutRequestIpv4PrefixList
+		return ret
+	}
+	return *o.Ipv4PrefixList
+}
+
+// GetIpv4PrefixListOk returns a tuple with the Ipv4PrefixList field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetIpv4PrefixListOk() (*ConfigPutRequestIpv4PrefixList, bool) {
+	if o == nil || IsNil(o.Ipv4PrefixList) {
+		return nil, false
+	}
+	return o.Ipv4PrefixList, true
+}
+
+// HasIpv4PrefixList returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasIpv4PrefixList() bool {
+	if o != nil && !IsNil(o.Ipv4PrefixList) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpv4PrefixList gets a reference to the given ConfigPutRequestIpv4PrefixList and assigns it to the Ipv4PrefixList field.
+func (o *ConfigPutRequest) SetIpv4PrefixList(v ConfigPutRequestIpv4PrefixList) {
+	o.Ipv4PrefixList = &v
+}
+
 // GetEthDeviceProfiles returns the EthDeviceProfiles field value if set, zero value otherwise.
 func (o *ConfigPutRequest) GetEthDeviceProfiles() ConfigPutRequestEthDeviceProfiles {
 	if o == nil || IsNil(o.EthDeviceProfiles) {
@@ -227,6 +226,38 @@ func (o *ConfigPutRequest) HasEthDeviceProfiles() bool {
 // SetEthDeviceProfiles gets a reference to the given ConfigPutRequestEthDeviceProfiles and assigns it to the EthDeviceProfiles field.
 func (o *ConfigPutRequest) SetEthDeviceProfiles(v ConfigPutRequestEthDeviceProfiles) {
 	o.EthDeviceProfiles = &v
+}
+
+// GetIpv4Filter returns the Ipv4Filter field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetIpv4Filter() ConfigPutRequestIpv4Filter {
+	if o == nil || IsNil(o.Ipv4Filter) {
+		var ret ConfigPutRequestIpv4Filter
+		return ret
+	}
+	return *o.Ipv4Filter
+}
+
+// GetIpv4FilterOk returns a tuple with the Ipv4Filter field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetIpv4FilterOk() (*ConfigPutRequestIpv4Filter, bool) {
+	if o == nil || IsNil(o.Ipv4Filter) {
+		return nil, false
+	}
+	return o.Ipv4Filter, true
+}
+
+// HasIpv4Filter returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasIpv4Filter() bool {
+	if o != nil && !IsNil(o.Ipv4Filter) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpv4Filter gets a reference to the given ConfigPutRequestIpv4Filter and assigns it to the Ipv4Filter field.
+func (o *ConfigPutRequest) SetIpv4Filter(v ConfigPutRequestIpv4Filter) {
+	o.Ipv4Filter = &v
 }
 
 // GetGatewayProfile returns the GatewayProfile field value if set, zero value otherwise.
@@ -389,132 +420,68 @@ func (o *ConfigPutRequest) SetRouteMapClause(v ConfigPutRequestRouteMapClause) {
 	o.RouteMapClause = &v
 }
 
-// GetIpv4Fliter returns the Ipv4Fliter field value if set, zero value otherwise.
-func (o *ConfigPutRequest) GetIpv4Fliter() ConfigPutRequestIpv4Fliter {
-	if o == nil || IsNil(o.Ipv4Fliter) {
-		var ret ConfigPutRequestIpv4Fliter
+// GetService returns the Service field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetService() ConfigPutRequestService {
+	if o == nil || IsNil(o.Service) {
+		var ret ConfigPutRequestService
 		return ret
 	}
-	return *o.Ipv4Fliter
+	return *o.Service
 }
 
-// GetIpv4FliterOk returns a tuple with the Ipv4Fliter field value if set, nil otherwise
+// GetServiceOk returns a tuple with the Service field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequest) GetIpv4FliterOk() (*ConfigPutRequestIpv4Fliter, bool) {
-	if o == nil || IsNil(o.Ipv4Fliter) {
+func (o *ConfigPutRequest) GetServiceOk() (*ConfigPutRequestService, bool) {
+	if o == nil || IsNil(o.Service) {
 		return nil, false
 	}
-	return o.Ipv4Fliter, true
+	return o.Service, true
 }
 
-// HasIpv4Fliter returns a boolean if a field has been set.
-func (o *ConfigPutRequest) HasIpv4Fliter() bool {
-	if o != nil && !IsNil(o.Ipv4Fliter) {
+// HasService returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasService() bool {
+	if o != nil && !IsNil(o.Service) {
 		return true
 	}
 
 	return false
 }
 
-// SetIpv4Fliter gets a reference to the given ConfigPutRequestIpv4Fliter and assigns it to the Ipv4Fliter field.
-func (o *ConfigPutRequest) SetIpv4Fliter(v ConfigPutRequestIpv4Fliter) {
-	o.Ipv4Fliter = &v
+// SetService gets a reference to the given ConfigPutRequestService and assigns it to the Service field.
+func (o *ConfigPutRequest) SetService(v ConfigPutRequestService) {
+	o.Service = &v
 }
 
-// GetThresholdRules returns the ThresholdRules field value if set, zero value otherwise.
-func (o *ConfigPutRequest) GetThresholdRules() ConfigPutRequestThresholdRules {
-	if o == nil || IsNil(o.ThresholdRules) {
-		var ret ConfigPutRequestThresholdRules
+// GetRouteMap returns the RouteMap field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetRouteMap() ConfigPutRequestRouteMap {
+	if o == nil || IsNil(o.RouteMap) {
+		var ret ConfigPutRequestRouteMap
 		return ret
 	}
-	return *o.ThresholdRules
+	return *o.RouteMap
 }
 
-// GetThresholdRulesOk returns a tuple with the ThresholdRules field value if set, nil otherwise
+// GetRouteMapOk returns a tuple with the RouteMap field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequest) GetThresholdRulesOk() (*ConfigPutRequestThresholdRules, bool) {
-	if o == nil || IsNil(o.ThresholdRules) {
+func (o *ConfigPutRequest) GetRouteMapOk() (*ConfigPutRequestRouteMap, bool) {
+	if o == nil || IsNil(o.RouteMap) {
 		return nil, false
 	}
-	return o.ThresholdRules, true
+	return o.RouteMap, true
 }
 
-// HasThresholdRules returns a boolean if a field has been set.
-func (o *ConfigPutRequest) HasThresholdRules() bool {
-	if o != nil && !IsNil(o.ThresholdRules) {
+// HasRouteMap returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasRouteMap() bool {
+	if o != nil && !IsNil(o.RouteMap) {
 		return true
 	}
 
 	return false
 }
 
-// SetThresholdRules gets a reference to the given ConfigPutRequestThresholdRules and assigns it to the ThresholdRules field.
-func (o *ConfigPutRequest) SetThresholdRules(v ConfigPutRequestThresholdRules) {
-	o.ThresholdRules = &v
-}
-
-// GetIpPrefixList returns the IpPrefixList field value if set, zero value otherwise.
-func (o *ConfigPutRequest) GetIpPrefixList() ConfigPutRequestIpPrefixList {
-	if o == nil || IsNil(o.IpPrefixList) {
-		var ret ConfigPutRequestIpPrefixList
-		return ret
-	}
-	return *o.IpPrefixList
-}
-
-// GetIpPrefixListOk returns a tuple with the IpPrefixList field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequest) GetIpPrefixListOk() (*ConfigPutRequestIpPrefixList, bool) {
-	if o == nil || IsNil(o.IpPrefixList) {
-		return nil, false
-	}
-	return o.IpPrefixList, true
-}
-
-// HasIpPrefixList returns a boolean if a field has been set.
-func (o *ConfigPutRequest) HasIpPrefixList() bool {
-	if o != nil && !IsNil(o.IpPrefixList) {
-		return true
-	}
-
-	return false
-}
-
-// SetIpPrefixList gets a reference to the given ConfigPutRequestIpPrefixList and assigns it to the IpPrefixList field.
-func (o *ConfigPutRequest) SetIpPrefixList(v ConfigPutRequestIpPrefixList) {
-	o.IpPrefixList = &v
-}
-
-// GetAsPathAccessList returns the AsPathAccessList field value if set, zero value otherwise.
-func (o *ConfigPutRequest) GetAsPathAccessList() ConfigPutRequestAsPathAccessList {
-	if o == nil || IsNil(o.AsPathAccessList) {
-		var ret ConfigPutRequestAsPathAccessList
-		return ret
-	}
-	return *o.AsPathAccessList
-}
-
-// GetAsPathAccessListOk returns a tuple with the AsPathAccessList field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequest) GetAsPathAccessListOk() (*ConfigPutRequestAsPathAccessList, bool) {
-	if o == nil || IsNil(o.AsPathAccessList) {
-		return nil, false
-	}
-	return o.AsPathAccessList, true
-}
-
-// HasAsPathAccessList returns a boolean if a field has been set.
-func (o *ConfigPutRequest) HasAsPathAccessList() bool {
-	if o != nil && !IsNil(o.AsPathAccessList) {
-		return true
-	}
-
-	return false
-}
-
-// SetAsPathAccessList gets a reference to the given ConfigPutRequestAsPathAccessList and assigns it to the AsPathAccessList field.
-func (o *ConfigPutRequest) SetAsPathAccessList(v ConfigPutRequestAsPathAccessList) {
-	o.AsPathAccessList = &v
+// SetRouteMap gets a reference to the given ConfigPutRequestRouteMap and assigns it to the RouteMap field.
+func (o *ConfigPutRequest) SetRouteMap(v ConfigPutRequestRouteMap) {
+	o.RouteMap = &v
 }
 
 // GetBizdConfig returns the BizdConfig field value if set, zero value otherwise.
@@ -709,38 +676,6 @@ func (o *ConfigPutRequest) SetCommunityList(v ConfigPutRequestCommunityList) {
 	o.CommunityList = &v
 }
 
-// GetRouteMap returns the RouteMap field value if set, zero value otherwise.
-func (o *ConfigPutRequest) GetRouteMap() ConfigPutRequestRouteMap {
-	if o == nil || IsNil(o.RouteMap) {
-		var ret ConfigPutRequestRouteMap
-		return ret
-	}
-	return *o.RouteMap
-}
-
-// GetRouteMapOk returns a tuple with the RouteMap field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequest) GetRouteMapOk() (*ConfigPutRequestRouteMap, bool) {
-	if o == nil || IsNil(o.RouteMap) {
-		return nil, false
-	}
-	return o.RouteMap, true
-}
-
-// HasRouteMap returns a boolean if a field has been set.
-func (o *ConfigPutRequest) HasRouteMap() bool {
-	if o != nil && !IsNil(o.RouteMap) {
-		return true
-	}
-
-	return false
-}
-
-// SetRouteMap gets a reference to the given ConfigPutRequestRouteMap and assigns it to the RouteMap field.
-func (o *ConfigPutRequest) SetRouteMap(v ConfigPutRequestRouteMap) {
-	o.RouteMap = &v
-}
-
 // GetTenant returns the Tenant field value if set, zero value otherwise.
 func (o *ConfigPutRequest) GetTenant() ConfigPutRequestTenant {
 	if o == nil || IsNil(o.Tenant) {
@@ -773,36 +708,36 @@ func (o *ConfigPutRequest) SetTenant(v ConfigPutRequestTenant) {
 	o.Tenant = &v
 }
 
-// GetService returns the Service field value if set, zero value otherwise.
-func (o *ConfigPutRequest) GetService() ConfigPutRequestService {
-	if o == nil || IsNil(o.Service) {
-		var ret ConfigPutRequestService
+// GetIpv6PrefixList returns the Ipv6PrefixList field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetIpv6PrefixList() ConfigPutRequestIpv6PrefixList {
+	if o == nil || IsNil(o.Ipv6PrefixList) {
+		var ret ConfigPutRequestIpv6PrefixList
 		return ret
 	}
-	return *o.Service
+	return *o.Ipv6PrefixList
 }
 
-// GetServiceOk returns a tuple with the Service field value if set, nil otherwise
+// GetIpv6PrefixListOk returns a tuple with the Ipv6PrefixList field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequest) GetServiceOk() (*ConfigPutRequestService, bool) {
-	if o == nil || IsNil(o.Service) {
+func (o *ConfigPutRequest) GetIpv6PrefixListOk() (*ConfigPutRequestIpv6PrefixList, bool) {
+	if o == nil || IsNil(o.Ipv6PrefixList) {
 		return nil, false
 	}
-	return o.Service, true
+	return o.Ipv6PrefixList, true
 }
 
-// HasService returns a boolean if a field has been set.
-func (o *ConfigPutRequest) HasService() bool {
-	if o != nil && !IsNil(o.Service) {
+// HasIpv6PrefixList returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasIpv6PrefixList() bool {
+	if o != nil && !IsNil(o.Ipv6PrefixList) {
 		return true
 	}
 
 	return false
 }
 
-// SetService gets a reference to the given ConfigPutRequestService and assigns it to the Service field.
-func (o *ConfigPutRequest) SetService(v ConfigPutRequestService) {
-	o.Service = &v
+// SetIpv6PrefixList gets a reference to the given ConfigPutRequestIpv6PrefixList and assigns it to the Ipv6PrefixList field.
+func (o *ConfigPutRequest) SetIpv6PrefixList(v ConfigPutRequestIpv6PrefixList) {
+	o.Ipv6PrefixList = &v
 }
 
 // GetIpv4ListFilter returns the Ipv4ListFilter field value if set, zero value otherwise.
@@ -835,6 +770,38 @@ func (o *ConfigPutRequest) HasIpv4ListFilter() bool {
 // SetIpv4ListFilter gets a reference to the given ConfigPutRequestIpv4ListFilter and assigns it to the Ipv4ListFilter field.
 func (o *ConfigPutRequest) SetIpv4ListFilter(v ConfigPutRequestIpv4ListFilter) {
 	o.Ipv4ListFilter = &v
+}
+
+// GetAsPathAccessList returns the AsPathAccessList field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetAsPathAccessList() ConfigPutRequestAsPathAccessList {
+	if o == nil || IsNil(o.AsPathAccessList) {
+		var ret ConfigPutRequestAsPathAccessList
+		return ret
+	}
+	return *o.AsPathAccessList
+}
+
+// GetAsPathAccessListOk returns a tuple with the AsPathAccessList field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetAsPathAccessListOk() (*ConfigPutRequestAsPathAccessList, bool) {
+	if o == nil || IsNil(o.AsPathAccessList) {
+		return nil, false
+	}
+	return o.AsPathAccessList, true
+}
+
+// HasAsPathAccessList returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasAsPathAccessList() bool {
+	if o != nil && !IsNil(o.AsPathAccessList) {
+		return true
+	}
+
+	return false
+}
+
+// SetAsPathAccessList gets a reference to the given ConfigPutRequestAsPathAccessList and assigns it to the AsPathAccessList field.
+func (o *ConfigPutRequest) SetAsPathAccessList(v ConfigPutRequestAsPathAccessList) {
+	o.AsPathAccessList = &v
 }
 
 // GetIpv6ListFilter returns the Ipv6ListFilter field value if set, zero value otherwise.
@@ -1077,14 +1044,17 @@ func (o ConfigPutRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.SfpBreakouts) {
 		toSerialize["sfp_breakouts"] = o.SfpBreakouts
 	}
-	if !IsNil(o.Thresholds) {
-		toSerialize["thresholds"] = o.Thresholds
-	}
 	if !IsNil(o.Site) {
 		toSerialize["site"] = o.Site
 	}
+	if !IsNil(o.Ipv4PrefixList) {
+		toSerialize["ipv4_prefix_list"] = o.Ipv4PrefixList
+	}
 	if !IsNil(o.EthDeviceProfiles) {
 		toSerialize["eth_device_profiles"] = o.EthDeviceProfiles
+	}
+	if !IsNil(o.Ipv4Filter) {
+		toSerialize["ipv4_filter"] = o.Ipv4Filter
 	}
 	if !IsNil(o.GatewayProfile) {
 		toSerialize["gateway_profile"] = o.GatewayProfile
@@ -1101,17 +1071,11 @@ func (o ConfigPutRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.RouteMapClause) {
 		toSerialize["route_map_clause"] = o.RouteMapClause
 	}
-	if !IsNil(o.Ipv4Fliter) {
-		toSerialize["ipv4_fliter"] = o.Ipv4Fliter
+	if !IsNil(o.Service) {
+		toSerialize["service"] = o.Service
 	}
-	if !IsNil(o.ThresholdRules) {
-		toSerialize["threshold_rules"] = o.ThresholdRules
-	}
-	if !IsNil(o.IpPrefixList) {
-		toSerialize["ip_prefix_list"] = o.IpPrefixList
-	}
-	if !IsNil(o.AsPathAccessList) {
-		toSerialize["as_path_access_list"] = o.AsPathAccessList
+	if !IsNil(o.RouteMap) {
+		toSerialize["route_map"] = o.RouteMap
 	}
 	if !IsNil(o.BizdConfig) {
 		toSerialize["bizd_config"] = o.BizdConfig
@@ -1131,17 +1095,17 @@ func (o ConfigPutRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.CommunityList) {
 		toSerialize["community_list"] = o.CommunityList
 	}
-	if !IsNil(o.RouteMap) {
-		toSerialize["route_map"] = o.RouteMap
-	}
 	if !IsNil(o.Tenant) {
 		toSerialize["tenant"] = o.Tenant
 	}
-	if !IsNil(o.Service) {
-		toSerialize["service"] = o.Service
+	if !IsNil(o.Ipv6PrefixList) {
+		toSerialize["ipv6_prefix_list"] = o.Ipv6PrefixList
 	}
 	if !IsNil(o.Ipv4ListFilter) {
 		toSerialize["ipv4_list_filter"] = o.Ipv4ListFilter
+	}
+	if !IsNil(o.AsPathAccessList) {
+		toSerialize["as_path_access_list"] = o.AsPathAccessList
 	}
 	if !IsNil(o.Ipv6ListFilter) {
 		toSerialize["ipv6_list_filter"] = o.Ipv6ListFilter

@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **RouteMapClauses** | Pointer to [**[]ConfigPutRequestRouteMapRouteMapNameRouteMapClausesInner**](ConfigPutRequestRouteMapRouteMapNameRouteMapClausesInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties**](ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties**](ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -105,20 +105,20 @@ HasRouteMapClauses returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *ConfigPutRequestRouteMapRouteMapName) GetObjectProperties() ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties`
+`func (o *ConfigPutRequestRouteMapRouteMapName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *ConfigPutRequestRouteMapRouteMapName) GetObjectPropertiesOk() (*ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties, bool)`
+`func (o *ConfigPutRequestRouteMapRouteMapName) GetObjectPropertiesOk() (*ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *ConfigPutRequestRouteMapRouteMapName) SetObjectProperties(v ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties)`
+`func (o *ConfigPutRequestRouteMapRouteMapName) SetObjectProperties(v ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

@@ -8,8 +8,8 @@ Name | Type | Description | Notes
 **TrafficMirrorNumSourcePort** | Pointer to **string** | Source Port for Traffic Mirror | [optional] [default to ""]
 **TrafficMirrorNumSourceLagIndicator** | Pointer to **bool** | Source LAG Indicator for Traffic Mirror | [optional] [default to false]
 **TrafficMirrorNumDestinationPort** | Pointer to **string** | Destination Port for Traffic Mirror | [optional] [default to ""]
-**TrafficMirrorNumInboundTraffic** | Pointer to **bool** | Boolean value indicating if the mirror is for inbound traffic | [optional] [default to true]
-**TrafficMirrorNumOutboundTraffic** | Pointer to **bool** | Boolean value indicating if the mirror is for outbound traffic | [optional] [default to true]
+**TrafficMirrorNumInboundTraffic** | Pointer to **bool** | Boolean value indicating if the mirror is for inbound traffic | [optional] [default to false]
+**TrafficMirrorNumOutboundTraffic** | Pointer to **bool** | Boolean value indicating if the mirror is for outbound traffic | [optional] [default to false]
 
 ## Methods
 

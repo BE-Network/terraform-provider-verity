@@ -14,16 +14,16 @@ import (
 	"encoding/json"
 )
 
-// checks if the ConfigPutRequestIpPrefixListIpPrefixListNameListsInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ConfigPutRequestIpPrefixListIpPrefixListNameListsInner{}
+// checks if the ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner{}
 
-// ConfigPutRequestIpPrefixListIpPrefixListNameListsInner struct for ConfigPutRequestIpPrefixListIpPrefixListNameListsInner
-type ConfigPutRequestIpPrefixListIpPrefixListNameListsInner struct {
-	// Enable of this IP Prefix List
+// ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner struct for ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner
+type ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner struct {
+	// Enable of this IPv4 Prefix List
 	Enable *bool `json:"enable,omitempty"`
 	// Action upon match of Community Strings.
 	PermitDeny *string `json:"permit_deny,omitempty"`
-	// IP address and subnet to match against 
+	// IPv4 address and subnet to match against 
 	Ipv4Prefix *string `json:"ipv4_prefix,omitempty"`
 	// Match IP routes with a subnet mask greater than or equal to the value indicated 
 	GreaterThanEqualValue NullableInt32 `json:"greater_than_equal_value,omitempty"`
@@ -33,12 +33,12 @@ type ConfigPutRequestIpPrefixListIpPrefixListNameListsInner struct {
 	Index *int32 `json:"index,omitempty"`
 }
 
-// NewConfigPutRequestIpPrefixListIpPrefixListNameListsInner instantiates a new ConfigPutRequestIpPrefixListIpPrefixListNameListsInner object
+// NewConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner instantiates a new ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigPutRequestIpPrefixListIpPrefixListNameListsInner() *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner {
-	this := ConfigPutRequestIpPrefixListIpPrefixListNameListsInner{}
+func NewConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner() *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner {
+	this := ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner{}
 	var enable bool = false
 	this.Enable = &enable
 	var permitDeny string = "permit"
@@ -48,11 +48,11 @@ func NewConfigPutRequestIpPrefixListIpPrefixListNameListsInner() *ConfigPutReque
 	return &this
 }
 
-// NewConfigPutRequestIpPrefixListIpPrefixListNameListsInnerWithDefaults instantiates a new ConfigPutRequestIpPrefixListIpPrefixListNameListsInner object
+// NewConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInnerWithDefaults instantiates a new ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewConfigPutRequestIpPrefixListIpPrefixListNameListsInnerWithDefaults() *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner {
-	this := ConfigPutRequestIpPrefixListIpPrefixListNameListsInner{}
+func NewConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInnerWithDefaults() *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner {
+	this := ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner{}
 	var enable bool = false
 	this.Enable = &enable
 	var permitDeny string = "permit"
@@ -63,7 +63,7 @@ func NewConfigPutRequestIpPrefixListIpPrefixListNameListsInnerWithDefaults() *Co
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetEnable() bool {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetEnable() bool {
 	if o == nil || IsNil(o.Enable) {
 		var ret bool
 		return ret
@@ -73,7 +73,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetEnable() boo
 
 // GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetEnableOk() (*bool, bool) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetEnableOk() (*bool, bool) {
 	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
@@ -81,7 +81,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetEnableOk() (
 }
 
 // HasEnable returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasEnable() bool {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) HasEnable() bool {
 	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
@@ -90,12 +90,12 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasEnable() boo
 }
 
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) SetEnable(v bool) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) SetEnable(v bool) {
 	o.Enable = &v
 }
 
 // GetPermitDeny returns the PermitDeny field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetPermitDeny() string {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetPermitDeny() string {
 	if o == nil || IsNil(o.PermitDeny) {
 		var ret string
 		return ret
@@ -105,7 +105,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetPermitDeny()
 
 // GetPermitDenyOk returns a tuple with the PermitDeny field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetPermitDenyOk() (*string, bool) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetPermitDenyOk() (*string, bool) {
 	if o == nil || IsNil(o.PermitDeny) {
 		return nil, false
 	}
@@ -113,7 +113,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetPermitDenyOk
 }
 
 // HasPermitDeny returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasPermitDeny() bool {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) HasPermitDeny() bool {
 	if o != nil && !IsNil(o.PermitDeny) {
 		return true
 	}
@@ -122,12 +122,12 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasPermitDeny()
 }
 
 // SetPermitDeny gets a reference to the given string and assigns it to the PermitDeny field.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) SetPermitDeny(v string) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) SetPermitDeny(v string) {
 	o.PermitDeny = &v
 }
 
 // GetIpv4Prefix returns the Ipv4Prefix field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetIpv4Prefix() string {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetIpv4Prefix() string {
 	if o == nil || IsNil(o.Ipv4Prefix) {
 		var ret string
 		return ret
@@ -137,7 +137,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetIpv4Prefix()
 
 // GetIpv4PrefixOk returns a tuple with the Ipv4Prefix field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetIpv4PrefixOk() (*string, bool) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetIpv4PrefixOk() (*string, bool) {
 	if o == nil || IsNil(o.Ipv4Prefix) {
 		return nil, false
 	}
@@ -145,7 +145,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetIpv4PrefixOk
 }
 
 // HasIpv4Prefix returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasIpv4Prefix() bool {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) HasIpv4Prefix() bool {
 	if o != nil && !IsNil(o.Ipv4Prefix) {
 		return true
 	}
@@ -154,12 +154,12 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasIpv4Prefix()
 }
 
 // SetIpv4Prefix gets a reference to the given string and assigns it to the Ipv4Prefix field.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) SetIpv4Prefix(v string) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) SetIpv4Prefix(v string) {
 	o.Ipv4Prefix = &v
 }
 
 // GetGreaterThanEqualValue returns the GreaterThanEqualValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetGreaterThanEqualValue() int32 {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetGreaterThanEqualValue() int32 {
 	if o == nil || IsNil(o.GreaterThanEqualValue.Get()) {
 		var ret int32
 		return ret
@@ -170,7 +170,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetGreaterThanE
 // GetGreaterThanEqualValueOk returns a tuple with the GreaterThanEqualValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetGreaterThanEqualValueOk() (*int32, bool) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetGreaterThanEqualValueOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -178,7 +178,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetGreaterThanE
 }
 
 // HasGreaterThanEqualValue returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasGreaterThanEqualValue() bool {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) HasGreaterThanEqualValue() bool {
 	if o != nil && o.GreaterThanEqualValue.IsSet() {
 		return true
 	}
@@ -187,21 +187,21 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasGreaterThanE
 }
 
 // SetGreaterThanEqualValue gets a reference to the given NullableInt32 and assigns it to the GreaterThanEqualValue field.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) SetGreaterThanEqualValue(v int32) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) SetGreaterThanEqualValue(v int32) {
 	o.GreaterThanEqualValue.Set(&v)
 }
 // SetGreaterThanEqualValueNil sets the value for GreaterThanEqualValue to be an explicit nil
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) SetGreaterThanEqualValueNil() {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) SetGreaterThanEqualValueNil() {
 	o.GreaterThanEqualValue.Set(nil)
 }
 
 // UnsetGreaterThanEqualValue ensures that no value is present for GreaterThanEqualValue, not even an explicit nil
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) UnsetGreaterThanEqualValue() {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) UnsetGreaterThanEqualValue() {
 	o.GreaterThanEqualValue.Unset()
 }
 
 // GetLessThanEqualValue returns the LessThanEqualValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetLessThanEqualValue() int32 {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetLessThanEqualValue() int32 {
 	if o == nil || IsNil(o.LessThanEqualValue.Get()) {
 		var ret int32
 		return ret
@@ -212,7 +212,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetLessThanEqua
 // GetLessThanEqualValueOk returns a tuple with the LessThanEqualValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetLessThanEqualValueOk() (*int32, bool) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetLessThanEqualValueOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -220,7 +220,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetLessThanEqua
 }
 
 // HasLessThanEqualValue returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasLessThanEqualValue() bool {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) HasLessThanEqualValue() bool {
 	if o != nil && o.LessThanEqualValue.IsSet() {
 		return true
 	}
@@ -229,21 +229,21 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasLessThanEqua
 }
 
 // SetLessThanEqualValue gets a reference to the given NullableInt32 and assigns it to the LessThanEqualValue field.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) SetLessThanEqualValue(v int32) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) SetLessThanEqualValue(v int32) {
 	o.LessThanEqualValue.Set(&v)
 }
 // SetLessThanEqualValueNil sets the value for LessThanEqualValue to be an explicit nil
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) SetLessThanEqualValueNil() {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) SetLessThanEqualValueNil() {
 	o.LessThanEqualValue.Set(nil)
 }
 
 // UnsetLessThanEqualValue ensures that no value is present for LessThanEqualValue, not even an explicit nil
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) UnsetLessThanEqualValue() {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) UnsetLessThanEqualValue() {
 	o.LessThanEqualValue.Unset()
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetIndex() int32 {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetIndex() int32 {
 	if o == nil || IsNil(o.Index) {
 		var ret int32
 		return ret
@@ -253,7 +253,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetIndex() int3
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetIndexOk() (*int32, bool) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) GetIndexOk() (*int32, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -261,7 +261,7 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) GetIndexOk() (*
 }
 
 // HasIndex returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasIndex() bool {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) HasIndex() bool {
 	if o != nil && !IsNil(o.Index) {
 		return true
 	}
@@ -270,11 +270,11 @@ func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) HasIndex() bool
 }
 
 // SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) SetIndex(v int32) {
+func (o *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) SetIndex(v int32) {
 	o.Index = &v
 }
 
-func (o ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) MarshalJSON() ([]byte, error) {
+func (o ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -282,7 +282,7 @@ func (o ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) MarshalJSON() ([
 	return json.Marshal(toSerialize)
 }
 
-func (o ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) ToMap() (map[string]interface{}, error) {
+func (o ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
@@ -305,38 +305,38 @@ func (o ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) ToMap() (map[str
 	return toSerialize, nil
 }
 
-type NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner struct {
-	value *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner
+type NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner struct {
+	value *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner
 	isSet bool
 }
 
-func (v NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner) Get() *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner {
+func (v NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) Get() *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner {
 	return v.value
 }
 
-func (v *NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner) Set(val *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) {
+func (v *NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) Set(val *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner) IsSet() bool {
+func (v NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner) Unset() {
+func (v *NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner(val *ConfigPutRequestIpPrefixListIpPrefixListNameListsInner) *NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner {
-	return &NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner{value: val, isSet: true}
+func NewNullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner(val *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) *NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner {
+	return &NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner{value: val, isSet: true}
 }
 
-func (v NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner) MarshalJSON() ([]byte, error) {
+func (v NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableConfigPutRequestIpPrefixListIpPrefixListNameListsInner) UnmarshalJSON(src []byte) error {
+func (v *NullableConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

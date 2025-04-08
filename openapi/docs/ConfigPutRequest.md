@@ -6,28 +6,27 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **DeviceController** | Pointer to [**ConfigPutRequestDeviceController**](ConfigPutRequestDeviceController.md) |  | [optional] 
 **SfpBreakouts** | Pointer to [**ConfigPutRequestSfpBreakouts**](ConfigPutRequestSfpBreakouts.md) |  | [optional] 
-**Thresholds** | Pointer to [**ConfigPutRequestThresholds**](ConfigPutRequestThresholds.md) |  | [optional] 
 **Site** | Pointer to [**ConfigPutRequestSite**](ConfigPutRequestSite.md) |  | [optional] 
+**Ipv4PrefixList** | Pointer to [**ConfigPutRequestIpv4PrefixList**](ConfigPutRequestIpv4PrefixList.md) |  | [optional] 
 **EthDeviceProfiles** | Pointer to [**ConfigPutRequestEthDeviceProfiles**](ConfigPutRequestEthDeviceProfiles.md) |  | [optional] 
+**Ipv4Filter** | Pointer to [**ConfigPutRequestIpv4Filter**](ConfigPutRequestIpv4Filter.md) |  | [optional] 
 **GatewayProfile** | Pointer to [**ConfigPutRequestGatewayProfile**](ConfigPutRequestGatewayProfile.md) |  | [optional] 
 **EndpointView** | Pointer to [**ConfigPutRequestEndpointView**](ConfigPutRequestEndpointView.md) |  | [optional] 
 **Gateway** | Pointer to [**ConfigPutRequestGateway**](ConfigPutRequestGateway.md) |  | [optional] 
 **Ipv6Filter** | Pointer to [**ConfigPutRequestIpv6Filter**](ConfigPutRequestIpv6Filter.md) |  | [optional] 
 **RouteMapClause** | Pointer to [**ConfigPutRequestRouteMapClause**](ConfigPutRequestRouteMapClause.md) |  | [optional] 
-**Ipv4Fliter** | Pointer to [**ConfigPutRequestIpv4Fliter**](ConfigPutRequestIpv4Fliter.md) |  | [optional] 
-**ThresholdRules** | Pointer to [**ConfigPutRequestThresholdRules**](ConfigPutRequestThresholdRules.md) |  | [optional] 
-**IpPrefixList** | Pointer to [**ConfigPutRequestIpPrefixList**](ConfigPutRequestIpPrefixList.md) |  | [optional] 
-**AsPathAccessList** | Pointer to [**ConfigPutRequestAsPathAccessList**](ConfigPutRequestAsPathAccessList.md) |  | [optional] 
+**Service** | Pointer to [**ConfigPutRequestService**](ConfigPutRequestService.md) |  | [optional] 
+**RouteMap** | Pointer to [**ConfigPutRequestRouteMap**](ConfigPutRequestRouteMap.md) |  | [optional] 
 **BizdConfig** | Pointer to [**ConfigPutRequestBizdConfig**](ConfigPutRequestBizdConfig.md) |  | [optional] 
 **PbEgressProfile** | Pointer to [**ConfigPutRequestPbEgressProfile**](ConfigPutRequestPbEgressProfile.md) |  | [optional] 
 **Badge** | Pointer to [**ConfigPutRequestBadge**](ConfigPutRequestBadge.md) |  | [optional] 
 **Lag** | Pointer to [**ConfigPutRequestLag**](ConfigPutRequestLag.md) |  | [optional] 
 **StaticIp** | Pointer to [**ConfigPutRequestStaticIp**](ConfigPutRequestStaticIp.md) |  | [optional] 
 **CommunityList** | Pointer to [**ConfigPutRequestCommunityList**](ConfigPutRequestCommunityList.md) |  | [optional] 
-**RouteMap** | Pointer to [**ConfigPutRequestRouteMap**](ConfigPutRequestRouteMap.md) |  | [optional] 
 **Tenant** | Pointer to [**ConfigPutRequestTenant**](ConfigPutRequestTenant.md) |  | [optional] 
-**Service** | Pointer to [**ConfigPutRequestService**](ConfigPutRequestService.md) |  | [optional] 
+**Ipv6PrefixList** | Pointer to [**ConfigPutRequestIpv6PrefixList**](ConfigPutRequestIpv6PrefixList.md) |  | [optional] 
 **Ipv4ListFilter** | Pointer to [**ConfigPutRequestIpv4ListFilter**](ConfigPutRequestIpv4ListFilter.md) |  | [optional] 
+**AsPathAccessList** | Pointer to [**ConfigPutRequestAsPathAccessList**](ConfigPutRequestAsPathAccessList.md) |  | [optional] 
 **Ipv6ListFilter** | Pointer to [**ConfigPutRequestIpv6ListFilter**](ConfigPutRequestIpv6ListFilter.md) |  | [optional] 
 **EthPortProfile** | Pointer to [**ConfigPutRequestEthPortProfile**](ConfigPutRequestEthPortProfile.md) |  | [optional] 
 **EthPortSettings** | Pointer to [**ConfigPutRequestEthPortSettings**](ConfigPutRequestEthPortSettings.md) |  | [optional] 
@@ -105,31 +104,6 @@ SetSfpBreakouts sets SfpBreakouts field to given value.
 
 HasSfpBreakouts returns a boolean if a field has been set.
 
-### GetThresholds
-
-`func (o *ConfigPutRequest) GetThresholds() ConfigPutRequestThresholds`
-
-GetThresholds returns the Thresholds field if non-nil, zero value otherwise.
-
-### GetThresholdsOk
-
-`func (o *ConfigPutRequest) GetThresholdsOk() (*ConfigPutRequestThresholds, bool)`
-
-GetThresholdsOk returns a tuple with the Thresholds field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetThresholds
-
-`func (o *ConfigPutRequest) SetThresholds(v ConfigPutRequestThresholds)`
-
-SetThresholds sets Thresholds field to given value.
-
-### HasThresholds
-
-`func (o *ConfigPutRequest) HasThresholds() bool`
-
-HasThresholds returns a boolean if a field has been set.
-
 ### GetSite
 
 `func (o *ConfigPutRequest) GetSite() ConfigPutRequestSite`
@@ -155,6 +129,31 @@ SetSite sets Site field to given value.
 
 HasSite returns a boolean if a field has been set.
 
+### GetIpv4PrefixList
+
+`func (o *ConfigPutRequest) GetIpv4PrefixList() ConfigPutRequestIpv4PrefixList`
+
+GetIpv4PrefixList returns the Ipv4PrefixList field if non-nil, zero value otherwise.
+
+### GetIpv4PrefixListOk
+
+`func (o *ConfigPutRequest) GetIpv4PrefixListOk() (*ConfigPutRequestIpv4PrefixList, bool)`
+
+GetIpv4PrefixListOk returns a tuple with the Ipv4PrefixList field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIpv4PrefixList
+
+`func (o *ConfigPutRequest) SetIpv4PrefixList(v ConfigPutRequestIpv4PrefixList)`
+
+SetIpv4PrefixList sets Ipv4PrefixList field to given value.
+
+### HasIpv4PrefixList
+
+`func (o *ConfigPutRequest) HasIpv4PrefixList() bool`
+
+HasIpv4PrefixList returns a boolean if a field has been set.
+
 ### GetEthDeviceProfiles
 
 `func (o *ConfigPutRequest) GetEthDeviceProfiles() ConfigPutRequestEthDeviceProfiles`
@@ -179,6 +178,31 @@ SetEthDeviceProfiles sets EthDeviceProfiles field to given value.
 `func (o *ConfigPutRequest) HasEthDeviceProfiles() bool`
 
 HasEthDeviceProfiles returns a boolean if a field has been set.
+
+### GetIpv4Filter
+
+`func (o *ConfigPutRequest) GetIpv4Filter() ConfigPutRequestIpv4Filter`
+
+GetIpv4Filter returns the Ipv4Filter field if non-nil, zero value otherwise.
+
+### GetIpv4FilterOk
+
+`func (o *ConfigPutRequest) GetIpv4FilterOk() (*ConfigPutRequestIpv4Filter, bool)`
+
+GetIpv4FilterOk returns a tuple with the Ipv4Filter field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIpv4Filter
+
+`func (o *ConfigPutRequest) SetIpv4Filter(v ConfigPutRequestIpv4Filter)`
+
+SetIpv4Filter sets Ipv4Filter field to given value.
+
+### HasIpv4Filter
+
+`func (o *ConfigPutRequest) HasIpv4Filter() bool`
+
+HasIpv4Filter returns a boolean if a field has been set.
 
 ### GetGatewayProfile
 
@@ -305,105 +329,55 @@ SetRouteMapClause sets RouteMapClause field to given value.
 
 HasRouteMapClause returns a boolean if a field has been set.
 
-### GetIpv4Fliter
+### GetService
 
-`func (o *ConfigPutRequest) GetIpv4Fliter() ConfigPutRequestIpv4Fliter`
+`func (o *ConfigPutRequest) GetService() ConfigPutRequestService`
 
-GetIpv4Fliter returns the Ipv4Fliter field if non-nil, zero value otherwise.
+GetService returns the Service field if non-nil, zero value otherwise.
 
-### GetIpv4FliterOk
+### GetServiceOk
 
-`func (o *ConfigPutRequest) GetIpv4FliterOk() (*ConfigPutRequestIpv4Fliter, bool)`
+`func (o *ConfigPutRequest) GetServiceOk() (*ConfigPutRequestService, bool)`
 
-GetIpv4FliterOk returns a tuple with the Ipv4Fliter field if it's non-nil, zero value otherwise
+GetServiceOk returns a tuple with the Service field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetIpv4Fliter
+### SetService
 
-`func (o *ConfigPutRequest) SetIpv4Fliter(v ConfigPutRequestIpv4Fliter)`
+`func (o *ConfigPutRequest) SetService(v ConfigPutRequestService)`
 
-SetIpv4Fliter sets Ipv4Fliter field to given value.
+SetService sets Service field to given value.
 
-### HasIpv4Fliter
+### HasService
 
-`func (o *ConfigPutRequest) HasIpv4Fliter() bool`
+`func (o *ConfigPutRequest) HasService() bool`
 
-HasIpv4Fliter returns a boolean if a field has been set.
+HasService returns a boolean if a field has been set.
 
-### GetThresholdRules
+### GetRouteMap
 
-`func (o *ConfigPutRequest) GetThresholdRules() ConfigPutRequestThresholdRules`
+`func (o *ConfigPutRequest) GetRouteMap() ConfigPutRequestRouteMap`
 
-GetThresholdRules returns the ThresholdRules field if non-nil, zero value otherwise.
+GetRouteMap returns the RouteMap field if non-nil, zero value otherwise.
 
-### GetThresholdRulesOk
+### GetRouteMapOk
 
-`func (o *ConfigPutRequest) GetThresholdRulesOk() (*ConfigPutRequestThresholdRules, bool)`
+`func (o *ConfigPutRequest) GetRouteMapOk() (*ConfigPutRequestRouteMap, bool)`
 
-GetThresholdRulesOk returns a tuple with the ThresholdRules field if it's non-nil, zero value otherwise
+GetRouteMapOk returns a tuple with the RouteMap field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetThresholdRules
+### SetRouteMap
 
-`func (o *ConfigPutRequest) SetThresholdRules(v ConfigPutRequestThresholdRules)`
+`func (o *ConfigPutRequest) SetRouteMap(v ConfigPutRequestRouteMap)`
 
-SetThresholdRules sets ThresholdRules field to given value.
+SetRouteMap sets RouteMap field to given value.
 
-### HasThresholdRules
+### HasRouteMap
 
-`func (o *ConfigPutRequest) HasThresholdRules() bool`
+`func (o *ConfigPutRequest) HasRouteMap() bool`
 
-HasThresholdRules returns a boolean if a field has been set.
-
-### GetIpPrefixList
-
-`func (o *ConfigPutRequest) GetIpPrefixList() ConfigPutRequestIpPrefixList`
-
-GetIpPrefixList returns the IpPrefixList field if non-nil, zero value otherwise.
-
-### GetIpPrefixListOk
-
-`func (o *ConfigPutRequest) GetIpPrefixListOk() (*ConfigPutRequestIpPrefixList, bool)`
-
-GetIpPrefixListOk returns a tuple with the IpPrefixList field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetIpPrefixList
-
-`func (o *ConfigPutRequest) SetIpPrefixList(v ConfigPutRequestIpPrefixList)`
-
-SetIpPrefixList sets IpPrefixList field to given value.
-
-### HasIpPrefixList
-
-`func (o *ConfigPutRequest) HasIpPrefixList() bool`
-
-HasIpPrefixList returns a boolean if a field has been set.
-
-### GetAsPathAccessList
-
-`func (o *ConfigPutRequest) GetAsPathAccessList() ConfigPutRequestAsPathAccessList`
-
-GetAsPathAccessList returns the AsPathAccessList field if non-nil, zero value otherwise.
-
-### GetAsPathAccessListOk
-
-`func (o *ConfigPutRequest) GetAsPathAccessListOk() (*ConfigPutRequestAsPathAccessList, bool)`
-
-GetAsPathAccessListOk returns a tuple with the AsPathAccessList field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetAsPathAccessList
-
-`func (o *ConfigPutRequest) SetAsPathAccessList(v ConfigPutRequestAsPathAccessList)`
-
-SetAsPathAccessList sets AsPathAccessList field to given value.
-
-### HasAsPathAccessList
-
-`func (o *ConfigPutRequest) HasAsPathAccessList() bool`
-
-HasAsPathAccessList returns a boolean if a field has been set.
+HasRouteMap returns a boolean if a field has been set.
 
 ### GetBizdConfig
 
@@ -555,31 +529,6 @@ SetCommunityList sets CommunityList field to given value.
 
 HasCommunityList returns a boolean if a field has been set.
 
-### GetRouteMap
-
-`func (o *ConfigPutRequest) GetRouteMap() ConfigPutRequestRouteMap`
-
-GetRouteMap returns the RouteMap field if non-nil, zero value otherwise.
-
-### GetRouteMapOk
-
-`func (o *ConfigPutRequest) GetRouteMapOk() (*ConfigPutRequestRouteMap, bool)`
-
-GetRouteMapOk returns a tuple with the RouteMap field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetRouteMap
-
-`func (o *ConfigPutRequest) SetRouteMap(v ConfigPutRequestRouteMap)`
-
-SetRouteMap sets RouteMap field to given value.
-
-### HasRouteMap
-
-`func (o *ConfigPutRequest) HasRouteMap() bool`
-
-HasRouteMap returns a boolean if a field has been set.
-
 ### GetTenant
 
 `func (o *ConfigPutRequest) GetTenant() ConfigPutRequestTenant`
@@ -605,30 +554,30 @@ SetTenant sets Tenant field to given value.
 
 HasTenant returns a boolean if a field has been set.
 
-### GetService
+### GetIpv6PrefixList
 
-`func (o *ConfigPutRequest) GetService() ConfigPutRequestService`
+`func (o *ConfigPutRequest) GetIpv6PrefixList() ConfigPutRequestIpv6PrefixList`
 
-GetService returns the Service field if non-nil, zero value otherwise.
+GetIpv6PrefixList returns the Ipv6PrefixList field if non-nil, zero value otherwise.
 
-### GetServiceOk
+### GetIpv6PrefixListOk
 
-`func (o *ConfigPutRequest) GetServiceOk() (*ConfigPutRequestService, bool)`
+`func (o *ConfigPutRequest) GetIpv6PrefixListOk() (*ConfigPutRequestIpv6PrefixList, bool)`
 
-GetServiceOk returns a tuple with the Service field if it's non-nil, zero value otherwise
+GetIpv6PrefixListOk returns a tuple with the Ipv6PrefixList field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetService
+### SetIpv6PrefixList
 
-`func (o *ConfigPutRequest) SetService(v ConfigPutRequestService)`
+`func (o *ConfigPutRequest) SetIpv6PrefixList(v ConfigPutRequestIpv6PrefixList)`
 
-SetService sets Service field to given value.
+SetIpv6PrefixList sets Ipv6PrefixList field to given value.
 
-### HasService
+### HasIpv6PrefixList
 
-`func (o *ConfigPutRequest) HasService() bool`
+`func (o *ConfigPutRequest) HasIpv6PrefixList() bool`
 
-HasService returns a boolean if a field has been set.
+HasIpv6PrefixList returns a boolean if a field has been set.
 
 ### GetIpv4ListFilter
 
@@ -654,6 +603,31 @@ SetIpv4ListFilter sets Ipv4ListFilter field to given value.
 `func (o *ConfigPutRequest) HasIpv4ListFilter() bool`
 
 HasIpv4ListFilter returns a boolean if a field has been set.
+
+### GetAsPathAccessList
+
+`func (o *ConfigPutRequest) GetAsPathAccessList() ConfigPutRequestAsPathAccessList`
+
+GetAsPathAccessList returns the AsPathAccessList field if non-nil, zero value otherwise.
+
+### GetAsPathAccessListOk
+
+`func (o *ConfigPutRequest) GetAsPathAccessListOk() (*ConfigPutRequestAsPathAccessList, bool)`
+
+GetAsPathAccessListOk returns a tuple with the AsPathAccessList field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAsPathAccessList
+
+`func (o *ConfigPutRequest) SetAsPathAccessList(v ConfigPutRequestAsPathAccessList)`
+
+SetAsPathAccessList sets AsPathAccessList field to given value.
+
+### HasAsPathAccessList
+
+`func (o *ConfigPutRequest) HasAsPathAccessList() bool`
+
+HasAsPathAccessList returns a boolean if a field has been set.
 
 ### GetIpv6ListFilter
 

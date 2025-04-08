@@ -21,7 +21,7 @@ var _ MappedNullable = &ConfigPutRequestGatewayProfileGatewayProfileName{}
 type ConfigPutRequestGatewayProfileGatewayProfileName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	// Profiles that Tenant Slice creates and manages
 	TenantSliceManaged *bool `json:"tenant_slice_managed,omitempty"`

@@ -21,7 +21,7 @@ var _ MappedNullable = &ConfigPutRequestServiceServiceName{}
 type ConfigPutRequestServiceServiceName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	// A Value between 1 and 4096
 	Vlan NullableInt32 `json:"vlan,omitempty"`

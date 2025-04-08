@@ -23,7 +23,7 @@ type ConfigPutRequestIpv4ListFilterIpv4ListFilterName struct {
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// Comma seperated list of IPv4 addresses
+	// Comma separated list of IPv4 addresses
 	Ipv4List *string `json:"ipv4_list,omitempty"`
 }
 

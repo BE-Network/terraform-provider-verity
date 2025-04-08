@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the ConfigPutRequestIpv6FilterIpv6FilterName type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ConfigPutRequestIpv6FilterIpv6FilterName{}
+// checks if the ConfigPutRequestIpv4FilterIpv4FilterName type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConfigPutRequestIpv4FilterIpv4FilterName{}
 
-// ConfigPutRequestIpv6FilterIpv6FilterName struct for ConfigPutRequestIpv6FilterIpv6FilterName
-type ConfigPutRequestIpv6FilterIpv6FilterName struct {
+// ConfigPutRequestIpv4FilterIpv4FilterName struct for ConfigPutRequestIpv4FilterIpv4FilterName
+type ConfigPutRequestIpv4FilterIpv4FilterName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
@@ -27,7 +27,7 @@ type ConfigPutRequestIpv6FilterIpv6FilterName struct {
 	Protocol *string `json:"protocol,omitempty"`
 	// If bidirectional is selected, packets will be selected that match the source filters in either the source or destination fields of the packet.
 	Bidirectional *bool `json:"bidirectional,omitempty"`
-	// This field matches the source IP address of an IPv6 packet
+	// This field matches the source IP address of an IPv4 packet
 	SourceIp *string `json:"source_ip,omitempty"`
 	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range.
 	SourcePortOperator *string `json:"source_port_operator,omitempty"`
@@ -35,7 +35,7 @@ type ConfigPutRequestIpv6FilterIpv6FilterName struct {
 	SourcePort1 NullableInt32 `json:"source_port_1,omitempty"`
 	// This field will only be used in the range TCP/UDP port value match operation to define the top value in the range.
 	SourcePort2 NullableInt32 `json:"source_port_2,omitempty"`
-	// This field matches the destination IP address of an IPv6 packet.
+	// This field matches the destination IP address of an IPv4 packet.
 	DestinationIp *string `json:"destination_ip,omitempty"`
 	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range.
 	DestinationPortOperator *string `json:"destination_port_operator,omitempty"`
@@ -46,12 +46,12 @@ type ConfigPutRequestIpv6FilterIpv6FilterName struct {
 	ObjectProperties *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties `json:"object_properties,omitempty"`
 }
 
-// NewConfigPutRequestIpv6FilterIpv6FilterName instantiates a new ConfigPutRequestIpv6FilterIpv6FilterName object
+// NewConfigPutRequestIpv4FilterIpv4FilterName instantiates a new ConfigPutRequestIpv4FilterIpv4FilterName object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigPutRequestIpv6FilterIpv6FilterName() *ConfigPutRequestIpv6FilterIpv6FilterName {
-	this := ConfigPutRequestIpv6FilterIpv6FilterName{}
+func NewConfigPutRequestIpv4FilterIpv4FilterName() *ConfigPutRequestIpv4FilterIpv4FilterName {
+	this := ConfigPutRequestIpv4FilterIpv4FilterName{}
 	var name string = ""
 	this.Name = &name
 	var enable bool = false
@@ -71,11 +71,11 @@ func NewConfigPutRequestIpv6FilterIpv6FilterName() *ConfigPutRequestIpv6FilterIp
 	return &this
 }
 
-// NewConfigPutRequestIpv6FilterIpv6FilterNameWithDefaults instantiates a new ConfigPutRequestIpv6FilterIpv6FilterName object
+// NewConfigPutRequestIpv4FilterIpv4FilterNameWithDefaults instantiates a new ConfigPutRequestIpv4FilterIpv4FilterName object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewConfigPutRequestIpv6FilterIpv6FilterNameWithDefaults() *ConfigPutRequestIpv6FilterIpv6FilterName {
-	this := ConfigPutRequestIpv6FilterIpv6FilterName{}
+func NewConfigPutRequestIpv4FilterIpv4FilterNameWithDefaults() *ConfigPutRequestIpv4FilterIpv4FilterName {
+	this := ConfigPutRequestIpv4FilterIpv4FilterName{}
 	var name string = ""
 	this.Name = &name
 	var enable bool = false
@@ -96,7 +96,7 @@ func NewConfigPutRequestIpv6FilterIpv6FilterNameWithDefaults() *ConfigPutRequest
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetName() string {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetName() string {
 	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
@@ -106,7 +106,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetNameOk() (*string, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetNameOk() (*string, bool) {
 	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
@@ -114,7 +114,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetNameOk() (*string, bool) {
 }
 
 // HasName returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasName() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasName() bool {
 	if o != nil && !IsNil(o.Name) {
 		return true
 	}
@@ -123,12 +123,12 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasName() bool {
 }
 
 // SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetName(v string) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetName(v string) {
 	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetEnable() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetEnable() bool {
 	if o == nil || IsNil(o.Enable) {
 		var ret bool
 		return ret
@@ -138,7 +138,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetEnable() bool {
 
 // GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetEnableOk() (*bool, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetEnableOk() (*bool, bool) {
 	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
@@ -146,7 +146,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetEnableOk() (*bool, bool) {
 }
 
 // HasEnable returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasEnable() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasEnable() bool {
 	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
@@ -155,12 +155,12 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasEnable() bool {
 }
 
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetEnable(v bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetEnable(v bool) {
 	o.Enable = &v
 }
 
 // GetProtocol returns the Protocol field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetProtocol() string {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetProtocol() string {
 	if o == nil || IsNil(o.Protocol) {
 		var ret string
 		return ret
@@ -170,7 +170,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetProtocol() string {
 
 // GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetProtocolOk() (*string, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetProtocolOk() (*string, bool) {
 	if o == nil || IsNil(o.Protocol) {
 		return nil, false
 	}
@@ -178,7 +178,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetProtocolOk() (*string, boo
 }
 
 // HasProtocol returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasProtocol() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasProtocol() bool {
 	if o != nil && !IsNil(o.Protocol) {
 		return true
 	}
@@ -187,12 +187,12 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasProtocol() bool {
 }
 
 // SetProtocol gets a reference to the given string and assigns it to the Protocol field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetProtocol(v string) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetProtocol(v string) {
 	o.Protocol = &v
 }
 
 // GetBidirectional returns the Bidirectional field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetBidirectional() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetBidirectional() bool {
 	if o == nil || IsNil(o.Bidirectional) {
 		var ret bool
 		return ret
@@ -202,7 +202,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetBidirectional() bool {
 
 // GetBidirectionalOk returns a tuple with the Bidirectional field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetBidirectionalOk() (*bool, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetBidirectionalOk() (*bool, bool) {
 	if o == nil || IsNil(o.Bidirectional) {
 		return nil, false
 	}
@@ -210,7 +210,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetBidirectionalOk() (*bool, 
 }
 
 // HasBidirectional returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasBidirectional() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasBidirectional() bool {
 	if o != nil && !IsNil(o.Bidirectional) {
 		return true
 	}
@@ -219,12 +219,12 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasBidirectional() bool {
 }
 
 // SetBidirectional gets a reference to the given bool and assigns it to the Bidirectional field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetBidirectional(v bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetBidirectional(v bool) {
 	o.Bidirectional = &v
 }
 
 // GetSourceIp returns the SourceIp field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourceIp() string {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetSourceIp() string {
 	if o == nil || IsNil(o.SourceIp) {
 		var ret string
 		return ret
@@ -234,7 +234,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourceIp() string {
 
 // GetSourceIpOk returns a tuple with the SourceIp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourceIpOk() (*string, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetSourceIpOk() (*string, bool) {
 	if o == nil || IsNil(o.SourceIp) {
 		return nil, false
 	}
@@ -242,7 +242,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourceIpOk() (*string, boo
 }
 
 // HasSourceIp returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasSourceIp() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasSourceIp() bool {
 	if o != nil && !IsNil(o.SourceIp) {
 		return true
 	}
@@ -251,12 +251,12 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasSourceIp() bool {
 }
 
 // SetSourceIp gets a reference to the given string and assigns it to the SourceIp field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetSourceIp(v string) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetSourceIp(v string) {
 	o.SourceIp = &v
 }
 
 // GetSourcePortOperator returns the SourcePortOperator field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePortOperator() string {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetSourcePortOperator() string {
 	if o == nil || IsNil(o.SourcePortOperator) {
 		var ret string
 		return ret
@@ -266,7 +266,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePortOperator() strin
 
 // GetSourcePortOperatorOk returns a tuple with the SourcePortOperator field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePortOperatorOk() (*string, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetSourcePortOperatorOk() (*string, bool) {
 	if o == nil || IsNil(o.SourcePortOperator) {
 		return nil, false
 	}
@@ -274,7 +274,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePortOperatorOk() (*s
 }
 
 // HasSourcePortOperator returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasSourcePortOperator() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasSourcePortOperator() bool {
 	if o != nil && !IsNil(o.SourcePortOperator) {
 		return true
 	}
@@ -283,12 +283,12 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasSourcePortOperator() bool 
 }
 
 // SetSourcePortOperator gets a reference to the given string and assigns it to the SourcePortOperator field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetSourcePortOperator(v string) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetSourcePortOperator(v string) {
 	o.SourcePortOperator = &v
 }
 
 // GetSourcePort1 returns the SourcePort1 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePort1() int32 {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetSourcePort1() int32 {
 	if o == nil || IsNil(o.SourcePort1.Get()) {
 		var ret int32
 		return ret
@@ -299,7 +299,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePort1() int32 {
 // GetSourcePort1Ok returns a tuple with the SourcePort1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePort1Ok() (*int32, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetSourcePort1Ok() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -307,7 +307,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePort1Ok() (*int32, b
 }
 
 // HasSourcePort1 returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasSourcePort1() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasSourcePort1() bool {
 	if o != nil && o.SourcePort1.IsSet() {
 		return true
 	}
@@ -316,21 +316,21 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasSourcePort1() bool {
 }
 
 // SetSourcePort1 gets a reference to the given NullableInt32 and assigns it to the SourcePort1 field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetSourcePort1(v int32) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetSourcePort1(v int32) {
 	o.SourcePort1.Set(&v)
 }
 // SetSourcePort1Nil sets the value for SourcePort1 to be an explicit nil
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetSourcePort1Nil() {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetSourcePort1Nil() {
 	o.SourcePort1.Set(nil)
 }
 
 // UnsetSourcePort1 ensures that no value is present for SourcePort1, not even an explicit nil
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) UnsetSourcePort1() {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) UnsetSourcePort1() {
 	o.SourcePort1.Unset()
 }
 
 // GetSourcePort2 returns the SourcePort2 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePort2() int32 {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetSourcePort2() int32 {
 	if o == nil || IsNil(o.SourcePort2.Get()) {
 		var ret int32
 		return ret
@@ -341,7 +341,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePort2() int32 {
 // GetSourcePort2Ok returns a tuple with the SourcePort2 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePort2Ok() (*int32, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetSourcePort2Ok() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -349,7 +349,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetSourcePort2Ok() (*int32, b
 }
 
 // HasSourcePort2 returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasSourcePort2() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasSourcePort2() bool {
 	if o != nil && o.SourcePort2.IsSet() {
 		return true
 	}
@@ -358,21 +358,21 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasSourcePort2() bool {
 }
 
 // SetSourcePort2 gets a reference to the given NullableInt32 and assigns it to the SourcePort2 field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetSourcePort2(v int32) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetSourcePort2(v int32) {
 	o.SourcePort2.Set(&v)
 }
 // SetSourcePort2Nil sets the value for SourcePort2 to be an explicit nil
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetSourcePort2Nil() {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetSourcePort2Nil() {
 	o.SourcePort2.Set(nil)
 }
 
 // UnsetSourcePort2 ensures that no value is present for SourcePort2, not even an explicit nil
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) UnsetSourcePort2() {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) UnsetSourcePort2() {
 	o.SourcePort2.Unset()
 }
 
 // GetDestinationIp returns the DestinationIp field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationIp() string {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetDestinationIp() string {
 	if o == nil || IsNil(o.DestinationIp) {
 		var ret string
 		return ret
@@ -382,7 +382,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationIp() string {
 
 // GetDestinationIpOk returns a tuple with the DestinationIp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationIpOk() (*string, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetDestinationIpOk() (*string, bool) {
 	if o == nil || IsNil(o.DestinationIp) {
 		return nil, false
 	}
@@ -390,7 +390,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationIpOk() (*string
 }
 
 // HasDestinationIp returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasDestinationIp() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasDestinationIp() bool {
 	if o != nil && !IsNil(o.DestinationIp) {
 		return true
 	}
@@ -399,12 +399,12 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasDestinationIp() bool {
 }
 
 // SetDestinationIp gets a reference to the given string and assigns it to the DestinationIp field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetDestinationIp(v string) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetDestinationIp(v string) {
 	o.DestinationIp = &v
 }
 
 // GetDestinationPortOperator returns the DestinationPortOperator field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPortOperator() string {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetDestinationPortOperator() string {
 	if o == nil || IsNil(o.DestinationPortOperator) {
 		var ret string
 		return ret
@@ -414,7 +414,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPortOperator() 
 
 // GetDestinationPortOperatorOk returns a tuple with the DestinationPortOperator field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPortOperatorOk() (*string, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetDestinationPortOperatorOk() (*string, bool) {
 	if o == nil || IsNil(o.DestinationPortOperator) {
 		return nil, false
 	}
@@ -422,7 +422,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPortOperatorOk(
 }
 
 // HasDestinationPortOperator returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasDestinationPortOperator() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasDestinationPortOperator() bool {
 	if o != nil && !IsNil(o.DestinationPortOperator) {
 		return true
 	}
@@ -431,12 +431,12 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasDestinationPortOperator() 
 }
 
 // SetDestinationPortOperator gets a reference to the given string and assigns it to the DestinationPortOperator field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetDestinationPortOperator(v string) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetDestinationPortOperator(v string) {
 	o.DestinationPortOperator = &v
 }
 
 // GetDestinationPort1 returns the DestinationPort1 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPort1() int32 {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetDestinationPort1() int32 {
 	if o == nil || IsNil(o.DestinationPort1.Get()) {
 		var ret int32
 		return ret
@@ -447,7 +447,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPort1() int32 {
 // GetDestinationPort1Ok returns a tuple with the DestinationPort1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPort1Ok() (*int32, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetDestinationPort1Ok() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -455,7 +455,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPort1Ok() (*int
 }
 
 // HasDestinationPort1 returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasDestinationPort1() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasDestinationPort1() bool {
 	if o != nil && o.DestinationPort1.IsSet() {
 		return true
 	}
@@ -464,21 +464,21 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasDestinationPort1() bool {
 }
 
 // SetDestinationPort1 gets a reference to the given NullableInt32 and assigns it to the DestinationPort1 field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetDestinationPort1(v int32) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetDestinationPort1(v int32) {
 	o.DestinationPort1.Set(&v)
 }
 // SetDestinationPort1Nil sets the value for DestinationPort1 to be an explicit nil
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetDestinationPort1Nil() {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetDestinationPort1Nil() {
 	o.DestinationPort1.Set(nil)
 }
 
 // UnsetDestinationPort1 ensures that no value is present for DestinationPort1, not even an explicit nil
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) UnsetDestinationPort1() {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) UnsetDestinationPort1() {
 	o.DestinationPort1.Unset()
 }
 
 // GetDestinationPort2 returns the DestinationPort2 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPort2() int32 {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetDestinationPort2() int32 {
 	if o == nil || IsNil(o.DestinationPort2.Get()) {
 		var ret int32
 		return ret
@@ -489,7 +489,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPort2() int32 {
 // GetDestinationPort2Ok returns a tuple with the DestinationPort2 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPort2Ok() (*int32, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetDestinationPort2Ok() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -497,7 +497,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetDestinationPort2Ok() (*int
 }
 
 // HasDestinationPort2 returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasDestinationPort2() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasDestinationPort2() bool {
 	if o != nil && o.DestinationPort2.IsSet() {
 		return true
 	}
@@ -506,21 +506,21 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasDestinationPort2() bool {
 }
 
 // SetDestinationPort2 gets a reference to the given NullableInt32 and assigns it to the DestinationPort2 field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetDestinationPort2(v int32) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetDestinationPort2(v int32) {
 	o.DestinationPort2.Set(&v)
 }
 // SetDestinationPort2Nil sets the value for DestinationPort2 to be an explicit nil
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetDestinationPort2Nil() {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetDestinationPort2Nil() {
 	o.DestinationPort2.Set(nil)
 }
 
 // UnsetDestinationPort2 ensures that no value is present for DestinationPort2, not even an explicit nil
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) UnsetDestinationPort2() {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) UnsetDestinationPort2() {
 	o.DestinationPort2.Unset()
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
 		var ret ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties
 		return ret
@@ -530,7 +530,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetObjectProperties() ConfigP
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetObjectPropertiesOk() (*ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties, bool) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) GetObjectPropertiesOk() (*ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -538,7 +538,7 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) GetObjectPropertiesOk() (*Con
 }
 
 // HasObjectProperties returns a boolean if a field has been set.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasObjectProperties() bool {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) HasObjectProperties() bool {
 	if o != nil && !IsNil(o.ObjectProperties) {
 		return true
 	}
@@ -547,11 +547,11 @@ func (o *ConfigPutRequestIpv6FilterIpv6FilterName) HasObjectProperties() bool {
 }
 
 // SetObjectProperties gets a reference to the given ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties and assigns it to the ObjectProperties field.
-func (o *ConfigPutRequestIpv6FilterIpv6FilterName) SetObjectProperties(v ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties) {
+func (o *ConfigPutRequestIpv4FilterIpv4FilterName) SetObjectProperties(v ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties) {
 	o.ObjectProperties = &v
 }
 
-func (o ConfigPutRequestIpv6FilterIpv6FilterName) MarshalJSON() ([]byte, error) {
+func (o ConfigPutRequestIpv4FilterIpv4FilterName) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -559,7 +559,7 @@ func (o ConfigPutRequestIpv6FilterIpv6FilterName) MarshalJSON() ([]byte, error) 
 	return json.Marshal(toSerialize)
 }
 
-func (o ConfigPutRequestIpv6FilterIpv6FilterName) ToMap() (map[string]interface{}, error) {
+func (o ConfigPutRequestIpv4FilterIpv4FilterName) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
@@ -603,38 +603,38 @@ func (o ConfigPutRequestIpv6FilterIpv6FilterName) ToMap() (map[string]interface{
 	return toSerialize, nil
 }
 
-type NullableConfigPutRequestIpv6FilterIpv6FilterName struct {
-	value *ConfigPutRequestIpv6FilterIpv6FilterName
+type NullableConfigPutRequestIpv4FilterIpv4FilterName struct {
+	value *ConfigPutRequestIpv4FilterIpv4FilterName
 	isSet bool
 }
 
-func (v NullableConfigPutRequestIpv6FilterIpv6FilterName) Get() *ConfigPutRequestIpv6FilterIpv6FilterName {
+func (v NullableConfigPutRequestIpv4FilterIpv4FilterName) Get() *ConfigPutRequestIpv4FilterIpv4FilterName {
 	return v.value
 }
 
-func (v *NullableConfigPutRequestIpv6FilterIpv6FilterName) Set(val *ConfigPutRequestIpv6FilterIpv6FilterName) {
+func (v *NullableConfigPutRequestIpv4FilterIpv4FilterName) Set(val *ConfigPutRequestIpv4FilterIpv4FilterName) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableConfigPutRequestIpv6FilterIpv6FilterName) IsSet() bool {
+func (v NullableConfigPutRequestIpv4FilterIpv4FilterName) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableConfigPutRequestIpv6FilterIpv6FilterName) Unset() {
+func (v *NullableConfigPutRequestIpv4FilterIpv4FilterName) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableConfigPutRequestIpv6FilterIpv6FilterName(val *ConfigPutRequestIpv6FilterIpv6FilterName) *NullableConfigPutRequestIpv6FilterIpv6FilterName {
-	return &NullableConfigPutRequestIpv6FilterIpv6FilterName{value: val, isSet: true}
+func NewNullableConfigPutRequestIpv4FilterIpv4FilterName(val *ConfigPutRequestIpv4FilterIpv4FilterName) *NullableConfigPutRequestIpv4FilterIpv4FilterName {
+	return &NullableConfigPutRequestIpv4FilterIpv4FilterName{value: val, isSet: true}
 }
 
-func (v NullableConfigPutRequestIpv6FilterIpv6FilterName) MarshalJSON() ([]byte, error) {
+func (v NullableConfigPutRequestIpv4FilterIpv4FilterName) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableConfigPutRequestIpv6FilterIpv6FilterName) UnmarshalJSON(src []byte) error {
+func (v *NullableConfigPutRequestIpv4FilterIpv4FilterName) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

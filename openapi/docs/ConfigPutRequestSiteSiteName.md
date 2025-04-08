@@ -16,7 +16,7 @@ Name | Type | Description | Notes
 **DscpToPBitMap** | Pointer to **string** | For any Service that is using DSCP to p-bit map packet prioritization. A string of length 64 with a 0-7 in each position | [optional] [default to "0000000011111111222222223333333344444444555555556666666677777777"]
 **AnycastMacAddress** | Pointer to **string** | Site Level MAC Address for Anycast | [optional] [default to "(auto)"]
 **AnycastMacAddressAutoAssigned** | Pointer to **bool** | Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit. | [optional] 
-**MacAddressAgingTime** | Pointer to **int32** | MAC Address Aging Time | [optional] 
+**MacAddressAgingTime** | Pointer to **int32** | MAC Address Aging Time (between 1-100000) | [optional] 
 **MlagDelayRestoreTimer** | Pointer to **int32** | MLAG Delay Restore Timer | [optional] 
 **BgpKeepaliveTimer** | Pointer to **int32** | Spine BGP Keepalive Timer | [optional] 
 **BgpHoldDownTimer** | Pointer to **int32** | Spine BGP Hold Down Timer | [optional] 
@@ -29,7 +29,6 @@ Name | Type | Description | Notes
 **LinkStateTimeoutValue** | Pointer to **NullableInt32** | Link State Timeout Value | [optional] 
 **EvpnMultihomingStartupDelay** | Pointer to **NullableInt32** | Startup Delay | [optional] 
 **EvpnMacHoldtime** | Pointer to **NullableInt32** | MAC Holdtime | [optional] 
-**EvpnNeighborHoldtime** | Pointer to **NullableInt32** | Neighbor Holdtime | [optional] 
 **AggressiveReporting** | Pointer to **bool** | Fast Reporting of Switch Communications, Link Up/Down, and BGP Status | [optional] [default to true]
 **CrcFailureThreshold** | Pointer to **NullableInt32** | Threshold in Errors per second that when met will disable the links as part of LAGs | [optional] 
 **Islands** | Pointer to [**[]ConfigPutRequestSiteSiteNameIslandsInner**](ConfigPutRequestSiteSiteNameIslandsInner.md) |  | [optional] 
@@ -720,41 +719,6 @@ HasEvpnMacHoldtime returns a boolean if a field has been set.
 `func (o *ConfigPutRequestSiteSiteName) UnsetEvpnMacHoldtime()`
 
 UnsetEvpnMacHoldtime ensures that no value is present for EvpnMacHoldtime, not even an explicit nil
-### GetEvpnNeighborHoldtime
-
-`func (o *ConfigPutRequestSiteSiteName) GetEvpnNeighborHoldtime() int32`
-
-GetEvpnNeighborHoldtime returns the EvpnNeighborHoldtime field if non-nil, zero value otherwise.
-
-### GetEvpnNeighborHoldtimeOk
-
-`func (o *ConfigPutRequestSiteSiteName) GetEvpnNeighborHoldtimeOk() (*int32, bool)`
-
-GetEvpnNeighborHoldtimeOk returns a tuple with the EvpnNeighborHoldtime field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEvpnNeighborHoldtime
-
-`func (o *ConfigPutRequestSiteSiteName) SetEvpnNeighborHoldtime(v int32)`
-
-SetEvpnNeighborHoldtime sets EvpnNeighborHoldtime field to given value.
-
-### HasEvpnNeighborHoldtime
-
-`func (o *ConfigPutRequestSiteSiteName) HasEvpnNeighborHoldtime() bool`
-
-HasEvpnNeighborHoldtime returns a boolean if a field has been set.
-
-### SetEvpnNeighborHoldtimeNil
-
-`func (o *ConfigPutRequestSiteSiteName) SetEvpnNeighborHoldtimeNil(b bool)`
-
- SetEvpnNeighborHoldtimeNil sets the value for EvpnNeighborHoldtime to be an explicit nil
-
-### UnsetEvpnNeighborHoldtime
-`func (o *ConfigPutRequestSiteSiteName) UnsetEvpnNeighborHoldtime()`
-
-UnsetEvpnNeighborHoldtime ensures that no value is present for EvpnNeighborHoldtime, not even an explicit nil
 ### GetAggressiveReporting
 
 `func (o *ConfigPutRequestSiteSiteName) GetAggressiveReporting() bool`

@@ -67,7 +67,7 @@ func NewConfigPutRequestEndpointViewEndpointViewNameOrRulesInner() *ConfigPutReq
 	this.RuleNumSubrule1Type = &ruleNumSubrule1Type
 	var ruleNumSubrule1Value string = ""
 	this.RuleNumSubrule1Value = &ruleNumSubrule1Value
-	var ruleNumSubrule1ReferencePath string = "0"
+	var ruleNumSubrule1ReferencePath string = ""
 	this.RuleNumSubrule1ReferencePath = &ruleNumSubrule1ReferencePath
 	var ruleNumSubrule1Invert bool = false
 	this.RuleNumSubrule1Invert = &ruleNumSubrule1Invert
@@ -75,7 +75,7 @@ func NewConfigPutRequestEndpointViewEndpointViewNameOrRulesInner() *ConfigPutReq
 	this.RuleNumSubrule2Type = &ruleNumSubrule2Type
 	var ruleNumSubrule2Value string = ""
 	this.RuleNumSubrule2Value = &ruleNumSubrule2Value
-	var ruleNumSubrule2ReferencePath string = "0"
+	var ruleNumSubrule2ReferencePath string = ""
 	this.RuleNumSubrule2ReferencePath = &ruleNumSubrule2ReferencePath
 	var ruleNumSubrule2Invert bool = false
 	this.RuleNumSubrule2Invert = &ruleNumSubrule2Invert
@@ -83,7 +83,7 @@ func NewConfigPutRequestEndpointViewEndpointViewNameOrRulesInner() *ConfigPutReq
 	this.RuleNumSubrule3Type = &ruleNumSubrule3Type
 	var ruleNumSubrule3Value string = ""
 	this.RuleNumSubrule3Value = &ruleNumSubrule3Value
-	var ruleNumSubrule3ReferencePath string = "0"
+	var ruleNumSubrule3ReferencePath string = ""
 	this.RuleNumSubrule3ReferencePath = &ruleNumSubrule3ReferencePath
 	var ruleNumSubrule3Invert bool = false
 	this.RuleNumSubrule3Invert = &ruleNumSubrule3Invert
@@ -101,7 +101,7 @@ func NewConfigPutRequestEndpointViewEndpointViewNameOrRulesInnerWithDefaults() *
 	this.RuleNumSubrule1Type = &ruleNumSubrule1Type
 	var ruleNumSubrule1Value string = ""
 	this.RuleNumSubrule1Value = &ruleNumSubrule1Value
-	var ruleNumSubrule1ReferencePath string = "0"
+	var ruleNumSubrule1ReferencePath string = ""
 	this.RuleNumSubrule1ReferencePath = &ruleNumSubrule1ReferencePath
 	var ruleNumSubrule1Invert bool = false
 	this.RuleNumSubrule1Invert = &ruleNumSubrule1Invert
@@ -109,7 +109,7 @@ func NewConfigPutRequestEndpointViewEndpointViewNameOrRulesInnerWithDefaults() *
 	this.RuleNumSubrule2Type = &ruleNumSubrule2Type
 	var ruleNumSubrule2Value string = ""
 	this.RuleNumSubrule2Value = &ruleNumSubrule2Value
-	var ruleNumSubrule2ReferencePath string = "0"
+	var ruleNumSubrule2ReferencePath string = ""
 	this.RuleNumSubrule2ReferencePath = &ruleNumSubrule2ReferencePath
 	var ruleNumSubrule2Invert bool = false
 	this.RuleNumSubrule2Invert = &ruleNumSubrule2Invert
@@ -117,7 +117,7 @@ func NewConfigPutRequestEndpointViewEndpointViewNameOrRulesInnerWithDefaults() *
 	this.RuleNumSubrule3Type = &ruleNumSubrule3Type
 	var ruleNumSubrule3Value string = ""
 	this.RuleNumSubrule3Value = &ruleNumSubrule3Value
-	var ruleNumSubrule3ReferencePath string = "0"
+	var ruleNumSubrule3ReferencePath string = ""
 	this.RuleNumSubrule3ReferencePath = &ruleNumSubrule3ReferencePath
 	var ruleNumSubrule3Invert bool = false
 	this.RuleNumSubrule3Invert = &ruleNumSubrule3Invert

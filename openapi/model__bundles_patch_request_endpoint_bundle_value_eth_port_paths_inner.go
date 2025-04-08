@@ -33,7 +33,7 @@ type BundlesPatchRequestEndpointBundleValueEthPortPathsInner struct {
 	EthPortNumGatewayProfileRefType *string `json:"eth_port_num_gateway_profile_ref_type_,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int32 `json:"index,omitempty"`
-	// The name identifying the port
+	// The name identifying the port. Used for reference only, it won't actually change the port name.
 	PortName *string `json:"port_name,omitempty"`
 }
 

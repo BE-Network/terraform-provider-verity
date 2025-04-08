@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **AnyAll** | Pointer to **string** | BGP does not advertise any or all routes that do not match the Community String | [optional] [default to "any"]
 **StandardExpanded** | Pointer to **string** | Used Community String or Expanded Expression | [optional] [default to "standard"]
 **Lists** | Pointer to [**[]ConfigPutRequestExtendedCommunityListExtendedCommunityListNameListsInner**](ConfigPutRequestExtendedCommunityListExtendedCommunityListNameListsInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties**](ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties**](ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -183,20 +183,20 @@ HasLists returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *ConfigPutRequestExtendedCommunityListExtendedCommunityListName) GetObjectProperties() ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties`
+`func (o *ConfigPutRequestExtendedCommunityListExtendedCommunityListName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *ConfigPutRequestExtendedCommunityListExtendedCommunityListName) GetObjectPropertiesOk() (*ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties, bool)`
+`func (o *ConfigPutRequestExtendedCommunityListExtendedCommunityListName) GetObjectPropertiesOk() (*ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *ConfigPutRequestExtendedCommunityListExtendedCommunityListName) SetObjectProperties(v ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties)`
+`func (o *ConfigPutRequestExtendedCommunityListExtendedCommunityListName) SetObjectProperties(v ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

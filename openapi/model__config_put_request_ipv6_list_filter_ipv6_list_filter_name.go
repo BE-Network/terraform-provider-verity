@@ -23,7 +23,7 @@ type ConfigPutRequestIpv6ListFilterIpv6ListFilterName struct {
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// Comma seperated list of IPv6 addresses
+	// Comma separated list of IPv6 addresses
 	Ipv6List *string `json:"ipv6_list,omitempty" validate:"regexp=^.*$"`
 }
 

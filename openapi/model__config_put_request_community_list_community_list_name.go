@@ -30,7 +30,7 @@ type ConfigPutRequestCommunityListCommunityListName struct {
 	// Used Community String or Expanded Expression
 	StandardExpanded *string `json:"standard_expanded,omitempty"`
 	Lists []ConfigPutRequestCommunityListCommunityListNameListsInner `json:"lists,omitempty"`
-	ObjectProperties *ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewConfigPutRequestCommunityListCommunityListName instantiates a new ConfigPutRequestCommunityListCommunityListName object
@@ -263,9 +263,9 @@ func (o *ConfigPutRequestCommunityListCommunityListName) SetLists(v []ConfigPutR
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *ConfigPutRequestCommunityListCommunityListName) GetObjectProperties() ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties {
+func (o *ConfigPutRequestCommunityListCommunityListName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties
+		var ret ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -273,7 +273,7 @@ func (o *ConfigPutRequestCommunityListCommunityListName) GetObjectProperties() C
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestCommunityListCommunityListName) GetObjectPropertiesOk() (*ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties, bool) {
+func (o *ConfigPutRequestCommunityListCommunityListName) GetObjectPropertiesOk() (*ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -289,8 +289,8 @@ func (o *ConfigPutRequestCommunityListCommunityListName) HasObjectProperties() b
 	return false
 }
 
-// SetObjectProperties gets a reference to the given ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties and assigns it to the ObjectProperties field.
-func (o *ConfigPutRequestCommunityListCommunityListName) SetObjectProperties(v ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties) {
+// SetObjectProperties gets a reference to the given ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties and assigns it to the ObjectProperties field.
+func (o *ConfigPutRequestCommunityListCommunityListName) SetObjectProperties(v ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties) {
 	o.ObjectProperties = &v
 }
 

@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
-**Ipv6List** | Pointer to **string** | Comma seperated list of IPv6 addresses | [optional] [default to ""]
+**Ipv6List** | Pointer to **string** | Comma separated list of IPv6 addresses | [optional] [default to ""]
 
 ## Methods
 

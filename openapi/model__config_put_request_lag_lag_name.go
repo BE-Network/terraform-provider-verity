@@ -21,7 +21,7 @@ var _ MappedNullable = &ConfigPutRequestLagLagName{}
 type ConfigPutRequestLagLagName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	// Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link
 	IsPeerLink *bool `json:"is_peer_link,omitempty"`

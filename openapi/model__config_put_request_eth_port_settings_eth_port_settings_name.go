@@ -21,7 +21,7 @@ var _ MappedNullable = &ConfigPutRequestEthPortSettingsEthPortSettingsName{}
 type ConfigPutRequestEthPortSettingsEthPortSettingsName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	// Indicates if port speed and duplex mode should be auto negotiated
 	AutoNegotiation *bool `json:"auto_negotiation,omitempty"`
@@ -61,18 +61,6 @@ type ConfigPutRequestEthPortSettingsEthPortSettingsName struct {
 	Fec *string `json:"fec,omitempty"`
 	// Ports with this setting will be disabled when link state tracking takes effect
 	SingleLink *bool `json:"single_link,omitempty"`
-	// A value between 0 to 133168898
-	MinimumWredThreshold *int32 `json:"minimum_wred_threshold,omitempty"`
-	// A value between 0 to 133168898
-	MaximumWredThreshold *int32 `json:"maximum_wred_threshold,omitempty"`
-	// A value between 0 to 100
-	WredDropProbability *int32 `json:"wred_drop_probability,omitempty"`
-	// Ports with this setting will be disabled when link state tracking takes effect
-	PriorityFlowControlWatchdogAction *string `json:"priority_flow_control_watchdog_action,omitempty"`
-	// A value between 100 to 5000
-	PriorityFlowControlWatchdogDetectTime *int32 `json:"priority_flow_control_watchdog_detect_time,omitempty"`
-	// A value between 100 to 60000
-	PriorityFlowControlWatchdogRestoreTime *int32 `json:"priority_flow_control_watchdog_restore_time,omitempty"`
 	ObjectProperties *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -122,8 +110,6 @@ func NewConfigPutRequestEthPortSettingsEthPortSettingsName() *ConfigPutRequestEt
 	this.Fec = &fec
 	var singleLink bool = false
 	this.SingleLink = &singleLink
-	var priorityFlowControlWatchdogAction string = "DROP"
-	this.PriorityFlowControlWatchdogAction = &priorityFlowControlWatchdogAction
 	return &this
 }
 
@@ -172,8 +158,6 @@ func NewConfigPutRequestEthPortSettingsEthPortSettingsNameWithDefaults() *Config
 	this.Fec = &fec
 	var singleLink bool = false
 	this.SingleLink = &singleLink
-	var priorityFlowControlWatchdogAction string = "DROP"
-	this.PriorityFlowControlWatchdogAction = &priorityFlowControlWatchdogAction
 	return &this
 }
 
@@ -849,198 +833,6 @@ func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetSingleLink(v boo
 	o.SingleLink = &v
 }
 
-// GetMinimumWredThreshold returns the MinimumWredThreshold field value if set, zero value otherwise.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetMinimumWredThreshold() int32 {
-	if o == nil || IsNil(o.MinimumWredThreshold) {
-		var ret int32
-		return ret
-	}
-	return *o.MinimumWredThreshold
-}
-
-// GetMinimumWredThresholdOk returns a tuple with the MinimumWredThreshold field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetMinimumWredThresholdOk() (*int32, bool) {
-	if o == nil || IsNil(o.MinimumWredThreshold) {
-		return nil, false
-	}
-	return o.MinimumWredThreshold, true
-}
-
-// HasMinimumWredThreshold returns a boolean if a field has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasMinimumWredThreshold() bool {
-	if o != nil && !IsNil(o.MinimumWredThreshold) {
-		return true
-	}
-
-	return false
-}
-
-// SetMinimumWredThreshold gets a reference to the given int32 and assigns it to the MinimumWredThreshold field.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetMinimumWredThreshold(v int32) {
-	o.MinimumWredThreshold = &v
-}
-
-// GetMaximumWredThreshold returns the MaximumWredThreshold field value if set, zero value otherwise.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetMaximumWredThreshold() int32 {
-	if o == nil || IsNil(o.MaximumWredThreshold) {
-		var ret int32
-		return ret
-	}
-	return *o.MaximumWredThreshold
-}
-
-// GetMaximumWredThresholdOk returns a tuple with the MaximumWredThreshold field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetMaximumWredThresholdOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaximumWredThreshold) {
-		return nil, false
-	}
-	return o.MaximumWredThreshold, true
-}
-
-// HasMaximumWredThreshold returns a boolean if a field has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasMaximumWredThreshold() bool {
-	if o != nil && !IsNil(o.MaximumWredThreshold) {
-		return true
-	}
-
-	return false
-}
-
-// SetMaximumWredThreshold gets a reference to the given int32 and assigns it to the MaximumWredThreshold field.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetMaximumWredThreshold(v int32) {
-	o.MaximumWredThreshold = &v
-}
-
-// GetWredDropProbability returns the WredDropProbability field value if set, zero value otherwise.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetWredDropProbability() int32 {
-	if o == nil || IsNil(o.WredDropProbability) {
-		var ret int32
-		return ret
-	}
-	return *o.WredDropProbability
-}
-
-// GetWredDropProbabilityOk returns a tuple with the WredDropProbability field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetWredDropProbabilityOk() (*int32, bool) {
-	if o == nil || IsNil(o.WredDropProbability) {
-		return nil, false
-	}
-	return o.WredDropProbability, true
-}
-
-// HasWredDropProbability returns a boolean if a field has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasWredDropProbability() bool {
-	if o != nil && !IsNil(o.WredDropProbability) {
-		return true
-	}
-
-	return false
-}
-
-// SetWredDropProbability gets a reference to the given int32 and assigns it to the WredDropProbability field.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetWredDropProbability(v int32) {
-	o.WredDropProbability = &v
-}
-
-// GetPriorityFlowControlWatchdogAction returns the PriorityFlowControlWatchdogAction field value if set, zero value otherwise.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogAction() string {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogAction) {
-		var ret string
-		return ret
-	}
-	return *o.PriorityFlowControlWatchdogAction
-}
-
-// GetPriorityFlowControlWatchdogActionOk returns a tuple with the PriorityFlowControlWatchdogAction field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogActionOk() (*string, bool) {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogAction) {
-		return nil, false
-	}
-	return o.PriorityFlowControlWatchdogAction, true
-}
-
-// HasPriorityFlowControlWatchdogAction returns a boolean if a field has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasPriorityFlowControlWatchdogAction() bool {
-	if o != nil && !IsNil(o.PriorityFlowControlWatchdogAction) {
-		return true
-	}
-
-	return false
-}
-
-// SetPriorityFlowControlWatchdogAction gets a reference to the given string and assigns it to the PriorityFlowControlWatchdogAction field.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetPriorityFlowControlWatchdogAction(v string) {
-	o.PriorityFlowControlWatchdogAction = &v
-}
-
-// GetPriorityFlowControlWatchdogDetectTime returns the PriorityFlowControlWatchdogDetectTime field value if set, zero value otherwise.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogDetectTime() int32 {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogDetectTime) {
-		var ret int32
-		return ret
-	}
-	return *o.PriorityFlowControlWatchdogDetectTime
-}
-
-// GetPriorityFlowControlWatchdogDetectTimeOk returns a tuple with the PriorityFlowControlWatchdogDetectTime field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogDetectTimeOk() (*int32, bool) {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogDetectTime) {
-		return nil, false
-	}
-	return o.PriorityFlowControlWatchdogDetectTime, true
-}
-
-// HasPriorityFlowControlWatchdogDetectTime returns a boolean if a field has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasPriorityFlowControlWatchdogDetectTime() bool {
-	if o != nil && !IsNil(o.PriorityFlowControlWatchdogDetectTime) {
-		return true
-	}
-
-	return false
-}
-
-// SetPriorityFlowControlWatchdogDetectTime gets a reference to the given int32 and assigns it to the PriorityFlowControlWatchdogDetectTime field.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetPriorityFlowControlWatchdogDetectTime(v int32) {
-	o.PriorityFlowControlWatchdogDetectTime = &v
-}
-
-// GetPriorityFlowControlWatchdogRestoreTime returns the PriorityFlowControlWatchdogRestoreTime field value if set, zero value otherwise.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogRestoreTime() int32 {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogRestoreTime) {
-		var ret int32
-		return ret
-	}
-	return *o.PriorityFlowControlWatchdogRestoreTime
-}
-
-// GetPriorityFlowControlWatchdogRestoreTimeOk returns a tuple with the PriorityFlowControlWatchdogRestoreTime field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogRestoreTimeOk() (*int32, bool) {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogRestoreTime) {
-		return nil, false
-	}
-	return o.PriorityFlowControlWatchdogRestoreTime, true
-}
-
-// HasPriorityFlowControlWatchdogRestoreTime returns a boolean if a field has been set.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasPriorityFlowControlWatchdogRestoreTime() bool {
-	if o != nil && !IsNil(o.PriorityFlowControlWatchdogRestoreTime) {
-		return true
-	}
-
-	return false
-}
-
-// SetPriorityFlowControlWatchdogRestoreTime gets a reference to the given int32 and assigns it to the PriorityFlowControlWatchdogRestoreTime field.
-func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetPriorityFlowControlWatchdogRestoreTime(v int32) {
-	o.PriorityFlowControlWatchdogRestoreTime = &v
-}
-
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetObjectProperties() ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -1145,24 +937,6 @@ func (o ConfigPutRequestEthPortSettingsEthPortSettingsName) ToMap() (map[string]
 	}
 	if !IsNil(o.SingleLink) {
 		toSerialize["single_link"] = o.SingleLink
-	}
-	if !IsNil(o.MinimumWredThreshold) {
-		toSerialize["minimum_wred_threshold"] = o.MinimumWredThreshold
-	}
-	if !IsNil(o.MaximumWredThreshold) {
-		toSerialize["maximum_wred_threshold"] = o.MaximumWredThreshold
-	}
-	if !IsNil(o.WredDropProbability) {
-		toSerialize["wred_drop_probability"] = o.WredDropProbability
-	}
-	if !IsNil(o.PriorityFlowControlWatchdogAction) {
-		toSerialize["priority_flow_control_watchdog_action"] = o.PriorityFlowControlWatchdogAction
-	}
-	if !IsNil(o.PriorityFlowControlWatchdogDetectTime) {
-		toSerialize["priority_flow_control_watchdog_detect_time"] = o.PriorityFlowControlWatchdogDetectTime
-	}
-	if !IsNil(o.PriorityFlowControlWatchdogRestoreTime) {
-		toSerialize["priority_flow_control_watchdog_restore_time"] = o.PriorityFlowControlWatchdogRestoreTime
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

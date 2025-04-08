@@ -71,6 +71,7 @@ type verityGatewayResourceModel struct {
 	BfdReceiveInterval      types.Int64                          `tfsdk:"bfd_receive_interval"`
 	BfdTransmissionInterval types.Int64                          `tfsdk:"bfd_transmission_interval"`
 	BfdDetectMultiplier     types.Int64                          `tfsdk:"bfd_detect_multiplier"`
+	BfdMultihop             types.Bool                           `tfsdk:"bfd_multihop"`
 	NextHopSelf             types.Bool                           `tfsdk:"next_hop_self"`
 	ExportRouteMapRefType   types.String                         `tfsdk:"export_route_map_ref_type_"`
 	ImportRouteMapRefType   types.String                         `tfsdk:"import_route_map_ref_type_"`
@@ -222,6 +223,9 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 			"bfd_detect_multiplier": schema.Int64Attribute{
 				Optional: true,
 			},
+			"bfd_multihop": schema.BoolAttribute{
+				Optional: true,
+			},
 			"next_hop_self": schema.BoolAttribute{
 				Optional: true,
 			},
@@ -346,9 +350,6 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	if !plan.Md5Password.IsNull() {
 		gatewayProps.Md5Password = openapi.PtrString(plan.Md5Password.ValueString())
 	}
-	if !plan.Md5PasswordEncrypted.IsNull() {
-		gatewayProps.Md5PasswordEncrypted = openapi.PtrString(plan.Md5PasswordEncrypted.ValueString())
-	}
 	if !plan.ImportRouteMap.IsNull() {
 		gatewayProps.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
 	}
@@ -408,6 +409,9 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(&val)
 	} else {
 		gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(nil)
+	}
+	if !plan.BfdMultihop.IsNull() {
+		gatewayProps.BfdMultihop = openapi.PtrBool(plan.BfdMultihop.ValueBool())
 	}
 	if !plan.NextHopSelf.IsNull() {
 		gatewayProps.NextHopSelf = openapi.PtrBool(plan.NextHopSelf.ValueBool())
@@ -628,6 +632,7 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		"local_as_no_prepend": &state.LocalAsNoPrepend,
 		"replace_as":          &state.ReplaceAs,
 		"enable_bfd":          &state.EnableBfd,
+		"bfd_multihop":        &state.BfdMultihop,
 		"next_hop_self":       &state.NextHopSelf,
 	}
 
@@ -816,6 +821,10 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		gatewayProps.EnableBfd = openapi.PtrBool(plan.EnableBfd.ValueBool())
 		hasChanges = true
 	}
+	if !plan.BfdMultihop.Equal(state.BfdMultihop) {
+		gatewayProps.BfdMultihop = openapi.PtrBool(plan.BfdMultihop.ValueBool())
+		hasChanges = true
+	}
 	if !plan.NextHopSelf.Equal(state.NextHopSelf) {
 		gatewayProps.NextHopSelf = openapi.PtrBool(plan.NextHopSelf.ValueBool())
 		hasChanges = true
@@ -842,10 +851,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	}
 	if !plan.Md5Password.Equal(state.Md5Password) {
 		gatewayProps.Md5Password = openapi.PtrString(plan.Md5Password.ValueString())
-		hasChanges = true
-	}
-	if !plan.Md5PasswordEncrypted.Equal(state.Md5PasswordEncrypted) {
-		gatewayProps.Md5PasswordEncrypted = openapi.PtrString(plan.Md5PasswordEncrypted.ValueString())
 		hasChanges = true
 	}
 	if !plan.ImportRouteMap.Equal(state.ImportRouteMap) {

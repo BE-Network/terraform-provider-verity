@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **PermitDeny** | Pointer to **string** | Action upon match of Community Strings. | [optional] [default to "permit"]
 **Lists** | Pointer to [**[]ConfigPutRequestAsPathAccessListAsPathAccessListNameListsInner**](ConfigPutRequestAsPathAccessListAsPathAccessListNameListsInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties**](ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties**](ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -131,20 +131,20 @@ HasLists returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectProperties() ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties`
+`func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectPropertiesOk() (*ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties, bool)`
+`func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) GetObjectPropertiesOk() (*ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) SetObjectProperties(v ConfigPutRequestIpv6FilterIpv6FilterNameObjectProperties)`
+`func (o *ConfigPutRequestAsPathAccessListAsPathAccessListName) SetObjectProperties(v ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

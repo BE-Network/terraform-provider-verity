@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
-**Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
+**Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to true]
 **Layer3Vni** | Pointer to **NullableInt32** | VNI value used to transport traffic between services of a Tenant  | [optional] 
 **Layer3VniAutoAssigned** | Pointer to **bool** | Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit. | [optional] 
 **Layer3Vlan** | Pointer to **NullableInt32** | VLAN value used to transport traffic between services of a Tenant  | [optional] 

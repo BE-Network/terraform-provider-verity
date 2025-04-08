@@ -43,7 +43,7 @@ type ConfigPutRequestSiteSiteName struct {
 	AnycastMacAddress *string `json:"anycast_mac_address,omitempty"`
 	// Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit.
 	AnycastMacAddressAutoAssigned *bool `json:"anycast_mac_address_auto_assigned_,omitempty"`
-	// MAC Address Aging Time
+	// MAC Address Aging Time (between 1-100000)
 	MacAddressAgingTime *int32 `json:"mac_address_aging_time,omitempty"`
 	// MLAG Delay Restore Timer
 	MlagDelayRestoreTimer *int32 `json:"mlag_delay_restore_timer,omitempty"`
@@ -69,8 +69,6 @@ type ConfigPutRequestSiteSiteName struct {
 	EvpnMultihomingStartupDelay NullableInt32 `json:"evpn_multihoming_startup_delay,omitempty"`
 	// MAC Holdtime
 	EvpnMacHoldtime NullableInt32 `json:"evpn_mac_holdtime,omitempty"`
-	// Neighbor Holdtime
-	EvpnNeighborHoldtime NullableInt32 `json:"evpn_neighbor_holdtime,omitempty"`
 	// Fast Reporting of Switch Communications, Link Up/Down, and BGP Status
 	AggressiveReporting *bool `json:"aggressive_reporting,omitempty"`
 	// Threshold in Errors per second that when met will disable the links as part of LAGs
@@ -977,48 +975,6 @@ func (o *ConfigPutRequestSiteSiteName) UnsetEvpnMacHoldtime() {
 	o.EvpnMacHoldtime.Unset()
 }
 
-// GetEvpnNeighborHoldtime returns the EvpnNeighborHoldtime field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigPutRequestSiteSiteName) GetEvpnNeighborHoldtime() int32 {
-	if o == nil || IsNil(o.EvpnNeighborHoldtime.Get()) {
-		var ret int32
-		return ret
-	}
-	return *o.EvpnNeighborHoldtime.Get()
-}
-
-// GetEvpnNeighborHoldtimeOk returns a tuple with the EvpnNeighborHoldtime field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigPutRequestSiteSiteName) GetEvpnNeighborHoldtimeOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.EvpnNeighborHoldtime.Get(), o.EvpnNeighborHoldtime.IsSet()
-}
-
-// HasEvpnNeighborHoldtime returns a boolean if a field has been set.
-func (o *ConfigPutRequestSiteSiteName) HasEvpnNeighborHoldtime() bool {
-	if o != nil && o.EvpnNeighborHoldtime.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetEvpnNeighborHoldtime gets a reference to the given NullableInt32 and assigns it to the EvpnNeighborHoldtime field.
-func (o *ConfigPutRequestSiteSiteName) SetEvpnNeighborHoldtime(v int32) {
-	o.EvpnNeighborHoldtime.Set(&v)
-}
-// SetEvpnNeighborHoldtimeNil sets the value for EvpnNeighborHoldtime to be an explicit nil
-func (o *ConfigPutRequestSiteSiteName) SetEvpnNeighborHoldtimeNil() {
-	o.EvpnNeighborHoldtime.Set(nil)
-}
-
-// UnsetEvpnNeighborHoldtime ensures that no value is present for EvpnNeighborHoldtime, not even an explicit nil
-func (o *ConfigPutRequestSiteSiteName) UnsetEvpnNeighborHoldtime() {
-	o.EvpnNeighborHoldtime.Unset()
-}
-
 // GetAggressiveReporting returns the AggressiveReporting field value if set, zero value otherwise.
 func (o *ConfigPutRequestSiteSiteName) GetAggressiveReporting() bool {
 	if o == nil || IsNil(o.AggressiveReporting) {
@@ -1273,9 +1229,6 @@ func (o ConfigPutRequestSiteSiteName) ToMap() (map[string]interface{}, error) {
 	}
 	if o.EvpnMacHoldtime.IsSet() {
 		toSerialize["evpn_mac_holdtime"] = o.EvpnMacHoldtime.Get()
-	}
-	if o.EvpnNeighborHoldtime.IsSet() {
-		toSerialize["evpn_neighbor_holdtime"] = o.EvpnNeighborHoldtime.Get()
 	}
 	if !IsNil(o.AggressiveReporting) {
 		toSerialize["aggressive_reporting"] = o.AggressiveReporting

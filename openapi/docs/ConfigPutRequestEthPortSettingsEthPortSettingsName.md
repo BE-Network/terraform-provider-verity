@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
-**Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
+**Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **AutoNegotiation** | Pointer to **bool** | Indicates if port speed and duplex mode should be auto negotiated | [optional] [default to true]
 **MaxBitRate** | Pointer to **string** | Maximum Bit Rate allowed | [optional] [default to "-1"]
 **DuplexMode** | Pointer to **string** | Duplex Mode | [optional] [default to "Auto"]
@@ -25,12 +25,6 @@ Name | Type | Description | Notes
 **Action** | Pointer to **string** | Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: &lt;br&gt;                                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                                     Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.&lt;br&gt;&lt;br&gt;                                                     Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.                                                      Alarm is raised . Alarm automatically clears when rate is below configured threshold. &lt;br&gt;&lt;br&gt;                                                     Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. &lt;br&gt;                                                 &lt;/div&gt;                                              | [optional] [default to "Protect"]
 **Fec** | Pointer to **string** | FEC is Forward Error Correction which is error correction on the fiber link.                                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                                     Any: Allows switch Negotiation between FC and RS &lt;br&gt;                                                     None: Disables FEC on an interface.&lt;br&gt;                                                     FC: Enables FEC on supported interfaces. FC stands for fire code.&lt;br&gt;                                                     RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. &lt;br&gt;                                                     None: VnetC doesn&#39;t alter the Switch Value.&lt;br&gt;                                                 &lt;/div&gt;                                              | [optional] [default to "unaltered"]
 **SingleLink** | Pointer to **bool** | Ports with this setting will be disabled when link state tracking takes effect | [optional] [default to false]
-**MinimumWredThreshold** | Pointer to **int32** | A value between 0 to 133168898 | [optional] 
-**MaximumWredThreshold** | Pointer to **int32** | A value between 0 to 133168898 | [optional] 
-**WredDropProbability** | Pointer to **int32** | A value between 0 to 100 | [optional] 
-**PriorityFlowControlWatchdogAction** | Pointer to **string** | Ports with this setting will be disabled when link state tracking takes effect | [optional] [default to "DROP"]
-**PriorityFlowControlWatchdogDetectTime** | Pointer to **int32** | A value between 100 to 5000 | [optional] 
-**PriorityFlowControlWatchdogRestoreTime** | Pointer to **int32** | A value between 100 to 60000 | [optional] 
 **ObjectProperties** | Pointer to [**ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties**](ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -576,156 +570,6 @@ SetSingleLink sets SingleLink field to given value.
 `func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasSingleLink() bool`
 
 HasSingleLink returns a boolean if a field has been set.
-
-### GetMinimumWredThreshold
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetMinimumWredThreshold() int32`
-
-GetMinimumWredThreshold returns the MinimumWredThreshold field if non-nil, zero value otherwise.
-
-### GetMinimumWredThresholdOk
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetMinimumWredThresholdOk() (*int32, bool)`
-
-GetMinimumWredThresholdOk returns a tuple with the MinimumWredThreshold field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMinimumWredThreshold
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetMinimumWredThreshold(v int32)`
-
-SetMinimumWredThreshold sets MinimumWredThreshold field to given value.
-
-### HasMinimumWredThreshold
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasMinimumWredThreshold() bool`
-
-HasMinimumWredThreshold returns a boolean if a field has been set.
-
-### GetMaximumWredThreshold
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetMaximumWredThreshold() int32`
-
-GetMaximumWredThreshold returns the MaximumWredThreshold field if non-nil, zero value otherwise.
-
-### GetMaximumWredThresholdOk
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetMaximumWredThresholdOk() (*int32, bool)`
-
-GetMaximumWredThresholdOk returns a tuple with the MaximumWredThreshold field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMaximumWredThreshold
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetMaximumWredThreshold(v int32)`
-
-SetMaximumWredThreshold sets MaximumWredThreshold field to given value.
-
-### HasMaximumWredThreshold
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasMaximumWredThreshold() bool`
-
-HasMaximumWredThreshold returns a boolean if a field has been set.
-
-### GetWredDropProbability
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetWredDropProbability() int32`
-
-GetWredDropProbability returns the WredDropProbability field if non-nil, zero value otherwise.
-
-### GetWredDropProbabilityOk
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetWredDropProbabilityOk() (*int32, bool)`
-
-GetWredDropProbabilityOk returns a tuple with the WredDropProbability field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetWredDropProbability
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetWredDropProbability(v int32)`
-
-SetWredDropProbability sets WredDropProbability field to given value.
-
-### HasWredDropProbability
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasWredDropProbability() bool`
-
-HasWredDropProbability returns a boolean if a field has been set.
-
-### GetPriorityFlowControlWatchdogAction
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogAction() string`
-
-GetPriorityFlowControlWatchdogAction returns the PriorityFlowControlWatchdogAction field if non-nil, zero value otherwise.
-
-### GetPriorityFlowControlWatchdogActionOk
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogActionOk() (*string, bool)`
-
-GetPriorityFlowControlWatchdogActionOk returns a tuple with the PriorityFlowControlWatchdogAction field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPriorityFlowControlWatchdogAction
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetPriorityFlowControlWatchdogAction(v string)`
-
-SetPriorityFlowControlWatchdogAction sets PriorityFlowControlWatchdogAction field to given value.
-
-### HasPriorityFlowControlWatchdogAction
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasPriorityFlowControlWatchdogAction() bool`
-
-HasPriorityFlowControlWatchdogAction returns a boolean if a field has been set.
-
-### GetPriorityFlowControlWatchdogDetectTime
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogDetectTime() int32`
-
-GetPriorityFlowControlWatchdogDetectTime returns the PriorityFlowControlWatchdogDetectTime field if non-nil, zero value otherwise.
-
-### GetPriorityFlowControlWatchdogDetectTimeOk
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogDetectTimeOk() (*int32, bool)`
-
-GetPriorityFlowControlWatchdogDetectTimeOk returns a tuple with the PriorityFlowControlWatchdogDetectTime field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPriorityFlowControlWatchdogDetectTime
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetPriorityFlowControlWatchdogDetectTime(v int32)`
-
-SetPriorityFlowControlWatchdogDetectTime sets PriorityFlowControlWatchdogDetectTime field to given value.
-
-### HasPriorityFlowControlWatchdogDetectTime
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasPriorityFlowControlWatchdogDetectTime() bool`
-
-HasPriorityFlowControlWatchdogDetectTime returns a boolean if a field has been set.
-
-### GetPriorityFlowControlWatchdogRestoreTime
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogRestoreTime() int32`
-
-GetPriorityFlowControlWatchdogRestoreTime returns the PriorityFlowControlWatchdogRestoreTime field if non-nil, zero value otherwise.
-
-### GetPriorityFlowControlWatchdogRestoreTimeOk
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) GetPriorityFlowControlWatchdogRestoreTimeOk() (*int32, bool)`
-
-GetPriorityFlowControlWatchdogRestoreTimeOk returns a tuple with the PriorityFlowControlWatchdogRestoreTime field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPriorityFlowControlWatchdogRestoreTime
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) SetPriorityFlowControlWatchdogRestoreTime(v int32)`
-
-SetPriorityFlowControlWatchdogRestoreTime sets PriorityFlowControlWatchdogRestoreTime field to given value.
-
-### HasPriorityFlowControlWatchdogRestoreTime
-
-`func (o *ConfigPutRequestEthPortSettingsEthPortSettingsName) HasPriorityFlowControlWatchdogRestoreTime() bool`
-
-HasPriorityFlowControlWatchdogRestoreTime returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
