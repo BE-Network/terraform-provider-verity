@@ -279,27 +279,54 @@ func parameterToJson(obj interface{}) (string, error) {
 
 // callAPI do the request.
 func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
-	if c.cfg.Debug {
-		dump, err := httputil.DumpRequestOut(request, true)
-		if err != nil {
-			return nil, err
-		}
-		log.Printf("\n%s\n", string(dump))
-	}
+    if c.cfg.Debug {
+        isAuthRequest := strings.Contains(request.URL.Path, "/auth")
+        
+        if isAuthRequest {
+            // For auth requests, create a buffer to read the body
+            var bodyBytes []byte
+            if request.Body != nil {
+                bodyBytes, _ = io.ReadAll(request.Body)
+                // Restore the body for the actual request
+                request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+            }
+            
+            // Generate debug output without the body content
+            dump, err := httputil.DumpRequestOut(request, false)
+            if err != nil {
+                return nil, err
+            }
+            log.Printf("\n%s\n[REDACTED AUTH REQUEST BODY]\n", string(dump))
+        } else {
+            // Normal debug output for non-auth requests
+            var bodyBytes []byte
+            if request.Body != nil {
+                bodyBytes, _ = io.ReadAll(request.Body)
+                // Restore the body for the actual request
+                request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+            }
+            
+            dump, err := httputil.DumpRequestOut(request, true)
+            if err != nil {
+                return nil, err
+            }
+            log.Printf("\n%s\n", string(dump))
+        }
+    }
 
-	resp, err := c.cfg.HTTPClient.Do(request)
-	if err != nil {
-		return resp, err
-	}
+    resp, err := c.cfg.HTTPClient.Do(request)
+    if err != nil {
+        return resp, err
+    }
 
-	if c.cfg.Debug {
-		dump, err := httputil.DumpResponse(resp, true)
-		if err != nil {
-			return resp, err
-		}
-		log.Printf("\n%s\n", string(dump))
-	}
-	return resp, err
+    if c.cfg.Debug {
+        dump, err := httputil.DumpResponse(resp, true)
+        if err != nil {
+            return resp, err
+        }
+        log.Printf("\n%s\n", string(dump))
+    }
+    return resp, err
 }
 
 // Allow modification of underlying config for alternate implementations and testing
