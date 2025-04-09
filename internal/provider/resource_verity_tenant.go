@@ -559,12 +559,33 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.Layer3Vni.Equal(state.Layer3Vni) && !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'layer_3_vni' field cannot be modified because 'layer_3_vni_auto_assigned_' is set to true. The API will ignore any changes to this field.",
+		)
+		return
+	}
+
+	if !plan.Layer3Vlan.Equal(state.Layer3Vlan) && !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'layer_3_vlan' field cannot be modified because 'layer_3_vlan_auto_assigned_' is set to true. The API will ignore any changes to this field.",
+		)
+		return
+	}
+
+	if !plan.VrfName.Equal(state.VrfName) && !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'vrf_name' field cannot be modified because 'vrf_name_auto_assigned_' is set to true. The API will ignore any changes to this field.",
+		)
 		return
 	}
 

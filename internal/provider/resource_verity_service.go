@@ -431,15 +431,19 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 
 func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state verityServiceResourceModel
-
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	diags = req.State.Get(ctx, &state)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
+
+	if !plan.Vni.Equal(state.Vni) && !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'vni' field cannot be modified because 'vni_auto_assigned_' is set to true. The API will ignore any changes to this field.",
+		)
 		return
 	}
 
