@@ -442,7 +442,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	if !plan.Vni.Equal(state.Vni) && !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
-			"The 'vni' field cannot be modified because 'vni_auto_assigned_' is set to true. The API will ignore any changes to this field.",
+			"The 'vni' field cannot be modified because 'vni_auto_assigned_' is set to true.",
 		)
 		return
 	}
