@@ -1,10 +1,13 @@
 package provider
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 	"time"
 
 	"terraform-provider-verity/internal/importer"
@@ -12,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -113,7 +117,180 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 		return
 	}
 
-	data.ID = types.StringValue(time.Now().UTC().String())
 	data.ImportedFiles = []types.String{}
+
+	entries, err := os.ReadDir(absPath)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Directory",
+			fmt.Sprintf("Error reading directory: %v", err),
+		)
+		return
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".tf") {
+			filePath := filepath.Join(absPath, entry.Name())
+			data.ImportedFiles = append(data.ImportedFiles, types.StringValue(filePath))
+		}
+	}
+
+	importBlocksFile, err := createImportBlocks(ctx, absPath)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Generating Import Blocks",
+			fmt.Sprintf("Error generating import blocks: %v", err),
+		)
+		return
+	}
+	data.ImportedFiles = append(data.ImportedFiles, types.StringValue(importBlocksFile))
+	tflog.Info(ctx, "Successfully generated import blocks", map[string]any{
+		"file": importBlocksFile,
+	})
+
+	data.ID = types.StringValue(time.Now().UTC().String())
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
+	skipFiles := map[string]bool{
+		"provider.tf":      true,
+		"versions.tf":      true,
+		"variables.tf":     true,
+		"terraform.tfvars": true,
+		"import_blocks.tf": true,
+	}
+
+	outputFile := filepath.Join(dirPath, "import_blocks.tf")
+
+	file, err := os.Create(outputFile)
+	if err != nil {
+		return "", fmt.Errorf("error creating output file: %w", err)
+	}
+	defer file.Close()
+
+	if _, err := file.WriteString("# Import blocks for Verity resources\n\n"); err != nil {
+		return "", fmt.Errorf("error writing to output file: %w", err)
+	}
+
+	resourceOrder := []string{
+		"verity_tenant",
+		"verity_service",
+		"verity_eth_port_settings",
+		"verity_eth_port_profile",
+		"verity_gateway_profile",
+		"verity_gateway",
+		"verity_lag",
+		"verity_bundle",
+	}
+
+	importBlocks := make(map[string]string)
+	for _, res := range resourceOrder {
+		importBlocks[res] = ""
+	}
+
+	entries, err := os.ReadDir(dirPath)
+	if err != nil {
+		return "", fmt.Errorf("error reading directory: %w", err)
+	}
+
+	resourceRegex := regexp.MustCompile(`resource\s+"([^"]+)"\s+"([^"]+)"`)
+	nameRegex := regexp.MustCompile(`name\s*=\s*"([^"]+)"`)
+
+	tflog.Info(ctx, "Processing Terraform files for import blocks")
+
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".tf") {
+			continue
+		}
+
+		if skipFiles[entry.Name()] {
+			tflog.Info(ctx, "Skipping file", map[string]any{"file": entry.Name()})
+			continue
+		}
+
+		tflog.Info(ctx, "Processing file", map[string]any{"file": entry.Name()})
+		filePath := filepath.Join(dirPath, entry.Name())
+
+		resourceBlocks, err := findResourceBlocks(filePath)
+		if err != nil {
+			return "", fmt.Errorf("error parsing file %s: %w", entry.Name(), err)
+		}
+
+		for _, block := range resourceBlocks {
+			resourceMatches := resourceRegex.FindStringSubmatch(block)
+			if len(resourceMatches) < 3 {
+				continue
+			}
+
+			resourceType := resourceMatches[1]
+			hclName := resourceMatches[2]
+
+			nameValue := hclName
+			nameMatches := nameRegex.FindStringSubmatch(block)
+			if len(nameMatches) > 1 {
+				nameValue = nameMatches[1]
+			}
+
+			importBlock := fmt.Sprintf("import {\n  to = %s.%s\n  id = \"%s\"\n}\n\n",
+				resourceType, hclName, nameValue)
+
+			if _, exists := importBlocks[resourceType]; exists {
+				importBlocks[resourceType] += importBlock
+			}
+		}
+	}
+
+	for _, resourceType := range resourceOrder {
+		blocks := importBlocks[resourceType]
+		if blocks != "" {
+			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n%s", resourceType, blocks)); err != nil {
+				return "", fmt.Errorf("error writing to output file: %w", err)
+			}
+		}
+	}
+
+	return outputFile, nil
+}
+
+func findResourceBlocks(filePath string) ([]string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error opening file: %w", err)
+	}
+	defer file.Close()
+
+	var blocks []string
+	var currentBlock strings.Builder
+	inBlock := false
+	braceCount := 0
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if !inBlock && strings.Contains(line, "resource ") {
+			inBlock = true
+			currentBlock.WriteString(line + "\n")
+			braceCount += strings.Count(line, "{") - strings.Count(line, "}")
+			continue
+		}
+
+		if inBlock {
+			currentBlock.WriteString(line + "\n")
+			braceCount += strings.Count(line, "{") - strings.Count(line, "}")
+
+			if braceCount == 0 {
+				blocks = append(blocks, currentBlock.String())
+				currentBlock.Reset()
+				inBlock = false
+			}
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("error reading file: %w", err)
+	}
+
+	return blocks, nil
 }
