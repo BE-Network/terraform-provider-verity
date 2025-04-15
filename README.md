@@ -80,12 +80,12 @@ By default, Terraform is only able to handle 10 resources at a time. It is recom
 
 ### Unix-based Systems
 ```bash
-export TF_CLI_ARGS_apply="-parallelism=1000"
+export TF_CLI_ARGS_apply="-parallelism=250"
 ```
 
 ### Windows
 ```powershell
-$env:TF_CLI_ARGS_apply="-parallelism=1000"
+$env:TF_CLI_ARGS_apply="-parallelism=250"
 ```
 
 ## Regenerating the OpenAPI Go SDK
