@@ -117,3 +117,43 @@ After regenerating the SDK, you need to update the provider resource files:
 
 - For fields deleted from the API: Remove them from the corresponding provider resource files
 - For new fields added to the API: Add them to the appropriate provider resource files
+
+## Using the State Import Scripts
+
+The provider includes scripts to help import existing Verity resources into Terraform state. These scripts automate the process of creating resource files and importing existing resources.
+
+### What the Scripts Do
+
+1. Find the main Terraform file with the Verity provider
+2. Add the `verity_state_importer` data source if it doesn't exist
+3. Run a first `terraform apply` to generate resource files and import blocks
+4. Run a second `terraform apply` to import the resources into your state
+5. Clean up temporary files
+
+### Running the Scripts
+
+#### Linux and macOS
+
+```bash
+# From your Terraform project directory
+../tools/import_verity_state.sh
+
+# If using a local provider (skip terraform init)
+../tools/import_verity_state.sh --local
+```
+
+#### Windows
+
+```powershell
+# From your Terraform project directory
+..\tools\import_verity_state.ps1
+
+# If using a local provider (skip terraform init)
+..\tools\import_verity_state.ps1 -Local $true
+```
+
+### Prerequisites
+
+- Terraform must be installed and in your PATH
+- Your Terraform files must include a Verity provider configuration
+- Environment variables for authentication must be set (see "Required Environment Variables" section)
