@@ -94,6 +94,8 @@ func NewConfigPutRequestSiteSiteName() *ConfigPutRequestSiteSiteName {
 	this.SpanningTreeType = &spanningTreeType
 	var regionName string = ""
 	this.RegionName = &regionName
+	var revision int32 = 0
+	this.Revision = *NewNullableInt32(&revision)
 	var forceSpanningTreeOnFabricPorts bool = false
 	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
 	var readOnlyMode bool = false
@@ -102,8 +104,36 @@ func NewConfigPutRequestSiteSiteName() *ConfigPutRequestSiteSiteName {
 	this.DscpToPBitMap = &dscpToPBitMap
 	var anycastMacAddress string = "(auto)"
 	this.AnycastMacAddress = &anycastMacAddress
+	var macAddressAgingTime int32 = 600
+	this.MacAddressAgingTime = &macAddressAgingTime
+	var mlagDelayRestoreTimer int32 = 300
+	this.MlagDelayRestoreTimer = &mlagDelayRestoreTimer
+	var bgpKeepaliveTimer int32 = 60
+	this.BgpKeepaliveTimer = &bgpKeepaliveTimer
+	var bgpHoldDownTimer int32 = 180
+	this.BgpHoldDownTimer = &bgpHoldDownTimer
+	var spineBgpAdvertisementInterval int32 = 1
+	this.SpineBgpAdvertisementInterval = &spineBgpAdvertisementInterval
+	var spineBgpConnectTimer int32 = 120
+	this.SpineBgpConnectTimer = &spineBgpConnectTimer
+	var leafBgpKeepAliveTimer int32 = 60
+	this.LeafBgpKeepAliveTimer = &leafBgpKeepAliveTimer
+	var leafBgpHoldDownTimer int32 = 180
+	this.LeafBgpHoldDownTimer = &leafBgpHoldDownTimer
+	var leafBgpAdvertisementInterval int32 = 1
+	this.LeafBgpAdvertisementInterval = &leafBgpAdvertisementInterval
+	var leafBgpConnectTimer int32 = 120
+	this.LeafBgpConnectTimer = &leafBgpConnectTimer
+	var linkStateTimeoutValue int32 = 60
+	this.LinkStateTimeoutValue = *NewNullableInt32(&linkStateTimeoutValue)
+	var evpnMultihomingStartupDelay int32 = 300
+	this.EvpnMultihomingStartupDelay = *NewNullableInt32(&evpnMultihomingStartupDelay)
+	var evpnMacHoldtime int32 = 1080
+	this.EvpnMacHoldtime = *NewNullableInt32(&evpnMacHoldtime)
 	var aggressiveReporting bool = true
 	this.AggressiveReporting = &aggressiveReporting
+	var crcFailureThreshold int32 = 5
+	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
 	return &this
 }
 
@@ -122,6 +152,8 @@ func NewConfigPutRequestSiteSiteNameWithDefaults() *ConfigPutRequestSiteSiteName
 	this.SpanningTreeType = &spanningTreeType
 	var regionName string = ""
 	this.RegionName = &regionName
+	var revision int32 = 0
+	this.Revision = *NewNullableInt32(&revision)
 	var forceSpanningTreeOnFabricPorts bool = false
 	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
 	var readOnlyMode bool = false
@@ -130,8 +162,36 @@ func NewConfigPutRequestSiteSiteNameWithDefaults() *ConfigPutRequestSiteSiteName
 	this.DscpToPBitMap = &dscpToPBitMap
 	var anycastMacAddress string = "(auto)"
 	this.AnycastMacAddress = &anycastMacAddress
+	var macAddressAgingTime int32 = 600
+	this.MacAddressAgingTime = &macAddressAgingTime
+	var mlagDelayRestoreTimer int32 = 300
+	this.MlagDelayRestoreTimer = &mlagDelayRestoreTimer
+	var bgpKeepaliveTimer int32 = 60
+	this.BgpKeepaliveTimer = &bgpKeepaliveTimer
+	var bgpHoldDownTimer int32 = 180
+	this.BgpHoldDownTimer = &bgpHoldDownTimer
+	var spineBgpAdvertisementInterval int32 = 1
+	this.SpineBgpAdvertisementInterval = &spineBgpAdvertisementInterval
+	var spineBgpConnectTimer int32 = 120
+	this.SpineBgpConnectTimer = &spineBgpConnectTimer
+	var leafBgpKeepAliveTimer int32 = 60
+	this.LeafBgpKeepAliveTimer = &leafBgpKeepAliveTimer
+	var leafBgpHoldDownTimer int32 = 180
+	this.LeafBgpHoldDownTimer = &leafBgpHoldDownTimer
+	var leafBgpAdvertisementInterval int32 = 1
+	this.LeafBgpAdvertisementInterval = &leafBgpAdvertisementInterval
+	var leafBgpConnectTimer int32 = 120
+	this.LeafBgpConnectTimer = &leafBgpConnectTimer
+	var linkStateTimeoutValue int32 = 60
+	this.LinkStateTimeoutValue = *NewNullableInt32(&linkStateTimeoutValue)
+	var evpnMultihomingStartupDelay int32 = 300
+	this.EvpnMultihomingStartupDelay = *NewNullableInt32(&evpnMultihomingStartupDelay)
+	var evpnMacHoldtime int32 = 1080
+	this.EvpnMacHoldtime = *NewNullableInt32(&evpnMacHoldtime)
 	var aggressiveReporting bool = true
 	this.AggressiveReporting = &aggressiveReporting
+	var crcFailureThreshold int32 = 5
+	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
 	return &this
 }
 

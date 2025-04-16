@@ -40,7 +40,7 @@ func NewBundlesPatchRequestEndpointBundleValue() *BundlesPatchRequestEndpointBun
 	this := BundlesPatchRequestEndpointBundleValue{}
 	var name string = ""
 	this.Name = &name
-	var deviceSettings string = "eth_device_profile|(Default)|"
+	var deviceSettings string = "eth_device_profile|(Device Settings)|"
 	this.DeviceSettings = &deviceSettings
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
@@ -54,7 +54,7 @@ func NewBundlesPatchRequestEndpointBundleValueWithDefaults() *BundlesPatchReques
 	this := BundlesPatchRequestEndpointBundleValue{}
 	var name string = ""
 	this.Name = &name
-	var deviceSettings string = "eth_device_profile|(Default)|"
+	var deviceSettings string = "eth_device_profile|(Device Settings)|"
 	this.DeviceSettings = &deviceSettings
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands

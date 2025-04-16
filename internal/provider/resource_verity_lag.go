@@ -96,6 +96,13 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"eth_port_profile_ref_type_": schema.StringAttribute{
 				Description: "Reference type for the Ethernet port profile.",
 				Optional:    true,
+				Computed:    true,
+			},
+			"uplink": schema.BoolAttribute{
+				Description: "Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN",
+				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -143,6 +150,7 @@ type verityLagResourceModel struct {
 	Fallback              types.Bool                       `tfsdk:"fallback"`
 	FastRate              types.Bool                       `tfsdk:"fast_rate"`
 	EthPortProfileRefType types.String                     `tfsdk:"eth_port_profile_ref_type_"`
+	Uplink                types.Bool                       `tfsdk:"uplink"`
 }
 
 type verityLagObjectPropertiesModel struct {
@@ -207,6 +215,9 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		if refType != "" {
 			lagReq.EthPortProfileRefType = openapi.PtrString(refType)
 		}
+	}
+	if !plan.Uplink.IsNull() {
+		lagReq.Uplink = openapi.PtrBool(plan.Uplink.ValueBool())
 	}
 
 	if len(plan.ObjectProperties) > 0 {
@@ -387,6 +398,11 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 	} else {
 		state.EthPortProfileRefType = types.StringNull()
 	}
+	if val, ok := lagData["uplink"].(bool); ok {
+		state.Uplink = types.BoolValue(val)
+	} else {
+		state.Uplink = types.BoolNull()
+	}
 	state.ObjectProperties = []verityLagObjectPropertiesModel{{}}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -426,7 +442,7 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		lagReq.ObjectProperties = nil
 	}
 
-	boolFields := []string{"enable", "is_peer_link", "lacp", "fallback", "fast_rate"}
+	boolFields := []string{"enable", "is_peer_link", "lacp", "fallback", "fast_rate", "uplink"}
 	for _, field := range boolFields {
 		if planField, stateField := getBoolField(field, plan, state); !planField.Equal(stateField) {
 			boolVal := planField.ValueBool()
@@ -441,6 +457,8 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 				lagReq.Fallback = openapi.PtrBool(boolVal)
 			case "fast_rate":
 				lagReq.FastRate = openapi.PtrBool(boolVal)
+			case "uplink":
+				lagReq.Uplink = openapi.PtrBool(boolVal)
 			}
 			hasChanges = true
 		}
@@ -554,6 +572,8 @@ func getBoolField(field string, plan verityLagResourceModel, state verityLagReso
 		return plan.Fallback, state.Fallback
 	case "fast_rate":
 		return plan.FastRate, state.FastRate
+	case "uplink":
+		return plan.Uplink, state.Uplink
 	default:
 		return types.BoolNull(), types.BoolNull()
 	}

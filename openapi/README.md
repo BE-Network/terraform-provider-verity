@@ -84,7 +84,7 @@ Class | Method | HTTP request | Description
 *BundlesAPI* | [**BundlesPatch**](docs/BundlesAPI.md#bundlespatch) | **Patch** /bundles | Update bundle
 *ChangesetsAPI* | [**ChangesetsDelete**](docs/ChangesetsAPI.md#changesetsdelete) | **Delete** /changesets | Delete a changeset
 *ChangesetsAPI* | [**ChangesetsGet**](docs/ChangesetsAPI.md#changesetsget) | **Get** /changesets | Get all changes in a changeset or get the list of available changesets
-*ChangesetsAPI* | [**ChangesetsPost**](docs/ChangesetsAPI.md#changesetspost) | **Post** /changesets | Create or commit a changeset
+*ChangesetsAPI* | [**ChangesetsPut**](docs/ChangesetsAPI.md#changesetsput) | **Put** /changesets | Create or commit a changeset
 *ConfigAPI* | [**ConfigGet**](docs/ConfigAPI.md#configget) | **Get** /config | Get whole configuration
 *ConfigAPI* | [**ConfigPatch**](docs/ConfigAPI.md#configpatch) | **Patch** /config | Update configuration
 *ConfigAPI* | [**ConfigPut**](docs/ConfigAPI.md#configput) | **Put** /config | Create or update configuration
@@ -129,7 +129,7 @@ Class | Method | HTTP request | Description
  - [BundlesPatchRequestEndpointBundleValueEthPortPathsInner](docs/BundlesPatchRequestEndpointBundleValueEthPortPathsInner.md)
  - [BundlesPatchRequestEndpointBundleValueObjectProperties](docs/BundlesPatchRequestEndpointBundleValueObjectProperties.md)
  - [BundlesPatchRequestEndpointBundleValueUserServicesInner](docs/BundlesPatchRequestEndpointBundleValueUserServicesInner.md)
- - [ChangesetsPostRequest](docs/ChangesetsPostRequest.md)
+ - [ChangesetsPutRequest](docs/ChangesetsPutRequest.md)
  - [ConfigPutRequest](docs/ConfigPutRequest.md)
  - [ConfigPutRequestAsPathAccessList](docs/ConfigPutRequestAsPathAccessList.md)
  - [ConfigPutRequestAsPathAccessListAsPathAccessListName](docs/ConfigPutRequestAsPathAccessListAsPathAccessListName.md)

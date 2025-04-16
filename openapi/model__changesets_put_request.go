@@ -16,43 +16,43 @@ import (
 	"fmt"
 )
 
-// checks if the ChangesetsPostRequest type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ChangesetsPostRequest{}
+// checks if the ChangesetsPutRequest type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ChangesetsPutRequest{}
 
-// ChangesetsPostRequest struct for ChangesetsPostRequest
-type ChangesetsPostRequest struct {
+// ChangesetsPutRequest struct for ChangesetsPutRequest
+type ChangesetsPutRequest struct {
 	// Create or commit the changeset
 	Commit *bool `json:"commit,omitempty"`
 	// Changeset name to create or commit
 	ChangesetName string `json:"changeset_name"`
 }
 
-type _ChangesetsPostRequest ChangesetsPostRequest
+type _ChangesetsPutRequest ChangesetsPutRequest
 
-// NewChangesetsPostRequest instantiates a new ChangesetsPostRequest object
+// NewChangesetsPutRequest instantiates a new ChangesetsPutRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewChangesetsPostRequest(changesetName string) *ChangesetsPostRequest {
-	this := ChangesetsPostRequest{}
+func NewChangesetsPutRequest(changesetName string) *ChangesetsPutRequest {
+	this := ChangesetsPutRequest{}
 	var commit bool = false
 	this.Commit = &commit
 	this.ChangesetName = changesetName
 	return &this
 }
 
-// NewChangesetsPostRequestWithDefaults instantiates a new ChangesetsPostRequest object
+// NewChangesetsPutRequestWithDefaults instantiates a new ChangesetsPutRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewChangesetsPostRequestWithDefaults() *ChangesetsPostRequest {
-	this := ChangesetsPostRequest{}
+func NewChangesetsPutRequestWithDefaults() *ChangesetsPutRequest {
+	this := ChangesetsPutRequest{}
 	var commit bool = false
 	this.Commit = &commit
 	return &this
 }
 
 // GetCommit returns the Commit field value if set, zero value otherwise.
-func (o *ChangesetsPostRequest) GetCommit() bool {
+func (o *ChangesetsPutRequest) GetCommit() bool {
 	if o == nil || IsNil(o.Commit) {
 		var ret bool
 		return ret
@@ -62,7 +62,7 @@ func (o *ChangesetsPostRequest) GetCommit() bool {
 
 // GetCommitOk returns a tuple with the Commit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ChangesetsPostRequest) GetCommitOk() (*bool, bool) {
+func (o *ChangesetsPutRequest) GetCommitOk() (*bool, bool) {
 	if o == nil || IsNil(o.Commit) {
 		return nil, false
 	}
@@ -70,7 +70,7 @@ func (o *ChangesetsPostRequest) GetCommitOk() (*bool, bool) {
 }
 
 // HasCommit returns a boolean if a field has been set.
-func (o *ChangesetsPostRequest) HasCommit() bool {
+func (o *ChangesetsPutRequest) HasCommit() bool {
 	if o != nil && !IsNil(o.Commit) {
 		return true
 	}
@@ -79,12 +79,12 @@ func (o *ChangesetsPostRequest) HasCommit() bool {
 }
 
 // SetCommit gets a reference to the given bool and assigns it to the Commit field.
-func (o *ChangesetsPostRequest) SetCommit(v bool) {
+func (o *ChangesetsPutRequest) SetCommit(v bool) {
 	o.Commit = &v
 }
 
 // GetChangesetName returns the ChangesetName field value
-func (o *ChangesetsPostRequest) GetChangesetName() string {
+func (o *ChangesetsPutRequest) GetChangesetName() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -95,7 +95,7 @@ func (o *ChangesetsPostRequest) GetChangesetName() string {
 
 // GetChangesetNameOk returns a tuple with the ChangesetName field value
 // and a boolean to check if the value has been set.
-func (o *ChangesetsPostRequest) GetChangesetNameOk() (*string, bool) {
+func (o *ChangesetsPutRequest) GetChangesetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -103,11 +103,11 @@ func (o *ChangesetsPostRequest) GetChangesetNameOk() (*string, bool) {
 }
 
 // SetChangesetName sets field value
-func (o *ChangesetsPostRequest) SetChangesetName(v string) {
+func (o *ChangesetsPutRequest) SetChangesetName(v string) {
 	o.ChangesetName = v
 }
 
-func (o ChangesetsPostRequest) MarshalJSON() ([]byte, error) {
+func (o ChangesetsPutRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -115,7 +115,7 @@ func (o ChangesetsPostRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o ChangesetsPostRequest) ToMap() (map[string]interface{}, error) {
+func (o ChangesetsPutRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Commit) {
 		toSerialize["commit"] = o.Commit
@@ -124,7 +124,7 @@ func (o ChangesetsPostRequest) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *ChangesetsPostRequest) UnmarshalJSON(data []byte) (err error) {
+func (o *ChangesetsPutRequest) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -146,53 +146,53 @@ func (o *ChangesetsPostRequest) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varChangesetsPostRequest := _ChangesetsPostRequest{}
+	varChangesetsPutRequest := _ChangesetsPutRequest{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varChangesetsPostRequest)
+	err = decoder.Decode(&varChangesetsPutRequest)
 
 	if err != nil {
 		return err
 	}
 
-	*o = ChangesetsPostRequest(varChangesetsPostRequest)
+	*o = ChangesetsPutRequest(varChangesetsPutRequest)
 
 	return err
 }
 
-type NullableChangesetsPostRequest struct {
-	value *ChangesetsPostRequest
+type NullableChangesetsPutRequest struct {
+	value *ChangesetsPutRequest
 	isSet bool
 }
 
-func (v NullableChangesetsPostRequest) Get() *ChangesetsPostRequest {
+func (v NullableChangesetsPutRequest) Get() *ChangesetsPutRequest {
 	return v.value
 }
 
-func (v *NullableChangesetsPostRequest) Set(val *ChangesetsPostRequest) {
+func (v *NullableChangesetsPutRequest) Set(val *ChangesetsPutRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableChangesetsPostRequest) IsSet() bool {
+func (v NullableChangesetsPutRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableChangesetsPostRequest) Unset() {
+func (v *NullableChangesetsPutRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableChangesetsPostRequest(val *ChangesetsPostRequest) *NullableChangesetsPostRequest {
-	return &NullableChangesetsPostRequest{value: val, isSet: true}
+func NewNullableChangesetsPutRequest(val *ChangesetsPutRequest) *NullableChangesetsPutRequest {
+	return &NullableChangesetsPutRequest{value: val, isSet: true}
 }
 
-func (v NullableChangesetsPostRequest) MarshalJSON() ([]byte, error) {
+func (v NullableChangesetsPutRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableChangesetsPostRequest) UnmarshalJSON(src []byte) error {
+func (v *NullableChangesetsPutRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

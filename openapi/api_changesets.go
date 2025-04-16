@@ -219,46 +219,46 @@ func (a *ChangesetsAPIService) ChangesetsGetExecute(r ApiChangesetsGetRequest) (
 	return localVarHTTPResponse, nil
 }
 
-type ApiChangesetsPostRequest struct {
+type ApiChangesetsPutRequest struct {
 	ctx context.Context
 	ApiService *ChangesetsAPIService
-	changesetsPostRequest *ChangesetsPostRequest
+	changesetsPutRequest *ChangesetsPutRequest
 }
 
-func (r ApiChangesetsPostRequest) ChangesetsPostRequest(changesetsPostRequest ChangesetsPostRequest) ApiChangesetsPostRequest {
-	r.changesetsPostRequest = &changesetsPostRequest
+func (r ApiChangesetsPutRequest) ChangesetsPutRequest(changesetsPutRequest ChangesetsPutRequest) ApiChangesetsPutRequest {
+	r.changesetsPutRequest = &changesetsPutRequest
 	return r
 }
 
-func (r ApiChangesetsPostRequest) Execute() (*http.Response, error) {
-	return r.ApiService.ChangesetsPostExecute(r)
+func (r ApiChangesetsPutRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ChangesetsPutExecute(r)
 }
 
 /*
-ChangesetsPost Create or commit a changeset
+ChangesetsPut Create or commit a changeset
 
 Create a changeset or commit an already existing changeset to the system.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiChangesetsPostRequest
+ @return ApiChangesetsPutRequest
 */
-func (a *ChangesetsAPIService) ChangesetsPost(ctx context.Context) ApiChangesetsPostRequest {
-	return ApiChangesetsPostRequest{
+func (a *ChangesetsAPIService) ChangesetsPut(ctx context.Context) ApiChangesetsPutRequest {
+	return ApiChangesetsPutRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *ChangesetsAPIService) ChangesetsPostExecute(r ApiChangesetsPostRequest) (*http.Response, error) {
+func (a *ChangesetsAPIService) ChangesetsPutExecute(r ApiChangesetsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
+		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChangesetsAPIService.ChangesetsPost")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChangesetsAPIService.ChangesetsPut")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -268,8 +268,8 @@ func (a *ChangesetsAPIService) ChangesetsPostExecute(r ApiChangesetsPostRequest)
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.changesetsPostRequest == nil {
-		return nil, reportError("changesetsPostRequest is required and must be specified")
+	if r.changesetsPutRequest == nil {
+		return nil, reportError("changesetsPutRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -290,7 +290,7 @@ func (a *ChangesetsAPIService) ChangesetsPostExecute(r ApiChangesetsPostRequest)
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.changesetsPostRequest
+	localVarPostBody = r.changesetsPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

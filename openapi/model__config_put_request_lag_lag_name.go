@@ -40,6 +40,8 @@ type ConfigPutRequestLagLagName struct {
 	// Send LACP packets every second (if disabled, packets are sent every 30 seconds)
 	FastRate *bool `json:"fast_rate,omitempty"`
 	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
+	// Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN
+	Uplink *bool `json:"uplink,omitempty"`
 }
 
 // NewConfigPutRequestLagLagName instantiates a new ConfigPutRequestLagLagName object
@@ -64,6 +66,8 @@ func NewConfigPutRequestLagLagName() *ConfigPutRequestLagLagName {
 	this.Fallback = &fallback
 	var fastRate bool = false
 	this.FastRate = &fastRate
+	var uplink bool = false
+	this.Uplink = &uplink
 	return &this
 }
 
@@ -88,6 +92,8 @@ func NewConfigPutRequestLagLagNameWithDefaults() *ConfigPutRequestLagLagName {
 	this.Fallback = &fallback
 	var fastRate bool = false
 	this.FastRate = &fastRate
+	var uplink bool = false
+	this.Uplink = &uplink
 	return &this
 }
 
@@ -453,6 +459,38 @@ func (o *ConfigPutRequestLagLagName) SetObjectProperties(v map[string]interface{
 	o.ObjectProperties = v
 }
 
+// GetUplink returns the Uplink field value if set, zero value otherwise.
+func (o *ConfigPutRequestLagLagName) GetUplink() bool {
+	if o == nil || IsNil(o.Uplink) {
+		var ret bool
+		return ret
+	}
+	return *o.Uplink
+}
+
+// GetUplinkOk returns a tuple with the Uplink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestLagLagName) GetUplinkOk() (*bool, bool) {
+	if o == nil || IsNil(o.Uplink) {
+		return nil, false
+	}
+	return o.Uplink, true
+}
+
+// HasUplink returns a boolean if a field has been set.
+func (o *ConfigPutRequestLagLagName) HasUplink() bool {
+	if o != nil && !IsNil(o.Uplink) {
+		return true
+	}
+
+	return false
+}
+
+// SetUplink gets a reference to the given bool and assigns it to the Uplink field.
+func (o *ConfigPutRequestLagLagName) SetUplink(v bool) {
+	o.Uplink = &v
+}
+
 func (o ConfigPutRequestLagLagName) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -495,6 +533,9 @@ func (o ConfigPutRequestLagLagName) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.Uplink) {
+		toSerialize["uplink"] = o.Uplink
 	}
 	return toSerialize, nil
 }

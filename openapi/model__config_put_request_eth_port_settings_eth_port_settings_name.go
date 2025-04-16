@@ -102,6 +102,8 @@ func NewConfigPutRequestEthPortSettingsEthPortSettingsName() *ConfigPutRequestEt
 	this.Broadcast = &broadcast
 	var multicast bool = true
 	this.Multicast = &multicast
+	var maxAllowedValue int32 = 1000
+	this.MaxAllowedValue = &maxAllowedValue
 	var maxAllowedUnit string = "pps"
 	this.MaxAllowedUnit = &maxAllowedUnit
 	var action string = "Protect"
@@ -150,6 +152,8 @@ func NewConfigPutRequestEthPortSettingsEthPortSettingsNameWithDefaults() *Config
 	this.Broadcast = &broadcast
 	var multicast bool = true
 	this.Multicast = &multicast
+	var maxAllowedValue int32 = 1000
+	this.MaxAllowedValue = &maxAllowedValue
 	var maxAllowedUnit string = "pps"
 	this.MaxAllowedUnit = &maxAllowedUnit
 	var action string = "Protect"

@@ -196,14 +196,14 @@ paths:
       summary: Get all changes in a changeset or get the list of available changesets
       tags:
       - Changesets
-    post:
+    put:
       description: |
         Create a changeset or commit an already existing changeset to the system.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_changesets_post_request'
+              $ref: '#/components/schemas/_changesets_put_request'
         required: true
       responses:
         "429":
@@ -2027,6 +2027,18 @@ components:
         object_properties:
           $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object
+    _changesets_put_request:
+      properties:
+        commit:
+          default: false
+          description: Create or commit the changeset
+          type: boolean
+        changeset_name:
+          description: Changeset name to create or commit
+          type: string
+      required:
+      - changeset_name
+      type: object
     _config_put_request_tenant_tenant_name:
       properties:
         name:
@@ -2332,6 +2344,7 @@ components:
           - switchpoint
           type: string
         number_of_multipoints:
+          default: 0
           description: Number of Multipoints
           nullable: true
           type: integer
@@ -2393,14 +2406,17 @@ components:
           description: Usage Threshold
           type: number
         external_battery_power_available:
+          default: 40
           description: External Battery Power Available
           maximum: 2000
           type: integer
         external_power_available:
+          default: 75
           description: External Power Available
           maximum: 2000
           type: integer
         security_audit_interval:
+          default: 60
           description: "Frequency in minutes of rereading this Switch running configuration\
             \ and comparing it to expected values.\n                             \
             \                   <br>if the value is blank, audit will use default\
@@ -2412,6 +2428,7 @@ components:
           nullable: true
           type: integer
         commit_to_flash_interval:
+          default: 60
           description: |-
             Frequency in minutes to write the Switch configuration to flash.
                                                             <br>if the value is blank, commit will use default switch settings.
@@ -2895,7 +2912,7 @@ components:
           minLength: 1
           type: string
         device_settings:
-          default: eth_device_profile|(Default)|
+          default: eth_device_profile|(Device Settings)|
           description: Device Settings for device
           type: string
         device_settings_ref_type_:
@@ -3047,6 +3064,7 @@ components:
             an MSTP region must have the same configured region name
           type: string
         revision:
+          default: 0
           description: A logical number that signifies a revision for the MSTP configuration.
             All switches in an MSTP region must have the same revision number
           maximum: 65535
@@ -3079,64 +3097,77 @@ components:
             value to edit.
           type: boolean
         mac_address_aging_time:
+          default: 600
           description: MAC Address Aging Time (between 1-100000)
           maximum: 100000
           minimum: 1
           type: integer
         mlag_delay_restore_timer:
+          default: 300
           description: MLAG Delay Restore Timer
           maximum: 3600
           minimum: 1
           type: integer
         bgp_keepalive_timer:
+          default: 60
           description: Spine BGP Keepalive Timer
           maximum: 3600
           minimum: 1
           type: integer
         bgp_hold_down_timer:
+          default: 180
           description: Spine BGP Hold Down Timer
           maximum: 3600
           minimum: 1
           type: integer
         spine_bgp_advertisement_interval:
+          default: 1
           description: BGP Advertisement Interval for spines/superspines. Use "0"
             for immediate updates
           maximum: 3600
           type: integer
         spine_bgp_connect_timer:
+          default: 120
           description: BGP Connect Timer
           maximum: 3600
           minimum: 1
           type: integer
         leaf_bgp_keep_alive_timer:
+          default: 60
           description: Leaf BGP Keep Alive Timer
           maximum: 3600
           minimum: 1
           type: integer
         leaf_bgp_hold_down_timer:
+          default: 180
           description: Leaf BGP Hold Down Timer
           maximum: 3600
           minimum: 1
           type: integer
         leaf_bgp_advertisement_interval:
+          default: 1
           description: BGP Advertisement Interval for leafs. Use "0" for immediate
             updates
           maximum: 3600
           type: integer
         leaf_bgp_connect_timer:
+          default: 120
           description: BGP Connect Timer
           maximum: 3600
           minimum: 1
           type: integer
         link_state_timeout_value:
+          default: 60
           description: Link State Timeout Value
           nullable: true
           type: integer
         evpn_multihoming_startup_delay:
+          default: 300
           description: Startup Delay
           nullable: true
           type: integer
         evpn_mac_holdtime:
+          default: 1080
           description: MAC Holdtime
           nullable: true
           type: integer
@@ -3146,6 +3177,7 @@ components:
             \ BGP Status"
           type: boolean
         crc_failure_threshold:
+          default: 5
           description: Threshold in Errors per second that when met will disable the
             links as part of LAGs
           maximum: 4294967296
@@ -3277,6 +3309,7 @@ components:
           format: ipv4
           type: string
         mtu:
+          default: 1500
           description: "MTU (Maximum Transmission Unit) The size used by a switch\
             \ to determine when large packets must be broken up into smaller packets\
             \ for delivery. If mismatched within a single vlan network, can cause\
@@ -3353,6 +3386,12 @@ components:
         object_properties:
           properties: {}
           type: object
+        uplink:
+          default: false
+          description: Indicates this LAG is designated as an uplink in the case of
+            a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces
+            and the MCLAG Peer Link VLAN
+          type: boolean
       type: object
     _config_put_request_switchpoint_switchpoint_name:
       properties:
@@ -3690,6 +3729,7 @@ components:
           description: Multicast
           type: boolean
         max_allowed_value:
+          default: 1000
           description: Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast
             traffic before invoking the protective action
           maximum: 9999
@@ -4194,29 +4234,34 @@ components:
           description: ""
           type: boolean
         keepalive_timer:
+          default: 60
           description: Interval in seconds between Keepalive messages sent to remote
             BGP peer
           maximum: 3600
           minimum: 1
           type: integer
         hold_timer:
+          default: 180
           description: "Time, in seconds,  used to determine failure of session Keepalive\
             \ messages received from remote BGP peer "
           maximum: 3600
           minimum: 1
           type: integer
         connect_timer:
+          default: 120
           description: Time in seconds between sucessive attempts to Establish BGP
             session
           maximum: 65535
           minimum: 1
           type: integer
         advertisement_interval:
+          default: 30
           description: 'The minimum time in seconds between sending route updates
             to BGP neighbor '
           maximum: 600
           type: integer
         ebgp_multihop:
+          default: 255
           description: 'Allows external BGP neighbors to establish peering session
             multiple network hops away. '
           maximum: 255
@@ -4296,6 +4341,7 @@ components:
           description: Prepend only Local AS in updates to EBGP peers.
           type: boolean
         max_local_as_occurrences:
+          default: 0
           description: "Allow routes with the local AS number in the AS-path, specifying\
             \ the maximum occurrences permitted before declaring a routing loop. Leave\
             \ blank or '0' to disable."
@@ -4308,6 +4354,7 @@ components:
           format: ipv4
           type: string
         dynamic_bgp_limits:
+          default: 0
           description: Dynamic BGP Limits
           maximum: 5000
           nullable: true
@@ -4322,6 +4369,7 @@ components:
           description: Enable BFD(Bi-Directional Forwarding)
           type: boolean
         bfd_receive_interval:
+          default: 300
           description: Configure the minimum interval during which the system can
             receive BFD control packets
           maximum: 60000
@@ -4329,6 +4377,7 @@ components:
           nullable: true
           type: integer
         bfd_transmission_interval:
+          default: 300
           description: Configure the minimum transmission interval during which the
             system can send BFD control packets
           maximum: 60000
@@ -4336,6 +4385,7 @@ components:
           nullable: true
           type: integer
         bfd_detect_multiplier:
+          default: 3
           description: Configure the detection multiplier to determine packet loss
           maximum: 128
           minimum: 2
@@ -4493,18 +4543,6 @@ components:
       properties:
         ipv4_filter_name:
           $ref: '#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name'
-      type: object
-    _changesets_post_request:
-      properties:
-        commit:
-          default: false
-          description: Create or commit the changeset
-          type: boolean
-        changeset_name:
-          description: Changeset name to create or commit
-          type: string
-      required:
-      - changeset_name
       type: object
     _gatewayprofiles_put_request:
       properties:

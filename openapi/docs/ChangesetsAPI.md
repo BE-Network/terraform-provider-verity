@@ -6,7 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**ChangesetsDelete**](ChangesetsAPI.md#ChangesetsDelete) | **Delete** /changesets | Delete a changeset
 [**ChangesetsGet**](ChangesetsAPI.md#ChangesetsGet) | **Get** /changesets | Get all changes in a changeset or get the list of available changesets
-[**ChangesetsPost**](ChangesetsAPI.md#ChangesetsPost) | **Post** /changesets | Create or commit a changeset
+[**ChangesetsPut**](ChangesetsAPI.md#ChangesetsPut) | **Put** /changesets | Create or commit a changeset
 
 
 
@@ -138,9 +138,9 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## ChangesetsPost
+## ChangesetsPut
 
-> ChangesetsPost(ctx).ChangesetsPostRequest(changesetsPostRequest).Execute()
+> ChangesetsPut(ctx).ChangesetsPutRequest(changesetsPutRequest).Execute()
 
 Create or commit a changeset
 
@@ -159,13 +159,13 @@ import (
 )
 
 func main() {
-	changesetsPostRequest := *openapiclient.NewChangesetsPostRequest("ChangesetName_example") // ChangesetsPostRequest | 
+	changesetsPutRequest := *openapiclient.NewChangesetsPutRequest("ChangesetName_example") // ChangesetsPutRequest | 
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.ChangesetsAPI.ChangesetsPost(context.Background()).ChangesetsPostRequest(changesetsPostRequest).Execute()
+	r, err := apiClient.ChangesetsAPI.ChangesetsPut(context.Background()).ChangesetsPutRequest(changesetsPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `ChangesetsAPI.ChangesetsPost``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `ChangesetsAPI.ChangesetsPut``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -177,12 +177,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiChangesetsPostRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiChangesetsPutRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **changesetsPostRequest** | [**ChangesetsPostRequest**](ChangesetsPostRequest.md) |  | 
+ **changesetsPutRequest** | [**ChangesetsPutRequest**](ChangesetsPutRequest.md) |  | 
 
 ### Return type
 

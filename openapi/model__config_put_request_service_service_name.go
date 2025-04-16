@@ -58,6 +58,8 @@ func NewConfigPutRequestServiceServiceName() *ConfigPutRequestServiceServiceName
 	this.AnycastIpMask = &anycastIpMask
 	var dhcpServerIp string = ""
 	this.DhcpServerIp = &dhcpServerIp
+	var mtu int32 = 1500
+	this.Mtu = *NewNullableInt32(&mtu)
 	return &this
 }
 
@@ -76,6 +78,8 @@ func NewConfigPutRequestServiceServiceNameWithDefaults() *ConfigPutRequestServic
 	this.AnycastIpMask = &anycastIpMask
 	var dhcpServerIp string = ""
 	this.DhcpServerIp = &dhcpServerIp
+	var mtu int32 = 1500
+	this.Mtu = *NewNullableInt32(&mtu)
 	return &this
 }
 

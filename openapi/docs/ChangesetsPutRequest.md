@@ -1,4 +1,4 @@
-# ChangesetsPostRequest
+# ChangesetsPutRequest
 
 ## Properties
 
@@ -9,64 +9,64 @@ Name | Type | Description | Notes
 
 ## Methods
 
-### NewChangesetsPostRequest
+### NewChangesetsPutRequest
 
-`func NewChangesetsPostRequest(changesetName string, ) *ChangesetsPostRequest`
+`func NewChangesetsPutRequest(changesetName string, ) *ChangesetsPutRequest`
 
-NewChangesetsPostRequest instantiates a new ChangesetsPostRequest object
+NewChangesetsPutRequest instantiates a new ChangesetsPutRequest object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewChangesetsPostRequestWithDefaults
+### NewChangesetsPutRequestWithDefaults
 
-`func NewChangesetsPostRequestWithDefaults() *ChangesetsPostRequest`
+`func NewChangesetsPutRequestWithDefaults() *ChangesetsPutRequest`
 
-NewChangesetsPostRequestWithDefaults instantiates a new ChangesetsPostRequest object
+NewChangesetsPutRequestWithDefaults instantiates a new ChangesetsPutRequest object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetCommit
 
-`func (o *ChangesetsPostRequest) GetCommit() bool`
+`func (o *ChangesetsPutRequest) GetCommit() bool`
 
 GetCommit returns the Commit field if non-nil, zero value otherwise.
 
 ### GetCommitOk
 
-`func (o *ChangesetsPostRequest) GetCommitOk() (*bool, bool)`
+`func (o *ChangesetsPutRequest) GetCommitOk() (*bool, bool)`
 
 GetCommitOk returns a tuple with the Commit field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCommit
 
-`func (o *ChangesetsPostRequest) SetCommit(v bool)`
+`func (o *ChangesetsPutRequest) SetCommit(v bool)`
 
 SetCommit sets Commit field to given value.
 
 ### HasCommit
 
-`func (o *ChangesetsPostRequest) HasCommit() bool`
+`func (o *ChangesetsPutRequest) HasCommit() bool`
 
 HasCommit returns a boolean if a field has been set.
 
 ### GetChangesetName
 
-`func (o *ChangesetsPostRequest) GetChangesetName() string`
+`func (o *ChangesetsPutRequest) GetChangesetName() string`
 
 GetChangesetName returns the ChangesetName field if non-nil, zero value otherwise.
 
 ### GetChangesetNameOk
 
-`func (o *ChangesetsPostRequest) GetChangesetNameOk() (*string, bool)`
+`func (o *ChangesetsPutRequest) GetChangesetNameOk() (*string, bool)`
 
 GetChangesetNameOk returns a tuple with the ChangesetName field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetChangesetName
 
-`func (o *ChangesetsPostRequest) SetChangesetName(v string)`
+`func (o *ChangesetsPutRequest) SetChangesetName(v string)`
 
 SetChangesetName sets ChangesetName field to given value.
 

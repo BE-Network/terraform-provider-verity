@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
-**DeviceSettings** | Pointer to **string** | Device Settings for device | [optional] [default to "eth_device_profile|(Default)|"]
+**DeviceSettings** | Pointer to **string** | Device Settings for device | [optional] [default to "eth_device_profile|(Device Settings)|"]
 **DeviceSettingsRefType** | Pointer to **string** | Object type for device_settings field | [optional] 
 **CliCommands** | Pointer to **string** | CLI Commands | [optional] [default to ""]
 **EthPortPaths** | Pointer to [**[]BundlesPatchRequestEndpointBundleValueEthPortPathsInner**](BundlesPatchRequestEndpointBundleValueEthPortPathsInner.md) |  | [optional] 

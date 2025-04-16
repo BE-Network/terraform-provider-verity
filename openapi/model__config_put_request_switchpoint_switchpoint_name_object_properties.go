@@ -44,6 +44,8 @@ func NewConfigPutRequestSwitchpointSwitchpointNameObjectProperties() *ConfigPutR
 	this.UserNotes = &userNotes
 	var expectedParentEndpoint string = ""
 	this.ExpectedParentEndpoint = &expectedParentEndpoint
+	var numberOfMultipoints int32 = 0
+	this.NumberOfMultipoints = *NewNullableInt32(&numberOfMultipoints)
 	var aggregate bool = false
 	this.Aggregate = &aggregate
 	var isHost bool = false
@@ -60,6 +62,8 @@ func NewConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesWithDefaults()
 	this.UserNotes = &userNotes
 	var expectedParentEndpoint string = ""
 	this.ExpectedParentEndpoint = &expectedParentEndpoint
+	var numberOfMultipoints int32 = 0
+	this.NumberOfMultipoints = *NewNullableInt32(&numberOfMultipoints)
 	var aggregate bool = false
 	this.Aggregate = &aggregate
 	var isHost bool = false

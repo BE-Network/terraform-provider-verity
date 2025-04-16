@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **Fallback** | Pointer to **bool** | Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer. | [optional] [default to false]
 **FastRate** | Pointer to **bool** | Send LACP packets every second (if disabled, packets are sent every 30 seconds) | [optional] [default to false]
 **ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
+**Uplink** | Pointer to **bool** | Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN | [optional] [default to false]
 
 ## Methods
 
@@ -319,6 +320,31 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *ConfigPutRequestLagLagName) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetUplink
+
+`func (o *ConfigPutRequestLagLagName) GetUplink() bool`
+
+GetUplink returns the Uplink field if non-nil, zero value otherwise.
+
+### GetUplinkOk
+
+`func (o *ConfigPutRequestLagLagName) GetUplinkOk() (*bool, bool)`
+
+GetUplinkOk returns a tuple with the Uplink field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUplink
+
+`func (o *ConfigPutRequestLagLagName) SetUplink(v bool)`
+
+SetUplink sets Uplink field to given value.
+
+### HasUplink
+
+`func (o *ConfigPutRequestLagLagName) HasUplink() bool`
+
+HasUplink returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
 **AnycastIpMask** | Pointer to **string** | Static anycast gateway address for service  | [optional] [default to ""]
 **DhcpServerIp** | Pointer to **string** | IP address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
-**Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] 
+**Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] [default to 1500]
 **ObjectProperties** | Pointer to [**ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties**](ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties.md) |  | [optional] 
 
 ## Methods
