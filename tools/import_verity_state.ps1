@@ -1,5 +1,9 @@
 #Requires -Version 5.0
 
+param(
+    [switch]$Local
+)
+
 function Log {
     param ([string]$message, [string]$color = "White")
     Write-Host "[$([DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss'))] $message" -ForegroundColor $color

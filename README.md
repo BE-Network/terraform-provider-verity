@@ -149,7 +149,7 @@ The provider includes scripts to help import existing Verity resources into Terr
 ..\tools\import_verity_state.ps1
 
 # If using a local provider (skip terraform init)
-..\tools\import_verity_state.ps1 -Local $true
+..\tools\import_verity_state.ps1 -Local
 ```
 
 ### Prerequisites
