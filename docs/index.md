@@ -67,9 +67,8 @@ The state importer workflow:
 
 1. **Configuration Export**: The importer connects to your Verity instance and exports the current configuration
 2. **Resource Generation**: It automatically generates Terraform resource files (`.tf`) that map your current Verity configuration to Terraform resources
-3. **Import Process**: 
-   - For Terraform versions < 1.5: The provider includes bash and PowerShell scripts that use `terraform import` commands to import each resource
-   - For Terraform versions ≥ 1.5: Use the provided import scripts to generate `import_blocks.tf` containing import blocks for all resources, allowing you to import everything with a single `terraform apply` command
+3. **Import Blocks Generation**: An `import_blocks.tf` file is automatically generated containing import blocks for all resources.
+4. **Import Process**: Run `terraform apply` to import all resources at once using the generated import blocks
 
 ### Generated Files
 The importer generates the following Terraform resource files:
@@ -81,57 +80,5 @@ The importer generates the following Terraform resource files:
 - `lags.tf` - LAG resources
 - `services.tf` - Service resources
 - `tenants.tf` - Tenant resources
+- `import_blocks.tf` - Import blocks for all resources in the correct dependency order
 
-Additionally, when using the import scripts:
-- For Terraform ≥ 1.5: The scripts will generate `import_blocks.tf` containing import blocks for all resources
-
-## 4. Example Configurations
-
-### Gateway Configuration
-```hcl
-resource "verity_gateway" "example" {
-  name = "example_gateway"
-  keepalive_timer = 60
-  hold_timer = 180
-  gateway_mode = "Dynamic BGP"
-  neighbor_as_number = 888
-  local_as_number = 222
-  ebgp_multihop = 255
-  
-  enable_bfd = true
-  bfd_transmission_interval = 300
-  bfd_receive_interval = 300
-  bfd_detect_multiplier = 3
-  
-  static_routes {
-    index = 1
-    enable = false
-    ad_value = 1
-  }
-}
-```
-
-## 5. API Integration
-
-The provider:
-- Uses an OpenAPI-generated client for API communication
-- Handles authentication via cookie-based sessions
-- Supports various API endpoints for different resource types
-- Automatically manages state and tracks changes
-
-## 6. Flow of Operations
-
-### Resource Management Flow:
-1. Provider Configuration and Authentication
-2. Resource Definition in Terraform Files
-3. Plan Generation (terraform plan)
-4. Change Detection and Validation
-5. API Operations Execution (terraform apply)
-6. State Update
-
-### Import Flow:
-1. Configure State Importer
-2. Run Import Operation (generates .tf files)
-3. Review Generated Configurations
-4. Run Import Scripts (< 1.5) or Use Import Blocks (≥ 1.5)
-5. Apply Imported State
