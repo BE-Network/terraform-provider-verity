@@ -157,4 +157,5 @@ The provider includes scripts to help import existing Verity resources into Terr
 - Terraform must be installed and in your PATH
 - Your Terraform files must include a Verity provider configuration
 - Environment variables for authentication must be set (see "Required Environment Variables" section)
+
 - 
