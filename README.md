@@ -96,7 +96,7 @@ If there are changes to the Verity API (reflected in a new swagger.json file), y
 
 2. Run the tools/transform_swagger.py script to prepare the swagger file for code generation:
    ```bash
-   python3 tools/transform_swagger.py
+   python3 tools/transform_swagger.py swagger.json
    ```
 
 3. Install the OpenAPI Generator CLI (if not already installed):
