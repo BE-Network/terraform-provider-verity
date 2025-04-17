@@ -60,10 +60,36 @@ $fileContent = Get-Content $mainTfFile -Raw
 if ($fileContent -match 'verity_state_importer') {
     $importerExists = $true
     Log "[INFO] Found verity_state_importer in $($mainTfFile)" -color Cyan
+    Copy-Item -Path $mainTfFile -Destination "$mainTfFile.orig" -Force
+    
+    # Create a clean version without the importer block
+    $content = Get-Content $mainTfFile
+    $cleanContent = New-Object System.Collections.ArrayList
+    $skipLines = $false
+    
+    foreach ($line in $content) {
+        # Start skipping at the data "verity_state_importer" line
+        if ($line -match 'data\s+"verity_state_importer"') {
+            $skipLines = $true
+            continue
+        }
+        
+        # If we find a closing brace that completes the block, stop skipping after this line
+        if ($skipLines -and $line -match '^\s*}\s*$') {
+            $skipLines = $false
+            continue
+        }
+        
+        if (-not $skipLines) {
+            [void]$cleanContent.Add($line)
+        }
+    }
+    
+    $cleanContent | Set-Content -Path "$mainTfFile.clean" -Force
 } else {
     Log "[INFO] verity_state_importer not found, will add it temporarily" -color Cyan
-    # Create a backup of the original file
-    Copy-Item -Path $mainTfFile -Destination "$mainTfFile.bak" -Force
+    # Create a backup of the original file (without importer)
+    Copy-Item -Path $mainTfFile -Destination "$mainTfFile.clean" -Force
     
     # Add the state importer data source
     $importerCode = "`ndata `"verity_state_importer`" `"import`" {`n  output_dir = var.config_dir`n}`n"
@@ -75,11 +101,17 @@ if ($fileContent -match 'verity_state_importer') {
 Log "[INFO] Running terraform apply to generate resource files and import blocks..." -color Cyan
 terraform apply -auto-approve
 if ($LASTEXITCODE -ne 0) {
-    # If we added the importer and apply failed, restore the original file
-    if (-not $importerExists -and (Test-Path "$mainTfFile.bak")) {
-        Copy-Item -Path "$mainTfFile.bak" -Destination $mainTfFile -Force
-        Log "[INFO] Restored original $($mainTfFile)" -color Yellow
+    # Restore the original file
+    if ($importerExists -and (Test-Path "$mainTfFile.orig")) {
+        Copy-Item -Path "$mainTfFile.orig" -Destination $mainTfFile -Force
+        Log "[INFO] Restored original file with importer" -color Yellow
+    } elseif (Test-Path "$mainTfFile.clean") {
+        Copy-Item -Path "$mainTfFile.clean" -Destination $mainTfFile -Force
+        Log "[INFO] Restored original file without importer" -color Yellow
     }
+
+    Remove-Item -Path "$mainTfFile.orig" -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "$mainTfFile.clean" -Force -ErrorAction SilentlyContinue
     Log "[ERROR] First terraform apply failed. Exiting." -color Red
     exit 1
 }
@@ -92,14 +124,14 @@ if (-not (Test-Path "import_blocks.tf")) {
     Log "[INFO] Successfully generated import_blocks.tf" -color Green
 }
 
-# If we added the importer, remove it now as it's not needed for the import process
-if (-not $importerExists) {
-    if (Test-Path "$mainTfFile.bak") {
-        Copy-Item -Path "$mainTfFile.bak" -Destination $mainTfFile -Force
-        Remove-Item -Path "$mainTfFile.bak" -Force
-        Log "[INFO] Removed verity_state_importer from $($mainTfFile)" -color Cyan
-    }
+# Always restore the clean version of the file (without importer)
+if (Test-Path "$mainTfFile.clean") {
+    Copy-Item -Path "$mainTfFile.clean" -Destination $mainTfFile -Force
+    Remove-Item -Path "$mainTfFile.clean" -Force
+    Log "[INFO] Removed verity_state_importer from $($mainTfFile)" -color Cyan
 }
+
+Remove-Item -Path "$mainTfFile.orig" -Force -ErrorAction SilentlyContinue
 
 # Second terraform apply to import resources
 Log "[INFO] Running second terraform apply to import resources into state..." -color Cyan

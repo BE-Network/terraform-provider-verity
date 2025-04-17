@@ -20,6 +20,11 @@ if ! command -v terraform &> /dev/null; then
   exit 1
 fi
 
+if ! command -v awk &> /dev/null; then
+  log "[ERROR] awk command not found. This script requires awk to run properly."
+  exit 1
+fi
+
 # Only run terraform init if not in local mode
 if [ "$LOCAL_MODE" = false ]; then
   log "[INFO] Running terraform init..."
@@ -51,10 +56,19 @@ IMPORTER_EXISTS=false
 if grep -q "verity_state_importer" "$MAIN_TF_FILE"; then
   IMPORTER_EXISTS=true
   log "[INFO] Found verity_state_importer in $MAIN_TF_FILE"
+  # Create a backup of the original file (which includes the importer)
+  cp "$MAIN_TF_FILE" "${MAIN_TF_FILE}.orig"
+  
+  # Create a clean version without the importer block
+  awk 'BEGIN{skip=0} 
+       /data "verity_state_importer"/ {skip=1; next} 
+       /^[[:space:]]*}/ {if (skip) {skip=0; next}} 
+       {if (!skip) print}' "$MAIN_TF_FILE" > "${MAIN_TF_FILE}.clean"
+  log "[INFO] Created clean version of $MAIN_TF_FILE without importer"
 else
   log "[INFO] verity_state_importer not found, will add it temporarily"
-  # Create a backup of the original file
-  cp "$MAIN_TF_FILE" "${MAIN_TF_FILE}.bak"
+  # Create a backup of the original file (without importer)
+  cp "$MAIN_TF_FILE" "${MAIN_TF_FILE}.clean"
   
   # Add the state importer data source
   echo -e "\ndata \"verity_state_importer\" \"import\" {\n  output_dir = var.config_dir\n}" >> "$MAIN_TF_FILE"
@@ -65,11 +79,15 @@ fi
 log "[INFO] Running terraform apply to generate resource files and import blocks..."
 terraform apply -auto-approve
 if [ $? -ne 0 ]; then
-  # If we added the importer and apply failed, restore the original file
-  if [ "$IMPORTER_EXISTS" = false ] && [ -f "${MAIN_TF_FILE}.bak" ]; then
-    mv "${MAIN_TF_FILE}.bak" "$MAIN_TF_FILE"
-    log "[INFO] Restored original $MAIN_TF_FILE"
+  # Restore the original file
+  if [ "$IMPORTER_EXISTS" = true ] && [ -f "${MAIN_TF_FILE}.orig" ]; then
+    mv "${MAIN_TF_FILE}.orig" "$MAIN_TF_FILE"
+  elif [ -f "${MAIN_TF_FILE}.clean" ]; then
+    mv "${MAIN_TF_FILE}.clean" "$MAIN_TF_FILE"
   fi
+  log "[INFO] Restored original $MAIN_TF_FILE"
+  # Clean up backup files
+  rm -f "${MAIN_TF_FILE}.orig" "${MAIN_TF_FILE}.clean"
   log "[ERROR] First terraform apply failed. Exiting."
   exit 1
 fi
@@ -82,13 +100,12 @@ else
   log "[INFO] Successfully generated import_blocks.tf"
 fi
 
-# If we added the importer, remove it now as it's not needed for the import process
-if [ "$IMPORTER_EXISTS" = false ]; then
-  if [ -f "${MAIN_TF_FILE}.bak" ]; then
-    mv "${MAIN_TF_FILE}.bak" "$MAIN_TF_FILE"
-    log "[INFO] Removed verity_state_importer from $MAIN_TF_FILE"
-  fi
+# Restore the clean version of the file (without importer)
+if [ -f "${MAIN_TF_FILE}.clean" ]; then
+  mv "${MAIN_TF_FILE}.clean" "$MAIN_TF_FILE"
+  log "[INFO] Removed verity_state_importer from $MAIN_TF_FILE"
 fi
+rm -f "${MAIN_TF_FILE}.orig"
 
 # Second terraform apply to import resources
 log "[INFO] Running second terraform apply to import resources into state..."
