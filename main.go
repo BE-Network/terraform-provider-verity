@@ -20,8 +20,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		// TODO: Update this string with the actual name of published verity provider.
-		Address: "registry.terraform.io/beyondedge/verity",
+		Address: "registry.terraform.io/BE-Network/verity",
 		Debug:   debug,
 	}
 	err := providerserver.Serve(context.Background(), provider.New(version), opts)
