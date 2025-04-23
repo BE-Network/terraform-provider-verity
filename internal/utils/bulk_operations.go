@@ -110,6 +110,23 @@ type BulkOperationManager struct {
 	operationErrors       map[string]error
 	operationWaitChannels map[string]chan struct{}
 	operationMutex        sync.Mutex
+	closedChannels        map[string]bool
+}
+
+func (b *BulkOperationManager) safeCloseChannel(opID string, lockAlreadyHeld ...bool) {
+	// Only lock if the caller doesn't already hold the lock
+	alreadyLocked := len(lockAlreadyHeld) > 0 && lockAlreadyHeld[0]
+	if !alreadyLocked {
+		b.operationMutex.Lock()
+		defer b.operationMutex.Unlock()
+	}
+
+	if waitCh, ok := b.operationWaitChannels[opID]; ok {
+		if _, closed := b.closedChannels[opID]; !closed {
+			close(waitCh)
+			b.closedChannels[opID] = true
+		}
+	}
 }
 
 func generateOperationID(resourceType, resourceName, operationType string) string {
@@ -122,6 +139,15 @@ func (b *BulkOperationManager) WaitForOperation(ctx context.Context, operationID
 	if !exists {
 		b.operationMutex.Unlock()
 		return fmt.Errorf("operation %s not found", operationID)
+	}
+
+	if closed, ok := b.closedChannels[operationID]; ok && closed {
+		var err error
+		if errorVal, hasError := b.operationErrors[operationID]; hasError {
+			err = errorVal
+		}
+		b.operationMutex.Unlock()
+		return err
 	}
 	b.operationMutex.Unlock()
 
@@ -176,6 +202,7 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		operationResults:      make(map[string]bool),
 		operationErrors:       make(map[string]error),
 		operationWaitChannels: make(map[string]chan struct{}),
+		closedChannels:        make(map[string]bool),
 
 		// Initialize with no recent operations
 		recentGatewayOps:         false,
@@ -199,21 +226,25 @@ func GetBulkOperationManager(client *openapi.APIClient, clearCacheFunc ClearCach
 
 func (b *BulkOperationManager) FailAllPendingOperations(ctx context.Context, err error) {
 	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
+	var idsToClose []string
 	failCount := 0
+
 	for opID, op := range b.pendingOperations {
 		if op.Status == OperationPending {
-			op.Status = OperationFailed
-			op.Error = fmt.Errorf("Operation aborted due to previous failure: %v", err)
-			b.operationErrors[opID] = op.Error
+			updatedOp := op
+			updatedOp.Status = OperationFailed
+			updatedOp.Error = fmt.Errorf("Operation aborted due to previous failure: %v", err)
+			b.pendingOperations[opID] = updatedOp
+			b.operationErrors[opID] = updatedOp.Error
 			b.operationResults[opID] = false
-
-			if waitCh, ok := b.operationWaitChannels[opID]; ok {
-				close(waitCh)
-			}
+			idsToClose = append(idsToClose, opID)
 			failCount++
 		}
+	}
+	b.operationMutex.Unlock()
+
+	for _, opID := range idsToClose {
+		b.safeCloseChannel(opID)
 	}
 
 	if failCount > 0 {
@@ -1647,7 +1678,7 @@ func (b *BulkOperationManager) ExecuteBulkGatewayPut(ctx context.Context) diag.D
 		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
 
 		req := b.client.GatewaysAPI.GatewaysPut(apiCtx).GatewaysPutRequest(*putRequest)
-		_, err := req.Execute()
+		_, err = req.Execute()
 
 		// Release the API call context
 		cancel()
@@ -1689,24 +1720,24 @@ func (b *BulkOperationManager) ExecuteBulkGatewayPut(ctx context.Context) diag.D
 			if _, exists := gatewayPut[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op // Create a local copy
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp // Update the map
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true) // Pass true because we already hold the lock
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op // Create a local copy
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp // Update the map
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true) // Pass true because we already hold the lock
 				}
 			}
 		}
@@ -1810,24 +1841,24 @@ func (b *BulkOperationManager) ExecuteBulkGatewayPatch(ctx context.Context) diag
 			if _, exists := gatewayPatch[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -1931,24 +1962,24 @@ func (b *BulkOperationManager) ExecuteBulkLagPut(ctx context.Context) diag.Diagn
 			if _, exists := lagPut[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2042,24 +2073,24 @@ func (b *BulkOperationManager) ExecuteBulkLagPatch(ctx context.Context) diag.Dia
 			if _, exists := lagPatch[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2149,24 +2180,24 @@ func (b *BulkOperationManager) ExecuteBulkLagDelete(ctx context.Context) diag.Di
 			if _, exists := lagDeleteMap[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2270,24 +2301,24 @@ func (b *BulkOperationManager) ExecuteBulkTenantPut(ctx context.Context) diag.Di
 			if _, exists := tenantPut[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2391,24 +2422,24 @@ func (b *BulkOperationManager) ExecuteBulkTenantPatch(ctx context.Context) diag.
 			if _, exists := tenantPatch[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2504,24 +2535,24 @@ func (b *BulkOperationManager) ExecuteBulkTenantDelete(ctx context.Context) diag
 			if _, exists := tenantDeleteMap[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2617,24 +2648,24 @@ func (b *BulkOperationManager) ExecuteBulkGatewayDelete(ctx context.Context) dia
 			if _, exists := gatewayDeleteMap[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2732,30 +2763,30 @@ func (b *BulkOperationManager) ExecuteBulkServicePut(ctx context.Context) diag.D
 	defer b.operationMutex.Unlock()
 
 	for opID, op := range b.pendingOperations {
-		// Only process Service PUT operations
+		// Only process service PUT operations
 		if op.ResourceType == "service" && op.OperationType == "PUT" {
 			// Check if this operation's service name is in our batch
 			if _, exists := servicePut[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op // Create a local copy
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp // Update the map
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op // Create a local copy
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp // Update the map
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2859,24 +2890,24 @@ func (b *BulkOperationManager) ExecuteBulkServicePatch(ctx context.Context) diag
 			if _, exists := servicePatch[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -2972,24 +3003,24 @@ func (b *BulkOperationManager) ExecuteBulkServiceDelete(ctx context.Context) dia
 			if _, exists := serviceDeleteMap[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -3093,24 +3124,24 @@ func (b *BulkOperationManager) ExecuteBulkGatewayProfilePut(ctx context.Context)
 			if _, exists := gatewayProfilePut[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -3214,24 +3245,24 @@ func (b *BulkOperationManager) ExecuteBulkGatewayProfilePatch(ctx context.Contex
 			if _, exists := gatewayProfilePatch[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -3328,24 +3359,24 @@ func (b *BulkOperationManager) ExecuteBulkGatewayProfileDelete(ctx context.Conte
 			if _, exists := gatewayProfileDeleteMap[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -3449,24 +3480,24 @@ func (b *BulkOperationManager) ExecuteBulkEthPortProfilePut(ctx context.Context)
 			if _, exists := ethPortProfilePut[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -3570,24 +3601,24 @@ func (b *BulkOperationManager) ExecuteBulkEthPortSettingsPut(ctx context.Context
 			if _, exists := ethPortSettingsPut[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -3691,24 +3722,24 @@ func (b *BulkOperationManager) ExecuteBulkEthPortProfilePatch(ctx context.Contex
 			if _, exists := ethPortProfilePatch[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -3812,24 +3843,24 @@ func (b *BulkOperationManager) ExecuteBulkEthPortSettingsPatch(ctx context.Conte
 			if _, exists := ethPortSettingsPatch[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -3925,24 +3956,24 @@ func (b *BulkOperationManager) ExecuteBulkEthPortProfileDelete(ctx context.Conte
 			if _, exists := ethPortProfileDeleteMap[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -4038,24 +4069,24 @@ func (b *BulkOperationManager) ExecuteBulkEthPortSettingsDelete(ctx context.Cont
 			if _, exists := ethPortSettingsDeleteMap[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
@@ -4155,24 +4186,24 @@ func (b *BulkOperationManager) ExecuteBulkBundlePatch(ctx context.Context) diag.
 			if _, exists := bundlePatch[op.ResourceName]; exists {
 				if err == nil {
 					// Mark operation as successful
-					op.Status = OperationSucceeded
+					updatedOp := op
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
 					b.operationResults[opID] = true
 
 					// Signal waiting resources
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				} else {
 					// Mark operation as failed
-					op.Status = OperationFailed
-					op.Error = err
+					updatedOp := op
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = err
+					b.pendingOperations[opID] = updatedOp
 					b.operationErrors[opID] = err
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
-					if waitCh, ok := b.operationWaitChannels[opID]; ok {
-						close(waitCh)
-					}
+					b.safeCloseChannel(opID, true)
 				}
 			}
 		}
