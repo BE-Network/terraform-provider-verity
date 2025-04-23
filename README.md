@@ -31,6 +31,24 @@ provider_installation {
 ```
 (Note: if using windows pay attention to the windows format for director naming)
 
+Then in your Terraform configuration file, specify the local provider:
+
+```hcl
+terraform {
+  required_providers {
+    verity = {
+      source = "registry.terraform.io/local/verity"
+    }
+  }
+}
+
+provider "verity" {
+  uri      = var.uri
+  username = var.username
+  password = var.password
+}
+```
+
 
 To use this configuration, you can either:
 - Copy it to `~/.terraformrc`
@@ -73,6 +91,29 @@ provider "verity" {
 
 Make sure to set these environment variables before running any Terraform commands. (Of course, windows is different...)
 
+
+## Production Setup
+
+For production use, configure Terraform to download the provider from the registry:
+
+```hcl
+terraform {
+  required_providers {
+    verity = {
+      source  = "BE-Network/verity"
+      version = "1.0.3"
+    }
+  }
+}
+
+provider "verity" {
+  uri      = var.uri
+  username = var.username
+  password = var.password
+}
+```
+
+> Replace `1.0.3` with the desired release version.
 
 ## Recommended Environment Variables
 
@@ -135,27 +176,30 @@ The provider includes scripts to help import existing Verity resources into Terr
 #### Linux and macOS
 
 ```bash
-# From your Terraform project directory
-../tools/import_verity_state.sh
+# Production
+.terraform/providers/registry.terraform.io/be-network/verity/<VERSION>/<OS>_<ARCH>/tools/import_verity_state.sh
 
-# If using a local provider (skip terraform init)
+# Local (skip terraform init)
 ../tools/import_verity_state.sh --local
 ```
 
-#### Windows
+#### Windows PowerShell
 
 ```powershell
-# From your Terraform project directory
-..\tools\import_verity_state.ps1
+# Production
+.terraform\providers\registry.terraform.io\be-network\verity\<VERSION>\<OS>_<ARCH>\tools\import_verity_state.ps1
 
-# If using a local provider (skip terraform init)
+# Local (skip terraform init)
 ..\tools\import_verity_state.ps1 -Local
 ```
+
+> **Note:** Replace:
+> - `<VERSION>` with the actual provider version (e.g. `1.0.3`)
+> - `<OS>` with your operating system (e.g. `linux`, `windows`, `darwin`)
+> - `<ARCH>` with your CPU architecture (e.g. `amd64`, `arm64`)
 
 ### Prerequisites
 
 - Terraform must be installed and in your PATH
 - Your Terraform files must include a Verity provider configuration
 - Environment variables for authentication must be set (see "Required Environment Variables" section)
-
-- 
