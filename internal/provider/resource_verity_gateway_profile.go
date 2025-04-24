@@ -436,7 +436,6 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 	name := data.Name.ValueString()
 	hasChanges := false
 	profileObj := openapi.ConfigPutRequestGatewayProfileGatewayProfileName{}
-	profileObj.Name = openapi.PtrString(name)
 
 	if !data.Enable.Equal(state.Enable) {
 		enable := data.Enable.ValueBool()

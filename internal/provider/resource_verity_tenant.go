@@ -598,7 +598,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	tenantReq := openapi.ConfigPutRequestTenantTenantName{}
-	tenantReq.Name = openapi.PtrString(plan.Name.ValueString())
 	hasChanges := false
 
 	if len(plan.ObjectProperties) > 0 {

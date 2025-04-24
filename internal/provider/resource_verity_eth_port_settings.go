@@ -571,20 +571,31 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	}
 
 	ethPortSettingsReq := openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName{}
-	ethPortSettingsReq.Name = openapi.PtrString(plan.Name.ValueString())
 	hasChanges := false
 
-	if len(plan.ObjectProperties) > 0 {
-		objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
-		if !plan.ObjectProperties[0].Group.IsNull() {
-			objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
-		} else {
-			objProps.Group = nil
+	objectPropertiesChanged := false
+
+	if (len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) == 0) ||
+		(len(plan.ObjectProperties) == 0 && len(state.ObjectProperties) > 0) {
+		objectPropertiesChanged = true
+	} else if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		if !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
+			objectPropertiesChanged = true
 		}
-		ethPortSettingsReq.ObjectProperties = &objProps
-		hasChanges = true
-	} else {
-		ethPortSettingsReq.ObjectProperties = nil
+	}
+
+	if objectPropertiesChanged {
+		if len(plan.ObjectProperties) > 0 {
+			objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+			if !plan.ObjectProperties[0].Group.IsNull() {
+				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
+			} else {
+				objProps.Group = nil
+			}
+			ethPortSettingsReq.ObjectProperties = &objProps
+		} else {
+			ethPortSettingsReq.ObjectProperties = nil
+		}
 		hasChanges = true
 	}
 

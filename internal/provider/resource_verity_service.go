@@ -456,8 +456,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	name := plan.Name.ValueString()
-	serviceReq := openapi.NewConfigPutRequestServiceServiceName()
-	serviceReq.Name = openapi.PtrString(name)
+	serviceReq := &openapi.ConfigPutRequestServiceServiceName{}
 	hasChanges := false
 
 	if len(plan.ObjectProperties) > 0 {
@@ -471,8 +470,9 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 			serviceReq.ObjectProperties = &objProps
 			hasChanges = true
 		}
-	} else {
+	} else if len(state.ObjectProperties) > 0 {
 		serviceReq.ObjectProperties = nil
+		hasChanges = true
 	}
 
 	if !plan.Enable.Equal(state.Enable) {
@@ -488,12 +488,8 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 			serviceReq.Vlan = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.Vlan.IsNull() {
-		vlanVal := int32(state.Vlan.ValueInt64())
-		serviceReq.Vlan = *openapi.NewNullableInt32(&vlanVal)
-	} else {
-		serviceReq.Vlan = *openapi.NewNullableInt32(nil)
 	}
+
 	if !plan.Vni.Equal(state.Vni) {
 		if !plan.Vni.IsNull() {
 			vniVal := int32(plan.Vni.ValueInt64())
@@ -502,11 +498,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 			serviceReq.Vni = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.Vni.IsNull() {
-		vniVal := int32(state.Vni.ValueInt64())
-		serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
-	} else {
-		serviceReq.Vni = *openapi.NewNullableInt32(nil)
 	}
 
 	if !plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {
@@ -518,14 +509,17 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		serviceReq.Tenant = openapi.PtrString(plan.Tenant.ValueString())
 		hasChanges = true
 	}
+
 	if !plan.TenantRefType.Equal(state.TenantRefType) {
 		serviceReq.TenantRefType = openapi.PtrString(plan.TenantRefType.ValueString())
 		hasChanges = true
 	}
+
 	if !plan.AnycastIpMask.Equal(state.AnycastIpMask) {
 		serviceReq.AnycastIpMask = openapi.PtrString(plan.AnycastIpMask.ValueString())
 		hasChanges = true
 	}
+
 	if !plan.DhcpServerIp.Equal(state.DhcpServerIp) {
 		serviceReq.DhcpServerIp = openapi.PtrString(plan.DhcpServerIp.ValueString())
 		hasChanges = true
@@ -539,11 +533,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 			serviceReq.Mtu = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.Mtu.IsNull() {
-		mtuVal := int32(state.Mtu.ValueInt64())
-		serviceReq.Mtu = *openapi.NewNullableInt32(&mtuVal)
-	} else {
-		serviceReq.Mtu = *openapi.NewNullableInt32(nil)
 	}
 
 	if !hasChanges {

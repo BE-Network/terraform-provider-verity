@@ -483,7 +483,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 	name := plan.Name.ValueString()
 	ethPortName := openapi.ConfigPutRequestEthPortProfileEthPortProfileName{}
-	ethPortName.Name = openapi.PtrString(name)
 
 	hasChanges := false
 

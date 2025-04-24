@@ -432,14 +432,11 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 
 	name := plan.Name.ValueString()
 	lagReq := &openapi.ConfigPutRequestLagLagName{}
-	lagReq.Name = openapi.PtrString(name)
 	hasChanges := false
 
-	if len(plan.ObjectProperties) > 0 {
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) == 0 {
 		lagReq.ObjectProperties = make(map[string]interface{})
 		hasChanges = true
-	} else {
-		lagReq.ObjectProperties = nil
 	}
 
 	boolFields := []string{"enable", "is_peer_link", "lacp", "fallback", "fast_rate", "uplink"}
@@ -489,11 +486,6 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 			lagReq.PeerLinkVlan = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.PeerLinkVlan.IsNull() {
-		peerLinkVlan := int32(state.PeerLinkVlan.ValueInt64())
-		lagReq.PeerLinkVlan = *openapi.NewNullableInt32(&peerLinkVlan)
-	} else {
-		lagReq.PeerLinkVlan = *openapi.NewNullableInt32(nil)
 	}
 
 	if !hasChanges {

@@ -785,8 +785,12 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 	name := plan.Name.ValueString()
 	gatewayProps := openapi.ConfigPutRequestGatewayGatewayName{}
-	gatewayProps.Name = openapi.PtrString(name)
 	hasChanges := false
+
+	if !plan.Name.Equal(state.Name) {
+		gatewayProps.Name = openapi.PtrString(name)
+		hasChanges = true
+	}
 
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
@@ -889,11 +893,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			gatewayProps.NeighborAsNumber = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.NeighborAsNumber.IsNull() {
-		val := int32(state.NeighborAsNumber.ValueInt64())
-		gatewayProps.NeighborAsNumber = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.NeighborAsNumber = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.KeepaliveTimer.Equal(state.KeepaliveTimer) {
 		gatewayProps.KeepaliveTimer = openapi.PtrInt32(int32(plan.KeepaliveTimer.ValueInt64()))
@@ -923,11 +922,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			gatewayProps.EgressVlan = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.EgressVlan.IsNull() {
-		val := int32(state.EgressVlan.ValueInt64())
-		gatewayProps.EgressVlan = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.EgressVlan = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.LocalAsNumber.Equal(state.LocalAsNumber) {
 		if !plan.LocalAsNumber.IsNull() {
@@ -937,11 +931,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.LocalAsNumber.IsNull() {
-		val := int32(state.LocalAsNumber.ValueInt64())
-		gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.MaxLocalAsOccurrences.Equal(state.MaxLocalAsOccurrences) {
 		if !plan.MaxLocalAsOccurrences.IsNull() {
@@ -951,11 +940,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			gatewayProps.MaxLocalAsOccurrences = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.MaxLocalAsOccurrences.IsNull() {
-		val := int32(state.MaxLocalAsOccurrences.ValueInt64())
-		gatewayProps.MaxLocalAsOccurrences = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.MaxLocalAsOccurrences = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.DynamicBgpLimits.Equal(state.DynamicBgpLimits) {
 		if !plan.DynamicBgpLimits.IsNull() {
@@ -965,11 +949,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			gatewayProps.DynamicBgpLimits = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.DynamicBgpLimits.IsNull() {
-		val := int32(state.DynamicBgpLimits.ValueInt64())
-		gatewayProps.DynamicBgpLimits = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.DynamicBgpLimits = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.BfdReceiveInterval.Equal(state.BfdReceiveInterval) {
 		if !plan.BfdReceiveInterval.IsNull() {
@@ -979,11 +958,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			gatewayProps.BfdReceiveInterval = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.BfdReceiveInterval.IsNull() {
-		val := int32(state.BfdReceiveInterval.ValueInt64())
-		gatewayProps.BfdReceiveInterval = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.BfdReceiveInterval = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.BfdTransmissionInterval.Equal(state.BfdTransmissionInterval) {
 		if !plan.BfdTransmissionInterval.IsNull() {
@@ -993,11 +967,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			gatewayProps.BfdTransmissionInterval = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.BfdTransmissionInterval.IsNull() {
-		val := int32(state.BfdTransmissionInterval.ValueInt64())
-		gatewayProps.BfdTransmissionInterval = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.BfdTransmissionInterval = *openapi.NewNullableInt32(nil)
 	}
 	if !plan.BfdDetectMultiplier.Equal(state.BfdDetectMultiplier) {
 		if !plan.BfdDetectMultiplier.IsNull() {
@@ -1007,11 +976,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
-	} else if !state.BfdDetectMultiplier.IsNull() {
-		val := int32(state.BfdDetectMultiplier.ValueInt64())
-		gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(nil)
 	}
 
 	oldStaticRoutesByIndex := make(map[int64]verityGatewayStaticRoutesModel)
