@@ -544,7 +544,6 @@ func (r *verityLagResource) Delete(ctx context.Context, req resource.DeleteReque
 
 	tflog.Info(ctx, fmt.Sprintf("LAG %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "lags")
-
 	resp.State.RemoveResource(ctx)
 }
 

@@ -323,10 +323,7 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 	}
 
 	if !exists {
-		resp.Diagnostics.AddWarning(
-			"Gateway Profile Not Found",
-			fmt.Sprintf("Gateway profile %s was not found in the API response. Removing from state.", profileName),
-		)
+		tflog.Debug(ctx, fmt.Sprintf("Gateway profile with ID '%s' not found in API response", profileName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
@@ -592,6 +589,7 @@ func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.
 	}
 
 	clearCache(ctx, r.provCtx, "gateway_profiles")
+	resp.State.RemoveResource(ctx)
 }
 
 func (r *verityGatewayProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

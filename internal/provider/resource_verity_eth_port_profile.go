@@ -229,9 +229,6 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		}
 
 		ethPortName.Services = services
-
-		requestJson, _ := json.MarshalIndent(ethPortName, "", "  ")
-		tflog.Debug(ctx, fmt.Sprintf("API request payload: %s", string(requestJson)))
 	}
 
 	operationID := r.bulkOpsMgr.AddEthPortProfilePut(ctx, name, ethPortName)
@@ -645,6 +642,7 @@ func (r *verityEthPortProfileResource) Delete(ctx context.Context, req resource.
 
 	tflog.Info(ctx, fmt.Sprintf("Eth port profile %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_profiles")
+	resp.State.RemoveResource(ctx)
 }
 
 func (r *verityEthPortProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
