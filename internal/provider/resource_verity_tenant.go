@@ -110,6 +110,7 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			"layer_3_vni": schema.Int64Attribute{
 				Description: "VNI value used to transport traffic between services of a Tenant",
 				Optional:    true,
+				Computed:    true,
 			},
 			"layer_3_vni_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in layer_3_vni field has been automatically assigned",
@@ -118,6 +119,7 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			"layer_3_vlan": schema.Int64Attribute{
 				Description: "VLAN value used to transport traffic between services of a Tenant",
 				Optional:    true,
+				Computed:    true,
 			},
 			"layer_3_vlan_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in layer_3_vlan field has been automatically assigned",
@@ -158,6 +160,7 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			"vrf_name": schema.StringAttribute{
 				Description: "Virtual Routing and Forwarding instance name",
 				Optional:    true,
+				Computed:    true,
 			},
 			"vrf_name_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in vrf_name field has been automatically assigned",
@@ -302,8 +305,33 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	tflog.Info(ctx, fmt.Sprintf("Tenant %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "tenants")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityTenantResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if tenantData, exists := bulkMgr.GetTenantResponse(name); exists {
+			// Use the cached data with plan values as fallback
+			state := populateTenantState(ctx, minState, tenantData, &plan)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -328,8 +356,22 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 	bulkOpsMgr := provCtx.bulkOpsMgr
 	tenantName := state.Name.ValueString()
 
+	var tenantData map[string]interface{}
+	var exists bool
+
+	if bulkOpsMgr != nil {
+		tenantData, exists = bulkOpsMgr.GetTenantResponse(tenantName)
+		if exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached tenant data for %s from recent operation", tenantName))
+			state = populateTenantState(ctx, state, tenantData, nil)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
 	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentTenantOperations() {
 		tflog.Info(ctx, fmt.Sprintf("Skipping tenant %s verification - trusting recent successful API operation", tenantName))
+		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 		return
 	}
 
@@ -376,8 +418,7 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("Looking for tenant with ID: %s", tenantName))
-	var tenantData map[string]interface{}
-	exists := false
+	exists = false
 
 	if data, ok := result.Tenant[tenantName]; ok {
 		tenantData = data
@@ -401,156 +442,7 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", tenantData["name"]))
-	if val, ok := tenantData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(val)
-	} else {
-		state.Enable = types.BoolNull()
-	}
-
-	if op, ok := tenantData["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityTenantObjectPropertiesModel{
-			{
-				Group: types.StringValue(fmt.Sprintf("%v", op["group"])),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	if val, ok := tenantData["layer_3_vni"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Layer3Vni = types.Int64Value(int64(v))
-		case int:
-			state.Layer3Vni = types.Int64Value(int64(v))
-		default:
-			state.Layer3Vni = types.Int64Null()
-		}
-	} else {
-		state.Layer3Vni = types.Int64Null()
-	}
-
-	if val, ok := tenantData["layer_3_vni_auto_assigned_"].(bool); ok {
-		state.Layer3VniAutoAssigned = types.BoolValue(val)
-	} else {
-		state.Layer3VniAutoAssigned = types.BoolNull()
-	}
-
-	if val, ok := tenantData["layer_3_vlan"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Layer3Vlan = types.Int64Value(int64(v))
-		case int:
-			state.Layer3Vlan = types.Int64Value(int64(v))
-		default:
-			state.Layer3Vlan = types.Int64Null()
-		}
-	} else {
-		state.Layer3Vlan = types.Int64Null()
-	}
-
-	if val, ok := tenantData["layer_3_vlan_auto_assigned_"].(bool); ok {
-		state.Layer3VlanAutoAssigned = types.BoolValue(val)
-	} else {
-		state.Layer3VlanAutoAssigned = types.BoolNull()
-	}
-
-	if val, ok := tenantData["dhcp_relay_source_ips_subnet"].(string); ok {
-		state.DhcpRelaySourceIpsSubnet = types.StringValue(val)
-	} else {
-		state.DhcpRelaySourceIpsSubnet = types.StringNull()
-	}
-
-	if val, ok := tenantData["route_distinguisher"].(string); ok {
-		state.RouteDistinguisher = types.StringValue(val)
-	} else {
-		state.RouteDistinguisher = types.StringNull()
-	}
-
-	if val, ok := tenantData["route_target_import"].(string); ok {
-		state.RouteTargetImport = types.StringValue(val)
-	} else {
-		state.RouteTargetImport = types.StringNull()
-	}
-
-	if val, ok := tenantData["route_target_export"].(string); ok {
-		state.RouteTargetExport = types.StringValue(val)
-	} else {
-		state.RouteTargetExport = types.StringNull()
-	}
-
-	if val, ok := tenantData["import_route_map"].(string); ok {
-		state.ImportRouteMap = types.StringValue(val)
-	} else {
-		state.ImportRouteMap = types.StringNull()
-	}
-
-	if val, ok := tenantData["import_route_map_ref_type_"].(string); ok {
-		state.ImportRouteMapRefType = types.StringValue(val)
-	} else {
-		state.ImportRouteMapRefType = types.StringNull()
-	}
-
-	if val, ok := tenantData["export_route_map"].(string); ok {
-		state.ExportRouteMap = types.StringValue(val)
-	} else {
-		state.ExportRouteMap = types.StringNull()
-	}
-
-	if val, ok := tenantData["export_route_map_ref_type_"].(string); ok {
-		state.ExportRouteMapRefType = types.StringValue(val)
-	} else {
-		state.ExportRouteMapRefType = types.StringNull()
-	}
-
-	if val, ok := tenantData["vrf_name"].(string); ok {
-		state.VrfName = types.StringValue(val)
-	} else {
-		state.VrfName = types.StringNull()
-	}
-
-	if val, ok := tenantData["vrf_name_auto_assigned_"].(bool); ok {
-		state.VrfNameAutoAssigned = types.BoolValue(val)
-	} else {
-		state.VrfNameAutoAssigned = types.BoolNull()
-	}
-
-	if rtVal, ok := tenantData["route_tenants"].([]interface{}); ok {
-		var routeTenants []verityTenantRouteTenantModel
-		for _, rt := range rtVal {
-			rtMap, ok := rt.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			routeTenant := verityTenantRouteTenantModel{}
-			if val, ok := rtMap["enable"].(bool); ok {
-				routeTenant.Enable = types.BoolValue(val)
-			} else {
-				routeTenant.Enable = types.BoolNull()
-			}
-			if val, ok := rtMap["tenant"].(string); ok {
-				routeTenant.Tenant = types.StringValue(val)
-			} else {
-				routeTenant.Tenant = types.StringNull()
-			}
-			if val, ok := rtMap["tenant_ref_type_"].(string); ok {
-				routeTenant.TenantRefType = types.StringValue(val)
-			} else {
-				routeTenant.TenantRefType = types.StringNull()
-			}
-			if val, ok := rtMap["index"].(float64); ok {
-				routeTenant.Index = types.Int64Value(int64(val))
-			} else {
-				routeTenant.Index = types.Int64Null()
-			}
-			routeTenants = append(routeTenants, routeTenant)
-		}
-		state.RouteTenants = routeTenants
-	} else {
-		state.RouteTenants = nil
-	}
-
+	state = populateTenantState(ctx, state, tenantData, nil)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -877,4 +769,216 @@ func (r *verityTenantResource) Delete(ctx context.Context, req resource.DeleteRe
 
 func (r *verityTenantResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateTenantState(ctx context.Context, state verityTenantResourceModel, tenantData map[string]interface{}, plan *verityTenantResourceModel) verityTenantResourceModel {
+	state.Name = types.StringValue(fmt.Sprintf("%v", tenantData["name"]))
+
+	// For each field, check if it's in the API response first,
+	// if not and we have a plan value, use that instead of null
+
+	if val, ok := tenantData["enable"].(bool); ok {
+		state.Enable = types.BoolValue(val)
+	} else if plan != nil && !plan.Enable.IsNull() {
+		state.Enable = plan.Enable
+	} else {
+		state.Enable = types.BoolNull()
+	}
+
+	if op, ok := tenantData["object_properties"].(map[string]interface{}); ok {
+		state.ObjectProperties = []verityTenantObjectPropertiesModel{
+			{
+				Group: types.StringValue(fmt.Sprintf("%v", op["group"])),
+			},
+		}
+	} else if plan != nil && len(plan.ObjectProperties) > 0 {
+		state.ObjectProperties = plan.ObjectProperties
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	if val, ok := tenantData["layer_3_vni"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.Layer3Vni = types.Int64Value(int64(v))
+		case int:
+			state.Layer3Vni = types.Int64Value(int64(v))
+		default:
+			if plan != nil && !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
+				state.Layer3Vni = types.Int64Null()
+			} else if plan != nil && !plan.Layer3Vni.IsNull() {
+				state.Layer3Vni = plan.Layer3Vni
+			} else {
+				state.Layer3Vni = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.Layer3Vni.IsNull() {
+		state.Layer3Vni = plan.Layer3Vni
+	} else {
+		state.Layer3Vni = types.Int64Null()
+	}
+
+	if val, ok := tenantData["layer_3_vni_auto_assigned_"].(bool); ok {
+		state.Layer3VniAutoAssigned = types.BoolValue(val)
+	} else if plan != nil && !plan.Layer3VniAutoAssigned.IsNull() {
+		state.Layer3VniAutoAssigned = plan.Layer3VniAutoAssigned
+	} else {
+		state.Layer3VniAutoAssigned = types.BoolNull()
+	}
+
+	if val, ok := tenantData["layer_3_vlan"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.Layer3Vlan = types.Int64Value(int64(v))
+		case int:
+			state.Layer3Vlan = types.Int64Value(int64(v))
+		default:
+			if plan != nil && !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
+				state.Layer3Vlan = types.Int64Null()
+			} else if plan != nil && !plan.Layer3Vlan.IsNull() {
+				state.Layer3Vlan = plan.Layer3Vlan
+			} else {
+				state.Layer3Vlan = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.Layer3Vlan.IsNull() {
+		state.Layer3Vlan = plan.Layer3Vlan
+	} else {
+		state.Layer3Vlan = types.Int64Null()
+	}
+
+	if val, ok := tenantData["layer_3_vlan_auto_assigned_"].(bool); ok {
+		state.Layer3VlanAutoAssigned = types.BoolValue(val)
+	} else if plan != nil && !plan.Layer3VlanAutoAssigned.IsNull() {
+		state.Layer3VlanAutoAssigned = plan.Layer3VlanAutoAssigned
+	} else {
+		state.Layer3VlanAutoAssigned = types.BoolNull()
+	}
+
+	if val, ok := tenantData["vrf_name"].(string); ok {
+		state.VrfName = types.StringValue(val)
+	} else if plan != nil && !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
+		state.VrfName = types.StringValue("")
+	} else if plan != nil && !plan.VrfName.IsNull() {
+		state.VrfName = plan.VrfName
+	} else {
+		state.VrfName = types.StringNull()
+	}
+
+	if val, ok := tenantData["vrf_name_auto_assigned_"].(bool); ok {
+		state.VrfNameAutoAssigned = types.BoolValue(val)
+	} else if plan != nil && !plan.VrfNameAutoAssigned.IsNull() {
+		state.VrfNameAutoAssigned = plan.VrfNameAutoAssigned
+	} else {
+		state.VrfNameAutoAssigned = types.BoolNull()
+	}
+
+	stringFields := map[string]*types.String{
+		"dhcp_relay_source_ips_subnet": &state.DhcpRelaySourceIpsSubnet,
+		"route_distinguisher":          &state.RouteDistinguisher,
+		"route_target_import":          &state.RouteTargetImport,
+		"route_target_export":          &state.RouteTargetExport,
+		"import_route_map":             &state.ImportRouteMap,
+		"import_route_map_ref_type_":   &state.ImportRouteMapRefType,
+		"export_route_map":             &state.ExportRouteMap,
+		"export_route_map_ref_type_":   &state.ExportRouteMapRefType,
+	}
+
+	for apiKey, stateField := range stringFields {
+		if val, ok := tenantData[apiKey].(string); ok {
+			*stateField = types.StringValue(val)
+		} else if plan != nil {
+			switch apiKey {
+			case "dhcp_relay_source_ips_subnet":
+				if !plan.DhcpRelaySourceIpsSubnet.IsNull() {
+					*stateField = plan.DhcpRelaySourceIpsSubnet
+				} else {
+					*stateField = types.StringNull()
+				}
+			case "route_distinguisher":
+				if !plan.RouteDistinguisher.IsNull() {
+					*stateField = plan.RouteDistinguisher
+				} else {
+					*stateField = types.StringNull()
+				}
+			case "route_target_import":
+				if !plan.RouteTargetImport.IsNull() {
+					*stateField = plan.RouteTargetImport
+				} else {
+					*stateField = types.StringNull()
+				}
+			case "route_target_export":
+				if !plan.RouteTargetExport.IsNull() {
+					*stateField = plan.RouteTargetExport
+				} else {
+					*stateField = types.StringNull()
+				}
+			case "import_route_map":
+				if !plan.ImportRouteMap.IsNull() {
+					*stateField = plan.ImportRouteMap
+				} else {
+					*stateField = types.StringNull()
+				}
+			case "import_route_map_ref_type_":
+				if !plan.ImportRouteMapRefType.IsNull() {
+					*stateField = plan.ImportRouteMapRefType
+				} else {
+					*stateField = types.StringNull()
+				}
+			case "export_route_map":
+				if !plan.ExportRouteMap.IsNull() {
+					*stateField = plan.ExportRouteMap
+				} else {
+					*stateField = types.StringNull()
+				}
+			case "export_route_map_ref_type_":
+				if !plan.ExportRouteMapRefType.IsNull() {
+					*stateField = plan.ExportRouteMapRefType
+				} else {
+					*stateField = types.StringNull()
+				}
+			}
+		} else {
+			*stateField = types.StringNull()
+		}
+	}
+
+	if rtVal, ok := tenantData["route_tenants"].([]interface{}); ok {
+		var routeTenants []verityTenantRouteTenantModel
+		for _, rt := range rtVal {
+			rtMap, ok := rt.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			routeTenant := verityTenantRouteTenantModel{}
+			if val, ok := rtMap["enable"].(bool); ok {
+				routeTenant.Enable = types.BoolValue(val)
+			} else {
+				routeTenant.Enable = types.BoolNull()
+			}
+			if val, ok := rtMap["tenant"].(string); ok {
+				routeTenant.Tenant = types.StringValue(val)
+			} else {
+				routeTenant.Tenant = types.StringNull()
+			}
+			if val, ok := rtMap["tenant_ref_type_"].(string); ok {
+				routeTenant.TenantRefType = types.StringValue(val)
+			} else {
+				routeTenant.TenantRefType = types.StringNull()
+			}
+			if val, ok := rtMap["index"].(float64); ok {
+				routeTenant.Index = types.Int64Value(int64(val))
+			} else {
+				routeTenant.Index = types.Int64Null()
+			}
+			routeTenants = append(routeTenants, routeTenant)
+		}
+		state.RouteTenants = routeTenants
+	} else if plan != nil && len(plan.RouteTenants) > 0 {
+		state.RouteTenants = plan.RouteTenants
+	} else {
+		state.RouteTenants = nil
+	}
+
+	return state
 }

@@ -102,6 +102,7 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 			"vni": schema.Int64Attribute{
 				Description: "Indication of the outgoing VLAN layer 2 service",
 				Optional:    true,
+				Computed:    true,
 			},
 			"vni_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in vni field has been automatically assigned or not.",
@@ -233,8 +234,33 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	tflog.Info(ctx, fmt.Sprintf("Service %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "services")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityServiceResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if serviceData, exists := bulkMgr.GetServiceResponse(name); exists {
+			// Use the cached data with plan values as fallback
+			state := populateServiceState(ctx, minState, serviceData, &plan)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -259,8 +285,22 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 	bulkOpsMgr := provCtx.bulkOpsMgr
 	serviceName := state.Name.ValueString()
 
+	var serviceData map[string]interface{}
+	var exists bool
+
+	if bulkOpsMgr != nil {
+		serviceData, exists = bulkOpsMgr.GetServiceResponse(serviceName)
+		if exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached service data for %s from recent operation", serviceName))
+			state = populateServiceState(ctx, state, serviceData, nil)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
 	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentServiceOperations() {
 		tflog.Info(ctx, fmt.Sprintf("Skipping service %s verification - trusting recent successful API operation", serviceName))
+		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 		return
 	}
 
@@ -314,9 +354,6 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("Looking for service with ID: %s", serviceName))
-	var serviceData map[string]interface{}
-	exists := false
-
 	if data, ok := result.Service[serviceName]; ok {
 		serviceData = data
 		exists = true
@@ -339,92 +376,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", serviceData["name"]))
-
-	if val, ok := serviceData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(val)
-	} else {
-		state.Enable = types.BoolNull()
-	}
-
-	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityServiceObjectPropertiesModel{
-			{
-				Group: types.StringValue(fmt.Sprintf("%v", op["group"])),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	if val, ok := serviceData["vlan"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Vlan = types.Int64Value(int64(v))
-		case int:
-			state.Vlan = types.Int64Value(int64(v))
-		default:
-			state.Vlan = types.Int64Null()
-		}
-	} else {
-		state.Vlan = types.Int64Null()
-	}
-
-	if val, ok := serviceData["vni"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Vni = types.Int64Value(int64(v))
-		case int:
-			state.Vni = types.Int64Value(int64(v))
-		default:
-			state.Vni = types.Int64Null()
-		}
-	} else {
-		state.Vni = types.Int64Null()
-	}
-
-	if val, ok := serviceData["vni_auto_assigned_"].(bool); ok {
-		state.VniAutoAssigned = types.BoolValue(val)
-	} else {
-		state.VniAutoAssigned = types.BoolNull()
-	}
-
-	if val, ok := serviceData["tenant"].(string); ok {
-		state.Tenant = types.StringValue(val)
-	} else {
-		state.Tenant = types.StringNull()
-	}
-
-	if val, ok := serviceData["tenant_ref_type_"].(string); ok {
-		state.TenantRefType = types.StringValue(val)
-	} else {
-		state.TenantRefType = types.StringNull()
-	}
-
-	if val, ok := serviceData["anycast_ip_mask"].(string); ok {
-		state.AnycastIpMask = types.StringValue(val)
-	} else {
-		state.AnycastIpMask = types.StringNull()
-	}
-
-	if val, ok := serviceData["dhcp_server_ip"].(string); ok {
-		state.DhcpServerIp = types.StringValue(val)
-	} else {
-		state.DhcpServerIp = types.StringNull()
-	}
-
-	if val, ok := serviceData["mtu"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Mtu = types.Int64Value(int64(v))
-		case int:
-			state.Mtu = types.Int64Value(int64(v))
-		default:
-			state.Mtu = types.Int64Null()
-		}
-	} else {
-		state.Mtu = types.Int64Null()
-	}
+	state = populateServiceState(ctx, state, serviceData, nil)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -595,4 +547,134 @@ func (r *verityServiceResource) Delete(ctx context.Context, req resource.DeleteR
 
 func (r *verityServiceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateServiceState(ctx context.Context, state verityServiceResourceModel, serviceData map[string]interface{}, plan *verityServiceResourceModel) verityServiceResourceModel {
+	state.Name = types.StringValue(fmt.Sprintf("%v", serviceData["name"]))
+
+	// For each field, check if it's in the API response first,
+	// if not and we have a plan value, use that instead of null
+
+	if val, ok := serviceData["enable"].(bool); ok {
+		state.Enable = types.BoolValue(val)
+	} else if plan != nil && !plan.Enable.IsNull() {
+		state.Enable = plan.Enable
+	} else {
+		state.Enable = types.BoolNull()
+	}
+
+	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
+		state.ObjectProperties = []verityServiceObjectPropertiesModel{
+			{
+				Group: types.StringValue(fmt.Sprintf("%v", op["group"])),
+			},
+		}
+	} else if plan != nil && len(plan.ObjectProperties) > 0 {
+		state.ObjectProperties = plan.ObjectProperties
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	if val, ok := serviceData["vlan"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.Vlan = types.Int64Value(int64(v))
+		case int:
+			state.Vlan = types.Int64Value(int64(v))
+		default:
+			if plan != nil && !plan.Vlan.IsNull() {
+				state.Vlan = plan.Vlan
+			} else {
+				state.Vlan = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.Vlan.IsNull() {
+		state.Vlan = plan.Vlan
+	} else {
+		state.Vlan = types.Int64Null()
+	}
+
+	if val, ok := serviceData["vni"]; ok && val != nil {
+		switch v := val.(type) {
+		case float64:
+			state.Vni = types.Int64Value(int64(v))
+		case int:
+			state.Vni = types.Int64Value(int64(v))
+		case int32:
+			state.Vni = types.Int64Value(int64(v))
+		default:
+			if plan != nil && !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+				state.Vni = types.Int64Null()
+			} else if plan != nil && !plan.Vni.IsNull() {
+				state.Vni = plan.Vni
+			} else {
+				state.Vni = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.Vni.IsNull() {
+		state.Vni = plan.Vni
+	} else {
+		state.Vni = types.Int64Null()
+	}
+
+	if val, ok := serviceData["vni_auto_assigned_"].(bool); ok {
+		state.VniAutoAssigned = types.BoolValue(val)
+	} else if plan != nil && !plan.VniAutoAssigned.IsNull() {
+		state.VniAutoAssigned = plan.VniAutoAssigned
+	} else {
+		state.VniAutoAssigned = types.BoolNull()
+	}
+
+	if val, ok := serviceData["tenant"].(string); ok {
+		state.Tenant = types.StringValue(val)
+	} else if plan != nil && !plan.Tenant.IsNull() {
+		state.Tenant = plan.Tenant
+	} else {
+		state.Tenant = types.StringNull()
+	}
+
+	if val, ok := serviceData["tenant_ref_type_"].(string); ok {
+		state.TenantRefType = types.StringValue(val)
+	} else if plan != nil && !plan.TenantRefType.IsNull() {
+		state.TenantRefType = plan.TenantRefType
+	} else {
+		state.TenantRefType = types.StringNull()
+	}
+
+	if val, ok := serviceData["anycast_ip_mask"].(string); ok {
+		state.AnycastIpMask = types.StringValue(val)
+	} else if plan != nil && !plan.AnycastIpMask.IsNull() {
+		state.AnycastIpMask = plan.AnycastIpMask
+	} else {
+		state.AnycastIpMask = types.StringNull()
+	}
+
+	if val, ok := serviceData["dhcp_server_ip"].(string); ok {
+		state.DhcpServerIp = types.StringValue(val)
+	} else if plan != nil && !plan.DhcpServerIp.IsNull() {
+		state.DhcpServerIp = plan.DhcpServerIp
+	} else {
+		state.DhcpServerIp = types.StringNull()
+	}
+
+	if val, ok := serviceData["mtu"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.Mtu = types.Int64Value(int64(v))
+		case int:
+			state.Mtu = types.Int64Value(int64(v))
+		default:
+			if plan != nil && !plan.Mtu.IsNull() {
+				state.Mtu = plan.Mtu
+			} else {
+				state.Mtu = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.Mtu.IsNull() {
+		state.Mtu = plan.Mtu
+	} else {
+		state.Mtu = types.Int64Null()
+	}
+
+	return state
 }

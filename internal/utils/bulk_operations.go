@@ -2,7 +2,9 @@ package utils
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"sync"
 	"terraform-provider-verity/openapi"
 	"time"
@@ -111,6 +113,12 @@ type BulkOperationManager struct {
 	operationWaitChannels map[string]chan struct{}
 	operationMutex        sync.Mutex
 	closedChannels        map[string]bool
+
+	// Store API responses
+	serviceResponses      map[string]map[string]interface{}
+	serviceResponsesMutex sync.RWMutex
+	tenantResponses       map[string]map[string]interface{}
+	tenantResponsesMutex  sync.RWMutex
 }
 
 func (b *BulkOperationManager) safeCloseChannel(opID string, lockAlreadyHeld ...bool) {
@@ -213,7 +221,28 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		recentEthPortProfileOps:  false,
 		recentEthPortSettingsOps: false,
 		recentBundleOps:          false,
+
+		serviceResponses:      make(map[string]map[string]interface{}),
+		serviceResponsesMutex: sync.RWMutex{},
+		tenantResponses:       make(map[string]map[string]interface{}),
+		tenantResponsesMutex:  sync.RWMutex{},
 	}
+}
+
+func (b *BulkOperationManager) GetServiceResponse(serviceName string) (map[string]interface{}, bool) {
+	b.serviceResponsesMutex.RLock()
+	defer b.serviceResponsesMutex.RUnlock()
+
+	response, exists := b.serviceResponses[serviceName]
+	return response, exists
+}
+
+func (b *BulkOperationManager) GetTenantResponse(tenantName string) (map[string]interface{}, bool) {
+	b.tenantResponsesMutex.RLock()
+	defer b.tenantResponsesMutex.RUnlock()
+
+	response, exists := b.tenantResponses[tenantName]
+	return response, exists
 }
 
 func GetBulkOperationManager(client *openapi.APIClient, clearCacheFunc ClearCacheFunc, providerContext interface{}) *BulkOperationManager {
@@ -2253,13 +2282,14 @@ func (b *BulkOperationManager) ExecuteBulkTenantPut(ctx context.Context) diag.Di
 	putRequest.SetTenant(tenantMap)
 	retryConfig := DefaultRetryConfig()
 	var err error
+	var apiResp *http.Response
 
 	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
 		// Create a separate context for the API call
 		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
 
 		req := b.client.TenantsAPI.TenantsPut(apiCtx).TenantsPutRequest(*putRequest)
-		_, err = req.Execute()
+		apiResp, err = req.Execute()
 
 		// Release the API call context
 		cancel()
@@ -2288,6 +2318,52 @@ func (b *BulkOperationManager) ExecuteBulkTenantPut(ctx context.Context) diag.Di
 			"error": err.Error(),
 		})
 		break
+	}
+
+	if err == nil && apiResp != nil {
+		defer apiResp.Body.Close()
+		delayTime := 2 * time.Second
+		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching tenants", delayTime))
+		time.Sleep(delayTime)
+
+		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+		defer fetchCancel()
+
+		tflog.Debug(ctx, "Fetching tenants after successful PUT operation to retrieve auto-generated values")
+		tenantsReq := b.client.TenantsAPI.TenantsGet(fetchCtx)
+		tenantsResp, fetchErr := tenantsReq.Execute()
+
+		if fetchErr == nil {
+			defer tenantsResp.Body.Close()
+
+			var tenantsData struct {
+				Tenant map[string]map[string]interface{} `json:"tenant"`
+			}
+
+			if respErr := json.NewDecoder(tenantsResp.Body).Decode(&tenantsData); respErr == nil {
+				b.tenantResponsesMutex.Lock()
+				for tenantName, tenantData := range tenantsData.Tenant {
+					b.tenantResponses[tenantName] = tenantData
+
+					if name, ok := tenantData["name"].(string); ok && name != tenantName {
+						b.tenantResponses[name] = tenantData
+					}
+				}
+				b.tenantResponsesMutex.Unlock()
+
+				tflog.Debug(ctx, "Successfully stored tenant data for auto-generated fields", map[string]interface{}{
+					"tenant_count": len(tenantsData.Tenant),
+				})
+			} else {
+				tflog.Error(ctx, "Failed to decode tenants response for auto-generated fields", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+			}
+		} else {
+			tflog.Error(ctx, "Failed to fetch tenants after PUT for auto-generated fields", map[string]interface{}{
+				"error": fetchErr.Error(),
+			})
+		}
 	}
 
 	// Update operation statuses based on the result
@@ -2721,13 +2797,14 @@ func (b *BulkOperationManager) ExecuteBulkServicePut(ctx context.Context) diag.D
 	putRequest.SetService(serviceMap)
 	retryConfig := DefaultRetryConfig()
 	var err error
+	var apiResp *http.Response
 
 	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
 		// Create a separate context for the API call
 		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
 
 		req := b.client.ServicesAPI.ServicesPut(apiCtx).ServicesPutRequest(*putRequest)
-		_, err = req.Execute()
+		apiResp, err = req.Execute()
 
 		// Release the API call context
 		cancel()
@@ -2758,7 +2835,52 @@ func (b *BulkOperationManager) ExecuteBulkServicePut(ctx context.Context) diag.D
 		break
 	}
 
-	// Update operation statuses based on the result
+	if err == nil && apiResp != nil {
+		defer apiResp.Body.Close()
+		delayTime := 2 * time.Second
+		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching services", delayTime))
+		time.Sleep(delayTime)
+
+		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+		defer fetchCancel()
+
+		tflog.Debug(ctx, "Fetching services after successful PUT operation to retrieve auto-generated values")
+		servicesReq := b.client.ServicesAPI.ServicesGet(fetchCtx)
+		servicesResp, fetchErr := servicesReq.Execute()
+
+		if fetchErr == nil {
+			defer servicesResp.Body.Close()
+
+			var servicesData struct {
+				Service map[string]map[string]interface{} `json:"service"`
+			}
+
+			if respErr := json.NewDecoder(servicesResp.Body).Decode(&servicesData); respErr == nil {
+				b.serviceResponsesMutex.Lock()
+				for serviceName, serviceData := range servicesData.Service {
+					b.serviceResponses[serviceName] = serviceData
+
+					if name, ok := serviceData["name"].(string); ok && name != serviceName {
+						b.serviceResponses[name] = serviceData
+					}
+				}
+				b.serviceResponsesMutex.Unlock()
+
+				tflog.Debug(ctx, "Successfully stored service data for auto-generated fields", map[string]interface{}{
+					"service_count": len(servicesData.Service),
+				})
+			} else {
+				tflog.Error(ctx, "Failed to decode services response for auto-generated fields", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+			}
+		} else {
+			tflog.Error(ctx, "Failed to fetch services after PUT for auto-generated fields", map[string]interface{}{
+				"error": fetchErr.Error(),
+			})
+		}
+	}
+
 	b.operationMutex.Lock()
 	defer b.operationMutex.Unlock()
 
