@@ -314,7 +314,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
-		if tenantData, exists := bulkMgr.GetTenantResponse(name); exists {
+		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", name); exists {
 			// Use the cached data with plan values as fallback
 			state := populateTenantState(ctx, minState, tenantData, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -360,7 +360,7 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 	var exists bool
 
 	if bulkOpsMgr != nil {
-		tenantData, exists = bulkOpsMgr.GetTenantResponse(tenantName)
+		tenantData, exists = bulkOpsMgr.GetResourceResponse("tenant", tenantName)
 		if exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached tenant data for %s from recent operation", tenantName))
 			state = populateTenantState(ctx, state, tenantData, nil)

@@ -243,7 +243,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
-		if serviceData, exists := bulkMgr.GetServiceResponse(name); exists {
+		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
 			// Use the cached data with plan values as fallback
 			state := populateServiceState(ctx, minState, serviceData, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -289,7 +289,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 	var exists bool
 
 	if bulkOpsMgr != nil {
-		serviceData, exists = bulkOpsMgr.GetServiceResponse(serviceName)
+		serviceData, exists = bulkOpsMgr.GetResourceResponse("service", serviceName)
 		if exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached service data for %s from recent operation", serviceName))
 			state = populateServiceState(ctx, state, serviceData, nil)
