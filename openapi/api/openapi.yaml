@@ -2138,6 +2138,11 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+        default_originate:
+          default: false
+          description: Enables a leaf switch to originate IPv4 default type-5 EVPN
+            routes across the switching fabric.
+          type: boolean
       type: object
     _config_put_request_switchpoint_switchpoint_name_badges_inner:
       properties:
@@ -2207,9 +2212,6 @@ components:
         tenant:
           default: ""
           description: Tenant
-          type: string
-        tenant_ref_type_:
-          description: Object type for tenant field
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -4028,7 +4030,7 @@ components:
         protocol:
           default: ""
           description: "IP protocol type (0-255) to match packets on. Ip indicates\
-            \ ipv4, ipv4 indicates ipv6"
+            \ ipv4, ipv6 indicates ipv6"
           minLength: 1
           type: string
         bidirectional:
@@ -4403,6 +4405,11 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+        default_originate:
+          default: false
+          description: Instructs BGP to generate and send a default route 0.0.0.0/0
+            to the specified neighbor.
+          type: boolean
         bfd_multihop:
           default: false
           description: Enable BFD Multi-Hop for Neighbor. This is used to detect failures

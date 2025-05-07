@@ -22,6 +22,7 @@ Name | Type | Description | Notes
 **VrfNameAutoAssigned** | Pointer to **bool** | Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit. | [optional] 
 **RouteTenants** | Pointer to [**[]ConfigPutRequestTenantTenantNameRouteTenantsInner**](ConfigPutRequestTenantTenantNameRouteTenantsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties**](ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties.md) |  | [optional] 
+**DefaultOriginate** | Pointer to **bool** | Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric. | [optional] [default to false]
 
 ## Methods
 
@@ -511,6 +512,31 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *ConfigPutRequestTenantTenantName) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetDefaultOriginate
+
+`func (o *ConfigPutRequestTenantTenantName) GetDefaultOriginate() bool`
+
+GetDefaultOriginate returns the DefaultOriginate field if non-nil, zero value otherwise.
+
+### GetDefaultOriginateOk
+
+`func (o *ConfigPutRequestTenantTenantName) GetDefaultOriginateOk() (*bool, bool)`
+
+GetDefaultOriginateOk returns a tuple with the DefaultOriginate field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDefaultOriginate
+
+`func (o *ConfigPutRequestTenantTenantName) SetDefaultOriginate(v bool)`
+
+SetDefaultOriginate sets DefaultOriginate field to given value.
+
+### HasDefaultOriginate
+
+`func (o *ConfigPutRequestTenantTenantName) HasDefaultOriginate() bool`
+
+HasDefaultOriginate returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -73,6 +73,7 @@ type verityGatewayResourceModel struct {
 	BfdDetectMultiplier     types.Int64                          `tfsdk:"bfd_detect_multiplier"`
 	BfdMultihop             types.Bool                           `tfsdk:"bfd_multihop"`
 	NextHopSelf             types.Bool                           `tfsdk:"next_hop_self"`
+	DefaultOriginate        types.Bool                           `tfsdk:"default_originate"`
 	ExportRouteMapRefType   types.String                         `tfsdk:"export_route_map_ref_type_"`
 	ImportRouteMapRefType   types.String                         `tfsdk:"import_route_map_ref_type_"`
 }
@@ -228,6 +229,10 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 			},
 			"next_hop_self": schema.BoolAttribute{
 				Optional: true,
+			},
+			"default_originate": schema.BoolAttribute{
+				Description: "Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.",
+				Optional:    true,
 			},
 			"export_route_map_ref_type_": schema.StringAttribute{
 				Optional: true,
@@ -415,6 +420,9 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	}
 	if !plan.NextHopSelf.IsNull() {
 		gatewayProps.NextHopSelf = openapi.PtrBool(plan.NextHopSelf.ValueBool())
+	}
+	if !plan.DefaultOriginate.IsNull() {
+		gatewayProps.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
 	}
 	if !plan.ExportRouteMapRefType.IsNull() {
 		gatewayProps.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
@@ -634,6 +642,7 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		"enable_bfd":          &state.EnableBfd,
 		"bfd_multihop":        &state.BfdMultihop,
 		"next_hop_self":       &state.NextHopSelf,
+		"default_originate":   &state.DefaultOriginate,
 	}
 
 	for apiKey, stateField := range boolAttrs {
@@ -875,6 +884,10 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	}
 	if !plan.HelperHopIpAddress.Equal(state.HelperHopIpAddress) {
 		gatewayProps.HelperHopIpAddress = openapi.PtrString(plan.HelperHopIpAddress.ValueString())
+		hasChanges = true
+	}
+	if !plan.DefaultOriginate.Equal(state.DefaultOriginate) {
+		gatewayProps.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
 		hasChanges = true
 	}
 	if !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType) {

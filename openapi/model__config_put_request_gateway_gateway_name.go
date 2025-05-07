@@ -87,6 +87,8 @@ type ConfigPutRequestGatewayGatewayName struct {
 	NextHopSelf *bool `json:"next_hop_self,omitempty"`
 	StaticRoutes []ConfigPutRequestGatewayGatewayNameStaticRoutesInner `json:"static_routes,omitempty"`
 	ObjectProperties *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties `json:"object_properties,omitempty"`
+	// Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.
+	DefaultOriginate *bool `json:"default_originate,omitempty"`
 	// Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers.
 	BfdMultihop *bool `json:"bfd_multihop,omitempty"`
 }
@@ -151,6 +153,8 @@ func NewConfigPutRequestGatewayGatewayName() *ConfigPutRequestGatewayGatewayName
 	this.BfdDetectMultiplier = *NewNullableInt32(&bfdDetectMultiplier)
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
+	var defaultOriginate bool = false
+	this.DefaultOriginate = &defaultOriginate
 	var bfdMultihop bool = false
 	this.BfdMultihop = &bfdMultihop
 	return &this
@@ -215,6 +219,8 @@ func NewConfigPutRequestGatewayGatewayNameWithDefaults() *ConfigPutRequestGatewa
 	this.BfdDetectMultiplier = *NewNullableInt32(&bfdDetectMultiplier)
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
+	var defaultOriginate bool = false
+	this.DefaultOriginate = &defaultOriginate
 	var bfdMultihop bool = false
 	this.BfdMultihop = &bfdMultihop
 	return &this
@@ -1420,6 +1426,38 @@ func (o *ConfigPutRequestGatewayGatewayName) SetObjectProperties(v ConfigPutRequ
 	o.ObjectProperties = &v
 }
 
+// GetDefaultOriginate returns the DefaultOriginate field value if set, zero value otherwise.
+func (o *ConfigPutRequestGatewayGatewayName) GetDefaultOriginate() bool {
+	if o == nil || IsNil(o.DefaultOriginate) {
+		var ret bool
+		return ret
+	}
+	return *o.DefaultOriginate
+}
+
+// GetDefaultOriginateOk returns a tuple with the DefaultOriginate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestGatewayGatewayName) GetDefaultOriginateOk() (*bool, bool) {
+	if o == nil || IsNil(o.DefaultOriginate) {
+		return nil, false
+	}
+	return o.DefaultOriginate, true
+}
+
+// HasDefaultOriginate returns a boolean if a field has been set.
+func (o *ConfigPutRequestGatewayGatewayName) HasDefaultOriginate() bool {
+	if o != nil && !IsNil(o.DefaultOriginate) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultOriginate gets a reference to the given bool and assigns it to the DefaultOriginate field.
+func (o *ConfigPutRequestGatewayGatewayName) SetDefaultOriginate(v bool) {
+	o.DefaultOriginate = &v
+}
+
 // GetBfdMultihop returns the BfdMultihop field value if set, zero value otherwise.
 func (o *ConfigPutRequestGatewayGatewayName) GetBfdMultihop() bool {
 	if o == nil || IsNil(o.BfdMultihop) {
@@ -1566,6 +1604,9 @@ func (o ConfigPutRequestGatewayGatewayName) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.DefaultOriginate) {
+		toSerialize["default_originate"] = o.DefaultOriginate
 	}
 	if !IsNil(o.BfdMultihop) {
 		toSerialize["bfd_multihop"] = o.BfdMultihop

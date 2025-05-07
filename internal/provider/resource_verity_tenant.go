@@ -55,6 +55,7 @@ type verityTenantResourceModel struct {
 	VrfName                  types.String                        `tfsdk:"vrf_name"`
 	VrfNameAutoAssigned      types.Bool                          `tfsdk:"vrf_name_auto_assigned_"`
 	RouteTenants             []verityTenantRouteTenantModel      `tfsdk:"route_tenants"`
+	DefaultOriginate         types.Bool                          `tfsdk:"default_originate"`
 }
 
 type verityTenantObjectPropertiesModel struct {
@@ -62,10 +63,9 @@ type verityTenantObjectPropertiesModel struct {
 }
 
 type verityTenantRouteTenantModel struct {
-	Enable        types.Bool   `tfsdk:"enable"`
-	Tenant        types.String `tfsdk:"tenant"`
-	TenantRefType types.String `tfsdk:"tenant_ref_type_"`
-	Index         types.Int64  `tfsdk:"index"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Tenant types.String `tfsdk:"tenant"`
+	Index  types.Int64  `tfsdk:"index"`
 }
 
 func (r *verityTenantResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -166,6 +166,10 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Description: "Whether or not the value in vrf_name field has been automatically assigned",
 				Optional:    true,
 			},
+			"default_originate": schema.BoolAttribute{
+				Description: "Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.",
+				Optional:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
@@ -189,10 +193,6 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 						},
 						"tenant": schema.StringAttribute{
 							Description: "Tenant",
-							Optional:    true,
-						},
-						"tenant_ref_type_": schema.StringAttribute{
-							Description: "Object type for tenant field",
 							Optional:    true,
 						},
 						"index": schema.Int64Attribute{
@@ -270,15 +270,15 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	if !plan.VrfNameAutoAssigned.IsNull() {
 		tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
 	}
+	if !plan.DefaultOriginate.IsNull() {
+		tenantReq.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
+	}
 
 	if len(plan.RouteTenants) > 0 {
 		for _, rt := range plan.RouteTenants {
 			tenant := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
 				Enable: openapi.PtrBool(rt.Enable.ValueBool()),
 				Tenant: openapi.PtrString(rt.Tenant.ValueString()),
-			}
-			if !rt.TenantRefType.IsNull() {
-				tenant.TenantRefType = openapi.PtrString(rt.TenantRefType.ValueString())
 			}
 			if !rt.Index.IsNull() {
 				tenant.Index = openapi.PtrInt32(int32(rt.Index.ValueInt64()))
@@ -649,6 +649,11 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
+	if !plan.DefaultOriginate.Equal(state.DefaultOriginate) {
+		tenantReq.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
+		hasChanges = true
+	}
+
 	if len(plan.RouteTenants) != len(state.RouteTenants) {
 		oldRouteTenantsByIndex := make(map[int64]verityTenantRouteTenantModel)
 		for _, rt := range state.RouteTenants {
@@ -670,8 +675,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 			routeTenantChanged := !exists
 			if exists {
 				if !rt.Enable.Equal(oldRouteTenant.Enable) ||
-					!rt.Tenant.Equal(oldRouteTenant.Tenant) ||
-					!rt.TenantRefType.Equal(oldRouteTenant.TenantRefType) {
+					!rt.Tenant.Equal(oldRouteTenant.Tenant) {
 					routeTenantChanged = true
 				}
 			}
@@ -691,12 +695,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 					tenantRoute.Tenant = openapi.PtrString(rt.Tenant.ValueString())
 				} else {
 					tenantRoute.Tenant = openapi.PtrString("")
-				}
-
-				if !rt.TenantRefType.IsNull() && rt.TenantRefType.ValueString() != "" {
-					tenantRoute.TenantRefType = openapi.PtrString(rt.TenantRefType.ValueString())
-				} else {
-					tenantRoute.TenantRefType = openapi.PtrString("")
 				}
 
 				changedRouteTenants = append(changedRouteTenants, tenantRoute)
@@ -873,6 +871,14 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 		state.VrfNameAutoAssigned = types.BoolNull()
 	}
 
+	if val, ok := tenantData["default_originate"].(bool); ok {
+		state.DefaultOriginate = types.BoolValue(val)
+	} else if plan != nil && !plan.DefaultOriginate.IsNull() {
+		state.DefaultOriginate = plan.DefaultOriginate
+	} else {
+		state.DefaultOriginate = types.BoolNull()
+	}
+
 	stringFields := map[string]*types.String{
 		"dhcp_relay_source_ips_subnet": &state.DhcpRelaySourceIpsSubnet,
 		"route_distinguisher":          &state.RouteDistinguisher,
@@ -960,11 +966,6 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 				routeTenant.Tenant = types.StringValue(val)
 			} else {
 				routeTenant.Tenant = types.StringNull()
-			}
-			if val, ok := rtMap["tenant_ref_type_"].(string); ok {
-				routeTenant.TenantRefType = types.StringValue(val)
-			} else {
-				routeTenant.TenantRefType = types.StringNull()
 			}
 			if val, ok := rtMap["index"].(float64); ok {
 				routeTenant.Index = types.Int64Value(int64(val))

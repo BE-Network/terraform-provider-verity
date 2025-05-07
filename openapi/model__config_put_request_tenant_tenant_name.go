@@ -53,6 +53,8 @@ type ConfigPutRequestTenantTenantName struct {
 	VrfNameAutoAssigned *bool `json:"vrf_name_auto_assigned_,omitempty"`
 	RouteTenants []ConfigPutRequestTenantTenantNameRouteTenantsInner `json:"route_tenants,omitempty"`
 	ObjectProperties *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties `json:"object_properties,omitempty"`
+	// Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.
+	DefaultOriginate *bool `json:"default_originate,omitempty"`
 }
 
 // NewConfigPutRequestTenantTenantName instantiates a new ConfigPutRequestTenantTenantName object
@@ -79,6 +81,8 @@ func NewConfigPutRequestTenantTenantName() *ConfigPutRequestTenantTenantName {
 	this.ExportRouteMap = &exportRouteMap
 	var vrfName string = "(auto)"
 	this.VrfName = &vrfName
+	var defaultOriginate bool = false
+	this.DefaultOriginate = &defaultOriginate
 	return &this
 }
 
@@ -105,6 +109,8 @@ func NewConfigPutRequestTenantTenantNameWithDefaults() *ConfigPutRequestTenantTe
 	this.ExportRouteMap = &exportRouteMap
 	var vrfName string = "(auto)"
 	this.VrfName = &vrfName
+	var defaultOriginate bool = false
+	this.DefaultOriginate = &defaultOriginate
 	return &this
 }
 
@@ -704,6 +710,38 @@ func (o *ConfigPutRequestTenantTenantName) SetObjectProperties(v ConfigPutReques
 	o.ObjectProperties = &v
 }
 
+// GetDefaultOriginate returns the DefaultOriginate field value if set, zero value otherwise.
+func (o *ConfigPutRequestTenantTenantName) GetDefaultOriginate() bool {
+	if o == nil || IsNil(o.DefaultOriginate) {
+		var ret bool
+		return ret
+	}
+	return *o.DefaultOriginate
+}
+
+// GetDefaultOriginateOk returns a tuple with the DefaultOriginate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestTenantTenantName) GetDefaultOriginateOk() (*bool, bool) {
+	if o == nil || IsNil(o.DefaultOriginate) {
+		return nil, false
+	}
+	return o.DefaultOriginate, true
+}
+
+// HasDefaultOriginate returns a boolean if a field has been set.
+func (o *ConfigPutRequestTenantTenantName) HasDefaultOriginate() bool {
+	if o != nil && !IsNil(o.DefaultOriginate) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultOriginate gets a reference to the given bool and assigns it to the DefaultOriginate field.
+func (o *ConfigPutRequestTenantTenantName) SetDefaultOriginate(v bool) {
+	o.DefaultOriginate = &v
+}
+
 func (o ConfigPutRequestTenantTenantName) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -767,6 +805,9 @@ func (o ConfigPutRequestTenantTenantName) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.DefaultOriginate) {
+		toSerialize["default_originate"] = o.DefaultOriginate
 	}
 	return toSerialize, nil
 }

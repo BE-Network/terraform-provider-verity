@@ -6,7 +6,6 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Enable** | Pointer to **bool** | Enable | [optional] [default to false]
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
-**TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
@@ -77,31 +76,6 @@ SetTenant sets Tenant field to given value.
 `func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) HasTenant() bool`
 
 HasTenant returns a boolean if a field has been set.
-
-### GetTenantRefType
-
-`func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) GetTenantRefType() string`
-
-GetTenantRefType returns the TenantRefType field if non-nil, zero value otherwise.
-
-### GetTenantRefTypeOk
-
-`func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) GetTenantRefTypeOk() (*string, bool)`
-
-GetTenantRefTypeOk returns a tuple with the TenantRefType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetTenantRefType
-
-`func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) SetTenantRefType(v string)`
-
-SetTenantRefType sets TenantRefType field to given value.
-
-### HasTenantRefType
-
-`func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) HasTenantRefType() bool`
-
-HasTenantRefType returns a boolean if a field has been set.
 
 ### GetIndex
 

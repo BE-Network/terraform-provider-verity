@@ -23,8 +23,6 @@ type ConfigPutRequestTenantTenantNameRouteTenantsInner struct {
 	Enable *bool `json:"enable,omitempty"`
 	// Tenant
 	Tenant *string `json:"tenant,omitempty"`
-	// Object type for tenant field
-	TenantRefType *string `json:"tenant_ref_type_,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int32 `json:"index,omitempty"`
 }
@@ -118,38 +116,6 @@ func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) SetTenant(v string) 
 	o.Tenant = &v
 }
 
-// GetTenantRefType returns the TenantRefType field value if set, zero value otherwise.
-func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) GetTenantRefType() string {
-	if o == nil || IsNil(o.TenantRefType) {
-		var ret string
-		return ret
-	}
-	return *o.TenantRefType
-}
-
-// GetTenantRefTypeOk returns a tuple with the TenantRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) GetTenantRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.TenantRefType) {
-		return nil, false
-	}
-	return o.TenantRefType, true
-}
-
-// HasTenantRefType returns a boolean if a field has been set.
-func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) HasTenantRefType() bool {
-	if o != nil && !IsNil(o.TenantRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetTenantRefType gets a reference to the given string and assigns it to the TenantRefType field.
-func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) SetTenantRefType(v string) {
-	o.TenantRefType = &v
-}
-
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *ConfigPutRequestTenantTenantNameRouteTenantsInner) GetIndex() int32 {
 	if o == nil || IsNil(o.Index) {
@@ -197,9 +163,6 @@ func (o ConfigPutRequestTenantTenantNameRouteTenantsInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.Tenant) {
 		toSerialize["tenant"] = o.Tenant
-	}
-	if !IsNil(o.TenantRefType) {
-		toSerialize["tenant_ref_type_"] = o.TenantRefType
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index

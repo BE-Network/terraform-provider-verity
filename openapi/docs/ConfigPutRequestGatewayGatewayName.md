@@ -39,6 +39,7 @@ Name | Type | Description | Notes
 **NextHopSelf** | Pointer to **bool** | Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself. | [optional] [default to false]
 **StaticRoutes** | Pointer to [**[]ConfigPutRequestGatewayGatewayNameStaticRoutesInner**](ConfigPutRequestGatewayGatewayNameStaticRoutesInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties**](ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties.md) |  | [optional] 
+**DefaultOriginate** | Pointer to **bool** | Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor. | [optional] [default to false]
 **BfdMultihop** | Pointer to **bool** | Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers. | [optional] [default to false]
 
 ## Methods
@@ -1014,6 +1015,31 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *ConfigPutRequestGatewayGatewayName) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetDefaultOriginate
+
+`func (o *ConfigPutRequestGatewayGatewayName) GetDefaultOriginate() bool`
+
+GetDefaultOriginate returns the DefaultOriginate field if non-nil, zero value otherwise.
+
+### GetDefaultOriginateOk
+
+`func (o *ConfigPutRequestGatewayGatewayName) GetDefaultOriginateOk() (*bool, bool)`
+
+GetDefaultOriginateOk returns a tuple with the DefaultOriginate field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDefaultOriginate
+
+`func (o *ConfigPutRequestGatewayGatewayName) SetDefaultOriginate(v bool)`
+
+SetDefaultOriginate sets DefaultOriginate field to given value.
+
+### HasDefaultOriginate
+
+`func (o *ConfigPutRequestGatewayGatewayName) HasDefaultOriginate() bool`
+
+HasDefaultOriginate returns a boolean if a field has been set.
 
 ### GetBfdMultihop
 
