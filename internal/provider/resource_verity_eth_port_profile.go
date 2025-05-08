@@ -237,9 +237,8 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile creation operation %s to complete", operationID))
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Create Eth Port Profile",
-			fmt.Sprintf("Error creating eth port profile %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Eth Port Profile %s", name))...,
 		)
 		return
 	}
@@ -315,9 +314,8 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Read Eth Port Profiles",
-			fmt.Sprintf("Error reading eth port profiles: %v", err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, "Failed to Read Eth Port Profiles")...,
 		)
 		return
 	}
@@ -596,9 +594,8 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile update operation %s to complete", operationID))
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Update Eth Port Profile",
-			fmt.Sprintf("Error updating eth port profile %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Eth Port Profile %s", name))...,
 		)
 		return
 	}
@@ -633,9 +630,8 @@ func (r *verityEthPortProfileResource) Delete(ctx context.Context, req resource.
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile deletion operation %s to complete", operationID))
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Delete Eth Port Profile",
-			fmt.Sprintf("Error deleting eth port profile %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Eth Port Profile %s", name))...,
 		)
 		return
 	}

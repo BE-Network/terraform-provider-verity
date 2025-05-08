@@ -297,9 +297,8 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Bundle",
-			fmt.Sprintf("Could not read bundle %s: %s", bundleName, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Bundle %s", bundleName))...,
 		)
 		return
 	}
@@ -716,9 +715,8 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Error Updating Bundle",
-			fmt.Sprintf("Could not update bundle %s: %s", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Bundle %s", name))...,
 		)
 		return
 	}

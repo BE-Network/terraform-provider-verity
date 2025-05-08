@@ -299,9 +299,8 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings creation operation %s to complete", operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Create Ethernet Port Settings",
-			fmt.Sprintf("Error creating Ethernet port settings %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Eth Port Settings %s", name))...,
 		)
 		return
 	}
@@ -377,7 +376,9 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to Read Ethernet Port Settings", err.Error())
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Eth Port Settings %s", settingsName))...,
+		)
 		return
 	}
 
@@ -794,10 +795,9 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings update operation %s to complete", operationID))
-	if err := bulkMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Update Ethernet Port Settings",
-			fmt.Sprintf("Error updating Ethernet port settings %s: %v", resourceName, err),
+	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Eth Port Settings %s", resourceName))...,
 		)
 		return
 	}
@@ -829,10 +829,9 @@ func (r *verityEthPortSettingsResource) Delete(ctx context.Context, req resource
 	r.provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings deletion operation %s to complete", operationID))
-	if err := bulkMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Delete Ethernet Port Settings",
-			fmt.Sprintf("Error deleting Ethernet port settings %s: %v", name, err),
+	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Eth Port Settings %s", name))...,
 		)
 		return
 	}

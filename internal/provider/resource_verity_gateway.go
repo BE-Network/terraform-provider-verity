@@ -474,9 +474,8 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway creation operation %s to complete", operationID))
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Create Gateway",
-			fmt.Sprintf("Error creating gateway %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Gateway %s", name))...,
 		)
 		return
 	}
@@ -548,9 +547,8 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		break
 	}
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Read Gateways",
-			fmt.Sprintf("Error reading gateways: %v", err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Gateway %s", gatewayName))...,
 		)
 		return
 	}
@@ -1055,13 +1053,11 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway update operation %s to complete", operationID))
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Update Gateway",
-			fmt.Sprintf("Error updating gateway %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Gateway %s", name))...,
 		)
 		return
 	}
-
 	tflog.Info(ctx, fmt.Sprintf("Gateway %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateways")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -1089,9 +1085,8 @@ func (r *verityGatewayResource) Delete(ctx context.Context, req resource.DeleteR
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway deletion operation %s to complete", operationID))
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Delete Gateway",
-			fmt.Sprintf("Error deleting gateway %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Gateway %s", name))...,
 		)
 		return
 	}

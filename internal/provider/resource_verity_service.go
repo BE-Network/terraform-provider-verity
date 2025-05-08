@@ -224,9 +224,8 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for service creation operation %s to complete", operationID))
 	if err := bulkMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Create Service",
-			fmt.Sprintf("Error creating service %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Service %s", name))...,
 		)
 		return
 	}
@@ -346,9 +345,8 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Read Service",
-			fmt.Sprintf("Error reading service %s: %v", serviceName, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Service %s", serviceName))...,
 		)
 		return
 	}
@@ -498,9 +496,8 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for service update operation %s to complete", operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Update Service",
-			fmt.Sprintf("Error updating service %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Service %s", name))...,
 		)
 		return
 	}
@@ -533,9 +530,8 @@ func (r *verityServiceResource) Delete(ctx context.Context, req resource.DeleteR
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for service deletion operation %s to complete", operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Delete Service",
-			fmt.Sprintf("Error deleting service %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Service %s", name))...,
 		)
 		return
 	}

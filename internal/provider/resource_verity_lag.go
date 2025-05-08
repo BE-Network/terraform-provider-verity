@@ -234,9 +234,8 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for LAG creation operation %s to complete", operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Create LAG",
-			fmt.Sprintf("Error creating LAG %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create LAG %s", name))...,
 		)
 		return
 	}
@@ -311,9 +310,8 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Read LAGs",
-			fmt.Sprintf("Error reading LAGs: %v", err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read LAG %s", lagName))...,
 		)
 		return
 	}
@@ -501,9 +499,8 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for LAG update operation %s to complete", operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Update LAG",
-			fmt.Sprintf("Error updating LAG %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update LAG %s", name))...,
 		)
 		return
 	}
@@ -535,9 +532,8 @@ func (r *verityLagResource) Delete(ctx context.Context, req resource.DeleteReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for LAG deletion operation %s to complete", operationID))
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Delete LAG",
-			fmt.Sprintf("Error deleting LAG %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete LAG %s", name))...,
 		)
 		return
 	}

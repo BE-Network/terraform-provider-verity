@@ -295,9 +295,8 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for tenant creation operation %s to complete", operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Create Tenant",
-			fmt.Sprintf("Error creating tenant %s: %v", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Tenant %s", name))...,
 		)
 		return
 	}
@@ -413,7 +412,9 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to Read Tenant", err.Error())
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Tenant %s", tenantName))...,
+		)
 		return
 	}
 
@@ -718,9 +719,8 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for tenant update operation %s to complete", operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Update Tenant",
-			fmt.Sprintf("Error updating tenant %s: %v", state.Name.ValueString(), err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Tenant %s", state.Name.ValueString()))...,
 		)
 		return
 	}
@@ -753,9 +753,8 @@ func (r *verityTenantResource) Delete(ctx context.Context, req resource.DeleteRe
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for tenant deletion operation %s to complete", operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Delete Tenant",
-			fmt.Sprintf("Error deleting tenant %s: %v", tenantName, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Tenant %s", tenantName))...,
 		)
 		return
 	}

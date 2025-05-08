@@ -233,9 +233,8 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Error Creating Gateway Profile",
-			fmt.Sprintf("Could not create gateway profile %s: %s", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Gateway Profile %s", name))...,
 		)
 		return
 	}
@@ -303,9 +302,8 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 	}
 
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Gateway Profile",
-			fmt.Sprintf("Could not read gateway profile %s: %s", profileName, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Gateway Profile %s", profileName))...,
 		)
 		return
 	}
@@ -553,9 +551,8 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Error Updating Gateway Profile",
-			fmt.Sprintf("Could not update gateway profile %s: %s", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Gateway Profile %s", name))...,
 		)
 		return
 	}
@@ -581,9 +578,8 @@ func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.AddError(
-			"Error Deleting Gateway Profile",
-			fmt.Sprintf("Could not delete gateway profile %s: %s", name, err),
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Gateway Profile %s", name))...,
 		)
 		return
 	}
