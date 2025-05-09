@@ -546,164 +546,312 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 	}
 
-	if len(data.EthPortPaths) > 0 {
-		statePathsByIndex := make(map[int64]ethPortPathsModel)
-		for _, path := range state.EthPortPaths {
-			if !path.Index.IsNull() {
-				statePathsByIndex[path.Index.ValueInt64()] = path
-			}
-		}
-
-		var changedPaths []openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner
-
-		for _, path := range data.EthPortPaths {
-			if path.Index.IsNull() {
-				continue
-			}
-
-			index := path.Index.ValueInt64()
-			statePath, exists := statePathsByIndex[index]
-			pathChanged := false
-
-			if !exists ||
-				!path.PortName.Equal(statePath.PortName) ||
-				!path.EthPortNumEthPortSettings.Equal(statePath.EthPortNumEthPortSettings) ||
-				!path.EthPortNumEthPortProfile.Equal(statePath.EthPortNumEthPortProfile) ||
-				!path.EthPortNumGatewayProfile.Equal(statePath.EthPortNumGatewayProfile) ||
-				!path.EthPortNumEthPortProfileRefType.Equal(statePath.EthPortNumEthPortProfileRefType) ||
-				!path.EthPortNumEthPortSettingsRefType.Equal(statePath.EthPortNumEthPortSettingsRefType) ||
-				!path.EthPortNumGatewayProfileRefType.Equal(statePath.EthPortNumGatewayProfileRefType) {
-				pathChanged = true
-			}
-
-			if pathChanged {
-				ethPortPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{
-					Index: openapi.PtrInt32(int32(index)),
-				}
-
-				if !path.PortName.IsNull() {
-					ethPortPath.PortName = openapi.PtrString(path.PortName.ValueString())
-				} else {
-					ethPortPath.PortName = openapi.PtrString("")
-				}
-
-				if !path.EthPortNumEthPortSettings.IsNull() {
-					ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
-				} else {
-					ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
-				}
-
-				if !path.EthPortNumEthPortProfile.IsNull() {
-					ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(path.EthPortNumEthPortProfile.ValueString())
-				} else {
-					ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
-				}
-
-				if !path.EthPortNumGatewayProfile.IsNull() {
-					ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
-				} else {
-					ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
-				}
-
-				if !path.EthPortNumEthPortProfileRefType.IsNull() {
-					ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString(path.EthPortNumEthPortProfileRefType.ValueString())
-				} else {
-					ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
-				}
-
-				if !path.EthPortNumEthPortSettingsRefType.IsNull() {
-					ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
-				} else {
-					ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
-				}
-
-				if !path.EthPortNumGatewayProfileRefType.IsNull() {
-					ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(path.EthPortNumGatewayProfileRefType.ValueString())
-				} else {
-					ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
-				}
-
-				changedPaths = append(changedPaths, ethPortPath)
-			}
-		}
-
-		if len(changedPaths) > 0 {
-			bundleValue.EthPortPaths = changedPaths
-			hasChanges = true
+	statePathsByIndex := make(map[int64]ethPortPathsModel)
+	for _, path := range state.EthPortPaths {
+		if !path.Index.IsNull() {
+			statePathsByIndex[path.Index.ValueInt64()] = path
 		}
 	}
 
-	if len(data.UserServices) > 0 {
-		stateServicesByIndex := make(map[int64]userServicesModel)
-		for _, service := range state.UserServices {
-			if !service.Index.IsNull() {
-				stateServicesByIndex[service.Index.ValueInt64()] = service
+	var changedPaths []openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner
+	ethPortPathsChanged := false
+
+	for _, path := range data.EthPortPaths {
+		if path.Index.IsNull() {
+			continue
+		}
+
+		index := path.Index.ValueInt64()
+		statePath, exists := statePathsByIndex[index]
+
+		if !exists {
+			// new eth port path, include all fields
+			ethPortPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+
+			if !path.PortName.IsNull() {
+				ethPortPath.PortName = openapi.PtrString(path.PortName.ValueString())
+			} else {
+				ethPortPath.PortName = openapi.PtrString("")
+			}
+
+			if !path.EthPortNumEthPortSettings.IsNull() {
+				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
+			}
+
+			if !path.EthPortNumEthPortProfile.IsNull() {
+				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(path.EthPortNumEthPortProfile.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
+			}
+
+			if !path.EthPortNumGatewayProfile.IsNull() {
+				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
+			} else {
+				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
+			}
+
+			if !path.EthPortNumEthPortProfileRefType.IsNull() {
+				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString(path.EthPortNumEthPortProfileRefType.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
+			}
+
+			if !path.EthPortNumEthPortSettingsRefType.IsNull() {
+				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
+			}
+
+			if !path.EthPortNumGatewayProfileRefType.IsNull() {
+				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(path.EthPortNumGatewayProfileRefType.ValueString())
+			} else {
+				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
+			}
+
+			changedPaths = append(changedPaths, ethPortPath)
+			ethPortPathsChanged = true
+			continue
+		}
+
+		// existing eth port path, check which fields changed
+		ethPortPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{
+			Index: openapi.PtrInt32(int32(index)),
+		}
+
+		fieldChanged := false
+
+		if !path.PortName.Equal(statePath.PortName) {
+			if !path.PortName.IsNull() {
+				ethPortPath.PortName = openapi.PtrString(path.PortName.ValueString())
+			} else {
+				ethPortPath.PortName = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !path.EthPortNumEthPortSettings.Equal(statePath.EthPortNumEthPortSettings) {
+			if !path.EthPortNumEthPortSettings.IsNull() {
+				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !path.EthPortNumEthPortProfile.Equal(statePath.EthPortNumEthPortProfile) {
+			if !path.EthPortNumEthPortProfile.IsNull() {
+				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(path.EthPortNumEthPortProfile.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !path.EthPortNumGatewayProfile.Equal(statePath.EthPortNumGatewayProfile) {
+			if !path.EthPortNumGatewayProfile.IsNull() {
+				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
+			} else {
+				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !path.EthPortNumEthPortProfileRefType.Equal(statePath.EthPortNumEthPortProfileRefType) {
+			if !path.EthPortNumEthPortProfileRefType.IsNull() {
+				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString(path.EthPortNumEthPortProfileRefType.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !path.EthPortNumEthPortSettingsRefType.Equal(statePath.EthPortNumEthPortSettingsRefType) {
+			if !path.EthPortNumEthPortSettingsRefType.IsNull() {
+				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !path.EthPortNumGatewayProfileRefType.Equal(statePath.EthPortNumGatewayProfileRefType) {
+			if !path.EthPortNumGatewayProfileRefType.IsNull() {
+				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(path.EthPortNumGatewayProfileRefType.ValueString())
+			} else {
+				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedPaths = append(changedPaths, ethPortPath)
+			ethPortPathsChanged = true
+		}
+	}
+
+	for idx := range statePathsByIndex {
+		found := false
+		for _, path := range data.EthPortPaths {
+			if !path.Index.IsNull() && path.Index.ValueInt64() == idx {
+				found = true
+				break
 			}
 		}
 
-		var changedServices []openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner
+		if !found {
+			// Path removed - include only the index for deletion
+			deletedPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+			changedPaths = append(changedPaths, deletedPath)
+			ethPortPathsChanged = true
+		}
+	}
 
+	if ethPortPathsChanged && len(changedPaths) > 0 {
+		bundleValue.EthPortPaths = changedPaths
+		hasChanges = true
+	}
+
+	stateServicesByIndex := make(map[int64]userServicesModel)
+	for _, service := range state.UserServices {
+		if !service.Index.IsNull() {
+			stateServicesByIndex[service.Index.ValueInt64()] = service
+		}
+	}
+
+	var changedServices []openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner
+	userServicesChanged := false
+
+	for _, service := range data.UserServices {
+		if service.Index.IsNull() {
+			continue
+		}
+
+		index := service.Index.ValueInt64()
+		stateService, exists := stateServicesByIndex[index]
+
+		if !exists {
+			// new user service, include all fields
+			userService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+
+			if !service.RowAppEnable.IsNull() {
+				userService.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
+			} else {
+				userService.RowAppEnable = openapi.PtrBool(false)
+			}
+
+			if !service.RowAppConnectedService.IsNull() {
+				userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+			} else {
+				userService.RowAppConnectedService = openapi.PtrString("")
+			}
+
+			if !service.RowAppCliCommands.IsNull() {
+				userService.RowAppCliCommands = openapi.PtrString(service.RowAppCliCommands.ValueString())
+			} else {
+				userService.RowAppCliCommands = openapi.PtrString("")
+			}
+
+			if !service.RowIpMask.IsNull() {
+				userService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
+			} else {
+				userService.RowIpMask = openapi.PtrString("")
+			}
+
+			if !service.RowAppConnectedServiceRefType.IsNull() {
+				userService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
+			} else {
+				userService.RowAppConnectedServiceRefType = openapi.PtrString("")
+			}
+
+			changedServices = append(changedServices, userService)
+			userServicesChanged = true
+			continue
+		}
+
+		// existing user service, check which fields changed
+		userService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{
+			Index: openapi.PtrInt32(int32(index)),
+		}
+
+		fieldChanged := false
+
+		if !service.RowAppEnable.Equal(stateService.RowAppEnable) {
+			userService.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !service.RowAppConnectedService.Equal(stateService.RowAppConnectedService) {
+			if !service.RowAppConnectedService.IsNull() {
+				userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+			} else {
+				userService.RowAppConnectedService = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowAppCliCommands.Equal(stateService.RowAppCliCommands) {
+			if !service.RowAppCliCommands.IsNull() {
+				userService.RowAppCliCommands = openapi.PtrString(service.RowAppCliCommands.ValueString())
+			} else {
+				userService.RowAppCliCommands = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowIpMask.Equal(stateService.RowIpMask) {
+			if !service.RowIpMask.IsNull() {
+				userService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
+			} else {
+				userService.RowIpMask = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowAppConnectedServiceRefType.Equal(stateService.RowAppConnectedServiceRefType) {
+			if !service.RowAppConnectedServiceRefType.IsNull() {
+				userService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
+			} else {
+				userService.RowAppConnectedServiceRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedServices = append(changedServices, userService)
+			userServicesChanged = true
+		}
+	}
+
+	for idx := range stateServicesByIndex {
+		found := false
 		for _, service := range data.UserServices {
-			if service.Index.IsNull() {
-				continue
-			}
-
-			index := service.Index.ValueInt64()
-			stateService, exists := stateServicesByIndex[index]
-			serviceChanged := false
-
-			if !exists ||
-				!service.RowAppEnable.Equal(stateService.RowAppEnable) ||
-				!service.RowAppConnectedService.Equal(stateService.RowAppConnectedService) ||
-				!service.RowAppCliCommands.Equal(stateService.RowAppCliCommands) ||
-				!service.RowIpMask.Equal(stateService.RowIpMask) ||
-				!service.RowAppConnectedServiceRefType.Equal(stateService.RowAppConnectedServiceRefType) {
-				serviceChanged = true
-			}
-
-			if serviceChanged {
-				userService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{
-					Index: openapi.PtrInt32(int32(index)),
-				}
-
-				if !service.RowAppEnable.IsNull() {
-					userService.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
-				} else {
-					userService.RowAppEnable = openapi.PtrBool(false)
-				}
-
-				if !service.RowAppConnectedService.IsNull() {
-					userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-				} else {
-					userService.RowAppConnectedService = openapi.PtrString("")
-				}
-
-				if !service.RowAppCliCommands.IsNull() {
-					userService.RowAppCliCommands = openapi.PtrString(service.RowAppCliCommands.ValueString())
-				} else {
-					userService.RowAppCliCommands = openapi.PtrString("")
-				}
-
-				if !service.RowIpMask.IsNull() {
-					userService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
-				} else {
-					userService.RowIpMask = openapi.PtrString("")
-				}
-
-				if !service.RowAppConnectedServiceRefType.IsNull() {
-					userService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
-				} else {
-					userService.RowAppConnectedServiceRefType = openapi.PtrString("")
-				}
-
-				changedServices = append(changedServices, userService)
+			if !service.Index.IsNull() && service.Index.ValueInt64() == idx {
+				found = true
+				break
 			}
 		}
 
-		if len(changedServices) > 0 {
-			bundleValue.UserServices = changedServices
-			hasChanges = true
+		if !found {
+			// service removed - include only the index for deletion
+			deletedService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+			changedServices = append(changedServices, deletedService)
+			userServicesChanged = true
 		}
+	}
+
+	if userServicesChanged && len(changedServices) > 0 {
+		bundleValue.UserServices = changedServices
+		hasChanges = true
 	}
 
 	if !hasChanges {

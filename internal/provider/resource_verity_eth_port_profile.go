@@ -526,62 +526,128 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	if len(plan.Services) > 0 {
-		oldServicesByIndex := make(map[int64]servicesModel)
-		for _, service := range state.Services {
-			if !service.Index.IsNull() {
-				oldServicesByIndex[service.Index.ValueInt64()] = service
-			}
+	oldServicesByIndex := make(map[int64]servicesModel)
+	for _, service := range state.Services {
+		if !service.Index.IsNull() {
+			oldServicesByIndex[service.Index.ValueInt64()] = service
+		}
+	}
+
+	var changedServices []openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner
+	servicesChanged := false
+
+	for _, service := range plan.Services {
+		if service.Index.IsNull() {
+			continue
 		}
 
-		var changedServices []openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner
+		index := service.Index.ValueInt64()
+		oldService, exists := oldServicesByIndex[index]
 
+		if !exists {
+			// new service, include all fields
+			s := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+
+			if !service.RowNumEnable.IsNull() {
+				s.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
+			} else {
+				s.RowNumEnable = openapi.PtrBool(false)
+			}
+
+			if !service.RowNumService.IsNull() {
+				s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
+			} else {
+				s.RowNumService = openapi.PtrString("")
+			}
+
+			if !service.RowNumServiceRefType.IsNull() {
+				s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
+			} else {
+				s.RowNumServiceRefType = openapi.PtrString("")
+			}
+
+			if !service.RowNumExternalVlan.IsNull() {
+				intVal := int32(service.RowNumExternalVlan.ValueInt64())
+				s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
+			} else {
+				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
+			}
+
+			changedServices = append(changedServices, s)
+			servicesChanged = true
+			continue
+		}
+
+		// existing service, check which fields changed
+		s := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner{
+			Index: openapi.PtrInt32(int32(index)),
+		}
+
+		fieldChanged := false
+
+		if !service.RowNumEnable.Equal(oldService.RowNumEnable) {
+			s.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !service.RowNumService.Equal(oldService.RowNumService) {
+			if !service.RowNumService.IsNull() {
+				s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
+			} else {
+				s.RowNumService = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowNumServiceRefType.Equal(oldService.RowNumServiceRefType) {
+			if !service.RowNumServiceRefType.IsNull() {
+				s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
+			} else {
+				s.RowNumServiceRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowNumExternalVlan.Equal(oldService.RowNumExternalVlan) {
+			if !service.RowNumExternalVlan.IsNull() {
+				intVal := int32(service.RowNumExternalVlan.ValueInt64())
+				s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
+			} else {
+				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedServices = append(changedServices, s)
+			servicesChanged = true
+		}
+	}
+
+	for idx := range oldServicesByIndex {
+		found := false
 		for _, service := range plan.Services {
-			if service.Index.IsNull() {
-				continue
-			}
-
-			index := service.Index.ValueInt64()
-			oldService, exists := oldServicesByIndex[index]
-
-			serviceChanged := !exists ||
-				!service.RowNumEnable.Equal(oldService.RowNumEnable) ||
-				!service.RowNumService.Equal(oldService.RowNumService) ||
-				!service.RowNumServiceRefType.Equal(oldService.RowNumServiceRefType) ||
-				!service.RowNumExternalVlan.Equal(oldService.RowNumExternalVlan)
-
-			if serviceChanged {
-				s := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner{
-					Index: openapi.PtrInt32(int32(index)),
-				}
-
-				if !service.RowNumEnable.IsNull() {
-					s.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
-				}
-
-				if !service.RowNumService.IsNull() {
-					s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
-				}
-
-				if !service.RowNumServiceRefType.IsNull() {
-					s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
-				}
-
-				if !service.RowNumExternalVlan.IsNull() {
-					intVal := int32(service.RowNumExternalVlan.ValueInt64())
-					s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
-				} else {
-					s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-				}
-
-				changedServices = append(changedServices, s)
-				hasChanges = true
+			if !service.Index.IsNull() && service.Index.ValueInt64() == idx {
+				found = true
+				break
 			}
 		}
 
-		if len(changedServices) > 0 {
-			ethPortName.Services = changedServices
+		if !found {
+			// service removed - include only the index for deletion
+			deletedService := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+			changedServices = append(changedServices, deletedService)
+			servicesChanged = true
 		}
+	}
+
+	if servicesChanged && len(changedServices) > 0 {
+		ethPortName.Services = changedServices
+		hasChanges = true
 	}
 
 	if !hasChanges {

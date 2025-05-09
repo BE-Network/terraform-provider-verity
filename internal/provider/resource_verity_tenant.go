@@ -655,57 +655,97 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	if len(plan.RouteTenants) != len(state.RouteTenants) {
-		oldRouteTenantsByIndex := make(map[int64]verityTenantRouteTenantModel)
-		for _, rt := range state.RouteTenants {
-			if !rt.Index.IsNull() {
-				idx := rt.Index.ValueInt64()
-				oldRouteTenantsByIndex[idx] = rt
-			}
-		}
-
-		var changedRouteTenants []openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner
-		for _, rt := range plan.RouteTenants {
-			if rt.Index.IsNull() {
-				continue
-			}
-
+	oldRouteTenantsByIndex := make(map[int64]verityTenantRouteTenantModel)
+	for _, rt := range state.RouteTenants {
+		if !rt.Index.IsNull() {
 			idx := rt.Index.ValueInt64()
-			oldRouteTenant, exists := oldRouteTenantsByIndex[idx]
+			oldRouteTenantsByIndex[idx] = rt
+		}
+	}
 
-			routeTenantChanged := !exists
-			if exists {
-				if !rt.Enable.Equal(oldRouteTenant.Enable) ||
-					!rt.Tenant.Equal(oldRouteTenant.Tenant) {
-					routeTenantChanged = true
-				}
+	var changedRouteTenants []openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner
+	routeTenantsChanged := false
+
+	for _, rt := range plan.RouteTenants {
+		if rt.Index.IsNull() {
+			continue
+		}
+
+		idx := rt.Index.ValueInt64()
+		oldRouteTenant, exists := oldRouteTenantsByIndex[idx]
+
+		if !exists {
+			// new route tenant, include all fields
+			tenantRoute := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
+				Index: openapi.PtrInt32(int32(idx)),
 			}
 
-			if routeTenantChanged {
-				tenantRoute := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
-					Index: openapi.PtrInt32(int32(idx)),
-				}
+			if !rt.Enable.IsNull() {
+				tenantRoute.Enable = openapi.PtrBool(rt.Enable.ValueBool())
+			} else {
+				tenantRoute.Enable = openapi.PtrBool(false)
+			}
 
-				if !rt.Enable.IsNull() {
-					tenantRoute.Enable = openapi.PtrBool(rt.Enable.ValueBool())
-				} else {
-					tenantRoute.Enable = openapi.PtrBool(false)
-				}
+			if !rt.Tenant.IsNull() && rt.Tenant.ValueString() != "" {
+				tenantRoute.Tenant = openapi.PtrString(rt.Tenant.ValueString())
+			} else {
+				tenantRoute.Tenant = openapi.PtrString("")
+			}
 
-				if !rt.Tenant.IsNull() && rt.Tenant.ValueString() != "" {
-					tenantRoute.Tenant = openapi.PtrString(rt.Tenant.ValueString())
-				} else {
-					tenantRoute.Tenant = openapi.PtrString("")
-				}
+			changedRouteTenants = append(changedRouteTenants, tenantRoute)
+			routeTenantsChanged = true
+			continue
+		}
 
-				changedRouteTenants = append(changedRouteTenants, tenantRoute)
+		// existing route tenant, check which fields changed
+		tenantRoute := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !rt.Enable.Equal(oldRouteTenant.Enable) {
+			tenantRoute.Enable = openapi.PtrBool(rt.Enable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !rt.Tenant.Equal(oldRouteTenant.Tenant) {
+			if !rt.Tenant.IsNull() && rt.Tenant.ValueString() != "" {
+				tenantRoute.Tenant = openapi.PtrString(rt.Tenant.ValueString())
+			} else {
+				tenantRoute.Tenant = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedRouteTenants = append(changedRouteTenants, tenantRoute)
+			routeTenantsChanged = true
+		}
+	}
+
+	for idx := range oldRouteTenantsByIndex {
+		found := false
+		for _, rt := range plan.RouteTenants {
+			if !rt.Index.IsNull() && rt.Index.ValueInt64() == idx {
+				found = true
+				break
 			}
 		}
 
-		if len(changedRouteTenants) > 0 {
-			tenantReq.RouteTenants = changedRouteTenants
-			hasChanges = true
+		if !found {
+			// route tenant removed - include only the index for deletion
+			deletedTenant := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+			changedRouteTenants = append(changedRouteTenants, deletedTenant)
+			routeTenantsChanged = true
 		}
+	}
+
+	if routeTenantsChanged && len(changedRouteTenants) > 0 {
+		tenantReq.RouteTenants = changedRouteTenants
+		hasChanges = true
 	}
 
 	if !hasChanges {

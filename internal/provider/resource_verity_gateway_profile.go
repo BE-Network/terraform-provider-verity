@@ -466,80 +466,137 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	if len(data.ExternalGateways) > 0 {
-		stateGatewaysByIndex := make(map[int64]externalGatewaysModel)
-		for _, eg := range state.ExternalGateways {
-			if !eg.Index.IsNull() {
-				stateGatewaysByIndex[eg.Index.ValueInt64()] = eg
-			}
+	stateGatewaysByIndex := make(map[int64]externalGatewaysModel)
+	for _, eg := range state.ExternalGateways {
+		if !eg.Index.IsNull() {
+			stateGatewaysByIndex[eg.Index.ValueInt64()] = eg
+		}
+	}
+
+	var changedExternalGateways []openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner
+	externalGatewaysChanged := false
+
+	for _, eg := range data.ExternalGateways {
+		if eg.Index.IsNull() {
+			continue
 		}
 
-		var changedExternalGateways []openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner
+		index := eg.Index.ValueInt64()
+		stateEg, exists := stateGatewaysByIndex[index]
 
-		for _, eg := range data.ExternalGateways {
-			if eg.Index.IsNull() {
-				continue
+		if !exists {
+			// new gateway, include all fields
+			gateway := openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner{
+				Index: openapi.PtrInt32(int32(index)),
 			}
 
-			index := eg.Index.ValueInt64()
-			stateEg, exists := stateGatewaysByIndex[index]
-			gatewayChanged := false
-
-			if exists {
-				if !eg.Enable.Equal(stateEg.Enable) ||
-					!eg.Gateway.Equal(stateEg.Gateway) ||
-					!eg.GatewayRefType.Equal(stateEg.GatewayRefType) ||
-					!eg.SourceIpMask.Equal(stateEg.SourceIpMask) ||
-					!eg.PeerGw.Equal(stateEg.PeerGw) {
-					gatewayChanged = true
-				}
+			if !eg.Enable.IsNull() {
+				gateway.Enable = openapi.PtrBool(eg.Enable.ValueBool())
 			} else {
-				gatewayChanged = true
+				gateway.Enable = openapi.PtrBool(false)
 			}
 
-			if gatewayChanged {
-				gateway := openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner{
-					Index: openapi.PtrInt32(int32(index)),
-				}
+			if !eg.Gateway.IsNull() {
+				gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
+			} else {
+				gateway.Gateway = openapi.PtrString("")
+			}
 
-				if !eg.Enable.IsNull() {
-					gateway.Enable = openapi.PtrBool(eg.Enable.ValueBool())
-				} else {
-					gateway.Enable = openapi.PtrBool(false)
-				}
+			if !eg.GatewayRefType.IsNull() {
+				gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
+			} else {
+				gateway.GatewayRefType = openapi.PtrString("")
+			}
 
-				if !eg.Gateway.IsNull() {
-					gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
-				} else {
-					gateway.Gateway = openapi.PtrString("")
-				}
+			if !eg.SourceIpMask.IsNull() {
+				gateway.SourceIpMask = openapi.PtrString(eg.SourceIpMask.ValueString())
+			} else {
+				gateway.SourceIpMask = openapi.PtrString("")
+			}
 
-				if !eg.GatewayRefType.IsNull() {
-					gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
-				} else {
-					gateway.GatewayRefType = openapi.PtrString("")
-				}
+			if !eg.PeerGw.IsNull() {
+				gateway.PeerGw = openapi.PtrBool(eg.PeerGw.ValueBool())
+			} else {
+				gateway.PeerGw = openapi.PtrBool(false)
+			}
 
-				if !eg.SourceIpMask.IsNull() {
-					gateway.SourceIpMask = openapi.PtrString(eg.SourceIpMask.ValueString())
-				} else {
-					gateway.SourceIpMask = openapi.PtrString("")
-				}
+			changedExternalGateways = append(changedExternalGateways, gateway)
+			externalGatewaysChanged = true
+			continue
+		}
 
-				if !eg.PeerGw.IsNull() {
-					gateway.PeerGw = openapi.PtrBool(eg.PeerGw.ValueBool())
-				} else {
-					gateway.PeerGw = openapi.PtrBool(false)
-				}
+		// existing gateway, check which fields changed
+		gateway := openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner{
+			Index: openapi.PtrInt32(int32(index)),
+		}
 
-				changedExternalGateways = append(changedExternalGateways, gateway)
+		fieldChanged := false
+
+		if !eg.Enable.Equal(stateEg.Enable) {
+			gateway.Enable = openapi.PtrBool(eg.Enable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !eg.Gateway.Equal(stateEg.Gateway) {
+			if !eg.Gateway.IsNull() {
+				gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
+			} else {
+				gateway.Gateway = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !eg.GatewayRefType.Equal(stateEg.GatewayRefType) {
+			if !eg.GatewayRefType.IsNull() {
+				gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
+			} else {
+				gateway.GatewayRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !eg.SourceIpMask.Equal(stateEg.SourceIpMask) {
+			if !eg.SourceIpMask.IsNull() {
+				gateway.SourceIpMask = openapi.PtrString(eg.SourceIpMask.ValueString())
+			} else {
+				gateway.SourceIpMask = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !eg.PeerGw.Equal(stateEg.PeerGw) {
+			gateway.PeerGw = openapi.PtrBool(eg.PeerGw.ValueBool())
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedExternalGateways = append(changedExternalGateways, gateway)
+			externalGatewaysChanged = true
+		}
+	}
+
+	for idx := range stateGatewaysByIndex {
+		found := false
+		for _, eg := range data.ExternalGateways {
+			if !eg.Index.IsNull() && eg.Index.ValueInt64() == idx {
+				found = true
+				break
 			}
 		}
 
-		if len(changedExternalGateways) > 0 {
-			profileObj.ExternalGateways = changedExternalGateways
-			hasChanges = true
+		if !found {
+			// gateway removed - include only the index for deletion
+			deletedGateway := openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+			changedExternalGateways = append(changedExternalGateways, deletedGateway)
+			externalGatewaysChanged = true
 		}
+	}
+
+	if externalGatewaysChanged && len(changedExternalGateways) > 0 {
+		profileObj.ExternalGateways = changedExternalGateways
+		hasChanges = true
 	}
 
 	if !hasChanges {

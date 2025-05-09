@@ -997,48 +997,118 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	var changedStaticRoutes []openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner
+	staticRoutesChanged := false
+
 	for _, sr := range plan.StaticRoutes {
 		if sr.Index.IsNull() {
 			continue
 		}
+
 		index := sr.Index.ValueInt64()
 		oldRoute, exists := oldStaticRoutesByIndex[index]
 
-		routeChanged := !exists ||
-			!sr.Enable.Equal(oldRoute.Enable) ||
-			!sr.Ipv4RoutePrefix.Equal(oldRoute.Ipv4RoutePrefix) ||
-			!sr.NextHopIpAddress.Equal(oldRoute.NextHopIpAddress) ||
-			!sr.AdValue.Equal(oldRoute.AdValue)
-
-		if routeChanged {
+		if !exists {
+			// new static route, include all fields
 			route := openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner{
 				Index: openapi.PtrInt32(int32(index)),
 			}
+
 			if !sr.Enable.IsNull() {
 				route.Enable = openapi.PtrBool(sr.Enable.ValueBool())
 			} else {
 				route.Enable = openapi.PtrBool(false)
 			}
+
 			if !sr.Ipv4RoutePrefix.IsNull() {
 				route.Ipv4RoutePrefix = openapi.PtrString(sr.Ipv4RoutePrefix.ValueString())
 			} else {
 				route.Ipv4RoutePrefix = openapi.PtrString("")
 			}
+
 			if !sr.NextHopIpAddress.IsNull() {
 				route.NextHopIpAddress = openapi.PtrString(sr.NextHopIpAddress.ValueString())
 			} else {
 				route.NextHopIpAddress = openapi.PtrString("")
 			}
+
 			if !sr.AdValue.IsNull() {
 				adVal := int32(sr.AdValue.ValueInt64())
 				route.AdValue = *openapi.NewNullableInt32(&adVal)
 			} else {
 				route.AdValue = *openapi.NewNullableInt32(nil)
 			}
+
 			changedStaticRoutes = append(changedStaticRoutes, route)
+			staticRoutesChanged = true
+			continue
+		}
+
+		// existing static route, check which fields changed
+		route := openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner{
+			Index: openapi.PtrInt32(int32(index)),
+		}
+
+		fieldChanged := false
+
+		if !sr.Enable.Equal(oldRoute.Enable) {
+			route.Enable = openapi.PtrBool(sr.Enable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !sr.Ipv4RoutePrefix.Equal(oldRoute.Ipv4RoutePrefix) {
+			if !sr.Ipv4RoutePrefix.IsNull() {
+				route.Ipv4RoutePrefix = openapi.PtrString(sr.Ipv4RoutePrefix.ValueString())
+			} else {
+				route.Ipv4RoutePrefix = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !sr.NextHopIpAddress.Equal(oldRoute.NextHopIpAddress) {
+			if !sr.NextHopIpAddress.IsNull() {
+				route.NextHopIpAddress = openapi.PtrString(sr.NextHopIpAddress.ValueString())
+			} else {
+				route.NextHopIpAddress = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !sr.AdValue.Equal(oldRoute.AdValue) {
+			if !sr.AdValue.IsNull() {
+				adVal := int32(sr.AdValue.ValueInt64())
+				route.AdValue = *openapi.NewNullableInt32(&adVal)
+			} else {
+				route.AdValue = *openapi.NewNullableInt32(nil)
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedStaticRoutes = append(changedStaticRoutes, route)
+			staticRoutesChanged = true
 		}
 	}
-	if len(changedStaticRoutes) > 0 {
+
+	for idx := range oldStaticRoutesByIndex {
+		found := false
+		for _, sr := range plan.StaticRoutes {
+			if !sr.Index.IsNull() && sr.Index.ValueInt64() == idx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// static route removed - include only the index for deletion
+			deletedRoute := openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+			changedStaticRoutes = append(changedStaticRoutes, deletedRoute)
+			staticRoutesChanged = true
+		}
+	}
+
+	if staticRoutesChanged && len(changedStaticRoutes) > 0 {
 		gatewayProps.StaticRoutes = changedStaticRoutes
 		hasChanges = true
 	}
