@@ -30,6 +30,16 @@ func (i *Importer) ImportAll(outputDir string) error {
 		return fmt.Errorf("failed to create output directory: %v", err)
 	}
 
+	stagesTF, err := i.generateStagesTF()
+	if err != nil {
+		return fmt.Errorf("failed to generate stages: %v", err)
+	}
+
+	stagesFile := filepath.Join(outputDir, "stages.tf")
+	if err := os.WriteFile(stagesFile, []byte(stagesTF), 0644); err != nil {
+		return fmt.Errorf("failed to write stages terraform config: %v", err)
+	}
+
 	resources := []struct {
 		name        string
 		importer    func() (interface{}, error)
@@ -39,6 +49,11 @@ func (i *Importer) ImportAll(outputDir string) error {
 			name:        "tenants",
 			importer:    i.importTenants,
 			tfGenerator: i.generateTenantsTF,
+		},
+		{
+			name:        "gateways",
+			importer:    i.importGateways,
+			tfGenerator: i.generateGatewaysTF,
 		},
 		{
 			name:        "gatewayprofiles",
@@ -69,11 +84,6 @@ func (i *Importer) ImportAll(outputDir string) error {
 			name:        "bundles",
 			importer:    i.importBundles,
 			tfGenerator: i.generateBundlesTF,
-		},
-		{
-			name:        "gateways",
-			importer:    i.importGateways,
-			tfGenerator: i.generateGatewaysTF,
 		},
 	}
 
@@ -109,6 +119,7 @@ func (i *Importer) generateGatewayProfilesTF(data interface{}) (string, error) {
 		tfConfig.WriteString(fmt.Sprintf(`
 resource "verity_gateway_profile" "%s" {
 	name = "%s"
+	depends_on = [verity_operation_stage.gateway_profile_stage]
 `, sanitizedName, name))
 
 		tfConfig.WriteString("	object_properties {\n")
@@ -184,6 +195,7 @@ func (i *Importer) generateEthPortProfilesTF(data interface{}) (string, error) {
 		tfConfig.WriteString(fmt.Sprintf(`
 resource "verity_eth_port_profile" "%s" {
     name = "%s"
+	depends_on = [verity_operation_stage.eth_port_profile_stage]
 `, sanitizedName, name))
 
 		tfConfig.WriteString("	object_properties {\n")
@@ -268,6 +280,7 @@ func (i *Importer) generateBundlesTF(data interface{}) (string, error) {
 		tfConfig.WriteString(fmt.Sprintf(`
 resource "verity_bundle" "%s" {
     name = "%s"
+	depends_on = [verity_operation_stage.bundle_stage]
 `, sanitizedName, name))
 
 		tfConfig.WriteString("	object_properties {\n")
@@ -338,6 +351,7 @@ func (i *Importer) generateTenantsTF(data interface{}) (string, error) {
 		tfConfig.WriteString(fmt.Sprintf(`
 resource "verity_tenant" "%s" {
     name = "%s"
+    depends_on = [verity_operation_stage.tenant_stage]
 `, sanitizedName, name))
 
 		tfConfig.WriteString("	object_properties {\n")
@@ -414,6 +428,7 @@ func (i *Importer) generateLagsTF(data interface{}) (string, error) {
 		tfConfig.WriteString(fmt.Sprintf(`
 resource "verity_lag" "%s" {
     name = "%s"
+	depends_on = [verity_operation_stage.lag_stage]
 `, sanitizedName, name))
 
 		tfConfig.WriteString("	object_properties {}\n")
@@ -453,6 +468,7 @@ func (i *Importer) generateServicesTF(data interface{}) (string, error) {
 		tfConfig.WriteString(fmt.Sprintf(`
 resource "verity_service" "%s" {
     name = "%s"
+	depends_on = [verity_operation_stage.service_stage]
 `, sanitizedName, name))
 
 		tfConfig.WriteString("	object_properties {\n")
@@ -503,6 +519,7 @@ func (i *Importer) generateEthPortSettingsTF(data interface{}) (string, error) {
 		tfConfig.WriteString(fmt.Sprintf(`
 resource "verity_eth_port_settings" "%s" {
     name = "%s"
+	depends_on = [verity_operation_stage.eth_port_settings_stage]
 `, sanitizedName, name))
 
 		tfConfig.WriteString("	object_properties {\n")
@@ -553,6 +570,7 @@ func (i *Importer) generateGatewaysTF(data interface{}) (string, error) {
 		tfConfig.WriteString(fmt.Sprintf(`
 resource "verity_gateway" "%s" {
     name = "%s"
+	depends_on = [verity_operation_stage.gateway_stage]
 `, sanitizedName, name))
 
 		tfConfig.WriteString("	object_properties {\n")
@@ -613,6 +631,70 @@ resource "verity_gateway" "%s" {
 
 		tfConfig.WriteString("}\n\n")
 	}
+
+	return tfConfig.String(), nil
+}
+
+func (i *Importer) generateStagesTF() (string, error) {
+	var tfConfig strings.Builder
+
+	tfConfig.WriteString(`
+# These resources establish ordering for bulk operations
+resource "verity_operation_stage" "tenant_stage" {
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "gateway_stage" {
+  depends_on = [verity_operation_stage.tenant_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "gateway_profile_stage" {
+  depends_on = [verity_operation_stage.gateway_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "service_stage" {
+  depends_on = [verity_operation_stage.gateway_profile_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "eth_port_profile_stage" {
+  depends_on = [verity_operation_stage.service_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "eth_port_settings_stage" {
+  depends_on = [verity_operation_stage.eth_port_profile_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "lag_stage" {
+  depends_on = [verity_operation_stage.eth_port_settings_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "bundle_stage" {
+  depends_on = [verity_operation_stage.lag_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+`)
 
 	return tfConfig.String(), nil
 }

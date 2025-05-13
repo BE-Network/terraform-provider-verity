@@ -218,6 +218,7 @@ func (p *verityProvider) Resources(ctx context.Context) []func() resource.Resour
 		NewVerityBundleResource,
 		NewVerityLagResource,
 		NewVerityGatewayProfileResource,
+		NewVerityOperationStageResource,
 	}
 }
 

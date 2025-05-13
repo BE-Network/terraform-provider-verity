@@ -100,6 +100,49 @@ The importer generates the following Terraform resource files:
 - `import_blocks.tf` - Import blocks for all resources in the correct dependency order
 
 
+### Resource Dependency Management
+
+The import process creates a special `stages.tf` file that defines explicit dependency ordering for resources. This uses the `verity_operation_stage` resource, which helps to:
+
+1. Establish a clear sequence for creating, updating, and destroying resources
+2. Prevent dependency conflicts between resource types
+3. Ensure that resources are processed in the optimal order for the Verity API
+
+Each imported resource is configured with the appropriate `depends_on` attribute referring to its corresponding stage. This prevents Terraform from attempting to create resources before their dependencies are ready, which is particularly important when working with the Verity API's interdependent resources.
+
+The operation stages maintain the following order for creation and update operations:
+
+1. tenant_stage
+2. gateway_stage
+3. gateway_profile_stage
+4. service_stage
+5. eth_port_profile_stage
+6. eth_port_settings_stage
+7. lag_stage
+8. bundle_stage
+
+For delete operations, this order is automatically reversed (8→1) to ensure proper dependency handling when removing resources.
+
+#### Creating New Resources
+
+When manually creating new resources (not through import), it's strongly recommended to follow the same pattern and include the appropriate `depends_on` attribute referring to the corresponding stage. For example:
+
+```hcl
+resource "verity_tenant" "example" {
+  name = "example-tenant"
+  // other attributes...
+  depends_on = [verity_operation_stage.tenant_stage]
+}
+
+resource "verity_service" "example" {
+  name = "example-service"
+  // other attributes...
+  depends_on = [verity_operation_stage.service_stage]
+}
+```
+
+This ensures proper ordering of operations and helps avoid dependency issues when managing your infrastructure.
+
 ## 4. Tools
 
 When you run `terraform init`, the provider binary and a `tools` folder are placed alongside the plugin in the `.terraform/providers` directory. This `tools` folder contains:
