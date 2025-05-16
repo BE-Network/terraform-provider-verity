@@ -23,6 +23,7 @@ var (
 	_ resource.Resource                = &verityServiceResource{}
 	_ resource.ResourceWithConfigure   = &verityServiceResource{}
 	_ resource.ResourceWithImportState = &verityServiceResource{}
+	_ resource.ResourceWithModifyPlan  = &verityServiceResource{}
 )
 
 func NewVerityServiceResource() resource.Resource {
@@ -504,7 +505,34 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	tflog.Info(ctx, fmt.Sprintf("Service %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "services")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityServiceResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
+			// Use the cached data from the API response
+			state := populateServiceState(ctx, minState, serviceData, nil)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityServiceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -590,21 +618,23 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		state.Vlan = types.Int64Null()
 	}
 
-	if val, ok := serviceData["vni"]; ok && val != nil {
-		switch v := val.(type) {
-		case float64:
-			state.Vni = types.Int64Value(int64(v))
-		case int:
-			state.Vni = types.Int64Value(int64(v))
-		case int32:
-			state.Vni = types.Int64Value(int64(v))
-		default:
-			if plan != nil && !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
-				state.Vni = types.Int64Null()
-			} else if plan != nil && !plan.Vni.IsNull() {
-				state.Vni = plan.Vni
-			} else {
-				state.Vni = types.Int64Null()
+	if val, ok := serviceData["vni"]; ok {
+		if val == nil {
+			state.Vni = types.Int64Null()
+		} else {
+			switch v := val.(type) {
+			case float64:
+				state.Vni = types.Int64Value(int64(v))
+			case int:
+				state.Vni = types.Int64Value(int64(v))
+			case int32:
+				state.Vni = types.Int64Value(int64(v))
+			default:
+				if plan != nil && !plan.Vni.IsNull() {
+					state.Vni = plan.Vni
+				} else {
+					state.Vni = types.Int64Null()
+				}
 			}
 		}
 	} else if plan != nil && !plan.Vni.IsNull() {
@@ -673,4 +703,31 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	}
 
 	return state
+}
+
+func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// Skip modification if we're deleting the resource
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan, state verityServiceResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() && !req.State.Raw.IsNull() {
+		resp.Diagnostics.AddWarning(
+			"Ignoring vni changes with auto-assignment enabled",
+			"The 'vni' field changes will be ignored because 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+		)
+
+		// Use current state value to suppress the diff
+		if !state.Vni.IsNull() {
+			resp.Plan.SetAttribute(ctx, path.Root("vni"), state.Vni)
+		}
+	}
 }

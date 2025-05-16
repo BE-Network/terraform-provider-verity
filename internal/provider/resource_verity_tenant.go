@@ -23,6 +23,7 @@ var (
 	_ resource.Resource                = &verityTenantResource{}
 	_ resource.ResourceWithConfigure   = &verityTenantResource{}
 	_ resource.ResourceWithImportState = &verityTenantResource{}
+	_ resource.ResourceWithModifyPlan  = &verityTenantResource{}
 )
 
 func NewVerityTenantResource() resource.Resource {
@@ -767,7 +768,34 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	tflog.Info(ctx, fmt.Sprintf("Tenant %s update operation completed successfully", state.Name.ValueString()))
 	clearCache(ctx, r.provCtx, "tenants")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityTenantResourceModel
+	minState.Name = types.StringValue(state.Name.ValueString())
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", state.Name.ValueString()); exists {
+			// Use the cached data from the API response
+			updatedState := populateTenantState(ctx, minState, tenantData, nil)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &updatedState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityTenantResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -835,18 +863,22 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	}
 
 	if val, ok := tenantData["layer_3_vni"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Layer3Vni = types.Int64Value(int64(v))
-		case int:
-			state.Layer3Vni = types.Int64Value(int64(v))
-		default:
-			if plan != nil && !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
-				state.Layer3Vni = types.Int64Null()
-			} else if plan != nil && !plan.Layer3Vni.IsNull() {
-				state.Layer3Vni = plan.Layer3Vni
-			} else {
-				state.Layer3Vni = types.Int64Null()
+		if val == nil {
+			state.Layer3Vni = types.Int64Null()
+		} else {
+			switch v := val.(type) {
+			case float64:
+				state.Layer3Vni = types.Int64Value(int64(v))
+			case int:
+				state.Layer3Vni = types.Int64Value(int64(v))
+			case int32:
+				state.Layer3Vni = types.Int64Value(int64(v))
+			default:
+				if plan != nil && !plan.Layer3Vni.IsNull() {
+					state.Layer3Vni = plan.Layer3Vni
+				} else {
+					state.Layer3Vni = types.Int64Null()
+				}
 			}
 		}
 	} else if plan != nil && !plan.Layer3Vni.IsNull() {
@@ -864,24 +896,24 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	}
 
 	if val, ok := tenantData["layer_3_vlan"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Layer3Vlan = types.Int64Value(int64(v))
-		case int:
-			state.Layer3Vlan = types.Int64Value(int64(v))
-		default:
-			if plan != nil && !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
-				state.Layer3Vlan = types.Int64Null()
-			} else if plan != nil && !plan.Layer3Vlan.IsNull() {
-				state.Layer3Vlan = plan.Layer3Vlan
-			} else {
-				state.Layer3Vlan = types.Int64Null()
+		if val == nil {
+			state.Layer3Vlan = types.Int64Null()
+		} else {
+			switch v := val.(type) {
+			case float64:
+				state.Layer3Vlan = types.Int64Value(int64(v))
+			case int:
+				state.Layer3Vlan = types.Int64Value(int64(v))
+			case int32:
+				state.Layer3Vlan = types.Int64Value(int64(v))
+			default:
+				if plan != nil && !plan.Layer3Vlan.IsNull() {
+					state.Layer3Vlan = plan.Layer3Vlan
+				} else {
+					state.Layer3Vlan = types.Int64Null()
+				}
 			}
 		}
-	} else if plan != nil && !plan.Layer3Vlan.IsNull() {
-		state.Layer3Vlan = plan.Layer3Vlan
-	} else {
-		state.Layer3Vlan = types.Int64Null()
 	}
 
 	if val, ok := tenantData["layer_3_vlan_auto_assigned_"].(bool); ok {
@@ -1021,4 +1053,53 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	}
 
 	return state
+}
+
+func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// Skip modification if we're deleting the resource
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan, state verityTenantResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() && !req.State.Raw.IsNull() {
+		resp.Diagnostics.AddWarning(
+			"Ignoring layer_3_vni changes with auto-assignment enabled",
+			"The 'layer_3_vni' field changes will be ignored because 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+		)
+
+		// Use current state value to suppress the diff
+		if !state.Layer3Vni.IsNull() {
+			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), state.Layer3Vni)
+		}
+	}
+
+	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() && !req.State.Raw.IsNull() {
+		resp.Diagnostics.AddWarning(
+			"Ignoring layer_3_vlan changes with auto-assignment enabled",
+			"The 'layer_3_vlan' field changes will be ignored because 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
+		)
+
+		if !state.Layer3Vlan.IsNull() {
+			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vlan"), state.Layer3Vlan)
+		}
+	}
+
+	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() && !req.State.Raw.IsNull() {
+		resp.Diagnostics.AddWarning(
+			"Ignoring vrf_name changes with auto-assignment enabled",
+			"The 'vrf_name' field changes will be ignored because 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
+		)
+
+		if !state.VrfName.IsNull() {
+			resp.Plan.SetAttribute(ctx, path.Root("vrf_name"), state.VrfName)
+		}
+	}
 }
