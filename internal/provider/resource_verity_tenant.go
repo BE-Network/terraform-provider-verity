@@ -1061,6 +1061,11 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
+	// Skip modification for new resources (where state is null)
+	if req.State.Raw.IsNull() {
+		return
+	}
+
 	var plan, state verityTenantResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)

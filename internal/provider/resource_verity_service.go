@@ -711,6 +711,11 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
+	// Skip modification for new resources (where state is null)
+	if req.State.Raw.IsNull() {
+		return
+	}
+
 	var plan, state verityServiceResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
