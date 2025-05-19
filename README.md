@@ -42,11 +42,7 @@ terraform {
   }
 }
 
-provider "verity" {
-  uri      = var.uri
-  username = var.username
-  password = var.password
-}
+provider "verity" {}
 ```
 
 
@@ -63,7 +59,70 @@ To use this configuration, you can either:
 
 ### Required Environment Variables
 
-The provider requires several environment variables to be set for authentication. You can set these variables manually or use a script like `set_env.sh`:
+The Verity provider offers flexible configuration options, allowing you to specify credentials through provider configuration blocks, variable files, or environment variables:
+
+- `TF_VAR_uri`: The base URL of the Verity API
+- `TF_VAR_username`: Your Verity API username
+- `TF_VAR_password`: Your Verity API password
+
+You can use these configuration options in three ways:
+
+1. **Using only environment variables**:
+   ```terraform
+   provider "verity" {}
+   ```
+   All configuration is taken from environment variables.
+
+2. **Using provider configuration block with variables**:
+   
+   First, create a `variables.tf` file:
+   ```terraform
+   variable "uri" {
+     description = "The base URL of the API"
+     type        = string
+     sensitive   = true
+   }
+
+   variable "username" {
+     description = "API username"
+     type        = string
+     sensitive   = true
+   }
+
+   variable "password" {
+     description = "API password"
+     type        = string
+     sensitive   = true
+   }
+
+   variable "config_dir" {
+     description = "Directory where Terraform configuration files will be generated"
+     type        = string
+     default     = "."
+   }
+   ```
+   
+   Then reference these variables in your provider configuration:
+   ```terraform
+   provider "verity" {
+     uri      = var.uri
+     username = var.username
+     password = var.password
+   }
+   ```
+
+3. **Mixed approach**:
+   ```terraform
+   provider "verity" {
+     uri = "<your-verity-uri>"  # URI specified directly as a string
+     # username and password will be read from environment variables
+   }
+   ```
+   This approach allows you to hardcode the URI directly as a string in your configuration, while still retrieving username and password from environment variables. This approach doesn't require the variables.tf file.
+
+If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable.
+
+For Linux and macOS, use the following commands to set environment variables:
 
 ```bash
 export TF_VAR_uri="<your-verity-uri>"
@@ -79,17 +138,7 @@ $env:TF_VAR_username="<your-username>"
 $env:TF_VAR_password="<your-password>"
 ```
 
-These variables correspond to the provider configuration in your Terraform files:
-
-```hcl
-provider "verity" {
-  uri      = var.uri
-  username = var.username
-  password = var.password
-}
-```
-
-Make sure to set these environment variables before running any Terraform commands. (Of course, windows is different...)
+Make sure to set these environment variables before running any Terraform commands.
 
 
 ## Production Setup
@@ -106,11 +155,7 @@ terraform {
   }
 }
 
-provider "verity" {
-  uri      = var.uri
-  username = var.username
-  password = var.password
-}
+provider "verity" {}
 ```
 
 > Replace `1.0.3` with the desired release version.

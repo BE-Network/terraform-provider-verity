@@ -92,7 +92,7 @@ if ($fileContent -match 'verity_state_importer') {
     Copy-Item -Path $mainTfFile -Destination "$mainTfFile.clean" -Force
     
     # Add the state importer data source
-    $importerCode = "`ndata `"verity_state_importer`" `"import`" {`n  output_dir = var.config_dir`n}`n"
+    $importerCode = "`ndata `"verity_state_importer`" `"import`" {}`n"
     Add-Content -Path $mainTfFile -Value $importerCode
     Log "[INFO] Added verity_state_importer to $($mainTfFile)" -color Cyan
 }

@@ -2,7 +2,56 @@
 
 ## 1. Provider Configuration
 
-The provider requires basic authentication parameters in your Terraform configuration:
+The Verity provider offers flexible configuration options, allowing you to specify credentials through provider configuration blocks, variable files, or environment variables.
+
+### Configuration Methods
+
+#### Using only environment variables:
+
+```hcl
+terraform {
+  required_providers {
+    verity = {
+      source  = "BE-Network/verity"
+      version = "<VERSION>"
+    }
+  }
+}
+
+provider "verity" {}
+```
+
+#### Using provider configuration block with variables:
+
+First, create a `variables.tf` file:
+
+```terraform
+variable "uri" {
+  description = "The base URL of the API"
+  type        = string
+  sensitive   = true
+}
+
+variable "username" {
+  description = "API username"
+  type        = string
+  sensitive   = true
+}
+
+variable "password" {
+  description = "API password"
+  type        = string
+  sensitive   = true
+}
+
+variable "config_dir" {
+  description = "Directory where Terraform configuration files will be generated"
+  type        = string
+  default     = "."
+}
+```
+
+Then reference these variables in your provider configuration:
 
 ```hcl
 terraform {
@@ -20,13 +69,32 @@ provider "verity" {
   password = var.password
 }
 ```
+
+#### Mixed approach (hardcoded URI with environment variables):
+
+```hcl
+terraform {
+  required_providers {
+    verity = {
+      source  = "BE-Network/verity"
+      version = "<VERSION>"
+    }
+  }
+}
+
+provider "verity" {
+  uri = "https://your-verity-instance"  # URI specified directly as a string
+  # username and password will be read from environment variables
+}
+```
+
 > **Note:** Replace `<VERSION>` with the actual provider version (e.g. `1.0.3`)
 
 Required parameters:
 - **uri**: Base URL for the API
 - **username** and **password**: For authentication
 
-You can export these variables using environment variables:
+You can export these environment variables as follows:
 
 ```bash
 # For Linux/MacOS
@@ -39,6 +107,8 @@ $env:TF_VAR_uri="https://your-verity-instance"
 $env:TF_VAR_username="your-username"
 $env:TF_VAR_password="your-password"
 ```
+
+If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable.
 
 ### CLI Parallelism
 

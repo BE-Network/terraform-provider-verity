@@ -71,7 +71,7 @@ else
   cp "$MAIN_TF_FILE" "${MAIN_TF_FILE}.clean"
   
   # Add the state importer data source
-  echo -e "\ndata \"verity_state_importer\" \"import\" {\n  output_dir = var.config_dir\n}" >> "$MAIN_TF_FILE"
+  echo -e "\ndata \"verity_state_importer\" \"import\" {}" >> "$MAIN_TF_FILE"
   log "[INFO] Added verity_state_importer to $MAIN_TF_FILE"
 fi
 

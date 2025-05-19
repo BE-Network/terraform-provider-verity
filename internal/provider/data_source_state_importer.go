@@ -50,8 +50,8 @@ func (d *stateImporterDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Computed:    true,
 			},
 			"output_dir": schema.StringAttribute{
-				Description: "Directory where the TF files will be saved",
-				Required:    true,
+				Description: "Directory where the TF files will be saved. Defaults to current directory.",
+				Optional:    true,
 			},
 			"imported_files": schema.ListAttribute{
 				Description: "List of files that were created during import",
@@ -88,6 +88,15 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 	}
 
 	outputDir := data.OutputDir.ValueString()
+	if outputDir == "" {
+		currentDir, err := os.Getwd()
+		if err != nil {
+			resp.Diagnostics.AddError("Error getting current directory", err.Error())
+			return
+		}
+		outputDir = currentDir
+		data.OutputDir = types.StringValue(outputDir)
+	}
 
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
 		resp.Diagnostics.AddError(

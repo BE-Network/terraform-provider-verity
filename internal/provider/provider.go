@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -69,17 +70,19 @@ func (p *verityProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 		Description: "Interact with Verity API",
 		Attributes: map[string]schema.Attribute{
 			"uri": schema.StringAttribute{
-				Required:    true,
 				Description: "The base URL of the API",
+				Optional:    true,
+				Sensitive:   true,
 			},
 			"username": schema.StringAttribute{
-				Required:    true,
 				Description: "API username",
+				Optional:    true,
+				Sensitive:   true,
 			},
 			"password": schema.StringAttribute{
-				Required:    true,
-				Sensitive:   true,
 				Description: "API password",
+				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -93,26 +96,50 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	if config.URI.ValueString() == "" {
+	uri := config.URI.ValueString()
+	if uri == "" {
+		uri = os.Getenv("TF_VAR_uri")
+		tflog.Debug(ctx, "URI not provided in configuration, using environment variable")
+	}
+
+	username := config.Username.ValueString()
+	if username == "" {
+		username = os.Getenv("TF_VAR_username")
+		tflog.Debug(ctx, "Username not provided in configuration, using environment variable")
+	}
+
+	password := config.Password.ValueString()
+	if password == "" {
+		password = os.Getenv("TF_VAR_password")
+		tflog.Debug(ctx, "Password not provided in configuration, using environment variable")
+	}
+
+	if uri == "" {
 		resp.Diagnostics.AddError(
 			"Missing API URI",
-			"The provider cannot create the Verity API client as the URI is missing",
+			"The provider cannot create the Verity API client as the URI is missing. "+
+				"Set the uri attribute in the provider configuration or "+
+				"set the TF_VAR_uri environment variable.",
 		)
 		return
 	}
 
-	if config.Username.ValueString() == "" {
+	if username == "" {
 		resp.Diagnostics.AddError(
 			"Missing API Username",
-			"The provider cannot create the Verity API client as the username is missing",
+			"The provider cannot create the Verity API client as the username is missing. "+
+				"Set the username attribute in the provider configuration or "+
+				"set the TF_VAR_username environment variable.",
 		)
 		return
 	}
 
-	if config.Password.ValueString() == "" {
+	if password == "" {
 		resp.Diagnostics.AddError(
 			"Missing API Password",
-			"The provider cannot create the Verity API client as the password is missing",
+			"The provider cannot create the Verity API client as the password is missing. "+
+				"Set the password attribute in the provider configuration or "+
+				"set the TF_VAR_password environment variable.",
 		)
 		return
 	}
@@ -134,7 +161,7 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		Jar: jar,
 	}
 
-	baseURL := config.URI.ValueString()
+	baseURL := uri
 	tflog.Debug(ctx, "Configuring provider", map[string]interface{}{
 		"base_url": baseURL,
 	})
@@ -186,8 +213,8 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		responseCache:  make(map[string]interface{}),
 		debounceActive: true,
 	}
-	provCtx.credentials.username = config.Username.ValueString()
-	provCtx.credentials.password = config.Password.ValueString()
+	provCtx.credentials.username = username
+	provCtx.credentials.password = password
 
 	bulkManager := utils.GetBulkOperationManager(client, clearCache, provCtx)
 	tflog.Info(ctx, "Initialized bulk operation manager with manual batching mode")
