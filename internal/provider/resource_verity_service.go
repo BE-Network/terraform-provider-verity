@@ -189,14 +189,21 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	} else {
 		serviceReq.Vlan = *openapi.NewNullableInt32(nil)
 	}
-	if !plan.Vni.IsNull() {
+	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+		serviceReq.VniAutoAssigned = openapi.PtrBool(true)
+		// Don't include the specific VNI in the request
+	} else if !plan.Vni.IsNull() {
+		// User explicitly specified a value
 		vniVal := int32(plan.Vni.ValueInt64())
 		serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+		if !plan.VniAutoAssigned.IsNull() {
+			serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
+		}
 	} else {
 		serviceReq.Vni = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.VniAutoAssigned.IsNull() {
-		serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
+		if !plan.VniAutoAssigned.IsNull() {
+			serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
+		}
 	}
 	if !plan.Tenant.IsNull() {
 		serviceReq.Tenant = openapi.PtrString(plan.Tenant.ValueString())
@@ -711,20 +718,30 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// Skip modification for new resources (where state is null)
-	if req.State.Raw.IsNull() {
-		return
-	}
-
-	var plan, state verityServiceResourceModel
+	var plan verityServiceResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() && !req.State.Raw.IsNull() {
+	// For new resources (where state is null)
+	if req.State.Raw.IsNull() {
+		if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+			resp.Diagnostics.AddWarning(
+				"VNI will be assigned by the API",
+				"The 'vni' field value in your configuration will be ignored because 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+		}
+		return
+	}
+
+	var state verityServiceResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		resp.Diagnostics.AddWarning(
 			"Ignoring vni changes with auto-assignment enabled",
 			"The 'vni' field changes will be ignored because 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",

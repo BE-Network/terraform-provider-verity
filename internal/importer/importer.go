@@ -140,6 +140,10 @@ resource "verity_gateway_profile" "%s" {
 				continue
 			}
 
+			if isAutoAssignedField(profile, key) {
+				continue
+			}
+
 			switch v := value.(type) {
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
@@ -224,6 +228,10 @@ resource "verity_eth_port_profile" "%s" {
 				continue
 			}
 
+			if isAutoAssignedField(profile, key) {
+				continue
+			}
+
 			switch v := value.(type) {
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
@@ -301,6 +309,10 @@ resource "verity_bundle" "%s" {
 				continue
 			}
 
+			if isAutoAssignedField(bundle, key) {
+				continue
+			}
+
 			switch v := value.(type) {
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
@@ -372,6 +384,10 @@ resource "verity_tenant" "%s" {
 				continue
 			}
 
+			if isAutoAssignedField(tenant, key) {
+				continue
+			}
+
 			switch v := value.(type) {
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
@@ -438,6 +454,10 @@ resource "verity_lag" "%s" {
 				continue
 			}
 
+			if isAutoAssignedField(lag, key) {
+				continue
+			}
+
 			switch v := value.(type) {
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
@@ -486,6 +506,10 @@ resource "verity_service" "%s" {
 
 		for key, value := range service {
 			if key == "name" || key == "object_properties" {
+				continue
+			}
+
+			if isAutoAssignedField(service, key) {
 				continue
 			}
 
@@ -540,6 +564,10 @@ resource "verity_eth_port_settings" "%s" {
 				continue
 			}
 
+			if isAutoAssignedField(setting, key) {
+				continue
+			}
+
 			switch v := value.(type) {
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
@@ -588,6 +616,10 @@ resource "verity_gateway" "%s" {
 
 		for key, value := range gateway {
 			if key == "name" || key == "object_properties" {
+				continue
+			}
+
+			if isAutoAssignedField(gateway, key) {
 				continue
 			}
 
@@ -848,4 +880,14 @@ func formatValue(value interface{}) string {
 	default:
 		return "null"
 	}
+}
+
+func isAutoAssignedField(resource map[string]interface{}, fieldName string) bool {
+	autoAssignedFieldName := fieldName + "_auto_assigned_"
+
+	if autoAssignedValue, ok := resource[autoAssignedFieldName].(bool); ok && autoAssignedValue {
+		return true
+	}
+
+	return false
 }
