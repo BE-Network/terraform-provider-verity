@@ -138,6 +138,19 @@ $env:TF_VAR_username="<your-username>"
 $env:TF_VAR_password="<your-password>"
 ```
 
+Additionally, the Verity provider requires the following environment variable to be set at all times to allow the provider to make bulk requests to the API. If this variable is not set, Terraform will use the default parallelism of 10, which will significantly slow down the provider:
+
+#### Unix-based Systems
+```bash
+export TF_CLI_ARGS_apply="-parallelism=250"
+```
+
+#### Windows
+```powershell
+$env:TF_CLI_ARGS_apply="-parallelism=250"
+```
+
+
 Make sure to set these environment variables before running any Terraform commands.
 
 
@@ -160,19 +173,7 @@ provider "verity" {}
 
 > Replace `1.0.3` with the desired release version.
 
-## Recommended Environment Variables
 
-By default, Terraform is only able to handle 10 resources at a time. It is recommended to export the following environment variable to allow the provider to make bulk requests to the API instead of splitting the API calls into multiple ones:
-
-### Unix-based Systems
-```bash
-export TF_CLI_ARGS_apply="-parallelism=250"
-```
-
-### Windows
-```powershell
-$env:TF_CLI_ARGS_apply="-parallelism=250"
-```
 
 ## Regenerating the OpenAPI Go SDK
 

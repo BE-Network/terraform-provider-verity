@@ -110,19 +110,21 @@ $env:TF_VAR_password="your-password"
 
 If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable.
 
-### CLI Parallelism
+### Required CLI Parallelism
 
-You can adjust Terraform’s parallelism for apply operations:
+The Verity provider requires the following environment variable to be set at all times to allow the provider to make bulk requests to the API. If this variable is not set, Terraform will use the default parallelism of 10, which will significantly slow down the provider:
 
+#### Unix-based Systems
 ```bash
 export TF_CLI_ARGS_apply="-parallelism=250"
 ```
 
-For Windows PowerShell:
-
+#### Windows
 ```powershell
 $env:TF_CLI_ARGS_apply="-parallelism=250"
 ```
+
+Make sure to set these environment variables before running any Terraform commands.
 
 ## 2. Resource Types
 
