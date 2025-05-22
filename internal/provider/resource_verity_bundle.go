@@ -513,10 +513,17 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		} else {
 			bundleValue.DeviceSettings = openapi.PtrString("")
 		}
-		hasChanges = true
-	}
 
-	if !data.DeviceSettingsRefType.Equal(state.DeviceSettingsRefType) {
+		// Always include device_settings_ref_type_ when device_settings changes
+		if !data.DeviceSettingsRefType.IsNull() {
+			bundleValue.DeviceSettingsRefType = openapi.PtrString(data.DeviceSettingsRefType.ValueString())
+		} else {
+			bundleValue.DeviceSettingsRefType = openapi.PtrString("")
+		}
+
+		hasChanges = true
+	} else if !data.DeviceSettingsRefType.Equal(state.DeviceSettingsRefType) {
+		// Only device_settings_ref_type_ has changed
 		if !data.DeviceSettingsRefType.IsNull() {
 			bundleValue.DeviceSettingsRefType = openapi.PtrString(data.DeviceSettingsRefType.ValueString())
 		} else {
