@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
+	"sort"
+	"strconv"
 	"strings"
 
 	"terraform-provider-verity/internal/utils"
@@ -15,6 +18,39 @@ import (
 type Importer struct {
 	client *openapi.APIClient
 	ctx    context.Context
+}
+
+type NestedBlockIterationStyle struct {
+	PrintIndexFirst     bool
+	SkipIndexInMainLoop bool
+	IterateAllAsMap     bool
+}
+
+type ResourceConfig struct {
+	ResourceType                 string
+	StageName                    string
+	HeaderNameLineFormat         string
+	HeaderDependsOnLineFormat    string
+	ObjectPropsHandler           func(objProps map[string]interface{}, builder *strings.Builder)
+	NestedBlockFields            map[string]bool
+	AdditionalTopLevelSkipKeys   []string
+	EmptyObjectPropsAsSingleLine bool
+	NestedBlockStyles            map[string]NestedBlockIterationStyle
+}
+
+var nameSplitRE = regexp.MustCompile(`(\d+|\D+)`)
+
+func getNaturalSortParts(s string) []interface{} {
+	matches := nameSplitRE.FindAllString(s, -1)
+	parts := make([]interface{}, len(matches))
+	for i, match := range matches {
+		if num, err := strconv.Atoi(match); err == nil {
+			parts[i] = num
+		} else {
+			parts[i] = match
+		}
+	}
+	return parts
 }
 
 func NewImporter(client *openapi.APIClient) *Importer {
@@ -107,43 +143,104 @@ func (i *Importer) ImportAll(outputDir string) error {
 	return nil
 }
 
-func (i *Importer) generateGatewayProfilesTF(data interface{}) (string, error) {
-	profiles, ok := data.(map[string]map[string]interface{})
+func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (string, error) {
+	resourcesMap, ok := data.(map[string]map[string]interface{})
 	if !ok {
-		return "", fmt.Errorf("invalid gateway profiles data format")
+		return "", fmt.Errorf("invalid data format for resource type %s", config.ResourceType)
 	}
 
-	var tfConfig strings.Builder
-	for name, profile := range profiles {
-		sanitizedName := utils.SanitizeResourceName(name)
-		tfConfig.WriteString(fmt.Sprintf(`
-resource "verity_gateway_profile" "%s" {
-	name = "%s"
-	depends_on = [verity_operation_stage.gateway_profile_stage]
-`, sanitizedName, name))
+	var resourceNames []string
+	for name := range resourcesMap {
+		resourceNames = append(resourceNames, name)
+	}
 
-		tfConfig.WriteString("	object_properties {\n")
+	sort.SliceStable(resourceNames, func(i, j int) bool {
+		s1 := resourceNames[i]
+		s2 := resourceNames[j]
 
-		if objProps, ok := profile["object_properties"].(map[string]interface{}); ok {
-			if group, ok := objProps["group"].(string); ok && group != "" {
-				tfConfig.WriteString(fmt.Sprintf("		group = %s\n", formatValue(group)))
-			} else {
-				tfConfig.WriteString("		group = \"\"\n")
-			}
-		} else {
-			tfConfig.WriteString("		group = \"\"\n")
+		parts1 := getNaturalSortParts(s1)
+		parts2 := getNaturalSortParts(s2)
+
+		len1 := len(parts1)
+		len2 := len(parts2)
+		minLen := len1
+		if len2 < minLen {
+			minLen = len2
 		}
-		tfConfig.WriteString("	}\n")
 
-		for key, value := range profile {
-			if key == "name" || key == "index" || key == "object_properties" {
+		for k := 0; k < minLen; k++ {
+			p1 := parts1[k]
+			p2 := parts2[k]
+
+			p1Int, p1IsInt := p1.(int)
+			p2Int, p2IsInt := p2.(int)
+
+			if p1IsInt && p2IsInt {
+				if p1Int != p2Int {
+					return p1Int < p2Int
+				}
+			} else if !p1IsInt && !p2IsInt {
+				p1Str := p1.(string)
+				p2Str := p2.(string)
+				if p1Str != p2Str {
+					return p1Str < p2Str
+				}
+			} else {
+				return p1IsInt
+			}
+		}
+		return len1 < len2
+	})
+
+	var tfConfig strings.Builder
+
+	for _, name := range resourceNames {
+		resource := resourcesMap[name]
+		sanitizedName := utils.SanitizeResourceName(name)
+
+		tfConfig.WriteString(fmt.Sprintf("\nresource \"verity_%s\" \"%s\" {\n", config.ResourceType, sanitizedName))
+		tfConfig.WriteString(fmt.Sprintf(config.HeaderNameLineFormat, name))
+		tfConfig.WriteString(fmt.Sprintf(config.HeaderDependsOnLineFormat, config.StageName))
+
+		tfConfig.WriteString("	object_properties")
+		var objPropsContentBuilder strings.Builder
+		objProps, _ := resource["object_properties"].(map[string]interface{})
+
+		if config.ObjectPropsHandler != nil {
+			config.ObjectPropsHandler(objProps, &objPropsContentBuilder)
+		}
+		objPropsContent := objPropsContentBuilder.String()
+
+		if objPropsContent == "" && config.EmptyObjectPropsAsSingleLine {
+			tfConfig.WriteString(" {}\n")
+		} else {
+			tfConfig.WriteString(" {\n")
+			tfConfig.WriteString(objPropsContent)
+			tfConfig.WriteString("	}\n")
+		}
+
+		skipKeysSet := map[string]bool{
+			"name":              true,
+			"object_properties": true,
+		}
+		for _, key := range config.AdditionalTopLevelSkipKeys {
+			skipKeysSet[key] = true
+		}
+
+		var topLevelKeys []string
+		for key := range resource {
+			if skipKeysSet[key] {
 				continue
 			}
-
-			if isAutoAssignedField(profile, key) {
+			if isAutoAssignedField(resource, key) {
 				continue
 			}
+			topLevelKeys = append(topLevelKeys, key)
+		}
+		sort.Strings(topLevelKeys)
 
+		for _, key := range topLevelKeys {
+			value := resource[key]
 			switch v := value.(type) {
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
@@ -152,18 +249,49 @@ resource "verity_gateway_profile" "%s" {
 			case string:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", key, formatValue(v)))
 			case []interface{}:
-				if key == "external_gateways" {
+				if _, isNestedBlock := config.NestedBlockFields[key]; isNestedBlock {
+					style, hasStyle := config.NestedBlockStyles[key]
+					if !hasStyle {
+						style = NestedBlockIterationStyle{PrintIndexFirst: true, SkipIndexInMainLoop: true, IterateAllAsMap: false}
+					}
+
 					for _, item := range v {
 						if itemMap, ok := item.(map[string]interface{}); ok {
 							tfConfig.WriteString(fmt.Sprintf("	%s {\n", key))
-							if index, ok := itemMap["index"].(float64); ok {
-								tfConfig.WriteString(fmt.Sprintf("		index = %d\n", int(index)))
-							}
-							for itemKey, itemValue := range itemMap {
-								if itemKey == "index" {
-									continue
+
+							if style.IterateAllAsMap {
+								for itemKey, itemValue := range itemMap {
+									tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
 								}
-								tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
+							} else {
+								printedIndex := false
+								if style.PrintIndexFirst {
+									if indexVal, idxExists := itemMap["index"]; idxExists {
+										if indexFloat, isFloat := indexVal.(float64); isFloat {
+											tfConfig.WriteString(fmt.Sprintf("		index = %d\n", int(indexFloat)))
+											printedIndex = true
+										}
+									}
+								}
+
+								var nestedItemKeys []string
+								for itemKey := range itemMap {
+									if style.SkipIndexInMainLoop && itemKey == "index" && printedIndex {
+										continue
+									}
+									if itemKey == "index" && style.SkipIndexInMainLoop && !printedIndex {
+										if style.SkipIndexInMainLoop {
+											continue
+										}
+									}
+									nestedItemKeys = append(nestedItemKeys, itemKey)
+								}
+								sort.Strings(nestedItemKeys)
+
+								for _, itemKey := range nestedItemKeys {
+									itemValue := itemMap[itemKey]
+									tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
+								}
 							}
 							tfConfig.WriteString("	}\n")
 						}
@@ -181,490 +309,162 @@ resource "verity_gateway_profile" "%s" {
 				tfConfig.WriteString(fmt.Sprintf("	%s = null\n", key))
 			}
 		}
-
 		tfConfig.WriteString("}\n\n")
 	}
-
 	return tfConfig.String(), nil
 }
-func (i *Importer) generateEthPortProfilesTF(data interface{}) (string, error) {
-	profiles, ok := data.(map[string]map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("invalid eth port profiles data format")
-	}
 
-	var tfConfig strings.Builder
-	for name, profile := range profiles {
-		sanitizedName := utils.SanitizeResourceName(name)
-		tfConfig.WriteString(fmt.Sprintf(`
-resource "verity_eth_port_profile" "%s" {
-    name = "%s"
-	depends_on = [verity_operation_stage.eth_port_profile_stage]
-`, sanitizedName, name))
-
-		tfConfig.WriteString("	object_properties {\n")
-
-		if objProps, ok := profile["object_properties"].(map[string]interface{}); ok {
-			if group, ok := objProps["group"]; ok && group != nil {
-				tfConfig.WriteString(fmt.Sprintf("		group = %s\n", formatValue(group)))
-			} else {
-				tfConfig.WriteString("		group = null\n")
-			}
-
-			if portMonitoring, ok := objProps["port_monitoring"]; ok && portMonitoring != nil {
-				tfConfig.WriteString(fmt.Sprintf("		port_monitoring = %s\n", formatValue(portMonitoring)))
-			} else {
-				tfConfig.WriteString("		port_monitoring = null\n")
-			}
-		} else {
-			tfConfig.WriteString("		group = null\n")
-			tfConfig.WriteString("		port_monitoring = null\n")
-		}
-
-		tfConfig.WriteString("	}\n")
-
-		for key, value := range profile {
-			if key == "name" || key == "index" || key == "object_properties" {
-				continue
-			}
-
-			if isAutoAssignedField(profile, key) {
-				continue
-			}
-
-			switch v := value.(type) {
-			case bool:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
-			case float64:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", key, int(v)))
-			case string:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", key, formatValue(v)))
-			case []interface{}:
-				if key == "services" {
-					for _, item := range v {
-						if itemMap, ok := item.(map[string]interface{}); ok {
-							tfConfig.WriteString(fmt.Sprintf("	%s {\n", key))
-							if index, ok := itemMap["index"].(float64); ok {
-								tfConfig.WriteString(fmt.Sprintf("		index = %d\n", int(index)))
-							}
-							for itemKey, itemValue := range itemMap {
-								if itemKey == "index" {
-									continue
-								}
-								tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
-							}
-							tfConfig.WriteString("	}\n")
-						}
-					}
+func (i *Importer) generateGatewayProfilesTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "gateway_profile",
+		StageName:                 "gateway_profile_stage",
+		HeaderNameLineFormat:      "\tname = \"%s\"\n",
+		HeaderDependsOnLineFormat: "\tdepends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler: func(objProps map[string]interface{}, builder *strings.Builder) {
+			if objProps != nil {
+				if group, ok := objProps["group"].(string); ok && group != "" {
+					builder.WriteString(fmt.Sprintf("		group = %s\n", formatValue(group)))
 				} else {
-					tfConfig.WriteString(fmt.Sprintf("	%s = [\n", key))
-					for _, item := range v {
-						if str, ok := item.(string); ok {
-							tfConfig.WriteString(fmt.Sprintf("		%s,\n", formatValue(str)))
-						}
-					}
-					tfConfig.WriteString("	]\n")
+					builder.WriteString("		group = \"\"\n")
 				}
-			case nil:
-				tfConfig.WriteString(fmt.Sprintf("	%s = null\n", key))
+			} else {
+				builder.WriteString("		group = \"\"\n")
 			}
-		}
-
-		tfConfig.WriteString("}\n\n")
+		},
+		NestedBlockFields:          map[string]bool{"external_gateways": true},
+		AdditionalTopLevelSkipKeys: []string{"index"},
 	}
+	return i.generateResourceTF(data, cfg)
+}
 
-	return tfConfig.String(), nil
+func (i *Importer) generateEthPortProfilesTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "eth_port_profile",
+		StageName:                 "eth_port_profile_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "\tdepends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler: func(objProps map[string]interface{}, builder *strings.Builder) {
+			if objProps != nil {
+				if group, ok := objProps["group"]; ok && group != nil {
+					builder.WriteString(fmt.Sprintf("		group = %s\n", formatValue(group)))
+				} else {
+					builder.WriteString("		group = null\n")
+				}
+				if portMonitoring, ok := objProps["port_monitoring"]; ok && portMonitoring != nil {
+					builder.WriteString(fmt.Sprintf("		port_monitoring = %s\n", formatValue(portMonitoring)))
+				} else {
+					builder.WriteString("		port_monitoring = null\n")
+				}
+			} else {
+				builder.WriteString("		group = null\n")
+				builder.WriteString("		port_monitoring = null\n")
+			}
+		},
+		NestedBlockFields:          map[string]bool{"services": true},
+		AdditionalTopLevelSkipKeys: []string{"index"},
+	}
+	return i.generateResourceTF(data, cfg)
 }
 
 func (i *Importer) generateBundlesTF(data interface{}) (string, error) {
-	bundles, ok := data.(map[string]map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("invalid bundles data format")
-	}
-
-	var tfConfig strings.Builder
-	for name, bundle := range bundles {
-		sanitizedName := utils.SanitizeResourceName(name)
-		tfConfig.WriteString(fmt.Sprintf(`
-resource "verity_bundle" "%s" {
-    name = "%s"
-	depends_on = [verity_operation_stage.bundle_stage]
-`, sanitizedName, name))
-
-		tfConfig.WriteString("	object_properties {\n")
-
-		if objProps, ok := bundle["object_properties"].(map[string]interface{}); ok {
-			if isForSwitch, ok := objProps["is_for_switch"].(bool); ok {
-				tfConfig.WriteString(fmt.Sprintf("		is_for_switch = %t\n", isForSwitch))
+	cfg := ResourceConfig{
+		ResourceType:              "bundle",
+		StageName:                 "bundle_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "\tdepends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler: func(objProps map[string]interface{}, builder *strings.Builder) {
+			if objProps != nil {
+				if isForSwitch, ok := objProps["is_for_switch"].(bool); ok {
+					builder.WriteString(fmt.Sprintf("		is_for_switch = %t\n", isForSwitch))
+				} else {
+					builder.WriteString("		is_for_switch = false\n")
+				}
 			} else {
-				tfConfig.WriteString("		is_for_switch = false\n")
+				builder.WriteString("		is_for_switch = false\n")
+			}
+		},
+		NestedBlockFields:          map[string]bool{"eth_port_paths": true, "user_services": true},
+		AdditionalTopLevelSkipKeys: []string{"index"},
+		NestedBlockStyles: map[string]NestedBlockIterationStyle{
+			"eth_port_paths": {IterateAllAsMap: true},
+			"user_services":  {IterateAllAsMap: true},
+		},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func commonObjectPropsStringGroupHandler(objProps map[string]interface{}, builder *strings.Builder) {
+	if objProps != nil {
+		if groupVal, keyExists := objProps["group"]; keyExists {
+			if groupStr, ok := groupVal.(string); ok {
+				builder.WriteString(fmt.Sprintf("		group = %s\n", formatValue(groupStr)))
+			} else {
+				builder.WriteString("		group = null\n")
 			}
 		} else {
-			tfConfig.WriteString("		is_for_switch = false\n")
+			builder.WriteString("		group = null\n")
 		}
-		tfConfig.WriteString("	}\n")
-
-		for key, value := range bundle {
-			if key == "name" || key == "index" || key == "object_properties" {
-				continue
-			}
-
-			if isAutoAssignedField(bundle, key) {
-				continue
-			}
-
-			switch v := value.(type) {
-			case bool:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
-			case float64:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", key, int(v)))
-			case string:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", key, formatValue(v)))
-			case []interface{}:
-				if key == "eth_port_paths" || key == "user_services" {
-					for _, item := range v {
-						if itemMap, ok := item.(map[string]interface{}); ok {
-							tfConfig.WriteString(fmt.Sprintf("	%s {\n", key))
-							for itemKey, itemValue := range itemMap {
-								tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
-							}
-							tfConfig.WriteString("	}\n")
-						}
-					}
-				} else {
-					tfConfig.WriteString(fmt.Sprintf("	%s = [\n", key))
-					for _, item := range v {
-						if str, ok := item.(string); ok {
-							tfConfig.WriteString(fmt.Sprintf("		%s,\n", formatValue(str)))
-						}
-					}
-					tfConfig.WriteString("	]\n")
-				}
-			case nil:
-				tfConfig.WriteString(fmt.Sprintf("	%s = null\n", key))
-			}
-		}
-
-		tfConfig.WriteString("}\n\n")
+	} else {
+		builder.WriteString("		group = null\n")
 	}
-
-	return tfConfig.String(), nil
 }
 
 func (i *Importer) generateTenantsTF(data interface{}) (string, error) {
-	tenants, ok := data.(map[string]map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("invalid tenants data format")
+	cfg := ResourceConfig{
+		ResourceType:              "tenant",
+		StageName:                 "tenant_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        commonObjectPropsStringGroupHandler,
+		NestedBlockFields:         map[string]bool{"route_tenants": true},
 	}
-
-	var tfConfig strings.Builder
-	for name, tenant := range tenants {
-		sanitizedName := utils.SanitizeResourceName(name)
-		tfConfig.WriteString(fmt.Sprintf(`
-resource "verity_tenant" "%s" {
-    name = "%s"
-    depends_on = [verity_operation_stage.tenant_stage]
-`, sanitizedName, name))
-
-		tfConfig.WriteString("	object_properties {\n")
-
-		if objProps, ok := tenant["object_properties"].(map[string]interface{}); ok {
-			if group, ok := objProps["group"].(string); ok {
-				tfConfig.WriteString(fmt.Sprintf("		group = %s\n", formatValue(group)))
-			} else {
-				tfConfig.WriteString("		group = null\n")
-			}
-		} else {
-			tfConfig.WriteString("		group = null\n")
-		}
-		tfConfig.WriteString("	}\n")
-
-		for key, value := range tenant {
-			if key == "name" || key == "object_properties" {
-				continue
-			}
-
-			if isAutoAssignedField(tenant, key) {
-				continue
-			}
-
-			switch v := value.(type) {
-			case bool:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
-			case float64:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", key, int(v)))
-			case string:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", key, formatValue(v)))
-			case []interface{}:
-				if key == "route_tenants" {
-					for _, item := range v {
-						if itemMap, ok := item.(map[string]interface{}); ok {
-							tfConfig.WriteString(fmt.Sprintf("	%s {\n", key))
-							if index, ok := itemMap["index"].(float64); ok {
-								tfConfig.WriteString(fmt.Sprintf("		index = %d\n", int(index)))
-							}
-							for itemKey, itemValue := range itemMap {
-								if itemKey == "index" {
-									continue
-								}
-								tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
-							}
-							tfConfig.WriteString("	}\n")
-						}
-					}
-				} else {
-					tfConfig.WriteString(fmt.Sprintf("	%s = [\n", key))
-					for _, item := range v {
-						if str, ok := item.(string); ok {
-							tfConfig.WriteString(fmt.Sprintf("		%s,\n", formatValue(str)))
-						}
-					}
-					tfConfig.WriteString("	]\n")
-				}
-			case nil:
-				tfConfig.WriteString(fmt.Sprintf("	%s = null\n", key))
-			}
-		}
-
-		tfConfig.WriteString("}\n\n")
-	}
-
-	return tfConfig.String(), nil
+	return i.generateResourceTF(data, cfg)
 }
 
 func (i *Importer) generateLagsTF(data interface{}) (string, error) {
-	lags, ok := data.(map[string]map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("invalid lags data format")
+	cfg := ResourceConfig{
+		ResourceType:                 "lag",
+		StageName:                    "lag_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "\tdepends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           func(objProps map[string]interface{}, builder *strings.Builder) {},
+		EmptyObjectPropsAsSingleLine: true,
 	}
-
-	var tfConfig strings.Builder
-	for name, lag := range lags {
-		sanitizedName := utils.SanitizeResourceName(name)
-		tfConfig.WriteString(fmt.Sprintf(`
-resource "verity_lag" "%s" {
-    name = "%s"
-	depends_on = [verity_operation_stage.lag_stage]
-`, sanitizedName, name))
-
-		tfConfig.WriteString("	object_properties {}\n")
-
-		for key, value := range lag {
-			if key == "name" || key == "object_properties" {
-				continue
-			}
-
-			if isAutoAssignedField(lag, key) {
-				continue
-			}
-
-			switch v := value.(type) {
-			case bool:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
-			case float64:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", key, int(v)))
-			case string:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", key, formatValue(v)))
-			case nil:
-				tfConfig.WriteString(fmt.Sprintf("	%s = null\n", key))
-			}
-		}
-
-		tfConfig.WriteString("}\n\n")
-	}
-
-	return tfConfig.String(), nil
+	return i.generateResourceTF(data, cfg)
 }
 
 func (i *Importer) generateServicesTF(data interface{}) (string, error) {
-	services, ok := data.(map[string]map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("invalid services data format")
+	cfg := ResourceConfig{
+		ResourceType:              "service",
+		StageName:                 "service_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "\tdepends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        commonObjectPropsStringGroupHandler,
 	}
-
-	var tfConfig strings.Builder
-	for name, service := range services {
-		sanitizedName := utils.SanitizeResourceName(name)
-		tfConfig.WriteString(fmt.Sprintf(`
-resource "verity_service" "%s" {
-    name = "%s"
-	depends_on = [verity_operation_stage.service_stage]
-`, sanitizedName, name))
-
-		tfConfig.WriteString("	object_properties {\n")
-
-		if objProps, ok := service["object_properties"].(map[string]interface{}); ok {
-			if group, ok := objProps["group"].(string); ok {
-				tfConfig.WriteString(fmt.Sprintf("		group = %s\n", formatValue(group)))
-			} else {
-				tfConfig.WriteString("		group = null\n")
-			}
-		} else {
-			tfConfig.WriteString("		group = null\n")
-		}
-		tfConfig.WriteString("	}\n")
-
-		for key, value := range service {
-			if key == "name" || key == "object_properties" {
-				continue
-			}
-
-			if isAutoAssignedField(service, key) {
-				continue
-			}
-
-			switch v := value.(type) {
-			case bool:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
-			case float64:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", key, int(v)))
-			case string:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", key, formatValue(v)))
-			case nil:
-				tfConfig.WriteString(fmt.Sprintf("	%s = null\n", key))
-			}
-		}
-
-		tfConfig.WriteString("}\n\n")
-	}
-
-	return tfConfig.String(), nil
+	return i.generateResourceTF(data, cfg)
 }
 
 func (i *Importer) generateEthPortSettingsTF(data interface{}) (string, error) {
-	settings, ok := data.(map[string]map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("invalid eth port settings data format")
+	cfg := ResourceConfig{
+		ResourceType:              "eth_port_settings",
+		StageName:                 "eth_port_settings_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "\tdepends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        commonObjectPropsStringGroupHandler,
 	}
-
-	var tfConfig strings.Builder
-	for name, setting := range settings {
-		sanitizedName := utils.SanitizeResourceName(name)
-		tfConfig.WriteString(fmt.Sprintf(`
-resource "verity_eth_port_settings" "%s" {
-    name = "%s"
-	depends_on = [verity_operation_stage.eth_port_settings_stage]
-`, sanitizedName, name))
-
-		tfConfig.WriteString("	object_properties {\n")
-
-		if objProps, ok := setting["object_properties"].(map[string]interface{}); ok {
-			if group, ok := objProps["group"].(string); ok {
-				tfConfig.WriteString(fmt.Sprintf("		group = %s\n", formatValue(group)))
-			} else {
-				tfConfig.WriteString("		group = null\n")
-			}
-		} else {
-			tfConfig.WriteString("		group = null\n")
-		}
-		tfConfig.WriteString("	}\n")
-
-		for key, value := range setting {
-			if key == "name" || key == "object_properties" {
-				continue
-			}
-
-			if isAutoAssignedField(setting, key) {
-				continue
-			}
-
-			switch v := value.(type) {
-			case bool:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
-			case float64:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", key, int(v)))
-			case string:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", key, formatValue(v)))
-			case nil:
-				tfConfig.WriteString(fmt.Sprintf("	%s = null\n", key))
-			}
-		}
-
-		tfConfig.WriteString("}\n\n")
-	}
-
-	return tfConfig.String(), nil
+	return i.generateResourceTF(data, cfg)
 }
 
 func (i *Importer) generateGatewaysTF(data interface{}) (string, error) {
-	gateways, ok := data.(map[string]map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("invalid gateways data format")
+	cfg := ResourceConfig{
+		ResourceType:              "gateway",
+		StageName:                 "gateway_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "\tdepends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        commonObjectPropsStringGroupHandler,
+		NestedBlockFields:         map[string]bool{"static_routes": true},
 	}
-
-	var tfConfig strings.Builder
-	for name, gateway := range gateways {
-		sanitizedName := utils.SanitizeResourceName(name)
-		tfConfig.WriteString(fmt.Sprintf(`
-resource "verity_gateway" "%s" {
-    name = "%s"
-	depends_on = [verity_operation_stage.gateway_stage]
-`, sanitizedName, name))
-
-		tfConfig.WriteString("	object_properties {\n")
-
-		if objProps, ok := gateway["object_properties"].(map[string]interface{}); ok {
-			if group, ok := objProps["group"].(string); ok {
-				tfConfig.WriteString(fmt.Sprintf("		group = %s\n", formatValue(group)))
-			} else {
-				tfConfig.WriteString("		group = null\n")
-			}
-		} else {
-			tfConfig.WriteString("		group = null\n")
-		}
-		tfConfig.WriteString("	}\n")
-
-		for key, value := range gateway {
-			if key == "name" || key == "object_properties" {
-				continue
-			}
-
-			if isAutoAssignedField(gateway, key) {
-				continue
-			}
-
-			switch v := value.(type) {
-			case bool:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", key, v))
-			case float64:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", key, int(v)))
-			case string:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", key, formatValue(v)))
-			case []interface{}:
-				if key == "static_routes" {
-					for _, item := range v {
-						if itemMap, ok := item.(map[string]interface{}); ok {
-							tfConfig.WriteString(fmt.Sprintf("	%s {\n", key))
-							if index, ok := itemMap["index"].(float64); ok {
-								tfConfig.WriteString(fmt.Sprintf("		index = %d\n", int(index)))
-							}
-							for itemKey, itemValue := range itemMap {
-								if itemKey == "index" {
-									continue
-								}
-								tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
-							}
-							tfConfig.WriteString("	}\n")
-						}
-					}
-				} else {
-					tfConfig.WriteString(fmt.Sprintf("	%s = [\n", key))
-					for _, item := range v {
-						if str, ok := item.(string); ok {
-							tfConfig.WriteString(fmt.Sprintf("		%s,\n", formatValue(str)))
-						}
-					}
-					tfConfig.WriteString("	]\n")
-				}
-			case nil:
-				tfConfig.WriteString(fmt.Sprintf("	%s = null\n", key))
-			}
-		}
-
-		tfConfig.WriteString("}\n\n")
-	}
-
-	return tfConfig.String(), nil
+	return i.generateResourceTF(data, cfg)
 }
 
 func (i *Importer) generateStagesTF() (string, error) {
