@@ -459,21 +459,36 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		}
 	}
 
-	stringFields := []string{"color", "eth_port_profile", "eth_port_profile_ref_type_"}
-	for _, field := range stringFields {
-		planStr, stateStr := getStringField(field, plan, state)
-		if !planStr.Equal(stateStr) {
-			strVal := planStr.ValueString()
-			switch field {
-			case "color":
-				lagReq.Color = openapi.PtrString(strVal)
-			case "eth_port_profile":
-				lagReq.EthPortProfile = openapi.PtrString(strVal)
-			case "eth_port_profile_ref_type_":
-				lagReq.EthPortProfileRefType = openapi.PtrString(strVal)
-			}
-			hasChanges = true
+	planColor, stateColor := getStringField("color", plan, state)
+	if !planColor.Equal(stateColor) {
+		lagReq.Color = openapi.PtrString(planColor.ValueString())
+		hasChanges = true
+	}
+
+	ethPortProfileChanged := !plan.EthPortProfile.Equal(state.EthPortProfile)
+	ethPortProfileRefTypeChanged := !plan.EthPortProfileRefType.Equal(state.EthPortProfileRefType)
+
+	if ethPortProfileChanged || ethPortProfileRefTypeChanged {
+		// Validate using multiple ref types supported rules
+		if !utils.ValidateReferenceFields(&resp.Diagnostics,
+			plan.EthPortProfile, plan.EthPortProfileRefType,
+			"eth_port_profile", "eth_port_profile_ref_type_") {
+			return
 		}
+
+		// For multiple ref types supported: When either field changes, always send both fields
+		if !plan.EthPortProfile.IsNull() && plan.EthPortProfile.ValueString() != "" {
+			lagReq.EthPortProfile = openapi.PtrString(plan.EthPortProfile.ValueString())
+		} else {
+			lagReq.EthPortProfile = openapi.PtrString("")
+		}
+
+		if !plan.EthPortProfileRefType.IsNull() && plan.EthPortProfileRefType.ValueString() != "" {
+			lagReq.EthPortProfileRefType = openapi.PtrString(plan.EthPortProfileRefType.ValueString())
+		} else {
+			lagReq.EthPortProfileRefType = openapi.PtrString("")
+		}
+		hasChanges = true
 	}
 
 	if !plan.PeerLinkVlan.Equal(state.PeerLinkVlan) {

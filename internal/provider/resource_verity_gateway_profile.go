@@ -496,15 +496,32 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 				gateway.Enable = openapi.PtrBool(false)
 			}
 
-			if !eg.Gateway.IsNull() {
-				gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
-			} else {
-				gateway.Gateway = openapi.PtrString("")
-			}
+			hasGateway := !eg.Gateway.IsNull() && eg.Gateway.ValueString() != ""
+			hasRefType := !eg.GatewayRefType.IsNull() && eg.GatewayRefType.ValueString() != ""
 
-			if !eg.GatewayRefType.IsNull() {
-				gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
+			if hasGateway || hasRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					eg.Gateway, eg.GatewayRefType,
+					"gateway", "gateway_ref_type_",
+					hasGateway, hasRefType) {
+					return
+				}
+
+				// Set both fields for new entries that have at least one of the fields
+				if !eg.Gateway.IsNull() {
+					gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
+				} else {
+					gateway.Gateway = openapi.PtrString("")
+				}
+
+				if !eg.GatewayRefType.IsNull() {
+					gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
+				} else {
+					gateway.GatewayRefType = openapi.PtrString("")
+				}
 			} else {
+				// If neither field is set, set both to empty strings
+				gateway.Gateway = openapi.PtrString("")
 				gateway.GatewayRefType = openapi.PtrString("")
 			}
 
@@ -537,20 +554,44 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 			fieldChanged = true
 		}
 
-		if !eg.Gateway.Equal(stateEg.Gateway) {
-			if !eg.Gateway.IsNull() {
-				gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
-			} else {
-				gateway.Gateway = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
+		gatewayChanged := !eg.Gateway.Equal(stateEg.Gateway)
+		gatewayRefTypeChanged := !eg.GatewayRefType.Equal(stateEg.GatewayRefType)
 
-		if !eg.GatewayRefType.Equal(stateEg.GatewayRefType) {
-			if !eg.GatewayRefType.IsNull() {
-				gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
-			} else {
-				gateway.GatewayRefType = openapi.PtrString("")
+		if gatewayChanged || gatewayRefTypeChanged {
+			// Validate using one ref type supported rules
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				eg.Gateway, eg.GatewayRefType,
+				"gateway", "gateway_ref_type_",
+				gatewayChanged, gatewayRefTypeChanged) {
+				return
+			}
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if gatewayChanged {
+				if !eg.Gateway.IsNull() {
+					gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
+				} else {
+					gateway.Gateway = openapi.PtrString("")
+				}
+			}
+
+			if gatewayRefTypeChanged {
+				if !eg.GatewayRefType.IsNull() {
+					gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
+				} else {
+					gateway.GatewayRefType = openapi.PtrString("")
+				}
+
+				// If ref type changes, also send base field
+				if !gatewayChanged {
+					if !eg.Gateway.IsNull() {
+						gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
+					} else {
+						gateway.Gateway = openapi.PtrString("")
+					}
+				}
 			}
 			fieldChanged = true
 		}

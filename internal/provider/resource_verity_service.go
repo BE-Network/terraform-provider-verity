@@ -463,14 +463,42 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
-	if !plan.Tenant.Equal(state.Tenant) {
-		serviceReq.Tenant = openapi.PtrString(plan.Tenant.ValueString())
-		hasChanges = true
-	}
+	tenantChanged := !plan.Tenant.Equal(state.Tenant)
+	tenantRefTypeChanged := !plan.TenantRefType.Equal(state.TenantRefType)
 
-	if !plan.TenantRefType.Equal(state.TenantRefType) {
-		serviceReq.TenantRefType = openapi.PtrString(plan.TenantRefType.ValueString())
-		hasChanges = true
+	if tenantChanged || tenantRefTypeChanged {
+		// Validate using one ref type supported rules
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			plan.Tenant, plan.TenantRefType,
+			"tenant", "tenant_ref_type_",
+			tenantChanged, tenantRefTypeChanged) {
+			return
+		}
+
+		// Only send the base field if only it changed
+		if tenantChanged && !tenantRefTypeChanged {
+			// Just send the base field
+			if !plan.Tenant.IsNull() && plan.Tenant.ValueString() != "" {
+				serviceReq.Tenant = openapi.PtrString(plan.Tenant.ValueString())
+			} else {
+				serviceReq.Tenant = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if tenantRefTypeChanged {
+			// Send both fields
+			if !plan.Tenant.IsNull() && plan.Tenant.ValueString() != "" {
+				serviceReq.Tenant = openapi.PtrString(plan.Tenant.ValueString())
+			} else {
+				serviceReq.Tenant = openapi.PtrString("")
+			}
+
+			if !plan.TenantRefType.IsNull() && plan.TenantRefType.ValueString() != "" {
+				serviceReq.TenantRefType = openapi.PtrString(plan.TenantRefType.ValueString())
+			} else {
+				serviceReq.TenantRefType = openapi.PtrString("")
+			}
+			hasChanges = true
+		}
 	}
 
 	if !plan.AnycastIpMask.Equal(state.AnycastIpMask) {

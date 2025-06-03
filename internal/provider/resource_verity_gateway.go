@@ -840,12 +840,74 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		gatewayProps.NextHopSelf = openapi.PtrBool(plan.NextHopSelf.ValueBool())
 		hasChanges = true
 	}
-	if !plan.Tenant.Equal(state.Tenant) {
-		gatewayProps.Tenant = openapi.PtrString(plan.Tenant.ValueString())
+	// Handle tenant and tenant_ref_type_ fields according to "Many ref types supported" rules
+	tenantChanged := !plan.Tenant.Equal(state.Tenant)
+	tenantRefTypeChanged := !plan.TenantRefType.Equal(state.TenantRefType)
+
+	if tenantChanged || tenantRefTypeChanged {
+
+		if !utils.ValidateReferenceFields(&resp.Diagnostics, plan.Tenant, plan.TenantRefType, "tenant", "tenant_ref_type_") {
+			return
+		}
+
+		tenantValue := state.Tenant
+		if tenantChanged {
+			tenantValue = plan.Tenant
+		}
+		if !tenantValue.IsNull() && tenantValue.ValueString() != "" {
+			gatewayProps.Tenant = openapi.PtrString(tenantValue.ValueString())
+		} else {
+			gatewayProps.Tenant = openapi.PtrString("")
+		}
+
+		tenantRefTypeValue := state.TenantRefType
+		if tenantRefTypeChanged {
+			tenantRefTypeValue = plan.TenantRefType
+		}
+		if !tenantRefTypeValue.IsNull() && tenantRefTypeValue.ValueString() != "" {
+			gatewayProps.TenantRefType = openapi.PtrString(tenantRefTypeValue.ValueString())
+		} else {
+			gatewayProps.TenantRefType = openapi.PtrString("")
+		}
+
 		hasChanges = true
 	}
-	if !plan.TenantRefType.Equal(state.TenantRefType) {
-		gatewayProps.TenantRefType = openapi.PtrString(plan.TenantRefType.ValueString())
+	// Handle ImportRouteMap and ImportRouteMapRefType according to "One ref type supported" rules
+	importRouteMapChanged := !plan.ImportRouteMap.Equal(state.ImportRouteMap)
+	importRouteMapRefTypeChanged := !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType)
+
+	// Case: Validate using "one ref type supported" rules
+	if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+		plan.ImportRouteMap, plan.ImportRouteMapRefType,
+		"import_route_map", "import_route_map_ref_type_",
+		importRouteMapChanged, importRouteMapRefTypeChanged) {
+		return
+	}
+
+	if importRouteMapChanged && !importRouteMapRefTypeChanged {
+		// Case: Only the base field changes, only the base field is sent
+		// Just send the base field
+		if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
+			gatewayProps.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
+		} else {
+			gatewayProps.ImportRouteMap = openapi.PtrString("")
+		}
+		hasChanges = true
+	} else if importRouteMapRefTypeChanged {
+		// Case: ref_type changes (or both change), both fields are sent
+
+		// Send both fields
+		if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
+			gatewayProps.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
+		} else {
+			gatewayProps.ImportRouteMap = openapi.PtrString("")
+		}
+
+		if !plan.ImportRouteMapRefType.IsNull() && plan.ImportRouteMapRefType.ValueString() != "" {
+			gatewayProps.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
+		} else {
+			gatewayProps.ImportRouteMapRefType = openapi.PtrString("")
+		}
 		hasChanges = true
 	}
 	if !plan.NeighborIpAddress.Equal(state.NeighborIpAddress) {
@@ -888,13 +950,43 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		gatewayProps.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
 		hasChanges = true
 	}
-	if !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType) {
-		gatewayProps.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
-		hasChanges = true
-	}
-	if !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType) {
-		gatewayProps.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
-		hasChanges = true
+	// Handle ExportRouteMap and ExportRouteMapRefType according to "One ref type supported" rules
+	exportRouteMapChanged := !plan.ExportRouteMap.Equal(state.ExportRouteMap)
+	exportRouteMapRefTypeChanged := !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType)
+
+	if exportRouteMapChanged || exportRouteMapRefTypeChanged {
+		// Case: Validate using "one ref type supported" rules
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			plan.ExportRouteMap, plan.ExportRouteMapRefType,
+			"export_route_map", "export_route_map_ref_type_",
+			exportRouteMapChanged, exportRouteMapRefTypeChanged) {
+			return
+		}
+
+		// Only send the base field if only it changed
+		if exportRouteMapChanged && !exportRouteMapRefTypeChanged {
+			// Just send the base field
+			if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
+				gatewayProps.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
+			} else {
+				gatewayProps.ExportRouteMap = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if exportRouteMapRefTypeChanged {
+			// Send both fields
+			if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
+				gatewayProps.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
+			} else {
+				gatewayProps.ExportRouteMap = openapi.PtrString("")
+			}
+
+			if !plan.ExportRouteMapRefType.IsNull() && plan.ExportRouteMapRefType.ValueString() != "" {
+				gatewayProps.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
+			} else {
+				gatewayProps.ExportRouteMapRefType = openapi.PtrString("")
+			}
+			hasChanges = true
+		}
 	}
 	if !plan.NeighborAsNumber.Equal(state.NeighborAsNumber) {
 		if !plan.NeighborAsNumber.IsNull() {

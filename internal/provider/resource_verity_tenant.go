@@ -639,40 +639,81 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	if !plan.ImportRouteMap.Equal(state.ImportRouteMap) {
-		if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
-			tenantReq.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
-		} else {
-			tenantReq.ImportRouteMap = openapi.PtrString("")
+	importRouteMapChanged := !plan.ImportRouteMap.Equal(state.ImportRouteMap)
+	importRouteMapRefTypeChanged := !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType)
+
+	if importRouteMapChanged || importRouteMapRefTypeChanged {
+		// Validate using one ref type supported rules
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			plan.ImportRouteMap, plan.ImportRouteMapRefType,
+			"import_route_map", "import_route_map_ref_type_",
+			importRouteMapChanged, importRouteMapRefTypeChanged) {
+			return
 		}
-		hasChanges = true
+
+		// Only send the base field if only it changed
+		if importRouteMapChanged && !importRouteMapRefTypeChanged {
+			// Just send the base field
+			if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
+				tenantReq.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
+			} else {
+				tenantReq.ImportRouteMap = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if importRouteMapRefTypeChanged {
+			// Send both fields
+			if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
+				tenantReq.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
+			} else {
+				tenantReq.ImportRouteMap = openapi.PtrString("")
+			}
+
+			if !plan.ImportRouteMapRefType.IsNull() && plan.ImportRouteMapRefType.ValueString() != "" {
+				tenantReq.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
+			} else {
+				tenantReq.ImportRouteMapRefType = openapi.PtrString("")
+			}
+			hasChanges = true
+		}
 	}
 
-	if !plan.ExportRouteMap.Equal(state.ExportRouteMap) {
-		if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
-			tenantReq.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
-		} else {
-			tenantReq.ExportRouteMap = openapi.PtrString("")
-		}
-		hasChanges = true
-	}
+	// Handle ExportRouteMap and ExportRouteMapRefType
+	exportRouteMapChanged := !plan.ExportRouteMap.Equal(state.ExportRouteMap)
+	exportRouteMapRefTypeChanged := !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType)
 
-	if !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType) {
-		if !plan.ImportRouteMapRefType.IsNull() && plan.ImportRouteMapRefType.ValueString() != "" {
-			tenantReq.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
-		} else {
-			tenantReq.ImportRouteMapRefType = openapi.PtrString("")
+	if exportRouteMapChanged || exportRouteMapRefTypeChanged {
+		// Validate using one ref type supported rules
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			plan.ExportRouteMap, plan.ExportRouteMapRefType,
+			"export_route_map", "export_route_map_ref_type_",
+			exportRouteMapChanged, exportRouteMapRefTypeChanged) {
+			return
 		}
-		hasChanges = true
-	}
 
-	if !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType) {
-		if !plan.ExportRouteMapRefType.IsNull() && plan.ExportRouteMapRefType.ValueString() != "" {
-			tenantReq.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
-		} else {
-			tenantReq.ExportRouteMapRefType = openapi.PtrString("")
+		// Only send the base field if only it changed
+		if exportRouteMapChanged && !exportRouteMapRefTypeChanged {
+			// Just send the base field
+			if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
+				tenantReq.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
+			} else {
+				tenantReq.ExportRouteMap = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if exportRouteMapRefTypeChanged {
+			// Send both fields
+			if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
+				tenantReq.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
+			} else {
+				tenantReq.ExportRouteMap = openapi.PtrString("")
+			}
+
+			if !plan.ExportRouteMapRefType.IsNull() && plan.ExportRouteMapRefType.ValueString() != "" {
+				tenantReq.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
+			} else {
+				tenantReq.ExportRouteMapRefType = openapi.PtrString("")
+			}
+			hasChanges = true
 		}
-		hasChanges = true
 	}
 
 	if !plan.DefaultOriginate.Equal(state.DefaultOriginate) {
@@ -1120,6 +1161,28 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	// Check for ineffective changes to import_route_map_ref_type_
+	// Warn if import_route_map_ref_type_ is changing BUT import_route_map is empty and NOT changing.
+	if !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType) &&
+		(plan.ImportRouteMap.IsNull() || plan.ImportRouteMap.ValueString() == "") &&
+		plan.ImportRouteMap.Equal(state.ImportRouteMap) {
+		resp.Diagnostics.AddWarning(
+			"Ineffective change to import_route_map_ref_type_",
+			"The change to 'import_route_map_ref_type_' will likely be ignored by the API because 'import_route_map' is empty and not being changed. The API may require 'import_route_map' to have a value for 'import_route_map_ref_type_' to be effective.",
+		)
+	}
+
+	// Check for ineffective changes to export_route_map_ref_type_
+	// Warn if export_route_map_ref_type_ is changing BUT export_route_map is empty and NOT changing.
+	if !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType) &&
+		(plan.ExportRouteMap.IsNull() || plan.ExportRouteMap.ValueString() == "") &&
+		plan.ExportRouteMap.Equal(state.ExportRouteMap) {
+		resp.Diagnostics.AddWarning(
+			"Ineffective change to export_route_map_ref_type_",
+			"The change to 'export_route_map_ref_type_' will likely be ignored by the API because 'export_route_map' is empty and not being changed. The API may require 'export_route_map' to have a value for 'export_route_map_ref_type_' to be effective.",
+		)
 	}
 
 	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {

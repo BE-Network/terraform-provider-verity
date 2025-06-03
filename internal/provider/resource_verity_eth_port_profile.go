@@ -556,15 +556,32 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				s.RowNumEnable = openapi.PtrBool(false)
 			}
 
-			if !service.RowNumService.IsNull() {
-				s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
-			} else {
-				s.RowNumService = openapi.PtrString("")
-			}
+			hasService := !service.RowNumService.IsNull() && service.RowNumService.ValueString() != ""
+			hasRefType := !service.RowNumServiceRefType.IsNull() && service.RowNumServiceRefType.ValueString() != ""
 
-			if !service.RowNumServiceRefType.IsNull() {
-				s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
+			if hasService || hasRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					service.RowNumService, service.RowNumServiceRefType,
+					"row_num_service", "row_num_service_ref_type_",
+					hasService, hasRefType) {
+					return
+				}
+
+				// Set both fields for new entries that have at least one of the fields
+				if !service.RowNumService.IsNull() {
+					s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
+				} else {
+					s.RowNumService = openapi.PtrString("")
+				}
+
+				if !service.RowNumServiceRefType.IsNull() {
+					s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
+				} else {
+					s.RowNumServiceRefType = openapi.PtrString("")
+				}
 			} else {
+				// If neither field is set, set both to empty strings
+				s.RowNumService = openapi.PtrString("")
 				s.RowNumServiceRefType = openapi.PtrString("")
 			}
 
@@ -592,20 +609,43 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 			fieldChanged = true
 		}
 
-		if !service.RowNumService.Equal(oldService.RowNumService) {
-			if !service.RowNumService.IsNull() {
-				s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
-			} else {
-				s.RowNumService = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
+		rowNumServiceChanged := !service.RowNumService.Equal(oldService.RowNumService)
+		rowNumServiceRefTypeChanged := !service.RowNumServiceRefType.Equal(oldService.RowNumServiceRefType)
 
-		if !service.RowNumServiceRefType.Equal(oldService.RowNumServiceRefType) {
-			if !service.RowNumServiceRefType.IsNull() {
-				s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
-			} else {
-				s.RowNumServiceRefType = openapi.PtrString("")
+		if rowNumServiceChanged || rowNumServiceRefTypeChanged {
+			// Validate using one ref type supported rules
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				service.RowNumService, service.RowNumServiceRefType,
+				"row_num_service", "row_num_service_ref_type_",
+				rowNumServiceChanged, rowNumServiceRefTypeChanged) {
+				return
+			}
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if rowNumServiceChanged {
+				if !service.RowNumService.IsNull() {
+					s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
+				} else {
+					s.RowNumService = openapi.PtrString("")
+				}
+			}
+
+			if rowNumServiceRefTypeChanged {
+				if !service.RowNumServiceRefType.IsNull() {
+					s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
+				} else {
+					s.RowNumServiceRefType = openapi.PtrString("")
+				}
+
+				if !rowNumServiceChanged {
+					if !service.RowNumService.IsNull() {
+						s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
+					} else {
+						s.RowNumService = openapi.PtrString("")
+					}
+				}
 			}
 			fieldChanged = true
 		}

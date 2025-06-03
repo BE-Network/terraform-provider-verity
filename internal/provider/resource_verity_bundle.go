@@ -507,28 +507,45 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	if !data.DeviceSettings.Equal(state.DeviceSettings) {
-		if !data.DeviceSettings.IsNull() {
-			bundleValue.DeviceSettings = openapi.PtrString(data.DeviceSettings.ValueString())
-		} else {
-			bundleValue.DeviceSettings = openapi.PtrString("")
+	deviceSettingsChanged := !data.DeviceSettings.Equal(state.DeviceSettings)
+	deviceSettingsRefTypeChanged := !data.DeviceSettingsRefType.Equal(state.DeviceSettingsRefType)
+
+	if deviceSettingsChanged || deviceSettingsRefTypeChanged {
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			data.DeviceSettings, data.DeviceSettingsRefType,
+			"device_settings", "device_settings_ref_type_",
+			deviceSettingsChanged, deviceSettingsRefTypeChanged) {
+			return
 		}
 
-		// Always include device_settings_ref_type_ when device_settings changes
-		if !data.DeviceSettingsRefType.IsNull() {
-			bundleValue.DeviceSettingsRefType = openapi.PtrString(data.DeviceSettingsRefType.ValueString())
-		} else {
-			bundleValue.DeviceSettingsRefType = openapi.PtrString("")
+		// For fields with one reference type:
+		// If only base field changes, send only base field
+		// If ref type field changes (or both), send both fields
+		if deviceSettingsChanged {
+			if !data.DeviceSettings.IsNull() {
+				bundleValue.DeviceSettings = openapi.PtrString(data.DeviceSettings.ValueString())
+			} else {
+				bundleValue.DeviceSettings = openapi.PtrString("")
+			}
 		}
 
-		hasChanges = true
-	} else if !data.DeviceSettingsRefType.Equal(state.DeviceSettingsRefType) {
-		// Only device_settings_ref_type_ has changed
-		if !data.DeviceSettingsRefType.IsNull() {
-			bundleValue.DeviceSettingsRefType = openapi.PtrString(data.DeviceSettingsRefType.ValueString())
-		} else {
-			bundleValue.DeviceSettingsRefType = openapi.PtrString("")
+		if deviceSettingsRefTypeChanged {
+			if !data.DeviceSettingsRefType.IsNull() {
+				bundleValue.DeviceSettingsRefType = openapi.PtrString(data.DeviceSettingsRefType.ValueString())
+			} else {
+				bundleValue.DeviceSettingsRefType = openapi.PtrString("")
+			}
+
+			// If ref type changes, also send base field
+			if !deviceSettingsChanged {
+				if !data.DeviceSettings.IsNull() {
+					bundleValue.DeviceSettings = openapi.PtrString(data.DeviceSettings.ValueString())
+				} else {
+					bundleValue.DeviceSettings = openapi.PtrString("")
+				}
+			}
 		}
+
 		hasChanges = true
 	}
 
@@ -583,22 +600,46 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				ethPortPath.PortName = openapi.PtrString("")
 			}
 
+			hasEthPortSettings := !path.EthPortNumEthPortSettings.IsNull() && path.EthPortNumEthPortSettings.ValueString() != ""
+			hasEthPortSettingsRefType := !path.EthPortNumEthPortSettingsRefType.IsNull() && path.EthPortNumEthPortSettingsRefType.ValueString() != ""
+
+			if hasEthPortSettings || hasEthPortSettingsRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					path.EthPortNumEthPortSettings, path.EthPortNumEthPortSettingsRefType,
+					"eth_port_num_eth_port_settings", "eth_port_num_eth_port_settings_ref_type_",
+					hasEthPortSettings, hasEthPortSettingsRefType) {
+					return
+				}
+			}
+
 			if !path.EthPortNumEthPortSettings.IsNull() {
 				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
 			} else {
 				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
 			}
 
+			if !path.EthPortNumEthPortSettingsRefType.IsNull() {
+				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
+			} else {
+				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
+			}
+
+			hasEthPortProfile := !path.EthPortNumEthPortProfile.IsNull() && path.EthPortNumEthPortProfile.ValueString() != ""
+			hasEthPortProfileRefType := !path.EthPortNumEthPortProfileRefType.IsNull() && path.EthPortNumEthPortProfileRefType.ValueString() != ""
+
+			if hasEthPortProfile || hasEthPortProfileRefType {
+				if !utils.ValidateReferenceFields(&resp.Diagnostics,
+					path.EthPortNumEthPortProfile, path.EthPortNumEthPortProfileRefType,
+					"eth_port_num_eth_port_profile", "eth_port_num_eth_port_profile_ref_type_") {
+					return
+				}
+			}
+
+			// Set values after validation
 			if !path.EthPortNumEthPortProfile.IsNull() {
 				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(path.EthPortNumEthPortProfile.ValueString())
 			} else {
 				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
-			}
-
-			if !path.EthPortNumGatewayProfile.IsNull() {
-				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
-			} else {
-				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
 			}
 
 			if !path.EthPortNumEthPortProfileRefType.IsNull() {
@@ -607,10 +648,21 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
 			}
 
-			if !path.EthPortNumEthPortSettingsRefType.IsNull() {
-				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
+			hasGatewayProfile := !path.EthPortNumGatewayProfile.IsNull() && path.EthPortNumGatewayProfile.ValueString() != ""
+			hasGatewayProfileRefType := !path.EthPortNumGatewayProfileRefType.IsNull() && path.EthPortNumGatewayProfileRefType.ValueString() != ""
+
+			if hasGatewayProfile || hasGatewayProfileRefType {
+				if !utils.ValidateReferenceFields(&resp.Diagnostics,
+					path.EthPortNumGatewayProfile, path.EthPortNumGatewayProfileRefType,
+					"eth_port_num_gateway_profile", "eth_port_num_gateway_profile_ref_type_") {
+					return
+				}
+			}
+
+			if !path.EthPortNumGatewayProfile.IsNull() {
+				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
 			} else {
-				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
+				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
 			}
 
 			if !path.EthPortNumGatewayProfileRefType.IsNull() {
@@ -640,57 +692,99 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 			fieldChanged = true
 		}
 
-		if !path.EthPortNumEthPortSettings.Equal(statePath.EthPortNumEthPortSettings) {
-			if !path.EthPortNumEthPortSettings.IsNull() {
-				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
-			} else {
-				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
+		ethPortSettingsChanged := !path.EthPortNumEthPortSettings.Equal(statePath.EthPortNumEthPortSettings)
+		ethPortSettingsRefTypeChanged := !path.EthPortNumEthPortSettingsRefType.Equal(statePath.EthPortNumEthPortSettingsRefType)
+
+		if ethPortSettingsChanged || ethPortSettingsRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				path.EthPortNumEthPortSettings, path.EthPortNumEthPortSettingsRefType,
+				"eth_port_num_eth_port_settings", "eth_port_num_eth_port_settings_ref_type_",
+				ethPortSettingsChanged, ethPortSettingsRefTypeChanged) {
+				return
 			}
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if ethPortSettingsChanged {
+				if !path.EthPortNumEthPortSettings.IsNull() {
+					ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
+				} else {
+					ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
+				}
+			}
+
+			if ethPortSettingsRefTypeChanged {
+				if !path.EthPortNumEthPortSettingsRefType.IsNull() {
+					ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
+				} else {
+					ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
+				}
+
+				// If ref type changes, also send base field
+				if !ethPortSettingsChanged {
+					if !path.EthPortNumEthPortSettings.IsNull() {
+						ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
+					} else {
+						ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
+					}
+				}
+			}
+
 			fieldChanged = true
 		}
 
-		if !path.EthPortNumEthPortProfile.Equal(statePath.EthPortNumEthPortProfile) {
+		ethPortProfileChanged := !path.EthPortNumEthPortProfile.Equal(statePath.EthPortNumEthPortProfile)
+		ethPortProfileRefTypeChanged := !path.EthPortNumEthPortProfileRefType.Equal(statePath.EthPortNumEthPortProfileRefType)
+
+		if ethPortProfileChanged || ethPortProfileRefTypeChanged {
+			if !utils.ValidateReferenceFields(&resp.Diagnostics,
+				path.EthPortNumEthPortProfile, path.EthPortNumEthPortProfileRefType,
+				"eth_port_num_eth_port_profile", "eth_port_num_eth_port_profile_ref_type_") {
+				return
+			}
+
+			// For fields with multiple reference types:
+			// Always send both fields when either changes
 			if !path.EthPortNumEthPortProfile.IsNull() {
 				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(path.EthPortNumEthPortProfile.ValueString())
 			} else {
 				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
 			}
-			fieldChanged = true
-		}
 
-		if !path.EthPortNumGatewayProfile.Equal(statePath.EthPortNumGatewayProfile) {
-			if !path.EthPortNumGatewayProfile.IsNull() {
-				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
-			} else {
-				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !path.EthPortNumEthPortProfileRefType.Equal(statePath.EthPortNumEthPortProfileRefType) {
 			if !path.EthPortNumEthPortProfileRefType.IsNull() {
 				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString(path.EthPortNumEthPortProfileRefType.ValueString())
 			} else {
 				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
 			}
+
 			fieldChanged = true
 		}
 
-		if !path.EthPortNumEthPortSettingsRefType.Equal(statePath.EthPortNumEthPortSettingsRefType) {
-			if !path.EthPortNumEthPortSettingsRefType.IsNull() {
-				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
-			} else {
-				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
+		gatewayProfileChanged := !path.EthPortNumGatewayProfile.Equal(statePath.EthPortNumGatewayProfile)
+		gatewayProfileRefTypeChanged := !path.EthPortNumGatewayProfileRefType.Equal(statePath.EthPortNumGatewayProfileRefType)
+
+		if gatewayProfileChanged || gatewayProfileRefTypeChanged {
+			if !utils.ValidateReferenceFields(&resp.Diagnostics,
+				path.EthPortNumGatewayProfile, path.EthPortNumGatewayProfileRefType,
+				"eth_port_num_gateway_profile", "eth_port_num_gateway_profile_ref_type_") {
+				return
 			}
-			fieldChanged = true
-		}
 
-		if !path.EthPortNumGatewayProfileRefType.Equal(statePath.EthPortNumGatewayProfileRefType) {
+			// For fields with multiple reference types:
+			// Always send both fields when either changes
+			if !path.EthPortNumGatewayProfile.IsNull() {
+				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
+			} else {
+				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
+			}
+
 			if !path.EthPortNumGatewayProfileRefType.IsNull() {
 				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(path.EthPortNumGatewayProfileRefType.ValueString())
 			} else {
 				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
 			}
+
 			fieldChanged = true
 		}
 
@@ -754,10 +848,28 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				userService.RowAppEnable = openapi.PtrBool(false)
 			}
 
+			hasConnectedService := !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != ""
+			hasConnectedServiceRefType := !service.RowAppConnectedServiceRefType.IsNull() && service.RowAppConnectedServiceRefType.ValueString() != ""
+
+			if hasConnectedService || hasConnectedServiceRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					service.RowAppConnectedService, service.RowAppConnectedServiceRefType,
+					"row_app_connected_service", "row_app_connected_service_ref_type_",
+					hasConnectedService, hasConnectedServiceRefType) {
+					return
+				}
+			}
+
 			if !service.RowAppConnectedService.IsNull() {
 				userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
 			} else {
 				userService.RowAppConnectedService = openapi.PtrString("")
+			}
+
+			if !service.RowAppConnectedServiceRefType.IsNull() {
+				userService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
+			} else {
+				userService.RowAppConnectedServiceRefType = openapi.PtrString("")
 			}
 
 			if !service.RowAppCliCommands.IsNull() {
@@ -770,12 +882,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				userService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
 			} else {
 				userService.RowIpMask = openapi.PtrString("")
-			}
-
-			if !service.RowAppConnectedServiceRefType.IsNull() {
-				userService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
-			} else {
-				userService.RowAppConnectedServiceRefType = openapi.PtrString("")
 			}
 
 			changedServices = append(changedServices, userService)
@@ -795,12 +901,45 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 			fieldChanged = true
 		}
 
-		if !service.RowAppConnectedService.Equal(stateService.RowAppConnectedService) {
-			if !service.RowAppConnectedService.IsNull() {
-				userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-			} else {
-				userService.RowAppConnectedService = openapi.PtrString("")
+		connectedServiceChanged := !service.RowAppConnectedService.Equal(stateService.RowAppConnectedService)
+		connectedServiceRefTypeChanged := !service.RowAppConnectedServiceRefType.Equal(stateService.RowAppConnectedServiceRefType)
+
+		if connectedServiceChanged || connectedServiceRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				service.RowAppConnectedService, service.RowAppConnectedServiceRefType,
+				"row_app_connected_service", "row_app_connected_service_ref_type_",
+				connectedServiceChanged, connectedServiceRefTypeChanged) {
+				return
 			}
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if connectedServiceChanged {
+				if !service.RowAppConnectedService.IsNull() {
+					userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+				} else {
+					userService.RowAppConnectedService = openapi.PtrString("")
+				}
+			}
+
+			if connectedServiceRefTypeChanged {
+				if !service.RowAppConnectedServiceRefType.IsNull() {
+					userService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
+				} else {
+					userService.RowAppConnectedServiceRefType = openapi.PtrString("")
+				}
+
+				// If ref type changes, also send base field
+				if !connectedServiceChanged {
+					if !service.RowAppConnectedService.IsNull() {
+						userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+					} else {
+						userService.RowAppConnectedService = openapi.PtrString("")
+					}
+				}
+			}
+
 			fieldChanged = true
 		}
 
@@ -818,15 +957,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				userService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
 			} else {
 				userService.RowIpMask = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !service.RowAppConnectedServiceRefType.Equal(stateService.RowAppConnectedServiceRefType) {
-			if !service.RowAppConnectedServiceRefType.IsNull() {
-				userService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
-			} else {
-				userService.RowAppConnectedServiceRefType = openapi.PtrString("")
 			}
 			fieldChanged = true
 		}
