@@ -39,7 +39,35 @@ type ConfigPutRequestServiceServiceName struct {
 	DhcpServerIp *string `json:"dhcp_server_ip,omitempty"`
 	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
 	Mtu NullableInt32 `json:"mtu,omitempty"`
-	ObjectProperties *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *ConfigPutRequestServiceServiceNameObjectProperties `json:"object_properties,omitempty"`
+	// Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)
+	MaxUpstreamRateMbps *int32 `json:"max_upstream_rate_mbps,omitempty"`
+	// Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)
+	MaxDownstreamRateMbps *int32 `json:"max_downstream_rate_mbps,omitempty"`
+	// Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped
+	PacketPriority *string `json:"packet_priority,omitempty"`
+	// Determines how undefined handle multicast packet for Service<ul><li>* \"Multicast Flooding (Normal)\" Multicast packets are broadcast</li><li>* \"Multicast Flooding (AVB/PTP/Cobranet)\" Multicast packets are broadcast with special treatment for critical latency packets such as used by AVB, PTP, and Cobranet</li><li>* \"IPTV Filtering (IGMP Snooping)\" Multicast packets are propagated via IGMP Snooping</li><li>* \"IPTV Filtering (IGMP Report/Leave Flooding)\" Multicast packets are propagated via IGMP Snooping. except that IGMP Report/Leave packets are broadcast</li></ul>
+	MulticastManagementMode *string `json:"multicast_management_mode,omitempty"`
+	// Overrides priority bits on incoming tagged packets. Always done for untagged packets
+	TaggedPackets *bool `json:"tagged_packets,omitempty"`
+	// Is a Transparent LAN Service?
+	Tls *bool `json:"tls,omitempty"`
+	// Allow Edge Devices to communicate with each other. Disabling this forces upstream traffic to the router
+	AllowLocalSwitching *bool `json:"allow_local_switching,omitempty"`
+	// Multicast managment through IGMP requires a multicast querier. Check this box if SD LAN should provide a multicast querier
+	ActAsMulticastQuerier *bool `json:"act_as_multicast_querier,omitempty"`
+	// Block unknown unicast traffic flooding and only permits egress traffic with MAC addresses that are known to exit on the port
+	BlockUnknownUnicastFlood *bool `json:"block_unknown_unicast_flood,omitempty"`
+	// Block inbound packets sent by Downstream DHCP servers
+	BlockDownstreamDhcpServer *bool `json:"block_downstream_dhcp_server,omitempty"`
+	// Denotes a Management Service
+	IsManagementService *bool `json:"is_management_service,omitempty"`
+	// use DSCP to p-bit Mapping for L3 packets if available
+	UseDscpToPBitMappingForL3PacketsIfAvailable *bool `json:"use_dscp_to_p_bit_mapping_for_l3_packets_if_available,omitempty"`
+	// The Fast Leave feature causes the switch to immediately remove a port from the forwarding list for a IGMP multicast group when the port receives a leave message. Not recommended unless there is only a single receiver present on every point in the VLAN
+	AllowFastLeave *bool `json:"allow_fast_leave,omitempty"`
+	// MST Instance ID (0-4094)
+	MstInstance *int32 `json:"mst_instance,omitempty"`
 }
 
 // NewConfigPutRequestServiceServiceName instantiates a new ConfigPutRequestServiceServiceName object
@@ -60,6 +88,30 @@ func NewConfigPutRequestServiceServiceName() *ConfigPutRequestServiceServiceName
 	this.DhcpServerIp = &dhcpServerIp
 	var mtu int32 = 1500
 	this.Mtu = *NewNullableInt32(&mtu)
+	var packetPriority string = "0"
+	this.PacketPriority = &packetPriority
+	var multicastManagementMode string = "flooding"
+	this.MulticastManagementMode = &multicastManagementMode
+	var taggedPackets bool = false
+	this.TaggedPackets = &taggedPackets
+	var tls bool = false
+	this.Tls = &tls
+	var allowLocalSwitching bool = true
+	this.AllowLocalSwitching = &allowLocalSwitching
+	var actAsMulticastQuerier bool = false
+	this.ActAsMulticastQuerier = &actAsMulticastQuerier
+	var blockUnknownUnicastFlood bool = false
+	this.BlockUnknownUnicastFlood = &blockUnknownUnicastFlood
+	var blockDownstreamDhcpServer bool = true
+	this.BlockDownstreamDhcpServer = &blockDownstreamDhcpServer
+	var isManagementService bool = false
+	this.IsManagementService = &isManagementService
+	var useDscpToPBitMappingForL3PacketsIfAvailable bool = false
+	this.UseDscpToPBitMappingForL3PacketsIfAvailable = &useDscpToPBitMappingForL3PacketsIfAvailable
+	var allowFastLeave bool = false
+	this.AllowFastLeave = &allowFastLeave
+	var mstInstance int32 = 0
+	this.MstInstance = &mstInstance
 	return &this
 }
 
@@ -80,6 +132,30 @@ func NewConfigPutRequestServiceServiceNameWithDefaults() *ConfigPutRequestServic
 	this.DhcpServerIp = &dhcpServerIp
 	var mtu int32 = 1500
 	this.Mtu = *NewNullableInt32(&mtu)
+	var packetPriority string = "0"
+	this.PacketPriority = &packetPriority
+	var multicastManagementMode string = "flooding"
+	this.MulticastManagementMode = &multicastManagementMode
+	var taggedPackets bool = false
+	this.TaggedPackets = &taggedPackets
+	var tls bool = false
+	this.Tls = &tls
+	var allowLocalSwitching bool = true
+	this.AllowLocalSwitching = &allowLocalSwitching
+	var actAsMulticastQuerier bool = false
+	this.ActAsMulticastQuerier = &actAsMulticastQuerier
+	var blockUnknownUnicastFlood bool = false
+	this.BlockUnknownUnicastFlood = &blockUnknownUnicastFlood
+	var blockDownstreamDhcpServer bool = true
+	this.BlockDownstreamDhcpServer = &blockDownstreamDhcpServer
+	var isManagementService bool = false
+	this.IsManagementService = &isManagementService
+	var useDscpToPBitMappingForL3PacketsIfAvailable bool = false
+	this.UseDscpToPBitMappingForL3PacketsIfAvailable = &useDscpToPBitMappingForL3PacketsIfAvailable
+	var allowFastLeave bool = false
+	this.AllowFastLeave = &allowFastLeave
+	var mstInstance int32 = 0
+	this.MstInstance = &mstInstance
 	return &this
 }
 
@@ -434,9 +510,9 @@ func (o *ConfigPutRequestServiceServiceName) UnsetMtu() {
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *ConfigPutRequestServiceServiceName) GetObjectProperties() ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties {
+func (o *ConfigPutRequestServiceServiceName) GetObjectProperties() ConfigPutRequestServiceServiceNameObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties
+		var ret ConfigPutRequestServiceServiceNameObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -444,7 +520,7 @@ func (o *ConfigPutRequestServiceServiceName) GetObjectProperties() ConfigPutRequ
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestServiceServiceName) GetObjectPropertiesOk() (*ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties, bool) {
+func (o *ConfigPutRequestServiceServiceName) GetObjectPropertiesOk() (*ConfigPutRequestServiceServiceNameObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -460,9 +536,457 @@ func (o *ConfigPutRequestServiceServiceName) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties and assigns it to the ObjectProperties field.
-func (o *ConfigPutRequestServiceServiceName) SetObjectProperties(v ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties) {
+// SetObjectProperties gets a reference to the given ConfigPutRequestServiceServiceNameObjectProperties and assigns it to the ObjectProperties field.
+func (o *ConfigPutRequestServiceServiceName) SetObjectProperties(v ConfigPutRequestServiceServiceNameObjectProperties) {
 	o.ObjectProperties = &v
+}
+
+// GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetMaxUpstreamRateMbps() int32 {
+	if o == nil || IsNil(o.MaxUpstreamRateMbps) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxUpstreamRateMbps
+}
+
+// GetMaxUpstreamRateMbpsOk returns a tuple with the MaxUpstreamRateMbps field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetMaxUpstreamRateMbpsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxUpstreamRateMbps) {
+		return nil, false
+	}
+	return o.MaxUpstreamRateMbps, true
+}
+
+// HasMaxUpstreamRateMbps returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasMaxUpstreamRateMbps() bool {
+	if o != nil && !IsNil(o.MaxUpstreamRateMbps) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxUpstreamRateMbps gets a reference to the given int32 and assigns it to the MaxUpstreamRateMbps field.
+func (o *ConfigPutRequestServiceServiceName) SetMaxUpstreamRateMbps(v int32) {
+	o.MaxUpstreamRateMbps = &v
+}
+
+// GetMaxDownstreamRateMbps returns the MaxDownstreamRateMbps field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetMaxDownstreamRateMbps() int32 {
+	if o == nil || IsNil(o.MaxDownstreamRateMbps) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxDownstreamRateMbps
+}
+
+// GetMaxDownstreamRateMbpsOk returns a tuple with the MaxDownstreamRateMbps field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetMaxDownstreamRateMbpsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxDownstreamRateMbps) {
+		return nil, false
+	}
+	return o.MaxDownstreamRateMbps, true
+}
+
+// HasMaxDownstreamRateMbps returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasMaxDownstreamRateMbps() bool {
+	if o != nil && !IsNil(o.MaxDownstreamRateMbps) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxDownstreamRateMbps gets a reference to the given int32 and assigns it to the MaxDownstreamRateMbps field.
+func (o *ConfigPutRequestServiceServiceName) SetMaxDownstreamRateMbps(v int32) {
+	o.MaxDownstreamRateMbps = &v
+}
+
+// GetPacketPriority returns the PacketPriority field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetPacketPriority() string {
+	if o == nil || IsNil(o.PacketPriority) {
+		var ret string
+		return ret
+	}
+	return *o.PacketPriority
+}
+
+// GetPacketPriorityOk returns a tuple with the PacketPriority field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetPacketPriorityOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketPriority) {
+		return nil, false
+	}
+	return o.PacketPriority, true
+}
+
+// HasPacketPriority returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasPacketPriority() bool {
+	if o != nil && !IsNil(o.PacketPriority) {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketPriority gets a reference to the given string and assigns it to the PacketPriority field.
+func (o *ConfigPutRequestServiceServiceName) SetPacketPriority(v string) {
+	o.PacketPriority = &v
+}
+
+// GetMulticastManagementMode returns the MulticastManagementMode field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetMulticastManagementMode() string {
+	if o == nil || IsNil(o.MulticastManagementMode) {
+		var ret string
+		return ret
+	}
+	return *o.MulticastManagementMode
+}
+
+// GetMulticastManagementModeOk returns a tuple with the MulticastManagementMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetMulticastManagementModeOk() (*string, bool) {
+	if o == nil || IsNil(o.MulticastManagementMode) {
+		return nil, false
+	}
+	return o.MulticastManagementMode, true
+}
+
+// HasMulticastManagementMode returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasMulticastManagementMode() bool {
+	if o != nil && !IsNil(o.MulticastManagementMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetMulticastManagementMode gets a reference to the given string and assigns it to the MulticastManagementMode field.
+func (o *ConfigPutRequestServiceServiceName) SetMulticastManagementMode(v string) {
+	o.MulticastManagementMode = &v
+}
+
+// GetTaggedPackets returns the TaggedPackets field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetTaggedPackets() bool {
+	if o == nil || IsNil(o.TaggedPackets) {
+		var ret bool
+		return ret
+	}
+	return *o.TaggedPackets
+}
+
+// GetTaggedPacketsOk returns a tuple with the TaggedPackets field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetTaggedPacketsOk() (*bool, bool) {
+	if o == nil || IsNil(o.TaggedPackets) {
+		return nil, false
+	}
+	return o.TaggedPackets, true
+}
+
+// HasTaggedPackets returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasTaggedPackets() bool {
+	if o != nil && !IsNil(o.TaggedPackets) {
+		return true
+	}
+
+	return false
+}
+
+// SetTaggedPackets gets a reference to the given bool and assigns it to the TaggedPackets field.
+func (o *ConfigPutRequestServiceServiceName) SetTaggedPackets(v bool) {
+	o.TaggedPackets = &v
+}
+
+// GetTls returns the Tls field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetTls() bool {
+	if o == nil || IsNil(o.Tls) {
+		var ret bool
+		return ret
+	}
+	return *o.Tls
+}
+
+// GetTlsOk returns a tuple with the Tls field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetTlsOk() (*bool, bool) {
+	if o == nil || IsNil(o.Tls) {
+		return nil, false
+	}
+	return o.Tls, true
+}
+
+// HasTls returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasTls() bool {
+	if o != nil && !IsNil(o.Tls) {
+		return true
+	}
+
+	return false
+}
+
+// SetTls gets a reference to the given bool and assigns it to the Tls field.
+func (o *ConfigPutRequestServiceServiceName) SetTls(v bool) {
+	o.Tls = &v
+}
+
+// GetAllowLocalSwitching returns the AllowLocalSwitching field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetAllowLocalSwitching() bool {
+	if o == nil || IsNil(o.AllowLocalSwitching) {
+		var ret bool
+		return ret
+	}
+	return *o.AllowLocalSwitching
+}
+
+// GetAllowLocalSwitchingOk returns a tuple with the AllowLocalSwitching field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetAllowLocalSwitchingOk() (*bool, bool) {
+	if o == nil || IsNil(o.AllowLocalSwitching) {
+		return nil, false
+	}
+	return o.AllowLocalSwitching, true
+}
+
+// HasAllowLocalSwitching returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasAllowLocalSwitching() bool {
+	if o != nil && !IsNil(o.AllowLocalSwitching) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllowLocalSwitching gets a reference to the given bool and assigns it to the AllowLocalSwitching field.
+func (o *ConfigPutRequestServiceServiceName) SetAllowLocalSwitching(v bool) {
+	o.AllowLocalSwitching = &v
+}
+
+// GetActAsMulticastQuerier returns the ActAsMulticastQuerier field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetActAsMulticastQuerier() bool {
+	if o == nil || IsNil(o.ActAsMulticastQuerier) {
+		var ret bool
+		return ret
+	}
+	return *o.ActAsMulticastQuerier
+}
+
+// GetActAsMulticastQuerierOk returns a tuple with the ActAsMulticastQuerier field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetActAsMulticastQuerierOk() (*bool, bool) {
+	if o == nil || IsNil(o.ActAsMulticastQuerier) {
+		return nil, false
+	}
+	return o.ActAsMulticastQuerier, true
+}
+
+// HasActAsMulticastQuerier returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasActAsMulticastQuerier() bool {
+	if o != nil && !IsNil(o.ActAsMulticastQuerier) {
+		return true
+	}
+
+	return false
+}
+
+// SetActAsMulticastQuerier gets a reference to the given bool and assigns it to the ActAsMulticastQuerier field.
+func (o *ConfigPutRequestServiceServiceName) SetActAsMulticastQuerier(v bool) {
+	o.ActAsMulticastQuerier = &v
+}
+
+// GetBlockUnknownUnicastFlood returns the BlockUnknownUnicastFlood field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetBlockUnknownUnicastFlood() bool {
+	if o == nil || IsNil(o.BlockUnknownUnicastFlood) {
+		var ret bool
+		return ret
+	}
+	return *o.BlockUnknownUnicastFlood
+}
+
+// GetBlockUnknownUnicastFloodOk returns a tuple with the BlockUnknownUnicastFlood field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetBlockUnknownUnicastFloodOk() (*bool, bool) {
+	if o == nil || IsNil(o.BlockUnknownUnicastFlood) {
+		return nil, false
+	}
+	return o.BlockUnknownUnicastFlood, true
+}
+
+// HasBlockUnknownUnicastFlood returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasBlockUnknownUnicastFlood() bool {
+	if o != nil && !IsNil(o.BlockUnknownUnicastFlood) {
+		return true
+	}
+
+	return false
+}
+
+// SetBlockUnknownUnicastFlood gets a reference to the given bool and assigns it to the BlockUnknownUnicastFlood field.
+func (o *ConfigPutRequestServiceServiceName) SetBlockUnknownUnicastFlood(v bool) {
+	o.BlockUnknownUnicastFlood = &v
+}
+
+// GetBlockDownstreamDhcpServer returns the BlockDownstreamDhcpServer field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetBlockDownstreamDhcpServer() bool {
+	if o == nil || IsNil(o.BlockDownstreamDhcpServer) {
+		var ret bool
+		return ret
+	}
+	return *o.BlockDownstreamDhcpServer
+}
+
+// GetBlockDownstreamDhcpServerOk returns a tuple with the BlockDownstreamDhcpServer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetBlockDownstreamDhcpServerOk() (*bool, bool) {
+	if o == nil || IsNil(o.BlockDownstreamDhcpServer) {
+		return nil, false
+	}
+	return o.BlockDownstreamDhcpServer, true
+}
+
+// HasBlockDownstreamDhcpServer returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasBlockDownstreamDhcpServer() bool {
+	if o != nil && !IsNil(o.BlockDownstreamDhcpServer) {
+		return true
+	}
+
+	return false
+}
+
+// SetBlockDownstreamDhcpServer gets a reference to the given bool and assigns it to the BlockDownstreamDhcpServer field.
+func (o *ConfigPutRequestServiceServiceName) SetBlockDownstreamDhcpServer(v bool) {
+	o.BlockDownstreamDhcpServer = &v
+}
+
+// GetIsManagementService returns the IsManagementService field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetIsManagementService() bool {
+	if o == nil || IsNil(o.IsManagementService) {
+		var ret bool
+		return ret
+	}
+	return *o.IsManagementService
+}
+
+// GetIsManagementServiceOk returns a tuple with the IsManagementService field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetIsManagementServiceOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsManagementService) {
+		return nil, false
+	}
+	return o.IsManagementService, true
+}
+
+// HasIsManagementService returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasIsManagementService() bool {
+	if o != nil && !IsNil(o.IsManagementService) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsManagementService gets a reference to the given bool and assigns it to the IsManagementService field.
+func (o *ConfigPutRequestServiceServiceName) SetIsManagementService(v bool) {
+	o.IsManagementService = &v
+}
+
+// GetUseDscpToPBitMappingForL3PacketsIfAvailable returns the UseDscpToPBitMappingForL3PacketsIfAvailable field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetUseDscpToPBitMappingForL3PacketsIfAvailable() bool {
+	if o == nil || IsNil(o.UseDscpToPBitMappingForL3PacketsIfAvailable) {
+		var ret bool
+		return ret
+	}
+	return *o.UseDscpToPBitMappingForL3PacketsIfAvailable
+}
+
+// GetUseDscpToPBitMappingForL3PacketsIfAvailableOk returns a tuple with the UseDscpToPBitMappingForL3PacketsIfAvailable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetUseDscpToPBitMappingForL3PacketsIfAvailableOk() (*bool, bool) {
+	if o == nil || IsNil(o.UseDscpToPBitMappingForL3PacketsIfAvailable) {
+		return nil, false
+	}
+	return o.UseDscpToPBitMappingForL3PacketsIfAvailable, true
+}
+
+// HasUseDscpToPBitMappingForL3PacketsIfAvailable returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasUseDscpToPBitMappingForL3PacketsIfAvailable() bool {
+	if o != nil && !IsNil(o.UseDscpToPBitMappingForL3PacketsIfAvailable) {
+		return true
+	}
+
+	return false
+}
+
+// SetUseDscpToPBitMappingForL3PacketsIfAvailable gets a reference to the given bool and assigns it to the UseDscpToPBitMappingForL3PacketsIfAvailable field.
+func (o *ConfigPutRequestServiceServiceName) SetUseDscpToPBitMappingForL3PacketsIfAvailable(v bool) {
+	o.UseDscpToPBitMappingForL3PacketsIfAvailable = &v
+}
+
+// GetAllowFastLeave returns the AllowFastLeave field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetAllowFastLeave() bool {
+	if o == nil || IsNil(o.AllowFastLeave) {
+		var ret bool
+		return ret
+	}
+	return *o.AllowFastLeave
+}
+
+// GetAllowFastLeaveOk returns a tuple with the AllowFastLeave field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetAllowFastLeaveOk() (*bool, bool) {
+	if o == nil || IsNil(o.AllowFastLeave) {
+		return nil, false
+	}
+	return o.AllowFastLeave, true
+}
+
+// HasAllowFastLeave returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasAllowFastLeave() bool {
+	if o != nil && !IsNil(o.AllowFastLeave) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllowFastLeave gets a reference to the given bool and assigns it to the AllowFastLeave field.
+func (o *ConfigPutRequestServiceServiceName) SetAllowFastLeave(v bool) {
+	o.AllowFastLeave = &v
+}
+
+// GetMstInstance returns the MstInstance field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetMstInstance() int32 {
+	if o == nil || IsNil(o.MstInstance) {
+		var ret int32
+		return ret
+	}
+	return *o.MstInstance
+}
+
+// GetMstInstanceOk returns a tuple with the MstInstance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetMstInstanceOk() (*int32, bool) {
+	if o == nil || IsNil(o.MstInstance) {
+		return nil, false
+	}
+	return o.MstInstance, true
+}
+
+// HasMstInstance returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasMstInstance() bool {
+	if o != nil && !IsNil(o.MstInstance) {
+		return true
+	}
+
+	return false
+}
+
+// SetMstInstance gets a reference to the given int32 and assigns it to the MstInstance field.
+func (o *ConfigPutRequestServiceServiceName) SetMstInstance(v int32) {
+	o.MstInstance = &v
 }
 
 func (o ConfigPutRequestServiceServiceName) MarshalJSON() ([]byte, error) {
@@ -507,6 +1031,48 @@ func (o ConfigPutRequestServiceServiceName) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.MaxUpstreamRateMbps) {
+		toSerialize["max_upstream_rate_mbps"] = o.MaxUpstreamRateMbps
+	}
+	if !IsNil(o.MaxDownstreamRateMbps) {
+		toSerialize["max_downstream_rate_mbps"] = o.MaxDownstreamRateMbps
+	}
+	if !IsNil(o.PacketPriority) {
+		toSerialize["packet_priority"] = o.PacketPriority
+	}
+	if !IsNil(o.MulticastManagementMode) {
+		toSerialize["multicast_management_mode"] = o.MulticastManagementMode
+	}
+	if !IsNil(o.TaggedPackets) {
+		toSerialize["tagged_packets"] = o.TaggedPackets
+	}
+	if !IsNil(o.Tls) {
+		toSerialize["tls"] = o.Tls
+	}
+	if !IsNil(o.AllowLocalSwitching) {
+		toSerialize["allow_local_switching"] = o.AllowLocalSwitching
+	}
+	if !IsNil(o.ActAsMulticastQuerier) {
+		toSerialize["act_as_multicast_querier"] = o.ActAsMulticastQuerier
+	}
+	if !IsNil(o.BlockUnknownUnicastFlood) {
+		toSerialize["block_unknown_unicast_flood"] = o.BlockUnknownUnicastFlood
+	}
+	if !IsNil(o.BlockDownstreamDhcpServer) {
+		toSerialize["block_downstream_dhcp_server"] = o.BlockDownstreamDhcpServer
+	}
+	if !IsNil(o.IsManagementService) {
+		toSerialize["is_management_service"] = o.IsManagementService
+	}
+	if !IsNil(o.UseDscpToPBitMappingForL3PacketsIfAvailable) {
+		toSerialize["use_dscp_to_p_bit_mapping_for_l3_packets_if_available"] = o.UseDscpToPBitMappingForL3PacketsIfAvailable
+	}
+	if !IsNil(o.AllowFastLeave) {
+		toSerialize["allow_fast_leave"] = o.AllowFastLeave
+	}
+	if !IsNil(o.MstInstance) {
+		toSerialize["mst_instance"] = o.MstInstance
 	}
 	return toSerialize, nil
 }

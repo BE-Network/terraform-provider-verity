@@ -49,6 +49,16 @@ type ConfigPutRequest struct {
 	StaticConnections *ConfigPutRequestStaticConnections `json:"static_connections,omitempty"`
 	Switchpoint *ConfigPutRequestSwitchpoint `json:"switchpoint,omitempty"`
 	ExtendedCommunityList *ConfigPutRequestExtendedCommunityList `json:"extended_community_list,omitempty"`
+	ImageUpdateSets *ConfigPutRequestImageUpdateSets `json:"image_update_sets,omitempty"`
+	IpFilter *ConfigPutRequestIpFilter `json:"ip_filter,omitempty"`
+	FeatureFlag *ConfigPutRequestFeatureFlag `json:"feature_flag,omitempty"`
+	PacketQueue *ConfigPutRequestPacketQueue `json:"packet_queue,omitempty"`
+	ServicePortProfile *ConfigPutRequestServicePortProfile `json:"service_port_profile,omitempty"`
+	DeviceVoiceSettings *ConfigPutRequestDeviceVoiceSettings `json:"device_voice_settings,omitempty"`
+	AuthenticatedEthPort *ConfigPutRequestAuthenticatedEthPort `json:"authenticated_eth_port,omitempty"`
+	VoicePortProfiles *ConfigPutRequestVoicePortProfiles `json:"voice_port_profiles,omitempty"`
+	Endpoint *ConfigPutRequestEndpoint `json:"endpoint,omitempty"`
+	MacFilter *ConfigPutRequestMacFilter `json:"mac_filter,omitempty"`
 }
 
 // NewConfigPutRequest instantiates a new ConfigPutRequest object
@@ -1028,6 +1038,326 @@ func (o *ConfigPutRequest) SetExtendedCommunityList(v ConfigPutRequestExtendedCo
 	o.ExtendedCommunityList = &v
 }
 
+// GetImageUpdateSets returns the ImageUpdateSets field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetImageUpdateSets() ConfigPutRequestImageUpdateSets {
+	if o == nil || IsNil(o.ImageUpdateSets) {
+		var ret ConfigPutRequestImageUpdateSets
+		return ret
+	}
+	return *o.ImageUpdateSets
+}
+
+// GetImageUpdateSetsOk returns a tuple with the ImageUpdateSets field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetImageUpdateSetsOk() (*ConfigPutRequestImageUpdateSets, bool) {
+	if o == nil || IsNil(o.ImageUpdateSets) {
+		return nil, false
+	}
+	return o.ImageUpdateSets, true
+}
+
+// HasImageUpdateSets returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasImageUpdateSets() bool {
+	if o != nil && !IsNil(o.ImageUpdateSets) {
+		return true
+	}
+
+	return false
+}
+
+// SetImageUpdateSets gets a reference to the given ConfigPutRequestImageUpdateSets and assigns it to the ImageUpdateSets field.
+func (o *ConfigPutRequest) SetImageUpdateSets(v ConfigPutRequestImageUpdateSets) {
+	o.ImageUpdateSets = &v
+}
+
+// GetIpFilter returns the IpFilter field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetIpFilter() ConfigPutRequestIpFilter {
+	if o == nil || IsNil(o.IpFilter) {
+		var ret ConfigPutRequestIpFilter
+		return ret
+	}
+	return *o.IpFilter
+}
+
+// GetIpFilterOk returns a tuple with the IpFilter field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetIpFilterOk() (*ConfigPutRequestIpFilter, bool) {
+	if o == nil || IsNil(o.IpFilter) {
+		return nil, false
+	}
+	return o.IpFilter, true
+}
+
+// HasIpFilter returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasIpFilter() bool {
+	if o != nil && !IsNil(o.IpFilter) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpFilter gets a reference to the given ConfigPutRequestIpFilter and assigns it to the IpFilter field.
+func (o *ConfigPutRequest) SetIpFilter(v ConfigPutRequestIpFilter) {
+	o.IpFilter = &v
+}
+
+// GetFeatureFlag returns the FeatureFlag field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetFeatureFlag() ConfigPutRequestFeatureFlag {
+	if o == nil || IsNil(o.FeatureFlag) {
+		var ret ConfigPutRequestFeatureFlag
+		return ret
+	}
+	return *o.FeatureFlag
+}
+
+// GetFeatureFlagOk returns a tuple with the FeatureFlag field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetFeatureFlagOk() (*ConfigPutRequestFeatureFlag, bool) {
+	if o == nil || IsNil(o.FeatureFlag) {
+		return nil, false
+	}
+	return o.FeatureFlag, true
+}
+
+// HasFeatureFlag returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasFeatureFlag() bool {
+	if o != nil && !IsNil(o.FeatureFlag) {
+		return true
+	}
+
+	return false
+}
+
+// SetFeatureFlag gets a reference to the given ConfigPutRequestFeatureFlag and assigns it to the FeatureFlag field.
+func (o *ConfigPutRequest) SetFeatureFlag(v ConfigPutRequestFeatureFlag) {
+	o.FeatureFlag = &v
+}
+
+// GetPacketQueue returns the PacketQueue field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetPacketQueue() ConfigPutRequestPacketQueue {
+	if o == nil || IsNil(o.PacketQueue) {
+		var ret ConfigPutRequestPacketQueue
+		return ret
+	}
+	return *o.PacketQueue
+}
+
+// GetPacketQueueOk returns a tuple with the PacketQueue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetPacketQueueOk() (*ConfigPutRequestPacketQueue, bool) {
+	if o == nil || IsNil(o.PacketQueue) {
+		return nil, false
+	}
+	return o.PacketQueue, true
+}
+
+// HasPacketQueue returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasPacketQueue() bool {
+	if o != nil && !IsNil(o.PacketQueue) {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketQueue gets a reference to the given ConfigPutRequestPacketQueue and assigns it to the PacketQueue field.
+func (o *ConfigPutRequest) SetPacketQueue(v ConfigPutRequestPacketQueue) {
+	o.PacketQueue = &v
+}
+
+// GetServicePortProfile returns the ServicePortProfile field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetServicePortProfile() ConfigPutRequestServicePortProfile {
+	if o == nil || IsNil(o.ServicePortProfile) {
+		var ret ConfigPutRequestServicePortProfile
+		return ret
+	}
+	return *o.ServicePortProfile
+}
+
+// GetServicePortProfileOk returns a tuple with the ServicePortProfile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetServicePortProfileOk() (*ConfigPutRequestServicePortProfile, bool) {
+	if o == nil || IsNil(o.ServicePortProfile) {
+		return nil, false
+	}
+	return o.ServicePortProfile, true
+}
+
+// HasServicePortProfile returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasServicePortProfile() bool {
+	if o != nil && !IsNil(o.ServicePortProfile) {
+		return true
+	}
+
+	return false
+}
+
+// SetServicePortProfile gets a reference to the given ConfigPutRequestServicePortProfile and assigns it to the ServicePortProfile field.
+func (o *ConfigPutRequest) SetServicePortProfile(v ConfigPutRequestServicePortProfile) {
+	o.ServicePortProfile = &v
+}
+
+// GetDeviceVoiceSettings returns the DeviceVoiceSettings field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetDeviceVoiceSettings() ConfigPutRequestDeviceVoiceSettings {
+	if o == nil || IsNil(o.DeviceVoiceSettings) {
+		var ret ConfigPutRequestDeviceVoiceSettings
+		return ret
+	}
+	return *o.DeviceVoiceSettings
+}
+
+// GetDeviceVoiceSettingsOk returns a tuple with the DeviceVoiceSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetDeviceVoiceSettingsOk() (*ConfigPutRequestDeviceVoiceSettings, bool) {
+	if o == nil || IsNil(o.DeviceVoiceSettings) {
+		return nil, false
+	}
+	return o.DeviceVoiceSettings, true
+}
+
+// HasDeviceVoiceSettings returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasDeviceVoiceSettings() bool {
+	if o != nil && !IsNil(o.DeviceVoiceSettings) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeviceVoiceSettings gets a reference to the given ConfigPutRequestDeviceVoiceSettings and assigns it to the DeviceVoiceSettings field.
+func (o *ConfigPutRequest) SetDeviceVoiceSettings(v ConfigPutRequestDeviceVoiceSettings) {
+	o.DeviceVoiceSettings = &v
+}
+
+// GetAuthenticatedEthPort returns the AuthenticatedEthPort field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetAuthenticatedEthPort() ConfigPutRequestAuthenticatedEthPort {
+	if o == nil || IsNil(o.AuthenticatedEthPort) {
+		var ret ConfigPutRequestAuthenticatedEthPort
+		return ret
+	}
+	return *o.AuthenticatedEthPort
+}
+
+// GetAuthenticatedEthPortOk returns a tuple with the AuthenticatedEthPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetAuthenticatedEthPortOk() (*ConfigPutRequestAuthenticatedEthPort, bool) {
+	if o == nil || IsNil(o.AuthenticatedEthPort) {
+		return nil, false
+	}
+	return o.AuthenticatedEthPort, true
+}
+
+// HasAuthenticatedEthPort returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasAuthenticatedEthPort() bool {
+	if o != nil && !IsNil(o.AuthenticatedEthPort) {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthenticatedEthPort gets a reference to the given ConfigPutRequestAuthenticatedEthPort and assigns it to the AuthenticatedEthPort field.
+func (o *ConfigPutRequest) SetAuthenticatedEthPort(v ConfigPutRequestAuthenticatedEthPort) {
+	o.AuthenticatedEthPort = &v
+}
+
+// GetVoicePortProfiles returns the VoicePortProfiles field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetVoicePortProfiles() ConfigPutRequestVoicePortProfiles {
+	if o == nil || IsNil(o.VoicePortProfiles) {
+		var ret ConfigPutRequestVoicePortProfiles
+		return ret
+	}
+	return *o.VoicePortProfiles
+}
+
+// GetVoicePortProfilesOk returns a tuple with the VoicePortProfiles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetVoicePortProfilesOk() (*ConfigPutRequestVoicePortProfiles, bool) {
+	if o == nil || IsNil(o.VoicePortProfiles) {
+		return nil, false
+	}
+	return o.VoicePortProfiles, true
+}
+
+// HasVoicePortProfiles returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasVoicePortProfiles() bool {
+	if o != nil && !IsNil(o.VoicePortProfiles) {
+		return true
+	}
+
+	return false
+}
+
+// SetVoicePortProfiles gets a reference to the given ConfigPutRequestVoicePortProfiles and assigns it to the VoicePortProfiles field.
+func (o *ConfigPutRequest) SetVoicePortProfiles(v ConfigPutRequestVoicePortProfiles) {
+	o.VoicePortProfiles = &v
+}
+
+// GetEndpoint returns the Endpoint field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetEndpoint() ConfigPutRequestEndpoint {
+	if o == nil || IsNil(o.Endpoint) {
+		var ret ConfigPutRequestEndpoint
+		return ret
+	}
+	return *o.Endpoint
+}
+
+// GetEndpointOk returns a tuple with the Endpoint field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetEndpointOk() (*ConfigPutRequestEndpoint, bool) {
+	if o == nil || IsNil(o.Endpoint) {
+		return nil, false
+	}
+	return o.Endpoint, true
+}
+
+// HasEndpoint returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasEndpoint() bool {
+	if o != nil && !IsNil(o.Endpoint) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpoint gets a reference to the given ConfigPutRequestEndpoint and assigns it to the Endpoint field.
+func (o *ConfigPutRequest) SetEndpoint(v ConfigPutRequestEndpoint) {
+	o.Endpoint = &v
+}
+
+// GetMacFilter returns the MacFilter field value if set, zero value otherwise.
+func (o *ConfigPutRequest) GetMacFilter() ConfigPutRequestMacFilter {
+	if o == nil || IsNil(o.MacFilter) {
+		var ret ConfigPutRequestMacFilter
+		return ret
+	}
+	return *o.MacFilter
+}
+
+// GetMacFilterOk returns a tuple with the MacFilter field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequest) GetMacFilterOk() (*ConfigPutRequestMacFilter, bool) {
+	if o == nil || IsNil(o.MacFilter) {
+		return nil, false
+	}
+	return o.MacFilter, true
+}
+
+// HasMacFilter returns a boolean if a field has been set.
+func (o *ConfigPutRequest) HasMacFilter() bool {
+	if o != nil && !IsNil(o.MacFilter) {
+		return true
+	}
+
+	return false
+}
+
+// SetMacFilter gets a reference to the given ConfigPutRequestMacFilter and assigns it to the MacFilter field.
+func (o *ConfigPutRequest) SetMacFilter(v ConfigPutRequestMacFilter) {
+	o.MacFilter = &v
+}
+
 func (o ConfigPutRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -1127,6 +1457,36 @@ func (o ConfigPutRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ExtendedCommunityList) {
 		toSerialize["extended_community_list"] = o.ExtendedCommunityList
+	}
+	if !IsNil(o.ImageUpdateSets) {
+		toSerialize["image_update_sets"] = o.ImageUpdateSets
+	}
+	if !IsNil(o.IpFilter) {
+		toSerialize["ip_filter"] = o.IpFilter
+	}
+	if !IsNil(o.FeatureFlag) {
+		toSerialize["feature_flag"] = o.FeatureFlag
+	}
+	if !IsNil(o.PacketQueue) {
+		toSerialize["packet_queue"] = o.PacketQueue
+	}
+	if !IsNil(o.ServicePortProfile) {
+		toSerialize["service_port_profile"] = o.ServicePortProfile
+	}
+	if !IsNil(o.DeviceVoiceSettings) {
+		toSerialize["device_voice_settings"] = o.DeviceVoiceSettings
+	}
+	if !IsNil(o.AuthenticatedEthPort) {
+		toSerialize["authenticated_eth_port"] = o.AuthenticatedEthPort
+	}
+	if !IsNil(o.VoicePortProfiles) {
+		toSerialize["voice_port_profiles"] = o.VoicePortProfiles
+	}
+	if !IsNil(o.Endpoint) {
+		toSerialize["endpoint"] = o.Endpoint
+	}
+	if !IsNil(o.MacFilter) {
+		toSerialize["mac_filter"] = o.MacFilter
 	}
 	return toSerialize, nil
 }

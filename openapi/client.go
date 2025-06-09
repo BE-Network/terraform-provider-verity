@@ -49,13 +49,21 @@ type APIClient struct {
 
 	// API Services
 
+	ACLsAPI *ACLsAPIService
+
+	AuthenticatedEthPortsAPI *AuthenticatedEthPortsAPIService
+
 	AuthorizationAPI *AuthorizationAPIService
+
+	BadgesAPI *BadgesAPIService
 
 	BundlesAPI *BundlesAPIService
 
 	ChangesetsAPI *ChangesetsAPIService
 
 	ConfigAPI *ConfigAPIService
+
+	DeviceVoiceSettingsAPI *DeviceVoiceSettingsAPIService
 
 	EthPortProfilesAPI *EthPortProfilesAPIService
 
@@ -67,11 +75,23 @@ type APIClient struct {
 
 	LAGsAPI *LAGsAPIService
 
+	PacketBrokerAPI *PacketBrokerAPIService
+
+	PacketQueuesAPI *PacketQueuesAPIService
+
 	ReadModeAPI *ReadModeAPIService
+
+	ServicePortProfilesAPI *ServicePortProfilesAPIService
 
 	ServicesAPI *ServicesAPIService
 
+	SwitchpointsAPI *SwitchpointsAPIService
+
 	TenantsAPI *TenantsAPIService
+
+	VersionAPI *VersionAPIService
+
+	VoicePortProfilesAPI *VoicePortProfilesAPIService
 }
 
 type service struct {
@@ -90,18 +110,28 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.common.client = c
 
 	// API Services
+	c.ACLsAPI = (*ACLsAPIService)(&c.common)
+	c.AuthenticatedEthPortsAPI = (*AuthenticatedEthPortsAPIService)(&c.common)
 	c.AuthorizationAPI = (*AuthorizationAPIService)(&c.common)
+	c.BadgesAPI = (*BadgesAPIService)(&c.common)
 	c.BundlesAPI = (*BundlesAPIService)(&c.common)
 	c.ChangesetsAPI = (*ChangesetsAPIService)(&c.common)
 	c.ConfigAPI = (*ConfigAPIService)(&c.common)
+	c.DeviceVoiceSettingsAPI = (*DeviceVoiceSettingsAPIService)(&c.common)
 	c.EthPortProfilesAPI = (*EthPortProfilesAPIService)(&c.common)
 	c.EthPortSettingsAPI = (*EthPortSettingsAPIService)(&c.common)
 	c.GatewayProfilesAPI = (*GatewayProfilesAPIService)(&c.common)
 	c.GatewaysAPI = (*GatewaysAPIService)(&c.common)
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)
+	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
+	c.PacketQueuesAPI = (*PacketQueuesAPIService)(&c.common)
 	c.ReadModeAPI = (*ReadModeAPIService)(&c.common)
+	c.ServicePortProfilesAPI = (*ServicePortProfilesAPIService)(&c.common)
 	c.ServicesAPI = (*ServicesAPIService)(&c.common)
+	c.SwitchpointsAPI = (*SwitchpointsAPIService)(&c.common)
 	c.TenantsAPI = (*TenantsAPIService)(&c.common)
+	c.VersionAPI = (*VersionAPIService)(&c.common)
+	c.VoicePortProfilesAPI = (*VoicePortProfilesAPIService)(&c.common)
 
 	return c
 }
@@ -279,54 +309,27 @@ func parameterToJson(obj interface{}) (string, error) {
 
 // callAPI do the request.
 func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
-    if c.cfg.Debug {
-        isAuthRequest := strings.Contains(request.URL.Path, "/auth")
-        
-        if isAuthRequest {
-            // For auth requests, create a buffer to read the body
-            var bodyBytes []byte
-            if request.Body != nil {
-                bodyBytes, _ = io.ReadAll(request.Body)
-                // Restore the body for the actual request
-                request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-            }
-            
-            // Generate debug output without the body content
-            dump, err := httputil.DumpRequestOut(request, false)
-            if err != nil {
-                return nil, err
-            }
-            log.Printf("\n%s\n[REDACTED AUTH REQUEST BODY]\n", string(dump))
-        } else {
-            // Normal debug output for non-auth requests
-            var bodyBytes []byte
-            if request.Body != nil {
-                bodyBytes, _ = io.ReadAll(request.Body)
-                // Restore the body for the actual request
-                request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-            }
-            
-            dump, err := httputil.DumpRequestOut(request, true)
-            if err != nil {
-                return nil, err
-            }
-            log.Printf("\n%s\n", string(dump))
-        }
-    }
+	if c.cfg.Debug {
+		dump, err := httputil.DumpRequestOut(request, true)
+		if err != nil {
+			return nil, err
+		}
+		log.Printf("\n%s\n", string(dump))
+	}
 
-    resp, err := c.cfg.HTTPClient.Do(request)
-    if err != nil {
-        return resp, err
-    }
+	resp, err := c.cfg.HTTPClient.Do(request)
+	if err != nil {
+		return resp, err
+	}
 
-    if c.cfg.Debug {
-        dump, err := httputil.DumpResponse(resp, true)
-        if err != nil {
-            return resp, err
-        }
-        log.Printf("\n%s\n", string(dump))
-    }
-    return resp, err
+	if c.cfg.Debug {
+		dump, err := httputil.DumpResponse(resp, true)
+		if err != nil {
+			return resp, err
+		}
+		log.Printf("\n%s\n", string(dump))
+	}
+	return resp, err
 }
 
 // Allow modification of underlying config for alternate implementations and testing

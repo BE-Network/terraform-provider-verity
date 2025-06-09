@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ToiSwitchpoint** | Pointer to **string** | TOI Switchpoint | [optional] [default to ""]
+**ToiSwitchpoint** | Pointer to **string** | TOI Endpoint | [optional] [default to ""]
 **ToiSwitchpointRefType** | Pointer to **string** | Object type for toi_switchpoint field | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 

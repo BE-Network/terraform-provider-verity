@@ -21,6 +21,10 @@ var _ MappedNullable = &BundlesPatchRequestEndpointBundleValueObjectProperties{}
 type BundlesPatchRequestEndpointBundleValueObjectProperties struct {
 	// Denotes a Switch Bundle
 	IsForSwitch *bool `json:"is_for_switch,omitempty"`
+	// Group
+	Group *string `json:"group,omitempty"`
+	// Denotes a shared Switch Bundle
+	IsPublic *bool `json:"is_public,omitempty"`
 }
 
 // NewBundlesPatchRequestEndpointBundleValueObjectProperties instantiates a new BundlesPatchRequestEndpointBundleValueObjectProperties object
@@ -31,6 +35,10 @@ func NewBundlesPatchRequestEndpointBundleValueObjectProperties() *BundlesPatchRe
 	this := BundlesPatchRequestEndpointBundleValueObjectProperties{}
 	var isForSwitch bool = false
 	this.IsForSwitch = &isForSwitch
+	var group string = ""
+	this.Group = &group
+	var isPublic bool = false
+	this.IsPublic = &isPublic
 	return &this
 }
 
@@ -41,6 +49,10 @@ func NewBundlesPatchRequestEndpointBundleValueObjectPropertiesWithDefaults() *Bu
 	this := BundlesPatchRequestEndpointBundleValueObjectProperties{}
 	var isForSwitch bool = false
 	this.IsForSwitch = &isForSwitch
+	var group string = ""
+	this.Group = &group
+	var isPublic bool = false
+	this.IsPublic = &isPublic
 	return &this
 }
 
@@ -76,6 +88,70 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetIsForSwitch(
 	o.IsForSwitch = &v
 }
 
+// GetGroup returns the Group field value if set, zero value otherwise.
+func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetGroup() string {
+	if o == nil || IsNil(o.Group) {
+		var ret string
+		return ret
+	}
+	return *o.Group
+}
+
+// GetGroupOk returns a tuple with the Group field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetGroupOk() (*string, bool) {
+	if o == nil || IsNil(o.Group) {
+		return nil, false
+	}
+	return o.Group, true
+}
+
+// HasGroup returns a boolean if a field has been set.
+func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasGroup() bool {
+	if o != nil && !IsNil(o.Group) {
+		return true
+	}
+
+	return false
+}
+
+// SetGroup gets a reference to the given string and assigns it to the Group field.
+func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetGroup(v string) {
+	o.Group = &v
+}
+
+// GetIsPublic returns the IsPublic field value if set, zero value otherwise.
+func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsPublic() bool {
+	if o == nil || IsNil(o.IsPublic) {
+		var ret bool
+		return ret
+	}
+	return *o.IsPublic
+}
+
+// GetIsPublicOk returns a tuple with the IsPublic field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsPublicOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsPublic) {
+		return nil, false
+	}
+	return o.IsPublic, true
+}
+
+// HasIsPublic returns a boolean if a field has been set.
+func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasIsPublic() bool {
+	if o != nil && !IsNil(o.IsPublic) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsPublic gets a reference to the given bool and assigns it to the IsPublic field.
+func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetIsPublic(v bool) {
+	o.IsPublic = &v
+}
+
 func (o BundlesPatchRequestEndpointBundleValueObjectProperties) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -88,6 +164,12 @@ func (o BundlesPatchRequestEndpointBundleValueObjectProperties) ToMap() (map[str
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.IsForSwitch) {
 		toSerialize["is_for_switch"] = o.IsForSwitch
+	}
+	if !IsNil(o.Group) {
+		toSerialize["group"] = o.Group
+	}
+	if !IsNil(o.IsPublic) {
+		toSerialize["is_public"] = o.IsPublic
 	}
 	return toSerialize, nil
 }

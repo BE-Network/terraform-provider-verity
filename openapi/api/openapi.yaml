@@ -1232,14 +1232,14 @@ paths:
           content:
             application/json:
               example:
-              - Switchpoint|Spine 1|
-              - Switchpoint|mgmt1|
-              - Switchpoint|Leaf 04|
-              - Switchpoint|Spine 2|
-              - Switchpoint|Leaf 01|
-              - Switchpoint|Host|
-              - Switchpoint|Leaf 02|
               - Switchpoint|Leaf 03|
+              - Switchpoint|Spine 2|
+              - Switchpoint|Leaf 02|
+              - Switchpoint|Leaf 04|
+              - Switchpoint|mgmt1|
+              - Switchpoint|Host|
+              - Switchpoint|Leaf 01|
+              - Switchpoint|Spine 1|
           description: Successful response
         "204":
           description: No Content
@@ -1631,8 +1631,1463 @@ paths:
       summary: Create tenant
       tags:
       - Tenants
+  /acls:
+    delete:
+      description: |
+        Deletes an existing IP Filter from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: ip_filter_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: ip_version
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete IP Filter
+      tags:
+      - ACLs
+    get:
+      description: |
+        Retrieves all IP Filters from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: ip_filter_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: ip_version
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all IP Filters
+      tags:
+      - ACLs
+    patch:
+      description: |
+        Update IP Filter into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: ip_version
+        required: true
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_acls_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update IP Filter
+      tags:
+      - ACLs
+    put:
+      description: |
+        Create IP Filter into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: ip_version
+        required: true
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_acls_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create IP Filter
+      tags:
+      - ACLs
+  /badges:
+    delete:
+      description: |
+        Deletes an existing Badge from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: badge_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Badge
+      tags:
+      - Badges
+    get:
+      description: |
+        Retrieves all Badges from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: badge_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Badges
+      tags:
+      - Badges
+    patch:
+      description: |
+        Update Badge into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_badges_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Badge
+      tags:
+      - Badges
+    put:
+      description: |
+        Create Badge into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_badges_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Badge
+      tags:
+      - Badges
+  /packetbroker:
+    delete:
+      description: |
+        Deletes an existing PB Egress Profile from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: pb_egress_profile_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete PB Egress Profile
+      tags:
+      - PacketBroker
+    get:
+      description: |
+        Retrieves all PB Egress Profiles from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: pb_egress_profile_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all PB Egress Profiles
+      tags:
+      - PacketBroker
+    patch:
+      description: |
+        Update PB Egress Profile into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_packetbroker_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update PB Egress Profile
+      tags:
+      - PacketBroker
+    put:
+      description: |
+        Create PB Egress Profile into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_packetbroker_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create PB Egress Profile
+      tags:
+      - PacketBroker
+  /packetqueues:
+    delete:
+      description: |
+        Deletes an existing Packet Queue from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: packet_queue_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Packet Queue
+      tags:
+      - Packet Queues
+    get:
+      description: |
+        Retrieves all Packet Queues from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: packet_queue_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Packet Queues
+      tags:
+      - Packet Queues
+    patch:
+      description: |
+        Update Packet Queue into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_packetqueues_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Packet Queue
+      tags:
+      - Packet Queues
+    put:
+      description: |
+        Create Packet Queue into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_packetqueues_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Packet Queue
+      tags:
+      - Packet Queues
+  /switchpoints:
+    delete:
+      description: |
+        Deletes an existing Switchpoint from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: switchpoint_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Switchpoint
+      tags:
+      - Switchpoints
+    get:
+      description: |
+        Retrieves all Switchpoints from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: switchpoint_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Switchpoints
+      tags:
+      - Switchpoints
+    patch:
+      description: |
+        Update Switchpoint into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_switchpoints_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Switchpoint
+      tags:
+      - Switchpoints
+    put:
+      description: |
+        Create Switchpoint into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_switchpoints_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Switchpoint
+      tags:
+      - Switchpoints
+  /switchpoints/currentconfig:
+    get:
+      description: |
+        Retrieves all Switchpoint current configs from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: switchpoint_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Switchpoint current configs
+      tags:
+      - Switchpoints
+  /switchpoints/markoutofservice:
+    put:
+      description: |
+        Mark switchpoints out of service or back in service.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_switchpoints_markoutofservice_put_request'
+        required: true
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          content:
+            application/json:
+              example:
+                error: Rate limit exceeded
+          description: Too Many Requests
+        "404":
+          content:
+            application/json:
+              example:
+                error: Not found
+          description: Not Found
+        "401":
+          content:
+            application/json:
+              example:
+                error: User is not authorized
+          description: Unauthorized
+        "400":
+          content:
+            application/json:
+              example:
+                error: Bad request
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              example:
+                error: Internal server error
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Mark switchpoints out of service or back in service
+      tags:
+      - Switchpoints
+  /switchpoints/upgrade:
+    patch:
+      description: |
+        Update Switchpoint firmware to a specific version.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_switchpoints_upgrade_patch_request'
+        required: true
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Switchpoint firmware version
+      tags:
+      - Switchpoints
+  /version:
+    get:
+      description: |
+        Get vNetC version.
+      responses:
+        "429":
+          content:
+            application/json:
+              example:
+                error: Rate limit exceeded
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          content:
+            application/json:
+              example:
+                error: Internal server error
+          description: Server error
+        "401":
+          content:
+            application/json:
+              example:
+                error: User is not authorized
+          description: Unauthorized
+        "400":
+          content:
+            application/json:
+              example:
+                error: Bad request
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get vNetC version
+      tags:
+      - Version
+  /authenticatedethports:
+    delete:
+      description: |
+        Deletes an existing Authenticated Eth-Port from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: authenticated_eth_port_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Authenticated Eth-Port
+      tags:
+      - Authenticated Eth-Ports
+    get:
+      description: |
+        Retrieves all Authenticated Eth-Ports from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: authenticated_eth_port_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Authenticated Eth-Ports
+      tags:
+      - Authenticated Eth-Ports
+    patch:
+      description: |
+        Update Authenticated Eth-Port into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_authenticatedethports_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Authenticated Eth-Port
+      tags:
+      - Authenticated Eth-Ports
+    put:
+      description: |
+        Create Authenticated Eth-Port into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_authenticatedethports_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Authenticated Eth-Port
+      tags:
+      - Authenticated Eth-Ports
+  /devicevoicesettings:
+    delete:
+      description: |
+        Deletes an existing Device Voice Setting from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: device_voice_settings_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete tenant
+      tags:
+      - Device Voice Settings
+    get:
+      description: |
+        Retrieves all Device Voice Settings from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: device_voice_settings_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Device Voice Settings
+      tags:
+      - Device Voice Settings
+    patch:
+      description: |
+        Update Device Voice Setting into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_devicevoicesettings_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Device Voice Setting
+      tags:
+      - Device Voice Settings
+    put:
+      description: |
+        Create Device Voice Setting into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_devicevoicesettings_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Device Voice Setting
+      tags:
+      - Device Voice Settings
+  /serviceportprofiles:
+    delete:
+      description: |
+        Deletes an existing Service Port Profile from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: service_port_profile_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Service Port Profile
+      tags:
+      - Service Port Profiles
+    get:
+      description: |
+        Retrieves all Service Port Profiles from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: service_port_profile_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Service Port Profiles
+      tags:
+      - Service Port Profiles
+    patch:
+      description: |
+        Update Service Port Profile into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_serviceportprofiles_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Service Port Profile
+      tags:
+      - Service Port Profiles
+    put:
+      description: |
+        Create Service Port Profiles into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_serviceportprofiles_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Service Port Profile
+      tags:
+      - Service Port Profiles
+  /voiceportprofiles:
+    delete:
+      description: |
+        Deletes an existing Voice-Port Profile from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: voice_port_profile_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Voice-Port Profile
+      tags:
+      - Voice-Port Profiles
+    get:
+      description: |
+        Retrieves all Voice-Port Profiles from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: voice_port_profile_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Voice-Port Profiles
+      tags:
+      - Voice-Port Profiles
+    patch:
+      description: |
+        Update Voice-Port Profile into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_voiceportprofiles_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Voice-Port Profile
+      tags:
+      - Voice-Port Profiles
+    put:
+      description: |
+        Create Voice-Port ProfileVoice-Port Profiles into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_voiceportprofiles_put_request'
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Voice-Port ProfileVoice-Port Profiles
+      tags:
+      - Voice-Port Profiles
 components:
   schemas:
+    _config_put_request_packet_queue_packet_queue_name_queue_inner:
+      properties:
+        bandwidth_for_queue:
+          default: 0
+          description: Percentage bandwidth allocated to Queue. 0 is no limit
+          maximum: 100
+          nullable: true
+          type: integer
+        scheduler_type:
+          default: SP
+          description: Scheduler Type for Queue
+          enum:
+          - ""
+          - WRR
+          - SP
+          - DWRR
+          type: string
+        scheduler_weight:
+          default: 0
+          description: Weight associated with WRR or DWRR scheduler
+          maximum: 100
+          nullable: true
+          type: integer
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
     _config_put_request:
       properties:
         device_controller:
@@ -1695,22 +3150,212 @@ components:
           $ref: '#/components/schemas/_config_put_request_switchpoint'
         extended_community_list:
           $ref: '#/components/schemas/_config_put_request_extended_community_list'
+        image_update_sets:
+          $ref: '#/components/schemas/_config_put_request_image_update_sets'
+        ip_filter:
+          $ref: '#/components/schemas/_config_put_request_ip_filter'
+        feature_flag:
+          $ref: '#/components/schemas/_config_put_request_feature_flag'
+        packet_queue:
+          $ref: '#/components/schemas/_config_put_request_packet_queue'
+        service_port_profile:
+          $ref: '#/components/schemas/_config_put_request_service_port_profile'
+        device_voice_settings:
+          $ref: '#/components/schemas/_config_put_request_device_voice_settings'
+        authenticated_eth_port:
+          $ref: '#/components/schemas/_config_put_request_authenticated_eth_port'
+        voice_port_profiles:
+          $ref: '#/components/schemas/_config_put_request_voice_port_profiles'
+        endpoint:
+          $ref: '#/components/schemas/_config_put_request_endpoint'
+        mac_filter:
+          $ref: '#/components/schemas/_config_put_request_mac_filter'
       type: object
     _config_put_request_site_site_name_islands_inner:
       properties:
         toi_switchpoint:
           default: ""
-          description: TOI Switchpoint
+          description: TOI Endpoint
           type: string
         toi_switchpoint_ref_type_:
           description: Object type for toi_switchpoint field
           enum:
           - switchpoint
+          - endpoint
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+      type: object
+    _config_put_request_voice_port_profiles_voice_port_profiles_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        protocol:
+          default: SIP
+          description: "Voice Protocol: MGCP or SIP"
+          enum:
+          - SIP
+          - MGCP
+          type: string
+        digit_map:
+          default: (T)
+          description: Dial Plan
+          type: string
+        call_three_way_enable:
+          default: false
+          description: Enable three way calling
+          type: boolean
+        caller_id_enable:
+          default: false
+          description: Caller ID
+          type: boolean
+        caller_id_name_enable:
+          default: false
+          description: Caller ID Name
+          type: boolean
+        call_waiting_enable:
+          default: false
+          description: Call Waiting
+          type: boolean
+        call_forward_unconditional_enable:
+          default: false
+          description: Call Forward Unconditional
+          type: boolean
+        call_forward_on_busy_enable:
+          default: false
+          description: Call Forward On Busy
+          type: boolean
+        call_forward_on_no_answer_ring_count:
+          default: 4
+          description: Call Forward on number of rings
+          minimum: 1
+          nullable: true
+          type: integer
+        call_transfer_enable:
+          default: false
+          description: Call Transfer
+          type: boolean
+        audio_mwi_enable:
+          default: false
+          description: Audio Message Waiting Indicator
+          type: boolean
+        anonymous_call_block_enable:
+          default: false
+          description: Block all anonymous calls
+          type: boolean
+        do_not_disturb_enable:
+          default: false
+          description: Do not disturb
+          type: boolean
+        cid_blocking_enable:
+          default: false
+          description: CID Blocking
+          type: boolean
+        cid_num_presentation_status:
+          default: Public
+          description: CID Number Presentation
+          enum:
+          - Public
+          - Private
+          type: string
+        cid_name_presentation_status:
+          default: Public
+          description: CID Name Presentation
+          enum:
+          - Public
+          - Private
+          type: string
+        call_waiting_caller_id_enable:
+          default: false
+          description: Call Waiting Caller ID
+          type: boolean
+        call_hold_enable:
+          default: false
+          description: Call Hold
+          type: boolean
+        visual_mwi_enable:
+          default: false
+          description: Visual Message Waiting Indicator
+          type: boolean
+        mwi_refresh_timer:
+          default: 30
+          description: Message Waiting Indicator Refresh
+          nullable: true
+          type: integer
+        hotline_enable:
+          default: false
+          description: Direct Connect
+          type: boolean
+        dial_tone_feature_delay:
+          default: 4
+          description: Dial Tone Feature Delay
+          minimum: 1
+          nullable: true
+          type: integer
+        intercom_enable:
+          default: false
+          description: Intercom
+          type: boolean
+        intercom_transfer_enable:
+          default: false
+          description: Intercom Transfer
+          type: boolean
+        transmit_gain:
+          default: -30
+          description: Transmit Gain in tenths of a dB.Example -30 would equal -3.0db
+          minimum: -80
+          nullable: true
+          type: integer
+        receive_gain:
+          default: -30
+          description: Receive Gainin tenths of a dB. Example -30 would equal -3.0db
+          minimum: -110
+          nullable: true
+          type: integer
+        echo_cancellation_enable:
+          default: true
+          description: Echo Cancellation Enable
+          type: boolean
+        jitter_target:
+          default: 40
+          description: The target value of the jitter buffer in milliseconds
+          maximum: 200
+          nullable: true
+          type: integer
+        jitter_buffer_max:
+          default: 180
+          description: The maximum depth of the jitter buffer in milliseconds
+          maximum: 200
+          nullable: true
+          type: integer
+        signaling_code:
+          default: LoopStart
+          description: Signaling Code
+          type: string
+        release_timer:
+          default: 10
+          description: Release timer defined in seconds. The default value of this
+            attribute is 10 seconds
+          nullable: true
+          type: integer
+        roh_timer:
+          default: 15
+          description: Time in seconds for the receiver is off-hook before ROH tone
+            is applied. The value 0 disables ROH timing. The default value is 15 seconds
+          nullable: true
+          type: integer
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name_object_properties'
       type: object
     _config_put_request_route_map_clause_route_map_clause_name:
       properties:
@@ -1728,8 +3373,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         match_as_path_access_list:
@@ -1805,8 +3450,8 @@ components:
           description: 'Match routes based on the value of the BGP Origin attribute '
           enum:
           - ""
-          - egp
           - igp
+          - egp
           - incomplete
           type: string
         match_peer_ip_address:
@@ -1832,9 +3477,9 @@ components:
           enum:
           - ""
           - bgp
+          - static
           - connected
           - ospf
-          - static
           type: string
         match_vrf:
           default: ""
@@ -1890,6 +3535,29 @@ components:
           - ipv6_prefix_list
           type: string
       type: object
+    _voiceportprofiles_put_request:
+      properties:
+        voice_port_profiles:
+          additionalProperties:
+            $ref: '#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name'
+          properties: {}
+          type: object
+      type: object
+    _config_put_request_authenticated_eth_port_authenticated_eth_port_name_object_properties:
+      properties:
+        group:
+          default: ""
+          description: Group
+          type: string
+        port_monitoring:
+          default: ""
+          description: Defines importance of Link Down on this port
+          enum:
+          - critical
+          - high
+          - ""
+          type: string
+      type: object
     _config_put_request_switchpoint_switchpoint_name_object_properties_eths:
       properties:
         eth_num_icon:
@@ -1921,7 +3589,88 @@ components:
             object to the list.
           type: integer
       type: object
+    _badges_put_request:
+      properties:
+        badge:
+          additionalProperties:
+            $ref: '#/components/schemas/_config_put_request_badge_badge_name'
+          properties: {}
+          type: object
+      type: object
+    _config_put_request_service_port_profile_service_port_profile_name_object_properties:
+      properties:
+        on_summary:
+          default: true
+          description: Show on the summary view
+          type: boolean
+        port_monitoring:
+          default: ""
+          description: Defines importance of Link Down on this port
+          enum:
+          - critical
+          - high
+          - ""
+          type: string
+        group:
+          default: ""
+          description: Group
+          type: string
+      type: object
     _config_put_request_switchpoint_switchpoint_name_eths_inner:
+      properties:
+        breakout:
+          default: ""
+          description: "Breakout Port Override. Available options determined by Switch\
+            \ capability, Installed SFP and the capacity of the pipeline."
+          enum:
+          - 4x40G
+          - ""
+          - 1x200G
+          - 4x400G
+          - pg10G
+          - 2x400G
+          - 4x50G
+          - 4x10G
+          - pg100G
+          - pg40G
+          - 4x200G
+          - 8x10G
+          - 2x25G
+          - 2x200G
+          - pg800G
+          - 1x400G
+          - 8x25G
+          - 4x100G
+          - 8x800G
+          - 2x100G
+          - 1x100G
+          - 8x40G
+          - 2x40G
+          - 8x200G
+          - pg25G
+          - 8x50G
+          - 1x10G
+          - 4x800G
+          - pg400G
+          - 8x100G
+          - 8x400G
+          - 1x25G
+          - 4x25G
+          - pg50G
+          - pg200G
+          - 1x40G
+          - 2x10G
+          - 2x50G
+          - 1x50G
+          - 1x800G
+          - 2x800G
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _config_put_request_endpoint_endpoint_name_eths_inner:
       properties:
         breakout:
           default: ""
@@ -1999,8 +3748,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         any_all:
@@ -2008,8 +3757,8 @@ components:
           description: BGP does not advertise any or all routes that do not match
             the Community String
           enum:
-          - any
           - all
+          - any
           minLength: 1
           type: string
         standard_expanded:
@@ -2026,6 +3775,11 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+      type: object
+    _config_put_request_mac_filter:
+      properties:
+        mac_filter_name:
+          $ref: '#/components/schemas/_config_put_request_mac_filter_mac_filter_name'
       type: object
     _changesets_put_request:
       properties:
@@ -2169,21 +3923,23 @@ components:
           type: string
         switchpoint_1:
           default: ""
-          description: Switchpoint
+          description: Endpoint
           type: string
         switchpoint_1_ref_type_:
           description: Object type for switchpoint_1 field
           enum:
           - switchpoint
+          - endpoint
           type: string
         switchpoint_2:
           default: ""
-          description: Switchpoint
+          description: Endpoint
           type: string
         switchpoint_2_ref_type_:
           description: Object type for switchpoint_2 field
           enum:
           - switchpoint
+          - endpoint
           type: string
         lag_group:
           default: ""
@@ -2217,6 +3973,35 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+      type: object
+    _bundles_patch_request_endpoint_bundle_value_rg_services_inner:
+      properties:
+        '#_ip/mask':
+          default: ""
+          description: IP/Mask
+          format: ipv4
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+        row_app_enable:
+          default: false
+          description: Enable of this ONT application
+          type: boolean
+        row_app_connected_service:
+          default: ""
+          description: Service connected to this ONT application
+          type: string
+        row_app_connected_service_ref_type_:
+          description: Object type for row_app_connected_service field
+          enum:
+          - service
+          type: string
+        row_app_type:
+          default: ""
+          description: Type of ONT Application
+          type: string
       type: object
     _config_put_request_bizd_config_bizd_config_name:
       properties:
@@ -2271,6 +4056,19 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+        row_num_mac_filter:
+          default: ""
+          description: Choose an access control list
+          type: string
+        row_num_mac_filter_ref_type_:
+          description: Object type for row_num_mac_filter field
+          enum:
+          - mac_filter
+          type: string
+        row_num_lan_iptv:
+          default: ""
+          description: Denotes a LAN or IPTV service
+          type: string
       type: object
     _config_put_request_badge_badge_name:
       properties:
@@ -2290,13 +4088,51 @@ components:
           description: Group
           type: string
         port_monitoring:
-          default: high
+          default: ""
           description: Defines importance of Link Down on this port
           enum:
+          - ""
           - critical
           - high
-          - ""
           type: string
+        sort_by_name:
+          default: false
+          description: Choose to sort by service name or by order of creation
+          type: boolean
+        label:
+          default: ""
+          description: Port Label displayed ports provisioned with this Eth Port Profile
+            but with no Port Label defined in the endpoint
+          type: string
+        icon:
+          default: empty
+          description: Port Icon displayed ports provisioned with this Eth Port Profile
+            but with no Port Icon defined in the endpoint
+          enum:
+          - "{\"value\":\"empty\",\"icon\":\"ipho-Empty\"}"
+          - "{\"value\":\"laptop\",\"icon\":\"ipho-laptop\"}"
+          - "{\"value\":\"db\",\"icon\":\"ipho-dbsave\"}"
+          - "{\"value\":\"wireless\",\"icon\":\"ipho-wireless\"}"
+          - "{\"value\":\"phone\",\"icon\":\"ipho-telport\"}"
+          - "{\"value\":\"server\",\"icon\":\"ipho-ont-indoor\"}"
+          - "{\"value\":\"wifi\",\"icon\":\"ipho-wifi\"}"
+          - "{\"value\":\"camera\",\"icon\":\"ipho-camera\"}"
+          - "{\"value\":\"tv\",\"icon\":\"ipho-tv\"}"
+          - "{\"value\":\"service_port\",\"icon\":\"ipho-serviceports\"}"
+          type: string
+      type: object
+    _switchpoints_markoutofservice_put_request:
+      properties:
+        mos:
+          default: true
+          description: Mark all devices out of service or back in service
+          type: boolean
+        device_names:
+          items:
+            type: string
+          type: array
+      required:
+      - device_names
       type: object
     _config_put_request_extended_community_list_extended_community_list_name_lists_inner:
       properties:
@@ -2371,6 +4207,35 @@ components:
       properties:
         site_name:
           $ref: '#/components/schemas/_config_put_request_site_site_name'
+      type: object
+    _packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable
+          type: boolean
+        filter:
+          default: ""
+          description: Filter
+          type: string
+        filter_ref_type_:
+          description: Object type for filter field
+          enum:
+          - ipv6_filter
+          - ipv6_list_filter
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _packetbroker_put_request:
+      properties:
+        pb_egress_profile:
+          additionalProperties:
+            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value'
+          properties: {}
+          type: object
       type: object
     _config_put_request_static_ip:
       properties:
@@ -2451,6 +4316,68 @@ components:
           type: boolean
         object_properties:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+        hold_timer:
+          default: 0
+          description: Hold Timer
+          maximum: 86400
+          nullable: true
+          type: integer
+        disable_tcp_udp_learned_packet_acceleration:
+          default: false
+          description: "Required for AVB, PTP and Cobranet Support"
+          type: boolean
+        mac_aging_timer_override:
+          description: "Blank uses the Device's default; otherwise an integer between\
+            \ 1 to 1,000,000 seconds"
+          maximum: 1000000
+          minimum: 1
+          nullable: true
+          type: integer
+        spanning_tree_priority:
+          default: byLevel
+          description: "STP per switch, priority are in 4096 increments, the lower\
+            \ the number, the higher the priority."
+          enum:
+          - "8192"
+          - "32768"
+          - "36864"
+          - "20480"
+          - "4096"
+          - "57344"
+          - "45056"
+          - "61440"
+          - byLevel
+          - "16384"
+          - "40960"
+          - "24576"
+          - "49152"
+          - "0"
+          - "12288"
+          - "28672"
+          - "53248"
+          type: string
+        packet_queue_id:
+          default: packet_queue|(Packet Queue)|
+          description: Packet Queue for device
+          type: string
+        packet_queue_id_ref_type_:
+          description: Object type for packet_queue_id field
+          enum:
+          - packet_queue
+          type: string
+      type: object
+    _devicevoicesettings_put_request:
+      properties:
+        device_voice_settings:
+          additionalProperties:
+            $ref: '#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name'
+          properties: {}
+          type: object
+      type: object
+    _config_put_request_image_update_sets:
+      properties:
+        image_update_sets_name:
+          $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name'
       type: object
     _config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner:
       properties:
@@ -2465,8 +4392,8 @@ components:
         filter_ref_type_:
           description: Object type for filter field
           enum:
-          - ipv6_filter
           - ipv6_list_filter
+          - ipv6_filter
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -2484,22 +4411,25 @@ components:
           description: Subrule 1 Type
           enum:
           - ""
-          - productClass
-          - endpoint_type
-          - isPreprovisioned
-          - endpoint
-          - followsSelector
-          - deviceSerialNumber
-          - badge_color
-          - softwareVersion
-          - managementIP
-          - upgraderStatus
-          - softwareVersionFreeform
-          - noEndpoint
-          - modelName
-          - badge
-          - pod
           - modelNameFreeform
+          - followsSelector
+          - isRemote
+          - bundle_id
+          - endpoint
+          - isPreprovisioned
+          - endpoint_type
+          - managementIP
+          - productClass
+          - softwareVersion
+          - noEndpoint
+          - upgraderStatus
+          - badge
+          - modelName
+          - deviceSerialNumber
+          - pod
+          - softwareVersionFreeform
+          - bundleFreeform
+          - badge_color
           type: string
         rule_num_subrule_1_value:
           default: ""
@@ -2521,22 +4451,25 @@ components:
           description: Subrule 2 Type
           enum:
           - ""
-          - productClass
-          - endpoint_type
-          - isPreprovisioned
-          - endpoint
-          - followsSelector
-          - deviceSerialNumber
-          - badge_color
-          - softwareVersion
-          - managementIP
-          - upgraderStatus
-          - softwareVersionFreeform
-          - noEndpoint
-          - modelName
-          - badge
-          - pod
           - modelNameFreeform
+          - followsSelector
+          - isRemote
+          - bundle_id
+          - endpoint
+          - isPreprovisioned
+          - endpoint_type
+          - managementIP
+          - productClass
+          - softwareVersion
+          - noEndpoint
+          - upgraderStatus
+          - badge
+          - modelName
+          - deviceSerialNumber
+          - pod
+          - softwareVersionFreeform
+          - bundleFreeform
+          - badge_color
           type: string
         rule_num_subrule_2_value:
           default: ""
@@ -2558,22 +4491,25 @@ components:
           description: Subrule 3 Type
           enum:
           - ""
-          - productClass
-          - endpoint_type
-          - isPreprovisioned
-          - endpoint
-          - followsSelector
-          - deviceSerialNumber
-          - badge_color
-          - softwareVersion
-          - managementIP
-          - upgraderStatus
-          - softwareVersionFreeform
-          - noEndpoint
-          - modelName
-          - badge
-          - pod
           - modelNameFreeform
+          - followsSelector
+          - isRemote
+          - bundle_id
+          - endpoint
+          - isPreprovisioned
+          - endpoint_type
+          - managementIP
+          - productClass
+          - softwareVersion
+          - noEndpoint
+          - upgraderStatus
+          - badge
+          - modelName
+          - deviceSerialNumber
+          - pod
+          - softwareVersionFreeform
+          - bundleFreeform
+          - badge_color
           type: string
         rule_num_subrule_3_value:
           default: ""
@@ -2611,6 +4547,8 @@ components:
           enum:
           - eth_port_profile_
           - lag
+          - authenticated_eth_port
+          - service_port_profile
           - pb_egress_profile
           type: string
         eth_port_num_eth_port_settings:
@@ -2629,8 +4567,8 @@ components:
         eth_port_num_gateway_profile_ref_type_:
           description: Object type for eth_port_num_gateway_profile field
           enum:
-          - gateway_profile
           - lag
+          - gateway_profile
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -2639,6 +4577,51 @@ components:
         port_name:
           description: "The name identifying the port. Used for reference only, it\
             \ won't actually change the port name."
+          type: string
+      type: object
+    _config_put_request_image_update_sets_image_update_sets_name_object_properties:
+      properties:
+        firmware_count:
+          default: 0
+          description: Firmware Count
+          nullable: true
+          type: integer
+      type: object
+    _config_put_request_image_update_sets_image_update_sets_name_section_else_inner:
+      properties:
+        endpoint_set_num_name:
+          default: All Others
+          description: The name of the Endpoint Set
+          type: string
+        endpoint_set_for_all_others_target_upgrade_version:
+          default: unmanaged
+          description: The target SW version for member devices of the Endpoint Set
+          enum:
+          - 1.8.0.69
+          - 1.8.0.75
+          - 1.8.0.67
+          - 1.7.1.26
+          - 1.7.1.25
+          - 1.8.0.73
+          - 1.8.0.70
+          - 1.8.0.66
+          - 1.8.0.71
+          - 1.8.0.72
+          - 1.8.0.74
+          - unmanaged
+          - 1.8.0.68
+          type: string
+        endpoint_set_for_all_others_unique_identifier:
+          default: else
+          description: Unique Identifier - not editable
+          type: string
+        endpoint_set_num_on_summary:
+          default: true
+          description: Include on the Summary
+          type: boolean
+        endpoint_set_for_all_others_target_upgrade_version_time:
+          default: ""
+          description: The time to update to the target SW version
           type: string
       type: object
     _config_put_request_device_controller:
@@ -2661,10 +4644,10 @@ components:
           default: community
           description: Mode
           enum:
-          - no_advertise
-          - local_as
-          - no_peer_set
           - community
+          - no_peer_set
+          - local_as
+          - no_advertise
           - no_export_set
           type: string
         community_string_expanded_expression:
@@ -2693,8 +4676,8 @@ components:
           default: dhcp
           description: IP Source
           enum:
-          - dhcp
           - static
+          - dhcp
           minLength: 1
           type: string
         controller_ip_and_mask:
@@ -2718,7 +4701,7 @@ components:
           format: ipv4
           type: string
         comm_type:
-          default: gnmi
+          default: snmpv2
           description: Comm Type
           enum:
           - gnmi
@@ -2727,7 +4710,7 @@ components:
           minLength: 1
           type: string
         snmp_community_string:
-          default: private
+          default: ""
           description: Comm Credentials
           maxLength: 32
           type: string
@@ -2737,7 +4720,11 @@ components:
           type: string
         lldp_search_string:
           default: ""
-          description: The unique identifier associated with the managed device.
+          description: "Optional unless Located By is \"LLDP\" or Device managed as\
+            \ \"Active SFP\". Must be either the chassis-id or the hostname of the\
+            \ LLDP from the managed device. Used to detect connections between managed\
+            \ devices. If blank, the chassis-id detected by the Device Controller\
+            \ via SNMP/CLI is used"
           maxLength: 64
           type: string
         ztp_identification:
@@ -2750,11 +4737,11 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - Static Port
-          - LLDP
-          - LAG_IDL
           - LAG
           - as_site
+          - LAG_IDL
+          - LLDP
+          - Static Port
           minLength: 1
           type: string
         power_state:
@@ -2762,33 +4749,33 @@ components:
           description: Power state of Switch Controller
           type: string
         communication_mode:
-          default: sonic
+          default: generic_snmp
           description: Communication Mode
           enum:
-          - sonic
-          - cisco_small_business_sgxxx
           - generic_advanced_snmp
-          - arista_7050_series
-          - generic_snmp
           - edgecore_ecs21000
-          - cisco_nexus_9xxx
           - ruckus_icx7150
           - tibit_xgs_olt_sfp
           - cisco_catalyst_c3xxx
+          - eltex_ltp_gpon_olt
+          - generic_snmp
           - juniper_acx5048
           - adtran_netvanta_series
-          - eltex_ltp_gpon_olt
+          - arista_7050_series
           - hpe_aruba_2530_series
-          - netgear_prosafe_series
           - microtik_routeros_telnet
+          - cisco_small_business_sgxxx
+          - sonic
+          - netgear_prosafe_series
+          - cisco_nexus_9xxx
           minLength: 1
           type: string
         cli_access_mode:
           default: SSH
           description: CLI Access Mode
           enum:
-          - SSH
           - Telnet
+          - SSH
           minLength: 1
           type: string
         username:
@@ -2811,7 +4798,7 @@ components:
           format: password
           type: string
         managed_on_native_vlan:
-          default: true
+          default: false
           description: Managed on native VLAN
           type: boolean
         sdlc:
@@ -2821,20 +4808,21 @@ components:
           type: string
         switchpoint:
           default: ""
-          description: Switchpoint reference
+          description: Endpoint reference
           type: string
         switchpoint_ref_type_:
           description: Object type for switchpoint field
           enum:
           - switchpoint
+          - endpoint
           type: string
         security_type:
           default: noAuthNoPriv
           description: Security level
           enum:
+          - authNoPriv
           - authPriv
           - noAuthNoPriv
-          - authNoPriv
           type: string
         snmpv3_username:
           default: ""
@@ -2845,8 +4833,8 @@ components:
           default: MD5
           description: Protocol
           enum:
-          - SHA
           - MD5
+          - SHA
           minLength: 1
           type: string
         passphrase:
@@ -2892,6 +4880,52 @@ components:
           description: Password
           format: password
           type: string
+        device_managed_as:
+          default: switch
+          description: Device managed as
+          enum:
+          - co_located_switch
+          - tibit
+          - switch
+          - tibit_old
+          minLength: 1
+          type: string
+        switch:
+          default: ""
+          description: Endpoint locating the Switch to be controlled
+          type: string
+        switch_ref_type_:
+          description: Object type for switch field
+          enum:
+          - endpoint
+          type: string
+        connection_service:
+          default: ""
+          description: Connect a Service
+          type: string
+        connection_service_ref_type_:
+          description: Object type for connection_service field
+          enum:
+          - service
+          type: string
+        port:
+          default: ""
+          description: Port locating the Switch to be controlled
+          type: string
+        sfp_mac_address_or_sn:
+          default: ""
+          description: SFP MAC Address or SN
+          type: string
+        uses_tagged_packets:
+          default: true
+          description: Indicates if the direct interface expects tagged or untagged
+            packets
+          type: boolean
+      type: object
+    _config_put_request_endpoint:
+      properties:
+        endpoint_name:
+          $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name'
       type: object
     _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties:
       properties:
@@ -2899,6 +4933,11 @@ components:
           default: ""
           description: User Notes.
           type: string
+      type: object
+    _config_put_request_voice_port_profiles:
+      properties:
+        voice_port_profiles_name:
+          $ref: '#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name'
       type: object
     _config_put_request_endpoint_view:
       properties:
@@ -2936,6 +4975,66 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_object_properties'
+        rg_services:
+          items:
+            $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_rg_services_inner'
+          type: array
+        enable:
+          default: false
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
+          type: boolean
+        protocol:
+          default: SIP
+          description: "Voice Protocol: MGCP or SIP"
+          minLength: 1
+          type: string
+        device_voice_settings:
+          default: voice_device_profile|(SIP Voice Device)|
+          description: Device Voice Settings for device
+          type: string
+        device_voice_settings_ref_type_:
+          description: Object type for device_voice_settings field
+          enum:
+          - device_voice_settings
+          type: string
+        voice_port_profile_paths:
+          items:
+            $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_voice_port_profile_paths_inner'
+          type: array
+      type: object
+    _config_put_request_feature_flag:
+      properties:
+        feature_flag_name:
+          $ref: '#/components/schemas/_config_put_request_feature_flag_feature_flag_name'
+      type: object
+    _config_put_request_mac_filter_mac_filter_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        type:
+          default: White
+          description: Black vs White MAC Filter
+          enum:
+          - White
+          - Black
+          minLength: 1
+          type: string
+        acl:
+          items:
+            $ref: '#/components/schemas/_config_put_request_mac_filter_mac_filter_name_acl_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
       type: object
     _tenants_put_request:
       properties:
@@ -3056,8 +5155,8 @@ components:
           enum:
           - ""
           - pvst
-          - mstp
           - port
+          - mstp
           minLength: 1
           type: string
         region_name:
@@ -3196,6 +5295,11 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_config_put_request_site_site_name_object_properties'
+        enable_dhcp_snooping:
+          default: false
+          description: Enables the switches to monitor DHCP traffic and collect assigned
+            IP addresses which are then placed in the DHCP assigned IPs report.
+          type: boolean
       type: object
     _config_put_request_community_list:
       properties:
@@ -3234,6 +5338,50 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+      type: object
+    _config_put_request_service_service_name_object_properties:
+      properties:
+        group:
+          default: ""
+          description: Group
+          type: string
+        on_summary:
+          default: true
+          description: Show on the summary view
+          type: boolean
+        warn_on_no_external_source:
+          default: true
+          description: Warn if there is not outbound path for service in SD-Router
+            or a Service Port Profile
+          type: boolean
+      type: object
+    _config_put_request_voice_port_profiles_voice_port_profiles_name_object_properties:
+      properties:
+        isdefault:
+          default: false
+          description: Default object.
+          type: boolean
+        port_monitoring:
+          default: ""
+          description: Defines importance of Link Down on this port
+          enum:
+          - critical
+          - high
+          - ""
+          type: string
+        group:
+          default: ""
+          description: Group
+          type: string
+        format_dial_plan:
+          default: true
+          description: Format dial plan for easier viewing
+          type: boolean
+      type: object
+    _config_put_request_authenticated_eth_port:
+      properties:
+        authenticated_eth_port_name:
+          $ref: '#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name'
       type: object
     _config_put_request_gateway_profile_gateway_profile_name:
       properties:
@@ -3321,7 +5469,96 @@ components:
           nullable: true
           type: integer
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+          $ref: '#/components/schemas/_config_put_request_service_service_name_object_properties'
+        max_upstream_rate_mbps:
+          description: Bandwidth allocated per port in the upstream direction. (Max
+            10000 Mbps)
+          maximum: 10000
+          type: integer
+        max_downstream_rate_mbps:
+          description: Bandwidth allocated per port in the downstream direction. (Max
+            10000 Mbps)
+          maximum: 10000
+          type: integer
+        packet_priority:
+          default: "0"
+          description: Priority untagged packets will be tagged with on ingress to
+            the network. If the network is flooded packets of lower priority will
+            be dropped
+          enum:
+          - "7"
+          - "4"
+          - "1"
+          - "0"
+          - "3"
+          - "2"
+          - "5"
+          - "6"
+          type: string
+        multicast_management_mode:
+          default: flooding
+          description: "Determines how undefined handle multicast packet for Service<ul><li>*\
+            \ \"Multicast Flooding (Normal)\" Multicast packets are broadcast</li><li>*\
+            \ \"Multicast Flooding (AVB/PTP/Cobranet)\" Multicast packets are broadcast\
+            \ with special treatment for critical latency packets such as used by\
+            \ AVB, PTP, and Cobranet</li><li>* \"IPTV Filtering (IGMP Snooping)\"\
+            \ Multicast packets are propagated via IGMP Snooping</li><li>* \"IPTV\
+            \ Filtering (IGMP Report/Leave Flooding)\" Multicast packets are propagated\
+            \ via IGMP Snooping. except that IGMP Report/Leave packets are broadcast</li></ul>"
+          enum:
+          - filtering_with_igmp_flooding
+          - flooding
+          - flooding_with_critical_latency
+          - filtering
+          type: string
+        tagged_packets:
+          default: false
+          description: Overrides priority bits on incoming tagged packets. Always
+            done for untagged packets
+          type: boolean
+        tls:
+          default: false
+          description: Is a Transparent LAN Service?
+          type: boolean
+        allow_local_switching:
+          default: true
+          description: Allow Edge Devices to communicate with each other. Disabling
+            this forces upstream traffic to the router
+          type: boolean
+        act_as_multicast_querier:
+          default: false
+          description: Multicast managment through IGMP requires a multicast querier.
+            Check this box if SD LAN should provide a multicast querier
+          type: boolean
+        block_unknown_unicast_flood:
+          default: false
+          description: Block unknown unicast traffic flooding and only permits egress
+            traffic with MAC addresses that are known to exit on the port
+          type: boolean
+        block_downstream_dhcp_server:
+          default: true
+          description: Block inbound packets sent by Downstream DHCP servers
+          type: boolean
+        is_management_service:
+          default: false
+          description: Denotes a Management Service
+          type: boolean
+        use_dscp_to_p_bit_mapping_for_l3_packets_if_available:
+          default: false
+          description: use DSCP to p-bit Mapping for L3 packets if available
+          type: boolean
+        allow_fast_leave:
+          default: false
+          description: The Fast Leave feature causes the switch to immediately remove
+            a port from the forwarding list for a IGMP multicast group when the port
+            receives a leave message. Not recommended unless there is only a single
+            receiver present on every point in the VLAN
+          type: boolean
+        mst_instance:
+          default: 0
+          description: MST Instance ID (0-4094)
+          maximum: 4094
+          type: integer
       type: object
     _config_put_request_lag_lag_name:
       properties:
@@ -3345,12 +5582,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
+          - emerald
           - anakiwa
           - chardonnay
-          - lavender
           - cornflower
-          - emerald
           - starship
+          - lavender
           minLength: 1
           type: string
         lacp:
@@ -3364,8 +5601,9 @@ components:
         eth_port_profile_ref_type_:
           description: Object type for eth_port_profile field
           enum:
-          - eth_port_profile_
+          - service_port_profile
           - gateway_profile
+          - eth_port_profile_
           - pb_egress_profile
           type: string
         peer_link_vlan:
@@ -3394,6 +5632,96 @@ components:
             a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces
             and the MCLAG Peer Link VLAN
           type: boolean
+      type: object
+    _config_put_request_endpoint_endpoint_name_object_properties:
+      properties:
+        user_notes:
+          default: ""
+          description: Notes writen by User about the site
+          type: string
+        expected_parent_endpoint:
+          default: ""
+          description: Expected Parent Endpoint
+          type: string
+        expected_parent_endpoint_ref_type_:
+          description: Object type for expected_parent_endpoint field
+          enum:
+          - endpoint
+          type: string
+        number_of_multipoints:
+          default: 0
+          description: Number of Multipoints
+          nullable: true
+          type: integer
+        draw_as_edge_device:
+          default: false
+          description: Turn on to display the switch as an edge device instead of
+            as a switch
+          type: boolean
+        aggregate:
+          default: false
+          description: For Switch Endpoints. Denotes switch aggregated with all of
+            its sub switches
+          type: boolean
+        is_host:
+          default: false
+          description: For Switch Endpoints. Denotes the Host Switch
+          type: boolean
+        eths:
+          $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_object_properties_eths'
+      type: object
+    _authenticatedethports_put_request:
+      properties:
+        authenticated_eth_port:
+          additionalProperties:
+            $ref: '#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name'
+          properties: {}
+          type: object
+      type: object
+    _config_put_request_eth_port_settings_eth_port_settings_name_object_properties:
+      properties:
+        group:
+          default: ""
+          description: Group
+          type: string
+        overridden_object:
+          default: ""
+          description: Overridden object.
+          type: string
+        overridden_object_ref_type_:
+          description: Object type for overridden_object field
+          type: string
+        isdefault:
+          default: false
+          description: Default object.
+          type: boolean
+      type: object
+    _config_put_request_packet_queue_packet_queue_name_object_properties:
+      properties:
+        isdefault:
+          default: false
+          description: Default object.
+          type: boolean
+        group:
+          default: ""
+          description: Group
+          type: string
+      type: object
+    _bundles_patch_request_endpoint_bundle_value_voice_port_profile_paths_inner:
+      properties:
+        voice_port_num_voice_port_profiles:
+          default: ""
+          description: ' Voice Port Settings for Voice Port'
+          type: string
+        voice_port_num_voice_port_profiles_ref_type_:
+          description: Object type for voice_port_num_voice_port_profiles field
+          enum:
+          - voice_port_profiles
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _config_put_request_switchpoint_switchpoint_name:
       properties:
@@ -3427,7 +5755,193 @@ components:
           type: boolean
         disabled_ports:
           default: ""
-          description: Disabled Ports
+          description: |-
+            Disabled Ports
+            It's a comma separated list of ports to disable.
+          type: string
+        out_of_band_management:
+          default: false
+          description: For Switch Endpoints. Denotes a Switch is managed out of band
+            via the management port
+          type: boolean
+        type:
+          default: leaf
+          description: Type of Switchpoint
+          enum:
+          - ""
+          - enterprise
+          - superspine
+          - packet_broker
+          - leaf
+          - management
+          - packet_broker_tor
+          - spine
+          type: string
+        super_pod:
+          default: ""
+          description: Super Pod  subgrouping of super spines and pods
+          minLength: 1
+          type: string
+        pod:
+          default: ""
+          description: 'Pod  subgrouping of spine and leaf switches '
+          minLength: 1
+          type: string
+        rack:
+          default: ""
+          description: 'Physical Rack location of the Switch '
+          minLength: 1
+          type: string
+        switch_router_id_ip_mask:
+          default: (auto)
+          description: Switch BGP Router Identifier
+          format: ipv4
+          minLength: 1
+          type: string
+        switch_router_id_ip_mask_auto_assigned_:
+          description: Whether or not the value in switch_router_id_ip_mask field
+            has been automatically assigned or not. Set to false and change switch_router_id_ip_mask
+            value to edit.
+          type: boolean
+        switch_vtep_id_ip_mask:
+          default: (auto)
+          description: Switch VETP Identifier
+          format: ipv4
+          minLength: 1
+          type: string
+        switch_vtep_id_ip_mask_auto_assigned_:
+          description: Whether or not the value in switch_vtep_id_ip_mask field has
+            been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask
+            value to edit.
+          type: boolean
+        bgp_as_number:
+          description: 'BGP Autonomous System Number for the site underlay '
+          maximum: 4294967295
+          minimum: 1
+          type: integer
+        bgp_as_number_auto_assigned_:
+          description: Whether or not the value in bgp_as_number field has been automatically
+            assigned or not. Set to false and change bgp_as_number value to edit.
+          type: boolean
+        badges:
+          items:
+            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_badges_inner'
+          type: array
+        children:
+          items:
+            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_children_inner'
+          type: array
+        traffic_mirrors:
+          items:
+            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner'
+          type: array
+        eths:
+          items:
+            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_eths_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_object_properties'
+      type: object
+    _config_put_request_service_port_profile_service_port_profile_name_services_inner:
+      properties:
+        row_num_enable:
+          default: false
+          description: Enable row
+          type: boolean
+        row_num_service:
+          default: ""
+          description: Connect a Service
+          type: string
+        row_num_service_ref_type_:
+          description: Object type for row_num_service field
+          enum:
+          - service
+          type: string
+        row_num_external_vlan:
+          description: Choose an external vlan
+          maximum: 4096
+          minimum: 1
+          nullable: true
+          type: integer
+        row_num_limit_in:
+          description: Speed of ingress (Mbps)
+          maximum: 10000
+          minimum: 1
+          nullable: true
+          type: integer
+        row_num_limit_out:
+          default: 1000
+          description: Speed of egress (Mbps)
+          maximum: 10000
+          minimum: 1
+          nullable: true
+          type: integer
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _config_put_request_bizd_config:
+      properties:
+        bizd_config_name:
+          $ref: '#/components/schemas/_config_put_request_bizd_config_bizd_config_name'
+      type: object
+    _config_put_request_mac_filter_mac_filter_name_acl_inner:
+      properties:
+        filter_num_mac:
+          default: ""
+          description: MAC address descriptor including colons example 01:23:45:67:9a:ab.
+            and * notation accepted example 12:*
+          type: string
+        filter_num_mask:
+          default: ""
+          description: Hexidecimal mask including colons example ff:ff:fe:00:00:00.
+            /n and * notation accepted example /16 or 12:*
+          type: string
+        filter_num_enable:
+          default: false
+          description: 'Enable of this MAC Filter '
+          type: boolean
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _switchpoints_put_request_switchpoint_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        device_serial_number:
+          default: ""
+          description: Device Serial Number
+          type: string
+        connected_bundle:
+          default: ""
+          description: Connected Bundle
+          type: string
+        connected_bundle_ref_type_:
+          description: Object type for connected_bundle field
+          enum:
+          - endpoint_bundle
+          type: string
+        read_only_mode:
+          default: false
+          description: "When Read Only Mode is checked, vNetC will perform all functions\
+            \ except writing database updates to the target hardware"
+          type: boolean
+        locked:
+          default: false
+          description: Permission lock
+          type: boolean
+        disabled_ports:
+          default: ""
+          description: |-
+            Disabled Ports
+            It's a comma separated list of ports to disable.
           type: string
         out_of_band_management:
           default: false
@@ -3507,15 +6021,24 @@ components:
           type: array
         eths:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_eths_inner'
+            $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name_eths_inner'
           type: array
         object_properties:
           $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_object_properties'
       type: object
-    _config_put_request_bizd_config:
+    _switchpoints_upgrade_patch_request:
       properties:
-        bizd_config_name:
-          $ref: '#/components/schemas/_config_put_request_bizd_config_bizd_config_name'
+        package_version:
+          default: ""
+          description: Version to upgrade to
+          type: string
+        device_names:
+          items:
+            type: string
+          type: array
+      required:
+      - device_names
+      - package_version
       type: object
     _config_put_request_ipv6_list_filter:
       properties:
@@ -3585,6 +6108,67 @@ components:
         gateway_name:
           $ref: '#/components/schemas/_config_put_request_gateway_gateway_name'
       type: object
+    _config_put_request_service_port_profile_service_port_profile_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        port_type:
+          default: up
+          description: Determines what Service are provisioned on the port and if
+            those Services are propagated upstream<ul><li>* "Upstream Switchport"
+            Services specified below.  Services are not propagated.</li><li>* "Downstream
+            Switchport" Services specified below. Services are propagated.</li><li>*
+            "Crosslink Switchport" Services is union of all Services on each switch.  Services
+            are not propagated.</li><li>* "Upstream L3 (L2/L3 Switches Only" No Services.</li></ul>
+          enum:
+          - tls
+          - cross
+          - up
+          - down
+          - no_switchport
+          type: string
+        tls_limit_in:
+          default: 1000
+          description: Speed of ingress (Mbps) for TLS (Transparent LAN Service)
+          maximum: 10000
+          minimum: 1
+          nullable: true
+          type: integer
+        tls_service:
+          default: ""
+          description: Service used for TLS (Transparent LAN Service)
+          type: string
+        tls_service_ref_type_:
+          description: Object type for tls_service field
+          enum:
+          - service
+          type: string
+        trusted_port:
+          default: false
+          description: "Trusted Ports do not participate in IP Source Guard, Dynamic\
+            \ ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded\
+            \ without any checks."
+          type: boolean
+        ip_mask:
+          default: ""
+          description: IP/Mask
+          format: ipv4
+          type: string
+        services:
+          items:
+            $ref: '#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name_services_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name_object_properties'
+      type: object
     _config_put_request_route_map_route_map_name_route_map_clauses_inner:
       properties:
         enable:
@@ -3650,32 +6234,32 @@ components:
           type: boolean
         auto_negotiation:
           default: true
-          description: Indicates if port speed and duplex mode should be auto negotiated
+          description: Indicates if duplex mode should be auto negotiated
           type: boolean
         max_bit_rate:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "10000"
-          - "10"
-          - "5000"
-          - "25000"
-          - "2500"
-          - "50000"
-          - "-1"
-          - "400000"
-          - "100000"
-          - "1000"
-          - "100"
           - "40000"
+          - "100000"
+          - "10"
+          - "10000"
+          - "2500"
+          - "100"
+          - "5000"
+          - "400000"
+          - "50000"
+          - "25000"
+          - "-1"
+          - "1000"
           minLength: 1
           type: string
         duplex_mode:
           default: Auto
           description: Duplex Mode
           enum:
-          - Full
           - Auto
+          - Full
           - Half
           minLength: 1
           type: string
@@ -3742,20 +6326,19 @@ components:
           description: "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast\
             \ traffic before invoking the protective action <br>\n               \
             \                                 <div class=\"tab\">\n              \
-            \                                      %: Percentage.<br>            \
-            \                                                                    \
-            \                \n                                                  \
-            \  kbps: kilobits per second <br>\n                                  \
-            \                  mbps: megabits per second <br>\n                  \
-            \                                  gbps: gigabits per second <br>\n  \
-            \                                                  pps: packet per second\
-            \ <br>\n                                                    kpps: kilopacket\
-            \ per second <br>\n                                                </div>\n\
-            \                                                "
+            \                                      %: Percentage.<br>\n          \
+            \                                          kbps: kilobits per second <br>\n\
+            \                                                    mbps: megabits per\
+            \ second <br>\n                                                    gbps:\
+            \ gigabits per second <br>\n                                         \
+            \           pps: packet per second <br>\n                            \
+            \                        kpps: kilopacket per second <br>\n          \
+            \                                      </div>\n                      \
+            \                          "
           enum:
+          - Kpps
           - pps
           - '%'
-          - Kpps
           minLength: 1
           type: string
         action:
@@ -3767,16 +6350,16 @@ components:
             \ rate are silently dropped. QOS drop counters should indicate the drops.<br><br>\n\
             \                                                    Restrict: Broadcast/Multicast\
             \ packets beyond the percent rate are dropped. QOS drop counters should\
-            \ indicate the drops. \n                                             \
-            \       Alarm is raised . Alarm automatically clears when rate is below\
+            \ indicate the drops.\n                                              \
+            \      Alarm is raised . Alarm automatically clears when rate is below\
             \ configured threshold. <br><br>\n                                   \
             \                 Shutdown: Alarm is raised and port is taken out of service.\
             \ User must administratively Disable and Enable the port to restore service.\
             \ <br>\n                                                </div>\n     \
             \                                       "
           enum:
-          - Protect
           - Restrict
+          - Protect
           - Shutdown
           minLength: 1
           type: string
@@ -3795,12 +6378,12 @@ components:
             \ the Switch Value.<br>\n                                            \
             \    </div>\n                                            "
           enum:
-          - none
-          - rs
-          - fc
           - unaltered
-          - rs-custom
           - auto
+          - fc
+          - rs
+          - rs-custom
+          - none
           minLength: 1
           type: string
         single_link:
@@ -3809,7 +6392,166 @@ components:
             takes effect
           type: boolean
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+          $ref: '#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name_object_properties'
+        minimum_wred_threshold:
+          default: 1
+          description: A value between 1 to 12480(in KiloBytes)
+          maximum: 12480
+          minimum: 1
+          type: integer
+        maximum_wred_threshold:
+          default: 1
+          description: A value between 1 to 12480(in KiloBytes)
+          maximum: 12480
+          minimum: 1
+          type: integer
+        wred_drop_probability:
+          default: 0
+          description: A value between 0 to 100
+          maximum: 100
+          type: integer
+        priority_flow_control_watchdog_action:
+          default: DROP
+          description: Ports with this setting will be disabled when link state tracking
+            takes effect
+          enum:
+          - DROP
+          - FORWARD
+          minLength: 1
+          type: string
+        priority_flow_control_watchdog_detect_time:
+          default: 100
+          description: A value between 100 to 5000
+          maximum: 5000
+          minimum: 100
+          type: integer
+        priority_flow_control_watchdog_restore_time:
+          default: 100
+          description: A value between 100 to 60000
+          maximum: 60000
+          minimum: 100
+          type: integer
+        packet_queue:
+          default: ""
+          description: Packet Queue
+          type: string
+        packet_queue_ref_type_:
+          description: Object type for packet_queue field
+          enum:
+          - packet_queue
+          type: string
+        enable_wred_tuning:
+          default: false
+          description: Enables custom tuning of WRED values. Uncheck to use Switch
+            default values.
+          type: boolean
+        enable_ecn:
+          default: true
+          description: Enables Explicit Congestion Notification for WRED.
+          type: boolean
+        enable_watchdog_tuning:
+          default: false
+          description: Enables custom tuning of Watchdog values. Uncheck to use Switch
+            default values.
+          type: boolean
+        cli_commands:
+          default: ""
+          description: CLI Commands
+          type: string
+        detect_bridging_loops:
+          default: false
+          description: Enable Detection of Bridging Loops
+          type: boolean
+        unidirectional_link_detection:
+          default: false
+          description: Enable Detection of Unidirectional Link
+          type: boolean
+        mac_security_mode:
+          default: disabled
+          description: |-
+            Dynamic - MACs are learned and aged normally up to the limit. <br>
+                                            <div class="tab">
+                                                Packets will be dropped from clients exceeding the limit. <br>
+                                                Once a client ages out, a new client can take its slot. <br>
+                                                When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.<br>
+                                            </div>
+                                        Sticky - Semi permenant learning. <br>
+                                            <div class="tab">
+                                                Packets will be dropped from clients exceeding the limit. <br>
+                                                Addresses do not age out or move within the same switch. <br>
+                                                Operationally downing a port (disconnecting) does NOT flush the entries. <br>
+                                                Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.
+                                            </div>
+          enum:
+          - disabled
+          - dynamic
+          - sticky
+          minLength: 1
+          type: string
+        mac_limit:
+          default: 1000
+          description: Between 1-1000
+          maximum: 1000
+          minimum: 1
+          type: integer
+        security_violation_action:
+          default: protect
+          description: |-
+            Protect - All packets are dropped from clients above the MAC Limit. <br>
+                                            <div class="tab">
+                                                Exceeding the limit is not alarmed. <br>
+                                            </div>
+                                        Restrict - All packets are dropped from clients above the MAC Limit. <br>
+                                            <div class="tab">
+                                                Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. <br>
+                                            </div>
+                                        Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. <br>
+                                            <div class="tab">
+                                                User must administratively Disable and Enable the port to restore service.
+                                            </div>
+          enum:
+          - restrict
+          - protect
+          - shutdown
+          minLength: 1
+          type: string
+        aging_type:
+          default: absolute
+          description: Limit MAC authentication based on inactivity or on absolute
+            time. See Also Aging Time
+          enum:
+          - inactivity
+          - absolute
+          minLength: 1
+          type: string
+        aging_time:
+          default: 0
+          description: "In minutes, how long the client will stay authenticated. See\
+            \ Also Aging Type"
+          maximum: 1440
+          type: integer
+        lldp_enable:
+          default: true
+          description: LLDP enable
+          type: boolean
+        lldp_mode:
+          default: RxAndTx
+          description: LLDP mode.  Enables LLDP Rx and/or LLDP Tx
+          enum:
+          - RxAndTx
+          - RxOnly
+          - TxOnly
+          - Disabled
+          minLength: 1
+          type: string
+        lldp_med_enable:
+          default: false
+          description: LLDP med enable
+          type: boolean
+        lldp_med:
+          items:
+            $ref: '#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name_lldp_med_inner'
+          type: array
       type: object
     _config_put_request_pb_egress_profile_pb_egress_profile_name:
       properties:
@@ -3845,6 +6587,19 @@ components:
         eth_port_settings_name:
           $ref: '#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name'
       type: object
+    _switchpoints_put_request:
+      properties:
+        switchpoint:
+          additionalProperties:
+            $ref: '#/components/schemas/_switchpoints_put_request_switchpoint_value'
+          properties: {}
+          type: object
+        endpoint:
+          additionalProperties:
+            $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name'
+          properties: {}
+          type: object
+      type: object
     _config_put_request_eth_port_profile_:
       properties:
         eth_port_profile__name:
@@ -3873,8 +6628,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         lists:
@@ -3899,8 +6654,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         any_all:
@@ -3908,8 +6663,8 @@ components:
           description: BGP does not advertise any or all routes that do not match
             the Community String
           enum:
-          - any
           - all
+          - any
           minLength: 1
           type: string
         standard_expanded:
@@ -3926,6 +6681,116 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+      type: object
+    _config_put_request_packet_queue_packet_queue_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        pbit:
+          items:
+            $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name_pbit_inner'
+          type: array
+        queue:
+          items:
+            $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name_queue_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name_object_properties'
+      type: object
+    _config_put_request_image_update_sets_image_update_sets_name_section_pointless_inner:
+      properties:
+        endpoint_set_num_name:
+          default: Unassigned Devices
+          description: The name of the Endpoint Set
+          type: string
+        endpoint_set_for_endpointless_target_upgrade_version:
+          default: unmanaged
+          description: The target SW version for member devices of the Endpoint Set
+          enum:
+          - 1.8.0.69
+          - 1.8.0.75
+          - 1.8.0.67
+          - 1.7.1.26
+          - 1.7.1.25
+          - 1.8.0.73
+          - 1.8.0.70
+          - 1.8.0.66
+          - 1.8.0.71
+          - 1.8.0.72
+          - 1.8.0.74
+          - unmanaged
+          - 1.8.0.68
+          type: string
+        endpoint_set_for_endpointless_unique_identifier:
+          default: pointless
+          description: Unique Identifier - not editable
+          type: string
+        endpoint_set_num_on_summary:
+          default: true
+          description: Include on the Summary
+          type: boolean
+        endpoint_set_for_endpointless_target_upgrade_version_time:
+          default: ""
+          description: The time to update to the target SW version
+          type: string
+      type: object
+    _config_put_request_image_update_sets_image_update_sets_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: true
+          description: Enable object.
+          type: boolean
+        upgrader_on_summary:
+          default: true
+          description: Show Upgrader Pie Chart on Summary
+          type: boolean
+        installation_on_summary:
+          default: true
+          description: Show Installation Pie Chart on Summary
+          type: boolean
+        comm_on_summary:
+          default: true
+          description: Show Comm Pie Chart on Summary
+          type: boolean
+        provisioning_on_summary:
+          default: true
+          description: Show Provisioning Pie Chart on Summary
+          type: boolean
+        type:
+          default: whitebox
+          description: Type of Image Update Sets
+          enum:
+          - whitebox
+          - blackbox
+          type: string
+        section_pointless:
+          items:
+            $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_pointless_inner'
+          type: array
+        section:
+          items:
+            $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_inner'
+          type: array
+        section_else:
+          items:
+            $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_else_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_object_properties'
       type: object
     _config_put_request_endpoint_view_endpoint_view_name:
       properties:
@@ -3977,12 +6842,130 @@ components:
           properties: {}
           type: object
       type: object
+    _config_put_request_endpoint_endpoint_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        device_serial_number:
+          default: ""
+          description: Device Serial Number
+          type: string
+        connected_bundle:
+          default: ""
+          description: Connected Bundle
+          type: string
+        connected_bundle_ref_type_:
+          description: Object type for connected_bundle field
+          enum:
+          - endpoint_bundle
+          type: string
+        read_only_mode:
+          default: false
+          description: "When Read Only Mode is checked, vNetC will perform all functions\
+            \ except writing database updates to the target hardware"
+          type: boolean
+        locked:
+          default: false
+          description: Permission lock
+          type: boolean
+        disabled_ports:
+          default: ""
+          description: |-
+            Disabled Ports
+            It's a comma separated list of ports to disable.
+          type: string
+        is_fabric:
+          default: false
+          description: For Switch Endpoints. Denotes a Switch that is Fabric rather
+            than an Edge Device
+          type: boolean
+        out_of_band_management:
+          default: false
+          description: For Switch Endpoints. Denotes a Switch is managed out of band
+            via the management port
+          type: boolean
+        badges:
+          items:
+            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_badges_inner'
+          type: array
+        children:
+          items:
+            $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name_children_inner'
+          type: array
+        traffic_mirrors:
+          items:
+            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner'
+          type: array
+        eths:
+          items:
+            $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name_eths_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name_object_properties'
+      type: object
     _config_put_request_route_map:
       properties:
         route_map_name:
           $ref: '#/components/schemas/_config_put_request_route_map_route_map_name'
       type: object
+    _acls_put_request:
+      properties:
+        ip_filter:
+          additionalProperties:
+            $ref: '#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name'
+          properties: {}
+          type: object
+      type: object
     _config_put_request_pb_egress_profile_pb_egress_profile_name_ipv4_permit_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable
+          type: boolean
+        filter:
+          default: ""
+          description: Filter
+          type: string
+        filter_ref_type_:
+          description: Object type for filter field
+          enum:
+          - ipv4_list_filter
+          - ipv4_filter
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _config_put_request_site_site_name_object_properties_system_graphs:
+      properties:
+        graph_num_data:
+          default: ""
+          description: The graph data detailing this graph choice
+          type: string
+      type: object
+    _config_put_request_lag:
+      properties:
+        lag_name:
+          $ref: '#/components/schemas/_config_put_request_lag_lag_name'
+      type: object
+    _config_put_request_packet_queue_packet_queue_name_pbit_inner:
+      properties:
+        packet_queue_for_p_bit:
+          default: 0
+          description: Flag indicating this p-bit's Queue
+          maximum: 7
+          type: integer
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner:
       properties:
         enable:
           default: false
@@ -4002,18 +6985,6 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
-      type: object
-    _config_put_request_site_site_name_object_properties_system_graphs:
-      properties:
-        graph_num_data:
-          default: ""
-          description: The graph data detailing this graph choice
-          type: string
-      type: object
-    _config_put_request_lag:
-      properties:
-        lag_name:
-          $ref: '#/components/schemas/_config_put_request_lag_lag_name'
       type: object
     _config_put_request_ipv4_filter_ipv4_filter_name:
       properties:
@@ -4102,6 +7073,14 @@ components:
         object_properties:
           $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object
+    _packetqueues_put_request:
+      properties:
+        packet_queue:
+          additionalProperties:
+            $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name'
+          properties: {}
+          type: object
+      type: object
     _services_put_request:
       properties:
         service:
@@ -4126,6 +7105,14 @@ components:
         switchpoint_name:
           $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name'
       type: object
+    _serviceportprofiles_put_request:
+      properties:
+        service_port_profile:
+          additionalProperties:
+            $ref: '#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name'
+          properties: {}
+          type: object
+      type: object
     _auth_post_request:
       properties:
         auth:
@@ -4135,6 +7122,329 @@ components:
       properties:
         pb_egress_profile_name:
           $ref: '#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name'
+      type: object
+    _config_put_request_device_voice_settings_device_voice_settings_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        dtmf_method:
+          default: Inband
+          description: Specifies how DTMF signals are carried
+          enum:
+          - Inband
+          - RFC2833
+          - SIPInfo
+          type: string
+        region:
+          default: US
+          description: Region
+          format: name
+          type: string
+        protocol:
+          default: SIP
+          description: "Voice Protocol: MGCP or SIP"
+          enum:
+          - SIP
+          - MGCP
+          type: string
+        proxy_server:
+          default: ""
+          description: IP address or URI of the SIP proxy server for SIP signalling
+            messages
+          type: string
+        proxy_server_port:
+          default: 0
+          description: Proxy Server Port
+          maximum: 65535
+          nullable: true
+          type: integer
+        proxy_server_secondary:
+          default: ""
+          description: IP address or URI of the secondary SIP proxy server for SIP
+            signalling messages
+          type: string
+        proxy_server_secondary_port:
+          default: 0
+          description: Secondary Proxy Server Port
+          maximum: 65535
+          nullable: true
+          type: integer
+        registrar_server:
+          default: ""
+          description: "Name or IP address or resolved name of the registrar server\
+            \ for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net"
+          type: string
+        registrar_server_port:
+          default: 0
+          description: Registrar Server Port
+          maximum: 65535
+          nullable: true
+          type: integer
+        registrar_server_secondary:
+          default: ""
+          description: "Name or IP address or resolved name of the secondary registrar\
+            \ server for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net"
+          type: string
+        registrar_server_secondary_port:
+          default: 0
+          description: Secondary Registrar Server Port
+          maximum: 65535
+          nullable: true
+          type: integer
+        user_agent_domain:
+          default: ""
+          description: User Agent Domain
+          type: string
+        user_agent_transport:
+          default: UDP
+          description: User Agent Transport
+          enum:
+          - UDP
+          - TCP
+          - TLS
+          - SCTP
+          type: string
+        user_agent_port:
+          default: 0
+          description: User Agent Port
+          maximum: 65535
+          nullable: true
+          type: integer
+        outbound_proxy:
+          default: ""
+          description: IP address or URI of the outbound proxy server for SIP signalling
+            messages. An outbound SIP proxy may or may not be required within a given
+            network
+          type: string
+        outbound_proxy_port:
+          default: 0
+          description: Outbound Proxy Port
+          maximum: 65535
+          nullable: true
+          type: integer
+        outbound_proxy_secondary:
+          default: ""
+          description: IP address or URI of the secondary outbound proxy server for
+            SIP signalling messages. An outbound SIP proxy may or may not be required
+            within a given network
+          type: string
+        outbound_proxy_secondary_port:
+          default: 0
+          description: Secondary Outbound Proxy Port
+          maximum: 65535
+          nullable: true
+          type: integer
+        registration_period:
+          default: 3240
+          description: Specifies the time in seconds to start the re-registration
+            process. The default value is 3240 seconds
+          nullable: true
+          type: integer
+        register_expires:
+          default: 3600
+          description: "SIP registration expiration time in seconds. If value is 0,\
+            \ the SIP agent does not add an expiration time to the registration requests\
+            \ and does not perform re-registration. The default value is 3600 seconds"
+          nullable: true
+          type: integer
+        voicemail_server:
+          default: ""
+          description: "Name or IP address or resolved name of the external voicemail\
+            \ server if not provided by SIP server for MWI control. Examples: 10.10.10.10\
+            \ and proxy.voip.net"
+          type: string
+        voicemail_server_port:
+          default: 0
+          description: Voicemail Server Port
+          maximum: 65535
+          nullable: true
+          type: integer
+        voicemail_server_expires:
+          default: 3600
+          description: "Voicemail server expiration time in seconds. If value is 0,\
+            \ the Register Expires time is used instead. The default value is 3600\
+            \ seconds"
+          nullable: true
+          type: integer
+        sip_dscp_mark:
+          default: 0
+          description: Sip Differentiated Services Code point (DSCP)
+          maximum: 63
+          nullable: true
+          type: integer
+        call_agent_1:
+          default: ""
+          description: Call Agent 1
+          type: string
+        call_agent_port_1:
+          default: 0
+          description: Call Agent Port 1
+          nullable: true
+          type: integer
+        call_agent_2:
+          default: ""
+          description: Call Agent 2
+          type: string
+        call_agent_port_2:
+          default: 0
+          description: Call Agent Port 2
+          nullable: true
+          type: integer
+        domain:
+          default: ""
+          description: Domain
+          type: string
+        mgcp_dscp_mark:
+          default: 0
+          description: MGCP Differentiated Services Code point (DSCP)
+          maximum: 63
+          nullable: true
+          type: integer
+        termination_base:
+          default: aaln/
+          description: Base string for the MGCP physical termination id(s)
+          type: string
+        local_port_min:
+          default: 30000
+          description: Defines the base RTP port that should be used for voice traffic
+          nullable: true
+          type: integer
+        local_port_max:
+          default: 30200
+          description: "Defines the highest RTP port used for voice traffic, must\
+            \ be greater than local Local Port Min"
+          nullable: true
+          type: integer
+        event_payload_type:
+          default: 101
+          description: Telephone Event Payload Type
+          nullable: true
+          type: integer
+        cas_events:
+          default: 0
+          description: Enables or disables handling of CAS via RTP CAS events. Valid
+            values are 0 = off and 1 = on
+          maximum: 1
+          type: integer
+        dscp_mark:
+          default: 0
+          description: Differentiated Services Code Point (DSCP) to be used for outgoing
+            RTP packets
+          maximum: 63
+          nullable: true
+          type: integer
+        rtcp:
+          default: true
+          description: RTCP Enable
+          type: boolean
+        fax_t38:
+          default: false
+          description: Fax T.38 Enable
+          type: boolean
+        bit_rate:
+          default: "14400"
+          description: "T.38 Bit Rate in bps. Most available fax machines support\
+            \ up to 14,400bps"
+          enum:
+          - "2400"
+          - "4800"
+          - "7200"
+          - "9600"
+          - "12000"
+          - "14400"
+          - "33600"
+          minLength: 1
+          type: string
+        cancel_call_waiting:
+          default: '*70'
+          description: Cancel Call waiting
+          type: string
+        call_hold:
+          default: '*9'
+          description: Call hold
+          type: string
+        cids_activate:
+          default: '*67'
+          description: Caller ID Delivery Blocking (single call)  Activate
+          type: string
+        cids_deactivate:
+          default: '*82'
+          description: Caller ID Delivery Blocking (single call) Deactivate
+          type: string
+        do_not_disturb_activate:
+          default: '*78'
+          description: Do not Disturb Activate
+          type: string
+        do_not_disturb_deactivate:
+          default: '*79'
+          description: Do not Disturb Deactivate
+          type: string
+        do_not_disturb_pin_change:
+          default: '*10'
+          description: Do not Disturb PIN Change
+          type: string
+        emergency_service_number:
+          default: "911"
+          description: Emergency Service Number
+          type: string
+        anon_cid_block_activate:
+          default: '*77'
+          description: Anonymoes Caller ID Block Activate
+          type: string
+        anon_cid_block_deactivate:
+          default: '*87'
+          description: Anonymous Caller ID Block Deactivate
+          type: string
+        call_forward_unconditional_activate:
+          default: '*72'
+          description: Call Forward Unconditional Activate
+          type: string
+        call_forward_unconditional_deactivate:
+          default: '*73'
+          description: Call Forward Unconditional Deactivate
+          type: string
+        call_forward_on_busy_activate:
+          default: '*90'
+          description: Call Forward On Busy Activate
+          type: string
+        call_forward_on_busy_deactivate:
+          default: '*91'
+          description: Call Forward On Busy Deactivate
+          type: string
+        call_forward_on_no_answer_activate:
+          default: '*92'
+          description: Call Forward On No Answer Activate
+          type: string
+        call_forward_on_no_answer_deactivate:
+          default: '*93'
+          description: Call Forward On No Answer Deactivate
+          type: string
+        intercom_1:
+          default: '*53'
+          description: Intercom 1
+          type: string
+        intercom_2:
+          default: '*54'
+          description: Intercom 2
+          type: string
+        intercom_3:
+          default: '*55'
+          description: Intercom 3
+          type: string
+        Codecs:
+          items:
+            $ref: '#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name_Codecs_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name_object_properties'
       type: object
     _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name:
       properties:
@@ -4160,6 +7470,11 @@ components:
         as_path_access_list_name:
           $ref: '#/components/schemas/_config_put_request_as_path_access_list_as_path_access_list_name'
       type: object
+    _config_put_request_packet_queue:
+      properties:
+        packet_queue_name:
+          $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name'
+      type: object
     _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_lists_inner:
       properties:
         enable:
@@ -4170,8 +7485,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         ipv4_prefix:
@@ -4320,10 +7635,10 @@ components:
           default: Static BGP
           description: "Gateway Mode. Can be BGP, Static, or Default"
           enum:
-          - Dynamic BGP
-          - Static BGP
-          - Static
           - Default
+          - Static BGP
+          - Dynamic BGP
+          - Static
           minLength: 3
           type: string
         local_as_number:
@@ -4434,8 +7749,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         ipv6_prefix:
@@ -4458,6 +7773,62 @@ components:
           minimum: 1
           nullable: true
           type: integer
+      type: object
+    _config_put_request_feature_flag_feature_flag_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        feature:
+          items:
+            $ref: '#/components/schemas/_config_put_request_feature_flag_feature_flag_name_feature_inner'
+          type: array
+      type: object
+    _config_put_request_device_voice_settings_device_voice_settings_name_Codecs_inner:
+      properties:
+        codec_num_name:
+          default: G.711MuLaw
+          description: Name of this Codec
+          enum:
+          - G.711MuLaw
+          - G.711ALaw
+          - G.722
+          - G.726
+          - G.729
+          type: string
+        codec_num_enable:
+          default: true
+          description: Enable Codec
+          type: boolean
+        codec_num_packetization_period:
+          default: "20"
+          description: Packet period selection interval in milliseconds
+          enum:
+          - "10"
+          - "20"
+          - "30"
+          type: string
+        codec_num_silence_suppression:
+          default: false
+          description: Specifies whether silence suppression is on or off. Valid values
+            are 0 = off and 1 = on
+          type: boolean
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _config_put_request_device_voice_settings:
+      properties:
+        device_voice_settings_name:
+          $ref: '#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name'
       type: object
     _config_put_request_ipv6_filter_ipv6_filter_name:
       properties:
@@ -4495,8 +7866,8 @@ components:
             \ range."
           enum:
           - ""
-          - equal
           - greater
+          - equal
           - less
           - range
           type: string
@@ -4525,8 +7896,8 @@ components:
             \ range."
           enum:
           - ""
-          - equal
           - greater
+          - equal
           - less
           - range
           type: string
@@ -4550,6 +7921,50 @@ components:
       properties:
         ipv4_filter_name:
           $ref: '#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name'
+      type: object
+    _config_put_request_eth_port_settings_eth_port_settings_name_lldp_med_inner:
+      properties:
+        lldp_med_row_num_enable:
+          default: false
+          description: Per LLDP Med row enable
+          type: boolean
+        lldp_med_row_num_advertised_applicatio:
+          default: ""
+          description: Advertised application
+          enum:
+          - ""
+          - GuestVoiceSignaling
+          - VideoSignaling
+          - GuestVoice
+          - Voice
+          - VideoConferencing
+          - StreamingVideo
+          - VoiceSignaling
+          - SoftphoneVoice
+          type: string
+        lldp_med_row_num_dscp_mark:
+          default: 0
+          description: LLDP DSCP Mark
+          maximum: 63
+          type: integer
+        lldp_med_row_num_priority:
+          default: 0
+          description: LLDP Priority
+          maximum: 7
+          type: integer
+        lldp_med_row_num_service:
+          default: ""
+          description: LLDP Service
+          type: string
+        lldp_med_row_num_service_ref_type_:
+          description: Object type for lldp_med_row_num_service field
+          enum:
+          - service
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _gatewayprofiles_put_request:
       properties:
@@ -4579,6 +7994,41 @@ components:
         tenant_name:
           $ref: '#/components/schemas/_config_put_request_tenant_tenant_name'
       type: object
+    _config_put_request_ip_filter:
+      properties:
+        ip_filter_name:
+          $ref: '#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name'
+      type: object
+    _config_put_request_authenticated_eth_port_authenticated_eth_port_name_eth_ports_inner:
+      properties:
+        eth_port_profile_num_enable:
+          default: false
+          description: Enable row
+          type: boolean
+        eth_port_profile_num_eth_port:
+          default: ""
+          description: Choose an Eth Port Profile
+          type: string
+        eth_port_profile_num_eth_port_ref_type_:
+          description: Object type for eth_port_profile_num_eth_port field
+          enum:
+          - eth_port_profile_
+          type: string
+        eth_port_profile_num_walled_garden_set:
+          default: false
+          description: Flag indicating this Eth Port Profile is the Walled Garden
+          type: boolean
+        eth_port_profile_num_radius_filter_id:
+          default: ""
+          description: The value of filter-id in the RADIUS response which will evoke
+            this Eth Port Profile
+          minLength: 1
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
     _config_put_request_sfp_breakouts_sfp_breakouts_name_breakout_inner:
       properties:
         enable:
@@ -4598,46 +8048,46 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
-          - 2x10G
-          - pg200G
-          - 1x50G
-          - pg100G
-          - 2x400G
-          - 8x400G
-          - 4x100G
-          - 1x40G
-          - 2x25G
-          - 8x10G
-          - 2x40G
-          - 1x200G
-          - 2x50G
           - 4x40G
-          - pg800G
-          - pg10G
-          - 4x50G
-          - 8x40G
-          - 8x200G
-          - 8x100G
-          - 8x50G
-          - pg40G
-          - 1x25G
-          - 2x800G
+          - 1x200G
           - 4x400G
-          - 1x10G
-          - 4x25G
-          - 2x100G
-          - 8x800G
-          - 8x25G
-          - pg400G
-          - 1x800G
-          - 2x200G
-          - 4x200G
-          - pg25G
-          - 1x100G
-          - 1x400G
+          - pg10G
+          - 2x400G
+          - 4x50G
           - 4x10G
+          - pg100G
+          - pg40G
+          - 4x200G
+          - 8x10G
+          - 2x25G
+          - 2x200G
+          - pg800G
+          - 1x400G
+          - 8x25G
+          - 4x100G
+          - 8x800G
+          - 2x100G
+          - 1x100G
+          - 8x40G
+          - 2x40G
+          - 8x200G
+          - pg25G
+          - 8x50G
+          - 1x10G
           - 4x800G
+          - pg400G
+          - 8x100G
+          - 8x400G
+          - 1x25G
+          - 4x25G
           - pg50G
+          - pg200G
+          - 1x40G
+          - 2x10G
+          - 2x50G
+          - 1x50G
+          - 1x800G
+          - 2x800G
           type: string
       type: object
     _config_put_request_ipv4_list_filter_ipv4_list_filter_name:
@@ -4656,6 +8106,130 @@ components:
           default: ""
           description: Comma separated list of IPv4 addresses
           minLength: 1
+          type: string
+      type: object
+    _config_put_request_image_update_sets_image_update_sets_name_section_inner:
+      properties:
+        endpoint_set_num_name:
+          default: ""
+          description: The name of the Endpoint Set
+          type: string
+        endpoint_set_num_target_upgrade_version:
+          default: unmanaged
+          description: The target SW version for member devices of the Endpoint Set
+          enum:
+          - 1.8.0.69
+          - 1.8.0.75
+          - 1.8.0.67
+          - 1.7.1.26
+          - 1.7.1.25
+          - 1.8.0.73
+          - 1.8.0.70
+          - 1.8.0.66
+          - 1.8.0.71
+          - 1.8.0.72
+          - 1.8.0.74
+          - unmanaged
+          - 1.8.0.68
+          type: string
+        endpoint_set_num_unique_identifier:
+          default: "17492038383101"
+          description: Unique Identifier - not editable
+          type: string
+        endpoint_set_num_on_summary:
+          default: true
+          description: Include on the Summary
+          type: boolean
+        endpoint_set_num_target_upgrade_version_time:
+          default: ""
+          description: The time to update to the target SW version
+          type: string
+        endpoint_set_num_subrule_1_inverted:
+          default: false
+          description: Subrule 1 Inverted of the Endpoint Set
+          type: boolean
+        endpoint_set_num_subrule_1_type:
+          default: ""
+          description: Subrule 1 Type of the Endpoint Set
+          enum:
+          - ""
+          - endpoint
+          - pod
+          - endpoint_type
+          - badge
+          - deviceSerialNumber
+          - bundle_id
+          - badge_color
+          - productClass
+          type: string
+        endpoint_set_num_subrule_1_value:
+          default: ""
+          description: Subrule 1 Value of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_1_reference_path:
+          default: ""
+          description: Subrule 1 Reference Path of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_1_reference_path_ref_type_:
+          description: Object type for endpoint_set_num_subrule_1_reference_path field
+          type: string
+        endpoint_set_num_subrule_2_inverted:
+          default: false
+          description: Subrule 2 Inverted of the Endpoint Set
+          type: boolean
+        endpoint_set_num_subrule_2_type:
+          default: ""
+          description: Subrule 2 Type of the Endpoint Set
+          enum:
+          - ""
+          - endpoint
+          - pod
+          - endpoint_type
+          - badge
+          - deviceSerialNumber
+          - bundle_id
+          - badge_color
+          - productClass
+          type: string
+        endpoint_set_num_subrule_2_value:
+          default: ""
+          description: Subrule 2 Value of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_2_reference_path:
+          default: ""
+          description: Subrule 2 Reference Path of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_2_reference_path_ref_type_:
+          description: Object type for endpoint_set_num_subrule_2_reference_path field
+          type: string
+        endpoint_set_num_subrule_3_inverted:
+          default: false
+          description: Subrule 3 Inverted of the Endpoint Set
+          type: boolean
+        endpoint_set_num_subrule_3_type:
+          default: ""
+          description: Subrule 3 Type of the Endpoint Set
+          enum:
+          - ""
+          - endpoint
+          - pod
+          - endpoint_type
+          - badge
+          - deviceSerialNumber
+          - bundle_id
+          - badge_color
+          - productClass
+          type: string
+        endpoint_set_num_subrule_3_value:
+          default: ""
+          description: Subrule 3 Value of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_3_reference_path:
+          default: ""
+          description: Subrule 3 Reference Path of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_3_reference_path_ref_type_:
+          description: Object type for endpoint_set_num_subrule_3_reference_path field
           type: string
       type: object
     _config_put_request_eth_port_profile__eth_port_profile__name:
@@ -4682,6 +8256,84 @@ components:
           type: array
         object_properties:
           $ref: '#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name_object_properties'
+        tls:
+          default: false
+          description: Transparent LAN Service Trunk
+          type: boolean
+        tls_service:
+          default: ""
+          description: Choose a Service supporting Transparent LAN Service
+          type: string
+        tls_service_ref_type_:
+          description: Object type for tls_service field
+          enum:
+          - service
+          type: string
+        trusted_port:
+          default: false
+          description: "Trusted Ports do not participate in IP Source Guard, Dynamic\
+            \ ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded\
+            \ without any checks."
+          type: boolean
+      type: object
+    _config_put_request_authenticated_eth_port_authenticated_eth_port_name:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        connection_mode:
+          default: PortMode
+          description: Choose connection mode for Authenticated Eth-Port<br><b>Port
+            Mode</b>  Standard mode. The last authenticated clients VLAN access is
+            applied.<br><b>Single Client Mode</b>  MAC filtered client. Only the authenticated
+            clients traffic can pass. No traffic from a second client may pass. Only
+            when the first client deauthenticates can a new authentication take place.<br><b>Multiple
+            Client Mode</b>  MAC filtered clients. Only authenticated client traffic
+            can pass. Multiple clients can authenticate and gain access to individual
+            service offerings. MAC-based authentication is not supported.
+          enum:
+          - MultipleClientMode
+          - PortMode
+          - SingleClientMode
+          type: string
+        reauthorization_period_sec:
+          default: 3600
+          description: Amount of time in seconds before 802.1X requires reauthorization
+            of an active session. "0" disables reauthorization (not recommended)
+          maximum: 3600
+          type: integer
+        allow_mac_based_authentication:
+          default: false
+          description: Enables 802.1x to capture the connected MAC address and send
+            it tothe Radius Server instead of requesting credentials.  Useful for
+            printers and similar devices
+          type: boolean
+        mac_authentication_holdoff_sec:
+          default: 60
+          description: Amount of time in seconds 802.1X authentication is allowed
+            to run before MAC-based authentication has begun
+          maximum: 60
+          minimum: 10
+          type: integer
+        trusted_port:
+          default: false
+          description: "Trusted Ports do not participate in IP Source Guard, Dynamic\
+            \ ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded\
+            \ without any checks."
+          type: boolean
+        eth_ports:
+          items:
+            $ref: '#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name_eth_ports_inner'
+          type: array
+        object_properties:
+          $ref: '#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name_object_properties'
       type: object
     _config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties:
       properties:
@@ -4699,12 +8351,13 @@ components:
       properties:
         endpoint1_for_a_static_connection:
           default: ""
-          description: 1st Switchpoint for a Static Connection
+          description: 1st Endpoint for a Static Connection
           type: string
         endpoint1_for_a_static_connection_ref_type_:
           description: Object type for endpoint1_for_a_static_connection field
           enum:
           - switchpoint
+          - endpoint
           type: string
         port1_for_a_static_connection:
           default: ""
@@ -4715,12 +8368,13 @@ components:
           type: string
         endpoint2_for_a_static_connection:
           default: ""
-          description: 2nd Switchpoint for a Static Connection
+          description: 2nd Endpoint for a Static Connection
           type: string
         endpoint2_for_a_static_connection_ref_type_:
           description: Object type for endpoint2_for_a_static_connection field
           enum:
           - switchpoint
+          - endpoint
           type: string
         port2_for_a_static_connection:
           default: ""
@@ -4733,6 +8387,35 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+      type: object
+    _packetbroker_put_request_pb_egress_profile_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        ipv4_permit:
+          items:
+            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner'
+          type: array
+        ipv4_deny:
+          items:
+            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner'
+          type: array
+        ipv6_permit:
+          items:
+            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner'
+          type: array
+        ipv6_deny:
+          items:
+            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner'
+          type: array
       type: object
     _config_put_request_extended_community_list:
       properties:
@@ -4774,11 +8457,55 @@ components:
           default: false
           description: Denotes a Switch Bundle
           type: boolean
+        group:
+          default: ""
+          description: Group
+          type: string
+        is_public:
+          default: false
+          description: Denotes a shared Switch Bundle
+          type: boolean
       type: object
     _config_put_request_eth_device_profiles:
       properties:
         eth_device_profiles_name:
           $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name'
+      type: object
+    _config_put_request_feature_flag_feature_flag_name_feature_inner:
+      properties:
+        feature:
+          default: ""
+          description: Feature name
+          type: string
+        enabled:
+          default: false
+          description: Controls if the feature is turned on or off
+          type: boolean
+      type: object
+    _config_put_request_service_port_profile:
+      properties:
+        service_port_profile_name:
+          $ref: '#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name'
+      type: object
+    _config_put_request_endpoint_endpoint_name_children_inner:
+      properties:
+        child_num_endpoint:
+          default: ""
+          description: Endpoint associated with the Child
+          type: string
+        child_num_endpoint_ref_type_:
+          description: Object type for child_num_endpoint field
+          enum:
+          - endpoint
+          type: string
+        child_num_device:
+          default: ""
+          description: Device associated with the Child
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _config_put_request_static_ip_static_ip_name:
       properties:
@@ -4834,6 +8561,7 @@ components:
           description: Object type for switch field
           enum:
           - switchpoint
+          - endpoint
           type: string
         port:
           default: ""

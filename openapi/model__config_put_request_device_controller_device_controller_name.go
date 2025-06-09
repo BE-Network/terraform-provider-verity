@@ -39,7 +39,7 @@ type ConfigPutRequestDeviceControllerDeviceControllerName struct {
 	SnmpCommunityString *string `json:"snmp_community_string,omitempty"`
 	// Uplink Port of Managed Device
 	UplinkPort *string `json:"uplink_port,omitempty"`
-	// The unique identifier associated with the managed device.
+	// Optional unless Located By is \"LLDP\" or Device managed as \"Active SFP\". Must be either the chassis-id or the hostname of the LLDP from the managed device. Used to detect connections between managed devices. If blank, the chassis-id detected by the Device Controller via SNMP/CLI is used
 	LldpSearchString *string `json:"lldp_search_string,omitempty"`
 	// Service Tag or Serial Number to identify device for Zero Touch Provisioning
 	ZtpIdentification *string `json:"ztp_identification,omitempty"`
@@ -63,7 +63,7 @@ type ConfigPutRequestDeviceControllerDeviceControllerName struct {
 	ManagedOnNativeVlan *bool `json:"managed_on_native_vlan,omitempty"`
 	// SDLC that Device Controller belongs to
 	Sdlc *string `json:"sdlc,omitempty"`
-	// Switchpoint reference
+	// Endpoint reference
 	Switchpoint *string `json:"switchpoint,omitempty"`
 	// Object type for switchpoint field
 	SwitchpointRefType *string `json:"switchpoint_ref_type_,omitempty"`
@@ -89,6 +89,22 @@ type ConfigPutRequestDeviceControllerDeviceControllerName struct {
 	PassphraseEncrypted *string `json:"passphrase_encrypted,omitempty"`
 	// Password
 	PrivatePasswordEncrypted *string `json:"private_password_encrypted,omitempty"`
+	// Device managed as
+	DeviceManagedAs *string `json:"device_managed_as,omitempty"`
+	// Endpoint locating the Switch to be controlled
+	Switch *string `json:"switch,omitempty"`
+	// Object type for switch field
+	SwitchRefType *string `json:"switch_ref_type_,omitempty"`
+	// Connect a Service
+	ConnectionService *string `json:"connection_service,omitempty"`
+	// Object type for connection_service field
+	ConnectionServiceRefType *string `json:"connection_service_ref_type_,omitempty"`
+	// Port locating the Switch to be controlled
+	Port *string `json:"port,omitempty"`
+	// SFP MAC Address or SN
+	SfpMacAddressOrSn *string `json:"sfp_mac_address_or_sn,omitempty"`
+	// Indicates if the direct interface expects tagged or untagged packets
+	UsesTaggedPackets *bool `json:"uses_tagged_packets,omitempty"`
 }
 
 // NewConfigPutRequestDeviceControllerDeviceControllerName instantiates a new ConfigPutRequestDeviceControllerDeviceControllerName object
@@ -111,9 +127,9 @@ func NewConfigPutRequestDeviceControllerDeviceControllerName() *ConfigPutRequest
 	this.SwitchIpAndMask = &switchIpAndMask
 	var switchGateway string = ""
 	this.SwitchGateway = &switchGateway
-	var commType string = "gnmi"
+	var commType string = "snmpv2"
 	this.CommType = &commType
-	var snmpCommunityString string = "private"
+	var snmpCommunityString string = ""
 	this.SnmpCommunityString = &snmpCommunityString
 	var uplinkPort string = ""
 	this.UplinkPort = &uplinkPort
@@ -125,7 +141,7 @@ func NewConfigPutRequestDeviceControllerDeviceControllerName() *ConfigPutRequest
 	this.LocatedBy = &locatedBy
 	var powerState string = "on"
 	this.PowerState = &powerState
-	var communicationMode string = "sonic"
+	var communicationMode string = "generic_snmp"
 	this.CommunicationMode = &communicationMode
 	var cliAccessMode string = "SSH"
 	this.CliAccessMode = &cliAccessMode
@@ -137,7 +153,7 @@ func NewConfigPutRequestDeviceControllerDeviceControllerName() *ConfigPutRequest
 	this.EnablePassword = &enablePassword
 	var sshKeyOrPassword string = ""
 	this.SshKeyOrPassword = &sshKeyOrPassword
-	var managedOnNativeVlan bool = true
+	var managedOnNativeVlan bool = false
 	this.ManagedOnNativeVlan = &managedOnNativeVlan
 	var sdlc string = ""
 	this.Sdlc = &sdlc
@@ -165,6 +181,18 @@ func NewConfigPutRequestDeviceControllerDeviceControllerName() *ConfigPutRequest
 	this.PassphraseEncrypted = &passphraseEncrypted
 	var privatePasswordEncrypted string = ""
 	this.PrivatePasswordEncrypted = &privatePasswordEncrypted
+	var deviceManagedAs string = "switch"
+	this.DeviceManagedAs = &deviceManagedAs
+	var switch_ string = ""
+	this.Switch = &switch_
+	var connectionService string = ""
+	this.ConnectionService = &connectionService
+	var port string = ""
+	this.Port = &port
+	var sfpMacAddressOrSn string = ""
+	this.SfpMacAddressOrSn = &sfpMacAddressOrSn
+	var usesTaggedPackets bool = true
+	this.UsesTaggedPackets = &usesTaggedPackets
 	return &this
 }
 
@@ -187,9 +215,9 @@ func NewConfigPutRequestDeviceControllerDeviceControllerNameWithDefaults() *Conf
 	this.SwitchIpAndMask = &switchIpAndMask
 	var switchGateway string = ""
 	this.SwitchGateway = &switchGateway
-	var commType string = "gnmi"
+	var commType string = "snmpv2"
 	this.CommType = &commType
-	var snmpCommunityString string = "private"
+	var snmpCommunityString string = ""
 	this.SnmpCommunityString = &snmpCommunityString
 	var uplinkPort string = ""
 	this.UplinkPort = &uplinkPort
@@ -201,7 +229,7 @@ func NewConfigPutRequestDeviceControllerDeviceControllerNameWithDefaults() *Conf
 	this.LocatedBy = &locatedBy
 	var powerState string = "on"
 	this.PowerState = &powerState
-	var communicationMode string = "sonic"
+	var communicationMode string = "generic_snmp"
 	this.CommunicationMode = &communicationMode
 	var cliAccessMode string = "SSH"
 	this.CliAccessMode = &cliAccessMode
@@ -213,7 +241,7 @@ func NewConfigPutRequestDeviceControllerDeviceControllerNameWithDefaults() *Conf
 	this.EnablePassword = &enablePassword
 	var sshKeyOrPassword string = ""
 	this.SshKeyOrPassword = &sshKeyOrPassword
-	var managedOnNativeVlan bool = true
+	var managedOnNativeVlan bool = false
 	this.ManagedOnNativeVlan = &managedOnNativeVlan
 	var sdlc string = ""
 	this.Sdlc = &sdlc
@@ -241,6 +269,18 @@ func NewConfigPutRequestDeviceControllerDeviceControllerNameWithDefaults() *Conf
 	this.PassphraseEncrypted = &passphraseEncrypted
 	var privatePasswordEncrypted string = ""
 	this.PrivatePasswordEncrypted = &privatePasswordEncrypted
+	var deviceManagedAs string = "switch"
+	this.DeviceManagedAs = &deviceManagedAs
+	var switch_ string = ""
+	this.Switch = &switch_
+	var connectionService string = ""
+	this.ConnectionService = &connectionService
+	var port string = ""
+	this.Port = &port
+	var sfpMacAddressOrSn string = ""
+	this.SfpMacAddressOrSn = &sfpMacAddressOrSn
+	var usesTaggedPackets bool = true
+	this.UsesTaggedPackets = &usesTaggedPackets
 	return &this
 }
 
@@ -1364,6 +1404,262 @@ func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetPrivatePasswor
 	o.PrivatePasswordEncrypted = &v
 }
 
+// GetDeviceManagedAs returns the DeviceManagedAs field value if set, zero value otherwise.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetDeviceManagedAs() string {
+	if o == nil || IsNil(o.DeviceManagedAs) {
+		var ret string
+		return ret
+	}
+	return *o.DeviceManagedAs
+}
+
+// GetDeviceManagedAsOk returns a tuple with the DeviceManagedAs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetDeviceManagedAsOk() (*string, bool) {
+	if o == nil || IsNil(o.DeviceManagedAs) {
+		return nil, false
+	}
+	return o.DeviceManagedAs, true
+}
+
+// HasDeviceManagedAs returns a boolean if a field has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasDeviceManagedAs() bool {
+	if o != nil && !IsNil(o.DeviceManagedAs) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeviceManagedAs gets a reference to the given string and assigns it to the DeviceManagedAs field.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetDeviceManagedAs(v string) {
+	o.DeviceManagedAs = &v
+}
+
+// GetSwitch returns the Switch field value if set, zero value otherwise.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSwitch() string {
+	if o == nil || IsNil(o.Switch) {
+		var ret string
+		return ret
+	}
+	return *o.Switch
+}
+
+// GetSwitchOk returns a tuple with the Switch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSwitchOk() (*string, bool) {
+	if o == nil || IsNil(o.Switch) {
+		return nil, false
+	}
+	return o.Switch, true
+}
+
+// HasSwitch returns a boolean if a field has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasSwitch() bool {
+	if o != nil && !IsNil(o.Switch) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitch gets a reference to the given string and assigns it to the Switch field.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetSwitch(v string) {
+	o.Switch = &v
+}
+
+// GetSwitchRefType returns the SwitchRefType field value if set, zero value otherwise.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSwitchRefType() string {
+	if o == nil || IsNil(o.SwitchRefType) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchRefType
+}
+
+// GetSwitchRefTypeOk returns a tuple with the SwitchRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSwitchRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchRefType) {
+		return nil, false
+	}
+	return o.SwitchRefType, true
+}
+
+// HasSwitchRefType returns a boolean if a field has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasSwitchRefType() bool {
+	if o != nil && !IsNil(o.SwitchRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchRefType gets a reference to the given string and assigns it to the SwitchRefType field.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetSwitchRefType(v string) {
+	o.SwitchRefType = &v
+}
+
+// GetConnectionService returns the ConnectionService field value if set, zero value otherwise.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetConnectionService() string {
+	if o == nil || IsNil(o.ConnectionService) {
+		var ret string
+		return ret
+	}
+	return *o.ConnectionService
+}
+
+// GetConnectionServiceOk returns a tuple with the ConnectionService field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetConnectionServiceOk() (*string, bool) {
+	if o == nil || IsNil(o.ConnectionService) {
+		return nil, false
+	}
+	return o.ConnectionService, true
+}
+
+// HasConnectionService returns a boolean if a field has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasConnectionService() bool {
+	if o != nil && !IsNil(o.ConnectionService) {
+		return true
+	}
+
+	return false
+}
+
+// SetConnectionService gets a reference to the given string and assigns it to the ConnectionService field.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetConnectionService(v string) {
+	o.ConnectionService = &v
+}
+
+// GetConnectionServiceRefType returns the ConnectionServiceRefType field value if set, zero value otherwise.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetConnectionServiceRefType() string {
+	if o == nil || IsNil(o.ConnectionServiceRefType) {
+		var ret string
+		return ret
+	}
+	return *o.ConnectionServiceRefType
+}
+
+// GetConnectionServiceRefTypeOk returns a tuple with the ConnectionServiceRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetConnectionServiceRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ConnectionServiceRefType) {
+		return nil, false
+	}
+	return o.ConnectionServiceRefType, true
+}
+
+// HasConnectionServiceRefType returns a boolean if a field has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasConnectionServiceRefType() bool {
+	if o != nil && !IsNil(o.ConnectionServiceRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetConnectionServiceRefType gets a reference to the given string and assigns it to the ConnectionServiceRefType field.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetConnectionServiceRefType(v string) {
+	o.ConnectionServiceRefType = &v
+}
+
+// GetPort returns the Port field value if set, zero value otherwise.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetPort() string {
+	if o == nil || IsNil(o.Port) {
+		var ret string
+		return ret
+	}
+	return *o.Port
+}
+
+// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetPortOk() (*string, bool) {
+	if o == nil || IsNil(o.Port) {
+		return nil, false
+	}
+	return o.Port, true
+}
+
+// HasPort returns a boolean if a field has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasPort() bool {
+	if o != nil && !IsNil(o.Port) {
+		return true
+	}
+
+	return false
+}
+
+// SetPort gets a reference to the given string and assigns it to the Port field.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetPort(v string) {
+	o.Port = &v
+}
+
+// GetSfpMacAddressOrSn returns the SfpMacAddressOrSn field value if set, zero value otherwise.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSfpMacAddressOrSn() string {
+	if o == nil || IsNil(o.SfpMacAddressOrSn) {
+		var ret string
+		return ret
+	}
+	return *o.SfpMacAddressOrSn
+}
+
+// GetSfpMacAddressOrSnOk returns a tuple with the SfpMacAddressOrSn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSfpMacAddressOrSnOk() (*string, bool) {
+	if o == nil || IsNil(o.SfpMacAddressOrSn) {
+		return nil, false
+	}
+	return o.SfpMacAddressOrSn, true
+}
+
+// HasSfpMacAddressOrSn returns a boolean if a field has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasSfpMacAddressOrSn() bool {
+	if o != nil && !IsNil(o.SfpMacAddressOrSn) {
+		return true
+	}
+
+	return false
+}
+
+// SetSfpMacAddressOrSn gets a reference to the given string and assigns it to the SfpMacAddressOrSn field.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetSfpMacAddressOrSn(v string) {
+	o.SfpMacAddressOrSn = &v
+}
+
+// GetUsesTaggedPackets returns the UsesTaggedPackets field value if set, zero value otherwise.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetUsesTaggedPackets() bool {
+	if o == nil || IsNil(o.UsesTaggedPackets) {
+		var ret bool
+		return ret
+	}
+	return *o.UsesTaggedPackets
+}
+
+// GetUsesTaggedPacketsOk returns a tuple with the UsesTaggedPackets field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetUsesTaggedPacketsOk() (*bool, bool) {
+	if o == nil || IsNil(o.UsesTaggedPackets) {
+		return nil, false
+	}
+	return o.UsesTaggedPackets, true
+}
+
+// HasUsesTaggedPackets returns a boolean if a field has been set.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasUsesTaggedPackets() bool {
+	if o != nil && !IsNil(o.UsesTaggedPackets) {
+		return true
+	}
+
+	return false
+}
+
+// SetUsesTaggedPackets gets a reference to the given bool and assigns it to the UsesTaggedPackets field.
+func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetUsesTaggedPackets(v bool) {
+	o.UsesTaggedPackets = &v
+}
+
 func (o ConfigPutRequestDeviceControllerDeviceControllerName) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -1478,6 +1774,30 @@ func (o ConfigPutRequestDeviceControllerDeviceControllerName) ToMap() (map[strin
 	}
 	if !IsNil(o.PrivatePasswordEncrypted) {
 		toSerialize["private_password_encrypted"] = o.PrivatePasswordEncrypted
+	}
+	if !IsNil(o.DeviceManagedAs) {
+		toSerialize["device_managed_as"] = o.DeviceManagedAs
+	}
+	if !IsNil(o.Switch) {
+		toSerialize["switch"] = o.Switch
+	}
+	if !IsNil(o.SwitchRefType) {
+		toSerialize["switch_ref_type_"] = o.SwitchRefType
+	}
+	if !IsNil(o.ConnectionService) {
+		toSerialize["connection_service"] = o.ConnectionService
+	}
+	if !IsNil(o.ConnectionServiceRefType) {
+		toSerialize["connection_service_ref_type_"] = o.ConnectionServiceRefType
+	}
+	if !IsNil(o.Port) {
+		toSerialize["port"] = o.Port
+	}
+	if !IsNil(o.SfpMacAddressOrSn) {
+		toSerialize["sfp_mac_address_or_sn"] = o.SfpMacAddressOrSn
+	}
+	if !IsNil(o.UsesTaggedPackets) {
+		toSerialize["uses_tagged_packets"] = o.UsesTaggedPackets
 	}
 	return toSerialize, nil
 }

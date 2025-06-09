@@ -31,7 +31,7 @@ type ConfigPutRequestSwitchpointSwitchpointName struct {
 	ReadOnlyMode *bool `json:"read_only_mode,omitempty"`
 	// Permission lock
 	Locked *bool `json:"locked,omitempty"`
-	// Disabled Ports
+	// Disabled Ports It's a comma separated list of ports to disable.
 	DisabledPorts *string `json:"disabled_ports,omitempty"`
 	// For Switch Endpoints. Denotes a Switch is managed out of band via the management port
 	OutOfBandManagement *bool `json:"out_of_band_management,omitempty"`

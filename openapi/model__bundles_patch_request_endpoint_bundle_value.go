@@ -30,6 +30,16 @@ type BundlesPatchRequestEndpointBundleValue struct {
 	EthPortPaths []BundlesPatchRequestEndpointBundleValueEthPortPathsInner `json:"eth_port_paths,omitempty"`
 	UserServices []BundlesPatchRequestEndpointBundleValueUserServicesInner `json:"user_services,omitempty"`
 	ObjectProperties *BundlesPatchRequestEndpointBundleValueObjectProperties `json:"object_properties,omitempty"`
+	RgServices []BundlesPatchRequestEndpointBundleValueRgServicesInner `json:"rg_services,omitempty"`
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+	Enable *bool `json:"enable,omitempty"`
+	// Voice Protocol: MGCP or SIP
+	Protocol *string `json:"protocol,omitempty"`
+	// Device Voice Settings for device
+	DeviceVoiceSettings *string `json:"device_voice_settings,omitempty"`
+	// Object type for device_voice_settings field
+	DeviceVoiceSettingsRefType *string `json:"device_voice_settings_ref_type_,omitempty"`
+	VoicePortProfilePaths []BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner `json:"voice_port_profile_paths,omitempty"`
 }
 
 // NewBundlesPatchRequestEndpointBundleValue instantiates a new BundlesPatchRequestEndpointBundleValue object
@@ -44,6 +54,12 @@ func NewBundlesPatchRequestEndpointBundleValue() *BundlesPatchRequestEndpointBun
 	this.DeviceSettings = &deviceSettings
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
+	var enable bool = false
+	this.Enable = &enable
+	var protocol string = "SIP"
+	this.Protocol = &protocol
+	var deviceVoiceSettings string = "voice_device_profile|(SIP Voice Device)|"
+	this.DeviceVoiceSettings = &deviceVoiceSettings
 	return &this
 }
 
@@ -58,6 +74,12 @@ func NewBundlesPatchRequestEndpointBundleValueWithDefaults() *BundlesPatchReques
 	this.DeviceSettings = &deviceSettings
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
+	var enable bool = false
+	this.Enable = &enable
+	var protocol string = "SIP"
+	this.Protocol = &protocol
+	var deviceVoiceSettings string = "voice_device_profile|(SIP Voice Device)|"
+	this.DeviceVoiceSettings = &deviceVoiceSettings
 	return &this
 }
 
@@ -285,6 +307,198 @@ func (o *BundlesPatchRequestEndpointBundleValue) SetObjectProperties(v BundlesPa
 	o.ObjectProperties = &v
 }
 
+// GetRgServices returns the RgServices field value if set, zero value otherwise.
+func (o *BundlesPatchRequestEndpointBundleValue) GetRgServices() []BundlesPatchRequestEndpointBundleValueRgServicesInner {
+	if o == nil || IsNil(o.RgServices) {
+		var ret []BundlesPatchRequestEndpointBundleValueRgServicesInner
+		return ret
+	}
+	return o.RgServices
+}
+
+// GetRgServicesOk returns a tuple with the RgServices field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) GetRgServicesOk() ([]BundlesPatchRequestEndpointBundleValueRgServicesInner, bool) {
+	if o == nil || IsNil(o.RgServices) {
+		return nil, false
+	}
+	return o.RgServices, true
+}
+
+// HasRgServices returns a boolean if a field has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) HasRgServices() bool {
+	if o != nil && !IsNil(o.RgServices) {
+		return true
+	}
+
+	return false
+}
+
+// SetRgServices gets a reference to the given []BundlesPatchRequestEndpointBundleValueRgServicesInner and assigns it to the RgServices field.
+func (o *BundlesPatchRequestEndpointBundleValue) SetRgServices(v []BundlesPatchRequestEndpointBundleValueRgServicesInner) {
+	o.RgServices = v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *BundlesPatchRequestEndpointBundleValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *BundlesPatchRequestEndpointBundleValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetProtocol returns the Protocol field value if set, zero value otherwise.
+func (o *BundlesPatchRequestEndpointBundleValue) GetProtocol() string {
+	if o == nil || IsNil(o.Protocol) {
+		var ret string
+		return ret
+	}
+	return *o.Protocol
+}
+
+// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) GetProtocolOk() (*string, bool) {
+	if o == nil || IsNil(o.Protocol) {
+		return nil, false
+	}
+	return o.Protocol, true
+}
+
+// HasProtocol returns a boolean if a field has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) HasProtocol() bool {
+	if o != nil && !IsNil(o.Protocol) {
+		return true
+	}
+
+	return false
+}
+
+// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
+func (o *BundlesPatchRequestEndpointBundleValue) SetProtocol(v string) {
+	o.Protocol = &v
+}
+
+// GetDeviceVoiceSettings returns the DeviceVoiceSettings field value if set, zero value otherwise.
+func (o *BundlesPatchRequestEndpointBundleValue) GetDeviceVoiceSettings() string {
+	if o == nil || IsNil(o.DeviceVoiceSettings) {
+		var ret string
+		return ret
+	}
+	return *o.DeviceVoiceSettings
+}
+
+// GetDeviceVoiceSettingsOk returns a tuple with the DeviceVoiceSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) GetDeviceVoiceSettingsOk() (*string, bool) {
+	if o == nil || IsNil(o.DeviceVoiceSettings) {
+		return nil, false
+	}
+	return o.DeviceVoiceSettings, true
+}
+
+// HasDeviceVoiceSettings returns a boolean if a field has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) HasDeviceVoiceSettings() bool {
+	if o != nil && !IsNil(o.DeviceVoiceSettings) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeviceVoiceSettings gets a reference to the given string and assigns it to the DeviceVoiceSettings field.
+func (o *BundlesPatchRequestEndpointBundleValue) SetDeviceVoiceSettings(v string) {
+	o.DeviceVoiceSettings = &v
+}
+
+// GetDeviceVoiceSettingsRefType returns the DeviceVoiceSettingsRefType field value if set, zero value otherwise.
+func (o *BundlesPatchRequestEndpointBundleValue) GetDeviceVoiceSettingsRefType() string {
+	if o == nil || IsNil(o.DeviceVoiceSettingsRefType) {
+		var ret string
+		return ret
+	}
+	return *o.DeviceVoiceSettingsRefType
+}
+
+// GetDeviceVoiceSettingsRefTypeOk returns a tuple with the DeviceVoiceSettingsRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) GetDeviceVoiceSettingsRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.DeviceVoiceSettingsRefType) {
+		return nil, false
+	}
+	return o.DeviceVoiceSettingsRefType, true
+}
+
+// HasDeviceVoiceSettingsRefType returns a boolean if a field has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) HasDeviceVoiceSettingsRefType() bool {
+	if o != nil && !IsNil(o.DeviceVoiceSettingsRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeviceVoiceSettingsRefType gets a reference to the given string and assigns it to the DeviceVoiceSettingsRefType field.
+func (o *BundlesPatchRequestEndpointBundleValue) SetDeviceVoiceSettingsRefType(v string) {
+	o.DeviceVoiceSettingsRefType = &v
+}
+
+// GetVoicePortProfilePaths returns the VoicePortProfilePaths field value if set, zero value otherwise.
+func (o *BundlesPatchRequestEndpointBundleValue) GetVoicePortProfilePaths() []BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner {
+	if o == nil || IsNil(o.VoicePortProfilePaths) {
+		var ret []BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner
+		return ret
+	}
+	return o.VoicePortProfilePaths
+}
+
+// GetVoicePortProfilePathsOk returns a tuple with the VoicePortProfilePaths field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) GetVoicePortProfilePathsOk() ([]BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner, bool) {
+	if o == nil || IsNil(o.VoicePortProfilePaths) {
+		return nil, false
+	}
+	return o.VoicePortProfilePaths, true
+}
+
+// HasVoicePortProfilePaths returns a boolean if a field has been set.
+func (o *BundlesPatchRequestEndpointBundleValue) HasVoicePortProfilePaths() bool {
+	if o != nil && !IsNil(o.VoicePortProfilePaths) {
+		return true
+	}
+
+	return false
+}
+
+// SetVoicePortProfilePaths gets a reference to the given []BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner and assigns it to the VoicePortProfilePaths field.
+func (o *BundlesPatchRequestEndpointBundleValue) SetVoicePortProfilePaths(v []BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) {
+	o.VoicePortProfilePaths = v
+}
+
 func (o BundlesPatchRequestEndpointBundleValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -315,6 +529,24 @@ func (o BundlesPatchRequestEndpointBundleValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.RgServices) {
+		toSerialize["rg_services"] = o.RgServices
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.Protocol) {
+		toSerialize["protocol"] = o.Protocol
+	}
+	if !IsNil(o.DeviceVoiceSettings) {
+		toSerialize["device_voice_settings"] = o.DeviceVoiceSettings
+	}
+	if !IsNil(o.DeviceVoiceSettingsRefType) {
+		toSerialize["device_voice_settings_ref_type_"] = o.DeviceVoiceSettingsRefType
+	}
+	if !IsNil(o.VoicePortProfilePaths) {
+		toSerialize["voice_port_profile_paths"] = o.VoicePortProfilePaths
 	}
 	return toSerialize, nil
 }

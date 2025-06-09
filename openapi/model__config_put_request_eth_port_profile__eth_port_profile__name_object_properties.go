@@ -23,6 +23,12 @@ type ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties struct {
 	Group *string `json:"group,omitempty"`
 	// Defines importance of Link Down on this port
 	PortMonitoring *string `json:"port_monitoring,omitempty"`
+	// Choose to sort by service name or by order of creation
+	SortByName *bool `json:"sort_by_name,omitempty"`
+	// Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint
+	Label *string `json:"label,omitempty"`
+	// Port Icon displayed ports provisioned with this Eth Port Profile but with no Port Icon defined in the endpoint
+	Icon *string `json:"icon,omitempty"`
 }
 
 // NewConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties instantiates a new ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties object
@@ -33,8 +39,14 @@ func NewConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties() *Conf
 	this := ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties{}
 	var group string = ""
 	this.Group = &group
-	var portMonitoring string = "high"
+	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
+	var sortByName bool = false
+	this.SortByName = &sortByName
+	var label string = ""
+	this.Label = &label
+	var icon string = "empty"
+	this.Icon = &icon
 	return &this
 }
 
@@ -45,8 +57,14 @@ func NewConfigPutRequestEthPortProfileEthPortProfileNameObjectPropertiesWithDefa
 	this := ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties{}
 	var group string = ""
 	this.Group = &group
-	var portMonitoring string = "high"
+	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
+	var sortByName bool = false
+	this.SortByName = &sortByName
+	var label string = ""
+	this.Label = &label
+	var icon string = "empty"
+	this.Icon = &icon
 	return &this
 }
 
@@ -114,6 +132,102 @@ func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) SetPo
 	o.PortMonitoring = &v
 }
 
+// GetSortByName returns the SortByName field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) GetSortByName() bool {
+	if o == nil || IsNil(o.SortByName) {
+		var ret bool
+		return ret
+	}
+	return *o.SortByName
+}
+
+// GetSortByNameOk returns a tuple with the SortByName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) GetSortByNameOk() (*bool, bool) {
+	if o == nil || IsNil(o.SortByName) {
+		return nil, false
+	}
+	return o.SortByName, true
+}
+
+// HasSortByName returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) HasSortByName() bool {
+	if o != nil && !IsNil(o.SortByName) {
+		return true
+	}
+
+	return false
+}
+
+// SetSortByName gets a reference to the given bool and assigns it to the SortByName field.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) SetSortByName(v bool) {
+	o.SortByName = &v
+}
+
+// GetLabel returns the Label field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) GetLabel() string {
+	if o == nil || IsNil(o.Label) {
+		var ret string
+		return ret
+	}
+	return *o.Label
+}
+
+// GetLabelOk returns a tuple with the Label field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) GetLabelOk() (*string, bool) {
+	if o == nil || IsNil(o.Label) {
+		return nil, false
+	}
+	return o.Label, true
+}
+
+// HasLabel returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) HasLabel() bool {
+	if o != nil && !IsNil(o.Label) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabel gets a reference to the given string and assigns it to the Label field.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) SetLabel(v string) {
+	o.Label = &v
+}
+
+// GetIcon returns the Icon field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) GetIcon() string {
+	if o == nil || IsNil(o.Icon) {
+		var ret string
+		return ret
+	}
+	return *o.Icon
+}
+
+// GetIconOk returns a tuple with the Icon field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) GetIconOk() (*string, bool) {
+	if o == nil || IsNil(o.Icon) {
+		return nil, false
+	}
+	return o.Icon, true
+}
+
+// HasIcon returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) HasIcon() bool {
+	if o != nil && !IsNil(o.Icon) {
+		return true
+	}
+
+	return false
+}
+
+// SetIcon gets a reference to the given string and assigns it to the Icon field.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) SetIcon(v string) {
+	o.Icon = &v
+}
+
 func (o ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -129,6 +243,15 @@ func (o ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties) ToMap(
 	}
 	if !IsNil(o.PortMonitoring) {
 		toSerialize["port_monitoring"] = o.PortMonitoring
+	}
+	if !IsNil(o.SortByName) {
+		toSerialize["sort_by_name"] = o.SortByName
+	}
+	if !IsNil(o.Label) {
+		toSerialize["label"] = o.Label
+	}
+	if !IsNil(o.Icon) {
+		toSerialize["icon"] = o.Icon
 	}
 	return toSerialize, nil
 }

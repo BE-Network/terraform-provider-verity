@@ -27,6 +27,14 @@ type ConfigPutRequestEthPortProfileEthPortProfileName struct {
 	TenantSliceManaged *bool `json:"tenant_slice_managed,omitempty"`
 	Services []ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner `json:"services,omitempty"`
 	ObjectProperties *ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties `json:"object_properties,omitempty"`
+	// Transparent LAN Service Trunk
+	Tls *bool `json:"tls,omitempty"`
+	// Choose a Service supporting Transparent LAN Service
+	TlsService *string `json:"tls_service,omitempty"`
+	// Object type for tls_service field
+	TlsServiceRefType *string `json:"tls_service_ref_type_,omitempty"`
+	// Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.
+	TrustedPort *bool `json:"trusted_port,omitempty"`
 }
 
 // NewConfigPutRequestEthPortProfileEthPortProfileName instantiates a new ConfigPutRequestEthPortProfileEthPortProfileName object
@@ -41,6 +49,12 @@ func NewConfigPutRequestEthPortProfileEthPortProfileName() *ConfigPutRequestEthP
 	this.Enable = &enable
 	var tenantSliceManaged bool = false
 	this.TenantSliceManaged = &tenantSliceManaged
+	var tls bool = false
+	this.Tls = &tls
+	var tlsService string = ""
+	this.TlsService = &tlsService
+	var trustedPort bool = false
+	this.TrustedPort = &trustedPort
 	return &this
 }
 
@@ -55,6 +69,12 @@ func NewConfigPutRequestEthPortProfileEthPortProfileNameWithDefaults() *ConfigPu
 	this.Enable = &enable
 	var tenantSliceManaged bool = false
 	this.TenantSliceManaged = &tenantSliceManaged
+	var tls bool = false
+	this.Tls = &tls
+	var tlsService string = ""
+	this.TlsService = &tlsService
+	var trustedPort bool = false
+	this.TrustedPort = &trustedPort
 	return &this
 }
 
@@ -218,6 +238,134 @@ func (o *ConfigPutRequestEthPortProfileEthPortProfileName) SetObjectProperties(v
 	o.ObjectProperties = &v
 }
 
+// GetTls returns the Tls field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) GetTls() bool {
+	if o == nil || IsNil(o.Tls) {
+		var ret bool
+		return ret
+	}
+	return *o.Tls
+}
+
+// GetTlsOk returns a tuple with the Tls field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) GetTlsOk() (*bool, bool) {
+	if o == nil || IsNil(o.Tls) {
+		return nil, false
+	}
+	return o.Tls, true
+}
+
+// HasTls returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) HasTls() bool {
+	if o != nil && !IsNil(o.Tls) {
+		return true
+	}
+
+	return false
+}
+
+// SetTls gets a reference to the given bool and assigns it to the Tls field.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) SetTls(v bool) {
+	o.Tls = &v
+}
+
+// GetTlsService returns the TlsService field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) GetTlsService() string {
+	if o == nil || IsNil(o.TlsService) {
+		var ret string
+		return ret
+	}
+	return *o.TlsService
+}
+
+// GetTlsServiceOk returns a tuple with the TlsService field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) GetTlsServiceOk() (*string, bool) {
+	if o == nil || IsNil(o.TlsService) {
+		return nil, false
+	}
+	return o.TlsService, true
+}
+
+// HasTlsService returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) HasTlsService() bool {
+	if o != nil && !IsNil(o.TlsService) {
+		return true
+	}
+
+	return false
+}
+
+// SetTlsService gets a reference to the given string and assigns it to the TlsService field.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) SetTlsService(v string) {
+	o.TlsService = &v
+}
+
+// GetTlsServiceRefType returns the TlsServiceRefType field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) GetTlsServiceRefType() string {
+	if o == nil || IsNil(o.TlsServiceRefType) {
+		var ret string
+		return ret
+	}
+	return *o.TlsServiceRefType
+}
+
+// GetTlsServiceRefTypeOk returns a tuple with the TlsServiceRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) GetTlsServiceRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TlsServiceRefType) {
+		return nil, false
+	}
+	return o.TlsServiceRefType, true
+}
+
+// HasTlsServiceRefType returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) HasTlsServiceRefType() bool {
+	if o != nil && !IsNil(o.TlsServiceRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTlsServiceRefType gets a reference to the given string and assigns it to the TlsServiceRefType field.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) SetTlsServiceRefType(v string) {
+	o.TlsServiceRefType = &v
+}
+
+// GetTrustedPort returns the TrustedPort field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) GetTrustedPort() bool {
+	if o == nil || IsNil(o.TrustedPort) {
+		var ret bool
+		return ret
+	}
+	return *o.TrustedPort
+}
+
+// GetTrustedPortOk returns a tuple with the TrustedPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) GetTrustedPortOk() (*bool, bool) {
+	if o == nil || IsNil(o.TrustedPort) {
+		return nil, false
+	}
+	return o.TrustedPort, true
+}
+
+// HasTrustedPort returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) HasTrustedPort() bool {
+	if o != nil && !IsNil(o.TrustedPort) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrustedPort gets a reference to the given bool and assigns it to the TrustedPort field.
+func (o *ConfigPutRequestEthPortProfileEthPortProfileName) SetTrustedPort(v bool) {
+	o.TrustedPort = &v
+}
+
 func (o ConfigPutRequestEthPortProfileEthPortProfileName) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -242,6 +390,18 @@ func (o ConfigPutRequestEthPortProfileEthPortProfileName) ToMap() (map[string]in
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.Tls) {
+		toSerialize["tls"] = o.Tls
+	}
+	if !IsNil(o.TlsService) {
+		toSerialize["tls_service"] = o.TlsService
+	}
+	if !IsNil(o.TlsServiceRefType) {
+		toSerialize["tls_service_ref_type_"] = o.TlsServiceRefType
+	}
+	if !IsNil(o.TrustedPort) {
+		toSerialize["trusted_port"] = o.TrustedPort
 	}
 	return toSerialize, nil
 }

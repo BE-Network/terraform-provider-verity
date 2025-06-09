@@ -40,6 +40,18 @@ type ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName struct {
 	// Enable Cut-through Switching on all Switches
 	CutThroughSwitching *bool `json:"cut_through_switching,omitempty"`
 	ObjectProperties *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties `json:"object_properties,omitempty"`
+	// Hold Timer
+	HoldTimer NullableInt32 `json:"hold_timer,omitempty"`
+	// Required for AVB, PTP and Cobranet Support
+	DisableTcpUdpLearnedPacketAcceleration *bool `json:"disable_tcp_udp_learned_packet_acceleration,omitempty"`
+	// Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds
+	MacAgingTimerOverride NullableInt32 `json:"mac_aging_timer_override,omitempty"`
+	// STP per switch, priority are in 4096 increments, the lower the number, the higher the priority.
+	SpanningTreePriority *string `json:"spanning_tree_priority,omitempty"`
+	// Packet Queue for device
+	PacketQueueId *string `json:"packet_queue_id,omitempty"`
+	// Object type for packet_queue_id field
+	PacketQueueIdRefType *string `json:"packet_queue_id_ref_type_,omitempty"`
 }
 
 // NewConfigPutRequestEthDeviceProfilesEthDeviceProfilesName instantiates a new ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName object
@@ -66,6 +78,14 @@ func NewConfigPutRequestEthDeviceProfilesEthDeviceProfilesName() *ConfigPutReque
 	this.Rocev2 = &rocev2
 	var cutThroughSwitching bool = false
 	this.CutThroughSwitching = &cutThroughSwitching
+	var holdTimer int32 = 0
+	this.HoldTimer = *NewNullableInt32(&holdTimer)
+	var disableTcpUdpLearnedPacketAcceleration bool = false
+	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
+	var spanningTreePriority string = "byLevel"
+	this.SpanningTreePriority = &spanningTreePriority
+	var packetQueueId string = "packet_queue|(Packet Queue)|"
+	this.PacketQueueId = &packetQueueId
 	return &this
 }
 
@@ -92,6 +112,14 @@ func NewConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameWithDefaults() *Co
 	this.Rocev2 = &rocev2
 	var cutThroughSwitching bool = false
 	this.CutThroughSwitching = &cutThroughSwitching
+	var holdTimer int32 = 0
+	this.HoldTimer = *NewNullableInt32(&holdTimer)
+	var disableTcpUdpLearnedPacketAcceleration bool = false
+	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
+	var spanningTreePriority string = "byLevel"
+	this.SpanningTreePriority = &spanningTreePriority
+	var packetQueueId string = "packet_queue|(Packet Queue)|"
+	this.PacketQueueId = &packetQueueId
 	return &this
 }
 
@@ -467,6 +495,218 @@ func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetObjectProper
 	o.ObjectProperties = &v
 }
 
+// GetHoldTimer returns the HoldTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetHoldTimer() int32 {
+	if o == nil || IsNil(o.HoldTimer.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.HoldTimer.Get()
+}
+
+// GetHoldTimerOk returns a tuple with the HoldTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetHoldTimerOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.HoldTimer.Get(), o.HoldTimer.IsSet()
+}
+
+// HasHoldTimer returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasHoldTimer() bool {
+	if o != nil && o.HoldTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetHoldTimer gets a reference to the given NullableInt32 and assigns it to the HoldTimer field.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetHoldTimer(v int32) {
+	o.HoldTimer.Set(&v)
+}
+// SetHoldTimerNil sets the value for HoldTimer to be an explicit nil
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetHoldTimerNil() {
+	o.HoldTimer.Set(nil)
+}
+
+// UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) UnsetHoldTimer() {
+	o.HoldTimer.Unset()
+}
+
+// GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetDisableTcpUdpLearnedPacketAcceleration() bool {
+	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		var ret bool
+		return ret
+	}
+	return *o.DisableTcpUdpLearnedPacketAcceleration
+}
+
+// GetDisableTcpUdpLearnedPacketAccelerationOk returns a tuple with the DisableTcpUdpLearnedPacketAcceleration field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetDisableTcpUdpLearnedPacketAccelerationOk() (*bool, bool) {
+	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		return nil, false
+	}
+	return o.DisableTcpUdpLearnedPacketAcceleration, true
+}
+
+// HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasDisableTcpUdpLearnedPacketAcceleration() bool {
+	if o != nil && !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisableTcpUdpLearnedPacketAcceleration gets a reference to the given bool and assigns it to the DisableTcpUdpLearnedPacketAcceleration field.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetDisableTcpUdpLearnedPacketAcceleration(v bool) {
+	o.DisableTcpUdpLearnedPacketAcceleration = &v
+}
+
+// GetMacAgingTimerOverride returns the MacAgingTimerOverride field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetMacAgingTimerOverride() int32 {
+	if o == nil || IsNil(o.MacAgingTimerOverride.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.MacAgingTimerOverride.Get()
+}
+
+// GetMacAgingTimerOverrideOk returns a tuple with the MacAgingTimerOverride field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetMacAgingTimerOverrideOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MacAgingTimerOverride.Get(), o.MacAgingTimerOverride.IsSet()
+}
+
+// HasMacAgingTimerOverride returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasMacAgingTimerOverride() bool {
+	if o != nil && o.MacAgingTimerOverride.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMacAgingTimerOverride gets a reference to the given NullableInt32 and assigns it to the MacAgingTimerOverride field.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetMacAgingTimerOverride(v int32) {
+	o.MacAgingTimerOverride.Set(&v)
+}
+// SetMacAgingTimerOverrideNil sets the value for MacAgingTimerOverride to be an explicit nil
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetMacAgingTimerOverrideNil() {
+	o.MacAgingTimerOverride.Set(nil)
+}
+
+// UnsetMacAgingTimerOverride ensures that no value is present for MacAgingTimerOverride, not even an explicit nil
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) UnsetMacAgingTimerOverride() {
+	o.MacAgingTimerOverride.Unset()
+}
+
+// GetSpanningTreePriority returns the SpanningTreePriority field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetSpanningTreePriority() string {
+	if o == nil || IsNil(o.SpanningTreePriority) {
+		var ret string
+		return ret
+	}
+	return *o.SpanningTreePriority
+}
+
+// GetSpanningTreePriorityOk returns a tuple with the SpanningTreePriority field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetSpanningTreePriorityOk() (*string, bool) {
+	if o == nil || IsNil(o.SpanningTreePriority) {
+		return nil, false
+	}
+	return o.SpanningTreePriority, true
+}
+
+// HasSpanningTreePriority returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasSpanningTreePriority() bool {
+	if o != nil && !IsNil(o.SpanningTreePriority) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpanningTreePriority gets a reference to the given string and assigns it to the SpanningTreePriority field.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetSpanningTreePriority(v string) {
+	o.SpanningTreePriority = &v
+}
+
+// GetPacketQueueId returns the PacketQueueId field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetPacketQueueId() string {
+	if o == nil || IsNil(o.PacketQueueId) {
+		var ret string
+		return ret
+	}
+	return *o.PacketQueueId
+}
+
+// GetPacketQueueIdOk returns a tuple with the PacketQueueId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetPacketQueueIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueueId) {
+		return nil, false
+	}
+	return o.PacketQueueId, true
+}
+
+// HasPacketQueueId returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasPacketQueueId() bool {
+	if o != nil && !IsNil(o.PacketQueueId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketQueueId gets a reference to the given string and assigns it to the PacketQueueId field.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetPacketQueueId(v string) {
+	o.PacketQueueId = &v
+}
+
+// GetPacketQueueIdRefType returns the PacketQueueIdRefType field value if set, zero value otherwise.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetPacketQueueIdRefType() string {
+	if o == nil || IsNil(o.PacketQueueIdRefType) {
+		var ret string
+		return ret
+	}
+	return *o.PacketQueueIdRefType
+}
+
+// GetPacketQueueIdRefTypeOk returns a tuple with the PacketQueueIdRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetPacketQueueIdRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueueIdRefType) {
+		return nil, false
+	}
+	return o.PacketQueueIdRefType, true
+}
+
+// HasPacketQueueIdRefType returns a boolean if a field has been set.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasPacketQueueIdRefType() bool {
+	if o != nil && !IsNil(o.PacketQueueIdRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketQueueIdRefType gets a reference to the given string and assigns it to the PacketQueueIdRefType field.
+func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetPacketQueueIdRefType(v string) {
+	o.PacketQueueIdRefType = &v
+}
+
 func (o ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -509,6 +749,24 @@ func (o ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) ToMap() (map[str
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if o.HoldTimer.IsSet() {
+		toSerialize["hold_timer"] = o.HoldTimer.Get()
+	}
+	if !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		toSerialize["disable_tcp_udp_learned_packet_acceleration"] = o.DisableTcpUdpLearnedPacketAcceleration
+	}
+	if o.MacAgingTimerOverride.IsSet() {
+		toSerialize["mac_aging_timer_override"] = o.MacAgingTimerOverride.Get()
+	}
+	if !IsNil(o.SpanningTreePriority) {
+		toSerialize["spanning_tree_priority"] = o.SpanningTreePriority
+	}
+	if !IsNil(o.PacketQueueId) {
+		toSerialize["packet_queue_id"] = o.PacketQueueId
+	}
+	if !IsNil(o.PacketQueueIdRefType) {
+		toSerialize["packet_queue_id_ref_type_"] = o.PacketQueueIdRefType
 	}
 	return toSerialize, nil
 }

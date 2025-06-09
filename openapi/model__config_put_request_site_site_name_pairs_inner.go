@@ -21,11 +21,11 @@ var _ MappedNullable = &ConfigPutRequestSiteSiteNamePairsInner{}
 type ConfigPutRequestSiteSiteNamePairsInner struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
-	// Switchpoint
+	// Endpoint
 	Switchpoint1 *string `json:"switchpoint_1,omitempty"`
 	// Object type for switchpoint_1 field
 	Switchpoint1RefType *string `json:"switchpoint_1_ref_type_,omitempty"`
-	// Switchpoint
+	// Endpoint
 	Switchpoint2 *string `json:"switchpoint_2,omitempty"`
 	// Object type for switchpoint_2 field
 	Switchpoint2RefType *string `json:"switchpoint_2_ref_type_,omitempty"`

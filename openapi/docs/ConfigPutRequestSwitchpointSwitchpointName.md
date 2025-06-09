@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **ConnectedBundleRefType** | Pointer to **string** | Object type for connected_bundle field | [optional] 
 **ReadOnlyMode** | Pointer to **bool** | When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware | [optional] [default to false]
 **Locked** | Pointer to **bool** | Permission lock | [optional] [default to false]
-**DisabledPorts** | Pointer to **string** | Disabled Ports | [optional] [default to ""]
+**DisabledPorts** | Pointer to **string** | Disabled Ports It&#39;s a comma separated list of ports to disable. | [optional] [default to ""]
 **OutOfBandManagement** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch is managed out of band via the management port | [optional] [default to false]
 **Type** | Pointer to **string** | Type of Switchpoint | [optional] [default to "leaf"]
 **SuperPod** | Pointer to **string** | Super Pod  subgrouping of super spines and pods | [optional] [default to ""]

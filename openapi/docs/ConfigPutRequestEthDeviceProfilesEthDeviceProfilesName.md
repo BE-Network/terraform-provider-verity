@@ -15,6 +15,12 @@ Name | Type | Description | Notes
 **Rocev2** | Pointer to **bool** | Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs. | [optional] [default to false]
 **CutThroughSwitching** | Pointer to **bool** | Enable Cut-through Switching on all Switches | [optional] [default to false]
 **ObjectProperties** | Pointer to [**ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties**](ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties.md) |  | [optional] 
+**HoldTimer** | Pointer to **NullableInt32** | Hold Timer | [optional] [default to 0]
+**DisableTcpUdpLearnedPacketAcceleration** | Pointer to **bool** | Required for AVB, PTP and Cobranet Support | [optional] [default to false]
+**MacAgingTimerOverride** | Pointer to **NullableInt32** | Blank uses the Device&#39;s default; otherwise an integer between 1 to 1,000,000 seconds | [optional] 
+**SpanningTreePriority** | Pointer to **string** | STP per switch, priority are in 4096 increments, the lower the number, the higher the priority. | [optional] [default to "byLevel"]
+**PacketQueueId** | Pointer to **string** | Packet Queue for device | [optional] [default to "packet_queue|(Packet Queue)|"]
+**PacketQueueIdRefType** | Pointer to **string** | Object type for packet_queue_id field | [optional] 
 
 ## Methods
 
@@ -329,6 +335,176 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetHoldTimer
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetHoldTimer() int32`
+
+GetHoldTimer returns the HoldTimer field if non-nil, zero value otherwise.
+
+### GetHoldTimerOk
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetHoldTimerOk() (*int32, bool)`
+
+GetHoldTimerOk returns a tuple with the HoldTimer field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHoldTimer
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetHoldTimer(v int32)`
+
+SetHoldTimer sets HoldTimer field to given value.
+
+### HasHoldTimer
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasHoldTimer() bool`
+
+HasHoldTimer returns a boolean if a field has been set.
+
+### SetHoldTimerNil
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetHoldTimerNil(b bool)`
+
+ SetHoldTimerNil sets the value for HoldTimer to be an explicit nil
+
+### UnsetHoldTimer
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) UnsetHoldTimer()`
+
+UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
+### GetDisableTcpUdpLearnedPacketAcceleration
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetDisableTcpUdpLearnedPacketAcceleration() bool`
+
+GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field if non-nil, zero value otherwise.
+
+### GetDisableTcpUdpLearnedPacketAccelerationOk
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetDisableTcpUdpLearnedPacketAccelerationOk() (*bool, bool)`
+
+GetDisableTcpUdpLearnedPacketAccelerationOk returns a tuple with the DisableTcpUdpLearnedPacketAcceleration field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDisableTcpUdpLearnedPacketAcceleration
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetDisableTcpUdpLearnedPacketAcceleration(v bool)`
+
+SetDisableTcpUdpLearnedPacketAcceleration sets DisableTcpUdpLearnedPacketAcceleration field to given value.
+
+### HasDisableTcpUdpLearnedPacketAcceleration
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasDisableTcpUdpLearnedPacketAcceleration() bool`
+
+HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
+
+### GetMacAgingTimerOverride
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetMacAgingTimerOverride() int32`
+
+GetMacAgingTimerOverride returns the MacAgingTimerOverride field if non-nil, zero value otherwise.
+
+### GetMacAgingTimerOverrideOk
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetMacAgingTimerOverrideOk() (*int32, bool)`
+
+GetMacAgingTimerOverrideOk returns a tuple with the MacAgingTimerOverride field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMacAgingTimerOverride
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetMacAgingTimerOverride(v int32)`
+
+SetMacAgingTimerOverride sets MacAgingTimerOverride field to given value.
+
+### HasMacAgingTimerOverride
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasMacAgingTimerOverride() bool`
+
+HasMacAgingTimerOverride returns a boolean if a field has been set.
+
+### SetMacAgingTimerOverrideNil
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetMacAgingTimerOverrideNil(b bool)`
+
+ SetMacAgingTimerOverrideNil sets the value for MacAgingTimerOverride to be an explicit nil
+
+### UnsetMacAgingTimerOverride
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) UnsetMacAgingTimerOverride()`
+
+UnsetMacAgingTimerOverride ensures that no value is present for MacAgingTimerOverride, not even an explicit nil
+### GetSpanningTreePriority
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetSpanningTreePriority() string`
+
+GetSpanningTreePriority returns the SpanningTreePriority field if non-nil, zero value otherwise.
+
+### GetSpanningTreePriorityOk
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetSpanningTreePriorityOk() (*string, bool)`
+
+GetSpanningTreePriorityOk returns a tuple with the SpanningTreePriority field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpanningTreePriority
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetSpanningTreePriority(v string)`
+
+SetSpanningTreePriority sets SpanningTreePriority field to given value.
+
+### HasSpanningTreePriority
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasSpanningTreePriority() bool`
+
+HasSpanningTreePriority returns a boolean if a field has been set.
+
+### GetPacketQueueId
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetPacketQueueId() string`
+
+GetPacketQueueId returns the PacketQueueId field if non-nil, zero value otherwise.
+
+### GetPacketQueueIdOk
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetPacketQueueIdOk() (*string, bool)`
+
+GetPacketQueueIdOk returns a tuple with the PacketQueueId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPacketQueueId
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetPacketQueueId(v string)`
+
+SetPacketQueueId sets PacketQueueId field to given value.
+
+### HasPacketQueueId
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasPacketQueueId() bool`
+
+HasPacketQueueId returns a boolean if a field has been set.
+
+### GetPacketQueueIdRefType
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetPacketQueueIdRefType() string`
+
+GetPacketQueueIdRefType returns the PacketQueueIdRefType field if non-nil, zero value otherwise.
+
+### GetPacketQueueIdRefTypeOk
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) GetPacketQueueIdRefTypeOk() (*string, bool)`
+
+GetPacketQueueIdRefTypeOk returns a tuple with the PacketQueueIdRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPacketQueueIdRefType
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) SetPacketQueueIdRefType(v string)`
+
+SetPacketQueueIdRefType sets PacketQueueIdRefType field to given value.
+
+### HasPacketQueueIdRefType
+
+`func (o *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName) HasPacketQueueIdRefType() bool`
+
+HasPacketQueueIdRefType returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

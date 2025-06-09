@@ -4,11 +4,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Endpoint1ForAStaticConnection** | Pointer to **string** | 1st Switchpoint for a Static Connection | [optional] [default to ""]
+**Endpoint1ForAStaticConnection** | Pointer to **string** | 1st Endpoint for a Static Connection | [optional] [default to ""]
 **Endpoint1ForAStaticConnectionRefType** | Pointer to **string** | Object type for endpoint1_for_a_static_connection field | [optional] 
 **Port1ForAStaticConnection** | Pointer to **string** | 1st Port Number for a Static Connection | [optional] [default to ""]
 **Port1ForAStaticConnectionRefType** | Pointer to **string** | Object type for port1_for_a_static_connection field | [optional] 
-**Endpoint2ForAStaticConnection** | Pointer to **string** | 2nd Switchpoint for a Static Connection | [optional] [default to ""]
+**Endpoint2ForAStaticConnection** | Pointer to **string** | 2nd Endpoint for a Static Connection | [optional] [default to ""]
 **Endpoint2ForAStaticConnectionRefType** | Pointer to **string** | Object type for endpoint2_for_a_static_connection field | [optional] 
 **Port2ForAStaticConnection** | Pointer to **string** | 2nd Port Number for a Static Connection | [optional] [default to ""]
 **Port2ForAStaticConnectionRefType** | Pointer to **string** | Object type for port2_for_a_static_connection field | [optional] 

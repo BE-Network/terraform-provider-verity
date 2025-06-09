@@ -34,6 +34,7 @@ Name | Type | Description | Notes
 **Islands** | Pointer to [**[]ConfigPutRequestSiteSiteNameIslandsInner**](ConfigPutRequestSiteSiteNameIslandsInner.md) |  | [optional] 
 **Pairs** | Pointer to [**[]ConfigPutRequestSiteSiteNamePairsInner**](ConfigPutRequestSiteSiteNamePairsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**ConfigPutRequestSiteSiteNameObjectProperties**](ConfigPutRequestSiteSiteNameObjectProperties.md) |  | [optional] 
+**EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
 
 ## Methods
 
@@ -853,6 +854,31 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *ConfigPutRequestSiteSiteName) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetEnableDhcpSnooping
+
+`func (o *ConfigPutRequestSiteSiteName) GetEnableDhcpSnooping() bool`
+
+GetEnableDhcpSnooping returns the EnableDhcpSnooping field if non-nil, zero value otherwise.
+
+### GetEnableDhcpSnoopingOk
+
+`func (o *ConfigPutRequestSiteSiteName) GetEnableDhcpSnoopingOk() (*bool, bool)`
+
+GetEnableDhcpSnoopingOk returns a tuple with the EnableDhcpSnooping field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnableDhcpSnooping
+
+`func (o *ConfigPutRequestSiteSiteName) SetEnableDhcpSnooping(v bool)`
+
+SetEnableDhcpSnooping sets EnableDhcpSnooping field to given value.
+
+### HasEnableDhcpSnooping
+
+`func (o *ConfigPutRequestSiteSiteName) HasEnableDhcpSnooping() bool`
+
+HasEnableDhcpSnooping returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

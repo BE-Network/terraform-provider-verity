@@ -19,7 +19,7 @@ var _ MappedNullable = &ConfigPutRequestStaticConnectionsStaticConnectionsNameCo
 
 // ConfigPutRequestStaticConnectionsStaticConnectionsNameConnectionsInner struct for ConfigPutRequestStaticConnectionsStaticConnectionsNameConnectionsInner
 type ConfigPutRequestStaticConnectionsStaticConnectionsNameConnectionsInner struct {
-	// 1st Switchpoint for a Static Connection
+	// 1st Endpoint for a Static Connection
 	Endpoint1ForAStaticConnection *string `json:"endpoint1_for_a_static_connection,omitempty"`
 	// Object type for endpoint1_for_a_static_connection field
 	Endpoint1ForAStaticConnectionRefType *string `json:"endpoint1_for_a_static_connection_ref_type_,omitempty"`
@@ -27,7 +27,7 @@ type ConfigPutRequestStaticConnectionsStaticConnectionsNameConnectionsInner stru
 	Port1ForAStaticConnection *string `json:"port1_for_a_static_connection,omitempty"`
 	// Object type for port1_for_a_static_connection field
 	Port1ForAStaticConnectionRefType *string `json:"port1_for_a_static_connection_ref_type_,omitempty"`
-	// 2nd Switchpoint for a Static Connection
+	// 2nd Endpoint for a Static Connection
 	Endpoint2ForAStaticConnection *string `json:"endpoint2_for_a_static_connection,omitempty"`
 	// Object type for endpoint2_for_a_static_connection field
 	Endpoint2ForAStaticConnectionRefType *string `json:"endpoint2_for_a_static_connection_ref_type_,omitempty"`

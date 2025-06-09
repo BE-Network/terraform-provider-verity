@@ -171,7 +171,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+		objProps := openapi.ConfigPutRequestServiceServiceNameObjectProperties{}
 		op := plan.ObjectProperties[0]
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
@@ -419,7 +419,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+			objProps := openapi.ConfigPutRequestServiceServiceNameObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {

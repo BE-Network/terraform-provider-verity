@@ -11,22 +11,22 @@ Name | Type | Description | Notes
 **Gateway** | Pointer to **string** | Gateway | [optional] [default to ""]
 **SwitchIpAndMask** | Pointer to **string** | Switch IP and Mask | [optional] [default to ""]
 **SwitchGateway** | Pointer to **string** | Gateway of Managed Device | [optional] [default to ""]
-**CommType** | Pointer to **string** | Comm Type | [optional] [default to "gnmi"]
-**SnmpCommunityString** | Pointer to **string** | Comm Credentials | [optional] [default to "private"]
+**CommType** | Pointer to **string** | Comm Type | [optional] [default to "snmpv2"]
+**SnmpCommunityString** | Pointer to **string** | Comm Credentials | [optional] [default to ""]
 **UplinkPort** | Pointer to **string** | Uplink Port of Managed Device | [optional] [default to ""]
-**LldpSearchString** | Pointer to **string** | The unique identifier associated with the managed device. | [optional] [default to ""]
+**LldpSearchString** | Pointer to **string** | Optional unless Located By is \&quot;LLDP\&quot; or Device managed as \&quot;Active SFP\&quot;. Must be either the chassis-id or the hostname of the LLDP from the managed device. Used to detect connections between managed devices. If blank, the chassis-id detected by the Device Controller via SNMP/CLI is used | [optional] [default to ""]
 **ZtpIdentification** | Pointer to **string** | Service Tag or Serial Number to identify device for Zero Touch Provisioning | [optional] [default to ""]
 **LocatedBy** | Pointer to **string** | Controls how the system locates this Device within its LAN | [optional] [default to "LLDP"]
 **PowerState** | Pointer to **string** | Power state of Switch Controller | [optional] [default to "on"]
-**CommunicationMode** | Pointer to **string** | Communication Mode | [optional] [default to "sonic"]
+**CommunicationMode** | Pointer to **string** | Communication Mode | [optional] [default to "generic_snmp"]
 **CliAccessMode** | Pointer to **string** | CLI Access Mode | [optional] [default to "SSH"]
 **Username** | Pointer to **string** | Username | [optional] [default to ""]
 **Password** | Pointer to **string** | Password | [optional] [default to ""]
 **EnablePassword** | Pointer to **string** | Enable Password - to enable privileged CLI operations | [optional] [default to ""]
 **SshKeyOrPassword** | Pointer to **string** | SSH Key or Password | [optional] [default to ""]
-**ManagedOnNativeVlan** | Pointer to **bool** | Managed on native VLAN | [optional] [default to true]
+**ManagedOnNativeVlan** | Pointer to **bool** | Managed on native VLAN | [optional] [default to false]
 **Sdlc** | Pointer to **string** | SDLC that Device Controller belongs to | [optional] [default to ""]
-**Switchpoint** | Pointer to **string** | Switchpoint reference | [optional] [default to ""]
+**Switchpoint** | Pointer to **string** | Endpoint reference | [optional] [default to ""]
 **SwitchpointRefType** | Pointer to **string** | Object type for switchpoint field | [optional] 
 **SecurityType** | Pointer to **string** | Security level | [optional] [default to "noAuthNoPriv"]
 **Snmpv3Username** | Pointer to **string** | Username | [optional] [default to ""]
@@ -39,6 +39,14 @@ Name | Type | Description | Notes
 **SshKeyOrPasswordEncrypted** | Pointer to **string** | SSH Key or Password | [optional] [default to ""]
 **PassphraseEncrypted** | Pointer to **string** | Passphrase | [optional] [default to ""]
 **PrivatePasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
+**DeviceManagedAs** | Pointer to **string** | Device managed as | [optional] [default to "switch"]
+**Switch** | Pointer to **string** | Endpoint locating the Switch to be controlled | [optional] [default to ""]
+**SwitchRefType** | Pointer to **string** | Object type for switch field | [optional] 
+**ConnectionService** | Pointer to **string** | Connect a Service | [optional] [default to ""]
+**ConnectionServiceRefType** | Pointer to **string** | Object type for connection_service field | [optional] 
+**Port** | Pointer to **string** | Port locating the Switch to be controlled | [optional] [default to ""]
+**SfpMacAddressOrSn** | Pointer to **string** | SFP MAC Address or SN | [optional] [default to ""]
+**UsesTaggedPackets** | Pointer to **bool** | Indicates if the direct interface expects tagged or untagged packets | [optional] [default to true]
 
 ## Methods
 
@@ -933,6 +941,206 @@ SetPrivatePasswordEncrypted sets PrivatePasswordEncrypted field to given value.
 `func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasPrivatePasswordEncrypted() bool`
 
 HasPrivatePasswordEncrypted returns a boolean if a field has been set.
+
+### GetDeviceManagedAs
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetDeviceManagedAs() string`
+
+GetDeviceManagedAs returns the DeviceManagedAs field if non-nil, zero value otherwise.
+
+### GetDeviceManagedAsOk
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetDeviceManagedAsOk() (*string, bool)`
+
+GetDeviceManagedAsOk returns a tuple with the DeviceManagedAs field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDeviceManagedAs
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetDeviceManagedAs(v string)`
+
+SetDeviceManagedAs sets DeviceManagedAs field to given value.
+
+### HasDeviceManagedAs
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasDeviceManagedAs() bool`
+
+HasDeviceManagedAs returns a boolean if a field has been set.
+
+### GetSwitch
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSwitch() string`
+
+GetSwitch returns the Switch field if non-nil, zero value otherwise.
+
+### GetSwitchOk
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSwitchOk() (*string, bool)`
+
+GetSwitchOk returns a tuple with the Switch field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitch
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetSwitch(v string)`
+
+SetSwitch sets Switch field to given value.
+
+### HasSwitch
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasSwitch() bool`
+
+HasSwitch returns a boolean if a field has been set.
+
+### GetSwitchRefType
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSwitchRefType() string`
+
+GetSwitchRefType returns the SwitchRefType field if non-nil, zero value otherwise.
+
+### GetSwitchRefTypeOk
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSwitchRefTypeOk() (*string, bool)`
+
+GetSwitchRefTypeOk returns a tuple with the SwitchRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchRefType
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetSwitchRefType(v string)`
+
+SetSwitchRefType sets SwitchRefType field to given value.
+
+### HasSwitchRefType
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasSwitchRefType() bool`
+
+HasSwitchRefType returns a boolean if a field has been set.
+
+### GetConnectionService
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetConnectionService() string`
+
+GetConnectionService returns the ConnectionService field if non-nil, zero value otherwise.
+
+### GetConnectionServiceOk
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetConnectionServiceOk() (*string, bool)`
+
+GetConnectionServiceOk returns a tuple with the ConnectionService field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetConnectionService
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetConnectionService(v string)`
+
+SetConnectionService sets ConnectionService field to given value.
+
+### HasConnectionService
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasConnectionService() bool`
+
+HasConnectionService returns a boolean if a field has been set.
+
+### GetConnectionServiceRefType
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetConnectionServiceRefType() string`
+
+GetConnectionServiceRefType returns the ConnectionServiceRefType field if non-nil, zero value otherwise.
+
+### GetConnectionServiceRefTypeOk
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetConnectionServiceRefTypeOk() (*string, bool)`
+
+GetConnectionServiceRefTypeOk returns a tuple with the ConnectionServiceRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetConnectionServiceRefType
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetConnectionServiceRefType(v string)`
+
+SetConnectionServiceRefType sets ConnectionServiceRefType field to given value.
+
+### HasConnectionServiceRefType
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasConnectionServiceRefType() bool`
+
+HasConnectionServiceRefType returns a boolean if a field has been set.
+
+### GetPort
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetPort() string`
+
+GetPort returns the Port field if non-nil, zero value otherwise.
+
+### GetPortOk
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetPortOk() (*string, bool)`
+
+GetPortOk returns a tuple with the Port field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPort
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetPort(v string)`
+
+SetPort sets Port field to given value.
+
+### HasPort
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasPort() bool`
+
+HasPort returns a boolean if a field has been set.
+
+### GetSfpMacAddressOrSn
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSfpMacAddressOrSn() string`
+
+GetSfpMacAddressOrSn returns the SfpMacAddressOrSn field if non-nil, zero value otherwise.
+
+### GetSfpMacAddressOrSnOk
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetSfpMacAddressOrSnOk() (*string, bool)`
+
+GetSfpMacAddressOrSnOk returns a tuple with the SfpMacAddressOrSn field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSfpMacAddressOrSn
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetSfpMacAddressOrSn(v string)`
+
+SetSfpMacAddressOrSn sets SfpMacAddressOrSn field to given value.
+
+### HasSfpMacAddressOrSn
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasSfpMacAddressOrSn() bool`
+
+HasSfpMacAddressOrSn returns a boolean if a field has been set.
+
+### GetUsesTaggedPackets
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetUsesTaggedPackets() bool`
+
+GetUsesTaggedPackets returns the UsesTaggedPackets field if non-nil, zero value otherwise.
+
+### GetUsesTaggedPacketsOk
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) GetUsesTaggedPacketsOk() (*bool, bool)`
+
+GetUsesTaggedPacketsOk returns a tuple with the UsesTaggedPackets field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUsesTaggedPackets
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) SetUsesTaggedPackets(v bool)`
+
+SetUsesTaggedPackets sets UsesTaggedPackets field to given value.
+
+### HasUsesTaggedPackets
+
+`func (o *ConfigPutRequestDeviceControllerDeviceControllerName) HasUsesTaggedPackets() bool`
+
+HasUsesTaggedPackets returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

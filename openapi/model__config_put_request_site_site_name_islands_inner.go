@@ -19,7 +19,7 @@ var _ MappedNullable = &ConfigPutRequestSiteSiteNameIslandsInner{}
 
 // ConfigPutRequestSiteSiteNameIslandsInner struct for ConfigPutRequestSiteSiteNameIslandsInner
 type ConfigPutRequestSiteSiteNameIslandsInner struct {
-	// TOI Switchpoint
+	// TOI Endpoint
 	ToiSwitchpoint *string `json:"toi_switchpoint,omitempty"`
 	// Object type for toi_switchpoint field
 	ToiSwitchpointRefType *string `json:"toi_switchpoint_ref_type_,omitempty"`

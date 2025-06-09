@@ -34,6 +34,16 @@ Name | Type | Description | Notes
 **StaticConnections** | Pointer to [**ConfigPutRequestStaticConnections**](ConfigPutRequestStaticConnections.md) |  | [optional] 
 **Switchpoint** | Pointer to [**ConfigPutRequestSwitchpoint**](ConfigPutRequestSwitchpoint.md) |  | [optional] 
 **ExtendedCommunityList** | Pointer to [**ConfigPutRequestExtendedCommunityList**](ConfigPutRequestExtendedCommunityList.md) |  | [optional] 
+**ImageUpdateSets** | Pointer to [**ConfigPutRequestImageUpdateSets**](ConfigPutRequestImageUpdateSets.md) |  | [optional] 
+**IpFilter** | Pointer to [**ConfigPutRequestIpFilter**](ConfigPutRequestIpFilter.md) |  | [optional] 
+**FeatureFlag** | Pointer to [**ConfigPutRequestFeatureFlag**](ConfigPutRequestFeatureFlag.md) |  | [optional] 
+**PacketQueue** | Pointer to [**ConfigPutRequestPacketQueue**](ConfigPutRequestPacketQueue.md) |  | [optional] 
+**ServicePortProfile** | Pointer to [**ConfigPutRequestServicePortProfile**](ConfigPutRequestServicePortProfile.md) |  | [optional] 
+**DeviceVoiceSettings** | Pointer to [**ConfigPutRequestDeviceVoiceSettings**](ConfigPutRequestDeviceVoiceSettings.md) |  | [optional] 
+**AuthenticatedEthPort** | Pointer to [**ConfigPutRequestAuthenticatedEthPort**](ConfigPutRequestAuthenticatedEthPort.md) |  | [optional] 
+**VoicePortProfiles** | Pointer to [**ConfigPutRequestVoicePortProfiles**](ConfigPutRequestVoicePortProfiles.md) |  | [optional] 
+**Endpoint** | Pointer to [**ConfigPutRequestEndpoint**](ConfigPutRequestEndpoint.md) |  | [optional] 
+**MacFilter** | Pointer to [**ConfigPutRequestMacFilter**](ConfigPutRequestMacFilter.md) |  | [optional] 
 
 ## Methods
 
@@ -803,6 +813,256 @@ SetExtendedCommunityList sets ExtendedCommunityList field to given value.
 `func (o *ConfigPutRequest) HasExtendedCommunityList() bool`
 
 HasExtendedCommunityList returns a boolean if a field has been set.
+
+### GetImageUpdateSets
+
+`func (o *ConfigPutRequest) GetImageUpdateSets() ConfigPutRequestImageUpdateSets`
+
+GetImageUpdateSets returns the ImageUpdateSets field if non-nil, zero value otherwise.
+
+### GetImageUpdateSetsOk
+
+`func (o *ConfigPutRequest) GetImageUpdateSetsOk() (*ConfigPutRequestImageUpdateSets, bool)`
+
+GetImageUpdateSetsOk returns a tuple with the ImageUpdateSets field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetImageUpdateSets
+
+`func (o *ConfigPutRequest) SetImageUpdateSets(v ConfigPutRequestImageUpdateSets)`
+
+SetImageUpdateSets sets ImageUpdateSets field to given value.
+
+### HasImageUpdateSets
+
+`func (o *ConfigPutRequest) HasImageUpdateSets() bool`
+
+HasImageUpdateSets returns a boolean if a field has been set.
+
+### GetIpFilter
+
+`func (o *ConfigPutRequest) GetIpFilter() ConfigPutRequestIpFilter`
+
+GetIpFilter returns the IpFilter field if non-nil, zero value otherwise.
+
+### GetIpFilterOk
+
+`func (o *ConfigPutRequest) GetIpFilterOk() (*ConfigPutRequestIpFilter, bool)`
+
+GetIpFilterOk returns a tuple with the IpFilter field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIpFilter
+
+`func (o *ConfigPutRequest) SetIpFilter(v ConfigPutRequestIpFilter)`
+
+SetIpFilter sets IpFilter field to given value.
+
+### HasIpFilter
+
+`func (o *ConfigPutRequest) HasIpFilter() bool`
+
+HasIpFilter returns a boolean if a field has been set.
+
+### GetFeatureFlag
+
+`func (o *ConfigPutRequest) GetFeatureFlag() ConfigPutRequestFeatureFlag`
+
+GetFeatureFlag returns the FeatureFlag field if non-nil, zero value otherwise.
+
+### GetFeatureFlagOk
+
+`func (o *ConfigPutRequest) GetFeatureFlagOk() (*ConfigPutRequestFeatureFlag, bool)`
+
+GetFeatureFlagOk returns a tuple with the FeatureFlag field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFeatureFlag
+
+`func (o *ConfigPutRequest) SetFeatureFlag(v ConfigPutRequestFeatureFlag)`
+
+SetFeatureFlag sets FeatureFlag field to given value.
+
+### HasFeatureFlag
+
+`func (o *ConfigPutRequest) HasFeatureFlag() bool`
+
+HasFeatureFlag returns a boolean if a field has been set.
+
+### GetPacketQueue
+
+`func (o *ConfigPutRequest) GetPacketQueue() ConfigPutRequestPacketQueue`
+
+GetPacketQueue returns the PacketQueue field if non-nil, zero value otherwise.
+
+### GetPacketQueueOk
+
+`func (o *ConfigPutRequest) GetPacketQueueOk() (*ConfigPutRequestPacketQueue, bool)`
+
+GetPacketQueueOk returns a tuple with the PacketQueue field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPacketQueue
+
+`func (o *ConfigPutRequest) SetPacketQueue(v ConfigPutRequestPacketQueue)`
+
+SetPacketQueue sets PacketQueue field to given value.
+
+### HasPacketQueue
+
+`func (o *ConfigPutRequest) HasPacketQueue() bool`
+
+HasPacketQueue returns a boolean if a field has been set.
+
+### GetServicePortProfile
+
+`func (o *ConfigPutRequest) GetServicePortProfile() ConfigPutRequestServicePortProfile`
+
+GetServicePortProfile returns the ServicePortProfile field if non-nil, zero value otherwise.
+
+### GetServicePortProfileOk
+
+`func (o *ConfigPutRequest) GetServicePortProfileOk() (*ConfigPutRequestServicePortProfile, bool)`
+
+GetServicePortProfileOk returns a tuple with the ServicePortProfile field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetServicePortProfile
+
+`func (o *ConfigPutRequest) SetServicePortProfile(v ConfigPutRequestServicePortProfile)`
+
+SetServicePortProfile sets ServicePortProfile field to given value.
+
+### HasServicePortProfile
+
+`func (o *ConfigPutRequest) HasServicePortProfile() bool`
+
+HasServicePortProfile returns a boolean if a field has been set.
+
+### GetDeviceVoiceSettings
+
+`func (o *ConfigPutRequest) GetDeviceVoiceSettings() ConfigPutRequestDeviceVoiceSettings`
+
+GetDeviceVoiceSettings returns the DeviceVoiceSettings field if non-nil, zero value otherwise.
+
+### GetDeviceVoiceSettingsOk
+
+`func (o *ConfigPutRequest) GetDeviceVoiceSettingsOk() (*ConfigPutRequestDeviceVoiceSettings, bool)`
+
+GetDeviceVoiceSettingsOk returns a tuple with the DeviceVoiceSettings field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDeviceVoiceSettings
+
+`func (o *ConfigPutRequest) SetDeviceVoiceSettings(v ConfigPutRequestDeviceVoiceSettings)`
+
+SetDeviceVoiceSettings sets DeviceVoiceSettings field to given value.
+
+### HasDeviceVoiceSettings
+
+`func (o *ConfigPutRequest) HasDeviceVoiceSettings() bool`
+
+HasDeviceVoiceSettings returns a boolean if a field has been set.
+
+### GetAuthenticatedEthPort
+
+`func (o *ConfigPutRequest) GetAuthenticatedEthPort() ConfigPutRequestAuthenticatedEthPort`
+
+GetAuthenticatedEthPort returns the AuthenticatedEthPort field if non-nil, zero value otherwise.
+
+### GetAuthenticatedEthPortOk
+
+`func (o *ConfigPutRequest) GetAuthenticatedEthPortOk() (*ConfigPutRequestAuthenticatedEthPort, bool)`
+
+GetAuthenticatedEthPortOk returns a tuple with the AuthenticatedEthPort field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAuthenticatedEthPort
+
+`func (o *ConfigPutRequest) SetAuthenticatedEthPort(v ConfigPutRequestAuthenticatedEthPort)`
+
+SetAuthenticatedEthPort sets AuthenticatedEthPort field to given value.
+
+### HasAuthenticatedEthPort
+
+`func (o *ConfigPutRequest) HasAuthenticatedEthPort() bool`
+
+HasAuthenticatedEthPort returns a boolean if a field has been set.
+
+### GetVoicePortProfiles
+
+`func (o *ConfigPutRequest) GetVoicePortProfiles() ConfigPutRequestVoicePortProfiles`
+
+GetVoicePortProfiles returns the VoicePortProfiles field if non-nil, zero value otherwise.
+
+### GetVoicePortProfilesOk
+
+`func (o *ConfigPutRequest) GetVoicePortProfilesOk() (*ConfigPutRequestVoicePortProfiles, bool)`
+
+GetVoicePortProfilesOk returns a tuple with the VoicePortProfiles field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVoicePortProfiles
+
+`func (o *ConfigPutRequest) SetVoicePortProfiles(v ConfigPutRequestVoicePortProfiles)`
+
+SetVoicePortProfiles sets VoicePortProfiles field to given value.
+
+### HasVoicePortProfiles
+
+`func (o *ConfigPutRequest) HasVoicePortProfiles() bool`
+
+HasVoicePortProfiles returns a boolean if a field has been set.
+
+### GetEndpoint
+
+`func (o *ConfigPutRequest) GetEndpoint() ConfigPutRequestEndpoint`
+
+GetEndpoint returns the Endpoint field if non-nil, zero value otherwise.
+
+### GetEndpointOk
+
+`func (o *ConfigPutRequest) GetEndpointOk() (*ConfigPutRequestEndpoint, bool)`
+
+GetEndpointOk returns a tuple with the Endpoint field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEndpoint
+
+`func (o *ConfigPutRequest) SetEndpoint(v ConfigPutRequestEndpoint)`
+
+SetEndpoint sets Endpoint field to given value.
+
+### HasEndpoint
+
+`func (o *ConfigPutRequest) HasEndpoint() bool`
+
+HasEndpoint returns a boolean if a field has been set.
+
+### GetMacFilter
+
+`func (o *ConfigPutRequest) GetMacFilter() ConfigPutRequestMacFilter`
+
+GetMacFilter returns the MacFilter field if non-nil, zero value otherwise.
+
+### GetMacFilterOk
+
+`func (o *ConfigPutRequest) GetMacFilterOk() (*ConfigPutRequestMacFilter, bool)`
+
+GetMacFilterOk returns a tuple with the MacFilter field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMacFilter
+
+`func (o *ConfigPutRequest) SetMacFilter(v ConfigPutRequestMacFilter)`
+
+SetMacFilter sets MacFilter field to given value.
+
+### HasMacFilter
+
+`func (o *ConfigPutRequest) HasMacFilter() bool`
+
+HasMacFilter returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

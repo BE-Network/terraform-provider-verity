@@ -9,6 +9,9 @@ Name | Type | Description | Notes
 **RowNumServiceRefType** | Pointer to **string** | Object type for row_num_service field | [optional] 
 **RowNumExternalVlan** | Pointer to **NullableInt32** | Choose an external vlan A value of 0 will make the VLAN untagged, while in case null is provided, the VLAN will be the one associated with the service. | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**RowNumMacFilter** | Pointer to **string** | Choose an access control list | [optional] [default to ""]
+**RowNumMacFilterRefType** | Pointer to **string** | Object type for row_num_mac_filter field | [optional] 
+**RowNumLanIptv** | Pointer to **string** | Denotes a LAN or IPTV service | [optional] [default to ""]
 
 ## Methods
 
@@ -163,6 +166,81 @@ SetIndex sets Index field to given value.
 `func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) HasIndex() bool`
 
 HasIndex returns a boolean if a field has been set.
+
+### GetRowNumMacFilter
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) GetRowNumMacFilter() string`
+
+GetRowNumMacFilter returns the RowNumMacFilter field if non-nil, zero value otherwise.
+
+### GetRowNumMacFilterOk
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) GetRowNumMacFilterOk() (*string, bool)`
+
+GetRowNumMacFilterOk returns a tuple with the RowNumMacFilter field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRowNumMacFilter
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) SetRowNumMacFilter(v string)`
+
+SetRowNumMacFilter sets RowNumMacFilter field to given value.
+
+### HasRowNumMacFilter
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) HasRowNumMacFilter() bool`
+
+HasRowNumMacFilter returns a boolean if a field has been set.
+
+### GetRowNumMacFilterRefType
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) GetRowNumMacFilterRefType() string`
+
+GetRowNumMacFilterRefType returns the RowNumMacFilterRefType field if non-nil, zero value otherwise.
+
+### GetRowNumMacFilterRefTypeOk
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) GetRowNumMacFilterRefTypeOk() (*string, bool)`
+
+GetRowNumMacFilterRefTypeOk returns a tuple with the RowNumMacFilterRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRowNumMacFilterRefType
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) SetRowNumMacFilterRefType(v string)`
+
+SetRowNumMacFilterRefType sets RowNumMacFilterRefType field to given value.
+
+### HasRowNumMacFilterRefType
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) HasRowNumMacFilterRefType() bool`
+
+HasRowNumMacFilterRefType returns a boolean if a field has been set.
+
+### GetRowNumLanIptv
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) GetRowNumLanIptv() string`
+
+GetRowNumLanIptv returns the RowNumLanIptv field if non-nil, zero value otherwise.
+
+### GetRowNumLanIptvOk
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) GetRowNumLanIptvOk() (*string, bool)`
+
+GetRowNumLanIptvOk returns a tuple with the RowNumLanIptv field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRowNumLanIptv
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) SetRowNumLanIptv(v string)`
+
+SetRowNumLanIptv sets RowNumLanIptv field to given value.
+
+### HasRowNumLanIptv
+
+`func (o *ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner) HasRowNumLanIptv() bool`
+
+HasRowNumLanIptv returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

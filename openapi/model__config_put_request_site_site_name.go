@@ -76,6 +76,8 @@ type ConfigPutRequestSiteSiteName struct {
 	Islands []ConfigPutRequestSiteSiteNameIslandsInner `json:"islands,omitempty"`
 	Pairs []ConfigPutRequestSiteSiteNamePairsInner `json:"pairs,omitempty"`
 	ObjectProperties *ConfigPutRequestSiteSiteNameObjectProperties `json:"object_properties,omitempty"`
+	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
+	EnableDhcpSnooping *bool `json:"enable_dhcp_snooping,omitempty"`
 }
 
 // NewConfigPutRequestSiteSiteName instantiates a new ConfigPutRequestSiteSiteName object
@@ -134,6 +136,8 @@ func NewConfigPutRequestSiteSiteName() *ConfigPutRequestSiteSiteName {
 	this.AggressiveReporting = &aggressiveReporting
 	var crcFailureThreshold int32 = 5
 	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
+	var enableDhcpSnooping bool = false
+	this.EnableDhcpSnooping = &enableDhcpSnooping
 	return &this
 }
 
@@ -192,6 +196,8 @@ func NewConfigPutRequestSiteSiteNameWithDefaults() *ConfigPutRequestSiteSiteName
 	this.AggressiveReporting = &aggressiveReporting
 	var crcFailureThreshold int32 = 5
 	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
+	var enableDhcpSnooping bool = false
+	this.EnableDhcpSnooping = &enableDhcpSnooping
 	return &this
 }
 
@@ -1205,6 +1211,38 @@ func (o *ConfigPutRequestSiteSiteName) SetObjectProperties(v ConfigPutRequestSit
 	o.ObjectProperties = &v
 }
 
+// GetEnableDhcpSnooping returns the EnableDhcpSnooping field value if set, zero value otherwise.
+func (o *ConfigPutRequestSiteSiteName) GetEnableDhcpSnooping() bool {
+	if o == nil || IsNil(o.EnableDhcpSnooping) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableDhcpSnooping
+}
+
+// GetEnableDhcpSnoopingOk returns a tuple with the EnableDhcpSnooping field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestSiteSiteName) GetEnableDhcpSnoopingOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableDhcpSnooping) {
+		return nil, false
+	}
+	return o.EnableDhcpSnooping, true
+}
+
+// HasEnableDhcpSnooping returns a boolean if a field has been set.
+func (o *ConfigPutRequestSiteSiteName) HasEnableDhcpSnooping() bool {
+	if o != nil && !IsNil(o.EnableDhcpSnooping) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableDhcpSnooping gets a reference to the given bool and assigns it to the EnableDhcpSnooping field.
+func (o *ConfigPutRequestSiteSiteName) SetEnableDhcpSnooping(v bool) {
+	o.EnableDhcpSnooping = &v
+}
+
 func (o ConfigPutRequestSiteSiteName) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -1304,6 +1342,9 @@ func (o ConfigPutRequestSiteSiteName) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.EnableDhcpSnooping) {
+		toSerialize["enable_dhcp_snooping"] = o.EnableDhcpSnooping
 	}
 	return toSerialize, nil
 }
