@@ -177,21 +177,33 @@ provider "verity" {}
 
 ## Regenerating the OpenAPI Go SDK
 
-If there are changes to the Verity API (reflected in a new swagger.json file), you'll need to regenerate the OpenAPI Go SDK. Follow these steps:
+To regenerate the OpenAPI SDK for Go:
 
-1. Save the new swagger.json file
+1. Get the latest Swagger JSON file(s)
+2. If you have multiple Swagger JSON files that need to be combined (e.g., from different API versions), use the `merge_swagger.py` script to merge them:
+   ```bash
+   python3 tools/merge_swagger.py <base_file> <file1> [<file2> ...] --output swagger_merged.json
+   ```
+   This will combine multiple Swagger specifications into a unified file, merging paths, components, and other sections. For example:
+   ```bash
+   python3 tools/merge_swagger.py swagger.json swagger_65_dc.json swagger_65_campus.json --output swagger_merged.json
+   ```
 
-2. Run the tools/transform_swagger.py script to prepare the swagger file for code generation:
+3. Transform the Swagger file to be compatible with the Go SDK generator:
    ```bash
    python3 tools/transform_swagger.py swagger.json
    ```
+   Or if you used the merge script:
+   ```bash
+   python3 tools/transform_swagger.py swagger_merged.json
+   ```
 
-3. Install the OpenAPI Generator CLI (if not already installed):
+4. Install the OpenAPI Generator CLI (if not already installed):
    ```bash
    npm install @openapitools/openapi-generator-cli -g
    ```
 
-4. Generate the Go SDK using openapi-generator-cli:
+5. Generate the Go SDK using openapi-generator-cli:
    ```bash
    openapi-generator-cli generate -i swagger_transformed.json -g go -o ./openapi
    ```
