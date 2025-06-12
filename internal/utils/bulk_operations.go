@@ -34,6 +34,17 @@ type ResourceExistenceCheck struct {
 	OperationType  string
 }
 
+type BulkOperationConfig struct {
+	ResourceType      string
+	OperationType     string
+	ExtractOperations func() (map[string]interface{}, []string)
+	CheckPreExistence func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error)
+	PrepareRequest    func(filteredData map[string]interface{}) interface{}
+	ExecuteRequest    func(ctx context.Context, request interface{}) (*http.Response, error)
+	ProcessResponse   func(ctx context.Context, resp *http.Response) error
+	UpdateRecentOps   func()
+}
+
 const (
 	OperationPending OperationStatus = iota
 	OperationSucceeded
@@ -937,4206 +948,2563 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	return nil
 }
 
-func (b *BulkOperationManager) HasPendingOrRecentGatewayOperations() bool {
+func (b *BulkOperationManager) hasPendingOrRecentOperations(
+	resourceType string,
+) bool {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
 
-	// Check if any gateway operations are pending
-	hasPending := len(b.gatewayPut) > 0 || len(b.gatewayPatch) > 0 || len(b.gatewayDelete) > 0
+	var putLen, patchLen, deleteLen int
+	var recentOps bool
+	var recentOpTime time.Time
+
+	switch resourceType {
+	case "gateway":
+		putLen = len(b.gatewayPut)
+		patchLen = len(b.gatewayPatch)
+		deleteLen = len(b.gatewayDelete)
+		recentOps = b.recentGatewayOps
+		recentOpTime = b.recentGatewayOpTime
+	case "lag":
+		putLen = len(b.lagPut)
+		patchLen = len(b.lagPatch)
+		deleteLen = len(b.lagDelete)
+		recentOps = b.recentLagOps
+		recentOpTime = b.recentLagOpTime
+	case "service":
+		putLen = len(b.servicePut)
+		patchLen = len(b.servicePatch)
+		deleteLen = len(b.serviceDelete)
+		recentOps = b.recentServiceOps
+		recentOpTime = b.recentServiceOpTime
+	case "tenant":
+		putLen = len(b.tenantPut)
+		patchLen = len(b.tenantPatch)
+		deleteLen = len(b.tenantDelete)
+		recentOps = b.recentTenantOps
+		recentOpTime = b.recentTenantOpTime
+	case "gateway_profile":
+		putLen = len(b.gatewayProfilePut)
+		patchLen = len(b.gatewayProfilePatch)
+		deleteLen = len(b.gatewayProfileDelete)
+		recentOps = b.recentGatewayProfileOps
+		recentOpTime = b.recentGatewayProfileOpTime
+	case "eth_port_profile":
+		putLen = len(b.ethPortProfilePut)
+		patchLen = len(b.ethPortProfilePatch)
+		deleteLen = len(b.ethPortProfileDelete)
+		recentOps = b.recentEthPortProfileOps
+		recentOpTime = b.recentEthPortProfileOpTime
+	case "eth_port_settings":
+		putLen = len(b.ethPortSettingsPut)
+		patchLen = len(b.ethPortSettingsPatch)
+		deleteLen = len(b.ethPortSettingsDelete)
+		recentOps = b.recentEthPortSettingsOps
+		recentOpTime = b.recentEthPortSettingsOpTime
+	case "bundle":
+		putLen = 0
+		patchLen = len(b.bundlePatch)
+		deleteLen = 0
+		recentOps = b.recentBundleOps
+		recentOpTime = b.recentBundleOpTime
+	}
+
+	// Check if any operations are pending
+	hasPending := putLen > 0 || patchLen > 0 || deleteLen > 0
 
 	// Check if we've recently had operations (within the last 5 seconds)
-	hasRecent := b.recentGatewayOps && time.Since(b.recentGatewayOpTime) < 5*time.Second
+	hasRecent := recentOps && time.Since(recentOpTime) < 5*time.Second
 
 	return hasPending || hasRecent
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentGatewayOperations() bool {
+	return b.hasPendingOrRecentOperations("gateway")
 }
 
 func (b *BulkOperationManager) HasPendingOrRecentLagOperations() bool {
-	b.mutex.Lock()
-	defer b.mutex.Unlock()
-
-	// Check if any LAG operations are pending
-	hasPending := len(b.lagPut) > 0 || len(b.lagPatch) > 0 || len(b.lagDelete) > 0
-
-	// Check if we've recently had operations (within the last 5 seconds)
-	hasRecent := b.recentLagOps && time.Since(b.recentLagOpTime) < 5*time.Second
-
-	return hasPending || hasRecent
+	return b.hasPendingOrRecentOperations("lag")
 }
 
 func (b *BulkOperationManager) HasPendingOrRecentServiceOperations() bool {
-	b.mutex.Lock()
-	defer b.mutex.Unlock()
-
-	// Check if any Service operations are pending
-	hasPending := len(b.servicePut) > 0 || len(b.servicePatch) > 0 || len(b.serviceDelete) > 0
-
-	// Check if we've recently had operations (within the last 5 seconds)
-	hasRecent := b.recentServiceOps && time.Since(b.recentServiceOpTime) < 5*time.Second
-
-	return hasPending || hasRecent
+	return b.hasPendingOrRecentOperations("service")
 }
 
 func (b *BulkOperationManager) HasPendingOrRecentTenantOperations() bool {
-	b.mutex.Lock()
-	defer b.mutex.Unlock()
-
-	// Check if any Tenant operations are pending
-	hasPending := len(b.tenantPut) > 0 || len(b.tenantPatch) > 0 || len(b.tenantDelete) > 0
-
-	// Check if we've recently had operations (within the last 5 seconds)
-	hasRecent := b.recentTenantOps && time.Since(b.recentTenantOpTime) < 5*time.Second
-
-	return hasPending || hasRecent
+	return b.hasPendingOrRecentOperations("tenant")
 }
 
 func (b *BulkOperationManager) HasPendingOrRecentGatewayProfileOperations() bool {
-	b.mutex.Lock()
-	defer b.mutex.Unlock()
-
-	// Check if any Gateway Profile operations are pending
-	hasPending := len(b.gatewayProfilePut) > 0 || len(b.gatewayProfilePatch) > 0 || len(b.gatewayProfileDelete) > 0
-
-	// Check if we've recently had operations (within the last 5 seconds)
-	hasRecent := b.recentGatewayProfileOps && time.Since(b.recentGatewayProfileOpTime) < 5*time.Second
-
-	return hasPending || hasRecent
+	return b.hasPendingOrRecentOperations("gateway_profile")
 }
 
 func (b *BulkOperationManager) HasPendingOrRecentEthPortProfileOperations() bool {
-	b.mutex.Lock()
-	defer b.mutex.Unlock()
-
-	// Check if any Eth Port Profile operations are pending
-	hasPending := len(b.ethPortProfilePut) > 0 || len(b.ethPortProfilePatch) > 0 || len(b.ethPortProfileDelete) > 0
-
-	// Check if we've recently had operations (within the last 5 seconds)
-	hasRecent := b.recentEthPortProfileOps && time.Since(b.recentEthPortProfileOpTime) < 5*time.Second
-
-	return hasPending || hasRecent
+	return b.hasPendingOrRecentOperations("eth_port_profile")
 }
 
 func (b *BulkOperationManager) HasPendingOrRecentEthPortSettingsOperations() bool {
-	b.mutex.Lock()
-	defer b.mutex.Unlock()
-
-	// Check if any Eth Port Profile operations are pending
-	hasPending := len(b.ethPortSettingsPut) > 0 || len(b.ethPortSettingsPatch) > 0 || len(b.ethPortSettingsDelete) > 0
-
-	// Check if we've recently had operations (within the last 5 seconds)
-	hasRecent := b.recentEthPortSettingsOps && time.Since(b.recentEthPortSettingsOpTime) < 5*time.Second
-
-	return hasPending || hasRecent
+	return b.hasPendingOrRecentOperations("eth_port_settings")
 }
 
 func (b *BulkOperationManager) HasPendingOrRecentBundleOperations() bool {
-	b.mutex.Lock()
-	defer b.mutex.Unlock()
+	return b.hasPendingOrRecentOperations("bundle")
+}
 
-	// Check if any bundle operations are pending
-	hasPending := len(b.bundlePatch) > 0
+func (b *BulkOperationManager) addOperation(
+	ctx context.Context,
+	resourceType string,
+	resourceName string,
+	operationType string,
+	storeFunc func(),
+	logDetails map[string]interface{},
+) string {
+	storeFunc()
 
-	// Check if we've recently had operations (within the last 5 seconds)
-	hasRecent := b.recentBundleOps && time.Since(b.recentBundleOpTime) < 5*time.Second
+	operationID := generateOperationID(resourceType, resourceName, operationType)
+	b.operationMutex.Lock()
+	defer b.operationMutex.Unlock()
 
-	return hasPending || hasRecent
+	b.pendingOperations[operationID] = &Operation{
+		ResourceType:  resourceType,
+		ResourceName:  resourceName,
+		OperationType: operationType,
+		Status:        OperationPending,
+	}
+
+	b.operationWaitChannels[operationID] = make(chan struct{})
+
+	now := time.Now()
+	b.lastOperationTime = now
+	if b.batchStartTime.IsZero() {
+		b.batchStartTime = now
+	}
+
+	if logDetails != nil {
+		logDetails["operation_id"] = operationID
+		tflog.Debug(ctx, fmt.Sprintf("Added %s to %s batch", resourceType, operationType), logDetails)
+	}
+
+	return operationID
 }
 
 func (b *BulkOperationManager) AddBundlePatch(ctx context.Context, bundleName string, props openapi.BundlesPatchRequestEndpointBundleValue) string {
-	b.mutex.Lock()
-	if b.bundlePatch == nil {
-		b.bundlePatch = make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
-	}
-	b.bundlePatch[bundleName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("bundle", bundleName, "PATCH")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "bundle",
-		ResourceName:  bundleName,
-		OperationType: "PATCH",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Bundle to PATCH batch", map[string]interface{}{
-		"bundle_name":  bundleName,
-		"batch_size":   len(b.bundlePatch),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"bundle",
+		bundleName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.bundlePatch[bundleName] = props
+		},
+		map[string]interface{}{
+			"bundle_name": bundleName,
+			"batch_size":  len(b.bundlePatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddGatewayPut(ctx context.Context, gatewayName string, props openapi.ConfigPutRequestGatewayGatewayName) string {
-	b.mutex.Lock()
-	b.gatewayPut[gatewayName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("gateway", gatewayName, "PUT")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "gateway",
-		ResourceName:  gatewayName,
-		OperationType: "PUT",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"gateway",
+		gatewayName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.gatewayPut[gatewayName] = props
+		},
+		map[string]interface{}{
+			"gateway_name": gatewayName,
+			"batch_size":   len(b.gatewayPatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddGatewayPatch(ctx context.Context, gatewayName string, props openapi.ConfigPutRequestGatewayGatewayName) string {
-	b.mutex.Lock()
-	b.gatewayPatch[gatewayName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("gateway", gatewayName, "PATCH")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "gateway",
-		ResourceName:  gatewayName,
-		OperationType: "PATCH",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Gateway to PATCH batch", map[string]interface{}{
-		"gateway_name": gatewayName,
-		"batch_size":   len(b.gatewayPatch),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"gateway",
+		gatewayName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.gatewayPatch[gatewayName] = props
+		},
+		map[string]interface{}{
+			"gateway_name": gatewayName,
+			"batch_size":   len(b.gatewayPatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddGatewayDelete(ctx context.Context, gatewayName string) string {
-	b.mutex.Lock()
-	b.gatewayDelete = append(b.gatewayDelete, gatewayName)
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("gateway", gatewayName, "DELETE")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "gateway",
-		ResourceName:  gatewayName,
-		OperationType: "DELETE",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Gateway to DELETE batch", map[string]interface{}{
-		"gateway_name": gatewayName,
-		"batch_size":   len(b.gatewayDelete),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"gateway",
+		gatewayName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.gatewayDelete = append(b.gatewayDelete, gatewayName)
+		},
+		map[string]interface{}{
+			"gateway_name": gatewayName,
+			"batch_size":   len(b.gatewayDelete) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddLagPut(ctx context.Context, lagName string, props openapi.ConfigPutRequestLagLagName) string {
-	b.mutex.Lock()
-	b.lagPut[lagName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("lag", lagName, "PUT")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "lag",
-		ResourceName:  lagName,
-		OperationType: "PUT",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added LAG to PUT batch", map[string]interface{}{
-		"lag_name":     lagName,
-		"batch_size":   len(b.lagPut),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"lag",
+		lagName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.lagPut[lagName] = props
+		},
+		map[string]interface{}{
+			"lag_name":   lagName,
+			"batch_size": len(b.lagPut) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddLagPatch(ctx context.Context, lagName string, props openapi.ConfigPutRequestLagLagName) string {
-	b.mutex.Lock()
-	b.lagPatch[lagName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("lag", lagName, "PATCH")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "lag",
-		ResourceName:  lagName,
-		OperationType: "PATCH",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added LAG to PATCH batch", map[string]interface{}{
-		"lag_name":     lagName,
-		"batch_size":   len(b.lagPatch),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"lag",
+		lagName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.lagPatch[lagName] = props
+		},
+		map[string]interface{}{
+			"lag_name":   lagName,
+			"batch_size": len(b.lagPatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddLagDelete(ctx context.Context, lagName string) string {
-	b.mutex.Lock()
-	b.lagDelete = append(b.lagDelete, lagName)
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("lag", lagName, "DELETE")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "lag",
-		ResourceName:  lagName,
-		OperationType: "DELETE",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added LAG to DELETE batch", map[string]interface{}{
-		"lag_name":     lagName,
-		"batch_size":   len(b.lagDelete),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"lag",
+		lagName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.lagDelete = append(b.lagDelete, lagName)
+		},
+		map[string]interface{}{
+			"lag_name":   lagName,
+			"batch_size": len(b.lagDelete) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddTenantPut(ctx context.Context, tenantName string, props openapi.ConfigPutRequestTenantTenantName) string {
-	b.mutex.Lock()
-	b.tenantPut[tenantName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("tenant", tenantName, "PUT")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "tenant",
-		ResourceName:  tenantName,
-		OperationType: "PUT",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Tenant to PUT batch", map[string]interface{}{
-		"tenant_name":  tenantName,
-		"batch_size":   len(b.tenantPut),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"tenant",
+		tenantName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.tenantPut[tenantName] = props
+		},
+		map[string]interface{}{
+			"tenant_name": tenantName,
+			"batch_size":  len(b.tenantPut) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddTenantPatch(ctx context.Context, tenantName string, props openapi.ConfigPutRequestTenantTenantName) string {
-	b.mutex.Lock()
-	b.tenantPatch[tenantName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("tenant", tenantName, "PATCH")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "tenant",
-		ResourceName:  tenantName,
-		OperationType: "PATCH",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Tenant to PATCH batch", map[string]interface{}{
-		"tenant_name":  tenantName,
-		"batch_size":   len(b.tenantPatch),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"tenant",
+		tenantName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.tenantPatch[tenantName] = props
+		},
+		map[string]interface{}{
+			"tenant_name": tenantName,
+			"batch_size":  len(b.tenantPatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddTenantDelete(ctx context.Context, tenantName string) string {
-	b.mutex.Lock()
-	b.tenantDelete = append(b.tenantDelete, tenantName)
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("tenant", tenantName, "DELETE")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "tenant",
-		ResourceName:  tenantName,
-		OperationType: "DELETE",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Tenant to DELETE batch", map[string]interface{}{
-		"tenant_name":  tenantName,
-		"batch_size":   len(b.tenantDelete),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"tenant",
+		tenantName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.tenantDelete = append(b.tenantDelete, tenantName)
+		},
+		map[string]interface{}{
+			"tenant_name": tenantName,
+			"batch_size":  len(b.tenantDelete) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddServicePut(ctx context.Context, serviceName string, props openapi.ConfigPutRequestServiceServiceName) string {
-	b.mutex.Lock()
-	b.servicePut[serviceName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("service", serviceName, "PUT")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "service",
-		ResourceName:  serviceName,
-		OperationType: "PUT",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Service to PUT batch", map[string]interface{}{
-		"service_name": serviceName,
-		"batch_size":   len(b.servicePut),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"service",
+		serviceName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.servicePut[serviceName] = props
+		},
+		map[string]interface{}{
+			"service_name": serviceName,
+			"batch_size":   len(b.servicePut) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddServicePatch(ctx context.Context, serviceName string, props openapi.ConfigPutRequestServiceServiceName) string {
-	b.mutex.Lock()
-	b.servicePatch[serviceName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("service", serviceName, "PATCH")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "service",
-		ResourceName:  serviceName,
-		OperationType: "PATCH",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Service to PATCH batch", map[string]interface{}{
-		"service_name": serviceName,
-		"batch_size":   len(b.servicePatch),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"service",
+		serviceName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.servicePatch[serviceName] = props
+		},
+		map[string]interface{}{
+			"service_name": serviceName,
+			"batch_size":   len(b.servicePatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddServiceDelete(ctx context.Context, serviceName string) string {
-	b.mutex.Lock()
-	b.serviceDelete = append(b.serviceDelete, serviceName)
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("service", serviceName, "DELETE")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "service",
-		ResourceName:  serviceName,
-		OperationType: "DELETE",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Service to DELETE batch", map[string]interface{}{
-		"service_name": serviceName,
-		"batch_size":   len(b.serviceDelete),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"service",
+		serviceName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.serviceDelete = append(b.serviceDelete, serviceName)
+		},
+		map[string]interface{}{
+			"service_name": serviceName,
+			"batch_size":   len(b.serviceDelete) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddGatewayProfilePut(ctx context.Context, profileName string, props openapi.ConfigPutRequestGatewayProfileGatewayProfileName) string {
-	b.mutex.Lock()
-	b.gatewayProfilePut[profileName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("gateway_profile", profileName, "PUT")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "gateway_profile",
-		ResourceName:  profileName,
-		OperationType: "PUT",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Gateway Profile to PUT batch", map[string]interface{}{
-		"profile_name": profileName,
-		"batch_size":   len(b.gatewayProfilePut),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"gateway_profile",
+		profileName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.gatewayProfilePut[profileName] = props
+		},
+		map[string]interface{}{
+			"profile_name": profileName,
+			"batch_size":   len(b.gatewayProfilePut) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddGatewayProfilePatch(ctx context.Context, profileName string, props openapi.ConfigPutRequestGatewayProfileGatewayProfileName) string {
-	b.mutex.Lock()
-	b.gatewayProfilePatch[profileName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("gateway_profile", profileName, "PATCH")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "gateway_profile",
-		ResourceName:  profileName,
-		OperationType: "PATCH",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Gateway Profile to PATCH batch", map[string]interface{}{
-		"profile_name": profileName,
-		"batch_size":   len(b.gatewayProfilePatch),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"gateway_profile",
+		profileName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.gatewayProfilePatch[profileName] = props
+		},
+		map[string]interface{}{
+			"profile_name": profileName,
+			"batch_size":   len(b.gatewayProfilePatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddGatewayProfileDelete(ctx context.Context, profileName string) string {
-	b.mutex.Lock()
-	b.gatewayProfileDelete = append(b.gatewayProfileDelete, profileName)
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("gateway_profile", profileName, "DELETE")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "gateway_profile",
-		ResourceName:  profileName,
-		OperationType: "DELETE",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added Gateway Profile to DELETE batch", map[string]interface{}{
-		"profile_name": profileName,
-		"batch_size":   len(b.gatewayProfileDelete),
-		"operation_id": operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"gateway_profile",
+		profileName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.gatewayProfileDelete = append(b.gatewayProfileDelete, profileName)
+		},
+		map[string]interface{}{
+			"profile_name": profileName,
+			"batch_size":   len(b.gatewayProfileDelete) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddEthPortProfilePut(ctx context.Context, ethPortProfileName string, props openapi.ConfigPutRequestEthPortProfileEthPortProfileName) string {
-	b.mutex.Lock()
-	b.ethPortProfilePut[ethPortProfileName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("eth_port_profile", ethPortProfileName, "PUT")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "eth_port_profile",
-		ResourceName:  ethPortProfileName,
-		OperationType: "PUT",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added EthPortProfile to PUT batch", map[string]interface{}{
-		"eth_port_profile_name": ethPortProfileName,
-		"batch_size":            len(b.ethPortProfilePut),
-		"operation_id":          operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"eth_port_profile",
+		ethPortProfileName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.ethPortProfilePut[ethPortProfileName] = props
+		},
+		map[string]interface{}{
+			"eth_port_profile_name": ethPortProfileName,
+			"batch_size":            len(b.ethPortProfilePut) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddEthPortProfilePatch(ctx context.Context, ethPortProfileName string, props openapi.ConfigPutRequestEthPortProfileEthPortProfileName) string {
-	b.mutex.Lock()
-	b.ethPortProfilePatch[ethPortProfileName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("eth_port_profile", ethPortProfileName, "PATCH")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "eth_port_profile",
-		ResourceName:  ethPortProfileName,
-		OperationType: "PATCH",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added EthPortProfile to PATCH batch", map[string]interface{}{
-		"eth_port_profile_name": ethPortProfileName,
-		"batch_size":            len(b.ethPortProfilePatch),
-		"operation_id":          operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"eth_port_profile",
+		ethPortProfileName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.ethPortProfilePatch[ethPortProfileName] = props
+		},
+		map[string]interface{}{
+			"eth_port_profile_name": ethPortProfileName,
+			"batch_size":            len(b.ethPortProfilePatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddEthPortProfileDelete(ctx context.Context, ethPortProfileName string) string {
-	b.mutex.Lock()
-	b.ethPortProfileDelete = append(b.ethPortProfileDelete, ethPortProfileName)
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("eth_port_profile", ethPortProfileName, "DELETE")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "eth_port_profile",
-		ResourceName:  ethPortProfileName,
-		OperationType: "DELETE",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added EthPortProfile to DELETE batch", map[string]interface{}{
-		"eth_port_profile_name": ethPortProfileName,
-		"batch_size":            len(b.ethPortProfileDelete),
-		"operation_id":          operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"eth_port_profile",
+		ethPortProfileName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.ethPortProfileDelete = append(b.ethPortProfileDelete, ethPortProfileName)
+		},
+		map[string]interface{}{
+			"eth_port_profile_name": ethPortProfileName,
+			"batch_size":            len(b.ethPortProfileDelete) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddEthPortSettingsPut(ctx context.Context, ethPortSettingsName string, props openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName) string {
-	b.mutex.Lock()
-	b.ethPortSettingsPut[ethPortSettingsName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("eth_port_settings", ethPortSettingsName, "PUT")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "eth_port_settings",
-		ResourceName:  ethPortSettingsName,
-		OperationType: "PUT",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added EthPortSettings to PUT batch", map[string]interface{}{
-		"eth_port_settings_name": ethPortSettingsName,
-		"batch_size":             len(b.ethPortSettingsPut),
-		"operation_id":           operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"eth_port_settings",
+		ethPortSettingsName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.ethPortSettingsPut[ethPortSettingsName] = props
+		},
+		map[string]interface{}{
+			"eth_port_settings_name": ethPortSettingsName,
+			"batch_size":             len(b.ethPortSettingsPut) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddEthPortSettingsPatch(ctx context.Context, ethPortSettingsName string, props openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName) string {
-	b.mutex.Lock()
-	b.ethPortSettingsPatch[ethPortSettingsName] = props
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("eth_port_settings", ethPortSettingsName, "PATCH")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "eth_port_settings",
-		ResourceName:  ethPortSettingsName,
-		OperationType: "PATCH",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added EthPortSettings to PATCH batch", map[string]interface{}{
-		"eth_port_settings_name": ethPortSettingsName,
-		"batch_size":             len(b.ethPortSettingsPatch),
-		"operation_id":           operationID,
-	})
-
-	return operationID
+	return b.addOperation(
+		ctx,
+		"eth_port_settings",
+		ethPortSettingsName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.ethPortSettingsPatch[ethPortSettingsName] = props
+		},
+		map[string]interface{}{
+			"eth_port_settings_name": ethPortSettingsName,
+			"batch_size":             len(b.ethPortSettingsPatch) + 1,
+		},
+	)
 }
 
 func (b *BulkOperationManager) AddEthPortSettingsDelete(ctx context.Context, ethPortSettingsName string) string {
-	b.mutex.Lock()
-	b.ethPortSettingsDelete = append(b.ethPortSettingsDelete, ethPortSettingsName)
-	b.mutex.Unlock()
-
-	operationID := generateOperationID("eth_port_settings", ethPortSettingsName, "DELETE")
-
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	b.pendingOperations[operationID] = &Operation{
-		ResourceType:  "eth_port_settings",
-		ResourceName:  ethPortSettingsName,
-		OperationType: "DELETE",
-		Status:        OperationPending,
-	}
-
-	b.operationWaitChannels[operationID] = make(chan struct{})
-
-	now := time.Now()
-	b.lastOperationTime = now
-	if b.batchStartTime.IsZero() {
-		b.batchStartTime = now
-	}
-
-	tflog.Debug(ctx, "Added EthPortSettings to DELETE batch", map[string]interface{}{
-		"eth_port_settings_name": ethPortSettingsName,
-		"batch_size":             len(b.ethPortSettingsDelete),
-		"operation_id":           operationID,
-	})
-
-	return operationID
-}
-
-func (b *BulkOperationManager) ExecuteBulkGatewayPut(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
-
-	b.mutex.Lock()
-
-	gatewayPut := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
-	for k, v := range b.gatewayPut {
-		gatewayPut[k] = v
-	}
-
-	b.gatewayPut = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
-
-	b.mutex.Unlock()
-
-	if len(gatewayPut) == 0 {
-		return diagnostics
-	}
-
-	gatewayNames := make([]string, 0, len(gatewayPut))
-	for name := range gatewayPut {
-		gatewayNames = append(gatewayNames, name)
-	}
-
-	// Add pre-existence check
-	checker := ResourceExistenceCheck{
-		ResourceType:  "gateway",
-		OperationType: "PUT",
-		FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-			apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-			defer cancel()
-
-			resp, err := b.client.GatewaysAPI.GatewaysGet(apiCtx).Execute()
-			if err != nil {
-				return nil, err
-			}
-			defer resp.Body.Close()
-
-			var result struct {
-				Gateway map[string]interface{} `json:"gateway"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, err
-			}
-			return result.Gateway, nil
+	return b.addOperation(
+		ctx,
+		"eth_port_settings",
+		ethPortSettingsName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.ethPortSettingsDelete = append(b.ethPortSettingsDelete, ethPortSettingsName)
 		},
-	}
-
-	// Filter out resources that already exist
-	filteredGatewayNames, err := b.FilterPreExistingResources(ctx, gatewayNames, checker)
-	if err != nil {
-		tflog.Warn(ctx, fmt.Sprintf("Error checking for existing gateways: %v - proceeding with all gateways", err))
-		filteredGatewayNames = gatewayNames
-	}
-
-	if len(filteredGatewayNames) == 0 {
-		tflog.Info(ctx, "All gateways already exist, skipping bulk gateway PUT operation")
-		b.recentGatewayOps = true
-		b.recentGatewayOpTime = time.Now()
-		return diagnostics
-	}
-
-	// Create filtered map of resources to create
-	filteredGatewayPut := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
-	for _, name := range filteredGatewayNames {
-		filteredGatewayPut[name] = gatewayPut[name]
-	}
-
-	tflog.Debug(ctx, "Executing bulk gateway PUT operation", map[string]interface{}{
-		"gateway_count": len(filteredGatewayPut),
-		"gateway_names": filteredGatewayNames,
-	})
-
-	putRequest := openapi.NewGatewaysPutRequest()
-	gatewayMap := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
-
-	for name, props := range filteredGatewayPut {
-		gatewayMap[name] = props
-	}
-	putRequest.SetGateway(gatewayMap)
-	retryConfig := DefaultRetryConfig()
-	var putErr error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.GatewaysAPI.GatewaysPut(apiCtx).GatewaysPutRequest(*putRequest)
-		_, putErr = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if putErr == nil {
-			tflog.Debug(ctx, "Bulk gateway PUT operation succeeded", map[string]interface{}{
-				"attempt": retry + 1,
-			})
-			break
-		}
-
-		if IsRetriableError(putErr) {
-			delayTime := CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, "Bulk gateway PUT operation failed with retriable error, retrying", map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       putErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
-
-			time.Sleep(delayTime)
-			continue
-		}
-
-		tflog.Error(ctx, "Bulk gateway PUT operation failed with non-retriable error", map[string]interface{}{
-			"error": putErr.Error(),
-		})
-		break
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process gateway PUT operations that weren't already handled in FilterPreExistingResources
-		if op.ResourceType == "gateway" && op.OperationType == "PUT" && op.Status == OperationPending {
-			// Check if this operation's gateway name is in our filtered batch
-			if _, exists := filteredGatewayPut[op.ResourceName]; exists {
-				if putErr == nil {
-					// Mark operation as successful
-					updatedOp := op // Create a local copy
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp // Update the map
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true) // Pass true because we already hold the lock
-				} else {
-					// Mark operation as failed
-					updatedOp := op // Create a local copy
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = putErr
-					b.pendingOperations[opID] = updatedOp // Update the map
-					b.operationErrors[opID] = putErr
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true) // Pass true because we already hold the lock
-				}
-			}
-		}
-	}
-
-	if putErr != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk gateway PUT operation",
-			fmt.Sprintf("Error: %s", putErr),
-		)
-		return diagnostics
-	}
-
-	b.recentGatewayOps = true
-	b.recentGatewayOpTime = time.Now()
-	return diagnostics
+		map[string]interface{}{
+			"eth_port_settings_name": ethPortSettingsName,
+			"batch_size":             len(b.ethPortSettingsDelete) + 1,
+		},
+	)
 }
 
-func (b *BulkOperationManager) ExecuteBulkGatewayPatch(ctx context.Context) diag.Diagnostics {
+func (b *BulkOperationManager) executeBulkOperation(ctx context.Context, config BulkOperationConfig) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
 
-	b.mutex.Lock()
+	operations, resourceNames := config.ExtractOperations()
 
-	gatewayPatch := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
-	for k, v := range b.gatewayPatch {
-		gatewayPatch[k] = v
-	}
-
-	b.gatewayPatch = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
-
-	b.mutex.Unlock()
-
-	if len(gatewayPatch) == 0 {
+	if len(operations) == 0 {
 		return diagnostics
 	}
 
-	gatewayNames := make([]string, 0, len(gatewayPatch))
-	for name := range gatewayPatch {
-		gatewayNames = append(gatewayNames, name)
+	// For PUT operations, filter out resources that already exist
+	var filteredOperations map[string]interface{}
+	var filteredResourceNames []string
+
+	if config.OperationType == "PUT" && config.CheckPreExistence != nil {
+		var err error
+		filteredResourceNames, filteredOperations, err = config.CheckPreExistence(ctx, resourceNames)
+		if err != nil {
+			tflog.Warn(ctx, fmt.Sprintf("Error checking for existing %s: %v - proceeding with all resources",
+				config.ResourceType, err))
+			filteredResourceNames = resourceNames
+			filteredOperations = operations
+		}
+
+		if len(filteredResourceNames) == 0 {
+			tflog.Info(ctx, fmt.Sprintf("All %s already exist, skipping bulk %s operation",
+				config.ResourceType, config.OperationType))
+			config.UpdateRecentOps()
+			return diagnostics
+		}
+	} else {
+		filteredOperations = operations
+		filteredResourceNames = resourceNames
 	}
 
-	tflog.Debug(ctx, "Executing bulk gateway PATCH operation", map[string]interface{}{
-		"gateway_count": len(gatewayPatch),
-		"gateway_names": gatewayNames,
-	})
+	tflog.Debug(ctx, fmt.Sprintf("Executing bulk %s %s operation", config.ResourceType, config.OperationType),
+		map[string]interface{}{
+			fmt.Sprintf("%s_count", config.ResourceType): len(filteredOperations),
+			fmt.Sprintf("%s_names", config.ResourceType): filteredResourceNames,
+		})
 
-	patchRequest := openapi.NewGatewaysPutRequest()
-	gatewayMap := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+	request := config.PrepareRequest(filteredOperations)
 
-	for name, props := range gatewayPatch {
-		gatewayMap[name] = props
-	}
-	patchRequest.SetGateway(gatewayMap)
 	retryConfig := DefaultRetryConfig()
-	var err error
+	var opErr error
+	var apiResp *http.Response
 
 	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
 		if retry > 0 {
 			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Gateway PATCH operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
+			tflog.Debug(ctx, fmt.Sprintf("Retrying bulk %s %s operation after delay",
+				config.ResourceType, config.OperationType),
+				map[string]interface{}{
+					"retry": retry,
+					"delay": delay,
+				})
 			time.Sleep(delay)
 		}
 
-		// Create a separate context for the API call
 		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.GatewaysAPI.GatewaysPatch(apiCtx).GatewaysPutRequest(*patchRequest)
-		_, err = req.Execute()
-
-		// Release the API call context
+		apiResp, opErr = config.ExecuteRequest(apiCtx, request)
 		cancel()
 
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Gateway PATCH operation successful", map[string]interface{}{
-				"count": len(gatewayPatch),
-			})
+		if opErr == nil {
+			tflog.Debug(ctx, fmt.Sprintf("Bulk %s %s operation succeeded",
+				config.ResourceType, config.OperationType),
+				map[string]interface{}{
+					"attempt": retry + 1,
+				})
 			break
 		}
 
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Gateway PATCH operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
+		if !IsRetriableError(opErr) {
+			tflog.Error(ctx, fmt.Sprintf("Bulk %s %s operation failed with non-retriable error",
+				config.ResourceType, config.OperationType),
+				map[string]interface{}{
+					"error": opErr.Error(),
+				})
 			break
 		}
+
+		delayTime := CalculateBackoff(retry, retryConfig)
+		tflog.Debug(ctx, fmt.Sprintf("Bulk %s %s operation failed with retriable error, retrying",
+			config.ResourceType, config.OperationType),
+			map[string]interface{}{
+				"attempt":     retry + 1,
+				"error":       opErr.Error(),
+				"delay_ms":    delayTime.Milliseconds(),
+				"max_retries": retryConfig.MaxRetries,
+			})
 	}
 
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process gateway PATCH operations
-		if op.ResourceType == "gateway" && op.OperationType == "PATCH" {
-			// Check if this operation's gateway name is in our batch
-			if _, exists := gatewayPatch[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
-			}
+	if opErr == nil && apiResp != nil && config.ProcessResponse != nil {
+		if err := config.ProcessResponse(ctx, apiResp); err != nil {
+			tflog.Error(ctx, fmt.Sprintf("Error processing %s response: %v", config.ResourceType, err))
 		}
 	}
 
-	if err != nil {
+	b.updateOperationStatuses(ctx, config.ResourceType, config.OperationType, filteredResourceNames, opErr)
+
+	if opErr != nil {
 		diagnostics.AddError(
-			"Failed to execute bulk Gateway PATCH operation",
-			fmt.Sprintf("Error: %s", err),
+			fmt.Sprintf("Failed to execute bulk %s %s operation", config.ResourceType, config.OperationType),
+			fmt.Sprintf("Error: %s", opErr),
 		)
 		return diagnostics
 	}
 
-	b.recentGatewayOps = true
-	b.recentGatewayOpTime = time.Now()
+	config.UpdateRecentOps()
 	return diagnostics
 }
 
+func (b *BulkOperationManager) updateOperationStatuses(ctx context.Context, resourceType, operationType string,
+	resourceNames []string, opErr error) {
+	resourceMap := make(map[string]bool)
+
+	for _, name := range resourceNames {
+		resourceMap[name] = true
+	}
+
+	b.operationMutex.Lock()
+	defer b.operationMutex.Unlock()
+
+	for opID, op := range b.pendingOperations {
+		if op.ResourceType == resourceType && op.OperationType == operationType {
+			// For PUT, we need to check pending status
+			if operationType == "PUT" && op.Status != OperationPending {
+				continue
+			}
+
+			// Check if this operation's resource name is in our filtered batch
+			if resourceMap[op.ResourceName] {
+				updatedOp := op
+				if opErr == nil {
+					// Mark operation as successful
+					updatedOp.Status = OperationSucceeded
+					b.pendingOperations[opID] = updatedOp
+					b.operationResults[opID] = true
+				} else {
+					// Mark operation as failed
+					updatedOp.Status = OperationFailed
+					updatedOp.Error = opErr
+					b.pendingOperations[opID] = updatedOp
+					b.operationErrors[opID] = opErr
+					b.operationResults[opID] = false
+				}
+				b.safeCloseChannel(opID, true)
+			}
+		}
+	}
+}
+
+func (b *BulkOperationManager) ExecuteBulkGatewayPut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestGatewayGatewayName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "gateway",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+			for k, v := range b.gatewayPut {
+				originalOperations[k] = v
+			}
+			b.gatewayPut = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "gateway",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.GatewaysAPI.GatewaysGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Gateway map[string]interface{} `json:"gateway"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Gateway, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewGatewaysPutRequest()
+			gatewayMap := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+
+			for name, props := range filteredData {
+				gatewayMap[name] = props.(openapi.ConfigPutRequestGatewayGatewayName)
+			}
+			putRequest.SetGateway(gatewayMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.GatewaysAPI.GatewaysPut(ctx).GatewaysPutRequest(
+				*request.(*openapi.GatewaysPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentGatewayOps = true
+			b.recentGatewayOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkGatewayPatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "gateway",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+
+			b.mutex.Lock()
+			gatewayPatch := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+			for k, v := range b.gatewayPatch {
+				gatewayPatch[k] = v
+			}
+			b.gatewayPatch = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(gatewayPatch))
+
+			for k, v := range gatewayPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewGatewaysPutRequest()
+			gatewayMap := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+
+			for name, props := range filteredData {
+				gatewayMap[name] = props.(openapi.ConfigPutRequestGatewayGatewayName)
+			}
+			patchRequest.SetGateway(gatewayMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.GatewaysAPI.GatewaysPatch(ctx).GatewaysPutRequest(
+				*request.(*openapi.GatewaysPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentGatewayOps = true
+			b.recentGatewayOpTime = time.Now()
+		},
+	})
+}
+
 func (b *BulkOperationManager) ExecuteBulkLagPut(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	var originalOperations map[string]openapi.ConfigPutRequestLagLagName
 
-	b.mutex.Lock()
-
-	lagPut := make(map[string]openapi.ConfigPutRequestLagLagName)
-	for k, v := range b.lagPut {
-		lagPut[k] = v
-	}
-
-	b.lagPut = make(map[string]openapi.ConfigPutRequestLagLagName)
-
-	b.mutex.Unlock()
-
-	if len(lagPut) == 0 {
-		return diagnostics
-	}
-
-	lagNames := make([]string, 0, len(lagPut))
-	for name := range lagPut {
-		lagNames = append(lagNames, name)
-	}
-
-	checker := ResourceExistenceCheck{
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  "lag",
 		OperationType: "PUT",
-		FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-			// First check if we have cached LAG data
-			b.lagResponsesMutex.RLock()
-			if len(b.lagResponses) > 0 {
-				cachedData := make(map[string]interface{})
-				for k, v := range b.lagResponses {
-					cachedData[k] = v
-				}
-				b.lagResponsesMutex.RUnlock()
 
-				tflog.Debug(ctx, "Using cached LAG data for pre-existence check", map[string]interface{}{
-					"count": len(cachedData),
-				})
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-				return cachedData, nil
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestLagLagName)
+			for k, v := range b.lagPut {
+				originalOperations[k] = v
 			}
-			b.lagResponsesMutex.RUnlock()
+			b.lagPut = make(map[string]openapi.ConfigPutRequestLagLagName)
+			b.mutex.Unlock()
 
-			// Fall back to API call if no cache
-			apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-			defer cancel()
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
 
-			resp, err := b.client.LAGsAPI.LagsGet(apiCtx).Execute()
-			if err != nil {
-				return nil, err
-			}
-			defer resp.Body.Close()
-
-			var result struct {
-				Lag map[string]interface{} `json:"lag"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, err
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
 			}
 
-			b.lagResponsesMutex.Lock()
-			for k, v := range result.Lag {
-				if vMap, ok := v.(map[string]interface{}); ok {
-					b.lagResponses[k] = vMap
-
-					if name, ok := vMap["name"].(string); ok && name != k {
-						b.lagResponses[name] = vMap
-					}
-				}
-			}
-			b.lagResponsesMutex.Unlock()
-
-			return result.Lag, nil
+			return result, names
 		},
-	}
 
-	// Filter out resources that already exist
-	filteredLagNames, err := b.FilterPreExistingResources(ctx, lagNames, checker)
-	if err != nil {
-		tflog.Warn(ctx, fmt.Sprintf("Error checking for existing LAGs: %v - proceeding with all LAGs", err))
-		filteredLagNames = lagNames
-	}
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "lag",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached LAG data
+					b.lagResponsesMutex.RLock()
+					if len(b.lagResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.lagResponses {
+							cachedData[k] = v
+						}
+						b.lagResponsesMutex.RUnlock()
 
-	if len(filteredLagNames) == 0 {
-		tflog.Info(ctx, "All LAGs already exist, skipping bulk LAG PUT operation")
-		b.recentLagOps = true
-		b.recentLagOpTime = time.Now()
-		return diagnostics
-	}
+						tflog.Debug(ctx, "Using cached LAG data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
 
-	// Create filtered map of resources to create
-	filteredLagPut := make(map[string]openapi.ConfigPutRequestLagLagName)
-	for _, name := range filteredLagNames {
-		filteredLagPut[name] = lagPut[name]
-	}
+						return cachedData, nil
+					}
+					b.lagResponsesMutex.RUnlock()
 
-	tflog.Debug(ctx, "Executing bulk LAG PUT operation", map[string]interface{}{
-		"lag_count": len(filteredLagPut),
-		"lag_names": filteredLagNames,
-	})
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
 
-	putRequest := openapi.NewLagsPutRequest()
-	lagMap := make(map[string]openapi.ConfigPutRequestLagLagName)
+					resp, err := b.client.LAGsAPI.LagsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
 
-	for name, props := range filteredLagPut {
-		lagMap[name] = props
-	}
-	putRequest.SetLag(lagMap)
-	retryConfig := DefaultRetryConfig()
-	var putErr error
-	var apiResp *http.Response
+					var result struct {
+						Lag map[string]interface{} `json:"lag"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					b.lagResponsesMutex.Lock()
+					for k, v := range result.Lag {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.lagResponses[k] = vMap
 
-		req := b.client.LAGsAPI.LagsPut(apiCtx).LagsPutRequest(*putRequest)
-		apiResp, putErr = req.Execute()
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.lagResponses[name] = vMap
+							}
+						}
+					}
+					b.lagResponsesMutex.Unlock()
 
-		// Release the API call context
-		cancel()
+					return result.Lag, nil
+				},
+			}
 
-		if putErr == nil {
-			tflog.Debug(ctx, "Bulk LAG PUT operation succeeded", map[string]interface{}{
-				"attempt": retry + 1,
-			})
-			break
-		}
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
 
-		if IsRetriableError(putErr) {
-			delayTime := CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, "Bulk LAG PUT operation failed with retriable error, retrying", map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       putErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
 
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewLagsPutRequest()
+			lagMap := make(map[string]openapi.ConfigPutRequestLagLagName)
+
+			for name, props := range filteredData {
+				lagMap[name] = props.(openapi.ConfigPutRequestLagLagName)
+			}
+			putRequest.SetLag(lagMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.LAGsAPI.LagsPut(ctx).LagsPutRequest(
+				*request.(*openapi.LagsPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching LAGs", delayTime))
 			time.Sleep(delayTime)
-			continue
-		}
 
-		tflog.Error(ctx, "Bulk LAG PUT operation failed with non-retriable error", map[string]interface{}{
-			"error": putErr.Error(),
-		})
-		break
-	}
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
 
-	if putErr == nil && apiResp != nil {
-		defer apiResp.Body.Close()
-		delayTime := 2 * time.Second
-		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching LAGs", delayTime))
-		time.Sleep(delayTime)
+			tflog.Debug(ctx, "Fetching LAGs after successful PUT operation to retrieve auto-generated values")
+			lagsReq := b.client.LAGsAPI.LagsGet(fetchCtx)
+			lagsResp, fetchErr := lagsReq.Execute()
 
-		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
-		defer fetchCancel()
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch LAGs after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
 
-		tflog.Debug(ctx, "Fetching LAGs after successful PUT operation to retrieve auto-generated values")
-		lagsReq := b.client.LAGsAPI.LagsGet(fetchCtx)
-		lagsResp, fetchErr := lagsReq.Execute()
-
-		if fetchErr == nil {
 			defer lagsResp.Body.Close()
 
 			var lagsData struct {
 				Lag map[string]map[string]interface{} `json:"lag"`
 			}
 
-			if respErr := json.NewDecoder(lagsResp.Body).Decode(&lagsData); respErr == nil {
-				b.lagResponsesMutex.Lock()
-				for lagName, lagData := range lagsData.Lag {
-					b.lagResponses[lagName] = lagData
-
-					if name, ok := lagData["name"].(string); ok && name != lagName {
-						b.lagResponses[name] = lagData
-					}
-				}
-				b.lagResponsesMutex.Unlock()
-
-				tflog.Debug(ctx, "Successfully stored LAG data for auto-generated fields", map[string]interface{}{
-					"lag_count": len(lagsData.Lag),
-				})
-			} else {
+			if respErr := json.NewDecoder(lagsResp.Body).Decode(&lagsData); respErr != nil {
 				tflog.Error(ctx, "Failed to decode LAGs response for auto-generated fields", map[string]interface{}{
 					"error": respErr.Error(),
 				})
+				return respErr
 			}
-		} else {
-			tflog.Error(ctx, "Failed to fetch LAGs after PUT for auto-generated fields", map[string]interface{}{
-				"error": fetchErr.Error(),
-			})
-		}
-	}
 
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
+			b.lagResponsesMutex.Lock()
+			for lagName, lagData := range lagsData.Lag {
+				b.lagResponses[lagName] = lagData
 
-	for opID, op := range b.pendingOperations {
-		// Only process LAG PUT operations that weren't already handled in FilterPreExistingResources
-		if op.ResourceType == "lag" && op.OperationType == "PUT" && op.Status == OperationPending {
-			// Check if this operation's LAG name is in our filtered batch
-			if _, exists := filteredLagPut[op.ResourceName]; exists {
-				if putErr == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = putErr
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = putErr
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
+				if name, ok := lagData["name"].(string); ok && name != lagName {
+					b.lagResponses[name] = lagData
 				}
 			}
-		}
-	}
+			b.lagResponsesMutex.Unlock()
 
-	if putErr != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk LAG PUT operation",
-			fmt.Sprintf("Error: %s", putErr),
-		)
-		return diagnostics
-	}
+			tflog.Debug(ctx, "Successfully stored LAG data for auto-generated fields", map[string]interface{}{
+				"lag_count": len(lagsData.Lag),
+			})
 
-	b.recentLagOps = true
-	b.recentLagOpTime = time.Now()
-	return diagnostics
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentLagOps = true
+			b.recentLagOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkLagPatch(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "lag",
+		OperationType: "PATCH",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	lagPatch := make(map[string]openapi.ConfigPutRequestLagLagName)
-	for k, v := range b.lagPatch {
-		lagPatch[k] = v
-	}
-
-	b.lagPatch = make(map[string]openapi.ConfigPutRequestLagLagName)
-
-	b.mutex.Unlock()
-
-	if len(lagPatch) == 0 {
-		return diagnostics
-	}
-
-	patchRequest := openapi.NewLagsPutRequest()
-	lagMap := make(map[string]openapi.ConfigPutRequestLagLagName)
-
-	for name, props := range lagPatch {
-		lagMap[name] = props
-	}
-	patchRequest.SetLag(lagMap)
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk LAG PATCH operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
-			time.Sleep(delay)
-		}
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.LAGsAPI.LagsPatch(apiCtx).LagsPutRequest(*patchRequest)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk LAG PATCH operation successful", map[string]interface{}{
-				"count": len(lagPatch),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk LAG PATCH operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process LAG PATCH operations
-		if op.ResourceType == "lag" && op.OperationType == "PATCH" {
-			// Check if this operation's lag name is in our batch
-			if _, exists := lagPatch[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			b.mutex.Lock()
+			lagPatch := make(map[string]openapi.ConfigPutRequestLagLagName)
+			for k, v := range b.lagPatch {
+				lagPatch[k] = v
 			}
-		}
-	}
+			b.lagPatch = make(map[string]openapi.ConfigPutRequestLagLagName)
+			b.mutex.Unlock()
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk LAG PATCH operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(lagPatch))
 
-	b.recentLagOps = true
-	b.recentLagOpTime = time.Now()
-	return diagnostics
+			for k, v := range lagPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewLagsPutRequest()
+			lagMap := make(map[string]openapi.ConfigPutRequestLagLagName)
+
+			for name, props := range filteredData {
+				lagMap[name] = props.(openapi.ConfigPutRequestLagLagName)
+			}
+			patchRequest.SetLag(lagMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.LAGsAPI.LagsPatch(ctx).LagsPutRequest(
+				*request.(*openapi.LagsPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentLagOps = true
+			b.recentLagOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkLagDelete(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "lag",
+		OperationType: "DELETE",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	lagNames := make([]string, len(b.lagDelete))
-	copy(lagNames, b.lagDelete)
+			b.mutex.Lock()
+			lagNames := make([]string, len(b.lagDelete))
+			copy(lagNames, b.lagDelete)
 
-	lagDeleteMap := make(map[string]bool)
-	for _, name := range lagNames {
-		lagDeleteMap[name] = true
-	}
-
-	b.lagDelete = make([]string, 0)
-
-	b.mutex.Unlock()
-
-	if len(lagNames) == 0 {
-		return diagnostics
-	}
-
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk LAG DELETE operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
-			time.Sleep(delay)
-		}
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.LAGsAPI.LagsDelete(apiCtx).LagName(lagNames)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk LAG DELETE operation successful", map[string]interface{}{
-				"count": len(lagNames),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk LAG DELETE operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process LAG DELETE operations
-		if op.ResourceType == "lag" && op.OperationType == "DELETE" {
-			// Check if this operation's lag name is in our batch
-			if _, exists := lagDeleteMap[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			lagDeleteMap := make(map[string]bool)
+			for _, name := range lagNames {
+				lagDeleteMap[name] = true
 			}
-		}
-	}
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk LAG DELETE operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			b.lagDelete = make([]string, 0)
+			b.mutex.Unlock()
 
-	b.recentLagOps = true
-	b.recentLagOpTime = time.Now()
-	return diagnostics
+			result := make(map[string]interface{})
+			for _, name := range lagNames {
+				result[name] = true
+			}
+
+			return result, lagNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.LAGsAPI.LagsDelete(ctx).LagName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentLagOps = true
+			b.recentLagOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkTenantPut(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	var originalOperations map[string]openapi.ConfigPutRequestTenantTenantName
 
-	b.mutex.Lock()
-
-	tenantPut := make(map[string]openapi.ConfigPutRequestTenantTenantName)
-	for k, v := range b.tenantPut {
-		tenantPut[k] = v
-	}
-
-	b.tenantPut = make(map[string]openapi.ConfigPutRequestTenantTenantName)
-
-	b.mutex.Unlock()
-
-	if len(tenantPut) == 0 {
-		return diagnostics
-	}
-
-	tenantNames := make([]string, 0, len(tenantPut))
-	for name := range tenantPut {
-		tenantNames = append(tenantNames, name)
-	}
-
-	checker := ResourceExistenceCheck{
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  "tenant",
 		OperationType: "PUT",
-		FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-			// First check if we have cached tenant data
-			b.tenantResponsesMutex.RLock()
-			if len(b.tenantResponses) > 0 {
-				cachedData := make(map[string]interface{})
-				for k, v := range b.tenantResponses {
-					cachedData[k] = v
-				}
-				b.tenantResponsesMutex.RUnlock()
 
-				tflog.Debug(ctx, "Using cached tenant data for pre-existence check", map[string]interface{}{
-					"count": len(cachedData),
-				})
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-				return cachedData, nil
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestTenantTenantName)
+			for k, v := range b.tenantPut {
+				originalOperations[k] = v
 			}
-			b.tenantResponsesMutex.RUnlock()
+			b.tenantPut = make(map[string]openapi.ConfigPutRequestTenantTenantName)
+			b.mutex.Unlock()
 
-			// Fall back to API call if no cache
-			apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-			defer cancel()
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
 
-			resp, err := b.client.TenantsAPI.TenantsGet(apiCtx).Execute()
-			if err != nil {
-				return nil, err
-			}
-			defer resp.Body.Close()
-
-			var result struct {
-				Tenant map[string]interface{} `json:"tenant"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, err
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
 			}
 
-			b.tenantResponsesMutex.Lock()
-			for k, v := range result.Tenant {
-				if vMap, ok := v.(map[string]interface{}); ok {
-					b.tenantResponses[k] = vMap
-
-					if name, ok := vMap["name"].(string); ok && name != k {
-						b.tenantResponses[name] = vMap
-					}
-				}
-			}
-			b.tenantResponsesMutex.Unlock()
-
-			return result.Tenant, nil
+			return result, names
 		},
-	}
 
-	// Filter out resources that already exist
-	filteredTenantNames, err := b.FilterPreExistingResources(ctx, tenantNames, checker)
-	if err != nil {
-		tflog.Warn(ctx, fmt.Sprintf("Error checking for existing tenants: %v - proceeding with all tenants", err))
-		filteredTenantNames = tenantNames
-	}
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "tenant",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached tenant data
+					b.tenantResponsesMutex.RLock()
+					if len(b.tenantResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.tenantResponses {
+							cachedData[k] = v
+						}
+						b.tenantResponsesMutex.RUnlock()
 
-	if len(filteredTenantNames) == 0 {
-		tflog.Info(ctx, "All tenants already exist, skipping bulk tenant PUT operation")
-		b.recentTenantOps = true
-		b.recentTenantOpTime = time.Now()
-		return diagnostics
-	}
+						tflog.Debug(ctx, "Using cached tenant data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
 
-	// Create filtered map of resources to create
-	filteredTenantPut := make(map[string]openapi.ConfigPutRequestTenantTenantName)
-	for _, name := range filteredTenantNames {
-		filteredTenantPut[name] = tenantPut[name]
-	}
+						return cachedData, nil
+					}
+					b.tenantResponsesMutex.RUnlock()
 
-	tflog.Debug(ctx, "Executing bulk Tenant PUT operation", map[string]interface{}{
-		"tenant_count": len(filteredTenantPut),
-		"tenant_names": filteredTenantNames,
-	})
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
 
-	putRequest := openapi.NewTenantsPutRequest()
-	tenantMap := make(map[string]openapi.ConfigPutRequestTenantTenantName)
+					resp, err := b.client.TenantsAPI.TenantsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
 
-	for name, props := range filteredTenantPut {
-		tenantMap[name] = props
-	}
-	putRequest.SetTenant(tenantMap)
-	retryConfig := DefaultRetryConfig()
-	var putErr error
-	var apiResp *http.Response
+					var result struct {
+						Tenant map[string]interface{} `json:"tenant"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					b.tenantResponsesMutex.Lock()
+					for k, v := range result.Tenant {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.tenantResponses[k] = vMap
 
-		req := b.client.TenantsAPI.TenantsPut(apiCtx).TenantsPutRequest(*putRequest)
-		apiResp, putErr = req.Execute()
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.tenantResponses[name] = vMap
+							}
+						}
+					}
+					b.tenantResponsesMutex.Unlock()
 
-		// Release the API call context
-		cancel()
+					return result.Tenant, nil
+				},
+			}
 
-		if putErr == nil {
-			tflog.Debug(ctx, "Bulk Tenant PUT operation succeeded", map[string]interface{}{
-				"attempt": retry + 1,
-			})
-			break
-		}
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
 
-		if IsRetriableError(putErr) {
-			delayTime := CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, "Bulk Tenant PUT operation failed with retriable error, retrying", map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       putErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
 
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewTenantsPutRequest()
+			tenantMap := make(map[string]openapi.ConfigPutRequestTenantTenantName)
+
+			for name, props := range filteredData {
+				tenantMap[name] = props.(openapi.ConfigPutRequestTenantTenantName)
+			}
+			putRequest.SetTenant(tenantMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.TenantsAPI.TenantsPut(ctx).TenantsPutRequest(
+				*request.(*openapi.TenantsPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching tenants", delayTime))
 			time.Sleep(delayTime)
-			continue
-		}
 
-		tflog.Error(ctx, "Bulk Tenant PUT operation failed with non-retriable error", map[string]interface{}{
-			"error": putErr.Error(),
-		})
-		break
-	}
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
 
-	if putErr == nil && apiResp != nil {
-		defer apiResp.Body.Close()
-		delayTime := 2 * time.Second
-		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching tenants", delayTime))
-		time.Sleep(delayTime)
+			tflog.Debug(ctx, "Fetching tenants after successful PUT operation to retrieve auto-generated values")
+			tenantsReq := b.client.TenantsAPI.TenantsGet(fetchCtx)
+			tenantsResp, fetchErr := tenantsReq.Execute()
 
-		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
-		defer fetchCancel()
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch tenants after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
 
-		tflog.Debug(ctx, "Fetching tenants after successful PUT operation to retrieve auto-generated values")
-		tenantsReq := b.client.TenantsAPI.TenantsGet(fetchCtx)
-		tenantsResp, fetchErr := tenantsReq.Execute()
-
-		if fetchErr == nil {
 			defer tenantsResp.Body.Close()
 
 			var tenantsData struct {
 				Tenant map[string]map[string]interface{} `json:"tenant"`
 			}
 
-			if respErr := json.NewDecoder(tenantsResp.Body).Decode(&tenantsData); respErr == nil {
-				b.tenantResponsesMutex.Lock()
-				for tenantName, tenantData := range tenantsData.Tenant {
-					b.tenantResponses[tenantName] = tenantData
-
-					if name, ok := tenantData["name"].(string); ok && name != tenantName {
-						b.tenantResponses[name] = tenantData
-					}
-				}
-				b.tenantResponsesMutex.Unlock()
-
-				tflog.Debug(ctx, "Successfully stored tenant data for auto-generated fields", map[string]interface{}{
-					"tenant_count": len(tenantsData.Tenant),
-				})
-			} else {
+			if respErr := json.NewDecoder(tenantsResp.Body).Decode(&tenantsData); respErr != nil {
 				tflog.Error(ctx, "Failed to decode tenants response for auto-generated fields", map[string]interface{}{
 					"error": respErr.Error(),
 				})
+				return respErr
 			}
-		} else {
-			tflog.Error(ctx, "Failed to fetch tenants after PUT for auto-generated fields", map[string]interface{}{
-				"error": fetchErr.Error(),
-			})
-		}
-	}
 
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
+			b.tenantResponsesMutex.Lock()
+			for tenantName, tenantData := range tenantsData.Tenant {
+				b.tenantResponses[tenantName] = tenantData
 
-	for opID, op := range b.pendingOperations {
-		// Only process tenant PUT operations that weren't already handled in FilterPreExistingResources
-		if op.ResourceType == "tenant" && op.OperationType == "PUT" && op.Status == OperationPending {
-			// Check if this operation's tenant name is in our filtered batch
-			if _, exists := filteredTenantPut[op.ResourceName]; exists {
-				if putErr == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = putErr
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = putErr
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
+				if name, ok := tenantData["name"].(string); ok && name != tenantName {
+					b.tenantResponses[name] = tenantData
 				}
 			}
-		}
-	}
+			b.tenantResponsesMutex.Unlock()
 
-	if putErr != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Tenant PUT operation",
-			fmt.Sprintf("Error: %s", putErr),
-		)
-		return diagnostics
-	}
+			tflog.Debug(ctx, "Successfully stored tenant data for auto-generated fields", map[string]interface{}{
+				"tenant_count": len(tenantsData.Tenant),
+			})
 
-	b.recentTenantOps = true
-	b.recentTenantOpTime = time.Now()
-	return diagnostics
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentTenantOps = true
+			b.recentTenantOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkTenantPatch(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "tenant",
+		OperationType: "PATCH",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	tenantPatch := make(map[string]openapi.ConfigPutRequestTenantTenantName)
-	for k, v := range b.tenantPatch {
-		tenantPatch[k] = v
-	}
-
-	b.tenantPatch = make(map[string]openapi.ConfigPutRequestTenantTenantName)
-
-	b.mutex.Unlock()
-
-	if len(tenantPatch) == 0 {
-		return diagnostics
-	}
-
-	tenantNames := make([]string, 0, len(tenantPatch))
-	for name := range tenantPatch {
-		tenantNames = append(tenantNames, name)
-	}
-
-	tflog.Debug(ctx, "Executing bulk Tenant PATCH operation", map[string]interface{}{
-		"tenant_count": len(tenantPatch),
-		"tenant_names": tenantNames,
-	})
-
-	patchRequest := openapi.NewTenantsPutRequest()
-	tenantMap := make(map[string]openapi.ConfigPutRequestTenantTenantName)
-
-	for name, props := range tenantPatch {
-		tenantMap[name] = props
-	}
-	patchRequest.SetTenant(tenantMap)
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Tenant PATCH operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
-			time.Sleep(delay)
-		}
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.TenantsAPI.TenantsPatch(apiCtx).TenantsPutRequest(*patchRequest)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Tenant PATCH operation successful", map[string]interface{}{
-				"count": len(tenantPatch),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Tenant PATCH operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process Tenant PATCH operations
-		if op.ResourceType == "tenant" && op.OperationType == "PATCH" {
-			// Check if this operation's tenant name is in our batch
-			if _, exists := tenantPatch[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			b.mutex.Lock()
+			tenantPatch := make(map[string]openapi.ConfigPutRequestTenantTenantName)
+			for k, v := range b.tenantPatch {
+				tenantPatch[k] = v
 			}
-		}
-	}
+			b.tenantPatch = make(map[string]openapi.ConfigPutRequestTenantTenantName)
+			b.mutex.Unlock()
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Tenant PATCH operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(tenantPatch))
 
-	b.recentTenantOps = true
-	b.recentTenantOpTime = time.Now()
-	return diagnostics
+			for k, v := range tenantPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewTenantsPutRequest()
+			tenantMap := make(map[string]openapi.ConfigPutRequestTenantTenantName)
+
+			for name, props := range filteredData {
+				tenantMap[name] = props.(openapi.ConfigPutRequestTenantTenantName)
+			}
+			patchRequest.SetTenant(tenantMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.TenantsAPI.TenantsPatch(ctx).TenantsPutRequest(
+				*request.(*openapi.TenantsPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentTenantOps = true
+			b.recentTenantOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkTenantDelete(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "tenant",
+		OperationType: "DELETE",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	tenantNames := make([]string, len(b.tenantDelete))
-	copy(tenantNames, b.tenantDelete)
+			b.mutex.Lock()
+			tenantNames := make([]string, len(b.tenantDelete))
+			copy(tenantNames, b.tenantDelete)
 
-	tenantDeleteMap := make(map[string]bool)
-	for _, name := range tenantNames {
-		tenantDeleteMap[name] = true
-	}
-
-	b.tenantDelete = make([]string, 0)
-
-	b.mutex.Unlock()
-
-	if len(tenantNames) == 0 {
-		return diagnostics
-	}
-
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Tenant DELETE operation after delay", map[string]interface{}{
-				"retry":       retry,
-				"delay":       delay,
-				"max_retries": retryConfig.MaxRetries,
-			})
-
-			time.Sleep(delay)
-		}
-
-		tflog.Debug(ctx, "Executing bulk Tenant DELETE operation", map[string]interface{}{
-			"tenant_count": len(tenantNames),
-			"tenant_names": tenantNames,
-		})
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.TenantsAPI.TenantsDelete(apiCtx).TenantName(tenantNames)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Tenant DELETE operation successful", map[string]interface{}{
-				"count": len(tenantNames),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Tenant DELETE operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process Tenant DELETE operations
-		if op.ResourceType == "tenant" && op.OperationType == "DELETE" {
-			// Check if this operation's tenant name is in our batch
-			if _, exists := tenantDeleteMap[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			tenantDeleteMap := make(map[string]bool)
+			for _, name := range tenantNames {
+				tenantDeleteMap[name] = true
 			}
-		}
-	}
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Tenant DELETE operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			b.tenantDelete = make([]string, 0)
+			b.mutex.Unlock()
 
-	b.recentTenantOps = true
-	b.recentTenantOpTime = time.Now()
-	return diagnostics
+			result := make(map[string]interface{})
+			for _, name := range tenantNames {
+				result[name] = true
+			}
+
+			return result, tenantNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.TenantsAPI.TenantsDelete(ctx).TenantName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentTenantOps = true
+			b.recentTenantOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkGatewayDelete(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "gateway",
+		OperationType: "DELETE",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	gatewayNames := make([]string, len(b.gatewayDelete))
-	copy(gatewayNames, b.gatewayDelete)
+			b.mutex.Lock()
+			gatewayNames := make([]string, len(b.gatewayDelete))
+			copy(gatewayNames, b.gatewayDelete)
 
-	gatewayDeleteMap := make(map[string]bool)
-	for _, name := range gatewayNames {
-		gatewayDeleteMap[name] = true
-	}
-
-	b.gatewayDelete = make([]string, 0)
-
-	b.mutex.Unlock()
-
-	if len(gatewayNames) == 0 {
-		return diagnostics
-	}
-
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Gateway DELETE operation after delay", map[string]interface{}{
-				"retry":       retry,
-				"delay":       delay,
-				"max_retries": retryConfig.MaxRetries,
-			})
-
-			time.Sleep(delay)
-		}
-
-		tflog.Debug(ctx, "Executing bulk Gateway DELETE operation", map[string]interface{}{
-			"gateway_count": len(gatewayNames),
-			"gateway_names": gatewayNames,
-		})
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.GatewaysAPI.GatewaysDelete(apiCtx).GatewayName(gatewayNames)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Gateway DELETE operation successful", map[string]interface{}{
-				"count": len(gatewayNames),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Gateway DELETE operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process gateway DELETE operations
-		if op.ResourceType == "gateway" && op.OperationType == "DELETE" {
-			// Check if this operation's gateway name is in our batch
-			if _, exists := gatewayDeleteMap[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			gatewayDeleteMap := make(map[string]bool)
+			for _, name := range gatewayNames {
+				gatewayDeleteMap[name] = true
 			}
-		}
-	}
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Gateway DELETE operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			b.gatewayDelete = make([]string, 0)
+			b.mutex.Unlock()
 
-	b.recentGatewayOps = true
-	b.recentGatewayOpTime = time.Now()
-	return diagnostics
+			result := make(map[string]interface{})
+			for _, name := range gatewayNames {
+				result[name] = true
+			}
+
+			return result, gatewayNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.GatewaysAPI.GatewaysDelete(ctx).GatewayName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentGatewayOps = true
+			b.recentGatewayOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkServicePut(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	var originalOperations map[string]openapi.ConfigPutRequestServiceServiceName
 
-	b.mutex.Lock()
-
-	servicePut := make(map[string]openapi.ConfigPutRequestServiceServiceName)
-	for k, v := range b.servicePut {
-		servicePut[k] = v
-	}
-
-	b.servicePut = make(map[string]openapi.ConfigPutRequestServiceServiceName)
-
-	b.mutex.Unlock()
-
-	if len(servicePut) == 0 {
-		return diagnostics
-	}
-
-	serviceNames := make([]string, 0, len(servicePut))
-	for name := range servicePut {
-		serviceNames = append(serviceNames, name)
-	}
-
-	checker := ResourceExistenceCheck{
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  "service",
 		OperationType: "PUT",
-		FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-			// First check if we have cached service data
-			b.serviceResponsesMutex.RLock()
-			if len(b.serviceResponses) > 0 {
-				cachedData := make(map[string]interface{})
-				for k, v := range b.serviceResponses {
-					cachedData[k] = v
-				}
-				b.serviceResponsesMutex.RUnlock()
 
-				tflog.Debug(ctx, "Using cached service data for pre-existence check", map[string]interface{}{
-					"count": len(cachedData),
-				})
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-				return cachedData, nil
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestServiceServiceName)
+			for k, v := range b.servicePut {
+				originalOperations[k] = v
 			}
-			b.serviceResponsesMutex.RUnlock()
+			b.servicePut = make(map[string]openapi.ConfigPutRequestServiceServiceName)
+			b.mutex.Unlock()
 
-			// Fall back to API call if no cache
-			apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-			defer cancel()
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
 
-			resp, err := b.client.ServicesAPI.ServicesGet(apiCtx).Execute()
-			if err != nil {
-				return nil, err
-			}
-			defer resp.Body.Close()
-
-			var result struct {
-				Service map[string]interface{} `json:"service"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, err
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
 			}
 
-			b.serviceResponsesMutex.Lock()
-			for k, v := range result.Service {
-				if vMap, ok := v.(map[string]interface{}); ok {
-					b.serviceResponses[k] = vMap
-
-					if name, ok := vMap["name"].(string); ok && name != k {
-						b.serviceResponses[name] = vMap
-					}
-				}
-			}
-			b.serviceResponsesMutex.Unlock()
-
-			return result.Service, nil
+			return result, names
 		},
-	}
 
-	// Filter out resources that already exist
-	filteredServiceNames, err := b.FilterPreExistingResources(ctx, serviceNames, checker)
-	if err != nil {
-		tflog.Warn(ctx, fmt.Sprintf("Error checking for existing services: %v - proceeding with all services", err))
-		filteredServiceNames = serviceNames
-	}
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "service",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached service data
+					b.serviceResponsesMutex.RLock()
+					if len(b.serviceResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.serviceResponses {
+							cachedData[k] = v
+						}
+						b.serviceResponsesMutex.RUnlock()
 
-	if len(filteredServiceNames) == 0 {
-		tflog.Info(ctx, "All services already exist, skipping bulk service PUT operation")
-		b.recentServiceOps = true
-		b.recentServiceOpTime = time.Now()
-		return diagnostics
-	}
+						tflog.Debug(ctx, "Using cached service data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
 
-	// Create filtered map of resources to create
-	filteredServicePut := make(map[string]openapi.ConfigPutRequestServiceServiceName)
-	for _, name := range filteredServiceNames {
-		filteredServicePut[name] = servicePut[name]
-	}
+						return cachedData, nil
+					}
+					b.serviceResponsesMutex.RUnlock()
 
-	tflog.Debug(ctx, "Executing bulk Service PUT operation", map[string]interface{}{
-		"service_count": len(filteredServicePut),
-		"service_names": filteredServiceNames,
-	})
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
 
-	putRequest := openapi.NewServicesPutRequest()
-	serviceMap := make(map[string]openapi.ConfigPutRequestServiceServiceName)
+					resp, err := b.client.ServicesAPI.ServicesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
 
-	for name, props := range filteredServicePut {
-		serviceMap[name] = props
-	}
-	putRequest.SetService(serviceMap)
-	retryConfig := DefaultRetryConfig()
-	var putErr error
-	var apiResp *http.Response
+					var result struct {
+						Service map[string]interface{} `json:"service"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					b.serviceResponsesMutex.Lock()
+					for k, v := range result.Service {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.serviceResponses[k] = vMap
 
-		req := b.client.ServicesAPI.ServicesPut(apiCtx).ServicesPutRequest(*putRequest)
-		apiResp, putErr = req.Execute()
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.serviceResponses[name] = vMap
+							}
+						}
+					}
+					b.serviceResponsesMutex.Unlock()
 
-		// Release the API call context
-		cancel()
+					return result.Service, nil
+				},
+			}
 
-		if putErr == nil {
-			tflog.Debug(ctx, "Bulk Service PUT operation succeeded", map[string]interface{}{
-				"attempt": retry + 1,
-			})
-			break
-		}
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
 
-		if IsRetriableError(putErr) {
-			delayTime := CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, "Bulk Service PUT operation failed with retriable error, retrying", map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       putErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
 
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewServicesPutRequest()
+			serviceMap := make(map[string]openapi.ConfigPutRequestServiceServiceName)
+
+			for name, props := range filteredData {
+				serviceMap[name] = props.(openapi.ConfigPutRequestServiceServiceName)
+			}
+			putRequest.SetService(serviceMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.ServicesAPI.ServicesPut(ctx).ServicesPutRequest(
+				*request.(*openapi.ServicesPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching services", delayTime))
 			time.Sleep(delayTime)
-			continue
-		}
 
-		tflog.Error(ctx, "Bulk Service PUT operation failed with non-retriable error", map[string]interface{}{
-			"error": putErr.Error(),
-		})
-		break
-	}
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
 
-	if putErr == nil && apiResp != nil {
-		defer apiResp.Body.Close()
-		delayTime := 2 * time.Second
-		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching services", delayTime))
-		time.Sleep(delayTime)
+			tflog.Debug(ctx, "Fetching services after successful PUT operation to retrieve auto-generated values")
+			servicesReq := b.client.ServicesAPI.ServicesGet(fetchCtx)
+			servicesResp, fetchErr := servicesReq.Execute()
 
-		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
-		defer fetchCancel()
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch services after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
 
-		tflog.Debug(ctx, "Fetching services after successful PUT operation to retrieve auto-generated values")
-		servicesReq := b.client.ServicesAPI.ServicesGet(fetchCtx)
-		servicesResp, fetchErr := servicesReq.Execute()
-
-		if fetchErr == nil {
 			defer servicesResp.Body.Close()
 
 			var servicesData struct {
 				Service map[string]map[string]interface{} `json:"service"`
 			}
 
-			if respErr := json.NewDecoder(servicesResp.Body).Decode(&servicesData); respErr == nil {
-				b.serviceResponsesMutex.Lock()
-				for serviceName, serviceData := range servicesData.Service {
-					b.serviceResponses[serviceName] = serviceData
-
-					if name, ok := serviceData["name"].(string); ok && name != serviceName {
-						b.serviceResponses[name] = serviceData
-					}
-				}
-				b.serviceResponsesMutex.Unlock()
-
-				tflog.Debug(ctx, "Successfully stored service data for auto-generated fields", map[string]interface{}{
-					"service_count": len(servicesData.Service),
-				})
-			} else {
+			if respErr := json.NewDecoder(servicesResp.Body).Decode(&servicesData); respErr != nil {
 				tflog.Error(ctx, "Failed to decode services response for auto-generated fields", map[string]interface{}{
 					"error": respErr.Error(),
 				})
+				return respErr
 			}
-		} else {
-			tflog.Error(ctx, "Failed to fetch services after PUT for auto-generated fields", map[string]interface{}{
-				"error": fetchErr.Error(),
-			})
-		}
-	}
 
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
+			b.serviceResponsesMutex.Lock()
+			for serviceName, serviceData := range servicesData.Service {
+				b.serviceResponses[serviceName] = serviceData
 
-	for opID, op := range b.pendingOperations {
-		// Only process service PUT operations that weren't already handled in FilterPreExistingResources
-		if op.ResourceType == "service" && op.OperationType == "PUT" && op.Status == OperationPending {
-			// Check if this operation's service name is in our filtered batch
-			if _, exists := filteredServicePut[op.ResourceName]; exists {
-				if putErr == nil {
-					// Mark operation as successful
-					updatedOp := op // Create a local copy
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp // Update the map
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op // Create a local copy
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = putErr
-					b.pendingOperations[opID] = updatedOp // Update the map
-					b.operationErrors[opID] = putErr
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
+				if name, ok := serviceData["name"].(string); ok && name != serviceName {
+					b.serviceResponses[name] = serviceData
 				}
 			}
-		}
-	}
+			b.serviceResponsesMutex.Unlock()
 
-	if putErr != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Service PUT operation",
-			fmt.Sprintf("Error: %s", putErr),
-		)
-		return diagnostics
-	}
+			tflog.Debug(ctx, "Successfully stored service data for auto-generated fields", map[string]interface{}{
+				"service_count": len(servicesData.Service),
+			})
 
-	b.recentServiceOps = true
-	b.recentServiceOpTime = time.Now()
-	return diagnostics
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentServiceOps = true
+			b.recentServiceOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkServicePatch(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "service",
+		OperationType: "PATCH",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	servicePatch := make(map[string]openapi.ConfigPutRequestServiceServiceName)
-	for k, v := range b.servicePatch {
-		servicePatch[k] = v
-	}
-
-	b.servicePatch = make(map[string]openapi.ConfigPutRequestServiceServiceName)
-
-	b.mutex.Unlock()
-
-	if len(servicePatch) == 0 {
-		return diagnostics
-	}
-
-	serviceNames := make([]string, 0, len(servicePatch))
-	for name := range servicePatch {
-		serviceNames = append(serviceNames, name)
-	}
-
-	tflog.Debug(ctx, "Executing bulk Service PATCH operation", map[string]interface{}{
-		"service_count": len(servicePatch),
-		"service_names": serviceNames,
-	})
-
-	patchRequest := openapi.NewServicesPutRequest()
-	serviceMap := make(map[string]openapi.ConfigPutRequestServiceServiceName)
-
-	for name, props := range servicePatch {
-		serviceMap[name] = props
-	}
-	patchRequest.SetService(serviceMap)
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Service PATCH operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
-			time.Sleep(delay)
-		}
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.ServicesAPI.ServicesPatch(apiCtx).ServicesPutRequest(*patchRequest)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Service PATCH operation successful", map[string]interface{}{
-				"count": len(servicePatch),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Service PATCH operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process Service PATCH operations
-		if op.ResourceType == "service" && op.OperationType == "PATCH" {
-			// Check if this operation's service name is in our batch
-			if _, exists := servicePatch[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			b.mutex.Lock()
+			servicePatch := make(map[string]openapi.ConfigPutRequestServiceServiceName)
+			for k, v := range b.servicePatch {
+				servicePatch[k] = v
 			}
-		}
-	}
+			b.servicePatch = make(map[string]openapi.ConfigPutRequestServiceServiceName)
+			b.mutex.Unlock()
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Service PATCH operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(servicePatch))
 
-	b.recentServiceOps = true
-	b.recentServiceOpTime = time.Now()
-	return diagnostics
+			for k, v := range servicePatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewServicesPutRequest()
+			serviceMap := make(map[string]openapi.ConfigPutRequestServiceServiceName)
+
+			for name, props := range filteredData {
+				serviceMap[name] = props.(openapi.ConfigPutRequestServiceServiceName)
+			}
+			patchRequest.SetService(serviceMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.ServicesAPI.ServicesPatch(ctx).ServicesPutRequest(
+				*request.(*openapi.ServicesPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentServiceOps = true
+			b.recentServiceOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkServiceDelete(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "service",
+		OperationType: "DELETE",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	serviceNames := make([]string, len(b.serviceDelete))
-	copy(serviceNames, b.serviceDelete)
+			b.mutex.Lock()
+			serviceNames := make([]string, len(b.serviceDelete))
+			copy(serviceNames, b.serviceDelete)
 
-	serviceDeleteMap := make(map[string]bool)
-	for _, name := range serviceNames {
-		serviceDeleteMap[name] = true
-	}
-
-	b.serviceDelete = make([]string, 0)
-
-	b.mutex.Unlock()
-
-	if len(serviceNames) == 0 {
-		return diagnostics
-	}
-
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Service DELETE operation after delay", map[string]interface{}{
-				"retry":       retry,
-				"delay":       delay,
-				"max_retries": retryConfig.MaxRetries,
-			})
-
-			time.Sleep(delay)
-		}
-
-		tflog.Debug(ctx, "Executing bulk Service DELETE operation", map[string]interface{}{
-			"service_count": len(serviceNames),
-			"service_names": serviceNames,
-		})
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.ServicesAPI.ServicesDelete(apiCtx).ServiceName(serviceNames)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Service DELETE operation successful", map[string]interface{}{
-				"count": len(serviceNames),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Service DELETE operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process Service DELETE operations
-		if op.ResourceType == "service" && op.OperationType == "DELETE" {
-			// Check if this operation's service name is in our batch
-			if _, exists := serviceDeleteMap[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			serviceDeleteMap := make(map[string]bool)
+			for _, name := range serviceNames {
+				serviceDeleteMap[name] = true
 			}
-		}
-	}
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Service DELETE operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			b.serviceDelete = make([]string, 0)
+			b.mutex.Unlock()
 
-	b.recentServiceOps = true
-	b.recentServiceOpTime = time.Now()
-	return diagnostics
+			result := make(map[string]interface{})
+			for _, name := range serviceNames {
+				result[name] = true
+			}
+
+			return result, serviceNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.ServicesAPI.ServicesDelete(ctx).ServiceName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentServiceOps = true
+			b.recentServiceOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkGatewayProfilePut(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	var originalOperations map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName
 
-	b.mutex.Lock()
-
-	gatewayProfilePut := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
-	for k, v := range b.gatewayProfilePut {
-		gatewayProfilePut[k] = v
-	}
-
-	b.gatewayProfilePut = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
-
-	b.mutex.Unlock()
-
-	if len(gatewayProfilePut) == 0 {
-		return diagnostics
-	}
-
-	gatewayProfileNames := make([]string, 0, len(gatewayProfilePut))
-	for name := range gatewayProfilePut {
-		gatewayProfileNames = append(gatewayProfileNames, name)
-	}
-
-	checker := ResourceExistenceCheck{
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  "gateway_profile",
 		OperationType: "PUT",
-		FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-			// First check if we have cached Gateway Profile data
-			b.gatewayProfileResponsesMutex.RLock()
-			if len(b.gatewayProfileResponses) > 0 {
-				cachedData := make(map[string]interface{})
-				for k, v := range b.gatewayProfileResponses {
-					cachedData[k] = v
-				}
-				b.gatewayProfileResponsesMutex.RUnlock()
 
-				tflog.Debug(ctx, "Using cached Gateway Profile data for pre-existence check", map[string]interface{}{
-					"count": len(cachedData),
-				})
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-				return cachedData, nil
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			for k, v := range b.gatewayProfilePut {
+				originalOperations[k] = v
 			}
-			b.gatewayProfileResponsesMutex.RUnlock()
+			b.gatewayProfilePut = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			b.mutex.Unlock()
 
-			// Fall back to API call if no cache
-			apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-			defer cancel()
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
 
-			resp, err := b.client.GatewayProfilesAPI.GatewayprofilesGet(apiCtx).Execute()
-			if err != nil {
-				return nil, err
-			}
-			defer resp.Body.Close()
-
-			var result struct {
-				GatewayProfile map[string]interface{} `json:"gateway_profile"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, err
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
 			}
 
-			b.gatewayProfileResponsesMutex.Lock()
-			for k, v := range result.GatewayProfile {
-				if vMap, ok := v.(map[string]interface{}); ok {
-					b.gatewayProfileResponses[k] = vMap
-
-					if name, ok := vMap["name"].(string); ok && name != k {
-						b.gatewayProfileResponses[name] = vMap
-					}
-				}
-			}
-			b.gatewayProfileResponsesMutex.Unlock()
-
-			return result.GatewayProfile, nil
+			return result, names
 		},
-	}
 
-	// Filter out resources that already exist
-	filteredGatewayProfileNames, err := b.FilterPreExistingResources(ctx, gatewayProfileNames, checker)
-	if err != nil {
-		tflog.Warn(ctx, fmt.Sprintf("Error checking for existing Gateway Profiles: %v - proceeding with all Gateway Profiles", err))
-		filteredGatewayProfileNames = gatewayProfileNames
-	}
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "gateway_profile",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached Gateway Profile data
+					b.gatewayProfileResponsesMutex.RLock()
+					if len(b.gatewayProfileResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.gatewayProfileResponses {
+							cachedData[k] = v
+						}
+						b.gatewayProfileResponsesMutex.RUnlock()
 
-	if len(filteredGatewayProfileNames) == 0 {
-		tflog.Info(ctx, "All Gateway Profiles already exist, skipping bulk Gateway Profile PUT operation")
-		b.recentGatewayProfileOps = true
-		b.recentGatewayProfileOpTime = time.Now()
-		return diagnostics
-	}
+						tflog.Debug(ctx, "Using cached Gateway Profile data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
 
-	// Create filtered map of resources to create
-	filteredGatewayProfilePut := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
-	for _, name := range filteredGatewayProfileNames {
-		filteredGatewayProfilePut[name] = gatewayProfilePut[name]
-	}
+						return cachedData, nil
+					}
+					b.gatewayProfileResponsesMutex.RUnlock()
 
-	tflog.Debug(ctx, "Executing bulk Gateway Profile PUT operation", map[string]interface{}{
-		"gateway_profile_count": len(filteredGatewayProfilePut),
-		"gateway_profile_names": filteredGatewayProfileNames,
-	})
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
 
-	putRequest := openapi.NewGatewayprofilesPutRequest()
-	gatewayProfileMap := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+					resp, err := b.client.GatewayProfilesAPI.GatewayprofilesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
 
-	for name, props := range filteredGatewayProfilePut {
-		gatewayProfileMap[name] = props
-	}
-	putRequest.SetGatewayProfile(gatewayProfileMap)
-	retryConfig := DefaultRetryConfig()
-	var putErr error
-	var apiResp *http.Response
+					var result struct {
+						GatewayProfile map[string]interface{} `json:"gateway_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					b.gatewayProfileResponsesMutex.Lock()
+					for k, v := range result.GatewayProfile {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.gatewayProfileResponses[k] = vMap
 
-		req := b.client.GatewayProfilesAPI.GatewayprofilesPut(apiCtx).GatewayprofilesPutRequest(*putRequest)
-		apiResp, putErr = req.Execute()
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.gatewayProfileResponses[name] = vMap
+							}
+						}
+					}
+					b.gatewayProfileResponsesMutex.Unlock()
 
-		// Release the API call context
-		cancel()
-
-		if putErr == nil {
-			tflog.Debug(ctx, "Bulk Gateway Profile PUT operation succeeded", map[string]interface{}{
-				"attempt": retry + 1,
-			})
-			break
-		}
-
-		if IsRetriableError(putErr) {
-			delayTime := CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, "Bulk Gateway Profile PUT operation failed with retriable error, retrying", map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       putErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
-
-			time.Sleep(delayTime)
-			continue
-		}
-
-		tflog.Error(ctx, "Bulk Gateway Profile PUT operation failed with non-retriable error", map[string]interface{}{
-			"error": putErr.Error(),
-		})
-		break
-	}
-
-	if putErr == nil && apiResp != nil {
-		defer apiResp.Body.Close()
-		delayTime := 2 * time.Second
-		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching Gateway Profiles", delayTime))
-		time.Sleep(delayTime)
-
-		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
-		defer fetchCancel()
-
-		tflog.Debug(ctx, "Fetching Gateway Profiles after successful PUT operation to retrieve auto-generated values")
-		profilesReq := b.client.GatewayProfilesAPI.GatewayprofilesGet(fetchCtx)
-		profilesResp, fetchErr := profilesReq.Execute()
-
-		if fetchErr == nil {
-			defer profilesResp.Body.Close()
-
-			var profilesData struct {
-				GatewayProfile map[string]map[string]interface{} `json:"gateway_profile"`
+					return result.GatewayProfile, nil
+				},
 			}
 
-			if respErr := json.NewDecoder(profilesResp.Body).Decode(&profilesData); respErr == nil {
-				b.gatewayProfileResponsesMutex.Lock()
-				for profileName, profileData := range profilesData.GatewayProfile {
-					b.gatewayProfileResponses[profileName] = profileData
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
 
-					if name, ok := profileData["name"].(string); ok && name != profileName {
-						b.gatewayProfileResponses[name] = profileData
-					}
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
 				}
-				b.gatewayProfileResponsesMutex.Unlock()
+			}
 
-				tflog.Debug(ctx, "Successfully stored Gateway Profile data for auto-generated fields", map[string]interface{}{
-					"gateway_profile_count": len(profilesData.GatewayProfile),
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewGatewayprofilesPutRequest()
+			gatewayProfileMap := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+
+			for name, props := range filteredData {
+				gatewayProfileMap[name] = props.(openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			}
+			putRequest.SetGatewayProfile(gatewayProfileMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.GatewayProfilesAPI.GatewayprofilesPut(ctx).GatewayprofilesPutRequest(
+				*request.(*openapi.GatewayprofilesPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching Gateways", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching Gateways after successful PUT operation to retrieve auto-generated values")
+			gatewaysReq := b.client.GatewaysAPI.GatewaysGet(fetchCtx)
+			gatewaysResp, fetchErr := gatewaysReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch Gateways after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
 				})
-			} else {
-				tflog.Error(ctx, "Failed to decode Gateway Profiles response for auto-generated fields", map[string]interface{}{
+				return fetchErr
+			}
+
+			defer gatewaysResp.Body.Close()
+
+			var gatewaysData struct {
+				Gateway map[string]map[string]interface{} `json:"gateway"`
+			}
+
+			if respErr := json.NewDecoder(gatewaysResp.Body).Decode(&gatewaysData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode Gateways response for auto-generated fields", map[string]interface{}{
 					"error": respErr.Error(),
 				})
+				return respErr
 			}
-		} else {
-			tflog.Error(ctx, "Failed to fetch Gateway Profiles after PUT for auto-generated fields", map[string]interface{}{
-				"error": fetchErr.Error(),
-			})
-		}
-	}
 
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
+			b.gatewayResponsesMutex.Lock()
+			for gatewayName, gatewayData := range gatewaysData.Gateway {
+				b.gatewayResponses[gatewayName] = gatewayData
 
-	for opID, op := range b.pendingOperations {
-		// Only process Gateway Profile PUT operations that weren't already handled in FilterPreExistingResources
-		if op.ResourceType == "gateway_profile" && op.OperationType == "PUT" && op.Status == OperationPending {
-			// Check if this operation's Gateway Profile name is in our filtered batch
-			if _, exists := filteredGatewayProfilePut[op.ResourceName]; exists {
-				if putErr == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = putErr
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = putErr
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
+				if name, ok := gatewayData["name"].(string); ok && name != gatewayName {
+					b.gatewayResponses[name] = gatewayData
 				}
 			}
-		}
-	}
+			b.gatewayResponsesMutex.Unlock()
 
-	if putErr != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Gateway Profile PUT operation",
-			fmt.Sprintf("Error: %s", putErr),
-		)
-		return diagnostics
-	}
+			tflog.Debug(ctx, "Successfully stored Gateway data for auto-generated fields", map[string]interface{}{
+				"gateway_count": len(gatewaysData.Gateway),
+			})
 
-	b.recentGatewayProfileOps = true
-	b.recentGatewayProfileOpTime = time.Now()
-	return diagnostics
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentGatewayProfileOps = true
+			b.recentGatewayProfileOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkGatewayProfilePatch(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "gateway_profile",
+		OperationType: "PATCH",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	gatewayProfilePatch := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
-	for k, v := range b.gatewayProfilePatch {
-		gatewayProfilePatch[k] = v
-	}
-
-	b.gatewayProfilePatch = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
-
-	b.mutex.Unlock()
-
-	if len(gatewayProfilePatch) == 0 {
-		return diagnostics
-	}
-
-	gatewayProfileNames := make([]string, 0, len(gatewayProfilePatch))
-	for name := range gatewayProfilePatch {
-		gatewayProfileNames = append(gatewayProfileNames, name)
-	}
-
-	tflog.Debug(ctx, "Executing bulk Gateway Profile PATCH operation", map[string]interface{}{
-		"gateway_profile_count": len(gatewayProfilePatch),
-		"gateway_profile_names": gatewayProfileNames,
-	})
-
-	patchRequest := openapi.NewGatewayprofilesPutRequest()
-	gatewayProfileMap := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
-
-	for name, props := range gatewayProfilePatch {
-		gatewayProfileMap[name] = props
-	}
-	patchRequest.SetGatewayProfile(gatewayProfileMap)
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Gateway Profile PATCH operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
-			time.Sleep(delay)
-		}
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.GatewayProfilesAPI.GatewayprofilesPatch(apiCtx).GatewayprofilesPutRequest(*patchRequest)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Gateway Profile PATCH operation successful", map[string]interface{}{
-				"count": len(gatewayProfilePatch),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Gateway Profile PATCH operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process Gateway Profile PATCH operations
-		if op.ResourceType == "gateway_profile" && op.OperationType == "PATCH" {
-			// Check if this operation's gateway profile name is in our batch
-			if _, exists := gatewayProfilePatch[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			b.mutex.Lock()
+			gatewayProfilePatch := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			for k, v := range b.gatewayProfilePatch {
+				gatewayProfilePatch[k] = v
 			}
-		}
-	}
+			b.gatewayProfilePatch = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			b.mutex.Unlock()
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Gateway Profile PATCH operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(gatewayProfilePatch))
 
-	b.recentGatewayProfileOps = true
-	b.recentGatewayProfileOpTime = time.Now()
-	return diagnostics
+			for k, v := range gatewayProfilePatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewGatewayprofilesPutRequest()
+			gatewayProfileMap := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+
+			for name, props := range filteredData {
+				gatewayProfileMap[name] = props.(openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			}
+			patchRequest.SetGatewayProfile(gatewayProfileMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.GatewayProfilesAPI.GatewayprofilesPatch(ctx).GatewayprofilesPutRequest(
+				*request.(*openapi.GatewayprofilesPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentGatewayProfileOps = true
+			b.recentGatewayProfileOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkGatewayProfileDelete(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "gateway_profile",
+		OperationType: "DELETE",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	gatewayProfileNames := make([]string, len(b.gatewayProfileDelete))
-	copy(gatewayProfileNames, b.gatewayProfileDelete)
+			b.mutex.Lock()
+			gatewayProfileNames := make([]string, len(b.gatewayProfileDelete))
+			copy(gatewayProfileNames, b.gatewayProfileDelete)
 
-	gatewayProfileDeleteMap := make(map[string]bool)
-	for _, name := range gatewayProfileNames {
-		gatewayProfileDeleteMap[name] = true
-	}
-
-	// Clear the pending operations list early to avoid duplicates
-	b.gatewayProfileDelete = make([]string, 0)
-
-	b.mutex.Unlock()
-
-	if len(gatewayProfileNames) == 0 {
-		return diagnostics
-	}
-
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Gateway Profile DELETE operation after delay", map[string]interface{}{
-				"retry":       retry,
-				"delay":       delay,
-				"max_retries": retryConfig.MaxRetries,
-			})
-
-			time.Sleep(delay)
-		}
-
-		tflog.Debug(ctx, "Executing bulk Gateway Profile DELETE operation", map[string]interface{}{
-			"gateway_profile_count": len(gatewayProfileNames),
-			"gateway_profile_names": gatewayProfileNames,
-		})
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.GatewayProfilesAPI.GatewayprofilesDelete(apiCtx).ProfileName(gatewayProfileNames)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Gateway Profile DELETE operation successful", map[string]interface{}{
-				"count": len(gatewayProfileNames),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Gateway Profile DELETE operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process Gateway Profile DELETE operations
-		if op.ResourceType == "gateway_profile" && op.OperationType == "DELETE" {
-			// Check if this operation's gateway profile name is in our batch
-			if _, exists := gatewayProfileDeleteMap[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			gatewayProfileDeleteMap := make(map[string]bool)
+			for _, name := range gatewayProfileNames {
+				gatewayProfileDeleteMap[name] = true
 			}
-		}
-	}
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Gateway Profile DELETE operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			b.gatewayProfileDelete = make([]string, 0)
+			b.mutex.Unlock()
 
-	b.recentGatewayProfileOps = true
-	b.recentGatewayProfileOpTime = time.Now()
-	return diagnostics
+			result := make(map[string]interface{})
+			for _, name := range gatewayProfileNames {
+				result[name] = true
+			}
+
+			return result, gatewayProfileNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.GatewayProfilesAPI.GatewayprofilesDelete(ctx).ProfileName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentGatewayProfileOps = true
+			b.recentGatewayProfileOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkEthPortProfilePut(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	var originalOperations map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName
 
-	b.mutex.Lock()
-
-	ethPortProfilePut := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
-	for k, v := range b.ethPortProfilePut {
-		ethPortProfilePut[k] = v
-	}
-
-	b.ethPortProfilePut = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
-
-	b.mutex.Unlock()
-
-	if len(ethPortProfilePut) == 0 {
-		return diagnostics
-	}
-
-	ethPortProfileNames := make([]string, 0, len(ethPortProfilePut))
-	for name := range ethPortProfilePut {
-		ethPortProfileNames = append(ethPortProfileNames, name)
-	}
-
-	checker := ResourceExistenceCheck{
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  "eth_port_profile",
 		OperationType: "PUT",
-		FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-			// First check if we have cached EthPortProfile data
-			b.ethPortProfileResponsesMutex.RLock()
-			if len(b.ethPortProfileResponses) > 0 {
-				cachedData := make(map[string]interface{})
-				for k, v := range b.ethPortProfileResponses {
-					cachedData[k] = v
-				}
-				b.ethPortProfileResponsesMutex.RUnlock()
 
-				tflog.Debug(ctx, "Using cached EthPortProfile data for pre-existence check", map[string]interface{}{
-					"count": len(cachedData),
-				})
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-				return cachedData, nil
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			for k, v := range b.ethPortProfilePut {
+				originalOperations[k] = v
 			}
-			b.ethPortProfileResponsesMutex.RUnlock()
+			b.ethPortProfilePut = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			b.mutex.Unlock()
 
-			// Fall back to API call if no cache
-			apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-			defer cancel()
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
 
-			resp, err := b.client.EthPortProfilesAPI.EthportprofilesGet(apiCtx).Execute()
-			if err != nil {
-				return nil, err
-			}
-			defer resp.Body.Close()
-
-			var result struct {
-				EthPortProfile map[string]interface{} `json:"eth_port_profile"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, err
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
 			}
 
-			b.ethPortProfileResponsesMutex.Lock()
-			for k, v := range result.EthPortProfile {
-				if vMap, ok := v.(map[string]interface{}); ok {
-					b.ethPortProfileResponses[k] = vMap
-
-					if name, ok := vMap["name"].(string); ok && name != k {
-						b.ethPortProfileResponses[name] = vMap
-					}
-				}
-			}
-			b.ethPortProfileResponsesMutex.Unlock()
-
-			return result.EthPortProfile, nil
+			return result, names
 		},
-	}
 
-	// Filter out resources that already exist
-	filteredEthPortProfileNames, err := b.FilterPreExistingResources(ctx, ethPortProfileNames, checker)
-	if err != nil {
-		tflog.Warn(ctx, fmt.Sprintf("Error checking for existing EthPortProfiles: %v - proceeding with all EthPortProfiles", err))
-		filteredEthPortProfileNames = ethPortProfileNames
-	}
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "eth_port_profile",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached EthPortProfile data
+					b.ethPortProfileResponsesMutex.RLock()
+					if len(b.ethPortProfileResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.ethPortProfileResponses {
+							cachedData[k] = v
+						}
+						b.ethPortProfileResponsesMutex.RUnlock()
 
-	if len(filteredEthPortProfileNames) == 0 {
-		tflog.Info(ctx, "All EthPortProfiles already exist, skipping bulk EthPortProfile PUT operation")
-		b.recentEthPortProfileOps = true
-		b.recentEthPortProfileOpTime = time.Now()
-		return diagnostics
-	}
+						tflog.Debug(ctx, "Using cached EthPortProfile data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
 
-	// Create filtered map of resources to create
-	filteredEthPortProfilePut := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
-	for _, name := range filteredEthPortProfileNames {
-		filteredEthPortProfilePut[name] = ethPortProfilePut[name]
-	}
+						return cachedData, nil
+					}
+					b.ethPortProfileResponsesMutex.RUnlock()
 
-	tflog.Debug(ctx, "Executing bulk EthPort Profile PUT operation", map[string]interface{}{
-		"eth_port_profile_count": len(filteredEthPortProfilePut),
-		"eth_port_profile_names": filteredEthPortProfileNames,
-	})
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
 
-	putRequest := openapi.NewEthportprofilesPutRequest()
-	ethPortProfileMap := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+					resp, err := b.client.EthPortProfilesAPI.EthportprofilesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
 
-	for name, props := range filteredEthPortProfilePut {
-		ethPortProfileMap[name] = props
-	}
-	putRequest.SetEthPortProfile(ethPortProfileMap)
-	retryConfig := DefaultRetryConfig()
-	var putErr error
-	var apiResp *http.Response
+					var result struct {
+						EthPortProfile map[string]interface{} `json:"eth_port_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					b.ethPortProfileResponsesMutex.Lock()
+					for k, v := range result.EthPortProfile {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.ethPortProfileResponses[k] = vMap
 
-		req := b.client.EthPortProfilesAPI.EthportprofilesPut(apiCtx).EthportprofilesPutRequest(*putRequest)
-		apiResp, putErr = req.Execute()
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.ethPortProfileResponses[name] = vMap
+							}
+						}
+					}
+					b.ethPortProfileResponsesMutex.Unlock()
 
-		// Release the API call context
-		cancel()
+					return result.EthPortProfile, nil
+				},
+			}
 
-		if putErr == nil {
-			tflog.Debug(ctx, "Bulk EthPortProfile PUT operation succeeded", map[string]interface{}{
-				"attempt": retry + 1,
-			})
-			break
-		}
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
 
-		if IsRetriableError(putErr) {
-			delayTime := CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, "Bulk EthPort Profile PUT operation failed with retriable error, retrying", map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       putErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
 
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewEthportprofilesPutRequest()
+			ethPortProfileMap := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+
+			for name, props := range filteredData {
+				ethPortProfileMap[name] = props.(openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			}
+			putRequest.SetEthPortProfile(ethPortProfileMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.EthPortProfilesAPI.EthportprofilesPut(ctx).EthportprofilesPutRequest(
+				*request.(*openapi.EthportprofilesPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching EthPortProfiles", delayTime))
 			time.Sleep(delayTime)
-			continue
-		}
 
-		tflog.Error(ctx, "Bulk EthPort Profile PUT operation failed with non-retriable error", map[string]interface{}{
-			"error": putErr.Error(),
-		})
-		break
-	}
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
 
-	if putErr == nil && apiResp != nil {
-		defer apiResp.Body.Close()
-		delayTime := 2 * time.Second
-		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching EthPortProfiles", delayTime))
-		time.Sleep(delayTime)
+			tflog.Debug(ctx, "Fetching EthPortProfiles after successful PUT operation to retrieve auto-generated values")
+			profilesReq := b.client.EthPortProfilesAPI.EthportprofilesGet(fetchCtx)
+			profilesResp, fetchErr := profilesReq.Execute()
 
-		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
-		defer fetchCancel()
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch EthPortProfiles after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
 
-		tflog.Debug(ctx, "Fetching EthPortProfiles after successful PUT operation to retrieve auto-generated values")
-		profilesReq := b.client.EthPortProfilesAPI.EthportprofilesGet(fetchCtx)
-		profilesResp, fetchErr := profilesReq.Execute()
-
-		if fetchErr == nil {
 			defer profilesResp.Body.Close()
 
 			var profilesData struct {
 				EthPortProfile map[string]map[string]interface{} `json:"eth_port_profile"`
 			}
 
-			if respErr := json.NewDecoder(profilesResp.Body).Decode(&profilesData); respErr == nil {
-				b.ethPortProfileResponsesMutex.Lock()
-				for profileName, profileData := range profilesData.EthPortProfile {
-					b.ethPortProfileResponses[profileName] = profileData
-
-					if name, ok := profileData["name"].(string); ok && name != profileName {
-						b.ethPortProfileResponses[name] = profileData
-					}
-				}
-				b.ethPortProfileResponsesMutex.Unlock()
-
-				tflog.Debug(ctx, "Successfully stored EthPortProfile data for auto-generated fields", map[string]interface{}{
-					"eth_port_profile_count": len(profilesData.EthPortProfile),
-				})
-			} else {
+			if respErr := json.NewDecoder(profilesResp.Body).Decode(&profilesData); respErr != nil {
 				tflog.Error(ctx, "Failed to decode EthPortProfiles response for auto-generated fields", map[string]interface{}{
 					"error": respErr.Error(),
 				})
+				return respErr
 			}
-		} else {
-			tflog.Error(ctx, "Failed to fetch EthPortProfiles after PUT for auto-generated fields", map[string]interface{}{
-				"error": fetchErr.Error(),
-			})
-		}
-	}
 
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
+			b.ethPortProfileResponsesMutex.Lock()
+			for profileName, profileData := range profilesData.EthPortProfile {
+				b.ethPortProfileResponses[profileName] = profileData
 
-	for opID, op := range b.pendingOperations {
-		// Only process EthPortProfile PUT operations that weren't already handled in FilterPreExistingResources
-		if op.ResourceType == "eth_port_profile" && op.OperationType == "PUT" && op.Status == OperationPending {
-			// Check if this operation's EthPortProfile name is in our filtered batch
-			if _, exists := filteredEthPortProfilePut[op.ResourceName]; exists {
-				if putErr == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = putErr
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = putErr
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
+				if name, ok := profileData["name"].(string); ok && name != profileName {
+					b.ethPortProfileResponses[name] = profileData
 				}
 			}
-		}
-	}
+			b.ethPortProfileResponsesMutex.Unlock()
 
-	if putErr != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk EthPortProfile PUT operation",
-			fmt.Sprintf("Error: %s", putErr),
-		)
-		return diagnostics
-	}
+			tflog.Debug(ctx, "Successfully stored EthPortProfile data for auto-generated fields", map[string]interface{}{
+				"eth_port_profile_count": len(profilesData.EthPortProfile),
+			})
 
-	b.recentEthPortProfileOps = true
-	b.recentEthPortProfileOpTime = time.Now()
-	return diagnostics
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentEthPortProfileOps = true
+			b.recentEthPortProfileOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkEthPortSettingsPut(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	var originalOperations map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName
 
-	b.mutex.Lock()
-
-	ethPortSettingsPut := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
-	for k, v := range b.ethPortSettingsPut {
-		ethPortSettingsPut[k] = v
-	}
-
-	b.ethPortSettingsPut = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
-
-	b.mutex.Unlock()
-
-	if len(ethPortSettingsPut) == 0 {
-		return diagnostics
-	}
-
-	ethPortSettingsNames := make([]string, 0, len(ethPortSettingsPut))
-	for name := range ethPortSettingsPut {
-		ethPortSettingsNames = append(ethPortSettingsNames, name)
-	}
-
-	checker := ResourceExistenceCheck{
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  "eth_port_settings",
 		OperationType: "PUT",
-		FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-			// First check if we have cached EthPortSettings data
-			b.ethPortSettingsResponsesMutex.RLock()
-			if len(b.ethPortSettingsResponses) > 0 {
-				cachedData := make(map[string]interface{})
-				for k, v := range b.ethPortSettingsResponses {
-					cachedData[k] = v
-				}
-				b.ethPortSettingsResponsesMutex.RUnlock()
 
-				tflog.Debug(ctx, "Using cached EthPortSettings data for pre-existence check", map[string]interface{}{
-					"count": len(cachedData),
-				})
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-				return cachedData, nil
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			for k, v := range b.ethPortSettingsPut {
+				originalOperations[k] = v
 			}
-			b.ethPortSettingsResponsesMutex.RUnlock()
+			b.ethPortSettingsPut = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			b.mutex.Unlock()
 
-			// Fall back to API call if no cache
-			apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-			defer cancel()
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
 
-			resp, err := b.client.EthPortSettingsAPI.EthportsettingsGet(apiCtx).Execute()
-			if err != nil {
-				return nil, err
-			}
-			defer resp.Body.Close()
-
-			var result struct {
-				EthPortSettings map[string]interface{} `json:"eth_port_settings"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, err
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
 			}
 
-			b.ethPortSettingsResponsesMutex.Lock()
-			for k, v := range result.EthPortSettings {
-				if vMap, ok := v.(map[string]interface{}); ok {
-					b.ethPortSettingsResponses[k] = vMap
-
-					if name, ok := vMap["name"].(string); ok && name != k {
-						b.ethPortSettingsResponses[name] = vMap
-					}
-				}
-			}
-			b.ethPortSettingsResponsesMutex.Unlock()
-
-			return result.EthPortSettings, nil
+			return result, names
 		},
-	}
 
-	// Filter out resources that already exist
-	filteredEthPortSettingsNames, err := b.FilterPreExistingResources(ctx, ethPortSettingsNames, checker)
-	if err != nil {
-		tflog.Warn(ctx, fmt.Sprintf("Error checking for existing EthPortSettings: %v - proceeding with all EthPortSettings", err))
-		filteredEthPortSettingsNames = ethPortSettingsNames
-	}
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "eth_port_settings",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached EthPortSettings data
+					b.ethPortSettingsResponsesMutex.RLock()
+					if len(b.ethPortSettingsResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.ethPortSettingsResponses {
+							cachedData[k] = v
+						}
+						b.ethPortSettingsResponsesMutex.RUnlock()
 
-	if len(filteredEthPortSettingsNames) == 0 {
-		tflog.Info(ctx, "All EthPortSettings already exist, skipping bulk EthPortSettings PUT operation")
-		b.recentEthPortSettingsOps = true
-		b.recentEthPortSettingsOpTime = time.Now()
-		return diagnostics
-	}
+						tflog.Debug(ctx, "Using cached EthPortSettings data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
 
-	// Create filtered map of resources to create
-	filteredEthPortSettingsPut := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
-	for _, name := range filteredEthPortSettingsNames {
-		filteredEthPortSettingsPut[name] = ethPortSettingsPut[name]
-	}
+						return cachedData, nil
+					}
+					b.ethPortSettingsResponsesMutex.RUnlock()
 
-	tflog.Debug(ctx, "Executing bulk EthPort Settings PUT operation", map[string]interface{}{
-		"eth_port_settings_count": len(filteredEthPortSettingsPut),
-		"eth_port_settings_names": filteredEthPortSettingsNames,
-	})
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
 
-	putRequest := openapi.NewEthportsettingsPutRequest()
-	ethPortSettingsMap := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+					resp, err := b.client.EthPortSettingsAPI.EthportsettingsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
 
-	for name, props := range filteredEthPortSettingsPut {
-		ethPortSettingsMap[name] = props
-	}
-	putRequest.SetEthPortSettings(ethPortSettingsMap)
-	retryConfig := DefaultRetryConfig()
-	var putErr error
-	var apiResp *http.Response
+					var result struct {
+						EthPortSettings map[string]interface{} `json:"eth_port_settings"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					b.ethPortSettingsResponsesMutex.Lock()
+					for k, v := range result.EthPortSettings {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.ethPortSettingsResponses[k] = vMap
 
-		req := b.client.EthPortSettingsAPI.EthportsettingsPut(apiCtx).EthportsettingsPutRequest(*putRequest)
-		apiResp, putErr = req.Execute()
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.ethPortSettingsResponses[name] = vMap
+							}
+						}
+					}
+					b.ethPortSettingsResponsesMutex.Unlock()
 
-		// Release the API call context
-		cancel()
+					return result.EthPortSettings, nil
+				},
+			}
 
-		if putErr == nil {
-			tflog.Debug(ctx, "Bulk EthPortSettings PUT operation succeeded", map[string]interface{}{
-				"attempt": retry + 1,
-			})
-			break
-		}
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
 
-		if IsRetriableError(putErr) {
-			delayTime := CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, "Bulk EthPort Settings PUT operation failed with retriable error, retrying", map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       putErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
 
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewEthportsettingsPutRequest()
+			ethPortSettingsMap := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+
+			for name, props := range filteredData {
+				ethPortSettingsMap[name] = props.(openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			}
+			putRequest.SetEthPortSettings(ethPortSettingsMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.EthPortSettingsAPI.EthportsettingsPut(ctx).EthportsettingsPutRequest(
+				*request.(*openapi.EthportsettingsPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching EthPortSettings", delayTime))
 			time.Sleep(delayTime)
-			continue
-		}
 
-		tflog.Error(ctx, "Bulk EthPort Settings PUT operation failed with non-retriable error", map[string]interface{}{
-			"error": putErr.Error(),
-		})
-		break
-	}
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
 
-	if putErr == nil && apiResp != nil {
-		defer apiResp.Body.Close()
-		delayTime := 2 * time.Second
-		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching EthPortSettings", delayTime))
-		time.Sleep(delayTime)
+			tflog.Debug(ctx, "Fetching EthPortSettings after successful PUT operation to retrieve auto-generated values")
+			settingsReq := b.client.EthPortSettingsAPI.EthportsettingsGet(fetchCtx)
+			settingsResp, fetchErr := settingsReq.Execute()
 
-		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
-		defer fetchCancel()
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch EthPortSettings after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
 
-		tflog.Debug(ctx, "Fetching EthPortSettings after successful PUT operation to retrieve auto-generated values")
-		settingsReq := b.client.EthPortSettingsAPI.EthportsettingsGet(fetchCtx)
-		settingsResp, fetchErr := settingsReq.Execute()
-
-		if fetchErr == nil {
 			defer settingsResp.Body.Close()
 
 			var settingsData struct {
 				EthPortSettings map[string]map[string]interface{} `json:"eth_port_settings"`
 			}
 
-			if respErr := json.NewDecoder(settingsResp.Body).Decode(&settingsData); respErr == nil {
-				b.ethPortSettingsResponsesMutex.Lock()
-				for settingsName, settingsData := range settingsData.EthPortSettings {
-					b.ethPortSettingsResponses[settingsName] = settingsData
-
-					if name, ok := settingsData["name"].(string); ok && name != settingsName {
-						b.ethPortSettingsResponses[name] = settingsData
-					}
-				}
-				b.ethPortSettingsResponsesMutex.Unlock()
-
-				tflog.Debug(ctx, "Successfully stored EthPortSettings data for auto-generated fields", map[string]interface{}{
-					"eth_port_settings_count": len(settingsData.EthPortSettings),
-				})
-			} else {
+			if respErr := json.NewDecoder(settingsResp.Body).Decode(&settingsData); respErr != nil {
 				tflog.Error(ctx, "Failed to decode EthPortSettings response for auto-generated fields", map[string]interface{}{
 					"error": respErr.Error(),
 				})
+				return respErr
 			}
-		} else {
-			tflog.Error(ctx, "Failed to fetch EthPortSettings after PUT for auto-generated fields", map[string]interface{}{
-				"error": fetchErr.Error(),
-			})
-		}
-	}
 
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
+			b.ethPortSettingsResponsesMutex.Lock()
+			for settingsName, settingsData := range settingsData.EthPortSettings {
+				b.ethPortSettingsResponses[settingsName] = settingsData
 
-	for opID, op := range b.pendingOperations {
-		// Only process EthPortSettings PUT operations that weren't already handled in FilterPreExistingResources
-		if op.ResourceType == "eth_port_settings" && op.OperationType == "PUT" && op.Status == OperationPending {
-			// Check if this operation's EthPortSettings name is in our filtered batch
-			if _, exists := filteredEthPortSettingsPut[op.ResourceName]; exists {
-				if putErr == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Error = putErr
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = putErr
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
+				if name, ok := settingsData["name"].(string); ok && name != settingsName {
+					b.ethPortSettingsResponses[name] = settingsData
 				}
 			}
-		}
-	}
+			b.ethPortSettingsResponsesMutex.Unlock()
 
-	if putErr != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk EthPortSettings PUT operation",
-			fmt.Sprintf("Error: %s", putErr),
-		)
-		return diagnostics
-	}
+			tflog.Debug(ctx, "Successfully stored EthPortSettings data for auto-generated fields", map[string]interface{}{
+				"eth_port_settings_count": len(settingsData.EthPortSettings),
+			})
 
-	b.recentEthPortSettingsOps = true
-	b.recentEthPortSettingsOpTime = time.Now()
-	return diagnostics
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentEthPortSettingsOps = true
+			b.recentEthPortSettingsOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkEthPortProfilePatch(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "eth_port_profile",
+		OperationType: "PATCH",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	ethPortProfilePatch := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
-	for k, v := range b.ethPortProfilePatch {
-		ethPortProfilePatch[k] = v
-	}
-
-	b.ethPortProfilePatch = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
-
-	b.mutex.Unlock()
-
-	if len(ethPortProfilePatch) == 0 {
-		return diagnostics
-	}
-
-	ethPortProfileNames := make([]string, 0, len(ethPortProfilePatch))
-	for name := range ethPortProfilePatch {
-		ethPortProfileNames = append(ethPortProfileNames, name)
-	}
-
-	tflog.Debug(ctx, "Executing bulk EthPort Profile PATCH operation", map[string]interface{}{
-		"eth_port_profile_count": len(ethPortProfilePatch),
-		"eth_port_profile_names": ethPortProfileNames,
-	})
-
-	patchRequest := openapi.NewEthportprofilesPutRequest()
-	ethPortProfileMap := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
-
-	for name, props := range ethPortProfilePatch {
-		ethPortProfileMap[name] = props
-	}
-	patchRequest.SetEthPortProfile(ethPortProfileMap)
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Eth Port Profile PATCH operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
-			time.Sleep(delay)
-		}
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.EthPortProfilesAPI.EthportprofilesPatch(apiCtx).EthportprofilesPutRequest(*patchRequest)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Eth Port Profile PATCH operation successful", map[string]interface{}{
-				"count": len(ethPortProfilePatch),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Eth Port Profile PATCH operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process EthPortProfile PATCH operations
-		if op.ResourceType == "eth_port_profile" && op.OperationType == "PATCH" {
-			// Check if this operation's profile name is in our batch
-			if _, exists := ethPortProfilePatch[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			b.mutex.Lock()
+			ethPortProfilePatch := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			for k, v := range b.ethPortProfilePatch {
+				ethPortProfilePatch[k] = v
 			}
-		}
-	}
+			b.ethPortProfilePatch = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			b.mutex.Unlock()
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Eth Port Profile PATCH operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(ethPortProfilePatch))
 
-	b.recentEthPortProfileOps = true
-	b.recentEthPortProfileOpTime = time.Now()
-	return diagnostics
+			for k, v := range ethPortProfilePatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewEthportprofilesPutRequest()
+			ethPortProfileMap := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+
+			for name, props := range filteredData {
+				ethPortProfileMap[name] = props.(openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			}
+			patchRequest.SetEthPortProfile(ethPortProfileMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.EthPortProfilesAPI.EthportprofilesPatch(ctx).EthportprofilesPutRequest(
+				*request.(*openapi.EthportprofilesPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentEthPortProfileOps = true
+			b.recentEthPortProfileOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkEthPortSettingsPatch(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "eth_port_settings",
+		OperationType: "PATCH",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	ethPortSettingsPatch := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
-	for k, v := range b.ethPortSettingsPatch {
-		ethPortSettingsPatch[k] = v
-	}
-
-	b.ethPortSettingsPatch = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
-
-	b.mutex.Unlock()
-
-	if len(ethPortSettingsPatch) == 0 {
-		return diagnostics
-	}
-
-	ethPortSettingsNames := make([]string, 0, len(ethPortSettingsPatch))
-	for name := range ethPortSettingsPatch {
-		ethPortSettingsNames = append(ethPortSettingsNames, name)
-	}
-
-	tflog.Debug(ctx, "Executing bulk EthPort Settings PATCH operation", map[string]interface{}{
-		"eth_port_settings_count": len(ethPortSettingsPatch),
-		"eth_port_settings_names": ethPortSettingsNames,
-	})
-
-	patchRequest := openapi.NewEthportsettingsPutRequest()
-	ethPortSettingsMap := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
-
-	for name, props := range ethPortSettingsPatch {
-		ethPortSettingsMap[name] = props
-	}
-	patchRequest.SetEthPortSettings(ethPortSettingsMap)
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk EthPort Settings PATCH operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
-			time.Sleep(delay)
-		}
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.EthPortSettingsAPI.EthportsettingsPatch(apiCtx).EthportsettingsPutRequest(*patchRequest)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk EthPort Settings PATCH operation successful", map[string]interface{}{
-				"count": len(ethPortSettingsPatch),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk EthPort Settings PATCH operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process EthPortSettings PATCH operations
-		if op.ResourceType == "eth_port_settings" && op.OperationType == "PATCH" {
-			// Check if this operation's settings name is in our batch
-			if _, exists := ethPortSettingsPatch[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			b.mutex.Lock()
+			ethPortSettingsPatch := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			for k, v := range b.ethPortSettingsPatch {
+				ethPortSettingsPatch[k] = v
 			}
-		}
-	}
+			b.ethPortSettingsPatch = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			b.mutex.Unlock()
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk EthPort Settings PATCH operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(ethPortSettingsPatch))
 
-	b.recentEthPortSettingsOps = true
-	b.recentEthPortSettingsOpTime = time.Now()
-	return diagnostics
+			for k, v := range ethPortSettingsPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewEthportsettingsPutRequest()
+			ethPortSettingsMap := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+
+			for name, props := range filteredData {
+				ethPortSettingsMap[name] = props.(openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			}
+			patchRequest.SetEthPortSettings(ethPortSettingsMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.EthPortSettingsAPI.EthportsettingsPatch(ctx).EthportsettingsPutRequest(
+				*request.(*openapi.EthportsettingsPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentEthPortSettingsOps = true
+			b.recentEthPortSettingsOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkEthPortProfileDelete(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "eth_port_profile",
+		OperationType: "DELETE",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	ethPortProfileNames := make([]string, len(b.ethPortProfileDelete))
-	copy(ethPortProfileNames, b.ethPortProfileDelete)
+			b.mutex.Lock()
+			ethPortProfileNames := make([]string, len(b.ethPortProfileDelete))
+			copy(ethPortProfileNames, b.ethPortProfileDelete)
 
-	ethPortProfileDeleteMap := make(map[string]bool)
-	for _, name := range ethPortProfileNames {
-		ethPortProfileDeleteMap[name] = true
-	}
-
-	b.ethPortProfileDelete = make([]string, 0)
-
-	b.mutex.Unlock()
-
-	if len(ethPortProfileNames) == 0 {
-		return diagnostics
-	}
-
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Eth Port Profile DELETE operation after delay", map[string]interface{}{
-				"retry":       retry,
-				"delay":       delay,
-				"max_retries": retryConfig.MaxRetries,
-			})
-
-			time.Sleep(delay)
-		}
-
-		tflog.Debug(ctx, "Executing bulk Eth Port Profile DELETE operation", map[string]interface{}{
-			"eth_port_profile_count": len(ethPortProfileNames),
-			"eth_port_profile_names": ethPortProfileNames,
-		})
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.EthPortProfilesAPI.EthportprofilesDelete(apiCtx).ProfileName(ethPortProfileNames)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Eth Port Profile DELETE operation successful", map[string]interface{}{
-				"count": len(ethPortProfileNames),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Eth Port Profile DELETE operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process EthPortProfile DELETE operations
-		if op.ResourceType == "eth_port_profile" && op.OperationType == "DELETE" {
-			// Check if this operation's profile name is in our batch
-			if _, exists := ethPortProfileDeleteMap[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			ethPortProfileDeleteMap := make(map[string]bool)
+			for _, name := range ethPortProfileNames {
+				ethPortProfileDeleteMap[name] = true
 			}
-		}
-	}
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Eth Port Profile DELETE operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			b.ethPortProfileDelete = make([]string, 0)
+			b.mutex.Unlock()
 
-	b.recentEthPortProfileOps = true
-	b.recentEthPortProfileOpTime = time.Now()
-	return diagnostics
+			result := make(map[string]interface{})
+			for _, name := range ethPortProfileNames {
+				result[name] = true
+			}
+
+			return result, ethPortProfileNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.EthPortProfilesAPI.EthportprofilesDelete(ctx).ProfileName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentEthPortProfileOps = true
+			b.recentEthPortProfileOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkEthPortSettingsDelete(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "eth_port_settings",
+		OperationType: "DELETE",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	ethPortSettingsNames := make([]string, len(b.ethPortSettingsDelete))
-	copy(ethPortSettingsNames, b.ethPortSettingsDelete)
+			b.mutex.Lock()
+			ethPortSettingsNames := make([]string, len(b.ethPortSettingsDelete))
+			copy(ethPortSettingsNames, b.ethPortSettingsDelete)
 
-	ethPortSettingsDeleteMap := make(map[string]bool)
-	for _, name := range ethPortSettingsNames {
-		ethPortSettingsDeleteMap[name] = true
-	}
-
-	b.ethPortSettingsDelete = make([]string, 0)
-
-	b.mutex.Unlock()
-
-	if len(ethPortSettingsNames) == 0 {
-		return diagnostics
-	}
-
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk EthPort Settings DELETE operation after delay", map[string]interface{}{
-				"retry":       retry,
-				"delay":       delay,
-				"max_retries": retryConfig.MaxRetries,
-			})
-
-			time.Sleep(delay)
-		}
-
-		tflog.Debug(ctx, "Executing bulk EthPort Settings DELETE operation", map[string]interface{}{
-			"eth_port_settings_count": len(ethPortSettingsNames),
-			"eth_port_settings_names": ethPortSettingsNames,
-		})
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.EthPortSettingsAPI.EthportsettingsDelete(apiCtx).PortName(ethPortSettingsNames)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk EthPort Settings DELETE operation successful", map[string]interface{}{
-				"count": len(ethPortSettingsNames),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk EthPort Settings DELETE operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process EthPortSettings DELETE operations
-		if op.ResourceType == "eth_port_settings" && op.OperationType == "DELETE" {
-			// Check if this operation's settings name is in our batch
-			if _, exists := ethPortSettingsDeleteMap[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			ethPortSettingsDeleteMap := make(map[string]bool)
+			for _, name := range ethPortSettingsNames {
+				ethPortSettingsDeleteMap[name] = true
 			}
-		}
-	}
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk EthPort Settings DELETE operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			b.ethPortSettingsDelete = make([]string, 0)
+			b.mutex.Unlock()
 
-	b.recentEthPortSettingsOps = true
-	b.recentEthPortSettingsOpTime = time.Now()
-	return diagnostics
+			result := make(map[string]interface{})
+			for _, name := range ethPortSettingsNames {
+				result[name] = true
+			}
+
+			return result, ethPortSettingsNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.EthPortSettingsAPI.EthportsettingsDelete(ctx).PortName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentEthPortSettingsOps = true
+			b.recentEthPortSettingsOpTime = time.Now()
+		},
+	})
 }
 
 func (b *BulkOperationManager) ExecuteBulkBundlePatch(ctx context.Context) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "bundle",
+		OperationType: "PATCH",
 
-	b.mutex.Lock()
+		ExtractOperations: func() (map[string]interface{}, []string) {
 
-	bundlePatch := make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
-	for k, v := range b.bundlePatch {
-		bundlePatch[k] = v
-	}
-
-	b.bundlePatch = make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
-
-	b.mutex.Unlock()
-
-	if len(bundlePatch) == 0 {
-		return diagnostics
-	}
-
-	bundleNames := make([]string, 0, len(bundlePatch))
-	for name := range bundlePatch {
-		bundleNames = append(bundleNames, name)
-	}
-
-	tflog.Debug(ctx, "Executing bulk Bundle PATCH operation", map[string]interface{}{
-		"bundle_count": len(bundlePatch),
-		"bundle_names": bundleNames,
-	})
-
-	patchRequest := openapi.NewBundlesPatchRequest()
-	patchRequest.SetEndpointBundle(bundlePatch)
-
-	retryConfig := DefaultRetryConfig()
-	var err error
-
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delay := CalculateBackoff(retry-1, retryConfig)
-
-			tflog.Debug(ctx, "Retrying bulk Bundle PATCH operation after delay", map[string]interface{}{
-				"retry": retry,
-				"delay": delay,
-			})
-
-			time.Sleep(delay)
-		}
-
-		// Create a separate context for the API call
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-
-		req := b.client.BundlesAPI.BundlesPatch(apiCtx).BundlesPatchRequest(*patchRequest)
-		_, err = req.Execute()
-
-		// Release the API call context
-		cancel()
-
-		if err == nil {
-			tflog.Debug(ctx, "Bulk Bundle PATCH operation successful", map[string]interface{}{
-				"count": len(bundlePatch),
-			})
-			break
-		}
-
-		if !IsRetriableError(err) {
-			tflog.Error(ctx, "Bulk Bundle PATCH operation failed with non-retriable error", map[string]interface{}{
-				"error": err.Error(),
-			})
-			break
-		}
-	}
-
-	// Update operation statuses based on the result
-	b.operationMutex.Lock()
-	defer b.operationMutex.Unlock()
-
-	for opID, op := range b.pendingOperations {
-		// Only process Bundle PATCH operations
-		if op.ResourceType == "bundle" && op.OperationType == "PATCH" {
-			// Check if this operation's bundle name is in our batch
-			if _, exists := bundlePatch[op.ResourceName]; exists {
-				if err == nil {
-					// Mark operation as successful
-					updatedOp := op
-					updatedOp.Status = OperationSucceeded
-					b.pendingOperations[opID] = updatedOp
-					b.operationResults[opID] = true
-
-					// Signal waiting resources
-					b.safeCloseChannel(opID, true)
-				} else {
-					// Mark operation as failed
-					updatedOp := op
-					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
-					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
-					b.operationResults[opID] = false
-
-					// Signal waiting resources with the error
-					b.safeCloseChannel(opID, true)
-				}
+			b.mutex.Lock()
+			bundlePatch := make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
+			for k, v := range b.bundlePatch {
+				bundlePatch[k] = v
 			}
-		}
-	}
+			b.bundlePatch = make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
+			b.mutex.Unlock()
 
-	if err != nil {
-		diagnostics.AddError(
-			"Failed to execute bulk Bundle PATCH operation",
-			fmt.Sprintf("Error: %s", err),
-		)
-		return diagnostics
-	}
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(bundlePatch))
 
-	b.recentBundleOps = true
-	b.recentBundleOpTime = time.Now()
-	return diagnostics
+			for k, v := range bundlePatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewBundlesPatchRequest()
+			bundleMap := make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
+
+			for name, props := range filteredData {
+				bundleMap[name] = props.(openapi.BundlesPatchRequestEndpointBundleValue)
+			}
+			patchRequest.SetEndpointBundle(bundleMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.BundlesAPI.BundlesPatch(ctx).BundlesPatchRequest(
+				*request.(*openapi.BundlesPatchRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentBundleOps = true
+			b.recentBundleOpTime = time.Now()
+		},
+	})
 }
