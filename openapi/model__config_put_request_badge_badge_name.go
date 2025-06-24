@@ -21,6 +21,10 @@ var _ MappedNullable = &ConfigPutRequestBadgeBadgeName{}
 type ConfigPutRequestBadgeBadgeName struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
+	// Badge color
+	Color *string `json:"color,omitempty"`
+	// Badge number
+	Number *int32 `json:"number,omitempty"`
 	ObjectProperties *ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -77,6 +81,70 @@ func (o *ConfigPutRequestBadgeBadgeName) SetName(v string) {
 	o.Name = &v
 }
 
+// GetColor returns the Color field value if set, zero value otherwise.
+func (o *ConfigPutRequestBadgeBadgeName) GetColor() string {
+	if o == nil || IsNil(o.Color) {
+		var ret string
+		return ret
+	}
+	return *o.Color
+}
+
+// GetColorOk returns a tuple with the Color field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestBadgeBadgeName) GetColorOk() (*string, bool) {
+	if o == nil || IsNil(o.Color) {
+		return nil, false
+	}
+	return o.Color, true
+}
+
+// HasColor returns a boolean if a field has been set.
+func (o *ConfigPutRequestBadgeBadgeName) HasColor() bool {
+	if o != nil && !IsNil(o.Color) {
+		return true
+	}
+
+	return false
+}
+
+// SetColor gets a reference to the given string and assigns it to the Color field.
+func (o *ConfigPutRequestBadgeBadgeName) SetColor(v string) {
+	o.Color = &v
+}
+
+// GetNumber returns the Number field value if set, zero value otherwise.
+func (o *ConfigPutRequestBadgeBadgeName) GetNumber() int32 {
+	if o == nil || IsNil(o.Number) {
+		var ret int32
+		return ret
+	}
+	return *o.Number
+}
+
+// GetNumberOk returns a tuple with the Number field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestBadgeBadgeName) GetNumberOk() (*int32, bool) {
+	if o == nil || IsNil(o.Number) {
+		return nil, false
+	}
+	return o.Number, true
+}
+
+// HasNumber returns a boolean if a field has been set.
+func (o *ConfigPutRequestBadgeBadgeName) HasNumber() bool {
+	if o != nil && !IsNil(o.Number) {
+		return true
+	}
+
+	return false
+}
+
+// SetNumber gets a reference to the given int32 and assigns it to the Number field.
+func (o *ConfigPutRequestBadgeBadgeName) SetNumber(v int32) {
+	o.Number = &v
+}
+
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *ConfigPutRequestBadgeBadgeName) GetObjectProperties() ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -121,6 +189,12 @@ func (o ConfigPutRequestBadgeBadgeName) ToMap() (map[string]interface{}, error) 
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Color) {
+		toSerialize["color"] = o.Color
+	}
+	if !IsNil(o.Number) {
+		toSerialize["number"] = o.Number
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

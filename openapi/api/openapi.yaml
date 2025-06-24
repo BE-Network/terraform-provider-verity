@@ -4078,6 +4078,12 @@ components:
           format: name
           minLength: 1
           type: string
+        color:
+          description: Badge color
+          type: string
+        number:
+          description: Badge number
+          type: integer
         object_properties:
           $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
       type: object

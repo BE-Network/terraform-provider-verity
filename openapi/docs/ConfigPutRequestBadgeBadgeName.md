@@ -5,6 +5,8 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Color** | Pointer to **string** | Badge color | [optional] 
+**Number** | Pointer to **int32** | Badge number | [optional] 
 **ObjectProperties** | Pointer to [**ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties**](ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -50,6 +52,56 @@ SetName sets Name field to given value.
 `func (o *ConfigPutRequestBadgeBadgeName) HasName() bool`
 
 HasName returns a boolean if a field has been set.
+
+### GetColor
+
+`func (o *ConfigPutRequestBadgeBadgeName) GetColor() string`
+
+GetColor returns the Color field if non-nil, zero value otherwise.
+
+### GetColorOk
+
+`func (o *ConfigPutRequestBadgeBadgeName) GetColorOk() (*string, bool)`
+
+GetColorOk returns a tuple with the Color field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetColor
+
+`func (o *ConfigPutRequestBadgeBadgeName) SetColor(v string)`
+
+SetColor sets Color field to given value.
+
+### HasColor
+
+`func (o *ConfigPutRequestBadgeBadgeName) HasColor() bool`
+
+HasColor returns a boolean if a field has been set.
+
+### GetNumber
+
+`func (o *ConfigPutRequestBadgeBadgeName) GetNumber() int32`
+
+GetNumber returns the Number field if non-nil, zero value otherwise.
+
+### GetNumberOk
+
+`func (o *ConfigPutRequestBadgeBadgeName) GetNumberOk() (*int32, bool)`
+
+GetNumberOk returns a tuple with the Number field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNumber
+
+`func (o *ConfigPutRequestBadgeBadgeName) SetNumber(v int32)`
+
+SetNumber sets Number field to given value.
+
+### HasNumber
+
+`func (o *ConfigPutRequestBadgeBadgeName) HasNumber() bool`
+
+HasNumber returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
