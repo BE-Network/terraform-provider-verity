@@ -25,8 +25,8 @@ type PacketbrokerPutRequestPbEgressProfileValue struct {
 	Enable *bool `json:"enable,omitempty"`
 	Ipv4Permit []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner `json:"ipv4_permit,omitempty"`
 	Ipv4Deny []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner `json:"ipv4_deny,omitempty"`
-	Ipv6Permit []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner `json:"ipv6_permit,omitempty"`
-	Ipv6Deny []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner `json:"ipv6_deny,omitempty"`
+	Ipv6Permit []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner `json:"ipv6_permit,omitempty"`
+	Ipv6Deny []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner `json:"ipv6_deny,omitempty"`
 }
 
 // NewPacketbrokerPutRequestPbEgressProfileValue instantiates a new PacketbrokerPutRequestPbEgressProfileValue object
@@ -183,9 +183,9 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv4Deny(v []Packetbroke
 }
 
 // GetIpv6Permit returns the Ipv6Permit field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Permit() []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Permit() []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner {
 	if o == nil || IsNil(o.Ipv6Permit) {
-		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+		var ret []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner
 		return ret
 	}
 	return o.Ipv6Permit
@@ -193,7 +193,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Permit() []Packetbro
 
 // GetIpv6PermitOk returns a tuple with the Ipv6Permit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6PermitOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6PermitOk() ([]ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner, bool) {
 	if o == nil || IsNil(o.Ipv6Permit) {
 		return nil, false
 	}
@@ -209,15 +209,15 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) HasIpv6Permit() bool {
 	return false
 }
 
-// SetIpv6Permit gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner and assigns it to the Ipv6Permit field.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Permit(v []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) {
+// SetIpv6Permit gets a reference to the given []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner and assigns it to the Ipv6Permit field.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Permit(v []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner) {
 	o.Ipv6Permit = v
 }
 
 // GetIpv6Deny returns the Ipv6Deny field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Deny() []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Deny() []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner {
 	if o == nil || IsNil(o.Ipv6Deny) {
-		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+		var ret []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner
 		return ret
 	}
 	return o.Ipv6Deny
@@ -225,7 +225,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Deny() []Packetbroke
 
 // GetIpv6DenyOk returns a tuple with the Ipv6Deny field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6DenyOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6DenyOk() ([]ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner, bool) {
 	if o == nil || IsNil(o.Ipv6Deny) {
 		return nil, false
 	}
@@ -241,8 +241,8 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) HasIpv6Deny() bool {
 	return false
 }
 
-// SetIpv6Deny gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner and assigns it to the Ipv6Deny field.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Deny(v []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) {
+// SetIpv6Deny gets a reference to the given []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner and assigns it to the Ipv6Deny field.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Deny(v []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner) {
 	o.Ipv6Deny = v
 }
 

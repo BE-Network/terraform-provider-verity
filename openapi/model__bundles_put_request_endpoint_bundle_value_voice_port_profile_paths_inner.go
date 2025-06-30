@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner{}
+// checks if the BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
 
-// BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner struct for BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner
-type BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner struct {
+// BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner struct for BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner
+type BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner struct {
 	//  Voice Port Settings for Voice Port
 	VoicePortNumVoicePortProfiles *string `json:"voice_port_num_voice_port_profiles,omitempty"`
 	// Object type for voice_port_num_voice_port_profiles field
@@ -27,29 +27,29 @@ type BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner struct {
 	Index *int32 `json:"index,omitempty"`
 }
 
-// NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner instantiates a new BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner object
+// NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner instantiates a new BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner() *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner {
-	this := BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner{}
+func NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner() *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
+	this := BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
 	var voicePortNumVoicePortProfiles string = ""
 	this.VoicePortNumVoicePortProfiles = &voicePortNumVoicePortProfiles
 	return &this
 }
 
-// NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults instantiates a new BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner object
+// NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults instantiates a new BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults() *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner {
-	this := BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner{}
+func NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults() *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
+	this := BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
 	var voicePortNumVoicePortProfiles string = ""
 	this.VoicePortNumVoicePortProfiles = &voicePortNumVoicePortProfiles
 	return &this
 }
 
 // GetVoicePortNumVoicePortProfiles returns the VoicePortNumVoicePortProfiles field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfiles() string {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfiles() string {
 	if o == nil || IsNil(o.VoicePortNumVoicePortProfiles) {
 		var ret string
 		return ret
@@ -59,7 +59,7 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVo
 
 // GetVoicePortNumVoicePortProfilesOk returns a tuple with the VoicePortNumVoicePortProfiles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesOk() (*string, bool) {
 	if o == nil || IsNil(o.VoicePortNumVoicePortProfiles) {
 		return nil, false
 	}
@@ -67,7 +67,7 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVo
 }
 
 // HasVoicePortNumVoicePortProfiles returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasVoicePortNumVoicePortProfiles() bool {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) HasVoicePortNumVoicePortProfiles() bool {
 	if o != nil && !IsNil(o.VoicePortNumVoicePortProfiles) {
 		return true
 	}
@@ -76,12 +76,12 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasVo
 }
 
 // SetVoicePortNumVoicePortProfiles gets a reference to the given string and assigns it to the VoicePortNumVoicePortProfiles field.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoicePortNumVoicePortProfiles(v string) {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoicePortNumVoicePortProfiles(v string) {
 	o.VoicePortNumVoicePortProfiles = &v
 }
 
 // GetVoicePortNumVoicePortProfilesRefType returns the VoicePortNumVoicePortProfilesRefType field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesRefType() string {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesRefType() string {
 	if o == nil || IsNil(o.VoicePortNumVoicePortProfilesRefType) {
 		var ret string
 		return ret
@@ -91,7 +91,7 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVo
 
 // GetVoicePortNumVoicePortProfilesRefTypeOk returns a tuple with the VoicePortNumVoicePortProfilesRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesRefTypeOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.VoicePortNumVoicePortProfilesRefType) {
 		return nil, false
 	}
@@ -99,7 +99,7 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVo
 }
 
 // HasVoicePortNumVoicePortProfilesRefType returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasVoicePortNumVoicePortProfilesRefType() bool {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) HasVoicePortNumVoicePortProfilesRefType() bool {
 	if o != nil && !IsNil(o.VoicePortNumVoicePortProfilesRefType) {
 		return true
 	}
@@ -108,12 +108,12 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasVo
 }
 
 // SetVoicePortNumVoicePortProfilesRefType gets a reference to the given string and assigns it to the VoicePortNumVoicePortProfilesRefType field.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoicePortNumVoicePortProfilesRefType(v string) {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoicePortNumVoicePortProfilesRefType(v string) {
 	o.VoicePortNumVoicePortProfilesRefType = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndex() int32 {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndex() int32 {
 	if o == nil || IsNil(o.Index) {
 		var ret int32
 		return ret
@@ -123,7 +123,7 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetIn
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndexOk() (*int32, bool) {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndexOk() (*int32, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -131,7 +131,7 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetIn
 }
 
 // HasIndex returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasIndex() bool {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) HasIndex() bool {
 	if o != nil && !IsNil(o.Index) {
 		return true
 	}
@@ -140,11 +140,11 @@ func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasIn
 }
 
 // SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) SetIndex(v int32) {
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetIndex(v int32) {
 	o.Index = &v
 }
 
-func (o BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) MarshalJSON() ([]byte, error) {
+func (o BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -152,7 +152,7 @@ func (o BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) Marsha
 	return json.Marshal(toSerialize)
 }
 
-func (o BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) ToMap() (map[string]interface{}, error) {
+func (o BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.VoicePortNumVoicePortProfiles) {
 		toSerialize["voice_port_num_voice_port_profiles"] = o.VoicePortNumVoicePortProfiles
@@ -166,38 +166,38 @@ func (o BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) ToMap(
 	return toSerialize, nil
 }
 
-type NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner struct {
-	value *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner
+type NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner struct {
+	value *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner
 	isSet bool
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) Get() *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner {
+func (v NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) Get() *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
 	return v.value
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) Set(val *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) {
+func (v *NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) Set(val *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) IsSet() bool {
+func (v NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) Unset() {
+func (v *NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner(val *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) *NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner {
-	return &NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner{value: val, isSet: true}
+func NewNullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner(val *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) *NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
+	return &NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{value: val, isSet: true}
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) MarshalJSON() ([]byte, error) {
+func (v NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) UnmarshalJSON(src []byte) error {
+func (v *NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

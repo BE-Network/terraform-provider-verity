@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the BundlesPatchRequestEndpointBundleValueEthPortPathsInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &BundlesPatchRequestEndpointBundleValueEthPortPathsInner{}
+// checks if the BundlesPutRequestEndpointBundleValueEthPortPathsInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
 
-// BundlesPatchRequestEndpointBundleValueEthPortPathsInner struct for BundlesPatchRequestEndpointBundleValueEthPortPathsInner
-type BundlesPatchRequestEndpointBundleValueEthPortPathsInner struct {
+// BundlesPutRequestEndpointBundleValueEthPortPathsInner struct for BundlesPutRequestEndpointBundleValueEthPortPathsInner
+type BundlesPutRequestEndpointBundleValueEthPortPathsInner struct {
 	// Eth Port Profile Or LAG for Eth Port
 	EthPortNumEthPortProfile *string `json:"eth_port_num_eth_port_profile,omitempty"`
 	// Object type for eth_port_num_eth_port_profile field
@@ -37,12 +37,12 @@ type BundlesPatchRequestEndpointBundleValueEthPortPathsInner struct {
 	PortName *string `json:"port_name,omitempty"`
 }
 
-// NewBundlesPatchRequestEndpointBundleValueEthPortPathsInner instantiates a new BundlesPatchRequestEndpointBundleValueEthPortPathsInner object
+// NewBundlesPutRequestEndpointBundleValueEthPortPathsInner instantiates a new BundlesPutRequestEndpointBundleValueEthPortPathsInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBundlesPatchRequestEndpointBundleValueEthPortPathsInner() *BundlesPatchRequestEndpointBundleValueEthPortPathsInner {
-	this := BundlesPatchRequestEndpointBundleValueEthPortPathsInner{}
+func NewBundlesPutRequestEndpointBundleValueEthPortPathsInner() *BundlesPutRequestEndpointBundleValueEthPortPathsInner {
+	this := BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
 	var ethPortNumEthPortProfile string = ""
 	this.EthPortNumEthPortProfile = &ethPortNumEthPortProfile
 	var ethPortNumEthPortSettings string = ""
@@ -52,11 +52,11 @@ func NewBundlesPatchRequestEndpointBundleValueEthPortPathsInner() *BundlesPatchR
 	return &this
 }
 
-// NewBundlesPatchRequestEndpointBundleValueEthPortPathsInnerWithDefaults instantiates a new BundlesPatchRequestEndpointBundleValueEthPortPathsInner object
+// NewBundlesPutRequestEndpointBundleValueEthPortPathsInnerWithDefaults instantiates a new BundlesPutRequestEndpointBundleValueEthPortPathsInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewBundlesPatchRequestEndpointBundleValueEthPortPathsInnerWithDefaults() *BundlesPatchRequestEndpointBundleValueEthPortPathsInner {
-	this := BundlesPatchRequestEndpointBundleValueEthPortPathsInner{}
+func NewBundlesPutRequestEndpointBundleValueEthPortPathsInnerWithDefaults() *BundlesPutRequestEndpointBundleValueEthPortPathsInner {
+	this := BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
 	var ethPortNumEthPortProfile string = ""
 	this.EthPortNumEthPortProfile = &ethPortNumEthPortProfile
 	var ethPortNumEthPortSettings string = ""
@@ -67,7 +67,7 @@ func NewBundlesPatchRequestEndpointBundleValueEthPortPathsInnerWithDefaults() *B
 }
 
 // GetEthPortNumEthPortProfile returns the EthPortNumEthPortProfile field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortProfile() string {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortProfile() string {
 	if o == nil || IsNil(o.EthPortNumEthPortProfile) {
 		var ret string
 		return ret
@@ -77,7 +77,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumE
 
 // GetEthPortNumEthPortProfileOk returns a tuple with the EthPortNumEthPortProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortProfileOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortProfileOk() (*string, bool) {
 	if o == nil || IsNil(o.EthPortNumEthPortProfile) {
 		return nil, false
 	}
@@ -85,7 +85,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumE
 }
 
 // HasEthPortNumEthPortProfile returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumEthPortProfile() bool {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumEthPortProfile() bool {
 	if o != nil && !IsNil(o.EthPortNumEthPortProfile) {
 		return true
 	}
@@ -94,12 +94,12 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumE
 }
 
 // SetEthPortNumEthPortProfile gets a reference to the given string and assigns it to the EthPortNumEthPortProfile field.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumEthPortProfile(v string) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumEthPortProfile(v string) {
 	o.EthPortNumEthPortProfile = &v
 }
 
 // GetEthPortNumEthPortProfileRefType returns the EthPortNumEthPortProfileRefType field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortProfileRefType() string {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortProfileRefType() string {
 	if o == nil || IsNil(o.EthPortNumEthPortProfileRefType) {
 		var ret string
 		return ret
@@ -109,7 +109,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumE
 
 // GetEthPortNumEthPortProfileRefTypeOk returns a tuple with the EthPortNumEthPortProfileRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortProfileRefTypeOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortProfileRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.EthPortNumEthPortProfileRefType) {
 		return nil, false
 	}
@@ -117,7 +117,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumE
 }
 
 // HasEthPortNumEthPortProfileRefType returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumEthPortProfileRefType() bool {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumEthPortProfileRefType() bool {
 	if o != nil && !IsNil(o.EthPortNumEthPortProfileRefType) {
 		return true
 	}
@@ -126,12 +126,12 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumE
 }
 
 // SetEthPortNumEthPortProfileRefType gets a reference to the given string and assigns it to the EthPortNumEthPortProfileRefType field.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumEthPortProfileRefType(v string) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumEthPortProfileRefType(v string) {
 	o.EthPortNumEthPortProfileRefType = &v
 }
 
 // GetEthPortNumEthPortSettings returns the EthPortNumEthPortSettings field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortSettings() string {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortSettings() string {
 	if o == nil || IsNil(o.EthPortNumEthPortSettings) {
 		var ret string
 		return ret
@@ -141,7 +141,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumE
 
 // GetEthPortNumEthPortSettingsOk returns a tuple with the EthPortNumEthPortSettings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortSettingsOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortSettingsOk() (*string, bool) {
 	if o == nil || IsNil(o.EthPortNumEthPortSettings) {
 		return nil, false
 	}
@@ -149,7 +149,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumE
 }
 
 // HasEthPortNumEthPortSettings returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumEthPortSettings() bool {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumEthPortSettings() bool {
 	if o != nil && !IsNil(o.EthPortNumEthPortSettings) {
 		return true
 	}
@@ -158,12 +158,12 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumE
 }
 
 // SetEthPortNumEthPortSettings gets a reference to the given string and assigns it to the EthPortNumEthPortSettings field.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumEthPortSettings(v string) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumEthPortSettings(v string) {
 	o.EthPortNumEthPortSettings = &v
 }
 
 // GetEthPortNumEthPortSettingsRefType returns the EthPortNumEthPortSettingsRefType field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortSettingsRefType() string {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortSettingsRefType() string {
 	if o == nil || IsNil(o.EthPortNumEthPortSettingsRefType) {
 		var ret string
 		return ret
@@ -173,7 +173,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumE
 
 // GetEthPortNumEthPortSettingsRefTypeOk returns a tuple with the EthPortNumEthPortSettingsRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortSettingsRefTypeOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumEthPortSettingsRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.EthPortNumEthPortSettingsRefType) {
 		return nil, false
 	}
@@ -181,7 +181,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumE
 }
 
 // HasEthPortNumEthPortSettingsRefType returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumEthPortSettingsRefType() bool {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumEthPortSettingsRefType() bool {
 	if o != nil && !IsNil(o.EthPortNumEthPortSettingsRefType) {
 		return true
 	}
@@ -190,12 +190,12 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumE
 }
 
 // SetEthPortNumEthPortSettingsRefType gets a reference to the given string and assigns it to the EthPortNumEthPortSettingsRefType field.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumEthPortSettingsRefType(v string) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumEthPortSettingsRefType(v string) {
 	o.EthPortNumEthPortSettingsRefType = &v
 }
 
 // GetEthPortNumGatewayProfile returns the EthPortNumGatewayProfile field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumGatewayProfile() string {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumGatewayProfile() string {
 	if o == nil || IsNil(o.EthPortNumGatewayProfile) {
 		var ret string
 		return ret
@@ -205,7 +205,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumG
 
 // GetEthPortNumGatewayProfileOk returns a tuple with the EthPortNumGatewayProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumGatewayProfileOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumGatewayProfileOk() (*string, bool) {
 	if o == nil || IsNil(o.EthPortNumGatewayProfile) {
 		return nil, false
 	}
@@ -213,7 +213,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumG
 }
 
 // HasEthPortNumGatewayProfile returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumGatewayProfile() bool {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumGatewayProfile() bool {
 	if o != nil && !IsNil(o.EthPortNumGatewayProfile) {
 		return true
 	}
@@ -222,12 +222,12 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumG
 }
 
 // SetEthPortNumGatewayProfile gets a reference to the given string and assigns it to the EthPortNumGatewayProfile field.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumGatewayProfile(v string) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumGatewayProfile(v string) {
 	o.EthPortNumGatewayProfile = &v
 }
 
 // GetEthPortNumGatewayProfileRefType returns the EthPortNumGatewayProfileRefType field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumGatewayProfileRefType() string {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumGatewayProfileRefType() string {
 	if o == nil || IsNil(o.EthPortNumGatewayProfileRefType) {
 		var ret string
 		return ret
@@ -237,7 +237,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumG
 
 // GetEthPortNumGatewayProfileRefTypeOk returns a tuple with the EthPortNumGatewayProfileRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumGatewayProfileRefTypeOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumGatewayProfileRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.EthPortNumGatewayProfileRefType) {
 		return nil, false
 	}
@@ -245,7 +245,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumG
 }
 
 // HasEthPortNumGatewayProfileRefType returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumGatewayProfileRefType() bool {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumGatewayProfileRefType() bool {
 	if o != nil && !IsNil(o.EthPortNumGatewayProfileRefType) {
 		return true
 	}
@@ -254,12 +254,12 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumG
 }
 
 // SetEthPortNumGatewayProfileRefType gets a reference to the given string and assigns it to the EthPortNumGatewayProfileRefType field.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumGatewayProfileRefType(v string) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumGatewayProfileRefType(v string) {
 	o.EthPortNumGatewayProfileRefType = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetIndex() int32 {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndex() int32 {
 	if o == nil || IsNil(o.Index) {
 		var ret int32
 		return ret
@@ -269,7 +269,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetIndex() int
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetIndexOk() (*int32, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndexOk() (*int32, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -277,7 +277,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetIndexOk() (
 }
 
 // HasIndex returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasIndex() bool {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasIndex() bool {
 	if o != nil && !IsNil(o.Index) {
 		return true
 	}
@@ -286,12 +286,12 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasIndex() boo
 }
 
 // SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) SetIndex(v int32) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetIndex(v int32) {
 	o.Index = &v
 }
 
 // GetPortName returns the PortName field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetPortName() string {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetPortName() string {
 	if o == nil || IsNil(o.PortName) {
 		var ret string
 		return ret
@@ -301,7 +301,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetPortName() 
 
 // GetPortNameOk returns a tuple with the PortName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetPortNameOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetPortNameOk() (*string, bool) {
 	if o == nil || IsNil(o.PortName) {
 		return nil, false
 	}
@@ -309,7 +309,7 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) GetPortNameOk(
 }
 
 // HasPortName returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasPortName() bool {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasPortName() bool {
 	if o != nil && !IsNil(o.PortName) {
 		return true
 	}
@@ -318,11 +318,11 @@ func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) HasPortName() 
 }
 
 // SetPortName gets a reference to the given string and assigns it to the PortName field.
-func (o *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) SetPortName(v string) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetPortName(v string) {
 	o.PortName = &v
 }
 
-func (o BundlesPatchRequestEndpointBundleValueEthPortPathsInner) MarshalJSON() ([]byte, error) {
+func (o BundlesPutRequestEndpointBundleValueEthPortPathsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -330,7 +330,7 @@ func (o BundlesPatchRequestEndpointBundleValueEthPortPathsInner) MarshalJSON() (
 	return json.Marshal(toSerialize)
 }
 
-func (o BundlesPatchRequestEndpointBundleValueEthPortPathsInner) ToMap() (map[string]interface{}, error) {
+func (o BundlesPutRequestEndpointBundleValueEthPortPathsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.EthPortNumEthPortProfile) {
 		toSerialize["eth_port_num_eth_port_profile"] = o.EthPortNumEthPortProfile
@@ -359,38 +359,38 @@ func (o BundlesPatchRequestEndpointBundleValueEthPortPathsInner) ToMap() (map[st
 	return toSerialize, nil
 }
 
-type NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner struct {
-	value *BundlesPatchRequestEndpointBundleValueEthPortPathsInner
+type NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner struct {
+	value *BundlesPutRequestEndpointBundleValueEthPortPathsInner
 	isSet bool
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner) Get() *BundlesPatchRequestEndpointBundleValueEthPortPathsInner {
+func (v NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner) Get() *BundlesPutRequestEndpointBundleValueEthPortPathsInner {
 	return v.value
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner) Set(val *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) {
+func (v *NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner) Set(val *BundlesPutRequestEndpointBundleValueEthPortPathsInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner) IsSet() bool {
+func (v NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner) Unset() {
+func (v *NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner(val *BundlesPatchRequestEndpointBundleValueEthPortPathsInner) *NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner {
-	return &NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner{value: val, isSet: true}
+func NewNullableBundlesPutRequestEndpointBundleValueEthPortPathsInner(val *BundlesPutRequestEndpointBundleValueEthPortPathsInner) *NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner {
+	return &NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner{value: val, isSet: true}
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner) MarshalJSON() ([]byte, error) {
+func (v NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueEthPortPathsInner) UnmarshalJSON(src []byte) error {
+func (v *NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

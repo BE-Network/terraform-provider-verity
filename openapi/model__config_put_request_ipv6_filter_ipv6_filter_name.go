@@ -23,7 +23,7 @@ type ConfigPutRequestIpv6FilterIpv6FilterName struct {
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// IP protocol type (0-255) to match packets on. Ip indicates ipv4, ipv4 indicates ipv6
+	// Value must be ip/tcp/udp/icmp or a number between 0 and 255 to match packets.  Value IP will match all IP protocols.
 	Protocol *string `json:"protocol,omitempty"`
 	// If bidirectional is selected, packets will be selected that match the source filters in either the source or destination fields of the packet.
 	Bidirectional *bool `json:"bidirectional,omitempty"`

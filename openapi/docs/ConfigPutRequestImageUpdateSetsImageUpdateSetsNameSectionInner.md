@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **EndpointSetNumName** | Pointer to **string** | The name of the Endpoint Set | [optional] [default to ""]
 **EndpointSetNumTargetUpgradeVersion** | Pointer to **string** | The target SW version for member devices of the Endpoint Set | [optional] [default to "unmanaged"]
-**EndpointSetNumUniqueIdentifier** | Pointer to **string** | Unique Identifier - not editable | [optional] [default to "17492038383101"]
+**EndpointSetNumUniqueIdentifier** | Pointer to **string** | Unique Identifier - not editable | [optional] [default to "17510191572191"]
 **EndpointSetNumOnSummary** | Pointer to **bool** | Include on the Summary | [optional] [default to true]
 **EndpointSetNumTargetUpgradeVersionTime** | Pointer to **string** | The time to update to the target SW version | [optional] [default to ""]
 **EndpointSetNumSubrule1Inverted** | Pointer to **bool** | Subrule 1 Inverted of the Endpoint Set | [optional] [default to false]

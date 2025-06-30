@@ -15,7 +15,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_auth_post_request'
+              $ref: "#/components/schemas/_auth_post_request"
         required: true
       responses:
         "200":
@@ -40,6 +40,45 @@ paths:
       tags:
       - Authorization
   /bundles:
+    delete:
+      description: |
+        Deletes an existing bundle from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: bundle_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete bundle
+      tags:
+      - Bundles
     get:
       description: |
         Retrieves all bundles from the system.
@@ -90,7 +129,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_bundles_patch_request'
+              $ref: "#/components/schemas/_bundles_patch_request"
       responses:
         "201":
           description: Created or Updated
@@ -105,6 +144,39 @@ paths:
       security:
       - TokenAuth: []
       summary: Update bundle
+      tags:
+      - Bundles
+    put:
+      description: |
+        Create bundle into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_bundles_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create bundle
       tags:
       - Bundles
   /changesets:
@@ -203,7 +275,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_changesets_put_request'
+              $ref: "#/components/schemas/_changesets_put_request"
         required: true
       responses:
         "429":
@@ -420,7 +492,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_config_put_request'
+              $ref: "#/components/schemas/_config_put_request"
       responses:
         "429":
           content:
@@ -469,7 +541,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_config_put_request'
+              $ref: "#/components/schemas/_config_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -592,7 +664,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_ethportprofiles_put_request'
+              $ref: "#/components/schemas/_ethportprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -625,7 +697,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_ethportprofiles_put_request'
+              $ref: "#/components/schemas/_ethportprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -732,7 +804,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_ethportsettings_put_request'
+              $ref: "#/components/schemas/_ethportsettings_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -765,7 +837,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_ethportsettings_put_request'
+              $ref: "#/components/schemas/_ethportsettings_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -872,7 +944,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_gatewayprofiles_put_request'
+              $ref: "#/components/schemas/_gatewayprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -905,7 +977,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_gatewayprofiles_put_request'
+              $ref: "#/components/schemas/_gatewayprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1012,7 +1084,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_gateways_put_request'
+              $ref: "#/components/schemas/_gateways_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1045,7 +1117,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_gateways_put_request'
+              $ref: "#/components/schemas/_gateways_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1152,7 +1224,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_lags_put_request'
+              $ref: "#/components/schemas/_lags_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1185,7 +1257,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_lags_put_request'
+              $ref: "#/components/schemas/_lags_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1232,14 +1304,14 @@ paths:
           content:
             application/json:
               example:
-              - Switchpoint|Leaf 03|
+              - Switchpoint|Leaf 04|
               - Switchpoint|Spine 2|
               - Switchpoint|Leaf 02|
-              - Switchpoint|Leaf 04|
-              - Switchpoint|mgmt1|
               - Switchpoint|Host|
-              - Switchpoint|Leaf 01|
+              - Switchpoint|Leaf 03|
               - Switchpoint|Spine 1|
+              - Switchpoint|Leaf 01|
+              - Switchpoint|mgmt1|
           description: Successful response
         "204":
           description: No Content
@@ -1441,7 +1513,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_services_put_request'
+              $ref: "#/components/schemas/_services_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1474,7 +1546,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_services_put_request'
+              $ref: "#/components/schemas/_services_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1581,7 +1653,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_tenants_put_request'
+              $ref: "#/components/schemas/_tenants_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1614,7 +1686,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_tenants_put_request'
+              $ref: "#/components/schemas/_tenants_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1742,7 +1814,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_acls_put_request'
+              $ref: "#/components/schemas/_acls_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1782,7 +1854,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_acls_put_request'
+              $ref: "#/components/schemas/_acls_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1889,7 +1961,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_badges_put_request'
+              $ref: "#/components/schemas/_badges_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1922,7 +1994,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_badges_put_request'
+              $ref: "#/components/schemas/_badges_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -1939,6 +2011,146 @@ paths:
       summary: Create Badge
       tags:
       - Badges
+  /devicecontrollers:
+    delete:
+      description: |
+        Deletes an existing Device Controllers from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: device_controller_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Device Controllers
+      tags:
+      - Device Controllers
+    get:
+      description: |
+        Retrieves all Device Controllers from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: device_controller_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Device Controllers
+      tags:
+      - Device Controllers
+    patch:
+      description: |
+        Update Device Controller into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_devicecontrollers_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Device Controller
+      tags:
+      - Device Controllers
+    put:
+      description: |
+        Create Device Controller into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_devicecontrollers_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Device Controller
+      tags:
+      - Device Controllers
   /packetbroker:
     delete:
       description: |
@@ -2029,7 +2241,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_packetbroker_put_request'
+              $ref: "#/components/schemas/_packetbroker_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2062,7 +2274,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_packetbroker_put_request'
+              $ref: "#/components/schemas/_packetbroker_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2169,7 +2381,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_packetqueues_put_request'
+              $ref: "#/components/schemas/_packetqueues_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2202,7 +2414,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_packetqueues_put_request'
+              $ref: "#/components/schemas/_packetqueues_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2219,6 +2431,108 @@ paths:
       summary: Create Packet Queue
       tags:
       - Packet Queues
+  /request:
+    get:
+      description: |
+        Get miscellaneous info about the system.
+      parameters:
+      - explode: true
+        in: query
+        name: query
+        required: true
+        schema:
+          description: Select the return information of this endpoint.
+          enum:
+          - status
+          - networks
+          - device_details
+          - slice
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: setname
+        required: false
+        schema:
+          description: Named endpoint set.
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: site
+        required: false
+        schema:
+          description: Named site.
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: dev_id
+        required: false
+        schema:
+          description: Device id.
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: endpoint_id
+        required: false
+        schema:
+          description: Endpoint id.
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: endpoint_name
+        required: false
+        schema:
+          description: Endpoint name.
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: start
+        required: false
+        schema:
+          description: Monotonic UTC epoch timestamps.
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: stop
+        required: false
+        schema:
+          description: Monotonic UTC epoch timestamps.
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: endpoint
+        required: false
+        schema:
+          description: Endpoint name.
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "204":
+          description: No Content
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Get miscellaneous info about the system
+      tags:
+      - Request
   /switchpoints:
     delete:
       description: |
@@ -2309,7 +2623,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_switchpoints_put_request'
+              $ref: "#/components/schemas/_switchpoints_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2342,7 +2656,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_switchpoints_put_request'
+              $ref: "#/components/schemas/_switchpoints_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2395,7 +2709,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_switchpoints_markoutofservice_put_request'
+              $ref: "#/components/schemas/_switchpoints_markoutofservice_put_request"
         required: true
       responses:
         "200":
@@ -2444,7 +2758,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_switchpoints_upgrade_patch_request'
+              $ref: "#/components/schemas/_switchpoints_upgrade_patch_request"
         required: true
       responses:
         "201":
@@ -2588,7 +2902,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_authenticatedethports_put_request'
+              $ref: "#/components/schemas/_authenticatedethports_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2621,7 +2935,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_authenticatedethports_put_request'
+              $ref: "#/components/schemas/_authenticatedethports_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2728,7 +3042,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_devicevoicesettings_put_request'
+              $ref: "#/components/schemas/_devicevoicesettings_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2761,7 +3075,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_devicevoicesettings_put_request'
+              $ref: "#/components/schemas/_devicevoicesettings_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2868,7 +3182,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_serviceportprofiles_put_request'
+              $ref: "#/components/schemas/_serviceportprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -2901,7 +3215,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_serviceportprofiles_put_request'
+              $ref: "#/components/schemas/_serviceportprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -3008,7 +3322,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_voiceportprofiles_put_request'
+              $ref: "#/components/schemas/_voiceportprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -3041,7 +3355,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_voiceportprofiles_put_request'
+              $ref: "#/components/schemas/_voiceportprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -3073,9 +3387,9 @@ components:
           description: Scheduler Type for Queue
           enum:
           - ""
+          - DWRR
           - WRR
           - SP
-          - DWRR
           type: string
         scheduler_weight:
           default: 0
@@ -3091,85 +3405,96 @@ components:
     _config_put_request:
       properties:
         device_controller:
-          $ref: '#/components/schemas/_config_put_request_device_controller'
+          $ref: "#/components/schemas/_config_put_request_device_controller"
         sfp_breakouts:
-          $ref: '#/components/schemas/_config_put_request_sfp_breakouts'
+          $ref: "#/components/schemas/_config_put_request_sfp_breakouts"
         site:
-          $ref: '#/components/schemas/_config_put_request_site'
+          $ref: "#/components/schemas/_config_put_request_site"
         ipv4_prefix_list:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list"
         eth_device_profiles:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles'
+          $ref: "#/components/schemas/_config_put_request_eth_device_profiles"
         ipv4_filter:
-          $ref: '#/components/schemas/_config_put_request_ipv4_filter'
+          $ref: "#/components/schemas/_config_put_request_ipv4_filter"
         gateway_profile:
-          $ref: '#/components/schemas/_config_put_request_gateway_profile'
+          $ref: "#/components/schemas/_config_put_request_gateway_profile"
         endpoint_view:
-          $ref: '#/components/schemas/_config_put_request_endpoint_view'
+          $ref: "#/components/schemas/_config_put_request_endpoint_view"
         gateway:
-          $ref: '#/components/schemas/_config_put_request_gateway'
+          $ref: "#/components/schemas/_config_put_request_gateway"
         ipv6_filter:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter'
+          $ref: "#/components/schemas/_config_put_request_ipv6_filter"
         route_map_clause:
-          $ref: '#/components/schemas/_config_put_request_route_map_clause'
+          $ref: "#/components/schemas/_config_put_request_route_map_clause"
         service:
-          $ref: '#/components/schemas/_config_put_request_service'
+          $ref: "#/components/schemas/_config_put_request_service"
         route_map:
-          $ref: '#/components/schemas/_config_put_request_route_map'
+          $ref: "#/components/schemas/_config_put_request_route_map"
         bizd_config:
-          $ref: '#/components/schemas/_config_put_request_bizd_config'
+          $ref: "#/components/schemas/_config_put_request_bizd_config"
         pb_egress_profile:
-          $ref: '#/components/schemas/_config_put_request_pb_egress_profile'
+          $ref: "#/components/schemas/_config_put_request_pb_egress_profile"
         badge:
-          $ref: '#/components/schemas/_config_put_request_badge'
+          $ref: "#/components/schemas/_config_put_request_badge"
         lag:
-          $ref: '#/components/schemas/_config_put_request_lag'
+          $ref: "#/components/schemas/_config_put_request_lag"
         static_ip:
-          $ref: '#/components/schemas/_config_put_request_static_ip'
+          $ref: "#/components/schemas/_config_put_request_static_ip"
         community_list:
-          $ref: '#/components/schemas/_config_put_request_community_list'
+          $ref: "#/components/schemas/_config_put_request_community_list"
         tenant:
-          $ref: '#/components/schemas/_config_put_request_tenant'
+          $ref: "#/components/schemas/_config_put_request_tenant"
         ipv6_prefix_list:
-          $ref: '#/components/schemas/_config_put_request_ipv6_prefix_list'
+          $ref: "#/components/schemas/_config_put_request_ipv6_prefix_list"
         ipv4_list_filter:
-          $ref: '#/components/schemas/_config_put_request_ipv4_list_filter'
+          $ref: "#/components/schemas/_config_put_request_ipv4_list_filter"
         as_path_access_list:
-          $ref: '#/components/schemas/_config_put_request_as_path_access_list'
+          $ref: "#/components/schemas/_config_put_request_as_path_access_list"
         ipv6_list_filter:
-          $ref: '#/components/schemas/_config_put_request_ipv6_list_filter'
+          $ref: "#/components/schemas/_config_put_request_ipv6_list_filter"
         eth_port_profile_:
-          $ref: '#/components/schemas/_config_put_request_eth_port_profile_'
+          $ref: "#/components/schemas/_config_put_request_eth_port_profile_"
         eth_port_settings:
-          $ref: '#/components/schemas/_config_put_request_eth_port_settings'
+          $ref: "#/components/schemas/_config_put_request_eth_port_settings"
         endpoint_bundle:
-          $ref: '#/components/schemas/_config_put_request_endpoint_bundle'
+          $ref: "#/components/schemas/_config_put_request_endpoint_bundle"
         static_connections:
-          $ref: '#/components/schemas/_config_put_request_static_connections'
+          $ref: "#/components/schemas/_config_put_request_static_connections"
         switchpoint:
-          $ref: '#/components/schemas/_config_put_request_switchpoint'
+          $ref: "#/components/schemas/_config_put_request_switchpoint"
         extended_community_list:
-          $ref: '#/components/schemas/_config_put_request_extended_community_list'
+          $ref: "#/components/schemas/_config_put_request_extended_community_list"
         image_update_sets:
-          $ref: '#/components/schemas/_config_put_request_image_update_sets'
+          $ref: "#/components/schemas/_config_put_request_image_update_sets"
         ip_filter:
-          $ref: '#/components/schemas/_config_put_request_ip_filter'
+          $ref: "#/components/schemas/_config_put_request_ip_filter"
         feature_flag:
-          $ref: '#/components/schemas/_config_put_request_feature_flag'
+          $ref: "#/components/schemas/_config_put_request_feature_flag"
         packet_queue:
-          $ref: '#/components/schemas/_config_put_request_packet_queue'
+          $ref: "#/components/schemas/_config_put_request_packet_queue"
         service_port_profile:
-          $ref: '#/components/schemas/_config_put_request_service_port_profile'
+          $ref: "#/components/schemas/_config_put_request_service_port_profile"
         device_voice_settings:
-          $ref: '#/components/schemas/_config_put_request_device_voice_settings'
+          $ref: "#/components/schemas/_config_put_request_device_voice_settings"
         authenticated_eth_port:
-          $ref: '#/components/schemas/_config_put_request_authenticated_eth_port'
+          $ref: "#/components/schemas/_config_put_request_authenticated_eth_port"
         voice_port_profiles:
-          $ref: '#/components/schemas/_config_put_request_voice_port_profiles'
+          $ref: "#/components/schemas/_config_put_request_voice_port_profiles"
         endpoint:
-          $ref: '#/components/schemas/_config_put_request_endpoint'
+          $ref: "#/components/schemas/_config_put_request_endpoint"
         mac_filter:
-          $ref: '#/components/schemas/_config_put_request_mac_filter'
+          $ref: "#/components/schemas/_config_put_request_mac_filter"
+      type: object
+    _config_put_request_endpoint_endpoint_name_object_properties_eths_inner:
+      properties:
+        eth_num_icon:
+          default: empty
+          description: Icon of this Eth Port
+          type: string
+        eth_num_label:
+          default: ""
+          description: Label of this Eth Port
+          type: string
       type: object
     _config_put_request_site_site_name_islands_inner:
       properties:
@@ -3355,7 +3680,22 @@ components:
           nullable: true
           type: integer
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name_object_properties"
+      type: object
+    _bundles_put_request_endpoint_bundle_value_object_properties:
+      properties:
+        is_for_switch:
+          default: false
+          description: Denotes a Switch Bundle
+          type: boolean
+        group:
+          default: ""
+          description: Group
+          type: string
+        is_public:
+          default: false
+          description: Denotes a shared Switch Bundle
+          type: boolean
       type: object
     _config_put_request_route_map_clause_route_map_clause_name:
       properties:
@@ -3450,8 +3790,8 @@ components:
           description: 'Match routes based on the value of the BGP Origin attribute '
           enum:
           - ""
-          - igp
           - egp
+          - igp
           - incomplete
           type: string
         match_peer_ip_address:
@@ -3477,9 +3817,9 @@ components:
           enum:
           - ""
           - bgp
+          - ospf
           - static
           - connected
-          - ospf
           type: string
         match_vrf:
           default: ""
@@ -3504,9 +3844,9 @@ components:
           description: Match based on the indicated EVPN Route Type
           enum:
           - ""
-          - macip
           - multicast
           - prefix
+          - macip
           type: string
         match_vni:
           description: 'Match based on the VNI value '
@@ -3515,7 +3855,7 @@ components:
           nullable: true
           type: integer
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_route_map_clause_route_map_clause_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_route_map_clause_route_map_clause_name_object_properties"
         match_ipv6_address_ipv6_prefix_list:
           default: ""
           description: Match IPv4 Address IPv6 Prefix List
@@ -3539,7 +3879,7 @@ components:
       properties:
         voice_port_profiles:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name'
+            $ref: "#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name"
           properties: {}
           type: object
       type: object
@@ -3556,17 +3896,6 @@ components:
           - critical
           - high
           - ""
-          type: string
-      type: object
-    _config_put_request_switchpoint_switchpoint_name_object_properties_eths:
-      properties:
-        eth_num_icon:
-          default: empty
-          description: Icon of this Eth Port
-          type: string
-        eth_num_label:
-          default: ""
-          description: Label of this Eth Port
           type: string
       type: object
     _config_put_request_switchpoint_switchpoint_name_children_inner:
@@ -3593,7 +3922,7 @@ components:
       properties:
         badge:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_badge_badge_name'
+            $ref: "#/components/schemas/_config_put_request_badge_badge_name"
           properties: {}
           type: object
       type: object
@@ -3623,47 +3952,47 @@ components:
           description: "Breakout Port Override. Available options determined by Switch\
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
-          - 4x40G
-          - ""
-          - 1x200G
-          - 4x400G
-          - pg10G
-          - 2x400G
-          - 4x50G
-          - 4x10G
-          - pg100G
-          - pg40G
-          - 4x200G
-          - 8x10G
-          - 2x25G
-          - 2x200G
-          - pg800G
-          - 1x400G
-          - 8x25G
-          - 4x100G
-          - 8x800G
-          - 2x100G
-          - 1x100G
-          - 8x40G
-          - 2x40G
-          - 8x200G
-          - pg25G
-          - 8x50G
-          - 1x10G
-          - 4x800G
-          - pg400G
-          - 8x100G
-          - 8x400G
-          - 1x25G
-          - 4x25G
-          - pg50G
-          - pg200G
-          - 1x40G
           - 2x10G
           - 2x50G
-          - 1x50G
-          - 1x800G
+          - ""
+          - 4x800G
+          - pg800G
+          - 8x10G
+          - 1x200G
+          - pg100G
+          - 4x50G
+          - pg400G
+          - 2x100G
+          - 8x50G
           - 2x800G
+          - pg40G
+          - 1x40G
+          - 2x25G
+          - 4x400G
+          - 8x200G
+          - 4x10G
+          - 2x200G
+          - 1x400G
+          - 2x40G
+          - pg25G
+          - pg50G
+          - 4x40G
+          - 4x25G
+          - 8x100G
+          - 8x800G
+          - 8x40G
+          - 1x50G
+          - pg10G
+          - 8x25G
+          - pg200G
+          - 1x25G
+          - 1x100G
+          - 1x800G
+          - 2x400G
+          - 4x200G
+          - 1x10G
+          - 8x400G
+          - 4x100G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -3728,7 +4057,7 @@ components:
       properties:
         eth_port_profile_:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name'
+            $ref: "#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name"
           properties: {}
           type: object
       type: object
@@ -3757,29 +4086,29 @@ components:
           description: BGP does not advertise any or all routes that do not match
             the Community String
           enum:
-          - all
           - any
+          - all
           minLength: 1
           type: string
         standard_expanded:
           default: standard
           description: Used Community String or Expanded Expression
           enum:
-          - standard
           - expanded
+          - standard
           minLength: 1
           type: string
         lists:
           items:
-            $ref: '#/components/schemas/_config_put_request_community_list_community_list_name_lists_inner'
+            $ref: "#/components/schemas/_config_put_request_community_list_community_list_name_lists_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _config_put_request_mac_filter:
       properties:
         mac_filter_name:
-          $ref: '#/components/schemas/_config_put_request_mac_filter_mac_filter_name'
+          $ref: "#/components/schemas/_config_put_request_mac_filter_mac_filter_name"
       type: object
     _changesets_put_request:
       properties:
@@ -3888,10 +4217,10 @@ components:
           type: boolean
         route_tenants:
           items:
-            $ref: '#/components/schemas/_config_put_request_tenant_tenant_name_route_tenants_inner'
+            $ref: "#/components/schemas/_config_put_request_tenant_tenant_name_route_tenants_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties"
         default_originate:
           default: false
           description: Enables a leaf switch to originate IPv4 default type-5 EVPN
@@ -3973,35 +4302,6 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
-      type: object
-    _bundles_patch_request_endpoint_bundle_value_rg_services_inner:
-      properties:
-        '#_ip/mask':
-          default: ""
-          description: IP/Mask
-          format: ipv4
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
-        row_app_enable:
-          default: false
-          description: Enable of this ONT application
-          type: boolean
-        row_app_connected_service:
-          default: ""
-          description: Service connected to this ONT application
-          type: string
-        row_app_connected_service_ref_type_:
-          description: Object type for row_app_connected_service field
-          enum:
-          - service
-          type: string
-        row_app_type:
-          default: ""
-          description: Type of ONT Application
-          type: string
       type: object
     _config_put_request_bizd_config_bizd_config_name:
       properties:
@@ -4085,7 +4385,7 @@ components:
           description: Badge number
           type: integer
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _config_put_request_eth_port_profile__eth_port_profile__name_object_properties:
       properties:
@@ -4097,8 +4397,8 @@ components:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
-          - ""
           - critical
+          - ""
           - high
           type: string
         sort_by_name:
@@ -4165,12 +4465,12 @@ components:
     _config_put_request_ipv4_prefix_list:
       properties:
         ipv4_prefix_list_name:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name"
       type: object
     _config_put_request_endpoint_bundle:
       properties:
         endpoint_bundle_name:
-          $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value'
+          $ref: "#/components/schemas/_bundles_patch_request_endpoint_bundle_value"
       type: object
     _config_put_request_switchpoint_switchpoint_name_object_properties:
       properties:
@@ -4202,57 +4502,56 @@ components:
           description: For Switch Endpoints. Denotes the Host Switch
           type: boolean
         eths:
-          $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_object_properties_eths'
+          items:
+            properties:
+              eth_num_icon:
+                default: empty
+                description: Icon of this Eth Port
+                type: string
+              eth_num_label:
+                default: ""
+                description: Label of this Eth Port
+                type: string
+            type: object
+          properties:
+            eth_num_icon:
+              default: empty
+              description: Icon of this Eth Port
+              type: string
+            eth_num_label:
+              default: ""
+              description: Label of this Eth Port
+              type: string
+          type: array
       type: object
     _config_put_request_static_connections:
       properties:
         static_connections_name:
-          $ref: '#/components/schemas/_config_put_request_static_connections_static_connections_name'
+          $ref: "#/components/schemas/_config_put_request_static_connections_static_connections_name"
       type: object
     _config_put_request_site:
       properties:
         site_name:
-          $ref: '#/components/schemas/_config_put_request_site_site_name'
-      type: object
-    _packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner:
-      properties:
-        enable:
-          default: false
-          description: Enable
-          type: boolean
-        filter:
-          default: ""
-          description: Filter
-          type: string
-        filter_ref_type_:
-          description: Object type for filter field
-          enum:
-          - ipv6_filter
-          - ipv6_list_filter
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
+          $ref: "#/components/schemas/_config_put_request_site_site_name"
       type: object
     _packetbroker_put_request:
       properties:
         pb_egress_profile:
           additionalProperties:
-            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value'
+            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value"
           properties: {}
           type: object
       type: object
     _config_put_request_static_ip:
       properties:
         static_ip_name:
-          $ref: '#/components/schemas/_config_put_request_static_ip_static_ip_name'
+          $ref: "#/components/schemas/_config_put_request_static_ip_static_ip_name"
       type: object
     _gateways_put_request:
       properties:
         gateway:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_gateway_gateway_name'
+            $ref: "#/components/schemas/_config_put_request_gateway_gateway_name"
           properties: {}
           type: object
       type: object
@@ -4272,8 +4571,8 @@ components:
           default: IEEE 802.3af
           description: Mode
           enum:
-          - IEEE 802.3af
           - Manual
+          - IEEE 802.3af
           type: string
         usage_threshold:
           description: Usage Threshold
@@ -4297,7 +4596,6 @@ components:
             \ the value is 0, audit will be turned off.\n                        \
             \                        "
           maximum: 1440
-          minimum: 1
           nullable: true
           type: integer
         commit_to_flash_interval:
@@ -4307,7 +4605,6 @@ components:
                                                             <br>if the value is blank, commit will use default switch settings.
                                                             <br>if the value is 0, commit will be turned off.
           maximum: 1440
-          minimum: 1
           nullable: true
           type: integer
         rocev2:
@@ -4321,7 +4618,7 @@ components:
           description: Enable Cut-through Switching on all Switches
           type: boolean
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties"
         hold_timer:
           default: 0
           description: Hold Timer
@@ -4376,14 +4673,14 @@ components:
       properties:
         device_voice_settings:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name'
+            $ref: "#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name"
           properties: {}
           type: object
       type: object
     _config_put_request_image_update_sets:
       properties:
         image_update_sets_name:
-          $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name'
+          $ref: "#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name"
       type: object
     _config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner:
       properties:
@@ -4398,8 +4695,8 @@ components:
         filter_ref_type_:
           description: Object type for filter field
           enum:
-          - ipv6_list_filter
           - ipv6_filter
+          - ipv6_list_filter
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -4417,25 +4714,25 @@ components:
           description: Subrule 1 Type
           enum:
           - ""
-          - modelNameFreeform
-          - followsSelector
-          - isRemote
-          - bundle_id
-          - endpoint
-          - isPreprovisioned
-          - endpoint_type
-          - managementIP
-          - productClass
-          - softwareVersion
-          - noEndpoint
           - upgraderStatus
-          - badge
-          - modelName
-          - deviceSerialNumber
-          - pod
           - softwareVersionFreeform
+          - badge
+          - isRemote
+          - isPreprovisioned
+          - deviceSerialNumber
+          - softwareVersion
+          - bundle_id
           - bundleFreeform
+          - noEndpoint
+          - modelNameFreeform
+          - modelName
+          - endpoint_type
+          - followsSelector
+          - endpoint
+          - pod
+          - managementIP
           - badge_color
+          - productClass
           type: string
         rule_num_subrule_1_value:
           default: ""
@@ -4457,25 +4754,25 @@ components:
           description: Subrule 2 Type
           enum:
           - ""
-          - modelNameFreeform
-          - followsSelector
-          - isRemote
-          - bundle_id
-          - endpoint
-          - isPreprovisioned
-          - endpoint_type
-          - managementIP
-          - productClass
-          - softwareVersion
-          - noEndpoint
           - upgraderStatus
-          - badge
-          - modelName
-          - deviceSerialNumber
-          - pod
           - softwareVersionFreeform
+          - badge
+          - isRemote
+          - isPreprovisioned
+          - deviceSerialNumber
+          - softwareVersion
+          - bundle_id
           - bundleFreeform
+          - noEndpoint
+          - modelNameFreeform
+          - modelName
+          - endpoint_type
+          - followsSelector
+          - endpoint
+          - pod
+          - managementIP
           - badge_color
+          - productClass
           type: string
         rule_num_subrule_2_value:
           default: ""
@@ -4497,25 +4794,25 @@ components:
           description: Subrule 3 Type
           enum:
           - ""
-          - modelNameFreeform
-          - followsSelector
-          - isRemote
-          - bundle_id
-          - endpoint
-          - isPreprovisioned
-          - endpoint_type
-          - managementIP
-          - productClass
-          - softwareVersion
-          - noEndpoint
           - upgraderStatus
-          - badge
-          - modelName
-          - deviceSerialNumber
-          - pod
           - softwareVersionFreeform
+          - badge
+          - isRemote
+          - isPreprovisioned
+          - deviceSerialNumber
+          - softwareVersion
+          - bundle_id
           - bundleFreeform
+          - noEndpoint
+          - modelNameFreeform
+          - modelName
+          - endpoint_type
+          - followsSelector
+          - endpoint
+          - pod
+          - managementIP
           - badge_color
+          - productClass
           type: string
         rule_num_subrule_3_value:
           default: ""
@@ -4540,50 +4837,7 @@ components:
     _config_put_request_badge:
       properties:
         badge_name:
-          $ref: '#/components/schemas/_config_put_request_badge_badge_name'
-      type: object
-    _bundles_patch_request_endpoint_bundle_value_eth_port_paths_inner:
-      properties:
-        eth_port_num_eth_port_profile:
-          default: ""
-          description: Eth Port Profile Or LAG for Eth Port
-          type: string
-        eth_port_num_eth_port_profile_ref_type_:
-          description: Object type for eth_port_num_eth_port_profile field
-          enum:
-          - eth_port_profile_
-          - lag
-          - authenticated_eth_port
-          - service_port_profile
-          - pb_egress_profile
-          type: string
-        eth_port_num_eth_port_settings:
-          default: ""
-          description: Choose an Eth Port Settings
-          type: string
-        eth_port_num_eth_port_settings_ref_type_:
-          description: Object type for eth_port_num_eth_port_settings field
-          enum:
-          - eth_port_settings
-          type: string
-        eth_port_num_gateway_profile:
-          default: ""
-          description: Gateway Profile or LAG for Eth Port
-          type: string
-        eth_port_num_gateway_profile_ref_type_:
-          description: Object type for eth_port_num_gateway_profile field
-          enum:
-          - lag
-          - gateway_profile
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
-        port_name:
-          description: "The name identifying the port. Used for reference only, it\
-            \ won't actually change the port name."
-          type: string
+          $ref: "#/components/schemas/_config_put_request_badge_badge_name"
       type: object
     _config_put_request_image_update_sets_image_update_sets_name_object_properties:
       properties:
@@ -4603,19 +4857,20 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.0.69
-          - 1.8.0.75
-          - 1.8.0.67
-          - 1.7.1.26
-          - 1.7.1.25
-          - 1.8.0.73
-          - 1.8.0.70
-          - 1.8.0.66
-          - 1.8.0.71
-          - 1.8.0.72
-          - 1.8.0.74
+          - 1.8.0.80
+          - 1.8.0.79
+          - 1.8.0.85
+          - 1.8.0.83
+          - 1.8.0.89
+          - 1.8.0.84
+          - 1.7.1.29
+          - 1.7.1.30
+          - 1.8.0.86
+          - 1.8.0.82
           - unmanaged
-          - 1.8.0.68
+          - 1.7.1.27
+          - 1.8.0.81
+          - 1.8.0.87
           type: string
         endpoint_set_for_all_others_unique_identifier:
           default: else
@@ -4633,12 +4888,12 @@ components:
     _config_put_request_device_controller:
       properties:
         device_controller_name:
-          $ref: '#/components/schemas/_config_put_request_device_controller_device_controller_name'
+          $ref: "#/components/schemas/_config_put_request_device_controller_device_controller_name"
       type: object
     _config_put_request_ipv6_prefix_list:
       properties:
         ipv6_prefix_list_name:
-          $ref: '#/components/schemas/_config_put_request_ipv6_prefix_list_ipv6_prefix_list_name'
+          $ref: "#/components/schemas/_config_put_request_ipv6_prefix_list_ipv6_prefix_list_name"
       type: object
     _config_put_request_community_list_community_list_name_lists_inner:
       properties:
@@ -4652,9 +4907,9 @@ components:
           enum:
           - community
           - no_peer_set
+          - no_export_set
           - local_as
           - no_advertise
-          - no_export_set
           type: string
         community_string_expanded_expression:
           default: ""
@@ -4682,8 +4937,8 @@ components:
           default: dhcp
           description: IP Source
           enum:
-          - static
           - dhcp
+          - static
           minLength: 1
           type: string
         controller_ip_and_mask:
@@ -4710,9 +4965,9 @@ components:
           default: snmpv2
           description: Comm Type
           enum:
+          - snmpv3
           - gnmi
           - snmpv2
-          - snmpv3
           minLength: 1
           type: string
         snmp_community_string:
@@ -4743,11 +4998,11 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - LAG
           - as_site
-          - LAG_IDL
-          - LLDP
           - Static Port
+          - LAG_IDL
+          - LAG
+          - LLDP
           minLength: 1
           type: string
         power_state:
@@ -4758,22 +5013,22 @@ components:
           default: generic_snmp
           description: Communication Mode
           enum:
-          - generic_advanced_snmp
-          - edgecore_ecs21000
-          - ruckus_icx7150
-          - tibit_xgs_olt_sfp
+          - microtik_routeros_telnet
           - cisco_catalyst_c3xxx
-          - eltex_ltp_gpon_olt
-          - generic_snmp
-          - juniper_acx5048
+          - cisco_nexus_9xxx
           - adtran_netvanta_series
           - arista_7050_series
-          - hpe_aruba_2530_series
-          - microtik_routeros_telnet
-          - cisco_small_business_sgxxx
+          - generic_snmp
+          - ruckus_icx7150
           - sonic
           - netgear_prosafe_series
-          - cisco_nexus_9xxx
+          - eltex_ltp_gpon_olt
+          - edgecore_ecs21000
+          - generic_advanced_snmp
+          - cisco_small_business_sgxxx
+          - juniper_acx5048
+          - hpe_aruba_2530_series
+          - tibit_xgs_olt_sfp
           minLength: 1
           type: string
         cli_access_mode:
@@ -4827,8 +5082,8 @@ components:
           description: Security level
           enum:
           - authNoPriv
-          - authPriv
           - noAuthNoPriv
+          - authPriv
           type: string
         snmpv3_username:
           default: ""
@@ -4839,8 +5094,8 @@ components:
           default: MD5
           description: Protocol
           enum:
-          - MD5
           - SHA
+          - MD5
           minLength: 1
           type: string
         passphrase:
@@ -4931,7 +5186,7 @@ components:
     _config_put_request_endpoint:
       properties:
         endpoint_name:
-          $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name'
+          $ref: "#/components/schemas/_config_put_request_endpoint_endpoint_name"
       type: object
     _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties:
       properties:
@@ -4943,12 +5198,12 @@ components:
     _config_put_request_voice_port_profiles:
       properties:
         voice_port_profiles_name:
-          $ref: '#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name'
+          $ref: "#/components/schemas/_config_put_request_voice_port_profiles_voice_port_profiles_name"
       type: object
     _config_put_request_endpoint_view:
       properties:
         endpoint_view_name:
-          $ref: '#/components/schemas/_config_put_request_endpoint_view_endpoint_view_name'
+          $ref: "#/components/schemas/_config_put_request_endpoint_view_endpoint_view_name"
       type: object
     _bundles_patch_request_endpoint_bundle_value:
       properties:
@@ -4973,17 +5228,17 @@ components:
           type: string
         eth_port_paths:
           items:
-            $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_eth_port_paths_inner'
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_eth_port_paths_inner"
           type: array
         user_services:
           items:
-            $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_user_services_inner'
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_user_services_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_object_properties'
+          $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_object_properties"
         rg_services:
           items:
-            $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_rg_services_inner'
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_rg_services_inner"
           type: array
         enable:
           default: false
@@ -5007,13 +5262,13 @@ components:
           type: string
         voice_port_profile_paths:
           items:
-            $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value_voice_port_profile_paths_inner'
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_voice_port_profile_paths_inner"
           type: array
       type: object
     _config_put_request_feature_flag:
       properties:
         feature_flag_name:
-          $ref: '#/components/schemas/_config_put_request_feature_flag_feature_flag_name'
+          $ref: "#/components/schemas/_config_put_request_feature_flag_feature_flag_name"
       type: object
     _config_put_request_mac_filter_mac_filter_name:
       properties:
@@ -5037,18 +5292,78 @@ components:
           type: string
         acl:
           items:
-            $ref: '#/components/schemas/_config_put_request_mac_filter_mac_filter_name_acl_inner'
+            $ref: "#/components/schemas/_config_put_request_mac_filter_mac_filter_name_acl_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties"
       type: object
     _tenants_put_request:
       properties:
         tenant:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_tenant_tenant_name'
+            $ref: "#/components/schemas/_config_put_request_tenant_tenant_name"
           properties: {}
           type: object
+      type: object
+    _bundles_put_request_endpoint_bundle_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        device_settings:
+          default: eth_device_profile|(Device Settings)|
+          description: Device Settings for device
+          type: string
+        device_settings_ref_type_:
+          description: Object type for device_settings field
+          enum:
+          - eth_device_profiles
+          type: string
+        cli_commands:
+          default: ""
+          description: CLI Commands
+          type: string
+        eth_port_paths:
+          items:
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_eth_port_paths_inner"
+          type: array
+        rg_services:
+          items:
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_rg_services_inner"
+          type: array
+        user_services:
+          items:
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_user_services_inner"
+          type: array
+        object_properties:
+          $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_object_properties"
+        enable:
+          default: false
+          description: |-
+            Enable object.
+            It's highly recommended to set this value to true so that validation on the object will be ran.
+          type: boolean
+        protocol:
+          default: SIP
+          description: "Voice Protocol: MGCP or SIP"
+          minLength: 1
+          type: string
+        device_voice_settings:
+          default: voice_device_profile|(SIP Voice Device)|
+          description: Device Voice Settings for device
+          type: string
+        device_voice_settings_ref_type_:
+          description: Object type for device_voice_settings field
+          enum:
+          - device_voice_settings
+          type: string
+        voice_port_profile_paths:
+          items:
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_voice_port_profile_paths_inner"
+          type: array
       type: object
     _config_put_request_route_map_route_map_name:
       properties:
@@ -5064,10 +5379,10 @@ components:
           type: boolean
         route_map_clauses:
           items:
-            $ref: '#/components/schemas/_config_put_request_route_map_route_map_name_route_map_clauses_inner'
+            $ref: "#/components/schemas/_config_put_request_route_map_route_map_name_route_map_clauses_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _auth_post_request_auth:
       properties:
@@ -5086,14 +5401,14 @@ components:
       properties:
         eth_port_settings:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name'
+            $ref: "#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name"
           properties: {}
           type: object
       type: object
     _config_put_request_ipv6_filter:
       properties:
         ipv6_filter_name:
-          $ref: '#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name'
+          $ref: "#/components/schemas/_config_put_request_ipv6_filter_ipv6_filter_name"
       type: object
     _config_put_request_static_connections_static_connections_name:
       properties:
@@ -5103,7 +5418,7 @@ components:
           type: boolean
         connections:
           items:
-            $ref: '#/components/schemas/_config_put_request_static_connections_static_connections_name_connections_inner'
+            $ref: "#/components/schemas/_config_put_request_static_connections_static_connections_name_connections_inner"
           type: array
         object_properties:
           properties: {}
@@ -5112,7 +5427,7 @@ components:
     _config_put_request_route_map_clause:
       properties:
         route_map_clause_name:
-          $ref: '#/components/schemas/_config_put_request_route_map_clause_route_map_clause_name'
+          $ref: "#/components/schemas/_config_put_request_route_map_clause_route_map_clause_name"
       type: object
     _config_put_request_ipv6_prefix_list_ipv6_prefix_list_name:
       properties:
@@ -5128,10 +5443,10 @@ components:
           type: boolean
         lists:
           items:
-            $ref: '#/components/schemas/_config_put_request_ipv6_prefix_list_ipv6_prefix_list_name_lists_inner'
+            $ref: "#/components/schemas/_config_put_request_ipv6_prefix_list_ipv6_prefix_list_name_lists_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _config_put_request_site_site_name:
       properties:
@@ -5161,8 +5476,8 @@ components:
           enum:
           - ""
           - pvst
-          - port
           - mstp
+          - port
           minLength: 1
           type: string
         region_name:
@@ -5293,14 +5608,14 @@ components:
           type: integer
         islands:
           items:
-            $ref: '#/components/schemas/_config_put_request_site_site_name_islands_inner'
+            $ref: "#/components/schemas/_config_put_request_site_site_name_islands_inner"
           type: array
         pairs:
           items:
-            $ref: '#/components/schemas/_config_put_request_site_site_name_pairs_inner'
+            $ref: "#/components/schemas/_config_put_request_site_site_name_pairs_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_site_site_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_site_site_name_object_properties"
         enable_dhcp_snooping:
           default: false
           description: Enables the switches to monitor DHCP traffic and collect assigned
@@ -5310,7 +5625,7 @@ components:
     _config_put_request_community_list:
       properties:
         community_list_name:
-          $ref: '#/components/schemas/_config_put_request_community_list_community_list_name'
+          $ref: "#/components/schemas/_config_put_request_community_list_community_list_name"
       type: object
     _config_put_request_gateway_profile_gateway_profile_name_external_gateways_inner:
       properties:
@@ -5387,7 +5702,7 @@ components:
     _config_put_request_authenticated_eth_port:
       properties:
         authenticated_eth_port_name:
-          $ref: '#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name'
+          $ref: "#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name"
       type: object
     _config_put_request_gateway_profile_gateway_profile_name:
       properties:
@@ -5409,10 +5724,10 @@ components:
           type: boolean
         external_gateways:
           items:
-            $ref: '#/components/schemas/_config_put_request_gateway_profile_gateway_profile_name_external_gateways_inner'
+            $ref: "#/components/schemas/_config_put_request_gateway_profile_gateway_profile_name_external_gateways_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties"
       type: object
     _config_put_request_service_service_name:
       properties:
@@ -5475,7 +5790,15 @@ components:
           nullable: true
           type: integer
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_service_service_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_service_service_name_object_properties"
+        anycast_ipv4_mask:
+          default: ""
+          description: 'Static anycast gateway addresses(IPv4) for service '
+          type: string
+        anycast_ipv6_mask:
+          default: ""
+          description: 'Static anycast gateway addresses(IPv6) for service '
+          type: string
         max_upstream_rate_mbps:
           description: Bandwidth allocated per port in the upstream direction. (Max
             10000 Mbps)
@@ -5588,12 +5911,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - emerald
+          - starship
           - anakiwa
           - chardonnay
-          - cornflower
-          - starship
+          - emerald
           - lavender
+          - cornflower
           minLength: 1
           type: string
         lacp:
@@ -5607,10 +5930,10 @@ components:
         eth_port_profile_ref_type_:
           description: Object type for eth_port_profile field
           enum:
-          - service_port_profile
           - gateway_profile
-          - eth_port_profile_
           - pb_egress_profile
+          - eth_port_profile_
+          - service_port_profile
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
@@ -5674,13 +5997,15 @@ components:
           description: For Switch Endpoints. Denotes the Host Switch
           type: boolean
         eths:
-          $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_object_properties_eths'
+          items:
+            $ref: "#/components/schemas/_config_put_request_endpoint_endpoint_name_object_properties_eths_inner"
+          type: array
       type: object
     _authenticatedethports_put_request:
       properties:
         authenticated_eth_port:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name'
+            $ref: "#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name"
           properties: {}
           type: object
       type: object
@@ -5712,22 +6037,6 @@ components:
           default: ""
           description: Group
           type: string
-      type: object
-    _bundles_patch_request_endpoint_bundle_value_voice_port_profile_paths_inner:
-      properties:
-        voice_port_num_voice_port_profiles:
-          default: ""
-          description: ' Voice Port Settings for Voice Port'
-          type: string
-        voice_port_num_voice_port_profiles_ref_type_:
-          description: Object type for voice_port_num_voice_port_profiles field
-          enum:
-          - voice_port_profiles
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
       type: object
     _config_put_request_switchpoint_switchpoint_name:
       properties:
@@ -5775,13 +6084,13 @@ components:
           description: Type of Switchpoint
           enum:
           - ""
-          - enterprise
-          - superspine
-          - packet_broker
           - leaf
-          - management
-          - packet_broker_tor
           - spine
+          - superspine
+          - enterprise
+          - packet_broker
+          - packet_broker_tor
+          - management
           type: string
         super_pod:
           default: ""
@@ -5831,22 +6140,51 @@ components:
           type: boolean
         badges:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_badges_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_badges_inner"
           type: array
         children:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_children_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_children_inner"
           type: array
         traffic_mirrors:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner"
           type: array
         eths:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_eths_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_eths_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_object_properties"
+      type: object
+    _bundles_put_request_endpoint_bundle_value_user_services_inner:
+      properties:
+        row_app_enable:
+          default: false
+          description: Enable of this User application
+          type: boolean
+        row_app_connected_service:
+          default: ""
+          description: Service connected to this User application
+          type: string
+        row_app_connected_service_ref_type_:
+          description: Object type for row_app_connected_service field
+          enum:
+          - service
+          type: string
+        row_app_cli_commands:
+          default: ""
+          description: CLI Commands of this User application
+          type: string
+        row_ip_mask:
+          default: ""
+          description: IP/Mask
+          format: ipv4
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _config_put_request_service_port_profile_service_port_profile_name_services_inner:
       properties:
@@ -5890,7 +6228,7 @@ components:
     _config_put_request_bizd_config:
       properties:
         bizd_config_name:
-          $ref: '#/components/schemas/_config_put_request_bizd_config_bizd_config_name'
+          $ref: "#/components/schemas/_config_put_request_bizd_config_bizd_config_name"
       type: object
     _config_put_request_mac_filter_mac_filter_name_acl_inner:
       properties:
@@ -6015,22 +6353,22 @@ components:
           type: boolean
         badges:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_badges_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_badges_inner"
           type: array
         children:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_children_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_children_inner"
           type: array
         traffic_mirrors:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner"
           type: array
         eths:
           items:
-            $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name_eths_inner'
+            $ref: "#/components/schemas/_config_put_request_endpoint_endpoint_name_eths_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_object_properties'
+          $ref: "#/components/schemas/_switchpoints_put_request_switchpoint_value_object_properties"
       type: object
     _switchpoints_upgrade_patch_request:
       properties:
@@ -6049,12 +6387,24 @@ components:
     _config_put_request_ipv6_list_filter:
       properties:
         ipv6_list_filter_name:
-          $ref: '#/components/schemas/_config_put_request_ipv6_list_filter_ipv6_list_filter_name'
+          $ref: "#/components/schemas/_config_put_request_ipv6_list_filter_ipv6_list_filter_name"
       type: object
     _config_put_request_site_site_name_object_properties:
       properties:
         system_graphs:
-          $ref: '#/components/schemas/_config_put_request_site_site_name_object_properties_system_graphs'
+          items:
+            properties:
+              graph_num_data:
+                default: ""
+                description: The graph data detailing this graph choice
+                type: string
+            type: object
+          properties:
+            graph_num_data:
+              default: ""
+              description: The graph data detailing this graph choice
+              type: string
+          type: array
       type: object
     _config_put_request_ipv6_list_filter_ipv6_list_filter_name:
       properties:
@@ -6077,12 +6427,12 @@ components:
     _config_put_request_service:
       properties:
         service_name:
-          $ref: '#/components/schemas/_config_put_request_service_service_name'
+          $ref: "#/components/schemas/_config_put_request_service_service_name"
       type: object
     _config_put_request_ipv4_list_filter:
       properties:
         ipv4_list_filter_name:
-          $ref: '#/components/schemas/_config_put_request_ipv4_list_filter_ipv4_list_filter_name'
+          $ref: "#/components/schemas/_config_put_request_ipv4_list_filter_ipv4_list_filter_name"
       type: object
     _config_put_request_sfp_breakouts_sfp_breakouts_name:
       properties:
@@ -6098,7 +6448,7 @@ components:
           type: boolean
         breakout:
           items:
-            $ref: '#/components/schemas/_config_put_request_sfp_breakouts_sfp_breakouts_name_breakout_inner'
+            $ref: "#/components/schemas/_config_put_request_sfp_breakouts_sfp_breakouts_name_breakout_inner"
           type: array
         object_properties:
           properties: {}
@@ -6107,12 +6457,12 @@ components:
     _config_put_request_sfp_breakouts:
       properties:
         sfp_breakouts_name:
-          $ref: '#/components/schemas/_config_put_request_sfp_breakouts_sfp_breakouts_name'
+          $ref: "#/components/schemas/_config_put_request_sfp_breakouts_sfp_breakouts_name"
       type: object
     _config_put_request_gateway:
       properties:
         gateway_name:
-          $ref: '#/components/schemas/_config_put_request_gateway_gateway_name'
+          $ref: "#/components/schemas/_config_put_request_gateway_gateway_name"
       type: object
     _config_put_request_service_port_profile_service_port_profile_name:
       properties:
@@ -6170,10 +6520,10 @@ components:
           type: string
         services:
           items:
-            $ref: '#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name_services_inner'
+            $ref: "#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name_services_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name_object_properties"
       type: object
     _config_put_request_route_map_route_map_name_route_map_clauses_inner:
       properties:
@@ -6224,6 +6574,35 @@ components:
           description: Boolean value indicating if the mirror is for outbound traffic
           type: boolean
       type: object
+    _bundles_put_request_endpoint_bundle_value_rg_services_inner:
+      properties:
+        row_ip_mask:
+          default: ""
+          description: IP/Mask
+          format: ipv4
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+        row_app_enable:
+          default: false
+          description: Enable of this ONT application
+          type: boolean
+        row_app_connected_service:
+          default: ""
+          description: Service connected to this ONT application
+          type: string
+        row_app_connected_service_ref_type_:
+          description: Object type for row_app_connected_service field
+          enum:
+          - service
+          type: string
+        row_app_type:
+          default: ""
+          description: Type of ONT Application
+          type: string
+      type: object
     _config_put_request_eth_port_settings_eth_port_settings_name:
       properties:
         name:
@@ -6246,27 +6625,27 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "40000"
-          - "100000"
-          - "10"
           - "10000"
-          - "2500"
-          - "100"
-          - "5000"
-          - "400000"
-          - "50000"
-          - "25000"
-          - "-1"
+          - "40000"
           - "1000"
+          - "5000"
+          - "2500"
+          - "10"
+          - "50000"
+          - "100"
+          - "-1"
+          - "100000"
+          - "400000"
+          - "25000"
           minLength: 1
           type: string
         duplex_mode:
           default: Auto
           description: Duplex Mode
           enum:
+          - Half
           - Auto
           - Full
-          - Half
           minLength: 1
           type: string
         stp_enable:
@@ -6298,9 +6677,9 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
-          - Critical
-          - High
           - Low
+          - High
+          - Critical
           minLength: 1
           type: string
         allocated_power:
@@ -6342,9 +6721,9 @@ components:
             \                                      </div>\n                      \
             \                          "
           enum:
+          - '%'
           - Kpps
           - pps
-          - '%'
           minLength: 1
           type: string
         action:
@@ -6364,8 +6743,8 @@ components:
             \ <br>\n                                                </div>\n     \
             \                                       "
           enum:
-          - Restrict
           - Protect
+          - Restrict
           - Shutdown
           minLength: 1
           type: string
@@ -6384,12 +6763,12 @@ components:
             \ the Switch Value.<br>\n                                            \
             \    </div>\n                                            "
           enum:
-          - unaltered
-          - auto
-          - fc
           - rs
           - rs-custom
+          - unaltered
+          - fc
           - none
+          - auto
           minLength: 1
           type: string
         single_link:
@@ -6398,7 +6777,7 @@ components:
             takes effect
           type: boolean
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name_object_properties"
         minimum_wred_threshold:
           default: 1
           description: A value between 1 to 12480(in KiloBytes)
@@ -6556,7 +6935,7 @@ components:
           type: boolean
         lldp_med:
           items:
-            $ref: '#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name_lldp_med_inner'
+            $ref: "#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name_lldp_med_inner"
           type: array
       type: object
     _config_put_request_pb_egress_profile_pb_egress_profile_name:
@@ -6573,49 +6952,65 @@ components:
           type: boolean
         ipv4_permit:
           items:
-            $ref: '#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv4_permit_inner'
+            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv4_permit_inner"
           type: array
         ipv4_deny:
           items:
-            $ref: '#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv4_permit_inner'
+            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv4_permit_inner"
           type: array
         ipv6_permit:
           items:
-            $ref: '#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner'
+            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner"
           type: array
         ipv6_deny:
           items:
-            $ref: '#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner'
+            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner"
           type: array
       type: object
     _config_put_request_eth_port_settings:
       properties:
         eth_port_settings_name:
-          $ref: '#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name'
+          $ref: "#/components/schemas/_config_put_request_eth_port_settings_eth_port_settings_name"
+      type: object
+    _bundles_put_request_endpoint_bundle_value_voice_port_profile_paths_inner:
+      properties:
+        voice_port_num_voice_port_profiles:
+          default: ""
+          description: ' Voice Port Settings for Voice Port'
+          type: string
+        voice_port_num_voice_port_profiles_ref_type_:
+          description: Object type for voice_port_num_voice_port_profiles field
+          enum:
+          - voice_port_profiles
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _switchpoints_put_request:
       properties:
         switchpoint:
           additionalProperties:
-            $ref: '#/components/schemas/_switchpoints_put_request_switchpoint_value'
+            $ref: "#/components/schemas/_switchpoints_put_request_switchpoint_value"
           properties: {}
           type: object
         endpoint:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name'
+            $ref: "#/components/schemas/_config_put_request_endpoint_endpoint_name"
           properties: {}
           type: object
       type: object
     _config_put_request_eth_port_profile_:
       properties:
         eth_port_profile__name:
-          $ref: '#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name'
+          $ref: "#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name"
       type: object
     _lags_put_request:
       properties:
         lag:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_lag_lag_name'
+            $ref: "#/components/schemas/_config_put_request_lag_lag_name"
           properties: {}
           type: object
       type: object
@@ -6640,10 +7035,10 @@ components:
           type: string
         lists:
           items:
-            $ref: '#/components/schemas/_config_put_request_as_path_access_list_as_path_access_list_name_lists_inner'
+            $ref: "#/components/schemas/_config_put_request_as_path_access_list_as_path_access_list_name_lists_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _config_put_request_extended_community_list_extended_community_list_name:
       properties:
@@ -6669,24 +7064,24 @@ components:
           description: BGP does not advertise any or all routes that do not match
             the Community String
           enum:
-          - all
           - any
+          - all
           minLength: 1
           type: string
         standard_expanded:
           default: standard
           description: Used Community String or Expanded Expression
           enum:
-          - standard
           - expanded
+          - standard
           minLength: 1
           type: string
         lists:
           items:
-            $ref: '#/components/schemas/_config_put_request_extended_community_list_extended_community_list_name_lists_inner'
+            $ref: "#/components/schemas/_config_put_request_extended_community_list_extended_community_list_name_lists_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _config_put_request_packet_queue_packet_queue_name:
       properties:
@@ -6702,14 +7097,14 @@ components:
           type: boolean
         pbit:
           items:
-            $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name_pbit_inner'
+            $ref: "#/components/schemas/_config_put_request_packet_queue_packet_queue_name_pbit_inner"
           type: array
         queue:
           items:
-            $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name_queue_inner'
+            $ref: "#/components/schemas/_config_put_request_packet_queue_packet_queue_name_queue_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_packet_queue_packet_queue_name_object_properties"
       type: object
     _config_put_request_image_update_sets_image_update_sets_name_section_pointless_inner:
       properties:
@@ -6721,19 +7116,20 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.0.69
-          - 1.8.0.75
-          - 1.8.0.67
-          - 1.7.1.26
-          - 1.7.1.25
-          - 1.8.0.73
-          - 1.8.0.70
-          - 1.8.0.66
-          - 1.8.0.71
-          - 1.8.0.72
-          - 1.8.0.74
+          - 1.8.0.80
+          - 1.8.0.79
+          - 1.8.0.85
+          - 1.8.0.83
+          - 1.8.0.89
+          - 1.8.0.84
+          - 1.7.1.29
+          - 1.7.1.30
+          - 1.8.0.86
+          - 1.8.0.82
           - unmanaged
-          - 1.8.0.68
+          - 1.7.1.27
+          - 1.8.0.81
+          - 1.8.0.87
           type: string
         endpoint_set_for_endpointless_unique_identifier:
           default: pointless
@@ -6785,18 +7181,61 @@ components:
           type: string
         section_pointless:
           items:
-            $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_pointless_inner'
+            $ref: "#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_pointless_inner"
           type: array
         section:
           items:
-            $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_inner'
+            $ref: "#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_inner"
           type: array
         section_else:
           items:
-            $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_else_inner'
+            $ref: "#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_section_else_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_image_update_sets_image_update_sets_name_object_properties"
+      type: object
+    _bundles_put_request_endpoint_bundle_value_eth_port_paths_inner:
+      properties:
+        eth_port_num_eth_port_profile:
+          default: ""
+          description: Eth Port Profile Or LAG for Eth Port
+          type: string
+        eth_port_num_eth_port_profile_ref_type_:
+          description: Object type for eth_port_num_eth_port_profile field
+          enum:
+          - lag
+          - pb_egress_profile
+          - authenticated_eth_port
+          - service_port_profile
+          - eth_port_profile_
+          type: string
+        eth_port_num_eth_port_settings:
+          default: ""
+          description: Choose an Eth Port Settings
+          type: string
+        eth_port_num_eth_port_settings_ref_type_:
+          description: Object type for eth_port_num_eth_port_settings field
+          enum:
+          - eth_port_settings
+          type: string
+        eth_port_num_gateway_profile:
+          default: ""
+          description: Gateway Profile or LAG for Eth Port
+          type: string
+        eth_port_num_gateway_profile_ref_type_:
+          description: Object type for eth_port_num_gateway_profile field
+          enum:
+          - gateway_profile
+          - lag
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+        port_name:
+          description: "The name identifying the port. Used for reference only, it\
+            \ won't actually change the port name."
+          type: string
       type: object
     _config_put_request_endpoint_view_endpoint_view_name:
       properties:
@@ -6842,7 +7281,7 @@ components:
           type: boolean
         orRules:
           items:
-            $ref: '#/components/schemas/_config_put_request_endpoint_view_endpoint_view_name_orRules_inner'
+            $ref: "#/components/schemas/_config_put_request_endpoint_view_endpoint_view_name_orRules_inner"
           type: array
         object_properties:
           properties: {}
@@ -6896,33 +7335,33 @@ components:
           type: boolean
         badges:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_badges_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_badges_inner"
           type: array
         children:
           items:
-            $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name_children_inner'
+            $ref: "#/components/schemas/_config_put_request_endpoint_endpoint_name_children_inner"
           type: array
         traffic_mirrors:
           items:
-            $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner'
+            $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name_traffic_mirrors_inner"
           type: array
         eths:
           items:
-            $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name_eths_inner'
+            $ref: "#/components/schemas/_config_put_request_endpoint_endpoint_name_eths_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_endpoint_endpoint_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_endpoint_endpoint_name_object_properties"
       type: object
     _config_put_request_route_map:
       properties:
         route_map_name:
-          $ref: '#/components/schemas/_config_put_request_route_map_route_map_name'
+          $ref: "#/components/schemas/_config_put_request_route_map_route_map_name"
       type: object
     _acls_put_request:
       properties:
         ip_filter:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name'
+            $ref: "#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name"
           properties: {}
           type: object
       type: object
@@ -6947,17 +7386,10 @@ components:
             object to the list.
           type: integer
       type: object
-    _config_put_request_site_site_name_object_properties_system_graphs:
-      properties:
-        graph_num_data:
-          default: ""
-          description: The graph data detailing this graph choice
-          type: string
-      type: object
     _config_put_request_lag:
       properties:
         lag_name:
-          $ref: '#/components/schemas/_config_put_request_lag_lag_name'
+          $ref: "#/components/schemas/_config_put_request_lag_lag_name"
       type: object
     _config_put_request_packet_queue_packet_queue_name_pbit_inner:
       properties:
@@ -7006,8 +7438,8 @@ components:
           type: boolean
         protocol:
           default: ""
-          description: "IP protocol type (0-255) to match packets on. Ip indicates\
-            \ ipv4, ipv6 indicates ipv6"
+          description: Value must be ip/tcp/udp/icmp or a number between 0 and 255
+            to match packets.  Value IP will match all IP protocols.
           minLength: 1
           type: string
         bidirectional:
@@ -7077,13 +7509,13 @@ components:
           nullable: true
           type: integer
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _packetqueues_put_request:
       properties:
         packet_queue:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name'
+            $ref: "#/components/schemas/_config_put_request_packet_queue_packet_queue_name"
           properties: {}
           type: object
       type: object
@@ -7091,9 +7523,43 @@ components:
       properties:
         service:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_service_service_name'
+            $ref: "#/components/schemas/_config_put_request_service_service_name"
           properties: {}
           type: object
+      type: object
+    _switchpoints_put_request_switchpoint_value_object_properties:
+      properties:
+        user_notes:
+          default: ""
+          description: Notes writen by User about the site
+          type: string
+        expected_parent_endpoint:
+          default: ""
+          description: Expected Parent Endpoint
+          type: string
+        expected_parent_endpoint_ref_type_:
+          description: Object type for expected_parent_endpoint field
+          enum:
+          - switchpoint
+          type: string
+        number_of_multipoints:
+          default: 0
+          description: Number of Multipoints
+          nullable: true
+          type: integer
+        aggregate:
+          default: false
+          description: For Switch Endpoints. Denotes switch aggregated with all of
+            its sub switches
+          type: boolean
+        is_host:
+          default: false
+          description: For Switch Endpoints. Denotes the Host Switch
+          type: boolean
+        eths:
+          items:
+            $ref: "#/components/schemas/_config_put_request_endpoint_endpoint_name_object_properties_eths_inner"
+          type: array
       type: object
     _config_put_request_route_map_clause_route_map_clause_name_object_properties:
       properties:
@@ -7109,25 +7575,25 @@ components:
     _config_put_request_switchpoint:
       properties:
         switchpoint_name:
-          $ref: '#/components/schemas/_config_put_request_switchpoint_switchpoint_name'
+          $ref: "#/components/schemas/_config_put_request_switchpoint_switchpoint_name"
       type: object
     _serviceportprofiles_put_request:
       properties:
         service_port_profile:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name'
+            $ref: "#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name"
           properties: {}
           type: object
       type: object
     _auth_post_request:
       properties:
         auth:
-          $ref: '#/components/schemas/_auth_post_request_auth'
+          $ref: "#/components/schemas/_auth_post_request_auth"
       type: object
     _config_put_request_pb_egress_profile:
       properties:
         pb_egress_profile_name:
-          $ref: '#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name'
+          $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name"
       type: object
     _config_put_request_device_voice_settings_device_voice_settings_name:
       properties:
@@ -7447,10 +7913,10 @@ components:
           type: string
         Codecs:
           items:
-            $ref: '#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name_Codecs_inner'
+            $ref: "#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name_Codecs_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_packet_queue_packet_queue_name_object_properties"
       type: object
     _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name:
       properties:
@@ -7466,20 +7932,20 @@ components:
           type: boolean
         lists:
           items:
-            $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_lists_inner'
+            $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_lists_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _config_put_request_as_path_access_list:
       properties:
         as_path_access_list_name:
-          $ref: '#/components/schemas/_config_put_request_as_path_access_list_as_path_access_list_name'
+          $ref: "#/components/schemas/_config_put_request_as_path_access_list_as_path_access_list_name"
       type: object
     _config_put_request_packet_queue:
       properties:
         packet_queue_name:
-          $ref: '#/components/schemas/_config_put_request_packet_queue_packet_queue_name'
+          $ref: "#/components/schemas/_config_put_request_packet_queue_packet_queue_name"
       type: object
     _config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_lists_inner:
       properties:
@@ -7642,9 +8108,9 @@ components:
           description: "Gateway Mode. Can be BGP, Static, or Default"
           enum:
           - Default
-          - Static BGP
-          - Dynamic BGP
           - Static
+          - Dynamic BGP
+          - Static BGP
           minLength: 3
           type: string
         local_as_number:
@@ -7722,10 +8188,10 @@ components:
           type: boolean
         static_routes:
           items:
-            $ref: '#/components/schemas/_config_put_request_gateway_gateway_name_static_routes_inner'
+            $ref: "#/components/schemas/_config_put_request_gateway_gateway_name_static_routes_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties"
         default_originate:
           default: false
           description: Instructs BGP to generate and send a default route 0.0.0.0/0
@@ -7741,7 +8207,7 @@ components:
       properties:
         endpoint_bundle:
           additionalProperties:
-            $ref: '#/components/schemas/_bundles_patch_request_endpoint_bundle_value'
+            $ref: "#/components/schemas/_bundles_patch_request_endpoint_bundle_value"
           properties: {}
           type: object
       type: object
@@ -7794,7 +8260,7 @@ components:
           type: boolean
         feature:
           items:
-            $ref: '#/components/schemas/_config_put_request_feature_flag_feature_flag_name_feature_inner'
+            $ref: "#/components/schemas/_config_put_request_feature_flag_feature_flag_name_feature_inner"
           type: array
       type: object
     _config_put_request_device_voice_settings_device_voice_settings_name_Codecs_inner:
@@ -7834,7 +8300,7 @@ components:
     _config_put_request_device_voice_settings:
       properties:
         device_voice_settings_name:
-          $ref: '#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name'
+          $ref: "#/components/schemas/_config_put_request_device_voice_settings_device_voice_settings_name"
       type: object
     _config_put_request_ipv6_filter_ipv6_filter_name:
       properties:
@@ -7850,8 +8316,8 @@ components:
           type: boolean
         protocol:
           default: ""
-          description: "IP protocol type (0-255) to match packets on. Ip indicates\
-            \ ipv4, ipv4 indicates ipv6"
+          description: Value must be ip/tcp/udp/icmp or a number between 0 and 255
+            to match packets.  Value IP will match all IP protocols.
           minLength: 1
           type: string
         bidirectional:
@@ -7872,8 +8338,8 @@ components:
             \ range."
           enum:
           - ""
-          - greater
           - equal
+          - greater
           - less
           - range
           type: string
@@ -7902,8 +8368,8 @@ components:
             \ range."
           enum:
           - ""
-          - greater
           - equal
+          - greater
           - less
           - range
           type: string
@@ -7921,12 +8387,28 @@ components:
           nullable: true
           type: integer
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_ipv4_prefix_list_ipv4_prefix_list_name_object_properties"
       type: object
     _config_put_request_ipv4_filter:
       properties:
         ipv4_filter_name:
-          $ref: '#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name'
+          $ref: "#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name"
+      type: object
+    _devicecontrollers_put_request:
+      properties:
+        device_controller:
+          additionalProperties:
+            $ref: "#/components/schemas/_config_put_request_device_controller_device_controller_name"
+          properties: {}
+          type: object
+      type: object
+    _bundles_put_request:
+      properties:
+        endpoint_bundle:
+          additionalProperties:
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value"
+          properties: {}
+          type: object
       type: object
     _config_put_request_eth_port_settings_eth_port_settings_name_lldp_med_inner:
       properties:
@@ -7976,7 +8458,7 @@ components:
       properties:
         gateway_profile:
           additionalProperties:
-            $ref: '#/components/schemas/_config_put_request_gateway_profile_gateway_profile_name'
+            $ref: "#/components/schemas/_config_put_request_gateway_profile_gateway_profile_name"
           properties: {}
           type: object
       type: object
@@ -7998,12 +8480,12 @@ components:
     _config_put_request_tenant:
       properties:
         tenant_name:
-          $ref: '#/components/schemas/_config_put_request_tenant_tenant_name'
+          $ref: "#/components/schemas/_config_put_request_tenant_tenant_name"
       type: object
     _config_put_request_ip_filter:
       properties:
         ip_filter_name:
-          $ref: '#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name'
+          $ref: "#/components/schemas/_config_put_request_ipv4_filter_ipv4_filter_name"
       type: object
     _config_put_request_authenticated_eth_port_authenticated_eth_port_name_eth_ports_inner:
       properties:
@@ -8054,46 +8536,46 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
-          - 4x40G
-          - 1x200G
-          - 4x400G
-          - pg10G
-          - 2x400G
-          - 4x50G
-          - 4x10G
-          - pg100G
-          - pg40G
-          - 4x200G
-          - 8x10G
-          - 2x25G
-          - 2x200G
-          - pg800G
-          - 1x400G
-          - 8x25G
-          - 4x100G
-          - 8x800G
-          - 2x100G
-          - 1x100G
-          - 8x40G
-          - 2x40G
-          - 8x200G
-          - pg25G
-          - 8x50G
-          - 1x10G
-          - 4x800G
-          - pg400G
-          - 8x100G
-          - 8x400G
-          - 1x25G
-          - 4x25G
-          - pg50G
-          - pg200G
-          - 1x40G
           - 2x10G
           - 2x50G
-          - 1x50G
-          - 1x800G
+          - 4x800G
+          - pg800G
+          - 8x10G
+          - 1x200G
+          - pg100G
+          - 4x50G
+          - pg400G
+          - 2x100G
+          - 8x50G
           - 2x800G
+          - pg40G
+          - 1x40G
+          - 2x25G
+          - 4x400G
+          - 8x200G
+          - 4x10G
+          - 2x200G
+          - 1x400G
+          - 2x40G
+          - pg25G
+          - pg50G
+          - 4x40G
+          - 4x25G
+          - 8x100G
+          - 8x800G
+          - 8x40G
+          - 1x50G
+          - pg10G
+          - 8x25G
+          - pg200G
+          - 1x25G
+          - 1x100G
+          - 1x800G
+          - 2x400G
+          - 4x200G
+          - 1x10G
+          - 8x400G
+          - 4x100G
           type: string
       type: object
     _config_put_request_ipv4_list_filter_ipv4_list_filter_name:
@@ -8124,22 +8606,23 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.0.69
-          - 1.8.0.75
-          - 1.8.0.67
-          - 1.7.1.26
-          - 1.7.1.25
-          - 1.8.0.73
-          - 1.8.0.70
-          - 1.8.0.66
-          - 1.8.0.71
-          - 1.8.0.72
-          - 1.8.0.74
+          - 1.8.0.80
+          - 1.8.0.79
+          - 1.8.0.85
+          - 1.8.0.83
+          - 1.8.0.89
+          - 1.8.0.84
+          - 1.7.1.29
+          - 1.7.1.30
+          - 1.8.0.86
+          - 1.8.0.82
           - unmanaged
-          - 1.8.0.68
+          - 1.7.1.27
+          - 1.8.0.81
+          - 1.8.0.87
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17492038383101"
+          default: "17510191572191"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -8159,14 +8642,14 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
+          - badge
+          - badge_color
+          - bundle_id
+          - productClass
+          - endpoint_type
+          - deviceSerialNumber
           - endpoint
           - pod
-          - endpoint_type
-          - badge
-          - deviceSerialNumber
-          - bundle_id
-          - badge_color
-          - productClass
           type: string
         endpoint_set_num_subrule_1_value:
           default: ""
@@ -8188,14 +8671,14 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
+          - badge
+          - badge_color
+          - bundle_id
+          - productClass
+          - endpoint_type
+          - deviceSerialNumber
           - endpoint
           - pod
-          - endpoint_type
-          - badge
-          - deviceSerialNumber
-          - bundle_id
-          - badge_color
-          - productClass
           type: string
         endpoint_set_num_subrule_2_value:
           default: ""
@@ -8217,14 +8700,14 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
+          - badge
+          - badge_color
+          - bundle_id
+          - productClass
+          - endpoint_type
+          - deviceSerialNumber
           - endpoint
           - pod
-          - endpoint_type
-          - badge
-          - deviceSerialNumber
-          - bundle_id
-          - badge_color
-          - productClass
           type: string
         endpoint_set_num_subrule_3_value:
           default: ""
@@ -8258,10 +8741,10 @@ components:
           type: boolean
         services:
           items:
-            $ref: '#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name_services_inner'
+            $ref: "#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name_services_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_eth_port_profile__eth_port_profile__name_object_properties"
         tls:
           default: false
           description: Transparent LAN Service Trunk
@@ -8336,10 +8819,10 @@ components:
           type: boolean
         eth_ports:
           items:
-            $ref: '#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name_eth_ports_inner'
+            $ref: "#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name_eth_ports_inner"
           type: array
         object_properties:
-          $ref: '#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name_object_properties'
+          $ref: "#/components/schemas/_config_put_request_authenticated_eth_port_authenticated_eth_port_name_object_properties"
       type: object
     _config_put_request_eth_device_profiles_eth_device_profiles_name_object_properties:
       properties:
@@ -8351,7 +8834,7 @@ components:
     _config_put_request_gateway_profile:
       properties:
         gateway_profile_name:
-          $ref: '#/components/schemas/_config_put_request_gateway_profile_gateway_profile_name'
+          $ref: "#/components/schemas/_config_put_request_gateway_profile_gateway_profile_name"
       type: object
     _config_put_request_static_connections_static_connections_name_connections_inner:
       properties:
@@ -8408,74 +8891,30 @@ components:
           type: boolean
         ipv4_permit:
           items:
-            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner'
+            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner"
           type: array
         ipv4_deny:
           items:
-            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner'
+            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner"
           type: array
         ipv6_permit:
           items:
-            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner'
+            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner"
           type: array
         ipv6_deny:
           items:
-            $ref: '#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner'
+            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner"
           type: array
       type: object
     _config_put_request_extended_community_list:
       properties:
         extended_community_list_name:
-          $ref: '#/components/schemas/_config_put_request_extended_community_list_extended_community_list_name'
-      type: object
-    _bundles_patch_request_endpoint_bundle_value_user_services_inner:
-      properties:
-        row_app_enable:
-          default: false
-          description: Enable of this User application
-          type: boolean
-        row_app_connected_service:
-          default: ""
-          description: Service connected to this User application
-          type: string
-        row_app_connected_service_ref_type_:
-          description: Object type for row_app_connected_service field
-          enum:
-          - service
-          type: string
-        row_app_cli_commands:
-          default: ""
-          description: CLI Commands of this User application
-          type: string
-        row_ip_mask:
-          default: ""
-          description: IP/Mask
-          format: ipv4
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
-      type: object
-    _bundles_patch_request_endpoint_bundle_value_object_properties:
-      properties:
-        is_for_switch:
-          default: false
-          description: Denotes a Switch Bundle
-          type: boolean
-        group:
-          default: ""
-          description: Group
-          type: string
-        is_public:
-          default: false
-          description: Denotes a shared Switch Bundle
-          type: boolean
+          $ref: "#/components/schemas/_config_put_request_extended_community_list_extended_community_list_name"
       type: object
     _config_put_request_eth_device_profiles:
       properties:
         eth_device_profiles_name:
-          $ref: '#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name'
+          $ref: "#/components/schemas/_config_put_request_eth_device_profiles_eth_device_profiles_name"
       type: object
     _config_put_request_feature_flag_feature_flag_name_feature_inner:
       properties:
@@ -8491,7 +8930,7 @@ components:
     _config_put_request_service_port_profile:
       properties:
         service_port_profile_name:
-          $ref: '#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name'
+          $ref: "#/components/schemas/_config_put_request_service_port_profile_service_port_profile_name"
       type: object
     _config_put_request_endpoint_endpoint_name_children_inner:
       properties:

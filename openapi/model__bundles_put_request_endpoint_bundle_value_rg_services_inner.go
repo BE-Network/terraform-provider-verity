@@ -14,13 +14,13 @@ import (
 	"encoding/json"
 )
 
-// checks if the BundlesPatchRequestEndpointBundleValueRgServicesInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &BundlesPatchRequestEndpointBundleValueRgServicesInner{}
+// checks if the BundlesPutRequestEndpointBundleValueRgServicesInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &BundlesPutRequestEndpointBundleValueRgServicesInner{}
 
-// BundlesPatchRequestEndpointBundleValueRgServicesInner struct for BundlesPatchRequestEndpointBundleValueRgServicesInner
-type BundlesPatchRequestEndpointBundleValueRgServicesInner struct {
+// BundlesPutRequestEndpointBundleValueRgServicesInner struct for BundlesPutRequestEndpointBundleValueRgServicesInner
+type BundlesPutRequestEndpointBundleValueRgServicesInner struct {
 	// IP/Mask
-	IpMask *string `json:"#_ip/mask,omitempty"`
+	RowIpMask *string `json:"row_ip_mask,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int32 `json:"index,omitempty"`
 	// Enable of this ONT application
@@ -33,14 +33,14 @@ type BundlesPatchRequestEndpointBundleValueRgServicesInner struct {
 	RowAppType *string `json:"row_app_type,omitempty"`
 }
 
-// NewBundlesPatchRequestEndpointBundleValueRgServicesInner instantiates a new BundlesPatchRequestEndpointBundleValueRgServicesInner object
+// NewBundlesPutRequestEndpointBundleValueRgServicesInner instantiates a new BundlesPutRequestEndpointBundleValueRgServicesInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBundlesPatchRequestEndpointBundleValueRgServicesInner() *BundlesPatchRequestEndpointBundleValueRgServicesInner {
-	this := BundlesPatchRequestEndpointBundleValueRgServicesInner{}
-	var ipMask string = ""
-	this.IpMask = &ipMask
+func NewBundlesPutRequestEndpointBundleValueRgServicesInner() *BundlesPutRequestEndpointBundleValueRgServicesInner {
+	this := BundlesPutRequestEndpointBundleValueRgServicesInner{}
+	var rowIpMask string = ""
+	this.RowIpMask = &rowIpMask
 	var rowAppEnable bool = false
 	this.RowAppEnable = &rowAppEnable
 	var rowAppConnectedService string = ""
@@ -50,13 +50,13 @@ func NewBundlesPatchRequestEndpointBundleValueRgServicesInner() *BundlesPatchReq
 	return &this
 }
 
-// NewBundlesPatchRequestEndpointBundleValueRgServicesInnerWithDefaults instantiates a new BundlesPatchRequestEndpointBundleValueRgServicesInner object
+// NewBundlesPutRequestEndpointBundleValueRgServicesInnerWithDefaults instantiates a new BundlesPutRequestEndpointBundleValueRgServicesInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewBundlesPatchRequestEndpointBundleValueRgServicesInnerWithDefaults() *BundlesPatchRequestEndpointBundleValueRgServicesInner {
-	this := BundlesPatchRequestEndpointBundleValueRgServicesInner{}
-	var ipMask string = ""
-	this.IpMask = &ipMask
+func NewBundlesPutRequestEndpointBundleValueRgServicesInnerWithDefaults() *BundlesPutRequestEndpointBundleValueRgServicesInner {
+	this := BundlesPutRequestEndpointBundleValueRgServicesInner{}
+	var rowIpMask string = ""
+	this.RowIpMask = &rowIpMask
 	var rowAppEnable bool = false
 	this.RowAppEnable = &rowAppEnable
 	var rowAppConnectedService string = ""
@@ -66,40 +66,40 @@ func NewBundlesPatchRequestEndpointBundleValueRgServicesInnerWithDefaults() *Bun
 	return &this
 }
 
-// GetIpMask returns the IpMask field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetIpMask() string {
-	if o == nil || IsNil(o.IpMask) {
+// GetRowIpMask returns the RowIpMask field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowIpMask() string {
+	if o == nil || IsNil(o.RowIpMask) {
 		var ret string
 		return ret
 	}
-	return *o.IpMask
+	return *o.RowIpMask
 }
 
-// GetIpMaskOk returns a tuple with the IpMask field value if set, nil otherwise
+// GetRowIpMaskOk returns a tuple with the RowIpMask field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetIpMaskOk() (*string, bool) {
-	if o == nil || IsNil(o.IpMask) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowIpMaskOk() (*string, bool) {
+	if o == nil || IsNil(o.RowIpMask) {
 		return nil, false
 	}
-	return o.IpMask, true
+	return o.RowIpMask, true
 }
 
-// HasIpMask returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasIpMask() bool {
-	if o != nil && !IsNil(o.IpMask) {
+// HasRowIpMask returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasRowIpMask() bool {
+	if o != nil && !IsNil(o.RowIpMask) {
 		return true
 	}
 
 	return false
 }
 
-// SetIpMask gets a reference to the given string and assigns it to the IpMask field.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) SetIpMask(v string) {
-	o.IpMask = &v
+// SetRowIpMask gets a reference to the given string and assigns it to the RowIpMask field.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowIpMask(v string) {
+	o.RowIpMask = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetIndex() int32 {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetIndex() int32 {
 	if o == nil || IsNil(o.Index) {
 		var ret int32
 		return ret
@@ -109,7 +109,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetIndex() int32
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetIndexOk() (*int32, bool) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetIndexOk() (*int32, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -117,7 +117,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetIndexOk() (*i
 }
 
 // HasIndex returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasIndex() bool {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasIndex() bool {
 	if o != nil && !IsNil(o.Index) {
 		return true
 	}
@@ -126,12 +126,12 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasIndex() bool 
 }
 
 // SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) SetIndex(v int32) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetIndex(v int32) {
 	o.Index = &v
 }
 
 // GetRowAppEnable returns the RowAppEnable field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppEnable() bool {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppEnable() bool {
 	if o == nil || IsNil(o.RowAppEnable) {
 		var ret bool
 		return ret
@@ -141,7 +141,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppEnable(
 
 // GetRowAppEnableOk returns a tuple with the RowAppEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppEnableOk() (*bool, bool) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppEnableOk() (*bool, bool) {
 	if o == nil || IsNil(o.RowAppEnable) {
 		return nil, false
 	}
@@ -149,7 +149,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppEnableO
 }
 
 // HasRowAppEnable returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasRowAppEnable() bool {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasRowAppEnable() bool {
 	if o != nil && !IsNil(o.RowAppEnable) {
 		return true
 	}
@@ -158,12 +158,12 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasRowAppEnable(
 }
 
 // SetRowAppEnable gets a reference to the given bool and assigns it to the RowAppEnable field.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) SetRowAppEnable(v bool) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowAppEnable(v bool) {
 	o.RowAppEnable = &v
 }
 
 // GetRowAppConnectedService returns the RowAppConnectedService field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppConnectedService() string {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppConnectedService() string {
 	if o == nil || IsNil(o.RowAppConnectedService) {
 		var ret string
 		return ret
@@ -173,7 +173,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppConnect
 
 // GetRowAppConnectedServiceOk returns a tuple with the RowAppConnectedService field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppConnectedServiceOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppConnectedServiceOk() (*string, bool) {
 	if o == nil || IsNil(o.RowAppConnectedService) {
 		return nil, false
 	}
@@ -181,7 +181,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppConnect
 }
 
 // HasRowAppConnectedService returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasRowAppConnectedService() bool {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasRowAppConnectedService() bool {
 	if o != nil && !IsNil(o.RowAppConnectedService) {
 		return true
 	}
@@ -190,12 +190,12 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasRowAppConnect
 }
 
 // SetRowAppConnectedService gets a reference to the given string and assigns it to the RowAppConnectedService field.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) SetRowAppConnectedService(v string) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowAppConnectedService(v string) {
 	o.RowAppConnectedService = &v
 }
 
 // GetRowAppConnectedServiceRefType returns the RowAppConnectedServiceRefType field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppConnectedServiceRefType() string {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppConnectedServiceRefType() string {
 	if o == nil || IsNil(o.RowAppConnectedServiceRefType) {
 		var ret string
 		return ret
@@ -205,7 +205,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppConnect
 
 // GetRowAppConnectedServiceRefTypeOk returns a tuple with the RowAppConnectedServiceRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppConnectedServiceRefTypeOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppConnectedServiceRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.RowAppConnectedServiceRefType) {
 		return nil, false
 	}
@@ -213,7 +213,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppConnect
 }
 
 // HasRowAppConnectedServiceRefType returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasRowAppConnectedServiceRefType() bool {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasRowAppConnectedServiceRefType() bool {
 	if o != nil && !IsNil(o.RowAppConnectedServiceRefType) {
 		return true
 	}
@@ -222,12 +222,12 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasRowAppConnect
 }
 
 // SetRowAppConnectedServiceRefType gets a reference to the given string and assigns it to the RowAppConnectedServiceRefType field.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) SetRowAppConnectedServiceRefType(v string) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowAppConnectedServiceRefType(v string) {
 	o.RowAppConnectedServiceRefType = &v
 }
 
 // GetRowAppType returns the RowAppType field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppType() string {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppType() string {
 	if o == nil || IsNil(o.RowAppType) {
 		var ret string
 		return ret
@@ -237,7 +237,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppType() 
 
 // GetRowAppTypeOk returns a tuple with the RowAppType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppTypeOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.RowAppType) {
 		return nil, false
 	}
@@ -245,7 +245,7 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) GetRowAppTypeOk(
 }
 
 // HasRowAppType returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasRowAppType() bool {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasRowAppType() bool {
 	if o != nil && !IsNil(o.RowAppType) {
 		return true
 	}
@@ -254,11 +254,11 @@ func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) HasRowAppType() 
 }
 
 // SetRowAppType gets a reference to the given string and assigns it to the RowAppType field.
-func (o *BundlesPatchRequestEndpointBundleValueRgServicesInner) SetRowAppType(v string) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowAppType(v string) {
 	o.RowAppType = &v
 }
 
-func (o BundlesPatchRequestEndpointBundleValueRgServicesInner) MarshalJSON() ([]byte, error) {
+func (o BundlesPutRequestEndpointBundleValueRgServicesInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -266,10 +266,10 @@ func (o BundlesPatchRequestEndpointBundleValueRgServicesInner) MarshalJSON() ([]
 	return json.Marshal(toSerialize)
 }
 
-func (o BundlesPatchRequestEndpointBundleValueRgServicesInner) ToMap() (map[string]interface{}, error) {
+func (o BundlesPutRequestEndpointBundleValueRgServicesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.IpMask) {
-		toSerialize["#_ip/mask"] = o.IpMask
+	if !IsNil(o.RowIpMask) {
+		toSerialize["row_ip_mask"] = o.RowIpMask
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
@@ -289,38 +289,38 @@ func (o BundlesPatchRequestEndpointBundleValueRgServicesInner) ToMap() (map[stri
 	return toSerialize, nil
 }
 
-type NullableBundlesPatchRequestEndpointBundleValueRgServicesInner struct {
-	value *BundlesPatchRequestEndpointBundleValueRgServicesInner
+type NullableBundlesPutRequestEndpointBundleValueRgServicesInner struct {
+	value *BundlesPutRequestEndpointBundleValueRgServicesInner
 	isSet bool
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueRgServicesInner) Get() *BundlesPatchRequestEndpointBundleValueRgServicesInner {
+func (v NullableBundlesPutRequestEndpointBundleValueRgServicesInner) Get() *BundlesPutRequestEndpointBundleValueRgServicesInner {
 	return v.value
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueRgServicesInner) Set(val *BundlesPatchRequestEndpointBundleValueRgServicesInner) {
+func (v *NullableBundlesPutRequestEndpointBundleValueRgServicesInner) Set(val *BundlesPutRequestEndpointBundleValueRgServicesInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueRgServicesInner) IsSet() bool {
+func (v NullableBundlesPutRequestEndpointBundleValueRgServicesInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueRgServicesInner) Unset() {
+func (v *NullableBundlesPutRequestEndpointBundleValueRgServicesInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableBundlesPatchRequestEndpointBundleValueRgServicesInner(val *BundlesPatchRequestEndpointBundleValueRgServicesInner) *NullableBundlesPatchRequestEndpointBundleValueRgServicesInner {
-	return &NullableBundlesPatchRequestEndpointBundleValueRgServicesInner{value: val, isSet: true}
+func NewNullableBundlesPutRequestEndpointBundleValueRgServicesInner(val *BundlesPutRequestEndpointBundleValueRgServicesInner) *NullableBundlesPutRequestEndpointBundleValueRgServicesInner {
+	return &NullableBundlesPutRequestEndpointBundleValueRgServicesInner{value: val, isSet: true}
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueRgServicesInner) MarshalJSON() ([]byte, error) {
+func (v NullableBundlesPutRequestEndpointBundleValueRgServicesInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueRgServicesInner) UnmarshalJSON(src []byte) error {
+func (v *NullableBundlesPutRequestEndpointBundleValueRgServicesInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

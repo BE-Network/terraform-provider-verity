@@ -1,4 +1,4 @@
-# BundlesPatchRequestEndpointBundleValueObjectProperties
+# BundlesPutRequestEndpointBundleValueObjectProperties
 
 ## Properties
 
@@ -10,95 +10,95 @@ Name | Type | Description | Notes
 
 ## Methods
 
-### NewBundlesPatchRequestEndpointBundleValueObjectProperties
+### NewBundlesPutRequestEndpointBundleValueObjectProperties
 
-`func NewBundlesPatchRequestEndpointBundleValueObjectProperties() *BundlesPatchRequestEndpointBundleValueObjectProperties`
+`func NewBundlesPutRequestEndpointBundleValueObjectProperties() *BundlesPutRequestEndpointBundleValueObjectProperties`
 
-NewBundlesPatchRequestEndpointBundleValueObjectProperties instantiates a new BundlesPatchRequestEndpointBundleValueObjectProperties object
+NewBundlesPutRequestEndpointBundleValueObjectProperties instantiates a new BundlesPutRequestEndpointBundleValueObjectProperties object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewBundlesPatchRequestEndpointBundleValueObjectPropertiesWithDefaults
+### NewBundlesPutRequestEndpointBundleValueObjectPropertiesWithDefaults
 
-`func NewBundlesPatchRequestEndpointBundleValueObjectPropertiesWithDefaults() *BundlesPatchRequestEndpointBundleValueObjectProperties`
+`func NewBundlesPutRequestEndpointBundleValueObjectPropertiesWithDefaults() *BundlesPutRequestEndpointBundleValueObjectProperties`
 
-NewBundlesPatchRequestEndpointBundleValueObjectPropertiesWithDefaults instantiates a new BundlesPatchRequestEndpointBundleValueObjectProperties object
+NewBundlesPutRequestEndpointBundleValueObjectPropertiesWithDefaults instantiates a new BundlesPutRequestEndpointBundleValueObjectProperties object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetIsForSwitch
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsForSwitch() bool`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsForSwitch() bool`
 
 GetIsForSwitch returns the IsForSwitch field if non-nil, zero value otherwise.
 
 ### GetIsForSwitchOk
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsForSwitchOk() (*bool, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsForSwitchOk() (*bool, bool)`
 
 GetIsForSwitchOk returns a tuple with the IsForSwitch field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIsForSwitch
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetIsForSwitch(v bool)`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetIsForSwitch(v bool)`
 
 SetIsForSwitch sets IsForSwitch field to given value.
 
 ### HasIsForSwitch
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasIsForSwitch() bool`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasIsForSwitch() bool`
 
 HasIsForSwitch returns a boolean if a field has been set.
 
 ### GetGroup
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetGroup() string`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetGroup() string`
 
 GetGroup returns the Group field if non-nil, zero value otherwise.
 
 ### GetGroupOk
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetGroupOk() (*string, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetGroupOk() (*string, bool)`
 
 GetGroupOk returns a tuple with the Group field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetGroup
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetGroup(v string)`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetGroup(v string)`
 
 SetGroup sets Group field to given value.
 
 ### HasGroup
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasGroup() bool`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasGroup() bool`
 
 HasGroup returns a boolean if a field has been set.
 
 ### GetIsPublic
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsPublic() bool`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsPublic() bool`
 
 GetIsPublic returns the IsPublic field if non-nil, zero value otherwise.
 
 ### GetIsPublicOk
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsPublicOk() (*bool, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsPublicOk() (*bool, bool)`
 
 GetIsPublicOk returns a tuple with the IsPublic field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIsPublic
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetIsPublic(v bool)`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetIsPublic(v bool)`
 
 SetIsPublic sets IsPublic field to given value.
 
 ### HasIsPublic
 
-`func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasIsPublic() bool`
+`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasIsPublic() bool`
 
 HasIsPublic returns a boolean if a field has been set.
 

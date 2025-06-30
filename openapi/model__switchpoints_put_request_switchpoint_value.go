@@ -59,7 +59,7 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	Children []ConfigPutRequestSwitchpointSwitchpointNameChildrenInner `json:"children,omitempty"`
 	TrafficMirrors []ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner `json:"traffic_mirrors,omitempty"`
 	Eths []ConfigPutRequestEndpointEndpointNameEthsInner `json:"eths,omitempty"`
-	ObjectProperties *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *SwitchpointsPutRequestSwitchpointValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValue instantiates a new SwitchpointsPutRequestSwitchpointValue object
@@ -836,9 +836,9 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetEths(v []ConfigPutRequestEnd
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectProperties() ConfigPutRequestSwitchpointSwitchpointNameObjectProperties {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectProperties() SwitchpointsPutRequestSwitchpointValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret ConfigPutRequestSwitchpointSwitchpointNameObjectProperties
+		var ret SwitchpointsPutRequestSwitchpointValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -846,7 +846,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectProperties() ConfigPut
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectPropertiesOk() (*ConfigPutRequestSwitchpointSwitchpointNameObjectProperties, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectPropertiesOk() (*SwitchpointsPutRequestSwitchpointValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -862,8 +862,8 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given ConfigPutRequestSwitchpointSwitchpointNameObjectProperties and assigns it to the ObjectProperties field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetObjectProperties(v ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) {
+// SetObjectProperties gets a reference to the given SwitchpointsPutRequestSwitchpointValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetObjectProperties(v SwitchpointsPutRequestSwitchpointValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 

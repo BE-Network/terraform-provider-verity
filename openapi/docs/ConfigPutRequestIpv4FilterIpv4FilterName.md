@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
-**Protocol** | Pointer to **string** | IP protocol type (0-255) to match packets on. Ip indicates ipv4, ipv6 indicates ipv6 | [optional] [default to ""]
+**Protocol** | Pointer to **string** | Value must be ip/tcp/udp/icmp or a number between 0 and 255 to match packets.  Value IP will match all IP protocols. | [optional] [default to ""]
 **Bidirectional** | Pointer to **bool** | If bidirectional is selected, packets will be selected that match the source filters in either the source or destination fields of the packet. | [optional] [default to false]
 **SourceIp** | Pointer to **string** | This field matches the source IP address of an IPv4 packet | [optional] [default to ""]
 **SourcePortOperator** | Pointer to **string** | This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range. | [optional] [default to ""]

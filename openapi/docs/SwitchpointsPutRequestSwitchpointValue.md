@@ -26,7 +26,7 @@ Name | Type | Description | Notes
 **Children** | Pointer to [**[]ConfigPutRequestSwitchpointSwitchpointNameChildrenInner**](ConfigPutRequestSwitchpointSwitchpointNameChildrenInner.md) |  | [optional] 
 **TrafficMirrors** | Pointer to [**[]ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner**](ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner.md) |  | [optional] 
 **Eths** | Pointer to [**[]ConfigPutRequestEndpointEndpointNameEthsInner**](ConfigPutRequestEndpointEndpointNameEthsInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**ConfigPutRequestSwitchpointSwitchpointNameObjectProperties**](ConfigPutRequestSwitchpointSwitchpointNameObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**SwitchpointsPutRequestSwitchpointValueObjectProperties**](SwitchpointsPutRequestSwitchpointValueObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -599,20 +599,20 @@ HasEths returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectProperties() ConfigPutRequestSwitchpointSwitchpointNameObjectProperties`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectProperties() SwitchpointsPutRequestSwitchpointValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectPropertiesOk() (*ConfigPutRequestSwitchpointSwitchpointNameObjectProperties, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetObjectPropertiesOk() (*SwitchpointsPutRequestSwitchpointValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetObjectProperties(v ConfigPutRequestSwitchpointSwitchpointNameObjectProperties)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetObjectProperties(v SwitchpointsPutRequestSwitchpointValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

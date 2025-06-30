@@ -19,7 +19,7 @@ var _ MappedNullable = &ConfigPutRequestSiteSiteNameObjectProperties{}
 
 // ConfigPutRequestSiteSiteNameObjectProperties struct for ConfigPutRequestSiteSiteNameObjectProperties
 type ConfigPutRequestSiteSiteNameObjectProperties struct {
-	SystemGraphs *ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs `json:"system_graphs,omitempty"`
+	SystemGraphs *[]map[string]interface{} `json:"system_graphs,omitempty"`
 }
 
 // NewConfigPutRequestSiteSiteNameObjectProperties instantiates a new ConfigPutRequestSiteSiteNameObjectProperties object
@@ -40,9 +40,9 @@ func NewConfigPutRequestSiteSiteNameObjectPropertiesWithDefaults() *ConfigPutReq
 }
 
 // GetSystemGraphs returns the SystemGraphs field value if set, zero value otherwise.
-func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphs() ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs {
+func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphs() []map[string]interface{} {
 	if o == nil || IsNil(o.SystemGraphs) {
-		var ret ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs
+		var ret []map[string]interface{}
 		return ret
 	}
 	return *o.SystemGraphs
@@ -50,7 +50,7 @@ func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphs() ConfigP
 
 // GetSystemGraphsOk returns a tuple with the SystemGraphs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphsOk() (*ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs, bool) {
+func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphsOk() (*[]map[string]interface{}, bool) {
 	if o == nil || IsNil(o.SystemGraphs) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *ConfigPutRequestSiteSiteNameObjectProperties) HasSystemGraphs() bool {
 	return false
 }
 
-// SetSystemGraphs gets a reference to the given ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs and assigns it to the SystemGraphs field.
-func (o *ConfigPutRequestSiteSiteNameObjectProperties) SetSystemGraphs(v ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs) {
+// SetSystemGraphs gets a reference to the given []map[string]interface{} and assigns it to the SystemGraphs field.
+func (o *ConfigPutRequestSiteSiteNameObjectProperties) SetSystemGraphs(v []map[string]interface{}) {
 	o.SystemGraphs = &v
 }
 

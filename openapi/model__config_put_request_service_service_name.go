@@ -40,6 +40,10 @@ type ConfigPutRequestServiceServiceName struct {
 	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
 	Mtu NullableInt32 `json:"mtu,omitempty"`
 	ObjectProperties *ConfigPutRequestServiceServiceNameObjectProperties `json:"object_properties,omitempty"`
+	// Static anycast gateway addresses(IPv4) for service 
+	AnycastIpv4Mask *string `json:"anycast_ipv4_mask,omitempty"`
+	// Static anycast gateway addresses(IPv6) for service 
+	AnycastIpv6Mask *string `json:"anycast_ipv6_mask,omitempty"`
 	// Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)
 	MaxUpstreamRateMbps *int32 `json:"max_upstream_rate_mbps,omitempty"`
 	// Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)
@@ -88,6 +92,10 @@ func NewConfigPutRequestServiceServiceName() *ConfigPutRequestServiceServiceName
 	this.DhcpServerIp = &dhcpServerIp
 	var mtu int32 = 1500
 	this.Mtu = *NewNullableInt32(&mtu)
+	var anycastIpv4Mask string = ""
+	this.AnycastIpv4Mask = &anycastIpv4Mask
+	var anycastIpv6Mask string = ""
+	this.AnycastIpv6Mask = &anycastIpv6Mask
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var multicastManagementMode string = "flooding"
@@ -132,6 +140,10 @@ func NewConfigPutRequestServiceServiceNameWithDefaults() *ConfigPutRequestServic
 	this.DhcpServerIp = &dhcpServerIp
 	var mtu int32 = 1500
 	this.Mtu = *NewNullableInt32(&mtu)
+	var anycastIpv4Mask string = ""
+	this.AnycastIpv4Mask = &anycastIpv4Mask
+	var anycastIpv6Mask string = ""
+	this.AnycastIpv6Mask = &anycastIpv6Mask
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var multicastManagementMode string = "flooding"
@@ -539,6 +551,70 @@ func (o *ConfigPutRequestServiceServiceName) HasObjectProperties() bool {
 // SetObjectProperties gets a reference to the given ConfigPutRequestServiceServiceNameObjectProperties and assigns it to the ObjectProperties field.
 func (o *ConfigPutRequestServiceServiceName) SetObjectProperties(v ConfigPutRequestServiceServiceNameObjectProperties) {
 	o.ObjectProperties = &v
+}
+
+// GetAnycastIpv4Mask returns the AnycastIpv4Mask field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetAnycastIpv4Mask() string {
+	if o == nil || IsNil(o.AnycastIpv4Mask) {
+		var ret string
+		return ret
+	}
+	return *o.AnycastIpv4Mask
+}
+
+// GetAnycastIpv4MaskOk returns a tuple with the AnycastIpv4Mask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetAnycastIpv4MaskOk() (*string, bool) {
+	if o == nil || IsNil(o.AnycastIpv4Mask) {
+		return nil, false
+	}
+	return o.AnycastIpv4Mask, true
+}
+
+// HasAnycastIpv4Mask returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasAnycastIpv4Mask() bool {
+	if o != nil && !IsNil(o.AnycastIpv4Mask) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnycastIpv4Mask gets a reference to the given string and assigns it to the AnycastIpv4Mask field.
+func (o *ConfigPutRequestServiceServiceName) SetAnycastIpv4Mask(v string) {
+	o.AnycastIpv4Mask = &v
+}
+
+// GetAnycastIpv6Mask returns the AnycastIpv6Mask field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetAnycastIpv6Mask() string {
+	if o == nil || IsNil(o.AnycastIpv6Mask) {
+		var ret string
+		return ret
+	}
+	return *o.AnycastIpv6Mask
+}
+
+// GetAnycastIpv6MaskOk returns a tuple with the AnycastIpv6Mask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetAnycastIpv6MaskOk() (*string, bool) {
+	if o == nil || IsNil(o.AnycastIpv6Mask) {
+		return nil, false
+	}
+	return o.AnycastIpv6Mask, true
+}
+
+// HasAnycastIpv6Mask returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasAnycastIpv6Mask() bool {
+	if o != nil && !IsNil(o.AnycastIpv6Mask) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnycastIpv6Mask gets a reference to the given string and assigns it to the AnycastIpv6Mask field.
+func (o *ConfigPutRequestServiceServiceName) SetAnycastIpv6Mask(v string) {
+	o.AnycastIpv6Mask = &v
 }
 
 // GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field value if set, zero value otherwise.
@@ -1031,6 +1107,12 @@ func (o ConfigPutRequestServiceServiceName) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.AnycastIpv4Mask) {
+		toSerialize["anycast_ipv4_mask"] = o.AnycastIpv4Mask
+	}
+	if !IsNil(o.AnycastIpv6Mask) {
+		toSerialize["anycast_ipv6_mask"] = o.AnycastIpv6Mask
 	}
 	if !IsNil(o.MaxUpstreamRateMbps) {
 		toSerialize["max_upstream_rate_mbps"] = o.MaxUpstreamRateMbps

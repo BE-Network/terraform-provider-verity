@@ -1,21 +1,21 @@
-# \BundlesAPI
+# \DeviceControllersAPI
 
 All URIs are relative to *http://localhost/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**BundlesDelete**](BundlesAPI.md#BundlesDelete) | **Delete** /bundles | Delete bundle
-[**BundlesGet**](BundlesAPI.md#BundlesGet) | **Get** /bundles | Get all bundles
-[**BundlesPatch**](BundlesAPI.md#BundlesPatch) | **Patch** /bundles | Update bundle
-[**BundlesPut**](BundlesAPI.md#BundlesPut) | **Put** /bundles | Create bundle
+[**DevicecontrollersDelete**](DeviceControllersAPI.md#DevicecontrollersDelete) | **Delete** /devicecontrollers | Delete Device Controllers
+[**DevicecontrollersGet**](DeviceControllersAPI.md#DevicecontrollersGet) | **Get** /devicecontrollers | Get all Device Controllers
+[**DevicecontrollersPatch**](DeviceControllersAPI.md#DevicecontrollersPatch) | **Patch** /devicecontrollers | Update Device Controller
+[**DevicecontrollersPut**](DeviceControllersAPI.md#DevicecontrollersPut) | **Put** /devicecontrollers | Create Device Controller
 
 
 
-## BundlesDelete
+## DevicecontrollersDelete
 
-> BundlesDelete(ctx).BundleName(bundleName).ChangesetName(changesetName).Execute()
+> DevicecontrollersDelete(ctx).DeviceControllerName(deviceControllerName).ChangesetName(changesetName).Execute()
 
-Delete bundle
+Delete Device Controllers
 
 
 
@@ -32,14 +32,14 @@ import (
 )
 
 func main() {
-	bundleName := []string{"Inner_example"} // []string | 
+	deviceControllerName := []string{"Inner_example"} // []string | 
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.BundlesAPI.BundlesDelete(context.Background()).BundleName(bundleName).ChangesetName(changesetName).Execute()
+	r, err := apiClient.DeviceControllersAPI.DevicecontrollersDelete(context.Background()).DeviceControllerName(deviceControllerName).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `BundlesAPI.BundlesDelete``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -51,12 +51,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiBundlesDeleteRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDevicecontrollersDeleteRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **bundleName** | **[]string** |  | 
+ **deviceControllerName** | **[]string** |  | 
  **changesetName** | **string** |  | 
 
 ### Return type
@@ -77,11 +77,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## BundlesGet
+## DevicecontrollersGet
 
-> BundlesGet(ctx).BundleName(bundleName).IncludeData(includeData).Execute()
+> DevicecontrollersGet(ctx).DeviceControllerName(deviceControllerName).IncludeData(includeData).Execute()
 
-Get all bundles
+Get all Device Controllers
 
 
 
@@ -98,14 +98,14 @@ import (
 )
 
 func main() {
-	bundleName := "bundleName_example" // string |  (optional)
+	deviceControllerName := "deviceControllerName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.BundlesAPI.BundlesGet(context.Background()).BundleName(bundleName).IncludeData(includeData).Execute()
+	r, err := apiClient.DeviceControllersAPI.DevicecontrollersGet(context.Background()).DeviceControllerName(deviceControllerName).IncludeData(includeData).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `BundlesAPI.BundlesGet``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -117,12 +117,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiBundlesGetRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDevicecontrollersGetRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **bundleName** | **string** |  | 
+ **deviceControllerName** | **string** |  | 
  **includeData** | **bool** |  | 
 
 ### Return type
@@ -143,11 +143,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## BundlesPatch
+## DevicecontrollersPatch
 
-> BundlesPatch(ctx).ChangesetName(changesetName).BundlesPatchRequest(bundlesPatchRequest).Execute()
+> DevicecontrollersPatch(ctx).ChangesetName(changesetName).DevicecontrollersPutRequest(devicecontrollersPutRequest).Execute()
 
-Update bundle
+Update Device Controller
 
 
 
@@ -165,13 +165,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	bundlesPatchRequest := *openapiclient.NewBundlesPatchRequest() // BundlesPatchRequest |  (optional)
+	devicecontrollersPutRequest := *openapiclient.NewDevicecontrollersPutRequest() // DevicecontrollersPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.BundlesAPI.BundlesPatch(context.Background()).ChangesetName(changesetName).BundlesPatchRequest(bundlesPatchRequest).Execute()
+	r, err := apiClient.DeviceControllersAPI.DevicecontrollersPatch(context.Background()).ChangesetName(changesetName).DevicecontrollersPutRequest(devicecontrollersPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `BundlesAPI.BundlesPatch``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersPatch``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -183,13 +183,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiBundlesPatchRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDevicecontrollersPatchRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **bundlesPatchRequest** | [**BundlesPatchRequest**](BundlesPatchRequest.md) |  | 
+ **devicecontrollersPutRequest** | [**DevicecontrollersPutRequest**](DevicecontrollersPutRequest.md) |  | 
 
 ### Return type
 
@@ -209,11 +209,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## BundlesPut
+## DevicecontrollersPut
 
-> BundlesPut(ctx).ChangesetName(changesetName).BundlesPutRequest(bundlesPutRequest).Execute()
+> DevicecontrollersPut(ctx).ChangesetName(changesetName).DevicecontrollersPutRequest(devicecontrollersPutRequest).Execute()
 
-Create bundle
+Create Device Controller
 
 
 
@@ -231,13 +231,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	bundlesPutRequest := *openapiclient.NewBundlesPutRequest() // BundlesPutRequest |  (optional)
+	devicecontrollersPutRequest := *openapiclient.NewDevicecontrollersPutRequest() // DevicecontrollersPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.BundlesAPI.BundlesPut(context.Background()).ChangesetName(changesetName).BundlesPutRequest(bundlesPutRequest).Execute()
+	r, err := apiClient.DeviceControllersAPI.DevicecontrollersPut(context.Background()).ChangesetName(changesetName).DevicecontrollersPutRequest(devicecontrollersPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `BundlesAPI.BundlesPut``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersPut``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -249,13 +249,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiBundlesPutRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDevicecontrollersPutRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **bundlesPutRequest** | [**BundlesPutRequest**](BundlesPutRequest.md) |  | 
+ **devicecontrollersPutRequest** | [**DevicecontrollersPutRequest**](DevicecontrollersPutRequest.md) |  | 
 
 ### Return type
 

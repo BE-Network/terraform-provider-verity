@@ -1,4 +1,4 @@
-# ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths
+# ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner
 
 ## Properties
 
@@ -9,70 +9,70 @@ Name | Type | Description | Notes
 
 ## Methods
 
-### NewConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths
+### NewConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner
 
-`func NewConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths() *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths`
+`func NewConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner() *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner`
 
-NewConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths instantiates a new ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths object
+NewConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner instantiates a new ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEthsWithDefaults
+### NewConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInnerWithDefaults
 
-`func NewConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEthsWithDefaults() *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths`
+`func NewConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInnerWithDefaults() *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner`
 
-NewConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEthsWithDefaults instantiates a new ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths object
+NewConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInnerWithDefaults instantiates a new ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetEthNumIcon
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) GetEthNumIcon() string`
+`func (o *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) GetEthNumIcon() string`
 
 GetEthNumIcon returns the EthNumIcon field if non-nil, zero value otherwise.
 
 ### GetEthNumIconOk
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) GetEthNumIconOk() (*string, bool)`
+`func (o *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) GetEthNumIconOk() (*string, bool)`
 
 GetEthNumIconOk returns a tuple with the EthNumIcon field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEthNumIcon
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) SetEthNumIcon(v string)`
+`func (o *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) SetEthNumIcon(v string)`
 
 SetEthNumIcon sets EthNumIcon field to given value.
 
 ### HasEthNumIcon
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) HasEthNumIcon() bool`
+`func (o *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) HasEthNumIcon() bool`
 
 HasEthNumIcon returns a boolean if a field has been set.
 
 ### GetEthNumLabel
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) GetEthNumLabel() string`
+`func (o *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) GetEthNumLabel() string`
 
 GetEthNumLabel returns the EthNumLabel field if non-nil, zero value otherwise.
 
 ### GetEthNumLabelOk
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) GetEthNumLabelOk() (*string, bool)`
+`func (o *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) GetEthNumLabelOk() (*string, bool)`
 
 GetEthNumLabelOk returns a tuple with the EthNumLabel field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEthNumLabel
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) SetEthNumLabel(v string)`
+`func (o *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) SetEthNumLabel(v string)`
 
 SetEthNumLabel sets EthNumLabel field to given value.
 
 ### HasEthNumLabel
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) HasEthNumLabel() bool`
+`func (o *ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) HasEthNumLabel() bool`
 
 HasEthNumLabel returns a boolean if a field has been set.
 

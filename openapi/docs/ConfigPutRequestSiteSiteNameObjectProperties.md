@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**SystemGraphs** | Pointer to [**ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs**](ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs.md) |  | [optional] 
+**SystemGraphs** | Pointer to  |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetSystemGraphs
 
-`func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphs() ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs`
+`func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphs() []map[string]interface{}`
 
 GetSystemGraphs returns the SystemGraphs field if non-nil, zero value otherwise.
 
 ### GetSystemGraphsOk
 
-`func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphsOk() (*ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs, bool)`
+`func (o *ConfigPutRequestSiteSiteNameObjectProperties) GetSystemGraphsOk() (*[]map[string]interface{}, bool)`
 
 GetSystemGraphsOk returns a tuple with the SystemGraphs field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSystemGraphs
 
-`func (o *ConfigPutRequestSiteSiteNameObjectProperties) SetSystemGraphs(v ConfigPutRequestSiteSiteNameObjectPropertiesSystemGraphs)`
+`func (o *ConfigPutRequestSiteSiteNameObjectProperties) SetSystemGraphs(v []map[string]interface{})`
 
 SetSystemGraphs sets SystemGraphs field to given value.
 

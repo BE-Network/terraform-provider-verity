@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **NumberOfMultipoints** | Pointer to **NullableInt32** | Number of Multipoints | [optional] [default to 0]
 **Aggregate** | Pointer to **bool** | For Switch Endpoints. Denotes switch aggregated with all of its sub switches | [optional] [default to false]
 **IsHost** | Pointer to **bool** | For Switch Endpoints. Denotes the Host Switch | [optional] [default to false]
-**Eths** | Pointer to [**ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths**](ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths.md) |  | [optional] 
+**Eths** | Pointer to  |  | [optional] 
 
 ## Methods
 
@@ -193,20 +193,20 @@ HasIsHost returns a boolean if a field has been set.
 
 ### GetEths
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEths() ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths`
+`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEths() []map[string]interface{}`
 
 GetEths returns the Eths field if non-nil, zero value otherwise.
 
 ### GetEthsOk
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEthsOk() (*ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths, bool)`
+`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEthsOk() (*[]map[string]interface{}, bool)`
 
 GetEthsOk returns a tuple with the Eths field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEths
 
-`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) SetEths(v ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths)`
+`func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) SetEths(v []map[string]interface{})`
 
 SetEths sets Eths field to given value.
 

@@ -31,7 +31,7 @@ type ConfigPutRequestSwitchpointSwitchpointNameObjectProperties struct {
 	Aggregate *bool `json:"aggregate,omitempty"`
 	// For Switch Endpoints. Denotes the Host Switch
 	IsHost *bool `json:"is_host,omitempty"`
-	Eths *ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths `json:"eths,omitempty"`
+	Eths *[]map[string]interface{} `json:"eths,omitempty"`
 }
 
 // NewConfigPutRequestSwitchpointSwitchpointNameObjectProperties instantiates a new ConfigPutRequestSwitchpointSwitchpointNameObjectProperties object
@@ -274,9 +274,9 @@ func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) SetIsHost(v
 }
 
 // GetEths returns the Eths field value if set, zero value otherwise.
-func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEths() ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths {
+func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEths() []map[string]interface{} {
 	if o == nil || IsNil(o.Eths) {
-		var ret ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths
+		var ret []map[string]interface{}
 		return ret
 	}
 	return *o.Eths
@@ -284,7 +284,7 @@ func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEths() C
 
 // GetEthsOk returns a tuple with the Eths field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEthsOk() (*ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths, bool) {
+func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) GetEthsOk() (*[]map[string]interface{}, bool) {
 	if o == nil || IsNil(o.Eths) {
 		return nil, false
 	}
@@ -300,8 +300,8 @@ func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) HasEths() b
 	return false
 }
 
-// SetEths gets a reference to the given ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths and assigns it to the Eths field.
-func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) SetEths(v ConfigPutRequestSwitchpointSwitchpointNameObjectPropertiesEths) {
+// SetEths gets a reference to the given []map[string]interface{} and assigns it to the Eths field.
+func (o *ConfigPutRequestSwitchpointSwitchpointNameObjectProperties) SetEths(v []map[string]interface{}) {
 	o.Eths = &v
 }
 

@@ -62,6 +62,8 @@ type APIClient struct {
 
 	ConfigAPI *ConfigAPIService
 
+	DeviceControllersAPI *DeviceControllersAPIService
+
 	DeviceVoiceSettingsAPI *DeviceVoiceSettingsAPIService
 
 	EthPortProfilesAPI *EthPortProfilesAPIService
@@ -79,6 +81,8 @@ type APIClient struct {
 	PacketQueuesAPI *PacketQueuesAPIService
 
 	ReadModeAPI *ReadModeAPIService
+
+	RequestAPI *RequestAPIService
 
 	ServicePortProfilesAPI *ServicePortProfilesAPIService
 
@@ -116,6 +120,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.BundlesAPI = (*BundlesAPIService)(&c.common)
 	c.ChangesetsAPI = (*ChangesetsAPIService)(&c.common)
 	c.ConfigAPI = (*ConfigAPIService)(&c.common)
+	c.DeviceControllersAPI = (*DeviceControllersAPIService)(&c.common)
 	c.DeviceVoiceSettingsAPI = (*DeviceVoiceSettingsAPIService)(&c.common)
 	c.EthPortProfilesAPI = (*EthPortProfilesAPIService)(&c.common)
 	c.EthPortSettingsAPI = (*EthPortSettingsAPIService)(&c.common)
@@ -125,6 +130,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
 	c.PacketQueuesAPI = (*PacketQueuesAPIService)(&c.common)
 	c.ReadModeAPI = (*ReadModeAPIService)(&c.common)
+	c.RequestAPI = (*RequestAPIService)(&c.common)
 	c.ServicePortProfilesAPI = (*ServicePortProfilesAPIService)(&c.common)
 	c.ServicesAPI = (*ServicesAPIService)(&c.common)
 	c.SwitchpointsAPI = (*SwitchpointsAPIService)(&c.common)

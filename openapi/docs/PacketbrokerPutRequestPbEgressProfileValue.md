@@ -8,8 +8,8 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Ipv4Permit** | Pointer to [**[]PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner**](PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner.md) |  | [optional] 
 **Ipv4Deny** | Pointer to [**[]PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner**](PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner.md) |  | [optional] 
-**Ipv6Permit** | Pointer to [**[]PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner**](PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner.md) |  | [optional] 
-**Ipv6Deny** | Pointer to [**[]PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner**](PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner.md) |  | [optional] 
+**Ipv6Permit** | Pointer to [**[]ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner**](ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner.md) |  | [optional] 
+**Ipv6Deny** | Pointer to [**[]ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner**](ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner.md) |  | [optional] 
 
 ## Methods
 
@@ -132,20 +132,20 @@ HasIpv4Deny returns a boolean if a field has been set.
 
 ### GetIpv6Permit
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Permit() []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner`
+`func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Permit() []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner`
 
 GetIpv6Permit returns the Ipv6Permit field if non-nil, zero value otherwise.
 
 ### GetIpv6PermitOk
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6PermitOk() (*[]PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6PermitOk() (*[]ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner, bool)`
 
 GetIpv6PermitOk returns a tuple with the Ipv6Permit field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpv6Permit
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Permit(v []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Permit(v []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner)`
 
 SetIpv6Permit sets Ipv6Permit field to given value.
 
@@ -157,20 +157,20 @@ HasIpv6Permit returns a boolean if a field has been set.
 
 ### GetIpv6Deny
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Deny() []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner`
+`func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Deny() []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner`
 
 GetIpv6Deny returns the Ipv6Deny field if non-nil, zero value otherwise.
 
 ### GetIpv6DenyOk
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6DenyOk() (*[]PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6DenyOk() (*[]ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner, bool)`
 
 GetIpv6DenyOk returns a tuple with the Ipv6Deny field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpv6Deny
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Deny(v []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Deny(v []ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner)`
 
 SetIpv6Deny sets Ipv6Deny field to given value.
 

@@ -15,6 +15,8 @@ Name | Type | Description | Notes
 **DhcpServerIp** | Pointer to **string** | IP address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
 **Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] [default to 1500]
 **ObjectProperties** | Pointer to [**ConfigPutRequestServiceServiceNameObjectProperties**](ConfigPutRequestServiceServiceNameObjectProperties.md) |  | [optional] 
+**AnycastIpv4Mask** | Pointer to **string** | Static anycast gateway addresses(IPv4) for service  | [optional] [default to ""]
+**AnycastIpv6Mask** | Pointer to **string** | Static anycast gateway addresses(IPv6) for service  | [optional] [default to ""]
 **MaxUpstreamRateMbps** | Pointer to **int32** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
 **MaxDownstreamRateMbps** | Pointer to **int32** | Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps) | [optional] 
 **PacketPriority** | Pointer to **string** | Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped | [optional] [default to "0"]
@@ -353,6 +355,56 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *ConfigPutRequestServiceServiceName) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetAnycastIpv4Mask
+
+`func (o *ConfigPutRequestServiceServiceName) GetAnycastIpv4Mask() string`
+
+GetAnycastIpv4Mask returns the AnycastIpv4Mask field if non-nil, zero value otherwise.
+
+### GetAnycastIpv4MaskOk
+
+`func (o *ConfigPutRequestServiceServiceName) GetAnycastIpv4MaskOk() (*string, bool)`
+
+GetAnycastIpv4MaskOk returns a tuple with the AnycastIpv4Mask field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAnycastIpv4Mask
+
+`func (o *ConfigPutRequestServiceServiceName) SetAnycastIpv4Mask(v string)`
+
+SetAnycastIpv4Mask sets AnycastIpv4Mask field to given value.
+
+### HasAnycastIpv4Mask
+
+`func (o *ConfigPutRequestServiceServiceName) HasAnycastIpv4Mask() bool`
+
+HasAnycastIpv4Mask returns a boolean if a field has been set.
+
+### GetAnycastIpv6Mask
+
+`func (o *ConfigPutRequestServiceServiceName) GetAnycastIpv6Mask() string`
+
+GetAnycastIpv6Mask returns the AnycastIpv6Mask field if non-nil, zero value otherwise.
+
+### GetAnycastIpv6MaskOk
+
+`func (o *ConfigPutRequestServiceServiceName) GetAnycastIpv6MaskOk() (*string, bool)`
+
+GetAnycastIpv6MaskOk returns a tuple with the AnycastIpv6Mask field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAnycastIpv6Mask
+
+`func (o *ConfigPutRequestServiceServiceName) SetAnycastIpv6Mask(v string)`
+
+SetAnycastIpv6Mask sets AnycastIpv6Mask field to given value.
+
+### HasAnycastIpv6Mask
+
+`func (o *ConfigPutRequestServiceServiceName) HasAnycastIpv6Mask() bool`
+
+HasAnycastIpv6Mask returns a boolean if a field has been set.
 
 ### GetMaxUpstreamRateMbps
 

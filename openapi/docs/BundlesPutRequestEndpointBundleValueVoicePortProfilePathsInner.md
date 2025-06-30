@@ -1,4 +1,4 @@
-# BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner
+# BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner
 
 ## Properties
 
@@ -10,95 +10,95 @@ Name | Type | Description | Notes
 
 ## Methods
 
-### NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner
+### NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner
 
-`func NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner() *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner`
+`func NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner() *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner`
 
-NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner instantiates a new BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner object
+NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner instantiates a new BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults
+### NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults
 
-`func NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults() *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner`
+`func NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults() *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner`
 
-NewBundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults instantiates a new BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner object
+NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaults instantiates a new BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetVoicePortNumVoicePortProfiles
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfiles() string`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfiles() string`
 
 GetVoicePortNumVoicePortProfiles returns the VoicePortNumVoicePortProfiles field if non-nil, zero value otherwise.
 
 ### GetVoicePortNumVoicePortProfilesOk
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesOk() (*string, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesOk() (*string, bool)`
 
 GetVoicePortNumVoicePortProfilesOk returns a tuple with the VoicePortNumVoicePortProfiles field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetVoicePortNumVoicePortProfiles
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoicePortNumVoicePortProfiles(v string)`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoicePortNumVoicePortProfiles(v string)`
 
 SetVoicePortNumVoicePortProfiles sets VoicePortNumVoicePortProfiles field to given value.
 
 ### HasVoicePortNumVoicePortProfiles
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasVoicePortNumVoicePortProfiles() bool`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) HasVoicePortNumVoicePortProfiles() bool`
 
 HasVoicePortNumVoicePortProfiles returns a boolean if a field has been set.
 
 ### GetVoicePortNumVoicePortProfilesRefType
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesRefType() string`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesRefType() string`
 
 GetVoicePortNumVoicePortProfilesRefType returns the VoicePortNumVoicePortProfilesRefType field if non-nil, zero value otherwise.
 
 ### GetVoicePortNumVoicePortProfilesRefTypeOk
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesRefTypeOk() (*string, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetVoicePortNumVoicePortProfilesRefTypeOk() (*string, bool)`
 
 GetVoicePortNumVoicePortProfilesRefTypeOk returns a tuple with the VoicePortNumVoicePortProfilesRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetVoicePortNumVoicePortProfilesRefType
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoicePortNumVoicePortProfilesRefType(v string)`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoicePortNumVoicePortProfilesRefType(v string)`
 
 SetVoicePortNumVoicePortProfilesRefType sets VoicePortNumVoicePortProfilesRefType field to given value.
 
 ### HasVoicePortNumVoicePortProfilesRefType
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasVoicePortNumVoicePortProfilesRefType() bool`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) HasVoicePortNumVoicePortProfilesRefType() bool`
 
 HasVoicePortNumVoicePortProfilesRefType returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndex() int32`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndex() int32`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndexOk() (*int32, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndexOk() (*int32, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) SetIndex(v int32)`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetIndex(v int32)`
 
 SetIndex sets Index field to given value.
 
 ### HasIndex
 
-`func (o *BundlesPatchRequestEndpointBundleValueVoicePortProfilePathsInner) HasIndex() bool`
+`func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) HasIndex() bool`
 
 HasIndex returns a boolean if a field has been set.
 

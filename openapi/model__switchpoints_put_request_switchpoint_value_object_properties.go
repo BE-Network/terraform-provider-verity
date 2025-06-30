@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the ConfigPutRequestEndpointEndpointNameObjectProperties type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ConfigPutRequestEndpointEndpointNameObjectProperties{}
+// checks if the SwitchpointsPutRequestSwitchpointValueObjectProperties type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 
-// ConfigPutRequestEndpointEndpointNameObjectProperties struct for ConfigPutRequestEndpointEndpointNameObjectProperties
-type ConfigPutRequestEndpointEndpointNameObjectProperties struct {
+// SwitchpointsPutRequestSwitchpointValueObjectProperties struct for SwitchpointsPutRequestSwitchpointValueObjectProperties
+type SwitchpointsPutRequestSwitchpointValueObjectProperties struct {
 	// Notes writen by User about the site
 	UserNotes *string `json:"user_notes,omitempty"`
 	// Expected Parent Endpoint
@@ -27,8 +27,6 @@ type ConfigPutRequestEndpointEndpointNameObjectProperties struct {
 	ExpectedParentEndpointRefType *string `json:"expected_parent_endpoint_ref_type_,omitempty"`
 	// Number of Multipoints
 	NumberOfMultipoints NullableInt32 `json:"number_of_multipoints,omitempty"`
-	// Turn on to display the switch as an edge device instead of as a switch
-	DrawAsEdgeDevice *bool `json:"draw_as_edge_device,omitempty"`
 	// For Switch Endpoints. Denotes switch aggregated with all of its sub switches
 	Aggregate *bool `json:"aggregate,omitempty"`
 	// For Switch Endpoints. Denotes the Host Switch
@@ -36,20 +34,18 @@ type ConfigPutRequestEndpointEndpointNameObjectProperties struct {
 	Eths []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner `json:"eths,omitempty"`
 }
 
-// NewConfigPutRequestEndpointEndpointNameObjectProperties instantiates a new ConfigPutRequestEndpointEndpointNameObjectProperties object
+// NewSwitchpointsPutRequestSwitchpointValueObjectProperties instantiates a new SwitchpointsPutRequestSwitchpointValueObjectProperties object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigPutRequestEndpointEndpointNameObjectProperties() *ConfigPutRequestEndpointEndpointNameObjectProperties {
-	this := ConfigPutRequestEndpointEndpointNameObjectProperties{}
+func NewSwitchpointsPutRequestSwitchpointValueObjectProperties() *SwitchpointsPutRequestSwitchpointValueObjectProperties {
+	this := SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 	var userNotes string = ""
 	this.UserNotes = &userNotes
 	var expectedParentEndpoint string = ""
 	this.ExpectedParentEndpoint = &expectedParentEndpoint
 	var numberOfMultipoints int32 = 0
 	this.NumberOfMultipoints = *NewNullableInt32(&numberOfMultipoints)
-	var drawAsEdgeDevice bool = false
-	this.DrawAsEdgeDevice = &drawAsEdgeDevice
 	var aggregate bool = false
 	this.Aggregate = &aggregate
 	var isHost bool = false
@@ -57,19 +53,17 @@ func NewConfigPutRequestEndpointEndpointNameObjectProperties() *ConfigPutRequest
 	return &this
 }
 
-// NewConfigPutRequestEndpointEndpointNameObjectPropertiesWithDefaults instantiates a new ConfigPutRequestEndpointEndpointNameObjectProperties object
+// NewSwitchpointsPutRequestSwitchpointValueObjectPropertiesWithDefaults instantiates a new SwitchpointsPutRequestSwitchpointValueObjectProperties object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewConfigPutRequestEndpointEndpointNameObjectPropertiesWithDefaults() *ConfigPutRequestEndpointEndpointNameObjectProperties {
-	this := ConfigPutRequestEndpointEndpointNameObjectProperties{}
+func NewSwitchpointsPutRequestSwitchpointValueObjectPropertiesWithDefaults() *SwitchpointsPutRequestSwitchpointValueObjectProperties {
+	this := SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 	var userNotes string = ""
 	this.UserNotes = &userNotes
 	var expectedParentEndpoint string = ""
 	this.ExpectedParentEndpoint = &expectedParentEndpoint
 	var numberOfMultipoints int32 = 0
 	this.NumberOfMultipoints = *NewNullableInt32(&numberOfMultipoints)
-	var drawAsEdgeDevice bool = false
-	this.DrawAsEdgeDevice = &drawAsEdgeDevice
 	var aggregate bool = false
 	this.Aggregate = &aggregate
 	var isHost bool = false
@@ -78,7 +72,7 @@ func NewConfigPutRequestEndpointEndpointNameObjectPropertiesWithDefaults() *Conf
 }
 
 // GetUserNotes returns the UserNotes field value if set, zero value otherwise.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetUserNotes() string {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetUserNotes() string {
 	if o == nil || IsNil(o.UserNotes) {
 		var ret string
 		return ret
@@ -88,7 +82,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetUserNotes() st
 
 // GetUserNotesOk returns a tuple with the UserNotes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetUserNotesOk() (*string, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetUserNotesOk() (*string, bool) {
 	if o == nil || IsNil(o.UserNotes) {
 		return nil, false
 	}
@@ -96,7 +90,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetUserNotesOk() 
 }
 
 // HasUserNotes returns a boolean if a field has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasUserNotes() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasUserNotes() bool {
 	if o != nil && !IsNil(o.UserNotes) {
 		return true
 	}
@@ -105,12 +99,12 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasUserNotes() bo
 }
 
 // SetUserNotes gets a reference to the given string and assigns it to the UserNotes field.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetUserNotes(v string) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetUserNotes(v string) {
 	o.UserNotes = &v
 }
 
 // GetExpectedParentEndpoint returns the ExpectedParentEndpoint field value if set, zero value otherwise.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetExpectedParentEndpoint() string {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetExpectedParentEndpoint() string {
 	if o == nil || IsNil(o.ExpectedParentEndpoint) {
 		var ret string
 		return ret
@@ -120,7 +114,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetExpectedParent
 
 // GetExpectedParentEndpointOk returns a tuple with the ExpectedParentEndpoint field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetExpectedParentEndpointOk() (*string, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetExpectedParentEndpointOk() (*string, bool) {
 	if o == nil || IsNil(o.ExpectedParentEndpoint) {
 		return nil, false
 	}
@@ -128,7 +122,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetExpectedParent
 }
 
 // HasExpectedParentEndpoint returns a boolean if a field has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasExpectedParentEndpoint() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasExpectedParentEndpoint() bool {
 	if o != nil && !IsNil(o.ExpectedParentEndpoint) {
 		return true
 	}
@@ -137,12 +131,12 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasExpectedParent
 }
 
 // SetExpectedParentEndpoint gets a reference to the given string and assigns it to the ExpectedParentEndpoint field.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetExpectedParentEndpoint(v string) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetExpectedParentEndpoint(v string) {
 	o.ExpectedParentEndpoint = &v
 }
 
 // GetExpectedParentEndpointRefType returns the ExpectedParentEndpointRefType field value if set, zero value otherwise.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetExpectedParentEndpointRefType() string {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetExpectedParentEndpointRefType() string {
 	if o == nil || IsNil(o.ExpectedParentEndpointRefType) {
 		var ret string
 		return ret
@@ -152,7 +146,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetExpectedParent
 
 // GetExpectedParentEndpointRefTypeOk returns a tuple with the ExpectedParentEndpointRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetExpectedParentEndpointRefTypeOk() (*string, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetExpectedParentEndpointRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.ExpectedParentEndpointRefType) {
 		return nil, false
 	}
@@ -160,7 +154,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetExpectedParent
 }
 
 // HasExpectedParentEndpointRefType returns a boolean if a field has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasExpectedParentEndpointRefType() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasExpectedParentEndpointRefType() bool {
 	if o != nil && !IsNil(o.ExpectedParentEndpointRefType) {
 		return true
 	}
@@ -169,12 +163,12 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasExpectedParent
 }
 
 // SetExpectedParentEndpointRefType gets a reference to the given string and assigns it to the ExpectedParentEndpointRefType field.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetExpectedParentEndpointRefType(v string) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetExpectedParentEndpointRefType(v string) {
 	o.ExpectedParentEndpointRefType = &v
 }
 
 // GetNumberOfMultipoints returns the NumberOfMultipoints field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetNumberOfMultipoints() int32 {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipoints() int32 {
 	if o == nil || IsNil(o.NumberOfMultipoints.Get()) {
 		var ret int32
 		return ret
@@ -185,7 +179,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetNumberOfMultip
 // GetNumberOfMultipointsOk returns a tuple with the NumberOfMultipoints field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetNumberOfMultipointsOk() (*int32, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipointsOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -193,7 +187,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetNumberOfMultip
 }
 
 // HasNumberOfMultipoints returns a boolean if a field has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasNumberOfMultipoints() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasNumberOfMultipoints() bool {
 	if o != nil && o.NumberOfMultipoints.IsSet() {
 		return true
 	}
@@ -202,53 +196,21 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasNumberOfMultip
 }
 
 // SetNumberOfMultipoints gets a reference to the given NullableInt32 and assigns it to the NumberOfMultipoints field.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetNumberOfMultipoints(v int32) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipoints(v int32) {
 	o.NumberOfMultipoints.Set(&v)
 }
 // SetNumberOfMultipointsNil sets the value for NumberOfMultipoints to be an explicit nil
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetNumberOfMultipointsNil() {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipointsNil() {
 	o.NumberOfMultipoints.Set(nil)
 }
 
 // UnsetNumberOfMultipoints ensures that no value is present for NumberOfMultipoints, not even an explicit nil
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) UnsetNumberOfMultipoints() {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) UnsetNumberOfMultipoints() {
 	o.NumberOfMultipoints.Unset()
 }
 
-// GetDrawAsEdgeDevice returns the DrawAsEdgeDevice field value if set, zero value otherwise.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetDrawAsEdgeDevice() bool {
-	if o == nil || IsNil(o.DrawAsEdgeDevice) {
-		var ret bool
-		return ret
-	}
-	return *o.DrawAsEdgeDevice
-}
-
-// GetDrawAsEdgeDeviceOk returns a tuple with the DrawAsEdgeDevice field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetDrawAsEdgeDeviceOk() (*bool, bool) {
-	if o == nil || IsNil(o.DrawAsEdgeDevice) {
-		return nil, false
-	}
-	return o.DrawAsEdgeDevice, true
-}
-
-// HasDrawAsEdgeDevice returns a boolean if a field has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasDrawAsEdgeDevice() bool {
-	if o != nil && !IsNil(o.DrawAsEdgeDevice) {
-		return true
-	}
-
-	return false
-}
-
-// SetDrawAsEdgeDevice gets a reference to the given bool and assigns it to the DrawAsEdgeDevice field.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetDrawAsEdgeDevice(v bool) {
-	o.DrawAsEdgeDevice = &v
-}
-
 // GetAggregate returns the Aggregate field value if set, zero value otherwise.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetAggregate() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetAggregate() bool {
 	if o == nil || IsNil(o.Aggregate) {
 		var ret bool
 		return ret
@@ -258,7 +220,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetAggregate() bo
 
 // GetAggregateOk returns a tuple with the Aggregate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetAggregateOk() (*bool, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetAggregateOk() (*bool, bool) {
 	if o == nil || IsNil(o.Aggregate) {
 		return nil, false
 	}
@@ -266,7 +228,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetAggregateOk() 
 }
 
 // HasAggregate returns a boolean if a field has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasAggregate() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasAggregate() bool {
 	if o != nil && !IsNil(o.Aggregate) {
 		return true
 	}
@@ -275,12 +237,12 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasAggregate() bo
 }
 
 // SetAggregate gets a reference to the given bool and assigns it to the Aggregate field.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetAggregate(v bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetAggregate(v bool) {
 	o.Aggregate = &v
 }
 
 // GetIsHost returns the IsHost field value if set, zero value otherwise.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetIsHost() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetIsHost() bool {
 	if o == nil || IsNil(o.IsHost) {
 		var ret bool
 		return ret
@@ -290,7 +252,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetIsHost() bool 
 
 // GetIsHostOk returns a tuple with the IsHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetIsHostOk() (*bool, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetIsHostOk() (*bool, bool) {
 	if o == nil || IsNil(o.IsHost) {
 		return nil, false
 	}
@@ -298,7 +260,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetIsHostOk() (*b
 }
 
 // HasIsHost returns a boolean if a field has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasIsHost() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasIsHost() bool {
 	if o != nil && !IsNil(o.IsHost) {
 		return true
 	}
@@ -307,12 +269,12 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasIsHost() bool 
 }
 
 // SetIsHost gets a reference to the given bool and assigns it to the IsHost field.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetIsHost(v bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetIsHost(v bool) {
 	o.IsHost = &v
 }
 
 // GetEths returns the Eths field value if set, zero value otherwise.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetEths() []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEths() []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner {
 	if o == nil || IsNil(o.Eths) {
 		var ret []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner
 		return ret
@@ -322,7 +284,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetEths() []Confi
 
 // GetEthsOk returns a tuple with the Eths field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetEthsOk() ([]ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEthsOk() ([]ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner, bool) {
 	if o == nil || IsNil(o.Eths) {
 		return nil, false
 	}
@@ -330,7 +292,7 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) GetEthsOk() ([]Co
 }
 
 // HasEths returns a boolean if a field has been set.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasEths() bool {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasEths() bool {
 	if o != nil && !IsNil(o.Eths) {
 		return true
 	}
@@ -339,11 +301,11 @@ func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) HasEths() bool {
 }
 
 // SetEths gets a reference to the given []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner and assigns it to the Eths field.
-func (o *ConfigPutRequestEndpointEndpointNameObjectProperties) SetEths(v []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetEths(v []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) {
 	o.Eths = v
 }
 
-func (o ConfigPutRequestEndpointEndpointNameObjectProperties) MarshalJSON() ([]byte, error) {
+func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -351,7 +313,7 @@ func (o ConfigPutRequestEndpointEndpointNameObjectProperties) MarshalJSON() ([]b
 	return json.Marshal(toSerialize)
 }
 
-func (o ConfigPutRequestEndpointEndpointNameObjectProperties) ToMap() (map[string]interface{}, error) {
+func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.UserNotes) {
 		toSerialize["user_notes"] = o.UserNotes
@@ -365,9 +327,6 @@ func (o ConfigPutRequestEndpointEndpointNameObjectProperties) ToMap() (map[strin
 	if o.NumberOfMultipoints.IsSet() {
 		toSerialize["number_of_multipoints"] = o.NumberOfMultipoints.Get()
 	}
-	if !IsNil(o.DrawAsEdgeDevice) {
-		toSerialize["draw_as_edge_device"] = o.DrawAsEdgeDevice
-	}
 	if !IsNil(o.Aggregate) {
 		toSerialize["aggregate"] = o.Aggregate
 	}
@@ -380,38 +339,38 @@ func (o ConfigPutRequestEndpointEndpointNameObjectProperties) ToMap() (map[strin
 	return toSerialize, nil
 }
 
-type NullableConfigPutRequestEndpointEndpointNameObjectProperties struct {
-	value *ConfigPutRequestEndpointEndpointNameObjectProperties
+type NullableSwitchpointsPutRequestSwitchpointValueObjectProperties struct {
+	value *SwitchpointsPutRequestSwitchpointValueObjectProperties
 	isSet bool
 }
 
-func (v NullableConfigPutRequestEndpointEndpointNameObjectProperties) Get() *ConfigPutRequestEndpointEndpointNameObjectProperties {
+func (v NullableSwitchpointsPutRequestSwitchpointValueObjectProperties) Get() *SwitchpointsPutRequestSwitchpointValueObjectProperties {
 	return v.value
 }
 
-func (v *NullableConfigPutRequestEndpointEndpointNameObjectProperties) Set(val *ConfigPutRequestEndpointEndpointNameObjectProperties) {
+func (v *NullableSwitchpointsPutRequestSwitchpointValueObjectProperties) Set(val *SwitchpointsPutRequestSwitchpointValueObjectProperties) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableConfigPutRequestEndpointEndpointNameObjectProperties) IsSet() bool {
+func (v NullableSwitchpointsPutRequestSwitchpointValueObjectProperties) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableConfigPutRequestEndpointEndpointNameObjectProperties) Unset() {
+func (v *NullableSwitchpointsPutRequestSwitchpointValueObjectProperties) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableConfigPutRequestEndpointEndpointNameObjectProperties(val *ConfigPutRequestEndpointEndpointNameObjectProperties) *NullableConfigPutRequestEndpointEndpointNameObjectProperties {
-	return &NullableConfigPutRequestEndpointEndpointNameObjectProperties{value: val, isSet: true}
+func NewNullableSwitchpointsPutRequestSwitchpointValueObjectProperties(val *SwitchpointsPutRequestSwitchpointValueObjectProperties) *NullableSwitchpointsPutRequestSwitchpointValueObjectProperties {
+	return &NullableSwitchpointsPutRequestSwitchpointValueObjectProperties{value: val, isSet: true}
 }
 
-func (v NullableConfigPutRequestEndpointEndpointNameObjectProperties) MarshalJSON() ([]byte, error) {
+func (v NullableSwitchpointsPutRequestSwitchpointValueObjectProperties) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableConfigPutRequestEndpointEndpointNameObjectProperties) UnmarshalJSON(src []byte) error {
+func (v *NullableSwitchpointsPutRequestSwitchpointValueObjectProperties) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

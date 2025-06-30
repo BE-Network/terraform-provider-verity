@@ -20,77 +20,77 @@ import (
 )
 
 
-// BundlesAPIService BundlesAPI service
-type BundlesAPIService service
+// DeviceControllersAPIService DeviceControllersAPI service
+type DeviceControllersAPIService service
 
-type ApiBundlesDeleteRequest struct {
+type ApiDevicecontrollersDeleteRequest struct {
 	ctx context.Context
-	ApiService *BundlesAPIService
-	bundleName *[]string
+	ApiService *DeviceControllersAPIService
+	deviceControllerName *[]string
 	changesetName *string
 }
 
-func (r ApiBundlesDeleteRequest) BundleName(bundleName []string) ApiBundlesDeleteRequest {
-	r.bundleName = &bundleName
+func (r ApiDevicecontrollersDeleteRequest) DeviceControllerName(deviceControllerName []string) ApiDevicecontrollersDeleteRequest {
+	r.deviceControllerName = &deviceControllerName
 	return r
 }
 
-func (r ApiBundlesDeleteRequest) ChangesetName(changesetName string) ApiBundlesDeleteRequest {
+func (r ApiDevicecontrollersDeleteRequest) ChangesetName(changesetName string) ApiDevicecontrollersDeleteRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiBundlesDeleteRequest) Execute() (*http.Response, error) {
-	return r.ApiService.BundlesDeleteExecute(r)
+func (r ApiDevicecontrollersDeleteRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DevicecontrollersDeleteExecute(r)
 }
 
 /*
-BundlesDelete Delete bundle
+DevicecontrollersDelete Delete Device Controllers
 
-Deletes an existing bundle from the system if changeset_name is empty, from a changeset if its name is provided.
+Deletes an existing Device Controllers from the system if changeset_name is empty, from a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesDeleteRequest
+ @return ApiDevicecontrollersDeleteRequest
 */
-func (a *BundlesAPIService) BundlesDelete(ctx context.Context) ApiBundlesDeleteRequest {
-	return ApiBundlesDeleteRequest{
+func (a *DeviceControllersAPIService) DevicecontrollersDelete(ctx context.Context) ApiDevicecontrollersDeleteRequest {
+	return ApiDevicecontrollersDeleteRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *BundlesAPIService) BundlesDeleteExecute(r ApiBundlesDeleteRequest) (*http.Response, error) {
+func (a *DeviceControllersAPIService) DevicecontrollersDeleteExecute(r ApiDevicecontrollersDeleteRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesDelete")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceControllersAPIService.DevicecontrollersDelete")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/bundles"
+	localVarPath := localBasePath + "/devicecontrollers"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.bundleName == nil {
-		return nil, reportError("bundleName is required and must be specified")
+	if r.deviceControllerName == nil {
+		return nil, reportError("deviceControllerName is required and must be specified")
 	}
 
 	{
-		t := *r.bundleName
+		t := *r.deviceControllerName
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "bundle_name", s.Index(i).Interface(), "form", "multi")
+				parameterAddToHeaderOrQuery(localVarQueryParams, "device_controller_name", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "bundle_name", t, "form", "multi")
+			parameterAddToHeaderOrQuery(localVarQueryParams, "device_controller_name", t, "form", "multi")
 		}
 	}
 	if r.changesetName != nil {
@@ -141,64 +141,64 @@ func (a *BundlesAPIService) BundlesDeleteExecute(r ApiBundlesDeleteRequest) (*ht
 	return localVarHTTPResponse, nil
 }
 
-type ApiBundlesGetRequest struct {
+type ApiDevicecontrollersGetRequest struct {
 	ctx context.Context
-	ApiService *BundlesAPIService
-	bundleName *string
+	ApiService *DeviceControllersAPIService
+	deviceControllerName *string
 	includeData *bool
 }
 
-func (r ApiBundlesGetRequest) BundleName(bundleName string) ApiBundlesGetRequest {
-	r.bundleName = &bundleName
+func (r ApiDevicecontrollersGetRequest) DeviceControllerName(deviceControllerName string) ApiDevicecontrollersGetRequest {
+	r.deviceControllerName = &deviceControllerName
 	return r
 }
 
-func (r ApiBundlesGetRequest) IncludeData(includeData bool) ApiBundlesGetRequest {
+func (r ApiDevicecontrollersGetRequest) IncludeData(includeData bool) ApiDevicecontrollersGetRequest {
 	r.includeData = &includeData
 	return r
 }
 
-func (r ApiBundlesGetRequest) Execute() (*http.Response, error) {
-	return r.ApiService.BundlesGetExecute(r)
+func (r ApiDevicecontrollersGetRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DevicecontrollersGetExecute(r)
 }
 
 /*
-BundlesGet Get all bundles
+DevicecontrollersGet Get all Device Controllers
 
-Retrieves all bundles from the system.
+Retrieves all Device Controllers from the system.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesGetRequest
+ @return ApiDevicecontrollersGetRequest
 */
-func (a *BundlesAPIService) BundlesGet(ctx context.Context) ApiBundlesGetRequest {
-	return ApiBundlesGetRequest{
+func (a *DeviceControllersAPIService) DevicecontrollersGet(ctx context.Context) ApiDevicecontrollersGetRequest {
+	return ApiDevicecontrollersGetRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *BundlesAPIService) BundlesGetExecute(r ApiBundlesGetRequest) (*http.Response, error) {
+func (a *DeviceControllersAPIService) DevicecontrollersGetExecute(r ApiDevicecontrollersGetRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesGet")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceControllersAPIService.DevicecontrollersGet")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/bundles"
+	localVarPath := localBasePath + "/devicecontrollers"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.bundleName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "bundle_name", r.bundleName, "form", "")
+	if r.deviceControllerName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "device_controller_name", r.deviceControllerName, "form", "")
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
@@ -248,57 +248,57 @@ func (a *BundlesAPIService) BundlesGetExecute(r ApiBundlesGetRequest) (*http.Res
 	return localVarHTTPResponse, nil
 }
 
-type ApiBundlesPatchRequest struct {
+type ApiDevicecontrollersPatchRequest struct {
 	ctx context.Context
-	ApiService *BundlesAPIService
+	ApiService *DeviceControllersAPIService
 	changesetName *string
-	bundlesPatchRequest *BundlesPatchRequest
+	devicecontrollersPutRequest *DevicecontrollersPutRequest
 }
 
-func (r ApiBundlesPatchRequest) ChangesetName(changesetName string) ApiBundlesPatchRequest {
+func (r ApiDevicecontrollersPatchRequest) ChangesetName(changesetName string) ApiDevicecontrollersPatchRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiBundlesPatchRequest) BundlesPatchRequest(bundlesPatchRequest BundlesPatchRequest) ApiBundlesPatchRequest {
-	r.bundlesPatchRequest = &bundlesPatchRequest
+func (r ApiDevicecontrollersPatchRequest) DevicecontrollersPutRequest(devicecontrollersPutRequest DevicecontrollersPutRequest) ApiDevicecontrollersPatchRequest {
+	r.devicecontrollersPutRequest = &devicecontrollersPutRequest
 	return r
 }
 
-func (r ApiBundlesPatchRequest) Execute() (*http.Response, error) {
-	return r.ApiService.BundlesPatchExecute(r)
+func (r ApiDevicecontrollersPatchRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DevicecontrollersPatchExecute(r)
 }
 
 /*
-BundlesPatch Update bundle
+DevicecontrollersPatch Update Device Controller
 
-Update bundle into the system if changeset_name is empty, into a changeset if its name is provided.
+Update Device Controller into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesPatchRequest
+ @return ApiDevicecontrollersPatchRequest
 */
-func (a *BundlesAPIService) BundlesPatch(ctx context.Context) ApiBundlesPatchRequest {
-	return ApiBundlesPatchRequest{
+func (a *DeviceControllersAPIService) DevicecontrollersPatch(ctx context.Context) ApiDevicecontrollersPatchRequest {
+	return ApiDevicecontrollersPatchRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *BundlesAPIService) BundlesPatchExecute(r ApiBundlesPatchRequest) (*http.Response, error) {
+func (a *DeviceControllersAPIService) DevicecontrollersPatchExecute(r ApiDevicecontrollersPatchRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPatch
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesPatch")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceControllersAPIService.DevicecontrollersPatch")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/bundles"
+	localVarPath := localBasePath + "/devicecontrollers"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -325,7 +325,7 @@ func (a *BundlesAPIService) BundlesPatchExecute(r ApiBundlesPatchRequest) (*http
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.bundlesPatchRequest
+	localVarPostBody = r.devicecontrollersPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -354,57 +354,57 @@ func (a *BundlesAPIService) BundlesPatchExecute(r ApiBundlesPatchRequest) (*http
 	return localVarHTTPResponse, nil
 }
 
-type ApiBundlesPutRequest struct {
+type ApiDevicecontrollersPutRequest struct {
 	ctx context.Context
-	ApiService *BundlesAPIService
+	ApiService *DeviceControllersAPIService
 	changesetName *string
-	bundlesPutRequest *BundlesPutRequest
+	devicecontrollersPutRequest *DevicecontrollersPutRequest
 }
 
-func (r ApiBundlesPutRequest) ChangesetName(changesetName string) ApiBundlesPutRequest {
+func (r ApiDevicecontrollersPutRequest) ChangesetName(changesetName string) ApiDevicecontrollersPutRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiBundlesPutRequest) BundlesPutRequest(bundlesPutRequest BundlesPutRequest) ApiBundlesPutRequest {
-	r.bundlesPutRequest = &bundlesPutRequest
+func (r ApiDevicecontrollersPutRequest) DevicecontrollersPutRequest(devicecontrollersPutRequest DevicecontrollersPutRequest) ApiDevicecontrollersPutRequest {
+	r.devicecontrollersPutRequest = &devicecontrollersPutRequest
 	return r
 }
 
-func (r ApiBundlesPutRequest) Execute() (*http.Response, error) {
-	return r.ApiService.BundlesPutExecute(r)
+func (r ApiDevicecontrollersPutRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DevicecontrollersPutExecute(r)
 }
 
 /*
-BundlesPut Create bundle
+DevicecontrollersPut Create Device Controller
 
-Create bundle into the system if changeset_name is empty, into a changeset if its name is provided.
+Create Device Controller into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesPutRequest
+ @return ApiDevicecontrollersPutRequest
 */
-func (a *BundlesAPIService) BundlesPut(ctx context.Context) ApiBundlesPutRequest {
-	return ApiBundlesPutRequest{
+func (a *DeviceControllersAPIService) DevicecontrollersPut(ctx context.Context) ApiDevicecontrollersPutRequest {
+	return ApiDevicecontrollersPutRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *BundlesAPIService) BundlesPutExecute(r ApiBundlesPutRequest) (*http.Response, error) {
+func (a *DeviceControllersAPIService) DevicecontrollersPutExecute(r ApiDevicecontrollersPutRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesPut")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceControllersAPIService.DevicecontrollersPut")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/bundles"
+	localVarPath := localBasePath + "/devicecontrollers"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -431,7 +431,7 @@ func (a *BundlesAPIService) BundlesPutExecute(r ApiBundlesPutRequest) (*http.Res
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.bundlesPutRequest
+	localVarPostBody = r.devicecontrollersPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

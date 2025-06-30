@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the BundlesPatchRequestEndpointBundleValueObjectProperties type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &BundlesPatchRequestEndpointBundleValueObjectProperties{}
+// checks if the BundlesPutRequestEndpointBundleValueObjectProperties type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &BundlesPutRequestEndpointBundleValueObjectProperties{}
 
-// BundlesPatchRequestEndpointBundleValueObjectProperties struct for BundlesPatchRequestEndpointBundleValueObjectProperties
-type BundlesPatchRequestEndpointBundleValueObjectProperties struct {
+// BundlesPutRequestEndpointBundleValueObjectProperties struct for BundlesPutRequestEndpointBundleValueObjectProperties
+type BundlesPutRequestEndpointBundleValueObjectProperties struct {
 	// Denotes a Switch Bundle
 	IsForSwitch *bool `json:"is_for_switch,omitempty"`
 	// Group
@@ -27,12 +27,12 @@ type BundlesPatchRequestEndpointBundleValueObjectProperties struct {
 	IsPublic *bool `json:"is_public,omitempty"`
 }
 
-// NewBundlesPatchRequestEndpointBundleValueObjectProperties instantiates a new BundlesPatchRequestEndpointBundleValueObjectProperties object
+// NewBundlesPutRequestEndpointBundleValueObjectProperties instantiates a new BundlesPutRequestEndpointBundleValueObjectProperties object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBundlesPatchRequestEndpointBundleValueObjectProperties() *BundlesPatchRequestEndpointBundleValueObjectProperties {
-	this := BundlesPatchRequestEndpointBundleValueObjectProperties{}
+func NewBundlesPutRequestEndpointBundleValueObjectProperties() *BundlesPutRequestEndpointBundleValueObjectProperties {
+	this := BundlesPutRequestEndpointBundleValueObjectProperties{}
 	var isForSwitch bool = false
 	this.IsForSwitch = &isForSwitch
 	var group string = ""
@@ -42,11 +42,11 @@ func NewBundlesPatchRequestEndpointBundleValueObjectProperties() *BundlesPatchRe
 	return &this
 }
 
-// NewBundlesPatchRequestEndpointBundleValueObjectPropertiesWithDefaults instantiates a new BundlesPatchRequestEndpointBundleValueObjectProperties object
+// NewBundlesPutRequestEndpointBundleValueObjectPropertiesWithDefaults instantiates a new BundlesPutRequestEndpointBundleValueObjectProperties object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewBundlesPatchRequestEndpointBundleValueObjectPropertiesWithDefaults() *BundlesPatchRequestEndpointBundleValueObjectProperties {
-	this := BundlesPatchRequestEndpointBundleValueObjectProperties{}
+func NewBundlesPutRequestEndpointBundleValueObjectPropertiesWithDefaults() *BundlesPutRequestEndpointBundleValueObjectProperties {
+	this := BundlesPutRequestEndpointBundleValueObjectProperties{}
 	var isForSwitch bool = false
 	this.IsForSwitch = &isForSwitch
 	var group string = ""
@@ -57,7 +57,7 @@ func NewBundlesPatchRequestEndpointBundleValueObjectPropertiesWithDefaults() *Bu
 }
 
 // GetIsForSwitch returns the IsForSwitch field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsForSwitch() bool {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsForSwitch() bool {
 	if o == nil || IsNil(o.IsForSwitch) {
 		var ret bool
 		return ret
@@ -67,7 +67,7 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsForSwitch(
 
 // GetIsForSwitchOk returns a tuple with the IsForSwitch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsForSwitchOk() (*bool, bool) {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsForSwitchOk() (*bool, bool) {
 	if o == nil || IsNil(o.IsForSwitch) {
 		return nil, false
 	}
@@ -75,7 +75,7 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsForSwitchO
 }
 
 // HasIsForSwitch returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasIsForSwitch() bool {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasIsForSwitch() bool {
 	if o != nil && !IsNil(o.IsForSwitch) {
 		return true
 	}
@@ -84,12 +84,12 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasIsForSwitch(
 }
 
 // SetIsForSwitch gets a reference to the given bool and assigns it to the IsForSwitch field.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetIsForSwitch(v bool) {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetIsForSwitch(v bool) {
 	o.IsForSwitch = &v
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetGroup() string {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetGroup() string {
 	if o == nil || IsNil(o.Group) {
 		var ret string
 		return ret
@@ -99,7 +99,7 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetGroup() stri
 
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetGroupOk() (*string, bool) {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetGroupOk() (*string, bool) {
 	if o == nil || IsNil(o.Group) {
 		return nil, false
 	}
@@ -107,7 +107,7 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetGroupOk() (*
 }
 
 // HasGroup returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasGroup() bool {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasGroup() bool {
 	if o != nil && !IsNil(o.Group) {
 		return true
 	}
@@ -116,12 +116,12 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasGroup() bool
 }
 
 // SetGroup gets a reference to the given string and assigns it to the Group field.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetGroup(v string) {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetGroup(v string) {
 	o.Group = &v
 }
 
 // GetIsPublic returns the IsPublic field value if set, zero value otherwise.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsPublic() bool {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsPublic() bool {
 	if o == nil || IsNil(o.IsPublic) {
 		var ret bool
 		return ret
@@ -131,7 +131,7 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsPublic() b
 
 // GetIsPublicOk returns a tuple with the IsPublic field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsPublicOk() (*bool, bool) {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsPublicOk() (*bool, bool) {
 	if o == nil || IsNil(o.IsPublic) {
 		return nil, false
 	}
@@ -139,7 +139,7 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) GetIsPublicOk()
 }
 
 // HasIsPublic returns a boolean if a field has been set.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasIsPublic() bool {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasIsPublic() bool {
 	if o != nil && !IsNil(o.IsPublic) {
 		return true
 	}
@@ -148,11 +148,11 @@ func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) HasIsPublic() b
 }
 
 // SetIsPublic gets a reference to the given bool and assigns it to the IsPublic field.
-func (o *BundlesPatchRequestEndpointBundleValueObjectProperties) SetIsPublic(v bool) {
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetIsPublic(v bool) {
 	o.IsPublic = &v
 }
 
-func (o BundlesPatchRequestEndpointBundleValueObjectProperties) MarshalJSON() ([]byte, error) {
+func (o BundlesPutRequestEndpointBundleValueObjectProperties) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -160,7 +160,7 @@ func (o BundlesPatchRequestEndpointBundleValueObjectProperties) MarshalJSON() ([
 	return json.Marshal(toSerialize)
 }
 
-func (o BundlesPatchRequestEndpointBundleValueObjectProperties) ToMap() (map[string]interface{}, error) {
+func (o BundlesPutRequestEndpointBundleValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.IsForSwitch) {
 		toSerialize["is_for_switch"] = o.IsForSwitch
@@ -174,38 +174,38 @@ func (o BundlesPatchRequestEndpointBundleValueObjectProperties) ToMap() (map[str
 	return toSerialize, nil
 }
 
-type NullableBundlesPatchRequestEndpointBundleValueObjectProperties struct {
-	value *BundlesPatchRequestEndpointBundleValueObjectProperties
+type NullableBundlesPutRequestEndpointBundleValueObjectProperties struct {
+	value *BundlesPutRequestEndpointBundleValueObjectProperties
 	isSet bool
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueObjectProperties) Get() *BundlesPatchRequestEndpointBundleValueObjectProperties {
+func (v NullableBundlesPutRequestEndpointBundleValueObjectProperties) Get() *BundlesPutRequestEndpointBundleValueObjectProperties {
 	return v.value
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueObjectProperties) Set(val *BundlesPatchRequestEndpointBundleValueObjectProperties) {
+func (v *NullableBundlesPutRequestEndpointBundleValueObjectProperties) Set(val *BundlesPutRequestEndpointBundleValueObjectProperties) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueObjectProperties) IsSet() bool {
+func (v NullableBundlesPutRequestEndpointBundleValueObjectProperties) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueObjectProperties) Unset() {
+func (v *NullableBundlesPutRequestEndpointBundleValueObjectProperties) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableBundlesPatchRequestEndpointBundleValueObjectProperties(val *BundlesPatchRequestEndpointBundleValueObjectProperties) *NullableBundlesPatchRequestEndpointBundleValueObjectProperties {
-	return &NullableBundlesPatchRequestEndpointBundleValueObjectProperties{value: val, isSet: true}
+func NewNullableBundlesPutRequestEndpointBundleValueObjectProperties(val *BundlesPutRequestEndpointBundleValueObjectProperties) *NullableBundlesPutRequestEndpointBundleValueObjectProperties {
+	return &NullableBundlesPutRequestEndpointBundleValueObjectProperties{value: val, isSet: true}
 }
 
-func (v NullableBundlesPatchRequestEndpointBundleValueObjectProperties) MarshalJSON() ([]byte, error) {
+func (v NullableBundlesPutRequestEndpointBundleValueObjectProperties) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableBundlesPatchRequestEndpointBundleValueObjectProperties) UnmarshalJSON(src []byte) error {
+func (v *NullableBundlesPutRequestEndpointBundleValueObjectProperties) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
