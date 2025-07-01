@@ -37,18 +37,18 @@ type verityGatewayProfileResource struct {
 }
 
 type verityGatewayProfileResourceModel struct {
-	Name               types.String            `tfsdk:"name"`
-	Enable             types.Bool              `tfsdk:"enable"`
-	TenantSliceManaged types.Bool              `tfsdk:"tenant_slice_managed"`
-	ObjectProperties   []objectPropertiesModel `tfsdk:"object_properties"`
-	ExternalGateways   []externalGatewaysModel `tfsdk:"external_gateways"`
+	Name               types.String                                `tfsdk:"name"`
+	Enable             types.Bool                                  `tfsdk:"enable"`
+	TenantSliceManaged types.Bool                                  `tfsdk:"tenant_slice_managed"`
+	ObjectProperties   []verityGatewayProfileObjectPropertiesModel `tfsdk:"object_properties"`
+	ExternalGateways   []verityGatewayProfileExternalGatewaysModel `tfsdk:"external_gateways"`
 }
 
-type objectPropertiesModel struct {
+type verityGatewayProfileObjectPropertiesModel struct {
 	Group types.String `tfsdk:"group"`
 }
 
-type externalGatewaysModel struct {
+type verityGatewayProfileExternalGatewaysModel struct {
 	Enable         types.Bool   `tfsdk:"enable"`
 	Gateway        types.String `tfsdk:"gateway"`
 	GatewayRefType types.String `tfsdk:"gateway_ref_type_"`
@@ -337,7 +337,7 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 	}
 
 	if objProps, ok := profileData["object_properties"].(map[string]interface{}); ok {
-		objectProps := objectPropertiesModel{}
+		objectProps := verityGatewayProfileObjectPropertiesModel{}
 
 		if group, ok := objProps["group"]; ok && group != nil {
 			groupStr, isString := group.(string)
@@ -346,15 +346,17 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 			}
 		}
 
-		data.ObjectProperties = []objectPropertiesModel{objectProps}
+		data.ObjectProperties = []verityGatewayProfileObjectPropertiesModel{objectProps}
+	} else {
+		data.ObjectProperties = nil
 	}
 
 	if ext, ok := profileData["external_gateways"].([]interface{}); ok {
-		var egList []externalGatewaysModel
+		var egList []verityGatewayProfileExternalGatewaysModel
 
 		for _, item := range ext {
 			if m, ok := item.(map[string]interface{}); ok {
-				gateway := externalGatewaysModel{}
+				gateway := verityGatewayProfileExternalGatewaysModel{}
 
 				if v, exists := m["enable"]; exists && v != nil {
 					if boolVal, ok := v.(bool); ok {
@@ -466,7 +468,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	stateGatewaysByIndex := make(map[int64]externalGatewaysModel)
+	stateGatewaysByIndex := make(map[int64]verityGatewayProfileExternalGatewaysModel)
 	for _, eg := range state.ExternalGateways {
 		if !eg.Index.IsNull() {
 			stateGatewaysByIndex[eg.Index.ValueInt64()] = eg

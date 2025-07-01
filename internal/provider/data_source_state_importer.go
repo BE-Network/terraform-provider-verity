@@ -116,7 +116,7 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 	}
 
 	client := d.client.client
-	imp := importer.NewImporter(client)
+	imp := importer.NewImporter(client, d.client.mode)
 	err = imp.ImportAll(absPath)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -183,6 +183,7 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 	}
 
 	resourceOrder := []string{
+		// Datacenter mode resources
 		"verity_tenant",
 		"verity_service",
 		"verity_eth_port_settings",
@@ -191,6 +192,17 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 		"verity_gateway",
 		"verity_lag",
 		"verity_bundle",
+		"verity_acl",
+		"verity_packet_broker",
+		// Campus mode resources
+		"verity_authenticated_eth_port",
+		"verity_device_voice_settings",
+		"verity_packet_queue",
+		"verity_service_port_profile",
+		"verity_voice_port_profile",
+		// Both modes
+		"verity_badge",
+		"verity_switchpoint",
 	}
 
 	importBlocks := make(map[string]string)
@@ -252,6 +264,15 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 
 	for _, resourceType := range resourceOrder {
 		blocks := importBlocks[resourceType]
+		if blocks != "" {
+			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n%s", resourceType, blocks)); err != nil {
+				return "", fmt.Errorf("error writing to output file: %w", err)
+			}
+			delete(importBlocks, resourceType)
+		}
+	}
+
+	for resourceType, blocks := range importBlocks {
 		if blocks != "" {
 			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n%s", resourceType, blocks)); err != nil {
 				return "", fmt.Errorf("error writing to output file: %w", err)

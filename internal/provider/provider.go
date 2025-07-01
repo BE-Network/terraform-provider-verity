@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -38,6 +39,8 @@ type providerContext struct {
 		username string
 		password string
 	}
+	mode           string
+	apiVersion     string
 	responseCache  map[string]interface{}
 	cacheMutex     sync.Mutex
 	bulkOpsMgr     *utils.BulkOperationManager
@@ -51,6 +54,7 @@ type verityProviderModel struct {
 	URI      types.String `tfsdk:"uri"`
 	Username types.String `tfsdk:"username"`
 	Password types.String `tfsdk:"password"`
+	Mode     types.String `tfsdk:"mode"`
 }
 
 func New(version string) func() provider.Provider {
@@ -84,6 +88,10 @@ func (p *verityProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:    true,
 				Sensitive:   true,
 			},
+			"mode": schema.StringAttribute{
+				Description: "Mode to operate in: 'datacenter' (default) or 'campus'",
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -112,6 +120,25 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	if password == "" {
 		password = os.Getenv("TF_VAR_password")
 		tflog.Debug(ctx, "Password not provided in configuration, using environment variable")
+	}
+
+	mode := config.Mode.ValueString()
+	if mode == "" {
+		mode = os.Getenv("TF_VAR_mode")
+		tflog.Debug(ctx, "Mode not provided in configuration, checking environment variable")
+	}
+
+	// Default to 'datacenter' mode if not specified
+	if mode == "" {
+		mode = "datacenter"
+		tflog.Debug(ctx, "Mode not provided in configuration or environment, defaulting to 'datacenter'")
+	} else if mode != "datacenter" && mode != "campus" {
+		resp.Diagnostics.AddError(
+			"Invalid Mode",
+			"The mode must be either 'datacenter' or 'campus'. "+
+				"Got: "+mode,
+		)
+		return
 	}
 
 	if uri == "" {
@@ -207,16 +234,20 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	client := openapi.NewAPIClient(apiConfig)
 
 	provCtx := &providerContext{
+		config:         apiConfig,
 		client:         client,
 		tokenManager:   tokenManager,
-		config:         apiConfig,
 		responseCache:  make(map[string]interface{}),
+		mode:           mode,
 		debounceActive: true,
 	}
+
 	provCtx.credentials.username = username
 	provCtx.credentials.password = password
 
-	bulkManager := utils.GetBulkOperationManager(client, clearCache, provCtx)
+	tflog.Info(ctx, "Configuring provider with mode: "+mode)
+
+	bulkManager := utils.GetBulkOperationManager(client, clearCache, provCtx, mode)
 	tflog.Info(ctx, "Initialized bulk operation manager with manual batching mode")
 
 	provCtx.bulkOpsMgr = bulkManager
@@ -231,11 +262,108 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	resp.ResourceData = provCtx
+	tflog.SetField(ctx, "verity_mode", provCtx.mode)
+
+	apiVersion, err := getApiVersion(ctx, provCtx)
+	if err != nil {
+		tflog.Warn(ctx, "Failed to get API version, using default compatibility", map[string]interface{}{
+			"error": err.Error(),
+		})
+		// Set a default version if we couldn't get the actual version
+		apiVersion = "6.4.0"
+	}
+
+	provCtx.apiVersion = apiVersion
+
+	ctxWithProviderData := context.WithValue(ctx, "providerData", provCtx)
+
 	resp.DataSourceData = provCtx
+	resp.ResourceData = provCtx
+
+	tflog.Info(ctxWithProviderData, "Provider configured", map[string]interface{}{
+		"mode":        provCtx.mode,
+		"api_version": provCtx.apiVersion,
+	})
+}
+
+func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error) {
+	const defaultVersion = "6.4"
+
+	if err := authenticate(ctx, provCtx); err != nil {
+		return "", fmt.Errorf("authentication failed when getting API version: %w", err)
+	}
+
+	tflog.Debug(ctx, "Fetching API version via OpenAPI client")
+
+	httpResp, err := provCtx.client.VersionAPI.VersionGet(ctx).Execute()
+
+	if err != nil {
+		tflog.Error(ctx, "Failed to execute API version request via OpenAPI client, defaulting.", map[string]interface{}{
+			"error":           err,
+			"default_version": defaultVersion,
+		})
+		return defaultVersion, nil // Return default version, no error to the caller of getApiVersion itself.
+	}
+	defer httpResp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		tflog.Error(ctx, "Failed to read API version response body (OpenAPI client), defaulting.", map[string]interface{}{
+			"error":           err,
+			"default_version": defaultVersion,
+		})
+		return defaultVersion, nil
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		tflog.Error(ctx, "API version request via OpenAPI client returned non-OK status, defaulting.", map[string]interface{}{
+			"status_code":     httpResp.StatusCode,
+			"response_body":   string(bodyBytes),
+			"default_version": defaultVersion,
+		})
+		return defaultVersion, nil
+	}
+
+	var versionPayload struct {
+		Version string `json:"version"`
+	}
+	if err := json.Unmarshal(bodyBytes, &versionPayload); err != nil {
+		tflog.Error(ctx, "Failed to unmarshal API version JSON response (OpenAPI client), defaulting.", map[string]interface{}{
+			"error":           err,
+			"response_body":   string(bodyBytes),
+			"default_version": defaultVersion,
+		})
+		return defaultVersion, nil
+	}
+
+	if versionPayload.Version == "" {
+		tflog.Warn(ctx, "API version string is empty in response (OpenAPI client), defaulting.", map[string]interface{}{
+			"response_body":   string(bodyBytes),
+			"default_version": defaultVersion,
+		})
+		return defaultVersion, nil
+	}
+
+	tflog.Info(ctx, "Successfully fetched API version via OpenAPI client", map[string]interface{}{
+		"version": versionPayload.Version,
+	})
+	return versionPayload.Version, nil
 }
 
 func (p *verityProvider) Resources(ctx context.Context) []func() resource.Resource {
+	providerData, ok := ctx.Value("providerData").(*providerContext)
+	if !ok {
+		tflog.Warn(ctx, "Provider context not available, returning all resources")
+		return getAllResources()
+	}
+
+	allResources := getAllResources()
+	compatibleResources := utils.FilterResourcesByMode(ctx, allResources, providerData.mode, providerData.apiVersion)
+
+	return compatibleResources
+}
+
+func getAllResources() []func() resource.Resource {
 	return []func() resource.Resource{
 		NewVerityTenantResource,
 		NewVerityGatewayResource,
@@ -246,6 +374,15 @@ func (p *verityProvider) Resources(ctx context.Context) []func() resource.Resour
 		NewVerityLagResource,
 		NewVerityGatewayProfileResource,
 		NewVerityOperationStageResource,
+		NewVerityBadgeResource,
+		NewVerityAuthenticatedEthPortResource,
+		NewVerityDeviceVoiceSettingsResource,
+		NewVerityPacketBrokerResource,
+		NewVerityPacketQueueResource,
+		NewVerityServicePortProfileResource,
+		NewVerityVoicePortProfileResource,
+		NewVeritySwitchpointResource,
+		NewVerityDeviceControllerResource,
 	}
 }
 

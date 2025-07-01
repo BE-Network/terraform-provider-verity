@@ -38,21 +38,41 @@ type verityServiceResource struct {
 }
 
 type verityServiceResourceModel struct {
-	Name             types.String                         `tfsdk:"name"`
-	Enable           types.Bool                           `tfsdk:"enable"`
-	ObjectProperties []verityServiceObjectPropertiesModel `tfsdk:"object_properties"`
-	Vlan             types.Int64                          `tfsdk:"vlan"`
-	Vni              types.Int64                          `tfsdk:"vni"`
-	VniAutoAssigned  types.Bool                           `tfsdk:"vni_auto_assigned_"`
-	Tenant           types.String                         `tfsdk:"tenant"`
-	TenantRefType    types.String                         `tfsdk:"tenant_ref_type_"`
-	AnycastIpMask    types.String                         `tfsdk:"anycast_ip_mask"`
-	DhcpServerIp     types.String                         `tfsdk:"dhcp_server_ip"`
-	Mtu              types.Int64                          `tfsdk:"mtu"`
+	Name                                        types.String                         `tfsdk:"name"`
+	Enable                                      types.Bool                           `tfsdk:"enable"`
+	ObjectProperties                            []verityServiceObjectPropertiesModel `tfsdk:"object_properties"`
+	Vlan                                        types.Int64                          `tfsdk:"vlan"`
+	Vni                                         types.Int64                          `tfsdk:"vni"`
+	VniAutoAssigned                             types.Bool                           `tfsdk:"vni_auto_assigned_"`
+	Tenant                                      types.String                         `tfsdk:"tenant"`
+	TenantRefType                               types.String                         `tfsdk:"tenant_ref_type_"`
+	AnycastIpMask                               types.String                         `tfsdk:"anycast_ip_mask"`
+	DhcpServerIp                                types.String                         `tfsdk:"dhcp_server_ip"`
+	DhcpServerIpv4                              types.String                         `tfsdk:"dhcp_server_ipv4"`
+	DhcpServerIpv6                              types.String                         `tfsdk:"dhcp_server_ipv6"`
+	Mtu                                         types.Int64                          `tfsdk:"mtu"`
+	AnycastIpv4Mask                             types.String                         `tfsdk:"anycast_ipv4_mask"`
+	AnycastIpv6Mask                             types.String                         `tfsdk:"anycast_ipv6_mask"`
+	MaxUpstreamRateMbps                         types.Int64                          `tfsdk:"max_upstream_rate_mbps"`
+	MaxDownstreamRateMbps                       types.Int64                          `tfsdk:"max_downstream_rate_mbps"`
+	PacketPriority                              types.String                         `tfsdk:"packet_priority"`
+	MulticastManagementMode                     types.String                         `tfsdk:"multicast_management_mode"`
+	TaggedPackets                               types.Bool                           `tfsdk:"tagged_packets"`
+	Tls                                         types.Bool                           `tfsdk:"tls"`
+	AllowLocalSwitching                         types.Bool                           `tfsdk:"allow_local_switching"`
+	ActAsMulticastQuerier                       types.Bool                           `tfsdk:"act_as_multicast_querier"`
+	BlockUnknownUnicastFlood                    types.Bool                           `tfsdk:"block_unknown_unicast_flood"`
+	BlockDownstreamDhcpServer                   types.Bool                           `tfsdk:"block_downstream_dhcp_server"`
+	IsManagementService                         types.Bool                           `tfsdk:"is_management_service"`
+	UseDscpToPBitMappingForL3PacketsIfAvailable types.Bool                           `tfsdk:"use_dscp_to_p_bit_mapping_for_l3_packets_if_available"`
+	AllowFastLeave                              types.Bool                           `tfsdk:"allow_fast_leave"`
+	MstInstance                                 types.Int64                          `tfsdk:"mst_instance"`
 }
 
 type verityServiceObjectPropertiesModel struct {
-	Group types.String `tfsdk:"group"`
+	Group                  types.String `tfsdk:"group"`
+	OnSummary              types.Bool   `tfsdk:"on_summary"`
+	WarnOnNoExternalSource types.Bool   `tfsdk:"warn_on_no_external_source"`
 }
 
 func (r *verityServiceResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -125,8 +145,80 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 				Description: "IP address(s) of the DHCP server for service. May have up to four separated by commas.",
 				Optional:    true,
 			},
+			"dhcp_server_ipv4": schema.StringAttribute{
+				Description: "IPv4 address(s) of the DHCP server for service. May have up to four separated by commas.",
+				Optional:    true,
+			},
+			"dhcp_server_ipv6": schema.StringAttribute{
+				Description: "IPv6 address(s) of the DHCP server for service. May have up to four separated by commas.",
+				Optional:    true,
+			},
 			"mtu": schema.Int64Attribute{
 				Description: "MTU (Maximum Transmission Unit) - the size used by a switch to determine when large packets must be broken up for delivery.",
+				Optional:    true,
+			},
+			"anycast_ipv4_mask": schema.StringAttribute{
+				Description: "Static anycast gateway addresses(IPv4) for service",
+				Optional:    true,
+			},
+			"anycast_ipv6_mask": schema.StringAttribute{
+				Description: "Static anycast gateway addresses(IPv6) for service",
+				Optional:    true,
+			},
+			"max_upstream_rate_mbps": schema.Int64Attribute{
+				Description: "Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)",
+				Optional:    true,
+			},
+			"max_downstream_rate_mbps": schema.Int64Attribute{
+				Description: "Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)",
+				Optional:    true,
+			},
+			"packet_priority": schema.StringAttribute{
+				Description: "Priority untagged packets will be tagged with on ingress to the network.",
+				Optional:    true,
+			},
+			"multicast_management_mode": schema.StringAttribute{
+				Description: "Determines how to handle multicast packets for Service",
+				Optional:    true,
+			},
+			"tagged_packets": schema.BoolAttribute{
+				Description: "Overrides priority bits on incoming tagged packets.",
+				Optional:    true,
+			},
+			"tls": schema.BoolAttribute{
+				Description: "Is a Transparent LAN Service?",
+				Optional:    true,
+			},
+			"allow_local_switching": schema.BoolAttribute{
+				Description: "Allow Edge Devices to communicate with each other.",
+				Optional:    true,
+			},
+			"act_as_multicast_querier": schema.BoolAttribute{
+				Description: "Multicast management through IGMP requires a multicast querier.",
+				Optional:    true,
+			},
+			"block_unknown_unicast_flood": schema.BoolAttribute{
+				Description: "Block unknown unicast traffic flooding.",
+				Optional:    true,
+			},
+			"block_downstream_dhcp_server": schema.BoolAttribute{
+				Description: "Block inbound packets sent by Downstream DHCP servers",
+				Optional:    true,
+			},
+			"is_management_service": schema.BoolAttribute{
+				Description: "Denotes a Management Service",
+				Optional:    true,
+			},
+			"use_dscp_to_p_bit_mapping_for_l3_packets_if_available": schema.BoolAttribute{
+				Description: "use DSCP to p-bit Mapping for L3 packets if available",
+				Optional:    true,
+			},
+			"allow_fast_leave": schema.BoolAttribute{
+				Description: "The Fast Leave feature causes the switch to immediately remove a port from the forwarding list.",
+				Optional:    true,
+			},
+			"mst_instance": schema.Int64Attribute{
+				Description: "MST Instance ID (0-4094)",
 				Optional:    true,
 			},
 		},
@@ -137,6 +229,14 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 					Attributes: map[string]schema.Attribute{
 						"group": schema.StringAttribute{
 							Description: "Group",
+							Optional:    true,
+						},
+						"on_summary": schema.BoolAttribute{
+							Description: "Show on the summary view",
+							Optional:    true,
+						},
+						"warn_on_no_external_source": schema.BoolAttribute{
+							Description: "Warn if there is not outbound path for service in SD-Router or a Service Port Profile",
 							Optional:    true,
 						},
 					},
@@ -178,6 +278,16 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		} else {
 			objProps.Group = nil
 		}
+		if !op.OnSummary.IsNull() {
+			objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
+		} else {
+			objProps.OnSummary = nil
+		}
+		if !op.WarnOnNoExternalSource.IsNull() {
+			objProps.WarnOnNoExternalSource = openapi.PtrBool(op.WarnOnNoExternalSource.ValueBool())
+		} else {
+			objProps.WarnOnNoExternalSource = nil
+		}
 		serviceReq.ObjectProperties = &objProps
 	} else {
 		serviceReq.ObjectProperties = nil
@@ -217,11 +327,65 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	if !plan.DhcpServerIp.IsNull() {
 		serviceReq.DhcpServerIp = openapi.PtrString(plan.DhcpServerIp.ValueString())
 	}
+	if !plan.DhcpServerIpv4.IsNull() {
+		serviceReq.DhcpServerIpv4 = openapi.PtrString(plan.DhcpServerIpv4.ValueString())
+	}
+	if !plan.DhcpServerIpv6.IsNull() {
+		serviceReq.DhcpServerIpv6 = openapi.PtrString(plan.DhcpServerIpv6.ValueString())
+	}
 	if !plan.Mtu.IsNull() {
 		mtuVal := int32(plan.Mtu.ValueInt64())
 		serviceReq.Mtu = *openapi.NewNullableInt32(&mtuVal)
 	} else {
 		serviceReq.Mtu = *openapi.NewNullableInt32(nil)
+	}
+	if !plan.AnycastIpv4Mask.IsNull() {
+		serviceReq.AnycastIpv4Mask = openapi.PtrString(plan.AnycastIpv4Mask.ValueString())
+	}
+	if !plan.AnycastIpv6Mask.IsNull() {
+		serviceReq.AnycastIpv6Mask = openapi.PtrString(plan.AnycastIpv6Mask.ValueString())
+	}
+	if !plan.MaxUpstreamRateMbps.IsNull() {
+		serviceReq.MaxUpstreamRateMbps = openapi.PtrInt32(int32(plan.MaxUpstreamRateMbps.ValueInt64()))
+	}
+	if !plan.MaxDownstreamRateMbps.IsNull() {
+		serviceReq.MaxDownstreamRateMbps = openapi.PtrInt32(int32(plan.MaxDownstreamRateMbps.ValueInt64()))
+	}
+	if !plan.PacketPriority.IsNull() {
+		serviceReq.PacketPriority = openapi.PtrString(plan.PacketPriority.ValueString())
+	}
+	if !plan.MulticastManagementMode.IsNull() {
+		serviceReq.MulticastManagementMode = openapi.PtrString(plan.MulticastManagementMode.ValueString())
+	}
+	if !plan.TaggedPackets.IsNull() {
+		serviceReq.TaggedPackets = openapi.PtrBool(plan.TaggedPackets.ValueBool())
+	}
+	if !plan.Tls.IsNull() {
+		serviceReq.Tls = openapi.PtrBool(plan.Tls.ValueBool())
+	}
+	if !plan.AllowLocalSwitching.IsNull() {
+		serviceReq.AllowLocalSwitching = openapi.PtrBool(plan.AllowLocalSwitching.ValueBool())
+	}
+	if !plan.ActAsMulticastQuerier.IsNull() {
+		serviceReq.ActAsMulticastQuerier = openapi.PtrBool(plan.ActAsMulticastQuerier.ValueBool())
+	}
+	if !plan.BlockUnknownUnicastFlood.IsNull() {
+		serviceReq.BlockUnknownUnicastFlood = openapi.PtrBool(plan.BlockUnknownUnicastFlood.ValueBool())
+	}
+	if !plan.BlockDownstreamDhcpServer.IsNull() {
+		serviceReq.BlockDownstreamDhcpServer = openapi.PtrBool(plan.BlockDownstreamDhcpServer.ValueBool())
+	}
+	if !plan.IsManagementService.IsNull() {
+		serviceReq.IsManagementService = openapi.PtrBool(plan.IsManagementService.ValueBool())
+	}
+	if !plan.UseDscpToPBitMappingForL3PacketsIfAvailable.IsNull() {
+		serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = openapi.PtrBool(plan.UseDscpToPBitMappingForL3PacketsIfAvailable.ValueBool())
+	}
+	if !plan.AllowFastLeave.IsNull() {
+		serviceReq.AllowFastLeave = openapi.PtrBool(plan.AllowFastLeave.ValueBool())
+	}
+	if !plan.MstInstance.IsNull() {
+		serviceReq.MstInstance = openapi.PtrInt32(int32(plan.MstInstance.ValueInt64()))
 	}
 
 	provCtx := r.provCtx
@@ -417,19 +581,40 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	serviceReq := &openapi.ConfigPutRequestServiceServiceName{}
 	hasChanges := false
 
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
+	objPropsChanged := false
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		op_plan := plan.ObjectProperties[0]
+		op_state := state.ObjectProperties[0]
+		if !op_plan.Group.Equal(op_state.Group) || !op_plan.OnSummary.Equal(op_state.OnSummary) || !op_plan.WarnOnNoExternalSource.Equal(op_state.WarnOnNoExternalSource) {
+			objPropsChanged = true
+		}
+	} else if len(plan.ObjectProperties) != len(state.ObjectProperties) {
+		objPropsChanged = true
+	}
+
+	if objPropsChanged {
+		if len(plan.ObjectProperties) > 0 {
 			objProps := openapi.ConfigPutRequestServiceServiceNameObjectProperties{}
-			if !plan.ObjectProperties[0].Group.IsNull() {
-				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
+			op := plan.ObjectProperties[0]
+			if !op.Group.IsNull() {
+				objProps.Group = openapi.PtrString(op.Group.ValueString())
 			} else {
 				objProps.Group = nil
 			}
+			if !op.OnSummary.IsNull() {
+				objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
+			} else {
+				objProps.OnSummary = nil
+			}
+			if !op.WarnOnNoExternalSource.IsNull() {
+				objProps.WarnOnNoExternalSource = openapi.PtrBool(op.WarnOnNoExternalSource.ValueBool())
+			} else {
+				objProps.WarnOnNoExternalSource = nil
+			}
 			serviceReq.ObjectProperties = &objProps
-			hasChanges = true
+		} else {
+			serviceReq.ObjectProperties = nil
 		}
-	} else if len(state.ObjectProperties) > 0 {
-		serviceReq.ObjectProperties = nil
 		hasChanges = true
 	}
 
@@ -511,12 +696,114 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
+	if !plan.DhcpServerIpv4.Equal(state.DhcpServerIpv4) {
+		serviceReq.DhcpServerIpv4 = openapi.PtrString(plan.DhcpServerIpv4.ValueString())
+		hasChanges = true
+	}
+
+	if !plan.DhcpServerIpv6.Equal(state.DhcpServerIpv6) {
+		serviceReq.DhcpServerIpv6 = openapi.PtrString(plan.DhcpServerIpv6.ValueString())
+		hasChanges = true
+	}
+
 	if !plan.Mtu.Equal(state.Mtu) {
 		if !plan.Mtu.IsNull() {
 			mtuVal := int32(plan.Mtu.ValueInt64())
 			serviceReq.Mtu = *openapi.NewNullableInt32(&mtuVal)
 		} else {
 			serviceReq.Mtu = *openapi.NewNullableInt32(nil)
+		}
+		hasChanges = true
+	}
+
+	if !plan.AnycastIpv4Mask.Equal(state.AnycastIpv4Mask) {
+		serviceReq.AnycastIpv4Mask = openapi.PtrString(plan.AnycastIpv4Mask.ValueString())
+		hasChanges = true
+	}
+
+	if !plan.AnycastIpv6Mask.Equal(state.AnycastIpv6Mask) {
+		serviceReq.AnycastIpv6Mask = openapi.PtrString(plan.AnycastIpv6Mask.ValueString())
+		hasChanges = true
+	}
+
+	if !plan.MaxUpstreamRateMbps.Equal(state.MaxUpstreamRateMbps) {
+		if !plan.MaxUpstreamRateMbps.IsNull() {
+			serviceReq.MaxUpstreamRateMbps = openapi.PtrInt32(int32(plan.MaxUpstreamRateMbps.ValueInt64()))
+		} else {
+			serviceReq.MaxUpstreamRateMbps = nil
+		}
+		hasChanges = true
+	}
+
+	if !plan.MaxDownstreamRateMbps.Equal(state.MaxDownstreamRateMbps) {
+		if !plan.MaxDownstreamRateMbps.IsNull() {
+			serviceReq.MaxDownstreamRateMbps = openapi.PtrInt32(int32(plan.MaxDownstreamRateMbps.ValueInt64()))
+		} else {
+			serviceReq.MaxDownstreamRateMbps = nil
+		}
+		hasChanges = true
+	}
+
+	if !plan.PacketPriority.Equal(state.PacketPriority) {
+		serviceReq.PacketPriority = openapi.PtrString(plan.PacketPriority.ValueString())
+		hasChanges = true
+	}
+
+	if !plan.MulticastManagementMode.Equal(state.MulticastManagementMode) {
+		serviceReq.MulticastManagementMode = openapi.PtrString(plan.MulticastManagementMode.ValueString())
+		hasChanges = true
+	}
+
+	if !plan.TaggedPackets.Equal(state.TaggedPackets) {
+		serviceReq.TaggedPackets = openapi.PtrBool(plan.TaggedPackets.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.Tls.Equal(state.Tls) {
+		serviceReq.Tls = openapi.PtrBool(plan.Tls.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.AllowLocalSwitching.Equal(state.AllowLocalSwitching) {
+		serviceReq.AllowLocalSwitching = openapi.PtrBool(plan.AllowLocalSwitching.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.ActAsMulticastQuerier.Equal(state.ActAsMulticastQuerier) {
+		serviceReq.ActAsMulticastQuerier = openapi.PtrBool(plan.ActAsMulticastQuerier.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.BlockUnknownUnicastFlood.Equal(state.BlockUnknownUnicastFlood) {
+		serviceReq.BlockUnknownUnicastFlood = openapi.PtrBool(plan.BlockUnknownUnicastFlood.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.BlockDownstreamDhcpServer.Equal(state.BlockDownstreamDhcpServer) {
+		serviceReq.BlockDownstreamDhcpServer = openapi.PtrBool(plan.BlockDownstreamDhcpServer.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.IsManagementService.Equal(state.IsManagementService) {
+		serviceReq.IsManagementService = openapi.PtrBool(plan.IsManagementService.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.UseDscpToPBitMappingForL3PacketsIfAvailable.Equal(state.UseDscpToPBitMappingForL3PacketsIfAvailable) {
+		serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = openapi.PtrBool(plan.UseDscpToPBitMappingForL3PacketsIfAvailable.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.AllowFastLeave.Equal(state.AllowFastLeave) {
+		serviceReq.AllowFastLeave = openapi.PtrBool(plan.AllowFastLeave.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.MstInstance.Equal(state.MstInstance) {
+		if !plan.MstInstance.IsNull() {
+			serviceReq.MstInstance = openapi.PtrInt32(int32(plan.MstInstance.ValueInt64()))
+		} else {
+			serviceReq.MstInstance = nil
 		}
 		hasChanges = true
 	}
@@ -623,11 +910,31 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	}
 
 	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityServiceObjectPropertiesModel{
-			{
-				Group: types.StringValue(fmt.Sprintf("%v", op["group"])),
-			},
+		objProps := verityServiceObjectPropertiesModel{}
+
+		if group, exists := op["group"]; exists {
+			objProps.Group = types.StringValue(fmt.Sprintf("%v", group))
+		} else {
+			objProps.Group = types.StringNull()
 		}
+
+		if onSummary, exists := op["on_summary"].(bool); exists {
+			objProps.OnSummary = types.BoolValue(onSummary)
+		} else if plan != nil && len(plan.ObjectProperties) > 0 && !plan.ObjectProperties[0].OnSummary.IsNull() {
+			objProps.OnSummary = plan.ObjectProperties[0].OnSummary
+		} else {
+			objProps.OnSummary = types.BoolNull()
+		}
+
+		if warnOnNoExternal, exists := op["warn_on_no_external_source"].(bool); exists {
+			objProps.WarnOnNoExternalSource = types.BoolValue(warnOnNoExternal)
+		} else if plan != nil && len(plan.ObjectProperties) > 0 && !plan.ObjectProperties[0].WarnOnNoExternalSource.IsNull() {
+			objProps.WarnOnNoExternalSource = plan.ObjectProperties[0].WarnOnNoExternalSource
+		} else {
+			objProps.WarnOnNoExternalSource = types.BoolNull()
+		}
+
+		state.ObjectProperties = []verityServiceObjectPropertiesModel{objProps}
 	} else if plan != nil && len(plan.ObjectProperties) > 0 {
 		state.ObjectProperties = plan.ObjectProperties
 	} else {
@@ -718,6 +1025,22 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		state.DhcpServerIp = types.StringNull()
 	}
 
+	if val, ok := serviceData["dhcp_server_ipv4"].(string); ok {
+		state.DhcpServerIpv4 = types.StringValue(val)
+	} else if plan != nil && !plan.DhcpServerIpv4.IsNull() {
+		state.DhcpServerIpv4 = plan.DhcpServerIpv4
+	} else {
+		state.DhcpServerIpv4 = types.StringNull()
+	}
+
+	if val, ok := serviceData["dhcp_server_ipv6"].(string); ok {
+		state.DhcpServerIpv6 = types.StringValue(val)
+	} else if plan != nil && !plan.DhcpServerIpv6.IsNull() {
+		state.DhcpServerIpv6 = plan.DhcpServerIpv6
+	} else {
+		state.DhcpServerIpv6 = types.StringNull()
+	}
+
 	if val, ok := serviceData["mtu"]; ok {
 		switch v := val.(type) {
 		case float64:
@@ -735,6 +1058,173 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		state.Mtu = plan.Mtu
 	} else {
 		state.Mtu = types.Int64Null()
+	}
+
+	if val, ok := serviceData["anycast_ipv4_mask"].(string); ok {
+		state.AnycastIpv4Mask = types.StringValue(val)
+	} else if plan != nil && !plan.AnycastIpv4Mask.IsNull() {
+		state.AnycastIpv4Mask = plan.AnycastIpv4Mask
+	} else {
+		state.AnycastIpv4Mask = types.StringNull()
+	}
+
+	if val, ok := serviceData["anycast_ipv6_mask"].(string); ok {
+		state.AnycastIpv6Mask = types.StringValue(val)
+	} else if plan != nil && !plan.AnycastIpv6Mask.IsNull() {
+		state.AnycastIpv6Mask = plan.AnycastIpv6Mask
+	} else {
+		state.AnycastIpv6Mask = types.StringNull()
+	}
+
+	if val, ok := serviceData["max_upstream_rate_mbps"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.MaxUpstreamRateMbps = types.Int64Value(int64(v))
+		case int:
+			state.MaxUpstreamRateMbps = types.Int64Value(int64(v))
+		case int32:
+			state.MaxUpstreamRateMbps = types.Int64Value(int64(v))
+		default:
+			if plan != nil && !plan.MaxUpstreamRateMbps.IsNull() {
+				state.MaxUpstreamRateMbps = plan.MaxUpstreamRateMbps
+			} else {
+				state.MaxUpstreamRateMbps = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.MaxUpstreamRateMbps.IsNull() {
+		state.MaxUpstreamRateMbps = plan.MaxUpstreamRateMbps
+	} else {
+		state.MaxUpstreamRateMbps = types.Int64Null()
+	}
+
+	if val, ok := serviceData["max_downstream_rate_mbps"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.MaxDownstreamRateMbps = types.Int64Value(int64(v))
+		case int:
+			state.MaxDownstreamRateMbps = types.Int64Value(int64(v))
+		case int32:
+			state.MaxDownstreamRateMbps = types.Int64Value(int64(v))
+		default:
+			if plan != nil && !plan.MaxDownstreamRateMbps.IsNull() {
+				state.MaxDownstreamRateMbps = plan.MaxDownstreamRateMbps
+			} else {
+				state.MaxDownstreamRateMbps = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.MaxDownstreamRateMbps.IsNull() {
+		state.MaxDownstreamRateMbps = plan.MaxDownstreamRateMbps
+	} else {
+		state.MaxDownstreamRateMbps = types.Int64Null()
+	}
+
+	if val, ok := serviceData["packet_priority"].(string); ok {
+		state.PacketPriority = types.StringValue(val)
+	} else if plan != nil && !plan.PacketPriority.IsNull() {
+		state.PacketPriority = plan.PacketPriority
+	} else {
+		state.PacketPriority = types.StringNull()
+	}
+
+	if val, ok := serviceData["multicast_management_mode"].(string); ok {
+		state.MulticastManagementMode = types.StringValue(val)
+	} else if plan != nil && !plan.MulticastManagementMode.IsNull() {
+		state.MulticastManagementMode = plan.MulticastManagementMode
+	} else {
+		state.MulticastManagementMode = types.StringNull()
+	}
+
+	if val, ok := serviceData["tagged_packets"].(bool); ok {
+		state.TaggedPackets = types.BoolValue(val)
+	} else if plan != nil && !plan.TaggedPackets.IsNull() {
+		state.TaggedPackets = plan.TaggedPackets
+	} else {
+		state.TaggedPackets = types.BoolNull()
+	}
+
+	if val, ok := serviceData["tls"].(bool); ok {
+		state.Tls = types.BoolValue(val)
+	} else if plan != nil && !plan.Tls.IsNull() {
+		state.Tls = plan.Tls
+	} else {
+		state.Tls = types.BoolNull()
+	}
+
+	if val, ok := serviceData["allow_local_switching"].(bool); ok {
+		state.AllowLocalSwitching = types.BoolValue(val)
+	} else if plan != nil && !plan.AllowLocalSwitching.IsNull() {
+		state.AllowLocalSwitching = plan.AllowLocalSwitching
+	} else {
+		state.AllowLocalSwitching = types.BoolNull()
+	}
+
+	if val, ok := serviceData["act_as_multicast_querier"].(bool); ok {
+		state.ActAsMulticastQuerier = types.BoolValue(val)
+	} else if plan != nil && !plan.ActAsMulticastQuerier.IsNull() {
+		state.ActAsMulticastQuerier = plan.ActAsMulticastQuerier
+	} else {
+		state.ActAsMulticastQuerier = types.BoolNull()
+	}
+
+	if val, ok := serviceData["block_unknown_unicast_flood"].(bool); ok {
+		state.BlockUnknownUnicastFlood = types.BoolValue(val)
+	} else if plan != nil && !plan.BlockUnknownUnicastFlood.IsNull() {
+		state.BlockUnknownUnicastFlood = plan.BlockUnknownUnicastFlood
+	} else {
+		state.BlockUnknownUnicastFlood = types.BoolNull()
+	}
+
+	if val, ok := serviceData["block_downstream_dhcp_server"].(bool); ok {
+		state.BlockDownstreamDhcpServer = types.BoolValue(val)
+	} else if plan != nil && !plan.BlockDownstreamDhcpServer.IsNull() {
+		state.BlockDownstreamDhcpServer = plan.BlockDownstreamDhcpServer
+	} else {
+		state.BlockDownstreamDhcpServer = types.BoolNull()
+	}
+
+	if val, ok := serviceData["is_management_service"].(bool); ok {
+		state.IsManagementService = types.BoolValue(val)
+	} else if plan != nil && !plan.IsManagementService.IsNull() {
+		state.IsManagementService = plan.IsManagementService
+	} else {
+		state.IsManagementService = types.BoolNull()
+	}
+
+	if val, ok := serviceData["use_dscp_to_p_bit_mapping_for_l3_packets_if_available"].(bool); ok {
+		state.UseDscpToPBitMappingForL3PacketsIfAvailable = types.BoolValue(val)
+	} else if plan != nil && !plan.UseDscpToPBitMappingForL3PacketsIfAvailable.IsNull() {
+		state.UseDscpToPBitMappingForL3PacketsIfAvailable = plan.UseDscpToPBitMappingForL3PacketsIfAvailable
+	} else {
+		state.UseDscpToPBitMappingForL3PacketsIfAvailable = types.BoolNull()
+	}
+
+	if val, ok := serviceData["allow_fast_leave"].(bool); ok {
+		state.AllowFastLeave = types.BoolValue(val)
+	} else if plan != nil && !plan.AllowFastLeave.IsNull() {
+		state.AllowFastLeave = plan.AllowFastLeave
+	} else {
+		state.AllowFastLeave = types.BoolNull()
+	}
+
+	if val, ok := serviceData["mst_instance"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.MstInstance = types.Int64Value(int64(v))
+		case int:
+			state.MstInstance = types.Int64Value(int64(v))
+		case int32:
+			state.MstInstance = types.Int64Value(int64(v))
+		default:
+			if plan != nil && !plan.MstInstance.IsNull() {
+				state.MstInstance = plan.MstInstance
+			} else {
+				state.MstInstance = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.MstInstance.IsNull() {
+		state.MstInstance = plan.MstInstance
+	} else {
+		state.MstInstance = types.Int64Null()
 	}
 
 	return state

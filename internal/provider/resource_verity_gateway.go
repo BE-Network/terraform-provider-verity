@@ -55,7 +55,6 @@ type verityGatewayResourceModel struct {
 	SourceIpAddress         types.String                         `tfsdk:"source_ip_address"`
 	AnycastIpMask           types.String                         `tfsdk:"anycast_ip_mask"`
 	Md5Password             types.String                         `tfsdk:"md5_password"`
-	Md5PasswordEncrypted    types.String                         `tfsdk:"md5_password_encrypted"`
 	ImportRouteMap          types.String                         `tfsdk:"import_route_map"`
 	StaticRoutes            []verityGatewayStaticRoutesModel     `tfsdk:"static_routes"`
 	ExportRouteMap          types.String                         `tfsdk:"export_route_map"`
@@ -176,9 +175,6 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional: true,
 			},
 			"md5_password": schema.StringAttribute{
-				Optional: true,
-			},
-			"md5_password_encrypted": schema.StringAttribute{
 				Optional: true,
 			},
 			"import_route_map": schema.StringAttribute{
@@ -592,6 +588,7 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		state.Enable = types.BoolNull()
 	}
 
+	// Only set object_properties if it exists in the API response
 	if objProps, ok := gatewayData["object_properties"].(map[string]interface{}); ok {
 		if group, ok := objProps["group"].(string); ok {
 			state.ObjectProperties = []verityGatewayObjectPropertiesModel{
@@ -603,9 +600,7 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 			}
 		}
 	} else {
-		state.ObjectProperties = []verityGatewayObjectPropertiesModel{
-			{Group: types.StringValue("")},
-		}
+		state.ObjectProperties = nil
 	}
 
 	stringAttrs := map[string]*types.String{
@@ -615,7 +610,6 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		"source_ip_address":          &state.SourceIpAddress,
 		"anycast_ip_mask":            &state.AnycastIpMask,
 		"md5_password":               &state.Md5Password,
-		"md5_password_encrypted":     &state.Md5PasswordEncrypted,
 		"import_route_map":           &state.ImportRouteMap,
 		"export_route_map":           &state.ExportRouteMap,
 		"gateway_mode":               &state.GatewayMode,

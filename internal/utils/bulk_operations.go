@@ -63,6 +63,7 @@ type BulkOperationManager struct {
 	client            *openapi.APIClient
 	contextProvider   ContextProviderFunc
 	clearCacheFunc    ClearCacheFunc
+	mode              string
 	mutex             sync.Mutex
 	lastOperationTime time.Time
 	batchStartTime    time.Time
@@ -105,23 +106,93 @@ type BulkOperationManager struct {
 	// Bundles operations
 	bundlePatch map[string]openapi.BundlesPatchRequestEndpointBundleValue
 
+	// ACL operations
+	aclPut    map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
+	aclPatch  map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
+	aclDelete []string
+
+	// Authenticated Eth-Port operations
+	authenticatedEthPortPut    map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName
+	authenticatedEthPortPatch  map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName
+	authenticatedEthPortDelete []string
+
+	// Badge operations
+	badgePut    map[string]openapi.ConfigPutRequestBadgeBadgeName
+	badgePatch  map[string]openapi.ConfigPutRequestBadgeBadgeName
+	badgeDelete []string
+
+	// Device Port Settings operations
+	deviceVoiceSettingsPut    map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName
+	deviceVoiceSettingsPatch  map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName
+	deviceVoiceSettingsDelete []string
+
+	// Packet Broker operations
+	packetBrokerPut    map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName
+	packetBrokerPatch  map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName
+	packetBrokerDelete []string
+
+	// Packet Queues operations
+	packetQueuePut    map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName
+	packetQueuePatch  map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName
+	packetQueueDelete []string
+
+	// ServicePort Profile operations
+	servicePortProfilePut    map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName
+	servicePortProfilePatch  map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName
+	servicePortProfileDelete []string
+
+	// Switchpoint operations
+	switchpointPut    map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName
+	switchpointPatch  map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName
+	switchpointDelete []string
+
+	// Voice Port Profile operations
+	voicePortProfilePut    map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName
+	voicePortProfilePatch  map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName
+	voicePortProfileDelete []string
+
+	// Device Controller operations
+	deviceControllerPut    map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName
+	deviceControllerPatch  map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName
+	deviceControllerDelete []string
+
 	// Track recent operations to avoid race conditions
-	recentGatewayOps            bool
-	recentGatewayOpTime         time.Time
-	recentLagOps                bool
-	recentLagOpTime             time.Time
-	recentServiceOps            bool
-	recentServiceOpTime         time.Time
-	recentTenantOps             bool
-	recentTenantOpTime          time.Time
-	recentGatewayProfileOps     bool
-	recentGatewayProfileOpTime  time.Time
-	recentEthPortProfileOps     bool
-	recentEthPortProfileOpTime  time.Time
-	recentEthPortSettingsOps    bool
-	recentEthPortSettingsOpTime time.Time
-	recentBundleOps             bool
-	recentBundleOpTime          time.Time
+	recentGatewayOps                 bool
+	recentGatewayOpTime              time.Time
+	recentLagOps                     bool
+	recentLagOpTime                  time.Time
+	recentServiceOps                 bool
+	recentServiceOpTime              time.Time
+	recentTenantOps                  bool
+	recentTenantOpTime               time.Time
+	recentGatewayProfileOps          bool
+	recentGatewayProfileOpTime       time.Time
+	recentEthPortProfileOps          bool
+	recentEthPortProfileOpTime       time.Time
+	recentEthPortSettingsOps         bool
+	recentEthPortSettingsOpTime      time.Time
+	recentBundleOps                  bool
+	recentBundleOpTime               time.Time
+	recentAclOps                     bool
+	recentAclOpTime                  time.Time
+	recentAuthenticatedEthPortOps    bool
+	recentAuthenticatedEthPortOpTime time.Time
+	recentBadgeOps                   bool
+	recentBadgeOpTime                time.Time
+	recentVoicePortProfileOps        bool
+	recentVoicePortProfileOpTime     time.Time
+	recentSwitchpointOps             bool
+	recentSwitchpointOpTime          time.Time
+	recentServicePortProfileOps      bool
+	recentServicePortProfileOpTime   time.Time
+	recentPacketBrokerOps            bool
+	recentPacketBrokerOpTime         time.Time
+	recentPacketQueueOps             bool
+	recentPacketQueueOpTime          time.Time
+	recentDeviceVoiceSettingsOps     bool
+	recentDeviceVoiceSettingsOpTime  time.Time
+	recentDeviceControllerOps        bool
+	recentDeviceControllerOpTime     time.Time
 
 	// For tracking operations
 	pendingOperations     map[string]*Operation
@@ -132,22 +203,42 @@ type BulkOperationManager struct {
 	closedChannels        map[string]bool
 
 	// Store API responses
-	gatewayResponses              map[string]map[string]interface{}
-	gatewayResponsesMutex         sync.RWMutex
-	lagResponses                  map[string]map[string]interface{}
-	lagResponsesMutex             sync.RWMutex
-	serviceResponses              map[string]map[string]interface{}
-	serviceResponsesMutex         sync.RWMutex
-	tenantResponses               map[string]map[string]interface{}
-	tenantResponsesMutex          sync.RWMutex
-	gatewayProfileResponses       map[string]map[string]interface{}
-	gatewayProfileResponsesMutex  sync.RWMutex
-	ethPortProfileResponses       map[string]map[string]interface{}
-	ethPortProfileResponsesMutex  sync.RWMutex
-	ethPortSettingsResponses      map[string]map[string]interface{}
-	ethPortSettingsResponsesMutex sync.RWMutex
-	bundleResponses               map[string]map[string]interface{}
-	bundleResponsesMutex          sync.RWMutex
+	gatewayResponses                   map[string]map[string]interface{}
+	gatewayResponsesMutex              sync.RWMutex
+	lagResponses                       map[string]map[string]interface{}
+	lagResponsesMutex                  sync.RWMutex
+	serviceResponses                   map[string]map[string]interface{}
+	serviceResponsesMutex              sync.RWMutex
+	tenantResponses                    map[string]map[string]interface{}
+	tenantResponsesMutex               sync.RWMutex
+	gatewayProfileResponses            map[string]map[string]interface{}
+	gatewayProfileResponsesMutex       sync.RWMutex
+	ethPortProfileResponses            map[string]map[string]interface{}
+	ethPortProfileResponsesMutex       sync.RWMutex
+	ethPortSettingsResponses           map[string]map[string]interface{}
+	ethPortSettingsResponsesMutex      sync.RWMutex
+	bundleResponses                    map[string]map[string]interface{}
+	bundleResponsesMutex               sync.RWMutex
+	aclResponses                       map[string]map[string]interface{}
+	aclResponsesMutex                  sync.RWMutex
+	authenticatedEthPortResponses      map[string]map[string]interface{}
+	authenticatedEthPortResponsesMutex sync.RWMutex
+	badgeResponses                     map[string]map[string]interface{}
+	badgeResponsesMutex                sync.RWMutex
+	voicePortProfileResponses          map[string]map[string]interface{}
+	voicePortProfileResponsesMutex     sync.RWMutex
+	switchpointResponses               map[string]map[string]interface{}
+	switchpointResponsesMutex          sync.RWMutex
+	servicePortProfileResponses        map[string]map[string]interface{}
+	servicePortProfileResponsesMutex   sync.RWMutex
+	packetBrokerResponses              map[string]map[string]interface{}
+	packetBrokerResponsesMutex         sync.RWMutex
+	packetQueueResponses               map[string]map[string]interface{}
+	packetQueueResponsesMutex          sync.RWMutex
+	deviceVoiceSettingsResponses       map[string]map[string]interface{}
+	deviceVoiceSettingsResponsesMutex  sync.RWMutex
+	deviceControllerResponses          map[string]map[string]interface{}
+	deviceControllerResponsesMutex     sync.RWMutex
 }
 
 func (b *BulkOperationManager) FilterPreExistingResources(
@@ -259,67 +350,128 @@ func (b *BulkOperationManager) WaitForOperation(ctx context.Context, operationID
 	}
 }
 
-func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextProviderFunc, clearCacheFunc ClearCacheFunc) *BulkOperationManager {
+func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextProviderFunc, clearCacheFunc ClearCacheFunc, mode string) *BulkOperationManager {
 	return &BulkOperationManager{
-		client:                client,
-		contextProvider:       contextProvider,
-		clearCacheFunc:        clearCacheFunc,
-		lastOperationTime:     time.Now(),
-		gatewayPut:            make(map[string]openapi.ConfigPutRequestGatewayGatewayName),
-		gatewayPatch:          make(map[string]openapi.ConfigPutRequestGatewayGatewayName),
-		gatewayDelete:         make([]string, 0),
-		lagPut:                make(map[string]openapi.ConfigPutRequestLagLagName),
-		lagPatch:              make(map[string]openapi.ConfigPutRequestLagLagName),
-		lagDelete:             make([]string, 0),
-		tenantPut:             make(map[string]openapi.ConfigPutRequestTenantTenantName),
-		tenantPatch:           make(map[string]openapi.ConfigPutRequestTenantTenantName),
-		tenantDelete:          make([]string, 0),
-		servicePut:            make(map[string]openapi.ConfigPutRequestServiceServiceName),
-		servicePatch:          make(map[string]openapi.ConfigPutRequestServiceServiceName),
-		serviceDelete:         make([]string, 0),
-		gatewayProfilePut:     make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName),
-		gatewayProfilePatch:   make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName),
-		gatewayProfileDelete:  make([]string, 0),
-		ethPortProfilePut:     make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName),
-		ethPortProfilePatch:   make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName),
-		ethPortProfileDelete:  make([]string, 0),
-		ethPortSettingsPut:    make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName),
-		ethPortSettingsPatch:  make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName),
-		ethPortSettingsDelete: make([]string, 0),
-		bundlePatch:           make(map[string]openapi.BundlesPatchRequestEndpointBundleValue),
-		pendingOperations:     make(map[string]*Operation),
-		operationResults:      make(map[string]bool),
-		operationErrors:       make(map[string]error),
-		operationWaitChannels: make(map[string]chan struct{}),
-		closedChannels:        make(map[string]bool),
+		client:                     client,
+		contextProvider:            contextProvider,
+		clearCacheFunc:             clearCacheFunc,
+		mode:                       mode,
+		lastOperationTime:          time.Now(),
+		gatewayPut:                 make(map[string]openapi.ConfigPutRequestGatewayGatewayName),
+		gatewayPatch:               make(map[string]openapi.ConfigPutRequestGatewayGatewayName),
+		gatewayDelete:              make([]string, 0),
+		lagPut:                     make(map[string]openapi.ConfigPutRequestLagLagName),
+		lagPatch:                   make(map[string]openapi.ConfigPutRequestLagLagName),
+		lagDelete:                  make([]string, 0),
+		tenantPut:                  make(map[string]openapi.ConfigPutRequestTenantTenantName),
+		tenantPatch:                make(map[string]openapi.ConfigPutRequestTenantTenantName),
+		tenantDelete:               make([]string, 0),
+		servicePut:                 make(map[string]openapi.ConfigPutRequestServiceServiceName),
+		servicePatch:               make(map[string]openapi.ConfigPutRequestServiceServiceName),
+		serviceDelete:              make([]string, 0),
+		gatewayProfilePut:          make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName),
+		gatewayProfilePatch:        make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName),
+		gatewayProfileDelete:       make([]string, 0),
+		ethPortProfilePut:          make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName),
+		ethPortProfilePatch:        make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName),
+		ethPortProfileDelete:       make([]string, 0),
+		ethPortSettingsPut:         make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName),
+		ethPortSettingsPatch:       make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName),
+		ethPortSettingsDelete:      make([]string, 0),
+		bundlePatch:                make(map[string]openapi.BundlesPatchRequestEndpointBundleValue),
+		aclPut:                     make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName),
+		aclPatch:                   make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName),
+		aclDelete:                  make([]string, 0),
+		authenticatedEthPortPut:    make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName),
+		authenticatedEthPortPatch:  make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName),
+		authenticatedEthPortDelete: make([]string, 0),
+		badgePut:                   make(map[string]openapi.ConfigPutRequestBadgeBadgeName),
+		badgePatch:                 make(map[string]openapi.ConfigPutRequestBadgeBadgeName),
+		badgeDelete:                make([]string, 0),
+		voicePortProfilePut:        make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName),
+		voicePortProfilePatch:      make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName),
+		voicePortProfileDelete:     make([]string, 0),
+		switchpointPut:             make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName),
+		switchpointPatch:           make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName),
+		switchpointDelete:          make([]string, 0),
+		servicePortProfilePut:      make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName),
+		servicePortProfilePatch:    make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName),
+		servicePortProfileDelete:   make([]string, 0),
+		packetBrokerPut:            make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName),
+		packetBrokerPatch:          make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName),
+		packetBrokerDelete:         make([]string, 0),
+		packetQueuePut:             make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName),
+		packetQueuePatch:           make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName),
+		packetQueueDelete:          make([]string, 0),
+		deviceVoiceSettingsPut:     make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName),
+		deviceVoiceSettingsPatch:   make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName),
+		deviceVoiceSettingsDelete:  make([]string, 0),
+		deviceControllerPut:        make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName),
+		deviceControllerPatch:      make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName),
+		deviceControllerDelete:     make([]string, 0),
+		pendingOperations:          make(map[string]*Operation),
+		operationResults:           make(map[string]bool),
+		operationErrors:            make(map[string]error),
+		operationWaitChannels:      make(map[string]chan struct{}),
+		closedChannels:             make(map[string]bool),
 
 		// Initialize with no recent operations
-		recentGatewayOps:         false,
-		recentLagOps:             false,
-		recentServiceOps:         false,
-		recentTenantOps:          false,
-		recentGatewayProfileOps:  false,
-		recentEthPortProfileOps:  false,
-		recentEthPortSettingsOps: false,
-		recentBundleOps:          false,
+		recentGatewayOps:              false,
+		recentLagOps:                  false,
+		recentServiceOps:              false,
+		recentTenantOps:               false,
+		recentGatewayProfileOps:       false,
+		recentEthPortProfileOps:       false,
+		recentEthPortSettingsOps:      false,
+		recentBundleOps:               false,
+		recentAclOps:                  false,
+		recentAuthenticatedEthPortOps: false,
+		recentBadgeOps:                false,
+		recentVoicePortProfileOps:     false,
+		recentSwitchpointOps:          false,
+		recentServicePortProfileOps:   false,
+		recentPacketBrokerOps:         false,
+		recentPacketQueueOps:          false,
+		recentDeviceVoiceSettingsOps:  false,
+		recentDeviceControllerOps:     false,
 
 		// Initialize response caches
-		gatewayResponses:              make(map[string]map[string]interface{}),
-		gatewayResponsesMutex:         sync.RWMutex{},
-		lagResponses:                  make(map[string]map[string]interface{}),
-		lagResponsesMutex:             sync.RWMutex{},
-		serviceResponses:              make(map[string]map[string]interface{}),
-		serviceResponsesMutex:         sync.RWMutex{},
-		tenantResponses:               make(map[string]map[string]interface{}),
-		tenantResponsesMutex:          sync.RWMutex{},
-		gatewayProfileResponses:       make(map[string]map[string]interface{}),
-		gatewayProfileResponsesMutex:  sync.RWMutex{},
-		ethPortProfileResponses:       make(map[string]map[string]interface{}),
-		ethPortProfileResponsesMutex:  sync.RWMutex{},
-		ethPortSettingsResponses:      make(map[string]map[string]interface{}),
-		ethPortSettingsResponsesMutex: sync.RWMutex{},
-		bundleResponses:               make(map[string]map[string]interface{}),
-		bundleResponsesMutex:          sync.RWMutex{},
+		gatewayResponses:                   make(map[string]map[string]interface{}),
+		gatewayResponsesMutex:              sync.RWMutex{},
+		lagResponses:                       make(map[string]map[string]interface{}),
+		lagResponsesMutex:                  sync.RWMutex{},
+		serviceResponses:                   make(map[string]map[string]interface{}),
+		serviceResponsesMutex:              sync.RWMutex{},
+		tenantResponses:                    make(map[string]map[string]interface{}),
+		tenantResponsesMutex:               sync.RWMutex{},
+		gatewayProfileResponses:            make(map[string]map[string]interface{}),
+		gatewayProfileResponsesMutex:       sync.RWMutex{},
+		ethPortProfileResponses:            make(map[string]map[string]interface{}),
+		ethPortProfileResponsesMutex:       sync.RWMutex{},
+		ethPortSettingsResponses:           make(map[string]map[string]interface{}),
+		ethPortSettingsResponsesMutex:      sync.RWMutex{},
+		bundleResponses:                    make(map[string]map[string]interface{}),
+		bundleResponsesMutex:               sync.RWMutex{},
+		aclResponses:                       make(map[string]map[string]interface{}),
+		aclResponsesMutex:                  sync.RWMutex{},
+		authenticatedEthPortResponses:      make(map[string]map[string]interface{}),
+		authenticatedEthPortResponsesMutex: sync.RWMutex{},
+		badgeResponses:                     make(map[string]map[string]interface{}),
+		badgeResponsesMutex:                sync.RWMutex{},
+		voicePortProfileResponses:          make(map[string]map[string]interface{}),
+		voicePortProfileResponsesMutex:     sync.RWMutex{},
+		switchpointResponses:               make(map[string]map[string]interface{}),
+		switchpointResponsesMutex:          sync.RWMutex{},
+		servicePortProfileResponses:        make(map[string]map[string]interface{}),
+		servicePortProfileResponsesMutex:   sync.RWMutex{},
+		packetBrokerResponses:              make(map[string]map[string]interface{}),
+		packetBrokerResponsesMutex:         sync.RWMutex{},
+		packetQueueResponses:               make(map[string]map[string]interface{}),
+		packetQueueResponsesMutex:          sync.RWMutex{},
+		deviceVoiceSettingsResponses:       make(map[string]map[string]interface{}),
+		deviceVoiceSettingsResponsesMutex:  sync.RWMutex{},
+		deviceControllerResponses:          make(map[string]map[string]interface{}),
+		deviceControllerResponsesMutex:     sync.RWMutex{},
 	}
 }
 
@@ -373,17 +525,77 @@ func (b *BulkOperationManager) GetResourceResponse(resourceType, resourceName st
 		response, exists := b.bundleResponses[resourceName]
 		return response, exists
 
+	case "acl":
+		b.aclResponsesMutex.RLock()
+		defer b.aclResponsesMutex.RUnlock()
+		response, exists := b.aclResponses[resourceName]
+		return response, exists
+
+	case "authenticated_eth_port":
+		b.authenticatedEthPortResponsesMutex.RLock()
+		defer b.authenticatedEthPortResponsesMutex.RUnlock()
+		response, exists := b.authenticatedEthPortResponses[resourceName]
+		return response, exists
+
+	case "badge":
+		b.badgeResponsesMutex.RLock()
+		defer b.badgeResponsesMutex.RUnlock()
+		response, exists := b.badgeResponses[resourceName]
+		return response, exists
+
+	case "switchpoint":
+		b.switchpointResponsesMutex.RLock()
+		defer b.switchpointResponsesMutex.RUnlock()
+		response, exists := b.switchpointResponses[resourceName]
+		return response, exists
+
+	case "service_port_profile":
+		b.servicePortProfileResponsesMutex.RLock()
+		defer b.servicePortProfileResponsesMutex.RUnlock()
+		response, exists := b.servicePortProfileResponses[resourceName]
+		return response, exists
+
+	case "packet_broker":
+		b.packetBrokerResponsesMutex.RLock()
+		defer b.packetBrokerResponsesMutex.RUnlock()
+		response, exists := b.packetBrokerResponses[resourceName]
+		return response, exists
+
+	case "packet_queue":
+		b.packetQueueResponsesMutex.RLock()
+		defer b.packetQueueResponsesMutex.RUnlock()
+		response, exists := b.packetQueueResponses[resourceName]
+		return response, exists
+
+	case "device_voice_settings":
+		b.deviceVoiceSettingsResponsesMutex.RLock()
+		defer b.deviceVoiceSettingsResponsesMutex.RUnlock()
+		response, exists := b.deviceVoiceSettingsResponses[resourceName]
+		return response, exists
+
+	case "voice_port_profile":
+		b.voicePortProfileResponsesMutex.RLock()
+		defer b.voicePortProfileResponsesMutex.RUnlock()
+		response, exists := b.voicePortProfileResponses[resourceName]
+		return response, exists
+
+	case "device_controller":
+		b.deviceControllerResponsesMutex.RLock()
+		defer b.deviceControllerResponsesMutex.RUnlock()
+		response, exists := b.deviceControllerResponses[resourceName]
+		return response, exists
+
 	default:
 		return nil, false
 	}
 }
 
-func GetBulkOperationManager(client *openapi.APIClient, clearCacheFunc ClearCacheFunc, providerContext interface{}) *BulkOperationManager {
+func GetBulkOperationManager(client *openapi.APIClient, clearCacheFunc ClearCacheFunc, providerContext interface{}, mode string) *BulkOperationManager {
 	contextProvider := func() interface{} {
 		return providerContext
 	}
 
-	return NewBulkOperationManager(client, contextProvider, clearCacheFunc)
+	return NewBulkOperationManager(client, contextProvider, clearCacheFunc, mode)
 }
 
 func (b *BulkOperationManager) FailAllPendingOperations(ctx context.Context, err error) {
@@ -425,403 +637,22 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 		time.Sleep(remaining)
 	}
 
-	// Get counts of each operation type
-	tenantPutCount := len(b.tenantPut)
-	tenantPatchCount := len(b.tenantPatch)
-	tenantDeleteCount := len(b.tenantDelete)
+	var opsDiags diag.Diagnostics
+	var operationsPerformed bool
 
-	gatewayPutCount := len(b.gatewayPut)
-	gatewayPatchCount := len(b.gatewayPatch)
-	gatewayDeleteCount := len(b.gatewayDelete)
-
-	gatewayProfilePutCount := len(b.gatewayProfilePut)
-	gatewayProfilePatchCount := len(b.gatewayProfilePatch)
-	gatewayProfileDeleteCount := len(b.gatewayProfileDelete)
-
-	servicePutCount := len(b.servicePut)
-	servicePatchCount := len(b.servicePatch)
-	serviceDeleteCount := len(b.serviceDelete)
-
-	ethPortProfilePutCount := len(b.ethPortProfilePut)
-	ethPortProfilePatchCount := len(b.ethPortProfilePatch)
-	ethPortProfileDeleteCount := len(b.ethPortProfileDelete)
-
-	ethPortSettingsPutCount := len(b.ethPortSettingsPut)
-	ethPortSettingsPatchCount := len(b.ethPortSettingsPatch)
-	ethPortSettingsDeleteCount := len(b.ethPortSettingsDelete)
-
-	lagPutCount := len(b.lagPut)
-	lagPatchCount := len(b.lagPatch)
-	lagDeleteCount := len(b.lagDelete)
-
-	bundlePatchCount := len(b.bundlePatch)
-
-	operationsPerformed := false
-
-	// Step 1: Execute all PUT operations in the desired order
-	// Order:
-	// 1. Tenants
-	// 2. Gateways
-	// 3. Gateway Profiles
-	// 4. Services
-	// 5. Eth Port Profiles
-	// 6. Eth Port Settings
-	// 7. Lags
-
-	// First execute all PUT operations
-	if tenantPutCount > 0 {
-		tflog.Debug(ctx, "Executing Tenant PUT operations", map[string]interface{}{
-			"operation_count": tenantPutCount,
-		})
-		putDiags := b.ExecuteBulkTenantPut(ctx)
-		diagnostics.Append(putDiags...)
-
-		if putDiags.HasError() {
-			err := fmt.Errorf("bulk tenant PUT operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
+	switch b.mode {
+	case "datacenter":
+		tflog.Debug(ctx, "Executing pending operations in 'datacenter' mode")
+		opsDiags, operationsPerformed = b.ExecuteDatacenterOperations(ctx)
+	case "campus":
+		tflog.Debug(ctx, "Executing pending operations in 'campus' mode")
+		opsDiags, operationsPerformed = b.ExecuteCampusOperations(ctx)
+	default:
+		tflog.Warn(ctx, fmt.Sprintf("Unknown mode '%s', defaulting to 'datacenter' mode", b.mode))
+		opsDiags, operationsPerformed = b.ExecuteDatacenterOperations(ctx)
 	}
 
-	if gatewayPutCount > 0 {
-		tflog.Debug(ctx, "Executing Gateway PUT operations", map[string]interface{}{
-			"operation_count": gatewayPutCount,
-		})
-		putDiags := b.ExecuteBulkGatewayPut(ctx)
-		diagnostics.Append(putDiags...)
-
-		if putDiags.HasError() {
-			err := fmt.Errorf("bulk gateway PUT operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if gatewayProfilePutCount > 0 {
-		tflog.Debug(ctx, "Executing Gateway Profile PUT operations", map[string]interface{}{
-			"operation_count": gatewayProfilePutCount,
-		})
-		putDiags := b.ExecuteBulkGatewayProfilePut(ctx)
-		diagnostics.Append(putDiags...)
-
-		if putDiags.HasError() {
-			err := fmt.Errorf("bulk gateway profile PUT operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if servicePutCount > 0 {
-		tflog.Debug(ctx, "Executing Service PUT operations", map[string]interface{}{
-			"operation_count": servicePutCount,
-		})
-		putDiags := b.ExecuteBulkServicePut(ctx)
-		diagnostics.Append(putDiags...)
-
-		if putDiags.HasError() {
-			err := fmt.Errorf("bulk service PUT operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if ethPortProfilePutCount > 0 {
-		tflog.Debug(ctx, "Executing Eth Port Profile PUT operations", map[string]interface{}{
-			"operation_count": ethPortProfilePutCount,
-		})
-		putDiags := b.ExecuteBulkEthPortProfilePut(ctx)
-		diagnostics.Append(putDiags...)
-
-		if putDiags.HasError() {
-			err := fmt.Errorf("bulk eth port profile PUT operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if ethPortSettingsPutCount > 0 {
-		tflog.Debug(ctx, "Executing Eth Port Settings PUT operations", map[string]interface{}{
-			"operation_count": ethPortSettingsPutCount,
-		})
-		putDiags := b.ExecuteBulkEthPortSettingsPut(ctx)
-		diagnostics.Append(putDiags...)
-
-		if putDiags.HasError() {
-			err := fmt.Errorf("bulk eth port settings PUT operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if lagPutCount > 0 {
-		tflog.Debug(ctx, "Executing LAG PUT operations", map[string]interface{}{
-			"operation_count": lagPutCount,
-		})
-		putDiags := b.ExecuteBulkLagPut(ctx)
-		diagnostics.Append(putDiags...)
-
-		if putDiags.HasError() {
-			err := fmt.Errorf("bulk LAG PUT operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	// Step 2: Execute all PATCH operations in the desired order
-	// Order:
-	// 1. Tenants
-	// 2. Gateways
-	// 3. Gateway Profiles
-	// 4. Services
-	// 5. Eth Port Profiles
-	// 6. Eth Port Settings
-	// 7. Lags
-	// 8. Bundles
-
-	if tenantPatchCount > 0 {
-		tflog.Debug(ctx, "Executing Tenant PATCH operations", map[string]interface{}{
-			"operation_count": tenantPatchCount,
-		})
-		patchDiags := b.ExecuteBulkTenantPatch(ctx)
-		diagnostics.Append(patchDiags...)
-
-		if patchDiags.HasError() {
-			err := fmt.Errorf("bulk tenant PATCH operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if gatewayPatchCount > 0 {
-		tflog.Debug(ctx, "Executing Gateway PATCH operations", map[string]interface{}{
-			"operation_count": gatewayPatchCount,
-		})
-		patchDiags := b.ExecuteBulkGatewayPatch(ctx)
-		diagnostics.Append(patchDiags...)
-
-		if patchDiags.HasError() {
-			err := fmt.Errorf("bulk gateway PATCH operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if gatewayProfilePatchCount > 0 {
-		tflog.Debug(ctx, "Executing Gateway Profile PATCH operations", map[string]interface{}{
-			"operation_count": gatewayProfilePatchCount,
-		})
-		patchDiags := b.ExecuteBulkGatewayProfilePatch(ctx)
-		diagnostics.Append(patchDiags...)
-
-		if patchDiags.HasError() {
-			err := fmt.Errorf("bulk gateway profile PATCH operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if servicePatchCount > 0 {
-		tflog.Debug(ctx, "Executing Service PATCH operations", map[string]interface{}{
-			"operation_count": servicePatchCount,
-		})
-		patchDiags := b.ExecuteBulkServicePatch(ctx)
-		diagnostics.Append(patchDiags...)
-
-		if patchDiags.HasError() {
-			err := fmt.Errorf("bulk service PATCH operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if ethPortProfilePatchCount > 0 {
-		tflog.Debug(ctx, "Executing Eth Port Profile PATCH operations", map[string]interface{}{
-			"operation_count": ethPortProfilePatchCount,
-		})
-		patchDiags := b.ExecuteBulkEthPortProfilePatch(ctx)
-		diagnostics.Append(patchDiags...)
-
-		if patchDiags.HasError() {
-			err := fmt.Errorf("bulk eth port profile PATCH operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if ethPortSettingsPatchCount > 0 {
-		tflog.Debug(ctx, "Executing Eth Port Settings PATCH operations", map[string]interface{}{
-			"operation_count": ethPortSettingsPatchCount,
-		})
-		patchDiags := b.ExecuteBulkEthPortSettingsPatch(ctx)
-		diagnostics.Append(patchDiags...)
-
-		if patchDiags.HasError() {
-			err := fmt.Errorf("bulk eth port settings PATCH operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if lagPatchCount > 0 {
-		tflog.Debug(ctx, "Executing LAG PATCH operations", map[string]interface{}{
-			"operation_count": lagPatchCount,
-		})
-		patchDiags := b.ExecuteBulkLagPatch(ctx)
-		diagnostics.Append(patchDiags...)
-
-		if patchDiags.HasError() {
-			err := fmt.Errorf("bulk lag PATCH operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if bundlePatchCount > 0 {
-		tflog.Debug(ctx, "Executing Bundle PATCH operations", map[string]interface{}{
-			"operation_count": bundlePatchCount,
-		})
-		patchDiags := b.ExecuteBulkBundlePatch(ctx)
-		diagnostics.Append(patchDiags...)
-
-		if patchDiags.HasError() {
-			err := fmt.Errorf("bulk bundle PATCH operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	// Step 3: Execute all DELETE operations in desired order.
-	// DELETE order:
-	// 1. Bundles
-	// 2. Lags
-	// 3. Eth Port Settings
-	// 4. Eth Port Profiles
-	// 5. Services
-	// 6. Gateway Profiles
-	// 7. Gateways
-	// 8. Tenants
-
-	// Skipping Bundles DELETE operations as it's not supported by API
-
-	if lagDeleteCount > 0 {
-		tflog.Debug(ctx, "Executing LAG DELETE operations", map[string]interface{}{
-			"operation_count": lagDeleteCount,
-		})
-		deleteDiags := b.ExecuteBulkLagDelete(ctx)
-		diagnostics.Append(deleteDiags...)
-
-		if deleteDiags.HasError() {
-			err := fmt.Errorf("bulk lag DELETE operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if ethPortSettingsDeleteCount > 0 {
-		tflog.Debug(ctx, "Executing Eth Port Settings DELETE operations", map[string]interface{}{
-			"operation_count": ethPortSettingsDeleteCount,
-		})
-		deleteDiags := b.ExecuteBulkEthPortSettingsDelete(ctx)
-		diagnostics.Append(deleteDiags...)
-
-		if deleteDiags.HasError() {
-			err := fmt.Errorf("bulk eth port settings DELETE operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if ethPortProfileDeleteCount > 0 {
-		tflog.Debug(ctx, "Executing Eth Port Profile DELETE operations", map[string]interface{}{
-			"operation_count": ethPortProfileDeleteCount,
-		})
-		deleteDiags := b.ExecuteBulkEthPortProfileDelete(ctx)
-		diagnostics.Append(deleteDiags...)
-
-		if deleteDiags.HasError() {
-			err := fmt.Errorf("bulk eth port profile DELETE operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if serviceDeleteCount > 0 {
-		tflog.Debug(ctx, "Executing Service DELETE operations", map[string]interface{}{
-			"operation_count": serviceDeleteCount,
-		})
-		deleteDiags := b.ExecuteBulkServiceDelete(ctx)
-		diagnostics.Append(deleteDiags...)
-
-		if deleteDiags.HasError() {
-			err := fmt.Errorf("bulk service DELETE operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if gatewayProfileDeleteCount > 0 {
-		tflog.Debug(ctx, "Executing Gateway Profile DELETE operations", map[string]interface{}{
-			"operation_count": gatewayProfileDeleteCount,
-		})
-		deleteDiags := b.ExecuteBulkGatewayProfileDelete(ctx)
-		diagnostics.Append(deleteDiags...)
-
-		if deleteDiags.HasError() {
-			err := fmt.Errorf("bulk gateway profile DELETE operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if gatewayDeleteCount > 0 {
-		tflog.Debug(ctx, "Executing Gateway DELETE operations", map[string]interface{}{
-			"operation_count": gatewayDeleteCount,
-		})
-		deleteDiags := b.ExecuteBulkGatewayDelete(ctx)
-		diagnostics.Append(deleteDiags...)
-
-		if deleteDiags.HasError() {
-			err := fmt.Errorf("bulk gateway DELETE operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
-
-	if tenantDeleteCount > 0 {
-		tflog.Debug(ctx, "Executing Tenant DELETE operations", map[string]interface{}{
-			"operation_count": tenantDeleteCount,
-		})
-		deleteDiags := b.ExecuteBulkTenantDelete(ctx)
-		diagnostics.Append(deleteDiags...)
-
-		if deleteDiags.HasError() {
-			err := fmt.Errorf("bulk tenant DELETE operation failed")
-			b.FailAllPendingOperations(ctx, err)
-			return diagnostics
-		}
-		operationsPerformed = true
-	}
+	diagnostics.Append(opsDiags...)
 
 	if operationsPerformed {
 		waitDuration := 800 * time.Millisecond
@@ -830,18 +661,321 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 
 		tflog.Debug(ctx, "Final cache clear after all operations to ensure verification with fresh data")
 		if b.clearCacheFunc != nil && b.contextProvider != nil {
-			b.clearCacheFunc(ctx, b.contextProvider(), "gateways")
-			b.clearCacheFunc(ctx, b.contextProvider(), "lags")
 			b.clearCacheFunc(ctx, b.contextProvider(), "tenants")
-			b.clearCacheFunc(ctx, b.contextProvider(), "services")
+			b.clearCacheFunc(ctx, b.contextProvider(), "gateways")
 			b.clearCacheFunc(ctx, b.contextProvider(), "gatewayprofiles")
+			b.clearCacheFunc(ctx, b.contextProvider(), "services")
+			b.clearCacheFunc(ctx, b.contextProvider(), "packetqueues")
 			b.clearCacheFunc(ctx, b.contextProvider(), "ethportprofiles")
 			b.clearCacheFunc(ctx, b.contextProvider(), "ethportsettings")
+			b.clearCacheFunc(ctx, b.contextProvider(), "lags")
 			b.clearCacheFunc(ctx, b.contextProvider(), "bundles")
+			b.clearCacheFunc(ctx, b.contextProvider(), "acls")
+			b.clearCacheFunc(ctx, b.contextProvider(), "packetbroker")
+			b.clearCacheFunc(ctx, b.contextProvider(), "badges")
+			b.clearCacheFunc(ctx, b.contextProvider(), "switchpoints")
+			b.clearCacheFunc(ctx, b.contextProvider(), "devicecontrollers")
+			b.clearCacheFunc(ctx, b.contextProvider(), "authenticatedethports")
+			b.clearCacheFunc(ctx, b.contextProvider(), "devicevoicesettings")
+			b.clearCacheFunc(ctx, b.contextProvider(), "serviceportprofiles")
+			b.clearCacheFunc(ctx, b.contextProvider(), "voiceportprofiles")
 		}
 	}
 
 	return diagnostics
+}
+
+func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnostics, bool) {
+	var diagnostics diag.Diagnostics
+	operationsPerformed := false
+
+	execute := func(opType string, count int, execFunc func(context.Context) diag.Diagnostics, resourceName string) bool {
+		if count > 0 {
+			tflog.Debug(ctx, fmt.Sprintf("Executing %s %s operations", resourceName, opType), map[string]interface{}{
+				"operation_count": count,
+			})
+			diags := execFunc(ctx)
+			diagnostics.Append(diags...)
+			if diags.HasError() {
+				err := fmt.Errorf("bulk %s %s operation failed", resourceName, opType)
+				b.FailAllPendingOperations(ctx, err)
+				return false
+			}
+			operationsPerformed = true
+		}
+		return true
+	}
+
+	// PUT operations - DC Order
+	if !execute("PUT", len(b.tenantPut), b.ExecuteBulkTenantPut, "Tenant") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.gatewayPut), b.ExecuteBulkGatewayPut, "Gateway") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.gatewayProfilePut), b.ExecuteBulkGatewayProfilePut, "Gateway Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.servicePut), b.ExecuteBulkServicePut, "Service") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.packetQueuePut), b.ExecuteBulkPacketQueuePut, "Packet Queue") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ethPortProfilePut), b.ExecuteBulkEthPortProfilePut, "Eth Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ethPortSettingsPut), b.ExecuteBulkEthPortSettingsPut, "Eth Port Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.lagPut), b.ExecuteBulkLagPut, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.aclPut), b.ExecuteBulkAclPut, "ACL") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.packetBrokerPut), b.ExecuteBulkPacketBrokerPut, "Packet Broker") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.badgePut), b.ExecuteBulkBadgePut, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.switchpointPut), b.ExecuteBulkSwitchpointPut, "Switchpoint") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.deviceControllerPut), b.ExecuteBulkDeviceControllerPut, "Device Controller") {
+		return diagnostics, operationsPerformed
+	}
+
+	// PATCH operations - DC Order
+	if !execute("PATCH", len(b.tenantPatch), b.ExecuteBulkTenantPatch, "Tenant") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.gatewayPatch), b.ExecuteBulkGatewayPatch, "Gateway") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.gatewayProfilePatch), b.ExecuteBulkGatewayProfilePatch, "Gateway Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.servicePatch), b.ExecuteBulkServicePatch, "Service") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.packetQueuePatch), b.ExecuteBulkPacketQueuePatch, "Packet Queue") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.ethPortProfilePatch), b.ExecuteBulkEthPortProfilePatch, "Eth Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.ethPortSettingsPatch), b.ExecuteBulkEthPortSettingsPatch, "Eth Port Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.lagPatch), b.ExecuteBulkLagPatch, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.bundlePatch), b.ExecuteBulkBundlePatch, "Bundle") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.aclPatch), b.ExecuteBulkAclPatch, "ACL") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.packetBrokerPatch), b.ExecuteBulkPacketBrokerPatch, "Packet Broker") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.badgePatch), b.ExecuteBulkBadgePatch, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.switchpointPatch), b.ExecuteBulkSwitchpointPatch, "Switchpoint") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.deviceControllerPatch), b.ExecuteBulkDeviceControllerPatch, "Device Controller") {
+		return diagnostics, operationsPerformed
+	}
+
+	// DELETE operations - Reverse DC Order
+	if !execute("DELETE", len(b.deviceControllerDelete), b.ExecuteBulkDeviceControllerDelete, "Device Controller") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.switchpointDelete), b.ExecuteBulkSwitchpointDelete, "Switchpoint") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.badgeDelete), b.ExecuteBulkBadgeDelete, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.packetBrokerDelete), b.ExecuteBulkPacketBrokerDelete, "Packet Broker") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.aclDelete), b.ExecuteBulkAclDelete, "ACL") {
+		return diagnostics, operationsPerformed
+	}
+	// Skipping bundle delete
+	if !execute("DELETE", len(b.lagDelete), b.ExecuteBulkLagDelete, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ethPortSettingsDelete), b.ExecuteBulkEthPortSettingsDelete, "Eth Port Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ethPortProfileDelete), b.ExecuteBulkEthPortProfileDelete, "Eth Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.packetQueueDelete), b.ExecuteBulkPacketQueueDelete, "Packet Queue") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.serviceDelete), b.ExecuteBulkServiceDelete, "Service") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.gatewayProfileDelete), b.ExecuteBulkGatewayProfileDelete, "Gateway Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.gatewayDelete), b.ExecuteBulkGatewayDelete, "Gateway") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.tenantDelete), b.ExecuteBulkTenantDelete, "Tenant") {
+		return diagnostics, operationsPerformed
+	}
+
+	return diagnostics, operationsPerformed
+}
+
+func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics, bool) {
+	var diagnostics diag.Diagnostics
+	operationsPerformed := false
+
+	execute := func(opType string, count int, execFunc func(context.Context) diag.Diagnostics, resourceName string) bool {
+		if count > 0 {
+			tflog.Debug(ctx, fmt.Sprintf("Executing %s %s operations", resourceName, opType), map[string]interface{}{
+				"operation_count": count,
+			})
+			diags := execFunc(ctx)
+			diagnostics.Append(diags...)
+			if diags.HasError() {
+				err := fmt.Errorf("bulk %s %s operation failed", resourceName, opType)
+				b.FailAllPendingOperations(ctx, err)
+				return false
+			}
+			operationsPerformed = true
+		}
+		return true
+	}
+
+	// PUT operations - Campus Order
+	if !execute("PUT", len(b.servicePut), b.ExecuteBulkServicePut, "Service") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ethPortProfilePut), b.ExecuteBulkEthPortProfilePut, "Eth Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.authenticatedEthPortPut), b.ExecuteBulkAuthenticatedEthPortPut, "Authenticated Eth-Port") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.deviceVoiceSettingsPut), b.ExecuteBulkDeviceVoiceSettingsPut, "Device Voice Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.packetQueuePut), b.ExecuteBulkPacketQueuePut, "Packet Queue") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.servicePortProfilePut), b.ExecuteBulkServicePortProfilePut, "Service Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.voicePortProfilePut), b.ExecuteBulkVoicePortProfilePut, "Voice-Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ethPortSettingsPut), b.ExecuteBulkEthPortSettingsPut, "Eth Port Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.lagPut), b.ExecuteBulkLagPut, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.badgePut), b.ExecuteBulkBadgePut, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.switchpointPut), b.ExecuteBulkSwitchpointPut, "Switchpoint") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.deviceControllerPut), b.ExecuteBulkDeviceControllerPut, "Device Controller") {
+		return diagnostics, operationsPerformed
+	}
+
+	// PATCH operations - Campus Order
+	if !execute("PATCH", len(b.servicePatch), b.ExecuteBulkServicePatch, "Service") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.ethPortProfilePatch), b.ExecuteBulkEthPortProfilePatch, "Eth Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.authenticatedEthPortPatch), b.ExecuteBulkAuthenticatedEthPortPatch, "Authenticated Eth-Port") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.deviceVoiceSettingsPatch), b.ExecuteBulkDeviceVoiceSettingsPatch, "Device Voice Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.packetQueuePatch), b.ExecuteBulkPacketQueuePatch, "Packet Queue") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.servicePortProfilePatch), b.ExecuteBulkServicePortProfilePatch, "Service Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.voicePortProfilePatch), b.ExecuteBulkVoicePortProfilePatch, "Voice-Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.ethPortSettingsPatch), b.ExecuteBulkEthPortSettingsPatch, "Eth Port Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.lagPatch), b.ExecuteBulkLagPatch, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.bundlePatch), b.ExecuteBulkBundlePatch, "Bundle") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.badgePatch), b.ExecuteBulkBadgePatch, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.switchpointPatch), b.ExecuteBulkSwitchpointPatch, "Switchpoint") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.deviceControllerPatch), b.ExecuteBulkDeviceControllerPatch, "Device Controller") {
+		return diagnostics, operationsPerformed
+	}
+
+	// DELETE operations - Reverse Campus Order
+	if !execute("DELETE", len(b.deviceControllerDelete), b.ExecuteBulkDeviceControllerDelete, "Device Controller") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.switchpointDelete), b.ExecuteBulkSwitchpointDelete, "Switchpoint") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.badgeDelete), b.ExecuteBulkBadgeDelete, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	// Skipping bundle delete
+	if !execute("DELETE", len(b.lagDelete), b.ExecuteBulkLagDelete, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ethPortSettingsDelete), b.ExecuteBulkEthPortSettingsDelete, "Eth Port Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.voicePortProfileDelete), b.ExecuteBulkVoicePortProfileDelete, "Voice-Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.servicePortProfileDelete), b.ExecuteBulkServicePortProfileDelete, "Service Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.packetQueueDelete), b.ExecuteBulkPacketQueueDelete, "Packet Queue") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.deviceVoiceSettingsDelete), b.ExecuteBulkDeviceVoiceSettingsDelete, "Device Voice Settings") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.authenticatedEthPortDelete), b.ExecuteBulkAuthenticatedEthPortDelete, "Authenticated Eth-Port") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ethPortProfileDelete), b.ExecuteBulkEthPortProfileDelete, "Eth Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.serviceDelete), b.ExecuteBulkServiceDelete, "Service") {
+		return diagnostics, operationsPerformed
+	}
+
+	return diagnostics, operationsPerformed
 }
 
 func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool {
@@ -856,7 +990,16 @@ func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool
 		len(b.gatewayProfilePut) == 0 && len(b.gatewayProfilePatch) == 0 && len(b.gatewayProfileDelete) == 0 &&
 		len(b.ethPortProfilePut) == 0 && len(b.ethPortProfilePatch) == 0 && len(b.ethPortProfileDelete) == 0 &&
 		len(b.ethPortSettingsPut) == 0 && len(b.ethPortSettingsPatch) == 0 && len(b.ethPortSettingsDelete) == 0 &&
-		len(b.bundlePatch) == 0 {
+		len(b.bundlePatch) == 0 && len(b.authenticatedEthPortPut) == 0 && len(b.authenticatedEthPortPatch) == 0 &&
+		len(b.authenticatedEthPortDelete) == 0 && len(b.aclPut) == 0 && len(b.aclPatch) == 0 && len(b.aclDelete) == 0 &&
+		len(b.badgePut) == 0 && len(b.badgePatch) == 0 && len(b.badgeDelete) == 0 &&
+		len(b.voicePortProfilePut) == 0 && len(b.voicePortProfilePatch) == 0 && len(b.voicePortProfileDelete) == 0 &&
+		len(b.switchpointPut) == 0 && len(b.switchpointPatch) == 0 && len(b.switchpointDelete) == 0 &&
+		len(b.servicePortProfilePut) == 0 && len(b.servicePortProfilePatch) == 0 && len(b.servicePortProfileDelete) == 0 &&
+		len(b.packetBrokerPut) == 0 && len(b.packetBrokerPatch) == 0 && len(b.packetBrokerDelete) == 0 &&
+		len(b.packetQueuePut) == 0 && len(b.packetQueuePatch) == 0 && len(b.packetQueueDelete) == 0 &&
+		len(b.deviceVoiceSettingsPut) == 0 && len(b.deviceVoiceSettingsPatch) == 0 && len(b.deviceVoiceSettingsDelete) == 0 &&
+		len(b.deviceControllerPut) == 0 && len(b.deviceControllerPatch) == 0 && len(b.deviceControllerDelete) == 0 {
 		return false
 	}
 
@@ -904,6 +1047,46 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 
 	bundlePatchCount := len(b.bundlePatch)
 
+	aclPutCount := len(b.aclPut)
+	aclPatchCount := len(b.aclPatch)
+	aclDeleteCount := len(b.aclDelete)
+
+	authenticatedEthPortPutCount := len(b.authenticatedEthPortPut)
+	authenticatedEthPortPatchCount := len(b.authenticatedEthPortPatch)
+	authenticatedEthPortDeleteCount := len(b.authenticatedEthPortDelete)
+
+	badgePutCount := len(b.badgePut)
+	badgePatchCount := len(b.badgePatch)
+	badgeDeleteCount := len(b.badgeDelete)
+
+	voicePortProfilePutCount := len(b.voicePortProfilePut)
+	voicePortProfilePatchCount := len(b.voicePortProfilePatch)
+	voicePortProfileDeleteCount := len(b.voicePortProfileDelete)
+
+	switchpointPutCount := len(b.switchpointPut)
+	switchpointPatchCount := len(b.switchpointPatch)
+	switchpointDeleteCount := len(b.switchpointDelete)
+
+	servicePortProfilePutCount := len(b.servicePortProfilePut)
+	servicePortProfilePatchCount := len(b.servicePortProfilePatch)
+	servicePortProfileDeleteCount := len(b.servicePortProfileDelete)
+
+	packetBrokerPutCount := len(b.packetBrokerPut)
+	packetBrokerPatchCount := len(b.packetBrokerPatch)
+	packetBrokerDeleteCount := len(b.packetBrokerDelete)
+
+	packetQueuePutCount := len(b.packetQueuePut)
+	packetQueuePatchCount := len(b.packetQueuePatch)
+	packetQueueDeleteCount := len(b.packetQueueDelete)
+
+	deviceVoiceSettingsPutCount := len(b.deviceVoiceSettingsPut)
+	deviceVoiceSettingsPatchCount := len(b.deviceVoiceSettingsPatch)
+	deviceVoiceSettingsDeleteCount := len(b.deviceVoiceSettingsDelete)
+
+	deviceControllerPutCount := len(b.deviceControllerPut)
+	deviceControllerPatchCount := len(b.deviceControllerPatch)
+	deviceControllerDeleteCount := len(b.deviceControllerDelete)
+
 	b.mutex.Unlock()
 
 	totalCount := gatewayPutCount + gatewayPatchCount + gatewayDeleteCount +
@@ -913,33 +1096,72 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 		gatewayProfilePutCount + gatewayProfilePatchCount + gatewayProfileDeleteCount +
 		ethPortProfilePutCount + ethPortProfilePatchCount + ethPortProfileDeleteCount +
 		ethPortSettingsPutCount + ethPortSettingsPatchCount + ethPortSettingsDeleteCount +
-		bundlePatchCount
+		bundlePatchCount + aclPutCount + aclPatchCount + aclDeleteCount +
+		badgePutCount + badgePatchCount + badgeDeleteCount +
+		voicePortProfilePutCount + voicePortProfilePatchCount + voicePortProfileDeleteCount +
+		switchpointPutCount + switchpointPatchCount + switchpointDeleteCount +
+		servicePortProfilePutCount + servicePortProfilePatchCount + servicePortProfileDeleteCount +
+		packetBrokerPutCount + packetBrokerPatchCount + packetBrokerDeleteCount +
+		packetQueuePutCount + packetQueuePatchCount + packetQueueDeleteCount +
+		deviceVoiceSettingsPutCount + deviceVoiceSettingsPatchCount + deviceVoiceSettingsDeleteCount +
+		authenticatedEthPortPutCount + authenticatedEthPortPatchCount + authenticatedEthPortDeleteCount +
+		deviceControllerPutCount + deviceControllerPatchCount + deviceControllerDeleteCount
 
 	if totalCount > 0 {
 		tflog.Debug(ctx, "Multiple operations detected, executing in sequence", map[string]interface{}{
-			"gateway_put_count":              gatewayPutCount,
-			"gateway_patch_count":            gatewayPatchCount,
-			"gateway_delete_count":           gatewayDeleteCount,
-			"lag_put_count":                  lagPutCount,
-			"lag_patch_count":                lagPatchCount,
-			"lag_delete_count":               lagDeleteCount,
-			"tenant_put_count":               tenantPutCount,
-			"tenant_patch_count":             tenantPatchCount,
-			"tenant_delete_count":            tenantDeleteCount,
-			"service_put_count":              servicePutCount,
-			"service_patch_count":            servicePatchCount,
-			"service_delete_count":           serviceDeleteCount,
-			"gateway_profile_put_count":      gatewayProfilePutCount,
-			"gateway_profile_patch_count":    gatewayProfilePatchCount,
-			"gateway_profile_delete_count":   gatewayProfileDeleteCount,
-			"eth_port_profile_put_count":     ethPortProfilePutCount,
-			"eth_port_profile_patch_count":   ethPortProfilePatchCount,
-			"eth_port_profile_delete_count":  ethPortProfileDeleteCount,
-			"eth_port_settings_put_count":    ethPortSettingsPutCount,
-			"eth_port_settings_patch_count":  ethPortSettingsPatchCount,
-			"eth_port_settings_delete_count": ethPortSettingsDeleteCount,
-			"bundle_patch_count":             bundlePatchCount,
-			"total_count":                    totalCount,
+			"gateway_put_count":                   gatewayPutCount,
+			"gateway_patch_count":                 gatewayPatchCount,
+			"gateway_delete_count":                gatewayDeleteCount,
+			"lag_put_count":                       lagPutCount,
+			"lag_patch_count":                     lagPatchCount,
+			"lag_delete_count":                    lagDeleteCount,
+			"tenant_put_count":                    tenantPutCount,
+			"tenant_patch_count":                  tenantPatchCount,
+			"tenant_delete_count":                 tenantDeleteCount,
+			"service_put_count":                   servicePutCount,
+			"service_patch_count":                 servicePatchCount,
+			"service_delete_count":                serviceDeleteCount,
+			"gateway_profile_put_count":           gatewayProfilePutCount,
+			"gateway_profile_patch_count":         gatewayProfilePatchCount,
+			"gateway_profile_delete_count":        gatewayProfileDeleteCount,
+			"eth_port_profile_put_count":          ethPortProfilePutCount,
+			"eth_port_profile_patch_count":        ethPortProfilePatchCount,
+			"eth_port_profile_delete_count":       ethPortProfileDeleteCount,
+			"eth_port_settings_put_count":         ethPortSettingsPutCount,
+			"eth_port_settings_patch_count":       ethPortSettingsPatchCount,
+			"eth_port_settings_delete_count":      ethPortSettingsDeleteCount,
+			"bundle_patch_count":                  bundlePatchCount,
+			"acl_put_count":                       aclPutCount,
+			"acl_patch_count":                     aclPatchCount,
+			"acl_delete_count":                    aclDeleteCount,
+			"badge_put_count":                     badgePutCount,
+			"badge_patch_count":                   badgePatchCount,
+			"badge_delete_count":                  badgeDeleteCount,
+			"voice_port_profile_put_count":        voicePortProfilePutCount,
+			"voice_port_profile_patch_count":      voicePortProfilePatchCount,
+			"voice_port_profile_delete_count":     voicePortProfileDeleteCount,
+			"switchpoint_put_count":               switchpointPutCount,
+			"switchpoint_patch_count":             switchpointPatchCount,
+			"switchpoint_delete_count":            switchpointDeleteCount,
+			"service_port_profile_put_count":      servicePortProfilePutCount,
+			"service_port_profile_patch_count":    servicePortProfilePatchCount,
+			"service_port_profile_delete_count":   servicePortProfileDeleteCount,
+			"packet_broker_put_count":             packetBrokerPutCount,
+			"packet_broker_patch_count":           packetBrokerPatchCount,
+			"packet_broker_delete_count":          packetBrokerDeleteCount,
+			"packet_queue_put_count":              packetQueuePutCount,
+			"packet_queue_patch_count":            packetQueuePatchCount,
+			"packet_queue_delete_count":           packetQueueDeleteCount,
+			"device_voice_settings_put_count":     deviceVoiceSettingsPutCount,
+			"device_voice_settings_patch_count":   deviceVoiceSettingsPatchCount,
+			"device_voice_settings_delete_count":  deviceVoiceSettingsDeleteCount,
+			"authenticated_eth_port_put_count":    authenticatedEthPortPutCount,
+			"authenticated_eth_port_patch_count":  authenticatedEthPortPatchCount,
+			"authenticated_eth_port_delete_count": authenticatedEthPortDeleteCount,
+			"device_controller_put_count":         deviceControllerPutCount,
+			"device_controller_patch_count":       deviceControllerPatchCount,
+			"device_controller_delete_count":      deviceControllerDeleteCount,
+			"total_count":                         totalCount,
 		})
 
 		return b.ExecuteAllPendingOperations(ctx)
@@ -1007,6 +1229,66 @@ func (b *BulkOperationManager) hasPendingOrRecentOperations(
 		deleteLen = 0
 		recentOps = b.recentBundleOps
 		recentOpTime = b.recentBundleOpTime
+	case "acl":
+		putLen = len(b.aclPut)
+		patchLen = len(b.aclPatch)
+		deleteLen = len(b.aclDelete)
+		recentOps = b.recentAclOps
+		recentOpTime = b.recentAclOpTime
+	case "authenticated_eth_port":
+		putLen = len(b.authenticatedEthPortPut)
+		patchLen = len(b.authenticatedEthPortPatch)
+		deleteLen = len(b.authenticatedEthPortDelete)
+		recentOps = b.recentAuthenticatedEthPortOps
+		recentOpTime = b.recentAuthenticatedEthPortOpTime
+	case "badge":
+		putLen = len(b.badgePut)
+		patchLen = len(b.badgePatch)
+		deleteLen = len(b.badgeDelete)
+		recentOps = b.recentBadgeOps
+		recentOpTime = b.recentBadgeOpTime
+	case "voice_port_profile":
+		putLen = len(b.voicePortProfilePut)
+		patchLen = len(b.voicePortProfilePatch)
+		deleteLen = len(b.voicePortProfileDelete)
+		recentOps = b.recentVoicePortProfileOps
+		recentOpTime = b.recentVoicePortProfileOpTime
+	case "switchpoint":
+		putLen = len(b.switchpointPut)
+		patchLen = len(b.switchpointPatch)
+		deleteLen = len(b.switchpointDelete)
+		recentOps = b.recentSwitchpointOps
+		recentOpTime = b.recentSwitchpointOpTime
+	case "service_port_profile":
+		putLen = len(b.servicePortProfilePut)
+		patchLen = len(b.servicePortProfilePatch)
+		deleteLen = len(b.servicePortProfileDelete)
+		recentOps = b.recentServicePortProfileOps
+		recentOpTime = b.recentServicePortProfileOpTime
+	case "packet_broker":
+		putLen = len(b.packetBrokerPut)
+		patchLen = len(b.packetBrokerPatch)
+		deleteLen = len(b.packetBrokerDelete)
+		recentOps = b.recentPacketBrokerOps
+		recentOpTime = b.recentPacketBrokerOpTime
+	case "packet_queue":
+		putLen = len(b.packetQueuePut)
+		patchLen = len(b.packetQueuePatch)
+		deleteLen = len(b.packetQueueDelete)
+		recentOps = b.recentPacketQueueOps
+		recentOpTime = b.recentPacketQueueOpTime
+	case "device_voice_settings":
+		putLen = len(b.deviceVoiceSettingsPut)
+		patchLen = len(b.deviceVoiceSettingsPatch)
+		deleteLen = len(b.deviceVoiceSettingsDelete)
+		recentOps = b.recentDeviceVoiceSettingsOps
+		recentOpTime = b.recentDeviceVoiceSettingsOpTime
+	case "device_controller":
+		putLen = len(b.deviceControllerPut)
+		patchLen = len(b.deviceControllerPatch)
+		deleteLen = len(b.deviceControllerDelete)
+		recentOps = b.recentDeviceControllerOps
+		recentOpTime = b.recentDeviceControllerOpTime
 	}
 
 	// Check if any operations are pending
@@ -1048,6 +1330,46 @@ func (b *BulkOperationManager) HasPendingOrRecentEthPortSettingsOperations() boo
 
 func (b *BulkOperationManager) HasPendingOrRecentBundleOperations() bool {
 	return b.hasPendingOrRecentOperations("bundle")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentAclOperations() bool {
+	return b.hasPendingOrRecentOperations("acl")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentAuthenticatedEthPortOperations() bool {
+	return b.hasPendingOrRecentOperations("authenticated_eth_port")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentBadgeOperations() bool {
+	return b.hasPendingOrRecentOperations("badge")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentVoicePortProfileOperations() bool {
+	return b.hasPendingOrRecentOperations("voice_port_profile")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentSwitchpointOperations() bool {
+	return b.hasPendingOrRecentOperations("switchpoint")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentServicePortProfileOperations() bool {
+	return b.hasPendingOrRecentOperations("service_port_profile")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentPacketBrokerOperations() bool {
+	return b.hasPendingOrRecentOperations("packet_broker")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentPacketQueueOperations() bool {
+	return b.hasPendingOrRecentOperations("packet_queue")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentDeviceVoiceSettingsOperations() bool {
+	return b.hasPendingOrRecentOperations("device_voice_settings")
+}
+
+func (b *BulkOperationManager) HasPendingOrRecentDeviceControllerOperations() bool {
+	return b.hasPendingOrRecentOperations("device_controller")
 }
 
 func (b *BulkOperationManager) addOperation(
@@ -1479,6 +1801,546 @@ func (b *BulkOperationManager) AddEthPortSettingsDelete(ctx context.Context, eth
 		map[string]interface{}{
 			"eth_port_settings_name": ethPortSettingsName,
 			"batch_size":             len(b.ethPortSettingsDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddAclPut(ctx context.Context, aclName string, props openapi.ConfigPutRequestIpv4FilterIpv4FilterName) string {
+	return b.addOperation(
+		ctx,
+		"acl",
+		aclName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.aclPut[aclName] = props
+		},
+		map[string]interface{}{
+			"acl_name":   aclName,
+			"batch_size": len(b.aclPut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddAclPatch(ctx context.Context, aclName string, props openapi.ConfigPutRequestIpv4FilterIpv4FilterName) string {
+	return b.addOperation(
+		ctx,
+		"acl",
+		aclName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.aclPatch[aclName] = props
+		},
+		map[string]interface{}{
+			"acl_name":   aclName,
+			"batch_size": len(b.aclPatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddAclDelete(ctx context.Context, aclName string) string {
+	return b.addOperation(
+		ctx,
+		"acl",
+		aclName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.aclDelete = append(b.aclDelete, aclName)
+		},
+		map[string]interface{}{
+			"acl_name":   aclName,
+			"batch_size": len(b.aclDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddAuthenticatedEthPortPut(ctx context.Context, portName string, props openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName) string {
+	return b.addOperation(
+		ctx,
+		"authenticated_eth_port",
+		portName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.authenticatedEthPortPut[portName] = props
+		},
+		map[string]interface{}{
+			"port_name":  portName,
+			"batch_size": len(b.authenticatedEthPortPut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddAuthenticatedEthPortPatch(ctx context.Context, portName string, props openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName) string {
+	return b.addOperation(
+		ctx,
+		"authenticated_eth_port",
+		portName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.authenticatedEthPortPatch[portName] = props
+		},
+		map[string]interface{}{
+			"port_name":  portName,
+			"batch_size": len(b.authenticatedEthPortPatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddAuthenticatedEthPortDelete(ctx context.Context, portName string) string {
+	return b.addOperation(
+		ctx,
+		"authenticated_eth_port",
+		portName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.authenticatedEthPortDelete = append(b.authenticatedEthPortDelete, portName)
+		},
+		map[string]interface{}{
+			"port_name":  portName,
+			"batch_size": len(b.authenticatedEthPortDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddBadgePut(ctx context.Context, badgeName string, props openapi.ConfigPutRequestBadgeBadgeName) string {
+	return b.addOperation(
+		ctx,
+		"badge",
+		badgeName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.badgePut[badgeName] = props
+		},
+		map[string]interface{}{
+			"badge_name": badgeName,
+			"batch_size": len(b.badgePut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddBadgePatch(ctx context.Context, badgeName string, props openapi.ConfigPutRequestBadgeBadgeName) string {
+	return b.addOperation(
+		ctx,
+		"badge",
+		badgeName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.badgePatch[badgeName] = props
+		},
+		map[string]interface{}{
+			"badge_name": badgeName,
+			"batch_size": len(b.badgePatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddBadgeDelete(ctx context.Context, badgeName string) string {
+	return b.addOperation(
+		ctx,
+		"badge",
+		badgeName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.badgeDelete = append(b.badgeDelete, badgeName)
+		},
+		map[string]interface{}{
+			"badge_name": badgeName,
+			"batch_size": len(b.badgeDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddDeviceVoiceSettingsPut(ctx context.Context, deviceVoiceSettingsName string, props openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName) string {
+	return b.addOperation(
+		ctx,
+		"device_voice_settings",
+		deviceVoiceSettingsName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.deviceVoiceSettingsPut[deviceVoiceSettingsName] = props
+		},
+		map[string]interface{}{
+			"device_voice_settings_name": deviceVoiceSettingsName,
+			"batch_size":                 len(b.deviceVoiceSettingsPut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddDeviceVoiceSettingsPatch(ctx context.Context, deviceVoiceSettingsName string, props openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName) string {
+	return b.addOperation(
+		ctx,
+		"device_voice_settings",
+		deviceVoiceSettingsName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.deviceVoiceSettingsPatch[deviceVoiceSettingsName] = props
+		},
+		map[string]interface{}{
+			"device_voice_settings_name": deviceVoiceSettingsName,
+			"batch_size":                 len(b.deviceVoiceSettingsPatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddDeviceVoiceSettingsDelete(ctx context.Context, deviceVoiceSettingsName string) string {
+	return b.addOperation(
+		ctx,
+		"device_voice_settings",
+		deviceVoiceSettingsName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.deviceVoiceSettingsDelete = append(b.deviceVoiceSettingsDelete, deviceVoiceSettingsName)
+		},
+		map[string]interface{}{
+			"device_voice_settings_name": deviceVoiceSettingsName,
+			"batch_size":                 len(b.deviceVoiceSettingsDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddPacketBrokerPut(ctx context.Context, packetBrokerName string, props openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName) string {
+	return b.addOperation(
+		ctx,
+		"packet_broker",
+		packetBrokerName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.packetBrokerPut[packetBrokerName] = props
+		},
+		map[string]interface{}{
+			"packet_broker_name": packetBrokerName,
+			"batch_size":         len(b.packetBrokerPut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddPacketBrokerPatch(ctx context.Context, packetBrokerName string, props openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName) string {
+	return b.addOperation(
+		ctx,
+		"packet_broker",
+		packetBrokerName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.packetBrokerPatch[packetBrokerName] = props
+		},
+		map[string]interface{}{
+			"packet_broker_name": packetBrokerName,
+			"batch_size":         len(b.packetBrokerPatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddPacketBrokerDelete(ctx context.Context, packetBrokerName string) string {
+	return b.addOperation(
+		ctx,
+		"packet_broker",
+		packetBrokerName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.packetBrokerDelete = append(b.packetBrokerDelete, packetBrokerName)
+		},
+		map[string]interface{}{
+			"packet_broker_name": packetBrokerName,
+			"batch_size":         len(b.packetBrokerDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddPacketQueuePut(ctx context.Context, packetQueueName string, props openapi.ConfigPutRequestPacketQueuePacketQueueName) string {
+	return b.addOperation(
+		ctx,
+		"packet_queue",
+		packetQueueName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.packetQueuePut[packetQueueName] = props
+		},
+		map[string]interface{}{
+			"packet_queue_name": packetQueueName,
+			"batch_size":        len(b.packetQueuePut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddPacketQueuePatch(ctx context.Context, packetQueueName string, props openapi.ConfigPutRequestPacketQueuePacketQueueName) string {
+	return b.addOperation(
+		ctx,
+		"packet_queue",
+		packetQueueName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.packetQueuePatch[packetQueueName] = props
+		},
+		map[string]interface{}{
+			"packet_queue_name": packetQueueName,
+			"batch_size":        len(b.packetQueuePatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddPacketQueueDelete(ctx context.Context, packetQueueName string) string {
+	return b.addOperation(
+		ctx,
+		"packet_queue",
+		packetQueueName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.packetQueueDelete = append(b.packetQueueDelete, packetQueueName)
+		},
+		map[string]interface{}{
+			"packet_queue_name": packetQueueName,
+			"batch_size":        len(b.packetQueueDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddServicePortProfilePut(ctx context.Context, servicePortProfileName string, props openapi.ConfigPutRequestServicePortProfileServicePortProfileName) string {
+	return b.addOperation(
+		ctx,
+		"service_port_profile",
+		servicePortProfileName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.servicePortProfilePut[servicePortProfileName] = props
+		},
+		map[string]interface{}{
+			"service_port_profile_name": servicePortProfileName,
+			"batch_size":                len(b.servicePortProfilePut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddServicePortProfilePatch(ctx context.Context, servicePortProfileName string, props openapi.ConfigPutRequestServicePortProfileServicePortProfileName) string {
+	return b.addOperation(
+		ctx,
+		"service_port_profile",
+		servicePortProfileName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.servicePortProfilePatch[servicePortProfileName] = props
+		},
+		map[string]interface{}{
+			"service_port_profile_name": servicePortProfileName,
+			"batch_size":                len(b.servicePortProfilePatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddServicePortProfileDelete(ctx context.Context, servicePortProfileName string) string {
+	return b.addOperation(
+		ctx,
+		"service_port_profile",
+		servicePortProfileName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.servicePortProfileDelete = append(b.servicePortProfileDelete, servicePortProfileName)
+		},
+		map[string]interface{}{
+			"service_port_profile_name": servicePortProfileName,
+			"batch_size":                len(b.servicePortProfileDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddSwitchpointPut(ctx context.Context, switchpointName string, props openapi.ConfigPutRequestSwitchpointSwitchpointName) string {
+	return b.addOperation(
+		ctx,
+		"switchpoint",
+		switchpointName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.switchpointPut[switchpointName] = props
+		},
+		map[string]interface{}{
+			"switchpoint_name": switchpointName,
+			"batch_size":       len(b.switchpointPut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddSwitchpointPatch(ctx context.Context, switchpointName string, props openapi.ConfigPutRequestSwitchpointSwitchpointName) string {
+	return b.addOperation(
+		ctx,
+		"switchpoint",
+		switchpointName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.switchpointPatch[switchpointName] = props
+		},
+		map[string]interface{}{
+			"switchpoint_name": switchpointName,
+			"batch_size":       len(b.switchpointPatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddSwitchpointDelete(ctx context.Context, switchpointName string) string {
+	return b.addOperation(
+		ctx,
+		"switchpoint",
+		switchpointName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.switchpointDelete = append(b.switchpointDelete, switchpointName)
+		},
+		map[string]interface{}{
+			"switchpoint_name": switchpointName,
+			"batch_size":       len(b.switchpointDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddVoicePortProfilePut(ctx context.Context, voicePortProfileName string, props openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName) string {
+	return b.addOperation(
+		ctx,
+		"voice_port_profile",
+		voicePortProfileName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.voicePortProfilePut[voicePortProfileName] = props
+		},
+		map[string]interface{}{
+			"voice_port_profile_name": voicePortProfileName,
+			"batch_size":              len(b.voicePortProfilePut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddVoicePortProfilePatch(ctx context.Context, voicePortProfileName string, props openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName) string {
+	return b.addOperation(
+		ctx,
+		"voice_port_profile",
+		voicePortProfileName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.voicePortProfilePatch[voicePortProfileName] = props
+		},
+		map[string]interface{}{
+			"voice_port_profile_name": voicePortProfileName,
+			"batch_size":              len(b.voicePortProfilePatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddVoicePortProfileDelete(ctx context.Context, voicePortProfileName string) string {
+	return b.addOperation(
+		ctx,
+		"voice_port_profile",
+		voicePortProfileName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.voicePortProfileDelete = append(b.voicePortProfileDelete, voicePortProfileName)
+		},
+		map[string]interface{}{
+			"voice_port_profile_name": voicePortProfileName,
+			"batch_size":              len(b.voicePortProfileDelete) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddDeviceControllerPut(ctx context.Context, deviceControllerName string, props openapi.ConfigPutRequestDeviceControllerDeviceControllerName) string {
+	return b.addOperation(
+		ctx,
+		"device_controller",
+		deviceControllerName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.deviceControllerPut[deviceControllerName] = props
+		},
+		map[string]interface{}{
+			"device_controller_name": deviceControllerName,
+			"batch_size":             len(b.deviceControllerPut) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddDeviceControllerPatch(ctx context.Context, deviceControllerName string, props openapi.ConfigPutRequestDeviceControllerDeviceControllerName) string {
+	return b.addOperation(
+		ctx,
+		"device_controller",
+		deviceControllerName,
+		"PATCH",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.deviceControllerPatch[deviceControllerName] = props
+		},
+		map[string]interface{}{
+			"device_controller_name": deviceControllerName,
+			"batch_size":             len(b.deviceControllerPatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddDeviceControllerDelete(ctx context.Context, deviceControllerName string) string {
+	return b.addOperation(
+		ctx,
+		"device_controller",
+		deviceControllerName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.deviceControllerDelete = append(b.deviceControllerDelete, deviceControllerName)
+		},
+		map[string]interface{}{
+			"device_controller_name": deviceControllerName,
+			"batch_size":             len(b.deviceControllerDelete) + 1,
 		},
 	)
 }
@@ -3505,6 +4367,2946 @@ func (b *BulkOperationManager) ExecuteBulkBundlePatch(ctx context.Context) diag.
 		UpdateRecentOps: func() {
 			b.recentBundleOps = true
 			b.recentBundleOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkAclPut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "acl",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			for k, v := range b.aclPut {
+				originalOperations[k] = v
+			}
+			b.aclPut = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "acl",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached ACL data
+					b.aclResponsesMutex.RLock()
+					if len(b.aclResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.aclResponses {
+							cachedData[k] = v
+						}
+						b.aclResponsesMutex.RUnlock()
+
+						tflog.Debug(ctx, "Using cached ACL data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
+
+						return cachedData, nil
+					}
+					b.aclResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.ACLsAPI.AclsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						IpFilter map[string]interface{} `json:"ipFilter"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					b.aclResponsesMutex.Lock()
+					for k, v := range result.IpFilter {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.aclResponses[k] = vMap
+
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.aclResponses[name] = vMap
+							}
+						}
+					}
+					b.aclResponsesMutex.Unlock()
+
+					return result.IpFilter, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewAclsPutRequest()
+			aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+
+			for name, props := range filteredData {
+				aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			}
+			putRequest.SetIpFilter(aclMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.ACLsAPI.AclsPut(ctx).AclsPutRequest(
+				*request.(*openapi.AclsPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching ACLs", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching ACLs after successful PUT operation to retrieve auto-generated values")
+			aclsReq := b.client.ACLsAPI.AclsGet(fetchCtx)
+			aclsResp, fetchErr := aclsReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch ACLs after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer aclsResp.Body.Close()
+
+			var aclsData struct {
+				IpFilter map[string]map[string]interface{} `json:"ipFilter"`
+			}
+
+			if respErr := json.NewDecoder(aclsResp.Body).Decode(&aclsData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode ACLs response for auto-generated fields", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.aclResponsesMutex.Lock()
+			for aclName, aclData := range aclsData.IpFilter {
+				b.aclResponses[aclName] = aclData
+
+				if name, ok := aclData["name"].(string); ok && name != aclName {
+					b.aclResponses[name] = aclData
+				}
+			}
+			b.aclResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored ACL data for auto-generated fields", map[string]interface{}{
+				"acl_count": len(aclsData.IpFilter),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentAclOps = true
+			b.recentAclOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkAclPatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "acl",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			aclPatch := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			for k, v := range b.aclPatch {
+				aclPatch[k] = v
+			}
+			b.aclPatch = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(aclPatch))
+
+			for k, v := range aclPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewAclsPutRequest()
+			aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+
+			for name, props := range filteredData {
+				aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			}
+			patchRequest.SetIpFilter(aclMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.ACLsAPI.AclsPatch(ctx).AclsPutRequest(
+				*request.(*openapi.AclsPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentAclOps = true
+			b.recentAclOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkAclDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "acl",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			aclNames := make([]string, len(b.aclDelete))
+			copy(aclNames, b.aclDelete)
+
+			aclDeleteMap := make(map[string]bool)
+			for _, name := range aclNames {
+				aclDeleteMap[name] = true
+			}
+			b.aclDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for name := range aclDeleteMap {
+				result[name] = true
+			}
+
+			names := make([]string, 0, len(result))
+			for name := range result {
+				names = append(names, name)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			// For ACL delete, we need to return the list of ACL names
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			// The ACL delete API requires both ipFilterName and ipVersion
+			// We're using ipv4 as the default version since that's what the type suggests
+			req := b.client.ACLsAPI.AclsDelete(ctx).
+				IpFilterName(request.([]string)).
+				IpVersion("ipv4")
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentAclOps = true
+			b.recentAclOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkAuthenticatedEthPortPut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "authenticated_eth_port",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			for k, v := range b.authenticatedEthPortPut {
+				originalOperations[k] = v
+			}
+			b.authenticatedEthPortPut = make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "authenticated_eth_port",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached Authenticated Eth-Port data
+					b.authenticatedEthPortResponsesMutex.RLock()
+					if len(b.authenticatedEthPortResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.authenticatedEthPortResponses {
+							cachedData[k] = v
+						}
+						b.authenticatedEthPortResponsesMutex.RUnlock()
+
+						tflog.Debug(ctx, "Using cached Authenticated Eth-Port data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
+
+						return cachedData, nil
+					}
+					b.authenticatedEthPortResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						AuthenticatedEthPort map[string]interface{} `json:"authenticated_eth_port"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					b.authenticatedEthPortResponsesMutex.Lock()
+					for k, v := range result.AuthenticatedEthPort {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.authenticatedEthPortResponses[k] = vMap
+
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.authenticatedEthPortResponses[name] = vMap
+							}
+						}
+					}
+					b.authenticatedEthPortResponsesMutex.Unlock()
+
+					return result.AuthenticatedEthPort, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewAuthenticatedethportsPutRequest()
+			portMap := make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+
+			for name, props := range filteredData {
+				portMap[name] = props.(openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			}
+			putRequest.SetAuthenticatedEthPort(portMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.AuthenticatedEthPortsAPI.AuthenticatedethportsPut(ctx).AuthenticatedethportsPutRequest(
+				*request.(*openapi.AuthenticatedethportsPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching Authenticated Eth-Ports", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching Authenticated Eth-Ports after successful PUT operation to retrieve auto-generated values")
+			portsReq := b.client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(fetchCtx)
+			portsResp, fetchErr := portsReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch Authenticated Eth-Ports after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer portsResp.Body.Close()
+
+			var portsData struct {
+				AuthenticatedEthPort map[string]map[string]interface{} `json:"authenticated_eth_port"`
+			}
+
+			if respErr := json.NewDecoder(portsResp.Body).Decode(&portsData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode Authenticated Eth-Ports response for auto-generated fields", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.authenticatedEthPortResponsesMutex.Lock()
+			for portName, portData := range portsData.AuthenticatedEthPort {
+				b.authenticatedEthPortResponses[portName] = portData
+
+				if name, ok := portData["name"].(string); ok && name != portName {
+					b.authenticatedEthPortResponses[name] = portData
+				}
+			}
+			b.authenticatedEthPortResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored Authenticated Eth-Port data for auto-generated fields", map[string]interface{}{
+				"authenticated_eth_port_count": len(portsData.AuthenticatedEthPort),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentAuthenticatedEthPortOps = true
+			b.recentAuthenticatedEthPortOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkAuthenticatedEthPortPatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "authenticated_eth_port",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			authenticatedEthPortPatch := make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			for k, v := range b.authenticatedEthPortPatch {
+				authenticatedEthPortPatch[k] = v
+			}
+			b.authenticatedEthPortPatch = make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(authenticatedEthPortPatch))
+
+			for k, v := range authenticatedEthPortPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewAuthenticatedethportsPutRequest()
+			portMap := make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+
+			for name, props := range filteredData {
+				portMap[name] = props.(openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			}
+			patchRequest.SetAuthenticatedEthPort(portMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.AuthenticatedEthPortsAPI.AuthenticatedethportsPatch(ctx).AuthenticatedethportsPutRequest(
+				*request.(*openapi.AuthenticatedethportsPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentAuthenticatedEthPortOps = true
+			b.recentAuthenticatedEthPortOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkAuthenticatedEthPortDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "authenticated_eth_port",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			portNames := make([]string, len(b.authenticatedEthPortDelete))
+			copy(portNames, b.authenticatedEthPortDelete)
+
+			portDeleteMap := make(map[string]bool)
+			for _, name := range portNames {
+				portDeleteMap[name] = true
+			}
+
+			b.authenticatedEthPortDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range portNames {
+				result[name] = true
+			}
+
+			return result, portNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.AuthenticatedEthPortsAPI.AuthenticatedethportsDelete(ctx).AuthenticatedEthPortName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentAuthenticatedEthPortOps = true
+			b.recentAuthenticatedEthPortOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkBadgePut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestBadgeBadgeName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "badge",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+			for k, v := range b.badgePut {
+				originalOperations[k] = v
+			}
+			b.badgePut = make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "badge",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached badge data
+					b.badgeResponsesMutex.RLock()
+					if len(b.badgeResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.badgeResponses {
+							cachedData[k] = v
+						}
+						b.badgeResponsesMutex.RUnlock()
+
+						tflog.Debug(ctx, "Using cached badge data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
+
+						return cachedData, nil
+					}
+					b.badgeResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.BadgesAPI.BadgesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Badge map[string]interface{} `json:"badge"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					b.badgeResponsesMutex.Lock()
+					for k, v := range result.Badge {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.badgeResponses[k] = vMap
+
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.badgeResponses[name] = vMap
+							}
+						}
+					}
+					b.badgeResponsesMutex.Unlock()
+
+					return result.Badge, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewBadgesPutRequest()
+			badgeMap := make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+
+			for name, props := range filteredData {
+				badgeMap[name] = props.(openapi.ConfigPutRequestBadgeBadgeName)
+			}
+			putRequest.SetBadge(badgeMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.BadgesAPI.BadgesPut(ctx).BadgesPutRequest(
+				*request.(*openapi.BadgesPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching badges", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching badges after successful PUT operation to retrieve auto-generated values")
+			badgesReq := b.client.BadgesAPI.BadgesGet(fetchCtx)
+			badgesResp, fetchErr := badgesReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch badges after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer badgesResp.Body.Close()
+
+			var badgesData struct {
+				Badge map[string]map[string]interface{} `json:"badge"`
+			}
+
+			if respErr := json.NewDecoder(badgesResp.Body).Decode(&badgesData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode badges response for auto-generated fields", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.badgeResponsesMutex.Lock()
+			for badgeName, badgeData := range badgesData.Badge {
+				b.badgeResponses[badgeName] = badgeData
+
+				if name, ok := badgeData["name"].(string); ok && name != badgeName {
+					b.badgeResponses[name] = badgeData
+				}
+			}
+			b.badgeResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored badge data for auto-generated fields", map[string]interface{}{
+				"badge_count": len(badgesData.Badge),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentBadgeOps = true
+			b.recentBadgeOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkBadgePatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "badge",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			badgePatch := make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+			for k, v := range b.badgePatch {
+				badgePatch[k] = v
+			}
+			b.badgePatch = make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(badgePatch))
+
+			for k, v := range badgePatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewBadgesPutRequest()
+			badgeMap := make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+
+			for name, props := range filteredData {
+				badgeMap[name] = props.(openapi.ConfigPutRequestBadgeBadgeName)
+			}
+			patchRequest.SetBadge(badgeMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.BadgesAPI.BadgesPatch(ctx).BadgesPutRequest(
+				*request.(*openapi.BadgesPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentBadgeOps = true
+			b.recentBadgeOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkBadgeDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "badge",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			badgeNames := make([]string, len(b.badgeDelete))
+			copy(badgeNames, b.badgeDelete)
+
+			badgeDeleteMap := make(map[string]bool)
+			for _, name := range badgeNames {
+				badgeDeleteMap[name] = true
+			}
+			b.badgeDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range badgeNames {
+				result[name] = true
+			}
+
+			return result, badgeNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.BadgesAPI.BadgesDelete(ctx).BadgeName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentBadgeOps = true
+			b.recentBadgeOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkDeviceVoiceSettingsPut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "device_voice_settings",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			for k, v := range b.deviceVoiceSettingsPut {
+				originalOperations[k] = v
+			}
+			b.deviceVoiceSettingsPut = make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "device_voice_settings",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached device voice settings data
+					b.deviceVoiceSettingsResponsesMutex.RLock()
+					if len(b.deviceVoiceSettingsResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.deviceVoiceSettingsResponses {
+							cachedData[k] = v
+						}
+						b.deviceVoiceSettingsResponsesMutex.RUnlock()
+
+						tflog.Debug(ctx, "Using cached device voice settings data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
+
+						return cachedData, nil
+					}
+					b.deviceVoiceSettingsResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						DeviceVoiceSettings map[string]interface{} `json:"device_voice_settings"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					b.deviceVoiceSettingsResponsesMutex.Lock()
+					for k, v := range result.DeviceVoiceSettings {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.deviceVoiceSettingsResponses[k] = vMap
+
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.deviceVoiceSettingsResponses[name] = vMap
+							}
+						}
+					}
+					b.deviceVoiceSettingsResponsesMutex.Unlock()
+
+					return result.DeviceVoiceSettings, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewDevicevoicesettingsPutRequest()
+			deviceVoiceSettingsMap := make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+
+			for name, props := range filteredData {
+				deviceVoiceSettingsMap[name] = props.(openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			}
+			putRequest.SetDeviceVoiceSettings(deviceVoiceSettingsMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.DeviceVoiceSettingsAPI.DevicevoicesettingsPut(ctx).DevicevoicesettingsPutRequest(
+				*request.(*openapi.DevicevoicesettingsPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching device voice settings", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching device voice settings after successful PUT operation to retrieve auto-generated values")
+			settingsReq := b.client.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(fetchCtx)
+			settingsResp, fetchErr := settingsReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch device voice settings after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer settingsResp.Body.Close()
+
+			var settingsData struct {
+				DeviceVoiceSettings map[string]map[string]interface{} `json:"device_voice_settings"`
+			}
+
+			if respErr := json.NewDecoder(settingsResp.Body).Decode(&settingsData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode device voice settings response for auto-generated fields", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.deviceVoiceSettingsResponsesMutex.Lock()
+			for settingsName, settingsData := range settingsData.DeviceVoiceSettings {
+				b.deviceVoiceSettingsResponses[settingsName] = settingsData
+
+				if name, ok := settingsData["name"].(string); ok && name != settingsName {
+					b.deviceVoiceSettingsResponses[name] = settingsData
+				}
+			}
+			b.deviceVoiceSettingsResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored device voice settings data for auto-generated fields", map[string]interface{}{
+				"device_voice_settings_count": len(settingsData.DeviceVoiceSettings),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentDeviceVoiceSettingsOps = true
+			b.recentDeviceVoiceSettingsOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkDeviceVoiceSettingsPatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "device_voice_settings",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			deviceVoiceSettingsPatch := make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			for k, v := range b.deviceVoiceSettingsPatch {
+				deviceVoiceSettingsPatch[k] = v
+			}
+			b.deviceVoiceSettingsPatch = make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(deviceVoiceSettingsPatch))
+
+			for k, v := range deviceVoiceSettingsPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewDevicevoicesettingsPutRequest()
+			deviceVoiceSettingsMap := make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+
+			for name, props := range filteredData {
+				deviceVoiceSettingsMap[name] = props.(openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			}
+			patchRequest.SetDeviceVoiceSettings(deviceVoiceSettingsMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.DeviceVoiceSettingsAPI.DevicevoicesettingsPatch(ctx).DevicevoicesettingsPutRequest(
+				*request.(*openapi.DevicevoicesettingsPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentDeviceVoiceSettingsOps = true
+			b.recentDeviceVoiceSettingsOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkDeviceVoiceSettingsDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "device_voice_settings",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			deviceVoiceSettingsNames := make([]string, len(b.deviceVoiceSettingsDelete))
+			copy(deviceVoiceSettingsNames, b.deviceVoiceSettingsDelete)
+
+			deviceVoiceSettingsDeleteMap := make(map[string]bool)
+			for _, name := range deviceVoiceSettingsNames {
+				deviceVoiceSettingsDeleteMap[name] = true
+			}
+			b.deviceVoiceSettingsDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range deviceVoiceSettingsNames {
+				result[name] = true
+			}
+
+			return result, deviceVoiceSettingsNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.DeviceVoiceSettingsAPI.DevicevoicesettingsDelete(ctx).DeviceVoiceSettingsName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentDeviceVoiceSettingsOps = true
+			b.recentDeviceVoiceSettingsOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkPacketBrokerPut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "packet_broker",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			for k, v := range b.packetBrokerPut {
+				originalOperations[k] = v
+			}
+			b.packetBrokerPut = make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "packet_broker",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.PacketBrokerAPI.PacketbrokerGet(apiCtx).IncludeData(true).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						PbEgressProfile map[string]interface{} `json:"pb_egress_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.PbEgressProfile, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewPacketbrokerPutRequest()
+			packetBrokerMap := make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+
+			for name, props := range filteredData {
+				pbConfig := props.(openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+				packetBrokerMap[name] = pbConfig
+			}
+			putRequest.SetPbEgressProfile(packetBrokerMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.PacketBrokerAPI.PacketbrokerPut(ctx).PacketbrokerPutRequest(
+				*request.(*openapi.PacketbrokerPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			tflog.Debug(ctx, "Processing PacketBroker PUT response")
+
+			// Fetch updated data for all resources
+			getResp, err := b.client.PacketBrokerAPI.PacketbrokerGet(ctx).IncludeData(true).Execute()
+			if err != nil {
+				tflog.Error(ctx, "Failed to fetch PacketBroker data after PUT", map[string]interface{}{
+					"error": err.Error(),
+				})
+				return fmt.Errorf("failed to fetch PacketBroker data after PUT: %v", err)
+			}
+			defer getResp.Body.Close()
+
+			var result struct {
+				PbEgressProfile map[string]map[string]interface{} `json:"pb_egress_profile"`
+			}
+			if err := json.NewDecoder(getResp.Body).Decode(&result); err != nil {
+				tflog.Error(ctx, "Failed to decode PacketBroker response after PUT", map[string]interface{}{
+					"error": err.Error(),
+				})
+				return fmt.Errorf("failed to decode PacketBroker response after PUT: %v", err)
+			}
+
+			// Update cache with fresh data
+			b.packetBrokerResponsesMutex.Lock()
+			for name, data := range result.PbEgressProfile {
+				b.packetBrokerResponses[name] = data
+			}
+			b.packetBrokerResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Updated PacketBroker cache after PUT", map[string]interface{}{
+				"cached_resources": len(result.PbEgressProfile),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentPacketBrokerOps = true
+			b.recentPacketBrokerOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkPacketBrokerPatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "packet_broker",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			packetBrokerPatch := make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			for k, v := range b.packetBrokerPatch {
+				packetBrokerPatch[k] = v
+			}
+			b.packetBrokerPatch = make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(packetBrokerPatch))
+
+			for k, v := range packetBrokerPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewPacketbrokerPutRequest()
+			packetBrokerMap := make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+
+			for name, props := range filteredData {
+				pbConfig := props.(openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+				packetBrokerMap[name] = pbConfig
+			}
+			patchRequest.SetPbEgressProfile(packetBrokerMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.PacketBrokerAPI.PacketbrokerPatch(ctx).PacketbrokerPutRequest(
+				*request.(*openapi.PacketbrokerPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentPacketBrokerOps = true
+			b.recentPacketBrokerOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkPacketBrokerDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "packet_broker",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			packetBrokerNames := make([]string, len(b.packetBrokerDelete))
+			copy(packetBrokerNames, b.packetBrokerDelete)
+
+			packetBrokerDeleteMap := make(map[string]bool)
+			for _, name := range packetBrokerNames {
+				packetBrokerDeleteMap[name] = true
+			}
+			b.packetBrokerDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range packetBrokerNames {
+				result[name] = true
+			}
+
+			return result, packetBrokerNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.PacketBrokerAPI.PacketbrokerDelete(ctx).PbEgressProfileName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentPacketBrokerOps = true
+			b.recentPacketBrokerOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkPacketQueuePut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "packet_queue",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			for k, v := range b.packetQueuePut {
+				originalOperations[k] = v
+			}
+			b.packetQueuePut = make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "packet_queue",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached packet queue data
+					b.packetQueueResponsesMutex.RLock()
+					if len(b.packetQueueResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.packetQueueResponses {
+							cachedData[k] = v
+						}
+						b.packetQueueResponsesMutex.RUnlock()
+						return cachedData, nil
+					}
+					b.packetQueueResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.PacketQueuesAPI.PacketqueuesGet(apiCtx).IncludeData(true).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						PacketQueue map[string]interface{} `json:"packet_queue"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					// Cache the results
+					b.packetQueueResponsesMutex.Lock()
+					for k, v := range result.PacketQueue {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.packetQueueResponses[k] = vMap
+						}
+					}
+					b.packetQueueResponsesMutex.Unlock()
+
+					return result.PacketQueue, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewPacketqueuesPutRequest()
+			packetQueueMap := make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+
+			for name, props := range filteredData {
+				packetQueueMap[name] = props.(openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			}
+			putRequest.SetPacketQueue(packetQueueMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.PacketQueuesAPI.PacketqueuesPut(ctx).PacketqueuesPutRequest(
+				*request.(*openapi.PacketqueuesPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching packet queues", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching packet queues after successful PUT operation to retrieve auto-generated values")
+			queuesReq := b.client.PacketQueuesAPI.PacketqueuesGet(fetchCtx)
+			queuesResp, fetchErr := queuesReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch packet queues after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer queuesResp.Body.Close()
+
+			var queuesData struct {
+				PacketQueue map[string]map[string]interface{} `json:"packet_queue"`
+			}
+
+			if respErr := json.NewDecoder(queuesResp.Body).Decode(&queuesData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode packet queues response after PUT", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.packetQueueResponsesMutex.Lock()
+			for queueName, queueData := range queuesData.PacketQueue {
+				b.packetQueueResponses[queueName] = queueData
+			}
+			b.packetQueueResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored packet queue data for auto-generated fields", map[string]interface{}{
+				"packet_queue_count": len(queuesData.PacketQueue),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentPacketQueueOps = true
+			b.recentPacketQueueOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkPacketQueuePatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "packet_queue",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			packetQueuePatch := make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			for k, v := range b.packetQueuePatch {
+				packetQueuePatch[k] = v
+			}
+			b.packetQueuePatch = make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(packetQueuePatch))
+
+			for k, v := range packetQueuePatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewPacketqueuesPutRequest()
+			packetQueueMap := make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+
+			for name, props := range filteredData {
+				packetQueueMap[name] = props.(openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			}
+			patchRequest.SetPacketQueue(packetQueueMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.PacketQueuesAPI.PacketqueuesPatch(ctx).PacketqueuesPutRequest(
+				*request.(*openapi.PacketqueuesPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentPacketQueueOps = true
+			b.recentPacketQueueOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkPacketQueueDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "packet_queue",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			packetQueueNames := make([]string, len(b.packetQueueDelete))
+			copy(packetQueueNames, b.packetQueueDelete)
+
+			packetQueueDeleteMap := make(map[string]bool)
+			for _, name := range packetQueueNames {
+				packetQueueDeleteMap[name] = true
+			}
+			b.packetQueueDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range packetQueueNames {
+				result[name] = true
+			}
+
+			return result, packetQueueNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.PacketQueuesAPI.PacketqueuesDelete(ctx).PacketQueueName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentPacketQueueOps = true
+			b.recentPacketQueueOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkServicePortProfilePut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "service_port_profile",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			for k, v := range b.servicePortProfilePut {
+				originalOperations[k] = v
+			}
+			b.servicePortProfilePut = make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "service_port_profile",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.ServicePortProfilesAPI.ServiceportprofilesGet(apiCtx).IncludeData(true).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						ServicePortProfile map[string]interface{} `json:"service_port_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.ServicePortProfile, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewServiceportprofilesPutRequest()
+			servicePortProfileMap := make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+
+			for name, props := range filteredData {
+				servicePortProfileMap[name] = props.(openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			}
+			putRequest.SetServicePortProfile(servicePortProfileMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.ServicePortProfilesAPI.ServiceportprofilesPut(ctx).ServiceportprofilesPutRequest(
+				*request.(*openapi.ServiceportprofilesPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching service port profiles", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching service port profiles after successful PUT operation to retrieve auto-generated values")
+			profilesReq := b.client.ServicePortProfilesAPI.ServiceportprofilesGet(fetchCtx).IncludeData(true)
+			profilesResp, fetchErr := profilesReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch service port profiles after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer profilesResp.Body.Close()
+
+			var profilesData struct {
+				ServicePortProfile map[string]map[string]interface{} `json:"service_port_profile"`
+			}
+
+			if respErr := json.NewDecoder(profilesResp.Body).Decode(&profilesData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode service port profiles response after PUT", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.servicePortProfileResponsesMutex.Lock()
+			for profileName, profileData := range profilesData.ServicePortProfile {
+				b.servicePortProfileResponses[profileName] = profileData
+			}
+			b.servicePortProfileResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored service port profile data for auto-generated fields", map[string]interface{}{
+				"service_port_profile_count": len(profilesData.ServicePortProfile),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentServicePortProfileOps = true
+			b.recentServicePortProfileOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkServicePortProfilePatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "service_port_profile",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			servicePortProfilePatch := make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			for k, v := range b.servicePortProfilePatch {
+				servicePortProfilePatch[k] = v
+			}
+			b.servicePortProfilePatch = make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(servicePortProfilePatch))
+
+			for k, v := range servicePortProfilePatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewServiceportprofilesPutRequest()
+			servicePortProfileMap := make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+
+			for name, props := range filteredData {
+				servicePortProfileMap[name] = props.(openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			}
+			patchRequest.SetServicePortProfile(servicePortProfileMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.ServicePortProfilesAPI.ServiceportprofilesPatch(ctx).ServiceportprofilesPutRequest(
+				*request.(*openapi.ServiceportprofilesPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentServicePortProfileOps = true
+			b.recentServicePortProfileOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkServicePortProfileDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "service_port_profile",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			servicePortProfileNames := make([]string, len(b.servicePortProfileDelete))
+			copy(servicePortProfileNames, b.servicePortProfileDelete)
+
+			servicePortProfileDeleteMap := make(map[string]bool)
+			for _, name := range servicePortProfileNames {
+				servicePortProfileDeleteMap[name] = true
+			}
+			b.servicePortProfileDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range servicePortProfileNames {
+				result[name] = true
+			}
+
+			return result, servicePortProfileNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.ServicePortProfilesAPI.ServiceportprofilesDelete(ctx).ServicePortProfileName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentServicePortProfileOps = true
+			b.recentServicePortProfileOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkSwitchpointPut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "switchpoint",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName)
+			for k, v := range b.switchpointPut {
+				originalOperations[k] = v
+			}
+			b.switchpointPut = make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "switchpoint",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached Switchpoint data
+					b.switchpointResponsesMutex.RLock()
+					if len(b.switchpointResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.switchpointResponses {
+							cachedData[k] = v
+						}
+						b.switchpointResponsesMutex.RUnlock()
+
+						tflog.Debug(ctx, "Using cached Switchpoint data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
+
+						return cachedData, nil
+					}
+					b.switchpointResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.SwitchpointsAPI.SwitchpointsGet(apiCtx).IncludeData(true).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Switchpoint map[string]interface{} `json:"switchpoint"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					// Update cache with API data
+					b.switchpointResponsesMutex.Lock()
+					for k, v := range result.Switchpoint {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.switchpointResponses[k] = vMap
+
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.switchpointResponses[name] = vMap
+							}
+						}
+					}
+					b.switchpointResponsesMutex.Unlock()
+
+					return result.Switchpoint, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewSwitchpointsPutRequest()
+			switchpointMap := make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue)
+
+			for name, props := range filteredData {
+				configProps := props.(openapi.ConfigPutRequestSwitchpointSwitchpointName)
+				switchpointValue := openapi.SwitchpointsPutRequestSwitchpointValue{}
+
+				if configProps.Name != nil {
+					switchpointValue.SetName(*configProps.Name)
+				}
+				if configProps.DeviceSerialNumber != nil {
+					switchpointValue.SetDeviceSerialNumber(*configProps.DeviceSerialNumber)
+				}
+				if configProps.ConnectedBundle != nil {
+					switchpointValue.SetConnectedBundle(*configProps.ConnectedBundle)
+				}
+				if configProps.ReadOnlyMode != nil {
+					switchpointValue.SetReadOnlyMode(*configProps.ReadOnlyMode)
+				}
+				if configProps.Locked != nil {
+					switchpointValue.SetLocked(*configProps.Locked)
+				}
+				if configProps.DisabledPorts != nil {
+					switchpointValue.SetDisabledPorts(*configProps.DisabledPorts)
+				}
+				if configProps.OutOfBandManagement != nil {
+					switchpointValue.SetOutOfBandManagement(*configProps.OutOfBandManagement)
+				}
+				if configProps.Type != nil {
+					switchpointValue.SetType(*configProps.Type)
+				}
+				if configProps.SuperPod != nil {
+					switchpointValue.SetSuperPod(*configProps.SuperPod)
+				}
+				if configProps.Pod != nil {
+					switchpointValue.SetPod(*configProps.Pod)
+				}
+				if configProps.Rack != nil {
+					switchpointValue.SetRack(*configProps.Rack)
+				}
+				if configProps.SwitchRouterIdIpMask != nil {
+					switchpointValue.SetSwitchRouterIdIpMask(*configProps.SwitchRouterIdIpMask)
+				}
+
+				switchpointMap[name] = switchpointValue
+			}
+			putRequest.SetSwitchpoint(switchpointMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.SwitchpointsAPI.SwitchpointsPut(ctx).SwitchpointsPutRequest(
+				*request.(*openapi.SwitchpointsPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching switchpoints", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching switchpoints after successful PUT operation to retrieve auto-generated values")
+			switchpointsReq := b.client.SwitchpointsAPI.SwitchpointsGet(fetchCtx).IncludeData(true)
+			switchpointsResp, fetchErr := switchpointsReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch switchpoints after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer switchpointsResp.Body.Close()
+
+			var switchpointsData struct {
+				Switchpoint map[string]map[string]interface{} `json:"switchpoint"`
+			}
+
+			if respErr := json.NewDecoder(switchpointsResp.Body).Decode(&switchpointsData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode switchpoints response after PUT", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.switchpointResponsesMutex.Lock()
+			for switchpointName, switchpointData := range switchpointsData.Switchpoint {
+				b.switchpointResponses[switchpointName] = switchpointData
+			}
+			b.switchpointResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored switchpoint data for auto-generated fields", map[string]interface{}{
+				"switchpoint_count": len(switchpointsData.Switchpoint),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentSwitchpointOps = true
+			b.recentSwitchpointOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkSwitchpointPatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "switchpoint",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			switchpointPatch := make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName)
+			for k, v := range b.switchpointPatch {
+				switchpointPatch[k] = v
+			}
+			b.switchpointPatch = make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(switchpointPatch))
+
+			for k, v := range switchpointPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewSwitchpointsPutRequest()
+			switchpointMap := make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue)
+
+			for name, props := range filteredData {
+				configProps := props.(openapi.ConfigPutRequestSwitchpointSwitchpointName)
+				switchpointValue := openapi.SwitchpointsPutRequestSwitchpointValue{}
+
+				if configProps.Name != nil {
+					switchpointValue.SetName(*configProps.Name)
+				}
+				if configProps.DeviceSerialNumber != nil {
+					switchpointValue.SetDeviceSerialNumber(*configProps.DeviceSerialNumber)
+				}
+				if configProps.ConnectedBundle != nil {
+					switchpointValue.SetConnectedBundle(*configProps.ConnectedBundle)
+				}
+				if configProps.ReadOnlyMode != nil {
+					switchpointValue.SetReadOnlyMode(*configProps.ReadOnlyMode)
+				}
+				if configProps.Locked != nil {
+					switchpointValue.SetLocked(*configProps.Locked)
+				}
+				if configProps.DisabledPorts != nil {
+					switchpointValue.SetDisabledPorts(*configProps.DisabledPorts)
+				}
+				if configProps.OutOfBandManagement != nil {
+					switchpointValue.SetOutOfBandManagement(*configProps.OutOfBandManagement)
+				}
+				if configProps.Type != nil {
+					switchpointValue.SetType(*configProps.Type)
+				}
+				if configProps.SuperPod != nil {
+					switchpointValue.SetSuperPod(*configProps.SuperPod)
+				}
+				if configProps.Pod != nil {
+					switchpointValue.SetPod(*configProps.Pod)
+				}
+				if configProps.Rack != nil {
+					switchpointValue.SetRack(*configProps.Rack)
+				}
+				if configProps.SwitchRouterIdIpMask != nil {
+					switchpointValue.SetSwitchRouterIdIpMask(*configProps.SwitchRouterIdIpMask)
+				}
+
+				switchpointMap[name] = switchpointValue
+			}
+			patchRequest.SetSwitchpoint(switchpointMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.SwitchpointsAPI.SwitchpointsPatch(ctx).SwitchpointsPutRequest(
+				*request.(*openapi.SwitchpointsPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentSwitchpointOps = true
+			b.recentSwitchpointOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkSwitchpointDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "switchpoint",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			switchpointNames := make([]string, len(b.switchpointDelete))
+			copy(switchpointNames, b.switchpointDelete)
+
+			switchpointDeleteMap := make(map[string]bool)
+			for _, name := range switchpointNames {
+				switchpointDeleteMap[name] = true
+			}
+			b.switchpointDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range switchpointNames {
+				result[name] = true
+			}
+
+			return result, switchpointNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.SwitchpointsAPI.SwitchpointsDelete(ctx).SwitchpointName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentSwitchpointOps = true
+			b.recentSwitchpointOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkVoicePortProfilePut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "voice_port_profile",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			for k, v := range b.voicePortProfilePut {
+				originalOperations[k] = v
+			}
+			b.voicePortProfilePut = make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "voice_port_profile",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached Voice Port Profile data
+					b.voicePortProfileResponsesMutex.RLock()
+					if len(b.voicePortProfileResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.voicePortProfileResponses {
+							cachedData[k] = v
+						}
+						b.voicePortProfileResponsesMutex.RUnlock()
+
+						tflog.Debug(ctx, "Using cached Voice Port Profile data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
+
+						return cachedData, nil
+					}
+					b.voicePortProfileResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.VoicePortProfilesAPI.VoiceportprofilesGet(apiCtx).IncludeData(true).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						VoicePortProfiles map[string]interface{} `json:"voice_port_profiles"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					// Update cache with API data
+					b.voicePortProfileResponsesMutex.Lock()
+					for k, v := range result.VoicePortProfiles {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.voicePortProfileResponses[k] = vMap
+
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.voicePortProfileResponses[name] = vMap
+							}
+						}
+					}
+					b.voicePortProfileResponsesMutex.Unlock()
+
+					return result.VoicePortProfiles, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewVoiceportprofilesPutRequest()
+			profileMap := make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+
+			for name, props := range filteredData {
+				profileMap[name] = props.(openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			}
+			putRequest.SetVoicePortProfiles(profileMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.VoicePortProfilesAPI.VoiceportprofilesPut(ctx).VoiceportprofilesPutRequest(
+				*request.(*openapi.VoiceportprofilesPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching voice port profiles", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching voice port profiles after successful PUT operation to retrieve auto-generated values")
+			profilesReq := b.client.VoicePortProfilesAPI.VoiceportprofilesGet(fetchCtx).IncludeData(true)
+			profilesResp, fetchErr := profilesReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch voice port profiles after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer profilesResp.Body.Close()
+
+			var profilesData struct {
+				VoicePortProfiles map[string]map[string]interface{} `json:"voice_port_profiles"`
+			}
+
+			if respErr := json.NewDecoder(profilesResp.Body).Decode(&profilesData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode voice port profiles response after PUT", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.voicePortProfileResponsesMutex.Lock()
+			for profileName, profileData := range profilesData.VoicePortProfiles {
+				b.voicePortProfileResponses[profileName] = profileData
+			}
+			b.voicePortProfileResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored voice port profile data for auto-generated fields", map[string]interface{}{
+				"voice_port_profile_count": len(profilesData.VoicePortProfiles),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentVoicePortProfileOps = true
+			b.recentVoicePortProfileOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkVoicePortProfilePatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "voice_port_profile",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			voicePortProfilePatch := make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			for k, v := range b.voicePortProfilePatch {
+				voicePortProfilePatch[k] = v
+			}
+			b.voicePortProfilePatch = make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(voicePortProfilePatch))
+
+			for k, v := range voicePortProfilePatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewVoiceportprofilesPutRequest()
+			profileMap := make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+
+			for name, props := range filteredData {
+				profileMap[name] = props.(openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			}
+			patchRequest.SetVoicePortProfiles(profileMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.VoicePortProfilesAPI.VoiceportprofilesPatch(ctx).VoiceportprofilesPutRequest(
+				*request.(*openapi.VoiceportprofilesPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentVoicePortProfileOps = true
+			b.recentVoicePortProfileOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkVoicePortProfileDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "voice_port_profile",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			voicePortProfileNames := make([]string, len(b.voicePortProfileDelete))
+			copy(voicePortProfileNames, b.voicePortProfileDelete)
+
+			voicePortProfileDeleteMap := make(map[string]bool)
+			for _, name := range voicePortProfileNames {
+				voicePortProfileDeleteMap[name] = true
+			}
+			b.voicePortProfileDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range voicePortProfileNames {
+				result[name] = true
+			}
+
+			return result, voicePortProfileNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.VoicePortProfilesAPI.VoiceportprofilesDelete(ctx).VoicePortProfileName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentVoicePortProfileOps = true
+			b.recentVoicePortProfileOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkDeviceControllerPut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "device_controller",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+			for k, v := range b.deviceControllerPut {
+				originalOperations[k] = v
+			}
+			b.deviceControllerPut = make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "device_controller",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached DeviceController data
+					b.deviceControllerResponsesMutex.RLock()
+					if len(b.deviceControllerResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.deviceControllerResponses {
+							cachedData[k] = v
+						}
+						b.deviceControllerResponsesMutex.RUnlock()
+
+						tflog.Debug(ctx, "Using cached DeviceController data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
+
+						return cachedData, nil
+					}
+					b.deviceControllerResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.DeviceControllersAPI.DevicecontrollersGet(apiCtx).IncludeData(true).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						DeviceController map[string]interface{} `json:"device_controller"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					// Update cache with API data
+					b.deviceControllerResponsesMutex.Lock()
+					for k, v := range result.DeviceController {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.deviceControllerResponses[k] = vMap
+
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.deviceControllerResponses[name] = vMap
+							}
+						}
+					}
+					b.deviceControllerResponsesMutex.Unlock()
+
+					return result.DeviceController, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewDevicecontrollersPutRequest()
+			deviceMap := make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
+
+			for name, props := range filteredData {
+				sourceProps := props.(openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+				targetProps := openapi.DevicecontrollersPutRequestDeviceControllerValue{}
+
+				if sourceProps.Name != nil {
+					targetProps.Name = sourceProps.Name
+				}
+				if sourceProps.Enable != nil {
+					targetProps.Enable = sourceProps.Enable
+				}
+				if sourceProps.IpSource != nil {
+					targetProps.IpSource = sourceProps.IpSource
+				}
+				if sourceProps.ControllerIpAndMask != nil {
+					targetProps.ControllerIpAndMask = sourceProps.ControllerIpAndMask
+				}
+				if sourceProps.Gateway != nil {
+					targetProps.Gateway = sourceProps.Gateway
+				}
+				if sourceProps.SwitchIpAndMask != nil {
+					targetProps.SwitchIpAndMask = sourceProps.SwitchIpAndMask
+				}
+				if sourceProps.SwitchGateway != nil {
+					targetProps.SwitchGateway = sourceProps.SwitchGateway
+				}
+				if sourceProps.CommType != nil {
+					targetProps.CommType = sourceProps.CommType
+				}
+				if sourceProps.SnmpCommunityString != nil {
+					targetProps.SnmpCommunityString = sourceProps.SnmpCommunityString
+				}
+				if sourceProps.UplinkPort != nil {
+					targetProps.UplinkPort = sourceProps.UplinkPort
+				}
+				if sourceProps.LldpSearchString != nil {
+					targetProps.LldpSearchString = sourceProps.LldpSearchString
+				}
+				if sourceProps.ZtpIdentification != nil {
+					targetProps.ZtpIdentification = sourceProps.ZtpIdentification
+				}
+				if sourceProps.LocatedBy != nil {
+					targetProps.LocatedBy = sourceProps.LocatedBy
+				}
+				if sourceProps.PowerState != nil {
+					targetProps.PowerState = sourceProps.PowerState
+				}
+				if sourceProps.CommunicationMode != nil {
+					targetProps.CommunicationMode = sourceProps.CommunicationMode
+				}
+				if sourceProps.CliAccessMode != nil {
+					targetProps.CliAccessMode = sourceProps.CliAccessMode
+				}
+				if sourceProps.Username != nil {
+					targetProps.Username = sourceProps.Username
+				}
+				if sourceProps.Password != nil {
+					targetProps.Password = sourceProps.Password
+				}
+				if sourceProps.EnablePassword != nil {
+					targetProps.EnablePassword = sourceProps.EnablePassword
+				}
+				if sourceProps.SshKeyOrPassword != nil {
+					targetProps.SshKeyOrPassword = sourceProps.SshKeyOrPassword
+				}
+				if sourceProps.ManagedOnNativeVlan != nil {
+					targetProps.ManagedOnNativeVlan = sourceProps.ManagedOnNativeVlan
+				}
+				if sourceProps.Sdlc != nil {
+					targetProps.Sdlc = sourceProps.Sdlc
+				}
+				if sourceProps.Switchpoint != nil {
+					targetProps.Switchpoint = sourceProps.Switchpoint
+				}
+				if sourceProps.SwitchpointRefType != nil {
+					targetProps.SwitchpointRefType = sourceProps.SwitchpointRefType
+				}
+				if sourceProps.SecurityType != nil {
+					targetProps.SecurityType = sourceProps.SecurityType
+				}
+				if sourceProps.Snmpv3Username != nil {
+					targetProps.Snmpv3Username = sourceProps.Snmpv3Username
+				}
+				if sourceProps.AuthenticationProtocol != nil {
+					targetProps.AuthenticationProtocol = sourceProps.AuthenticationProtocol
+				}
+				if sourceProps.Passphrase != nil {
+					targetProps.Passphrase = sourceProps.Passphrase
+				}
+				if sourceProps.PrivateProtocol != nil {
+					targetProps.PrivateProtocol = sourceProps.PrivateProtocol
+				}
+				if sourceProps.PrivatePassword != nil {
+					targetProps.PrivatePassword = sourceProps.PrivatePassword
+				}
+				if sourceProps.PasswordEncrypted != nil {
+					targetProps.PasswordEncrypted = sourceProps.PasswordEncrypted
+				}
+				if sourceProps.EnablePasswordEncrypted != nil {
+					targetProps.EnablePasswordEncrypted = sourceProps.EnablePasswordEncrypted
+				}
+				if sourceProps.SshKeyOrPasswordEncrypted != nil {
+					targetProps.SshKeyOrPasswordEncrypted = sourceProps.SshKeyOrPasswordEncrypted
+				}
+				if sourceProps.PassphraseEncrypted != nil {
+					targetProps.PassphraseEncrypted = sourceProps.PassphraseEncrypted
+				}
+				if sourceProps.PrivatePasswordEncrypted != nil {
+					targetProps.PrivatePasswordEncrypted = sourceProps.PrivatePasswordEncrypted
+				}
+				if sourceProps.DeviceManagedAs != nil {
+					targetProps.DeviceManagedAs = sourceProps.DeviceManagedAs
+				}
+				if sourceProps.Switch != nil {
+					targetProps.Switch = sourceProps.Switch
+				}
+				if sourceProps.SwitchRefType != nil {
+					targetProps.SwitchRefType = sourceProps.SwitchRefType
+				}
+				if sourceProps.ConnectionService != nil {
+					targetProps.ConnectionService = sourceProps.ConnectionService
+				}
+				if sourceProps.ConnectionServiceRefType != nil {
+					targetProps.ConnectionServiceRefType = sourceProps.ConnectionServiceRefType
+				}
+				if sourceProps.Port != nil {
+					targetProps.Port = sourceProps.Port
+				}
+				if sourceProps.SfpMacAddressOrSn != nil {
+					targetProps.SfpMacAddressOrSn = sourceProps.SfpMacAddressOrSn
+				}
+				if sourceProps.UsesTaggedPackets != nil {
+					targetProps.UsesTaggedPackets = sourceProps.UsesTaggedPackets
+				}
+
+				deviceMap[name] = targetProps
+			}
+			patchRequest.SetDeviceController(deviceMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.DeviceControllersAPI.DevicecontrollersPut(ctx).DevicecontrollersPutRequest(
+				*request.(*openapi.DevicecontrollersPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching device controllers", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching device controllers after successful PUT operation to retrieve auto-generated values")
+			deviceControllersReq := b.client.DeviceControllersAPI.DevicecontrollersGet(fetchCtx).IncludeData(true)
+			deviceControllersResp, fetchErr := deviceControllersReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch device controllers after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer deviceControllersResp.Body.Close()
+
+			var deviceControllersData struct {
+				DeviceController map[string]map[string]interface{} `json:"device_controller"`
+			}
+
+			if respErr := json.NewDecoder(deviceControllersResp.Body).Decode(&deviceControllersData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode device controllers response after PUT", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.deviceControllerResponsesMutex.Lock()
+			for deviceControllerName, deviceControllerData := range deviceControllersData.DeviceController {
+				b.deviceControllerResponses[deviceControllerName] = deviceControllerData
+			}
+			b.deviceControllerResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored device controller data for auto-generated fields", map[string]interface{}{
+				"device_controller_count": len(deviceControllersData.DeviceController),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentDeviceControllerOps = true
+			b.recentDeviceControllerOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkDeviceControllerPatch(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "device_controller",
+		OperationType: "PATCH",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			deviceControllerPatch := make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+			for k, v := range b.deviceControllerPatch {
+				deviceControllerPatch[k] = v
+			}
+			b.deviceControllerPatch = make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(deviceControllerPatch))
+
+			for k, v := range deviceControllerPatch {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			patchRequest := openapi.NewDevicecontrollersPutRequest()
+			deviceMap := make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
+
+			for name, props := range filteredData {
+				sourceProps := props.(openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+				targetProps := openapi.DevicecontrollersPutRequestDeviceControllerValue{}
+
+				if sourceProps.Name != nil {
+					targetProps.Name = sourceProps.Name
+				}
+				if sourceProps.Enable != nil {
+					targetProps.Enable = sourceProps.Enable
+				}
+				if sourceProps.IpSource != nil {
+					targetProps.IpSource = sourceProps.IpSource
+				}
+				if sourceProps.ControllerIpAndMask != nil {
+					targetProps.ControllerIpAndMask = sourceProps.ControllerIpAndMask
+				}
+				if sourceProps.Gateway != nil {
+					targetProps.Gateway = sourceProps.Gateway
+				}
+				if sourceProps.SwitchIpAndMask != nil {
+					targetProps.SwitchIpAndMask = sourceProps.SwitchIpAndMask
+				}
+				if sourceProps.SwitchGateway != nil {
+					targetProps.SwitchGateway = sourceProps.SwitchGateway
+				}
+				if sourceProps.CommType != nil {
+					targetProps.CommType = sourceProps.CommType
+				}
+				if sourceProps.SnmpCommunityString != nil {
+					targetProps.SnmpCommunityString = sourceProps.SnmpCommunityString
+				}
+				if sourceProps.UplinkPort != nil {
+					targetProps.UplinkPort = sourceProps.UplinkPort
+				}
+				if sourceProps.LldpSearchString != nil {
+					targetProps.LldpSearchString = sourceProps.LldpSearchString
+				}
+				if sourceProps.ZtpIdentification != nil {
+					targetProps.ZtpIdentification = sourceProps.ZtpIdentification
+				}
+				if sourceProps.LocatedBy != nil {
+					targetProps.LocatedBy = sourceProps.LocatedBy
+				}
+				if sourceProps.PowerState != nil {
+					targetProps.PowerState = sourceProps.PowerState
+				}
+				if sourceProps.CommunicationMode != nil {
+					targetProps.CommunicationMode = sourceProps.CommunicationMode
+				}
+				if sourceProps.CliAccessMode != nil {
+					targetProps.CliAccessMode = sourceProps.CliAccessMode
+				}
+				if sourceProps.Username != nil {
+					targetProps.Username = sourceProps.Username
+				}
+				if sourceProps.Password != nil {
+					targetProps.Password = sourceProps.Password
+				}
+				if sourceProps.EnablePassword != nil {
+					targetProps.EnablePassword = sourceProps.EnablePassword
+				}
+				if sourceProps.SshKeyOrPassword != nil {
+					targetProps.SshKeyOrPassword = sourceProps.SshKeyOrPassword
+				}
+				if sourceProps.ManagedOnNativeVlan != nil {
+					targetProps.ManagedOnNativeVlan = sourceProps.ManagedOnNativeVlan
+				}
+				if sourceProps.Sdlc != nil {
+					targetProps.Sdlc = sourceProps.Sdlc
+				}
+				if sourceProps.Switchpoint != nil {
+					targetProps.Switchpoint = sourceProps.Switchpoint
+				}
+				if sourceProps.SwitchpointRefType != nil {
+					targetProps.SwitchpointRefType = sourceProps.SwitchpointRefType
+				}
+				if sourceProps.SecurityType != nil {
+					targetProps.SecurityType = sourceProps.SecurityType
+				}
+				if sourceProps.Snmpv3Username != nil {
+					targetProps.Snmpv3Username = sourceProps.Snmpv3Username
+				}
+				if sourceProps.AuthenticationProtocol != nil {
+					targetProps.AuthenticationProtocol = sourceProps.AuthenticationProtocol
+				}
+				if sourceProps.Passphrase != nil {
+					targetProps.Passphrase = sourceProps.Passphrase
+				}
+				if sourceProps.PrivateProtocol != nil {
+					targetProps.PrivateProtocol = sourceProps.PrivateProtocol
+				}
+				if sourceProps.PrivatePassword != nil {
+					targetProps.PrivatePassword = sourceProps.PrivatePassword
+				}
+				if sourceProps.PasswordEncrypted != nil {
+					targetProps.PasswordEncrypted = sourceProps.PasswordEncrypted
+				}
+				if sourceProps.EnablePasswordEncrypted != nil {
+					targetProps.EnablePasswordEncrypted = sourceProps.EnablePasswordEncrypted
+				}
+				if sourceProps.SshKeyOrPasswordEncrypted != nil {
+					targetProps.SshKeyOrPasswordEncrypted = sourceProps.SshKeyOrPasswordEncrypted
+				}
+				if sourceProps.PassphraseEncrypted != nil {
+					targetProps.PassphraseEncrypted = sourceProps.PassphraseEncrypted
+				}
+				if sourceProps.PrivatePasswordEncrypted != nil {
+					targetProps.PrivatePasswordEncrypted = sourceProps.PrivatePasswordEncrypted
+				}
+				if sourceProps.DeviceManagedAs != nil {
+					targetProps.DeviceManagedAs = sourceProps.DeviceManagedAs
+				}
+				if sourceProps.Switch != nil {
+					targetProps.Switch = sourceProps.Switch
+				}
+				if sourceProps.SwitchRefType != nil {
+					targetProps.SwitchRefType = sourceProps.SwitchRefType
+				}
+				if sourceProps.ConnectionService != nil {
+					targetProps.ConnectionService = sourceProps.ConnectionService
+				}
+				if sourceProps.ConnectionServiceRefType != nil {
+					targetProps.ConnectionServiceRefType = sourceProps.ConnectionServiceRefType
+				}
+				if sourceProps.Port != nil {
+					targetProps.Port = sourceProps.Port
+				}
+				if sourceProps.SfpMacAddressOrSn != nil {
+					targetProps.SfpMacAddressOrSn = sourceProps.SfpMacAddressOrSn
+				}
+				if sourceProps.UsesTaggedPackets != nil {
+					targetProps.UsesTaggedPackets = sourceProps.UsesTaggedPackets
+				}
+
+				deviceMap[name] = targetProps
+			}
+			patchRequest.SetDeviceController(deviceMap)
+			return patchRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.DeviceControllersAPI.DevicecontrollersPatch(ctx).DevicecontrollersPutRequest(
+				*request.(*openapi.DevicecontrollersPutRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentDeviceControllerOps = true
+			b.recentDeviceControllerOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkDeviceControllerDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "device_controller",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			deviceControllerNames := make([]string, len(b.deviceControllerDelete))
+			copy(deviceControllerNames, b.deviceControllerDelete)
+
+			deviceControllerDeleteMap := make(map[string]bool)
+			for _, name := range deviceControllerNames {
+				deviceControllerDeleteMap[name] = true
+			}
+			b.deviceControllerDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range deviceControllerNames {
+				result[name] = true
+			}
+
+			return result, deviceControllerNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			names := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				names = append(names, name)
+			}
+			return names
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.DeviceControllersAPI.DevicecontrollersDelete(ctx).DeviceControllerName(request.([]string))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentDeviceControllerOps = true
+			b.recentDeviceControllerOpTime = time.Now()
 		},
 	})
 }

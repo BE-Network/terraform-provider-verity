@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -79,4 +80,9 @@ func (r *operationStageResource) Update(ctx context.Context, req resource.Update
 
 func (r *operationStageResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// No actual deletion needed
+}
+
+func (r *operationStageResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// Simply set the ID of the resource to the import ID
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

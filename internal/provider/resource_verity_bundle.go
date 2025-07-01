@@ -36,17 +36,25 @@ type verityBundleResource struct {
 }
 
 type verityBundleResourceModel struct {
-	Name                  types.String                        `tfsdk:"name"`
-	DeviceSettings        types.String                        `tfsdk:"device_settings"`
-	DeviceSettingsRefType types.String                        `tfsdk:"device_settings_ref_type_"`
-	CliCommands           types.String                        `tfsdk:"cli_commands"`
-	ObjectProperties      []verityBundleObjectPropertiesModel `tfsdk:"object_properties"`
-	EthPortPaths          []ethPortPathsModel                 `tfsdk:"eth_port_paths"`
-	UserServices          []userServicesModel                 `tfsdk:"user_services"`
+	Name                       types.String                        `tfsdk:"name"`
+	Enable                     types.Bool                          `tfsdk:"enable"`
+	DeviceSettings             types.String                        `tfsdk:"device_settings"`
+	DeviceSettingsRefType      types.String                        `tfsdk:"device_settings_ref_type_"`
+	CliCommands                types.String                        `tfsdk:"cli_commands"`
+	Protocol                   types.String                        `tfsdk:"protocol"`
+	DeviceVoiceSettings        types.String                        `tfsdk:"device_voice_settings"`
+	DeviceVoiceSettingsRefType types.String                        `tfsdk:"device_voice_settings_ref_type_"`
+	ObjectProperties           []verityBundleObjectPropertiesModel `tfsdk:"object_properties"`
+	EthPortPaths               []ethPortPathsModel                 `tfsdk:"eth_port_paths"`
+	UserServices               []userServicesModel                 `tfsdk:"user_services"`
+	RgServices                 []rgServicesModel                   `tfsdk:"rg_services"`
+	VoicePortProfilePaths      []voicePortProfilePathsModel        `tfsdk:"voice_port_profile_paths"`
 }
 
 type verityBundleObjectPropertiesModel struct {
-	IsForSwitch types.Bool `tfsdk:"is_for_switch"`
+	IsForSwitch types.Bool   `tfsdk:"is_for_switch"`
+	Group       types.String `tfsdk:"group"`
+	IsPublic    types.Bool   `tfsdk:"is_public"`
 }
 
 type ethPortPathsModel struct {
@@ -60,11 +68,26 @@ type ethPortPathsModel struct {
 	Index                            types.Int64  `tfsdk:"index"`
 }
 
+type voicePortProfilePathsModel struct {
+	VoicePortNumVoicePortProfiles        types.String `tfsdk:"voice_port_num_voice_port_profiles"`
+	VoicePortNumVoicePortProfilesRefType types.String `tfsdk:"voice_port_num_voice_port_profiles_ref_type_"`
+	Index                                types.Int64  `tfsdk:"index"`
+}
+
 type userServicesModel struct {
 	RowAppEnable                  types.Bool   `tfsdk:"row_app_enable"`
 	RowAppConnectedService        types.String `tfsdk:"row_app_connected_service"`
 	RowAppConnectedServiceRefType types.String `tfsdk:"row_app_connected_service_ref_type_"`
 	RowAppCliCommands             types.String `tfsdk:"row_app_cli_commands"`
+	RowIpMask                     types.String `tfsdk:"row_ip_mask"`
+	Index                         types.Int64  `tfsdk:"index"`
+}
+
+type rgServicesModel struct {
+	RowAppEnable                  types.Bool   `tfsdk:"row_app_enable"`
+	RowAppConnectedService        types.String `tfsdk:"row_app_connected_service"`
+	RowAppConnectedServiceRefType types.String `tfsdk:"row_app_connected_service_ref_type_"`
+	RowAppType                    types.String `tfsdk:"row_app_type"`
 	RowIpMask                     types.String `tfsdk:"row_ip_mask"`
 	Index                         types.Int64  `tfsdk:"index"`
 }
@@ -104,6 +127,10 @@ func (r *verityBundleResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"enable": schema.BoolAttribute{
+				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
+				Optional:    true,
+			},
 			"device_settings": schema.StringAttribute{
 				Description: "Device Settings for device",
 				Optional:    true,
@@ -116,6 +143,18 @@ func (r *verityBundleResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "CLI Commands",
 				Optional:    true,
 			},
+			"protocol": schema.StringAttribute{
+				Description: "Voice Protocol: MGCP or SIP",
+				Optional:    true,
+			},
+			"device_voice_settings": schema.StringAttribute{
+				Description: "Device Voice Settings for device",
+				Optional:    true,
+			},
+			"device_voice_settings_ref_type_": schema.StringAttribute{
+				Description: "Object type for device_voice_settings field",
+				Optional:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
@@ -124,6 +163,14 @@ func (r *verityBundleResource) Schema(_ context.Context, _ resource.SchemaReques
 					Attributes: map[string]schema.Attribute{
 						"is_for_switch": schema.BoolAttribute{
 							Description: "Denotes a Switch Bundle",
+							Optional:    true,
+						},
+						"group": schema.StringAttribute{
+							Description: "Group",
+							Optional:    true,
+						},
+						"is_public": schema.BoolAttribute{
+							Description: "Denotes a shared Switch Bundle",
 							Optional:    true,
 						},
 					},
@@ -190,6 +237,56 @@ func (r *verityBundleResource) Schema(_ context.Context, _ resource.SchemaReques
 						},
 						"row_ip_mask": schema.StringAttribute{
 							Description: "IP/Mask in IPv4 format",
+							Optional:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
+							Optional:    true,
+						},
+					},
+				},
+			},
+			"rg_services": schema.ListNestedBlock{
+				Description: "List of RG services configurations",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"row_app_enable": schema.BoolAttribute{
+							Description: "Enable of this ONT application",
+							Optional:    true,
+						},
+						"row_app_connected_service": schema.StringAttribute{
+							Description: "Service connected to this ONT application",
+							Optional:    true,
+						},
+						"row_app_connected_service_ref_type_": schema.StringAttribute{
+							Description: "Object type for row_app_connected_service field",
+							Optional:    true,
+						},
+						"row_app_type": schema.StringAttribute{
+							Description: "Type of ONT Application",
+							Optional:    true,
+						},
+						"row_ip_mask": schema.StringAttribute{
+							Description: "IP/Mask in IPv4 format",
+							Optional:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
+							Optional:    true,
+						},
+					},
+				},
+			},
+			"voice_port_profile_paths": schema.ListNestedBlock{
+				Description: "List of voice port profile configurations",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"voice_port_num_voice_port_profiles": schema.StringAttribute{
+							Description: "Voice Port Profile for Voice Port",
+							Optional:    true,
+						},
+						"voice_port_num_voice_port_profiles_ref_type_": schema.StringAttribute{
+							Description: "Object type for voice_port_num_voice_port_profiles field",
 							Optional:    true,
 						},
 						"index": schema.Int64Attribute{
@@ -354,17 +451,52 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 		data.CliCommands = types.StringNull()
 	}
 
-	objectProps := verityBundleObjectPropertiesModel{
-		IsForSwitch: types.BoolValue(false),
+	if enableVal, ok := bundleData["enable"].(bool); ok {
+		data.Enable = types.BoolValue(enableVal)
+	} else {
+		data.Enable = types.BoolNull()
 	}
 
+	if protocol, ok := bundleData["protocol"].(string); ok {
+		data.Protocol = types.StringValue(protocol)
+	} else {
+		data.Protocol = types.StringNull()
+	}
+
+	if deviceVoiceSettings, ok := bundleData["device_voice_settings"].(string); ok {
+		data.DeviceVoiceSettings = types.StringValue(deviceVoiceSettings)
+	} else {
+		data.DeviceVoiceSettings = types.StringNull()
+	}
+
+	if deviceVoiceSettingsRefType, ok := bundleData["device_voice_settings_ref_type_"].(string); ok {
+		data.DeviceVoiceSettingsRefType = types.StringValue(deviceVoiceSettingsRefType)
+	} else {
+		data.DeviceVoiceSettingsRefType = types.StringNull()
+	}
+
+	// Only set object_properties if it exists in the API response
 	if objProps, ok := bundleData["object_properties"].(map[string]interface{}); ok {
+		objectProps := verityBundleObjectPropertiesModel{
+			IsForSwitch: types.BoolValue(false),
+			Group:       types.StringNull(),
+			IsPublic:    types.BoolNull(),
+		}
+
 		if isForSwitch, ok := objProps["is_for_switch"].(bool); ok {
 			objectProps.IsForSwitch = types.BoolValue(isForSwitch)
 		}
-	}
+		if group, ok := objProps["group"].(string); ok {
+			objectProps.Group = types.StringValue(group)
+		}
+		if isPublic, ok := objProps["is_public"].(bool); ok {
+			objectProps.IsPublic = types.BoolValue(isPublic)
+		}
 
-	data.ObjectProperties = []verityBundleObjectPropertiesModel{objectProps}
+		data.ObjectProperties = []verityBundleObjectPropertiesModel{objectProps}
+	} else {
+		data.ObjectProperties = nil
+	}
 
 	var ethPortPaths []ethPortPathsModel
 	if paths, ok := bundleData["eth_port_paths"].([]interface{}); ok {
@@ -476,6 +608,92 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 	}
 	data.UserServices = userServices
 
+	var rgServices []rgServicesModel
+	if services, ok := bundleData["rg_services"].([]interface{}); ok {
+		for _, s := range services {
+			service, ok := s.(map[string]interface{})
+			if !ok {
+				continue
+			}
+
+			rgService := rgServicesModel{}
+
+			if enable, ok := service["row_app_enable"].(bool); ok {
+				rgService.RowAppEnable = types.BoolValue(enable)
+			} else {
+				rgService.RowAppEnable = types.BoolNull()
+			}
+
+			stringFields := map[string]struct {
+				field  *types.String
+				apiKey string
+			}{
+				"row_app_connected_service":           {&rgService.RowAppConnectedService, "row_app_connected_service"},
+				"row_app_type":                        {&rgService.RowAppType, "row_app_type"},
+				"row_ip_mask":                         {&rgService.RowIpMask, "row_ip_mask"},
+				"row_app_connected_service_ref_type_": {&rgService.RowAppConnectedServiceRefType, "row_app_connected_service_ref_type_"},
+			}
+
+			for _, item := range stringFields {
+				if val, ok := service[item.apiKey]; ok && val != nil {
+					if strVal, ok := val.(string); ok {
+						*item.field = types.StringValue(strVal)
+					} else {
+						*item.field = types.StringNull()
+					}
+				} else {
+					*item.field = types.StringNull()
+				}
+			}
+
+			if index, ok := service["index"].(float64); ok {
+				rgService.Index = types.Int64Value(int64(index))
+			} else if index, ok := service["index"].(int); ok {
+				rgService.Index = types.Int64Value(int64(index))
+			} else {
+				rgService.Index = types.Int64Null()
+			}
+
+			rgServices = append(rgServices, rgService)
+		}
+	}
+	data.RgServices = rgServices
+
+	var voicePortProfilePaths []voicePortProfilePathsModel
+	if paths, ok := bundleData["voice_port_profile_paths"].([]interface{}); ok {
+		for _, p := range paths {
+			path, ok := p.(map[string]interface{})
+			if !ok {
+				continue
+			}
+
+			voicePortPath := voicePortProfilePathsModel{}
+
+			if voicePortProfiles, ok := path["voice_port_num_voice_port_profiles"].(string); ok {
+				voicePortPath.VoicePortNumVoicePortProfiles = types.StringValue(voicePortProfiles)
+			} else {
+				voicePortPath.VoicePortNumVoicePortProfiles = types.StringNull()
+			}
+
+			if voicePortProfilesRefType, ok := path["voice_port_num_voice_port_profiles_ref_type_"].(string); ok {
+				voicePortPath.VoicePortNumVoicePortProfilesRefType = types.StringValue(voicePortProfilesRefType)
+			} else {
+				voicePortPath.VoicePortNumVoicePortProfilesRefType = types.StringNull()
+			}
+
+			if index, ok := path["index"].(float64); ok {
+				voicePortPath.Index = types.Int64Value(int64(index))
+			} else if index, ok := path["index"].(int); ok {
+				voicePortPath.Index = types.Int64Value(int64(index))
+			} else {
+				voicePortPath.Index = types.Int64Null()
+			}
+
+			voicePortProfilePaths = append(voicePortProfilePaths, voicePortPath)
+		}
+	}
+	data.VoicePortProfilePaths = voicePortProfilePaths
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -503,6 +721,24 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 			bundleValue.CliCommands = openapi.PtrString(data.CliCommands.ValueString())
 		} else {
 			bundleValue.CliCommands = openapi.PtrString("")
+		}
+		hasChanges = true
+	}
+
+	if !data.Enable.Equal(state.Enable) {
+		if !data.Enable.IsNull() {
+			bundleValue.Enable = openapi.PtrBool(data.Enable.ValueBool())
+		} else {
+			bundleValue.Enable = openapi.PtrBool(false)
+		}
+		hasChanges = true
+	}
+
+	if !data.Protocol.Equal(state.Protocol) {
+		if !data.Protocol.IsNull() {
+			bundleValue.Protocol = openapi.PtrString(data.Protocol.ValueString())
+		} else {
+			bundleValue.Protocol = openapi.PtrString("")
 		}
 		hasChanges = true
 	}
@@ -549,9 +785,52 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
+	// Handle device_voice_settings and device_voice_settings_ref_type_
+	deviceVoiceSettingsChanged := !data.DeviceVoiceSettings.Equal(state.DeviceVoiceSettings)
+	deviceVoiceSettingsRefTypeChanged := !data.DeviceVoiceSettingsRefType.Equal(state.DeviceVoiceSettingsRefType)
+
+	if deviceVoiceSettingsChanged || deviceVoiceSettingsRefTypeChanged {
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			data.DeviceVoiceSettings, data.DeviceVoiceSettingsRefType,
+			"device_voice_settings", "device_voice_settings_ref_type_",
+			deviceVoiceSettingsChanged, deviceVoiceSettingsRefTypeChanged) {
+			return
+		}
+
+		// For fields with one reference type:
+		// If only base field changes, send only base field
+		// If ref type field changes (or both), send both fields
+		if deviceVoiceSettingsChanged {
+			if !data.DeviceVoiceSettings.IsNull() {
+				bundleValue.DeviceVoiceSettings = openapi.PtrString(data.DeviceVoiceSettings.ValueString())
+			} else {
+				bundleValue.DeviceVoiceSettings = openapi.PtrString("")
+			}
+		}
+
+		if deviceVoiceSettingsRefTypeChanged {
+			if !data.DeviceVoiceSettingsRefType.IsNull() {
+				bundleValue.DeviceVoiceSettingsRefType = openapi.PtrString(data.DeviceVoiceSettingsRefType.ValueString())
+			} else {
+				bundleValue.DeviceVoiceSettingsRefType = openapi.PtrString("")
+			}
+
+			// If ref type changes, also send base field
+			if !deviceVoiceSettingsChanged {
+				if !data.DeviceVoiceSettings.IsNull() {
+					bundleValue.DeviceVoiceSettings = openapi.PtrString(data.DeviceVoiceSettings.ValueString())
+				} else {
+					bundleValue.DeviceVoiceSettings = openapi.PtrString("")
+				}
+			}
+		}
+
+		hasChanges = true
+	}
+
 	if len(data.ObjectProperties) > 0 {
 		objPropsChanged := false
-		objectProperties := openapi.BundlesPatchRequestEndpointBundleValueObjectProperties{}
+		objectProperties := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
 
 		if len(state.ObjectProperties) == 0 ||
 			!data.ObjectProperties[0].IsForSwitch.Equal(state.ObjectProperties[0].IsForSwitch) {
@@ -561,6 +840,28 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				objectProperties.IsForSwitch = openapi.PtrBool(data.ObjectProperties[0].IsForSwitch.ValueBool())
 			} else {
 				objectProperties.IsForSwitch = openapi.PtrBool(false)
+			}
+		}
+
+		if len(state.ObjectProperties) == 0 ||
+			!data.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
+			objPropsChanged = true
+
+			if !data.ObjectProperties[0].Group.IsNull() {
+				objectProperties.Group = openapi.PtrString(data.ObjectProperties[0].Group.ValueString())
+			} else {
+				objectProperties.Group = openapi.PtrString("")
+			}
+		}
+
+		if len(state.ObjectProperties) == 0 ||
+			!data.ObjectProperties[0].IsPublic.Equal(state.ObjectProperties[0].IsPublic) {
+			objPropsChanged = true
+
+			if !data.ObjectProperties[0].IsPublic.IsNull() {
+				objectProperties.IsPublic = openapi.PtrBool(data.ObjectProperties[0].IsPublic.ValueBool())
+			} else {
+				objectProperties.IsPublic = openapi.PtrBool(false)
 			}
 		}
 
@@ -577,7 +878,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 	}
 
-	var changedPaths []openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner
+	var changedPaths []openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner
 	ethPortPathsChanged := false
 
 	for _, path := range data.EthPortPaths {
@@ -590,7 +891,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 		if !exists {
 			// new eth port path, include all fields
-			ethPortPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{
+			ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{
 				Index: openapi.PtrInt32(int32(index)),
 			}
 
@@ -677,7 +978,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 
 		// existing eth port path, check which fields changed
-		ethPortPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{
+		ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{
 			Index: openapi.PtrInt32(int32(index)),
 		}
 
@@ -805,7 +1106,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 		if !found {
 			// Path removed - include only the index for deletion
-			deletedPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{
+			deletedPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 			changedPaths = append(changedPaths, deletedPath)
@@ -825,7 +1126,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 	}
 
-	var changedServices []openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner
+	var changedServices []openapi.BundlesPutRequestEndpointBundleValueUserServicesInner
 	userServicesChanged := false
 
 	for _, service := range data.UserServices {
@@ -838,7 +1139,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 		if !exists {
 			// new user service, include all fields
-			userService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{
+			userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{
 				Index: openapi.PtrInt32(int32(index)),
 			}
 
@@ -890,7 +1191,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 
 		// existing user service, check which fields changed
-		userService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{
+		userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{
 			Index: openapi.PtrInt32(int32(index)),
 		}
 
@@ -978,7 +1279,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 		if !found {
 			// service removed - include only the index for deletion
-			deletedService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{
+			deletedService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 			changedServices = append(changedServices, deletedService)
@@ -988,6 +1289,311 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 	if userServicesChanged && len(changedServices) > 0 {
 		bundleValue.UserServices = changedServices
+		hasChanges = true
+	}
+
+	stateRgServicesByIndex := make(map[int64]rgServicesModel)
+	for _, service := range state.RgServices {
+		if !service.Index.IsNull() {
+			stateRgServicesByIndex[service.Index.ValueInt64()] = service
+		}
+	}
+
+	var changedRgServices []openapi.BundlesPutRequestEndpointBundleValueRgServicesInner
+	rgServicesChanged := false
+
+	for _, service := range data.RgServices {
+		if service.Index.IsNull() {
+			continue
+		}
+
+		index := service.Index.ValueInt64()
+		stateService, exists := stateRgServicesByIndex[index]
+
+		if !exists {
+			// new rg service, include all fields
+			rgService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+
+			if !service.RowAppEnable.IsNull() {
+				rgService.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
+			} else {
+				rgService.RowAppEnable = openapi.PtrBool(false)
+			}
+
+			hasConnectedService := !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != ""
+			hasConnectedServiceRefType := !service.RowAppConnectedServiceRefType.IsNull() && service.RowAppConnectedServiceRefType.ValueString() != ""
+
+			if hasConnectedService || hasConnectedServiceRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					service.RowAppConnectedService, service.RowAppConnectedServiceRefType,
+					"row_app_connected_service", "row_app_connected_service_ref_type_",
+					hasConnectedService, hasConnectedServiceRefType) {
+					return
+				}
+			}
+
+			if !service.RowAppConnectedService.IsNull() {
+				rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+			} else {
+				rgService.RowAppConnectedService = openapi.PtrString("")
+			}
+
+			if !service.RowAppConnectedServiceRefType.IsNull() {
+				rgService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
+			} else {
+				rgService.RowAppConnectedServiceRefType = openapi.PtrString("")
+			}
+
+			if !service.RowAppType.IsNull() {
+				rgService.RowAppType = openapi.PtrString(service.RowAppType.ValueString())
+			} else {
+				rgService.RowAppType = openapi.PtrString("")
+			}
+
+			if !service.RowIpMask.IsNull() {
+				rgService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
+			} else {
+				rgService.RowIpMask = openapi.PtrString("")
+			}
+
+			changedRgServices = append(changedRgServices, rgService)
+			rgServicesChanged = true
+			continue
+		}
+
+		// existing rg service, check which fields changed
+		rgService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{
+			Index: openapi.PtrInt32(int32(index)),
+		}
+
+		fieldChanged := false
+
+		if !service.RowAppEnable.Equal(stateService.RowAppEnable) {
+			rgService.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
+			fieldChanged = true
+		}
+
+		connectedServiceChanged := !service.RowAppConnectedService.Equal(stateService.RowAppConnectedService)
+		connectedServiceRefTypeChanged := !service.RowAppConnectedServiceRefType.Equal(stateService.RowAppConnectedServiceRefType)
+
+		if connectedServiceChanged || connectedServiceRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				service.RowAppConnectedService, service.RowAppConnectedServiceRefType,
+				"row_app_connected_service", "row_app_connected_service_ref_type_",
+				connectedServiceChanged, connectedServiceRefTypeChanged) {
+				return
+			}
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if connectedServiceChanged {
+				if !service.RowAppConnectedService.IsNull() {
+					rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+				} else {
+					rgService.RowAppConnectedService = openapi.PtrString("")
+				}
+			}
+
+			if connectedServiceRefTypeChanged {
+				if !service.RowAppConnectedServiceRefType.IsNull() {
+					rgService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
+				} else {
+					rgService.RowAppConnectedServiceRefType = openapi.PtrString("")
+				}
+
+				// If ref type changes, also send base field
+				if !connectedServiceChanged {
+					if !service.RowAppConnectedService.IsNull() {
+						rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+					} else {
+						rgService.RowAppConnectedService = openapi.PtrString("")
+					}
+				}
+			}
+
+			fieldChanged = true
+		}
+
+		if !service.RowAppType.Equal(stateService.RowAppType) {
+			if !service.RowAppType.IsNull() {
+				rgService.RowAppType = openapi.PtrString(service.RowAppType.ValueString())
+			} else {
+				rgService.RowAppType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowIpMask.Equal(stateService.RowIpMask) {
+			if !service.RowIpMask.IsNull() {
+				rgService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
+			} else {
+				rgService.RowIpMask = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedRgServices = append(changedRgServices, rgService)
+			rgServicesChanged = true
+		}
+	}
+
+	for idx := range stateRgServicesByIndex {
+		found := false
+		for _, service := range data.RgServices {
+			if !service.Index.IsNull() && service.Index.ValueInt64() == idx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// service removed - include only the index for deletion
+			deletedService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+			changedRgServices = append(changedRgServices, deletedService)
+			rgServicesChanged = true
+		}
+	}
+
+	if rgServicesChanged && len(changedRgServices) > 0 {
+		bundleValue.RgServices = changedRgServices
+		hasChanges = true
+	}
+
+	stateVoicePortProfilePathsByIndex := make(map[int64]voicePortProfilePathsModel)
+	for _, path := range state.VoicePortProfilePaths {
+		if !path.Index.IsNull() {
+			stateVoicePortProfilePathsByIndex[path.Index.ValueInt64()] = path
+		}
+	}
+
+	var changedVoicePortProfilePaths []openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner
+	voicePortProfilePathsChanged := false
+
+	for _, path := range data.VoicePortProfilePaths {
+		if path.Index.IsNull() {
+			continue
+		}
+
+		index := path.Index.ValueInt64()
+		statePath, exists := stateVoicePortProfilePathsByIndex[index]
+
+		if !exists {
+			// new voice port profile path, include all fields
+			voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+
+			hasVoicePortProfiles := !path.VoicePortNumVoicePortProfiles.IsNull() && path.VoicePortNumVoicePortProfiles.ValueString() != ""
+			hasVoicePortProfilesRefType := !path.VoicePortNumVoicePortProfilesRefType.IsNull() && path.VoicePortNumVoicePortProfilesRefType.ValueString() != ""
+
+			if hasVoicePortProfiles || hasVoicePortProfilesRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					path.VoicePortNumVoicePortProfiles, path.VoicePortNumVoicePortProfilesRefType,
+					"voice_port_num_voice_port_profiles", "voice_port_num_voice_port_profiles_ref_type_",
+					hasVoicePortProfiles, hasVoicePortProfilesRefType) {
+					return
+				}
+			}
+
+			if !path.VoicePortNumVoicePortProfiles.IsNull() {
+				voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString(path.VoicePortNumVoicePortProfiles.ValueString())
+			} else {
+				voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString("")
+			}
+
+			if !path.VoicePortNumVoicePortProfilesRefType.IsNull() {
+				voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString(path.VoicePortNumVoicePortProfilesRefType.ValueString())
+			} else {
+				voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString("")
+			}
+
+			changedVoicePortProfilePaths = append(changedVoicePortProfilePaths, voicePortPath)
+			voicePortProfilePathsChanged = true
+			continue
+		}
+
+		// existing voice port profile path, check which fields changed
+		voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{
+			Index: openapi.PtrInt32(int32(index)),
+		}
+
+		fieldChanged := false
+
+		voicePortProfilesChanged := !path.VoicePortNumVoicePortProfiles.Equal(statePath.VoicePortNumVoicePortProfiles)
+		voicePortProfilesRefTypeChanged := !path.VoicePortNumVoicePortProfilesRefType.Equal(statePath.VoicePortNumVoicePortProfilesRefType)
+
+		if voicePortProfilesChanged || voicePortProfilesRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				path.VoicePortNumVoicePortProfiles, path.VoicePortNumVoicePortProfilesRefType,
+				"voice_port_num_voice_port_profiles", "voice_port_num_voice_port_profiles_ref_type_",
+				voicePortProfilesChanged, voicePortProfilesRefTypeChanged) {
+				return
+			}
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if voicePortProfilesChanged {
+				if !path.VoicePortNumVoicePortProfiles.IsNull() {
+					voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString(path.VoicePortNumVoicePortProfiles.ValueString())
+				} else {
+					voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString("")
+				}
+			}
+
+			if voicePortProfilesRefTypeChanged {
+				if !path.VoicePortNumVoicePortProfilesRefType.IsNull() {
+					voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString(path.VoicePortNumVoicePortProfilesRefType.ValueString())
+				} else {
+					voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString("")
+				}
+
+				// If ref type changes, also send base field
+				if !voicePortProfilesChanged {
+					if !path.VoicePortNumVoicePortProfiles.IsNull() {
+						voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString(path.VoicePortNumVoicePortProfiles.ValueString())
+					} else {
+						voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString("")
+					}
+				}
+			}
+
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedVoicePortProfilePaths = append(changedVoicePortProfilePaths, voicePortPath)
+			voicePortProfilePathsChanged = true
+		}
+	}
+
+	for idx := range stateVoicePortProfilePathsByIndex {
+		found := false
+		for _, path := range data.VoicePortProfilePaths {
+			if !path.Index.IsNull() && path.Index.ValueInt64() == idx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// Path removed - include only the index for deletion
+			deletedPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+			changedVoicePortProfilePaths = append(changedVoicePortProfilePaths, deletedPath)
+			voicePortProfilePathsChanged = true
+		}
+	}
+
+	if voicePortProfilePathsChanged && len(changedVoicePortProfilePaths) > 0 {
+		bundleValue.VoicePortProfilePaths = changedVoicePortProfilePaths
 		hasChanges = true
 	}
 

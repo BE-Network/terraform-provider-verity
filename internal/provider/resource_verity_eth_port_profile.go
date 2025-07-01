@@ -43,19 +43,29 @@ type verityEthPortProfileResourceModel struct {
 	TenantSliceManaged types.Bool                                  `tfsdk:"tenant_slice_managed"`
 	ObjectProperties   []verityEthPortProfileObjectPropertiesModel `tfsdk:"object_properties"`
 	Services           []servicesModel                             `tfsdk:"services"`
+	Tls                types.Bool                                  `tfsdk:"tls"`
+	TlsService         types.String                                `tfsdk:"tls_service"`
+	TlsServiceRefType  types.String                                `tfsdk:"tls_service_ref_type_"`
+	TrustedPort        types.Bool                                  `tfsdk:"trusted_port"`
 }
 
 type verityEthPortProfileObjectPropertiesModel struct {
 	Group          types.String `tfsdk:"group"`
 	PortMonitoring types.String `tfsdk:"port_monitoring"`
+	SortByName     types.Bool   `tfsdk:"sort_by_name"`
+	Label          types.String `tfsdk:"label"`
+	Icon           types.String `tfsdk:"icon"`
 }
 
 type servicesModel struct {
-	RowNumEnable         types.Bool   `tfsdk:"row_num_enable"`
-	RowNumService        types.String `tfsdk:"row_num_service"`
-	RowNumServiceRefType types.String `tfsdk:"row_num_service_ref_type_"`
-	RowNumExternalVlan   types.Int64  `tfsdk:"row_num_external_vlan"`
-	Index                types.Int64  `tfsdk:"index"`
+	RowNumEnable           types.Bool   `tfsdk:"row_num_enable"`
+	RowNumService          types.String `tfsdk:"row_num_service"`
+	RowNumServiceRefType   types.String `tfsdk:"row_num_service_ref_type_"`
+	RowNumExternalVlan     types.Int64  `tfsdk:"row_num_external_vlan"`
+	Index                  types.Int64  `tfsdk:"index"`
+	RowNumMacFilter        types.String `tfsdk:"row_num_mac_filter"`
+	RowNumMacFilterRefType types.String `tfsdk:"row_num_mac_filter_ref_type_"`
+	RowNumLanIptv          types.String `tfsdk:"row_num_lan_iptv"`
 }
 
 func (r *verityEthPortProfileResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -103,7 +113,22 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 				Description: "Profiles that Tenant Slice creates and manages",
 				Optional:    true,
 				Computed:    true,
-				Default:     booldefault.StaticBool(false),
+			},
+			"tls": schema.BoolAttribute{
+				Description: "Transparent LAN Service Trunk",
+				Optional:    true,
+			},
+			"tls_service": schema.StringAttribute{
+				Description: "Choose a Service supporting Transparent LAN Service",
+				Optional:    true,
+			},
+			"tls_service_ref_type_": schema.StringAttribute{
+				Description: "Object type for tls_service field",
+				Optional:    true,
+			},
+			"trusted_port": schema.BoolAttribute{
+				Description: "Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.",
+				Optional:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -117,6 +142,18 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 						},
 						"port_monitoring": schema.StringAttribute{
 							Description: "Defines importance of Link Down on this port",
+							Optional:    true,
+						},
+						"sort_by_name": schema.BoolAttribute{
+							Description: "Choose to sort by service name or by order of creation",
+							Optional:    true,
+						},
+						"label": schema.StringAttribute{
+							Description: "Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint",
+							Optional:    true,
+						},
+						"icon": schema.StringAttribute{
+							Description: "Port Icon displayed ports provisioned with this Eth Port Profile but with no Port Icon defined in the endpoint",
 							Optional:    true,
 						},
 					},
@@ -144,6 +181,18 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
+							Optional:    true,
+						},
+						"row_num_mac_filter": schema.StringAttribute{
+							Description: "Choose an access control list",
+							Optional:    true,
+						},
+						"row_num_mac_filter_ref_type_": schema.StringAttribute{
+							Description: "Object type for row_num_mac_filter field",
+							Optional:    true,
+						},
+						"row_num_lan_iptv": schema.StringAttribute{
+							Description: "Denotes a LAN or IPTV service",
 							Optional:    true,
 						},
 					},
@@ -177,6 +226,22 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	ethPortName.Enable = openapi.PtrBool(plan.Enable.ValueBool())
 	ethPortName.TenantSliceManaged = openapi.PtrBool(plan.TenantSliceManaged.ValueBool())
 
+	if !plan.Tls.IsNull() {
+		ethPortName.Tls = openapi.PtrBool(plan.Tls.ValueBool())
+	}
+
+	if !plan.TlsService.IsNull() {
+		ethPortName.TlsService = openapi.PtrString(plan.TlsService.ValueString())
+	}
+
+	if !plan.TlsServiceRefType.IsNull() {
+		ethPortName.TlsServiceRefType = openapi.PtrString(plan.TlsServiceRefType.ValueString())
+	}
+
+	if !plan.TrustedPort.IsNull() {
+		ethPortName.TrustedPort = openapi.PtrBool(plan.TrustedPort.ValueBool())
+	}
+
 	if len(plan.ObjectProperties) > 0 {
 		objProps := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties{}
 		objProp := plan.ObjectProperties[0]
@@ -191,6 +256,18 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 			objProps.PortMonitoring = openapi.PtrString(objProp.PortMonitoring.ValueString())
 		} else {
 			objProps.PortMonitoring = nil
+		}
+
+		if !objProp.SortByName.IsNull() {
+			objProps.SortByName = openapi.PtrBool(objProp.SortByName.ValueBool())
+		}
+
+		if !objProp.Label.IsNull() {
+			objProps.Label = openapi.PtrString(objProp.Label.ValueString())
+		}
+
+		if !objProp.Icon.IsNull() {
+			objProps.Icon = openapi.PtrString(objProp.Icon.ValueString())
 		}
 
 		ethPortName.ObjectProperties = &objProps
@@ -223,6 +300,18 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 
 			if !service.Index.IsNull() {
 				s.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
+			}
+
+			if !service.RowNumMacFilter.IsNull() {
+				s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
+			}
+
+			if !service.RowNumMacFilterRefType.IsNull() {
+				s.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
+			}
+
+			if !service.RowNumLanIptv.IsNull() {
+				s.RowNumLanIptv = openapi.PtrString(service.RowNumLanIptv.ValueString())
 			}
 
 			services[i] = s
@@ -358,6 +447,30 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 		state.TenantSliceManaged = types.BoolValue(tenantSliceManaged)
 	}
 
+	if tls, ok := profile["tls"].(bool); ok {
+		state.Tls = types.BoolValue(tls)
+	} else {
+		state.Tls = types.BoolNull()
+	}
+
+	if tlsService, ok := profile["tls_service"].(string); ok {
+		state.TlsService = types.StringValue(tlsService)
+	} else {
+		state.TlsService = types.StringNull()
+	}
+
+	if tlsServiceRefType, ok := profile["tls_service_ref_type_"].(string); ok {
+		state.TlsServiceRefType = types.StringValue(tlsServiceRefType)
+	} else {
+		state.TlsServiceRefType = types.StringNull()
+	}
+
+	if trustedPort, ok := profile["trusted_port"].(bool); ok {
+		state.TrustedPort = types.BoolValue(trustedPort)
+	} else {
+		state.TrustedPort = types.BoolNull()
+	}
+
 	if objProps, ok := profile["object_properties"].(map[string]interface{}); ok {
 		var objProperties []verityEthPortProfileObjectPropertiesModel
 		objProperty := verityEthPortProfileObjectPropertiesModel{}
@@ -374,8 +487,28 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 			objProperty.PortMonitoring = types.StringNull()
 		}
 
+		if sortByName, ok := objProps["sort_by_name"].(bool); ok {
+			objProperty.SortByName = types.BoolValue(sortByName)
+		} else {
+			objProperty.SortByName = types.BoolNull()
+		}
+
+		if label, ok := objProps["label"].(string); ok {
+			objProperty.Label = types.StringValue(label)
+		} else {
+			objProperty.Label = types.StringNull()
+		}
+
+		if icon, ok := objProps["icon"].(string); ok {
+			objProperty.Icon = types.StringValue(icon)
+		} else {
+			objProperty.Icon = types.StringNull()
+		}
+
 		objProperties = append(objProperties, objProperty)
 		state.ObjectProperties = objProperties
+	} else {
+		state.ObjectProperties = nil
 	}
 
 	if services, ok := profile["services"].([]interface{}); ok {
@@ -442,6 +575,24 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 					serviceModel.Index = types.Int64Null()
 				}
 
+				if macFilter, ok := serviceMap["row_num_mac_filter"].(string); ok {
+					serviceModel.RowNumMacFilter = types.StringValue(macFilter)
+				} else {
+					serviceModel.RowNumMacFilter = types.StringNull()
+				}
+
+				if macFilterRefType, ok := serviceMap["row_num_mac_filter_ref_type_"].(string); ok {
+					serviceModel.RowNumMacFilterRefType = types.StringValue(macFilterRefType)
+				} else {
+					serviceModel.RowNumMacFilterRefType = types.StringNull()
+				}
+
+				if lanIptv, ok := serviceMap["row_num_lan_iptv"].(string); ok {
+					serviceModel.RowNumLanIptv = types.StringValue(lanIptv)
+				} else {
+					serviceModel.RowNumLanIptv = types.StringNull()
+				}
+
 				servicesList = append(servicesList, serviceModel)
 			}
 		}
@@ -491,9 +642,32 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		hasChanges = true
 	}
 
+	if !plan.Tls.Equal(state.Tls) {
+		ethPortName.Tls = openapi.PtrBool(plan.Tls.ValueBool())
+		hasChanges = true
+	}
+
+	if !plan.TlsService.Equal(state.TlsService) {
+		ethPortName.TlsService = openapi.PtrString(plan.TlsService.ValueString())
+		hasChanges = true
+	}
+
+	if !plan.TlsServiceRefType.Equal(state.TlsServiceRefType) {
+		ethPortName.TlsServiceRefType = openapi.PtrString(plan.TlsServiceRefType.ValueString())
+		hasChanges = true
+	}
+
+	if !plan.TrustedPort.Equal(state.TrustedPort) {
+		ethPortName.TrustedPort = openapi.PtrBool(plan.TrustedPort.ValueBool())
+		hasChanges = true
+	}
+
 	if len(plan.ObjectProperties) > 0 && (len(state.ObjectProperties) == 0 ||
 		!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-		!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring)) {
+		!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
+		!plan.ObjectProperties[0].SortByName.Equal(state.ObjectProperties[0].SortByName) ||
+		!plan.ObjectProperties[0].Label.Equal(state.ObjectProperties[0].Label) ||
+		!plan.ObjectProperties[0].Icon.Equal(state.ObjectProperties[0].Icon)) {
 
 		objProps := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties{}
 		hasObjPropsChanges := false
@@ -516,6 +690,27 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 					objProps.PortMonitoring = openapi.PtrString(objProp.PortMonitoring.ValueString())
 				} else {
 					objProps.PortMonitoring = nil
+				}
+			}
+
+			if len(state.ObjectProperties) == 0 || !objProp.SortByName.Equal(state.ObjectProperties[0].SortByName) {
+				hasObjPropsChanges = true
+				if !objProp.SortByName.IsNull() {
+					objProps.SortByName = openapi.PtrBool(objProp.SortByName.ValueBool())
+				}
+			}
+
+			if len(state.ObjectProperties) == 0 || !objProp.Label.Equal(state.ObjectProperties[0].Label) {
+				hasObjPropsChanges = true
+				if !objProp.Label.IsNull() {
+					objProps.Label = openapi.PtrString(objProp.Label.ValueString())
+				}
+			}
+
+			if len(state.ObjectProperties) == 0 || !objProp.Icon.Equal(state.ObjectProperties[0].Icon) {
+				hasObjPropsChanges = true
+				if !objProp.Icon.IsNull() {
+					objProps.Icon = openapi.PtrString(objProp.Icon.ValueString())
 				}
 			}
 		}
@@ -592,6 +787,24 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
 			}
 
+			if !service.RowNumMacFilter.IsNull() {
+				s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
+			} else {
+				s.RowNumMacFilter = openapi.PtrString("")
+			}
+
+			if !service.RowNumMacFilterRefType.IsNull() {
+				s.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
+			} else {
+				s.RowNumMacFilterRefType = openapi.PtrString("")
+			}
+
+			if !service.RowNumLanIptv.IsNull() {
+				s.RowNumLanIptv = openapi.PtrString(service.RowNumLanIptv.ValueString())
+			} else {
+				s.RowNumLanIptv = openapi.PtrString("")
+			}
+
 			changedServices = append(changedServices, s)
 			servicesChanged = true
 			continue
@@ -656,6 +869,33 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
 			} else {
 				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowNumMacFilter.Equal(oldService.RowNumMacFilter) {
+			if !service.RowNumMacFilter.IsNull() {
+				s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
+			} else {
+				s.RowNumMacFilter = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowNumMacFilterRefType.Equal(oldService.RowNumMacFilterRefType) {
+			if !service.RowNumMacFilterRefType.IsNull() {
+				s.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
+			} else {
+				s.RowNumMacFilterRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !service.RowNumLanIptv.Equal(oldService.RowNumLanIptv) {
+			if !service.RowNumLanIptv.IsNull() {
+				s.RowNumLanIptv = openapi.PtrString(service.RowNumLanIptv.ValueString())
+			} else {
+				s.RowNumLanIptv = openapi.PtrString("")
 			}
 			fieldChanged = true
 		}

@@ -110,7 +110,7 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "Object properties.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						// No attributes defined yet.
+						// No attributes defined - object_properties is an empty object in the schema
 					},
 				},
 			},
@@ -154,7 +154,7 @@ type verityLagResourceModel struct {
 }
 
 type verityLagObjectPropertiesModel struct {
-	// No attributes defined yet.
+	// No attributes defined - object_properties is an empty object in the schema
 }
 
 func (r *verityLagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -401,7 +401,13 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 	} else {
 		state.Uplink = types.BoolNull()
 	}
-	state.ObjectProperties = []verityLagObjectPropertiesModel{{}}
+
+	// Only set object_properties if it exists in the API response
+	if _, ok := lagData["object_properties"]; ok {
+		state.ObjectProperties = []verityLagObjectPropertiesModel{{}}
+	} else {
+		state.ObjectProperties = nil
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
