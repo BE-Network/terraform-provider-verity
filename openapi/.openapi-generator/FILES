@@ -182,6 +182,7 @@ docs/ConfigPutRequestVoicePortProfilesVoicePortProfilesNameObjectProperties.md
 docs/DeviceControllersAPI.md
 docs/DeviceVoiceSettingsAPI.md
 docs/DevicecontrollersPutRequest.md
+docs/DevicecontrollersPutRequestDeviceControllerValue.md
 docs/DevicevoicesettingsPutRequest.md
 docs/EthPortProfilesAPI.md
 docs/EthPortSettingsAPI.md
@@ -196,8 +197,6 @@ docs/LagsPutRequest.md
 docs/PacketBrokerAPI.md
 docs/PacketQueuesAPI.md
 docs/PacketbrokerPutRequest.md
-docs/PacketbrokerPutRequestPbEgressProfileValue.md
-docs/PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner.md
 docs/PacketqueuesPutRequest.md
 docs/ReadModeAPI.md
 docs/RequestAPI.md
@@ -363,6 +362,7 @@ model__config_put_request_voice_port_profiles.go
 model__config_put_request_voice_port_profiles_voice_port_profiles_name.go
 model__config_put_request_voice_port_profiles_voice_port_profiles_name_object_properties.go
 model__devicecontrollers_put_request.go
+model__devicecontrollers_put_request_device_controller_value.go
 model__devicevoicesettings_put_request.go
 model__ethportprofiles_put_request.go
 model__ethportsettings_put_request.go
@@ -370,8 +370,6 @@ model__gatewayprofiles_put_request.go
 model__gateways_put_request.go
 model__lags_put_request.go
 model__packetbroker_put_request.go
-model__packetbroker_put_request_pb_egress_profile_value.go
-model__packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner.go
 model__packetqueues_put_request.go
 model__serviceportprofiles_put_request.go
 model__services_put_request.go

@@ -19,7 +19,7 @@ var _ MappedNullable = &DevicecontrollersPutRequest{}
 
 // DevicecontrollersPutRequest struct for DevicecontrollersPutRequest
 type DevicecontrollersPutRequest struct {
-	DeviceController *map[string]ConfigPutRequestDeviceControllerDeviceControllerName `json:"device_controller,omitempty"`
+	DeviceController *map[string]DevicecontrollersPutRequestDeviceControllerValue `json:"device_controller,omitempty"`
 }
 
 // NewDevicecontrollersPutRequest instantiates a new DevicecontrollersPutRequest object
@@ -40,9 +40,9 @@ func NewDevicecontrollersPutRequestWithDefaults() *DevicecontrollersPutRequest {
 }
 
 // GetDeviceController returns the DeviceController field value if set, zero value otherwise.
-func (o *DevicecontrollersPutRequest) GetDeviceController() map[string]ConfigPutRequestDeviceControllerDeviceControllerName {
+func (o *DevicecontrollersPutRequest) GetDeviceController() map[string]DevicecontrollersPutRequestDeviceControllerValue {
 	if o == nil || IsNil(o.DeviceController) {
-		var ret map[string]ConfigPutRequestDeviceControllerDeviceControllerName
+		var ret map[string]DevicecontrollersPutRequestDeviceControllerValue
 		return ret
 	}
 	return *o.DeviceController
@@ -50,7 +50,7 @@ func (o *DevicecontrollersPutRequest) GetDeviceController() map[string]ConfigPut
 
 // GetDeviceControllerOk returns a tuple with the DeviceController field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicecontrollersPutRequest) GetDeviceControllerOk() (*map[string]ConfigPutRequestDeviceControllerDeviceControllerName, bool) {
+func (o *DevicecontrollersPutRequest) GetDeviceControllerOk() (*map[string]DevicecontrollersPutRequestDeviceControllerValue, bool) {
 	if o == nil || IsNil(o.DeviceController) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *DevicecontrollersPutRequest) HasDeviceController() bool {
 	return false
 }
 
-// SetDeviceController gets a reference to the given map[string]ConfigPutRequestDeviceControllerDeviceControllerName and assigns it to the DeviceController field.
-func (o *DevicecontrollersPutRequest) SetDeviceController(v map[string]ConfigPutRequestDeviceControllerDeviceControllerName) {
+// SetDeviceController gets a reference to the given map[string]DevicecontrollersPutRequestDeviceControllerValue and assigns it to the DeviceController field.
+func (o *DevicecontrollersPutRequest) SetDeviceController(v map[string]DevicecontrollersPutRequestDeviceControllerValue) {
 	o.DeviceController = &v
 }
 

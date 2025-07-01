@@ -23,6 +23,8 @@ Name | Type | Description | Notes
 **RouteTenants** | Pointer to [**[]ConfigPutRequestTenantTenantNameRouteTenantsInner**](ConfigPutRequestTenantTenantNameRouteTenantsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties**](ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties.md) |  | [optional] 
 **DefaultOriginate** | Pointer to **bool** | Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric. | [optional] [default to false]
+**DhcpRelaySourceIpv4sSubnet** | Pointer to **string** | Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on. | [optional] [default to ""]
+**DhcpRelaySourceIpv6sSubnet** | Pointer to **string** | Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on. | [optional] [default to ""]
 
 ## Methods
 
@@ -537,6 +539,56 @@ SetDefaultOriginate sets DefaultOriginate field to given value.
 `func (o *ConfigPutRequestTenantTenantName) HasDefaultOriginate() bool`
 
 HasDefaultOriginate returns a boolean if a field has been set.
+
+### GetDhcpRelaySourceIpv4sSubnet
+
+`func (o *ConfigPutRequestTenantTenantName) GetDhcpRelaySourceIpv4sSubnet() string`
+
+GetDhcpRelaySourceIpv4sSubnet returns the DhcpRelaySourceIpv4sSubnet field if non-nil, zero value otherwise.
+
+### GetDhcpRelaySourceIpv4sSubnetOk
+
+`func (o *ConfigPutRequestTenantTenantName) GetDhcpRelaySourceIpv4sSubnetOk() (*string, bool)`
+
+GetDhcpRelaySourceIpv4sSubnetOk returns a tuple with the DhcpRelaySourceIpv4sSubnet field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDhcpRelaySourceIpv4sSubnet
+
+`func (o *ConfigPutRequestTenantTenantName) SetDhcpRelaySourceIpv4sSubnet(v string)`
+
+SetDhcpRelaySourceIpv4sSubnet sets DhcpRelaySourceIpv4sSubnet field to given value.
+
+### HasDhcpRelaySourceIpv4sSubnet
+
+`func (o *ConfigPutRequestTenantTenantName) HasDhcpRelaySourceIpv4sSubnet() bool`
+
+HasDhcpRelaySourceIpv4sSubnet returns a boolean if a field has been set.
+
+### GetDhcpRelaySourceIpv6sSubnet
+
+`func (o *ConfigPutRequestTenantTenantName) GetDhcpRelaySourceIpv6sSubnet() string`
+
+GetDhcpRelaySourceIpv6sSubnet returns the DhcpRelaySourceIpv6sSubnet field if non-nil, zero value otherwise.
+
+### GetDhcpRelaySourceIpv6sSubnetOk
+
+`func (o *ConfigPutRequestTenantTenantName) GetDhcpRelaySourceIpv6sSubnetOk() (*string, bool)`
+
+GetDhcpRelaySourceIpv6sSubnetOk returns a tuple with the DhcpRelaySourceIpv6sSubnet field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDhcpRelaySourceIpv6sSubnet
+
+`func (o *ConfigPutRequestTenantTenantName) SetDhcpRelaySourceIpv6sSubnet(v string)`
+
+SetDhcpRelaySourceIpv6sSubnet sets DhcpRelaySourceIpv6sSubnet field to given value.
+
+### HasDhcpRelaySourceIpv6sSubnet
+
+`func (o *ConfigPutRequestTenantTenantName) HasDhcpRelaySourceIpv6sSubnet() bool`
+
+HasDhcpRelaySourceIpv6sSubnet returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

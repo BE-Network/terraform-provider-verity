@@ -44,6 +44,10 @@ type ConfigPutRequestServiceServiceName struct {
 	AnycastIpv4Mask *string `json:"anycast_ipv4_mask,omitempty"`
 	// Static anycast gateway addresses(IPv6) for service 
 	AnycastIpv6Mask *string `json:"anycast_ipv6_mask,omitempty"`
+	// IPv4 address(s) of the DHCP server for service.  May have up to four separated by commas.
+	DhcpServerIpv4 *string `json:"dhcp_server_ipv4,omitempty"`
+	// IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas.
+	DhcpServerIpv6 *string `json:"dhcp_server_ipv6,omitempty"`
 	// Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)
 	MaxUpstreamRateMbps *int32 `json:"max_upstream_rate_mbps,omitempty"`
 	// Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)
@@ -96,6 +100,10 @@ func NewConfigPutRequestServiceServiceName() *ConfigPutRequestServiceServiceName
 	this.AnycastIpv4Mask = &anycastIpv4Mask
 	var anycastIpv6Mask string = ""
 	this.AnycastIpv6Mask = &anycastIpv6Mask
+	var dhcpServerIpv4 string = ""
+	this.DhcpServerIpv4 = &dhcpServerIpv4
+	var dhcpServerIpv6 string = ""
+	this.DhcpServerIpv6 = &dhcpServerIpv6
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var multicastManagementMode string = "flooding"
@@ -144,6 +152,10 @@ func NewConfigPutRequestServiceServiceNameWithDefaults() *ConfigPutRequestServic
 	this.AnycastIpv4Mask = &anycastIpv4Mask
 	var anycastIpv6Mask string = ""
 	this.AnycastIpv6Mask = &anycastIpv6Mask
+	var dhcpServerIpv4 string = ""
+	this.DhcpServerIpv4 = &dhcpServerIpv4
+	var dhcpServerIpv6 string = ""
+	this.DhcpServerIpv6 = &dhcpServerIpv6
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var multicastManagementMode string = "flooding"
@@ -615,6 +627,70 @@ func (o *ConfigPutRequestServiceServiceName) HasAnycastIpv6Mask() bool {
 // SetAnycastIpv6Mask gets a reference to the given string and assigns it to the AnycastIpv6Mask field.
 func (o *ConfigPutRequestServiceServiceName) SetAnycastIpv6Mask(v string) {
 	o.AnycastIpv6Mask = &v
+}
+
+// GetDhcpServerIpv4 returns the DhcpServerIpv4 field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetDhcpServerIpv4() string {
+	if o == nil || IsNil(o.DhcpServerIpv4) {
+		var ret string
+		return ret
+	}
+	return *o.DhcpServerIpv4
+}
+
+// GetDhcpServerIpv4Ok returns a tuple with the DhcpServerIpv4 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetDhcpServerIpv4Ok() (*string, bool) {
+	if o == nil || IsNil(o.DhcpServerIpv4) {
+		return nil, false
+	}
+	return o.DhcpServerIpv4, true
+}
+
+// HasDhcpServerIpv4 returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasDhcpServerIpv4() bool {
+	if o != nil && !IsNil(o.DhcpServerIpv4) {
+		return true
+	}
+
+	return false
+}
+
+// SetDhcpServerIpv4 gets a reference to the given string and assigns it to the DhcpServerIpv4 field.
+func (o *ConfigPutRequestServiceServiceName) SetDhcpServerIpv4(v string) {
+	o.DhcpServerIpv4 = &v
+}
+
+// GetDhcpServerIpv6 returns the DhcpServerIpv6 field value if set, zero value otherwise.
+func (o *ConfigPutRequestServiceServiceName) GetDhcpServerIpv6() string {
+	if o == nil || IsNil(o.DhcpServerIpv6) {
+		var ret string
+		return ret
+	}
+	return *o.DhcpServerIpv6
+}
+
+// GetDhcpServerIpv6Ok returns a tuple with the DhcpServerIpv6 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestServiceServiceName) GetDhcpServerIpv6Ok() (*string, bool) {
+	if o == nil || IsNil(o.DhcpServerIpv6) {
+		return nil, false
+	}
+	return o.DhcpServerIpv6, true
+}
+
+// HasDhcpServerIpv6 returns a boolean if a field has been set.
+func (o *ConfigPutRequestServiceServiceName) HasDhcpServerIpv6() bool {
+	if o != nil && !IsNil(o.DhcpServerIpv6) {
+		return true
+	}
+
+	return false
+}
+
+// SetDhcpServerIpv6 gets a reference to the given string and assigns it to the DhcpServerIpv6 field.
+func (o *ConfigPutRequestServiceServiceName) SetDhcpServerIpv6(v string) {
+	o.DhcpServerIpv6 = &v
 }
 
 // GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field value if set, zero value otherwise.
@@ -1113,6 +1189,12 @@ func (o ConfigPutRequestServiceServiceName) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.AnycastIpv6Mask) {
 		toSerialize["anycast_ipv6_mask"] = o.AnycastIpv6Mask
+	}
+	if !IsNil(o.DhcpServerIpv4) {
+		toSerialize["dhcp_server_ipv4"] = o.DhcpServerIpv4
+	}
+	if !IsNil(o.DhcpServerIpv6) {
+		toSerialize["dhcp_server_ipv6"] = o.DhcpServerIpv6
 	}
 	if !IsNil(o.MaxUpstreamRateMbps) {
 		toSerialize["max_upstream_rate_mbps"] = o.MaxUpstreamRateMbps

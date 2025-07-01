@@ -55,6 +55,10 @@ type ConfigPutRequestTenantTenantName struct {
 	ObjectProperties *ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties `json:"object_properties,omitempty"`
 	// Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.
 	DefaultOriginate *bool `json:"default_originate,omitempty"`
+	// Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
+	DhcpRelaySourceIpv4sSubnet *string `json:"dhcp_relay_source_ipv4s_subnet,omitempty"`
+	// Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
+	DhcpRelaySourceIpv6sSubnet *string `json:"dhcp_relay_source_ipv6s_subnet,omitempty"`
 }
 
 // NewConfigPutRequestTenantTenantName instantiates a new ConfigPutRequestTenantTenantName object
@@ -83,6 +87,10 @@ func NewConfigPutRequestTenantTenantName() *ConfigPutRequestTenantTenantName {
 	this.VrfName = &vrfName
 	var defaultOriginate bool = false
 	this.DefaultOriginate = &defaultOriginate
+	var dhcpRelaySourceIpv4sSubnet string = ""
+	this.DhcpRelaySourceIpv4sSubnet = &dhcpRelaySourceIpv4sSubnet
+	var dhcpRelaySourceIpv6sSubnet string = ""
+	this.DhcpRelaySourceIpv6sSubnet = &dhcpRelaySourceIpv6sSubnet
 	return &this
 }
 
@@ -111,6 +119,10 @@ func NewConfigPutRequestTenantTenantNameWithDefaults() *ConfigPutRequestTenantTe
 	this.VrfName = &vrfName
 	var defaultOriginate bool = false
 	this.DefaultOriginate = &defaultOriginate
+	var dhcpRelaySourceIpv4sSubnet string = ""
+	this.DhcpRelaySourceIpv4sSubnet = &dhcpRelaySourceIpv4sSubnet
+	var dhcpRelaySourceIpv6sSubnet string = ""
+	this.DhcpRelaySourceIpv6sSubnet = &dhcpRelaySourceIpv6sSubnet
 	return &this
 }
 
@@ -742,6 +754,70 @@ func (o *ConfigPutRequestTenantTenantName) SetDefaultOriginate(v bool) {
 	o.DefaultOriginate = &v
 }
 
+// GetDhcpRelaySourceIpv4sSubnet returns the DhcpRelaySourceIpv4sSubnet field value if set, zero value otherwise.
+func (o *ConfigPutRequestTenantTenantName) GetDhcpRelaySourceIpv4sSubnet() string {
+	if o == nil || IsNil(o.DhcpRelaySourceIpv4sSubnet) {
+		var ret string
+		return ret
+	}
+	return *o.DhcpRelaySourceIpv4sSubnet
+}
+
+// GetDhcpRelaySourceIpv4sSubnetOk returns a tuple with the DhcpRelaySourceIpv4sSubnet field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestTenantTenantName) GetDhcpRelaySourceIpv4sSubnetOk() (*string, bool) {
+	if o == nil || IsNil(o.DhcpRelaySourceIpv4sSubnet) {
+		return nil, false
+	}
+	return o.DhcpRelaySourceIpv4sSubnet, true
+}
+
+// HasDhcpRelaySourceIpv4sSubnet returns a boolean if a field has been set.
+func (o *ConfigPutRequestTenantTenantName) HasDhcpRelaySourceIpv4sSubnet() bool {
+	if o != nil && !IsNil(o.DhcpRelaySourceIpv4sSubnet) {
+		return true
+	}
+
+	return false
+}
+
+// SetDhcpRelaySourceIpv4sSubnet gets a reference to the given string and assigns it to the DhcpRelaySourceIpv4sSubnet field.
+func (o *ConfigPutRequestTenantTenantName) SetDhcpRelaySourceIpv4sSubnet(v string) {
+	o.DhcpRelaySourceIpv4sSubnet = &v
+}
+
+// GetDhcpRelaySourceIpv6sSubnet returns the DhcpRelaySourceIpv6sSubnet field value if set, zero value otherwise.
+func (o *ConfigPutRequestTenantTenantName) GetDhcpRelaySourceIpv6sSubnet() string {
+	if o == nil || IsNil(o.DhcpRelaySourceIpv6sSubnet) {
+		var ret string
+		return ret
+	}
+	return *o.DhcpRelaySourceIpv6sSubnet
+}
+
+// GetDhcpRelaySourceIpv6sSubnetOk returns a tuple with the DhcpRelaySourceIpv6sSubnet field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigPutRequestTenantTenantName) GetDhcpRelaySourceIpv6sSubnetOk() (*string, bool) {
+	if o == nil || IsNil(o.DhcpRelaySourceIpv6sSubnet) {
+		return nil, false
+	}
+	return o.DhcpRelaySourceIpv6sSubnet, true
+}
+
+// HasDhcpRelaySourceIpv6sSubnet returns a boolean if a field has been set.
+func (o *ConfigPutRequestTenantTenantName) HasDhcpRelaySourceIpv6sSubnet() bool {
+	if o != nil && !IsNil(o.DhcpRelaySourceIpv6sSubnet) {
+		return true
+	}
+
+	return false
+}
+
+// SetDhcpRelaySourceIpv6sSubnet gets a reference to the given string and assigns it to the DhcpRelaySourceIpv6sSubnet field.
+func (o *ConfigPutRequestTenantTenantName) SetDhcpRelaySourceIpv6sSubnet(v string) {
+	o.DhcpRelaySourceIpv6sSubnet = &v
+}
+
 func (o ConfigPutRequestTenantTenantName) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -808,6 +884,12 @@ func (o ConfigPutRequestTenantTenantName) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.DefaultOriginate) {
 		toSerialize["default_originate"] = o.DefaultOriginate
+	}
+	if !IsNil(o.DhcpRelaySourceIpv4sSubnet) {
+		toSerialize["dhcp_relay_source_ipv4s_subnet"] = o.DhcpRelaySourceIpv4sSubnet
+	}
+	if !IsNil(o.DhcpRelaySourceIpv6sSubnet) {
+		toSerialize["dhcp_relay_source_ipv6s_subnet"] = o.DhcpRelaySourceIpv6sSubnet
 	}
 	return toSerialize, nil
 }

@@ -17,6 +17,8 @@ Name | Type | Description | Notes
 **ObjectProperties** | Pointer to [**ConfigPutRequestServiceServiceNameObjectProperties**](ConfigPutRequestServiceServiceNameObjectProperties.md) |  | [optional] 
 **AnycastIpv4Mask** | Pointer to **string** | Static anycast gateway addresses(IPv4) for service  | [optional] [default to ""]
 **AnycastIpv6Mask** | Pointer to **string** | Static anycast gateway addresses(IPv6) for service  | [optional] [default to ""]
+**DhcpServerIpv4** | Pointer to **string** | IPv4 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
+**DhcpServerIpv6** | Pointer to **string** | IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
 **MaxUpstreamRateMbps** | Pointer to **int32** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
 **MaxDownstreamRateMbps** | Pointer to **int32** | Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps) | [optional] 
 **PacketPriority** | Pointer to **string** | Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped | [optional] [default to "0"]
@@ -405,6 +407,56 @@ SetAnycastIpv6Mask sets AnycastIpv6Mask field to given value.
 `func (o *ConfigPutRequestServiceServiceName) HasAnycastIpv6Mask() bool`
 
 HasAnycastIpv6Mask returns a boolean if a field has been set.
+
+### GetDhcpServerIpv4
+
+`func (o *ConfigPutRequestServiceServiceName) GetDhcpServerIpv4() string`
+
+GetDhcpServerIpv4 returns the DhcpServerIpv4 field if non-nil, zero value otherwise.
+
+### GetDhcpServerIpv4Ok
+
+`func (o *ConfigPutRequestServiceServiceName) GetDhcpServerIpv4Ok() (*string, bool)`
+
+GetDhcpServerIpv4Ok returns a tuple with the DhcpServerIpv4 field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDhcpServerIpv4
+
+`func (o *ConfigPutRequestServiceServiceName) SetDhcpServerIpv4(v string)`
+
+SetDhcpServerIpv4 sets DhcpServerIpv4 field to given value.
+
+### HasDhcpServerIpv4
+
+`func (o *ConfigPutRequestServiceServiceName) HasDhcpServerIpv4() bool`
+
+HasDhcpServerIpv4 returns a boolean if a field has been set.
+
+### GetDhcpServerIpv6
+
+`func (o *ConfigPutRequestServiceServiceName) GetDhcpServerIpv6() string`
+
+GetDhcpServerIpv6 returns the DhcpServerIpv6 field if non-nil, zero value otherwise.
+
+### GetDhcpServerIpv6Ok
+
+`func (o *ConfigPutRequestServiceServiceName) GetDhcpServerIpv6Ok() (*string, bool)`
+
+GetDhcpServerIpv6Ok returns a tuple with the DhcpServerIpv6 field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDhcpServerIpv6
+
+`func (o *ConfigPutRequestServiceServiceName) SetDhcpServerIpv6(v string)`
+
+SetDhcpServerIpv6 sets DhcpServerIpv6 field to given value.
+
+### HasDhcpServerIpv6
+
+`func (o *ConfigPutRequestServiceServiceName) HasDhcpServerIpv6() bool`
+
+HasDhcpServerIpv6 returns a boolean if a field has been set.
 
 ### GetMaxUpstreamRateMbps
 

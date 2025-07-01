@@ -1304,14 +1304,14 @@ paths:
           content:
             application/json:
               example:
-              - Switchpoint|Leaf 04|
               - Switchpoint|Spine 2|
-              - Switchpoint|Leaf 02|
               - Switchpoint|Host|
               - Switchpoint|Leaf 03|
-              - Switchpoint|Spine 1|
               - Switchpoint|Leaf 01|
+              - Switchpoint|Leaf 02|
+              - Switchpoint|Leaf 04|
               - Switchpoint|mgmt1|
+              - Switchpoint|Spine 1|
           description: Successful response
         "204":
           description: No Content
@@ -3387,9 +3387,9 @@ components:
           description: Scheduler Type for Queue
           enum:
           - ""
+          - SP
           - DWRR
           - WRR
-          - SP
           type: string
         scheduler_weight:
           default: 0
@@ -3505,8 +3505,8 @@ components:
         toi_switchpoint_ref_type_:
           description: Object type for toi_switchpoint field
           enum:
-          - switchpoint
           - endpoint
+          - switchpoint
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -3790,8 +3790,8 @@ components:
           description: 'Match routes based on the value of the BGP Origin attribute '
           enum:
           - ""
-          - egp
           - igp
+          - egp
           - incomplete
           type: string
         match_peer_ip_address:
@@ -3816,10 +3816,10 @@ components:
           description: 'Match Routing  Protocol the route originated from '
           enum:
           - ""
-          - bgp
           - ospf
           - static
           - connected
+          - bgp
           type: string
         match_vrf:
           default: ""
@@ -3844,9 +3844,9 @@ components:
           description: Match based on the indicated EVPN Route Type
           enum:
           - ""
-          - multicast
           - prefix
           - macip
+          - multicast
           type: string
         match_vni:
           description: 'Match based on the VNI value '
@@ -3952,47 +3952,47 @@ components:
           description: "Breakout Port Override. Available options determined by Switch\
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
+          - ""
+          - 1x200G
+          - pg40G
+          - pg400G
+          - 2x800G
+          - 8x400G
+          - 1x800G
+          - 8x40G
           - 2x10G
           - 2x50G
-          - ""
-          - 4x800G
-          - pg800G
-          - 8x10G
-          - 1x200G
-          - pg100G
-          - 4x50G
-          - pg400G
-          - 2x100G
-          - 8x50G
-          - 2x800G
-          - pg40G
-          - 1x40G
-          - 2x25G
-          - 4x400G
-          - 8x200G
-          - 4x10G
-          - 2x200G
-          - 1x400G
-          - 2x40G
-          - pg25G
-          - pg50G
-          - 4x40G
-          - 4x25G
-          - 8x100G
-          - 8x800G
-          - 8x40G
-          - 1x50G
           - pg10G
           - 8x25G
-          - pg200G
+          - 8x50G
+          - 1x400G
+          - 8x10G
           - 1x25G
-          - 1x100G
-          - 1x800G
-          - 2x400G
-          - 4x200G
-          - 1x10G
-          - 8x400G
+          - pg50G
+          - pg25G
           - 4x100G
+          - 4x800G
+          - 4x25G
+          - 4x10G
+          - 4x400G
+          - 4x50G
+          - 2x100G
+          - 2x400G
+          - 2x40G
+          - 1x100G
+          - 1x10G
+          - 2x25G
+          - 4x40G
+          - 8x800G
+          - 1x50G
+          - pg100G
+          - pg800G
+          - 1x40G
+          - pg200G
+          - 2x200G
+          - 8x200G
+          - 4x200G
+          - 8x100G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -4226,6 +4226,20 @@ components:
           description: Enables a leaf switch to originate IPv4 default type-5 EVPN
             routes across the switching fabric.
           type: boolean
+        dhcp_relay_source_ipv4s_subnet:
+          default: ""
+          description: Range of IPv4 addresses (represented in IPv4 subnet format)
+            used to configure the source IP of each DHCP Relay on each switch that
+            this Tenant is provisioned on.
+          format: ipv4
+          type: string
+        dhcp_relay_source_ipv6s_subnet:
+          default: ""
+          description: Range of IPv6 addresses (represented in IPv6 subnet format)
+            used to configure the source IP of each DHCP Relay on each switch that
+            this Tenant is provisioned on.
+          format: ipv6
+          type: string
       type: object
     _config_put_request_switchpoint_switchpoint_name_badges_inner:
       properties:
@@ -4257,8 +4271,8 @@ components:
         switchpoint_1_ref_type_:
           description: Object type for switchpoint_1 field
           enum:
-          - switchpoint
           - endpoint
+          - switchpoint
           type: string
         switchpoint_2:
           default: ""
@@ -4267,8 +4281,8 @@ components:
         switchpoint_2_ref_type_:
           description: Object type for switchpoint_2 field
           enum:
-          - switchpoint
           - endpoint
+          - switchpoint
           type: string
         lag_group:
           default: ""
@@ -4397,8 +4411,8 @@ components:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
-          - critical
           - ""
+          - critical
           - high
           type: string
         sort_by_name:
@@ -4538,7 +4552,7 @@ components:
       properties:
         pb_egress_profile:
           additionalProperties:
-            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value"
+            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name"
           properties: {}
           type: object
       type: object
@@ -4714,25 +4728,25 @@ components:
           description: Subrule 1 Type
           enum:
           - ""
-          - upgraderStatus
-          - softwareVersionFreeform
-          - badge
-          - isRemote
-          - isPreprovisioned
-          - deviceSerialNumber
-          - softwareVersion
-          - bundle_id
-          - bundleFreeform
-          - noEndpoint
-          - modelNameFreeform
-          - modelName
-          - endpoint_type
-          - followsSelector
           - endpoint
-          - pod
+          - followsSelector
+          - softwareVersionFreeform
+          - deviceSerialNumber
+          - noEndpoint
           - managementIP
+          - upgraderStatus
+          - bundle_id
+          - isPreprovisioned
           - badge_color
+          - softwareVersion
+          - modelName
           - productClass
+          - bundleFreeform
+          - modelNameFreeform
+          - endpoint_type
+          - isRemote
+          - badge
+          - pod
           type: string
         rule_num_subrule_1_value:
           default: ""
@@ -4754,25 +4768,25 @@ components:
           description: Subrule 2 Type
           enum:
           - ""
-          - upgraderStatus
-          - softwareVersionFreeform
-          - badge
-          - isRemote
-          - isPreprovisioned
-          - deviceSerialNumber
-          - softwareVersion
-          - bundle_id
-          - bundleFreeform
-          - noEndpoint
-          - modelNameFreeform
-          - modelName
-          - endpoint_type
-          - followsSelector
           - endpoint
-          - pod
+          - followsSelector
+          - softwareVersionFreeform
+          - deviceSerialNumber
+          - noEndpoint
           - managementIP
+          - upgraderStatus
+          - bundle_id
+          - isPreprovisioned
           - badge_color
+          - softwareVersion
+          - modelName
           - productClass
+          - bundleFreeform
+          - modelNameFreeform
+          - endpoint_type
+          - isRemote
+          - badge
+          - pod
           type: string
         rule_num_subrule_2_value:
           default: ""
@@ -4794,25 +4808,25 @@ components:
           description: Subrule 3 Type
           enum:
           - ""
-          - upgraderStatus
-          - softwareVersionFreeform
-          - badge
-          - isRemote
-          - isPreprovisioned
-          - deviceSerialNumber
-          - softwareVersion
-          - bundle_id
-          - bundleFreeform
-          - noEndpoint
-          - modelNameFreeform
-          - modelName
-          - endpoint_type
-          - followsSelector
           - endpoint
-          - pod
+          - followsSelector
+          - softwareVersionFreeform
+          - deviceSerialNumber
+          - noEndpoint
           - managementIP
+          - upgraderStatus
+          - bundle_id
+          - isPreprovisioned
           - badge_color
+          - softwareVersion
+          - modelName
           - productClass
+          - bundleFreeform
+          - modelNameFreeform
+          - endpoint_type
+          - isRemote
+          - badge
+          - pod
           type: string
         rule_num_subrule_3_value:
           default: ""
@@ -4857,20 +4871,19 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.0.80
-          - 1.8.0.79
-          - 1.8.0.85
           - 1.8.0.83
-          - 1.8.0.89
-          - 1.8.0.84
-          - 1.7.1.29
-          - 1.7.1.30
-          - 1.8.0.86
-          - 1.8.0.82
           - unmanaged
-          - 1.7.1.27
           - 1.8.0.81
+          - 1.8.0.84
+          - 1.8.0.82
+          - 1.8.0.90
           - 1.8.0.87
+          - 1.7.1.27
+          - 1.8.0.80
+          - 1.7.1.30
+          - 1.8.0.89
+          - 1.8.0.86
+          - 1.8.0.85
           type: string
         endpoint_set_for_all_others_unique_identifier:
           default: else
@@ -4905,11 +4918,11 @@ components:
           default: community
           description: Mode
           enum:
-          - community
-          - no_peer_set
-          - no_export_set
           - local_as
+          - community
+          - no_export_set
           - no_advertise
+          - no_peer_set
           type: string
         community_string_expanded_expression:
           default: ""
@@ -4998,11 +5011,11 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - as_site
-          - Static Port
           - LAG_IDL
-          - LAG
           - LLDP
+          - Static Port
+          - as_site
+          - LAG
           minLength: 1
           type: string
         power_state:
@@ -5013,30 +5026,30 @@ components:
           default: generic_snmp
           description: Communication Mode
           enum:
-          - microtik_routeros_telnet
-          - cisco_catalyst_c3xxx
-          - cisco_nexus_9xxx
-          - adtran_netvanta_series
-          - arista_7050_series
-          - generic_snmp
-          - ruckus_icx7150
-          - sonic
-          - netgear_prosafe_series
-          - eltex_ltp_gpon_olt
-          - edgecore_ecs21000
-          - generic_advanced_snmp
           - cisco_small_business_sgxxx
           - juniper_acx5048
-          - hpe_aruba_2530_series
+          - cisco_catalyst_c3xxx
           - tibit_xgs_olt_sfp
+          - generic_snmp
+          - eltex_ltp_gpon_olt
+          - generic_advanced_snmp
+          - sonic
+          - arista_7050_series
+          - edgecore_ecs21000
+          - microtik_routeros_telnet
+          - hpe_aruba_2530_series
+          - netgear_prosafe_series
+          - ruckus_icx7150
+          - cisco_nexus_9xxx
+          - adtran_netvanta_series
           minLength: 1
           type: string
         cli_access_mode:
           default: SSH
           description: CLI Access Mode
           enum:
-          - Telnet
           - SSH
+          - Telnet
           minLength: 1
           type: string
         username:
@@ -5074,16 +5087,16 @@ components:
         switchpoint_ref_type_:
           description: Object type for switchpoint field
           enum:
-          - switchpoint
           - endpoint
+          - switchpoint
           type: string
         security_type:
           default: noAuthNoPriv
           description: Security level
           enum:
           - authNoPriv
-          - noAuthNoPriv
           - authPriv
+          - noAuthNoPriv
           type: string
         snmpv3_username:
           default: ""
@@ -5094,8 +5107,8 @@ components:
           default: MD5
           description: Protocol
           enum:
-          - SHA
           - MD5
+          - SHA
           minLength: 1
           type: string
         passphrase:
@@ -5475,9 +5488,9 @@ components:
             Spanning Tree enabled
           enum:
           - ""
-          - pvst
-          - mstp
           - port
+          - mstp
+          - pvst
           minLength: 1
           type: string
         region_name:
@@ -5799,6 +5812,18 @@ components:
           default: ""
           description: 'Static anycast gateway addresses(IPv6) for service '
           type: string
+        dhcp_server_ipv4:
+          default: ""
+          description: IPv4 address(s) of the DHCP server for service.  May have up
+            to four separated by commas.
+          format: ipv4
+          type: string
+        dhcp_server_ipv6:
+          default: ""
+          description: IPv6 address(s) of the DHCP server for service.  May have up
+            to four separated by commas.
+          format: ipv6
+          type: string
         max_upstream_rate_mbps:
           description: Bandwidth allocated per port in the upstream direction. (Max
             10000 Mbps)
@@ -5911,12 +5936,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - starship
-          - anakiwa
-          - chardonnay
-          - emerald
-          - lavender
           - cornflower
+          - anakiwa
+          - emerald
+          - chardonnay
+          - lavender
+          - starship
           minLength: 1
           type: string
         lacp:
@@ -6038,6 +6063,268 @@ components:
           description: Group
           type: string
       type: object
+    _devicecontrollers_put_request_device_controller_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        ip_source:
+          default: dhcp
+          description: IP Source
+          enum:
+          - static
+          - dhcp
+          minLength: 1
+          type: string
+        controller_ip_and_mask:
+          default: ""
+          description: Controller IP and Mask
+          format: ipv4
+          type: string
+        gateway:
+          default: ""
+          description: Gateway
+          format: ipv4
+          type: string
+        switch_ip_and_mask:
+          default: ""
+          description: Switch IP and Mask
+          format: ipv4
+          type: string
+        switch_gateway:
+          default: ""
+          description: Gateway of Managed Device
+          format: ipv4
+          type: string
+        comm_type:
+          default: snmpv2
+          description: Comm Type
+          enum:
+          - snmpv3
+          - gnmi
+          - snmpv2
+          minLength: 1
+          type: string
+        snmp_community_string:
+          default: ""
+          description: Comm Credentials
+          maxLength: 32
+          type: string
+        uplink_port:
+          default: ""
+          description: Uplink Port of Managed Device
+          type: string
+        lldp_search_string:
+          default: ""
+          description: "Optional unless Located By is \"LLDP\" or Device managed as\
+            \ \"Active SFP\". Must be either the chassis-id or the hostname of the\
+            \ LLDP from the managed device. Used to detect connections between managed\
+            \ devices. If blank, the chassis-id detected by the Device Controller\
+            \ via SNMP/CLI is used"
+          maxLength: 64
+          type: string
+        ztp_identification:
+          default: ""
+          description: Service Tag or Serial Number to identify device for Zero Touch
+            Provisioning
+          maxLength: 64
+          type: string
+        located_by:
+          default: LLDP
+          description: Controls how the system locates this Device within its LAN
+          enum:
+          - LAG_IDL
+          - LLDP
+          - Static Port
+          - as_site
+          - LAG
+          minLength: 1
+          type: string
+        power_state:
+          default: "on"
+          description: Power state of Switch Controller
+          type: string
+        communication_mode:
+          default: generic_snmp
+          description: Communication Mode
+          enum:
+          - cisco_small_business_sgxxx
+          - cisco_catalyst_c3xxx
+          - juniper_acx5048
+          - tibit_xgs_olt_sfp
+          - generic_snmp
+          - eltex_ltp_gpon_olt
+          - generic_advanced_snmp
+          - sonic
+          - arista_7050_series
+          - edgecore_ecs21000
+          - microtik_routeros_telnet
+          - hpe_aruba_2530_series
+          - netgear_prosafe_series
+          - ruckus_icx7150
+          - cisco_nexus_9xxx
+          - adtran_netvanta_series
+          minLength: 1
+          type: string
+        cli_access_mode:
+          default: SSH
+          description: CLI Access Mode
+          enum:
+          - SSH
+          - Telnet
+          minLength: 1
+          type: string
+        username:
+          default: ""
+          description: Username
+          type: string
+        password:
+          default: ""
+          description: Password
+          format: password
+          type: string
+        enable_password:
+          default: ""
+          description: Enable Password - to enable privileged CLI operations
+          format: password
+          type: string
+        ssh_key_or_password:
+          default: ""
+          description: SSH Key or Password
+          format: password
+          type: string
+        managed_on_native_vlan:
+          default: false
+          description: Managed on native VLAN
+          type: boolean
+        sdlc:
+          default: ""
+          description: SDLC that Device Controller belongs to
+          format: hostname
+          type: string
+        switchpoint:
+          default: ""
+          description: Endpoint reference
+          type: string
+        switchpoint_ref_type_:
+          description: Object type for switchpoint field
+          enum:
+          - endpoint
+          - switchpoint
+          type: string
+        security_type:
+          default: noAuthNoPriv
+          description: Security level
+          enum:
+          - authNoPriv
+          - authPriv
+          - noAuthNoPriv
+          type: string
+        snmpv3_username:
+          default: ""
+          description: Username
+          format: name
+          type: string
+        authentication_protocol:
+          default: MD5
+          description: Protocol
+          enum:
+          - MD5
+          - SHA
+          minLength: 1
+          type: string
+        passphrase:
+          default: ""
+          description: Passphrase
+          format: password
+          type: string
+        private_protocol:
+          default: DES
+          description: Protocol
+          enum:
+          - AES
+          - DES
+          minLength: 1
+          type: string
+        private_password:
+          default: ""
+          description: Password
+          format: password
+          type: string
+        password_encrypted:
+          default: ""
+          description: Password
+          format: password
+          type: string
+        enable_password_encrypted:
+          default: ""
+          description: Enable Password - to enable privileged CLI operations
+          format: password
+          type: string
+        ssh_key_or_password_encrypted:
+          default: ""
+          description: SSH Key or Password
+          format: password
+          type: string
+        passphrase_encrypted:
+          default: ""
+          description: Passphrase
+          format: password
+          type: string
+        private_password_encrypted:
+          default: ""
+          description: Password
+          format: password
+          type: string
+        device_managed_as:
+          default: switch
+          description: Device managed as
+          enum:
+          - co_located_switch
+          - tibit
+          - switch
+          - tibit_old
+          minLength: 1
+          type: string
+        switch:
+          default: ""
+          description: Endpoint locating the Switch to be controlled
+          type: string
+        switch_ref_type_:
+          description: Object type for switch field
+          enum:
+          - endpoint
+          type: string
+        connection_service:
+          default: ""
+          description: Connect a Service
+          type: string
+        connection_service_ref_type_:
+          description: Object type for connection_service field
+          enum:
+          - service
+          type: string
+        port:
+          default: ""
+          description: Port locating the Switch to be controlled
+          type: string
+        sfp_mac_address_or_sn:
+          default: ""
+          description: SFP MAC Address or SN
+          type: string
+        uses_tagged_packets:
+          default: true
+          description: Indicates if the direct interface expects tagged or untagged
+            packets
+          type: boolean
+      type: object
     _config_put_request_switchpoint_switchpoint_name:
       properties:
         name:
@@ -6084,13 +6371,13 @@ components:
           description: Type of Switchpoint
           enum:
           - ""
-          - leaf
-          - spine
-          - superspine
-          - enterprise
-          - packet_broker
-          - packet_broker_tor
           - management
+          - leaf
+          - packet_broker_tor
+          - superspine
+          - packet_broker
+          - spine
+          - enterprise
           type: string
         super_pod:
           default: ""
@@ -6625,18 +6912,18 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "10000"
-          - "40000"
-          - "1000"
-          - "5000"
-          - "2500"
           - "10"
-          - "50000"
-          - "100"
-          - "-1"
-          - "100000"
           - "400000"
+          - "10000"
+          - "-1"
+          - "50000"
           - "25000"
+          - "1000"
+          - "100"
+          - "5000"
+          - "100000"
+          - "2500"
+          - "40000"
           minLength: 1
           type: string
         duplex_mode:
@@ -6677,9 +6964,9 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
+          - Critical
           - Low
           - High
-          - Critical
           minLength: 1
           type: string
         allocated_power:
@@ -6721,9 +7008,9 @@ components:
             \                                      </div>\n                      \
             \                          "
           enum:
-          - '%'
           - Kpps
           - pps
+          - '%'
           minLength: 1
           type: string
         action:
@@ -6763,12 +7050,12 @@ components:
             \ the Switch Value.<br>\n                                            \
             \    </div>\n                                            "
           enum:
-          - rs
-          - rs-custom
           - unaltered
-          - fc
-          - none
           - auto
+          - none
+          - rs-custom
+          - rs
+          - fc
           minLength: 1
           type: string
         single_link:
@@ -7116,20 +7403,19 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.0.80
-          - 1.8.0.79
-          - 1.8.0.85
           - 1.8.0.83
-          - 1.8.0.89
-          - 1.8.0.84
-          - 1.7.1.29
-          - 1.7.1.30
-          - 1.8.0.86
-          - 1.8.0.82
           - unmanaged
-          - 1.7.1.27
           - 1.8.0.81
+          - 1.8.0.84
+          - 1.8.0.82
+          - 1.8.0.90
           - 1.8.0.87
+          - 1.7.1.27
+          - 1.8.0.80
+          - 1.7.1.30
+          - 1.8.0.89
+          - 1.8.0.86
+          - 1.8.0.85
           type: string
         endpoint_set_for_endpointless_unique_identifier:
           default: pointless
@@ -7176,8 +7462,8 @@ components:
           default: whitebox
           description: Type of Image Update Sets
           enum:
-          - whitebox
           - blackbox
+          - whitebox
           type: string
         section_pointless:
           items:
@@ -7203,11 +7489,11 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
-          - lag
-          - pb_egress_profile
           - authenticated_eth_port
-          - service_port_profile
+          - lag
           - eth_port_profile_
+          - service_port_profile
+          - pb_egress_profile
           type: string
         eth_port_num_eth_port_settings:
           default: ""
@@ -7378,8 +7664,8 @@ components:
         filter_ref_type_:
           description: Object type for filter field
           enum:
-          - ipv4_list_filter
           - ipv4_filter
+          - ipv4_list_filter
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -7398,27 +7684,6 @@ components:
           description: Flag indicating this p-bit's Queue
           maximum: 7
           type: integer
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
-      type: object
-    _packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner:
-      properties:
-        enable:
-          default: false
-          description: Enable
-          type: boolean
-        filter:
-          default: ""
-          description: Filter
-          type: string
-        filter_ref_type_:
-          description: Object type for filter field
-          enum:
-          - ipv4_filter
-          - ipv4_list_filter
-          type: string
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
@@ -8338,10 +8603,10 @@ components:
             \ range."
           enum:
           - ""
-          - equal
           - greater
-          - less
           - range
+          - less
+          - equal
           type: string
         source_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -8368,10 +8633,10 @@ components:
             \ range."
           enum:
           - ""
-          - equal
           - greater
-          - less
           - range
+          - less
+          - equal
           type: string
         destination_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -8398,7 +8663,7 @@ components:
       properties:
         device_controller:
           additionalProperties:
-            $ref: "#/components/schemas/_config_put_request_device_controller_device_controller_name"
+            $ref: "#/components/schemas/_devicecontrollers_put_request_device_controller_value"
           properties: {}
           type: object
       type: object
@@ -8536,46 +8801,46 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
+          - 1x200G
+          - pg40G
+          - pg400G
+          - 2x800G
+          - 8x400G
+          - 1x800G
+          - 8x40G
           - 2x10G
           - 2x50G
-          - 4x800G
-          - pg800G
-          - 8x10G
-          - 1x200G
-          - pg100G
-          - 4x50G
-          - pg400G
-          - 2x100G
-          - 8x50G
-          - 2x800G
-          - pg40G
-          - 1x40G
-          - 2x25G
-          - 4x400G
-          - 8x200G
-          - 4x10G
-          - 2x200G
-          - 1x400G
-          - 2x40G
-          - pg25G
-          - pg50G
-          - 4x40G
-          - 4x25G
-          - 8x100G
-          - 8x800G
-          - 8x40G
-          - 1x50G
           - pg10G
           - 8x25G
-          - pg200G
+          - 8x50G
+          - 1x400G
+          - 8x10G
           - 1x25G
-          - 1x100G
-          - 1x800G
-          - 2x400G
-          - 4x200G
-          - 1x10G
-          - 8x400G
+          - pg50G
+          - pg25G
           - 4x100G
+          - 4x800G
+          - 4x25G
+          - 4x10G
+          - 4x400G
+          - 4x50G
+          - 2x100G
+          - 2x400G
+          - 2x40G
+          - 1x100G
+          - 1x10G
+          - 2x25G
+          - 4x40G
+          - 8x800G
+          - 1x50G
+          - pg100G
+          - pg800G
+          - 1x40G
+          - pg200G
+          - 2x200G
+          - 8x200G
+          - 4x200G
+          - 8x100G
           type: string
       type: object
     _config_put_request_ipv4_list_filter_ipv4_list_filter_name:
@@ -8606,23 +8871,22 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.0.80
-          - 1.8.0.79
-          - 1.8.0.85
           - 1.8.0.83
-          - 1.8.0.89
-          - 1.8.0.84
-          - 1.7.1.29
-          - 1.7.1.30
-          - 1.8.0.86
-          - 1.8.0.82
           - unmanaged
-          - 1.7.1.27
           - 1.8.0.81
+          - 1.8.0.84
+          - 1.8.0.82
+          - 1.8.0.90
           - 1.8.0.87
+          - 1.7.1.27
+          - 1.8.0.80
+          - 1.7.1.30
+          - 1.8.0.89
+          - 1.8.0.86
+          - 1.8.0.85
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17510191572191"
+          default: "17512797893881"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -8642,14 +8906,14 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
-          - badge
           - badge_color
-          - bundle_id
-          - productClass
-          - endpoint_type
-          - deviceSerialNumber
           - endpoint
+          - deviceSerialNumber
+          - endpoint_type
+          - productClass
+          - badge
           - pod
+          - bundle_id
           type: string
         endpoint_set_num_subrule_1_value:
           default: ""
@@ -8671,14 +8935,14 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
-          - badge
           - badge_color
-          - bundle_id
-          - productClass
-          - endpoint_type
-          - deviceSerialNumber
           - endpoint
+          - deviceSerialNumber
+          - endpoint_type
+          - productClass
+          - badge
           - pod
+          - bundle_id
           type: string
         endpoint_set_num_subrule_2_value:
           default: ""
@@ -8700,14 +8964,14 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
-          - badge
           - badge_color
-          - bundle_id
-          - productClass
-          - endpoint_type
-          - deviceSerialNumber
           - endpoint
+          - deviceSerialNumber
+          - endpoint_type
+          - productClass
+          - badge
           - pod
+          - bundle_id
           type: string
         endpoint_set_num_subrule_3_value:
           default: ""
@@ -8845,8 +9109,8 @@ components:
         endpoint1_for_a_static_connection_ref_type_:
           description: Object type for endpoint1_for_a_static_connection field
           enum:
-          - switchpoint
           - endpoint
+          - switchpoint
           type: string
         port1_for_a_static_connection:
           default: ""
@@ -8862,8 +9126,8 @@ components:
         endpoint2_for_a_static_connection_ref_type_:
           description: Object type for endpoint2_for_a_static_connection field
           enum:
-          - switchpoint
           - endpoint
+          - switchpoint
           type: string
         port2_for_a_static_connection:
           default: ""
@@ -8876,35 +9140,6 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
-      type: object
-    _packetbroker_put_request_pb_egress_profile_value:
-      properties:
-        name:
-          default: ""
-          description: Object Name. Must be unique.
-          format: name
-          minLength: 1
-          type: string
-        enable:
-          default: false
-          description: Enable object.
-          type: boolean
-        ipv4_permit:
-          items:
-            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner"
-          type: array
-        ipv4_deny:
-          items:
-            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner"
-          type: array
-        ipv6_permit:
-          items:
-            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner"
-          type: array
-        ipv6_deny:
-          items:
-            $ref: "#/components/schemas/_config_put_request_pb_egress_profile_pb_egress_profile_name_ipv6_permit_inner"
-          type: array
       type: object
     _config_put_request_extended_community_list:
       properties:
@@ -9005,8 +9240,8 @@ components:
         switch_ref_type_:
           description: Object type for switch field
           enum:
-          - switchpoint
           - endpoint
+          - switchpoint
           type: string
         port:
           default: ""

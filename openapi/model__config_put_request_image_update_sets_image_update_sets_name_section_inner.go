@@ -71,7 +71,7 @@ func NewConfigPutRequestImageUpdateSetsImageUpdateSetsNameSectionInner() *Config
 	this.EndpointSetNumName = &endpointSetNumName
 	var endpointSetNumTargetUpgradeVersion string = "unmanaged"
 	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
-	var endpointSetNumUniqueIdentifier string = "17510191572191"
+	var endpointSetNumUniqueIdentifier string = "17512797893881"
 	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	var endpointSetNumOnSummary bool = true
 	this.EndpointSetNumOnSummary = &endpointSetNumOnSummary
@@ -113,7 +113,7 @@ func NewConfigPutRequestImageUpdateSetsImageUpdateSetsNameSectionInnerWithDefaul
 	this.EndpointSetNumName = &endpointSetNumName
 	var endpointSetNumTargetUpgradeVersion string = "unmanaged"
 	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
-	var endpointSetNumUniqueIdentifier string = "17510191572191"
+	var endpointSetNumUniqueIdentifier string = "17512797893881"
 	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	var endpointSetNumOnSummary bool = true
 	this.EndpointSetNumOnSummary = &endpointSetNumOnSummary

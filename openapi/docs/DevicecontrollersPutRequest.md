@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**DeviceController** | Pointer to [**map[string]ConfigPutRequestDeviceControllerDeviceControllerName**](ConfigPutRequestDeviceControllerDeviceControllerName.md) |  | [optional] 
+**DeviceController** | Pointer to [**map[string]DevicecontrollersPutRequestDeviceControllerValue**](DevicecontrollersPutRequestDeviceControllerValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetDeviceController
 
-`func (o *DevicecontrollersPutRequest) GetDeviceController() map[string]ConfigPutRequestDeviceControllerDeviceControllerName`
+`func (o *DevicecontrollersPutRequest) GetDeviceController() map[string]DevicecontrollersPutRequestDeviceControllerValue`
 
 GetDeviceController returns the DeviceController field if non-nil, zero value otherwise.
 
 ### GetDeviceControllerOk
 
-`func (o *DevicecontrollersPutRequest) GetDeviceControllerOk() (*map[string]ConfigPutRequestDeviceControllerDeviceControllerName, bool)`
+`func (o *DevicecontrollersPutRequest) GetDeviceControllerOk() (*map[string]DevicecontrollersPutRequestDeviceControllerValue, bool)`
 
 GetDeviceControllerOk returns a tuple with the DeviceController field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDeviceController
 
-`func (o *DevicecontrollersPutRequest) SetDeviceController(v map[string]ConfigPutRequestDeviceControllerDeviceControllerName)`
+`func (o *DevicecontrollersPutRequest) SetDeviceController(v map[string]DevicecontrollersPutRequestDeviceControllerValue)`
 
 SetDeviceController sets DeviceController field to given value.
 
