@@ -266,6 +266,14 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	apiVersion, err := getApiVersion(ctx, provCtx)
 	if err != nil {
+		if strings.Contains(err.Error(), "mode mismatch") {
+			resp.Diagnostics.AddError(
+				"Provider Mode Configuration Error",
+				err.Error(),
+			)
+			return
+		}
+
 		tflog.Warn(ctx, "Failed to get API version, using default compatibility", map[string]interface{}{
 			"error": err.Error(),
 		})
@@ -325,7 +333,8 @@ func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error
 	}
 
 	var versionPayload struct {
-		Version string `json:"version"`
+		Version    string `json:"version"`
+		Datacenter *bool  `json:"datacenter,omitempty"`
 	}
 	if err := json.Unmarshal(bodyBytes, &versionPayload); err != nil {
 		tflog.Error(ctx, "Failed to unmarshal API version JSON response (OpenAPI client), defaulting.", map[string]interface{}{
@@ -342,6 +351,30 @@ func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error
 			"default_version": defaultVersion,
 		})
 		return defaultVersion, nil
+	}
+
+	if versionPayload.Datacenter != nil {
+		systemIsDatacenter := *versionPayload.Datacenter
+		configuredIsDatacenter := provCtx.mode == "datacenter"
+
+		if systemIsDatacenter != configuredIsDatacenter {
+			var systemMode, configuredMode string
+			if systemIsDatacenter {
+				systemMode = "datacenter"
+			} else {
+				systemMode = "campus"
+			}
+			configuredMode = provCtx.mode
+
+			return "", fmt.Errorf("mode mismatch: provider is configured for '%s' mode but the system is running in '%s' mode. Please update the provider configuration to match the actual system type", configuredMode, systemMode)
+		}
+
+		tflog.Info(ctx, "Mode validation successful", map[string]interface{}{
+			"configured_mode": provCtx.mode,
+			"system_mode":     systemIsDatacenter,
+		})
+	} else {
+		tflog.Debug(ctx, "No datacenter field in version response, skipping mode validation")
 	}
 
 	tflog.Info(ctx, "Successfully fetched API version via OpenAPI client", map[string]interface{}{
