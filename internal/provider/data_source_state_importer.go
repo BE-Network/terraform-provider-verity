@@ -203,6 +203,7 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 		// Both modes
 		"verity_badge",
 		"verity_switchpoint",
+		"verity_device_controller",
 	}
 
 	importBlocks := make(map[string]string)
