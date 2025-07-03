@@ -301,10 +301,21 @@ func (r *verityBundleResource) Schema(_ context.Context, _ resource.SchemaReques
 }
 
 func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data verityBundleResourceModel
+	var plan verityBundleResourceModel
 
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// API version check: Only allow on 6.5+
+	apiVersion, err := getApiVersion(ctx, r.provCtx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Version Error", fmt.Sprintf("Unable to determine API version: %s", err))
+		return
+	}
+	if apiVersion < "6.5" {
+		resp.Diagnostics.AddError("Unsupported API Version", "Bundle resource creation is only supported on API version 6.5 and above.")
 		return
 	}
 
@@ -313,23 +324,168 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
+	name := plan.Name.ValueString()
+	bundleProps := openapi.BundlesPutRequestEndpointBundleValue{}
+	bundleProps.Name = openapi.PtrString(name)
+
+	if !plan.Enable.IsNull() {
+		bundleProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+	}
+	if !plan.DeviceSettings.IsNull() {
+		bundleProps.DeviceSettings = openapi.PtrString(plan.DeviceSettings.ValueString())
+	}
+	if !plan.DeviceSettingsRefType.IsNull() {
+		bundleProps.DeviceSettingsRefType = openapi.PtrString(plan.DeviceSettingsRefType.ValueString())
+	}
+	if !plan.CliCommands.IsNull() {
+		bundleProps.CliCommands = openapi.PtrString(plan.CliCommands.ValueString())
+	}
+	if !plan.Protocol.IsNull() {
+		bundleProps.Protocol = openapi.PtrString(plan.Protocol.ValueString())
+	}
+	if !plan.DeviceVoiceSettings.IsNull() {
+		bundleProps.DeviceVoiceSettings = openapi.PtrString(plan.DeviceVoiceSettings.ValueString())
+	}
+	if !plan.DeviceVoiceSettingsRefType.IsNull() {
+		bundleProps.DeviceVoiceSettingsRefType = openapi.PtrString(plan.DeviceVoiceSettingsRefType.ValueString())
+	}
+
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
+		if !op.IsForSwitch.IsNull() {
+			objProps.IsForSwitch = openapi.PtrBool(op.IsForSwitch.ValueBool())
+		}
+		if !op.Group.IsNull() {
+			objProps.Group = openapi.PtrString(op.Group.ValueString())
+		}
+		if !op.IsPublic.IsNull() {
+			objProps.IsPublic = openapi.PtrBool(op.IsPublic.ValueBool())
+		}
+		bundleProps.ObjectProperties = &objProps
+	}
+
+	if len(plan.EthPortPaths) > 0 {
+		ethPortPaths := make([]openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner, len(plan.EthPortPaths))
+		for i, path := range plan.EthPortPaths {
+			pathItem := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
+			if !path.EthPortNumEthPortProfile.IsNull() {
+				pathItem.EthPortNumEthPortProfile = openapi.PtrString(path.EthPortNumEthPortProfile.ValueString())
+			}
+			if !path.EthPortNumEthPortProfileRefType.IsNull() {
+				pathItem.EthPortNumEthPortProfileRefType = openapi.PtrString(path.EthPortNumEthPortProfileRefType.ValueString())
+			}
+			if !path.EthPortNumEthPortSettings.IsNull() {
+				pathItem.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
+			}
+			if !path.EthPortNumEthPortSettingsRefType.IsNull() {
+				pathItem.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
+			}
+			if !path.EthPortNumGatewayProfile.IsNull() {
+				pathItem.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
+			}
+			if !path.EthPortNumGatewayProfileRefType.IsNull() {
+				pathItem.EthPortNumGatewayProfileRefType = openapi.PtrString(path.EthPortNumGatewayProfileRefType.ValueString())
+			}
+			if !path.PortName.IsNull() {
+				pathItem.PortName = openapi.PtrString(path.PortName.ValueString())
+			}
+			if !path.Index.IsNull() {
+				pathItem.Index = openapi.PtrInt32(int32(path.Index.ValueInt64()))
+			}
+			ethPortPaths[i] = pathItem
+		}
+		bundleProps.EthPortPaths = ethPortPaths
+	}
+
+	if len(plan.UserServices) > 0 {
+		userServices := make([]openapi.BundlesPutRequestEndpointBundleValueUserServicesInner, len(plan.UserServices))
+		for i, service := range plan.UserServices {
+			serviceItem := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
+			if !service.RowAppEnable.IsNull() {
+				serviceItem.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
+			}
+			if !service.RowAppConnectedService.IsNull() {
+				serviceItem.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+			}
+			if !service.RowAppConnectedServiceRefType.IsNull() {
+				serviceItem.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
+			}
+			if !service.RowAppCliCommands.IsNull() {
+				serviceItem.RowAppCliCommands = openapi.PtrString(service.RowAppCliCommands.ValueString())
+			}
+			if !service.RowIpMask.IsNull() {
+				serviceItem.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
+			}
+			if !service.Index.IsNull() {
+				serviceItem.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
+			}
+			userServices[i] = serviceItem
+		}
+		bundleProps.UserServices = userServices
+	}
+
+	if len(plan.RgServices) > 0 {
+		rgServices := make([]openapi.BundlesPutRequestEndpointBundleValueRgServicesInner, len(plan.RgServices))
+		for i, service := range plan.RgServices {
+			serviceItem := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{}
+			if !service.RowAppEnable.IsNull() {
+				serviceItem.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
+			}
+			if !service.RowAppConnectedService.IsNull() {
+				serviceItem.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+			}
+			if !service.RowAppConnectedServiceRefType.IsNull() {
+				serviceItem.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
+			}
+			if !service.RowAppType.IsNull() {
+				serviceItem.RowAppType = openapi.PtrString(service.RowAppType.ValueString())
+			}
+			if !service.RowIpMask.IsNull() {
+				serviceItem.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
+			}
+			if !service.Index.IsNull() {
+				serviceItem.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
+			}
+			rgServices[i] = serviceItem
+		}
+		bundleProps.RgServices = rgServices
+	}
+
+	if len(plan.VoicePortProfilePaths) > 0 {
+		voicePortProfilePaths := make([]openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner, len(plan.VoicePortProfilePaths))
+		for i, path := range plan.VoicePortProfilePaths {
+			pathItem := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
+			if !path.VoicePortNumVoicePortProfiles.IsNull() {
+				pathItem.VoicePortNumVoicePortProfiles = openapi.PtrString(path.VoicePortNumVoicePortProfiles.ValueString())
+			}
+			if !path.VoicePortNumVoicePortProfilesRefType.IsNull() {
+				pathItem.VoicePortNumVoicePortProfilesRefType = openapi.PtrString(path.VoicePortNumVoicePortProfilesRefType.ValueString())
+			}
+			if !path.Index.IsNull() {
+				pathItem.Index = openapi.PtrInt32(int32(path.Index.ValueInt64()))
+			}
+			voicePortProfilePaths[i] = pathItem
+		}
+		bundleProps.VoicePortProfilePaths = voicePortProfilePaths
+	}
+
+	operationID := r.bulkOpsMgr.AddBundlePut(ctx, name, bundleProps)
+	r.notifyOperationAdded()
+
+	tflog.Debug(ctx, fmt.Sprintf("Waiting for bundle creation operation %s to complete", operationID))
+	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Bundle %s", name))...,
+		)
+		return
+	}
+
+	tflog.Info(ctx, fmt.Sprintf("Bundle %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "bundles")
 
-	name := data.Name.ValueString()
-	data.Name = types.StringValue(name)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
-
-	if !resp.Diagnostics.HasError() {
-		readReq := resource.ReadRequest{
-			State: resp.State,
-		}
-		readResp := resource.ReadResponse{
-			State:       resp.State,
-			Diagnostics: resp.Diagnostics,
-		}
-		r.Read(ctx, readReq, &readResp)
-		resp.Diagnostics = readResp.Diagnostics
-	}
+	plan.Name = types.StringValue(name)
+	resp.State.Set(ctx, plan)
 }
 
 func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -757,35 +913,31 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		// For fields with one reference type:
 		// If only base field changes, send only base field
 		// If ref type field changes (or both), send both fields
-		if deviceSettingsChanged {
-			if !data.DeviceSettings.IsNull() {
+		if deviceSettingsChanged && !deviceSettingsRefTypeChanged {
+			// Just send the base field
+			if !data.DeviceSettings.IsNull() && data.DeviceSettings.ValueString() != "" {
 				bundleValue.DeviceSettings = openapi.PtrString(data.DeviceSettings.ValueString())
 			} else {
 				bundleValue.DeviceSettings = openapi.PtrString("")
 			}
-		}
+			hasChanges = true
+		} else if deviceSettingsRefTypeChanged {
+			// Send both fields
+			if !data.DeviceSettings.IsNull() && data.DeviceSettings.ValueString() != "" {
+				bundleValue.DeviceSettings = openapi.PtrString(data.DeviceSettings.ValueString())
+			} else {
+				bundleValue.DeviceSettings = openapi.PtrString("")
+			}
 
-		if deviceSettingsRefTypeChanged {
-			if !data.DeviceSettingsRefType.IsNull() {
+			if !data.DeviceSettingsRefType.IsNull() && data.DeviceSettingsRefType.ValueString() != "" {
 				bundleValue.DeviceSettingsRefType = openapi.PtrString(data.DeviceSettingsRefType.ValueString())
 			} else {
 				bundleValue.DeviceSettingsRefType = openapi.PtrString("")
 			}
-
-			// If ref type changes, also send base field
-			if !deviceSettingsChanged {
-				if !data.DeviceSettings.IsNull() {
-					bundleValue.DeviceSettings = openapi.PtrString(data.DeviceSettings.ValueString())
-				} else {
-					bundleValue.DeviceSettings = openapi.PtrString("")
-				}
-			}
+			hasChanges = true
 		}
-
-		hasChanges = true
 	}
 
-	// Handle device_voice_settings and device_voice_settings_ref_type_
 	deviceVoiceSettingsChanged := !data.DeviceVoiceSettings.Equal(state.DeviceVoiceSettings)
 	deviceVoiceSettingsRefTypeChanged := !data.DeviceVoiceSettingsRefType.Equal(state.DeviceVoiceSettingsRefType)
 
@@ -800,32 +952,29 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		// For fields with one reference type:
 		// If only base field changes, send only base field
 		// If ref type field changes (or both), send both fields
-		if deviceVoiceSettingsChanged {
-			if !data.DeviceVoiceSettings.IsNull() {
+		if deviceVoiceSettingsChanged && !deviceVoiceSettingsRefTypeChanged {
+			// Just send the base field
+			if !data.DeviceVoiceSettings.IsNull() && data.DeviceVoiceSettings.ValueString() != "" {
 				bundleValue.DeviceVoiceSettings = openapi.PtrString(data.DeviceVoiceSettings.ValueString())
 			} else {
 				bundleValue.DeviceVoiceSettings = openapi.PtrString("")
 			}
-		}
+			hasChanges = true
+		} else if deviceVoiceSettingsRefTypeChanged {
+			// Send both fields
+			if !data.DeviceVoiceSettings.IsNull() && data.DeviceVoiceSettings.ValueString() != "" {
+				bundleValue.DeviceVoiceSettings = openapi.PtrString(data.DeviceVoiceSettings.ValueString())
+			} else {
+				bundleValue.DeviceVoiceSettings = openapi.PtrString("")
+			}
 
-		if deviceVoiceSettingsRefTypeChanged {
-			if !data.DeviceVoiceSettingsRefType.IsNull() {
+			if !data.DeviceVoiceSettingsRefType.IsNull() && data.DeviceVoiceSettingsRefType.ValueString() != "" {
 				bundleValue.DeviceVoiceSettingsRefType = openapi.PtrString(data.DeviceVoiceSettingsRefType.ValueString())
 			} else {
 				bundleValue.DeviceVoiceSettingsRefType = openapi.PtrString("")
 			}
-
-			// If ref type changes, also send base field
-			if !deviceVoiceSettingsChanged {
-				if !data.DeviceVoiceSettings.IsNull() {
-					bundleValue.DeviceVoiceSettings = openapi.PtrString(data.DeviceVoiceSettings.ValueString())
-				} else {
-					bundleValue.DeviceVoiceSettings = openapi.PtrString("")
-				}
-			}
+			hasChanges = true
 		}
-
-		hasChanges = true
 	}
 
 	if len(data.ObjectProperties) > 0 {
@@ -929,14 +1078,14 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 			hasEthPortProfileRefType := !path.EthPortNumEthPortProfileRefType.IsNull() && path.EthPortNumEthPortProfileRefType.ValueString() != ""
 
 			if hasEthPortProfile || hasEthPortProfileRefType {
-				if !utils.ValidateReferenceFields(&resp.Diagnostics,
+				if !utils.ValidateMultipleRefTypesSupported(&resp.Diagnostics,
 					path.EthPortNumEthPortProfile, path.EthPortNumEthPortProfileRefType,
 					"eth_port_num_eth_port_profile", "eth_port_num_eth_port_profile_ref_type_") {
 					return
 				}
 			}
 
-			// Set values after validation
+			// Always send both for multiple ref types
 			if !path.EthPortNumEthPortProfile.IsNull() {
 				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(path.EthPortNumEthPortProfile.ValueString())
 			} else {
@@ -953,13 +1102,14 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 			hasGatewayProfileRefType := !path.EthPortNumGatewayProfileRefType.IsNull() && path.EthPortNumGatewayProfileRefType.ValueString() != ""
 
 			if hasGatewayProfile || hasGatewayProfileRefType {
-				if !utils.ValidateReferenceFields(&resp.Diagnostics,
+				if !utils.ValidateMultipleRefTypesSupported(&resp.Diagnostics,
 					path.EthPortNumGatewayProfile, path.EthPortNumGatewayProfileRefType,
 					"eth_port_num_gateway_profile", "eth_port_num_gateway_profile_ref_type_") {
 					return
 				}
 			}
 
+			// Always send both fields for multiple ref types
 			if !path.EthPortNumGatewayProfile.IsNull() {
 				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
 			} else {
@@ -1039,7 +1189,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		ethPortProfileRefTypeChanged := !path.EthPortNumEthPortProfileRefType.Equal(statePath.EthPortNumEthPortProfileRefType)
 
 		if ethPortProfileChanged || ethPortProfileRefTypeChanged {
-			if !utils.ValidateReferenceFields(&resp.Diagnostics,
+			if !utils.ValidateMultipleRefTypesSupported(&resp.Diagnostics,
 				path.EthPortNumEthPortProfile, path.EthPortNumEthPortProfileRefType,
 				"eth_port_num_eth_port_profile", "eth_port_num_eth_port_profile_ref_type_") {
 				return
@@ -1066,7 +1216,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		gatewayProfileRefTypeChanged := !path.EthPortNumGatewayProfileRefType.Equal(statePath.EthPortNumGatewayProfileRefType)
 
 		if gatewayProfileChanged || gatewayProfileRefTypeChanged {
-			if !utils.ValidateReferenceFields(&resp.Diagnostics,
+			if !utils.ValidateMultipleRefTypesSupported(&resp.Diagnostics,
 				path.EthPortNumGatewayProfile, path.EthPortNumGatewayProfileRefType,
 				"eth_port_num_gateway_profile", "eth_port_num_gateway_profile_ref_type_") {
 				return
@@ -1216,28 +1366,25 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 			// For fields with one reference type:
 			// If only base field changes, send only base field
 			// If ref type field changes (or both), send both fields
-			if connectedServiceChanged {
-				if !service.RowAppConnectedService.IsNull() {
+			if connectedServiceChanged && !connectedServiceRefTypeChanged {
+				// Just send the base field
+				if !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != "" {
 					userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
 				} else {
 					userService.RowAppConnectedService = openapi.PtrString("")
 				}
-			}
+			} else if connectedServiceRefTypeChanged {
+				// Send both fields
+				if !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != "" {
+					userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+				} else {
+					userService.RowAppConnectedService = openapi.PtrString("")
+				}
 
-			if connectedServiceRefTypeChanged {
-				if !service.RowAppConnectedServiceRefType.IsNull() {
+				if !service.RowAppConnectedServiceRefType.IsNull() && service.RowAppConnectedServiceRefType.ValueString() != "" {
 					userService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
 				} else {
 					userService.RowAppConnectedServiceRefType = openapi.PtrString("")
-				}
-
-				// If ref type changes, also send base field
-				if !connectedServiceChanged {
-					if !service.RowAppConnectedService.IsNull() {
-						userService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-					} else {
-						userService.RowAppConnectedService = openapi.PtrString("")
-					}
 				}
 			}
 
@@ -1389,28 +1536,25 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 			// For fields with one reference type:
 			// If only base field changes, send only base field
 			// If ref type field changes (or both), send both fields
-			if connectedServiceChanged {
-				if !service.RowAppConnectedService.IsNull() {
+			if connectedServiceChanged && !connectedServiceRefTypeChanged {
+				// Just send the base field
+				if !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != "" {
 					rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
 				} else {
 					rgService.RowAppConnectedService = openapi.PtrString("")
 				}
-			}
+			} else if connectedServiceRefTypeChanged {
+				// Send both fields
+				if !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != "" {
+					rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
+				} else {
+					rgService.RowAppConnectedService = openapi.PtrString("")
+				}
 
-			if connectedServiceRefTypeChanged {
-				if !service.RowAppConnectedServiceRefType.IsNull() {
+				if !service.RowAppConnectedServiceRefType.IsNull() && service.RowAppConnectedServiceRefType.ValueString() != "" {
 					rgService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
 				} else {
 					rgService.RowAppConnectedServiceRefType = openapi.PtrString("")
-				}
-
-				// If ref type changes, also send base field
-				if !connectedServiceChanged {
-					if !service.RowAppConnectedService.IsNull() {
-						rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-					} else {
-						rgService.RowAppConnectedService = openapi.PtrString("")
-					}
 				}
 			}
 
@@ -1617,10 +1761,47 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 }
 
 func (r *verityBundleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	resp.Diagnostics.AddError(
-		"Operation Not Supported",
-		"Deletion of bundles is not supported by the API",
-	)
+	var state verityBundleResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// API version check: Only allow on 6.5+
+	apiVersion, err := getApiVersion(ctx, r.provCtx)
+	if err != nil {
+		resp.Diagnostics.AddError("API Version Error", fmt.Sprintf("Unable to determine API version: %s", err))
+		return
+	}
+	if apiVersion < "6.5" {
+		resp.Diagnostics.AddError("Unsupported API Version", "Bundle resource deletion is only supported on API version 6.5 and above.")
+		return
+	}
+
+	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
+		resp.Diagnostics.AddError(
+			"Failed to Authenticate",
+			fmt.Sprintf("Error authenticating with API: %s", err),
+		)
+		return
+	}
+
+	name := state.Name.ValueString()
+	operationID := r.bulkOpsMgr.AddBundleDelete(ctx, name)
+	r.notifyOperationAdded()
+
+	tflog.Debug(ctx, fmt.Sprintf("Waiting for bundle deletion operation %s to complete", operationID))
+	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
+		resp.Diagnostics.Append(
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Bundle %s", name))...,
+		)
+		return
+	}
+
+	tflog.Info(ctx, fmt.Sprintf("Bundle %s deletion operation completed successfully", name))
+	clearCache(ctx, r.provCtx, "bundles")
+	resp.State.RemoveResource(ctx)
 }
 
 func (r *verityBundleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

@@ -104,7 +104,9 @@ type BulkOperationManager struct {
 	ethPortSettingsDelete []string
 
 	// Bundles operations
-	bundlePatch map[string]openapi.BundlesPatchRequestEndpointBundleValue
+	bundlePut    map[string]openapi.BundlesPutRequestEndpointBundleValue
+	bundlePatch  map[string]openapi.BundlesPatchRequestEndpointBundleValue
+	bundleDelete []string
 
 	// ACL operations
 	aclPut    map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
@@ -378,7 +380,9 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		ethPortSettingsPut:         make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName),
 		ethPortSettingsPatch:       make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName),
 		ethPortSettingsDelete:      make([]string, 0),
+		bundlePut:                  make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
 		bundlePatch:                make(map[string]openapi.BundlesPatchRequestEndpointBundleValue),
+		bundleDelete:               make([]string, 0),
 		aclPut:                     make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName),
 		aclPatch:                   make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName),
 		aclDelete:                  make([]string, 0),
@@ -731,6 +735,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", len(b.lagPut), b.ExecuteBulkLagPut, "LAG") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.bundlePut), b.ExecuteBulkBundlePut, "Bundle") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.aclPut), b.ExecuteBulkAclPut, "ACL") {
 		return diagnostics, operationsPerformed
 	}
@@ -807,7 +814,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("DELETE", len(b.aclDelete), b.ExecuteBulkAclDelete, "ACL") {
 		return diagnostics, operationsPerformed
 	}
-	// Skipping bundle delete
+	if !execute("DELETE", len(b.bundleDelete), b.ExecuteBulkBundleDelete, "Bundle") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("DELETE", len(b.lagDelete), b.ExecuteBulkLagDelete, "LAG") {
 		return diagnostics, operationsPerformed
 	}
@@ -885,6 +894,9 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PUT", len(b.lagPut), b.ExecuteBulkLagPut, "LAG") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.bundlePut), b.ExecuteBulkBundlePut, "Bundle") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.badgePut), b.ExecuteBulkBadgePut, "Badge") {
 		return diagnostics, operationsPerformed
 	}
@@ -946,7 +958,9 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("DELETE", len(b.badgeDelete), b.ExecuteBulkBadgeDelete, "Badge") {
 		return diagnostics, operationsPerformed
 	}
-	// Skipping bundle delete
+	if !execute("DELETE", len(b.bundleDelete), b.ExecuteBulkBundleDelete, "Bundle") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("DELETE", len(b.lagDelete), b.ExecuteBulkLagDelete, "LAG") {
 		return diagnostics, operationsPerformed
 	}
@@ -990,7 +1004,7 @@ func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool
 		len(b.gatewayProfilePut) == 0 && len(b.gatewayProfilePatch) == 0 && len(b.gatewayProfileDelete) == 0 &&
 		len(b.ethPortProfilePut) == 0 && len(b.ethPortProfilePatch) == 0 && len(b.ethPortProfileDelete) == 0 &&
 		len(b.ethPortSettingsPut) == 0 && len(b.ethPortSettingsPatch) == 0 && len(b.ethPortSettingsDelete) == 0 &&
-		len(b.bundlePatch) == 0 && len(b.authenticatedEthPortPut) == 0 && len(b.authenticatedEthPortPatch) == 0 &&
+		len(b.bundlePut) == 0 && len(b.bundlePatch) == 0 && len(b.bundleDelete) == 0 && len(b.authenticatedEthPortPut) == 0 && len(b.authenticatedEthPortPatch) == 0 &&
 		len(b.authenticatedEthPortDelete) == 0 && len(b.aclPut) == 0 && len(b.aclPatch) == 0 && len(b.aclDelete) == 0 &&
 		len(b.badgePut) == 0 && len(b.badgePatch) == 0 && len(b.badgeDelete) == 0 &&
 		len(b.voicePortProfilePut) == 0 && len(b.voicePortProfilePatch) == 0 && len(b.voicePortProfileDelete) == 0 &&
@@ -1045,7 +1059,9 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	ethPortSettingsPatchCount := len(b.ethPortSettingsPatch)
 	ethPortSettingsDeleteCount := len(b.ethPortSettingsDelete)
 
+	bundlePutCount := len(b.bundlePut)
 	bundlePatchCount := len(b.bundlePatch)
+	bundleDeleteCount := len(b.bundleDelete)
 
 	aclPutCount := len(b.aclPut)
 	aclPatchCount := len(b.aclPatch)
@@ -1096,7 +1112,7 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 		gatewayProfilePutCount + gatewayProfilePatchCount + gatewayProfileDeleteCount +
 		ethPortProfilePutCount + ethPortProfilePatchCount + ethPortProfileDeleteCount +
 		ethPortSettingsPutCount + ethPortSettingsPatchCount + ethPortSettingsDeleteCount +
-		bundlePatchCount + aclPutCount + aclPatchCount + aclDeleteCount +
+		bundlePutCount + bundlePatchCount + bundleDeleteCount + aclPutCount + aclPatchCount + aclDeleteCount +
 		badgePutCount + badgePatchCount + badgeDeleteCount +
 		voicePortProfilePutCount + voicePortProfilePatchCount + voicePortProfileDeleteCount +
 		switchpointPutCount + switchpointPatchCount + switchpointDeleteCount +
@@ -1130,7 +1146,9 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 			"eth_port_settings_put_count":         ethPortSettingsPutCount,
 			"eth_port_settings_patch_count":       ethPortSettingsPatchCount,
 			"eth_port_settings_delete_count":      ethPortSettingsDeleteCount,
+			"bundle_put_count":                    bundlePutCount,
 			"bundle_patch_count":                  bundlePatchCount,
+			"bundle_delete_count":                 bundleDeleteCount,
 			"acl_put_count":                       aclPutCount,
 			"acl_patch_count":                     aclPatchCount,
 			"acl_delete_count":                    aclDeleteCount,
@@ -1224,9 +1242,9 @@ func (b *BulkOperationManager) hasPendingOrRecentOperations(
 		recentOps = b.recentEthPortSettingsOps
 		recentOpTime = b.recentEthPortSettingsOpTime
 	case "bundle":
-		putLen = 0
+		putLen = len(b.bundlePut)
 		patchLen = len(b.bundlePatch)
-		deleteLen = 0
+		deleteLen = len(b.bundleDelete)
 		recentOps = b.recentBundleOps
 		recentOpTime = b.recentBundleOpTime
 	case "acl":
@@ -1409,6 +1427,24 @@ func (b *BulkOperationManager) addOperation(
 	return operationID
 }
 
+func (b *BulkOperationManager) AddBundlePut(ctx context.Context, bundleName string, props openapi.BundlesPutRequestEndpointBundleValue) string {
+	return b.addOperation(
+		ctx,
+		"bundle",
+		bundleName,
+		"PUT",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.bundlePut[bundleName] = props
+		},
+		map[string]interface{}{
+			"bundle_name": bundleName,
+			"batch_size":  len(b.bundlePut) + 1,
+		},
+	)
+}
+
 func (b *BulkOperationManager) AddBundlePatch(ctx context.Context, bundleName string, props openapi.BundlesPatchRequestEndpointBundleValue) string {
 	return b.addOperation(
 		ctx,
@@ -1423,6 +1459,24 @@ func (b *BulkOperationManager) AddBundlePatch(ctx context.Context, bundleName st
 		map[string]interface{}{
 			"bundle_name": bundleName,
 			"batch_size":  len(b.bundlePatch) + 1,
+		},
+	)
+}
+
+func (b *BulkOperationManager) AddBundleDelete(ctx context.Context, bundleName string) string {
+	return b.addOperation(
+		ctx,
+		"bundle",
+		bundleName,
+		"DELETE",
+		func() {
+			b.mutex.Lock()
+			defer b.mutex.Unlock()
+			b.bundleDelete = append(b.bundleDelete, bundleName)
+		},
+		map[string]interface{}{
+			"bundle_name": bundleName,
+			"batch_size":  len(b.bundleDelete) + 1,
 		},
 	)
 }
@@ -4319,6 +4373,176 @@ func (b *BulkOperationManager) ExecuteBulkEthPortSettingsDelete(ctx context.Cont
 	})
 }
 
+func (b *BulkOperationManager) ExecuteBulkBundlePut(ctx context.Context) diag.Diagnostics {
+	var originalOperations map[string]openapi.BundlesPutRequestEndpointBundleValue
+
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "bundle",
+		OperationType: "PUT",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			originalOperations = make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
+			for k, v := range b.bundlePut {
+				originalOperations[k] = v
+			}
+			b.bundlePut = make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			names := make([]string, 0, len(originalOperations))
+
+			for k, v := range originalOperations {
+				result[k] = v
+				names = append(names, k)
+			}
+
+			return result, names
+		},
+
+		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+			checker := ResourceExistenceCheck{
+				ResourceType:  "bundle",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					// First check if we have cached bundle data
+					b.bundleResponsesMutex.RLock()
+					if len(b.bundleResponses) > 0 {
+						cachedData := make(map[string]interface{})
+						for k, v := range b.bundleResponses {
+							cachedData[k] = v
+						}
+						b.bundleResponsesMutex.RUnlock()
+
+						tflog.Debug(ctx, "Using cached bundle data for pre-existence check", map[string]interface{}{
+							"count": len(cachedData),
+						})
+
+						return cachedData, nil
+					}
+					b.bundleResponsesMutex.RUnlock()
+
+					// Fall back to API call if no cache
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.BundlesAPI.BundlesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						EndpointBundle map[string]interface{} `json:"endpoint_bundle"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					b.bundleResponsesMutex.Lock()
+					for k, v := range result.EndpointBundle {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.bundleResponses[k] = vMap
+
+							if name, ok := vMap["name"].(string); ok && name != k {
+								b.bundleResponses[name] = vMap
+							}
+						}
+					}
+					b.bundleResponsesMutex.Unlock()
+
+					return result.EndpointBundle, nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			putRequest := openapi.NewBundlesPutRequest()
+			bundleMap := make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
+
+			for name, props := range filteredData {
+				bundleMap[name] = props.(openapi.BundlesPutRequestEndpointBundleValue)
+			}
+			putRequest.SetEndpointBundle(bundleMap)
+			return putRequest
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.BundlesAPI.BundlesPut(ctx).BundlesPutRequest(
+				*request.(*openapi.BundlesPutRequest))
+			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching bundles", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching bundles after successful PUT operation to retrieve auto-generated values")
+			bundlesReq := b.client.BundlesAPI.BundlesGet(fetchCtx)
+			bundlesResp, fetchErr := bundlesReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch bundles after PUT for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer bundlesResp.Body.Close()
+
+			var bundlesData struct {
+				EndpointBundle map[string]map[string]interface{} `json:"endpoint_bundle"`
+			}
+
+			if respErr := json.NewDecoder(bundlesResp.Body).Decode(&bundlesData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode bundles response for auto-generated fields", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.bundleResponsesMutex.Lock()
+			for bundleName, bundleData := range bundlesData.EndpointBundle {
+				b.bundleResponses[bundleName] = bundleData
+
+				if name, ok := bundleData["name"].(string); ok && name != bundleName {
+					b.bundleResponses[name] = bundleData
+				}
+			}
+			b.bundleResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored bundle data for auto-generated fields", map[string]interface{}{
+				"bundle_count": len(bundlesData.EndpointBundle),
+			})
+
+			return nil
+		},
+
+		UpdateRecentOps: func() {
+			b.recentBundleOps = true
+			b.recentBundleOpTime = time.Now()
+		},
+	})
+}
+
 func (b *BulkOperationManager) ExecuteBulkBundlePatch(ctx context.Context) diag.Diagnostics {
 	return b.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  "bundle",
@@ -4361,6 +4585,54 @@ func (b *BulkOperationManager) ExecuteBulkBundlePatch(ctx context.Context) diag.
 		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
 			req := b.client.BundlesAPI.BundlesPatch(ctx).BundlesPatchRequest(
 				*request.(*openapi.BundlesPatchRequest))
+			return req.Execute()
+		},
+
+		UpdateRecentOps: func() {
+			b.recentBundleOps = true
+			b.recentBundleOpTime = time.Now()
+		},
+	})
+}
+
+func (b *BulkOperationManager) ExecuteBulkBundleDelete(ctx context.Context) diag.Diagnostics {
+	return b.executeBulkOperation(ctx, BulkOperationConfig{
+		ResourceType:  "bundle",
+		OperationType: "DELETE",
+
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			b.mutex.Lock()
+			bundleNames := make([]string, len(b.bundleDelete))
+			copy(bundleNames, b.bundleDelete)
+
+			bundleDeleteMap := make(map[string]bool)
+			for _, name := range bundleNames {
+				bundleDeleteMap[name] = true
+			}
+
+			b.bundleDelete = make([]string, 0)
+			b.mutex.Unlock()
+
+			result := make(map[string]interface{})
+			for _, name := range bundleNames {
+				result[name] = true
+			}
+
+			return result, bundleNames
+		},
+
+		CheckPreExistence: nil,
+
+		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+			bundleNames := make([]string, 0, len(filteredData))
+			for name := range filteredData {
+				bundleNames = append(bundleNames, name)
+			}
+			return bundleNames
+		},
+
+		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+			req := b.client.BundlesAPI.BundlesDelete(ctx).BundleName(request.([]string))
 			return req.Execute()
 		},
 
