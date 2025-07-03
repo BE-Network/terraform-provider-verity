@@ -486,51 +486,6 @@ func (i *Importer) generateBundlesTF(data interface{}) (string, error) {
 	return i.generateResourceTF(data, cfg)
 }
 
-// universalObjectPropsHandler dynamically processes all fields present in the object_properties
-// section of the API response and converts them to Terraform configuration format.
-// - If objProps is nil or empty map: generates no content
-// - If objProps has fields: generates TF config for all fields (including nested structures)
-// - Fields specified in ObjectPropsNestedBlockFields are rendered as blocks instead of attributes
-func universalObjectPropsHandler(objProps map[string]interface{}, builder *strings.Builder, config ResourceConfig) {
-	if len(objProps) > 0 {
-		var keys []string
-		for key := range objProps {
-			keys = append(keys, key)
-		}
-		sort.Strings(keys)
-
-		for _, key := range keys {
-			value := objProps[key]
-
-			if config.ObjectPropsNestedBlockFields != nil && config.ObjectPropsNestedBlockFields[key] {
-				// Render as nested blocks
-				if valueArray, ok := value.([]interface{}); ok {
-					for _, item := range valueArray {
-						builder.WriteString(fmt.Sprintf("		%s {\n", key))
-						if itemMap, ok := item.(map[string]interface{}); ok {
-							var itemKeys []string
-							for itemKey := range itemMap {
-								itemKeys = append(itemKeys, itemKey)
-							}
-							sort.Strings(itemKeys)
-
-							for _, itemKey := range itemKeys {
-								itemValue := itemMap[itemKey]
-								builder.WriteString(fmt.Sprintf("			%s = %s\n", itemKey, formatObjectPropsValue(itemValue, "		")))
-							}
-						}
-						builder.WriteString("		}\n")
-					}
-				}
-			} else {
-				// Render as attribute assignment
-				builder.WriteString(fmt.Sprintf("		%s = %s\n", key, formatObjectPropsValue(value, "	")))
-			}
-		}
-	}
-	// If objProps is nil or empty, generate no content
-}
-
 func (i *Importer) generateTenantsTF(data interface{}) (string, error) {
 	cfg := ResourceConfig{
 		ResourceType:              "tenant",
@@ -1130,6 +1085,51 @@ func (i *Importer) importDeviceControllers() (interface{}, error) {
 	}
 
 	return result.DeviceController, nil
+}
+
+// universalObjectPropsHandler dynamically processes all fields present in the object_properties
+// section of the API response and converts them to Terraform configuration format.
+// - If objProps is nil or empty map: generates no content
+// - If objProps has fields: generates TF config for all fields (including nested structures)
+// - Fields specified in ObjectPropsNestedBlockFields are rendered as blocks instead of attributes
+func universalObjectPropsHandler(objProps map[string]interface{}, builder *strings.Builder, config ResourceConfig) {
+	if len(objProps) > 0 {
+		var keys []string
+		for key := range objProps {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+
+		for _, key := range keys {
+			value := objProps[key]
+
+			if config.ObjectPropsNestedBlockFields != nil && config.ObjectPropsNestedBlockFields[key] {
+				// Render as nested blocks
+				if valueArray, ok := value.([]interface{}); ok {
+					for _, item := range valueArray {
+						builder.WriteString(fmt.Sprintf("		%s {\n", key))
+						if itemMap, ok := item.(map[string]interface{}); ok {
+							var itemKeys []string
+							for itemKey := range itemMap {
+								itemKeys = append(itemKeys, itemKey)
+							}
+							sort.Strings(itemKeys)
+
+							for _, itemKey := range itemKeys {
+								itemValue := itemMap[itemKey]
+								builder.WriteString(fmt.Sprintf("			%s = %s\n", itemKey, formatObjectPropsValue(itemValue, "		")))
+							}
+						}
+						builder.WriteString("		}\n")
+					}
+				}
+			} else {
+				// Render as attribute assignment
+				builder.WriteString(fmt.Sprintf("		%s = %s\n", key, formatObjectPropsValue(value, "	")))
+			}
+		}
+	}
+	// If objProps is nil or empty, generate no content
 }
 
 func formatObjectPropsValue(value interface{}, indent string) string {
