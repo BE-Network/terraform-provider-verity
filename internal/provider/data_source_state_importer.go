@@ -192,7 +192,8 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 		"verity_gateway",
 		"verity_lag",
 		"verity_bundle",
-		"verity_acl",
+		"verity_acl_v4",
+		"verity_acl_v6",
 		"verity_packet_broker",
 		// Campus mode resources
 		"verity_authenticated_eth_port",

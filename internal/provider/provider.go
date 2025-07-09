@@ -407,6 +407,8 @@ func getAllResources() []func() resource.Resource {
 		NewVerityLagResource,
 		NewVerityGatewayProfileResource,
 		NewVerityOperationStageResource,
+		NewVerityACLV4Resource,
+		NewVerityACLV6Resource,
 		NewVerityBadgeResource,
 		NewVerityAuthenticatedEthPortResource,
 		NewVerityDeviceVoiceSettingsResource,

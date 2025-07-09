@@ -108,10 +108,11 @@ type BulkOperationManager struct {
 	bundlePatch  map[string]openapi.BundlesPatchRequestEndpointBundleValue
 	bundleDelete []string
 
-	// ACL operations
-	aclPut    map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
-	aclPatch  map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
-	aclDelete []string
+	// ACL operations (unified for IPv4 and IPv6)
+	aclPut       map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
+	aclPatch     map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
+	aclDelete    []string
+	aclIpVersion map[string]string // Track which IP version each ACL operation uses
 
 	// Authenticated Eth-Port operations
 	authenticatedEthPortPut    map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName
@@ -386,6 +387,7 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		aclPut:                     make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName),
 		aclPatch:                   make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName),
 		aclDelete:                  make([]string, 0),
+		aclIpVersion:               make(map[string]string),
 		authenticatedEthPortPut:    make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName),
 		authenticatedEthPortPatch:  make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName),
 		authenticatedEthPortDelete: make([]string, 0),
@@ -529,7 +531,7 @@ func (b *BulkOperationManager) GetResourceResponse(resourceType, resourceName st
 		response, exists := b.bundleResponses[resourceName]
 		return response, exists
 
-	case "acl":
+	case "acl_v4", "acl_v6":
 		b.aclResponsesMutex.RLock()
 		defer b.aclResponsesMutex.RUnlock()
 		response, exists := b.aclResponses[resourceName]
@@ -674,7 +676,8 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 			b.clearCacheFunc(ctx, b.contextProvider(), "ethportsettings")
 			b.clearCacheFunc(ctx, b.contextProvider(), "lags")
 			b.clearCacheFunc(ctx, b.contextProvider(), "bundles")
-			b.clearCacheFunc(ctx, b.contextProvider(), "acls")
+			b.clearCacheFunc(ctx, b.contextProvider(), "acls_ipv4")
+			b.clearCacheFunc(ctx, b.contextProvider(), "acls_ipv6")
 			b.clearCacheFunc(ctx, b.contextProvider(), "packetbroker")
 			b.clearCacheFunc(ctx, b.contextProvider(), "badges")
 			b.clearCacheFunc(ctx, b.contextProvider(), "switchpoints")
@@ -1859,55 +1862,76 @@ func (b *BulkOperationManager) AddEthPortSettingsDelete(ctx context.Context, eth
 	)
 }
 
-func (b *BulkOperationManager) AddAclPut(ctx context.Context, aclName string, props openapi.ConfigPutRequestIpv4FilterIpv4FilterName) string {
+func (b *BulkOperationManager) AddAclPut(ctx context.Context, aclName string, props openapi.ConfigPutRequestIpv4FilterIpv4FilterName, ipVersion string) string {
+	resourceType := "acl_v4"
+	if ipVersion == "6" {
+		resourceType = "acl_v6"
+	}
+
 	return b.addOperation(
 		ctx,
-		"acl",
+		resourceType,
 		aclName,
 		"PUT",
 		func() {
 			b.mutex.Lock()
 			defer b.mutex.Unlock()
 			b.aclPut[aclName] = props
+			b.aclIpVersion[aclName] = ipVersion
 		},
 		map[string]interface{}{
 			"acl_name":   aclName,
+			"ip_version": ipVersion,
 			"batch_size": len(b.aclPut) + 1,
 		},
 	)
 }
 
-func (b *BulkOperationManager) AddAclPatch(ctx context.Context, aclName string, props openapi.ConfigPutRequestIpv4FilterIpv4FilterName) string {
+func (b *BulkOperationManager) AddAclPatch(ctx context.Context, aclName string, props openapi.ConfigPutRequestIpv4FilterIpv4FilterName, ipVersion string) string {
+	resourceType := "acl_v4"
+	if ipVersion == "6" {
+		resourceType = "acl_v6"
+	}
+
 	return b.addOperation(
 		ctx,
-		"acl",
+		resourceType,
 		aclName,
 		"PATCH",
 		func() {
 			b.mutex.Lock()
 			defer b.mutex.Unlock()
 			b.aclPatch[aclName] = props
+			b.aclIpVersion[aclName] = ipVersion
 		},
 		map[string]interface{}{
 			"acl_name":   aclName,
+			"ip_version": ipVersion,
 			"batch_size": len(b.aclPatch) + 1,
 		},
 	)
 }
 
-func (b *BulkOperationManager) AddAclDelete(ctx context.Context, aclName string) string {
+func (b *BulkOperationManager) AddAclDelete(ctx context.Context, aclName string, ipVersion string) string {
+	resourceType := "acl_v4"
+	if ipVersion == "6" {
+		resourceType = "acl_v6"
+	}
+
 	return b.addOperation(
 		ctx,
-		"acl",
+		resourceType,
 		aclName,
 		"DELETE",
 		func() {
 			b.mutex.Lock()
 			defer b.mutex.Unlock()
 			b.aclDelete = append(b.aclDelete, aclName)
+			b.aclIpVersion[aclName] = ipVersion
 		},
 		map[string]interface{}{
 			"acl_name":   aclName,
+			"ip_version": ipVersion,
 			"batch_size": len(b.aclDelete) + 1,
 		},
 	)
@@ -4644,281 +4668,546 @@ func (b *BulkOperationManager) ExecuteBulkBundleDelete(ctx context.Context) diag
 }
 
 func (b *BulkOperationManager) ExecuteBulkAclPut(ctx context.Context) diag.Diagnostics {
-	var originalOperations map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
+	var diagnostics diag.Diagnostics
+	b.mutex.Lock()
+	originalOperations := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+	originalIpVersions := make(map[string]string)
+	for k, v := range b.aclPut {
+		originalOperations[k] = v
+	}
+	for k, v := range b.aclIpVersion {
+		if _, exists := originalOperations[k]; exists {
+			originalIpVersions[k] = v
+		}
+	}
+	b.aclPut = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+	// Clean up IP version tracking for processed ACLs
+	for k := range originalOperations {
+		delete(b.aclIpVersion, k)
+	}
+	b.mutex.Unlock()
 
-	return b.executeBulkOperation(ctx, BulkOperationConfig{
-		ResourceType:  "acl",
-		OperationType: "PUT",
+	if len(originalOperations) == 0 {
+		return diagnostics
+	}
 
-		ExtractOperations: func() (map[string]interface{}, []string) {
-			b.mutex.Lock()
-			originalOperations = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
-			for k, v := range b.aclPut {
-				originalOperations[k] = v
-			}
-			b.aclPut = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
-			b.mutex.Unlock()
+	ipv4Data := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+	ipv6Data := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
 
-			result := make(map[string]interface{})
-			names := make([]string, 0, len(originalOperations))
+	for name, props := range originalOperations {
+		ipVersion := originalIpVersions[name]
+		if ipVersion == "6" {
+			ipv6Data[name] = props
+		} else {
+			ipv4Data[name] = props
+		}
+	}
 
-			for k, v := range originalOperations {
-				result[k] = v
-				names = append(names, k)
-			}
+	// Process IPv4 ACLs
+	if len(ipv4Data) > 0 {
+		ipv4Diagnostics := b.executeBulkOperation(ctx, BulkOperationConfig{
+			ResourceType:  "acl_v4",
+			OperationType: "PUT",
 
-			return result, names
-		},
+			ExtractOperations: func() (map[string]interface{}, []string) {
+				result := make(map[string]interface{})
+				names := make([]string, 0, len(ipv4Data))
+				for k, v := range ipv4Data {
+					result[k] = v
+					names = append(names, k)
+				}
+				return result, names
+			},
 
-		CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
-			checker := ResourceExistenceCheck{
-				ResourceType:  "acl",
-				OperationType: "PUT",
-				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-					// First check if we have cached ACL data
-					b.aclResponsesMutex.RLock()
-					if len(b.aclResponses) > 0 {
-						cachedData := make(map[string]interface{})
-						for k, v := range b.aclResponses {
-							cachedData[k] = v
+			CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+				checker := ResourceExistenceCheck{
+					ResourceType:  "acl",
+					OperationType: "PUT",
+					FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+						// Check cached ACL data first
+						b.aclResponsesMutex.RLock()
+						if len(b.aclResponses) > 0 {
+							cachedData := make(map[string]interface{})
+							for k, v := range b.aclResponses {
+								cachedData[k] = v
+							}
+							b.aclResponsesMutex.RUnlock()
+							return cachedData, nil
 						}
 						b.aclResponsesMutex.RUnlock()
 
-						tflog.Debug(ctx, "Using cached ACL data for pre-existence check", map[string]interface{}{
-							"count": len(cachedData),
-						})
+						// Fetch IPv4 ACLs from API
+						apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+						defer cancel()
 
-						return cachedData, nil
+						resp, err := b.client.ACLsAPI.AclsGet(apiCtx).IpVersion("4").Execute()
+						if err != nil {
+							return nil, err
+						}
+						defer resp.Body.Close()
+
+						var result map[string]interface{}
+						if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+							return nil, err
+						}
+
+						if ipv4Filter, ok := result["ipv4_filter"].(map[string]interface{}); ok {
+							b.aclResponsesMutex.Lock()
+							for k, v := range ipv4Filter {
+								if vMap, ok := v.(map[string]interface{}); ok {
+									b.aclResponses[k] = vMap
+								}
+							}
+							b.aclResponsesMutex.Unlock()
+							return ipv4Filter, nil
+						}
+						return make(map[string]interface{}), nil
+					},
+				}
+
+				filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+				if err != nil {
+					return resourceNames, nil, err
+				}
+
+				filteredOperations := make(map[string]interface{})
+				for _, name := range filteredNames {
+					if val, ok := ipv4Data[name]; ok {
+						filteredOperations[name] = val
 					}
-					b.aclResponsesMutex.RUnlock()
+				}
+				return filteredNames, filteredOperations, nil
+			},
 
-					// Fall back to API call if no cache
-					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-					defer cancel()
+			PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+				putRequest := openapi.NewAclsPutRequest()
+				aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				for name, props := range filteredData {
+					aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				}
+				putRequest.SetIpFilter(aclMap)
+				return putRequest
+			},
 
-					resp, err := b.client.ACLsAPI.AclsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
+			ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+				req := b.client.ACLsAPI.AclsPut(ctx).IpVersion("4").AclsPutRequest(
+					*request.(*openapi.AclsPutRequest))
+				return req.Execute()
+			},
 
-					var result struct {
-						IpFilter map[string]interface{} `json:"ipFilter"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
+			ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+				// Fetch IPv4 ACLs after PUT to get auto-generated values
+				delayTime := 2 * time.Second
+				time.Sleep(delayTime)
 
+				fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+				defer fetchCancel()
+
+				aclsReq := b.client.ACLsAPI.AclsGet(fetchCtx).IpVersion("4")
+				aclsResp, fetchErr := aclsReq.Execute()
+				if fetchErr != nil {
+					return fetchErr
+				}
+				defer aclsResp.Body.Close()
+
+				var aclsResponse map[string]interface{}
+				if respErr := json.NewDecoder(aclsResp.Body).Decode(&aclsResponse); respErr != nil {
+					return respErr
+				}
+
+				if ipv4Filter, ok := aclsResponse["ipv4_filter"].(map[string]interface{}); ok {
 					b.aclResponsesMutex.Lock()
-					for k, v := range result.IpFilter {
+					for k, v := range ipv4Filter {
 						if vMap, ok := v.(map[string]interface{}); ok {
 							b.aclResponses[k] = vMap
-
-							if name, ok := vMap["name"].(string); ok && name != k {
-								b.aclResponses[name] = vMap
-							}
 						}
 					}
 					b.aclResponsesMutex.Unlock()
-
-					return result.IpFilter, nil
-				},
-			}
-
-			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
-			if err != nil {
-				return resourceNames, nil, err
-			}
-
-			filteredOperations := make(map[string]interface{})
-			for _, name := range filteredNames {
-				if val, ok := originalOperations[name]; ok {
-					filteredOperations[name] = val
 				}
-			}
+				return nil
+			},
 
-			return filteredNames, filteredOperations, nil
-		},
+			UpdateRecentOps: func() {
+				b.recentAclOps = true
+				b.recentAclOpTime = time.Now()
+			},
+		})
+		diagnostics = append(diagnostics, ipv4Diagnostics...)
+	}
 
-		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
-			putRequest := openapi.NewAclsPutRequest()
-			aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+	// Process IPv6 ACLs
+	if len(ipv6Data) > 0 {
+		ipv6Diagnostics := b.executeBulkOperation(ctx, BulkOperationConfig{
+			ResourceType:  "acl_v6",
+			OperationType: "PUT",
 
-			for name, props := range filteredData {
-				aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
-			}
-			putRequest.SetIpFilter(aclMap)
-			return putRequest
-		},
-
-		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
-			req := b.client.ACLsAPI.AclsPut(ctx).AclsPutRequest(
-				*request.(*openapi.AclsPutRequest))
-			return req.Execute()
-		},
-
-		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
-			delayTime := 2 * time.Second
-			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching ACLs", delayTime))
-			time.Sleep(delayTime)
-
-			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
-			defer fetchCancel()
-
-			tflog.Debug(ctx, "Fetching ACLs after successful PUT operation to retrieve auto-generated values")
-			aclsReq := b.client.ACLsAPI.AclsGet(fetchCtx)
-			aclsResp, fetchErr := aclsReq.Execute()
-
-			if fetchErr != nil {
-				tflog.Error(ctx, "Failed to fetch ACLs after PUT for auto-generated fields", map[string]interface{}{
-					"error": fetchErr.Error(),
-				})
-				return fetchErr
-			}
-
-			defer aclsResp.Body.Close()
-
-			var aclsData struct {
-				IpFilter map[string]map[string]interface{} `json:"ipFilter"`
-			}
-
-			if respErr := json.NewDecoder(aclsResp.Body).Decode(&aclsData); respErr != nil {
-				tflog.Error(ctx, "Failed to decode ACLs response for auto-generated fields", map[string]interface{}{
-					"error": respErr.Error(),
-				})
-				return respErr
-			}
-
-			b.aclResponsesMutex.Lock()
-			for aclName, aclData := range aclsData.IpFilter {
-				b.aclResponses[aclName] = aclData
-
-				if name, ok := aclData["name"].(string); ok && name != aclName {
-					b.aclResponses[name] = aclData
+			ExtractOperations: func() (map[string]interface{}, []string) {
+				result := make(map[string]interface{})
+				names := make([]string, 0, len(ipv6Data))
+				for k, v := range ipv6Data {
+					result[k] = v
+					names = append(names, k)
 				}
-			}
-			b.aclResponsesMutex.Unlock()
+				return result, names
+			},
 
-			tflog.Debug(ctx, "Successfully stored ACL data for auto-generated fields", map[string]interface{}{
-				"acl_count": len(aclsData.IpFilter),
-			})
+			CheckPreExistence: func(ctx context.Context, resourceNames []string) ([]string, map[string]interface{}, error) {
+				checker := ResourceExistenceCheck{
+					ResourceType:  "acl",
+					OperationType: "PUT",
+					FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+						// Check cached ACL data first
+						b.aclResponsesMutex.RLock()
+						if len(b.aclResponses) > 0 {
+							cachedData := make(map[string]interface{})
+							for k, v := range b.aclResponses {
+								cachedData[k] = v
+							}
+							b.aclResponsesMutex.RUnlock()
+							return cachedData, nil
+						}
+						b.aclResponsesMutex.RUnlock()
 
-			return nil
-		},
+						// Fetch IPv6 ACLs from API
+						apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+						defer cancel()
 
-		UpdateRecentOps: func() {
-			b.recentAclOps = true
-			b.recentAclOpTime = time.Now()
-		},
-	})
+						resp, err := b.client.ACLsAPI.AclsGet(apiCtx).IpVersion("6").Execute()
+						if err != nil {
+							return nil, err
+						}
+						defer resp.Body.Close()
+
+						var result map[string]interface{}
+						if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+							return nil, err
+						}
+
+						if ipv6Filter, ok := result["ipv6_filter"].(map[string]interface{}); ok {
+							b.aclResponsesMutex.Lock()
+							for k, v := range ipv6Filter {
+								if vMap, ok := v.(map[string]interface{}); ok {
+									b.aclResponses[k] = vMap
+								}
+							}
+							b.aclResponsesMutex.Unlock()
+							return ipv6Filter, nil
+						}
+						return make(map[string]interface{}), nil
+					},
+				}
+
+				filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+				if err != nil {
+					return resourceNames, nil, err
+				}
+
+				filteredOperations := make(map[string]interface{})
+				for _, name := range filteredNames {
+					if val, ok := ipv6Data[name]; ok {
+						filteredOperations[name] = val
+					}
+				}
+				return filteredNames, filteredOperations, nil
+			},
+
+			PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+				putRequest := openapi.NewAclsPutRequest()
+				aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				for name, props := range filteredData {
+					aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				}
+				putRequest.SetIpFilter(aclMap)
+				return putRequest
+			},
+
+			ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+				req := b.client.ACLsAPI.AclsPut(ctx).IpVersion("6").AclsPutRequest(
+					*request.(*openapi.AclsPutRequest))
+				return req.Execute()
+			},
+
+			ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+				// Fetch IPv6 ACLs after PUT to get auto-generated values
+				delayTime := 2 * time.Second
+				time.Sleep(delayTime)
+
+				fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+				defer fetchCancel()
+
+				aclsReq := b.client.ACLsAPI.AclsGet(fetchCtx).IpVersion("6")
+				aclsResp, fetchErr := aclsReq.Execute()
+				if fetchErr != nil {
+					return fetchErr
+				}
+				defer aclsResp.Body.Close()
+
+				var aclsResponse map[string]interface{}
+				if respErr := json.NewDecoder(aclsResp.Body).Decode(&aclsResponse); respErr != nil {
+					return respErr
+				}
+
+				if ipv6Filter, ok := aclsResponse["ipv6_filter"].(map[string]interface{}); ok {
+					b.aclResponsesMutex.Lock()
+					for k, v := range ipv6Filter {
+						if vMap, ok := v.(map[string]interface{}); ok {
+							b.aclResponses[k] = vMap
+						}
+					}
+					b.aclResponsesMutex.Unlock()
+				}
+				return nil
+			},
+
+			UpdateRecentOps: func() {
+				b.recentAclOps = true
+				b.recentAclOpTime = time.Now()
+			},
+		})
+		diagnostics = append(diagnostics, ipv6Diagnostics...)
+	}
+
+	return diagnostics
 }
 
 func (b *BulkOperationManager) ExecuteBulkAclPatch(ctx context.Context) diag.Diagnostics {
-	return b.executeBulkOperation(ctx, BulkOperationConfig{
-		ResourceType:  "acl",
-		OperationType: "PATCH",
+	var diagnostics diag.Diagnostics
+	b.mutex.Lock()
+	originalOperations := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+	originalIpVersions := make(map[string]string)
+	for k, v := range b.aclPatch {
+		originalOperations[k] = v
+	}
+	for k, v := range b.aclIpVersion {
+		if _, exists := originalOperations[k]; exists {
+			originalIpVersions[k] = v
+		}
+	}
+	b.aclPatch = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+	// Clean up IP version tracking for processed ACLs
+	for k := range originalOperations {
+		delete(b.aclIpVersion, k)
+	}
+	b.mutex.Unlock()
 
-		ExtractOperations: func() (map[string]interface{}, []string) {
-			b.mutex.Lock()
-			aclPatch := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
-			for k, v := range b.aclPatch {
-				aclPatch[k] = v
-			}
-			b.aclPatch = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
-			b.mutex.Unlock()
+	if len(originalOperations) == 0 {
+		return diagnostics
+	}
 
-			result := make(map[string]interface{})
-			names := make([]string, 0, len(aclPatch))
+	ipv4Data := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+	ipv6Data := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
 
-			for k, v := range aclPatch {
-				result[k] = v
-				names = append(names, k)
-			}
+	for name, props := range originalOperations {
+		ipVersion := originalIpVersions[name]
+		if ipVersion == "6" {
+			ipv6Data[name] = props
+		} else {
+			ipv4Data[name] = props
+		}
+	}
 
-			return result, names
-		},
+	// Process IPv4 ACLs
+	if len(ipv4Data) > 0 {
+		ipv4Diagnostics := b.executeBulkOperation(ctx, BulkOperationConfig{
+			ResourceType:  "acl_v4",
+			OperationType: "PATCH",
 
-		CheckPreExistence: nil,
+			ExtractOperations: func() (map[string]interface{}, []string) {
+				result := make(map[string]interface{})
+				names := make([]string, 0, len(ipv4Data))
+				for k, v := range ipv4Data {
+					result[k] = v
+					names = append(names, k)
+				}
+				return result, names
+			},
 
-		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
-			patchRequest := openapi.NewAclsPutRequest()
-			aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			CheckPreExistence: nil,
 
-			for name, props := range filteredData {
-				aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
-			}
-			patchRequest.SetIpFilter(aclMap)
-			return patchRequest
-		},
+			PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+				patchRequest := openapi.NewAclsPutRequest()
+				aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				for name, props := range filteredData {
+					aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				}
+				patchRequest.SetIpFilter(aclMap)
+				return patchRequest
+			},
 
-		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
-			req := b.client.ACLsAPI.AclsPatch(ctx).AclsPutRequest(
-				*request.(*openapi.AclsPutRequest))
-			return req.Execute()
-		},
+			ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+				req := b.client.ACLsAPI.AclsPatch(ctx).IpVersion("4").AclsPutRequest(
+					*request.(*openapi.AclsPutRequest))
+				return req.Execute()
+			},
 
-		UpdateRecentOps: func() {
-			b.recentAclOps = true
-			b.recentAclOpTime = time.Now()
-		},
-	})
+			UpdateRecentOps: func() {
+				b.recentAclOps = true
+				b.recentAclOpTime = time.Now()
+			},
+		})
+		diagnostics = append(diagnostics, ipv4Diagnostics...)
+	}
+
+	// Process IPv6 ACLs
+	if len(ipv6Data) > 0 {
+		ipv6Diagnostics := b.executeBulkOperation(ctx, BulkOperationConfig{
+			ResourceType:  "acl_v6",
+			OperationType: "PATCH",
+
+			ExtractOperations: func() (map[string]interface{}, []string) {
+				result := make(map[string]interface{})
+				names := make([]string, 0, len(ipv6Data))
+				for k, v := range ipv6Data {
+					result[k] = v
+					names = append(names, k)
+				}
+				return result, names
+			},
+
+			CheckPreExistence: nil,
+
+			PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+				patchRequest := openapi.NewAclsPutRequest()
+				aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				for name, props := range filteredData {
+					aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				}
+				patchRequest.SetIpFilter(aclMap)
+				return patchRequest
+			},
+
+			ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+				req := b.client.ACLsAPI.AclsPatch(ctx).IpVersion("6").AclsPutRequest(
+					*request.(*openapi.AclsPutRequest))
+				return req.Execute()
+			},
+
+			UpdateRecentOps: func() {
+				b.recentAclOps = true
+				b.recentAclOpTime = time.Now()
+			},
+		})
+		diagnostics = append(diagnostics, ipv6Diagnostics...)
+	}
+
+	return diagnostics
 }
 
 func (b *BulkOperationManager) ExecuteBulkAclDelete(ctx context.Context) diag.Diagnostics {
-	return b.executeBulkOperation(ctx, BulkOperationConfig{
-		ResourceType:  "acl",
-		OperationType: "DELETE",
+	var diagnostics diag.Diagnostics
+	b.mutex.Lock()
+	aclNames := make([]string, len(b.aclDelete))
+	copy(aclNames, b.aclDelete)
 
-		ExtractOperations: func() (map[string]interface{}, []string) {
-			b.mutex.Lock()
-			aclNames := make([]string, len(b.aclDelete))
-			copy(aclNames, b.aclDelete)
+	originalIpVersions := make(map[string]string)
+	for _, name := range aclNames {
+		if ipVersion, exists := b.aclIpVersion[name]; exists {
+			originalIpVersions[name] = ipVersion
+		}
+	}
 
-			aclDeleteMap := make(map[string]bool)
-			for _, name := range aclNames {
-				aclDeleteMap[name] = true
-			}
-			b.aclDelete = make([]string, 0)
-			b.mutex.Unlock()
+	b.aclDelete = make([]string, 0)
+	// Clean up IP version tracking for processed ACLs
+	for _, name := range aclNames {
+		delete(b.aclIpVersion, name)
+	}
+	b.mutex.Unlock()
 
-			result := make(map[string]interface{})
-			for name := range aclDeleteMap {
-				result[name] = true
-			}
+	if len(aclNames) == 0 {
+		return diagnostics
+	}
 
-			names := make([]string, 0, len(result))
-			for name := range result {
-				names = append(names, name)
-			}
+	ipv4Names := make([]string, 0)
+	ipv6Names := make([]string, 0)
 
-			return result, names
-		},
+	for _, name := range aclNames {
+		ipVersion := originalIpVersions[name]
+		if ipVersion == "6" {
+			ipv6Names = append(ipv6Names, name)
+		} else {
+			ipv4Names = append(ipv4Names, name)
+		}
+	}
 
-		CheckPreExistence: nil,
+	// Process IPv4 ACLs
+	if len(ipv4Names) > 0 {
+		ipv4Diagnostics := b.executeBulkOperation(ctx, BulkOperationConfig{
+			ResourceType:  "acl_v4",
+			OperationType: "DELETE",
 
-		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
-			// For ACL delete, we need to return the list of ACL names
-			names := make([]string, 0, len(filteredData))
-			for name := range filteredData {
-				names = append(names, name)
-			}
-			return names
-		},
+			ExtractOperations: func() (map[string]interface{}, []string) {
+				result := make(map[string]interface{})
+				for _, name := range ipv4Names {
+					result[name] = true
+				}
+				return result, ipv4Names
+			},
 
-		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
-			// The ACL delete API requires both ipFilterName and ipVersion
-			// We're using ipv4 as the default version since that's what the type suggests
-			req := b.client.ACLsAPI.AclsDelete(ctx).
-				IpFilterName(request.([]string)).
-				IpVersion("ipv4")
-			return req.Execute()
-		},
+			CheckPreExistence: nil,
 
-		UpdateRecentOps: func() {
-			b.recentAclOps = true
-			b.recentAclOpTime = time.Now()
-		},
-	})
+			PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+				names := make([]string, 0, len(filteredData))
+				for name := range filteredData {
+					names = append(names, name)
+				}
+				return names
+			},
+
+			ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+				req := b.client.ACLsAPI.AclsDelete(ctx).
+					IpFilterName(request.([]string)).
+					IpVersion("4")
+				return req.Execute()
+			},
+
+			UpdateRecentOps: func() {
+				b.recentAclOps = true
+				b.recentAclOpTime = time.Now()
+			},
+		})
+		diagnostics = append(diagnostics, ipv4Diagnostics...)
+	}
+
+	// Process IPv6 ACLs
+	if len(ipv6Names) > 0 {
+		ipv6Diagnostics := b.executeBulkOperation(ctx, BulkOperationConfig{
+			ResourceType:  "acl_v6",
+			OperationType: "DELETE",
+
+			ExtractOperations: func() (map[string]interface{}, []string) {
+				result := make(map[string]interface{})
+				for _, name := range ipv6Names {
+					result[name] = true
+				}
+				return result, ipv6Names
+			},
+
+			CheckPreExistence: nil,
+
+			PrepareRequest: func(filteredData map[string]interface{}) interface{} {
+				names := make([]string, 0, len(filteredData))
+				for name := range filteredData {
+					names = append(names, name)
+				}
+				return names
+			},
+
+			ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
+				req := b.client.ACLsAPI.AclsDelete(ctx).
+					IpFilterName(request.([]string)).
+					IpVersion("6")
+				return req.Execute()
+			},
+
+			UpdateRecentOps: func() {
+				b.recentAclOps = true
+				b.recentAclOpTime = time.Now()
+			},
+		})
+		diagnostics = append(diagnostics, ipv6Diagnostics...)
+	}
+
+	return diagnostics
 }
 
 func (b *BulkOperationManager) ExecuteBulkAuthenticatedEthPortPut(ctx context.Context) diag.Diagnostics {

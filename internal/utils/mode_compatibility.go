@@ -35,7 +35,8 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_tenant":          ResourceModeDatacenter,
 	"verity_gateway":         ResourceModeDatacenter,
 	"verity_gateway_profile": ResourceModeDatacenter,
-	"verity_acl":             ResourceModeDatacenter,
+	"verity_acl_v4":          ResourceModeDatacenter,
+	"verity_acl_v6":          ResourceModeDatacenter,
 	"verity_packet_broker":   ResourceModeDatacenter,
 
 	// Campus-only resources
@@ -69,7 +70,8 @@ var ResourceVersionCompatibility = map[string]ApiVersionSupport{
 	"verity_operation_stage":        {Major: 6, Minor: 4},
 	"verity_badge":                  {Major: 6, Minor: 5},
 	"verity_switchpoint":            {Major: 6, Minor: 5},
-	"verity_acl":                    {Major: 6, Minor: 5},
+	"verity_acl_v4":                 {Major: 6, Minor: 5},
+	"verity_acl_v6":                 {Major: 6, Minor: 5},
 	"verity_packet_broker":          {Major: 6, Minor: 5},
 	"verity_authenticated_eth_port": {Major: 6, Minor: 5},
 	"verity_device_voice_settings":  {Major: 6, Minor: 5},

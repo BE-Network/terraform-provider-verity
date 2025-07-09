@@ -154,6 +154,8 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "services", terraformResourceType: "verity_service", importer: i.importServices, tfGenerator: i.generateServicesTF},
 		{name: "ethportsettings", terraformResourceType: "verity_eth_port_settings", importer: i.importEthPortSettings, tfGenerator: i.generateEthPortSettingsTF},
 		{name: "bundles", terraformResourceType: "verity_bundle", importer: i.importBundles, tfGenerator: i.generateBundlesTF},
+		{name: "acls_ipv4", terraformResourceType: "verity_acl_v4", importer: i.importACLsIPv4, tfGenerator: i.generateACLsIPv4TF},
+		{name: "acls_ipv6", terraformResourceType: "verity_acl_v6", importer: i.importACLsIPv6, tfGenerator: i.generateACLsIPv6TF},
 		{name: "badges", terraformResourceType: "verity_badge", importer: i.importBadges, tfGenerator: i.generateBadgesTF},
 		{name: "authenticatedethports", terraformResourceType: "verity_authenticated_eth_port", importer: i.importAuthenticatedEthPorts, tfGenerator: i.generateAuthenticatedEthPortsTF},
 		{name: "devicecontrollers", terraformResourceType: "verity_device_controller", importer: i.importDeviceControllers, tfGenerator: i.generateDeviceControllersTF},
@@ -656,6 +658,28 @@ func (i *Importer) generateDeviceControllersTF(data interface{}) (string, error)
 	return i.generateResourceTF(data, cfg)
 }
 
+func (i *Importer) generateACLsIPv4TF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "acl_v4",
+		StageName:                 "acl_v4_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateACLsIPv6TF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "acl_v6",
+		StageName:                 "acl_v6_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
 func (i *Importer) generateStagesTF() (string, error) {
 	var tfConfig strings.Builder
 
@@ -732,7 +756,7 @@ func (i *Importer) generateStagesTF() (string, error) {
 		// DATACENTER mode staging order:
 		// 1. Tenants, 2. Gateways, 3. Gateway Profiles, 4. Services, 5. Packet Queues,
 		// 6. Eth Port Profiles, 7. Eth Port Settings, 8. Lags, 9. Bundles,
-		// 10. ACLs, 11. PacketBroker, 12. Badges, 13. Switchpoints, 14. Device controllers
+		// 10. IPv4 ACLs, 11. IPv6 ACLs, 12. PacketBroker, 13. Badges, 14. Switchpoints, 15. Device controllers
 		stageOrder = []StageDefinition{
 			{"tenant_stage", "verity_tenant", ""},
 			{"gateway_stage", "verity_gateway", "tenant_stage"},
@@ -743,8 +767,9 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"eth_port_settings_stage", "verity_eth_port_settings", "eth_port_profile_stage"},
 			{"lag_stage", "verity_lag", "eth_port_settings_stage"},
 			{"bundle_stage", "verity_bundle", "lag_stage"},
-			{"acl_stage", "verity_acl", "bundle_stage"},
-			{"packet_broker_stage", "verity_packet_broker", "acl_stage"},
+			{"acl_v4_stage", "verity_acl_v4", "bundle_stage"},
+			{"acl_v6_stage", "verity_acl_v6", "acl_v4_stage"},
+			{"packet_broker_stage", "verity_packet_broker", "acl_v6_stage"},
 			{"badge_stage", "verity_badge", "packet_broker_stage"},
 			{"switchpoint_stage", "verity_switchpoint", "badge_stage"},
 			{"device_controller_stage", "verity_device_controller", "switchpoint_stage"},
@@ -1085,6 +1110,50 @@ func (i *Importer) importDeviceControllers() (interface{}, error) {
 	}
 
 	return result.DeviceController, nil
+}
+
+func (i *Importer) importACLsIPv4() (interface{}, error) {
+	return i.importACLs("4")
+}
+
+func (i *Importer) importACLsIPv6() (interface{}, error) {
+	return i.importACLs("6")
+}
+
+func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface{}, error) {
+	resp, err := i.client.ACLsAPI.AclsGet(i.ctx).IpVersion(ipVersion).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get %s ACLs: %v", ipVersion, err)
+	}
+	defer resp.Body.Close()
+
+	if ipVersion == "4" {
+		var result struct {
+			IpFilter map[string]map[string]interface{} `json:"ipv4_filter"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			return nil, fmt.Errorf("failed to decode IPv4 ACLs response: %v", err)
+		}
+
+		if result.IpFilter == nil {
+			return make(map[string]map[string]interface{}), nil
+		}
+
+		return result.IpFilter, nil
+	} else {
+		var result struct {
+			IpFilter map[string]map[string]interface{} `json:"ipv6_filter"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			return nil, fmt.Errorf("failed to decode IPv6 ACLs response: %v", err)
+		}
+
+		if result.IpFilter == nil {
+			return make(map[string]map[string]interface{}), nil
+		}
+
+		return result.IpFilter, nil
+	}
 }
 
 // universalObjectPropsHandler dynamically processes all fields present in the object_properties
