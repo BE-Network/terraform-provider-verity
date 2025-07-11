@@ -2,6 +2,10 @@
 
 `verity_voice_port_profile` manages voice port profile resources in Verity, which define configurations for voice ports including protocol settings, call features, and quality parameters.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl
@@ -80,12 +84,16 @@ resource "verity_voice_port_profile" "example" {
 * `dial_tone_feature_delay` - (Optional) Dial tone feature delay in milliseconds.
 * `intercom_enable` - (Optional) Enable intercom. Default is `false`.
 * `intercom_transfer_enable` - (Optional) Enable intercom transfer. Default is `false`.
+* `transmit_gain` - (Optional) Transmit gain in tenths of a dB. Example -30 would equal -3.0dB (available as of API version 6.5).
+* `receive_gain` - (Optional) Receive gain in tenths of a dB. Example -30 would equal -3.0dB (available as of API version 6.5).
+* `echo_cancellation_enable` - (Optional) Enable echo cancellation. Default is `false` (available as of API version 6.5).
 * `modem_transport` - (Optional) Modem transport mode (e.g., `passthrough`, `relay`).
 * `preferred_codec` - (Optional) Preferred audio codec (e.g., `g711ulaw`, `g729`).
 * `fax_tone_detect_enable` - (Optional) Enable fax tone detection. Default is `false`.
 * `silent_dialing_enable` - (Optional) Enable silent dialing. Default is `false`.
 * `dtmf_inband` - (Optional) Enable DTMF in-band. Default is `false`.
 * `dtmf_rfc2833` - (Optional) Enable DTMF RFC 2833. Default is `false`.
+* `signaling_code` - (Optional) Signaling code for voice communication (available as of API version 6.5).
 * `jitter_target` - (Optional) Target jitter buffer size in milliseconds.
 * `jitter_buffer_max` - (Optional) Maximum jitter buffer size in milliseconds.
 * `release_timer` - (Optional) Release timer in seconds.
@@ -101,5 +109,5 @@ resource "verity_voice_port_profile" "example" {
 Voice Port Profile resources can be imported using the `name` attribute:
 
 ```
-$ terraform import verity_voice_port_profile.example example_voice_profile
+$ terraform import verity_voice_port_profile.example example
 ```

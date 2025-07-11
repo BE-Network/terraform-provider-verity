@@ -2,6 +2,10 @@
 
 `verity_packet_broker` manages packet broker (PB Egress Profile) resources in Verity, which define how packets are filtered and processed.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl
@@ -69,5 +73,5 @@ resource "verity_packet_broker" "example" {
 Packet Broker resources can be imported using the `name` attribute:
 
 ```
-$ terraform import verity_packet_broker.example example_packet_broker
+$ terraform import verity_packet_broker.example example
 ```

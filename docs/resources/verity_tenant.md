@@ -45,6 +45,8 @@ resource "verity_tenant" "example" {
 * `layer_3_vlan` - Layer 3 VLAN ID
 * `layer_3_vlan_auto_assigned_` - Whether Layer 3 VLAN ID is auto-assigned
 * `dhcp_relay_source_ips_subnet` - DHCP relay source IPs subnet
+* `dhcp_relay_source_ipv4s_subnet` - Range of IPv4 addresses used for DHCP relay source IPs (available as of API version 6.5)
+* `dhcp_relay_source_ipv6s_subnet` - Range of IPv6 addresses used for DHCP relay source IPs (available as of API version 6.5)
 * `route_distinguisher` - Route distinguisher for BGP
 * `route_target_import` - Route target import value for BGP
 * `route_target_export` - Route target export value for BGP
@@ -54,6 +56,7 @@ resource "verity_tenant" "example" {
 * `export_route_map_ref_type_` - Object type for export route map
 * `vrf_name` - VRF name
 * `vrf_name_auto_assigned_` - Whether VRF name is auto-assigned
+* `default_originate` - Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric (available as of API version 6.5)
 * `route_tenants` - List of route tenant blocks
   * `enable` - Enable this route tenant
   * `tenant` - Reference to another tenant
@@ -64,3 +67,6 @@ resource "verity_tenant" "example" {
 
 Tenant resources can be imported using the `name` attribute:
 
+```
+$ terraform import verity_tenant.example example
+```

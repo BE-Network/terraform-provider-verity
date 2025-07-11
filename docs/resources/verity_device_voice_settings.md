@@ -2,6 +2,10 @@
 
 `verity_device_voice_settings` manages voice settings for devices in Verity, which define the configuration for voice communications.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl
@@ -77,5 +81,5 @@ resource "verity_device_voice_settings" "example" {
 Device Voice Settings resources can be imported using the `name` attribute:
 
 ```
-$ terraform import verity_device_voice_settings.example example_voice_settings
+$ terraform import verity_device_voice_settings.example example
 ```

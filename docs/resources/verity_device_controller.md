@@ -2,6 +2,10 @@
 
 `verity_device_controller` manages device controllers in Verity, which define configurations for network device management.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl
@@ -55,6 +59,11 @@ resource "verity_device_controller" "example" {
 * `passphrase` - (Optional) Passphrase for SNMPv3 authentication.
 * `private_protocol` - (Optional) Privacy protocol for SNMPv3.
 * `private_password` - (Optional) Privacy password for SNMPv3.
+* `password_encrypted` - (Optional) Encrypted Password (available as of API version 6.5).
+* `enable_password_encrypted` - (Optional) Encrypted Enable Password for privileged CLI operations (available as of API version 6.5).
+* `ssh_key_or_password_encrypted` - (Optional) Encrypted SSH Key or Password (available as of API version 6.5).
+* `passphrase_encrypted` - (Optional) Encrypted Passphrase for SNMPv3 authentication (available as of API version 6.5).
+* `private_password_encrypted` - (Optional) Encrypted Private Password for SNMPv3 (available as of API version 6.5).
 * `device_managed_as` - (Optional) How the device is managed (e.g., `controller`, `switch`).
 * `switch` - (Optional) Reference to a switch resource.
 * `switch_ref_type_` - (Optional) Object type for switch reference.
@@ -69,5 +78,5 @@ resource "verity_device_controller" "example" {
 Device Controller resources can be imported using the `name` attribute:
 
 ```
-$ terraform import verity_device_controller.example example_controller
+$ terraform import verity_device_controller.example example
 ```

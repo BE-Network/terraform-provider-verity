@@ -75,8 +75,34 @@ resource "verity_gateway" "example" {
   * `next_hop_ip_address` - Next hop IP address
   * `ad_value` - Administrative distance value (0-255)
   * `index` - Index identifying the object
+* `egress_vlan` - BGP egress VLAN
+* `source_ip_address` - Source IP address (available as of API version 6.5)
+* `anycast_ip_mask` - Anycast IP mask (available as of API version 6.5)
+* `md5_password` - MD5 password for BGP authentication (available as of API version 6.5)
+* `import_route_map` - Import route map reference (available as of API version 6.5)
+* `import_route_map_ref_type_` - Object type for import route map reference (available as of API version 6.5)
+* `export_route_map` - Export route map reference (available as of API version 6.5)
+* `export_route_map_ref_type_` - Object type for export route map reference (available as of API version 6.5)
+* `gateway_mode` - Gateway mode (e.g., "Dynamic BGP") (available as of API version 6.5)
+* `local_as_number` - Local AS number (available as of API version 6.5)
+* `local_as_no_prepend` - Whether to not prepend local AS number (available as of API version 6.5)
+* `replace_as` - Whether to replace AS (available as of API version 6.5)
+* `max_local_as_occurrences` - Maximum local AS occurrences (available as of API version 6.5)
+* `dynamic_bgp_subnet` - Dynamic BGP subnet (available as of API version 6.5)
+* `dynamic_bgp_limits` - Dynamic BGP limits (available as of API version 6.5)
+* `helper_hop_ip_address` - Helper hop IP address (available as of API version 6.5)
+* `enable_bfd` - Enable BFD (Bidirectional Forwarding Detection) (available as of API version 6.5)
+* `bfd_receive_interval` - BFD receive interval (available as of API version 6.5)
+* `bfd_transmission_interval` - BFD transmission interval (available as of API version 6.5)
+* `bfd_detect_multiplier` - BFD detect multiplier (available as of API version 6.5)
+* `bfd_multihop` - BFD multihop (available as of API version 6.5)
+* `next_hop_self` - Use next hop self (available as of API version 6.5)
+* `default_originate` - Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor (available as of API version 6.5)
 
 ## Import
 
 Gateway resources can be imported using the `name` attribute:
 
+```
+$ terraform import verity_gateway.example example
+```

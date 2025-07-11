@@ -2,6 +2,10 @@
 
 `verity_switchpoint` manages switchpoint resources in Verity, which represent network devices like switches or routers.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl
@@ -125,5 +129,5 @@ resource "verity_switchpoint" "example" {
 Switchpoint resources can be imported using the `name` attribute:
 
 ```
-$ terraform import verity_switchpoint.example example_switch
+$ terraform import verity_switchpoint.example example
 ```

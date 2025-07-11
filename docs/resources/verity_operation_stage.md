@@ -23,5 +23,5 @@ This resource does not require any configuration arguments.
 Operation Stage resources can be imported using the `id` attribute:
 
 ```
-$ terraform import verity_operation_stage.example stage
+$ terraform import verity_operation_stage.example_stage example_stage
 ```

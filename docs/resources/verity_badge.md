@@ -2,6 +2,10 @@
 
 `verity_badge` manages badge resources in Verity, which define identification badges with colors and numbers.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl
@@ -11,7 +15,7 @@ resource "verity_badge" "example" {
   number = 42
   
   object_properties {
-    notes = "Example badge for engineering team"
+    notes = ""
   }
 }
 ```
@@ -29,5 +33,5 @@ resource "verity_badge" "example" {
 Badge resources can be imported using the `name` attribute:
 
 ```
-$ terraform import verity_badge.example example_badge
+$ terraform import verity_badge.example example
 ```

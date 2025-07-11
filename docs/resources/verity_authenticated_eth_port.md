@@ -2,6 +2,10 @@
 
 `verity_authenticated_eth_port` manages authenticated Ethernet port resources in Verity, which define authentication settings for Ethernet ports.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl

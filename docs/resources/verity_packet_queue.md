@@ -2,6 +2,10 @@
 
 `verity_packet_queue` manages packet queue resources in Verity, which define quality of service settings for network traffic.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl
@@ -61,5 +65,5 @@ resource "verity_packet_queue" "example" {
 Packet Queue resources can be imported using the `name` attribute:
 
 ```
-$ terraform import verity_packet_queue.example example_queue
+$ terraform import verity_packet_queue.example example
 ```

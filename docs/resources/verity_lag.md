@@ -40,3 +40,6 @@ resource "verity_lag" "example" {
 
 LAG resources can be imported using the `name` attribute:
 
+```
+$ terraform import verity_lag.example example
+```

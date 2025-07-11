@@ -2,6 +2,10 @@
 
 `verity_service_port_profile` manages service port profile resources in Verity, which define port configurations and associated services.
 
+## Version Compatibility
+
+**This resource requires Verity API version 6.5 or higher.**
+
 ## Example Usage
 
 ```hcl
@@ -71,5 +75,5 @@ resource "verity_service_port_profile" "example" {
 Service Port Profile resources can be imported using the `name` attribute:
 
 ```
-$ terraform import verity_service_port_profile.example example_service_port_profile
+$ terraform import verity_service_port_profile.example example
 ```
