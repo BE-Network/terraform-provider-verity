@@ -1570,7 +1570,8 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
+	// Only show warning and suppress diff if auto-assignment is enabled AND the field is actually changing
+	if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() && !plan.BgpAsNumber.Equal(state.BgpAsNumber) {
 		resp.Diagnostics.AddWarning(
 			"Ignoring bgp_as_number changes with auto-assignment enabled",
 			"The 'bgp_as_number' field changes will be ignored because 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
@@ -1582,7 +1583,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		}
 	}
 
-	if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+	if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() && !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask) {
 		resp.Diagnostics.AddWarning(
 			"Ignoring switch_router_id_ip_mask changes with auto-assignment enabled",
 			"The 'switch_router_id_ip_mask' field changes will be ignored because 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
@@ -1594,7 +1595,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		}
 	}
 
-	if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+	if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() && !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask) {
 		resp.Diagnostics.AddWarning(
 			"Ignoring switch_vtep_id_ip_mask changes with auto-assignment enabled",
 			"The 'switch_vtep_id_ip_mask' field changes will be ignored because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",

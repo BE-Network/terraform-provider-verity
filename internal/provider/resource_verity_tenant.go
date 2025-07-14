@@ -1185,7 +1185,8 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		)
 	}
 
-	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
+	// Only show warning and suppress diff if auto-assignment is enabled AND the field is actually changing
+	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() && !plan.Layer3Vni.Equal(state.Layer3Vni) {
 		resp.Diagnostics.AddWarning(
 			"Ignoring layer_3_vni changes with auto-assignment enabled",
 			"The 'layer_3_vni' field changes will be ignored because 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
@@ -1197,7 +1198,7 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		}
 	}
 
-	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
+	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() && !plan.Layer3Vlan.Equal(state.Layer3Vlan) {
 		resp.Diagnostics.AddWarning(
 			"Ignoring layer_3_vlan changes with auto-assignment enabled",
 			"The 'layer_3_vlan' field changes will be ignored because 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
@@ -1208,7 +1209,7 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		}
 	}
 
-	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
+	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() && !plan.VrfName.Equal(state.VrfName) {
 		resp.Diagnostics.AddWarning(
 			"Ignoring vrf_name changes with auto-assignment enabled",
 			"The 'vrf_name' field changes will be ignored because 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
