@@ -838,8 +838,8 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
-			// Use the cached data from the API response
-			state := populateServiceState(ctx, minState, serviceData, nil)
+			// Use the cached data from the API response with plan values as fallback
+			state := populateServiceState(ctx, minState, serviceData, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -899,14 +899,12 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	state.Name = types.StringValue(fmt.Sprintf("%v", serviceData["name"]))
 
 	// For each field, check if it's in the API response first,
-	// if not and we have a plan value, use that instead of null
+	// if not: use plan value (if plan provided and not null), otherwise preserve current state value
 
 	if val, ok := serviceData["enable"].(bool); ok {
 		state.Enable = types.BoolValue(val)
 	} else if plan != nil && !plan.Enable.IsNull() {
 		state.Enable = plan.Enable
-	} else {
-		state.Enable = types.BoolNull()
 	}
 
 	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
@@ -914,6 +912,8 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 
 		if group, exists := op["group"]; exists {
 			objProps.Group = types.StringValue(fmt.Sprintf("%v", group))
+		} else if len(state.ObjectProperties) > 0 {
+			objProps.Group = state.ObjectProperties[0].Group
 		} else {
 			objProps.Group = types.StringNull()
 		}
@@ -922,6 +922,8 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 			objProps.OnSummary = types.BoolValue(onSummary)
 		} else if plan != nil && len(plan.ObjectProperties) > 0 && !plan.ObjectProperties[0].OnSummary.IsNull() {
 			objProps.OnSummary = plan.ObjectProperties[0].OnSummary
+		} else if len(state.ObjectProperties) > 0 {
+			objProps.OnSummary = state.ObjectProperties[0].OnSummary
 		} else {
 			objProps.OnSummary = types.BoolNull()
 		}
@@ -930,6 +932,8 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 			objProps.WarnOnNoExternalSource = types.BoolValue(warnOnNoExternal)
 		} else if plan != nil && len(plan.ObjectProperties) > 0 && !plan.ObjectProperties[0].WarnOnNoExternalSource.IsNull() {
 			objProps.WarnOnNoExternalSource = plan.ObjectProperties[0].WarnOnNoExternalSource
+		} else if len(state.ObjectProperties) > 0 {
+			objProps.WarnOnNoExternalSource = state.ObjectProperties[0].WarnOnNoExternalSource
 		} else {
 			objProps.WarnOnNoExternalSource = types.BoolNull()
 		}
@@ -937,8 +941,6 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		state.ObjectProperties = []verityServiceObjectPropertiesModel{objProps}
 	} else if plan != nil && len(plan.ObjectProperties) > 0 {
 		state.ObjectProperties = plan.ObjectProperties
-	} else {
-		state.ObjectProperties = nil
 	}
 
 	if val, ok := serviceData["vlan"]; ok {
@@ -950,14 +952,10 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		default:
 			if plan != nil && !plan.Vlan.IsNull() {
 				state.Vlan = plan.Vlan
-			} else {
-				state.Vlan = types.Int64Null()
 			}
 		}
 	} else if plan != nil && !plan.Vlan.IsNull() {
 		state.Vlan = plan.Vlan
-	} else {
-		state.Vlan = types.Int64Null()
 	}
 
 	if val, ok := serviceData["vni"]; ok {
@@ -974,15 +972,11 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 			default:
 				if plan != nil && !plan.Vni.IsNull() {
 					state.Vni = plan.Vni
-				} else {
-					state.Vni = types.Int64Null()
 				}
 			}
 		}
 	} else if plan != nil && !plan.Vni.IsNull() {
 		state.Vni = plan.Vni
-	} else {
-		state.Vni = types.Int64Null()
 	}
 
 	if val, ok := serviceData["vni_auto_assigned_"].(bool); ok {

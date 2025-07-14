@@ -3204,6 +3204,55 @@ func (b *BulkOperationManager) ExecuteBulkTenantPatch(ctx context.Context) diag.
 			return req.Execute()
 		},
 
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching tenants", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching tenants after successful PATCH operation to retrieve current values")
+			tenantsReq := b.client.TenantsAPI.TenantsGet(fetchCtx)
+			tenantsResp, fetchErr := tenantsReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch tenants after PATCH for current field values", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer tenantsResp.Body.Close()
+
+			var tenantsData struct {
+				Tenant map[string]map[string]interface{} `json:"tenant"`
+			}
+
+			if respErr := json.NewDecoder(tenantsResp.Body).Decode(&tenantsData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode tenants response for current field values", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.tenantResponsesMutex.Lock()
+			for tenantName, tenantData := range tenantsData.Tenant {
+				b.tenantResponses[tenantName] = tenantData
+
+				if name, ok := tenantData["name"].(string); ok && name != tenantName {
+					b.tenantResponses[name] = tenantData
+				}
+			}
+			b.tenantResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored tenant data for current field values after PATCH", map[string]interface{}{
+				"tenant_count": len(tenantsData.Tenant),
+			})
+
+			return nil
+		},
+
 		UpdateRecentOps: func() {
 			b.recentTenantOps = true
 			b.recentTenantOpTime = time.Now()
@@ -3523,6 +3572,55 @@ func (b *BulkOperationManager) ExecuteBulkServicePatch(ctx context.Context) diag
 			req := b.client.ServicesAPI.ServicesPatch(ctx).ServicesPutRequest(
 				*request.(*openapi.ServicesPutRequest))
 			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching services", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching services after successful PATCH operation to retrieve current values")
+			servicesReq := b.client.ServicesAPI.ServicesGet(fetchCtx)
+			servicesResp, fetchErr := servicesReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch services after PATCH for current field values", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer servicesResp.Body.Close()
+
+			var servicesData struct {
+				Service map[string]map[string]interface{} `json:"service"`
+			}
+
+			if respErr := json.NewDecoder(servicesResp.Body).Decode(&servicesData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode services response for current field values", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.serviceResponsesMutex.Lock()
+			for serviceName, serviceData := range servicesData.Service {
+				b.serviceResponses[serviceName] = serviceData
+
+				if name, ok := serviceData["name"].(string); ok && name != serviceName {
+					b.serviceResponses[name] = serviceData
+				}
+			}
+			b.serviceResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored service data for current field values after PATCH", map[string]interface{}{
+				"service_count": len(servicesData.Service),
+			})
+
+			return nil
 		},
 
 		UpdateRecentOps: func() {
@@ -7020,6 +7118,55 @@ func (b *BulkOperationManager) ExecuteBulkSwitchpointPatch(ctx context.Context) 
 			req := b.client.SwitchpointsAPI.SwitchpointsPatch(ctx).SwitchpointsPutRequest(
 				*request.(*openapi.SwitchpointsPutRequest))
 			return req.Execute()
+		},
+
+		ProcessResponse: func(ctx context.Context, resp *http.Response) error {
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching switchpoints", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching switchpoints after successful PATCH operation to retrieve current values")
+			switchpointsReq := b.client.SwitchpointsAPI.SwitchpointsGet(fetchCtx)
+			switchpointsResp, fetchErr := switchpointsReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch switchpoints after PATCH for current field values", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer switchpointsResp.Body.Close()
+
+			var switchpointsData struct {
+				Switchpoint map[string]map[string]interface{} `json:"switchpoint"`
+			}
+
+			if respErr := json.NewDecoder(switchpointsResp.Body).Decode(&switchpointsData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode switchpoints response for current field values", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.switchpointResponsesMutex.Lock()
+			for switchpointName, switchpointData := range switchpointsData.Switchpoint {
+				b.switchpointResponses[switchpointName] = switchpointData
+
+				if name, ok := switchpointData["name"].(string); ok && name != switchpointName {
+					b.switchpointResponses[name] = switchpointData
+				}
+			}
+			b.switchpointResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored switchpoint data for current field values after PATCH", map[string]interface{}{
+				"switchpoint_count": len(switchpointsData.Switchpoint),
+			})
+
+			return nil
 		},
 
 		UpdateRecentOps: func() {

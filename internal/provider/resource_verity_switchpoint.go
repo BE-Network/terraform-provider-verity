@@ -23,6 +23,7 @@ var (
 	_ resource.Resource                = &veritySwitchpointResource{}
 	_ resource.ResourceWithConfigure   = &veritySwitchpointResource{}
 	_ resource.ResourceWithImportState = &veritySwitchpointResource{}
+	_ resource.ResourceWithModifyPlan  = &veritySwitchpointResource{}
 )
 
 func NewVeritySwitchpointResource() resource.Resource {
@@ -187,6 +188,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			"switch_router_id_ip_mask": schema.StringAttribute{
 				Description: "Switch BGP Router Identifier",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switch_router_id_ip_mask_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in switch_router_id_ip_mask field has been automatically assigned",
@@ -195,6 +197,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			"switch_vtep_id_ip_mask": schema.StringAttribute{
 				Description: "Switch VTEP Identifier",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switch_vtep_id_ip_mask_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned",
@@ -203,6 +206,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			"bgp_as_number": schema.Int64Attribute{
 				Description: "BGP Autonomous System Number for the site underlay",
 				Optional:    true,
+				Computed:    true,
 			},
 			"bgp_as_number_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in bgp_as_number field has been automatically assigned",
@@ -572,8 +576,33 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	tflog.Info(ctx, fmt.Sprintf("Switchpoint %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "switchpoints")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState veritySwitchpointResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
+			// Use the cached data with plan values as fallback
+			state := r.populateSwitchpointState(ctx, minState, switchpointData, &plan)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -592,14 +621,30 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
+	provCtx := r.provCtx
+	bulkOpsMgr := provCtx.bulkOpsMgr
 	spName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentSwitchpointOperations() {
-		tflog.Info(ctx, fmt.Sprintf("Skipping Switchpoint %s verification – trusting recent successful API operation", spName))
+	var switchpointData map[string]interface{}
+	var exists bool
+
+	if bulkOpsMgr != nil {
+		switchpointData, exists = bulkOpsMgr.GetResourceResponse("switchpoint", spName)
+		if exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached switchpoint data for %s from recent operation", spName))
+			state = r.populateSwitchpointState(ctx, state, switchpointData, nil)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentSwitchpointOperations() {
+		tflog.Info(ctx, fmt.Sprintf("Skipping switchpoint %s verification - trusting recent successful API operation", spName))
+		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Fetching Switchpoints for verification of %s", spName))
+	tflog.Debug(ctx, fmt.Sprintf("No recent switchpoint operations found, performing normal verification for %s", spName))
 
 	type SwitchpointResponse struct {
 		Switchpoint map[string]interface{} `json:"switchpoint"`
@@ -644,11 +689,11 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Looking for Switchpoint with ID: %s", spName))
 	var spData map[string]interface{}
-	exists := false
+	foundInAPI := false
 
 	if data, ok := result.Switchpoint[spName].(map[string]interface{}); ok {
 		spData = data
-		exists = true
+		foundInAPI = true
 		tflog.Debug(ctx, fmt.Sprintf("Found Switchpoint directly by ID: %s", spName))
 	} else {
 		for apiName, s := range result.Switchpoint {
@@ -660,339 +705,20 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 			if name, ok := switchpoint["name"].(string); ok && name == spName {
 				spData = switchpoint
 				spName = apiName
-				exists = true
+				foundInAPI = true
 				tflog.Debug(ctx, fmt.Sprintf("Found Switchpoint with name '%s' under API key '%s'", name, apiName))
 				break
 			}
 		}
 	}
 
-	if !exists {
+	if !foundInAPI {
 		tflog.Debug(ctx, fmt.Sprintf("Switchpoint with ID '%s' not found in API response", spName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", spData["name"]))
-
-	stringFields := map[string]*types.String{
-		"device_serial_number":       &state.DeviceSerialNumber,
-		"connected_bundle":           &state.ConnectedBundle,
-		"connected_bundle_ref_type_": &state.ConnectedBundleRefType,
-		"disabled_ports":             &state.DisabledPorts,
-		"type":                       &state.Type,
-		"super_pod":                  &state.SuperPod,
-		"pod":                        &state.Pod,
-		"rack":                       &state.Rack,
-	}
-
-	for apiKey, stateField := range stringFields {
-		if value, ok := spData[apiKey].(string); ok {
-			*stateField = types.StringValue(value)
-		} else {
-			*stateField = types.StringNull()
-		}
-	}
-
-	// Handle auto-assigned fields separately - only set them if they are not auto-assigned
-	if routerIdAutoAssigned, ok := spData["switch_router_id_ip_mask_auto_assigned_"].(bool); ok && !routerIdAutoAssigned {
-		if value, ok := spData["switch_router_id_ip_mask"].(string); ok {
-			state.SwitchRouterIdIpMask = types.StringValue(value)
-		} else {
-			state.SwitchRouterIdIpMask = types.StringNull()
-		}
-	} else {
-		state.SwitchRouterIdIpMask = types.StringNull()
-	}
-
-	if vtepIdAutoAssigned, ok := spData["switch_vtep_id_ip_mask_auto_assigned_"].(bool); ok && !vtepIdAutoAssigned {
-		if value, ok := spData["switch_vtep_id_ip_mask"].(string); ok {
-			state.SwitchVtepIdIpMask = types.StringValue(value)
-		} else {
-			state.SwitchVtepIdIpMask = types.StringNull()
-		}
-	} else {
-		state.SwitchVtepIdIpMask = types.StringNull()
-	}
-
-	boolFields := map[string]*types.Bool{
-		"read_only_mode":         &state.ReadOnlyMode,
-		"locked":                 &state.Locked,
-		"out_of_band_management": &state.OutOfBandManagement,
-		"switch_router_id_ip_mask_auto_assigned_": &state.SwitchRouterIdIpMaskAutoAssigned,
-		"switch_vtep_id_ip_mask_auto_assigned_":   &state.SwitchVtepIdIpMaskAutoAssigned,
-		"bgp_as_number_auto_assigned_":            &state.BgpAsNumberAutoAssigned,
-	}
-
-	for apiKey, stateField := range boolFields {
-		if value, ok := spData[apiKey].(bool); ok {
-			*stateField = types.BoolValue(value)
-		} else {
-			*stateField = types.BoolNull()
-		}
-	}
-
-	// Handle bgp_as_number - only set it if it's not auto-assigned
-	if bgpAutoAssigned, ok := spData["bgp_as_number_auto_assigned_"].(bool); ok && !bgpAutoAssigned {
-		if value, ok := spData["bgp_as_number"]; ok && value != nil {
-			switch v := value.(type) {
-			case int:
-				state.BgpAsNumber = types.Int64Value(int64(v))
-			case int32:
-				state.BgpAsNumber = types.Int64Value(int64(v))
-			case int64:
-				state.BgpAsNumber = types.Int64Value(v)
-			case float64:
-				state.BgpAsNumber = types.Int64Value(int64(v))
-			case string:
-				if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-					state.BgpAsNumber = types.Int64Value(intVal)
-				} else {
-					state.BgpAsNumber = types.Int64Null()
-				}
-			default:
-				state.BgpAsNumber = types.Int64Null()
-			}
-		} else {
-			state.BgpAsNumber = types.Int64Null()
-		}
-	} else {
-		state.BgpAsNumber = types.Int64Null()
-	}
-
-	if badgesArray, ok := spData["badges"].([]interface{}); ok && len(badgesArray) > 0 {
-		var badges []veritySwitchpointBadgeModel
-		for _, b := range badgesArray {
-			badge, ok := b.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			badgeModel := veritySwitchpointBadgeModel{}
-			if val, ok := badge["badge"].(string); ok {
-				badgeModel.Badge = types.StringValue(val)
-			} else {
-				badgeModel.Badge = types.StringNull()
-			}
-			if val, ok := badge["badge_ref_type_"].(string); ok {
-				badgeModel.BadgeRefType = types.StringValue(val)
-			} else {
-				badgeModel.BadgeRefType = types.StringNull()
-			}
-			if index, ok := badge["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					badgeModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					badgeModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					badgeModel.Index = types.Int64Null()
-				}
-			} else {
-				badgeModel.Index = types.Int64Null()
-			}
-			badges = append(badges, badgeModel)
-		}
-		state.Badges = badges
-	} else {
-		state.Badges = nil
-	}
-
-	if childrenArray, ok := spData["children"].([]interface{}); ok && len(childrenArray) > 0 {
-		var children []veritySwitchpointChildModel
-		for _, c := range childrenArray {
-			child, ok := c.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			childModel := veritySwitchpointChildModel{}
-			if val, ok := child["child_num_endpoint"].(string); ok {
-				childModel.ChildNumEndpoint = types.StringValue(val)
-			} else {
-				childModel.ChildNumEndpoint = types.StringNull()
-			}
-			if val, ok := child["child_num_endpoint_ref_type_"].(string); ok {
-				childModel.ChildNumEndpointRefType = types.StringValue(val)
-			} else {
-				childModel.ChildNumEndpointRefType = types.StringNull()
-			}
-			if val, ok := child["child_num_device"].(string); ok {
-				childModel.ChildNumDevice = types.StringValue(val)
-			} else {
-				childModel.ChildNumDevice = types.StringNull()
-			}
-			if index, ok := child["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					childModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					childModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					childModel.Index = types.Int64Null()
-				}
-			} else {
-				childModel.Index = types.Int64Null()
-			}
-			children = append(children, childModel)
-		}
-		state.Children = children
-	} else {
-		state.Children = nil
-	}
-
-	if mirrorsArray, ok := spData["traffic_mirrors"].([]interface{}); ok && len(mirrorsArray) > 0 {
-		var mirrors []veritySwitchpointTrafficMirrorModel
-		for _, m := range mirrorsArray {
-			mirror, ok := m.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			mirrorModel := veritySwitchpointTrafficMirrorModel{}
-			if val, ok := mirror["traffic_mirror_num_enable"].(bool); ok {
-				mirrorModel.TrafficMirrorNumEnable = types.BoolValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumEnable = types.BoolNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_source_port"].(string); ok {
-				mirrorModel.TrafficMirrorNumSourcePort = types.StringValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumSourcePort = types.StringNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_source_lag_indicator"].(bool); ok {
-				mirrorModel.TrafficMirrorNumSourceLagIndicator = types.BoolValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumSourceLagIndicator = types.BoolNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_destination_port"].(string); ok {
-				mirrorModel.TrafficMirrorNumDestinationPort = types.StringValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumDestinationPort = types.StringNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_inbound_traffic"].(bool); ok {
-				mirrorModel.TrafficMirrorNumInboundTraffic = types.BoolValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumInboundTraffic = types.BoolNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_outbound_traffic"].(bool); ok {
-				mirrorModel.TrafficMirrorNumOutboundTraffic = types.BoolValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumOutboundTraffic = types.BoolNull()
-			}
-			mirrors = append(mirrors, mirrorModel)
-		}
-		state.TrafficMirrors = mirrors
-	} else {
-		state.TrafficMirrors = nil
-	}
-
-	if ethsArray, ok := spData["eths"].([]interface{}); ok && len(ethsArray) > 0 {
-		var eths []veritySwitchpointEthModel
-		for _, e := range ethsArray {
-			eth, ok := e.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			ethModel := veritySwitchpointEthModel{}
-			if val, ok := eth["breakout"].(string); ok {
-				ethModel.Breakout = types.StringValue(val)
-			} else {
-				ethModel.Breakout = types.StringNull()
-			}
-			if index, ok := eth["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					ethModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					ethModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					ethModel.Index = types.Int64Null()
-				}
-			} else {
-				ethModel.Index = types.Int64Null()
-			}
-			eths = append(eths, ethModel)
-		}
-		state.Eths = eths
-	} else {
-		state.Eths = nil
-	}
-
-	if objProps, ok := spData["object_properties"].(map[string]interface{}); ok {
-		op := veritySwitchpointObjectPropertiesModel{}
-		if val, ok := objProps["user_notes"].(string); ok {
-			op.UserNotes = types.StringValue(val)
-		} else {
-			op.UserNotes = types.StringNull()
-		}
-		if val, ok := objProps["expected_parent_endpoint"].(string); ok {
-			op.ExpectedParentEndpoint = types.StringValue(val)
-		} else {
-			op.ExpectedParentEndpoint = types.StringNull()
-		}
-		if val, ok := objProps["expected_parent_endpoint_ref_type_"].(string); ok {
-			op.ExpectedParentEndpointRefType = types.StringValue(val)
-		} else {
-			op.ExpectedParentEndpointRefType = types.StringNull()
-		}
-		if val, ok := objProps["number_of_multipoints"]; ok && val != nil {
-			if intVal, ok := val.(float64); ok {
-				op.NumberOfMultipoints = types.Int64Value(int64(intVal))
-			} else if intVal, ok := val.(int); ok {
-				op.NumberOfMultipoints = types.Int64Value(int64(intVal))
-			} else {
-				op.NumberOfMultipoints = types.Int64Null()
-			}
-		} else {
-			op.NumberOfMultipoints = types.Int64Null()
-		}
-		if val, ok := objProps["aggregate"].(bool); ok {
-			op.Aggregate = types.BoolValue(val)
-		} else {
-			op.Aggregate = types.BoolNull()
-		}
-		if val, ok := objProps["is_host"].(bool); ok {
-			op.IsHost = types.BoolValue(val)
-		} else {
-			op.IsHost = types.BoolNull()
-		}
-
-		if ethsArray, ok := objProps["eths"].([]interface{}); ok && len(ethsArray) > 0 {
-			var eths []veritySwitchpointObjectPropertiesEthModel
-			for _, e := range ethsArray {
-				eth, ok := e.(map[string]interface{})
-				if !ok {
-					continue
-				}
-				ethModel := veritySwitchpointObjectPropertiesEthModel{}
-				if val, ok := eth["eth_num_icon"].(string); ok {
-					ethModel.EthNumIcon = types.StringValue(val)
-				} else {
-					ethModel.EthNumIcon = types.StringNull()
-				}
-				if val, ok := eth["eth_num_label"].(string); ok {
-					ethModel.EthNumLabel = types.StringValue(val)
-				} else {
-					ethModel.EthNumLabel = types.StringNull()
-				}
-				if index, ok := eth["index"]; ok && index != nil {
-					if intVal, ok := index.(float64); ok {
-						ethModel.Index = types.Int64Value(int64(intVal))
-					} else if intVal, ok := index.(int); ok {
-						ethModel.Index = types.Int64Value(int64(intVal))
-					} else {
-						ethModel.Index = types.Int64Null()
-					}
-				} else {
-					ethModel.Index = types.Int64Null()
-				}
-				eths = append(eths, ethModel)
-			}
-			op.Eths = eths
-		} else {
-			op.Eths = nil
-		}
-
-		state.ObjectProperties = []veritySwitchpointObjectPropertiesModel{op}
-	} else {
-		state.ObjectProperties = nil
-	}
-
+	state = r.populateSwitchpointState(ctx, state, spData, nil)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -1007,6 +733,30 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.BgpAsNumber.Equal(state.BgpAsNumber) && !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'bgp_as_number' field cannot be modified because 'bgp_as_number_auto_assigned_' is set to true.",
+		)
+		return
+	}
+
+	if !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask) && !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'switch_router_id_ip_mask' field cannot be modified because 'switch_router_id_ip_mask_auto_assigned_' is set to true.",
+		)
+		return
+	}
+
+	if !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask) && !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'switch_vtep_id_ip_mask' field cannot be modified because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true.",
+		)
 		return
 	}
 
@@ -1040,13 +790,27 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		"super_pod":                  {plan.SuperPod, state.SuperPod, func(v string) { spProps.SuperPod = openapi.PtrString(v) }},
 		"pod":                        {plan.Pod, state.Pod, func(v string) { spProps.Pod = openapi.PtrString(v) }},
 		"rack":                       {plan.Rack, state.Rack, func(v string) { spProps.Rack = openapi.PtrString(v) }},
-		"switch_router_id_ip_mask":   {plan.SwitchRouterIdIpMask, state.SwitchRouterIdIpMask, func(v string) { spProps.SwitchRouterIdIpMask = openapi.PtrString(v) }},
-		"switch_vtep_id_ip_mask":     {plan.SwitchVtepIdIpMask, state.SwitchVtepIdIpMask, func(v string) { spProps.SwitchVtepIdIpMask = openapi.PtrString(v) }},
 	}
 
 	for _, field := range stringFields {
 		if !field.planField.Equal(field.stateField) {
 			field.setter(field.planField.ValueString())
+			hasChanges = true
+		}
+	}
+
+	if !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask) {
+		if plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() || !plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() ||
+			!plan.SwitchRouterIdIpMaskAutoAssigned.Equal(state.SwitchRouterIdIpMaskAutoAssigned) {
+			spProps.SwitchRouterIdIpMask = openapi.PtrString(plan.SwitchRouterIdIpMask.ValueString())
+			hasChanges = true
+		}
+	}
+
+	if !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask) {
+		if plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() || !plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() ||
+			!plan.SwitchVtepIdIpMaskAutoAssigned.Equal(state.SwitchVtepIdIpMaskAutoAssigned) {
+			spProps.SwitchVtepIdIpMask = openapi.PtrString(plan.SwitchVtepIdIpMask.ValueString())
 			hasChanges = true
 		}
 	}
@@ -1072,13 +836,16 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	if !plan.BgpAsNumber.Equal(state.BgpAsNumber) {
-		if !plan.BgpAsNumber.IsNull() {
-			val := int32(plan.BgpAsNumber.ValueInt64())
-			spProps.BgpAsNumber = &val
-		} else {
-			spProps.BgpAsNumber = nil
+		if plan.BgpAsNumberAutoAssigned.IsNull() || !plan.BgpAsNumberAutoAssigned.ValueBool() ||
+			!plan.BgpAsNumberAutoAssigned.Equal(state.BgpAsNumberAutoAssigned) {
+			if !plan.BgpAsNumber.IsNull() {
+				val := int32(plan.BgpAsNumber.ValueInt64())
+				spProps.BgpAsNumber = &val
+			} else {
+				spProps.BgpAsNumber = nil
+			}
+			hasChanges = true
 		}
-		hasChanges = true
 	}
 
 	if !r.equalBadgeArrays(plan.Badges, state.Badges) {
@@ -1232,7 +999,34 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 	tflog.Info(ctx, fmt.Sprintf("Switchpoint %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "switchpoints")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState veritySwitchpointResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
+			// Use the cached data from the API response with plan values as fallback
+			state := r.populateSwitchpointState(ctx, minState, switchpointData, &plan)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *veritySwitchpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -1353,4 +1147,462 @@ func (r *veritySwitchpointResource) equalObjectPropertiesEthArrays(a, b []verity
 		}
 	}
 	return true
+}
+
+func (r *veritySwitchpointResource) populateSwitchpointState(
+	ctx context.Context,
+	state veritySwitchpointResourceModel,
+	switchpointData map[string]interface{},
+	plan *veritySwitchpointResourceModel,
+) veritySwitchpointResourceModel {
+	state.Name = types.StringValue(fmt.Sprintf("%v", switchpointData["name"]))
+
+	// For each field, check if it's in the API response first,
+	// if not: use plan value (if plan provided and not null), otherwise preserve current state value
+
+	stringFields := map[string]*types.String{
+		"device_serial_number":       &state.DeviceSerialNumber,
+		"connected_bundle":           &state.ConnectedBundle,
+		"connected_bundle_ref_type_": &state.ConnectedBundleRefType,
+		"disabled_ports":             &state.DisabledPorts,
+		"type":                       &state.Type,
+		"super_pod":                  &state.SuperPod,
+		"pod":                        &state.Pod,
+		"rack":                       &state.Rack,
+	}
+
+	for apiKey, stateField := range stringFields {
+		if val, ok := switchpointData[apiKey].(string); ok {
+			*stateField = types.StringValue(val)
+		} else if plan != nil {
+			switch apiKey {
+			case "device_serial_number":
+				if !plan.DeviceSerialNumber.IsNull() {
+					*stateField = plan.DeviceSerialNumber
+				}
+			case "connected_bundle":
+				if !plan.ConnectedBundle.IsNull() {
+					*stateField = plan.ConnectedBundle
+				}
+			case "connected_bundle_ref_type_":
+				if !plan.ConnectedBundleRefType.IsNull() {
+					*stateField = plan.ConnectedBundleRefType
+				}
+			case "disabled_ports":
+				if !plan.DisabledPorts.IsNull() {
+					*stateField = plan.DisabledPorts
+				}
+			case "type":
+				if !plan.Type.IsNull() {
+					*stateField = plan.Type
+				}
+			case "super_pod":
+				if !plan.SuperPod.IsNull() {
+					*stateField = plan.SuperPod
+				}
+			case "pod":
+				if !plan.Pod.IsNull() {
+					*stateField = plan.Pod
+				}
+			case "rack":
+				if !plan.Rack.IsNull() {
+					*stateField = plan.Rack
+				}
+			}
+		}
+	}
+
+	// Auto-assigned string fields with special handling
+	// For auto-assigned fields, always use API values when available
+	if val, ok := switchpointData["switch_router_id_ip_mask"].(string); ok {
+		state.SwitchRouterIdIpMask = types.StringValue(val)
+	} else if plan != nil && !plan.SwitchRouterIdIpMask.IsNull() {
+		state.SwitchRouterIdIpMask = plan.SwitchRouterIdIpMask
+	}
+
+	if val, ok := switchpointData["switch_router_id_ip_mask_auto_assigned_"].(bool); ok {
+		state.SwitchRouterIdIpMaskAutoAssigned = types.BoolValue(val)
+	} else if plan != nil && !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() {
+		state.SwitchRouterIdIpMaskAutoAssigned = plan.SwitchRouterIdIpMaskAutoAssigned
+	}
+
+	if val, ok := switchpointData["switch_vtep_id_ip_mask"].(string); ok {
+		state.SwitchVtepIdIpMask = types.StringValue(val)
+	} else if plan != nil && !plan.SwitchVtepIdIpMask.IsNull() {
+		state.SwitchVtepIdIpMask = plan.SwitchVtepIdIpMask
+	}
+
+	if val, ok := switchpointData["switch_vtep_id_ip_mask_auto_assigned_"].(bool); ok {
+		state.SwitchVtepIdIpMaskAutoAssigned = types.BoolValue(val)
+	} else if plan != nil && !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() {
+		state.SwitchVtepIdIpMaskAutoAssigned = plan.SwitchVtepIdIpMaskAutoAssigned
+	}
+
+	if val, ok := switchpointData["read_only_mode"].(bool); ok {
+		state.ReadOnlyMode = types.BoolValue(val)
+	} else if plan != nil && !plan.ReadOnlyMode.IsNull() {
+		state.ReadOnlyMode = plan.ReadOnlyMode
+	}
+
+	if val, ok := switchpointData["locked"].(bool); ok {
+		state.Locked = types.BoolValue(val)
+	} else if plan != nil && !plan.Locked.IsNull() {
+		state.Locked = plan.Locked
+	}
+
+	if val, ok := switchpointData["out_of_band_management"].(bool); ok {
+		state.OutOfBandManagement = types.BoolValue(val)
+	} else if plan != nil && !plan.OutOfBandManagement.IsNull() {
+		state.OutOfBandManagement = plan.OutOfBandManagement
+	}
+
+	if val, ok := switchpointData["bgp_as_number"]; ok {
+		if val == nil {
+			state.BgpAsNumber = types.Int64Null()
+		} else {
+			switch v := val.(type) {
+			case int:
+				state.BgpAsNumber = types.Int64Value(int64(v))
+			case int32:
+				state.BgpAsNumber = types.Int64Value(int64(v))
+			case int64:
+				state.BgpAsNumber = types.Int64Value(v)
+			case float64:
+				state.BgpAsNumber = types.Int64Value(int64(v))
+			case string:
+				if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
+					state.BgpAsNumber = types.Int64Value(intVal)
+				} else {
+					if plan != nil && !plan.BgpAsNumber.IsNull() {
+						state.BgpAsNumber = plan.BgpAsNumber
+					}
+				}
+			default:
+				if plan != nil && !plan.BgpAsNumber.IsNull() {
+					state.BgpAsNumber = plan.BgpAsNumber
+				}
+			}
+		}
+	} else if plan != nil && !plan.BgpAsNumber.IsNull() {
+		state.BgpAsNumber = plan.BgpAsNumber
+	}
+
+	if val, ok := switchpointData["bgp_as_number_auto_assigned_"].(bool); ok {
+		state.BgpAsNumberAutoAssigned = types.BoolValue(val)
+	} else if plan != nil && !plan.BgpAsNumberAutoAssigned.IsNull() {
+		state.BgpAsNumberAutoAssigned = plan.BgpAsNumberAutoAssigned
+	}
+
+	if badgesArray, ok := switchpointData["badges"].([]interface{}); ok && len(badgesArray) > 0 {
+		var badges []veritySwitchpointBadgeModel
+		for _, b := range badgesArray {
+			badge, ok := b.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			badgeModel := veritySwitchpointBadgeModel{}
+			if val, ok := badge["badge"].(string); ok {
+				badgeModel.Badge = types.StringValue(val)
+			} else {
+				badgeModel.Badge = types.StringNull()
+			}
+			if val, ok := badge["badge_ref_type_"].(string); ok {
+				badgeModel.BadgeRefType = types.StringValue(val)
+			} else {
+				badgeModel.BadgeRefType = types.StringNull()
+			}
+			if index, ok := badge["index"]; ok && index != nil {
+				if intVal, ok := index.(float64); ok {
+					badgeModel.Index = types.Int64Value(int64(intVal))
+				} else if intVal, ok := index.(int); ok {
+					badgeModel.Index = types.Int64Value(int64(intVal))
+				} else {
+					badgeModel.Index = types.Int64Null()
+				}
+			} else {
+				badgeModel.Index = types.Int64Null()
+			}
+			badges = append(badges, badgeModel)
+		}
+		state.Badges = badges
+	} else if plan != nil && len(plan.Badges) > 0 {
+		state.Badges = plan.Badges
+	}
+
+	if childrenArray, ok := switchpointData["children"].([]interface{}); ok && len(childrenArray) > 0 {
+		var children []veritySwitchpointChildModel
+		for _, c := range childrenArray {
+			child, ok := c.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			childModel := veritySwitchpointChildModel{}
+			if val, ok := child["child_num_endpoint"].(string); ok {
+				childModel.ChildNumEndpoint = types.StringValue(val)
+			} else {
+				childModel.ChildNumEndpoint = types.StringNull()
+			}
+			if val, ok := child["child_num_endpoint_ref_type_"].(string); ok {
+				childModel.ChildNumEndpointRefType = types.StringValue(val)
+			} else {
+				childModel.ChildNumEndpointRefType = types.StringNull()
+			}
+			if val, ok := child["child_num_device"].(string); ok {
+				childModel.ChildNumDevice = types.StringValue(val)
+			} else {
+				childModel.ChildNumDevice = types.StringNull()
+			}
+			if index, ok := child["index"]; ok && index != nil {
+				if intVal, ok := index.(float64); ok {
+					childModel.Index = types.Int64Value(int64(intVal))
+				} else if intVal, ok := index.(int); ok {
+					childModel.Index = types.Int64Value(int64(intVal))
+				} else {
+					childModel.Index = types.Int64Null()
+				}
+			} else {
+				childModel.Index = types.Int64Null()
+			}
+			children = append(children, childModel)
+		}
+		state.Children = children
+	} else if plan != nil && len(plan.Children) > 0 {
+		state.Children = plan.Children
+	}
+
+	if mirrorsArray, ok := switchpointData["traffic_mirrors"].([]interface{}); ok && len(mirrorsArray) > 0 {
+		var mirrors []veritySwitchpointTrafficMirrorModel
+		for _, m := range mirrorsArray {
+			mirror, ok := m.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			mirrorModel := veritySwitchpointTrafficMirrorModel{}
+			if val, ok := mirror["traffic_mirror_num_enable"].(bool); ok {
+				mirrorModel.TrafficMirrorNumEnable = types.BoolValue(val)
+			} else {
+				mirrorModel.TrafficMirrorNumEnable = types.BoolNull()
+			}
+			if val, ok := mirror["traffic_mirror_num_source_port"].(string); ok {
+				mirrorModel.TrafficMirrorNumSourcePort = types.StringValue(val)
+			} else {
+				mirrorModel.TrafficMirrorNumSourcePort = types.StringNull()
+			}
+			if val, ok := mirror["traffic_mirror_num_source_lag_indicator"].(bool); ok {
+				mirrorModel.TrafficMirrorNumSourceLagIndicator = types.BoolValue(val)
+			} else {
+				mirrorModel.TrafficMirrorNumSourceLagIndicator = types.BoolNull()
+			}
+			if val, ok := mirror["traffic_mirror_num_destination_port"].(string); ok {
+				mirrorModel.TrafficMirrorNumDestinationPort = types.StringValue(val)
+			} else {
+				mirrorModel.TrafficMirrorNumDestinationPort = types.StringNull()
+			}
+			if val, ok := mirror["traffic_mirror_num_inbound_traffic"].(bool); ok {
+				mirrorModel.TrafficMirrorNumInboundTraffic = types.BoolValue(val)
+			} else {
+				mirrorModel.TrafficMirrorNumInboundTraffic = types.BoolNull()
+			}
+			if val, ok := mirror["traffic_mirror_num_outbound_traffic"].(bool); ok {
+				mirrorModel.TrafficMirrorNumOutboundTraffic = types.BoolValue(val)
+			} else {
+				mirrorModel.TrafficMirrorNumOutboundTraffic = types.BoolNull()
+			}
+			mirrors = append(mirrors, mirrorModel)
+		}
+		state.TrafficMirrors = mirrors
+	} else if plan != nil && len(plan.TrafficMirrors) > 0 {
+		state.TrafficMirrors = plan.TrafficMirrors
+	}
+
+	if ethsArray, ok := switchpointData["eths"].([]interface{}); ok && len(ethsArray) > 0 {
+		var eths []veritySwitchpointEthModel
+		for _, e := range ethsArray {
+			eth, ok := e.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			ethModel := veritySwitchpointEthModel{}
+			if val, ok := eth["breakout"].(string); ok {
+				ethModel.Breakout = types.StringValue(val)
+			} else {
+				ethModel.Breakout = types.StringNull()
+			}
+			if index, ok := eth["index"]; ok && index != nil {
+				if intVal, ok := index.(float64); ok {
+					ethModel.Index = types.Int64Value(int64(intVal))
+				} else if intVal, ok := index.(int); ok {
+					ethModel.Index = types.Int64Value(int64(intVal))
+				} else {
+					ethModel.Index = types.Int64Null()
+				}
+			} else {
+				ethModel.Index = types.Int64Null()
+			}
+			eths = append(eths, ethModel)
+		}
+		state.Eths = eths
+	} else if plan != nil && len(plan.Eths) > 0 {
+		state.Eths = plan.Eths
+	}
+
+	if objProps, ok := switchpointData["object_properties"].(map[string]interface{}); ok {
+		op := veritySwitchpointObjectPropertiesModel{}
+		if val, ok := objProps["user_notes"].(string); ok {
+			op.UserNotes = types.StringValue(val)
+		} else {
+			op.UserNotes = types.StringNull()
+		}
+		if val, ok := objProps["expected_parent_endpoint"].(string); ok {
+			op.ExpectedParentEndpoint = types.StringValue(val)
+		} else {
+			op.ExpectedParentEndpoint = types.StringNull()
+		}
+		if val, ok := objProps["expected_parent_endpoint_ref_type_"].(string); ok {
+			op.ExpectedParentEndpointRefType = types.StringValue(val)
+		} else {
+			op.ExpectedParentEndpointRefType = types.StringNull()
+		}
+		if val, ok := objProps["number_of_multipoints"]; ok && val != nil {
+			if intVal, ok := val.(float64); ok {
+				op.NumberOfMultipoints = types.Int64Value(int64(intVal))
+			} else if intVal, ok := val.(int); ok {
+				op.NumberOfMultipoints = types.Int64Value(int64(intVal))
+			} else {
+				op.NumberOfMultipoints = types.Int64Null()
+			}
+		} else {
+			op.NumberOfMultipoints = types.Int64Null()
+		}
+		if val, ok := objProps["aggregate"].(bool); ok {
+			op.Aggregate = types.BoolValue(val)
+		} else {
+			op.Aggregate = types.BoolNull()
+		}
+		if val, ok := objProps["is_host"].(bool); ok {
+			op.IsHost = types.BoolValue(val)
+		} else {
+			op.IsHost = types.BoolNull()
+		}
+
+		if ethsArray, ok := objProps["eths"].([]interface{}); ok && len(ethsArray) > 0 {
+			var eths []veritySwitchpointObjectPropertiesEthModel
+			for _, e := range ethsArray {
+				eth, ok := e.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				ethModel := veritySwitchpointObjectPropertiesEthModel{}
+				if val, ok := eth["eth_num_icon"].(string); ok {
+					ethModel.EthNumIcon = types.StringValue(val)
+				} else {
+					ethModel.EthNumIcon = types.StringNull()
+				}
+				if val, ok := eth["eth_num_label"].(string); ok {
+					ethModel.EthNumLabel = types.StringValue(val)
+				} else {
+					ethModel.EthNumLabel = types.StringNull()
+				}
+				if index, ok := eth["index"]; ok && index != nil {
+					if intVal, ok := index.(float64); ok {
+						ethModel.Index = types.Int64Value(int64(intVal))
+					} else if intVal, ok := index.(int); ok {
+						ethModel.Index = types.Int64Value(int64(intVal))
+					} else {
+						ethModel.Index = types.Int64Null()
+					}
+				} else {
+					ethModel.Index = types.Int64Null()
+				}
+				eths = append(eths, ethModel)
+			}
+			op.Eths = eths
+		} else {
+			op.Eths = nil
+		}
+
+		state.ObjectProperties = []veritySwitchpointObjectPropertiesModel{op}
+	} else if plan != nil && len(plan.ObjectProperties) > 0 {
+		state.ObjectProperties = plan.ObjectProperties
+	}
+
+	return state
+}
+
+func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// Skip modification if we're deleting the resource
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan veritySwitchpointResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// For new resources (where state is null)
+	if req.State.Raw.IsNull() {
+		if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
+			resp.Diagnostics.AddWarning(
+				"BGP AS Number will be assigned by the API",
+				"The 'bgp_as_number' field value in your configuration will be ignored because 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+		}
+		if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+			resp.Diagnostics.AddWarning(
+				"Switch Router ID IP Mask will be assigned by the API",
+				"The 'switch_router_id_ip_mask' field value in your configuration will be ignored because 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+		}
+		if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+			resp.Diagnostics.AddWarning(
+				"Switch VTEP ID IP Mask will be assigned by the API",
+				"The 'switch_vtep_id_ip_mask' field value in your configuration will be ignored because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+		}
+		return
+	}
+
+	var state veritySwitchpointResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddWarning(
+			"Ignoring bgp_as_number changes with auto-assignment enabled",
+			"The 'bgp_as_number' field changes will be ignored because 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
+		)
+
+		// Use current state value to suppress the diff
+		if !state.BgpAsNumber.IsNull() {
+			resp.Plan.SetAttribute(ctx, path.Root("bgp_as_number"), state.BgpAsNumber)
+		}
+	}
+
+	if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddWarning(
+			"Ignoring switch_router_id_ip_mask changes with auto-assignment enabled",
+			"The 'switch_router_id_ip_mask' field changes will be ignored because 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+		)
+
+		// Use current state value to suppress the diff
+		if !state.SwitchRouterIdIpMask.IsNull() {
+			resp.Plan.SetAttribute(ctx, path.Root("switch_router_id_ip_mask"), state.SwitchRouterIdIpMask)
+		}
+	}
+
+	if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+		resp.Diagnostics.AddWarning(
+			"Ignoring switch_vtep_id_ip_mask changes with auto-assignment enabled",
+			"The 'switch_vtep_id_ip_mask' field changes will be ignored because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+		)
+
+		// Use current state value to suppress the diff
+		if !state.SwitchVtepIdIpMask.IsNull() {
+			resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), state.SwitchVtepIdIpMask)
+		}
+	}
 }
