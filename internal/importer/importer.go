@@ -1069,7 +1069,7 @@ func (i *Importer) importVoicePortProfiles() (interface{}, error) {
 	defer resp.Body.Close()
 
 	var result struct {
-		VoicePortProfile map[string]map[string]interface{} `json:"voice_port_profile"`
+		VoicePortProfile map[string]map[string]interface{} `json:"voice_port_profiles"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("failed to decode voice port profiles response: %v", err)
