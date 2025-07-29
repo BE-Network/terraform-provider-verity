@@ -320,7 +320,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		ethPortName.Services = services
 	}
 
-	operationID := r.bulkOpsMgr.AddEthPortProfilePut(ctx, name, ethPortName)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "ethportprofile", name, ethPortName)
 
 	r.notifyOperationAdded()
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile creation operation %s to complete", operationID))
@@ -356,7 +356,7 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 
 	profileName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentEthPortProfileOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ethportprofile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping eth port profile %s verification - trusting recent successful API operation", profileName))
 		return
 	}
@@ -935,7 +935,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddEthPortProfilePatch(ctx, name, ethPortName)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "ethportprofile", name, ethPortName)
 	r.notifyOperationAdded()
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile update operation %s to complete", operationID))
 
@@ -970,7 +970,7 @@ func (r *verityEthPortProfileResource) Delete(ctx context.Context, req resource.
 
 	name := state.Name.ValueString()
 
-	operationID := r.bulkOpsMgr.AddEthPortProfileDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "ethportprofile", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile deletion operation %s to complete", operationID))

@@ -296,7 +296,7 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		pbProps.Ipv6Deny = ipv6Deny
 	}
 
-	operationID := r.bulkOpsMgr.AddPacketBrokerPut(ctx, name, pbProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "packetbroker", name, pbProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for packet broker creation operation %s to complete", operationID))
@@ -332,7 +332,7 @@ func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.Read
 
 	pbName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentPacketBrokerOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packetbroker") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping PB Egress Profile %s verification – trusting recent successful API operation", pbName))
 		return
 	}
@@ -715,7 +715,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPacketBrokerPatch(ctx, name, pbProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "packetbroker", name, pbProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for PB Egress Profile update operation %s to complete", operationID))
@@ -747,7 +747,7 @@ func (r *verityPacketBrokerResource) Delete(ctx context.Context, req resource.De
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddPacketBrokerDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "packetbroker", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for PB Egress Profile deletion operation %s to complete", operationID))

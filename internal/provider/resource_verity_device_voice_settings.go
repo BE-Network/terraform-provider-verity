@@ -727,7 +727,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		dvsProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddDeviceVoiceSettingsPut(ctx, name, dvsProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "devicevoicesettings", name, dvsProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for device voice settings creation operation %s to complete", operationID))
@@ -763,7 +763,7 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 
 	dvsName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentDeviceVoiceSettingsOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("devicevoicesettings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Device Voice Settings %s verification – trusting recent successful API operation", dvsName))
 		return
 	}
@@ -1215,7 +1215,7 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddDeviceVoiceSettingsPatch(ctx, name, dvsProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "devicevoicesettings", name, dvsProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Voice Settings update operation %s to complete", operationID))
@@ -1247,7 +1247,7 @@ func (r *verityDeviceVoiceSettingsResource) Delete(ctx context.Context, req reso
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDeviceVoiceSettingsDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "devicevoicesettings", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Voice Settings deletion operation %s to complete", operationID))

@@ -465,7 +465,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		gatewayProps.StaticRoutes = routes
 	}
 
-	operationID := r.bulkOpsMgr.AddGatewayPut(ctx, name, gatewayProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "gateway", name, gatewayProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway creation operation %s to complete", operationID))
@@ -501,7 +501,7 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 
 	gatewayName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentGatewayOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gateway") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping gateway %s verification – trusting recent successful API operation", gatewayName))
 		return
 	}
@@ -1204,7 +1204,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddGatewayPatch(ctx, name, gatewayProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "gateway", name, gatewayProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway update operation %s to complete", operationID))
@@ -1236,7 +1236,7 @@ func (r *verityGatewayResource) Delete(ctx context.Context, req resource.DeleteR
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddGatewayDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "gateway", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway deletion operation %s to complete", operationID))

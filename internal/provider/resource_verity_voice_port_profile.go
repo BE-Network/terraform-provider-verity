@@ -444,7 +444,7 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		vppProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddVoicePortProfilePut(ctx, name, vppProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "voiceportprofile", name, vppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for voice port profile creation operation %s to complete", operationID))
@@ -480,7 +480,7 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 
 	vppName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentVoicePortProfileOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("voiceportprofile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Voice Port Profile %s verification – trusting recent successful API operation", vppName))
 		return
 	}
@@ -811,7 +811,7 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddVoicePortProfilePatch(ctx, name, vppProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "voiceportprofile", name, vppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Voice Port Profile update operation %s to complete", operationID))
@@ -843,7 +843,7 @@ func (r *verityVoicePortProfileResource) Delete(ctx context.Context, req resourc
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddVoicePortProfileDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "voiceportprofile", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Voice Port Profile deletion operation %s to complete", operationID))

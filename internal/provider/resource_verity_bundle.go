@@ -470,7 +470,7 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		bundleProps.VoicePortProfilePaths = voicePortProfilePaths
 	}
 
-	operationID := r.bulkOpsMgr.AddBundlePut(ctx, name, bundleProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "bundle", name, bundleProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for bundle creation operation %s to complete", operationID))
@@ -503,7 +503,7 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 
 	bundleName := data.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentBundleOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("bundle") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping bundle %s verification - trusting recent successful API operation", bundleName))
 		return
 	}
@@ -1746,7 +1746,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddBundlePatch(ctx, name, bundleValue)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "bundle", name, bundleValue)
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
@@ -1788,7 +1788,7 @@ func (r *verityBundleResource) Delete(ctx context.Context, req resource.DeleteRe
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddBundleDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "bundle", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for bundle deletion operation %s to complete", operationID))

@@ -562,7 +562,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		spProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddSwitchpointPut(ctx, name, spProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "switchpoint", name, spProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for switchpoint creation operation %s to complete", operationID))
@@ -638,7 +638,7 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 		}
 	}
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentSwitchpointOperations() {
+	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("switchpoint") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping switchpoint %s verification - trusting recent successful API operation", spName))
 		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 		return
@@ -987,7 +987,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddSwitchpointPatch(ctx, name, spProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "switchpoint", name, spProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Switchpoint update operation %s to complete", operationID))
@@ -1046,7 +1046,7 @@ func (r *veritySwitchpointResource) Delete(ctx context.Context, req resource.Del
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddSwitchpointDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "switchpoint", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Switchpoint deletion operation %s to complete", operationID))

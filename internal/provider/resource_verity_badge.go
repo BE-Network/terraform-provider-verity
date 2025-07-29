@@ -145,7 +145,7 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		badgeProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddBadgePut(ctx, name, badgeProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "badge", name, badgeProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for badge creation operation %s to complete", operationID))
@@ -181,7 +181,7 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 
 	badgeName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentBadgeOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("badge") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping badge %s verification – trusting recent successful API operation", badgeName))
 		return
 	}
@@ -362,7 +362,7 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddBadgePatch(ctx, name, badgeProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "badge", name, badgeProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for badge update operation %s to complete", operationID))
@@ -394,7 +394,7 @@ func (r *verityBadgeResource) Delete(ctx context.Context, req resource.DeleteReq
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddBadgeDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "badge", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for badge deletion operation %s to complete", operationID))

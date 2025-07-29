@@ -573,7 +573,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	provCtx := r.provCtx
 	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddEthPortSettingsPut(ctx, name, ethPortSettingsReq)
+	operationID := bulkOpsMgr.AddPut(ctx, "ethportsettings", name, ethPortSettingsReq)
 
 	provCtx.NotifyOperationAdded()
 
@@ -612,7 +612,7 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 	bulkOpsMgr := provCtx.bulkOpsMgr
 	settingsName := state.Name.ValueString()
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentEthPortSettingsOperations() {
+	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("ethportsettings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping eth port settings %s verification - trusting recent successful API operation", settingsName))
 		return
 	}
@@ -1496,7 +1496,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	bulkMgr := provCtx.bulkOpsMgr
 	resourceName := plan.Name.ValueString()
 
-	operationID := bulkMgr.AddEthPortSettingsPatch(ctx, resourceName, ethPortSettingsReq)
+	operationID := bulkMgr.AddPatch(ctx, "ethportsettings", resourceName, ethPortSettingsReq)
 	provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings update operation %s to complete", operationID))
@@ -1530,7 +1530,7 @@ func (r *verityEthPortSettingsResource) Delete(ctx context.Context, req resource
 
 	name := state.Name.ValueString()
 	bulkMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkMgr.AddEthPortSettingsDelete(ctx, name)
+	operationID := bulkMgr.AddDelete(ctx, "ethportsettings", name)
 	r.provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings deletion operation %s to complete", operationID))

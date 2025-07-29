@@ -435,7 +435,7 @@ func (r *verityDeviceControllerResource) Create(ctx context.Context, req resourc
 		deviceControllerProps.UsesTaggedPackets = openapi.PtrBool(plan.UsesTaggedPackets.ValueBool())
 	}
 
-	operationID := r.bulkOpsMgr.AddDeviceControllerPut(ctx, name, deviceControllerProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "devicecontroller", name, deviceControllerProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for device controller creation operation %s to complete", operationID))
@@ -475,7 +475,7 @@ func (r *verityDeviceControllerResource) Read(ctx context.Context, req resource.
 	bulkOpsMgr := provCtx.bulkOpsMgr
 	deviceControllerName := state.Name.ValueString()
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentDeviceControllerOperations() {
+	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("devicecontroller") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping device controller %s verification - trusting recent successful API operation", deviceControllerName))
 		return
 	}
@@ -925,7 +925,7 @@ func (r *verityDeviceControllerResource) Update(ctx context.Context, req resourc
 	}
 
 	bulkOpsMgr := r.bulkOpsMgr
-	operationID := bulkOpsMgr.AddDeviceControllerPatch(ctx, name, deviceControllerProps)
+	operationID := bulkOpsMgr.AddPatch(ctx, "devicecontroller", name, deviceControllerProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for device controller update operation %s to complete", operationID))
@@ -959,7 +959,7 @@ func (r *verityDeviceControllerResource) Delete(ctx context.Context, req resourc
 
 	name := state.Name.ValueString()
 	bulkOpsMgr := r.bulkOpsMgr
-	operationID := bulkOpsMgr.AddDeviceControllerDelete(ctx, name)
+	operationID := bulkOpsMgr.AddDelete(ctx, "devicecontroller", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for device controller deletion operation %s to complete", operationID))

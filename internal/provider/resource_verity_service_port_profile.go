@@ -287,7 +287,7 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		sppProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddServicePortProfilePut(ctx, name, sppProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "serviceportprofile", name, sppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for service port profile creation operation %s to complete", operationID))
@@ -323,7 +323,7 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 
 	sppName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentServicePortProfileOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("serviceportprofile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Service Port Profile %s verification – trusting recent successful API operation", sppName))
 		return
 	}
@@ -694,7 +694,7 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddServicePortProfilePatch(ctx, name, sppProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "serviceportprofile", name, sppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Service Port Profile update operation %s to complete", operationID))
@@ -726,7 +726,7 @@ func (r *verityServicePortProfileResource) Delete(ctx context.Context, req resou
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddServicePortProfileDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "serviceportprofile", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Service Port Profile deletion operation %s to complete", operationID))

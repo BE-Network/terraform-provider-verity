@@ -229,7 +229,7 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 		profileObj.SetExternalGateways(externalGatewaysList)
 	}
 
-	operationID := r.bulkOpsMgr.AddGatewayProfilePut(ctx, name, *profileObj)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "gatewayprofile", name, *profileObj)
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
@@ -259,7 +259,7 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 
 	profileName := data.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentGatewayProfileOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gatewayprofile") {
 		return
 	}
 
@@ -647,7 +647,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddGatewayProfilePatch(ctx, name, profileObj)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "gatewayprofile", name, profileObj)
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
@@ -674,7 +674,7 @@ func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.
 	}
 
 	name := data.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddGatewayProfileDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "gatewayprofile", name)
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {

@@ -326,7 +326,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	provCtx := r.provCtx
 	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddTenantPut(ctx, name, tenantReq)
+	operationID := bulkOpsMgr.AddPut(ctx, "tenant", name, tenantReq)
 
 	provCtx.NotifyOperationAdded()
 
@@ -405,7 +405,7 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 		}
 	}
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentTenantOperations() {
+	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("tenant") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping tenant %s verification - trusting recent successful API operation", tenantName))
 		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 		return
@@ -850,7 +850,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddTenantPatch(ctx, state.Name.ValueString(), tenantReq)
+	operationID := bulkOpsMgr.AddPatch(ctx, "tenant", state.Name.ValueString(), tenantReq)
 	r.provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for tenant update operation %s to complete", operationID))
@@ -911,7 +911,7 @@ func (r *verityTenantResource) Delete(ctx context.Context, req resource.DeleteRe
 
 	tenantName := state.Name.ValueString()
 	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddTenantDelete(ctx, tenantName)
+	operationID := bulkOpsMgr.AddDelete(ctx, "tenant", tenantName)
 	r.provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for tenant deletion operation %s to complete", operationID))

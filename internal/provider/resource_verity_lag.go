@@ -228,7 +228,7 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 
 	provCtx := r.provCtx
 	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddLagPut(ctx, name, *lagReq)
+	operationID := bulkOpsMgr.AddPut(ctx, "lag", name, *lagReq)
 
 	provCtx.NotifyOperationAdded()
 
@@ -265,7 +265,7 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	lagName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentLagOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("lag") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping LAG %s verification - trusting recent successful API operation", lagName))
 		return
 	}
@@ -514,7 +514,7 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 
 	provCtx := r.provCtx
 	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddLagPatch(ctx, name, *lagReq)
+	operationID := bulkOpsMgr.AddPatch(ctx, "lag", name, *lagReq)
 
 	provCtx.NotifyOperationAdded()
 
@@ -548,7 +548,7 @@ func (r *verityLagResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddLagDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "lag", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for LAG deletion operation %s to complete", operationID))

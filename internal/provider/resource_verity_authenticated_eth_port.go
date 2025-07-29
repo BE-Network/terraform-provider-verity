@@ -251,7 +251,7 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		aepProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddAuthenticatedEthPortPut(ctx, name, aepProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "authenticated_eth_port", name, aepProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for authenticated eth-port creation operation %s to complete", operationID))
@@ -287,7 +287,7 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 
 	aepName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentAuthenticatedEthPortOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("authenticated_eth_port") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Authenticated Eth-Port %s verification – trusting recent successful API operation", aepName))
 		return
 	}
@@ -620,7 +620,7 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddAuthenticatedEthPortPatch(ctx, name, aepProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "authenticated_eth_port", name, aepProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Authenticated Eth-Port update operation %s to complete", operationID))
@@ -652,7 +652,7 @@ func (r *verityAuthenticatedEthPortResource) Delete(ctx context.Context, req res
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddAuthenticatedEthPortDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "authenticated_eth_port", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Authenticated Eth-Port deletion operation %s to complete", operationID))

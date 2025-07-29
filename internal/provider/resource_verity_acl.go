@@ -263,7 +263,7 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 	bulkOpsMgr := provCtx.bulkOpsMgr
 	aclName := state.Name.ValueString()
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentAclOperations() {
+	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("acl") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping IPv%s ACL %s verification - trusting recent successful API operation", r.ipVersion, aclName))
 		return
 	}

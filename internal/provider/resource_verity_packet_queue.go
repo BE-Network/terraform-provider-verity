@@ -236,7 +236,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		pqProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPacketQueuePut(ctx, name, pqProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "packetqueue", name, pqProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for packet queue creation operation %s to complete", operationID))
@@ -272,7 +272,7 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 
 	pqName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentPacketQueueOperations() {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packetqueue") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Packet Queue %s verification – trusting recent successful API operation", pqName))
 		return
 	}
@@ -570,7 +570,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPacketQueuePatch(ctx, name, pqProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "packetqueue", name, pqProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Packet Queue update operation %s to complete", operationID))
@@ -602,7 +602,7 @@ func (r *verityPacketQueueResource) Delete(ctx context.Context, req resource.Del
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddPacketQueueDelete(ctx, name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "packetqueue", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Packet Queue deletion operation %s to complete", operationID))

@@ -390,7 +390,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 
 	provCtx := r.provCtx
 	bulkMgr := provCtx.bulkOpsMgr
-	operationID := bulkMgr.AddServicePut(ctx, name, *serviceReq)
+	operationID := bulkMgr.AddPut(ctx, "service", name, *serviceReq)
 
 	provCtx.NotifyOperationAdded()
 
@@ -469,7 +469,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 		}
 	}
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentServiceOperations() {
+	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("service") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping service %s verification - trusting recent successful API operation", serviceName))
 		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 		return
@@ -814,7 +814,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddServicePatch(ctx, name, *serviceReq)
+	operationID := bulkOpsMgr.AddPatch(ctx, "service", name, *serviceReq)
 	r.provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for service update operation %s to complete", operationID))
@@ -875,7 +875,7 @@ func (r *verityServiceResource) Delete(ctx context.Context, req resource.DeleteR
 
 	name := state.Name.ValueString()
 	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddServiceDelete(ctx, name)
+	operationID := bulkOpsMgr.AddDelete(ctx, "service", name)
 	r.provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for service deletion operation %s to complete", operationID))
