@@ -55,10 +55,10 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	BgpAsNumber *int32 `json:"bgp_as_number,omitempty"`
 	// Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit.
 	BgpAsNumberAutoAssigned *bool `json:"bgp_as_number_auto_assigned_,omitempty"`
-	Badges []ConfigPutRequestSwitchpointSwitchpointNameBadgesInner `json:"badges,omitempty"`
-	Children []ConfigPutRequestSwitchpointSwitchpointNameChildrenInner `json:"children,omitempty"`
-	TrafficMirrors []ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner `json:"traffic_mirrors,omitempty"`
-	Eths []ConfigPutRequestEndpointEndpointNameEthsInner `json:"eths,omitempty"`
+	Badges []SwitchpointsPutRequestSwitchpointValueBadgesInner `json:"badges,omitempty"`
+	Children []SwitchpointsPutRequestSwitchpointValueChildrenInner `json:"children,omitempty"`
+	TrafficMirrors []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner `json:"traffic_mirrors,omitempty"`
+	Eths []SwitchpointsPutRequestSwitchpointValueEthsInner `json:"eths,omitempty"`
 	ObjectProperties *SwitchpointsPutRequestSwitchpointValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -708,9 +708,9 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumberAutoAssigned(v bo
 }
 
 // GetBadges returns the Badges field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetBadges() []ConfigPutRequestSwitchpointSwitchpointNameBadgesInner {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetBadges() []SwitchpointsPutRequestSwitchpointValueBadgesInner {
 	if o == nil || IsNil(o.Badges) {
-		var ret []ConfigPutRequestSwitchpointSwitchpointNameBadgesInner
+		var ret []SwitchpointsPutRequestSwitchpointValueBadgesInner
 		return ret
 	}
 	return o.Badges
@@ -718,7 +718,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetBadges() []ConfigPutRequestS
 
 // GetBadgesOk returns a tuple with the Badges field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetBadgesOk() ([]ConfigPutRequestSwitchpointSwitchpointNameBadgesInner, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetBadgesOk() ([]SwitchpointsPutRequestSwitchpointValueBadgesInner, bool) {
 	if o == nil || IsNil(o.Badges) {
 		return nil, false
 	}
@@ -734,15 +734,15 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasBadges() bool {
 	return false
 }
 
-// SetBadges gets a reference to the given []ConfigPutRequestSwitchpointSwitchpointNameBadgesInner and assigns it to the Badges field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetBadges(v []ConfigPutRequestSwitchpointSwitchpointNameBadgesInner) {
+// SetBadges gets a reference to the given []SwitchpointsPutRequestSwitchpointValueBadgesInner and assigns it to the Badges field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetBadges(v []SwitchpointsPutRequestSwitchpointValueBadgesInner) {
 	o.Badges = v
 }
 
 // GetChildren returns the Children field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetChildren() []ConfigPutRequestSwitchpointSwitchpointNameChildrenInner {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetChildren() []SwitchpointsPutRequestSwitchpointValueChildrenInner {
 	if o == nil || IsNil(o.Children) {
-		var ret []ConfigPutRequestSwitchpointSwitchpointNameChildrenInner
+		var ret []SwitchpointsPutRequestSwitchpointValueChildrenInner
 		return ret
 	}
 	return o.Children
@@ -750,7 +750,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetChildren() []ConfigPutReques
 
 // GetChildrenOk returns a tuple with the Children field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetChildrenOk() ([]ConfigPutRequestSwitchpointSwitchpointNameChildrenInner, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetChildrenOk() ([]SwitchpointsPutRequestSwitchpointValueChildrenInner, bool) {
 	if o == nil || IsNil(o.Children) {
 		return nil, false
 	}
@@ -766,15 +766,15 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasChildren() bool {
 	return false
 }
 
-// SetChildren gets a reference to the given []ConfigPutRequestSwitchpointSwitchpointNameChildrenInner and assigns it to the Children field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetChildren(v []ConfigPutRequestSwitchpointSwitchpointNameChildrenInner) {
+// SetChildren gets a reference to the given []SwitchpointsPutRequestSwitchpointValueChildrenInner and assigns it to the Children field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetChildren(v []SwitchpointsPutRequestSwitchpointValueChildrenInner) {
 	o.Children = v
 }
 
 // GetTrafficMirrors returns the TrafficMirrors field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrors() []ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrors() []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner {
 	if o == nil || IsNil(o.TrafficMirrors) {
-		var ret []ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner
+		var ret []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner
 		return ret
 	}
 	return o.TrafficMirrors
@@ -782,7 +782,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrors() []ConfigPut
 
 // GetTrafficMirrorsOk returns a tuple with the TrafficMirrors field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrorsOk() ([]ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrorsOk() ([]SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, bool) {
 	if o == nil || IsNil(o.TrafficMirrors) {
 		return nil, false
 	}
@@ -798,15 +798,15 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasTrafficMirrors() bool {
 	return false
 }
 
-// SetTrafficMirrors gets a reference to the given []ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner and assigns it to the TrafficMirrors field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetTrafficMirrors(v []ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner) {
+// SetTrafficMirrors gets a reference to the given []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner and assigns it to the TrafficMirrors field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetTrafficMirrors(v []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) {
 	o.TrafficMirrors = v
 }
 
 // GetEths returns the Eths field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetEths() []ConfigPutRequestEndpointEndpointNameEthsInner {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetEths() []SwitchpointsPutRequestSwitchpointValueEthsInner {
 	if o == nil || IsNil(o.Eths) {
-		var ret []ConfigPutRequestEndpointEndpointNameEthsInner
+		var ret []SwitchpointsPutRequestSwitchpointValueEthsInner
 		return ret
 	}
 	return o.Eths
@@ -814,7 +814,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetEths() []ConfigPutRequestEnd
 
 // GetEthsOk returns a tuple with the Eths field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetEthsOk() ([]ConfigPutRequestEndpointEndpointNameEthsInner, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetEthsOk() ([]SwitchpointsPutRequestSwitchpointValueEthsInner, bool) {
 	if o == nil || IsNil(o.Eths) {
 		return nil, false
 	}
@@ -830,8 +830,8 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasEths() bool {
 	return false
 }
 
-// SetEths gets a reference to the given []ConfigPutRequestEndpointEndpointNameEthsInner and assigns it to the Eths field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetEths(v []ConfigPutRequestEndpointEndpointNameEthsInner) {
+// SetEths gets a reference to the given []SwitchpointsPutRequestSwitchpointValueEthsInner and assigns it to the Eths field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetEths(v []SwitchpointsPutRequestSwitchpointValueEthsInner) {
 	o.Eths = v
 }
 

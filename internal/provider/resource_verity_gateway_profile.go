@@ -166,7 +166,7 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	name := data.Name.ValueString()
-	profileObj := openapi.NewConfigPutRequestGatewayProfileGatewayProfileName()
+	profileObj := openapi.NewGatewayprofilesPutRequestGatewayProfileValue()
 	profileObj.Name = openapi.PtrString(name)
 
 	if !data.Enable.IsNull() {
@@ -180,7 +180,7 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	if len(data.ObjectProperties) > 0 {
-		objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 
 		if !data.ObjectProperties[0].Group.IsNull() {
 			groupVal := data.ObjectProperties[0].Group.ValueString()
@@ -193,10 +193,10 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	if len(data.ExternalGateways) > 0 {
-		var externalGatewaysList []openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner
+		var externalGatewaysList []openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner
 
 		for _, eg := range data.ExternalGateways {
-			gatewayObj := openapi.NewConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner()
+			gatewayObj := openapi.NewGatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner()
 
 			if !eg.Enable.IsNull() {
 				gatewayObj.SetEnable(eg.Enable.ValueBool())
@@ -229,7 +229,7 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 		profileObj.SetExternalGateways(externalGatewaysList)
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "gatewayprofile", name, *profileObj)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "gateway_profile", name, *profileObj)
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
@@ -259,7 +259,7 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 
 	profileName := data.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gatewayprofile") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gateway_profile") {
 		return
 	}
 
@@ -432,7 +432,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 
 	name := data.Name.ValueString()
 	hasChanges := false
-	profileObj := openapi.ConfigPutRequestGatewayProfileGatewayProfileName{}
+	profileObj := openapi.GatewayprofilesPutRequestGatewayProfileValue{}
 
 	if !data.Enable.Equal(state.Enable) {
 		enable := data.Enable.ValueBool()
@@ -447,7 +447,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 	}
 
 	if len(data.ObjectProperties) > 0 {
-		objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 		objPropsChanged := false
 
 		if len(state.ObjectProperties) == 0 ||
@@ -475,7 +475,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	var changedExternalGateways []openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner
+	var changedExternalGateways []openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner
 	externalGatewaysChanged := false
 
 	for _, eg := range data.ExternalGateways {
@@ -488,7 +488,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 
 		if !exists {
 			// new gateway, include all fields
-			gateway := openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner{
+			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
 				Index: openapi.PtrInt32(int32(index)),
 			}
 
@@ -545,7 +545,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		}
 
 		// existing gateway, check which fields changed
-		gateway := openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner{
+		gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
 			Index: openapi.PtrInt32(int32(index)),
 		}
 
@@ -629,7 +629,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 
 		if !found {
 			// gateway removed - include only the index for deletion
-			deletedGateway := openapi.ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner{
+			deletedGateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 			changedExternalGateways = append(changedExternalGateways, deletedGateway)
@@ -647,7 +647,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "gatewayprofile", name, profileObj)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "gateway_profile", name, profileObj)
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
@@ -674,7 +674,7 @@ func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.
 	}
 
 	name := data.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "gatewayprofile", name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "gateway_profile", name)
 	r.notifyOperationAdded()
 
 	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {

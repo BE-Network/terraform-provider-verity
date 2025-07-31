@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## BundlesGet
 
-> BundlesGet(ctx).BundleName(bundleName).IncludeData(includeData).Execute()
+> BundlesGet(ctx).BundleName(bundleName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all bundles
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	bundleName := "bundleName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.BundlesAPI.BundlesGet(context.Background()).BundleName(bundleName).IncludeData(includeData).Execute()
+	r, err := apiClient.BundlesAPI.BundlesGet(context.Background()).BundleName(bundleName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `BundlesAPI.BundlesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **bundleName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 
@@ -145,7 +147,7 @@ Name | Type | Description  | Notes
 
 ## BundlesPatch
 
-> BundlesPatch(ctx).ChangesetName(changesetName).BundlesPatchRequest(bundlesPatchRequest).Execute()
+> BundlesPatch(ctx).ChangesetName(changesetName).BundlesPutRequest(bundlesPutRequest).Execute()
 
 Update bundle
 
@@ -165,11 +167,11 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	bundlesPatchRequest := *openapiclient.NewBundlesPatchRequest() // BundlesPatchRequest |  (optional)
+	bundlesPutRequest := *openapiclient.NewBundlesPutRequest() // BundlesPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.BundlesAPI.BundlesPatch(context.Background()).ChangesetName(changesetName).BundlesPatchRequest(bundlesPatchRequest).Execute()
+	r, err := apiClient.BundlesAPI.BundlesPatch(context.Background()).ChangesetName(changesetName).BundlesPutRequest(bundlesPutRequest).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `BundlesAPI.BundlesPatch``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -189,7 +191,7 @@ Other parameters are passed through a pointer to a apiBundlesPatchRequest struct
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **bundlesPatchRequest** | [**BundlesPatchRequest**](BundlesPatchRequest.md) |  | 
+ **bundlesPutRequest** | [**BundlesPutRequest**](BundlesPutRequest.md) |  | 
 
 ### Return type
 

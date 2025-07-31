@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Lag** | Pointer to [**map[string]ConfigPutRequestLagLagName**](ConfigPutRequestLagLagName.md) |  | [optional] 
+**Lag** | Pointer to [**map[string]LagsPutRequestLagValue**](LagsPutRequestLagValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetLag
 
-`func (o *LagsPutRequest) GetLag() map[string]ConfigPutRequestLagLagName`
+`func (o *LagsPutRequest) GetLag() map[string]LagsPutRequestLagValue`
 
 GetLag returns the Lag field if non-nil, zero value otherwise.
 
 ### GetLagOk
 
-`func (o *LagsPutRequest) GetLagOk() (*map[string]ConfigPutRequestLagLagName, bool)`
+`func (o *LagsPutRequest) GetLagOk() (*map[string]LagsPutRequestLagValue, bool)`
 
 GetLagOk returns a tuple with the Lag field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLag
 
-`func (o *LagsPutRequest) SetLag(v map[string]ConfigPutRequestLagLagName)`
+`func (o *LagsPutRequest) SetLag(v map[string]LagsPutRequestLagValue)`
 
 SetLag sets Lag field to given value.
 

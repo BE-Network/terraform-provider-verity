@@ -146,6 +146,7 @@ type ApiGatewayprofilesGetRequest struct {
 	ApiService *GatewayProfilesAPIService
 	profileName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiGatewayprofilesGetRequest) ProfileName(profileName string) ApiGatewayprofilesGetRequest {
@@ -155,6 +156,11 @@ func (r ApiGatewayprofilesGetRequest) ProfileName(profileName string) ApiGateway
 
 func (r ApiGatewayprofilesGetRequest) IncludeData(includeData bool) ApiGatewayprofilesGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiGatewayprofilesGetRequest) ChangesetName(changesetName string) ApiGatewayprofilesGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *GatewayProfilesAPIService) GatewayprofilesGetExecute(r ApiGatewayprofil
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

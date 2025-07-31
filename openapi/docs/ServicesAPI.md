@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## ServicesGet
 
-> ServicesGet(ctx).ServiceName(serviceName).IncludeData(includeData).Execute()
+> ServicesGet(ctx).ServiceName(serviceName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all services
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	serviceName := "serviceName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.ServicesAPI.ServicesGet(context.Background()).ServiceName(serviceName).IncludeData(includeData).Execute()
+	r, err := apiClient.ServicesAPI.ServicesGet(context.Background()).ServiceName(serviceName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ServicesAPI.ServicesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **serviceName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

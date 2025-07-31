@@ -50,6 +50,8 @@ type APIClient struct {
 
 	ACLsAPI *ACLsAPIService
 
+	ASPathAccessListsAPI *ASPathAccessListsAPIService
+
 	AuthenticatedEthPortsAPI *AuthenticatedEthPortsAPIService
 
 	AuthorizationAPI *AuthorizationAPIService
@@ -58,11 +60,11 @@ type APIClient struct {
 
 	BundlesAPI *BundlesAPIService
 
-	ChangesetsAPI *ChangesetsAPIService
-
-	ConfigAPI *ConfigAPIService
+	CommunityListsAPI *CommunityListsAPIService
 
 	DeviceControllersAPI *DeviceControllersAPIService
+
+	DeviceSettingsAPI *DeviceSettingsAPIService
 
 	DeviceVoiceSettingsAPI *DeviceVoiceSettingsAPIService
 
@@ -70,9 +72,17 @@ type APIClient struct {
 
 	EthPortSettingsAPI *EthPortSettingsAPIService
 
+	ExtendedCommunityListsAPI *ExtendedCommunityListsAPIService
+
 	GatewayProfilesAPI *GatewayProfilesAPIService
 
 	GatewaysAPI *GatewaysAPIService
+
+	IPv4PrefixListsAPI *IPv4PrefixListsAPIService
+
+	IPv6PrefixListsAPI *IPv6PrefixListsAPIService
+
+	ImageUpdateSetsAPI *ImageUpdateSetsAPIService
 
 	LAGsAPI *LAGsAPIService
 
@@ -80,13 +90,17 @@ type APIClient struct {
 
 	PacketQueuesAPI *PacketQueuesAPIService
 
-	ReadModeAPI *ReadModeAPIService
+	RouteMapClausesAPI *RouteMapClausesAPIService
 
-	RequestAPI *RequestAPIService
+	RouteMapsAPI *RouteMapsAPIService
+
+	SFPBreakoutsAPI *SFPBreakoutsAPIService
 
 	ServicePortProfilesAPI *ServicePortProfilesAPIService
 
 	ServicesAPI *ServicesAPIService
+
+	SitesAPI *SitesAPIService
 
 	SwitchpointsAPI *SwitchpointsAPIService
 
@@ -114,25 +128,32 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 
 	// API Services
 	c.ACLsAPI = (*ACLsAPIService)(&c.common)
+	c.ASPathAccessListsAPI = (*ASPathAccessListsAPIService)(&c.common)
 	c.AuthenticatedEthPortsAPI = (*AuthenticatedEthPortsAPIService)(&c.common)
 	c.AuthorizationAPI = (*AuthorizationAPIService)(&c.common)
 	c.BadgesAPI = (*BadgesAPIService)(&c.common)
 	c.BundlesAPI = (*BundlesAPIService)(&c.common)
-	c.ChangesetsAPI = (*ChangesetsAPIService)(&c.common)
-	c.ConfigAPI = (*ConfigAPIService)(&c.common)
+	c.CommunityListsAPI = (*CommunityListsAPIService)(&c.common)
 	c.DeviceControllersAPI = (*DeviceControllersAPIService)(&c.common)
+	c.DeviceSettingsAPI = (*DeviceSettingsAPIService)(&c.common)
 	c.DeviceVoiceSettingsAPI = (*DeviceVoiceSettingsAPIService)(&c.common)
 	c.EthPortProfilesAPI = (*EthPortProfilesAPIService)(&c.common)
 	c.EthPortSettingsAPI = (*EthPortSettingsAPIService)(&c.common)
+	c.ExtendedCommunityListsAPI = (*ExtendedCommunityListsAPIService)(&c.common)
 	c.GatewayProfilesAPI = (*GatewayProfilesAPIService)(&c.common)
 	c.GatewaysAPI = (*GatewaysAPIService)(&c.common)
+	c.IPv4PrefixListsAPI = (*IPv4PrefixListsAPIService)(&c.common)
+	c.IPv6PrefixListsAPI = (*IPv6PrefixListsAPIService)(&c.common)
+	c.ImageUpdateSetsAPI = (*ImageUpdateSetsAPIService)(&c.common)
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)
 	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
 	c.PacketQueuesAPI = (*PacketQueuesAPIService)(&c.common)
-	c.ReadModeAPI = (*ReadModeAPIService)(&c.common)
-	c.RequestAPI = (*RequestAPIService)(&c.common)
+	c.RouteMapClausesAPI = (*RouteMapClausesAPIService)(&c.common)
+	c.RouteMapsAPI = (*RouteMapsAPIService)(&c.common)
+	c.SFPBreakoutsAPI = (*SFPBreakoutsAPIService)(&c.common)
 	c.ServicePortProfilesAPI = (*ServicePortProfilesAPIService)(&c.common)
 	c.ServicesAPI = (*ServicesAPIService)(&c.common)
+	c.SitesAPI = (*SitesAPIService)(&c.common)
 	c.SwitchpointsAPI = (*SwitchpointsAPIService)(&c.common)
 	c.TenantsAPI = (*TenantsAPIService)(&c.common)
 	c.VersionAPI = (*VersionAPIService)(&c.common)
@@ -315,7 +336,7 @@ func parameterToJson(obj interface{}) (string, error) {
 // callAPI do the request.
 func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 	if c.cfg.Debug {
-		isAuthRequest := strings.Contains(request.URL.Path, "/auth")
+		isAuthRequest := strings.HasSuffix(request.URL.Path, "/auth") || strings.Contains(request.URL.Path, "/auth/")
 
 		if isAuthRequest {
 			// For auth requests, create a buffer to read the body

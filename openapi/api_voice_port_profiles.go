@@ -146,6 +146,7 @@ type ApiVoiceportprofilesGetRequest struct {
 	ApiService *VoicePortProfilesAPIService
 	voicePortProfileName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiVoiceportprofilesGetRequest) VoicePortProfileName(voicePortProfileName string) ApiVoiceportprofilesGetRequest {
@@ -155,6 +156,11 @@ func (r ApiVoiceportprofilesGetRequest) VoicePortProfileName(voicePortProfileNam
 
 func (r ApiVoiceportprofilesGetRequest) IncludeData(includeData bool) ApiVoiceportprofilesGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiVoiceportprofilesGetRequest) ChangesetName(changesetName string) ApiVoiceportprofilesGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *VoicePortProfilesAPIService) VoiceportprofilesGetExecute(r ApiVoiceport
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

@@ -19,7 +19,7 @@ var _ MappedNullable = &ServicesPutRequest{}
 
 // ServicesPutRequest struct for ServicesPutRequest
 type ServicesPutRequest struct {
-	Service *map[string]ConfigPutRequestServiceServiceName `json:"service,omitempty"`
+	Service *map[string]ServicesPutRequestServiceValue `json:"service,omitempty"`
 }
 
 // NewServicesPutRequest instantiates a new ServicesPutRequest object
@@ -40,9 +40,9 @@ func NewServicesPutRequestWithDefaults() *ServicesPutRequest {
 }
 
 // GetService returns the Service field value if set, zero value otherwise.
-func (o *ServicesPutRequest) GetService() map[string]ConfigPutRequestServiceServiceName {
+func (o *ServicesPutRequest) GetService() map[string]ServicesPutRequestServiceValue {
 	if o == nil || IsNil(o.Service) {
-		var ret map[string]ConfigPutRequestServiceServiceName
+		var ret map[string]ServicesPutRequestServiceValue
 		return ret
 	}
 	return *o.Service
@@ -50,7 +50,7 @@ func (o *ServicesPutRequest) GetService() map[string]ConfigPutRequestServiceServ
 
 // GetServiceOk returns a tuple with the Service field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServicesPutRequest) GetServiceOk() (*map[string]ConfigPutRequestServiceServiceName, bool) {
+func (o *ServicesPutRequest) GetServiceOk() (*map[string]ServicesPutRequestServiceValue, bool) {
 	if o == nil || IsNil(o.Service) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *ServicesPutRequest) HasService() bool {
 	return false
 }
 
-// SetService gets a reference to the given map[string]ConfigPutRequestServiceServiceName and assigns it to the Service field.
-func (o *ServicesPutRequest) SetService(v map[string]ConfigPutRequestServiceServiceName) {
+// SetService gets a reference to the given map[string]ServicesPutRequestServiceValue and assigns it to the Service field.
+func (o *ServicesPutRequest) SetService(v map[string]ServicesPutRequestServiceValue) {
 	o.Service = &v
 }
 

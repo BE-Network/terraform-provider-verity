@@ -123,7 +123,7 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	name := plan.Name.ValueString()
-	badgeProps := openapi.ConfigPutRequestBadgeBadgeName{}
+	badgeProps := openapi.BadgesPutRequestBadgeValue{}
 	badgeProps.Name = openapi.PtrString(name)
 
 	if !plan.Color.IsNull() {
@@ -136,7 +136,7 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties{}
+		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		if !op.Notes.IsNull() {
 			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
 		} else {
@@ -318,7 +318,7 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 
 	name := plan.Name.ValueString()
-	badgeProps := openapi.ConfigPutRequestBadgeBadgeName{}
+	badgeProps := openapi.BadgesPutRequestBadgeValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -346,7 +346,7 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
-			objProps := openapi.ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties{}
+			objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 			if !plan.ObjectProperties[0].Notes.IsNull() {
 				objProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
 			} else {

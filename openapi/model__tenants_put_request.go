@@ -19,7 +19,7 @@ var _ MappedNullable = &TenantsPutRequest{}
 
 // TenantsPutRequest struct for TenantsPutRequest
 type TenantsPutRequest struct {
-	Tenant *map[string]ConfigPutRequestTenantTenantName `json:"tenant,omitempty"`
+	Tenant *map[string]TenantsPutRequestTenantValue `json:"tenant,omitempty"`
 }
 
 // NewTenantsPutRequest instantiates a new TenantsPutRequest object
@@ -40,9 +40,9 @@ func NewTenantsPutRequestWithDefaults() *TenantsPutRequest {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise.
-func (o *TenantsPutRequest) GetTenant() map[string]ConfigPutRequestTenantTenantName {
+func (o *TenantsPutRequest) GetTenant() map[string]TenantsPutRequestTenantValue {
 	if o == nil || IsNil(o.Tenant) {
-		var ret map[string]ConfigPutRequestTenantTenantName
+		var ret map[string]TenantsPutRequestTenantValue
 		return ret
 	}
 	return *o.Tenant
@@ -50,7 +50,7 @@ func (o *TenantsPutRequest) GetTenant() map[string]ConfigPutRequestTenantTenantN
 
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TenantsPutRequest) GetTenantOk() (*map[string]ConfigPutRequestTenantTenantName, bool) {
+func (o *TenantsPutRequest) GetTenantOk() (*map[string]TenantsPutRequestTenantValue, bool) {
 	if o == nil || IsNil(o.Tenant) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *TenantsPutRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given map[string]ConfigPutRequestTenantTenantName and assigns it to the Tenant field.
-func (o *TenantsPutRequest) SetTenant(v map[string]ConfigPutRequestTenantTenantName) {
+// SetTenant gets a reference to the given map[string]TenantsPutRequestTenantValue and assigns it to the Tenant field.
+func (o *TenantsPutRequest) SetTenant(v map[string]TenantsPutRequestTenantValue) {
 	o.Tenant = &v
 }
 

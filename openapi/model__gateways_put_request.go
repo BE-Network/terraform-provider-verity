@@ -19,7 +19,7 @@ var _ MappedNullable = &GatewaysPutRequest{}
 
 // GatewaysPutRequest struct for GatewaysPutRequest
 type GatewaysPutRequest struct {
-	Gateway *map[string]ConfigPutRequestGatewayGatewayName `json:"gateway,omitempty"`
+	Gateway *map[string]GatewaysPutRequestGatewayValue `json:"gateway,omitempty"`
 }
 
 // NewGatewaysPutRequest instantiates a new GatewaysPutRequest object
@@ -40,9 +40,9 @@ func NewGatewaysPutRequestWithDefaults() *GatewaysPutRequest {
 }
 
 // GetGateway returns the Gateway field value if set, zero value otherwise.
-func (o *GatewaysPutRequest) GetGateway() map[string]ConfigPutRequestGatewayGatewayName {
+func (o *GatewaysPutRequest) GetGateway() map[string]GatewaysPutRequestGatewayValue {
 	if o == nil || IsNil(o.Gateway) {
-		var ret map[string]ConfigPutRequestGatewayGatewayName
+		var ret map[string]GatewaysPutRequestGatewayValue
 		return ret
 	}
 	return *o.Gateway
@@ -50,7 +50,7 @@ func (o *GatewaysPutRequest) GetGateway() map[string]ConfigPutRequestGatewayGate
 
 // GetGatewayOk returns a tuple with the Gateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewaysPutRequest) GetGatewayOk() (*map[string]ConfigPutRequestGatewayGatewayName, bool) {
+func (o *GatewaysPutRequest) GetGatewayOk() (*map[string]GatewaysPutRequestGatewayValue, bool) {
 	if o == nil || IsNil(o.Gateway) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *GatewaysPutRequest) HasGateway() bool {
 	return false
 }
 
-// SetGateway gets a reference to the given map[string]ConfigPutRequestGatewayGatewayName and assigns it to the Gateway field.
-func (o *GatewaysPutRequest) SetGateway(v map[string]ConfigPutRequestGatewayGatewayName) {
+// SetGateway gets a reference to the given map[string]GatewaysPutRequestGatewayValue and assigns it to the Gateway field.
+func (o *GatewaysPutRequest) SetGateway(v map[string]GatewaysPutRequestGatewayValue) {
 	o.Gateway = &v
 }
 

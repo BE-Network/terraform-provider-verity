@@ -22,10 +22,10 @@ Name | Type | Description | Notes
 **SwitchVtepIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit. | [optional] 
 **BgpAsNumber** | Pointer to **int32** | BGP Autonomous System Number for the site underlay  | [optional] 
 **BgpAsNumberAutoAssigned** | Pointer to **bool** | Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit. | [optional] 
-**Badges** | Pointer to [**[]ConfigPutRequestSwitchpointSwitchpointNameBadgesInner**](ConfigPutRequestSwitchpointSwitchpointNameBadgesInner.md) |  | [optional] 
-**Children** | Pointer to [**[]ConfigPutRequestSwitchpointSwitchpointNameChildrenInner**](ConfigPutRequestSwitchpointSwitchpointNameChildrenInner.md) |  | [optional] 
-**TrafficMirrors** | Pointer to [**[]ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner**](ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner.md) |  | [optional] 
-**Eths** | Pointer to [**[]ConfigPutRequestEndpointEndpointNameEthsInner**](ConfigPutRequestEndpointEndpointNameEthsInner.md) |  | [optional] 
+**Badges** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueBadgesInner**](SwitchpointsPutRequestSwitchpointValueBadgesInner.md) |  | [optional] 
+**Children** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueChildrenInner**](SwitchpointsPutRequestSwitchpointValueChildrenInner.md) |  | [optional] 
+**TrafficMirrors** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner**](SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner.md) |  | [optional] 
+**Eths** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueEthsInner**](SwitchpointsPutRequestSwitchpointValueEthsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SwitchpointsPutRequestSwitchpointValueObjectProperties**](SwitchpointsPutRequestSwitchpointValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -499,20 +499,20 @@ HasBgpAsNumberAutoAssigned returns a boolean if a field has been set.
 
 ### GetBadges
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetBadges() []ConfigPutRequestSwitchpointSwitchpointNameBadgesInner`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetBadges() []SwitchpointsPutRequestSwitchpointValueBadgesInner`
 
 GetBadges returns the Badges field if non-nil, zero value otherwise.
 
 ### GetBadgesOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetBadgesOk() (*[]ConfigPutRequestSwitchpointSwitchpointNameBadgesInner, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetBadgesOk() (*[]SwitchpointsPutRequestSwitchpointValueBadgesInner, bool)`
 
 GetBadgesOk returns a tuple with the Badges field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBadges
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetBadges(v []ConfigPutRequestSwitchpointSwitchpointNameBadgesInner)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetBadges(v []SwitchpointsPutRequestSwitchpointValueBadgesInner)`
 
 SetBadges sets Badges field to given value.
 
@@ -524,20 +524,20 @@ HasBadges returns a boolean if a field has been set.
 
 ### GetChildren
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetChildren() []ConfigPutRequestSwitchpointSwitchpointNameChildrenInner`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetChildren() []SwitchpointsPutRequestSwitchpointValueChildrenInner`
 
 GetChildren returns the Children field if non-nil, zero value otherwise.
 
 ### GetChildrenOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetChildrenOk() (*[]ConfigPutRequestSwitchpointSwitchpointNameChildrenInner, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetChildrenOk() (*[]SwitchpointsPutRequestSwitchpointValueChildrenInner, bool)`
 
 GetChildrenOk returns a tuple with the Children field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetChildren
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetChildren(v []ConfigPutRequestSwitchpointSwitchpointNameChildrenInner)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetChildren(v []SwitchpointsPutRequestSwitchpointValueChildrenInner)`
 
 SetChildren sets Children field to given value.
 
@@ -549,20 +549,20 @@ HasChildren returns a boolean if a field has been set.
 
 ### GetTrafficMirrors
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrors() []ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrors() []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner`
 
 GetTrafficMirrors returns the TrafficMirrors field if non-nil, zero value otherwise.
 
 ### GetTrafficMirrorsOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrorsOk() (*[]ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetTrafficMirrorsOk() (*[]SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, bool)`
 
 GetTrafficMirrorsOk returns a tuple with the TrafficMirrors field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTrafficMirrors
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetTrafficMirrors(v []ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetTrafficMirrors(v []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner)`
 
 SetTrafficMirrors sets TrafficMirrors field to given value.
 
@@ -574,20 +574,20 @@ HasTrafficMirrors returns a boolean if a field has been set.
 
 ### GetEths
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetEths() []ConfigPutRequestEndpointEndpointNameEthsInner`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetEths() []SwitchpointsPutRequestSwitchpointValueEthsInner`
 
 GetEths returns the Eths field if non-nil, zero value otherwise.
 
 ### GetEthsOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetEthsOk() (*[]ConfigPutRequestEndpointEndpointNameEthsInner, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetEthsOk() (*[]SwitchpointsPutRequestSwitchpointValueEthsInner, bool)`
 
 GetEthsOk returns a tuple with the Eths field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEths
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetEths(v []ConfigPutRequestEndpointEndpointNameEthsInner)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetEths(v []SwitchpointsPutRequestSwitchpointValueEthsInner)`
 
 SetEths sets Eths field to given value.
 

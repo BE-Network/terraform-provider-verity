@@ -375,7 +375,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	name := plan.Name.ValueString()
-	spProps := openapi.ConfigPutRequestSwitchpointSwitchpointName{}
+	spProps := openapi.SwitchpointsPutRequestSwitchpointValue{}
 	spProps.Name = openapi.PtrString(name)
 
 	if !plan.DeviceSerialNumber.IsNull() {
@@ -436,9 +436,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	if len(plan.Badges) > 0 {
-		badges := make([]openapi.ConfigPutRequestSwitchpointSwitchpointNameBadgesInner, len(plan.Badges))
+		badges := make([]openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner, len(plan.Badges))
 		for i, badge := range plan.Badges {
-			badgeItem := openapi.ConfigPutRequestSwitchpointSwitchpointNameBadgesInner{}
+			badgeItem := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{}
 			if !badge.Badge.IsNull() {
 				badgeItem.Badge = openapi.PtrString(badge.Badge.ValueString())
 			}
@@ -454,9 +454,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	if len(plan.Children) > 0 {
-		children := make([]openapi.ConfigPutRequestSwitchpointSwitchpointNameChildrenInner, len(plan.Children))
+		children := make([]openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner, len(plan.Children))
 		for i, child := range plan.Children {
-			childItem := openapi.ConfigPutRequestSwitchpointSwitchpointNameChildrenInner{}
+			childItem := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{}
 			if !child.ChildNumEndpoint.IsNull() {
 				childItem.ChildNumEndpoint = openapi.PtrString(child.ChildNumEndpoint.ValueString())
 			}
@@ -475,9 +475,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	if len(plan.TrafficMirrors) > 0 {
-		mirrors := make([]openapi.ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner, len(plan.TrafficMirrors))
+		mirrors := make([]openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, len(plan.TrafficMirrors))
 		for i, mirror := range plan.TrafficMirrors {
-			mirrorItem := openapi.ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner{}
+			mirrorItem := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{}
 			if !mirror.TrafficMirrorNumEnable.IsNull() {
 				mirrorItem.TrafficMirrorNumEnable = openapi.PtrBool(mirror.TrafficMirrorNumEnable.ValueBool())
 			}
@@ -502,9 +502,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	if len(plan.Eths) > 0 {
-		eths := make([]openapi.ConfigPutRequestSwitchpointSwitchpointNameEthsInner, len(plan.Eths))
+		eths := make([]openapi.SwitchpointsPutRequestSwitchpointValueEthsInner, len(plan.Eths))
 		for i, eth := range plan.Eths {
-			ethItem := openapi.ConfigPutRequestSwitchpointSwitchpointNameEthsInner{}
+			ethItem := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{}
 			if !eth.Breakout.IsNull() {
 				ethItem.Breakout = openapi.PtrString(eth.Breakout.ValueString())
 			}
@@ -518,7 +518,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestSwitchpointSwitchpointNameObjectProperties{}
+		objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 		if !op.UserNotes.IsNull() {
 			objProps.UserNotes = openapi.PtrString(op.UserNotes.ValueString())
 		}
@@ -542,21 +542,18 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		}
 
 		if len(op.Eths) > 0 {
-			ethsSlice := make([]map[string]interface{}, len(op.Eths))
+			ethsSlice := make([]openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner, len(op.Eths))
 			for i, eth := range op.Eths {
-				ethMap := make(map[string]interface{})
+				ethItem := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{}
 				if !eth.EthNumIcon.IsNull() {
-					ethMap["eth_num_icon"] = eth.EthNumIcon.ValueString()
+					ethItem.EthNumIcon = openapi.PtrString(eth.EthNumIcon.ValueString())
 				}
 				if !eth.EthNumLabel.IsNull() {
-					ethMap["eth_num_label"] = eth.EthNumLabel.ValueString()
+					ethItem.EthNumLabel = openapi.PtrString(eth.EthNumLabel.ValueString())
 				}
-				if !eth.Index.IsNull() {
-					ethMap["index"] = int(eth.Index.ValueInt64())
-				}
-				ethsSlice[i] = ethMap
+				ethsSlice[i] = ethItem
 			}
-			objProps.Eths = &ethsSlice
+			objProps.Eths = ethsSlice
 		}
 
 		spProps.ObjectProperties = &objProps
@@ -769,7 +766,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	name := plan.Name.ValueString()
-	spProps := openapi.ConfigPutRequestSwitchpointSwitchpointName{}
+	spProps := openapi.SwitchpointsPutRequestSwitchpointValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -849,9 +846,9 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	if !r.equalBadgeArrays(plan.Badges, state.Badges) {
-		badges := make([]openapi.ConfigPutRequestSwitchpointSwitchpointNameBadgesInner, len(plan.Badges))
+		badges := make([]openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner, len(plan.Badges))
 		for i, badge := range plan.Badges {
-			badgeItem := openapi.ConfigPutRequestSwitchpointSwitchpointNameBadgesInner{}
+			badgeItem := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{}
 			if !badge.Badge.IsNull() {
 				badgeItem.Badge = openapi.PtrString(badge.Badge.ValueString())
 			}
@@ -868,9 +865,9 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	if !r.equalChildrenArrays(plan.Children, state.Children) {
-		children := make([]openapi.ConfigPutRequestSwitchpointSwitchpointNameChildrenInner, len(plan.Children))
+		children := make([]openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner, len(plan.Children))
 		for i, child := range plan.Children {
-			childItem := openapi.ConfigPutRequestSwitchpointSwitchpointNameChildrenInner{}
+			childItem := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{}
 			if !child.ChildNumEndpoint.IsNull() {
 				childItem.ChildNumEndpoint = openapi.PtrString(child.ChildNumEndpoint.ValueString())
 			}
@@ -890,9 +887,9 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	if !r.equalTrafficMirrorArrays(plan.TrafficMirrors, state.TrafficMirrors) {
-		mirrors := make([]openapi.ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner, len(plan.TrafficMirrors))
+		mirrors := make([]openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, len(plan.TrafficMirrors))
 		for i, mirror := range plan.TrafficMirrors {
-			mirrorItem := openapi.ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner{}
+			mirrorItem := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{}
 			if !mirror.TrafficMirrorNumEnable.IsNull() {
 				mirrorItem.TrafficMirrorNumEnable = openapi.PtrBool(mirror.TrafficMirrorNumEnable.ValueBool())
 			}
@@ -918,9 +915,9 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	if !r.equalEthArrays(plan.Eths, state.Eths) {
-		eths := make([]openapi.ConfigPutRequestSwitchpointSwitchpointNameEthsInner, len(plan.Eths))
+		eths := make([]openapi.SwitchpointsPutRequestSwitchpointValueEthsInner, len(plan.Eths))
 		for i, eth := range plan.Eths {
-			ethItem := openapi.ConfigPutRequestSwitchpointSwitchpointNameEthsInner{}
+			ethItem := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{}
 			if !eth.Breakout.IsNull() {
 				ethItem.Breakout = openapi.PtrString(eth.Breakout.ValueString())
 			}
@@ -936,7 +933,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
 			op := plan.ObjectProperties[0]
-			objProps := openapi.ConfigPutRequestSwitchpointSwitchpointNameObjectProperties{}
+			objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 			if !op.UserNotes.IsNull() {
 				objProps.UserNotes = openapi.PtrString(op.UserNotes.ValueString())
 			}
@@ -960,21 +957,18 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			}
 
 			if len(op.Eths) > 0 {
-				ethsSlice := make([]map[string]interface{}, len(op.Eths))
+				ethsSlice := make([]openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner, len(op.Eths))
 				for i, eth := range op.Eths {
-					ethMap := make(map[string]interface{})
+					ethItem := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{}
 					if !eth.EthNumIcon.IsNull() {
-						ethMap["eth_num_icon"] = eth.EthNumIcon.ValueString()
+						ethItem.EthNumIcon = openapi.PtrString(eth.EthNumIcon.ValueString())
 					}
 					if !eth.EthNumLabel.IsNull() {
-						ethMap["eth_num_label"] = eth.EthNumLabel.ValueString()
+						ethItem.EthNumLabel = openapi.PtrString(eth.EthNumLabel.ValueString())
 					}
-					if !eth.Index.IsNull() {
-						ethMap["index"] = int(eth.Index.ValueInt64())
-					}
-					ethsSlice[i] = ethMap
+					ethsSlice[i] = ethItem
 				}
-				objProps.Eths = &ethsSlice
+				objProps.Eths = ethsSlice
 			}
 
 			spProps.ObjectProperties = &objProps

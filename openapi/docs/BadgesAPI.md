@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## BadgesGet
 
-> BadgesGet(ctx).BadgeName(badgeName).IncludeData(includeData).Execute()
+> BadgesGet(ctx).BadgeName(badgeName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Badges
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	badgeName := "badgeName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.BadgesAPI.BadgesGet(context.Background()).BadgeName(badgeName).IncludeData(includeData).Execute()
+	r, err := apiClient.BadgesAPI.BadgesGet(context.Background()).BadgeName(badgeName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `BadgesAPI.BadgesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **badgeName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

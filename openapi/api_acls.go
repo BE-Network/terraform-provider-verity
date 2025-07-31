@@ -157,6 +157,7 @@ type ApiAclsGetRequest struct {
 	ipVersion *string
 	ipFilterName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiAclsGetRequest) IpVersion(ipVersion string) ApiAclsGetRequest {
@@ -171,6 +172,11 @@ func (r ApiAclsGetRequest) IpFilterName(ipFilterName string) ApiAclsGetRequest {
 
 func (r ApiAclsGetRequest) IncludeData(includeData bool) ApiAclsGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiAclsGetRequest) ChangesetName(changesetName string) ApiAclsGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -223,6 +229,9 @@ func (a *ACLsAPIService) AclsGetExecute(r ApiAclsGetRequest) (*http.Response, er
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
 	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "ip_version", r.ipVersion, "form", "")
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

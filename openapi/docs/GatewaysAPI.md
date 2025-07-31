@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## GatewaysGet
 
-> GatewaysGet(ctx).GatewayName(gatewayName).IncludeData(includeData).Execute()
+> GatewaysGet(ctx).GatewayName(gatewayName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all gateways
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	gatewayName := "gatewayName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.GatewaysAPI.GatewaysGet(context.Background()).GatewayName(gatewayName).IncludeData(includeData).Execute()
+	r, err := apiClient.GatewaysAPI.GatewaysGet(context.Background()).GatewayName(gatewayName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `GatewaysAPI.GatewaysGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **gatewayName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

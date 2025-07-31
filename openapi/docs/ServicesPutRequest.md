@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Service** | Pointer to [**map[string]ConfigPutRequestServiceServiceName**](ConfigPutRequestServiceServiceName.md) |  | [optional] 
+**Service** | Pointer to [**map[string]ServicesPutRequestServiceValue**](ServicesPutRequestServiceValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetService
 
-`func (o *ServicesPutRequest) GetService() map[string]ConfigPutRequestServiceServiceName`
+`func (o *ServicesPutRequest) GetService() map[string]ServicesPutRequestServiceValue`
 
 GetService returns the Service field if non-nil, zero value otherwise.
 
 ### GetServiceOk
 
-`func (o *ServicesPutRequest) GetServiceOk() (*map[string]ConfigPutRequestServiceServiceName, bool)`
+`func (o *ServicesPutRequest) GetServiceOk() (*map[string]ServicesPutRequestServiceValue, bool)`
 
 GetServiceOk returns a tuple with the Service field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetService
 
-`func (o *ServicesPutRequest) SetService(v map[string]ConfigPutRequestServiceServiceName)`
+`func (o *ServicesPutRequest) SetService(v map[string]ServicesPutRequestServiceValue)`
 
 SetService sets Service field to given value.
 

@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**PbEgressProfile** | Pointer to [**map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName**](ConfigPutRequestPbEgressProfilePbEgressProfileName.md) |  | [optional] 
+**PbEgressProfile** | Pointer to [**map[string]PacketbrokerPutRequestPbEgressProfileValue**](PacketbrokerPutRequestPbEgressProfileValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetPbEgressProfile
 
-`func (o *PacketbrokerPutRequest) GetPbEgressProfile() map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName`
+`func (o *PacketbrokerPutRequest) GetPbEgressProfile() map[string]PacketbrokerPutRequestPbEgressProfileValue`
 
 GetPbEgressProfile returns the PbEgressProfile field if non-nil, zero value otherwise.
 
 ### GetPbEgressProfileOk
 
-`func (o *PacketbrokerPutRequest) GetPbEgressProfileOk() (*map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName, bool)`
+`func (o *PacketbrokerPutRequest) GetPbEgressProfileOk() (*map[string]PacketbrokerPutRequestPbEgressProfileValue, bool)`
 
 GetPbEgressProfileOk returns a tuple with the PbEgressProfile field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPbEgressProfile
 
-`func (o *PacketbrokerPutRequest) SetPbEgressProfile(v map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName)`
+`func (o *PacketbrokerPutRequest) SetPbEgressProfile(v map[string]PacketbrokerPutRequestPbEgressProfileValue)`
 
 SetPbEgressProfile sets PbEgressProfile field to given value.
 

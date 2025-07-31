@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## PacketbrokerGet
 
-> PacketbrokerGet(ctx).PbEgressProfileName(pbEgressProfileName).IncludeData(includeData).Execute()
+> PacketbrokerGet(ctx).PbEgressProfileName(pbEgressProfileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all PB Egress Profiles
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	pbEgressProfileName := "pbEgressProfileName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PacketBrokerAPI.PacketbrokerGet(context.Background()).PbEgressProfileName(pbEgressProfileName).IncludeData(includeData).Execute()
+	r, err := apiClient.PacketBrokerAPI.PacketbrokerGet(context.Background()).PbEgressProfileName(pbEgressProfileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `PacketBrokerAPI.PacketbrokerGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **pbEgressProfileName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

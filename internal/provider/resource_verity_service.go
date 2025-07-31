@@ -46,8 +46,6 @@ type verityServiceResourceModel struct {
 	VniAutoAssigned                             types.Bool                           `tfsdk:"vni_auto_assigned_"`
 	Tenant                                      types.String                         `tfsdk:"tenant"`
 	TenantRefType                               types.String                         `tfsdk:"tenant_ref_type_"`
-	AnycastIpMask                               types.String                         `tfsdk:"anycast_ip_mask"`
-	DhcpServerIp                                types.String                         `tfsdk:"dhcp_server_ip"`
 	DhcpServerIpv4                              types.String                         `tfsdk:"dhcp_server_ipv4"`
 	DhcpServerIpv6                              types.String                         `tfsdk:"dhcp_server_ipv6"`
 	Mtu                                         types.Int64                          `tfsdk:"mtu"`
@@ -135,14 +133,6 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 			},
 			"tenant_ref_type_": schema.StringAttribute{
 				Description: "Object type for tenant field",
-				Optional:    true,
-			},
-			"anycast_ip_mask": schema.StringAttribute{
-				Description: "Static anycast gateway address for service",
-				Optional:    true,
-			},
-			"dhcp_server_ip": schema.StringAttribute{
-				Description: "IP address(s) of the DHCP server for service. May have up to four separated by commas.",
 				Optional:    true,
 			},
 			"dhcp_server_ipv4": schema.StringAttribute{
@@ -264,14 +254,14 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 
 	name := plan.Name.ValueString()
 
-	serviceReq := openapi.NewConfigPutRequestServiceServiceName()
+	serviceReq := openapi.NewServicesPutRequestServiceValue()
 	serviceReq.Name = openapi.PtrString(name)
 	if !plan.Enable.IsNull() {
 		serviceReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		objProps := openapi.ConfigPutRequestServiceServiceNameObjectProperties{}
+		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
 		op := plan.ObjectProperties[0]
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
@@ -320,12 +310,6 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	}
 	if !plan.TenantRefType.IsNull() {
 		serviceReq.TenantRefType = openapi.PtrString(plan.TenantRefType.ValueString())
-	}
-	if !plan.AnycastIpMask.IsNull() {
-		serviceReq.AnycastIpMask = openapi.PtrString(plan.AnycastIpMask.ValueString())
-	}
-	if !plan.DhcpServerIp.IsNull() {
-		serviceReq.DhcpServerIp = openapi.PtrString(plan.DhcpServerIp.ValueString())
 	}
 	if !plan.DhcpServerIpv4.IsNull() {
 		serviceReq.DhcpServerIpv4 = openapi.PtrString(plan.DhcpServerIpv4.ValueString())
@@ -578,7 +562,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	name := plan.Name.ValueString()
-	serviceReq := &openapi.ConfigPutRequestServiceServiceName{}
+	serviceReq := &openapi.ServicesPutRequestServiceValue{}
 	hasChanges := false
 
 	objPropsChanged := false
@@ -594,7 +578,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	if objPropsChanged {
 		if len(plan.ObjectProperties) > 0 {
-			objProps := openapi.ConfigPutRequestServiceServiceNameObjectProperties{}
+			objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
 			op := plan.ObjectProperties[0]
 			if !op.Group.IsNull() {
 				objProps.Group = openapi.PtrString(op.Group.ValueString())
@@ -684,16 +668,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 			}
 			hasChanges = true
 		}
-	}
-
-	if !plan.AnycastIpMask.Equal(state.AnycastIpMask) {
-		serviceReq.AnycastIpMask = openapi.PtrString(plan.AnycastIpMask.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.DhcpServerIp.Equal(state.DhcpServerIp) {
-		serviceReq.DhcpServerIp = openapi.PtrString(plan.DhcpServerIp.ValueString())
-		hasChanges = true
 	}
 
 	if !plan.DhcpServerIpv4.Equal(state.DhcpServerIpv4) {
@@ -1001,22 +975,6 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		state.TenantRefType = plan.TenantRefType
 	} else {
 		state.TenantRefType = types.StringNull()
-	}
-
-	if val, ok := serviceData["anycast_ip_mask"].(string); ok {
-		state.AnycastIpMask = types.StringValue(val)
-	} else if plan != nil && !plan.AnycastIpMask.IsNull() {
-		state.AnycastIpMask = plan.AnycastIpMask
-	} else {
-		state.AnycastIpMask = types.StringNull()
-	}
-
-	if val, ok := serviceData["dhcp_server_ip"].(string); ok {
-		state.DhcpServerIp = types.StringValue(val)
-	} else if plan != nil && !plan.DhcpServerIp.IsNull() {
-		state.DhcpServerIp = plan.DhcpServerIp
-	} else {
-		state.DhcpServerIp = types.StringNull()
 	}
 
 	if val, ok := serviceData["dhcp_server_ipv4"].(string); ok {

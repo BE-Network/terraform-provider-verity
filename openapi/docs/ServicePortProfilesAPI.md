@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## ServiceportprofilesGet
 
-> ServiceportprofilesGet(ctx).ServicePortProfileName(servicePortProfileName).IncludeData(includeData).Execute()
+> ServiceportprofilesGet(ctx).ServicePortProfileName(servicePortProfileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Service Port Profiles
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	servicePortProfileName := "servicePortProfileName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.ServicePortProfilesAPI.ServiceportprofilesGet(context.Background()).ServicePortProfileName(servicePortProfileName).IncludeData(includeData).Execute()
+	r, err := apiClient.ServicePortProfilesAPI.ServiceportprofilesGet(context.Background()).ServicePortProfileName(servicePortProfileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ServicePortProfilesAPI.ServiceportprofilesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **servicePortProfileName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

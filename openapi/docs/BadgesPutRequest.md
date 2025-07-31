@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Badge** | Pointer to [**map[string]ConfigPutRequestBadgeBadgeName**](ConfigPutRequestBadgeBadgeName.md) |  | [optional] 
+**Badge** | Pointer to [**map[string]BadgesPutRequestBadgeValue**](BadgesPutRequestBadgeValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetBadge
 
-`func (o *BadgesPutRequest) GetBadge() map[string]ConfigPutRequestBadgeBadgeName`
+`func (o *BadgesPutRequest) GetBadge() map[string]BadgesPutRequestBadgeValue`
 
 GetBadge returns the Badge field if non-nil, zero value otherwise.
 
 ### GetBadgeOk
 
-`func (o *BadgesPutRequest) GetBadgeOk() (*map[string]ConfigPutRequestBadgeBadgeName, bool)`
+`func (o *BadgesPutRequest) GetBadgeOk() (*map[string]BadgesPutRequestBadgeValue, bool)`
 
 GetBadgeOk returns a tuple with the Badge field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBadge
 
-`func (o *BadgesPutRequest) SetBadge(v map[string]ConfigPutRequestBadgeBadgeName)`
+`func (o *BadgesPutRequest) SetBadge(v map[string]BadgesPutRequestBadgeValue)`
 
 SetBadge sets Badge field to given value.
 

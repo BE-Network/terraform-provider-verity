@@ -19,7 +19,7 @@ var _ MappedNullable = &EthportsettingsPutRequest{}
 
 // EthportsettingsPutRequest struct for EthportsettingsPutRequest
 type EthportsettingsPutRequest struct {
-	EthPortSettings *map[string]ConfigPutRequestEthPortSettingsEthPortSettingsName `json:"eth_port_settings,omitempty"`
+	EthPortSettings *map[string]EthportsettingsPutRequestEthPortSettingsValue `json:"eth_port_settings,omitempty"`
 }
 
 // NewEthportsettingsPutRequest instantiates a new EthportsettingsPutRequest object
@@ -40,9 +40,9 @@ func NewEthportsettingsPutRequestWithDefaults() *EthportsettingsPutRequest {
 }
 
 // GetEthPortSettings returns the EthPortSettings field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequest) GetEthPortSettings() map[string]ConfigPutRequestEthPortSettingsEthPortSettingsName {
+func (o *EthportsettingsPutRequest) GetEthPortSettings() map[string]EthportsettingsPutRequestEthPortSettingsValue {
 	if o == nil || IsNil(o.EthPortSettings) {
-		var ret map[string]ConfigPutRequestEthPortSettingsEthPortSettingsName
+		var ret map[string]EthportsettingsPutRequestEthPortSettingsValue
 		return ret
 	}
 	return *o.EthPortSettings
@@ -50,7 +50,7 @@ func (o *EthportsettingsPutRequest) GetEthPortSettings() map[string]ConfigPutReq
 
 // GetEthPortSettingsOk returns a tuple with the EthPortSettings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequest) GetEthPortSettingsOk() (*map[string]ConfigPutRequestEthPortSettingsEthPortSettingsName, bool) {
+func (o *EthportsettingsPutRequest) GetEthPortSettingsOk() (*map[string]EthportsettingsPutRequestEthPortSettingsValue, bool) {
 	if o == nil || IsNil(o.EthPortSettings) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *EthportsettingsPutRequest) HasEthPortSettings() bool {
 	return false
 }
 
-// SetEthPortSettings gets a reference to the given map[string]ConfigPutRequestEthPortSettingsEthPortSettingsName and assigns it to the EthPortSettings field.
-func (o *EthportsettingsPutRequest) SetEthPortSettings(v map[string]ConfigPutRequestEthPortSettingsEthPortSettingsName) {
+// SetEthPortSettings gets a reference to the given map[string]EthportsettingsPutRequestEthPortSettingsValue and assigns it to the EthPortSettings field.
+func (o *EthportsettingsPutRequest) SetEthPortSettings(v map[string]EthportsettingsPutRequestEthPortSettingsValue) {
 	o.EthPortSettings = &v
 }
 

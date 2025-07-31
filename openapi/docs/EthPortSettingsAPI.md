@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## EthportsettingsGet
 
-> EthportsettingsGet(ctx).PortName(portName).IncludeData(includeData).Execute()
+> EthportsettingsGet(ctx).PortName(portName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Eth-Port Settings
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	portName := "portName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.EthPortSettingsAPI.EthportsettingsGet(context.Background()).PortName(portName).IncludeData(includeData).Execute()
+	r, err := apiClient.EthPortSettingsAPI.EthportsettingsGet(context.Background()).PortName(portName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `EthPortSettingsAPI.EthportsettingsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **portName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

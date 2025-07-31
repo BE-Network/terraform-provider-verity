@@ -45,7 +45,6 @@ type verityTenantResourceModel struct {
 	Layer3VniAutoAssigned      types.Bool                          `tfsdk:"layer_3_vni_auto_assigned_"`
 	Layer3Vlan                 types.Int64                         `tfsdk:"layer_3_vlan"`
 	Layer3VlanAutoAssigned     types.Bool                          `tfsdk:"layer_3_vlan_auto_assigned_"`
-	DhcpRelaySourceIpsSubnet   types.String                        `tfsdk:"dhcp_relay_source_ips_subnet"`
 	DhcpRelaySourceIpv4sSubnet types.String                        `tfsdk:"dhcp_relay_source_ipv4s_subnet"`
 	DhcpRelaySourceIpv6sSubnet types.String                        `tfsdk:"dhcp_relay_source_ipv6s_subnet"`
 	RouteDistinguisher         types.String                        `tfsdk:"route_distinguisher"`
@@ -126,10 +125,6 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"layer_3_vlan_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in layer_3_vlan field has been automatically assigned",
-				Optional:    true,
-			},
-			"dhcp_relay_source_ips_subnet": schema.StringAttribute{
-				Description: "Range of IP addresses used to configure the source IP of each DHCP Relay",
 				Optional:    true,
 			},
 			"dhcp_relay_source_ipv4s_subnet": schema.StringAttribute{
@@ -235,10 +230,9 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	name := plan.Name.ValueString()
 
-	tenantReq := openapi.ConfigPutRequestTenantTenantName{
+	tenantReq := openapi.TenantsPutRequestTenantValue{
 		Name:                       openapi.PtrString(name),
 		Enable:                     openapi.PtrBool(plan.Enable.ValueBool()),
-		DhcpRelaySourceIpsSubnet:   openapi.PtrString(plan.DhcpRelaySourceIpsSubnet.ValueString()),
 		DhcpRelaySourceIpv4sSubnet: openapi.PtrString(plan.DhcpRelaySourceIpv4sSubnet.ValueString()),
 		DhcpRelaySourceIpv6sSubnet: openapi.PtrString(plan.DhcpRelaySourceIpv6sSubnet.ValueString()),
 		RouteDistinguisher:         openapi.PtrString(plan.RouteDistinguisher.ValueString()),
@@ -246,11 +240,11 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		RouteTargetExport:          openapi.PtrString(plan.RouteTargetExport.ValueString()),
 		ImportRouteMap:             openapi.PtrString(plan.ImportRouteMap.ValueString()),
 		ExportRouteMap:             openapi.PtrString(plan.ExportRouteMap.ValueString()),
-		RouteTenants:               []openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{},
+		RouteTenants:               []openapi.TenantsPutRequestTenantValueRouteTenantsInner{},
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 		if !plan.ObjectProperties[0].Group.IsNull() {
 			objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 		} else {
@@ -313,7 +307,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	if len(plan.RouteTenants) > 0 {
 		for _, rt := range plan.RouteTenants {
-			tenant := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
+			tenant := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
 				Enable: openapi.PtrBool(rt.Enable.ValueBool()),
 				Tenant: openapi.PtrString(rt.Tenant.ValueString()),
 			}
@@ -527,12 +521,12 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	tenantReq := openapi.ConfigPutRequestTenantTenantName{}
+	tenantReq := openapi.TenantsPutRequestTenantValue{}
 	hasChanges := false
 
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {
@@ -613,15 +607,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 			tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
 			hasChanges = true
 		}
-	}
-
-	if !plan.DhcpRelaySourceIpsSubnet.Equal(state.DhcpRelaySourceIpsSubnet) {
-		if !plan.DhcpRelaySourceIpsSubnet.IsNull() && plan.DhcpRelaySourceIpsSubnet.ValueString() != "" {
-			tenantReq.DhcpRelaySourceIpsSubnet = openapi.PtrString(plan.DhcpRelaySourceIpsSubnet.ValueString())
-		} else {
-			tenantReq.DhcpRelaySourceIpsSubnet = openapi.PtrString("")
-		}
-		hasChanges = true
 	}
 
 	if !plan.DhcpRelaySourceIpv4sSubnet.Equal(state.DhcpRelaySourceIpv4sSubnet) {
@@ -759,7 +744,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 	}
 
-	var changedRouteTenants []openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner
+	var changedRouteTenants []openapi.TenantsPutRequestTenantValueRouteTenantsInner
 	routeTenantsChanged := false
 
 	for _, rt := range plan.RouteTenants {
@@ -772,7 +757,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 		if !exists {
 			// new route tenant, include all fields
-			tenantRoute := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
+			tenantRoute := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 
@@ -794,7 +779,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 
 		// existing route tenant, check which fields changed
-		tenantRoute := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
+		tenantRoute := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
 			Index: openapi.PtrInt32(int32(idx)),
 		}
 
@@ -831,7 +816,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 		if !found {
 			// route tenant removed - include only the index for deletion
-			deletedTenant := openapi.ConfigPutRequestTenantTenantNameRouteTenantsInner{
+			deletedTenant := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 			changedRouteTenants = append(changedRouteTenants, deletedTenant)
@@ -1026,7 +1011,6 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	}
 
 	stringFields := map[string]*types.String{
-		"dhcp_relay_source_ips_subnet":   &state.DhcpRelaySourceIpsSubnet,
 		"dhcp_relay_source_ipv4s_subnet": &state.DhcpRelaySourceIpv4sSubnet,
 		"dhcp_relay_source_ipv6s_subnet": &state.DhcpRelaySourceIpv6sSubnet,
 		"route_distinguisher":            &state.RouteDistinguisher,
@@ -1043,10 +1027,6 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 			*stateField = types.StringValue(val)
 		} else if plan != nil {
 			switch apiKey {
-			case "dhcp_relay_source_ips_subnet":
-				if !plan.DhcpRelaySourceIpsSubnet.IsNull() {
-					*stateField = plan.DhcpRelaySourceIpsSubnet
-				}
 			case "dhcp_relay_source_ipv4s_subnet":
 				if !plan.DhcpRelaySourceIpv4sSubnet.IsNull() {
 					*stateField = plan.DhcpRelaySourceIpv4sSubnet

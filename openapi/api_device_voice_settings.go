@@ -146,6 +146,7 @@ type ApiDevicevoicesettingsGetRequest struct {
 	ApiService *DeviceVoiceSettingsAPIService
 	deviceVoiceSettingsName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiDevicevoicesettingsGetRequest) DeviceVoiceSettingsName(deviceVoiceSettingsName string) ApiDevicevoicesettingsGetRequest {
@@ -155,6 +156,11 @@ func (r ApiDevicevoicesettingsGetRequest) DeviceVoiceSettingsName(deviceVoiceSet
 
 func (r ApiDevicevoicesettingsGetRequest) IncludeData(includeData bool) ApiDevicevoicesettingsGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiDevicevoicesettingsGetRequest) ChangesetName(changesetName string) ApiDevicevoicesettingsGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsGetExecute(r ApiDevic
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

@@ -146,6 +146,7 @@ type ApiEthportsettingsGetRequest struct {
 	ApiService *EthPortSettingsAPIService
 	portName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiEthportsettingsGetRequest) PortName(portName string) ApiEthportsettingsGetRequest {
@@ -155,6 +156,11 @@ func (r ApiEthportsettingsGetRequest) PortName(portName string) ApiEthportsettin
 
 func (r ApiEthportsettingsGetRequest) IncludeData(includeData bool) ApiEthportsettingsGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiEthportsettingsGetRequest) ChangesetName(changesetName string) ApiEthportsettingsGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *EthPortSettingsAPIService) EthportsettingsGetExecute(r ApiEthportsettin
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

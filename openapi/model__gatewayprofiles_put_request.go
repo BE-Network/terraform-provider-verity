@@ -19,7 +19,7 @@ var _ MappedNullable = &GatewayprofilesPutRequest{}
 
 // GatewayprofilesPutRequest struct for GatewayprofilesPutRequest
 type GatewayprofilesPutRequest struct {
-	GatewayProfile *map[string]ConfigPutRequestGatewayProfileGatewayProfileName `json:"gateway_profile,omitempty"`
+	GatewayProfile *map[string]GatewayprofilesPutRequestGatewayProfileValue `json:"gateway_profile,omitempty"`
 }
 
 // NewGatewayprofilesPutRequest instantiates a new GatewayprofilesPutRequest object
@@ -40,9 +40,9 @@ func NewGatewayprofilesPutRequestWithDefaults() *GatewayprofilesPutRequest {
 }
 
 // GetGatewayProfile returns the GatewayProfile field value if set, zero value otherwise.
-func (o *GatewayprofilesPutRequest) GetGatewayProfile() map[string]ConfigPutRequestGatewayProfileGatewayProfileName {
+func (o *GatewayprofilesPutRequest) GetGatewayProfile() map[string]GatewayprofilesPutRequestGatewayProfileValue {
 	if o == nil || IsNil(o.GatewayProfile) {
-		var ret map[string]ConfigPutRequestGatewayProfileGatewayProfileName
+		var ret map[string]GatewayprofilesPutRequestGatewayProfileValue
 		return ret
 	}
 	return *o.GatewayProfile
@@ -50,7 +50,7 @@ func (o *GatewayprofilesPutRequest) GetGatewayProfile() map[string]ConfigPutRequ
 
 // GetGatewayProfileOk returns a tuple with the GatewayProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewayprofilesPutRequest) GetGatewayProfileOk() (*map[string]ConfigPutRequestGatewayProfileGatewayProfileName, bool) {
+func (o *GatewayprofilesPutRequest) GetGatewayProfileOk() (*map[string]GatewayprofilesPutRequestGatewayProfileValue, bool) {
 	if o == nil || IsNil(o.GatewayProfile) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *GatewayprofilesPutRequest) HasGatewayProfile() bool {
 	return false
 }
 
-// SetGatewayProfile gets a reference to the given map[string]ConfigPutRequestGatewayProfileGatewayProfileName and assigns it to the GatewayProfile field.
-func (o *GatewayprofilesPutRequest) SetGatewayProfile(v map[string]ConfigPutRequestGatewayProfileGatewayProfileName) {
+// SetGatewayProfile gets a reference to the given map[string]GatewayprofilesPutRequestGatewayProfileValue and assigns it to the GatewayProfile field.
+func (o *GatewayprofilesPutRequest) SetGatewayProfile(v map[string]GatewayprofilesPutRequestGatewayProfileValue) {
 	o.GatewayProfile = &v
 }
 

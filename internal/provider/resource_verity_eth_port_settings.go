@@ -386,7 +386,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	name := plan.Name.ValueString()
 
-	ethPortSettingsReq := openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName{}
+	ethPortSettingsReq := openapi.EthportsettingsPutRequestEthPortSettingsValue{}
 	ethPortSettingsReq.Name = openapi.PtrString(name)
 	if !plan.Enable.IsNull() {
 		ethPortSettingsReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -517,7 +517,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestEthPortSettingsEthPortSettingsNameObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
@@ -538,10 +538,10 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	}
 
 	if len(plan.LldpMed) > 0 {
-		lldpMedItems := make([]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsNameLldpMedInner, len(plan.LldpMed))
+		lldpMedItems := make([]openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, len(plan.LldpMed))
 
 		for i, lldpMedItem := range plan.LldpMed {
-			item := openapi.ConfigPutRequestEthPortSettingsEthPortSettingsNameLldpMedInner{}
+			item := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
 
 			if !lldpMedItem.LldpMedRowNumEnable.IsNull() {
 				item.LldpMedRowNumEnable = openapi.PtrBool(lldpMedItem.LldpMedRowNumEnable.ValueBool())
@@ -573,7 +573,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	provCtx := r.provCtx
 	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPut(ctx, "ethportsettings", name, ethPortSettingsReq)
+	operationID := bulkOpsMgr.AddPut(ctx, "eth_port_settings", name, ethPortSettingsReq)
 
 	provCtx.NotifyOperationAdded()
 
@@ -612,7 +612,7 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 	bulkOpsMgr := provCtx.bulkOpsMgr
 	settingsName := state.Name.ValueString()
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("ethportsettings") {
+	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("eth_port_settings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping eth port settings %s verification - trusting recent successful API operation", settingsName))
 		return
 	}
@@ -1110,7 +1110,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	ethPortSettingsReq := openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName{}
+	ethPortSettingsReq := openapi.EthportsettingsPutRequestEthPortSettingsValue{}
 	hasChanges := false
 
 	objectPropertiesChanged := false
@@ -1129,7 +1129,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 
 	if objectPropertiesChanged {
 		if len(plan.ObjectProperties) > 0 {
-			objProps := openapi.ConfigPutRequestEthPortSettingsEthPortSettingsNameObjectProperties{}
+			objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {
@@ -1496,7 +1496,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	bulkMgr := provCtx.bulkOpsMgr
 	resourceName := plan.Name.ValueString()
 
-	operationID := bulkMgr.AddPatch(ctx, "ethportsettings", resourceName, ethPortSettingsReq)
+	operationID := bulkMgr.AddPatch(ctx, "eth_port_settings", resourceName, ethPortSettingsReq)
 	provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings update operation %s to complete", operationID))
@@ -1530,7 +1530,7 @@ func (r *verityEthPortSettingsResource) Delete(ctx context.Context, req resource
 
 	name := state.Name.ValueString()
 	bulkMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkMgr.AddDelete(ctx, "ethportsettings", name)
+	operationID := bulkMgr.AddDelete(ctx, "eth_port_settings", name)
 	r.provCtx.NotifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings deletion operation %s to complete", operationID))

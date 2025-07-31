@@ -83,6 +83,10 @@ Class | Method | HTTP request | Description
 *ACLsAPI* | [**AclsGet**](docs/ACLsAPI.md#aclsget) | **Get** /acls | Get all IP Filters
 *ACLsAPI* | [**AclsPatch**](docs/ACLsAPI.md#aclspatch) | **Patch** /acls | Update IP Filter
 *ACLsAPI* | [**AclsPut**](docs/ACLsAPI.md#aclsput) | **Put** /acls | Create IP Filter
+*ASPathAccessListsAPI* | [**AspathaccesslistsDelete**](docs/ASPathAccessListsAPI.md#aspathaccesslistsdelete) | **Delete** /aspathaccesslists | Delete AS Path Access Lists
+*ASPathAccessListsAPI* | [**AspathaccesslistsGet**](docs/ASPathAccessListsAPI.md#aspathaccesslistsget) | **Get** /aspathaccesslists | Get all AS Path Access Lists
+*ASPathAccessListsAPI* | [**AspathaccesslistsPatch**](docs/ASPathAccessListsAPI.md#aspathaccesslistspatch) | **Patch** /aspathaccesslists | Update AS Path Access List
+*ASPathAccessListsAPI* | [**AspathaccesslistsPut**](docs/ASPathAccessListsAPI.md#aspathaccesslistsput) | **Put** /aspathaccesslists | Create AS Path Access List
 *AuthenticatedEthPortsAPI* | [**AuthenticatedethportsDelete**](docs/AuthenticatedEthPortsAPI.md#authenticatedethportsdelete) | **Delete** /authenticatedethports | Delete Authenticated Eth-Port
 *AuthenticatedEthPortsAPI* | [**AuthenticatedethportsGet**](docs/AuthenticatedEthPortsAPI.md#authenticatedethportsget) | **Get** /authenticatedethports | Get all Authenticated Eth-Ports
 *AuthenticatedEthPortsAPI* | [**AuthenticatedethportsPatch**](docs/AuthenticatedEthPortsAPI.md#authenticatedethportspatch) | **Patch** /authenticatedethports | Update Authenticated Eth-Port
@@ -96,16 +100,18 @@ Class | Method | HTTP request | Description
 *BundlesAPI* | [**BundlesGet**](docs/BundlesAPI.md#bundlesget) | **Get** /bundles | Get all bundles
 *BundlesAPI* | [**BundlesPatch**](docs/BundlesAPI.md#bundlespatch) | **Patch** /bundles | Update bundle
 *BundlesAPI* | [**BundlesPut**](docs/BundlesAPI.md#bundlesput) | **Put** /bundles | Create bundle
-*ChangesetsAPI* | [**ChangesetsDelete**](docs/ChangesetsAPI.md#changesetsdelete) | **Delete** /changesets | Delete a changeset
-*ChangesetsAPI* | [**ChangesetsGet**](docs/ChangesetsAPI.md#changesetsget) | **Get** /changesets | Get all changes in a changeset or get the list of available changesets
-*ChangesetsAPI* | [**ChangesetsPut**](docs/ChangesetsAPI.md#changesetsput) | **Put** /changesets | Create or commit a changeset
-*ConfigAPI* | [**ConfigGet**](docs/ConfigAPI.md#configget) | **Get** /config | Get whole configuration
-*ConfigAPI* | [**ConfigPatch**](docs/ConfigAPI.md#configpatch) | **Patch** /config | Update configuration
-*ConfigAPI* | [**ConfigPut**](docs/ConfigAPI.md#configput) | **Put** /config | Create or update configuration
+*CommunityListsAPI* | [**CommunitylistsDelete**](docs/CommunityListsAPI.md#communitylistsdelete) | **Delete** /communitylists | Delete Community Lists
+*CommunityListsAPI* | [**CommunitylistsGet**](docs/CommunityListsAPI.md#communitylistsget) | **Get** /communitylists | Get all Community Lists
+*CommunityListsAPI* | [**CommunitylistsPatch**](docs/CommunityListsAPI.md#communitylistspatch) | **Patch** /communitylists | Update Community List
+*CommunityListsAPI* | [**CommunitylistsPut**](docs/CommunityListsAPI.md#communitylistsput) | **Put** /communitylists | Create Community List
 *DeviceControllersAPI* | [**DevicecontrollersDelete**](docs/DeviceControllersAPI.md#devicecontrollersdelete) | **Delete** /devicecontrollers | Delete Device Controllers
 *DeviceControllersAPI* | [**DevicecontrollersGet**](docs/DeviceControllersAPI.md#devicecontrollersget) | **Get** /devicecontrollers | Get all Device Controllers
 *DeviceControllersAPI* | [**DevicecontrollersPatch**](docs/DeviceControllersAPI.md#devicecontrollerspatch) | **Patch** /devicecontrollers | Update Device Controller
 *DeviceControllersAPI* | [**DevicecontrollersPut**](docs/DeviceControllersAPI.md#devicecontrollersput) | **Put** /devicecontrollers | Create Device Controller
+*DeviceSettingsAPI* | [**DevicesettingsDelete**](docs/DeviceSettingsAPI.md#devicesettingsdelete) | **Delete** /devicesettings | Delete Device Settings
+*DeviceSettingsAPI* | [**DevicesettingsGet**](docs/DeviceSettingsAPI.md#devicesettingsget) | **Get** /devicesettings | Get all Device Settings
+*DeviceSettingsAPI* | [**DevicesettingsPatch**](docs/DeviceSettingsAPI.md#devicesettingspatch) | **Patch** /devicesettings | Update Device Settings
+*DeviceSettingsAPI* | [**DevicesettingsPut**](docs/DeviceSettingsAPI.md#devicesettingsput) | **Put** /devicesettings | Create Device Settings
 *DeviceVoiceSettingsAPI* | [**DevicevoicesettingsDelete**](docs/DeviceVoiceSettingsAPI.md#devicevoicesettingsdelete) | **Delete** /devicevoicesettings | Delete tenant
 *DeviceVoiceSettingsAPI* | [**DevicevoicesettingsGet**](docs/DeviceVoiceSettingsAPI.md#devicevoicesettingsget) | **Get** /devicevoicesettings | Get all Device Voice Settings
 *DeviceVoiceSettingsAPI* | [**DevicevoicesettingsPatch**](docs/DeviceVoiceSettingsAPI.md#devicevoicesettingspatch) | **Patch** /devicevoicesettings | Update Device Voice Setting
@@ -118,6 +124,10 @@ Class | Method | HTTP request | Description
 *EthPortSettingsAPI* | [**EthportsettingsGet**](docs/EthPortSettingsAPI.md#ethportsettingsget) | **Get** /ethportsettings | Get all Eth-Port Settings
 *EthPortSettingsAPI* | [**EthportsettingsPatch**](docs/EthPortSettingsAPI.md#ethportsettingspatch) | **Patch** /ethportsettings | Update Eth-Port Settings
 *EthPortSettingsAPI* | [**EthportsettingsPut**](docs/EthPortSettingsAPI.md#ethportsettingsput) | **Put** /ethportsettings | Create Eth-Port Settings
+*ExtendedCommunityListsAPI* | [**ExtendedcommunitylistsDelete**](docs/ExtendedCommunityListsAPI.md#extendedcommunitylistsdelete) | **Delete** /extendedcommunitylists | Delete Extended Community List
+*ExtendedCommunityListsAPI* | [**ExtendedcommunitylistsGet**](docs/ExtendedCommunityListsAPI.md#extendedcommunitylistsget) | **Get** /extendedcommunitylists | Get all Extended Community Lists
+*ExtendedCommunityListsAPI* | [**ExtendedcommunitylistsPatch**](docs/ExtendedCommunityListsAPI.md#extendedcommunitylistspatch) | **Patch** /extendedcommunitylists | Update Extended Community List
+*ExtendedCommunityListsAPI* | [**ExtendedcommunitylistsPut**](docs/ExtendedCommunityListsAPI.md#extendedcommunitylistsput) | **Put** /extendedcommunitylists | Create Extended Community List
 *GatewayProfilesAPI* | [**GatewayprofilesDelete**](docs/GatewayProfilesAPI.md#gatewayprofilesdelete) | **Delete** /gatewayprofiles | Delete Gateway Profile
 *GatewayProfilesAPI* | [**GatewayprofilesGet**](docs/GatewayProfilesAPI.md#gatewayprofilesget) | **Get** /gatewayprofiles | Get all Gateway Profiles
 *GatewayProfilesAPI* | [**GatewayprofilesPatch**](docs/GatewayProfilesAPI.md#gatewayprofilespatch) | **Patch** /gatewayprofiles | Update Gateway Profile
@@ -126,6 +136,18 @@ Class | Method | HTTP request | Description
 *GatewaysAPI* | [**GatewaysGet**](docs/GatewaysAPI.md#gatewaysget) | **Get** /gateways | Get all gateways
 *GatewaysAPI* | [**GatewaysPatch**](docs/GatewaysAPI.md#gatewayspatch) | **Patch** /gateways | Update gateway
 *GatewaysAPI* | [**GatewaysPut**](docs/GatewaysAPI.md#gatewaysput) | **Put** /gateways | Create gateway
+*IPv4PrefixListsAPI* | [**Ipv4prefixlistsDelete**](docs/IPv4PrefixListsAPI.md#ipv4prefixlistsdelete) | **Delete** /ipv4prefixlists | Delete IPv4 Prefix List
+*IPv4PrefixListsAPI* | [**Ipv4prefixlistsGet**](docs/IPv4PrefixListsAPI.md#ipv4prefixlistsget) | **Get** /ipv4prefixlists | Get all IPv4 Prefix Lists
+*IPv4PrefixListsAPI* | [**Ipv4prefixlistsPatch**](docs/IPv4PrefixListsAPI.md#ipv4prefixlistspatch) | **Patch** /ipv4prefixlists | Update IPv4 Prefix List
+*IPv4PrefixListsAPI* | [**Ipv4prefixlistsPut**](docs/IPv4PrefixListsAPI.md#ipv4prefixlistsput) | **Put** /ipv4prefixlists | Create IPv4 Prefix List
+*IPv6PrefixListsAPI* | [**Ipv6prefixlistsDelete**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistsdelete) | **Delete** /ipv6prefixlists | Delete IPv6 Prefix List
+*IPv6PrefixListsAPI* | [**Ipv6prefixlistsGet**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistsget) | **Get** /ipv6prefixlists | Get all IPv6 Prefix Lists
+*IPv6PrefixListsAPI* | [**Ipv6prefixlistsPatch**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistspatch) | **Patch** /ipv6prefixlists | Update IPv6 Prefix List
+*IPv6PrefixListsAPI* | [**Ipv6prefixlistsPut**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistsput) | **Put** /ipv6prefixlists | Create IPv6 Prefix List
+*ImageUpdateSetsAPI* | [**ImageupdatesetsDelete**](docs/ImageUpdateSetsAPI.md#imageupdatesetsdelete) | **Delete** /imageupdatesets | Delete Image Update Set
+*ImageUpdateSetsAPI* | [**ImageupdatesetsGet**](docs/ImageUpdateSetsAPI.md#imageupdatesetsget) | **Get** /imageupdatesets | Get all Image Update Sets
+*ImageUpdateSetsAPI* | [**ImageupdatesetsPatch**](docs/ImageUpdateSetsAPI.md#imageupdatesetspatch) | **Patch** /imageupdatesets | Update Image Update Set
+*ImageUpdateSetsAPI* | [**ImageupdatesetsPut**](docs/ImageUpdateSetsAPI.md#imageupdatesetsput) | **Put** /imageupdatesets | Create Image Update Set
 *LAGsAPI* | [**LagsDelete**](docs/LAGsAPI.md#lagsdelete) | **Delete** /lags | Delete LAG
 *LAGsAPI* | [**LagsGet**](docs/LAGsAPI.md#lagsget) | **Get** /lags | Get all LAGs
 *LAGsAPI* | [**LagsPatch**](docs/LAGsAPI.md#lagspatch) | **Patch** /lags | Update LAG
@@ -138,9 +160,16 @@ Class | Method | HTTP request | Description
 *PacketQueuesAPI* | [**PacketqueuesGet**](docs/PacketQueuesAPI.md#packetqueuesget) | **Get** /packetqueues | Get all Packet Queues
 *PacketQueuesAPI* | [**PacketqueuesPatch**](docs/PacketQueuesAPI.md#packetqueuespatch) | **Patch** /packetqueues | Update Packet Queue
 *PacketQueuesAPI* | [**PacketqueuesPut**](docs/PacketQueuesAPI.md#packetqueuesput) | **Put** /packetqueues | Create Packet Queue
-*ReadModeAPI* | [**ReadmodeGet**](docs/ReadModeAPI.md#readmodeget) | **Get** /readmode | Get list of read-only switchpoints or pods
-*ReadModeAPI* | [**ReadmodePut**](docs/ReadModeAPI.md#readmodeput) | **Put** /readmode | Change read-only mode of switchpoint or pod
-*RequestAPI* | [**RequestGet**](docs/RequestAPI.md#requestget) | **Get** /request | Get miscellaneous info about the system
+*RouteMapClausesAPI* | [**RoutemapclausesDelete**](docs/RouteMapClausesAPI.md#routemapclausesdelete) | **Delete** /routemapclauses | Delete Route Map Clause
+*RouteMapClausesAPI* | [**RoutemapclausesGet**](docs/RouteMapClausesAPI.md#routemapclausesget) | **Get** /routemapclauses | Get all Route Map Clauses
+*RouteMapClausesAPI* | [**RoutemapclausesPatch**](docs/RouteMapClausesAPI.md#routemapclausespatch) | **Patch** /routemapclauses | Update Route Map Clause
+*RouteMapClausesAPI* | [**RoutemapclausesPut**](docs/RouteMapClausesAPI.md#routemapclausesput) | **Put** /routemapclauses | Create Route Map Clause
+*RouteMapsAPI* | [**RoutemapsDelete**](docs/RouteMapsAPI.md#routemapsdelete) | **Delete** /routemaps | Delete Route Map
+*RouteMapsAPI* | [**RoutemapsGet**](docs/RouteMapsAPI.md#routemapsget) | **Get** /routemaps | Get all Route Maps
+*RouteMapsAPI* | [**RoutemapsPatch**](docs/RouteMapsAPI.md#routemapspatch) | **Patch** /routemaps | Update Route Map
+*RouteMapsAPI* | [**RoutemapsPut**](docs/RouteMapsAPI.md#routemapsput) | **Put** /routemaps | Create Route Map
+*SFPBreakoutsAPI* | [**SfpbreakoutsGet**](docs/SFPBreakoutsAPI.md#sfpbreakoutsget) | **Get** /sfpbreakouts | Get all SFP Breakouts
+*SFPBreakoutsAPI* | [**SfpbreakoutsPatch**](docs/SFPBreakoutsAPI.md#sfpbreakoutspatch) | **Patch** /sfpbreakouts | Update SFP Breakout
 *ServicePortProfilesAPI* | [**ServiceportprofilesDelete**](docs/ServicePortProfilesAPI.md#serviceportprofilesdelete) | **Delete** /serviceportprofiles | Delete Service Port Profile
 *ServicePortProfilesAPI* | [**ServiceportprofilesGet**](docs/ServicePortProfilesAPI.md#serviceportprofilesget) | **Get** /serviceportprofiles | Get all Service Port Profiles
 *ServicePortProfilesAPI* | [**ServiceportprofilesPatch**](docs/ServicePortProfilesAPI.md#serviceportprofilespatch) | **Patch** /serviceportprofiles | Update Service Port Profile
@@ -149,6 +178,8 @@ Class | Method | HTTP request | Description
 *ServicesAPI* | [**ServicesGet**](docs/ServicesAPI.md#servicesget) | **Get** /services | Get all services
 *ServicesAPI* | [**ServicesPatch**](docs/ServicesAPI.md#servicespatch) | **Patch** /services | Update a service
 *ServicesAPI* | [**ServicesPut**](docs/ServicesAPI.md#servicesput) | **Put** /services | Create service
+*SitesAPI* | [**SitesGet**](docs/SitesAPI.md#sitesget) | **Get** /sites | Get all Sites
+*SitesAPI* | [**SitesPatch**](docs/SitesAPI.md#sitespatch) | **Patch** /sites | Update Site
 *SwitchpointsAPI* | [**SwitchpointsCurrentconfigGet**](docs/SwitchpointsAPI.md#switchpointscurrentconfigget) | **Get** /switchpoints/currentconfig | Get all Switchpoint current configs
 *SwitchpointsAPI* | [**SwitchpointsDelete**](docs/SwitchpointsAPI.md#switchpointsdelete) | **Delete** /switchpoints | Delete Switchpoint
 *SwitchpointsAPI* | [**SwitchpointsGet**](docs/SwitchpointsAPI.md#switchpointsget) | **Get** /switchpoints | Get all Switchpoints
@@ -170,12 +201,19 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [AclsPutRequest](docs/AclsPutRequest.md)
+ - [AclsPutRequestIpFilterValue](docs/AclsPutRequestIpFilterValue.md)
+ - [AclsPutRequestIpFilterValueObjectProperties](docs/AclsPutRequestIpFilterValueObjectProperties.md)
+ - [AspathaccesslistsPutRequest](docs/AspathaccesslistsPutRequest.md)
+ - [AspathaccesslistsPutRequestAsPathAccessListValue](docs/AspathaccesslistsPutRequestAsPathAccessListValue.md)
+ - [AspathaccesslistsPutRequestAsPathAccessListValueListsInner](docs/AspathaccesslistsPutRequestAsPathAccessListValueListsInner.md)
  - [AuthPostRequest](docs/AuthPostRequest.md)
  - [AuthPostRequestAuth](docs/AuthPostRequestAuth.md)
  - [AuthenticatedethportsPutRequest](docs/AuthenticatedethportsPutRequest.md)
+ - [AuthenticatedethportsPutRequestAuthenticatedEthPortValue](docs/AuthenticatedethportsPutRequestAuthenticatedEthPortValue.md)
+ - [AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner](docs/AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner.md)
+ - [AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties](docs/AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties.md)
  - [BadgesPutRequest](docs/BadgesPutRequest.md)
- - [BundlesPatchRequest](docs/BundlesPatchRequest.md)
- - [BundlesPatchRequestEndpointBundleValue](docs/BundlesPatchRequestEndpointBundleValue.md)
+ - [BadgesPutRequestBadgeValue](docs/BadgesPutRequestBadgeValue.md)
  - [BundlesPutRequest](docs/BundlesPutRequest.md)
  - [BundlesPutRequestEndpointBundleValue](docs/BundlesPutRequestEndpointBundleValue.md)
  - [BundlesPutRequestEndpointBundleValueEthPortPathsInner](docs/BundlesPutRequestEndpointBundleValueEthPortPathsInner.md)
@@ -183,154 +221,98 @@ Class | Method | HTTP request | Description
  - [BundlesPutRequestEndpointBundleValueRgServicesInner](docs/BundlesPutRequestEndpointBundleValueRgServicesInner.md)
  - [BundlesPutRequestEndpointBundleValueUserServicesInner](docs/BundlesPutRequestEndpointBundleValueUserServicesInner.md)
  - [BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner](docs/BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner.md)
- - [ChangesetsPutRequest](docs/ChangesetsPutRequest.md)
- - [ConfigPutRequest](docs/ConfigPutRequest.md)
- - [ConfigPutRequestAsPathAccessList](docs/ConfigPutRequestAsPathAccessList.md)
- - [ConfigPutRequestAsPathAccessListAsPathAccessListName](docs/ConfigPutRequestAsPathAccessListAsPathAccessListName.md)
- - [ConfigPutRequestAsPathAccessListAsPathAccessListNameListsInner](docs/ConfigPutRequestAsPathAccessListAsPathAccessListNameListsInner.md)
- - [ConfigPutRequestAuthenticatedEthPort](docs/ConfigPutRequestAuthenticatedEthPort.md)
- - [ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName](docs/ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName.md)
- - [ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameEthPortsInner](docs/ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameEthPortsInner.md)
- - [ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameObjectProperties](docs/ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameObjectProperties.md)
- - [ConfigPutRequestBadge](docs/ConfigPutRequestBadge.md)
- - [ConfigPutRequestBadgeBadgeName](docs/ConfigPutRequestBadgeBadgeName.md)
- - [ConfigPutRequestBizdConfig](docs/ConfigPutRequestBizdConfig.md)
- - [ConfigPutRequestBizdConfigBizdConfigName](docs/ConfigPutRequestBizdConfigBizdConfigName.md)
- - [ConfigPutRequestCommunityList](docs/ConfigPutRequestCommunityList.md)
- - [ConfigPutRequestCommunityListCommunityListName](docs/ConfigPutRequestCommunityListCommunityListName.md)
- - [ConfigPutRequestCommunityListCommunityListNameListsInner](docs/ConfigPutRequestCommunityListCommunityListNameListsInner.md)
- - [ConfigPutRequestDeviceController](docs/ConfigPutRequestDeviceController.md)
- - [ConfigPutRequestDeviceControllerDeviceControllerName](docs/ConfigPutRequestDeviceControllerDeviceControllerName.md)
- - [ConfigPutRequestDeviceVoiceSettings](docs/ConfigPutRequestDeviceVoiceSettings.md)
- - [ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName](docs/ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName.md)
- - [ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsNameCodecsInner](docs/ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsNameCodecsInner.md)
- - [ConfigPutRequestEndpoint](docs/ConfigPutRequestEndpoint.md)
- - [ConfigPutRequestEndpointBundle](docs/ConfigPutRequestEndpointBundle.md)
- - [ConfigPutRequestEndpointEndpointName](docs/ConfigPutRequestEndpointEndpointName.md)
- - [ConfigPutRequestEndpointEndpointNameChildrenInner](docs/ConfigPutRequestEndpointEndpointNameChildrenInner.md)
- - [ConfigPutRequestEndpointEndpointNameEthsInner](docs/ConfigPutRequestEndpointEndpointNameEthsInner.md)
- - [ConfigPutRequestEndpointEndpointNameObjectProperties](docs/ConfigPutRequestEndpointEndpointNameObjectProperties.md)
- - [ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner](docs/ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner.md)
- - [ConfigPutRequestEndpointView](docs/ConfigPutRequestEndpointView.md)
- - [ConfigPutRequestEndpointViewEndpointViewName](docs/ConfigPutRequestEndpointViewEndpointViewName.md)
- - [ConfigPutRequestEndpointViewEndpointViewNameOrRulesInner](docs/ConfigPutRequestEndpointViewEndpointViewNameOrRulesInner.md)
- - [ConfigPutRequestEthDeviceProfiles](docs/ConfigPutRequestEthDeviceProfiles.md)
- - [ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName](docs/ConfigPutRequestEthDeviceProfilesEthDeviceProfilesName.md)
- - [ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties](docs/ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties.md)
- - [ConfigPutRequestEthPortProfile](docs/ConfigPutRequestEthPortProfile.md)
- - [ConfigPutRequestEthPortProfileEthPortProfileName](docs/ConfigPutRequestEthPortProfileEthPortProfileName.md)
- - [ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties](docs/ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties.md)
- - [ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner](docs/ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner.md)
- - [ConfigPutRequestEthPortSettings](docs/ConfigPutRequestEthPortSettings.md)
- - [ConfigPutRequestEthPortSettingsEthPortSettingsName](docs/ConfigPutRequestEthPortSettingsEthPortSettingsName.md)
- - [ConfigPutRequestEthPortSettingsEthPortSettingsNameLldpMedInner](docs/ConfigPutRequestEthPortSettingsEthPortSettingsNameLldpMedInner.md)
- - [ConfigPutRequestEthPortSettingsEthPortSettingsNameObjectProperties](docs/ConfigPutRequestEthPortSettingsEthPortSettingsNameObjectProperties.md)
- - [ConfigPutRequestExtendedCommunityList](docs/ConfigPutRequestExtendedCommunityList.md)
- - [ConfigPutRequestExtendedCommunityListExtendedCommunityListName](docs/ConfigPutRequestExtendedCommunityListExtendedCommunityListName.md)
- - [ConfigPutRequestExtendedCommunityListExtendedCommunityListNameListsInner](docs/ConfigPutRequestExtendedCommunityListExtendedCommunityListNameListsInner.md)
- - [ConfigPutRequestFeatureFlag](docs/ConfigPutRequestFeatureFlag.md)
- - [ConfigPutRequestFeatureFlagFeatureFlagName](docs/ConfigPutRequestFeatureFlagFeatureFlagName.md)
- - [ConfigPutRequestFeatureFlagFeatureFlagNameFeatureInner](docs/ConfigPutRequestFeatureFlagFeatureFlagNameFeatureInner.md)
- - [ConfigPutRequestGateway](docs/ConfigPutRequestGateway.md)
- - [ConfigPutRequestGatewayGatewayName](docs/ConfigPutRequestGatewayGatewayName.md)
- - [ConfigPutRequestGatewayGatewayNameStaticRoutesInner](docs/ConfigPutRequestGatewayGatewayNameStaticRoutesInner.md)
- - [ConfigPutRequestGatewayProfile](docs/ConfigPutRequestGatewayProfile.md)
- - [ConfigPutRequestGatewayProfileGatewayProfileName](docs/ConfigPutRequestGatewayProfileGatewayProfileName.md)
- - [ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner](docs/ConfigPutRequestGatewayProfileGatewayProfileNameExternalGatewaysInner.md)
- - [ConfigPutRequestImageUpdateSets](docs/ConfigPutRequestImageUpdateSets.md)
- - [ConfigPutRequestImageUpdateSetsImageUpdateSetsName](docs/ConfigPutRequestImageUpdateSetsImageUpdateSetsName.md)
- - [ConfigPutRequestImageUpdateSetsImageUpdateSetsNameObjectProperties](docs/ConfigPutRequestImageUpdateSetsImageUpdateSetsNameObjectProperties.md)
- - [ConfigPutRequestImageUpdateSetsImageUpdateSetsNameSectionElseInner](docs/ConfigPutRequestImageUpdateSetsImageUpdateSetsNameSectionElseInner.md)
- - [ConfigPutRequestImageUpdateSetsImageUpdateSetsNameSectionInner](docs/ConfigPutRequestImageUpdateSetsImageUpdateSetsNameSectionInner.md)
- - [ConfigPutRequestImageUpdateSetsImageUpdateSetsNameSectionPointlessInner](docs/ConfigPutRequestImageUpdateSetsImageUpdateSetsNameSectionPointlessInner.md)
- - [ConfigPutRequestIpFilter](docs/ConfigPutRequestIpFilter.md)
- - [ConfigPutRequestIpv4Filter](docs/ConfigPutRequestIpv4Filter.md)
- - [ConfigPutRequestIpv4FilterIpv4FilterName](docs/ConfigPutRequestIpv4FilterIpv4FilterName.md)
- - [ConfigPutRequestIpv4ListFilter](docs/ConfigPutRequestIpv4ListFilter.md)
- - [ConfigPutRequestIpv4ListFilterIpv4ListFilterName](docs/ConfigPutRequestIpv4ListFilterIpv4ListFilterName.md)
- - [ConfigPutRequestIpv4PrefixList](docs/ConfigPutRequestIpv4PrefixList.md)
- - [ConfigPutRequestIpv4PrefixListIpv4PrefixListName](docs/ConfigPutRequestIpv4PrefixListIpv4PrefixListName.md)
- - [ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner](docs/ConfigPutRequestIpv4PrefixListIpv4PrefixListNameListsInner.md)
- - [ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties](docs/ConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties.md)
- - [ConfigPutRequestIpv6Filter](docs/ConfigPutRequestIpv6Filter.md)
- - [ConfigPutRequestIpv6FilterIpv6FilterName](docs/ConfigPutRequestIpv6FilterIpv6FilterName.md)
- - [ConfigPutRequestIpv6ListFilter](docs/ConfigPutRequestIpv6ListFilter.md)
- - [ConfigPutRequestIpv6ListFilterIpv6ListFilterName](docs/ConfigPutRequestIpv6ListFilterIpv6ListFilterName.md)
- - [ConfigPutRequestIpv6PrefixList](docs/ConfigPutRequestIpv6PrefixList.md)
- - [ConfigPutRequestIpv6PrefixListIpv6PrefixListName](docs/ConfigPutRequestIpv6PrefixListIpv6PrefixListName.md)
- - [ConfigPutRequestIpv6PrefixListIpv6PrefixListNameListsInner](docs/ConfigPutRequestIpv6PrefixListIpv6PrefixListNameListsInner.md)
- - [ConfigPutRequestLag](docs/ConfigPutRequestLag.md)
- - [ConfigPutRequestLagLagName](docs/ConfigPutRequestLagLagName.md)
- - [ConfigPutRequestMacFilter](docs/ConfigPutRequestMacFilter.md)
- - [ConfigPutRequestMacFilterMacFilterName](docs/ConfigPutRequestMacFilterMacFilterName.md)
- - [ConfigPutRequestMacFilterMacFilterNameAclInner](docs/ConfigPutRequestMacFilterMacFilterNameAclInner.md)
- - [ConfigPutRequestPacketQueue](docs/ConfigPutRequestPacketQueue.md)
- - [ConfigPutRequestPacketQueuePacketQueueName](docs/ConfigPutRequestPacketQueuePacketQueueName.md)
- - [ConfigPutRequestPacketQueuePacketQueueNameObjectProperties](docs/ConfigPutRequestPacketQueuePacketQueueNameObjectProperties.md)
- - [ConfigPutRequestPacketQueuePacketQueueNamePbitInner](docs/ConfigPutRequestPacketQueuePacketQueueNamePbitInner.md)
- - [ConfigPutRequestPacketQueuePacketQueueNameQueueInner](docs/ConfigPutRequestPacketQueuePacketQueueNameQueueInner.md)
- - [ConfigPutRequestPbEgressProfile](docs/ConfigPutRequestPbEgressProfile.md)
- - [ConfigPutRequestPbEgressProfilePbEgressProfileName](docs/ConfigPutRequestPbEgressProfilePbEgressProfileName.md)
- - [ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner](docs/ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner.md)
- - [ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner](docs/ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner.md)
- - [ConfigPutRequestRouteMap](docs/ConfigPutRequestRouteMap.md)
- - [ConfigPutRequestRouteMapClause](docs/ConfigPutRequestRouteMapClause.md)
- - [ConfigPutRequestRouteMapClauseRouteMapClauseName](docs/ConfigPutRequestRouteMapClauseRouteMapClauseName.md)
- - [ConfigPutRequestRouteMapClauseRouteMapClauseNameObjectProperties](docs/ConfigPutRequestRouteMapClauseRouteMapClauseNameObjectProperties.md)
- - [ConfigPutRequestRouteMapRouteMapName](docs/ConfigPutRequestRouteMapRouteMapName.md)
- - [ConfigPutRequestRouteMapRouteMapNameRouteMapClausesInner](docs/ConfigPutRequestRouteMapRouteMapNameRouteMapClausesInner.md)
- - [ConfigPutRequestService](docs/ConfigPutRequestService.md)
- - [ConfigPutRequestServicePortProfile](docs/ConfigPutRequestServicePortProfile.md)
- - [ConfigPutRequestServicePortProfileServicePortProfileName](docs/ConfigPutRequestServicePortProfileServicePortProfileName.md)
- - [ConfigPutRequestServicePortProfileServicePortProfileNameObjectProperties](docs/ConfigPutRequestServicePortProfileServicePortProfileNameObjectProperties.md)
- - [ConfigPutRequestServicePortProfileServicePortProfileNameServicesInner](docs/ConfigPutRequestServicePortProfileServicePortProfileNameServicesInner.md)
- - [ConfigPutRequestServiceServiceName](docs/ConfigPutRequestServiceServiceName.md)
- - [ConfigPutRequestServiceServiceNameObjectProperties](docs/ConfigPutRequestServiceServiceNameObjectProperties.md)
- - [ConfigPutRequestSfpBreakouts](docs/ConfigPutRequestSfpBreakouts.md)
- - [ConfigPutRequestSfpBreakoutsSfpBreakoutsName](docs/ConfigPutRequestSfpBreakoutsSfpBreakoutsName.md)
- - [ConfigPutRequestSfpBreakoutsSfpBreakoutsNameBreakoutInner](docs/ConfigPutRequestSfpBreakoutsSfpBreakoutsNameBreakoutInner.md)
- - [ConfigPutRequestSite](docs/ConfigPutRequestSite.md)
- - [ConfigPutRequestSiteSiteName](docs/ConfigPutRequestSiteSiteName.md)
- - [ConfigPutRequestSiteSiteNameIslandsInner](docs/ConfigPutRequestSiteSiteNameIslandsInner.md)
- - [ConfigPutRequestSiteSiteNameObjectProperties](docs/ConfigPutRequestSiteSiteNameObjectProperties.md)
- - [ConfigPutRequestSiteSiteNamePairsInner](docs/ConfigPutRequestSiteSiteNamePairsInner.md)
- - [ConfigPutRequestStaticConnections](docs/ConfigPutRequestStaticConnections.md)
- - [ConfigPutRequestStaticConnectionsStaticConnectionsName](docs/ConfigPutRequestStaticConnectionsStaticConnectionsName.md)
- - [ConfigPutRequestStaticConnectionsStaticConnectionsNameConnectionsInner](docs/ConfigPutRequestStaticConnectionsStaticConnectionsNameConnectionsInner.md)
- - [ConfigPutRequestStaticIp](docs/ConfigPutRequestStaticIp.md)
- - [ConfigPutRequestStaticIpStaticIpName](docs/ConfigPutRequestStaticIpStaticIpName.md)
- - [ConfigPutRequestSwitchpoint](docs/ConfigPutRequestSwitchpoint.md)
- - [ConfigPutRequestSwitchpointSwitchpointName](docs/ConfigPutRequestSwitchpointSwitchpointName.md)
- - [ConfigPutRequestSwitchpointSwitchpointNameBadgesInner](docs/ConfigPutRequestSwitchpointSwitchpointNameBadgesInner.md)
- - [ConfigPutRequestSwitchpointSwitchpointNameChildrenInner](docs/ConfigPutRequestSwitchpointSwitchpointNameChildrenInner.md)
- - [ConfigPutRequestSwitchpointSwitchpointNameEthsInner](docs/ConfigPutRequestSwitchpointSwitchpointNameEthsInner.md)
- - [ConfigPutRequestSwitchpointSwitchpointNameObjectProperties](docs/ConfigPutRequestSwitchpointSwitchpointNameObjectProperties.md)
- - [ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner](docs/ConfigPutRequestSwitchpointSwitchpointNameTrafficMirrorsInner.md)
- - [ConfigPutRequestTenant](docs/ConfigPutRequestTenant.md)
- - [ConfigPutRequestTenantTenantName](docs/ConfigPutRequestTenantTenantName.md)
- - [ConfigPutRequestTenantTenantNameRouteTenantsInner](docs/ConfigPutRequestTenantTenantNameRouteTenantsInner.md)
- - [ConfigPutRequestVoicePortProfiles](docs/ConfigPutRequestVoicePortProfiles.md)
- - [ConfigPutRequestVoicePortProfilesVoicePortProfilesName](docs/ConfigPutRequestVoicePortProfilesVoicePortProfilesName.md)
- - [ConfigPutRequestVoicePortProfilesVoicePortProfilesNameObjectProperties](docs/ConfigPutRequestVoicePortProfilesVoicePortProfilesNameObjectProperties.md)
+ - [CommunitylistsPutRequest](docs/CommunitylistsPutRequest.md)
+ - [CommunitylistsPutRequestCommunityListValue](docs/CommunitylistsPutRequestCommunityListValue.md)
+ - [CommunitylistsPutRequestCommunityListValueListsInner](docs/CommunitylistsPutRequestCommunityListValueListsInner.md)
  - [DevicecontrollersPutRequest](docs/DevicecontrollersPutRequest.md)
  - [DevicecontrollersPutRequestDeviceControllerValue](docs/DevicecontrollersPutRequestDeviceControllerValue.md)
+ - [DevicesettingsPutRequest](docs/DevicesettingsPutRequest.md)
+ - [DevicesettingsPutRequestEthDeviceProfilesValue](docs/DevicesettingsPutRequestEthDeviceProfilesValue.md)
+ - [DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties](docs/DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md)
  - [DevicevoicesettingsPutRequest](docs/DevicevoicesettingsPutRequest.md)
+ - [DevicevoicesettingsPutRequestDeviceVoiceSettingsValue](docs/DevicevoicesettingsPutRequestDeviceVoiceSettingsValue.md)
+ - [DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner](docs/DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner.md)
  - [EthportprofilesPutRequest](docs/EthportprofilesPutRequest.md)
+ - [EthportprofilesPutRequestEthPortProfileValue](docs/EthportprofilesPutRequestEthPortProfileValue.md)
+ - [EthportprofilesPutRequestEthPortProfileValueObjectProperties](docs/EthportprofilesPutRequestEthPortProfileValueObjectProperties.md)
+ - [EthportprofilesPutRequestEthPortProfileValueServicesInner](docs/EthportprofilesPutRequestEthPortProfileValueServicesInner.md)
  - [EthportsettingsPutRequest](docs/EthportsettingsPutRequest.md)
+ - [EthportsettingsPutRequestEthPortSettingsValue](docs/EthportsettingsPutRequestEthPortSettingsValue.md)
+ - [EthportsettingsPutRequestEthPortSettingsValueLldpMedInner](docs/EthportsettingsPutRequestEthPortSettingsValueLldpMedInner.md)
+ - [EthportsettingsPutRequestEthPortSettingsValueObjectProperties](docs/EthportsettingsPutRequestEthPortSettingsValueObjectProperties.md)
+ - [ExtendedcommunitylistsPutRequest](docs/ExtendedcommunitylistsPutRequest.md)
+ - [ExtendedcommunitylistsPutRequestExtendedCommunityListValue](docs/ExtendedcommunitylistsPutRequestExtendedCommunityListValue.md)
+ - [ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner](docs/ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner.md)
  - [GatewayprofilesPutRequest](docs/GatewayprofilesPutRequest.md)
+ - [GatewayprofilesPutRequestGatewayProfileValue](docs/GatewayprofilesPutRequestGatewayProfileValue.md)
+ - [GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner](docs/GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md)
  - [GatewaysPutRequest](docs/GatewaysPutRequest.md)
+ - [GatewaysPutRequestGatewayValue](docs/GatewaysPutRequestGatewayValue.md)
+ - [GatewaysPutRequestGatewayValueStaticRoutesInner](docs/GatewaysPutRequestGatewayValueStaticRoutesInner.md)
+ - [ImageupdatesetsPutRequest](docs/ImageupdatesetsPutRequest.md)
+ - [ImageupdatesetsPutRequestImageUpdateSetsValue](docs/ImageupdatesetsPutRequestImageUpdateSetsValue.md)
+ - [ImageupdatesetsPutRequestImageUpdateSetsValueObjectProperties](docs/ImageupdatesetsPutRequestImageUpdateSetsValueObjectProperties.md)
+ - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionElseInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionElseInner.md)
+ - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionInner.md)
+ - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner.md)
+ - [Ipv4prefixlistsPutRequest](docs/Ipv4prefixlistsPutRequest.md)
+ - [Ipv4prefixlistsPutRequestIpv4PrefixListValue](docs/Ipv4prefixlistsPutRequestIpv4PrefixListValue.md)
+ - [Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner](docs/Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner.md)
+ - [Ipv6prefixlistsPutRequest](docs/Ipv6prefixlistsPutRequest.md)
+ - [Ipv6prefixlistsPutRequestIpv6PrefixListValue](docs/Ipv6prefixlistsPutRequestIpv6PrefixListValue.md)
+ - [Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner](docs/Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner.md)
  - [LagsPutRequest](docs/LagsPutRequest.md)
+ - [LagsPutRequestLagValue](docs/LagsPutRequestLagValue.md)
  - [PacketbrokerPutRequest](docs/PacketbrokerPutRequest.md)
+ - [PacketbrokerPutRequestPbEgressProfileValue](docs/PacketbrokerPutRequestPbEgressProfileValue.md)
+ - [PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner](docs/PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner.md)
+ - [PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner](docs/PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner.md)
  - [PacketqueuesPutRequest](docs/PacketqueuesPutRequest.md)
+ - [PacketqueuesPutRequestPacketQueueValue](docs/PacketqueuesPutRequestPacketQueueValue.md)
+ - [PacketqueuesPutRequestPacketQueueValueObjectProperties](docs/PacketqueuesPutRequestPacketQueueValueObjectProperties.md)
+ - [PacketqueuesPutRequestPacketQueueValuePbitInner](docs/PacketqueuesPutRequestPacketQueueValuePbitInner.md)
+ - [PacketqueuesPutRequestPacketQueueValueQueueInner](docs/PacketqueuesPutRequestPacketQueueValueQueueInner.md)
+ - [RoutemapclausesPutRequest](docs/RoutemapclausesPutRequest.md)
+ - [RoutemapclausesPutRequestRouteMapClauseValue](docs/RoutemapclausesPutRequestRouteMapClauseValue.md)
+ - [RoutemapclausesPutRequestRouteMapClauseValueObjectProperties](docs/RoutemapclausesPutRequestRouteMapClauseValueObjectProperties.md)
+ - [RoutemapsPutRequest](docs/RoutemapsPutRequest.md)
+ - [RoutemapsPutRequestRouteMapValue](docs/RoutemapsPutRequestRouteMapValue.md)
+ - [RoutemapsPutRequestRouteMapValueRouteMapClausesInner](docs/RoutemapsPutRequestRouteMapValueRouteMapClausesInner.md)
  - [ServiceportprofilesPutRequest](docs/ServiceportprofilesPutRequest.md)
+ - [ServiceportprofilesPutRequestServicePortProfileValue](docs/ServiceportprofilesPutRequestServicePortProfileValue.md)
+ - [ServiceportprofilesPutRequestServicePortProfileValueObjectProperties](docs/ServiceportprofilesPutRequestServicePortProfileValueObjectProperties.md)
+ - [ServiceportprofilesPutRequestServicePortProfileValueServicesInner](docs/ServiceportprofilesPutRequestServicePortProfileValueServicesInner.md)
  - [ServicesPutRequest](docs/ServicesPutRequest.md)
+ - [ServicesPutRequestServiceValue](docs/ServicesPutRequestServiceValue.md)
+ - [ServicesPutRequestServiceValueObjectProperties](docs/ServicesPutRequestServiceValueObjectProperties.md)
+ - [SfpbreakoutsPatchRequest](docs/SfpbreakoutsPatchRequest.md)
+ - [SfpbreakoutsPatchRequestSfpBreakoutsValue](docs/SfpbreakoutsPatchRequestSfpBreakoutsValue.md)
+ - [SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner](docs/SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner.md)
+ - [SitesPatchRequest](docs/SitesPatchRequest.md)
+ - [SitesPatchRequestSiteValue](docs/SitesPatchRequestSiteValue.md)
+ - [SitesPatchRequestSiteValueIslandsInner](docs/SitesPatchRequestSiteValueIslandsInner.md)
+ - [SitesPatchRequestSiteValueObjectProperties](docs/SitesPatchRequestSiteValueObjectProperties.md)
+ - [SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner](docs/SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner.md)
+ - [SitesPatchRequestSiteValuePairsInner](docs/SitesPatchRequestSiteValuePairsInner.md)
  - [SwitchpointsMarkoutofservicePutRequest](docs/SwitchpointsMarkoutofservicePutRequest.md)
  - [SwitchpointsPutRequest](docs/SwitchpointsPutRequest.md)
+ - [SwitchpointsPutRequestEndpointValue](docs/SwitchpointsPutRequestEndpointValue.md)
+ - [SwitchpointsPutRequestEndpointValueChildrenInner](docs/SwitchpointsPutRequestEndpointValueChildrenInner.md)
+ - [SwitchpointsPutRequestEndpointValueObjectProperties](docs/SwitchpointsPutRequestEndpointValueObjectProperties.md)
  - [SwitchpointsPutRequestSwitchpointValue](docs/SwitchpointsPutRequestSwitchpointValue.md)
+ - [SwitchpointsPutRequestSwitchpointValueBadgesInner](docs/SwitchpointsPutRequestSwitchpointValueBadgesInner.md)
+ - [SwitchpointsPutRequestSwitchpointValueChildrenInner](docs/SwitchpointsPutRequestSwitchpointValueChildrenInner.md)
+ - [SwitchpointsPutRequestSwitchpointValueEthsInner](docs/SwitchpointsPutRequestSwitchpointValueEthsInner.md)
  - [SwitchpointsPutRequestSwitchpointValueObjectProperties](docs/SwitchpointsPutRequestSwitchpointValueObjectProperties.md)
+ - [SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner](docs/SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner.md)
+ - [SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner](docs/SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner.md)
  - [SwitchpointsUpgradePatchRequest](docs/SwitchpointsUpgradePatchRequest.md)
  - [TenantsPutRequest](docs/TenantsPutRequest.md)
+ - [TenantsPutRequestTenantValue](docs/TenantsPutRequestTenantValue.md)
+ - [TenantsPutRequestTenantValueRouteTenantsInner](docs/TenantsPutRequestTenantValueRouteTenantsInner.md)
  - [VoiceportprofilesPutRequest](docs/VoiceportprofilesPutRequest.md)
+ - [VoiceportprofilesPutRequestVoicePortProfilesValue](docs/VoiceportprofilesPutRequestVoicePortProfilesValue.md)
+ - [VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties](docs/VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties.md)
 
 
 ## Documentation For Authorization

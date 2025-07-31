@@ -146,6 +146,7 @@ type ApiServicesGetRequest struct {
 	ApiService *ServicesAPIService
 	serviceName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiServicesGetRequest) ServiceName(serviceName string) ApiServicesGetRequest {
@@ -155,6 +156,11 @@ func (r ApiServicesGetRequest) ServiceName(serviceName string) ApiServicesGetReq
 
 func (r ApiServicesGetRequest) IncludeData(includeData bool) ApiServicesGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiServicesGetRequest) ChangesetName(changesetName string) ApiServicesGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *ServicesAPIService) ServicesGetExecute(r ApiServicesGetRequest) (*http.
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

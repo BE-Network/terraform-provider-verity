@@ -81,7 +81,7 @@ Name | Type | Description  | Notes
 
 ## AclsGet
 
-> AclsGet(ctx).IpVersion(ipVersion).IpFilterName(ipFilterName).IncludeData(includeData).Execute()
+> AclsGet(ctx).IpVersion(ipVersion).IpFilterName(ipFilterName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all IP Filters
 
@@ -103,10 +103,11 @@ func main() {
 	ipVersion := "ipVersion_example" // string | 
 	ipFilterName := "ipFilterName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.ACLsAPI.AclsGet(context.Background()).IpVersion(ipVersion).IpFilterName(ipFilterName).IncludeData(includeData).Execute()
+	r, err := apiClient.ACLsAPI.AclsGet(context.Background()).IpVersion(ipVersion).IpFilterName(ipFilterName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ACLsAPI.AclsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -128,6 +129,7 @@ Name | Type | Description  | Notes
  **ipVersion** | **string** |  | 
  **ipFilterName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

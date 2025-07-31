@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**IpFilter** | Pointer to [**map[string]ConfigPutRequestIpv4FilterIpv4FilterName**](ConfigPutRequestIpv4FilterIpv4FilterName.md) |  | [optional] 
+**IpFilter** | Pointer to [**map[string]AclsPutRequestIpFilterValue**](AclsPutRequestIpFilterValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetIpFilter
 
-`func (o *AclsPutRequest) GetIpFilter() map[string]ConfigPutRequestIpv4FilterIpv4FilterName`
+`func (o *AclsPutRequest) GetIpFilter() map[string]AclsPutRequestIpFilterValue`
 
 GetIpFilter returns the IpFilter field if non-nil, zero value otherwise.
 
 ### GetIpFilterOk
 
-`func (o *AclsPutRequest) GetIpFilterOk() (*map[string]ConfigPutRequestIpv4FilterIpv4FilterName, bool)`
+`func (o *AclsPutRequest) GetIpFilterOk() (*map[string]AclsPutRequestIpFilterValue, bool)`
 
 GetIpFilterOk returns a tuple with the IpFilter field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpFilter
 
-`func (o *AclsPutRequest) SetIpFilter(v map[string]ConfigPutRequestIpv4FilterIpv4FilterName)`
+`func (o *AclsPutRequest) SetIpFilter(v map[string]AclsPutRequestIpFilterValue)`
 
 SetIpFilter sets IpFilter field to given value.
 

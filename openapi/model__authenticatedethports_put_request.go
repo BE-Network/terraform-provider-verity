@@ -19,7 +19,7 @@ var _ MappedNullable = &AuthenticatedethportsPutRequest{}
 
 // AuthenticatedethportsPutRequest struct for AuthenticatedethportsPutRequest
 type AuthenticatedethportsPutRequest struct {
-	AuthenticatedEthPort *map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName `json:"authenticated_eth_port,omitempty"`
+	AuthenticatedEthPort *map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue `json:"authenticated_eth_port,omitempty"`
 }
 
 // NewAuthenticatedethportsPutRequest instantiates a new AuthenticatedethportsPutRequest object
@@ -40,9 +40,9 @@ func NewAuthenticatedethportsPutRequestWithDefaults() *AuthenticatedethportsPutR
 }
 
 // GetAuthenticatedEthPort returns the AuthenticatedEthPort field value if set, zero value otherwise.
-func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPort() map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName {
+func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPort() map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue {
 	if o == nil || IsNil(o.AuthenticatedEthPort) {
-		var ret map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName
+		var ret map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue
 		return ret
 	}
 	return *o.AuthenticatedEthPort
@@ -50,7 +50,7 @@ func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPort() map[string]C
 
 // GetAuthenticatedEthPortOk returns a tuple with the AuthenticatedEthPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPortOk() (*map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName, bool) {
+func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPortOk() (*map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue, bool) {
 	if o == nil || IsNil(o.AuthenticatedEthPort) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *AuthenticatedethportsPutRequest) HasAuthenticatedEthPort() bool {
 	return false
 }
 
-// SetAuthenticatedEthPort gets a reference to the given map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName and assigns it to the AuthenticatedEthPort field.
-func (o *AuthenticatedethportsPutRequest) SetAuthenticatedEthPort(v map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName) {
+// SetAuthenticatedEthPort gets a reference to the given map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue and assigns it to the AuthenticatedEthPort field.
+func (o *AuthenticatedethportsPutRequest) SetAuthenticatedEthPort(v map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue) {
 	o.AuthenticatedEthPort = &v
 }
 

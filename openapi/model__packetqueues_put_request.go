@@ -19,7 +19,7 @@ var _ MappedNullable = &PacketqueuesPutRequest{}
 
 // PacketqueuesPutRequest struct for PacketqueuesPutRequest
 type PacketqueuesPutRequest struct {
-	PacketQueue *map[string]ConfigPutRequestPacketQueuePacketQueueName `json:"packet_queue,omitempty"`
+	PacketQueue *map[string]PacketqueuesPutRequestPacketQueueValue `json:"packet_queue,omitempty"`
 }
 
 // NewPacketqueuesPutRequest instantiates a new PacketqueuesPutRequest object
@@ -40,9 +40,9 @@ func NewPacketqueuesPutRequestWithDefaults() *PacketqueuesPutRequest {
 }
 
 // GetPacketQueue returns the PacketQueue field value if set, zero value otherwise.
-func (o *PacketqueuesPutRequest) GetPacketQueue() map[string]ConfigPutRequestPacketQueuePacketQueueName {
+func (o *PacketqueuesPutRequest) GetPacketQueue() map[string]PacketqueuesPutRequestPacketQueueValue {
 	if o == nil || IsNil(o.PacketQueue) {
-		var ret map[string]ConfigPutRequestPacketQueuePacketQueueName
+		var ret map[string]PacketqueuesPutRequestPacketQueueValue
 		return ret
 	}
 	return *o.PacketQueue
@@ -50,7 +50,7 @@ func (o *PacketqueuesPutRequest) GetPacketQueue() map[string]ConfigPutRequestPac
 
 // GetPacketQueueOk returns a tuple with the PacketQueue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketqueuesPutRequest) GetPacketQueueOk() (*map[string]ConfigPutRequestPacketQueuePacketQueueName, bool) {
+func (o *PacketqueuesPutRequest) GetPacketQueueOk() (*map[string]PacketqueuesPutRequestPacketQueueValue, bool) {
 	if o == nil || IsNil(o.PacketQueue) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *PacketqueuesPutRequest) HasPacketQueue() bool {
 	return false
 }
 
-// SetPacketQueue gets a reference to the given map[string]ConfigPutRequestPacketQueuePacketQueueName and assigns it to the PacketQueue field.
-func (o *PacketqueuesPutRequest) SetPacketQueue(v map[string]ConfigPutRequestPacketQueuePacketQueueName) {
+// SetPacketQueue gets a reference to the given map[string]PacketqueuesPutRequestPacketQueueValue and assigns it to the PacketQueue field.
+func (o *PacketqueuesPutRequest) SetPacketQueue(v map[string]PacketqueuesPutRequestPacketQueueValue) {
 	o.PacketQueue = &v
 }
 

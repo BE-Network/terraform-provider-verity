@@ -175,7 +175,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	name := plan.Name.ValueString()
-	pqProps := openapi.ConfigPutRequestPacketQueuePacketQueueName{}
+	pqProps := openapi.PacketqueuesPutRequestPacketQueueValue{}
 	pqProps.Name = openapi.PtrString(name)
 
 	if !plan.Enable.IsNull() {
@@ -183,9 +183,9 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	if len(plan.Pbit) > 0 {
-		pbitArray := make([]openapi.ConfigPutRequestPacketQueuePacketQueueNamePbitInner, len(plan.Pbit))
+		pbitArray := make([]openapi.PacketqueuesPutRequestPacketQueueValuePbitInner, len(plan.Pbit))
 		for i, pbit := range plan.Pbit {
-			pbitItem := openapi.ConfigPutRequestPacketQueuePacketQueueNamePbitInner{}
+			pbitItem := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{}
 			if !pbit.PacketQueueForPBit.IsNull() {
 				pbitItem.PacketQueueForPBit = openapi.PtrInt32(int32(pbit.PacketQueueForPBit.ValueInt64()))
 			}
@@ -198,9 +198,9 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	if len(plan.Queue) > 0 {
-		queueArray := make([]openapi.ConfigPutRequestPacketQueuePacketQueueNameQueueInner, len(plan.Queue))
+		queueArray := make([]openapi.PacketqueuesPutRequestPacketQueueValueQueueInner, len(plan.Queue))
 		for i, queue := range plan.Queue {
-			queueItem := openapi.ConfigPutRequestPacketQueuePacketQueueNameQueueInner{}
+			queueItem := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{}
 			if !queue.BandwidthForQueue.IsNull() {
 				val := int32(queue.BandwidthForQueue.ValueInt64())
 				queueItem.BandwidthForQueue = *openapi.NewNullableInt32(&val)
@@ -226,7 +226,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestPacketQueuePacketQueueNameObjectProperties{}
+		objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
 		if !op.IsDefault.IsNull() {
 			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
 		}
@@ -236,7 +236,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		pqProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "packetqueue", name, pqProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "packet_queue", name, pqProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for packet queue creation operation %s to complete", operationID))
@@ -272,7 +272,7 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 
 	pqName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packetqueue") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packet_queue") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Packet Queue %s verification – trusting recent successful API operation", pqName))
 		return
 	}
@@ -492,7 +492,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	name := plan.Name.ValueString()
-	pqProps := openapi.ConfigPutRequestPacketQueuePacketQueueName{}
+	pqProps := openapi.PacketqueuesPutRequestPacketQueueValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -506,9 +506,9 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	if !r.equalPbitArrays(plan.Pbit, state.Pbit) {
-		pbitArray := make([]openapi.ConfigPutRequestPacketQueuePacketQueueNamePbitInner, len(plan.Pbit))
+		pbitArray := make([]openapi.PacketqueuesPutRequestPacketQueueValuePbitInner, len(plan.Pbit))
 		for i, pbit := range plan.Pbit {
-			pbitItem := openapi.ConfigPutRequestPacketQueuePacketQueueNamePbitInner{}
+			pbitItem := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{}
 			if !pbit.PacketQueueForPBit.IsNull() {
 				pbitItem.PacketQueueForPBit = openapi.PtrInt32(int32(pbit.PacketQueueForPBit.ValueInt64()))
 			}
@@ -522,9 +522,9 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	if !r.equalQueueArrays(plan.Queue, state.Queue) {
-		queueArray := make([]openapi.ConfigPutRequestPacketQueuePacketQueueNameQueueInner, len(plan.Queue))
+		queueArray := make([]openapi.PacketqueuesPutRequestPacketQueueValueQueueInner, len(plan.Queue))
 		for i, queue := range plan.Queue {
-			queueItem := openapi.ConfigPutRequestPacketQueuePacketQueueNameQueueInner{}
+			queueItem := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{}
 			if !queue.BandwidthForQueue.IsNull() {
 				val := int32(queue.BandwidthForQueue.ValueInt64())
 				queueItem.BandwidthForQueue = *openapi.NewNullableInt32(&val)
@@ -553,7 +553,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		if len(state.ObjectProperties) == 0 ||
 			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) ||
 			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.ConfigPutRequestPacketQueuePacketQueueNameObjectProperties{}
+			objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
 			if !plan.ObjectProperties[0].IsDefault.IsNull() {
 				objProps.Isdefault = openapi.PtrBool(plan.ObjectProperties[0].IsDefault.ValueBool())
 			}
@@ -570,7 +570,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "packetqueue", name, pqProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "packet_queue", name, pqProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Packet Queue update operation %s to complete", operationID))
@@ -602,7 +602,7 @@ func (r *verityPacketQueueResource) Delete(ctx context.Context, req resource.Del
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "packetqueue", name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "packet_queue", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Packet Queue deletion operation %s to complete", operationID))

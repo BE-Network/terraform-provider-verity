@@ -450,7 +450,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 	}
 
 	name := plan.Name.ValueString()
-	dvsProps := openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName{}
+	dvsProps := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
 	dvsProps.Name = openapi.PtrString(name)
 
 	if !plan.Enable.IsNull() {
@@ -692,9 +692,9 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 	}
 
 	if len(plan.Codecs) > 0 {
-		codecs := make([]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsNameCodecsInner, len(plan.Codecs))
+		codecs := make([]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, len(plan.Codecs))
 		for i, codec := range plan.Codecs {
-			codecItem := openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsNameCodecsInner{}
+			codecItem := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
 			if !codec.CodecNumName.IsNull() {
 				codecItem.CodecNumName = openapi.PtrString(codec.CodecNumName.ValueString())
 			}
@@ -717,7 +717,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestPacketQueuePacketQueueNameObjectProperties{}
+		objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
 		if !op.IsDefault.IsNull() {
 			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
 		}
@@ -727,7 +727,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		dvsProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "devicevoicesettings", name, dvsProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "device_voice_settings", name, dvsProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for device voice settings creation operation %s to complete", operationID))
@@ -763,7 +763,7 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 
 	dvsName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("devicevoicesettings") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("device_voice_settings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Device Voice Settings %s verification – trusting recent successful API operation", dvsName))
 		return
 	}
@@ -1052,7 +1052,7 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	}
 
 	name := plan.Name.ValueString()
-	dvsProps := openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName{}
+	dvsProps := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -1171,9 +1171,9 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		hasChanges = true
 	}
 	if !r.equalCodecArrays(plan.Codecs, state.Codecs) {
-		codecs := make([]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsNameCodecsInner, len(plan.Codecs))
+		codecs := make([]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, len(plan.Codecs))
 		for i, codec := range plan.Codecs {
-			codecItem := openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsNameCodecsInner{}
+			codecItem := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
 			if !codec.CodecNumName.IsNull() {
 				codecItem.CodecNumName = openapi.PtrString(codec.CodecNumName.ValueString())
 			}
@@ -1198,7 +1198,7 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
 			op := plan.ObjectProperties[0]
-			objProps := openapi.ConfigPutRequestPacketQueuePacketQueueNameObjectProperties{}
+			objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
 			if !op.IsDefault.IsNull() {
 				objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
 			}
@@ -1215,7 +1215,7 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "devicevoicesettings", name, dvsProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "device_voice_settings", name, dvsProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Voice Settings update operation %s to complete", operationID))
@@ -1247,7 +1247,7 @@ func (r *verityDeviceVoiceSettingsResource) Delete(ctx context.Context, req reso
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "devicevoicesettings", name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "device_voice_settings", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Voice Settings deletion operation %s to complete", operationID))

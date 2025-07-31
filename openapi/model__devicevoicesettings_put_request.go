@@ -19,7 +19,7 @@ var _ MappedNullable = &DevicevoicesettingsPutRequest{}
 
 // DevicevoicesettingsPutRequest struct for DevicevoicesettingsPutRequest
 type DevicevoicesettingsPutRequest struct {
-	DeviceVoiceSettings *map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName `json:"device_voice_settings,omitempty"`
+	DeviceVoiceSettings *map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue `json:"device_voice_settings,omitempty"`
 }
 
 // NewDevicevoicesettingsPutRequest instantiates a new DevicevoicesettingsPutRequest object
@@ -40,9 +40,9 @@ func NewDevicevoicesettingsPutRequestWithDefaults() *DevicevoicesettingsPutReque
 }
 
 // GetDeviceVoiceSettings returns the DeviceVoiceSettings field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettings() map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName {
+func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettings() map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue {
 	if o == nil || IsNil(o.DeviceVoiceSettings) {
-		var ret map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName
+		var ret map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue
 		return ret
 	}
 	return *o.DeviceVoiceSettings
@@ -50,7 +50,7 @@ func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettings() map[string]Conf
 
 // GetDeviceVoiceSettingsOk returns a tuple with the DeviceVoiceSettings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettingsOk() (*map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName, bool) {
+func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettingsOk() (*map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue, bool) {
 	if o == nil || IsNil(o.DeviceVoiceSettings) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *DevicevoicesettingsPutRequest) HasDeviceVoiceSettings() bool {
 	return false
 }
 
-// SetDeviceVoiceSettings gets a reference to the given map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName and assigns it to the DeviceVoiceSettings field.
-func (o *DevicevoicesettingsPutRequest) SetDeviceVoiceSettings(v map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName) {
+// SetDeviceVoiceSettings gets a reference to the given map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue and assigns it to the DeviceVoiceSettings field.
+func (o *DevicevoicesettingsPutRequest) SetDeviceVoiceSettings(v map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) {
 	o.DeviceVoiceSettings = &v
 }
 

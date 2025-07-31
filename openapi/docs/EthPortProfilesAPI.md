@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## EthportprofilesGet
 
-> EthportprofilesGet(ctx).ProfileName(profileName).IncludeData(includeData).Execute()
+> EthportprofilesGet(ctx).ProfileName(profileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Eth-Port Profiles
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	profileName := "profileName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.EthPortProfilesAPI.EthportprofilesGet(context.Background()).ProfileName(profileName).IncludeData(includeData).Execute()
+	r, err := apiClient.EthPortProfilesAPI.EthportprofilesGet(context.Background()).ProfileName(profileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `EthPortProfilesAPI.EthportprofilesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **profileName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

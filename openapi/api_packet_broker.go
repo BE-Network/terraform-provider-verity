@@ -146,6 +146,7 @@ type ApiPacketbrokerGetRequest struct {
 	ApiService *PacketBrokerAPIService
 	pbEgressProfileName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiPacketbrokerGetRequest) PbEgressProfileName(pbEgressProfileName string) ApiPacketbrokerGetRequest {
@@ -155,6 +156,11 @@ func (r ApiPacketbrokerGetRequest) PbEgressProfileName(pbEgressProfileName strin
 
 func (r ApiPacketbrokerGetRequest) IncludeData(includeData bool) ApiPacketbrokerGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiPacketbrokerGetRequest) ChangesetName(changesetName string) ApiPacketbrokerGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *PacketBrokerAPIService) PacketbrokerGetExecute(r ApiPacketbrokerGetRequ
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

@@ -221,7 +221,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 
 	name := plan.Name.ValueString()
 
-	ethPortName := openapi.ConfigPutRequestEthPortProfileEthPortProfileName{}
+	ethPortName := openapi.EthportprofilesPutRequestEthPortProfileValue{}
 	ethPortName.Name = openapi.PtrString(name)
 	ethPortName.Enable = openapi.PtrBool(plan.Enable.ValueBool())
 	ethPortName.TenantSliceManaged = openapi.PtrBool(plan.TenantSliceManaged.ValueBool())
@@ -243,7 +243,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		objProps := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties{}
+		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
 		objProp := plan.ObjectProperties[0]
 
 		if !objProp.Group.IsNull() {
@@ -274,10 +274,10 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	if len(plan.Services) > 0 {
-		services := make([]openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner, len(plan.Services))
+		services := make([]openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner, len(plan.Services))
 
 		for i, service := range plan.Services {
-			s := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner{}
+			s := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
 
 			if !service.RowNumEnable.IsNull() {
 				s.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
@@ -320,7 +320,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		ethPortName.Services = services
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "ethportprofile", name, ethPortName)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "eth_port_profile", name, ethPortName)
 
 	r.notifyOperationAdded()
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile creation operation %s to complete", operationID))
@@ -356,7 +356,7 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 
 	profileName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ethportprofile") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("eth_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping eth port profile %s verification - trusting recent successful API operation", profileName))
 		return
 	}
@@ -628,7 +628,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	}
 
 	name := plan.Name.ValueString()
-	ethPortName := openapi.ConfigPutRequestEthPortProfileEthPortProfileName{}
+	ethPortName := openapi.EthportprofilesPutRequestEthPortProfileValue{}
 
 	hasChanges := false
 
@@ -669,7 +669,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		!plan.ObjectProperties[0].Label.Equal(state.ObjectProperties[0].Label) ||
 		!plan.ObjectProperties[0].Icon.Equal(state.ObjectProperties[0].Icon)) {
 
-		objProps := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameObjectProperties{}
+		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
 		hasObjPropsChanges := false
 
 		if len(plan.ObjectProperties) > 0 {
@@ -728,7 +728,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	var changedServices []openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner
+	var changedServices []openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner
 	servicesChanged := false
 
 	for _, service := range plan.Services {
@@ -741,7 +741,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 		if !exists {
 			// new service, include all fields
-			s := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner{
+			s := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
 				Index: openapi.PtrInt32(int32(index)),
 			}
 
@@ -811,7 +811,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		}
 
 		// existing service, check which fields changed
-		s := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner{
+		s := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
 			Index: openapi.PtrInt32(int32(index)),
 		}
 
@@ -917,7 +917,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 		if !found {
 			// service removed - include only the index for deletion
-			deletedService := openapi.ConfigPutRequestEthPortProfileEthPortProfileNameServicesInner{
+			deletedService := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 			changedServices = append(changedServices, deletedService)
@@ -935,7 +935,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "ethportprofile", name, ethPortName)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "eth_port_profile", name, ethPortName)
 	r.notifyOperationAdded()
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile update operation %s to complete", operationID))
 
@@ -970,7 +970,7 @@ func (r *verityEthPortProfileResource) Delete(ctx context.Context, req resource.
 
 	name := state.Name.ValueString()
 
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "ethportprofile", name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "eth_port_profile", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile deletion operation %s to complete", operationID))

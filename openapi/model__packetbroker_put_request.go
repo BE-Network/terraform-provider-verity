@@ -19,7 +19,7 @@ var _ MappedNullable = &PacketbrokerPutRequest{}
 
 // PacketbrokerPutRequest struct for PacketbrokerPutRequest
 type PacketbrokerPutRequest struct {
-	PbEgressProfile *map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName `json:"pb_egress_profile,omitempty"`
+	PbEgressProfile *map[string]PacketbrokerPutRequestPbEgressProfileValue `json:"pb_egress_profile,omitempty"`
 }
 
 // NewPacketbrokerPutRequest instantiates a new PacketbrokerPutRequest object
@@ -40,9 +40,9 @@ func NewPacketbrokerPutRequestWithDefaults() *PacketbrokerPutRequest {
 }
 
 // GetPbEgressProfile returns the PbEgressProfile field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequest) GetPbEgressProfile() map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName {
+func (o *PacketbrokerPutRequest) GetPbEgressProfile() map[string]PacketbrokerPutRequestPbEgressProfileValue {
 	if o == nil || IsNil(o.PbEgressProfile) {
-		var ret map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName
+		var ret map[string]PacketbrokerPutRequestPbEgressProfileValue
 		return ret
 	}
 	return *o.PbEgressProfile
@@ -50,7 +50,7 @@ func (o *PacketbrokerPutRequest) GetPbEgressProfile() map[string]ConfigPutReques
 
 // GetPbEgressProfileOk returns a tuple with the PbEgressProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequest) GetPbEgressProfileOk() (*map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName, bool) {
+func (o *PacketbrokerPutRequest) GetPbEgressProfileOk() (*map[string]PacketbrokerPutRequestPbEgressProfileValue, bool) {
 	if o == nil || IsNil(o.PbEgressProfile) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *PacketbrokerPutRequest) HasPbEgressProfile() bool {
 	return false
 }
 
-// SetPbEgressProfile gets a reference to the given map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName and assigns it to the PbEgressProfile field.
-func (o *PacketbrokerPutRequest) SetPbEgressProfile(v map[string]ConfigPutRequestPbEgressProfilePbEgressProfileName) {
+// SetPbEgressProfile gets a reference to the given map[string]PacketbrokerPutRequestPbEgressProfileValue and assigns it to the PbEgressProfile field.
+func (o *PacketbrokerPutRequest) SetPbEgressProfile(v map[string]PacketbrokerPutRequestPbEgressProfileValue) {
 	o.PbEgressProfile = &v
 }
 

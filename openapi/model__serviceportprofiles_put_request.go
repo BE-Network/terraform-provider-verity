@@ -19,7 +19,7 @@ var _ MappedNullable = &ServiceportprofilesPutRequest{}
 
 // ServiceportprofilesPutRequest struct for ServiceportprofilesPutRequest
 type ServiceportprofilesPutRequest struct {
-	ServicePortProfile *map[string]ConfigPutRequestServicePortProfileServicePortProfileName `json:"service_port_profile,omitempty"`
+	ServicePortProfile *map[string]ServiceportprofilesPutRequestServicePortProfileValue `json:"service_port_profile,omitempty"`
 }
 
 // NewServiceportprofilesPutRequest instantiates a new ServiceportprofilesPutRequest object
@@ -40,9 +40,9 @@ func NewServiceportprofilesPutRequestWithDefaults() *ServiceportprofilesPutReque
 }
 
 // GetServicePortProfile returns the ServicePortProfile field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequest) GetServicePortProfile() map[string]ConfigPutRequestServicePortProfileServicePortProfileName {
+func (o *ServiceportprofilesPutRequest) GetServicePortProfile() map[string]ServiceportprofilesPutRequestServicePortProfileValue {
 	if o == nil || IsNil(o.ServicePortProfile) {
-		var ret map[string]ConfigPutRequestServicePortProfileServicePortProfileName
+		var ret map[string]ServiceportprofilesPutRequestServicePortProfileValue
 		return ret
 	}
 	return *o.ServicePortProfile
@@ -50,7 +50,7 @@ func (o *ServiceportprofilesPutRequest) GetServicePortProfile() map[string]Confi
 
 // GetServicePortProfileOk returns a tuple with the ServicePortProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequest) GetServicePortProfileOk() (*map[string]ConfigPutRequestServicePortProfileServicePortProfileName, bool) {
+func (o *ServiceportprofilesPutRequest) GetServicePortProfileOk() (*map[string]ServiceportprofilesPutRequestServicePortProfileValue, bool) {
 	if o == nil || IsNil(o.ServicePortProfile) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *ServiceportprofilesPutRequest) HasServicePortProfile() bool {
 	return false
 }
 
-// SetServicePortProfile gets a reference to the given map[string]ConfigPutRequestServicePortProfileServicePortProfileName and assigns it to the ServicePortProfile field.
-func (o *ServiceportprofilesPutRequest) SetServicePortProfile(v map[string]ConfigPutRequestServicePortProfileServicePortProfileName) {
+// SetServicePortProfile gets a reference to the given map[string]ServiceportprofilesPutRequestServicePortProfileValue and assigns it to the ServicePortProfile field.
+func (o *ServiceportprofilesPutRequest) SetServicePortProfile(v map[string]ServiceportprofilesPutRequestServicePortProfileValue) {
 	o.ServicePortProfile = &v
 }
 

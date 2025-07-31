@@ -146,6 +146,7 @@ type ApiBundlesGetRequest struct {
 	ApiService *BundlesAPIService
 	bundleName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiBundlesGetRequest) BundleName(bundleName string) ApiBundlesGetRequest {
@@ -155,6 +156,11 @@ func (r ApiBundlesGetRequest) BundleName(bundleName string) ApiBundlesGetRequest
 
 func (r ApiBundlesGetRequest) IncludeData(includeData bool) ApiBundlesGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiBundlesGetRequest) ChangesetName(changesetName string) ApiBundlesGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *BundlesAPIService) BundlesGetExecute(r ApiBundlesGetRequest) (*http.Res
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -252,7 +261,7 @@ type ApiBundlesPatchRequest struct {
 	ctx context.Context
 	ApiService *BundlesAPIService
 	changesetName *string
-	bundlesPatchRequest *BundlesPatchRequest
+	bundlesPutRequest *BundlesPutRequest
 }
 
 func (r ApiBundlesPatchRequest) ChangesetName(changesetName string) ApiBundlesPatchRequest {
@@ -260,8 +269,8 @@ func (r ApiBundlesPatchRequest) ChangesetName(changesetName string) ApiBundlesPa
 	return r
 }
 
-func (r ApiBundlesPatchRequest) BundlesPatchRequest(bundlesPatchRequest BundlesPatchRequest) ApiBundlesPatchRequest {
-	r.bundlesPatchRequest = &bundlesPatchRequest
+func (r ApiBundlesPatchRequest) BundlesPutRequest(bundlesPutRequest BundlesPutRequest) ApiBundlesPatchRequest {
+	r.bundlesPutRequest = &bundlesPutRequest
 	return r
 }
 
@@ -325,7 +334,7 @@ func (a *BundlesAPIService) BundlesPatchExecute(r ApiBundlesPatchRequest) (*http
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.bundlesPatchRequest
+	localVarPostBody = r.bundlesPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

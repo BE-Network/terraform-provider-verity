@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**PacketQueue** | Pointer to [**map[string]ConfigPutRequestPacketQueuePacketQueueName**](ConfigPutRequestPacketQueuePacketQueueName.md) |  | [optional] 
+**PacketQueue** | Pointer to [**map[string]PacketqueuesPutRequestPacketQueueValue**](PacketqueuesPutRequestPacketQueueValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetPacketQueue
 
-`func (o *PacketqueuesPutRequest) GetPacketQueue() map[string]ConfigPutRequestPacketQueuePacketQueueName`
+`func (o *PacketqueuesPutRequest) GetPacketQueue() map[string]PacketqueuesPutRequestPacketQueueValue`
 
 GetPacketQueue returns the PacketQueue field if non-nil, zero value otherwise.
 
 ### GetPacketQueueOk
 
-`func (o *PacketqueuesPutRequest) GetPacketQueueOk() (*map[string]ConfigPutRequestPacketQueuePacketQueueName, bool)`
+`func (o *PacketqueuesPutRequest) GetPacketQueueOk() (*map[string]PacketqueuesPutRequestPacketQueueValue, bool)`
 
 GetPacketQueueOk returns a tuple with the PacketQueue field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPacketQueue
 
-`func (o *PacketqueuesPutRequest) SetPacketQueue(v map[string]ConfigPutRequestPacketQueuePacketQueueName)`
+`func (o *PacketqueuesPutRequest) SetPacketQueue(v map[string]PacketqueuesPutRequestPacketQueueValue)`
 
 SetPacketQueue sets PacketQueue field to given value.
 

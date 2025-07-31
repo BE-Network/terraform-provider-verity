@@ -121,94 +121,94 @@ type BulkOperationManager struct {
 	batchStartTime    time.Time
 
 	// Gateway operations
-	gatewayPut    map[string]openapi.ConfigPutRequestGatewayGatewayName
-	gatewayPatch  map[string]openapi.ConfigPutRequestGatewayGatewayName
+	gatewayPut    map[string]openapi.GatewaysPutRequestGatewayValue
+	gatewayPatch  map[string]openapi.GatewaysPutRequestGatewayValue
 	gatewayDelete []string
 
 	// LAG operations
-	lagPut    map[string]openapi.ConfigPutRequestLagLagName
-	lagPatch  map[string]openapi.ConfigPutRequestLagLagName
+	lagPut    map[string]openapi.LagsPutRequestLagValue
+	lagPatch  map[string]openapi.LagsPutRequestLagValue
 	lagDelete []string
 
 	// Tenant operations
-	tenantPut    map[string]openapi.ConfigPutRequestTenantTenantName
-	tenantPatch  map[string]openapi.ConfigPutRequestTenantTenantName
+	tenantPut    map[string]openapi.TenantsPutRequestTenantValue
+	tenantPatch  map[string]openapi.TenantsPutRequestTenantValue
 	tenantDelete []string
 
 	// Service operations
-	servicePut    map[string]openapi.ConfigPutRequestServiceServiceName
-	servicePatch  map[string]openapi.ConfigPutRequestServiceServiceName
+	servicePut    map[string]openapi.ServicesPutRequestServiceValue
+	servicePatch  map[string]openapi.ServicesPutRequestServiceValue
 	serviceDelete []string
 
 	// Gateway Profile operations
-	gatewayProfilePut    map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName
-	gatewayProfilePatch  map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName
+	gatewayProfilePut    map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue
+	gatewayProfilePatch  map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue
 	gatewayProfileDelete []string
 
 	// EthPortProfile operations
-	ethPortProfilePut    map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName
-	ethPortProfilePatch  map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName
+	ethPortProfilePut    map[string]openapi.EthportprofilesPutRequestEthPortProfileValue
+	ethPortProfilePatch  map[string]openapi.EthportprofilesPutRequestEthPortProfileValue
 	ethPortProfileDelete []string
 
 	// EthPortSettings operations
-	ethPortSettingsPut    map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName
-	ethPortSettingsPatch  map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName
+	ethPortSettingsPut    map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue
+	ethPortSettingsPatch  map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue
 	ethPortSettingsDelete []string
 
 	// Bundles operations
 	bundlePut    map[string]openapi.BundlesPutRequestEndpointBundleValue
-	bundlePatch  map[string]openapi.BundlesPatchRequestEndpointBundleValue
+	bundlePatch  map[string]openapi.BundlesPutRequestEndpointBundleValue
 	bundleDelete []string
 
 	// ACL operations (unified for IPv4 and IPv6)
-	aclPut       map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
-	aclPatch     map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
+	aclPut       map[string]openapi.AclsPutRequestIpFilterValue
+	aclPatch     map[string]openapi.AclsPutRequestIpFilterValue
 	aclDelete    []string
 	aclIpVersion map[string]string // Track which IP version each ACL operation uses
 
 	// Authenticated Eth-Port operations
-	authenticatedEthPortPut    map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName
-	authenticatedEthPortPatch  map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName
+	authenticatedEthPortPut    map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue
+	authenticatedEthPortPatch  map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue
 	authenticatedEthPortDelete []string
 
 	// Badge operations
-	badgePut    map[string]openapi.ConfigPutRequestBadgeBadgeName
-	badgePatch  map[string]openapi.ConfigPutRequestBadgeBadgeName
+	badgePut    map[string]openapi.BadgesPutRequestBadgeValue
+	badgePatch  map[string]openapi.BadgesPutRequestBadgeValue
 	badgeDelete []string
 
 	// Device Port Settings operations
-	deviceVoiceSettingsPut    map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName
-	deviceVoiceSettingsPatch  map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName
+	deviceVoiceSettingsPut    map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue
+	deviceVoiceSettingsPatch  map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue
 	deviceVoiceSettingsDelete []string
 
 	// Packet Broker operations
-	packetBrokerPut    map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName
-	packetBrokerPatch  map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName
+	packetBrokerPut    map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue
+	packetBrokerPatch  map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue
 	packetBrokerDelete []string
 
 	// Packet Queues operations
-	packetQueuePut    map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName
-	packetQueuePatch  map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName
+	packetQueuePut    map[string]openapi.PacketqueuesPutRequestPacketQueueValue
+	packetQueuePatch  map[string]openapi.PacketqueuesPutRequestPacketQueueValue
 	packetQueueDelete []string
 
 	// ServicePort Profile operations
-	servicePortProfilePut    map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName
-	servicePortProfilePatch  map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName
+	servicePortProfilePut    map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue
+	servicePortProfilePatch  map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue
 	servicePortProfileDelete []string
 
 	// Switchpoint operations
-	switchpointPut    map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName
-	switchpointPatch  map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName
+	switchpointPut    map[string]openapi.SwitchpointsPutRequestSwitchpointValue
+	switchpointPatch  map[string]openapi.SwitchpointsPutRequestSwitchpointValue
 	switchpointDelete []string
 
 	// Voice Port Profile operations
-	voicePortProfilePut    map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName
-	voicePortProfilePatch  map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName
+	voicePortProfilePut    map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue
+	voicePortProfilePatch  map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue
 	voicePortProfileDelete []string
 
 	// Device Controller operations
-	deviceControllerPut    map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName
-	deviceControllerPatch  map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName
+	deviceControllerPut    map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue
+	deviceControllerPatch  map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue
 	deviceControllerDelete []string
 
 	// Track recent operations to avoid race conditions
@@ -308,8 +308,8 @@ type BulkOperationManager struct {
 var resourceRegistry = map[string]ResourceConfig{
 	"gateway": {
 		ResourceType:     "gateway",
-		PutRequestType:   reflect.TypeOf(openapi.ConfigPutRequestGatewayGatewayName{}),
-		PatchRequestType: reflect.TypeOf(openapi.ConfigPutRequestGatewayGatewayName{}),
+		PutRequestType:   reflect.TypeOf(openapi.GatewaysPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.GatewaysPutRequest{}),
 		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "gateway"}
@@ -317,8 +317,8 @@ var resourceRegistry = map[string]ResourceConfig{
 	},
 	"lag": {
 		ResourceType:     "lag",
-		PutRequestType:   reflect.TypeOf(openapi.ConfigPutRequestLagLagName{}),
-		PatchRequestType: reflect.TypeOf(openapi.ConfigPutRequestLagLagName{}),
+		PutRequestType:   reflect.TypeOf(openapi.LagsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.LagsPutRequest{}),
 		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "lag"}
@@ -326,8 +326,8 @@ var resourceRegistry = map[string]ResourceConfig{
 	},
 	"tenant": {
 		ResourceType:     "tenant",
-		PutRequestType:   reflect.TypeOf(openapi.ConfigPutRequestTenantTenantName{}),
-		PatchRequestType: reflect.TypeOf(openapi.ConfigPutRequestTenantTenantName{}),
+		PutRequestType:   reflect.TypeOf(openapi.TenantsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.TenantsPutRequest{}),
 		HasAutoGen:       true,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "tenant"}
@@ -335,8 +335,8 @@ var resourceRegistry = map[string]ResourceConfig{
 	},
 	"service": {
 		ResourceType:     "service",
-		PutRequestType:   reflect.TypeOf(openapi.ConfigPutRequestServiceServiceName{}),
-		PatchRequestType: reflect.TypeOf(openapi.ConfigPutRequestServiceServiceName{}),
+		PutRequestType:   reflect.TypeOf(openapi.ServicesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.ServicesPutRequest{}),
 		HasAutoGen:       true,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "service"}
@@ -381,7 +381,7 @@ var resourceRegistry = map[string]ResourceConfig{
 	"bundle": {
 		ResourceType:     "bundle",
 		PutRequestType:   reflect.TypeOf(openapi.BundlesPutRequest{}),
-		PatchRequestType: reflect.TypeOf(openapi.BundlesPatchRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.BundlesPutRequest{}),
 		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "bundle"}
@@ -586,60 +586,60 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		clearCacheFunc:             clearCacheFunc,
 		mode:                       mode,
 		lastOperationTime:          time.Now(),
-		gatewayPut:                 make(map[string]openapi.ConfigPutRequestGatewayGatewayName),
-		gatewayPatch:               make(map[string]openapi.ConfigPutRequestGatewayGatewayName),
+		gatewayPut:                 make(map[string]openapi.GatewaysPutRequestGatewayValue),
+		gatewayPatch:               make(map[string]openapi.GatewaysPutRequestGatewayValue),
 		gatewayDelete:              make([]string, 0),
-		lagPut:                     make(map[string]openapi.ConfigPutRequestLagLagName),
-		lagPatch:                   make(map[string]openapi.ConfigPutRequestLagLagName),
+		lagPut:                     make(map[string]openapi.LagsPutRequestLagValue),
+		lagPatch:                   make(map[string]openapi.LagsPutRequestLagValue),
 		lagDelete:                  make([]string, 0),
-		tenantPut:                  make(map[string]openapi.ConfigPutRequestTenantTenantName),
-		tenantPatch:                make(map[string]openapi.ConfigPutRequestTenantTenantName),
+		tenantPut:                  make(map[string]openapi.TenantsPutRequestTenantValue),
+		tenantPatch:                make(map[string]openapi.TenantsPutRequestTenantValue),
 		tenantDelete:               make([]string, 0),
-		servicePut:                 make(map[string]openapi.ConfigPutRequestServiceServiceName),
-		servicePatch:               make(map[string]openapi.ConfigPutRequestServiceServiceName),
+		servicePut:                 make(map[string]openapi.ServicesPutRequestServiceValue),
+		servicePatch:               make(map[string]openapi.ServicesPutRequestServiceValue),
 		serviceDelete:              make([]string, 0),
-		gatewayProfilePut:          make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName),
-		gatewayProfilePatch:        make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName),
+		gatewayProfilePut:          make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
+		gatewayProfilePatch:        make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
 		gatewayProfileDelete:       make([]string, 0),
-		ethPortProfilePut:          make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName),
-		ethPortProfilePatch:        make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName),
+		ethPortProfilePut:          make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
+		ethPortProfilePatch:        make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
 		ethPortProfileDelete:       make([]string, 0),
-		ethPortSettingsPut:         make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName),
-		ethPortSettingsPatch:       make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName),
+		ethPortSettingsPut:         make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
+		ethPortSettingsPatch:       make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
 		ethPortSettingsDelete:      make([]string, 0),
 		bundlePut:                  make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
-		bundlePatch:                make(map[string]openapi.BundlesPatchRequestEndpointBundleValue),
+		bundlePatch:                make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
 		bundleDelete:               make([]string, 0),
-		aclPut:                     make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName),
-		aclPatch:                   make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName),
+		aclPut:                     make(map[string]openapi.AclsPutRequestIpFilterValue),
+		aclPatch:                   make(map[string]openapi.AclsPutRequestIpFilterValue),
 		aclDelete:                  make([]string, 0),
 		aclIpVersion:               make(map[string]string),
-		authenticatedEthPortPut:    make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName),
-		authenticatedEthPortPatch:  make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName),
+		authenticatedEthPortPut:    make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
+		authenticatedEthPortPatch:  make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
 		authenticatedEthPortDelete: make([]string, 0),
-		badgePut:                   make(map[string]openapi.ConfigPutRequestBadgeBadgeName),
-		badgePatch:                 make(map[string]openapi.ConfigPutRequestBadgeBadgeName),
+		badgePut:                   make(map[string]openapi.BadgesPutRequestBadgeValue),
+		badgePatch:                 make(map[string]openapi.BadgesPutRequestBadgeValue),
 		badgeDelete:                make([]string, 0),
-		voicePortProfilePut:        make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName),
-		voicePortProfilePatch:      make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName),
+		voicePortProfilePut:        make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
+		voicePortProfilePatch:      make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
 		voicePortProfileDelete:     make([]string, 0),
-		switchpointPut:             make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName),
-		switchpointPatch:           make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName),
+		switchpointPut:             make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
+		switchpointPatch:           make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
 		switchpointDelete:          make([]string, 0),
-		servicePortProfilePut:      make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName),
-		servicePortProfilePatch:    make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName),
+		servicePortProfilePut:      make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
+		servicePortProfilePatch:    make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
 		servicePortProfileDelete:   make([]string, 0),
-		packetBrokerPut:            make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName),
-		packetBrokerPatch:          make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName),
+		packetBrokerPut:            make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
+		packetBrokerPatch:          make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
 		packetBrokerDelete:         make([]string, 0),
-		packetQueuePut:             make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName),
-		packetQueuePatch:           make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName),
+		packetQueuePut:             make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
+		packetQueuePatch:           make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
 		packetQueueDelete:          make([]string, 0),
-		deviceVoiceSettingsPut:     make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName),
-		deviceVoiceSettingsPatch:   make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName),
+		deviceVoiceSettingsPut:     make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
+		deviceVoiceSettingsPatch:   make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
 		deviceVoiceSettingsDelete:  make([]string, 0),
-		deviceControllerPut:        make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName),
-		deviceControllerPatch:      make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName),
+		deviceControllerPut:        make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
+		deviceControllerPatch:      make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
 		deviceControllerDelete:     make([]string, 0),
 		pendingOperations:          make(map[string]*Operation),
 		operationResults:           make(map[string]bool),
@@ -1873,7 +1873,7 @@ func (g *GenericAPIClient) Patch(ctx context.Context, request interface{}) (*htt
 		req := g.client.EthPortSettingsAPI.EthportsettingsPatch(ctx).EthportsettingsPutRequest(*request.(*openapi.EthportsettingsPutRequest))
 		return req.Execute()
 	case "bundle":
-		req := g.client.BundlesAPI.BundlesPatch(ctx).BundlesPatchRequest(*request.(*openapi.BundlesPatchRequest))
+		req := g.client.BundlesAPI.BundlesPatch(ctx).BundlesPutRequest(*request.(*openapi.BundlesPutRequest))
 		return req.Execute()
 	case "acl":
 		req := g.client.ACLsAPI.AclsPatch(ctx).AclsPutRequest(*request.(*openapi.AclsPutRequest))
@@ -2045,11 +2045,11 @@ func (b *BulkOperationManager) AddDelete(ctx context.Context, resourceType, reso
 }
 
 // Special ACL methods that handle IP version tracking
-func (b *BulkOperationManager) AddAclPut(ctx context.Context, aclName string, props openapi.ConfigPutRequestIpv4FilterIpv4FilterName, ipVersion string) string {
+func (b *BulkOperationManager) AddAclPut(ctx context.Context, aclName string, props openapi.AclsPutRequestIpFilterValue, ipVersion string) string {
 	return b.addGenericOperation(ctx, "acl", aclName, "PUT", props, ipVersion)
 }
 
-func (b *BulkOperationManager) AddAclPatch(ctx context.Context, aclName string, props openapi.ConfigPutRequestIpv4FilterIpv4FilterName, ipVersion string) string {
+func (b *BulkOperationManager) AddAclPatch(ctx context.Context, aclName string, props openapi.AclsPutRequestIpFilterValue, ipVersion string) string {
 	return b.addGenericOperation(ctx, "acl", aclName, "PATCH", props, ipVersion)
 }
 
@@ -2116,26 +2116,26 @@ func (b *BulkOperationManager) ExecuteBulk(ctx context.Context, resourceType, op
 func (b *BulkOperationManager) executeBulkAcl(ctx context.Context, operationType string) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
 	b.mutex.Lock()
-	var originalOperations map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName
+	var originalOperations map[string]openapi.AclsPutRequestIpFilterValue
 	var originalIpVersions map[string]string
 
 	switch operationType {
 	case "PUT":
-		originalOperations = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+		originalOperations = make(map[string]openapi.AclsPutRequestIpFilterValue)
 		for k, v := range b.aclPut {
 			originalOperations[k] = v
 		}
-		b.aclPut = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+		b.aclPut = make(map[string]openapi.AclsPutRequestIpFilterValue)
 	case "PATCH":
-		originalOperations = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+		originalOperations = make(map[string]openapi.AclsPutRequestIpFilterValue)
 		for k, v := range b.aclPatch {
 			originalOperations[k] = v
 		}
-		b.aclPatch = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+		b.aclPatch = make(map[string]openapi.AclsPutRequestIpFilterValue)
 	case "DELETE":
-		originalOperations = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+		originalOperations = make(map[string]openapi.AclsPutRequestIpFilterValue)
 		for _, name := range b.aclDelete {
-			originalOperations[name] = openapi.ConfigPutRequestIpv4FilterIpv4FilterName{}
+			originalOperations[name] = openapi.AclsPutRequestIpFilterValue{}
 		}
 		b.aclDelete = b.aclDelete[:0]
 	}
@@ -2156,8 +2156,8 @@ func (b *BulkOperationManager) executeBulkAcl(ctx context.Context, operationType
 		return diagnostics
 	}
 
-	ipv4Data := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
-	ipv6Data := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+	ipv4Data := make(map[string]openapi.AclsPutRequestIpFilterValue)
+	ipv6Data := make(map[string]openapi.AclsPutRequestIpFilterValue)
 
 	// Process operations and extract original resource names from composite keys
 	for compositeKey, props := range originalOperations {
@@ -2200,7 +2200,7 @@ func (b *BulkOperationManager) executeBulkAcl(ctx context.Context, operationType
 	return diagnostics
 }
 
-func (b *BulkOperationManager) executeAclForIpVersion(ctx context.Context, aclData map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName, operationType, ipVersion string) diag.Diagnostics {
+func (b *BulkOperationManager) executeAclForIpVersion(ctx context.Context, aclData map[string]openapi.AclsPutRequestIpFilterValue, operationType, ipVersion string) diag.Diagnostics {
 	return b.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  fmt.Sprintf("acl_v%s", ipVersion),
 		OperationType: operationType,
@@ -2226,9 +2226,9 @@ func (b *BulkOperationManager) executeAclForIpVersion(ctx context.Context, aclDa
 				return names
 			} else {
 				request := openapi.NewAclsPutRequest()
-				aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				aclMap := make(map[string]openapi.AclsPutRequestIpFilterValue)
 				for name, props := range filteredData {
-					aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+					aclMap[name] = props.(openapi.AclsPutRequestIpFilterValue)
 				}
 				request.SetIpFilter(aclMap)
 				return request
@@ -2290,86 +2290,86 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 	case "gateway":
 		if operationType == "PUT" {
 			if b.gatewayPut == nil {
-				b.gatewayPut = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+				b.gatewayPut = make(map[string]openapi.GatewaysPutRequestGatewayValue)
 			}
-			b.gatewayPut[resourceName] = props.(openapi.ConfigPutRequestGatewayGatewayName)
+			b.gatewayPut[resourceName] = props.(openapi.GatewaysPutRequestGatewayValue)
 		} else {
 			if b.gatewayPatch == nil {
-				b.gatewayPatch = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+				b.gatewayPatch = make(map[string]openapi.GatewaysPutRequestGatewayValue)
 			}
-			b.gatewayPatch[resourceName] = props.(openapi.ConfigPutRequestGatewayGatewayName)
+			b.gatewayPatch[resourceName] = props.(openapi.GatewaysPutRequestGatewayValue)
 		}
 	case "lag":
 		if operationType == "PUT" {
 			if b.lagPut == nil {
-				b.lagPut = make(map[string]openapi.ConfigPutRequestLagLagName)
+				b.lagPut = make(map[string]openapi.LagsPutRequestLagValue)
 			}
-			b.lagPut[resourceName] = props.(openapi.ConfigPutRequestLagLagName)
+			b.lagPut[resourceName] = props.(openapi.LagsPutRequestLagValue)
 		} else {
 			if b.lagPatch == nil {
-				b.lagPatch = make(map[string]openapi.ConfigPutRequestLagLagName)
+				b.lagPatch = make(map[string]openapi.LagsPutRequestLagValue)
 			}
-			b.lagPatch[resourceName] = props.(openapi.ConfigPutRequestLagLagName)
+			b.lagPatch[resourceName] = props.(openapi.LagsPutRequestLagValue)
 		}
 	case "tenant":
 		if operationType == "PUT" {
 			if b.tenantPut == nil {
-				b.tenantPut = make(map[string]openapi.ConfigPutRequestTenantTenantName)
+				b.tenantPut = make(map[string]openapi.TenantsPutRequestTenantValue)
 			}
-			b.tenantPut[resourceName] = props.(openapi.ConfigPutRequestTenantTenantName)
+			b.tenantPut[resourceName] = props.(openapi.TenantsPutRequestTenantValue)
 		} else {
 			if b.tenantPatch == nil {
-				b.tenantPatch = make(map[string]openapi.ConfigPutRequestTenantTenantName)
+				b.tenantPatch = make(map[string]openapi.TenantsPutRequestTenantValue)
 			}
-			b.tenantPatch[resourceName] = props.(openapi.ConfigPutRequestTenantTenantName)
+			b.tenantPatch[resourceName] = props.(openapi.TenantsPutRequestTenantValue)
 		}
 	case "service":
 		if operationType == "PUT" {
 			if b.servicePut == nil {
-				b.servicePut = make(map[string]openapi.ConfigPutRequestServiceServiceName)
+				b.servicePut = make(map[string]openapi.ServicesPutRequestServiceValue)
 			}
-			b.servicePut[resourceName] = props.(openapi.ConfigPutRequestServiceServiceName)
+			b.servicePut[resourceName] = props.(openapi.ServicesPutRequestServiceValue)
 		} else {
 			if b.servicePatch == nil {
-				b.servicePatch = make(map[string]openapi.ConfigPutRequestServiceServiceName)
+				b.servicePatch = make(map[string]openapi.ServicesPutRequestServiceValue)
 			}
-			b.servicePatch[resourceName] = props.(openapi.ConfigPutRequestServiceServiceName)
+			b.servicePatch[resourceName] = props.(openapi.ServicesPutRequestServiceValue)
 		}
 	case "gateway_profile":
 		if operationType == "PUT" {
 			if b.gatewayProfilePut == nil {
-				b.gatewayProfilePut = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+				b.gatewayProfilePut = make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue)
 			}
-			b.gatewayProfilePut[resourceName] = props.(openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			b.gatewayProfilePut[resourceName] = props.(openapi.GatewayprofilesPutRequestGatewayProfileValue)
 		} else {
 			if b.gatewayProfilePatch == nil {
-				b.gatewayProfilePatch = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+				b.gatewayProfilePatch = make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue)
 			}
-			b.gatewayProfilePatch[resourceName] = props.(openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			b.gatewayProfilePatch[resourceName] = props.(openapi.GatewayprofilesPutRequestGatewayProfileValue)
 		}
 	case "eth_port_profile":
 		if operationType == "PUT" {
 			if b.ethPortProfilePut == nil {
-				b.ethPortProfilePut = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+				b.ethPortProfilePut = make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue)
 			}
-			b.ethPortProfilePut[resourceName] = props.(openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			b.ethPortProfilePut[resourceName] = props.(openapi.EthportprofilesPutRequestEthPortProfileValue)
 		} else {
 			if b.ethPortProfilePatch == nil {
-				b.ethPortProfilePatch = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+				b.ethPortProfilePatch = make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue)
 			}
-			b.ethPortProfilePatch[resourceName] = props.(openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			b.ethPortProfilePatch[resourceName] = props.(openapi.EthportprofilesPutRequestEthPortProfileValue)
 		}
 	case "eth_port_settings":
 		if operationType == "PUT" {
 			if b.ethPortSettingsPut == nil {
-				b.ethPortSettingsPut = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+				b.ethPortSettingsPut = make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue)
 			}
-			b.ethPortSettingsPut[resourceName] = props.(openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			b.ethPortSettingsPut[resourceName] = props.(openapi.EthportsettingsPutRequestEthPortSettingsValue)
 		} else {
 			if b.ethPortSettingsPatch == nil {
-				b.ethPortSettingsPatch = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+				b.ethPortSettingsPatch = make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue)
 			}
-			b.ethPortSettingsPatch[resourceName] = props.(openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			b.ethPortSettingsPatch[resourceName] = props.(openapi.EthportsettingsPutRequestEthPortSettingsValue)
 		}
 	case "bundle":
 		if operationType == "PUT" {
@@ -2379,129 +2379,129 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 			b.bundlePut[resourceName] = props.(openapi.BundlesPutRequestEndpointBundleValue)
 		} else {
 			if b.bundlePatch == nil {
-				b.bundlePatch = make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
+				b.bundlePatch = make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
 			}
-			b.bundlePatch[resourceName] = props.(openapi.BundlesPatchRequestEndpointBundleValue)
+			b.bundlePatch[resourceName] = props.(openapi.BundlesPutRequestEndpointBundleValue)
 		}
 	case "acl":
 		if operationType == "PUT" {
 			if b.aclPut == nil {
-				b.aclPut = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				b.aclPut = make(map[string]openapi.AclsPutRequestIpFilterValue)
 			}
-			b.aclPut[resourceName] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			b.aclPut[resourceName] = props.(openapi.AclsPutRequestIpFilterValue)
 		} else {
 			if b.aclPatch == nil {
-				b.aclPatch = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				b.aclPatch = make(map[string]openapi.AclsPutRequestIpFilterValue)
 			}
-			b.aclPatch[resourceName] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			b.aclPatch[resourceName] = props.(openapi.AclsPutRequestIpFilterValue)
 		}
 	case "authenticated_eth_port":
 		if operationType == "PUT" {
 			if b.authenticatedEthPortPut == nil {
-				b.authenticatedEthPortPut = make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+				b.authenticatedEthPortPut = make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
 			}
-			b.authenticatedEthPortPut[resourceName] = props.(openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			b.authenticatedEthPortPut[resourceName] = props.(openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
 		} else {
 			if b.authenticatedEthPortPatch == nil {
-				b.authenticatedEthPortPatch = make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+				b.authenticatedEthPortPatch = make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
 			}
-			b.authenticatedEthPortPatch[resourceName] = props.(openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			b.authenticatedEthPortPatch[resourceName] = props.(openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
 		}
 	case "badge":
 		if operationType == "PUT" {
 			if b.badgePut == nil {
-				b.badgePut = make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+				b.badgePut = make(map[string]openapi.BadgesPutRequestBadgeValue)
 			}
-			b.badgePut[resourceName] = props.(openapi.ConfigPutRequestBadgeBadgeName)
+			b.badgePut[resourceName] = props.(openapi.BadgesPutRequestBadgeValue)
 		} else {
 			if b.badgePatch == nil {
-				b.badgePatch = make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+				b.badgePatch = make(map[string]openapi.BadgesPutRequestBadgeValue)
 			}
-			b.badgePatch[resourceName] = props.(openapi.ConfigPutRequestBadgeBadgeName)
+			b.badgePatch[resourceName] = props.(openapi.BadgesPutRequestBadgeValue)
 		}
 	case "device_voice_settings":
 		if operationType == "PUT" {
 			if b.deviceVoiceSettingsPut == nil {
-				b.deviceVoiceSettingsPut = make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+				b.deviceVoiceSettingsPut = make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 			}
-			b.deviceVoiceSettingsPut[resourceName] = props.(openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			b.deviceVoiceSettingsPut[resourceName] = props.(openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 		} else {
 			if b.deviceVoiceSettingsPatch == nil {
-				b.deviceVoiceSettingsPatch = make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+				b.deviceVoiceSettingsPatch = make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 			}
-			b.deviceVoiceSettingsPatch[resourceName] = props.(openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			b.deviceVoiceSettingsPatch[resourceName] = props.(openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 		}
 	case "packet_broker":
 		if operationType == "PUT" {
 			if b.packetBrokerPut == nil {
-				b.packetBrokerPut = make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+				b.packetBrokerPut = make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
 			}
-			b.packetBrokerPut[resourceName] = props.(openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			b.packetBrokerPut[resourceName] = props.(openapi.PacketbrokerPutRequestPbEgressProfileValue)
 		} else {
 			if b.packetBrokerPatch == nil {
-				b.packetBrokerPatch = make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+				b.packetBrokerPatch = make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
 			}
-			b.packetBrokerPatch[resourceName] = props.(openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			b.packetBrokerPatch[resourceName] = props.(openapi.PacketbrokerPutRequestPbEgressProfileValue)
 		}
 	case "packet_queue":
 		if operationType == "PUT" {
 			if b.packetQueuePut == nil {
-				b.packetQueuePut = make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+				b.packetQueuePut = make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue)
 			}
-			b.packetQueuePut[resourceName] = props.(openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			b.packetQueuePut[resourceName] = props.(openapi.PacketqueuesPutRequestPacketQueueValue)
 		} else {
 			if b.packetQueuePatch == nil {
-				b.packetQueuePatch = make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+				b.packetQueuePatch = make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue)
 			}
-			b.packetQueuePatch[resourceName] = props.(openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			b.packetQueuePatch[resourceName] = props.(openapi.PacketqueuesPutRequestPacketQueueValue)
 		}
 	case "service_port_profile":
 		if operationType == "PUT" {
 			if b.servicePortProfilePut == nil {
-				b.servicePortProfilePut = make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+				b.servicePortProfilePut = make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue)
 			}
-			b.servicePortProfilePut[resourceName] = props.(openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			b.servicePortProfilePut[resourceName] = props.(openapi.ServiceportprofilesPutRequestServicePortProfileValue)
 		} else {
 			if b.servicePortProfilePatch == nil {
-				b.servicePortProfilePatch = make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+				b.servicePortProfilePatch = make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue)
 			}
-			b.servicePortProfilePatch[resourceName] = props.(openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			b.servicePortProfilePatch[resourceName] = props.(openapi.ServiceportprofilesPutRequestServicePortProfileValue)
 		}
 	case "switchpoint":
 		if operationType == "PUT" {
 			if b.switchpointPut == nil {
-				b.switchpointPut = make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName)
+				b.switchpointPut = make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue)
 			}
-			b.switchpointPut[resourceName] = props.(openapi.ConfigPutRequestSwitchpointSwitchpointName)
+			b.switchpointPut[resourceName] = props.(openapi.SwitchpointsPutRequestSwitchpointValue)
 		} else {
 			if b.switchpointPatch == nil {
-				b.switchpointPatch = make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName)
+				b.switchpointPatch = make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue)
 			}
-			b.switchpointPatch[resourceName] = props.(openapi.ConfigPutRequestSwitchpointSwitchpointName)
+			b.switchpointPatch[resourceName] = props.(openapi.SwitchpointsPutRequestSwitchpointValue)
 		}
 	case "device_controller":
 		if operationType == "PUT" {
 			if b.deviceControllerPut == nil {
-				b.deviceControllerPut = make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+				b.deviceControllerPut = make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
 			}
-			b.deviceControllerPut[resourceName] = props.(openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+			b.deviceControllerPut[resourceName] = props.(openapi.DevicecontrollersPutRequestDeviceControllerValue)
 		} else {
 			if b.deviceControllerPatch == nil {
-				b.deviceControllerPatch = make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+				b.deviceControllerPatch = make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
 			}
-			b.deviceControllerPatch[resourceName] = props.(openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+			b.deviceControllerPatch[resourceName] = props.(openapi.DevicecontrollersPutRequestDeviceControllerValue)
 		}
 	case "voice_port_profile":
 		if operationType == "PUT" {
 			if b.voicePortProfilePut == nil {
-				b.voicePortProfilePut = make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+				b.voicePortProfilePut = make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 			}
-			b.voicePortProfilePut[resourceName] = props.(openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			b.voicePortProfilePut[resourceName] = props.(openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 		} else {
 			if b.voicePortProfilePatch == nil {
-				b.voicePortProfilePatch = make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+				b.voicePortProfilePatch = make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 			}
-			b.voicePortProfilePatch[resourceName] = props.(openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			b.voicePortProfilePatch[resourceName] = props.(openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 		}
 	}
 }
@@ -2875,111 +2875,111 @@ func (b *BulkOperationManager) clearOperationMap(resourceType, operationType str
 	switch resourceType {
 	case "gateway":
 		if operationType == "PUT" {
-			b.gatewayPut = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+			b.gatewayPut = make(map[string]openapi.GatewaysPutRequestGatewayValue)
 		} else {
-			b.gatewayPatch = make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+			b.gatewayPatch = make(map[string]openapi.GatewaysPutRequestGatewayValue)
 		}
 	case "lag":
 		if operationType == "PUT" {
-			b.lagPut = make(map[string]openapi.ConfigPutRequestLagLagName)
+			b.lagPut = make(map[string]openapi.LagsPutRequestLagValue)
 		} else {
-			b.lagPatch = make(map[string]openapi.ConfigPutRequestLagLagName)
+			b.lagPatch = make(map[string]openapi.LagsPutRequestLagValue)
 		}
 	case "tenant":
 		if operationType == "PUT" {
-			b.tenantPut = make(map[string]openapi.ConfigPutRequestTenantTenantName)
+			b.tenantPut = make(map[string]openapi.TenantsPutRequestTenantValue)
 		} else {
-			b.tenantPatch = make(map[string]openapi.ConfigPutRequestTenantTenantName)
+			b.tenantPatch = make(map[string]openapi.TenantsPutRequestTenantValue)
 		}
 	case "service":
 		if operationType == "PUT" {
-			b.servicePut = make(map[string]openapi.ConfigPutRequestServiceServiceName)
+			b.servicePut = make(map[string]openapi.ServicesPutRequestServiceValue)
 		} else {
-			b.servicePatch = make(map[string]openapi.ConfigPutRequestServiceServiceName)
+			b.servicePatch = make(map[string]openapi.ServicesPutRequestServiceValue)
 		}
 	case "gateway_profile":
 		if operationType == "PUT" {
-			b.gatewayProfilePut = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			b.gatewayProfilePut = make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue)
 		} else {
-			b.gatewayProfilePatch = make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			b.gatewayProfilePatch = make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue)
 		}
 	case "eth_port_profile":
 		if operationType == "PUT" {
-			b.ethPortProfilePut = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			b.ethPortProfilePut = make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue)
 		} else {
-			b.ethPortProfilePatch = make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			b.ethPortProfilePatch = make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue)
 		}
 	case "eth_port_settings":
 		if operationType == "PUT" {
-			b.ethPortSettingsPut = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			b.ethPortSettingsPut = make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue)
 		} else {
-			b.ethPortSettingsPatch = make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			b.ethPortSettingsPatch = make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue)
 		}
 	case "bundle":
 		if operationType == "PUT" {
 			b.bundlePut = make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
 		} else {
-			b.bundlePatch = make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
+			b.bundlePatch = make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
 		}
 	case "acl":
 		if operationType == "PUT" {
-			b.aclPut = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			b.aclPut = make(map[string]openapi.AclsPutRequestIpFilterValue)
 		} else {
-			b.aclPatch = make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			b.aclPatch = make(map[string]openapi.AclsPutRequestIpFilterValue)
 		}
 	case "authenticated_eth_port":
 		if operationType == "PUT" {
-			b.authenticatedEthPortPut = make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			b.authenticatedEthPortPut = make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
 		} else {
-			b.authenticatedEthPortPatch = make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			b.authenticatedEthPortPatch = make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
 		}
 	case "badge":
 		if operationType == "PUT" {
-			b.badgePut = make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+			b.badgePut = make(map[string]openapi.BadgesPutRequestBadgeValue)
 		} else {
-			b.badgePatch = make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+			b.badgePatch = make(map[string]openapi.BadgesPutRequestBadgeValue)
 		}
 	case "device_voice_settings":
 		if operationType == "PUT" {
-			b.deviceVoiceSettingsPut = make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			b.deviceVoiceSettingsPut = make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 		} else {
-			b.deviceVoiceSettingsPatch = make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			b.deviceVoiceSettingsPatch = make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 		}
 	case "packet_broker":
 		if operationType == "PUT" {
-			b.packetBrokerPut = make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			b.packetBrokerPut = make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
 		} else {
-			b.packetBrokerPatch = make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			b.packetBrokerPatch = make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
 		}
 	case "packet_queue":
 		if operationType == "PUT" {
-			b.packetQueuePut = make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			b.packetQueuePut = make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue)
 		} else {
-			b.packetQueuePatch = make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			b.packetQueuePatch = make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue)
 		}
 	case "service_port_profile":
 		if operationType == "PUT" {
-			b.servicePortProfilePut = make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			b.servicePortProfilePut = make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue)
 		} else {
-			b.servicePortProfilePatch = make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			b.servicePortProfilePatch = make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue)
 		}
 	case "switchpoint":
 		if operationType == "PUT" {
-			b.switchpointPut = make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName)
+			b.switchpointPut = make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue)
 		} else {
-			b.switchpointPatch = make(map[string]openapi.ConfigPutRequestSwitchpointSwitchpointName)
+			b.switchpointPatch = make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue)
 		}
 	case "voice_port_profile":
 		if operationType == "PUT" {
-			b.voicePortProfilePut = make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			b.voicePortProfilePut = make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 		} else {
-			b.voicePortProfilePatch = make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			b.voicePortProfilePatch = make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 		}
 	case "device_controller":
 		if operationType == "PUT" {
-			b.deviceControllerPut = make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+			b.deviceControllerPut = make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
 		} else {
-			b.deviceControllerPatch = make(map[string]openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
+			b.deviceControllerPatch = make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
 		}
 	}
 }
@@ -3330,327 +3330,145 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 		switch config.ResourceType {
 		case "gateway":
 			putRequest := openapi.NewGatewaysPutRequest()
-			gatewayMap := make(map[string]openapi.ConfigPutRequestGatewayGatewayName)
+			gatewayMap := make(map[string]openapi.GatewaysPutRequestGatewayValue)
 			for name, props := range filteredData {
-				gatewayMap[name] = props.(openapi.ConfigPutRequestGatewayGatewayName)
+				gatewayMap[name] = props.(openapi.GatewaysPutRequestGatewayValue)
 			}
 			putRequest.SetGateway(gatewayMap)
 			return putRequest
 		case "lag":
 			putRequest := openapi.NewLagsPutRequest()
-			lagMap := make(map[string]openapi.ConfigPutRequestLagLagName)
+			lagMap := make(map[string]openapi.LagsPutRequestLagValue)
 			for name, props := range filteredData {
-				lagMap[name] = props.(openapi.ConfigPutRequestLagLagName)
+				lagMap[name] = props.(openapi.LagsPutRequestLagValue)
 			}
 			putRequest.SetLag(lagMap)
 			return putRequest
 		case "tenant":
 			putRequest := openapi.NewTenantsPutRequest()
-			tenantMap := make(map[string]openapi.ConfigPutRequestTenantTenantName)
+			tenantMap := make(map[string]openapi.TenantsPutRequestTenantValue)
 			for name, props := range filteredData {
-				tenantMap[name] = props.(openapi.ConfigPutRequestTenantTenantName)
+				tenantMap[name] = props.(openapi.TenantsPutRequestTenantValue)
 			}
 			putRequest.SetTenant(tenantMap)
 			return putRequest
 		case "service":
 			putRequest := openapi.NewServicesPutRequest()
-			serviceMap := make(map[string]openapi.ConfigPutRequestServiceServiceName)
+			serviceMap := make(map[string]openapi.ServicesPutRequestServiceValue)
 			for name, props := range filteredData {
-				serviceMap[name] = props.(openapi.ConfigPutRequestServiceServiceName)
+				serviceMap[name] = props.(openapi.ServicesPutRequestServiceValue)
 			}
 			putRequest.SetService(serviceMap)
 			return putRequest
 		case "gateway_profile":
 			putRequest := openapi.NewGatewayprofilesPutRequest()
-			profileMap := make(map[string]openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+			profileMap := make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue)
 			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.ConfigPutRequestGatewayProfileGatewayProfileName)
+				profileMap[name] = props.(openapi.GatewayprofilesPutRequestGatewayProfileValue)
 			}
 			putRequest.SetGatewayProfile(profileMap)
 			return putRequest
 		case "eth_port_profile":
 			putRequest := openapi.NewEthportprofilesPutRequest()
-			profileMap := make(map[string]openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+			profileMap := make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue)
 			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.ConfigPutRequestEthPortProfileEthPortProfileName)
+				profileMap[name] = props.(openapi.EthportprofilesPutRequestEthPortProfileValue)
 			}
 			putRequest.SetEthPortProfile(profileMap)
 			return putRequest
 		case "eth_port_settings":
 			putRequest := openapi.NewEthportsettingsPutRequest()
-			settingsMap := make(map[string]openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+			settingsMap := make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue)
 			for name, props := range filteredData {
-				settingsMap[name] = props.(openapi.ConfigPutRequestEthPortSettingsEthPortSettingsName)
+				settingsMap[name] = props.(openapi.EthportsettingsPutRequestEthPortSettingsValue)
 			}
 			putRequest.SetEthPortSettings(settingsMap)
 			return putRequest
 		case "bundle":
-			if operationType == "PUT" {
-				putRequest := openapi.NewBundlesPutRequest()
-				bundleMap := make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
-				for name, props := range filteredData {
-					bundleMap[name] = props.(openapi.BundlesPutRequestEndpointBundleValue)
-				}
-				putRequest.SetEndpointBundle(bundleMap)
-				return putRequest
-			} else {
-				patchRequest := openapi.NewBundlesPatchRequest()
-				bundleMap := make(map[string]openapi.BundlesPatchRequestEndpointBundleValue)
-				for name, props := range filteredData {
-					bundleMap[name] = props.(openapi.BundlesPatchRequestEndpointBundleValue)
-				}
-				patchRequest.SetEndpointBundle(bundleMap)
-				return patchRequest
+			putRequest := openapi.NewBundlesPutRequest()
+			bundleMap := make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
+			for name, props := range filteredData {
+				bundleMap[name] = props.(openapi.BundlesPutRequestEndpointBundleValue)
 			}
+			putRequest.SetEndpointBundle(bundleMap)
+			return putRequest
 		case "acl":
 			putRequest := openapi.NewAclsPutRequest()
-			aclMap := make(map[string]openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+			aclMap := make(map[string]openapi.AclsPutRequestIpFilterValue)
 			for name, props := range filteredData {
-				aclMap[name] = props.(openapi.ConfigPutRequestIpv4FilterIpv4FilterName)
+				aclMap[name] = props.(openapi.AclsPutRequestIpFilterValue)
 			}
 			putRequest.SetIpFilter(aclMap)
 			return putRequest
 		case "authenticated_eth_port":
 			putRequest := openapi.NewAuthenticatedethportsPutRequest()
-			portMap := make(map[string]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+			portMap := make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
 			for name, props := range filteredData {
-				portMap[name] = props.(openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)
+				portMap[name] = props.(openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
 			}
 			putRequest.SetAuthenticatedEthPort(portMap)
 			return putRequest
 		case "badge":
 			putRequest := openapi.NewBadgesPutRequest()
-			badgeMap := make(map[string]openapi.ConfigPutRequestBadgeBadgeName)
+			badgeMap := make(map[string]openapi.BadgesPutRequestBadgeValue)
 			for name, props := range filteredData {
-				badgeMap[name] = props.(openapi.ConfigPutRequestBadgeBadgeName)
+				badgeMap[name] = props.(openapi.BadgesPutRequestBadgeValue)
 			}
 			putRequest.SetBadge(badgeMap)
 			return putRequest
 		case "device_voice_settings":
 			putRequest := openapi.NewDevicevoicesettingsPutRequest()
-			settingsMap := make(map[string]openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+			settingsMap := make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 			for name, props := range filteredData {
-				settingsMap[name] = props.(openapi.ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)
+				settingsMap[name] = props.(openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 			}
 			putRequest.SetDeviceVoiceSettings(settingsMap)
 			return putRequest
 		case "packet_broker":
 			putRequest := openapi.NewPacketbrokerPutRequest()
-			brokerMap := make(map[string]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+			brokerMap := make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
 			for name, props := range filteredData {
-				brokerMap[name] = props.(openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName)
+				brokerMap[name] = props.(openapi.PacketbrokerPutRequestPbEgressProfileValue)
 			}
 			putRequest.SetPbEgressProfile(brokerMap)
 			return putRequest
 		case "packet_queue":
 			putRequest := openapi.NewPacketqueuesPutRequest()
-			queueMap := make(map[string]openapi.ConfigPutRequestPacketQueuePacketQueueName)
+			queueMap := make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue)
 			for name, props := range filteredData {
-				queueMap[name] = props.(openapi.ConfigPutRequestPacketQueuePacketQueueName)
+				queueMap[name] = props.(openapi.PacketqueuesPutRequestPacketQueueValue)
 			}
 			putRequest.SetPacketQueue(queueMap)
 			return putRequest
 		case "service_port_profile":
 			putRequest := openapi.NewServiceportprofilesPutRequest()
-			profileMap := make(map[string]openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+			profileMap := make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue)
 			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.ConfigPutRequestServicePortProfileServicePortProfileName)
+				profileMap[name] = props.(openapi.ServiceportprofilesPutRequestServicePortProfileValue)
 			}
 			putRequest.SetServicePortProfile(profileMap)
 			return putRequest
 		case "switchpoint":
 			putRequest := openapi.NewSwitchpointsPutRequest()
 			switchpointMap := make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue)
-
 			for name, props := range filteredData {
-				configProps := props.(openapi.ConfigPutRequestSwitchpointSwitchpointName)
-				switchpointValue := openapi.SwitchpointsPutRequestSwitchpointValue{}
-
-				if configProps.Name != nil {
-					switchpointValue.SetName(*configProps.Name)
-				}
-				if configProps.DeviceSerialNumber != nil {
-					switchpointValue.SetDeviceSerialNumber(*configProps.DeviceSerialNumber)
-				}
-				if configProps.ConnectedBundle != nil {
-					switchpointValue.SetConnectedBundle(*configProps.ConnectedBundle)
-				}
-				if configProps.ReadOnlyMode != nil {
-					switchpointValue.SetReadOnlyMode(*configProps.ReadOnlyMode)
-				}
-				if configProps.Locked != nil {
-					switchpointValue.SetLocked(*configProps.Locked)
-				}
-				if configProps.DisabledPorts != nil {
-					switchpointValue.SetDisabledPorts(*configProps.DisabledPorts)
-				}
-				if configProps.OutOfBandManagement != nil {
-					switchpointValue.SetOutOfBandManagement(*configProps.OutOfBandManagement)
-				}
-				if configProps.Type != nil {
-					switchpointValue.SetType(*configProps.Type)
-				}
-				if configProps.SuperPod != nil {
-					switchpointValue.SetSuperPod(*configProps.SuperPod)
-				}
-				if configProps.Pod != nil {
-					switchpointValue.SetPod(*configProps.Pod)
-				}
-				if configProps.Rack != nil {
-					switchpointValue.SetRack(*configProps.Rack)
-				}
-
-				switchpointMap[name] = switchpointValue
+				switchpointMap[name] = props.(openapi.SwitchpointsPutRequestSwitchpointValue)
 			}
 			putRequest.SetSwitchpoint(switchpointMap)
 			return putRequest
 		case "voice_port_profile":
 			putRequest := openapi.NewVoiceportprofilesPutRequest()
-			profileMap := make(map[string]openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+			profileMap := make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName)
+				profileMap[name] = props.(openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 			}
 			putRequest.SetVoicePortProfiles(profileMap)
 			return putRequest
 		case "device_controller":
 			putRequest := openapi.NewDevicecontrollersPutRequest()
 			deviceMap := make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
-
 			for name, props := range filteredData {
-				sourceProps := props.(openapi.ConfigPutRequestDeviceControllerDeviceControllerName)
-				targetProps := openapi.DevicecontrollersPutRequestDeviceControllerValue{}
-
-				if sourceProps.Name != nil {
-					targetProps.Name = sourceProps.Name
-				}
-				if sourceProps.Enable != nil {
-					targetProps.Enable = sourceProps.Enable
-				}
-				if sourceProps.IpSource != nil {
-					targetProps.IpSource = sourceProps.IpSource
-				}
-				if sourceProps.ControllerIpAndMask != nil {
-					targetProps.ControllerIpAndMask = sourceProps.ControllerIpAndMask
-				}
-				if sourceProps.Gateway != nil {
-					targetProps.Gateway = sourceProps.Gateway
-				}
-				if sourceProps.SwitchIpAndMask != nil {
-					targetProps.SwitchIpAndMask = sourceProps.SwitchIpAndMask
-				}
-				if sourceProps.SwitchGateway != nil {
-					targetProps.SwitchGateway = sourceProps.SwitchGateway
-				}
-				if sourceProps.CommType != nil {
-					targetProps.CommType = sourceProps.CommType
-				}
-				if sourceProps.SnmpCommunityString != nil {
-					targetProps.SnmpCommunityString = sourceProps.SnmpCommunityString
-				}
-				if sourceProps.UplinkPort != nil {
-					targetProps.UplinkPort = sourceProps.UplinkPort
-				}
-				if sourceProps.LldpSearchString != nil {
-					targetProps.LldpSearchString = sourceProps.LldpSearchString
-				}
-				if sourceProps.ZtpIdentification != nil {
-					targetProps.ZtpIdentification = sourceProps.ZtpIdentification
-				}
-				if sourceProps.LocatedBy != nil {
-					targetProps.LocatedBy = sourceProps.LocatedBy
-				}
-				if sourceProps.PowerState != nil {
-					targetProps.PowerState = sourceProps.PowerState
-				}
-				if sourceProps.CommunicationMode != nil {
-					targetProps.CommunicationMode = sourceProps.CommunicationMode
-				}
-				if sourceProps.CliAccessMode != nil {
-					targetProps.CliAccessMode = sourceProps.CliAccessMode
-				}
-				if sourceProps.Username != nil {
-					targetProps.Username = sourceProps.Username
-				}
-				if sourceProps.Password != nil {
-					targetProps.Password = sourceProps.Password
-				}
-				if sourceProps.EnablePassword != nil {
-					targetProps.EnablePassword = sourceProps.EnablePassword
-				}
-				if sourceProps.SshKeyOrPassword != nil {
-					targetProps.SshKeyOrPassword = sourceProps.SshKeyOrPassword
-				}
-				if sourceProps.ManagedOnNativeVlan != nil {
-					targetProps.ManagedOnNativeVlan = sourceProps.ManagedOnNativeVlan
-				}
-				if sourceProps.Sdlc != nil {
-					targetProps.Sdlc = sourceProps.Sdlc
-				}
-				if sourceProps.Switchpoint != nil {
-					targetProps.Switchpoint = sourceProps.Switchpoint
-				}
-				if sourceProps.SwitchpointRefType != nil {
-					targetProps.SwitchpointRefType = sourceProps.SwitchpointRefType
-				}
-				if sourceProps.SecurityType != nil {
-					targetProps.SecurityType = sourceProps.SecurityType
-				}
-				if sourceProps.Snmpv3Username != nil {
-					targetProps.Snmpv3Username = sourceProps.Snmpv3Username
-				}
-				if sourceProps.AuthenticationProtocol != nil {
-					targetProps.AuthenticationProtocol = sourceProps.AuthenticationProtocol
-				}
-				if sourceProps.Passphrase != nil {
-					targetProps.Passphrase = sourceProps.Passphrase
-				}
-				if sourceProps.PrivateProtocol != nil {
-					targetProps.PrivateProtocol = sourceProps.PrivateProtocol
-				}
-				if sourceProps.PrivatePassword != nil {
-					targetProps.PrivatePassword = sourceProps.PrivatePassword
-				}
-				if sourceProps.PasswordEncrypted != nil {
-					targetProps.PasswordEncrypted = sourceProps.PasswordEncrypted
-				}
-				if sourceProps.EnablePasswordEncrypted != nil {
-					targetProps.EnablePasswordEncrypted = sourceProps.EnablePasswordEncrypted
-				}
-				if sourceProps.SshKeyOrPasswordEncrypted != nil {
-					targetProps.SshKeyOrPasswordEncrypted = sourceProps.SshKeyOrPasswordEncrypted
-				}
-				if sourceProps.PassphraseEncrypted != nil {
-					targetProps.PassphraseEncrypted = sourceProps.PassphraseEncrypted
-				}
-				if sourceProps.PrivatePasswordEncrypted != nil {
-					targetProps.PrivatePasswordEncrypted = sourceProps.PrivatePasswordEncrypted
-				}
-				if sourceProps.DeviceManagedAs != nil {
-					targetProps.DeviceManagedAs = sourceProps.DeviceManagedAs
-				}
-				if sourceProps.Switch != nil {
-					targetProps.Switch = sourceProps.Switch
-				}
-				if sourceProps.SwitchRefType != nil {
-					targetProps.SwitchRefType = sourceProps.SwitchRefType
-				}
-				if sourceProps.ConnectionService != nil {
-					targetProps.ConnectionService = sourceProps.ConnectionService
-				}
-				if sourceProps.ConnectionServiceRefType != nil {
-					targetProps.ConnectionServiceRefType = sourceProps.ConnectionServiceRefType
-				}
-				if sourceProps.Port != nil {
-					targetProps.Port = sourceProps.Port
-				}
-				if sourceProps.SfpMacAddressOrSn != nil {
-					targetProps.SfpMacAddressOrSn = sourceProps.SfpMacAddressOrSn
-				}
-				if sourceProps.UsesTaggedPackets != nil {
-					targetProps.UsesTaggedPackets = sourceProps.UsesTaggedPackets
-				}
-
-				deviceMap[name] = targetProps
+				deviceMap[name] = props.(openapi.DevicecontrollersPutRequestDeviceControllerValue)
 			}
 			putRequest.SetDeviceController(deviceMap)
 			return putRequest

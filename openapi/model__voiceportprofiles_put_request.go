@@ -19,7 +19,7 @@ var _ MappedNullable = &VoiceportprofilesPutRequest{}
 
 // VoiceportprofilesPutRequest struct for VoiceportprofilesPutRequest
 type VoiceportprofilesPutRequest struct {
-	VoicePortProfiles *map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName `json:"voice_port_profiles,omitempty"`
+	VoicePortProfiles *map[string]VoiceportprofilesPutRequestVoicePortProfilesValue `json:"voice_port_profiles,omitempty"`
 }
 
 // NewVoiceportprofilesPutRequest instantiates a new VoiceportprofilesPutRequest object
@@ -40,9 +40,9 @@ func NewVoiceportprofilesPutRequestWithDefaults() *VoiceportprofilesPutRequest {
 }
 
 // GetVoicePortProfiles returns the VoicePortProfiles field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequest) GetVoicePortProfiles() map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName {
+func (o *VoiceportprofilesPutRequest) GetVoicePortProfiles() map[string]VoiceportprofilesPutRequestVoicePortProfilesValue {
 	if o == nil || IsNil(o.VoicePortProfiles) {
-		var ret map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName
+		var ret map[string]VoiceportprofilesPutRequestVoicePortProfilesValue
 		return ret
 	}
 	return *o.VoicePortProfiles
@@ -50,7 +50,7 @@ func (o *VoiceportprofilesPutRequest) GetVoicePortProfiles() map[string]ConfigPu
 
 // GetVoicePortProfilesOk returns a tuple with the VoicePortProfiles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequest) GetVoicePortProfilesOk() (*map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName, bool) {
+func (o *VoiceportprofilesPutRequest) GetVoicePortProfilesOk() (*map[string]VoiceportprofilesPutRequestVoicePortProfilesValue, bool) {
 	if o == nil || IsNil(o.VoicePortProfiles) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *VoiceportprofilesPutRequest) HasVoicePortProfiles() bool {
 	return false
 }
 
-// SetVoicePortProfiles gets a reference to the given map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName and assigns it to the VoicePortProfiles field.
-func (o *VoiceportprofilesPutRequest) SetVoicePortProfiles(v map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName) {
+// SetVoicePortProfiles gets a reference to the given map[string]VoiceportprofilesPutRequestVoicePortProfilesValue and assigns it to the VoicePortProfiles field.
+func (o *VoiceportprofilesPutRequest) SetVoicePortProfiles(v map[string]VoiceportprofilesPutRequestVoicePortProfilesValue) {
 	o.VoicePortProfiles = &v
 }
 

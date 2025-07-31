@@ -297,7 +297,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	name := plan.Name.ValueString()
-	gatewayProps := openapi.ConfigPutRequestGatewayGatewayName{}
+	gatewayProps := openapi.GatewaysPutRequestGatewayValue{}
 	gatewayProps.Name = openapi.PtrString(name)
 
 	if !plan.Enable.IsNull() {
@@ -429,7 +429,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
@@ -439,9 +439,9 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	if len(plan.StaticRoutes) > 0 {
-		routes := make([]openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner, len(plan.StaticRoutes))
+		routes := make([]openapi.GatewaysPutRequestGatewayValueStaticRoutesInner, len(plan.StaticRoutes))
 		for i, route := range plan.StaticRoutes {
-			rItem := openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner{}
+			rItem := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{}
 			if !route.Enable.IsNull() {
 				rItem.Enable = openapi.PtrBool(route.Enable.ValueBool())
 			}
@@ -785,7 +785,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	name := plan.Name.ValueString()
-	gatewayProps := openapi.ConfigPutRequestGatewayGatewayName{}
+	gatewayProps := openapi.GatewaysPutRequestGatewayValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -795,7 +795,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.ConfigPutRequestEthDeviceProfilesEthDeviceProfilesNameObjectProperties{}
+			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {
@@ -1082,7 +1082,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		}
 	}
 
-	var changedStaticRoutes []openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner
+	var changedStaticRoutes []openapi.GatewaysPutRequestGatewayValueStaticRoutesInner
 	staticRoutesChanged := false
 
 	for _, sr := range plan.StaticRoutes {
@@ -1095,7 +1095,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 		if !exists {
 			// new static route, include all fields
-			route := openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner{
+			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
 				Index: openapi.PtrInt32(int32(index)),
 			}
 
@@ -1130,7 +1130,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		}
 
 		// existing static route, check which fields changed
-		route := openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner{
+		route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
 			Index: openapi.PtrInt32(int32(index)),
 		}
 
@@ -1186,7 +1186,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 		if !found {
 			// static route removed - include only the index for deletion
-			deletedRoute := openapi.ConfigPutRequestGatewayGatewayNameStaticRoutesInner{
+			deletedRoute := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 			changedStaticRoutes = append(changedStaticRoutes, deletedRoute)

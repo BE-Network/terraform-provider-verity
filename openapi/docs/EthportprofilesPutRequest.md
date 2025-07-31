@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**EthPortProfile** | Pointer to [**map[string]ConfigPutRequestEthPortProfileEthPortProfileName**](ConfigPutRequestEthPortProfileEthPortProfileName.md) |  | [optional] 
+**EthPortProfile** | Pointer to [**map[string]EthportprofilesPutRequestEthPortProfileValue**](EthportprofilesPutRequestEthPortProfileValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetEthPortProfile
 
-`func (o *EthportprofilesPutRequest) GetEthPortProfile() map[string]ConfigPutRequestEthPortProfileEthPortProfileName`
+`func (o *EthportprofilesPutRequest) GetEthPortProfile() map[string]EthportprofilesPutRequestEthPortProfileValue`
 
 GetEthPortProfile returns the EthPortProfile field if non-nil, zero value otherwise.
 
 ### GetEthPortProfileOk
 
-`func (o *EthportprofilesPutRequest) GetEthPortProfileOk() (*map[string]ConfigPutRequestEthPortProfileEthPortProfileName, bool)`
+`func (o *EthportprofilesPutRequest) GetEthPortProfileOk() (*map[string]EthportprofilesPutRequestEthPortProfileValue, bool)`
 
 GetEthPortProfileOk returns a tuple with the EthPortProfile field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEthPortProfile
 
-`func (o *EthportprofilesPutRequest) SetEthPortProfile(v map[string]ConfigPutRequestEthPortProfileEthPortProfileName)`
+`func (o *EthportprofilesPutRequest) SetEthPortProfile(v map[string]EthportprofilesPutRequestEthPortProfileValue)`
 
 SetEthPortProfile sets EthPortProfile field to given value.
 

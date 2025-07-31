@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## VoiceportprofilesGet
 
-> VoiceportprofilesGet(ctx).VoicePortProfileName(voicePortProfileName).IncludeData(includeData).Execute()
+> VoiceportprofilesGet(ctx).VoicePortProfileName(voicePortProfileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Voice-Port Profiles
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	voicePortProfileName := "voicePortProfileName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.VoicePortProfilesAPI.VoiceportprofilesGet(context.Background()).VoicePortProfileName(voicePortProfileName).IncludeData(includeData).Execute()
+	r, err := apiClient.VoicePortProfilesAPI.VoiceportprofilesGet(context.Background()).VoicePortProfileName(voicePortProfileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `VoicePortProfilesAPI.VoiceportprofilesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **voicePortProfileName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

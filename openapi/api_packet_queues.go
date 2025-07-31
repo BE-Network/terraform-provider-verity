@@ -146,6 +146,7 @@ type ApiPacketqueuesGetRequest struct {
 	ApiService *PacketQueuesAPIService
 	packetQueueName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiPacketqueuesGetRequest) PacketQueueName(packetQueueName string) ApiPacketqueuesGetRequest {
@@ -155,6 +156,11 @@ func (r ApiPacketqueuesGetRequest) PacketQueueName(packetQueueName string) ApiPa
 
 func (r ApiPacketqueuesGetRequest) IncludeData(includeData bool) ApiPacketqueuesGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiPacketqueuesGetRequest) ChangesetName(changesetName string) ApiPacketqueuesGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *PacketQueuesAPIService) PacketqueuesGetExecute(r ApiPacketqueuesGetRequ
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

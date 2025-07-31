@@ -20,7 +20,7 @@ var _ MappedNullable = &SwitchpointsPutRequest{}
 // SwitchpointsPutRequest struct for SwitchpointsPutRequest
 type SwitchpointsPutRequest struct {
 	Switchpoint *map[string]SwitchpointsPutRequestSwitchpointValue `json:"switchpoint,omitempty"`
-	Endpoint *map[string]ConfigPutRequestEndpointEndpointName `json:"endpoint,omitempty"`
+	Endpoint *map[string]SwitchpointsPutRequestEndpointValue `json:"endpoint,omitempty"`
 }
 
 // NewSwitchpointsPutRequest instantiates a new SwitchpointsPutRequest object
@@ -73,9 +73,9 @@ func (o *SwitchpointsPutRequest) SetSwitchpoint(v map[string]SwitchpointsPutRequ
 }
 
 // GetEndpoint returns the Endpoint field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequest) GetEndpoint() map[string]ConfigPutRequestEndpointEndpointName {
+func (o *SwitchpointsPutRequest) GetEndpoint() map[string]SwitchpointsPutRequestEndpointValue {
 	if o == nil || IsNil(o.Endpoint) {
-		var ret map[string]ConfigPutRequestEndpointEndpointName
+		var ret map[string]SwitchpointsPutRequestEndpointValue
 		return ret
 	}
 	return *o.Endpoint
@@ -83,7 +83,7 @@ func (o *SwitchpointsPutRequest) GetEndpoint() map[string]ConfigPutRequestEndpoi
 
 // GetEndpointOk returns a tuple with the Endpoint field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequest) GetEndpointOk() (*map[string]ConfigPutRequestEndpointEndpointName, bool) {
+func (o *SwitchpointsPutRequest) GetEndpointOk() (*map[string]SwitchpointsPutRequestEndpointValue, bool) {
 	if o == nil || IsNil(o.Endpoint) {
 		return nil, false
 	}
@@ -99,8 +99,8 @@ func (o *SwitchpointsPutRequest) HasEndpoint() bool {
 	return false
 }
 
-// SetEndpoint gets a reference to the given map[string]ConfigPutRequestEndpointEndpointName and assigns it to the Endpoint field.
-func (o *SwitchpointsPutRequest) SetEndpoint(v map[string]ConfigPutRequestEndpointEndpointName) {
+// SetEndpoint gets a reference to the given map[string]SwitchpointsPutRequestEndpointValue and assigns it to the Endpoint field.
+func (o *SwitchpointsPutRequest) SetEndpoint(v map[string]SwitchpointsPutRequestEndpointValue) {
 	o.Endpoint = &v
 }
 

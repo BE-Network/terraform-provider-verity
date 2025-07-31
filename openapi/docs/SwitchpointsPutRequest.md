@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Switchpoint** | Pointer to [**map[string]SwitchpointsPutRequestSwitchpointValue**](SwitchpointsPutRequestSwitchpointValue.md) |  | [optional] 
-**Endpoint** | Pointer to [**map[string]ConfigPutRequestEndpointEndpointName**](ConfigPutRequestEndpointEndpointName.md) |  | [optional] 
+**Endpoint** | Pointer to [**map[string]SwitchpointsPutRequestEndpointValue**](SwitchpointsPutRequestEndpointValue.md) |  | [optional] 
 
 ## Methods
 
@@ -53,20 +53,20 @@ HasSwitchpoint returns a boolean if a field has been set.
 
 ### GetEndpoint
 
-`func (o *SwitchpointsPutRequest) GetEndpoint() map[string]ConfigPutRequestEndpointEndpointName`
+`func (o *SwitchpointsPutRequest) GetEndpoint() map[string]SwitchpointsPutRequestEndpointValue`
 
 GetEndpoint returns the Endpoint field if non-nil, zero value otherwise.
 
 ### GetEndpointOk
 
-`func (o *SwitchpointsPutRequest) GetEndpointOk() (*map[string]ConfigPutRequestEndpointEndpointName, bool)`
+`func (o *SwitchpointsPutRequest) GetEndpointOk() (*map[string]SwitchpointsPutRequestEndpointValue, bool)`
 
 GetEndpointOk returns a tuple with the Endpoint field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEndpoint
 
-`func (o *SwitchpointsPutRequest) SetEndpoint(v map[string]ConfigPutRequestEndpointEndpointName)`
+`func (o *SwitchpointsPutRequest) SetEndpoint(v map[string]SwitchpointsPutRequestEndpointValue)`
 
 SetEndpoint sets Endpoint field to given value.
 

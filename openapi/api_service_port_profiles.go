@@ -146,6 +146,7 @@ type ApiServiceportprofilesGetRequest struct {
 	ApiService *ServicePortProfilesAPIService
 	servicePortProfileName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiServiceportprofilesGetRequest) ServicePortProfileName(servicePortProfileName string) ApiServiceportprofilesGetRequest {
@@ -155,6 +156,11 @@ func (r ApiServiceportprofilesGetRequest) ServicePortProfileName(servicePortProf
 
 func (r ApiServiceportprofilesGetRequest) IncludeData(includeData bool) ApiServiceportprofilesGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiServiceportprofilesGetRequest) ChangesetName(changesetName string) ApiServiceportprofilesGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *ServicePortProfilesAPIService) ServiceportprofilesGetExecute(r ApiServi
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

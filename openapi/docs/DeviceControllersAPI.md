@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## DevicecontrollersGet
 
-> DevicecontrollersGet(ctx).DeviceControllerName(deviceControllerName).IncludeData(includeData).Execute()
+> DevicecontrollersGet(ctx).DeviceControllerName(deviceControllerName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Device Controllers
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	deviceControllerName := "deviceControllerName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.DeviceControllersAPI.DevicecontrollersGet(context.Background()).DeviceControllerName(deviceControllerName).IncludeData(includeData).Execute()
+	r, err := apiClient.DeviceControllersAPI.DevicecontrollersGet(context.Background()).DeviceControllerName(deviceControllerName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **deviceControllerName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

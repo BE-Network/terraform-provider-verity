@@ -146,7 +146,7 @@ Name | Type | Description  | Notes
 
 ## SwitchpointsGet
 
-> SwitchpointsGet(ctx).SwitchpointName(switchpointName).IncludeData(includeData).Execute()
+> SwitchpointsGet(ctx).SwitchpointName(switchpointName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Switchpoints
 
@@ -167,10 +167,11 @@ import (
 func main() {
 	switchpointName := "switchpointName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.SwitchpointsAPI.SwitchpointsGet(context.Background()).SwitchpointName(switchpointName).IncludeData(includeData).Execute()
+	r, err := apiClient.SwitchpointsAPI.SwitchpointsGet(context.Background()).SwitchpointName(switchpointName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `SwitchpointsAPI.SwitchpointsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -191,6 +192,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **switchpointName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

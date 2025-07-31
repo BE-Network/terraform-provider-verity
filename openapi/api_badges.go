@@ -146,6 +146,7 @@ type ApiBadgesGetRequest struct {
 	ApiService *BadgesAPIService
 	badgeName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiBadgesGetRequest) BadgeName(badgeName string) ApiBadgesGetRequest {
@@ -155,6 +156,11 @@ func (r ApiBadgesGetRequest) BadgeName(badgeName string) ApiBadgesGetRequest {
 
 func (r ApiBadgesGetRequest) IncludeData(includeData bool) ApiBadgesGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiBadgesGetRequest) ChangesetName(changesetName string) ApiBadgesGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *BadgesAPIService) BadgesGetExecute(r ApiBadgesGetRequest) (*http.Respon
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

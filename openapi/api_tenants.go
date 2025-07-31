@@ -146,6 +146,7 @@ type ApiTenantsGetRequest struct {
 	ApiService *TenantsAPIService
 	tenantName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiTenantsGetRequest) TenantName(tenantName string) ApiTenantsGetRequest {
@@ -155,6 +156,11 @@ func (r ApiTenantsGetRequest) TenantName(tenantName string) ApiTenantsGetRequest
 
 func (r ApiTenantsGetRequest) IncludeData(includeData bool) ApiTenantsGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiTenantsGetRequest) ChangesetName(changesetName string) ApiTenantsGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *TenantsAPIService) TenantsGetExecute(r ApiTenantsGetRequest) (*http.Res
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

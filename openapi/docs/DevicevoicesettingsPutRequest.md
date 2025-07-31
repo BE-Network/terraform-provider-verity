@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**DeviceVoiceSettings** | Pointer to [**map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName**](ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName.md) |  | [optional] 
+**DeviceVoiceSettings** | Pointer to [**map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue**](DevicevoicesettingsPutRequestDeviceVoiceSettingsValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetDeviceVoiceSettings
 
-`func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettings() map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName`
+`func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettings() map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue`
 
 GetDeviceVoiceSettings returns the DeviceVoiceSettings field if non-nil, zero value otherwise.
 
 ### GetDeviceVoiceSettingsOk
 
-`func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettingsOk() (*map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName, bool)`
+`func (o *DevicevoicesettingsPutRequest) GetDeviceVoiceSettingsOk() (*map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue, bool)`
 
 GetDeviceVoiceSettingsOk returns a tuple with the DeviceVoiceSettings field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDeviceVoiceSettings
 
-`func (o *DevicevoicesettingsPutRequest) SetDeviceVoiceSettings(v map[string]ConfigPutRequestDeviceVoiceSettingsDeviceVoiceSettingsName)`
+`func (o *DevicevoicesettingsPutRequest) SetDeviceVoiceSettings(v map[string]DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)`
 
 SetDeviceVoiceSettings sets DeviceVoiceSettings field to given value.
 

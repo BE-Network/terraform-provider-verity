@@ -869,7 +869,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	hasChanges := false
-	bundleValue := openapi.BundlesPatchRequestEndpointBundleValue{}
+	bundleValue := openapi.BundlesPutRequestEndpointBundleValue{}
 	name := data.Name.ValueString()
 
 	if !data.CliCommands.Equal(state.CliCommands) {

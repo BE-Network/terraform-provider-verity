@@ -19,7 +19,7 @@ var _ MappedNullable = &BadgesPutRequest{}
 
 // BadgesPutRequest struct for BadgesPutRequest
 type BadgesPutRequest struct {
-	Badge *map[string]ConfigPutRequestBadgeBadgeName `json:"badge,omitempty"`
+	Badge *map[string]BadgesPutRequestBadgeValue `json:"badge,omitempty"`
 }
 
 // NewBadgesPutRequest instantiates a new BadgesPutRequest object
@@ -40,9 +40,9 @@ func NewBadgesPutRequestWithDefaults() *BadgesPutRequest {
 }
 
 // GetBadge returns the Badge field value if set, zero value otherwise.
-func (o *BadgesPutRequest) GetBadge() map[string]ConfigPutRequestBadgeBadgeName {
+func (o *BadgesPutRequest) GetBadge() map[string]BadgesPutRequestBadgeValue {
 	if o == nil || IsNil(o.Badge) {
-		var ret map[string]ConfigPutRequestBadgeBadgeName
+		var ret map[string]BadgesPutRequestBadgeValue
 		return ret
 	}
 	return *o.Badge
@@ -50,7 +50,7 @@ func (o *BadgesPutRequest) GetBadge() map[string]ConfigPutRequestBadgeBadgeName 
 
 // GetBadgeOk returns a tuple with the Badge field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BadgesPutRequest) GetBadgeOk() (*map[string]ConfigPutRequestBadgeBadgeName, bool) {
+func (o *BadgesPutRequest) GetBadgeOk() (*map[string]BadgesPutRequestBadgeValue, bool) {
 	if o == nil || IsNil(o.Badge) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *BadgesPutRequest) HasBadge() bool {
 	return false
 }
 
-// SetBadge gets a reference to the given map[string]ConfigPutRequestBadgeBadgeName and assigns it to the Badge field.
-func (o *BadgesPutRequest) SetBadge(v map[string]ConfigPutRequestBadgeBadgeName) {
+// SetBadge gets a reference to the given map[string]BadgesPutRequestBadgeValue and assigns it to the Badge field.
+func (o *BadgesPutRequest) SetBadge(v map[string]BadgesPutRequestBadgeValue) {
 	o.Badge = &v
 }
 

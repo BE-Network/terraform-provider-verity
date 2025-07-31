@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## AuthenticatedethportsGet
 
-> AuthenticatedethportsGet(ctx).AuthenticatedEthPortName(authenticatedEthPortName).IncludeData(includeData).Execute()
+> AuthenticatedethportsGet(ctx).AuthenticatedEthPortName(authenticatedEthPortName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Authenticated Eth-Ports
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	authenticatedEthPortName := "authenticatedEthPortName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(context.Background()).AuthenticatedEthPortName(authenticatedEthPortName).IncludeData(includeData).Execute()
+	r, err := apiClient.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(context.Background()).AuthenticatedEthPortName(authenticatedEthPortName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `AuthenticatedEthPortsAPI.AuthenticatedethportsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **authenticatedEthPortName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

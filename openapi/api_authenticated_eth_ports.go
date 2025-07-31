@@ -146,6 +146,7 @@ type ApiAuthenticatedethportsGetRequest struct {
 	ApiService *AuthenticatedEthPortsAPIService
 	authenticatedEthPortName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiAuthenticatedethportsGetRequest) AuthenticatedEthPortName(authenticatedEthPortName string) ApiAuthenticatedethportsGetRequest {
@@ -155,6 +156,11 @@ func (r ApiAuthenticatedethportsGetRequest) AuthenticatedEthPortName(authenticat
 
 func (r ApiAuthenticatedethportsGetRequest) IncludeData(includeData bool) ApiAuthenticatedethportsGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiAuthenticatedethportsGetRequest) ChangesetName(changesetName string) ApiAuthenticatedethportsGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsGetExecute(r ApiA
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

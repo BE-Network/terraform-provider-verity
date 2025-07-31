@@ -31,7 +31,7 @@ type SwitchpointsPutRequestSwitchpointValueObjectProperties struct {
 	Aggregate *bool `json:"aggregate,omitempty"`
 	// For Switch Endpoints. Denotes the Host Switch
 	IsHost *bool `json:"is_host,omitempty"`
-	Eths []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner `json:"eths,omitempty"`
+	Eths []SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner `json:"eths,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValueObjectProperties instantiates a new SwitchpointsPutRequestSwitchpointValueObjectProperties object
@@ -274,9 +274,9 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetIsHost(v boo
 }
 
 // GetEths returns the Eths field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEths() []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEths() []SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner {
 	if o == nil || IsNil(o.Eths) {
-		var ret []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner
+		var ret []SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner
 		return ret
 	}
 	return o.Eths
@@ -284,7 +284,7 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEths() []Con
 
 // GetEthsOk returns a tuple with the Eths field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEthsOk() ([]ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEthsOk() ([]SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner, bool) {
 	if o == nil || IsNil(o.Eths) {
 		return nil, false
 	}
@@ -300,8 +300,8 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasEths() bool 
 	return false
 }
 
-// SetEths gets a reference to the given []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner and assigns it to the Eths field.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetEths(v []ConfigPutRequestEndpointEndpointNameObjectPropertiesEthsInner) {
+// SetEths gets a reference to the given []SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner and assigns it to the Eths field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetEths(v []SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner) {
 	o.Eths = v
 }
 

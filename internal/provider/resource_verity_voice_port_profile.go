@@ -294,7 +294,7 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 	}
 
 	name := plan.Name.ValueString()
-	vppProps := openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName{}
+	vppProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValue{}
 	vppProps.Name = openapi.PtrString(name)
 
 	if !plan.Enable.IsNull() {
@@ -428,7 +428,7 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesNameObjectProperties{}
+		objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
 		if !op.IsDefault.IsNull() {
 			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
 		}
@@ -444,7 +444,7 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		vppProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "voiceportprofile", name, vppProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "voice_port_profile", name, vppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for voice port profile creation operation %s to complete", operationID))
@@ -480,7 +480,7 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 
 	vppName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("voiceportprofile") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("voice_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Voice Port Profile %s verification – trusting recent successful API operation", vppName))
 		return
 	}
@@ -697,7 +697,7 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	}
 
 	name := plan.Name.ValueString()
-	vppProps := openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesName{}
+	vppProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -788,7 +788,7 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
 			op := plan.ObjectProperties[0]
-			objProps := openapi.ConfigPutRequestVoicePortProfilesVoicePortProfilesNameObjectProperties{}
+			objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
 			if !op.IsDefault.IsNull() {
 				objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
 			}
@@ -811,7 +811,7 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "voiceportprofile", name, vppProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "voice_port_profile", name, vppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Voice Port Profile update operation %s to complete", operationID))
@@ -843,7 +843,7 @@ func (r *verityVoicePortProfileResource) Delete(ctx context.Context, req resourc
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "voiceportprofile", name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "voice_port_profile", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Voice Port Profile deletion operation %s to complete", operationID))

@@ -205,7 +205,7 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	name := plan.Name.ValueString()
-	pbProps := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName{}
+	pbProps := openapi.PacketbrokerPutRequestPbEgressProfileValue{}
 	pbProps.Name = openapi.PtrString(name)
 
 	if !plan.Enable.IsNull() {
@@ -213,9 +213,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	if len(plan.Ipv4Permit) > 0 {
-		ipv4Permit := make([]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner, len(plan.Ipv4Permit))
+		ipv4Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Permit))
 		for i, filter := range plan.Ipv4Permit {
-			filterItem := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 			if !filter.Enable.IsNull() {
 				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
 			}
@@ -234,9 +234,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	if len(plan.Ipv4Deny) > 0 {
-		ipv4Deny := make([]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner, len(plan.Ipv4Deny))
+		ipv4Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Deny))
 		for i, filter := range plan.Ipv4Deny {
-			filterItem := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 			if !filter.Enable.IsNull() {
 				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
 			}
@@ -255,9 +255,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	if len(plan.Ipv6Permit) > 0 {
-		ipv6Permit := make([]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner, len(plan.Ipv6Permit))
+		ipv6Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Permit))
 		for i, filter := range plan.Ipv6Permit {
-			filterItem := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 			if !filter.Enable.IsNull() {
 				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
 			}
@@ -276,9 +276,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	if len(plan.Ipv6Deny) > 0 {
-		ipv6Deny := make([]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner, len(plan.Ipv6Deny))
+		ipv6Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Deny))
 		for i, filter := range plan.Ipv6Deny {
-			filterItem := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 			if !filter.Enable.IsNull() {
 				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
 			}
@@ -296,7 +296,7 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		pbProps.Ipv6Deny = ipv6Deny
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "packetbroker", name, pbProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "packet_broker", name, pbProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for packet broker creation operation %s to complete", operationID))
@@ -332,7 +332,7 @@ func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.Read
 
 	pbName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packetbroker") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packet_broker") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping PB Egress Profile %s verification – trusting recent successful API operation", pbName))
 		return
 	}
@@ -609,7 +609,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	}
 
 	name := plan.Name.ValueString()
-	pbProps := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileName{}
+	pbProps := openapi.PacketbrokerPutRequestPbEgressProfileValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -623,9 +623,9 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	}
 
 	if !r.equalFilterArrays(plan.Ipv4Permit, state.Ipv4Permit) {
-		ipv4Permit := make([]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner, len(plan.Ipv4Permit))
+		ipv4Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Permit))
 		for i, filter := range plan.Ipv4Permit {
-			filterItem := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 			if !filter.Enable.IsNull() {
 				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
 			}
@@ -645,9 +645,9 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	}
 
 	if !r.equalFilterArrays(plan.Ipv4Deny, state.Ipv4Deny) {
-		ipv4Deny := make([]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner, len(plan.Ipv4Deny))
+		ipv4Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Deny))
 		for i, filter := range plan.Ipv4Deny {
-			filterItem := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv4PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 			if !filter.Enable.IsNull() {
 				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
 			}
@@ -667,9 +667,9 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	}
 
 	if !r.equalFilterArrays(plan.Ipv6Permit, state.Ipv6Permit) {
-		ipv6Permit := make([]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner, len(plan.Ipv6Permit))
+		ipv6Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Permit))
 		for i, filter := range plan.Ipv6Permit {
-			filterItem := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 			if !filter.Enable.IsNull() {
 				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
 			}
@@ -689,9 +689,9 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	}
 
 	if !r.equalFilterArrays(plan.Ipv6Deny, state.Ipv6Deny) {
-		ipv6Deny := make([]openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner, len(plan.Ipv6Deny))
+		ipv6Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Deny))
 		for i, filter := range plan.Ipv6Deny {
-			filterItem := openapi.ConfigPutRequestPbEgressProfilePbEgressProfileNameIpv6PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 			if !filter.Enable.IsNull() {
 				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
 			}
@@ -715,7 +715,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "packetbroker", name, pbProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "packet_broker", name, pbProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for PB Egress Profile update operation %s to complete", operationID))
@@ -747,7 +747,7 @@ func (r *verityPacketBrokerResource) Delete(ctx context.Context, req resource.De
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "packetbroker", name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "packet_broker", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for PB Egress Profile deletion operation %s to complete", operationID))

@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Gateway** | Pointer to [**map[string]ConfigPutRequestGatewayGatewayName**](ConfigPutRequestGatewayGatewayName.md) |  | [optional] 
+**Gateway** | Pointer to [**map[string]GatewaysPutRequestGatewayValue**](GatewaysPutRequestGatewayValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetGateway
 
-`func (o *GatewaysPutRequest) GetGateway() map[string]ConfigPutRequestGatewayGatewayName`
+`func (o *GatewaysPutRequest) GetGateway() map[string]GatewaysPutRequestGatewayValue`
 
 GetGateway returns the Gateway field if non-nil, zero value otherwise.
 
 ### GetGatewayOk
 
-`func (o *GatewaysPutRequest) GetGatewayOk() (*map[string]ConfigPutRequestGatewayGatewayName, bool)`
+`func (o *GatewaysPutRequest) GetGatewayOk() (*map[string]GatewaysPutRequestGatewayValue, bool)`
 
 GetGatewayOk returns a tuple with the Gateway field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetGateway
 
-`func (o *GatewaysPutRequest) SetGateway(v map[string]ConfigPutRequestGatewayGatewayName)`
+`func (o *GatewaysPutRequest) SetGateway(v map[string]GatewaysPutRequestGatewayValue)`
 
 SetGateway sets Gateway field to given value.
 

@@ -19,7 +19,7 @@ var _ MappedNullable = &LagsPutRequest{}
 
 // LagsPutRequest struct for LagsPutRequest
 type LagsPutRequest struct {
-	Lag *map[string]ConfigPutRequestLagLagName `json:"lag,omitempty"`
+	Lag *map[string]LagsPutRequestLagValue `json:"lag,omitempty"`
 }
 
 // NewLagsPutRequest instantiates a new LagsPutRequest object
@@ -40,9 +40,9 @@ func NewLagsPutRequestWithDefaults() *LagsPutRequest {
 }
 
 // GetLag returns the Lag field value if set, zero value otherwise.
-func (o *LagsPutRequest) GetLag() map[string]ConfigPutRequestLagLagName {
+func (o *LagsPutRequest) GetLag() map[string]LagsPutRequestLagValue {
 	if o == nil || IsNil(o.Lag) {
-		var ret map[string]ConfigPutRequestLagLagName
+		var ret map[string]LagsPutRequestLagValue
 		return ret
 	}
 	return *o.Lag
@@ -50,7 +50,7 @@ func (o *LagsPutRequest) GetLag() map[string]ConfigPutRequestLagLagName {
 
 // GetLagOk returns a tuple with the Lag field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LagsPutRequest) GetLagOk() (*map[string]ConfigPutRequestLagLagName, bool) {
+func (o *LagsPutRequest) GetLagOk() (*map[string]LagsPutRequestLagValue, bool) {
 	if o == nil || IsNil(o.Lag) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *LagsPutRequest) HasLag() bool {
 	return false
 }
 
-// SetLag gets a reference to the given map[string]ConfigPutRequestLagLagName and assigns it to the Lag field.
-func (o *LagsPutRequest) SetLag(v map[string]ConfigPutRequestLagLagName) {
+// SetLag gets a reference to the given map[string]LagsPutRequestLagValue and assigns it to the Lag field.
+func (o *LagsPutRequest) SetLag(v map[string]LagsPutRequestLagValue) {
 	o.Lag = &v
 }
 

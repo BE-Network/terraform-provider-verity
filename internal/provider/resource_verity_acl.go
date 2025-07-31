@@ -180,7 +180,7 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	name := plan.Name.ValueString()
-	aclProps := openapi.NewConfigPutRequestIpv4FilterIpv4FilterName()
+	aclProps := openapi.NewAclsPutRequestIpFilterValue()
 
 	if !plan.Enable.IsNull() {
 		aclProps.SetEnable(plan.Enable.ValueBool())
@@ -217,7 +217,7 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if len(plan.ObjectProperties) > 0 && !plan.ObjectProperties[0].Notes.IsNull() {
-		objProps := openapi.NewConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties()
+		objProps := openapi.NewAclsPutRequestIpFilterValueObjectProperties()
 		objProps.SetNotes(plan.ObjectProperties[0].Notes.ValueString())
 		aclProps.SetObjectProperties(*objProps)
 	}
@@ -480,7 +480,7 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 	}
 
 	name := plan.Name.ValueString()
-	aclProps := &openapi.ConfigPutRequestIpv4FilterIpv4FilterName{}
+	aclProps := &openapi.AclsPutRequestIpFilterValue{}
 	hasChanges := false
 
 	objPropsChanged := false
@@ -494,7 +494,7 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 
 	if objPropsChanged {
 		if len(plan.ObjectProperties) > 0 {
-			objProps := openapi.NewConfigPutRequestIpv4PrefixListIpv4PrefixListNameObjectProperties()
+			objProps := openapi.NewAclsPutRequestIpFilterValueObjectProperties()
 			objProps.SetNotes(plan.ObjectProperties[0].Notes.ValueString())
 			aclProps.SetObjectProperties(*objProps)
 		}

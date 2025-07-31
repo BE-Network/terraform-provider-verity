@@ -19,7 +19,7 @@ var _ MappedNullable = &AclsPutRequest{}
 
 // AclsPutRequest struct for AclsPutRequest
 type AclsPutRequest struct {
-	IpFilter *map[string]ConfigPutRequestIpv4FilterIpv4FilterName `json:"ip_filter,omitempty"`
+	IpFilter *map[string]AclsPutRequestIpFilterValue `json:"ip_filter,omitempty"`
 }
 
 // NewAclsPutRequest instantiates a new AclsPutRequest object
@@ -40,9 +40,9 @@ func NewAclsPutRequestWithDefaults() *AclsPutRequest {
 }
 
 // GetIpFilter returns the IpFilter field value if set, zero value otherwise.
-func (o *AclsPutRequest) GetIpFilter() map[string]ConfigPutRequestIpv4FilterIpv4FilterName {
+func (o *AclsPutRequest) GetIpFilter() map[string]AclsPutRequestIpFilterValue {
 	if o == nil || IsNil(o.IpFilter) {
-		var ret map[string]ConfigPutRequestIpv4FilterIpv4FilterName
+		var ret map[string]AclsPutRequestIpFilterValue
 		return ret
 	}
 	return *o.IpFilter
@@ -50,7 +50,7 @@ func (o *AclsPutRequest) GetIpFilter() map[string]ConfigPutRequestIpv4FilterIpv4
 
 // GetIpFilterOk returns a tuple with the IpFilter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AclsPutRequest) GetIpFilterOk() (*map[string]ConfigPutRequestIpv4FilterIpv4FilterName, bool) {
+func (o *AclsPutRequest) GetIpFilterOk() (*map[string]AclsPutRequestIpFilterValue, bool) {
 	if o == nil || IsNil(o.IpFilter) {
 		return nil, false
 	}
@@ -66,8 +66,8 @@ func (o *AclsPutRequest) HasIpFilter() bool {
 	return false
 }
 
-// SetIpFilter gets a reference to the given map[string]ConfigPutRequestIpv4FilterIpv4FilterName and assigns it to the IpFilter field.
-func (o *AclsPutRequest) SetIpFilter(v map[string]ConfigPutRequestIpv4FilterIpv4FilterName) {
+// SetIpFilter gets a reference to the given map[string]AclsPutRequestIpFilterValue and assigns it to the IpFilter field.
+func (o *AclsPutRequest) SetIpFilter(v map[string]AclsPutRequestIpFilterValue) {
 	o.IpFilter = &v
 }
 

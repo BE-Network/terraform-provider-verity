@@ -205,7 +205,7 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 	}
 
 	name := plan.Name.ValueString()
-	sppProps := openapi.ConfigPutRequestServicePortProfileServicePortProfileName{}
+	sppProps := openapi.ServiceportprofilesPutRequestServicePortProfileValue{}
 	sppProps.Name = openapi.PtrString(name)
 
 	if !plan.Enable.IsNull() {
@@ -234,9 +234,9 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 	}
 
 	if len(plan.Services) > 0 {
-		services := make([]openapi.ConfigPutRequestServicePortProfileServicePortProfileNameServicesInner, len(plan.Services))
+		services := make([]openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner, len(plan.Services))
 		for i, service := range plan.Services {
-			serviceItem := openapi.ConfigPutRequestServicePortProfileServicePortProfileNameServicesInner{}
+			serviceItem := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 			if !service.RowNumEnable.IsNull() {
 				serviceItem.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
 			}
@@ -274,7 +274,7 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestServicePortProfileServicePortProfileNameObjectProperties{}
+		objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
 		if !op.OnSummary.IsNull() {
 			objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
 		}
@@ -287,7 +287,7 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		sppProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "serviceportprofile", name, sppProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "service_port_profile", name, sppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for service port profile creation operation %s to complete", operationID))
@@ -323,7 +323,7 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 
 	sppName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("serviceportprofile") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("service_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Service Port Profile %s verification – trusting recent successful API operation", sppName))
 		return
 	}
@@ -588,7 +588,7 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	}
 
 	name := plan.Name.ValueString()
-	sppProps := openapi.ConfigPutRequestServicePortProfileServicePortProfileName{}
+	sppProps := openapi.ServiceportprofilesPutRequestServicePortProfileValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -632,9 +632,9 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	}
 
 	if !r.equalServiceArrays(plan.Services, state.Services) {
-		services := make([]openapi.ConfigPutRequestServicePortProfileServicePortProfileNameServicesInner, len(plan.Services))
+		services := make([]openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner, len(plan.Services))
 		for i, service := range plan.Services {
-			serviceItem := openapi.ConfigPutRequestServicePortProfileServicePortProfileNameServicesInner{}
+			serviceItem := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 			if !service.RowNumEnable.IsNull() {
 				serviceItem.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
 			}
@@ -674,7 +674,7 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
 			op := plan.ObjectProperties[0]
-			objProps := openapi.ConfigPutRequestServicePortProfileServicePortProfileNameObjectProperties{}
+			objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
 			if !op.OnSummary.IsNull() {
 				objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
 			}
@@ -694,7 +694,7 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "serviceportprofile", name, sppProps)
+	operationID := r.bulkOpsMgr.AddPatch(ctx, "service_port_profile", name, sppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Service Port Profile update operation %s to complete", operationID))
@@ -726,7 +726,7 @@ func (r *verityServicePortProfileResource) Delete(ctx context.Context, req resou
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "serviceportprofile", name)
+	operationID := r.bulkOpsMgr.AddDelete(ctx, "service_port_profile", name)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for Service Port Profile deletion operation %s to complete", operationID))

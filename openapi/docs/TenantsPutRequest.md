@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Tenant** | Pointer to [**map[string]ConfigPutRequestTenantTenantName**](ConfigPutRequestTenantTenantName.md) |  | [optional] 
+**Tenant** | Pointer to [**map[string]TenantsPutRequestTenantValue**](TenantsPutRequestTenantValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetTenant
 
-`func (o *TenantsPutRequest) GetTenant() map[string]ConfigPutRequestTenantTenantName`
+`func (o *TenantsPutRequest) GetTenant() map[string]TenantsPutRequestTenantValue`
 
 GetTenant returns the Tenant field if non-nil, zero value otherwise.
 
 ### GetTenantOk
 
-`func (o *TenantsPutRequest) GetTenantOk() (*map[string]ConfigPutRequestTenantTenantName, bool)`
+`func (o *TenantsPutRequest) GetTenantOk() (*map[string]TenantsPutRequestTenantValue, bool)`
 
 GetTenantOk returns a tuple with the Tenant field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTenant
 
-`func (o *TenantsPutRequest) SetTenant(v map[string]ConfigPutRequestTenantTenantName)`
+`func (o *TenantsPutRequest) SetTenant(v map[string]TenantsPutRequestTenantValue)`
 
 SetTenant sets Tenant field to given value.
 

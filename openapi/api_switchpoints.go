@@ -244,6 +244,7 @@ type ApiSwitchpointsGetRequest struct {
 	ApiService *SwitchpointsAPIService
 	switchpointName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiSwitchpointsGetRequest) SwitchpointName(switchpointName string) ApiSwitchpointsGetRequest {
@@ -253,6 +254,11 @@ func (r ApiSwitchpointsGetRequest) SwitchpointName(switchpointName string) ApiSw
 
 func (r ApiSwitchpointsGetRequest) IncludeData(includeData bool) ApiSwitchpointsGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiSwitchpointsGetRequest) ChangesetName(changesetName string) ApiSwitchpointsGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -300,6 +306,9 @@ func (a *SwitchpointsAPIService) SwitchpointsGetExecute(r ApiSwitchpointsGetRequ
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**VoicePortProfiles** | Pointer to [**map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName**](ConfigPutRequestVoicePortProfilesVoicePortProfilesName.md) |  | [optional] 
+**VoicePortProfiles** | Pointer to [**map[string]VoiceportprofilesPutRequestVoicePortProfilesValue**](VoiceportprofilesPutRequestVoicePortProfilesValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetVoicePortProfiles
 
-`func (o *VoiceportprofilesPutRequest) GetVoicePortProfiles() map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName`
+`func (o *VoiceportprofilesPutRequest) GetVoicePortProfiles() map[string]VoiceportprofilesPutRequestVoicePortProfilesValue`
 
 GetVoicePortProfiles returns the VoicePortProfiles field if non-nil, zero value otherwise.
 
 ### GetVoicePortProfilesOk
 
-`func (o *VoiceportprofilesPutRequest) GetVoicePortProfilesOk() (*map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName, bool)`
+`func (o *VoiceportprofilesPutRequest) GetVoicePortProfilesOk() (*map[string]VoiceportprofilesPutRequestVoicePortProfilesValue, bool)`
 
 GetVoicePortProfilesOk returns a tuple with the VoicePortProfiles field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetVoicePortProfiles
 
-`func (o *VoiceportprofilesPutRequest) SetVoicePortProfiles(v map[string]ConfigPutRequestVoicePortProfilesVoicePortProfilesName)`
+`func (o *VoiceportprofilesPutRequest) SetVoicePortProfiles(v map[string]VoiceportprofilesPutRequestVoicePortProfilesValue)`
 
 SetVoicePortProfiles sets VoicePortProfiles field to given value.
 

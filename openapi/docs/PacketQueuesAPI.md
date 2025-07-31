@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## PacketqueuesGet
 
-> PacketqueuesGet(ctx).PacketQueueName(packetQueueName).IncludeData(includeData).Execute()
+> PacketqueuesGet(ctx).PacketQueueName(packetQueueName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Packet Queues
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	packetQueueName := "packetQueueName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PacketQueuesAPI.PacketqueuesGet(context.Background()).PacketQueueName(packetQueueName).IncludeData(includeData).Execute()
+	r, err := apiClient.PacketQueuesAPI.PacketqueuesGet(context.Background()).PacketQueueName(packetQueueName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `PacketQueuesAPI.PacketqueuesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packetQueueName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

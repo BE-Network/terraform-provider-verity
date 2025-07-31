@@ -190,7 +190,7 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 	}
 
 	name := plan.Name.ValueString()
-	aepProps := openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName{}
+	aepProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue{}
 	aepProps.Name = openapi.PtrString(name)
 
 	if !plan.Enable.IsNull() {
@@ -213,9 +213,9 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 	}
 
 	if len(plan.EthPorts) > 0 {
-		ethPorts := make([]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameEthPortsInner, len(plan.EthPorts))
+		ethPorts := make([]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner, len(plan.EthPorts))
 		for i, ethPort := range plan.EthPorts {
-			ethPortItem := openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameEthPortsInner{}
+			ethPortItem := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{}
 			if !ethPort.EthPortProfileNumEnable.IsNull() {
 				ethPortItem.EthPortProfileNumEnable = openapi.PtrBool(ethPort.EthPortProfileNumEnable.ValueBool())
 			}
@@ -241,7 +241,7 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameObjectProperties{}
+		objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		}
@@ -539,7 +539,7 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	}
 
 	name := plan.Name.ValueString()
-	aepProps := openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName{}
+	aepProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue{}
 	hasChanges := false
 
 	if !plan.Name.Equal(state.Name) {
@@ -573,9 +573,9 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	}
 
 	if !r.equalEthPortArrays(plan.EthPorts, state.EthPorts) {
-		ethPorts := make([]openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameEthPortsInner, len(plan.EthPorts))
+		ethPorts := make([]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner, len(plan.EthPorts))
 		for i, ethPort := range plan.EthPorts {
-			ethPortItem := openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameEthPortsInner{}
+			ethPortItem := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{}
 			if !ethPort.EthPortProfileNumEnable.IsNull() {
 				ethPortItem.EthPortProfileNumEnable = openapi.PtrBool(ethPort.EthPortProfileNumEnable.ValueBool())
 			}
@@ -603,7 +603,7 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
 			op := plan.ObjectProperties[0]
-			objProps := openapi.ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortNameObjectProperties{}
+			objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
 			if !op.Group.IsNull() {
 				objProps.Group = openapi.PtrString(op.Group.ValueString())
 			}

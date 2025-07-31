@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ServicePortProfile** | Pointer to [**map[string]ConfigPutRequestServicePortProfileServicePortProfileName**](ConfigPutRequestServicePortProfileServicePortProfileName.md) |  | [optional] 
+**ServicePortProfile** | Pointer to [**map[string]ServiceportprofilesPutRequestServicePortProfileValue**](ServiceportprofilesPutRequestServicePortProfileValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetServicePortProfile
 
-`func (o *ServiceportprofilesPutRequest) GetServicePortProfile() map[string]ConfigPutRequestServicePortProfileServicePortProfileName`
+`func (o *ServiceportprofilesPutRequest) GetServicePortProfile() map[string]ServiceportprofilesPutRequestServicePortProfileValue`
 
 GetServicePortProfile returns the ServicePortProfile field if non-nil, zero value otherwise.
 
 ### GetServicePortProfileOk
 
-`func (o *ServiceportprofilesPutRequest) GetServicePortProfileOk() (*map[string]ConfigPutRequestServicePortProfileServicePortProfileName, bool)`
+`func (o *ServiceportprofilesPutRequest) GetServicePortProfileOk() (*map[string]ServiceportprofilesPutRequestServicePortProfileValue, bool)`
 
 GetServicePortProfileOk returns a tuple with the ServicePortProfile field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetServicePortProfile
 
-`func (o *ServiceportprofilesPutRequest) SetServicePortProfile(v map[string]ConfigPutRequestServicePortProfileServicePortProfileName)`
+`func (o *ServiceportprofilesPutRequest) SetServicePortProfile(v map[string]ServiceportprofilesPutRequestServicePortProfileValue)`
 
 SetServicePortProfile sets ServicePortProfile field to given value.
 

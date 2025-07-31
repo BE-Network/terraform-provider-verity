@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## DevicevoicesettingsGet
 
-> DevicevoicesettingsGet(ctx).DeviceVoiceSettingsName(deviceVoiceSettingsName).IncludeData(includeData).Execute()
+> DevicevoicesettingsGet(ctx).DeviceVoiceSettingsName(deviceVoiceSettingsName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
 Get all Device Voice Settings
 
@@ -100,10 +100,11 @@ import (
 func main() {
 	deviceVoiceSettingsName := "deviceVoiceSettingsName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
+	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(context.Background()).DeviceVoiceSettingsName(deviceVoiceSettingsName).IncludeData(includeData).Execute()
+	r, err := apiClient.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(context.Background()).DeviceVoiceSettingsName(deviceVoiceSettingsName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DeviceVoiceSettingsAPI.DevicevoicesettingsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -124,6 +125,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **deviceVoiceSettingsName** | **string** |  | 
  **includeData** | **bool** |  | 
+ **changesetName** | **string** |  | 
 
 ### Return type
 

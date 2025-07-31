@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**AuthenticatedEthPort** | Pointer to [**map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName**](ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName.md) |  | [optional] 
+**AuthenticatedEthPort** | Pointer to [**map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue**](AuthenticatedethportsPutRequestAuthenticatedEthPortValue.md) |  | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetAuthenticatedEthPort
 
-`func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPort() map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName`
+`func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPort() map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue`
 
 GetAuthenticatedEthPort returns the AuthenticatedEthPort field if non-nil, zero value otherwise.
 
 ### GetAuthenticatedEthPortOk
 
-`func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPortOk() (*map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName, bool)`
+`func (o *AuthenticatedethportsPutRequest) GetAuthenticatedEthPortOk() (*map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue, bool)`
 
 GetAuthenticatedEthPortOk returns a tuple with the AuthenticatedEthPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAuthenticatedEthPort
 
-`func (o *AuthenticatedethportsPutRequest) SetAuthenticatedEthPort(v map[string]ConfigPutRequestAuthenticatedEthPortAuthenticatedEthPortName)`
+`func (o *AuthenticatedethportsPutRequest) SetAuthenticatedEthPort(v map[string]AuthenticatedethportsPutRequestAuthenticatedEthPortValue)`
 
 SetAuthenticatedEthPort sets AuthenticatedEthPort field to given value.
 

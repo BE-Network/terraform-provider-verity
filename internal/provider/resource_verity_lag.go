@@ -174,7 +174,7 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	name := plan.Name.ValueString()
-	lagReq := openapi.NewConfigPutRequestLagLagName()
+	lagReq := openapi.NewLagsPutRequestLagValue()
 	lagReq.Name = openapi.PtrString(name)
 
 	if !plan.Enable.IsNull() {
@@ -435,7 +435,7 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	name := plan.Name.ValueString()
-	lagReq := &openapi.ConfigPutRequestLagLagName{}
+	lagReq := &openapi.LagsPutRequestLagValue{}
 	hasChanges := false
 
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) == 0 {

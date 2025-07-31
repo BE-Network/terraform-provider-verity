@@ -146,6 +146,7 @@ type ApiDevicecontrollersGetRequest struct {
 	ApiService *DeviceControllersAPIService
 	deviceControllerName *string
 	includeData *bool
+	changesetName *string
 }
 
 func (r ApiDevicecontrollersGetRequest) DeviceControllerName(deviceControllerName string) ApiDevicecontrollersGetRequest {
@@ -155,6 +156,11 @@ func (r ApiDevicecontrollersGetRequest) DeviceControllerName(deviceControllerNam
 
 func (r ApiDevicecontrollersGetRequest) IncludeData(includeData bool) ApiDevicecontrollersGetRequest {
 	r.includeData = &includeData
+	return r
+}
+
+func (r ApiDevicecontrollersGetRequest) ChangesetName(changesetName string) ApiDevicecontrollersGetRequest {
+	r.changesetName = &changesetName
 	return r
 }
 
@@ -202,6 +208,9 @@ func (a *DeviceControllersAPIService) DevicecontrollersGetExecute(r ApiDevicecon
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
