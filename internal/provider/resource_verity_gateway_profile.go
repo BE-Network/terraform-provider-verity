@@ -206,7 +206,7 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 				gatewayObj.SetGateway(eg.Gateway.ValueString())
 			}
 
-			if !eg.GatewayRefType.IsNull() && eg.GatewayRefType.ValueString() != "" {
+			if !eg.GatewayRefType.IsNull() {
 				gatewayObj.SetGatewayRefType(eg.GatewayRefType.ValueString())
 			}
 

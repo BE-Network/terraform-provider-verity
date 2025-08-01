@@ -239,7 +239,9 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		RouteTargetImport:          openapi.PtrString(plan.RouteTargetImport.ValueString()),
 		RouteTargetExport:          openapi.PtrString(plan.RouteTargetExport.ValueString()),
 		ImportRouteMap:             openapi.PtrString(plan.ImportRouteMap.ValueString()),
+		ImportRouteMapRefType:      openapi.PtrString(plan.ImportRouteMapRefType.ValueString()),
 		ExportRouteMap:             openapi.PtrString(plan.ExportRouteMap.ValueString()),
+		ExportRouteMapRefType:      openapi.PtrString(plan.ExportRouteMapRefType.ValueString()),
 		RouteTenants:               []openapi.TenantsPutRequestTenantValueRouteTenantsInner{},
 	}
 
