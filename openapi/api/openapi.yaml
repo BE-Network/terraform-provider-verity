@@ -4807,6 +4807,10 @@ components:
           default: ""
           description: Label of this Eth Port
           type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _sites_patch_request_site_value_pairs_inner:
       properties:
