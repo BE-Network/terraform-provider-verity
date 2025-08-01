@@ -78,7 +78,11 @@ type APIClient struct {
 
 	GatewaysAPI *GatewaysAPIService
 
+	IPv4ListFiltersAPI *IPv4ListFiltersAPIService
+
 	IPv4PrefixListsAPI *IPv4PrefixListsAPIService
+
+	IPv6ListFiltersAPI *IPv6ListFiltersAPIService
 
 	IPv6PrefixListsAPI *IPv6PrefixListsAPIService
 
@@ -142,7 +146,9 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ExtendedCommunityListsAPI = (*ExtendedCommunityListsAPIService)(&c.common)
 	c.GatewayProfilesAPI = (*GatewayProfilesAPIService)(&c.common)
 	c.GatewaysAPI = (*GatewaysAPIService)(&c.common)
+	c.IPv4ListFiltersAPI = (*IPv4ListFiltersAPIService)(&c.common)
 	c.IPv4PrefixListsAPI = (*IPv4PrefixListsAPIService)(&c.common)
+	c.IPv6ListFiltersAPI = (*IPv6ListFiltersAPIService)(&c.common)
 	c.IPv6PrefixListsAPI = (*IPv6PrefixListsAPIService)(&c.common)
 	c.ImageUpdateSetsAPI = (*ImageUpdateSetsAPIService)(&c.common)
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)

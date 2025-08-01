@@ -136,10 +136,18 @@ Class | Method | HTTP request | Description
 *GatewaysAPI* | [**GatewaysGet**](docs/GatewaysAPI.md#gatewaysget) | **Get** /gateways | Get all gateways
 *GatewaysAPI* | [**GatewaysPatch**](docs/GatewaysAPI.md#gatewayspatch) | **Patch** /gateways | Update gateway
 *GatewaysAPI* | [**GatewaysPut**](docs/GatewaysAPI.md#gatewaysput) | **Put** /gateways | Create gateway
+*IPv4ListFiltersAPI* | [**Ipv4listsDelete**](docs/IPv4ListFiltersAPI.md#ipv4listsdelete) | **Delete** /ipv4lists | Delete IPv4 List Filter
+*IPv4ListFiltersAPI* | [**Ipv4listsGet**](docs/IPv4ListFiltersAPI.md#ipv4listsget) | **Get** /ipv4lists | Get all IPv4 List Filters
+*IPv4ListFiltersAPI* | [**Ipv4listsPatch**](docs/IPv4ListFiltersAPI.md#ipv4listspatch) | **Patch** /ipv4lists | Update IPv4 List Filter
+*IPv4ListFiltersAPI* | [**Ipv4listsPut**](docs/IPv4ListFiltersAPI.md#ipv4listsput) | **Put** /ipv4lists | Create IPv4 List Filter
 *IPv4PrefixListsAPI* | [**Ipv4prefixlistsDelete**](docs/IPv4PrefixListsAPI.md#ipv4prefixlistsdelete) | **Delete** /ipv4prefixlists | Delete IPv4 Prefix List
 *IPv4PrefixListsAPI* | [**Ipv4prefixlistsGet**](docs/IPv4PrefixListsAPI.md#ipv4prefixlistsget) | **Get** /ipv4prefixlists | Get all IPv4 Prefix Lists
 *IPv4PrefixListsAPI* | [**Ipv4prefixlistsPatch**](docs/IPv4PrefixListsAPI.md#ipv4prefixlistspatch) | **Patch** /ipv4prefixlists | Update IPv4 Prefix List
 *IPv4PrefixListsAPI* | [**Ipv4prefixlistsPut**](docs/IPv4PrefixListsAPI.md#ipv4prefixlistsput) | **Put** /ipv4prefixlists | Create IPv4 Prefix List
+*IPv6ListFiltersAPI* | [**Ipv6listsDelete**](docs/IPv6ListFiltersAPI.md#ipv6listsdelete) | **Delete** /ipv6lists | Delete IPv6 List Filter
+*IPv6ListFiltersAPI* | [**Ipv6listsGet**](docs/IPv6ListFiltersAPI.md#ipv6listsget) | **Get** /ipv6lists | Get all IPv6 List Filters
+*IPv6ListFiltersAPI* | [**Ipv6listsPatch**](docs/IPv6ListFiltersAPI.md#ipv6listspatch) | **Patch** /ipv6lists | Update IPv6 List Filter
+*IPv6ListFiltersAPI* | [**Ipv6listsPut**](docs/IPv6ListFiltersAPI.md#ipv6listsput) | **Put** /ipv6lists | Create IPv6 List Filter
 *IPv6PrefixListsAPI* | [**Ipv6prefixlistsDelete**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistsdelete) | **Delete** /ipv6prefixlists | Delete IPv6 Prefix List
 *IPv6PrefixListsAPI* | [**Ipv6prefixlistsGet**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistsget) | **Get** /ipv6prefixlists | Get all IPv6 Prefix Lists
 *IPv6PrefixListsAPI* | [**Ipv6prefixlistsPatch**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistspatch) | **Patch** /ipv6prefixlists | Update IPv6 Prefix List
@@ -255,9 +263,13 @@ Class | Method | HTTP request | Description
  - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionElseInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionElseInner.md)
  - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionInner.md)
  - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner.md)
+ - [Ipv4listsPutRequest](docs/Ipv4listsPutRequest.md)
+ - [Ipv4listsPutRequestIpv4ListFilterValue](docs/Ipv4listsPutRequestIpv4ListFilterValue.md)
  - [Ipv4prefixlistsPutRequest](docs/Ipv4prefixlistsPutRequest.md)
  - [Ipv4prefixlistsPutRequestIpv4PrefixListValue](docs/Ipv4prefixlistsPutRequestIpv4PrefixListValue.md)
  - [Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner](docs/Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner.md)
+ - [Ipv6listsPutRequest](docs/Ipv6listsPutRequest.md)
+ - [Ipv6listsPutRequestIpv6ListFilterValue](docs/Ipv6listsPutRequestIpv6ListFilterValue.md)
  - [Ipv6prefixlistsPutRequest](docs/Ipv6prefixlistsPutRequest.md)
  - [Ipv6prefixlistsPutRequestIpv6PrefixListValue](docs/Ipv6prefixlistsPutRequestIpv6PrefixListValue.md)
  - [Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner](docs/Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner.md)
