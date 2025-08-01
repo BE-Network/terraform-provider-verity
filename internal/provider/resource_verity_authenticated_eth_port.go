@@ -572,31 +572,138 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		hasChanges = true
 	}
 
-	if !r.equalEthPortArrays(plan.EthPorts, state.EthPorts) {
-		ethPorts := make([]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner, len(plan.EthPorts))
-		for i, ethPort := range plan.EthPorts {
-			ethPortItem := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{}
-			if !ethPort.EthPortProfileNumEnable.IsNull() {
-				ethPortItem.EthPortProfileNumEnable = openapi.PtrBool(ethPort.EthPortProfileNumEnable.ValueBool())
-			}
-			if !ethPort.EthPortProfileNumEthPort.IsNull() {
-				ethPortItem.EthPortProfileNumEthPort = openapi.PtrString(ethPort.EthPortProfileNumEthPort.ValueString())
-			}
-			if !ethPort.EthPortProfileNumEthPortRefType.IsNull() {
-				ethPortItem.EthPortProfileNumEthPortRefType = openapi.PtrString(ethPort.EthPortProfileNumEthPortRefType.ValueString())
-			}
-			if !ethPort.EthPortProfileNumWalledGardenSet.IsNull() {
-				ethPortItem.EthPortProfileNumWalledGardenSet = openapi.PtrBool(ethPort.EthPortProfileNumWalledGardenSet.ValueBool())
-			}
-			if !ethPort.EthPortProfileNumRadiusFilterId.IsNull() {
-				ethPortItem.EthPortProfileNumRadiusFilterId = openapi.PtrString(ethPort.EthPortProfileNumRadiusFilterId.ValueString())
-			}
-			if !ethPort.Index.IsNull() {
-				ethPortItem.Index = openapi.PtrInt32(int32(ethPort.Index.ValueInt64()))
-			}
-			ethPorts[i] = ethPortItem
+	oldEthPortsByIndex := make(map[int64]verityAuthenticatedEthPortEthPortModel)
+	for _, ethPort := range state.EthPorts {
+		if !ethPort.Index.IsNull() {
+			idx := ethPort.Index.ValueInt64()
+			oldEthPortsByIndex[idx] = ethPort
 		}
-		aepProps.EthPorts = ethPorts
+	}
+
+	var changedEthPorts []openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner
+	ethPortsChanged := false
+
+	for _, planEthPort := range plan.EthPorts {
+		if planEthPort.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planEthPort.Index.ValueInt64()
+		stateEthPort, exists := oldEthPortsByIndex[idx]
+
+		if !exists {
+			// CREATE: new eth port, include all fields
+			newEthPort := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planEthPort.EthPortProfileNumEnable.IsNull() {
+				newEthPort.EthPortProfileNumEnable = openapi.PtrBool(planEthPort.EthPortProfileNumEnable.ValueBool())
+			} else {
+				newEthPort.EthPortProfileNumEnable = openapi.PtrBool(false)
+			}
+
+			if !planEthPort.EthPortProfileNumEthPort.IsNull() && planEthPort.EthPortProfileNumEthPort.ValueString() != "" {
+				newEthPort.EthPortProfileNumEthPort = openapi.PtrString(planEthPort.EthPortProfileNumEthPort.ValueString())
+			} else {
+				newEthPort.EthPortProfileNumEthPort = openapi.PtrString("")
+			}
+
+			if !planEthPort.EthPortProfileNumEthPortRefType.IsNull() && planEthPort.EthPortProfileNumEthPortRefType.ValueString() != "" {
+				newEthPort.EthPortProfileNumEthPortRefType = openapi.PtrString(planEthPort.EthPortProfileNumEthPortRefType.ValueString())
+			} else {
+				newEthPort.EthPortProfileNumEthPortRefType = openapi.PtrString("")
+			}
+
+			if !planEthPort.EthPortProfileNumWalledGardenSet.IsNull() {
+				newEthPort.EthPortProfileNumWalledGardenSet = openapi.PtrBool(planEthPort.EthPortProfileNumWalledGardenSet.ValueBool())
+			} else {
+				newEthPort.EthPortProfileNumWalledGardenSet = openapi.PtrBool(false)
+			}
+
+			if !planEthPort.EthPortProfileNumRadiusFilterId.IsNull() && planEthPort.EthPortProfileNumRadiusFilterId.ValueString() != "" {
+				newEthPort.EthPortProfileNumRadiusFilterId = openapi.PtrString(planEthPort.EthPortProfileNumRadiusFilterId.ValueString())
+			} else {
+				newEthPort.EthPortProfileNumRadiusFilterId = openapi.PtrString("")
+			}
+
+			changedEthPorts = append(changedEthPorts, newEthPort)
+			ethPortsChanged = true
+			continue
+		}
+
+		// UPDATE: existing eth port, check which fields changed
+		updateEthPort := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planEthPort.EthPortProfileNumEnable.Equal(stateEthPort.EthPortProfileNumEnable) {
+			updateEthPort.EthPortProfileNumEnable = openapi.PtrBool(planEthPort.EthPortProfileNumEnable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !planEthPort.EthPortProfileNumEthPort.Equal(stateEthPort.EthPortProfileNumEthPort) {
+			if !planEthPort.EthPortProfileNumEthPort.IsNull() && planEthPort.EthPortProfileNumEthPort.ValueString() != "" {
+				updateEthPort.EthPortProfileNumEthPort = openapi.PtrString(planEthPort.EthPortProfileNumEthPort.ValueString())
+			} else {
+				updateEthPort.EthPortProfileNumEthPort = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planEthPort.EthPortProfileNumEthPortRefType.Equal(stateEthPort.EthPortProfileNumEthPortRefType) {
+			if !planEthPort.EthPortProfileNumEthPortRefType.IsNull() && planEthPort.EthPortProfileNumEthPortRefType.ValueString() != "" {
+				updateEthPort.EthPortProfileNumEthPortRefType = openapi.PtrString(planEthPort.EthPortProfileNumEthPortRefType.ValueString())
+			} else {
+				updateEthPort.EthPortProfileNumEthPortRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planEthPort.EthPortProfileNumWalledGardenSet.Equal(stateEthPort.EthPortProfileNumWalledGardenSet) {
+			updateEthPort.EthPortProfileNumWalledGardenSet = openapi.PtrBool(planEthPort.EthPortProfileNumWalledGardenSet.ValueBool())
+			fieldChanged = true
+		}
+
+		if !planEthPort.EthPortProfileNumRadiusFilterId.Equal(stateEthPort.EthPortProfileNumRadiusFilterId) {
+			if !planEthPort.EthPortProfileNumRadiusFilterId.IsNull() && planEthPort.EthPortProfileNumRadiusFilterId.ValueString() != "" {
+				updateEthPort.EthPortProfileNumRadiusFilterId = openapi.PtrString(planEthPort.EthPortProfileNumRadiusFilterId.ValueString())
+			} else {
+				updateEthPort.EthPortProfileNumRadiusFilterId = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedEthPorts = append(changedEthPorts, updateEthPort)
+			ethPortsChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldEthPortsByIndex {
+		found := false
+		for _, planEthPort := range plan.EthPorts {
+			if !planEthPort.Index.IsNull() && planEthPort.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// eth port removed - include only the index for deletion
+			deletedEthPort := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedEthPorts = append(changedEthPorts, deletedEthPort)
+			ethPortsChanged = true
+		}
+	}
+
+	if ethPortsChanged && len(changedEthPorts) > 0 {
+		aepProps.EthPorts = changedEthPorts
 		hasChanges = true
 	}
 
@@ -670,23 +777,6 @@ func (r *verityAuthenticatedEthPortResource) Delete(ctx context.Context, req res
 
 func (r *verityAuthenticatedEthPortResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func (r *verityAuthenticatedEthPortResource) equalEthPortArrays(a, b []verityAuthenticatedEthPortEthPortModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].EthPortProfileNumEnable.Equal(b[i].EthPortProfileNumEnable) ||
-			!a[i].EthPortProfileNumEthPort.Equal(b[i].EthPortProfileNumEthPort) ||
-			!a[i].EthPortProfileNumEthPortRefType.Equal(b[i].EthPortProfileNumEthPortRefType) ||
-			!a[i].EthPortProfileNumWalledGardenSet.Equal(b[i].EthPortProfileNumWalledGardenSet) ||
-			!a[i].EthPortProfileNumRadiusFilterId.Equal(b[i].EthPortProfileNumRadiusFilterId) ||
-			!a[i].Index.Equal(b[i].Index) {
-			return false
-		}
-	}
-	return true
 }
 
 func (r *verityAuthenticatedEthPortResource) equalObjectProperties(a, b verityAuthenticatedEthPortObjectPropertiesModel) bool {

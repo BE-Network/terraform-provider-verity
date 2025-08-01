@@ -505,47 +505,197 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		hasChanges = true
 	}
 
-	if !r.equalPbitArrays(plan.Pbit, state.Pbit) {
-		pbitArray := make([]openapi.PacketqueuesPutRequestPacketQueueValuePbitInner, len(plan.Pbit))
-		for i, pbit := range plan.Pbit {
-			pbitItem := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{}
-			if !pbit.PacketQueueForPBit.IsNull() {
-				pbitItem.PacketQueueForPBit = openapi.PtrInt32(int32(pbit.PacketQueueForPBit.ValueInt64()))
-			}
-			if !pbit.Index.IsNull() {
-				pbitItem.Index = openapi.PtrInt32(int32(pbit.Index.ValueInt64()))
-			}
-			pbitArray[i] = pbitItem
+	oldPbitsByIndex := make(map[int64]verityPacketQueuePbitModel)
+	for _, pbit := range state.Pbit {
+		if !pbit.Index.IsNull() {
+			idx := pbit.Index.ValueInt64()
+			oldPbitsByIndex[idx] = pbit
 		}
-		pqProps.Pbit = pbitArray
+	}
+
+	var changedPbits []openapi.PacketqueuesPutRequestPacketQueueValuePbitInner
+	pbitsChanged := false
+
+	for _, planPbit := range plan.Pbit {
+		if planPbit.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planPbit.Index.ValueInt64()
+		statePbit, exists := oldPbitsByIndex[idx]
+
+		if !exists {
+			// CREATE: new pbit, include all fields
+			newPbit := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planPbit.PacketQueueForPBit.IsNull() {
+				newPbit.PacketQueueForPBit = openapi.PtrInt32(int32(planPbit.PacketQueueForPBit.ValueInt64()))
+			}
+
+			changedPbits = append(changedPbits, newPbit)
+			pbitsChanged = true
+			continue
+		}
+
+		// UPDATE: existing pbit, check which fields changed
+		updatePbit := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planPbit.PacketQueueForPBit.Equal(statePbit.PacketQueueForPBit) {
+			updatePbit.PacketQueueForPBit = openapi.PtrInt32(int32(planPbit.PacketQueueForPBit.ValueInt64()))
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedPbits = append(changedPbits, updatePbit)
+			pbitsChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldPbitsByIndex {
+		found := false
+		for _, planPbit := range plan.Pbit {
+			if !planPbit.Index.IsNull() && planPbit.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// pbit removed - include only the index for deletion
+			deletedPbit := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedPbits = append(changedPbits, deletedPbit)
+			pbitsChanged = true
+		}
+	}
+
+	if pbitsChanged && len(changedPbits) > 0 {
+		pqProps.Pbit = changedPbits
 		hasChanges = true
 	}
 
-	if !r.equalQueueArrays(plan.Queue, state.Queue) {
-		queueArray := make([]openapi.PacketqueuesPutRequestPacketQueueValueQueueInner, len(plan.Queue))
-		for i, queue := range plan.Queue {
-			queueItem := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{}
-			if !queue.BandwidthForQueue.IsNull() {
-				val := int32(queue.BandwidthForQueue.ValueInt64())
-				queueItem.BandwidthForQueue = *openapi.NewNullableInt32(&val)
-			} else {
-				queueItem.BandwidthForQueue = *openapi.NewNullableInt32(nil)
-			}
-			if !queue.SchedulerType.IsNull() {
-				queueItem.SchedulerType = openapi.PtrString(queue.SchedulerType.ValueString())
-			}
-			if !queue.SchedulerWeight.IsNull() {
-				val := int32(queue.SchedulerWeight.ValueInt64())
-				queueItem.SchedulerWeight = *openapi.NewNullableInt32(&val)
-			} else {
-				queueItem.SchedulerWeight = *openapi.NewNullableInt32(nil)
-			}
-			if !queue.Index.IsNull() {
-				queueItem.Index = openapi.PtrInt32(int32(queue.Index.ValueInt64()))
-			}
-			queueArray[i] = queueItem
+	oldQueuesByIndex := make(map[int64]verityPacketQueueQueueModel)
+	for _, queue := range state.Queue {
+		if !queue.Index.IsNull() {
+			idx := queue.Index.ValueInt64()
+			oldQueuesByIndex[idx] = queue
 		}
-		pqProps.Queue = queueArray
+	}
+
+	var changedQueues []openapi.PacketqueuesPutRequestPacketQueueValueQueueInner
+	queuesChanged := false
+
+	for _, planQueue := range plan.Queue {
+		if planQueue.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planQueue.Index.ValueInt64()
+		stateQueue, exists := oldQueuesByIndex[idx]
+
+		if !exists {
+			// CREATE: new queue, include all fields
+			newQueue := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planQueue.BandwidthForQueue.IsNull() {
+				val := int32(planQueue.BandwidthForQueue.ValueInt64())
+				newQueue.BandwidthForQueue = *openapi.NewNullableInt32(&val)
+			} else {
+				newQueue.BandwidthForQueue = *openapi.NewNullableInt32(nil)
+			}
+
+			if !planQueue.SchedulerType.IsNull() && planQueue.SchedulerType.ValueString() != "" {
+				newQueue.SchedulerType = openapi.PtrString(planQueue.SchedulerType.ValueString())
+			} else {
+				newQueue.SchedulerType = openapi.PtrString("")
+			}
+
+			if !planQueue.SchedulerWeight.IsNull() {
+				val := int32(planQueue.SchedulerWeight.ValueInt64())
+				newQueue.SchedulerWeight = *openapi.NewNullableInt32(&val)
+			} else {
+				newQueue.SchedulerWeight = *openapi.NewNullableInt32(nil)
+			}
+
+			changedQueues = append(changedQueues, newQueue)
+			queuesChanged = true
+			continue
+		}
+
+		// UPDATE: existing queue, check which fields changed
+		updateQueue := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planQueue.BandwidthForQueue.Equal(stateQueue.BandwidthForQueue) {
+			if !planQueue.BandwidthForQueue.IsNull() {
+				val := int32(planQueue.BandwidthForQueue.ValueInt64())
+				updateQueue.BandwidthForQueue = *openapi.NewNullableInt32(&val)
+			} else {
+				updateQueue.BandwidthForQueue = *openapi.NewNullableInt32(nil)
+			}
+			fieldChanged = true
+		}
+
+		if !planQueue.SchedulerType.Equal(stateQueue.SchedulerType) {
+			if !planQueue.SchedulerType.IsNull() && planQueue.SchedulerType.ValueString() != "" {
+				updateQueue.SchedulerType = openapi.PtrString(planQueue.SchedulerType.ValueString())
+			} else {
+				updateQueue.SchedulerType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planQueue.SchedulerWeight.Equal(stateQueue.SchedulerWeight) {
+			if !planQueue.SchedulerWeight.IsNull() {
+				val := int32(planQueue.SchedulerWeight.ValueInt64())
+				updateQueue.SchedulerWeight = *openapi.NewNullableInt32(&val)
+			} else {
+				updateQueue.SchedulerWeight = *openapi.NewNullableInt32(nil)
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedQueues = append(changedQueues, updateQueue)
+			queuesChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldQueuesByIndex {
+		found := false
+		for _, planQueue := range plan.Queue {
+			if !planQueue.Index.IsNull() && planQueue.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// queue removed - include only the index for deletion
+			deletedQueue := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedQueues = append(changedQueues, deletedQueue)
+			queuesChanged = true
+		}
+	}
+
+	if queuesChanged && len(changedQueues) > 0 {
+		pqProps.Queue = changedQueues
 		hasChanges = true
 	}
 
@@ -620,32 +770,4 @@ func (r *verityPacketQueueResource) Delete(ctx context.Context, req resource.Del
 
 func (r *verityPacketQueueResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func (r *verityPacketQueueResource) equalPbitArrays(a, b []verityPacketQueuePbitModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].PacketQueueForPBit.Equal(b[i].PacketQueueForPBit) ||
-			!a[i].Index.Equal(b[i].Index) {
-			return false
-		}
-	}
-	return true
-}
-
-func (r *verityPacketQueueResource) equalQueueArrays(a, b []verityPacketQueueQueueModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].BandwidthForQueue.Equal(b[i].BandwidthForQueue) ||
-			!a[i].SchedulerType.Equal(b[i].SchedulerType) ||
-			!a[i].SchedulerWeight.Equal(b[i].SchedulerWeight) ||
-			!a[i].Index.Equal(b[i].Index) {
-			return false
-		}
-	}
-	return true
 }

@@ -1487,6 +1487,152 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		}
 	}
 
+	oldLldpMedByIndex := make(map[int64]verityEthPortSettingsLldpMedModel)
+	for _, lldpMed := range state.LldpMed {
+		if !lldpMed.Index.IsNull() {
+			idx := lldpMed.Index.ValueInt64()
+			oldLldpMedByIndex[idx] = lldpMed
+		}
+	}
+
+	var changedLldpMed []openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner
+	lldpMedChanged := false
+
+	for _, planLldpMed := range plan.LldpMed {
+		if planLldpMed.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planLldpMed.Index.ValueInt64()
+		stateLldpMed, exists := oldLldpMedByIndex[idx]
+
+		if !exists {
+			// CREATE: new lldp_med, include all fields
+			newLldpMed := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planLldpMed.LldpMedRowNumEnable.IsNull() {
+				newLldpMed.LldpMedRowNumEnable = openapi.PtrBool(planLldpMed.LldpMedRowNumEnable.ValueBool())
+			} else {
+				newLldpMed.LldpMedRowNumEnable = openapi.PtrBool(false)
+			}
+
+			if !planLldpMed.LldpMedRowNumAdvertisedApplication.IsNull() && planLldpMed.LldpMedRowNumAdvertisedApplication.ValueString() != "" {
+				newLldpMed.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(planLldpMed.LldpMedRowNumAdvertisedApplication.ValueString())
+			} else {
+				newLldpMed.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString("")
+			}
+
+			if !planLldpMed.LldpMedRowNumDscpMark.IsNull() {
+				newLldpMed.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(planLldpMed.LldpMedRowNumDscpMark.ValueInt64()))
+			} else {
+				newLldpMed.LldpMedRowNumDscpMark = openapi.PtrInt32(0)
+			}
+
+			if !planLldpMed.LldpMedRowNumPriority.IsNull() {
+				newLldpMed.LldpMedRowNumPriority = openapi.PtrInt32(int32(planLldpMed.LldpMedRowNumPriority.ValueInt64()))
+			} else {
+				newLldpMed.LldpMedRowNumPriority = openapi.PtrInt32(0)
+			}
+
+			if !planLldpMed.LldpMedRowNumService.IsNull() && planLldpMed.LldpMedRowNumService.ValueString() != "" {
+				newLldpMed.LldpMedRowNumService = openapi.PtrString(planLldpMed.LldpMedRowNumService.ValueString())
+			} else {
+				newLldpMed.LldpMedRowNumService = openapi.PtrString("")
+			}
+
+			if !planLldpMed.LldpMedRowNumServiceRefType.IsNull() && planLldpMed.LldpMedRowNumServiceRefType.ValueString() != "" {
+				newLldpMed.LldpMedRowNumServiceRefType = openapi.PtrString(planLldpMed.LldpMedRowNumServiceRefType.ValueString())
+			} else {
+				newLldpMed.LldpMedRowNumServiceRefType = openapi.PtrString("")
+			}
+
+			changedLldpMed = append(changedLldpMed, newLldpMed)
+			lldpMedChanged = true
+			continue
+		}
+
+		// UPDATE: existing lldp_med, check which fields changed
+		updateLldpMed := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planLldpMed.LldpMedRowNumEnable.Equal(stateLldpMed.LldpMedRowNumEnable) {
+			updateLldpMed.LldpMedRowNumEnable = openapi.PtrBool(planLldpMed.LldpMedRowNumEnable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !planLldpMed.LldpMedRowNumAdvertisedApplication.Equal(stateLldpMed.LldpMedRowNumAdvertisedApplication) {
+			if !planLldpMed.LldpMedRowNumAdvertisedApplication.IsNull() && planLldpMed.LldpMedRowNumAdvertisedApplication.ValueString() != "" {
+				updateLldpMed.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(planLldpMed.LldpMedRowNumAdvertisedApplication.ValueString())
+			} else {
+				updateLldpMed.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planLldpMed.LldpMedRowNumDscpMark.Equal(stateLldpMed.LldpMedRowNumDscpMark) {
+			updateLldpMed.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(planLldpMed.LldpMedRowNumDscpMark.ValueInt64()))
+			fieldChanged = true
+		}
+
+		if !planLldpMed.LldpMedRowNumPriority.Equal(stateLldpMed.LldpMedRowNumPriority) {
+			updateLldpMed.LldpMedRowNumPriority = openapi.PtrInt32(int32(planLldpMed.LldpMedRowNumPriority.ValueInt64()))
+			fieldChanged = true
+		}
+
+		if !planLldpMed.LldpMedRowNumService.Equal(stateLldpMed.LldpMedRowNumService) {
+			if !planLldpMed.LldpMedRowNumService.IsNull() && planLldpMed.LldpMedRowNumService.ValueString() != "" {
+				updateLldpMed.LldpMedRowNumService = openapi.PtrString(planLldpMed.LldpMedRowNumService.ValueString())
+			} else {
+				updateLldpMed.LldpMedRowNumService = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planLldpMed.LldpMedRowNumServiceRefType.Equal(stateLldpMed.LldpMedRowNumServiceRefType) {
+			if !planLldpMed.LldpMedRowNumServiceRefType.IsNull() && planLldpMed.LldpMedRowNumServiceRefType.ValueString() != "" {
+				updateLldpMed.LldpMedRowNumServiceRefType = openapi.PtrString(planLldpMed.LldpMedRowNumServiceRefType.ValueString())
+			} else {
+				updateLldpMed.LldpMedRowNumServiceRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedLldpMed = append(changedLldpMed, updateLldpMed)
+			lldpMedChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldLldpMedByIndex {
+		found := false
+		for _, planLldpMed := range plan.LldpMed {
+			if !planLldpMed.Index.IsNull() && planLldpMed.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// lldp_med removed - include only the index for deletion
+			deletedLldpMed := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedLldpMed = append(changedLldpMed, deletedLldpMed)
+			lldpMedChanged = true
+		}
+	}
+
+	if lldpMedChanged && len(changedLldpMed) > 0 {
+		ethPortSettingsReq.LldpMed = changedLldpMed
+		hasChanges = true
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return

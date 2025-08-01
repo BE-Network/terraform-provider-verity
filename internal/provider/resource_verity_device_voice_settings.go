@@ -1170,28 +1170,124 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		dvsProps.CasEvents = openapi.PtrInt32(int32(plan.CasEvents.ValueInt64()))
 		hasChanges = true
 	}
-	if !r.equalCodecArrays(plan.Codecs, state.Codecs) {
-		codecs := make([]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, len(plan.Codecs))
-		for i, codec := range plan.Codecs {
-			codecItem := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
-			if !codec.CodecNumName.IsNull() {
-				codecItem.CodecNumName = openapi.PtrString(codec.CodecNumName.ValueString())
-			}
-			if !codec.CodecNumEnable.IsNull() {
-				codecItem.CodecNumEnable = openapi.PtrBool(codec.CodecNumEnable.ValueBool())
-			}
-			if !codec.CodecNumPacketizationPeriod.IsNull() {
-				codecItem.CodecNumPacketizationPeriod = openapi.PtrString(codec.CodecNumPacketizationPeriod.ValueString())
-			}
-			if !codec.CodecNumSilenceSuppression.IsNull() {
-				codecItem.CodecNumSilenceSuppression = openapi.PtrBool(codec.CodecNumSilenceSuppression.ValueBool())
-			}
-			if !codec.Index.IsNull() {
-				codecItem.Index = openapi.PtrInt32(int32(codec.Index.ValueInt64()))
-			}
-			codecs[i] = codecItem
+
+	oldCodecsByIndex := make(map[int64]verityDeviceVoiceSettingsCodecModel)
+	for _, codec := range state.Codecs {
+		if !codec.Index.IsNull() {
+			idx := codec.Index.ValueInt64()
+			oldCodecsByIndex[idx] = codec
 		}
-		dvsProps.Codecs = codecs
+	}
+
+	var changedCodecs []openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner
+	codecsChanged := false
+
+	for _, planCodec := range plan.Codecs {
+		if planCodec.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planCodec.Index.ValueInt64()
+		stateCodec, exists := oldCodecsByIndex[idx]
+
+		if !exists {
+			// CREATE: new codec, include all fields
+			newCodec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planCodec.CodecNumName.IsNull() && planCodec.CodecNumName.ValueString() != "" {
+				newCodec.CodecNumName = openapi.PtrString(planCodec.CodecNumName.ValueString())
+			} else {
+				newCodec.CodecNumName = openapi.PtrString("")
+			}
+
+			if !planCodec.CodecNumEnable.IsNull() {
+				newCodec.CodecNumEnable = openapi.PtrBool(planCodec.CodecNumEnable.ValueBool())
+			} else {
+				newCodec.CodecNumEnable = openapi.PtrBool(false)
+			}
+
+			if !planCodec.CodecNumPacketizationPeriod.IsNull() && planCodec.CodecNumPacketizationPeriod.ValueString() != "" {
+				newCodec.CodecNumPacketizationPeriod = openapi.PtrString(planCodec.CodecNumPacketizationPeriod.ValueString())
+			} else {
+				newCodec.CodecNumPacketizationPeriod = openapi.PtrString("")
+			}
+
+			if !planCodec.CodecNumSilenceSuppression.IsNull() {
+				newCodec.CodecNumSilenceSuppression = openapi.PtrBool(planCodec.CodecNumSilenceSuppression.ValueBool())
+			} else {
+				newCodec.CodecNumSilenceSuppression = openapi.PtrBool(false)
+			}
+
+			changedCodecs = append(changedCodecs, newCodec)
+			codecsChanged = true
+			continue
+		}
+
+		// UPDATE: existing codec, check which fields changed
+		updateCodec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planCodec.CodecNumName.Equal(stateCodec.CodecNumName) {
+			if !planCodec.CodecNumName.IsNull() && planCodec.CodecNumName.ValueString() != "" {
+				updateCodec.CodecNumName = openapi.PtrString(planCodec.CodecNumName.ValueString())
+			} else {
+				updateCodec.CodecNumName = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planCodec.CodecNumEnable.Equal(stateCodec.CodecNumEnable) {
+			updateCodec.CodecNumEnable = openapi.PtrBool(planCodec.CodecNumEnable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !planCodec.CodecNumPacketizationPeriod.Equal(stateCodec.CodecNumPacketizationPeriod) {
+			if !planCodec.CodecNumPacketizationPeriod.IsNull() && planCodec.CodecNumPacketizationPeriod.ValueString() != "" {
+				updateCodec.CodecNumPacketizationPeriod = openapi.PtrString(planCodec.CodecNumPacketizationPeriod.ValueString())
+			} else {
+				updateCodec.CodecNumPacketizationPeriod = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planCodec.CodecNumSilenceSuppression.Equal(stateCodec.CodecNumSilenceSuppression) {
+			updateCodec.CodecNumSilenceSuppression = openapi.PtrBool(planCodec.CodecNumSilenceSuppression.ValueBool())
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedCodecs = append(changedCodecs, updateCodec)
+			codecsChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldCodecsByIndex {
+		found := false
+		for _, planCodec := range plan.Codecs {
+			if !planCodec.Index.IsNull() && planCodec.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// codec removed - include only the index for deletion
+			deletedCodec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedCodecs = append(changedCodecs, deletedCodec)
+			codecsChanged = true
+		}
+	}
+
+	if codecsChanged && len(changedCodecs) > 0 {
+		dvsProps.Codecs = changedCodecs
 		hasChanges = true
 	}
 
@@ -1265,22 +1361,6 @@ func (r *verityDeviceVoiceSettingsResource) Delete(ctx context.Context, req reso
 
 func (r *verityDeviceVoiceSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func (r *verityDeviceVoiceSettingsResource) equalCodecArrays(a, b []verityDeviceVoiceSettingsCodecModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].CodecNumName.Equal(b[i].CodecNumName) ||
-			!a[i].CodecNumEnable.Equal(b[i].CodecNumEnable) ||
-			!a[i].CodecNumPacketizationPeriod.Equal(b[i].CodecNumPacketizationPeriod) ||
-			!a[i].CodecNumSilenceSuppression.Equal(b[i].CodecNumSilenceSuppression) ||
-			!a[i].Index.Equal(b[i].Index) {
-			return false
-		}
-	}
-	return true
 }
 
 func (r *verityDeviceVoiceSettingsResource) equalObjectProperties(a, b verityDeviceVoiceSettingsObjectPropertiesModel) bool {

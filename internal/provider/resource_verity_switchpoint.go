@@ -551,6 +551,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 				if !eth.EthNumLabel.IsNull() {
 					ethItem.EthNumLabel = openapi.PtrString(eth.EthNumLabel.ValueString())
 				}
+				if !eth.Index.IsNull() {
+					ethItem.Index = openapi.PtrInt32(int32(eth.Index.ValueInt64()))
+				}
 				ethsSlice[i] = ethItem
 			}
 			objProps.Eths = ethsSlice
@@ -845,44 +848,215 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		}
 	}
 
-	if !r.equalBadgeArrays(plan.Badges, state.Badges) {
-		badges := make([]openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner, len(plan.Badges))
-		for i, badge := range plan.Badges {
-			badgeItem := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{}
-			if !badge.Badge.IsNull() {
-				badgeItem.Badge = openapi.PtrString(badge.Badge.ValueString())
-			}
-			if !badge.BadgeRefType.IsNull() {
-				badgeItem.BadgeRefType = openapi.PtrString(badge.BadgeRefType.ValueString())
-			}
-			if !badge.Index.IsNull() {
-				badgeItem.Index = openapi.PtrInt32(int32(badge.Index.ValueInt64()))
-			}
-			badges[i] = badgeItem
+	oldBadgesByIndex := make(map[int64]veritySwitchpointBadgeModel)
+	for _, badge := range state.Badges {
+		if !badge.Index.IsNull() {
+			idx := badge.Index.ValueInt64()
+			oldBadgesByIndex[idx] = badge
 		}
-		spProps.Badges = badges
+	}
+
+	var changedBadges []openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner
+	badgesChanged := false
+
+	for _, planBadge := range plan.Badges {
+		if planBadge.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planBadge.Index.ValueInt64()
+		stateBadge, exists := oldBadgesByIndex[idx]
+
+		if !exists {
+			// CREATE: new badge, include all fields
+			newBadge := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planBadge.Badge.IsNull() && planBadge.Badge.ValueString() != "" {
+				newBadge.Badge = openapi.PtrString(planBadge.Badge.ValueString())
+			} else {
+				newBadge.Badge = openapi.PtrString("")
+			}
+
+			if !planBadge.BadgeRefType.IsNull() && planBadge.BadgeRefType.ValueString() != "" {
+				newBadge.BadgeRefType = openapi.PtrString(planBadge.BadgeRefType.ValueString())
+			} else {
+				newBadge.BadgeRefType = openapi.PtrString("")
+			}
+
+			changedBadges = append(changedBadges, newBadge)
+			badgesChanged = true
+			continue
+		}
+
+		// UPDATE: existing badge, check which fields changed
+		updateBadge := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planBadge.Badge.Equal(stateBadge.Badge) {
+			if !planBadge.Badge.IsNull() && planBadge.Badge.ValueString() != "" {
+				updateBadge.Badge = openapi.PtrString(planBadge.Badge.ValueString())
+			} else {
+				updateBadge.Badge = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planBadge.BadgeRefType.Equal(stateBadge.BadgeRefType) {
+			if !planBadge.BadgeRefType.IsNull() && planBadge.BadgeRefType.ValueString() != "" {
+				updateBadge.BadgeRefType = openapi.PtrString(planBadge.BadgeRefType.ValueString())
+			} else {
+				updateBadge.BadgeRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedBadges = append(changedBadges, updateBadge)
+			badgesChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldBadgesByIndex {
+		found := false
+		for _, planBadge := range plan.Badges {
+			if !planBadge.Index.IsNull() && planBadge.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// badge removed - include only the index for deletion
+			deletedBadge := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedBadges = append(changedBadges, deletedBadge)
+			badgesChanged = true
+		}
+	}
+
+	if badgesChanged && len(changedBadges) > 0 {
+		spProps.Badges = changedBadges
 		hasChanges = true
 	}
 
-	if !r.equalChildrenArrays(plan.Children, state.Children) {
-		children := make([]openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner, len(plan.Children))
-		for i, child := range plan.Children {
-			childItem := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{}
-			if !child.ChildNumEndpoint.IsNull() {
-				childItem.ChildNumEndpoint = openapi.PtrString(child.ChildNumEndpoint.ValueString())
-			}
-			if !child.ChildNumEndpointRefType.IsNull() {
-				childItem.ChildNumEndpointRefType = openapi.PtrString(child.ChildNumEndpointRefType.ValueString())
-			}
-			if !child.ChildNumDevice.IsNull() {
-				childItem.ChildNumDevice = openapi.PtrString(child.ChildNumDevice.ValueString())
-			}
-			if !child.Index.IsNull() {
-				childItem.Index = openapi.PtrInt32(int32(child.Index.ValueInt64()))
-			}
-			children[i] = childItem
+	oldChildrenByIndex := make(map[int64]veritySwitchpointChildModel)
+	for _, child := range state.Children {
+		if !child.Index.IsNull() {
+			idx := child.Index.ValueInt64()
+			oldChildrenByIndex[idx] = child
 		}
-		spProps.Children = children
+	}
+
+	var changedChildren []openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner
+	childrenChanged := false
+
+	// Process all items in plan
+	for _, planChild := range plan.Children {
+		if planChild.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planChild.Index.ValueInt64()
+		stateChild, exists := oldChildrenByIndex[idx]
+
+		if !exists {
+			// CREATE: new child, include all fields
+			newChild := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planChild.ChildNumEndpoint.IsNull() && planChild.ChildNumEndpoint.ValueString() != "" {
+				newChild.ChildNumEndpoint = openapi.PtrString(planChild.ChildNumEndpoint.ValueString())
+			} else {
+				newChild.ChildNumEndpoint = openapi.PtrString("")
+			}
+
+			if !planChild.ChildNumEndpointRefType.IsNull() && planChild.ChildNumEndpointRefType.ValueString() != "" {
+				newChild.ChildNumEndpointRefType = openapi.PtrString(planChild.ChildNumEndpointRefType.ValueString())
+			} else {
+				newChild.ChildNumEndpointRefType = openapi.PtrString("")
+			}
+
+			if !planChild.ChildNumDevice.IsNull() && planChild.ChildNumDevice.ValueString() != "" {
+				newChild.ChildNumDevice = openapi.PtrString(planChild.ChildNumDevice.ValueString())
+			} else {
+				newChild.ChildNumDevice = openapi.PtrString("")
+			}
+
+			changedChildren = append(changedChildren, newChild)
+			childrenChanged = true
+			continue
+		}
+
+		// UPDATE: existing child, check which fields changed
+		updateChild := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planChild.ChildNumEndpoint.Equal(stateChild.ChildNumEndpoint) {
+			if !planChild.ChildNumEndpoint.IsNull() && planChild.ChildNumEndpoint.ValueString() != "" {
+				updateChild.ChildNumEndpoint = openapi.PtrString(planChild.ChildNumEndpoint.ValueString())
+			} else {
+				updateChild.ChildNumEndpoint = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planChild.ChildNumEndpointRefType.Equal(stateChild.ChildNumEndpointRefType) {
+			if !planChild.ChildNumEndpointRefType.IsNull() && planChild.ChildNumEndpointRefType.ValueString() != "" {
+				updateChild.ChildNumEndpointRefType = openapi.PtrString(planChild.ChildNumEndpointRefType.ValueString())
+			} else {
+				updateChild.ChildNumEndpointRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planChild.ChildNumDevice.Equal(stateChild.ChildNumDevice) {
+			if !planChild.ChildNumDevice.IsNull() && planChild.ChildNumDevice.ValueString() != "" {
+				updateChild.ChildNumDevice = openapi.PtrString(planChild.ChildNumDevice.ValueString())
+			} else {
+				updateChild.ChildNumDevice = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedChildren = append(changedChildren, updateChild)
+			childrenChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldChildrenByIndex {
+		found := false
+		for _, planChild := range plan.Children {
+			if !planChild.Index.IsNull() && planChild.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// child removed - include only the index for deletion
+			deletedChild := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedChildren = append(changedChildren, deletedChild)
+			childrenChanged = true
+		}
+	}
+
+	if childrenChanged && len(changedChildren) > 0 {
+		spProps.Children = changedChildren
 		hasChanges = true
 	}
 
@@ -914,66 +1088,243 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		hasChanges = true
 	}
 
-	if !r.equalEthArrays(plan.Eths, state.Eths) {
-		eths := make([]openapi.SwitchpointsPutRequestSwitchpointValueEthsInner, len(plan.Eths))
-		for i, eth := range plan.Eths {
-			ethItem := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{}
-			if !eth.Breakout.IsNull() {
-				ethItem.Breakout = openapi.PtrString(eth.Breakout.ValueString())
-			}
-			if !eth.Index.IsNull() {
-				ethItem.Index = openapi.PtrInt32(int32(eth.Index.ValueInt64()))
-			}
-			eths[i] = ethItem
+	oldEthsByIndex := make(map[int64]veritySwitchpointEthModel)
+	for _, eth := range state.Eths {
+		if !eth.Index.IsNull() {
+			idx := eth.Index.ValueInt64()
+			oldEthsByIndex[idx] = eth
 		}
-		spProps.Eths = eths
+	}
+
+	var changedEths []openapi.SwitchpointsPutRequestSwitchpointValueEthsInner
+	ethsChanged := false
+
+	for _, planEth := range plan.Eths {
+		if planEth.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planEth.Index.ValueInt64()
+		stateEth, exists := oldEthsByIndex[idx]
+
+		if !exists {
+			// CREATE: new eth, include all fields
+			newEth := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planEth.Breakout.IsNull() && planEth.Breakout.ValueString() != "" {
+				newEth.Breakout = openapi.PtrString(planEth.Breakout.ValueString())
+			} else {
+				newEth.Breakout = openapi.PtrString("")
+			}
+
+			changedEths = append(changedEths, newEth)
+			ethsChanged = true
+			continue
+		}
+
+		// UPDATE: existing eth, check which fields changed
+		updateEth := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planEth.Breakout.Equal(stateEth.Breakout) {
+			if !planEth.Breakout.IsNull() && planEth.Breakout.ValueString() != "" {
+				updateEth.Breakout = openapi.PtrString(planEth.Breakout.ValueString())
+			} else {
+				updateEth.Breakout = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedEths = append(changedEths, updateEth)
+			ethsChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldEthsByIndex {
+		found := false
+		for _, planEth := range plan.Eths {
+			if !planEth.Index.IsNull() && planEth.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// eth removed - include only the index for deletion
+			deletedEth := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedEths = append(changedEths, deletedEth)
+			ethsChanged = true
+		}
+	}
+
+	if ethsChanged && len(changedEths) > 0 {
+		spProps.Eths = changedEths
 		hasChanges = true
 	}
 
+	objectPropertiesChanged := false
+	var objProps openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties
+
 	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
-			op := plan.ObjectProperties[0]
-			objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
-			if !op.UserNotes.IsNull() {
-				objProps.UserNotes = openapi.PtrString(op.UserNotes.ValueString())
+		planOP := plan.ObjectProperties[0]
+		var stateOP *veritySwitchpointObjectPropertiesModel
+		if len(state.ObjectProperties) > 0 {
+			stateOP = &state.ObjectProperties[0]
+		}
+
+		// Check if non-eths fields changed
+		fieldsChanged := false
+		if stateOP == nil ||
+			!planOP.UserNotes.Equal(stateOP.UserNotes) ||
+			!planOP.ExpectedParentEndpoint.Equal(stateOP.ExpectedParentEndpoint) ||
+			!planOP.ExpectedParentEndpointRefType.Equal(stateOP.ExpectedParentEndpointRefType) ||
+			!planOP.NumberOfMultipoints.Equal(stateOP.NumberOfMultipoints) ||
+			!planOP.Aggregate.Equal(stateOP.Aggregate) ||
+			!planOP.IsHost.Equal(stateOP.IsHost) {
+			fieldsChanged = true
+		}
+
+		if fieldsChanged {
+			if !planOP.UserNotes.IsNull() {
+				objProps.UserNotes = openapi.PtrString(planOP.UserNotes.ValueString())
 			}
-			if !op.ExpectedParentEndpoint.IsNull() {
-				objProps.ExpectedParentEndpoint = openapi.PtrString(op.ExpectedParentEndpoint.ValueString())
+			if !planOP.ExpectedParentEndpoint.IsNull() {
+				objProps.ExpectedParentEndpoint = openapi.PtrString(planOP.ExpectedParentEndpoint.ValueString())
 			}
-			if !op.ExpectedParentEndpointRefType.IsNull() {
-				objProps.ExpectedParentEndpointRefType = openapi.PtrString(op.ExpectedParentEndpointRefType.ValueString())
+			if !planOP.ExpectedParentEndpointRefType.IsNull() {
+				objProps.ExpectedParentEndpointRefType = openapi.PtrString(planOP.ExpectedParentEndpointRefType.ValueString())
 			}
-			if !op.NumberOfMultipoints.IsNull() {
-				val := int32(op.NumberOfMultipoints.ValueInt64())
+			if !planOP.NumberOfMultipoints.IsNull() {
+				val := int32(planOP.NumberOfMultipoints.ValueInt64())
 				objProps.NumberOfMultipoints = *openapi.NewNullableInt32(&val)
 			} else {
 				objProps.NumberOfMultipoints = *openapi.NewNullableInt32(nil)
 			}
-			if !op.Aggregate.IsNull() {
-				objProps.Aggregate = openapi.PtrBool(op.Aggregate.ValueBool())
+			if !planOP.Aggregate.IsNull() {
+				objProps.Aggregate = openapi.PtrBool(planOP.Aggregate.ValueBool())
 			}
-			if !op.IsHost.IsNull() {
-				objProps.IsHost = openapi.PtrBool(op.IsHost.ValueBool())
+			if !planOP.IsHost.IsNull() {
+				objProps.IsHost = openapi.PtrBool(planOP.IsHost.ValueBool())
 			}
-
-			if len(op.Eths) > 0 {
-				ethsSlice := make([]openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner, len(op.Eths))
-				for i, eth := range op.Eths {
-					ethItem := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{}
-					if !eth.EthNumIcon.IsNull() {
-						ethItem.EthNumIcon = openapi.PtrString(eth.EthNumIcon.ValueString())
-					}
-					if !eth.EthNumLabel.IsNull() {
-						ethItem.EthNumLabel = openapi.PtrString(eth.EthNumLabel.ValueString())
-					}
-					ethsSlice[i] = ethItem
-				}
-				objProps.Eths = ethsSlice
-			}
-
-			spProps.ObjectProperties = &objProps
-			hasChanges = true
+			objectPropertiesChanged = true
 		}
+
+		var stateEths []veritySwitchpointObjectPropertiesEthModel
+		if stateOP != nil {
+			stateEths = stateOP.Eths
+		}
+
+		oldEthsByIndex := make(map[int64]veritySwitchpointObjectPropertiesEthModel)
+		for _, eth := range stateEths {
+			if !eth.Index.IsNull() {
+				idx := eth.Index.ValueInt64()
+				oldEthsByIndex[idx] = eth
+			}
+		}
+
+		var changedEths []openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner
+		ethsChanged := false
+
+		for _, planEth := range planOP.Eths {
+			if planEth.Index.IsNull() {
+				continue // Skip items without identifier
+			}
+
+			idx := planEth.Index.ValueInt64()
+			stateEth, exists := oldEthsByIndex[idx]
+
+			if !exists {
+				// CREATE: new eth, include all fields
+				newEth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{
+					Index: openapi.PtrInt32(int32(idx)),
+				}
+
+				if !planEth.EthNumIcon.IsNull() && planEth.EthNumIcon.ValueString() != "" {
+					newEth.EthNumIcon = openapi.PtrString(planEth.EthNumIcon.ValueString())
+				} else {
+					newEth.EthNumIcon = openapi.PtrString("empty")
+				}
+
+				if !planEth.EthNumLabel.IsNull() && planEth.EthNumLabel.ValueString() != "" {
+					newEth.EthNumLabel = openapi.PtrString(planEth.EthNumLabel.ValueString())
+				} else {
+					newEth.EthNumLabel = openapi.PtrString("")
+				}
+
+				changedEths = append(changedEths, newEth)
+				ethsChanged = true
+				continue
+			}
+
+			// UPDATE: existing eth, check which fields changed
+			updateEth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			fieldChanged := false
+
+			if !planEth.EthNumIcon.Equal(stateEth.EthNumIcon) {
+				if !planEth.EthNumIcon.IsNull() && planEth.EthNumIcon.ValueString() != "" {
+					updateEth.EthNumIcon = openapi.PtrString(planEth.EthNumIcon.ValueString())
+				} else {
+					updateEth.EthNumIcon = openapi.PtrString("empty")
+				}
+				fieldChanged = true
+			}
+
+			if !planEth.EthNumLabel.Equal(stateEth.EthNumLabel) {
+				if !planEth.EthNumLabel.IsNull() && planEth.EthNumLabel.ValueString() != "" {
+					updateEth.EthNumLabel = openapi.PtrString(planEth.EthNumLabel.ValueString())
+				} else {
+					updateEth.EthNumLabel = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if fieldChanged {
+				changedEths = append(changedEths, updateEth)
+				ethsChanged = true
+			}
+		}
+
+		// DELETE: Check for deleted items
+		for stateIdx := range oldEthsByIndex {
+			found := false
+			for _, planEth := range planOP.Eths {
+				if !planEth.Index.IsNull() && planEth.Index.ValueInt64() == stateIdx {
+					found = true
+					break
+				}
+			}
+
+			if !found {
+				// eth removed - include only the index for deletion
+				deletedEth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{
+					Index: openapi.PtrInt32(int32(stateIdx)),
+				}
+				changedEths = append(changedEths, deletedEth)
+				ethsChanged = true
+			}
+		}
+
+		if ethsChanged && len(changedEths) > 0 {
+			objProps.Eths = changedEths
+			objectPropertiesChanged = true
+		}
+	}
+
+	if objectPropertiesChanged {
+		spProps.ObjectProperties = &objProps
+		hasChanges = true
 	}
 
 	if !hasChanges {
@@ -1060,35 +1411,6 @@ func (r *veritySwitchpointResource) ImportState(ctx context.Context, req resourc
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func (r *veritySwitchpointResource) equalBadgeArrays(a, b []veritySwitchpointBadgeModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].Badge.Equal(b[i].Badge) ||
-			!a[i].BadgeRefType.Equal(b[i].BadgeRefType) ||
-			!a[i].Index.Equal(b[i].Index) {
-			return false
-		}
-	}
-	return true
-}
-
-func (r *veritySwitchpointResource) equalChildrenArrays(a, b []veritySwitchpointChildModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].ChildNumEndpoint.Equal(b[i].ChildNumEndpoint) ||
-			!a[i].ChildNumEndpointRefType.Equal(b[i].ChildNumEndpointRefType) ||
-			!a[i].ChildNumDevice.Equal(b[i].ChildNumDevice) ||
-			!a[i].Index.Equal(b[i].Index) {
-			return false
-		}
-	}
-	return true
-}
-
 func (r *veritySwitchpointResource) equalTrafficMirrorArrays(a, b []veritySwitchpointTrafficMirrorModel) bool {
 	if len(a) != len(b) {
 		return false
@@ -1100,43 +1422,6 @@ func (r *veritySwitchpointResource) equalTrafficMirrorArrays(a, b []veritySwitch
 			!a[i].TrafficMirrorNumDestinationPort.Equal(b[i].TrafficMirrorNumDestinationPort) ||
 			!a[i].TrafficMirrorNumInboundTraffic.Equal(b[i].TrafficMirrorNumInboundTraffic) ||
 			!a[i].TrafficMirrorNumOutboundTraffic.Equal(b[i].TrafficMirrorNumOutboundTraffic) {
-			return false
-		}
-	}
-	return true
-}
-
-func (r *veritySwitchpointResource) equalEthArrays(a, b []veritySwitchpointEthModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].Breakout.Equal(b[i].Breakout) ||
-			!a[i].Index.Equal(b[i].Index) {
-			return false
-		}
-	}
-	return true
-}
-
-func (r *veritySwitchpointResource) equalObjectProperties(a, b veritySwitchpointObjectPropertiesModel) bool {
-	return a.UserNotes.Equal(b.UserNotes) &&
-		a.ExpectedParentEndpoint.Equal(b.ExpectedParentEndpoint) &&
-		a.ExpectedParentEndpointRefType.Equal(b.ExpectedParentEndpointRefType) &&
-		a.NumberOfMultipoints.Equal(b.NumberOfMultipoints) &&
-		a.Aggregate.Equal(b.Aggregate) &&
-		a.IsHost.Equal(b.IsHost) &&
-		r.equalObjectPropertiesEthArrays(a.Eths, b.Eths)
-}
-
-func (r *veritySwitchpointResource) equalObjectPropertiesEthArrays(a, b []veritySwitchpointObjectPropertiesEthModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].EthNumIcon.Equal(b[i].EthNumIcon) ||
-			!a[i].EthNumLabel.Equal(b[i].EthNumLabel) ||
-			!a[i].Index.Equal(b[i].Index) {
 			return false
 		}
 	}

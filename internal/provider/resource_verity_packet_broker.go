@@ -622,91 +622,439 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		hasChanges = true
 	}
 
-	if !r.equalFilterArrays(plan.Ipv4Permit, state.Ipv4Permit) {
-		ipv4Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Permit))
-		for i, filter := range plan.Ipv4Permit {
-			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
-			if !filter.Enable.IsNull() {
-				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
-			}
-			if !filter.Filter.IsNull() {
-				filterItem.Filter = openapi.PtrString(filter.Filter.ValueString())
-			}
-			if !filter.FilterRefType.IsNull() {
-				filterItem.FilterRefType = openapi.PtrString(filter.FilterRefType.ValueString())
-			}
-			if !filter.Index.IsNull() {
-				filterItem.Index = openapi.PtrInt32(int32(filter.Index.ValueInt64()))
-			}
-			ipv4Permit[i] = filterItem
+	oldIpv4PermitByIndex := make(map[int64]verityPacketBrokerFilterModel)
+	for _, filter := range state.Ipv4Permit {
+		if !filter.Index.IsNull() {
+			idx := filter.Index.ValueInt64()
+			oldIpv4PermitByIndex[idx] = filter
 		}
-		pbProps.Ipv4Permit = ipv4Permit
+	}
+
+	var changedIpv4Permit []openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
+	ipv4PermitChanged := false
+
+	for _, planFilter := range plan.Ipv4Permit {
+		if planFilter.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planFilter.Index.ValueInt64()
+		stateFilter, exists := oldIpv4PermitByIndex[idx]
+
+		if !exists {
+			// CREATE: new filter, include all fields
+			newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planFilter.Enable.IsNull() {
+				newFilter.Enable = openapi.PtrBool(planFilter.Enable.ValueBool())
+			} else {
+				newFilter.Enable = openapi.PtrBool(false)
+			}
+
+			if !planFilter.Filter.IsNull() && planFilter.Filter.ValueString() != "" {
+				newFilter.Filter = openapi.PtrString(planFilter.Filter.ValueString())
+			} else {
+				newFilter.Filter = openapi.PtrString("")
+			}
+
+			if !planFilter.FilterRefType.IsNull() && planFilter.FilterRefType.ValueString() != "" {
+				newFilter.FilterRefType = openapi.PtrString(planFilter.FilterRefType.ValueString())
+			} else {
+				newFilter.FilterRefType = openapi.PtrString("")
+			}
+
+			changedIpv4Permit = append(changedIpv4Permit, newFilter)
+			ipv4PermitChanged = true
+			continue
+		}
+
+		// UPDATE: existing filter, check which fields changed
+		updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planFilter.Enable.Equal(stateFilter.Enable) {
+			updateFilter.Enable = openapi.PtrBool(planFilter.Enable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !planFilter.Filter.Equal(stateFilter.Filter) {
+			if !planFilter.Filter.IsNull() && planFilter.Filter.ValueString() != "" {
+				updateFilter.Filter = openapi.PtrString(planFilter.Filter.ValueString())
+			} else {
+				updateFilter.Filter = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planFilter.FilterRefType.Equal(stateFilter.FilterRefType) {
+			if !planFilter.FilterRefType.IsNull() && planFilter.FilterRefType.ValueString() != "" {
+				updateFilter.FilterRefType = openapi.PtrString(planFilter.FilterRefType.ValueString())
+			} else {
+				updateFilter.FilterRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedIpv4Permit = append(changedIpv4Permit, updateFilter)
+			ipv4PermitChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldIpv4PermitByIndex {
+		found := false
+		for _, planFilter := range plan.Ipv4Permit {
+			if !planFilter.Index.IsNull() && planFilter.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// filter removed - include only the index for deletion
+			deletedFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedIpv4Permit = append(changedIpv4Permit, deletedFilter)
+			ipv4PermitChanged = true
+		}
+	}
+
+	if ipv4PermitChanged && len(changedIpv4Permit) > 0 {
+		pbProps.Ipv4Permit = changedIpv4Permit
 		hasChanges = true
 	}
 
-	if !r.equalFilterArrays(plan.Ipv4Deny, state.Ipv4Deny) {
-		ipv4Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Deny))
-		for i, filter := range plan.Ipv4Deny {
-			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
-			if !filter.Enable.IsNull() {
-				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
-			}
-			if !filter.Filter.IsNull() {
-				filterItem.Filter = openapi.PtrString(filter.Filter.ValueString())
-			}
-			if !filter.FilterRefType.IsNull() {
-				filterItem.FilterRefType = openapi.PtrString(filter.FilterRefType.ValueString())
-			}
-			if !filter.Index.IsNull() {
-				filterItem.Index = openapi.PtrInt32(int32(filter.Index.ValueInt64()))
-			}
-			ipv4Deny[i] = filterItem
+	oldIpv4DenyByIndex := make(map[int64]verityPacketBrokerFilterModel)
+	for _, filter := range state.Ipv4Deny {
+		if !filter.Index.IsNull() {
+			idx := filter.Index.ValueInt64()
+			oldIpv4DenyByIndex[idx] = filter
 		}
-		pbProps.Ipv4Deny = ipv4Deny
+	}
+
+	var changedIpv4Deny []openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
+	ipv4DenyChanged := false
+
+	for _, planFilter := range plan.Ipv4Deny {
+		if planFilter.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planFilter.Index.ValueInt64()
+		stateFilter, exists := oldIpv4DenyByIndex[idx]
+
+		if !exists {
+			// CREATE: new filter, include all fields
+			newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planFilter.Enable.IsNull() {
+				newFilter.Enable = openapi.PtrBool(planFilter.Enable.ValueBool())
+			} else {
+				newFilter.Enable = openapi.PtrBool(false)
+			}
+
+			if !planFilter.Filter.IsNull() && planFilter.Filter.ValueString() != "" {
+				newFilter.Filter = openapi.PtrString(planFilter.Filter.ValueString())
+			} else {
+				newFilter.Filter = openapi.PtrString("")
+			}
+
+			if !planFilter.FilterRefType.IsNull() && planFilter.FilterRefType.ValueString() != "" {
+				newFilter.FilterRefType = openapi.PtrString(planFilter.FilterRefType.ValueString())
+			} else {
+				newFilter.FilterRefType = openapi.PtrString("")
+			}
+
+			changedIpv4Deny = append(changedIpv4Deny, newFilter)
+			ipv4DenyChanged = true
+			continue
+		}
+
+		// UPDATE: existing filter, check which fields changed
+		updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planFilter.Enable.Equal(stateFilter.Enable) {
+			updateFilter.Enable = openapi.PtrBool(planFilter.Enable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !planFilter.Filter.Equal(stateFilter.Filter) {
+			if !planFilter.Filter.IsNull() && planFilter.Filter.ValueString() != "" {
+				updateFilter.Filter = openapi.PtrString(planFilter.Filter.ValueString())
+			} else {
+				updateFilter.Filter = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planFilter.FilterRefType.Equal(stateFilter.FilterRefType) {
+			if !planFilter.FilterRefType.IsNull() && planFilter.FilterRefType.ValueString() != "" {
+				updateFilter.FilterRefType = openapi.PtrString(planFilter.FilterRefType.ValueString())
+			} else {
+				updateFilter.FilterRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedIpv4Deny = append(changedIpv4Deny, updateFilter)
+			ipv4DenyChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldIpv4DenyByIndex {
+		found := false
+		for _, planFilter := range plan.Ipv4Deny {
+			if !planFilter.Index.IsNull() && planFilter.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// filter removed - include only the index for deletion
+			deletedFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedIpv4Deny = append(changedIpv4Deny, deletedFilter)
+			ipv4DenyChanged = true
+		}
+	}
+
+	if ipv4DenyChanged && len(changedIpv4Deny) > 0 {
+		pbProps.Ipv4Deny = changedIpv4Deny
 		hasChanges = true
 	}
 
-	if !r.equalFilterArrays(plan.Ipv6Permit, state.Ipv6Permit) {
-		ipv6Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Permit))
-		for i, filter := range plan.Ipv6Permit {
-			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
-			if !filter.Enable.IsNull() {
-				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
-			}
-			if !filter.Filter.IsNull() {
-				filterItem.Filter = openapi.PtrString(filter.Filter.ValueString())
-			}
-			if !filter.FilterRefType.IsNull() {
-				filterItem.FilterRefType = openapi.PtrString(filter.FilterRefType.ValueString())
-			}
-			if !filter.Index.IsNull() {
-				filterItem.Index = openapi.PtrInt32(int32(filter.Index.ValueInt64()))
-			}
-			ipv6Permit[i] = filterItem
+	oldIpv6PermitByIndex := make(map[int64]verityPacketBrokerFilterModel)
+	for _, filter := range state.Ipv6Permit {
+		if !filter.Index.IsNull() {
+			idx := filter.Index.ValueInt64()
+			oldIpv6PermitByIndex[idx] = filter
 		}
-		pbProps.Ipv6Permit = ipv6Permit
+	}
+
+	var changedIpv6Permit []openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+	ipv6PermitChanged := false
+
+	for _, planFilter := range plan.Ipv6Permit {
+		if planFilter.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planFilter.Index.ValueInt64()
+		stateFilter, exists := oldIpv6PermitByIndex[idx]
+
+		if !exists {
+			// CREATE: new filter, include all fields
+			newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planFilter.Enable.IsNull() {
+				newFilter.Enable = openapi.PtrBool(planFilter.Enable.ValueBool())
+			} else {
+				newFilter.Enable = openapi.PtrBool(false)
+			}
+
+			if !planFilter.Filter.IsNull() && planFilter.Filter.ValueString() != "" {
+				newFilter.Filter = openapi.PtrString(planFilter.Filter.ValueString())
+			} else {
+				newFilter.Filter = openapi.PtrString("")
+			}
+
+			if !planFilter.FilterRefType.IsNull() && planFilter.FilterRefType.ValueString() != "" {
+				newFilter.FilterRefType = openapi.PtrString(planFilter.FilterRefType.ValueString())
+			} else {
+				newFilter.FilterRefType = openapi.PtrString("")
+			}
+
+			changedIpv6Permit = append(changedIpv6Permit, newFilter)
+			ipv6PermitChanged = true
+			continue
+		}
+
+		// UPDATE: existing filter, check which fields changed
+		updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planFilter.Enable.Equal(stateFilter.Enable) {
+			updateFilter.Enable = openapi.PtrBool(planFilter.Enable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !planFilter.Filter.Equal(stateFilter.Filter) {
+			if !planFilter.Filter.IsNull() && planFilter.Filter.ValueString() != "" {
+				updateFilter.Filter = openapi.PtrString(planFilter.Filter.ValueString())
+			} else {
+				updateFilter.Filter = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planFilter.FilterRefType.Equal(stateFilter.FilterRefType) {
+			if !planFilter.FilterRefType.IsNull() && planFilter.FilterRefType.ValueString() != "" {
+				updateFilter.FilterRefType = openapi.PtrString(planFilter.FilterRefType.ValueString())
+			} else {
+				updateFilter.FilterRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedIpv6Permit = append(changedIpv6Permit, updateFilter)
+			ipv6PermitChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldIpv6PermitByIndex {
+		found := false
+		for _, planFilter := range plan.Ipv6Permit {
+			if !planFilter.Index.IsNull() && planFilter.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// filter removed - include only the index for deletion
+			deletedFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedIpv6Permit = append(changedIpv6Permit, deletedFilter)
+			ipv6PermitChanged = true
+		}
+	}
+
+	if ipv6PermitChanged && len(changedIpv6Permit) > 0 {
+		pbProps.Ipv6Permit = changedIpv6Permit
 		hasChanges = true
 	}
 
-	if !r.equalFilterArrays(plan.Ipv6Deny, state.Ipv6Deny) {
-		ipv6Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Deny))
-		for i, filter := range plan.Ipv6Deny {
-			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
-			if !filter.Enable.IsNull() {
-				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
-			}
-			if !filter.Filter.IsNull() {
-				filterItem.Filter = openapi.PtrString(filter.Filter.ValueString())
-			}
-			if !filter.FilterRefType.IsNull() {
-				filterItem.FilterRefType = openapi.PtrString(filter.FilterRefType.ValueString())
-			}
-			if !filter.Index.IsNull() {
-				filterItem.Index = openapi.PtrInt32(int32(filter.Index.ValueInt64()))
-			}
-			ipv6Deny[i] = filterItem
+	oldIpv6DenyByIndex := make(map[int64]verityPacketBrokerFilterModel)
+	for _, filter := range state.Ipv6Deny {
+		if !filter.Index.IsNull() {
+			idx := filter.Index.ValueInt64()
+			oldIpv6DenyByIndex[idx] = filter
 		}
-		pbProps.Ipv6Deny = ipv6Deny
+	}
+
+	var changedIpv6Deny []openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+	ipv6DenyChanged := false
+
+	for _, planFilter := range plan.Ipv6Deny {
+		if planFilter.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planFilter.Index.ValueInt64()
+		stateFilter, exists := oldIpv6DenyByIndex[idx]
+
+		if !exists {
+			// CREATE: new filter, include all fields
+			newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planFilter.Enable.IsNull() {
+				newFilter.Enable = openapi.PtrBool(planFilter.Enable.ValueBool())
+			} else {
+				newFilter.Enable = openapi.PtrBool(false)
+			}
+
+			if !planFilter.Filter.IsNull() && planFilter.Filter.ValueString() != "" {
+				newFilter.Filter = openapi.PtrString(planFilter.Filter.ValueString())
+			} else {
+				newFilter.Filter = openapi.PtrString("")
+			}
+
+			if !planFilter.FilterRefType.IsNull() && planFilter.FilterRefType.ValueString() != "" {
+				newFilter.FilterRefType = openapi.PtrString(planFilter.FilterRefType.ValueString())
+			} else {
+				newFilter.FilterRefType = openapi.PtrString("")
+			}
+
+			changedIpv6Deny = append(changedIpv6Deny, newFilter)
+			ipv6DenyChanged = true
+			continue
+		}
+
+		// UPDATE: existing filter, check which fields changed
+		updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planFilter.Enable.Equal(stateFilter.Enable) {
+			updateFilter.Enable = openapi.PtrBool(planFilter.Enable.ValueBool())
+			fieldChanged = true
+		}
+
+		if !planFilter.Filter.Equal(stateFilter.Filter) {
+			if !planFilter.Filter.IsNull() && planFilter.Filter.ValueString() != "" {
+				updateFilter.Filter = openapi.PtrString(planFilter.Filter.ValueString())
+			} else {
+				updateFilter.Filter = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planFilter.FilterRefType.Equal(stateFilter.FilterRefType) {
+			if !planFilter.FilterRefType.IsNull() && planFilter.FilterRefType.ValueString() != "" {
+				updateFilter.FilterRefType = openapi.PtrString(planFilter.FilterRefType.ValueString())
+			} else {
+				updateFilter.FilterRefType = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedIpv6Deny = append(changedIpv6Deny, updateFilter)
+			ipv6DenyChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldIpv6DenyByIndex {
+		found := false
+		for _, planFilter := range plan.Ipv6Deny {
+			if !planFilter.Index.IsNull() && planFilter.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// filter removed - include only the index for deletion
+			deletedFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedIpv6Deny = append(changedIpv6Deny, deletedFilter)
+			ipv6DenyChanged = true
+		}
+	}
+
+	if ipv6DenyChanged && len(changedIpv6Deny) > 0 {
+		pbProps.Ipv6Deny = changedIpv6Deny
 		hasChanges = true
 	}
 
@@ -765,19 +1113,4 @@ func (r *verityPacketBrokerResource) Delete(ctx context.Context, req resource.De
 
 func (r *verityPacketBrokerResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func (r *verityPacketBrokerResource) equalFilterArrays(a, b []verityPacketBrokerFilterModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].Enable.Equal(b[i].Enable) ||
-			!a[i].Filter.Equal(b[i].Filter) ||
-			!a[i].FilterRefType.Equal(b[i].FilterRefType) ||
-			!a[i].Index.Equal(b[i].Index) {
-			return false
-		}
-	}
-	return true
 }
