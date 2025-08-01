@@ -703,8 +703,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	if !plan.MaxUpstreamRateMbps.Equal(state.MaxUpstreamRateMbps) {
 		if !plan.MaxUpstreamRateMbps.IsNull() {
 			serviceReq.MaxUpstreamRateMbps = openapi.PtrInt32(int32(plan.MaxUpstreamRateMbps.ValueInt64()))
-		} else {
-			serviceReq.MaxUpstreamRateMbps = nil
 		}
 		hasChanges = true
 	}
@@ -712,8 +710,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	if !plan.MaxDownstreamRateMbps.Equal(state.MaxDownstreamRateMbps) {
 		if !plan.MaxDownstreamRateMbps.IsNull() {
 			serviceReq.MaxDownstreamRateMbps = openapi.PtrInt32(int32(plan.MaxDownstreamRateMbps.ValueInt64()))
-		} else {
-			serviceReq.MaxDownstreamRateMbps = nil
 		}
 		hasChanges = true
 	}
@@ -774,11 +770,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	if !plan.MstInstance.Equal(state.MstInstance) {
-		if !plan.MstInstance.IsNull() {
-			serviceReq.MstInstance = openapi.PtrInt32(int32(plan.MstInstance.ValueInt64()))
-		} else {
-			serviceReq.MstInstance = nil
-		}
+		serviceReq.MstInstance = openapi.PtrInt32(int32(plan.MstInstance.ValueInt64()))
 		hasChanges = true
 	}
 

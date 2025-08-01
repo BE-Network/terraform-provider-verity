@@ -182,6 +182,7 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 	name := plan.Name.ValueString()
 	aclProps := openapi.NewAclsPutRequestIpFilterValue()
 
+	aclProps.SetName(name)
 	if !plan.Enable.IsNull() {
 		aclProps.SetEnable(plan.Enable.ValueBool())
 	}
@@ -197,26 +198,42 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 	if !plan.SourcePortOperator.IsNull() {
 		aclProps.SetSourcePortOperator(plan.SourcePortOperator.ValueString())
 	}
-	if !plan.SourcePort1.IsNull() {
-		aclProps.SetSourcePort1(int32(plan.SourcePort1.ValueInt64()))
-	}
-	if !plan.SourcePort2.IsNull() {
-		aclProps.SetSourcePort2(int32(plan.SourcePort2.ValueInt64()))
-	}
 	if !plan.DestinationIP.IsNull() {
 		aclProps.SetDestinationIp(plan.DestinationIP.ValueString())
 	}
 	if !plan.DestinationPortOperator.IsNull() {
 		aclProps.SetDestinationPortOperator(plan.DestinationPortOperator.ValueString())
 	}
-	if !plan.DestinationPort1.IsNull() {
-		aclProps.SetDestinationPort1(int32(plan.DestinationPort1.ValueInt64()))
-	}
-	if !plan.DestinationPort2.IsNull() {
-		aclProps.SetDestinationPort2(int32(plan.DestinationPort2.ValueInt64()))
+
+	if !plan.SourcePort1.IsNull() {
+		sourcePort1 := int32(plan.SourcePort1.ValueInt64())
+		aclProps.SourcePort1 = *openapi.NewNullableInt32(&sourcePort1)
+	} else {
+		aclProps.SourcePort1 = *openapi.NewNullableInt32(nil)
 	}
 
-	if len(plan.ObjectProperties) > 0 && !plan.ObjectProperties[0].Notes.IsNull() {
+	if !plan.SourcePort2.IsNull() {
+		sourcePort2 := int32(plan.SourcePort2.ValueInt64())
+		aclProps.SourcePort2 = *openapi.NewNullableInt32(&sourcePort2)
+	} else {
+		aclProps.SourcePort2 = *openapi.NewNullableInt32(nil)
+	}
+
+	if !plan.DestinationPort1.IsNull() {
+		destinationPort1 := int32(plan.DestinationPort1.ValueInt64())
+		aclProps.DestinationPort1 = *openapi.NewNullableInt32(&destinationPort1)
+	} else {
+		aclProps.DestinationPort1 = *openapi.NewNullableInt32(nil)
+	}
+
+	if !plan.DestinationPort2.IsNull() {
+		destinationPort2 := int32(plan.DestinationPort2.ValueInt64())
+		aclProps.DestinationPort2 = *openapi.NewNullableInt32(&destinationPort2)
+	} else {
+		aclProps.DestinationPort2 = *openapi.NewNullableInt32(nil)
+	}
+
+	if len(plan.ObjectProperties) > 0 {
 		objProps := openapi.NewAclsPutRequestIpFilterValueObjectProperties()
 		objProps.SetNotes(plan.ObjectProperties[0].Notes.ValueString())
 		aclProps.SetObjectProperties(*objProps)
@@ -528,14 +545,20 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 
 	if !plan.SourcePort1.Equal(state.SourcePort1) {
 		if !plan.SourcePort1.IsNull() {
-			aclProps.SetSourcePort1(int32(plan.SourcePort1.ValueInt64()))
+			sourcePort1 := int32(plan.SourcePort1.ValueInt64())
+			aclProps.SourcePort1 = *openapi.NewNullableInt32(&sourcePort1)
+		} else {
+			aclProps.SourcePort1 = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
 	}
 
 	if !plan.SourcePort2.Equal(state.SourcePort2) {
 		if !plan.SourcePort2.IsNull() {
-			aclProps.SetSourcePort2(int32(plan.SourcePort2.ValueInt64()))
+			sourcePort2 := int32(plan.SourcePort2.ValueInt64())
+			aclProps.SourcePort2 = *openapi.NewNullableInt32(&sourcePort2)
+		} else {
+			aclProps.SourcePort2 = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
 	}
@@ -552,14 +575,20 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 
 	if !plan.DestinationPort1.Equal(state.DestinationPort1) {
 		if !plan.DestinationPort1.IsNull() {
-			aclProps.SetDestinationPort1(int32(plan.DestinationPort1.ValueInt64()))
+			destinationPort1 := int32(plan.DestinationPort1.ValueInt64())
+			aclProps.DestinationPort1 = *openapi.NewNullableInt32(&destinationPort1)
+		} else {
+			aclProps.DestinationPort1 = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
 	}
 
 	if !plan.DestinationPort2.Equal(state.DestinationPort2) {
 		if !plan.DestinationPort2.IsNull() {
-			aclProps.SetDestinationPort2(int32(plan.DestinationPort2.ValueInt64()))
+			destinationPort2 := int32(plan.DestinationPort2.ValueInt64())
+			aclProps.DestinationPort2 = *openapi.NewNullableInt32(&destinationPort2)
+		} else {
+			aclProps.DestinationPort2 = *openapi.NewNullableInt32(nil)
 		}
 		hasChanges = true
 	}
