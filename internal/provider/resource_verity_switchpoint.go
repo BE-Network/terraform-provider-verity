@@ -83,6 +83,7 @@ type veritySwitchpointTrafficMirrorModel struct {
 	TrafficMirrorNumDestinationPort    types.String `tfsdk:"traffic_mirror_num_destination_port"`
 	TrafficMirrorNumInboundTraffic     types.Bool   `tfsdk:"traffic_mirror_num_inbound_traffic"`
 	TrafficMirrorNumOutboundTraffic    types.Bool   `tfsdk:"traffic_mirror_num_outbound_traffic"`
+	Index                              types.Int64  `tfsdk:"index"`
 }
 
 type veritySwitchpointEthModel struct {
@@ -282,6 +283,10 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						},
 						"traffic_mirror_num_outbound_traffic": schema.BoolAttribute{
 							Description: "Boolean value indicating if the mirror is for outbound traffic",
+							Optional:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 						},
 					},
@@ -495,6 +500,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 			}
 			if !mirror.TrafficMirrorNumOutboundTraffic.IsNull() {
 				mirrorItem.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(mirror.TrafficMirrorNumOutboundTraffic.ValueBool())
+			}
+			if !mirror.Index.IsNull() {
+				mirrorItem.Index = openapi.PtrInt32(int32(mirror.Index.ValueInt64()))
 			}
 			mirrors[i] = mirrorItem
 		}
@@ -1060,31 +1068,161 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		hasChanges = true
 	}
 
-	if !r.equalTrafficMirrorArrays(plan.TrafficMirrors, state.TrafficMirrors) {
-		mirrors := make([]openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, len(plan.TrafficMirrors))
-		for i, mirror := range plan.TrafficMirrors {
-			mirrorItem := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{}
-			if !mirror.TrafficMirrorNumEnable.IsNull() {
-				mirrorItem.TrafficMirrorNumEnable = openapi.PtrBool(mirror.TrafficMirrorNumEnable.ValueBool())
-			}
-			if !mirror.TrafficMirrorNumSourcePort.IsNull() {
-				mirrorItem.TrafficMirrorNumSourcePort = openapi.PtrString(mirror.TrafficMirrorNumSourcePort.ValueString())
-			}
-			if !mirror.TrafficMirrorNumSourceLagIndicator.IsNull() {
-				mirrorItem.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(mirror.TrafficMirrorNumSourceLagIndicator.ValueBool())
-			}
-			if !mirror.TrafficMirrorNumDestinationPort.IsNull() {
-				mirrorItem.TrafficMirrorNumDestinationPort = openapi.PtrString(mirror.TrafficMirrorNumDestinationPort.ValueString())
-			}
-			if !mirror.TrafficMirrorNumInboundTraffic.IsNull() {
-				mirrorItem.TrafficMirrorNumInboundTraffic = openapi.PtrBool(mirror.TrafficMirrorNumInboundTraffic.ValueBool())
-			}
-			if !mirror.TrafficMirrorNumOutboundTraffic.IsNull() {
-				mirrorItem.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(mirror.TrafficMirrorNumOutboundTraffic.ValueBool())
-			}
-			mirrors[i] = mirrorItem
+	oldTrafficMirrorsByIndex := make(map[int64]veritySwitchpointTrafficMirrorModel)
+	for _, mirror := range state.TrafficMirrors {
+		if !mirror.Index.IsNull() {
+			idx := mirror.Index.ValueInt64()
+			oldTrafficMirrorsByIndex[idx] = mirror
 		}
-		spProps.TrafficMirrors = mirrors
+	}
+
+	var changedTrafficMirrors []openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner
+	trafficMirrorsChanged := false
+
+	for _, planMirror := range plan.TrafficMirrors {
+		if planMirror.Index.IsNull() {
+			continue // Skip items without identifier
+		}
+
+		idx := planMirror.Index.ValueInt64()
+		stateMirror, exists := oldTrafficMirrorsByIndex[idx]
+
+		if !exists {
+			// CREATE: new traffic mirror, include all fields
+			newMirror := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{
+				Index: openapi.PtrInt32(int32(idx)),
+			}
+
+			if !planMirror.TrafficMirrorNumEnable.IsNull() {
+				newMirror.TrafficMirrorNumEnable = openapi.PtrBool(planMirror.TrafficMirrorNumEnable.ValueBool())
+			} else {
+				newMirror.TrafficMirrorNumEnable = openapi.PtrBool(false)
+			}
+
+			if !planMirror.TrafficMirrorNumSourcePort.IsNull() && planMirror.TrafficMirrorNumSourcePort.ValueString() != "" {
+				newMirror.TrafficMirrorNumSourcePort = openapi.PtrString(planMirror.TrafficMirrorNumSourcePort.ValueString())
+			} else {
+				newMirror.TrafficMirrorNumSourcePort = openapi.PtrString("")
+			}
+
+			if !planMirror.TrafficMirrorNumSourceLagIndicator.IsNull() {
+				newMirror.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(planMirror.TrafficMirrorNumSourceLagIndicator.ValueBool())
+			} else {
+				newMirror.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(false)
+			}
+
+			if !planMirror.TrafficMirrorNumDestinationPort.IsNull() && planMirror.TrafficMirrorNumDestinationPort.ValueString() != "" {
+				newMirror.TrafficMirrorNumDestinationPort = openapi.PtrString(planMirror.TrafficMirrorNumDestinationPort.ValueString())
+			} else {
+				newMirror.TrafficMirrorNumDestinationPort = openapi.PtrString("")
+			}
+
+			if !planMirror.TrafficMirrorNumInboundTraffic.IsNull() {
+				newMirror.TrafficMirrorNumInboundTraffic = openapi.PtrBool(planMirror.TrafficMirrorNumInboundTraffic.ValueBool())
+			} else {
+				newMirror.TrafficMirrorNumInboundTraffic = openapi.PtrBool(false)
+			}
+
+			if !planMirror.TrafficMirrorNumOutboundTraffic.IsNull() {
+				newMirror.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(planMirror.TrafficMirrorNumOutboundTraffic.ValueBool())
+			} else {
+				newMirror.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(false)
+			}
+
+			changedTrafficMirrors = append(changedTrafficMirrors, newMirror)
+			trafficMirrorsChanged = true
+			continue
+		}
+
+		// UPDATE: existing traffic mirror, check which fields changed
+		updateMirror := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{
+			Index: openapi.PtrInt32(int32(idx)),
+		}
+
+		fieldChanged := false
+
+		if !planMirror.TrafficMirrorNumEnable.Equal(stateMirror.TrafficMirrorNumEnable) {
+			if !planMirror.TrafficMirrorNumEnable.IsNull() {
+				updateMirror.TrafficMirrorNumEnable = openapi.PtrBool(planMirror.TrafficMirrorNumEnable.ValueBool())
+			} else {
+				updateMirror.TrafficMirrorNumEnable = openapi.PtrBool(false)
+			}
+			fieldChanged = true
+		}
+
+		if !planMirror.TrafficMirrorNumSourcePort.Equal(stateMirror.TrafficMirrorNumSourcePort) {
+			if !planMirror.TrafficMirrorNumSourcePort.IsNull() && planMirror.TrafficMirrorNumSourcePort.ValueString() != "" {
+				updateMirror.TrafficMirrorNumSourcePort = openapi.PtrString(planMirror.TrafficMirrorNumSourcePort.ValueString())
+			} else {
+				updateMirror.TrafficMirrorNumSourcePort = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planMirror.TrafficMirrorNumSourceLagIndicator.Equal(stateMirror.TrafficMirrorNumSourceLagIndicator) {
+			if !planMirror.TrafficMirrorNumSourceLagIndicator.IsNull() {
+				updateMirror.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(planMirror.TrafficMirrorNumSourceLagIndicator.ValueBool())
+			} else {
+				updateMirror.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(false)
+			}
+			fieldChanged = true
+		}
+
+		if !planMirror.TrafficMirrorNumDestinationPort.Equal(stateMirror.TrafficMirrorNumDestinationPort) {
+			if !planMirror.TrafficMirrorNumDestinationPort.IsNull() && planMirror.TrafficMirrorNumDestinationPort.ValueString() != "" {
+				updateMirror.TrafficMirrorNumDestinationPort = openapi.PtrString(planMirror.TrafficMirrorNumDestinationPort.ValueString())
+			} else {
+				updateMirror.TrafficMirrorNumDestinationPort = openapi.PtrString("")
+			}
+			fieldChanged = true
+		}
+
+		if !planMirror.TrafficMirrorNumInboundTraffic.Equal(stateMirror.TrafficMirrorNumInboundTraffic) {
+			if !planMirror.TrafficMirrorNumInboundTraffic.IsNull() {
+				updateMirror.TrafficMirrorNumInboundTraffic = openapi.PtrBool(planMirror.TrafficMirrorNumInboundTraffic.ValueBool())
+			} else {
+				updateMirror.TrafficMirrorNumInboundTraffic = openapi.PtrBool(false)
+			}
+			fieldChanged = true
+		}
+
+		if !planMirror.TrafficMirrorNumOutboundTraffic.Equal(stateMirror.TrafficMirrorNumOutboundTraffic) {
+			if !planMirror.TrafficMirrorNumOutboundTraffic.IsNull() {
+				updateMirror.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(planMirror.TrafficMirrorNumOutboundTraffic.ValueBool())
+			} else {
+				updateMirror.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(false)
+			}
+			fieldChanged = true
+		}
+
+		if fieldChanged {
+			changedTrafficMirrors = append(changedTrafficMirrors, updateMirror)
+			trafficMirrorsChanged = true
+		}
+	}
+
+	// DELETE: Check for deleted items
+	for stateIdx := range oldTrafficMirrorsByIndex {
+		found := false
+		for _, planMirror := range plan.TrafficMirrors {
+			if !planMirror.Index.IsNull() && planMirror.Index.ValueInt64() == stateIdx {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			// traffic mirror removed - include only the index for deletion
+			deletedMirror := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{
+				Index: openapi.PtrInt32(int32(stateIdx)),
+			}
+			changedTrafficMirrors = append(changedTrafficMirrors, deletedMirror)
+			trafficMirrorsChanged = true
+		}
+	}
+
+	if trafficMirrorsChanged && len(changedTrafficMirrors) > 0 {
+		spProps.TrafficMirrors = changedTrafficMirrors
 		hasChanges = true
 	}
 
@@ -1411,23 +1549,6 @@ func (r *veritySwitchpointResource) ImportState(ctx context.Context, req resourc
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func (r *veritySwitchpointResource) equalTrafficMirrorArrays(a, b []veritySwitchpointTrafficMirrorModel) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if !a[i].TrafficMirrorNumEnable.Equal(b[i].TrafficMirrorNumEnable) ||
-			!a[i].TrafficMirrorNumSourcePort.Equal(b[i].TrafficMirrorNumSourcePort) ||
-			!a[i].TrafficMirrorNumSourceLagIndicator.Equal(b[i].TrafficMirrorNumSourceLagIndicator) ||
-			!a[i].TrafficMirrorNumDestinationPort.Equal(b[i].TrafficMirrorNumDestinationPort) ||
-			!a[i].TrafficMirrorNumInboundTraffic.Equal(b[i].TrafficMirrorNumInboundTraffic) ||
-			!a[i].TrafficMirrorNumOutboundTraffic.Equal(b[i].TrafficMirrorNumOutboundTraffic) {
-			return false
-		}
-	}
-	return true
-}
-
 func (r *veritySwitchpointResource) populateSwitchpointState(
 	ctx context.Context,
 	state veritySwitchpointResourceModel,
@@ -1686,6 +1807,21 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 				mirrorModel.TrafficMirrorNumOutboundTraffic = types.BoolValue(val)
 			} else {
 				mirrorModel.TrafficMirrorNumOutboundTraffic = types.BoolNull()
+			}
+			if index, ok := mirror["index"]; ok && index != nil {
+				if intVal, ok := index.(float64); ok {
+					mirrorModel.Index = types.Int64Value(int64(intVal))
+				} else if intVal, ok := index.(int); ok {
+					mirrorModel.Index = types.Int64Value(int64(intVal))
+				} else if intVal, ok := index.(int32); ok {
+					mirrorModel.Index = types.Int64Value(int64(intVal))
+				} else if intVal, ok := index.(int64); ok {
+					mirrorModel.Index = types.Int64Value(intVal)
+				} else {
+					mirrorModel.Index = types.Int64Null()
+				}
+			} else {
+				mirrorModel.Index = types.Int64Null()
 			}
 			mirrors = append(mirrors, mirrorModel)
 		}
