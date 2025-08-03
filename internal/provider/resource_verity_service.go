@@ -545,7 +545,14 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	if !plan.Vni.Equal(state.Vni) && !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+	// Validate auto-assigned fields - this check prevents ineffective API calls
+	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
+	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
+	// Don't error if the field is unknown (computed during plan recalculation)
+	if !plan.Vni.Equal(state.Vni) &&
+		!plan.Vni.IsNull() && !plan.Vni.IsUnknown() && // User is explicitly setting a value
+		!plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() &&
+		plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'vni' field cannot be modified because 'vni_auto_assigned_' is set to true.",

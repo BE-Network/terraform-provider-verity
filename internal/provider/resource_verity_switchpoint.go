@@ -744,7 +744,14 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	if !plan.BgpAsNumber.Equal(state.BgpAsNumber) && !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
+	// Validate auto-assigned fields - these checks prevent ineffective API calls
+	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
+	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
+	// Don't error if the field is unknown (computed during plan recalculation)
+	if !plan.BgpAsNumber.Equal(state.BgpAsNumber) &&
+		!plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() && // User is explicitly setting a value
+		!plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() &&
+		plan.BgpAsNumberAutoAssigned.Equal(state.BgpAsNumberAutoAssigned) {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'bgp_as_number' field cannot be modified because 'bgp_as_number_auto_assigned_' is set to true.",
@@ -752,7 +759,10 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	if !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask) && !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+	if !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask) &&
+		!plan.SwitchRouterIdIpMask.IsNull() && !plan.SwitchRouterIdIpMask.IsUnknown() && // User is explicitly setting a value
+		!plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() &&
+		plan.SwitchRouterIdIpMaskAutoAssigned.Equal(state.SwitchRouterIdIpMaskAutoAssigned) {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'switch_router_id_ip_mask' field cannot be modified because 'switch_router_id_ip_mask_auto_assigned_' is set to true.",
@@ -760,7 +770,10 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	if !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask) && !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+	if !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask) &&
+		!plan.SwitchVtepIdIpMask.IsNull() && !plan.SwitchVtepIdIpMask.IsUnknown() && // User is explicitly setting a value
+		!plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() &&
+		plan.SwitchVtepIdIpMaskAutoAssigned.Equal(state.SwitchVtepIdIpMaskAutoAssigned) {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'switch_vtep_id_ip_mask' field cannot be modified because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true.",

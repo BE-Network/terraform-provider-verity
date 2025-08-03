@@ -491,7 +491,14 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	if !plan.Layer3Vni.Equal(state.Layer3Vni) && !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
+	// Validate auto-assigned fields - these checks prevent ineffective API calls
+	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
+	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
+	// Don't error if the field is unknown (computed during plan recalculation)
+	if !plan.Layer3Vni.Equal(state.Layer3Vni) &&
+		!plan.Layer3Vni.IsNull() && !plan.Layer3Vni.IsUnknown() && // User is explicitly setting a value
+		!plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() &&
+		plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned) {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'layer_3_vni' field cannot be modified because 'layer_3_vni_auto_assigned_' is set to true.",
@@ -499,7 +506,10 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	if !plan.Layer3Vlan.Equal(state.Layer3Vlan) && !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
+	if !plan.Layer3Vlan.Equal(state.Layer3Vlan) &&
+		!plan.Layer3Vlan.IsNull() && !plan.Layer3Vlan.IsUnknown() && // User is explicitly setting a value
+		!plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() &&
+		plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned) {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'layer_3_vlan' field cannot be modified because 'layer_3_vlan_auto_assigned_' is set to true.",
@@ -507,7 +517,10 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	if !plan.VrfName.Equal(state.VrfName) && !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
+	if !plan.VrfName.Equal(state.VrfName) &&
+		!plan.VrfName.IsNull() && !plan.VrfName.IsUnknown() && // User is explicitly setting a value
+		!plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() &&
+		plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned) {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'vrf_name' field cannot be modified because 'vrf_name_auto_assigned_' is set to true.",
