@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **TrafficMirrorNumDestinationPort** | Pointer to **string** | Destination Port for Traffic Mirror | [optional] [default to ""]
 **TrafficMirrorNumInboundTraffic** | Pointer to **bool** | Boolean value indicating if the mirror is for inbound traffic | [optional] [default to false]
 **TrafficMirrorNumOutboundTraffic** | Pointer to **bool** | Boolean value indicating if the mirror is for outbound traffic | [optional] [default to false]
+**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -179,6 +180,31 @@ SetTrafficMirrorNumOutboundTraffic sets TrafficMirrorNumOutboundTraffic field to
 `func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumOutboundTraffic() bool`
 
 HasTrafficMirrorNumOutboundTraffic returns a boolean if a field has been set.
+
+### GetIndex
+
+`func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetIndex() int32`
+
+GetIndex returns the Index field if non-nil, zero value otherwise.
+
+### GetIndexOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetIndexOk() (*int32, bool)`
+
+GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIndex
+
+`func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetIndex(v int32)`
+
+SetIndex sets Index field to given value.
+
+### HasIndex
+
+`func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasIndex() bool`
+
+HasIndex returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

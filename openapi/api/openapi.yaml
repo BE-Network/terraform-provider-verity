@@ -1831,6 +1831,228 @@ paths:
       summary: Create gateway
       tags:
       - Gateways
+  /imageupdatesets:
+    get:
+      description: |
+        Retrieves all Image Update Sets from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: image_update_set_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Image Update Sets
+      tags:
+      - Image Update Sets
+    patch:
+      description: |
+        Update Image Update Set into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_imageupdatesets_patch_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Image Update Set
+      tags:
+      - Image Update Sets
+  /ipv4lists:
+    delete:
+      description: |
+        Deletes an existing IPv4 List Filter from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: ipv4_list_filter_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete IPv4 List Filter
+      tags:
+      - IPv4 List Filters
+    get:
+      description: |
+        Retrieves all IPv4 List Filters from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: ipv4_list_filter_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all IPv4 List Filters
+      tags:
+      - IPv4 List Filters
+    patch:
+      description: |
+        Update IPv4 List Filter into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_ipv4lists_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update IPv4 List Filter
+      tags:
+      - IPv4 List Filters
+    put:
+      description: |
+        Create IPv4 List Filter into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_ipv4lists_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create IPv4 List Filter
+      tags:
+      - IPv4 List Filters
   /ipv4prefixlists:
     delete:
       description: |
@@ -1978,6 +2200,153 @@ paths:
       summary: Create IPv4 Prefix List
       tags:
       - IPv4 Prefix Lists
+  /ipv6lists:
+    delete:
+      description: |
+        Deletes an existing IPv6 List Filter from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: ipv6_list_filter_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete IPv6 List Filter
+      tags:
+      - IPv6 List Filters
+    get:
+      description: |
+        Retrieves all IPv6 List Filters from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: ipv6_list_filter_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all IPv6 List Filters
+      tags:
+      - IPv6 List Filters
+    patch:
+      description: |
+        Update IPv6 List Filter into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_ipv6lists_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update IPv6 List Filter
+      tags:
+      - IPv6 List Filters
+    put:
+      description: |
+        Create IPv6 List Filter into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_ipv6lists_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create IPv6 List Filter
+      tags:
+      - IPv6 List Filters
   /ipv6prefixlists:
     delete:
       description: |
@@ -3884,153 +4253,6 @@ paths:
       summary: Create Device Voice Setting
       tags:
       - Device Voice Settings
-  /imageupdatesets:
-    delete:
-      description: |
-        Deletes an existing Image Update Set from the system if changeset_name is empty, from a changeset if its name is provided.
-      parameters:
-      - explode: true
-        in: query
-        name: image_update_set_name
-        required: true
-        schema:
-          items:
-            type: string
-          type: array
-        style: form
-      - explode: true
-        in: query
-        name: changeset_name
-        required: false
-        schema:
-          description: Changeset name
-          type: string
-        style: form
-      responses:
-        "200":
-          description: Successful response
-        "429":
-          description: Too Many Requests
-        "404":
-          description: Not Found
-        "401":
-          description: Unauthorized
-        "400":
-          description: Bad Request
-        "500":
-          description: Server error
-      security:
-      - TokenAuth: []
-      summary: Delete Image Update Set
-      tags:
-      - Image Update Sets
-    get:
-      description: |
-        Retrieves all Image Update Sets from the system.
-      parameters:
-      - explode: true
-        in: query
-        name: image_update_set_name
-        required: false
-        schema:
-          type: string
-        style: form
-      - explode: true
-        in: query
-        name: include_data
-        required: false
-        schema:
-          type: boolean
-        style: form
-      - explode: true
-        in: query
-        name: changeset_name
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "429":
-          description: Too Many Requests
-        "200":
-          description: Successful response
-        "500":
-          description: Server error
-        "401":
-          description: Unauthorized
-        "400":
-          description: Bad Request
-      security:
-      - TokenAuth: []
-      summary: Get all Image Update Sets
-      tags:
-      - Image Update Sets
-    patch:
-      description: |
-        Update Image Update Set into the system if changeset_name is empty, into a changeset if its name is provided.
-      parameters:
-      - explode: true
-        in: query
-        name: changeset_name
-        required: false
-        schema:
-          description: Changeset name
-          type: string
-        style: form
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/_imageupdatesets_put_request"
-      responses:
-        "201":
-          description: Created or Updated
-        "429":
-          description: Too Many Requests
-        "500":
-          description: Server error
-        "401":
-          description: Unauthorized
-        "400":
-          description: Bad Request
-      security:
-      - TokenAuth: []
-      summary: Update Image Update Set
-      tags:
-      - Image Update Sets
-    put:
-      description: |
-        Create Image Update Set into the system if changeset_name is empty, into a changeset if its name is provided.
-      parameters:
-      - explode: true
-        in: query
-        name: changeset_name
-        required: false
-        schema:
-          description: Changeset name
-          type: string
-        style: form
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/_imageupdatesets_put_request"
-      responses:
-        "201":
-          description: Created or Updated
-        "429":
-          description: Too Many Requests
-        "500":
-          description: Server error
-        "401":
-          description: Unauthorized
-        "400":
-          description: Bad Request
-      security:
-      - TokenAuth: []
-      summary: Create Image Update Set
-      tags:
-      - Image Update Sets
   /serviceportprofiles:
     delete:
       description: |
@@ -4343,8 +4565,8 @@ components:
           default: IEEE 802.3af
           description: Mode
           enum:
-          - IEEE 802.3af
           - Manual
+          - IEEE 802.3af
           type: string
         usage_threshold:
           description: Usage Threshold
@@ -4440,6 +4662,14 @@ components:
           enum:
           - packet_queue
           type: string
+      type: object
+    _imageupdatesets_patch_request_image_update_sets_value_object_properties:
+      properties:
+        firmware_count:
+          default: 0
+          description: Firmware Count
+          nullable: true
+          type: integer
       type: object
     _authenticatedethports_put_request_authenticated_eth_port_value_object_properties:
       properties:
@@ -4797,6 +5027,64 @@ components:
           description: Group
           type: string
       type: object
+    _imageupdatesets_patch_request_image_update_sets_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: true
+          description: Enable object.
+          type: boolean
+        upgrader_on_summary:
+          default: true
+          description: Show Upgrader Pie Chart on Summary
+          type: boolean
+        installation_on_summary:
+          default: true
+          description: Show Installation Pie Chart on Summary
+          type: boolean
+        comm_on_summary:
+          default: true
+          description: Show Comm Pie Chart on Summary
+          type: boolean
+        provisioning_on_summary:
+          default: true
+          description: Show Provisioning Pie Chart on Summary
+          type: boolean
+        type:
+          default: whitebox
+          description: Type of Image Update Sets
+          enum:
+          - blackbox
+          - whitebox
+          type: string
+        section_pointless:
+          items:
+            $ref: "#/components/schemas/_imageupdatesets_patch_request_image_update_sets_value_section_pointless_inner"
+          type: array
+        section:
+          items:
+            $ref: "#/components/schemas/_imageupdatesets_patch_request_image_update_sets_value_section_inner"
+          type: array
+        section_else:
+          items:
+            $ref: "#/components/schemas/_imageupdatesets_patch_request_image_update_sets_value_section_else_inner"
+          type: array
+        object_properties:
+          $ref: "#/components/schemas/_imageupdatesets_patch_request_image_update_sets_value_object_properties"
+      type: object
+    _imageupdatesets_patch_request:
+      properties:
+        image_update_sets:
+          additionalProperties:
+            $ref: "#/components/schemas/_imageupdatesets_patch_request_image_update_sets_value"
+          properties: {}
+          type: object
+      type: object
     _switchpoints_put_request_switchpoint_value_object_properties_eths_inner:
       properties:
         eth_num_icon:
@@ -5023,14 +5311,6 @@ components:
           properties: {}
           type: object
       type: object
-    _imageupdatesets_put_request:
-      properties:
-        image_update_sets:
-          additionalProperties:
-            $ref: "#/components/schemas/_imageupdatesets_put_request_image_update_sets_value"
-          properties: {}
-          type: object
-      type: object
     _gateways_put_request:
       properties:
         gateway:
@@ -5039,6 +5319,24 @@ components:
           properties: {}
           type: object
       type: object
+    _ipv6lists_put_request_ipv6_list_filter_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        ipv6_list:
+          default: ""
+          description: Comma separated list of IPv6 addresses
+          pattern: /^.*$/
+          type: string
+      type: object
     _devicevoicesettings_put_request:
       properties:
         device_voice_settings:
@@ -5046,123 +5344,6 @@ components:
             $ref: "#/components/schemas/_devicevoicesettings_put_request_device_voice_settings_value"
           properties: {}
           type: object
-      type: object
-    _imageupdatesets_put_request_image_update_sets_value_section_inner:
-      properties:
-        endpoint_set_num_name:
-          default: ""
-          description: The name of the Endpoint Set
-          type: string
-        endpoint_set_num_target_upgrade_version:
-          default: unmanaged
-          description: The target SW version for member devices of the Endpoint Set
-          enum:
-          - unmanaged
-          - 1.8.1.1
-          - 1.8.1.3
-          - 1.8.1.2
-          type: string
-        endpoint_set_num_unique_identifier:
-          default: "17535736494231"
-          description: Unique Identifier - not editable
-          type: string
-        endpoint_set_num_on_summary:
-          default: true
-          description: Include on the Summary
-          type: boolean
-        endpoint_set_num_target_upgrade_version_time:
-          default: ""
-          description: The time to update to the target SW version
-          type: string
-        endpoint_set_num_subrule_1_inverted:
-          default: false
-          description: Subrule 1 Inverted of the Endpoint Set
-          type: boolean
-        endpoint_set_num_subrule_1_type:
-          default: ""
-          description: Subrule 1 Type of the Endpoint Set
-          enum:
-          - ""
-          - bundle_id
-          - endpoint
-          - badge_color
-          - productClass
-          - badge
-          - deviceSerialNumber
-          type: string
-        endpoint_set_num_subrule_1_value:
-          default: ""
-          description: Subrule 1 Value of the Endpoint Set
-          type: string
-        endpoint_set_num_subrule_1_reference_path:
-          default: ""
-          description: Subrule 1 Reference Path of the Endpoint Set
-          type: string
-        endpoint_set_num_subrule_1_reference_path_ref_type_:
-          description: Object type for endpoint_set_num_subrule_1_reference_path field
-          type: string
-        endpoint_set_num_subrule_2_inverted:
-          default: false
-          description: Subrule 2 Inverted of the Endpoint Set
-          type: boolean
-        endpoint_set_num_subrule_2_type:
-          default: ""
-          description: Subrule 2 Type of the Endpoint Set
-          enum:
-          - ""
-          - bundle_id
-          - endpoint
-          - badge_color
-          - productClass
-          - badge
-          - deviceSerialNumber
-          type: string
-        endpoint_set_num_subrule_2_value:
-          default: ""
-          description: Subrule 2 Value of the Endpoint Set
-          type: string
-        endpoint_set_num_subrule_2_reference_path:
-          default: ""
-          description: Subrule 2 Reference Path of the Endpoint Set
-          type: string
-        endpoint_set_num_subrule_2_reference_path_ref_type_:
-          description: Object type for endpoint_set_num_subrule_2_reference_path field
-          type: string
-        endpoint_set_num_subrule_3_inverted:
-          default: false
-          description: Subrule 3 Inverted of the Endpoint Set
-          type: boolean
-        endpoint_set_num_subrule_3_type:
-          default: ""
-          description: Subrule 3 Type of the Endpoint Set
-          enum:
-          - ""
-          - bundle_id
-          - endpoint
-          - badge_color
-          - productClass
-          - badge
-          - deviceSerialNumber
-          type: string
-        endpoint_set_num_subrule_3_value:
-          default: ""
-          description: Subrule 3 Value of the Endpoint Set
-          type: string
-        endpoint_set_num_subrule_3_reference_path:
-          default: ""
-          description: Subrule 3 Reference Path of the Endpoint Set
-          type: string
-        endpoint_set_num_subrule_3_reference_path_ref_type_:
-          description: Object type for endpoint_set_num_subrule_3_reference_path field
-          type: string
-      type: object
-    _imageupdatesets_put_request_image_update_sets_value_object_properties:
-      properties:
-        firmware_count:
-          default: 0
-          description: Firmware Count
-          nullable: true
-          type: integer
       type: object
     _sfpbreakouts_patch_request:
       properties:
@@ -5339,9 +5520,9 @@ components:
             Spanning Tree enabled
           enum:
           - ""
-          - mstp
-          - pvst
           - port
+          - pvst
+          - mstp
           minLength: 1
           type: string
         region_name:
@@ -5544,6 +5725,121 @@ components:
             object to the list.
           type: integer
       type: object
+    _imageupdatesets_patch_request_image_update_sets_value_section_inner:
+      properties:
+        endpoint_set_num_name:
+          default: ""
+          description: The name of the Endpoint Set
+          type: string
+        endpoint_set_num_target_upgrade_version:
+          default: unmanaged
+          description: The target SW version for member devices of the Endpoint Set
+          enum:
+          - 1.8.1.4
+          - 1.8.1.1
+          - 1.8.1.3
+          - unmanaged
+          type: string
+        endpoint_set_num_unique_identifier:
+          default: "17541345551551"
+          description: Unique Identifier - not editable
+          type: string
+        endpoint_set_num_on_summary:
+          default: true
+          description: Include on the Summary
+          type: boolean
+        endpoint_set_num_target_upgrade_version_time:
+          default: ""
+          description: The time to update to the target SW version
+          type: string
+        endpoint_set_num_subrule_1_inverted:
+          default: false
+          description: Subrule 1 Inverted of the Endpoint Set
+          type: boolean
+        endpoint_set_num_subrule_1_type:
+          default: ""
+          description: Subrule 1 Type of the Endpoint Set
+          enum:
+          - ""
+          - pod
+          - bundle_id
+          - endpoint_type
+          - endpoint
+          - deviceSerialNumber
+          - badge_color
+          - badge
+          - productClass
+          type: string
+        endpoint_set_num_subrule_1_value:
+          default: ""
+          description: Subrule 1 Value of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_1_reference_path:
+          default: ""
+          description: Subrule 1 Reference Path of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_1_reference_path_ref_type_:
+          description: Object type for endpoint_set_num_subrule_1_reference_path field
+          type: string
+        endpoint_set_num_subrule_2_inverted:
+          default: false
+          description: Subrule 2 Inverted of the Endpoint Set
+          type: boolean
+        endpoint_set_num_subrule_2_type:
+          default: ""
+          description: Subrule 2 Type of the Endpoint Set
+          enum:
+          - ""
+          - pod
+          - bundle_id
+          - endpoint_type
+          - endpoint
+          - deviceSerialNumber
+          - badge_color
+          - badge
+          - productClass
+          type: string
+        endpoint_set_num_subrule_2_value:
+          default: ""
+          description: Subrule 2 Value of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_2_reference_path:
+          default: ""
+          description: Subrule 2 Reference Path of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_2_reference_path_ref_type_:
+          description: Object type for endpoint_set_num_subrule_2_reference_path field
+          type: string
+        endpoint_set_num_subrule_3_inverted:
+          default: false
+          description: Subrule 3 Inverted of the Endpoint Set
+          type: boolean
+        endpoint_set_num_subrule_3_type:
+          default: ""
+          description: Subrule 3 Type of the Endpoint Set
+          enum:
+          - ""
+          - pod
+          - bundle_id
+          - endpoint_type
+          - endpoint
+          - deviceSerialNumber
+          - badge_color
+          - badge
+          - productClass
+          type: string
+        endpoint_set_num_subrule_3_value:
+          default: ""
+          description: Subrule 3 Value of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_3_reference_path:
+          default: ""
+          description: Subrule 3 Reference Path of the Endpoint Set
+          type: string
+        endpoint_set_num_subrule_3_reference_path_ref_type_:
+          description: Object type for endpoint_set_num_subrule_3_reference_path field
+          type: string
+      type: object
     _routemaps_put_request_route_map_value:
       properties:
         name:
@@ -5563,33 +5859,13 @@ components:
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
       type: object
-    _imageupdatesets_put_request_image_update_sets_value_section_pointless_inner:
+    _ipv4lists_put_request:
       properties:
-        endpoint_set_num_name:
-          default: Unassigned Devices
-          description: The name of the Endpoint Set
-          type: string
-        endpoint_set_for_endpointless_target_upgrade_version:
-          default: unmanaged
-          description: The target SW version for member devices of the Endpoint Set
-          enum:
-          - unmanaged
-          - 1.8.1.1
-          - 1.8.1.3
-          - 1.8.1.2
-          type: string
-        endpoint_set_for_endpointless_unique_identifier:
-          default: pointless
-          description: Unique Identifier - not editable
-          type: string
-        endpoint_set_num_on_summary:
-          default: true
-          description: Include on the Summary
-          type: boolean
-        endpoint_set_for_endpointless_target_upgrade_version_time:
-          default: ""
-          description: The time to update to the target SW version
-          type: string
+        ipv4_list_filter:
+          additionalProperties:
+            $ref: "#/components/schemas/_ipv4lists_put_request_ipv4_list_filter_value"
+          properties: {}
+          type: object
       type: object
     _ipv4prefixlists_put_request_ipv4_prefix_list_value:
       properties:
@@ -5610,55 +5886,33 @@ components:
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
       type: object
-    _imageupdatesets_put_request_image_update_sets_value:
+    _imageupdatesets_patch_request_image_update_sets_value_section_pointless_inner:
       properties:
-        name:
-          default: ""
-          description: Object Name. Must be unique.
-          format: name
-          minLength: 1
+        endpoint_set_num_name:
+          default: Unassigned Devices
+          description: The name of the Endpoint Set
           type: string
-        enable:
-          default: true
-          description: Enable object.
-          type: boolean
-        upgrader_on_summary:
-          default: true
-          description: Show Upgrader Pie Chart on Summary
-          type: boolean
-        installation_on_summary:
-          default: true
-          description: Show Installation Pie Chart on Summary
-          type: boolean
-        comm_on_summary:
-          default: true
-          description: Show Comm Pie Chart on Summary
-          type: boolean
-        provisioning_on_summary:
-          default: true
-          description: Show Provisioning Pie Chart on Summary
-          type: boolean
-        type:
-          default: whitebox
-          description: Type of Image Update Sets
+        endpoint_set_for_endpointless_target_upgrade_version:
+          default: unmanaged
+          description: The target SW version for member devices of the Endpoint Set
           enum:
-          - whitebox
-          - blackbox
+          - 1.8.1.4
+          - 1.8.1.1
+          - 1.8.1.3
+          - unmanaged
           type: string
-        section_pointless:
-          items:
-            $ref: "#/components/schemas/_imageupdatesets_put_request_image_update_sets_value_section_pointless_inner"
-          type: array
-        section:
-          items:
-            $ref: "#/components/schemas/_imageupdatesets_put_request_image_update_sets_value_section_inner"
-          type: array
-        section_else:
-          items:
-            $ref: "#/components/schemas/_imageupdatesets_put_request_image_update_sets_value_section_else_inner"
-          type: array
-        object_properties:
-          $ref: "#/components/schemas/_imageupdatesets_put_request_image_update_sets_value_object_properties"
+        endpoint_set_for_endpointless_unique_identifier:
+          default: pointless
+          description: Unique Identifier - not editable
+          type: string
+        endpoint_set_num_on_summary:
+          default: true
+          description: Include on the Summary
+          type: boolean
+        endpoint_set_for_endpointless_target_upgrade_version_time:
+          default: ""
+          description: The time to update to the target SW version
+          type: string
       type: object
     _switchpoints_put_request_endpoint_value_object_properties:
       properties:
@@ -5731,8 +5985,8 @@ components:
           default: dhcp
           description: IP Source
           enum:
-          - dhcp
           - static
+          - dhcp
           minLength: 1
           type: string
         controller_ip_and_mask:
@@ -5760,8 +6014,8 @@ components:
           description: Comm Type
           enum:
           - snmpv2
-          - gnmi
           - snmpv3
+          - gnmi
           minLength: 1
           type: string
         snmp_community_string:
@@ -5792,11 +6046,11 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - LAG
-          - Static Port
-          - as_site
           - LAG_IDL
           - LLDP
+          - Static Port
+          - as_site
+          - LAG
           minLength: 1
           type: string
         power_state:
@@ -5807,22 +6061,22 @@ components:
           default: generic_snmp
           description: Communication Mode
           enum:
-          - generic_advanced_snmp
-          - arista_7050_series
-          - ruckus_icx7150
-          - cisco_small_business_sgxxx
-          - cisco_catalyst_c3xxx
-          - generic_snmp
-          - hpe_aruba_2530_series
-          - edgecore_ecs21000
-          - tibit_xgs_olt_sfp
-          - adtran_netvanta_series
-          - eltex_ltp_gpon_olt
-          - cisco_nexus_9xxx
-          - juniper_acx5048
-          - microtik_routeros_telnet
-          - netgear_prosafe_series
           - sonic
+          - hpe_aruba_2530_series
+          - cisco_small_business_sgxxx
+          - arista_7050_series
+          - tibit_xgs_olt_sfp
+          - eltex_ltp_gpon_olt
+          - adtran_netvanta_series
+          - generic_snmp
+          - netgear_prosafe_series
+          - cisco_catalyst_c3xxx
+          - generic_advanced_snmp
+          - juniper_acx5048
+          - cisco_nexus_9xxx
+          - edgecore_ecs21000
+          - ruckus_icx7150
+          - microtik_routeros_telnet
           minLength: 1
           type: string
         cli_access_mode:
@@ -5901,8 +6155,8 @@ components:
           default: DES
           description: Protocol
           enum:
-          - AES
           - DES
+          - AES
           minLength: 1
           type: string
         private_password:
@@ -6028,6 +6282,34 @@ components:
           default: true
           description: Format dial plan for easier viewing
           type: boolean
+      type: object
+    _imageupdatesets_patch_request_image_update_sets_value_section_else_inner:
+      properties:
+        endpoint_set_num_name:
+          default: All Others
+          description: The name of the Endpoint Set
+          type: string
+        endpoint_set_for_all_others_target_upgrade_version:
+          default: unmanaged
+          description: The target SW version for member devices of the Endpoint Set
+          enum:
+          - 1.8.1.4
+          - 1.8.1.1
+          - 1.8.1.3
+          - unmanaged
+          type: string
+        endpoint_set_for_all_others_unique_identifier:
+          default: else
+          description: Unique Identifier - not editable
+          type: string
+        endpoint_set_num_on_summary:
+          default: true
+          description: Include on the Summary
+          type: boolean
+        endpoint_set_for_all_others_target_upgrade_version_time:
+          default: ""
+          description: The time to update to the target SW version
+          type: string
       type: object
     _switchpoints_put_request_switchpoint_value:
       properties:
@@ -6415,6 +6697,10 @@ components:
           default: false
           description: Boolean value indicating if the mirror is for outbound traffic
           type: boolean
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _devicevoicesettings_put_request_device_voice_settings_value_Codecs_inner:
       properties:
@@ -6811,11 +7097,11 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - emerald
-          - lavender
           - cornflower
-          - chardonnay
           - anakiwa
+          - lavender
+          - emerald
+          - chardonnay
           - starship
           minLength: 1
           type: string
@@ -6830,10 +7116,10 @@ components:
         eth_port_profile_ref_type_:
           description: Object type for eth_port_profile field
           enum:
-          - eth_port_profile_
           - service_port_profile
-          - pb_egress_profile
+          - eth_port_profile_
           - gateway_profile
+          - pb_egress_profile
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
@@ -6891,11 +7177,11 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
-          - lag
+          - pb_egress_profile
           - service_port_profile
           - authenticated_eth_port
-          - pb_egress_profile
           - eth_port_profile_
+          - lag
           type: string
         eth_port_num_eth_port_settings:
           default: ""
@@ -7262,26 +7548,26 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "2500"
-          - "100"
-          - "1000"
-          - "10000"
-          - "5000"
-          - "10"
-          - "50000"
-          - "-1"
           - "25000"
-          - "100000"
-          - "40000"
+          - "10000"
+          - "2500"
+          - "50000"
           - "400000"
+          - "1000"
+          - "10"
+          - "-1"
+          - "100000"
+          - "100"
+          - "40000"
+          - "5000"
           minLength: 1
           type: string
         duplex_mode:
           default: Auto
           description: Duplex Mode
           enum:
-          - Full
           - Auto
+          - Full
           - Half
           minLength: 1
           type: string
@@ -7314,8 +7600,8 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
-          - Critical
           - High
+          - Critical
           - Low
           minLength: 1
           type: string
@@ -7358,8 +7644,8 @@ components:
             \                                      </div>\n                      \
             \                          "
           enum:
-          - '%'
           - pps
+          - '%'
           - Kpps
           minLength: 1
           type: string
@@ -7380,9 +7666,9 @@ components:
             \ <br>\n                                                </div>\n     \
             \                                       "
           enum:
-          - Shutdown
           - Protect
           - Restrict
+          - Shutdown
           minLength: 1
           type: string
         fec:
@@ -7400,12 +7686,12 @@ components:
             \ the Switch Value.<br>\n                                            \
             \    </div>\n                                            "
           enum:
-          - rs
-          - rs-custom
-          - none
-          - unaltered
           - auto
           - fc
+          - rs-custom
+          - none
+          - rs
+          - unaltered
           minLength: 1
           type: string
         single_link:
@@ -8310,34 +8596,6 @@ components:
           properties: {}
           type: object
       type: object
-    _imageupdatesets_put_request_image_update_sets_value_section_else_inner:
-      properties:
-        endpoint_set_num_name:
-          default: All Others
-          description: The name of the Endpoint Set
-          type: string
-        endpoint_set_for_all_others_target_upgrade_version:
-          default: unmanaged
-          description: The target SW version for member devices of the Endpoint Set
-          enum:
-          - unmanaged
-          - 1.8.1.1
-          - 1.8.1.3
-          - 1.8.1.2
-          type: string
-        endpoint_set_for_all_others_unique_identifier:
-          default: else
-          description: Unique Identifier - not editable
-          type: string
-        endpoint_set_num_on_summary:
-          default: true
-          description: Include on the Summary
-          type: boolean
-        endpoint_set_for_all_others_target_upgrade_version_time:
-          default: ""
-          description: The time to update to the target SW version
-          type: string
-      type: object
     _gateways_put_request_gateway_value_static_routes_inner:
       properties:
         enable:
@@ -8364,6 +8622,14 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+      type: object
+    _ipv6lists_put_request:
+      properties:
+        ipv6_list_filter:
+          additionalProperties:
+            $ref: "#/components/schemas/_ipv6lists_put_request_ipv6_list_filter_value"
+          properties: {}
+          type: object
       type: object
     _voiceportprofiles_put_request_voice_port_profiles_value:
       properties:
@@ -8556,6 +8822,24 @@ components:
           type: array
         object_properties:
           $ref: "#/components/schemas/_packetqueues_put_request_packet_queue_value_object_properties"
+      type: object
+    _ipv4lists_put_request_ipv4_list_filter_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        ipv4_list:
+          default: ""
+          description: Comma separated list of IPv4 addresses
+          minLength: 1
+          type: string
       type: object
     _routemaps_put_request_route_map_value_route_map_clauses_inner:
       properties:

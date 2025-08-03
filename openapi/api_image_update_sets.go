@@ -16,130 +16,11 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"reflect"
 )
 
 
 // ImageUpdateSetsAPIService ImageUpdateSetsAPI service
 type ImageUpdateSetsAPIService service
-
-type ApiImageupdatesetsDeleteRequest struct {
-	ctx context.Context
-	ApiService *ImageUpdateSetsAPIService
-	imageUpdateSetName *[]string
-	changesetName *string
-}
-
-func (r ApiImageupdatesetsDeleteRequest) ImageUpdateSetName(imageUpdateSetName []string) ApiImageupdatesetsDeleteRequest {
-	r.imageUpdateSetName = &imageUpdateSetName
-	return r
-}
-
-func (r ApiImageupdatesetsDeleteRequest) ChangesetName(changesetName string) ApiImageupdatesetsDeleteRequest {
-	r.changesetName = &changesetName
-	return r
-}
-
-func (r ApiImageupdatesetsDeleteRequest) Execute() (*http.Response, error) {
-	return r.ApiService.ImageupdatesetsDeleteExecute(r)
-}
-
-/*
-ImageupdatesetsDelete Delete Image Update Set
-
-Deletes an existing Image Update Set from the system if changeset_name is empty, from a changeset if its name is provided.
-
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiImageupdatesetsDeleteRequest
-*/
-func (a *ImageUpdateSetsAPIService) ImageupdatesetsDelete(ctx context.Context) ApiImageupdatesetsDeleteRequest {
-	return ApiImageupdatesetsDeleteRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-func (a *ImageUpdateSetsAPIService) ImageupdatesetsDeleteExecute(r ApiImageupdatesetsDeleteRequest) (*http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ImageUpdateSetsAPIService.ImageupdatesetsDelete")
-	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/imageupdatesets"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.imageUpdateSetName == nil {
-		return nil, reportError("imageUpdateSetName is required and must be specified")
-	}
-
-	{
-		t := *r.imageUpdateSetName
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "image_update_set_name", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "image_update_set_name", t, "form", "multi")
-		}
-	}
-	if r.changesetName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
-	}
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		return localVarHTTPResponse, newErr
-	}
-
-	return localVarHTTPResponse, nil
-}
 
 type ApiImageupdatesetsGetRequest struct {
 	ctx context.Context
@@ -261,7 +142,7 @@ type ApiImageupdatesetsPatchRequest struct {
 	ctx context.Context
 	ApiService *ImageUpdateSetsAPIService
 	changesetName *string
-	imageupdatesetsPutRequest *ImageupdatesetsPutRequest
+	imageupdatesetsPatchRequest *ImageupdatesetsPatchRequest
 }
 
 func (r ApiImageupdatesetsPatchRequest) ChangesetName(changesetName string) ApiImageupdatesetsPatchRequest {
@@ -269,8 +150,8 @@ func (r ApiImageupdatesetsPatchRequest) ChangesetName(changesetName string) ApiI
 	return r
 }
 
-func (r ApiImageupdatesetsPatchRequest) ImageupdatesetsPutRequest(imageupdatesetsPutRequest ImageupdatesetsPutRequest) ApiImageupdatesetsPatchRequest {
-	r.imageupdatesetsPutRequest = &imageupdatesetsPutRequest
+func (r ApiImageupdatesetsPatchRequest) ImageupdatesetsPatchRequest(imageupdatesetsPatchRequest ImageupdatesetsPatchRequest) ApiImageupdatesetsPatchRequest {
+	r.imageupdatesetsPatchRequest = &imageupdatesetsPatchRequest
 	return r
 }
 
@@ -334,113 +215,7 @@ func (a *ImageUpdateSetsAPIService) ImageupdatesetsPatchExecute(r ApiImageupdate
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.imageupdatesetsPutRequest
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		return localVarHTTPResponse, newErr
-	}
-
-	return localVarHTTPResponse, nil
-}
-
-type ApiImageupdatesetsPutRequest struct {
-	ctx context.Context
-	ApiService *ImageUpdateSetsAPIService
-	changesetName *string
-	imageupdatesetsPutRequest *ImageupdatesetsPutRequest
-}
-
-func (r ApiImageupdatesetsPutRequest) ChangesetName(changesetName string) ApiImageupdatesetsPutRequest {
-	r.changesetName = &changesetName
-	return r
-}
-
-func (r ApiImageupdatesetsPutRequest) ImageupdatesetsPutRequest(imageupdatesetsPutRequest ImageupdatesetsPutRequest) ApiImageupdatesetsPutRequest {
-	r.imageupdatesetsPutRequest = &imageupdatesetsPutRequest
-	return r
-}
-
-func (r ApiImageupdatesetsPutRequest) Execute() (*http.Response, error) {
-	return r.ApiService.ImageupdatesetsPutExecute(r)
-}
-
-/*
-ImageupdatesetsPut Create Image Update Set
-
-Create Image Update Set into the system if changeset_name is empty, into a changeset if its name is provided.
-
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiImageupdatesetsPutRequest
-*/
-func (a *ImageUpdateSetsAPIService) ImageupdatesetsPut(ctx context.Context) ApiImageupdatesetsPutRequest {
-	return ApiImageupdatesetsPutRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-func (a *ImageUpdateSetsAPIService) ImageupdatesetsPutExecute(r ApiImageupdatesetsPutRequest) (*http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ImageUpdateSetsAPIService.ImageupdatesetsPut")
-	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/imageupdatesets"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	if r.changesetName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
-	}
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.imageupdatesetsPutRequest
+	localVarPostBody = r.imageupdatesetsPatchRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

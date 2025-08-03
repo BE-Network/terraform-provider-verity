@@ -152,10 +152,8 @@ Class | Method | HTTP request | Description
 *IPv6PrefixListsAPI* | [**Ipv6prefixlistsGet**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistsget) | **Get** /ipv6prefixlists | Get all IPv6 Prefix Lists
 *IPv6PrefixListsAPI* | [**Ipv6prefixlistsPatch**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistspatch) | **Patch** /ipv6prefixlists | Update IPv6 Prefix List
 *IPv6PrefixListsAPI* | [**Ipv6prefixlistsPut**](docs/IPv6PrefixListsAPI.md#ipv6prefixlistsput) | **Put** /ipv6prefixlists | Create IPv6 Prefix List
-*ImageUpdateSetsAPI* | [**ImageupdatesetsDelete**](docs/ImageUpdateSetsAPI.md#imageupdatesetsdelete) | **Delete** /imageupdatesets | Delete Image Update Set
 *ImageUpdateSetsAPI* | [**ImageupdatesetsGet**](docs/ImageUpdateSetsAPI.md#imageupdatesetsget) | **Get** /imageupdatesets | Get all Image Update Sets
 *ImageUpdateSetsAPI* | [**ImageupdatesetsPatch**](docs/ImageUpdateSetsAPI.md#imageupdatesetspatch) | **Patch** /imageupdatesets | Update Image Update Set
-*ImageUpdateSetsAPI* | [**ImageupdatesetsPut**](docs/ImageUpdateSetsAPI.md#imageupdatesetsput) | **Put** /imageupdatesets | Create Image Update Set
 *LAGsAPI* | [**LagsDelete**](docs/LAGsAPI.md#lagsdelete) | **Delete** /lags | Delete LAG
 *LAGsAPI* | [**LagsGet**](docs/LAGsAPI.md#lagsget) | **Get** /lags | Get all LAGs
 *LAGsAPI* | [**LagsPatch**](docs/LAGsAPI.md#lagspatch) | **Patch** /lags | Update LAG
@@ -257,12 +255,12 @@ Class | Method | HTTP request | Description
  - [GatewaysPutRequest](docs/GatewaysPutRequest.md)
  - [GatewaysPutRequestGatewayValue](docs/GatewaysPutRequestGatewayValue.md)
  - [GatewaysPutRequestGatewayValueStaticRoutesInner](docs/GatewaysPutRequestGatewayValueStaticRoutesInner.md)
- - [ImageupdatesetsPutRequest](docs/ImageupdatesetsPutRequest.md)
- - [ImageupdatesetsPutRequestImageUpdateSetsValue](docs/ImageupdatesetsPutRequestImageUpdateSetsValue.md)
- - [ImageupdatesetsPutRequestImageUpdateSetsValueObjectProperties](docs/ImageupdatesetsPutRequestImageUpdateSetsValueObjectProperties.md)
- - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionElseInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionElseInner.md)
- - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionInner.md)
- - [ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner](docs/ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner.md)
+ - [ImageupdatesetsPatchRequest](docs/ImageupdatesetsPatchRequest.md)
+ - [ImageupdatesetsPatchRequestImageUpdateSetsValue](docs/ImageupdatesetsPatchRequestImageUpdateSetsValue.md)
+ - [ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties](docs/ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties.md)
+ - [ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner](docs/ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner.md)
+ - [ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner](docs/ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner.md)
+ - [ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner](docs/ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner.md)
  - [Ipv4listsPutRequest](docs/Ipv4listsPutRequest.md)
  - [Ipv4listsPutRequestIpv4ListFilterValue](docs/Ipv4listsPutRequestIpv4ListFilterValue.md)
  - [Ipv4prefixlistsPutRequest](docs/Ipv4prefixlistsPutRequest.md)

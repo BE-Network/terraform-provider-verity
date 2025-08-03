@@ -1,4 +1,4 @@
-# ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner
+# ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner
 
 ## Properties
 
@@ -12,145 +12,145 @@ Name | Type | Description | Notes
 
 ## Methods
 
-### NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner
+### NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner
 
-`func NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner() *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner`
+`func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner() *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner`
 
-NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner instantiates a new ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner object
+NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner instantiates a new ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults
+### NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults
 
-`func NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults() *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner`
+`func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults() *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner`
 
-NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults instantiates a new ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner object
+NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults instantiates a new ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetEndpointSetNumName
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumName() string`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumName() string`
 
 GetEndpointSetNumName returns the EndpointSetNumName field if non-nil, zero value otherwise.
 
 ### GetEndpointSetNumNameOk
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumNameOk() (*string, bool)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumNameOk() (*string, bool)`
 
 GetEndpointSetNumNameOk returns a tuple with the EndpointSetNumName field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEndpointSetNumName
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetNumName(v string)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetNumName(v string)`
 
 SetEndpointSetNumName sets EndpointSetNumName field to given value.
 
 ### HasEndpointSetNumName
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetNumName() bool`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetNumName() bool`
 
 HasEndpointSetNumName returns a boolean if a field has been set.
 
 ### GetEndpointSetForEndpointlessTargetUpgradeVersion
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersion() string`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersion() string`
 
 GetEndpointSetForEndpointlessTargetUpgradeVersion returns the EndpointSetForEndpointlessTargetUpgradeVersion field if non-nil, zero value otherwise.
 
 ### GetEndpointSetForEndpointlessTargetUpgradeVersionOk
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionOk() (*string, bool)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionOk() (*string, bool)`
 
 GetEndpointSetForEndpointlessTargetUpgradeVersionOk returns a tuple with the EndpointSetForEndpointlessTargetUpgradeVersion field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEndpointSetForEndpointlessTargetUpgradeVersion
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessTargetUpgradeVersion(v string)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessTargetUpgradeVersion(v string)`
 
 SetEndpointSetForEndpointlessTargetUpgradeVersion sets EndpointSetForEndpointlessTargetUpgradeVersion field to given value.
 
 ### HasEndpointSetForEndpointlessTargetUpgradeVersion
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessTargetUpgradeVersion() bool`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessTargetUpgradeVersion() bool`
 
 HasEndpointSetForEndpointlessTargetUpgradeVersion returns a boolean if a field has been set.
 
 ### GetEndpointSetForEndpointlessUniqueIdentifier
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessUniqueIdentifier() string`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessUniqueIdentifier() string`
 
 GetEndpointSetForEndpointlessUniqueIdentifier returns the EndpointSetForEndpointlessUniqueIdentifier field if non-nil, zero value otherwise.
 
 ### GetEndpointSetForEndpointlessUniqueIdentifierOk
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessUniqueIdentifierOk() (*string, bool)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessUniqueIdentifierOk() (*string, bool)`
 
 GetEndpointSetForEndpointlessUniqueIdentifierOk returns a tuple with the EndpointSetForEndpointlessUniqueIdentifier field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEndpointSetForEndpointlessUniqueIdentifier
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessUniqueIdentifier(v string)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessUniqueIdentifier(v string)`
 
 SetEndpointSetForEndpointlessUniqueIdentifier sets EndpointSetForEndpointlessUniqueIdentifier field to given value.
 
 ### HasEndpointSetForEndpointlessUniqueIdentifier
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessUniqueIdentifier() bool`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessUniqueIdentifier() bool`
 
 HasEndpointSetForEndpointlessUniqueIdentifier returns a boolean if a field has been set.
 
 ### GetEndpointSetNumOnSummary
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumOnSummary() bool`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumOnSummary() bool`
 
 GetEndpointSetNumOnSummary returns the EndpointSetNumOnSummary field if non-nil, zero value otherwise.
 
 ### GetEndpointSetNumOnSummaryOk
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumOnSummaryOk() (*bool, bool)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumOnSummaryOk() (*bool, bool)`
 
 GetEndpointSetNumOnSummaryOk returns a tuple with the EndpointSetNumOnSummary field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEndpointSetNumOnSummary
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetNumOnSummary(v bool)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetNumOnSummary(v bool)`
 
 SetEndpointSetNumOnSummary sets EndpointSetNumOnSummary field to given value.
 
 ### HasEndpointSetNumOnSummary
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetNumOnSummary() bool`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetNumOnSummary() bool`
 
 HasEndpointSetNumOnSummary returns a boolean if a field has been set.
 
 ### GetEndpointSetForEndpointlessTargetUpgradeVersionTime
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionTime() string`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionTime() string`
 
 GetEndpointSetForEndpointlessTargetUpgradeVersionTime returns the EndpointSetForEndpointlessTargetUpgradeVersionTime field if non-nil, zero value otherwise.
 
 ### GetEndpointSetForEndpointlessTargetUpgradeVersionTimeOk
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionTimeOk() (*string, bool)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionTimeOk() (*string, bool)`
 
 GetEndpointSetForEndpointlessTargetUpgradeVersionTimeOk returns a tuple with the EndpointSetForEndpointlessTargetUpgradeVersionTime field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEndpointSetForEndpointlessTargetUpgradeVersionTime
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessTargetUpgradeVersionTime(v string)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessTargetUpgradeVersionTime(v string)`
 
 SetEndpointSetForEndpointlessTargetUpgradeVersionTime sets EndpointSetForEndpointlessTargetUpgradeVersionTime field to given value.
 
 ### HasEndpointSetForEndpointlessTargetUpgradeVersionTime
 
-`func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessTargetUpgradeVersionTime() bool`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessTargetUpgradeVersionTime() bool`
 
 HasEndpointSetForEndpointlessTargetUpgradeVersionTime returns a boolean if a field has been set.
 

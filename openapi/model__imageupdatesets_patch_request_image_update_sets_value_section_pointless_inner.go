@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner{}
+// checks if the ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner{}
 
-// ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner struct for ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner
-type ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner struct {
+// ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner struct for ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner
+type ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner struct {
 	// The name of the Endpoint Set
 	EndpointSetNumName *string `json:"endpoint_set_num_name,omitempty"`
 	// The target SW version for member devices of the Endpoint Set
@@ -31,12 +31,12 @@ type ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner struct {
 	EndpointSetForEndpointlessTargetUpgradeVersionTime *string `json:"endpoint_set_for_endpointless_target_upgrade_version_time,omitempty"`
 }
 
-// NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner instantiates a new ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner object
+// NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner instantiates a new ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner() *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner {
-	this := ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner{}
+func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner() *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner {
+	this := ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner{}
 	var endpointSetNumName string = "Unassigned Devices"
 	this.EndpointSetNumName = &endpointSetNumName
 	var endpointSetForEndpointlessTargetUpgradeVersion string = "unmanaged"
@@ -50,11 +50,11 @@ func NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner() *Im
 	return &this
 }
 
-// NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults instantiates a new ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner object
+// NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults instantiates a new ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults() *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner {
-	this := ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner{}
+func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInnerWithDefaults() *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner {
+	this := ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner{}
 	var endpointSetNumName string = "Unassigned Devices"
 	this.EndpointSetNumName = &endpointSetNumName
 	var endpointSetForEndpointlessTargetUpgradeVersion string = "unmanaged"
@@ -69,7 +69,7 @@ func NewImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInnerWithDe
 }
 
 // GetEndpointSetNumName returns the EndpointSetNumName field value if set, zero value otherwise.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumName() string {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumName() string {
 	if o == nil || IsNil(o.EndpointSetNumName) {
 		var ret string
 		return ret
@@ -79,7 +79,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 
 // GetEndpointSetNumNameOk returns a tuple with the EndpointSetNumName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumNameOk() (*string, bool) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumNameOk() (*string, bool) {
 	if o == nil || IsNil(o.EndpointSetNumName) {
 		return nil, false
 	}
@@ -87,7 +87,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 }
 
 // HasEndpointSetNumName returns a boolean if a field has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetNumName() bool {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetNumName() bool {
 	if o != nil && !IsNil(o.EndpointSetNumName) {
 		return true
 	}
@@ -96,12 +96,12 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Has
 }
 
 // SetEndpointSetNumName gets a reference to the given string and assigns it to the EndpointSetNumName field.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetNumName(v string) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetNumName(v string) {
 	o.EndpointSetNumName = &v
 }
 
 // GetEndpointSetForEndpointlessTargetUpgradeVersion returns the EndpointSetForEndpointlessTargetUpgradeVersion field value if set, zero value otherwise.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersion() string {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersion() string {
 	if o == nil || IsNil(o.EndpointSetForEndpointlessTargetUpgradeVersion) {
 		var ret string
 		return ret
@@ -111,7 +111,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 
 // GetEndpointSetForEndpointlessTargetUpgradeVersionOk returns a tuple with the EndpointSetForEndpointlessTargetUpgradeVersion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionOk() (*string, bool) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionOk() (*string, bool) {
 	if o == nil || IsNil(o.EndpointSetForEndpointlessTargetUpgradeVersion) {
 		return nil, false
 	}
@@ -119,7 +119,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 }
 
 // HasEndpointSetForEndpointlessTargetUpgradeVersion returns a boolean if a field has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessTargetUpgradeVersion() bool {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessTargetUpgradeVersion() bool {
 	if o != nil && !IsNil(o.EndpointSetForEndpointlessTargetUpgradeVersion) {
 		return true
 	}
@@ -128,12 +128,12 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Has
 }
 
 // SetEndpointSetForEndpointlessTargetUpgradeVersion gets a reference to the given string and assigns it to the EndpointSetForEndpointlessTargetUpgradeVersion field.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessTargetUpgradeVersion(v string) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessTargetUpgradeVersion(v string) {
 	o.EndpointSetForEndpointlessTargetUpgradeVersion = &v
 }
 
 // GetEndpointSetForEndpointlessUniqueIdentifier returns the EndpointSetForEndpointlessUniqueIdentifier field value if set, zero value otherwise.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessUniqueIdentifier() string {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessUniqueIdentifier() string {
 	if o == nil || IsNil(o.EndpointSetForEndpointlessUniqueIdentifier) {
 		var ret string
 		return ret
@@ -143,7 +143,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 
 // GetEndpointSetForEndpointlessUniqueIdentifierOk returns a tuple with the EndpointSetForEndpointlessUniqueIdentifier field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessUniqueIdentifierOk() (*string, bool) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessUniqueIdentifierOk() (*string, bool) {
 	if o == nil || IsNil(o.EndpointSetForEndpointlessUniqueIdentifier) {
 		return nil, false
 	}
@@ -151,7 +151,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 }
 
 // HasEndpointSetForEndpointlessUniqueIdentifier returns a boolean if a field has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessUniqueIdentifier() bool {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessUniqueIdentifier() bool {
 	if o != nil && !IsNil(o.EndpointSetForEndpointlessUniqueIdentifier) {
 		return true
 	}
@@ -160,12 +160,12 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Has
 }
 
 // SetEndpointSetForEndpointlessUniqueIdentifier gets a reference to the given string and assigns it to the EndpointSetForEndpointlessUniqueIdentifier field.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessUniqueIdentifier(v string) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessUniqueIdentifier(v string) {
 	o.EndpointSetForEndpointlessUniqueIdentifier = &v
 }
 
 // GetEndpointSetNumOnSummary returns the EndpointSetNumOnSummary field value if set, zero value otherwise.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumOnSummary() bool {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumOnSummary() bool {
 	if o == nil || IsNil(o.EndpointSetNumOnSummary) {
 		var ret bool
 		return ret
@@ -175,7 +175,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 
 // GetEndpointSetNumOnSummaryOk returns a tuple with the EndpointSetNumOnSummary field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumOnSummaryOk() (*bool, bool) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetNumOnSummaryOk() (*bool, bool) {
 	if o == nil || IsNil(o.EndpointSetNumOnSummary) {
 		return nil, false
 	}
@@ -183,7 +183,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 }
 
 // HasEndpointSetNumOnSummary returns a boolean if a field has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetNumOnSummary() bool {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetNumOnSummary() bool {
 	if o != nil && !IsNil(o.EndpointSetNumOnSummary) {
 		return true
 	}
@@ -192,12 +192,12 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Has
 }
 
 // SetEndpointSetNumOnSummary gets a reference to the given bool and assigns it to the EndpointSetNumOnSummary field.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetNumOnSummary(v bool) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetNumOnSummary(v bool) {
 	o.EndpointSetNumOnSummary = &v
 }
 
 // GetEndpointSetForEndpointlessTargetUpgradeVersionTime returns the EndpointSetForEndpointlessTargetUpgradeVersionTime field value if set, zero value otherwise.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionTime() string {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionTime() string {
 	if o == nil || IsNil(o.EndpointSetForEndpointlessTargetUpgradeVersionTime) {
 		var ret string
 		return ret
@@ -207,7 +207,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 
 // GetEndpointSetForEndpointlessTargetUpgradeVersionTimeOk returns a tuple with the EndpointSetForEndpointlessTargetUpgradeVersionTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionTimeOk() (*string, bool) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) GetEndpointSetForEndpointlessTargetUpgradeVersionTimeOk() (*string, bool) {
 	if o == nil || IsNil(o.EndpointSetForEndpointlessTargetUpgradeVersionTime) {
 		return nil, false
 	}
@@ -215,7 +215,7 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get
 }
 
 // HasEndpointSetForEndpointlessTargetUpgradeVersionTime returns a boolean if a field has been set.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessTargetUpgradeVersionTime() bool {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) HasEndpointSetForEndpointlessTargetUpgradeVersionTime() bool {
 	if o != nil && !IsNil(o.EndpointSetForEndpointlessTargetUpgradeVersionTime) {
 		return true
 	}
@@ -224,11 +224,11 @@ func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Has
 }
 
 // SetEndpointSetForEndpointlessTargetUpgradeVersionTime gets a reference to the given string and assigns it to the EndpointSetForEndpointlessTargetUpgradeVersionTime field.
-func (o *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessTargetUpgradeVersionTime(v string) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) SetEndpointSetForEndpointlessTargetUpgradeVersionTime(v string) {
 	o.EndpointSetForEndpointlessTargetUpgradeVersionTime = &v
 }
 
-func (o ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) MarshalJSON() ([]byte, error) {
+func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -236,7 +236,7 @@ func (o ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Mars
 	return json.Marshal(toSerialize)
 }
 
-func (o ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) ToMap() (map[string]interface{}, error) {
+func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.EndpointSetNumName) {
 		toSerialize["endpoint_set_num_name"] = o.EndpointSetNumName
@@ -256,38 +256,38 @@ func (o ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) ToMa
 	return toSerialize, nil
 }
 
-type NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner struct {
-	value *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner
+type NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner struct {
+	value *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner
 	isSet bool
 }
 
-func (v NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Get() *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner {
+func (v NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) Get() *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner {
 	return v.value
 }
 
-func (v *NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Set(val *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) {
+func (v *NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) Set(val *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) IsSet() bool {
+func (v NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) Unset() {
+func (v *NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner(val *ImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) *NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner {
-	return &NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner{value: val, isSet: true}
+func NewNullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner(val *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) *NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner {
+	return &NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner{value: val, isSet: true}
 }
 
-func (v NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) MarshalJSON() ([]byte, error) {
+func (v NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableImageupdatesetsPutRequestImageUpdateSetsValueSectionPointlessInner) UnmarshalJSON(src []byte) error {
+func (v *NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

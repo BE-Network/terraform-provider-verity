@@ -31,6 +31,8 @@ type SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner struct {
 	TrafficMirrorNumInboundTraffic *bool `json:"traffic_mirror_num_inbound_traffic,omitempty"`
 	// Boolean value indicating if the mirror is for outbound traffic
 	TrafficMirrorNumOutboundTraffic *bool `json:"traffic_mirror_num_outbound_traffic,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int32 `json:"index,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner instantiates a new SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner object
@@ -266,6 +268,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMi
 	o.TrafficMirrorNumOutboundTraffic = &v
 }
 
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetIndex() int32 {
+	if o == nil || IsNil(o.Index) {
+		var ret int32
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetIndexOk() (*int32, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int32 and assigns it to the Index field.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetIndex(v int32) {
+	o.Index = &v
+}
+
 func (o SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -293,6 +327,9 @@ func (o SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) ToMap() (map[
 	}
 	if !IsNil(o.TrafficMirrorNumOutboundTraffic) {
 		toSerialize["traffic_mirror_num_outbound_traffic"] = o.TrafficMirrorNumOutboundTraffic
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
