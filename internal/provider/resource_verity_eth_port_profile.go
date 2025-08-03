@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -106,8 +105,6 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"tenant_slice_managed": schema.BoolAttribute{
 				Description: "Profiles that Tenant Slice creates and manages",
@@ -220,11 +217,16 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	name := plan.Name.ValueString()
+	ethPortName := &openapi.EthportprofilesPutRequestEthPortProfileValue{
+		Name: openapi.PtrString(name),
+	}
 
-	ethPortName := openapi.EthportprofilesPutRequestEthPortProfileValue{}
-	ethPortName.Name = openapi.PtrString(name)
-	ethPortName.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	ethPortName.TenantSliceManaged = openapi.PtrBool(plan.TenantSliceManaged.ValueBool())
+	if !plan.Enable.IsNull() {
+		ethPortName.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+	}
+	if !plan.TenantSliceManaged.IsNull() {
+		ethPortName.TenantSliceManaged = openapi.PtrBool(plan.TenantSliceManaged.ValueBool())
+	}
 
 	if !plan.Tls.IsNull() {
 		ethPortName.Tls = openapi.PtrBool(plan.Tls.ValueBool())
@@ -320,7 +322,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		ethPortName.Services = services
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "eth_port_profile", name, ethPortName)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "eth_port_profile", name, *ethPortName)
 
 	r.notifyOperationAdded()
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile creation operation %s to complete", operationID))

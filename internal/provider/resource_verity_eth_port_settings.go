@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -137,8 +136,6 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"auto_negotiation": schema.BoolAttribute{
 				Description: "Indicates if port speed and duplex mode should be auto negotiated",
@@ -385,9 +382,10 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	}
 
 	name := plan.Name.ValueString()
+	ethPortSettingsReq := &openapi.EthportsettingsPutRequestEthPortSettingsValue{
+		Name: openapi.PtrString(name),
+	}
 
-	ethPortSettingsReq := openapi.EthportsettingsPutRequestEthPortSettingsValue{}
-	ethPortSettingsReq.Name = openapi.PtrString(name)
 	if !plan.Enable.IsNull() {
 		ethPortSettingsReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
 	}
@@ -573,7 +571,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	provCtx := r.provCtx
 	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPut(ctx, "eth_port_settings", name, ethPortSettingsReq)
+	operationID := bulkOpsMgr.AddPut(ctx, "eth_port_settings", name, *ethPortSettingsReq)
 
 	provCtx.NotifyOperationAdded()
 

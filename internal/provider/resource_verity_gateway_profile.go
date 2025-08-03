@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -95,14 +94,10 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"tenant_slice_managed": schema.BoolAttribute{
 				Description: "Profiles that Tenant Slice creates and manages",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -166,67 +161,65 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	name := data.Name.ValueString()
-	profileObj := openapi.NewGatewayprofilesPutRequestGatewayProfileValue()
-	profileObj.Name = openapi.PtrString(name)
+	profileObj := &openapi.GatewayprofilesPutRequestGatewayProfileValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !data.Enable.IsNull() {
 		enable := data.Enable.ValueBool()
-		profileObj.SetEnable(enable)
+		profileObj.Enable = openapi.PtrBool(enable)
 	}
 
 	if !data.TenantSliceManaged.IsNull() {
 		tenantSliceManaged := data.TenantSliceManaged.ValueBool()
-		profileObj.SetTenantSliceManaged(tenantSliceManaged)
+		profileObj.TenantSliceManaged = openapi.PtrBool(tenantSliceManaged)
 	}
 
 	if len(data.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-
-		if !data.ObjectProperties[0].Group.IsNull() {
-			groupVal := data.ObjectProperties[0].Group.ValueString()
-			objProps.Group = openapi.PtrString(groupVal)
-		} else {
+		objProps := &openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{
+			Group: openapi.PtrString(data.ObjectProperties[0].Group.ValueString()),
+		}
+		if data.ObjectProperties[0].Group.IsNull() {
 			objProps.Group = nil
 		}
-
-		profileObj.ObjectProperties = &objProps
+		profileObj.ObjectProperties = objProps
 	}
 
 	if len(data.ExternalGateways) > 0 {
 		var externalGatewaysList []openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner
 
 		for _, eg := range data.ExternalGateways {
-			gatewayObj := openapi.NewGatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner()
+			gatewayObj := &openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{}
 
 			if !eg.Enable.IsNull() {
-				gatewayObj.SetEnable(eg.Enable.ValueBool())
+				gatewayObj.Enable = openapi.PtrBool(eg.Enable.ValueBool())
 			}
 
 			if !eg.Gateway.IsNull() {
-				gatewayObj.SetGateway(eg.Gateway.ValueString())
+				gatewayObj.Gateway = openapi.PtrString(eg.Gateway.ValueString())
 			}
 
 			if !eg.GatewayRefType.IsNull() {
-				gatewayObj.SetGatewayRefType(eg.GatewayRefType.ValueString())
+				gatewayObj.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
 			}
 
 			if !eg.SourceIpMask.IsNull() {
-				gatewayObj.SetSourceIpMask(eg.SourceIpMask.ValueString())
+				gatewayObj.SourceIpMask = openapi.PtrString(eg.SourceIpMask.ValueString())
 			}
 
 			if !eg.PeerGw.IsNull() {
-				gatewayObj.SetPeerGw(eg.PeerGw.ValueBool())
+				gatewayObj.PeerGw = openapi.PtrBool(eg.PeerGw.ValueBool())
 			}
 
 			if !eg.Index.IsNull() {
 				index := int32(eg.Index.ValueInt64())
-				gatewayObj.SetIndex(index)
+				gatewayObj.Index = openapi.PtrInt32(index)
 			}
 
 			externalGatewaysList = append(externalGatewaysList, *gatewayObj)
 		}
 
-		profileObj.SetExternalGateways(externalGatewaysList)
+		profileObj.ExternalGateways = externalGatewaysList
 	}
 
 	operationID := r.bulkOpsMgr.AddPut(ctx, "gateway_profile", name, *profileObj)

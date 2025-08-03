@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -111,8 +110,6 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"vlan": schema.Int64Attribute{
 				Description: "A Value between 1 and 4096",
@@ -253,9 +250,10 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	}
 
 	name := plan.Name.ValueString()
+	serviceReq := &openapi.ServicesPutRequestServiceValue{
+		Name: openapi.PtrString(name),
+	}
 
-	serviceReq := openapi.NewServicesPutRequestServiceValue()
-	serviceReq.Name = openapi.PtrString(name)
 	if !plan.Enable.IsNull() {
 		serviceReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
 	}

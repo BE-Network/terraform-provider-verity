@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -106,8 +105,6 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"layer_3_vni": schema.Int64Attribute{
 				Description: "VNI value used to transport traffic between services of a Tenant",
@@ -229,20 +226,40 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	name := plan.Name.ValueString()
+	tenantReq := &openapi.TenantsPutRequestTenantValue{
+		Name:         openapi.PtrString(name),
+		RouteTenants: []openapi.TenantsPutRequestTenantValueRouteTenantsInner{},
+	}
 
-	tenantReq := openapi.TenantsPutRequestTenantValue{
-		Name:                       openapi.PtrString(name),
-		Enable:                     openapi.PtrBool(plan.Enable.ValueBool()),
-		DhcpRelaySourceIpv4sSubnet: openapi.PtrString(plan.DhcpRelaySourceIpv4sSubnet.ValueString()),
-		DhcpRelaySourceIpv6sSubnet: openapi.PtrString(plan.DhcpRelaySourceIpv6sSubnet.ValueString()),
-		RouteDistinguisher:         openapi.PtrString(plan.RouteDistinguisher.ValueString()),
-		RouteTargetImport:          openapi.PtrString(plan.RouteTargetImport.ValueString()),
-		RouteTargetExport:          openapi.PtrString(plan.RouteTargetExport.ValueString()),
-		ImportRouteMap:             openapi.PtrString(plan.ImportRouteMap.ValueString()),
-		ImportRouteMapRefType:      openapi.PtrString(plan.ImportRouteMapRefType.ValueString()),
-		ExportRouteMap:             openapi.PtrString(plan.ExportRouteMap.ValueString()),
-		ExportRouteMapRefType:      openapi.PtrString(plan.ExportRouteMapRefType.ValueString()),
-		RouteTenants:               []openapi.TenantsPutRequestTenantValueRouteTenantsInner{},
+	if !plan.Enable.IsNull() {
+		tenantReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+	}
+	if !plan.DhcpRelaySourceIpv4sSubnet.IsNull() {
+		tenantReq.DhcpRelaySourceIpv4sSubnet = openapi.PtrString(plan.DhcpRelaySourceIpv4sSubnet.ValueString())
+	}
+	if !plan.DhcpRelaySourceIpv6sSubnet.IsNull() {
+		tenantReq.DhcpRelaySourceIpv6sSubnet = openapi.PtrString(plan.DhcpRelaySourceIpv6sSubnet.ValueString())
+	}
+	if !plan.RouteDistinguisher.IsNull() {
+		tenantReq.RouteDistinguisher = openapi.PtrString(plan.RouteDistinguisher.ValueString())
+	}
+	if !plan.RouteTargetImport.IsNull() {
+		tenantReq.RouteTargetImport = openapi.PtrString(plan.RouteTargetImport.ValueString())
+	}
+	if !plan.RouteTargetExport.IsNull() {
+		tenantReq.RouteTargetExport = openapi.PtrString(plan.RouteTargetExport.ValueString())
+	}
+	if !plan.ImportRouteMap.IsNull() {
+		tenantReq.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
+	}
+	if !plan.ImportRouteMapRefType.IsNull() {
+		tenantReq.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
+	}
+	if !plan.ExportRouteMap.IsNull() {
+		tenantReq.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
+	}
+	if !plan.ExportRouteMapRefType.IsNull() {
+		tenantReq.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
 	}
 
 	if len(plan.ObjectProperties) > 0 {
@@ -322,7 +339,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	provCtx := r.provCtx
 	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPut(ctx, "tenant", name, tenantReq)
+	operationID := bulkOpsMgr.AddPut(ctx, "tenant", name, *tenantReq)
 
 	provCtx.NotifyOperationAdded()
 
@@ -536,7 +553,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	tenantReq := openapi.TenantsPutRequestTenantValue{}
+	tenantReq := &openapi.TenantsPutRequestTenantValue{}
 	hasChanges := false
 
 	if len(plan.ObjectProperties) > 0 {

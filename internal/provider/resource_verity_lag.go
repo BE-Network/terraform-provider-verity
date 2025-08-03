@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -54,14 +53,10 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"is_peer_link": schema.BoolAttribute{
 				Description: "Is this a peer link LAG.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"color": schema.StringAttribute{
 				Description: "UI display color.",
@@ -70,8 +65,6 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"lacp": schema.BoolAttribute{
 				Description: "Enable LACP.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"eth_port_profile": schema.StringAttribute{
 				Description: "Ethernet port profile name.",
@@ -84,25 +77,18 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"fallback": schema.BoolAttribute{
 				Description: "Enable fallback mode.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"fast_rate": schema.BoolAttribute{
 				Description: "Enable fast rate.",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"eth_port_profile_ref_type_": schema.StringAttribute{
 				Description: "Reference type for the Ethernet port profile.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"uplink": schema.BoolAttribute{
 				Description: "Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN",
 				Optional:    true,
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -174,8 +160,9 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	name := plan.Name.ValueString()
-	lagReq := openapi.NewLagsPutRequestLagValue()
-	lagReq.Name = openapi.PtrString(name)
+	lagReq := &openapi.LagsPutRequestLagValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		lagReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
