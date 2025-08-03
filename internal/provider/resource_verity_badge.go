@@ -123,8 +123,9 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	name := plan.Name.ValueString()
-	badgeProps := openapi.BadgesPutRequestBadgeValue{}
-	badgeProps.Name = openapi.PtrString(name)
+	badgeProps := &openapi.BadgesPutRequestBadgeValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Color.IsNull() {
 		badgeProps.Color = openapi.PtrString(plan.Color.ValueString())
@@ -145,7 +146,7 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		badgeProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "badge", name, badgeProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "badge", name, *badgeProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for badge creation operation %s to complete", operationID))

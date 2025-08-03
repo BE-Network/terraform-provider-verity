@@ -325,8 +325,9 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	name := plan.Name.ValueString()
-	bundleProps := openapi.BundlesPutRequestEndpointBundleValue{}
-	bundleProps.Name = openapi.PtrString(name)
+	bundleProps := &openapi.BundlesPutRequestEndpointBundleValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		bundleProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -470,7 +471,7 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		bundleProps.VoicePortProfilePaths = voicePortProfilePaths
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "bundle", name, bundleProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "bundle", name, *bundleProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for bundle creation operation %s to complete", operationID))

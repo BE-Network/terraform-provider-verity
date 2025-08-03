@@ -190,8 +190,9 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 	}
 
 	name := plan.Name.ValueString()
-	aepProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue{}
-	aepProps.Name = openapi.PtrString(name)
+	aepProps := &openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		aepProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -251,7 +252,7 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		aepProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "authenticated_eth_port", name, aepProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "authenticated_eth_port", name, *aepProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for authenticated eth-port creation operation %s to complete", operationID))

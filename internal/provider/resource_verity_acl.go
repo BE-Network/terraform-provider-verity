@@ -180,29 +180,30 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	name := plan.Name.ValueString()
-	aclProps := openapi.NewAclsPutRequestIpFilterValue()
+	aclProps := &openapi.AclsPutRequestIpFilterValue{
+		Name: openapi.PtrString(name),
+	}
 
-	aclProps.SetName(name)
 	if !plan.Enable.IsNull() {
-		aclProps.SetEnable(plan.Enable.ValueBool())
+		aclProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
 	}
 	if !plan.Protocol.IsNull() {
-		aclProps.SetProtocol(plan.Protocol.ValueString())
+		aclProps.Protocol = openapi.PtrString(plan.Protocol.ValueString())
 	}
 	if !plan.Bidirectional.IsNull() {
-		aclProps.SetBidirectional(plan.Bidirectional.ValueBool())
+		aclProps.Bidirectional = openapi.PtrBool(plan.Bidirectional.ValueBool())
 	}
 	if !plan.SourceIP.IsNull() {
-		aclProps.SetSourceIp(plan.SourceIP.ValueString())
+		aclProps.SourceIp = openapi.PtrString(plan.SourceIP.ValueString())
 	}
 	if !plan.SourcePortOperator.IsNull() {
-		aclProps.SetSourcePortOperator(plan.SourcePortOperator.ValueString())
+		aclProps.SourcePortOperator = openapi.PtrString(plan.SourcePortOperator.ValueString())
 	}
 	if !plan.DestinationIP.IsNull() {
-		aclProps.SetDestinationIp(plan.DestinationIP.ValueString())
+		aclProps.DestinationIp = openapi.PtrString(plan.DestinationIP.ValueString())
 	}
 	if !plan.DestinationPortOperator.IsNull() {
-		aclProps.SetDestinationPortOperator(plan.DestinationPortOperator.ValueString())
+		aclProps.DestinationPortOperator = openapi.PtrString(plan.DestinationPortOperator.ValueString())
 	}
 
 	if !plan.SourcePort1.IsNull() {
@@ -234,9 +235,10 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		objProps := openapi.NewAclsPutRequestIpFilterValueObjectProperties()
-		objProps.SetNotes(plan.ObjectProperties[0].Notes.ValueString())
-		aclProps.SetObjectProperties(*objProps)
+		objProps := &openapi.AclsPutRequestIpFilterValueObjectProperties{
+			Notes: openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString()),
+		}
+		aclProps.ObjectProperties = objProps
 	}
 
 	bulkOpsMgr := r.provCtx.bulkOpsMgr

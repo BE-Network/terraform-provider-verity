@@ -205,8 +205,9 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 	}
 
 	name := plan.Name.ValueString()
-	sppProps := openapi.ServiceportprofilesPutRequestServicePortProfileValue{}
-	sppProps.Name = openapi.PtrString(name)
+	sppProps := &openapi.ServiceportprofilesPutRequestServicePortProfileValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		sppProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -287,7 +288,7 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		sppProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "service_port_profile", name, sppProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "service_port_profile", name, *sppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for service port profile creation operation %s to complete", operationID))

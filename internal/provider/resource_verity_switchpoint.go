@@ -380,8 +380,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	name := plan.Name.ValueString()
-	spProps := openapi.SwitchpointsPutRequestSwitchpointValue{}
-	spProps.Name = openapi.PtrString(name)
+	spProps := &openapi.SwitchpointsPutRequestSwitchpointValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.DeviceSerialNumber.IsNull() {
 		spProps.DeviceSerialNumber = openapi.PtrString(plan.DeviceSerialNumber.ValueString())
@@ -570,7 +571,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		spProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "switchpoint", name, spProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "switchpoint", name, *spProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for switchpoint creation operation %s to complete", operationID))

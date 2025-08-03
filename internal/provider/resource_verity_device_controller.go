@@ -305,8 +305,9 @@ func (r *verityDeviceControllerResource) Create(ctx context.Context, req resourc
 	}
 
 	name := plan.Name.ValueString()
-	deviceControllerProps := openapi.DevicecontrollersPutRequestDeviceControllerValue{}
-	deviceControllerProps.Name = openapi.PtrString(name)
+	deviceControllerProps := &openapi.DevicecontrollersPutRequestDeviceControllerValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		deviceControllerProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -435,7 +436,7 @@ func (r *verityDeviceControllerResource) Create(ctx context.Context, req resourc
 		deviceControllerProps.UsesTaggedPackets = openapi.PtrBool(plan.UsesTaggedPackets.ValueBool())
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "device_controller", name, deviceControllerProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "device_controller", name, *deviceControllerProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for device controller creation operation %s to complete", operationID))

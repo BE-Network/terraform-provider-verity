@@ -294,8 +294,9 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 	}
 
 	name := plan.Name.ValueString()
-	vppProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValue{}
-	vppProps.Name = openapi.PtrString(name)
+	vppProps := &openapi.VoiceportprofilesPutRequestVoicePortProfilesValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		vppProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -444,7 +445,7 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		vppProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "voice_port_profile", name, vppProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "voice_port_profile", name, *vppProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for voice port profile creation operation %s to complete", operationID))

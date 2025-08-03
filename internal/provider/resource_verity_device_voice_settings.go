@@ -450,8 +450,9 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 	}
 
 	name := plan.Name.ValueString()
-	dvsProps := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
-	dvsProps.Name = openapi.PtrString(name)
+	dvsProps := &openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		dvsProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -727,7 +728,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		dvsProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "device_voice_settings", name, dvsProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "device_voice_settings", name, *dvsProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for device voice settings creation operation %s to complete", operationID))

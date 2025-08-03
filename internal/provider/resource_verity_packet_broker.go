@@ -205,8 +205,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	name := plan.Name.ValueString()
-	pbProps := openapi.PacketbrokerPutRequestPbEgressProfileValue{}
-	pbProps.Name = openapi.PtrString(name)
+	pbProps := &openapi.PacketbrokerPutRequestPbEgressProfileValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		pbProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -296,7 +297,7 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		pbProps.Ipv6Deny = ipv6Deny
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "packet_broker", name, pbProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "packet_broker", name, *pbProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for packet broker creation operation %s to complete", operationID))

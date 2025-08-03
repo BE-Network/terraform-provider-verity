@@ -175,8 +175,9 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	name := plan.Name.ValueString()
-	pqProps := openapi.PacketqueuesPutRequestPacketQueueValue{}
-	pqProps.Name = openapi.PtrString(name)
+	pqProps := &openapi.PacketqueuesPutRequestPacketQueueValue{
+		Name: openapi.PtrString(name),
+	}
 
 	if !plan.Enable.IsNull() {
 		pqProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
@@ -236,7 +237,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		pqProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "packet_queue", name, pqProps)
+	operationID := r.bulkOpsMgr.AddPut(ctx, "packet_queue", name, *pqProps)
 	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for packet queue creation operation %s to complete", operationID))
