@@ -139,7 +139,7 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
 	Intercom2 *string `json:"intercom_2,omitempty"`
 	// Intercom 3
 	Intercom3 *string `json:"intercom_3,omitempty"`
-	Codecs []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner `json:"Codecs,omitempty"`
+	Codecs []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner `json:"codecs,omitempty"`
 	ObjectProperties *PacketqueuesPutRequestPacketQueueValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -2765,7 +2765,7 @@ func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) ToMap() (map[stri
 		toSerialize["intercom_3"] = o.Intercom3
 	}
 	if !IsNil(o.Codecs) {
-		toSerialize["Codecs"] = o.Codecs
+		toSerialize["codecs"] = o.Codecs
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

@@ -63,7 +63,7 @@ type DevicecontrollersPutRequestDeviceControllerValue struct {
 	ManagedOnNativeVlan *bool `json:"managed_on_native_vlan,omitempty"`
 	// SDLC that Device Controller belongs to
 	Sdlc *string `json:"sdlc,omitempty"`
-	// Endpoint reference
+	// Switchpoint reference
 	Switchpoint *string `json:"switchpoint,omitempty"`
 	// Object type for switchpoint field
 	SwitchpointRefType *string `json:"switchpoint_ref_type_,omitempty"`
@@ -91,7 +91,7 @@ type DevicecontrollersPutRequestDeviceControllerValue struct {
 	PrivatePasswordEncrypted *string `json:"private_password_encrypted,omitempty"`
 	// Device managed as
 	DeviceManagedAs *string `json:"device_managed_as,omitempty"`
-	// Endpoint locating the Switch to be controlled
+	// Switchpoint locating the Switch to be controlled
 	Switch *string `json:"switch,omitempty"`
 	// Object type for switch field
 	SwitchRefType *string `json:"switch_ref_type_,omitempty"`

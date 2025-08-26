@@ -31,6 +31,8 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	ExternalBatteryPowerAvailable *int32 `json:"external_battery_power_available,omitempty"`
 	// External Power Available
 	ExternalPowerAvailable *int32 `json:"external_power_available,omitempty"`
+	// Required for AVB, PTP and Cobranet Support
+	DisableTcpUdpLearnedPacketAcceleration *bool `json:"disable_tcp_udp_learned_packet_acceleration,omitempty"`
 	// Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 <br>if the value is blank, audit will use default switch settings.                                                 <br>if the value is 0, audit will be turned off.                                                 
 	SecurityAuditInterval NullableInt32 `json:"security_audit_interval,omitempty"`
 	// Frequency in minutes to write the Switch configuration to flash.                                                 <br>if the value is blank, commit will use default switch settings.                                                 <br>if the value is 0, commit will be turned off.
@@ -42,8 +44,6 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
 	// Hold Timer
 	HoldTimer NullableInt32 `json:"hold_timer,omitempty"`
-	// Required for AVB, PTP and Cobranet Support
-	DisableTcpUdpLearnedPacketAcceleration *bool `json:"disable_tcp_udp_learned_packet_acceleration,omitempty"`
 	// Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds
 	MacAgingTimerOverride NullableInt32 `json:"mac_aging_timer_override,omitempty"`
 	// STP per switch, priority are in 4096 increments, the lower the number, the higher the priority.
@@ -70,6 +70,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.ExternalBatteryPowerAvailable = &externalBatteryPowerAvailable
 	var externalPowerAvailable int32 = 75
 	this.ExternalPowerAvailable = &externalPowerAvailable
+	var disableTcpUdpLearnedPacketAcceleration bool = false
+	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
 	var securityAuditInterval int32 = 60
 	this.SecurityAuditInterval = *NewNullableInt32(&securityAuditInterval)
 	var commitToFlashInterval int32 = 60
@@ -80,8 +82,6 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.CutThroughSwitching = &cutThroughSwitching
 	var holdTimer int32 = 0
 	this.HoldTimer = *NewNullableInt32(&holdTimer)
-	var disableTcpUdpLearnedPacketAcceleration bool = false
-	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
 	var spanningTreePriority string = "byLevel"
 	this.SpanningTreePriority = &spanningTreePriority
 	var packetQueueId string = "packet_queue|(Packet Queue)|"
@@ -104,6 +104,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.ExternalBatteryPowerAvailable = &externalBatteryPowerAvailable
 	var externalPowerAvailable int32 = 75
 	this.ExternalPowerAvailable = &externalPowerAvailable
+	var disableTcpUdpLearnedPacketAcceleration bool = false
+	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
 	var securityAuditInterval int32 = 60
 	this.SecurityAuditInterval = *NewNullableInt32(&securityAuditInterval)
 	var commitToFlashInterval int32 = 60
@@ -114,8 +116,6 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.CutThroughSwitching = &cutThroughSwitching
 	var holdTimer int32 = 0
 	this.HoldTimer = *NewNullableInt32(&holdTimer)
-	var disableTcpUdpLearnedPacketAcceleration bool = false
-	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
 	var spanningTreePriority string = "byLevel"
 	this.SpanningTreePriority = &spanningTreePriority
 	var packetQueueId string = "packet_queue|(Packet Queue)|"
@@ -313,6 +313,38 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasExternalPowerAvailab
 // SetExternalPowerAvailable gets a reference to the given int32 and assigns it to the ExternalPowerAvailable field.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailable(v int32) {
 	o.ExternalPowerAvailable = &v
+}
+
+// GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAcceleration() bool {
+	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		var ret bool
+		return ret
+	}
+	return *o.DisableTcpUdpLearnedPacketAcceleration
+}
+
+// GetDisableTcpUdpLearnedPacketAccelerationOk returns a tuple with the DisableTcpUdpLearnedPacketAcceleration field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAccelerationOk() (*bool, bool) {
+	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		return nil, false
+	}
+	return o.DisableTcpUdpLearnedPacketAcceleration, true
+}
+
+// HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDisableTcpUdpLearnedPacketAcceleration() bool {
+	if o != nil && !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisableTcpUdpLearnedPacketAcceleration gets a reference to the given bool and assigns it to the DisableTcpUdpLearnedPacketAcceleration field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDisableTcpUdpLearnedPacketAcceleration(v bool) {
+	o.DisableTcpUdpLearnedPacketAcceleration = &v
 }
 
 // GetSecurityAuditInterval returns the SecurityAuditInterval field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -537,38 +569,6 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetHoldTimer() {
 	o.HoldTimer.Unset()
 }
 
-// GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAcceleration() bool {
-	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
-		var ret bool
-		return ret
-	}
-	return *o.DisableTcpUdpLearnedPacketAcceleration
-}
-
-// GetDisableTcpUdpLearnedPacketAccelerationOk returns a tuple with the DisableTcpUdpLearnedPacketAcceleration field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAccelerationOk() (*bool, bool) {
-	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
-		return nil, false
-	}
-	return o.DisableTcpUdpLearnedPacketAcceleration, true
-}
-
-// HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDisableTcpUdpLearnedPacketAcceleration() bool {
-	if o != nil && !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
-		return true
-	}
-
-	return false
-}
-
-// SetDisableTcpUdpLearnedPacketAcceleration gets a reference to the given bool and assigns it to the DisableTcpUdpLearnedPacketAcceleration field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDisableTcpUdpLearnedPacketAcceleration(v bool) {
-	o.DisableTcpUdpLearnedPacketAcceleration = &v
-}
-
 // GetMacAgingTimerOverride returns the MacAgingTimerOverride field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverride() int32 {
 	if o == nil || IsNil(o.MacAgingTimerOverride.Get()) {
@@ -735,6 +735,9 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	if !IsNil(o.ExternalPowerAvailable) {
 		toSerialize["external_power_available"] = o.ExternalPowerAvailable
 	}
+	if !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		toSerialize["disable_tcp_udp_learned_packet_acceleration"] = o.DisableTcpUdpLearnedPacketAcceleration
+	}
 	if o.SecurityAuditInterval.IsSet() {
 		toSerialize["security_audit_interval"] = o.SecurityAuditInterval.Get()
 	}
@@ -752,9 +755,6 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	}
 	if o.HoldTimer.IsSet() {
 		toSerialize["hold_timer"] = o.HoldTimer.Get()
-	}
-	if !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
-		toSerialize["disable_tcp_udp_learned_packet_acceleration"] = o.DisableTcpUdpLearnedPacketAcceleration
 	}
 	if o.MacAgingTimerOverride.IsSet() {
 		toSerialize["mac_aging_timer_override"] = o.MacAgingTimerOverride.Get()

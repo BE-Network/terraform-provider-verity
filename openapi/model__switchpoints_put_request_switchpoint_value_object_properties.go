@@ -32,6 +32,8 @@ type SwitchpointsPutRequestSwitchpointValueObjectProperties struct {
 	// For Switch Endpoints. Denotes the Host Switch
 	IsHost *bool `json:"is_host,omitempty"`
 	Eths []SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner `json:"eths,omitempty"`
+	// Turn on to display the switch as an edge device instead of as a switch
+	DrawAsEdgeDevice *bool `json:"draw_as_edge_device,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValueObjectProperties instantiates a new SwitchpointsPutRequestSwitchpointValueObjectProperties object
@@ -50,6 +52,8 @@ func NewSwitchpointsPutRequestSwitchpointValueObjectProperties() *SwitchpointsPu
 	this.Aggregate = &aggregate
 	var isHost bool = false
 	this.IsHost = &isHost
+	var drawAsEdgeDevice bool = false
+	this.DrawAsEdgeDevice = &drawAsEdgeDevice
 	return &this
 }
 
@@ -68,6 +72,8 @@ func NewSwitchpointsPutRequestSwitchpointValueObjectPropertiesWithDefaults() *Sw
 	this.Aggregate = &aggregate
 	var isHost bool = false
 	this.IsHost = &isHost
+	var drawAsEdgeDevice bool = false
+	this.DrawAsEdgeDevice = &drawAsEdgeDevice
 	return &this
 }
 
@@ -305,6 +311,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetEths(v []Swi
 	o.Eths = v
 }
 
+// GetDrawAsEdgeDevice returns the DrawAsEdgeDevice field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDevice() bool {
+	if o == nil || IsNil(o.DrawAsEdgeDevice) {
+		var ret bool
+		return ret
+	}
+	return *o.DrawAsEdgeDevice
+}
+
+// GetDrawAsEdgeDeviceOk returns a tuple with the DrawAsEdgeDevice field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDeviceOk() (*bool, bool) {
+	if o == nil || IsNil(o.DrawAsEdgeDevice) {
+		return nil, false
+	}
+	return o.DrawAsEdgeDevice, true
+}
+
+// HasDrawAsEdgeDevice returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasDrawAsEdgeDevice() bool {
+	if o != nil && !IsNil(o.DrawAsEdgeDevice) {
+		return true
+	}
+
+	return false
+}
+
+// SetDrawAsEdgeDevice gets a reference to the given bool and assigns it to the DrawAsEdgeDevice field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetDrawAsEdgeDevice(v bool) {
+	o.DrawAsEdgeDevice = &v
+}
+
 func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -335,6 +373,9 @@ func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) ToMap() (map[str
 	}
 	if !IsNil(o.Eths) {
 		toSerialize["eths"] = o.Eths
+	}
+	if !IsNil(o.DrawAsEdgeDevice) {
+		toSerialize["draw_as_edge_device"] = o.DrawAsEdgeDevice
 	}
 	return toSerialize, nil
 }

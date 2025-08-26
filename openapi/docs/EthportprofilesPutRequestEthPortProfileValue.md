@@ -6,7 +6,10 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
-**TenantSliceManaged** | Pointer to **bool** | Profiles that Tenant Slice creates and manages | [optional] [default to false]
+**IngressAcl** | Pointer to **string** | Choose an ingress access control list | [optional] [default to ""]
+**IngressAclRefType** | Pointer to **string** | Object type for ingress_acl field | [optional] 
+**EgressAcl** | Pointer to **string** | Choose an egress access control list | [optional] [default to ""]
+**EgressAclRefType** | Pointer to **string** | Object type for egress_acl field | [optional] 
 **Services** | Pointer to [**[]EthportprofilesPutRequestEthPortProfileValueServicesInner**](EthportprofilesPutRequestEthPortProfileValueServicesInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**EthportprofilesPutRequestEthPortProfileValueObjectProperties**](EthportprofilesPutRequestEthPortProfileValueObjectProperties.md) |  | [optional] 
 **Tls** | Pointer to **bool** | Transparent LAN Service Trunk | [optional] [default to false]
@@ -83,30 +86,105 @@ SetEnable sets Enable field to given value.
 
 HasEnable returns a boolean if a field has been set.
 
-### GetTenantSliceManaged
+### GetIngressAcl
 
-`func (o *EthportprofilesPutRequestEthPortProfileValue) GetTenantSliceManaged() bool`
+`func (o *EthportprofilesPutRequestEthPortProfileValue) GetIngressAcl() string`
 
-GetTenantSliceManaged returns the TenantSliceManaged field if non-nil, zero value otherwise.
+GetIngressAcl returns the IngressAcl field if non-nil, zero value otherwise.
 
-### GetTenantSliceManagedOk
+### GetIngressAclOk
 
-`func (o *EthportprofilesPutRequestEthPortProfileValue) GetTenantSliceManagedOk() (*bool, bool)`
+`func (o *EthportprofilesPutRequestEthPortProfileValue) GetIngressAclOk() (*string, bool)`
 
-GetTenantSliceManagedOk returns a tuple with the TenantSliceManaged field if it's non-nil, zero value otherwise
+GetIngressAclOk returns a tuple with the IngressAcl field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTenantSliceManaged
+### SetIngressAcl
 
-`func (o *EthportprofilesPutRequestEthPortProfileValue) SetTenantSliceManaged(v bool)`
+`func (o *EthportprofilesPutRequestEthPortProfileValue) SetIngressAcl(v string)`
 
-SetTenantSliceManaged sets TenantSliceManaged field to given value.
+SetIngressAcl sets IngressAcl field to given value.
 
-### HasTenantSliceManaged
+### HasIngressAcl
 
-`func (o *EthportprofilesPutRequestEthPortProfileValue) HasTenantSliceManaged() bool`
+`func (o *EthportprofilesPutRequestEthPortProfileValue) HasIngressAcl() bool`
 
-HasTenantSliceManaged returns a boolean if a field has been set.
+HasIngressAcl returns a boolean if a field has been set.
+
+### GetIngressAclRefType
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) GetIngressAclRefType() string`
+
+GetIngressAclRefType returns the IngressAclRefType field if non-nil, zero value otherwise.
+
+### GetIngressAclRefTypeOk
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) GetIngressAclRefTypeOk() (*string, bool)`
+
+GetIngressAclRefTypeOk returns a tuple with the IngressAclRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIngressAclRefType
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) SetIngressAclRefType(v string)`
+
+SetIngressAclRefType sets IngressAclRefType field to given value.
+
+### HasIngressAclRefType
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) HasIngressAclRefType() bool`
+
+HasIngressAclRefType returns a boolean if a field has been set.
+
+### GetEgressAcl
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAcl() string`
+
+GetEgressAcl returns the EgressAcl field if non-nil, zero value otherwise.
+
+### GetEgressAclOk
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclOk() (*string, bool)`
+
+GetEgressAclOk returns a tuple with the EgressAcl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEgressAcl
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) SetEgressAcl(v string)`
+
+SetEgressAcl sets EgressAcl field to given value.
+
+### HasEgressAcl
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) HasEgressAcl() bool`
+
+HasEgressAcl returns a boolean if a field has been set.
+
+### GetEgressAclRefType
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclRefType() string`
+
+GetEgressAclRefType returns the EgressAclRefType field if non-nil, zero value otherwise.
+
+### GetEgressAclRefTypeOk
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclRefTypeOk() (*string, bool)`
+
+GetEgressAclRefTypeOk returns a tuple with the EgressAclRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEgressAclRefType
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) SetEgressAclRefType(v string)`
+
+SetEgressAclRefType sets EgressAclRefType field to given value.
+
+### HasEgressAclRefType
+
+`func (o *EthportprofilesPutRequestEthPortProfileValue) HasEgressAclRefType() bool`
+
+HasEgressAclRefType returns a boolean if a field has been set.
 
 ### GetServices
 

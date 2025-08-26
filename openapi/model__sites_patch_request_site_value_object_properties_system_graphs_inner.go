@@ -21,6 +21,8 @@ var _ MappedNullable = &SitesPatchRequestSiteValueObjectPropertiesSystemGraphsIn
 type SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner struct {
 	// The graph data detailing this graph choice
 	GraphNumData *string `json:"graph_num_data,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int32 `json:"index,omitempty"`
 }
 
 // NewSitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner instantiates a new SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner object
@@ -76,6 +78,38 @@ func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) SetGraphNu
 	o.GraphNumData = &v
 }
 
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndex() int32 {
+	if o == nil || IsNil(o.Index) {
+		var ret int32
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndexOk() (*int32, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int32 and assigns it to the Index field.
+func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) SetIndex(v int32) {
+	o.Index = &v
+}
+
 func (o SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -88,6 +122,9 @@ func (o SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) ToMap() (ma
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.GraphNumData) {
 		toSerialize["graph_num_data"] = o.GraphNumData
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }

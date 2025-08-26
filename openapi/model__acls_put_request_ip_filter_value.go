@@ -29,7 +29,7 @@ type AclsPutRequestIpFilterValue struct {
 	Bidirectional *bool `json:"bidirectional,omitempty"`
 	// This field matches the source IP address of an IPv4 packet
 	SourceIp *string `json:"source_ip,omitempty"`
-	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range.
+	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater, less or range.
 	SourcePortOperator *string `json:"source_port_operator,omitempty"`
 	// This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.
 	SourcePort1 NullableInt32 `json:"source_port_1,omitempty"`
@@ -37,7 +37,7 @@ type AclsPutRequestIpFilterValue struct {
 	SourcePort2 NullableInt32 `json:"source_port_2,omitempty"`
 	// This field matches the destination IP address of an IPv4 packet.
 	DestinationIp *string `json:"destination_ip,omitempty"`
-	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range.
+	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater, less or range.
 	DestinationPortOperator *string `json:"destination_port_operator,omitempty"`
 	// This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.
 	DestinationPort1 NullableInt32 `json:"destination_port_1,omitempty"`

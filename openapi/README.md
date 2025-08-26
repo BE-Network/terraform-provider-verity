@@ -166,6 +166,14 @@ Class | Method | HTTP request | Description
 *PacketQueuesAPI* | [**PacketqueuesGet**](docs/PacketQueuesAPI.md#packetqueuesget) | **Get** /packetqueues | Get all Packet Queues
 *PacketQueuesAPI* | [**PacketqueuesPatch**](docs/PacketQueuesAPI.md#packetqueuespatch) | **Patch** /packetqueues | Update Packet Queue
 *PacketQueuesAPI* | [**PacketqueuesPut**](docs/PacketQueuesAPI.md#packetqueuesput) | **Put** /packetqueues | Create Packet Queue
+*PodsAPI* | [**PodsDelete**](docs/PodsAPI.md#podsdelete) | **Delete** /pods | Delete Pod
+*PodsAPI* | [**PodsGet**](docs/PodsAPI.md#podsget) | **Get** /pods | Get all Pods
+*PodsAPI* | [**PodsPatch**](docs/PodsAPI.md#podspatch) | **Patch** /pods | Update Pod
+*PodsAPI* | [**PodsPut**](docs/PodsAPI.md#podsput) | **Put** /pods | Create Pod
+*PortACLsAPI* | [**PortaclsDelete**](docs/PortACLsAPI.md#portaclsdelete) | **Delete** /portacls | Delete Pod
+*PortACLsAPI* | [**PortaclsGet**](docs/PortACLsAPI.md#portaclsget) | **Get** /portacls | Get all Port ACLs
+*PortACLsAPI* | [**PortaclsPatch**](docs/PortACLsAPI.md#portaclspatch) | **Patch** /portacls | Update Port ACL
+*PortACLsAPI* | [**PortaclsPut**](docs/PortACLsAPI.md#portaclsput) | **Put** /portacls | Create Port ACL
 *RouteMapClausesAPI* | [**RoutemapclausesDelete**](docs/RouteMapClausesAPI.md#routemapclausesdelete) | **Delete** /routemapclauses | Delete Route Map Clause
 *RouteMapClausesAPI* | [**RoutemapclausesGet**](docs/RouteMapClausesAPI.md#routemapclausesget) | **Get** /routemapclauses | Get all Route Map Clauses
 *RouteMapClausesAPI* | [**RoutemapclausesPatch**](docs/RouteMapClausesAPI.md#routemapclausespatch) | **Patch** /routemapclauses | Update Route Map Clause
@@ -224,7 +232,6 @@ Class | Method | HTTP request | Description
  - [BundlesPutRequestEndpointBundleValue](docs/BundlesPutRequestEndpointBundleValue.md)
  - [BundlesPutRequestEndpointBundleValueEthPortPathsInner](docs/BundlesPutRequestEndpointBundleValueEthPortPathsInner.md)
  - [BundlesPutRequestEndpointBundleValueObjectProperties](docs/BundlesPutRequestEndpointBundleValueObjectProperties.md)
- - [BundlesPutRequestEndpointBundleValueRgServicesInner](docs/BundlesPutRequestEndpointBundleValueRgServicesInner.md)
  - [BundlesPutRequestEndpointBundleValueUserServicesInner](docs/BundlesPutRequestEndpointBundleValueUserServicesInner.md)
  - [BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner](docs/BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner.md)
  - [CommunitylistsPutRequest](docs/CommunitylistsPutRequest.md)
@@ -245,13 +252,13 @@ Class | Method | HTTP request | Description
  - [EthportsettingsPutRequest](docs/EthportsettingsPutRequest.md)
  - [EthportsettingsPutRequestEthPortSettingsValue](docs/EthportsettingsPutRequestEthPortSettingsValue.md)
  - [EthportsettingsPutRequestEthPortSettingsValueLldpMedInner](docs/EthportsettingsPutRequestEthPortSettingsValueLldpMedInner.md)
- - [EthportsettingsPutRequestEthPortSettingsValueObjectProperties](docs/EthportsettingsPutRequestEthPortSettingsValueObjectProperties.md)
  - [ExtendedcommunitylistsPutRequest](docs/ExtendedcommunitylistsPutRequest.md)
  - [ExtendedcommunitylistsPutRequestExtendedCommunityListValue](docs/ExtendedcommunitylistsPutRequestExtendedCommunityListValue.md)
  - [ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner](docs/ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner.md)
  - [GatewayprofilesPutRequest](docs/GatewayprofilesPutRequest.md)
  - [GatewayprofilesPutRequestGatewayProfileValue](docs/GatewayprofilesPutRequestGatewayProfileValue.md)
  - [GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner](docs/GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md)
+ - [GatewayprofilesPutRequestGatewayProfileValueObjectProperties](docs/GatewayprofilesPutRequestGatewayProfileValueObjectProperties.md)
  - [GatewaysPutRequest](docs/GatewaysPutRequest.md)
  - [GatewaysPutRequestGatewayValue](docs/GatewaysPutRequestGatewayValue.md)
  - [GatewaysPutRequestGatewayValueStaticRoutesInner](docs/GatewaysPutRequestGatewayValueStaticRoutesInner.md)
@@ -282,6 +289,12 @@ Class | Method | HTTP request | Description
  - [PacketqueuesPutRequestPacketQueueValueObjectProperties](docs/PacketqueuesPutRequestPacketQueueValueObjectProperties.md)
  - [PacketqueuesPutRequestPacketQueueValuePbitInner](docs/PacketqueuesPutRequestPacketQueueValuePbitInner.md)
  - [PacketqueuesPutRequestPacketQueueValueQueueInner](docs/PacketqueuesPutRequestPacketQueueValueQueueInner.md)
+ - [PodsPutRequest](docs/PodsPutRequest.md)
+ - [PodsPutRequestPodValue](docs/PodsPutRequestPodValue.md)
+ - [PortaclsPutRequest](docs/PortaclsPutRequest.md)
+ - [PortaclsPutRequestPortAclValue](docs/PortaclsPutRequestPortAclValue.md)
+ - [PortaclsPutRequestPortAclValueIpv4PermitInner](docs/PortaclsPutRequestPortAclValueIpv4PermitInner.md)
+ - [PortaclsPutRequestPortAclValueIpv6PermitInner](docs/PortaclsPutRequestPortAclValueIpv6PermitInner.md)
  - [RoutemapclausesPutRequest](docs/RoutemapclausesPutRequest.md)
  - [RoutemapclausesPutRequestRouteMapClauseValue](docs/RoutemapclausesPutRequestRouteMapClauseValue.md)
  - [RoutemapclausesPutRequestRouteMapClauseValueObjectProperties](docs/RoutemapclausesPutRequestRouteMapClauseValueObjectProperties.md)
@@ -306,9 +319,6 @@ Class | Method | HTTP request | Description
  - [SitesPatchRequestSiteValuePairsInner](docs/SitesPatchRequestSiteValuePairsInner.md)
  - [SwitchpointsMarkoutofservicePutRequest](docs/SwitchpointsMarkoutofservicePutRequest.md)
  - [SwitchpointsPutRequest](docs/SwitchpointsPutRequest.md)
- - [SwitchpointsPutRequestEndpointValue](docs/SwitchpointsPutRequestEndpointValue.md)
- - [SwitchpointsPutRequestEndpointValueChildrenInner](docs/SwitchpointsPutRequestEndpointValueChildrenInner.md)
- - [SwitchpointsPutRequestEndpointValueObjectProperties](docs/SwitchpointsPutRequestEndpointValueObjectProperties.md)
  - [SwitchpointsPutRequestSwitchpointValue](docs/SwitchpointsPutRequestSwitchpointValue.md)
  - [SwitchpointsPutRequestSwitchpointValueBadgesInner](docs/SwitchpointsPutRequestSwitchpointValueBadgesInner.md)
  - [SwitchpointsPutRequestSwitchpointValueChildrenInner](docs/SwitchpointsPutRequestSwitchpointValueChildrenInner.md)

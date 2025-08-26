@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to true]
 **DeviceSerialNumber** | Pointer to **string** | Device Serial Number | [optional] [default to ""]
 **ConnectedBundle** | Pointer to **string** | Connected Bundle | [optional] [default to ""]
 **ConnectedBundleRefType** | Pointer to **string** | Object type for connected_bundle field | [optional] 
@@ -14,7 +15,6 @@ Name | Type | Description | Notes
 **OutOfBandManagement** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch is managed out of band via the management port | [optional] [default to false]
 **Type** | Pointer to **string** | Type of Switchpoint | [optional] [default to "leaf"]
 **SuperPod** | Pointer to **string** | Super Pod  subgrouping of super spines and pods | [optional] [default to ""]
-**Pod** | Pointer to **string** | Pod  subgrouping of spine and leaf switches  | [optional] [default to ""]
 **Rack** | Pointer to **string** | Physical Rack location of the Switch  | [optional] [default to ""]
 **SwitchRouterIdIpMask** | Pointer to **string** | Switch BGP Router Identifier | [optional] [default to "(auto)"]
 **SwitchRouterIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit. | [optional] 
@@ -27,6 +27,9 @@ Name | Type | Description | Notes
 **TrafficMirrors** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner**](SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner.md) |  | [optional] 
 **Eths** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueEthsInner**](SwitchpointsPutRequestSwitchpointValueEthsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SwitchpointsPutRequestSwitchpointValueObjectProperties**](SwitchpointsPutRequestSwitchpointValueObjectProperties.md) |  | [optional] 
+**Pod** | Pointer to **string** | Pod - subgrouping of spine and leaf switches | [optional] [default to ""]
+**PodRefType** | Pointer to **string** | Object type for pod field | [optional] 
+**IsFabric** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device | [optional] [default to false]
 
 ## Methods
 
@@ -71,6 +74,31 @@ SetName sets Name field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasName() bool`
 
 HasName returns a boolean if a field has been set.
+
+### GetEnable
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetEnable() bool`
+
+GetEnable returns the Enable field if non-nil, zero value otherwise.
+
+### GetEnableOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetEnableOk() (*bool, bool)`
+
+GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnable
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetEnable(v bool)`
+
+SetEnable sets Enable field to given value.
+
+### HasEnable
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasEnable() bool`
+
+HasEnable returns a boolean if a field has been set.
 
 ### GetDeviceSerialNumber
 
@@ -296,31 +324,6 @@ SetSuperPod sets SuperPod field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasSuperPod() bool`
 
 HasSuperPod returns a boolean if a field has been set.
-
-### GetPod
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetPod() string`
-
-GetPod returns the Pod field if non-nil, zero value otherwise.
-
-### GetPodOk
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodOk() (*string, bool)`
-
-GetPodOk returns a tuple with the Pod field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPod
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetPod(v string)`
-
-SetPod sets Pod field to given value.
-
-### HasPod
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasPod() bool`
-
-HasPod returns a boolean if a field has been set.
 
 ### GetRack
 
@@ -621,6 +624,81 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetPod
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPod() string`
+
+GetPod returns the Pod field if non-nil, zero value otherwise.
+
+### GetPodOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodOk() (*string, bool)`
+
+GetPodOk returns a tuple with the Pod field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPod
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPod(v string)`
+
+SetPod sets Pod field to given value.
+
+### HasPod
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasPod() bool`
+
+HasPod returns a boolean if a field has been set.
+
+### GetPodRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefType() string`
+
+GetPodRefType returns the PodRefType field if non-nil, zero value otherwise.
+
+### GetPodRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefTypeOk() (*string, bool)`
+
+GetPodRefTypeOk returns a tuple with the PodRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPodRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPodRefType(v string)`
+
+SetPodRefType sets PodRefType field to given value.
+
+### HasPodRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasPodRefType() bool`
+
+HasPodRefType returns a boolean if a field has been set.
+
+### GetIsFabric
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetIsFabric() bool`
+
+GetIsFabric returns the IsFabric field if non-nil, zero value otherwise.
+
+### GetIsFabricOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetIsFabricOk() (*bool, bool)`
+
+GetIsFabricOk returns a tuple with the IsFabric field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsFabric
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetIsFabric(v bool)`
+
+SetIsFabric sets IsFabric field to given value.
+
+### HasIsFabric
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasIsFabric() bool`
+
+HasIsFabric returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

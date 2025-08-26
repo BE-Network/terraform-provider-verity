@@ -19,10 +19,10 @@ var _ MappedNullable = &BundlesPutRequestEndpointBundleValueObjectProperties{}
 
 // BundlesPutRequestEndpointBundleValueObjectProperties struct for BundlesPutRequestEndpointBundleValueObjectProperties
 type BundlesPutRequestEndpointBundleValueObjectProperties struct {
-	// Denotes a Switch Bundle
-	IsForSwitch *bool `json:"is_for_switch,omitempty"`
 	// Group
 	Group *string `json:"group,omitempty"`
+	// Denotes a Switch Bundle
+	IsForSwitch *bool `json:"is_for_switch,omitempty"`
 	// Denotes a shared Switch Bundle
 	IsPublic *bool `json:"is_public,omitempty"`
 }
@@ -33,10 +33,10 @@ type BundlesPutRequestEndpointBundleValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewBundlesPutRequestEndpointBundleValueObjectProperties() *BundlesPutRequestEndpointBundleValueObjectProperties {
 	this := BundlesPutRequestEndpointBundleValueObjectProperties{}
-	var isForSwitch bool = false
-	this.IsForSwitch = &isForSwitch
 	var group string = ""
 	this.Group = &group
+	var isForSwitch bool = false
+	this.IsForSwitch = &isForSwitch
 	var isPublic bool = false
 	this.IsPublic = &isPublic
 	return &this
@@ -47,45 +47,13 @@ func NewBundlesPutRequestEndpointBundleValueObjectProperties() *BundlesPutReques
 // but it doesn't guarantee that properties required by API are set
 func NewBundlesPutRequestEndpointBundleValueObjectPropertiesWithDefaults() *BundlesPutRequestEndpointBundleValueObjectProperties {
 	this := BundlesPutRequestEndpointBundleValueObjectProperties{}
-	var isForSwitch bool = false
-	this.IsForSwitch = &isForSwitch
 	var group string = ""
 	this.Group = &group
+	var isForSwitch bool = false
+	this.IsForSwitch = &isForSwitch
 	var isPublic bool = false
 	this.IsPublic = &isPublic
 	return &this
-}
-
-// GetIsForSwitch returns the IsForSwitch field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsForSwitch() bool {
-	if o == nil || IsNil(o.IsForSwitch) {
-		var ret bool
-		return ret
-	}
-	return *o.IsForSwitch
-}
-
-// GetIsForSwitchOk returns a tuple with the IsForSwitch field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsForSwitchOk() (*bool, bool) {
-	if o == nil || IsNil(o.IsForSwitch) {
-		return nil, false
-	}
-	return o.IsForSwitch, true
-}
-
-// HasIsForSwitch returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasIsForSwitch() bool {
-	if o != nil && !IsNil(o.IsForSwitch) {
-		return true
-	}
-
-	return false
-}
-
-// SetIsForSwitch gets a reference to the given bool and assigns it to the IsForSwitch field.
-func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetIsForSwitch(v bool) {
-	o.IsForSwitch = &v
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise.
@@ -118,6 +86,38 @@ func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasGroup() bool {
 // SetGroup gets a reference to the given string and assigns it to the Group field.
 func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetGroup(v string) {
 	o.Group = &v
+}
+
+// GetIsForSwitch returns the IsForSwitch field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsForSwitch() bool {
+	if o == nil || IsNil(o.IsForSwitch) {
+		var ret bool
+		return ret
+	}
+	return *o.IsForSwitch
+}
+
+// GetIsForSwitchOk returns a tuple with the IsForSwitch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetIsForSwitchOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsForSwitch) {
+		return nil, false
+	}
+	return o.IsForSwitch, true
+}
+
+// HasIsForSwitch returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasIsForSwitch() bool {
+	if o != nil && !IsNil(o.IsForSwitch) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsForSwitch gets a reference to the given bool and assigns it to the IsForSwitch field.
+func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetIsForSwitch(v bool) {
+	o.IsForSwitch = &v
 }
 
 // GetIsPublic returns the IsPublic field value if set, zero value otherwise.
@@ -162,11 +162,11 @@ func (o BundlesPutRequestEndpointBundleValueObjectProperties) MarshalJSON() ([]b
 
 func (o BundlesPutRequestEndpointBundleValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.IsForSwitch) {
-		toSerialize["is_for_switch"] = o.IsForSwitch
-	}
 	if !IsNil(o.Group) {
 		toSerialize["group"] = o.Group
+	}
+	if !IsNil(o.IsForSwitch) {
+		toSerialize["is_for_switch"] = o.IsForSwitch
 	}
 	if !IsNil(o.IsPublic) {
 		toSerialize["is_public"] = o.IsPublic

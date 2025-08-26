@@ -94,6 +94,10 @@ type APIClient struct {
 
 	PacketQueuesAPI *PacketQueuesAPIService
 
+	PodsAPI *PodsAPIService
+
+	PortACLsAPI *PortACLsAPIService
+
 	RouteMapClausesAPI *RouteMapClausesAPIService
 
 	RouteMapsAPI *RouteMapsAPIService
@@ -154,6 +158,8 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)
 	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
 	c.PacketQueuesAPI = (*PacketQueuesAPIService)(&c.common)
+	c.PodsAPI = (*PodsAPIService)(&c.common)
+	c.PortACLsAPI = (*PortACLsAPIService)(&c.common)
 	c.RouteMapClausesAPI = (*RouteMapClausesAPIService)(&c.common)
 	c.RouteMapsAPI = (*RouteMapsAPIService)(&c.common)
 	c.SFPBreakoutsAPI = (*SFPBreakoutsAPIService)(&c.common)

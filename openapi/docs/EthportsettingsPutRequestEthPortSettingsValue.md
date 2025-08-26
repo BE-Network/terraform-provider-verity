@@ -31,7 +31,7 @@ Name | Type | Description | Notes
 **PriorityFlowControlWatchdogAction** | Pointer to **string** | Ports with this setting will be disabled when link state tracking takes effect | [optional] [default to "DROP"]
 **PriorityFlowControlWatchdogDetectTime** | Pointer to **int32** | A value between 100 to 5000 | [optional] [default to 100]
 **PriorityFlowControlWatchdogRestoreTime** | Pointer to **int32** | A value between 100 to 60000 | [optional] [default to 100]
-**ObjectProperties** | Pointer to [**EthportsettingsPutRequestEthPortSettingsValueObjectProperties**](EthportsettingsPutRequestEthPortSettingsValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
 **PacketQueue** | Pointer to **string** | Packet Queue | [optional] [default to ""]
 **PacketQueueRefType** | Pointer to **string** | Object type for packet_queue field | [optional] 
 **EnableWredTuning** | Pointer to **bool** | Enables custom tuning of WRED values. Uncheck to use Switch default values. | [optional] [default to false]
@@ -746,20 +746,20 @@ HasPriorityFlowControlWatchdogRestoreTime returns a boolean if a field has been 
 
 ### GetObjectProperties
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() EthportsettingsPutRequestEthPortSettingsValueObjectProperties`
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (*EthportsettingsPutRequestEthPortSettingsValueObjectProperties, bool)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v EthportsettingsPutRequestEthPortSettingsValueObjectProperties)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

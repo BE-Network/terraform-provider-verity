@@ -21,6 +21,8 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValue{}
 type SwitchpointsPutRequestSwitchpointValue struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+	Enable *bool `json:"enable,omitempty"`
 	// Device Serial Number
 	DeviceSerialNumber *string `json:"device_serial_number,omitempty"`
 	// Connected Bundle
@@ -39,8 +41,6 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	Type *string `json:"type,omitempty"`
 	// Super Pod  subgrouping of super spines and pods
 	SuperPod *string `json:"super_pod,omitempty"`
-	// Pod  subgrouping of spine and leaf switches 
-	Pod *string `json:"pod,omitempty"`
 	// Physical Rack location of the Switch 
 	Rack *string `json:"rack,omitempty"`
 	// Switch BGP Router Identifier
@@ -60,6 +60,12 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	TrafficMirrors []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner `json:"traffic_mirrors,omitempty"`
 	Eths []SwitchpointsPutRequestSwitchpointValueEthsInner `json:"eths,omitempty"`
 	ObjectProperties *SwitchpointsPutRequestSwitchpointValueObjectProperties `json:"object_properties,omitempty"`
+	// Pod - subgrouping of spine and leaf switches
+	Pod *string `json:"pod,omitempty"`
+	// Object type for pod field
+	PodRefType *string `json:"pod_ref_type_,omitempty"`
+	// For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device
+	IsFabric *bool `json:"is_fabric,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValue instantiates a new SwitchpointsPutRequestSwitchpointValue object
@@ -70,6 +76,8 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this := SwitchpointsPutRequestSwitchpointValue{}
 	var name string = ""
 	this.Name = &name
+	var enable bool = true
+	this.Enable = &enable
 	var deviceSerialNumber string = ""
 	this.DeviceSerialNumber = &deviceSerialNumber
 	var connectedBundle string = ""
@@ -86,14 +94,16 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.Type = &type_
 	var superPod string = ""
 	this.SuperPod = &superPod
-	var pod string = ""
-	this.Pod = &pod
 	var rack string = ""
 	this.Rack = &rack
 	var switchRouterIdIpMask string = "(auto)"
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
+	var pod string = ""
+	this.Pod = &pod
+	var isFabric bool = false
+	this.IsFabric = &isFabric
 	return &this
 }
 
@@ -104,6 +114,8 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this := SwitchpointsPutRequestSwitchpointValue{}
 	var name string = ""
 	this.Name = &name
+	var enable bool = true
+	this.Enable = &enable
 	var deviceSerialNumber string = ""
 	this.DeviceSerialNumber = &deviceSerialNumber
 	var connectedBundle string = ""
@@ -120,14 +132,16 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.Type = &type_
 	var superPod string = ""
 	this.SuperPod = &superPod
-	var pod string = ""
-	this.Pod = &pod
 	var rack string = ""
 	this.Rack = &rack
 	var switchRouterIdIpMask string = "(auto)"
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
+	var pod string = ""
+	this.Pod = &pod
+	var isFabric bool = false
+	this.IsFabric = &isFabric
 	return &this
 }
 
@@ -161,6 +175,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetName(v string) {
 	o.Name = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetEnable(v bool) {
+	o.Enable = &v
 }
 
 // GetDeviceSerialNumber returns the DeviceSerialNumber field value if set, zero value otherwise.
@@ -449,38 +495,6 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasSuperPod() bool {
 // SetSuperPod gets a reference to the given string and assigns it to the SuperPod field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetSuperPod(v string) {
 	o.SuperPod = &v
-}
-
-// GetPod returns the Pod field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetPod() string {
-	if o == nil || IsNil(o.Pod) {
-		var ret string
-		return ret
-	}
-	return *o.Pod
-}
-
-// GetPodOk returns a tuple with the Pod field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetPodOk() (*string, bool) {
-	if o == nil || IsNil(o.Pod) {
-		return nil, false
-	}
-	return o.Pod, true
-}
-
-// HasPod returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) HasPod() bool {
-	if o != nil && !IsNil(o.Pod) {
-		return true
-	}
-
-	return false
-}
-
-// SetPod gets a reference to the given string and assigns it to the Pod field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetPod(v string) {
-	o.Pod = &v
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise.
@@ -867,6 +881,102 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetObjectProperties(v Switchpoi
 	o.ObjectProperties = &v
 }
 
+// GetPod returns the Pod field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPod() string {
+	if o == nil || IsNil(o.Pod) {
+		var ret string
+		return ret
+	}
+	return *o.Pod
+}
+
+// GetPodOk returns a tuple with the Pod field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPodOk() (*string, bool) {
+	if o == nil || IsNil(o.Pod) {
+		return nil, false
+	}
+	return o.Pod, true
+}
+
+// HasPod returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPod() bool {
+	if o != nil && !IsNil(o.Pod) {
+		return true
+	}
+
+	return false
+}
+
+// SetPod gets a reference to the given string and assigns it to the Pod field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPod(v string) {
+	o.Pod = &v
+}
+
+// GetPodRefType returns the PodRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefType() string {
+	if o == nil || IsNil(o.PodRefType) {
+		var ret string
+		return ret
+	}
+	return *o.PodRefType
+}
+
+// GetPodRefTypeOk returns a tuple with the PodRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PodRefType) {
+		return nil, false
+	}
+	return o.PodRefType, true
+}
+
+// HasPodRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPodRefType() bool {
+	if o != nil && !IsNil(o.PodRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPodRefType gets a reference to the given string and assigns it to the PodRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPodRefType(v string) {
+	o.PodRefType = &v
+}
+
+// GetIsFabric returns the IsFabric field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetIsFabric() bool {
+	if o == nil || IsNil(o.IsFabric) {
+		var ret bool
+		return ret
+	}
+	return *o.IsFabric
+}
+
+// GetIsFabricOk returns a tuple with the IsFabric field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetIsFabricOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsFabric) {
+		return nil, false
+	}
+	return o.IsFabric, true
+}
+
+// HasIsFabric returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasIsFabric() bool {
+	if o != nil && !IsNil(o.IsFabric) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsFabric gets a reference to the given bool and assigns it to the IsFabric field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetIsFabric(v bool) {
+	o.IsFabric = &v
+}
+
 func (o SwitchpointsPutRequestSwitchpointValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -879,6 +989,9 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.DeviceSerialNumber) {
 		toSerialize["device_serial_number"] = o.DeviceSerialNumber
@@ -906,9 +1019,6 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.SuperPod) {
 		toSerialize["super_pod"] = o.SuperPod
-	}
-	if !IsNil(o.Pod) {
-		toSerialize["pod"] = o.Pod
 	}
 	if !IsNil(o.Rack) {
 		toSerialize["rack"] = o.Rack
@@ -945,6 +1055,15 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.Pod) {
+		toSerialize["pod"] = o.Pod
+	}
+	if !IsNil(o.PodRefType) {
+		toSerialize["pod_ref_type_"] = o.PodRefType
+	}
+	if !IsNil(o.IsFabric) {
+		toSerialize["is_fabric"] = o.IsFabric
 	}
 	return toSerialize, nil
 }

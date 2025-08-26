@@ -5,7 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Switchpoint** | Pointer to [**map[string]SwitchpointsPutRequestSwitchpointValue**](SwitchpointsPutRequestSwitchpointValue.md) |  | [optional] 
-**Endpoint** | Pointer to [**map[string]SwitchpointsPutRequestEndpointValue**](SwitchpointsPutRequestEndpointValue.md) |  | [optional] 
 
 ## Methods
 
@@ -50,31 +49,6 @@ SetSwitchpoint sets Switchpoint field to given value.
 `func (o *SwitchpointsPutRequest) HasSwitchpoint() bool`
 
 HasSwitchpoint returns a boolean if a field has been set.
-
-### GetEndpoint
-
-`func (o *SwitchpointsPutRequest) GetEndpoint() map[string]SwitchpointsPutRequestEndpointValue`
-
-GetEndpoint returns the Endpoint field if non-nil, zero value otherwise.
-
-### GetEndpointOk
-
-`func (o *SwitchpointsPutRequest) GetEndpointOk() (*map[string]SwitchpointsPutRequestEndpointValue, bool)`
-
-GetEndpointOk returns a tuple with the Endpoint field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEndpoint
-
-`func (o *SwitchpointsPutRequest) SetEndpoint(v map[string]SwitchpointsPutRequestEndpointValue)`
-
-SetEndpoint sets Endpoint field to given value.
-
-### HasEndpoint
-
-`func (o *SwitchpointsPutRequest) HasEndpoint() bool`
-
-HasEndpoint returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

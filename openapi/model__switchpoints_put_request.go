@@ -20,7 +20,6 @@ var _ MappedNullable = &SwitchpointsPutRequest{}
 // SwitchpointsPutRequest struct for SwitchpointsPutRequest
 type SwitchpointsPutRequest struct {
 	Switchpoint *map[string]SwitchpointsPutRequestSwitchpointValue `json:"switchpoint,omitempty"`
-	Endpoint *map[string]SwitchpointsPutRequestEndpointValue `json:"endpoint,omitempty"`
 }
 
 // NewSwitchpointsPutRequest instantiates a new SwitchpointsPutRequest object
@@ -72,38 +71,6 @@ func (o *SwitchpointsPutRequest) SetSwitchpoint(v map[string]SwitchpointsPutRequ
 	o.Switchpoint = &v
 }
 
-// GetEndpoint returns the Endpoint field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequest) GetEndpoint() map[string]SwitchpointsPutRequestEndpointValue {
-	if o == nil || IsNil(o.Endpoint) {
-		var ret map[string]SwitchpointsPutRequestEndpointValue
-		return ret
-	}
-	return *o.Endpoint
-}
-
-// GetEndpointOk returns a tuple with the Endpoint field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequest) GetEndpointOk() (*map[string]SwitchpointsPutRequestEndpointValue, bool) {
-	if o == nil || IsNil(o.Endpoint) {
-		return nil, false
-	}
-	return o.Endpoint, true
-}
-
-// HasEndpoint returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequest) HasEndpoint() bool {
-	if o != nil && !IsNil(o.Endpoint) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpoint gets a reference to the given map[string]SwitchpointsPutRequestEndpointValue and assigns it to the Endpoint field.
-func (o *SwitchpointsPutRequest) SetEndpoint(v map[string]SwitchpointsPutRequestEndpointValue) {
-	o.Endpoint = &v
-}
-
 func (o SwitchpointsPutRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -116,9 +83,6 @@ func (o SwitchpointsPutRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Switchpoint) {
 		toSerialize["switchpoint"] = o.Switchpoint
-	}
-	if !IsNil(o.Endpoint) {
-		toSerialize["endpoint"] = o.Endpoint
 	}
 	return toSerialize, nil
 }

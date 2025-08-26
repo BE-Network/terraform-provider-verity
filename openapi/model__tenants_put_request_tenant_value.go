@@ -54,7 +54,7 @@ type TenantsPutRequestTenantValue struct {
 	// Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit.
 	VrfNameAutoAssigned *bool `json:"vrf_name_auto_assigned_,omitempty"`
 	RouteTenants []TenantsPutRequestTenantValueRouteTenantsInner `json:"route_tenants,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *GatewayprofilesPutRequestGatewayProfileValueObjectProperties `json:"object_properties,omitempty"`
 	// Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.
 	DefaultOriginate *bool `json:"default_originate,omitempty"`
 }
@@ -717,9 +717,9 @@ func (o *TenantsPutRequestTenantValue) SetRouteTenants(v []TenantsPutRequestTena
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *TenantsPutRequestTenantValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
+func (o *TenantsPutRequestTenantValue) GetObjectProperties() GatewayprofilesPutRequestGatewayProfileValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
+		var ret GatewayprofilesPutRequestGatewayProfileValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -727,7 +727,7 @@ func (o *TenantsPutRequestTenantValue) GetObjectProperties() DevicesettingsPutRe
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
+func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*GatewayprofilesPutRequestGatewayProfileValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -743,8 +743,8 @@ func (o *TenantsPutRequestTenantValue) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *TenantsPutRequestTenantValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
+// SetObjectProperties gets a reference to the given GatewayprofilesPutRequestGatewayProfileValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *TenantsPutRequestTenantValue) SetObjectProperties(v GatewayprofilesPutRequestGatewayProfileValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 

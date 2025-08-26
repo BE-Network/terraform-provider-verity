@@ -78,6 +78,8 @@ type SitesPatchRequestSiteValue struct {
 	ObjectProperties *SitesPatchRequestSiteValueObjectProperties `json:"object_properties,omitempty"`
 	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
 	EnableDhcpSnooping *bool `json:"enable_dhcp_snooping,omitempty"`
+	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
+	IpSourceGuard *bool `json:"ip_source_guard,omitempty"`
 }
 
 // NewSitesPatchRequestSiteValue instantiates a new SitesPatchRequestSiteValue object
@@ -138,6 +140,8 @@ func NewSitesPatchRequestSiteValue() *SitesPatchRequestSiteValue {
 	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
 	var enableDhcpSnooping bool = false
 	this.EnableDhcpSnooping = &enableDhcpSnooping
+	var ipSourceGuard bool = false
+	this.IpSourceGuard = &ipSourceGuard
 	return &this
 }
 
@@ -198,6 +202,8 @@ func NewSitesPatchRequestSiteValueWithDefaults() *SitesPatchRequestSiteValue {
 	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
 	var enableDhcpSnooping bool = false
 	this.EnableDhcpSnooping = &enableDhcpSnooping
+	var ipSourceGuard bool = false
+	this.IpSourceGuard = &ipSourceGuard
 	return &this
 }
 
@@ -1243,6 +1249,38 @@ func (o *SitesPatchRequestSiteValue) SetEnableDhcpSnooping(v bool) {
 	o.EnableDhcpSnooping = &v
 }
 
+// GetIpSourceGuard returns the IpSourceGuard field value if set, zero value otherwise.
+func (o *SitesPatchRequestSiteValue) GetIpSourceGuard() bool {
+	if o == nil || IsNil(o.IpSourceGuard) {
+		var ret bool
+		return ret
+	}
+	return *o.IpSourceGuard
+}
+
+// GetIpSourceGuardOk returns a tuple with the IpSourceGuard field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPatchRequestSiteValue) GetIpSourceGuardOk() (*bool, bool) {
+	if o == nil || IsNil(o.IpSourceGuard) {
+		return nil, false
+	}
+	return o.IpSourceGuard, true
+}
+
+// HasIpSourceGuard returns a boolean if a field has been set.
+func (o *SitesPatchRequestSiteValue) HasIpSourceGuard() bool {
+	if o != nil && !IsNil(o.IpSourceGuard) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpSourceGuard gets a reference to the given bool and assigns it to the IpSourceGuard field.
+func (o *SitesPatchRequestSiteValue) SetIpSourceGuard(v bool) {
+	o.IpSourceGuard = &v
+}
+
 func (o SitesPatchRequestSiteValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -1345,6 +1383,9 @@ func (o SitesPatchRequestSiteValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.EnableDhcpSnooping) {
 		toSerialize["enable_dhcp_snooping"] = o.EnableDhcpSnooping
+	}
+	if !IsNil(o.IpSourceGuard) {
+		toSerialize["ip_source_guard"] = o.IpSourceGuard
 	}
 	return toSerialize, nil
 }

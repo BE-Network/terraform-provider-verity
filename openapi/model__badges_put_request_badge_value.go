@@ -21,6 +21,8 @@ var _ MappedNullable = &BadgesPutRequestBadgeValue{}
 type BadgesPutRequestBadgeValue struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
 	// Badge color
 	Color *string `json:"color,omitempty"`
 	// Badge number
@@ -36,6 +38,8 @@ func NewBadgesPutRequestBadgeValue() *BadgesPutRequestBadgeValue {
 	this := BadgesPutRequestBadgeValue{}
 	var name string = ""
 	this.Name = &name
+	var enable bool = true
+	this.Enable = &enable
 	return &this
 }
 
@@ -46,6 +50,8 @@ func NewBadgesPutRequestBadgeValueWithDefaults() *BadgesPutRequestBadgeValue {
 	this := BadgesPutRequestBadgeValue{}
 	var name string = ""
 	this.Name = &name
+	var enable bool = true
+	this.Enable = &enable
 	return &this
 }
 
@@ -79,6 +85,38 @@ func (o *BadgesPutRequestBadgeValue) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *BadgesPutRequestBadgeValue) SetName(v string) {
 	o.Name = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *BadgesPutRequestBadgeValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BadgesPutRequestBadgeValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *BadgesPutRequestBadgeValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *BadgesPutRequestBadgeValue) SetEnable(v bool) {
+	o.Enable = &v
 }
 
 // GetColor returns the Color field value if set, zero value otherwise.
@@ -189,6 +227,9 @@ func (o BadgesPutRequestBadgeValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.Color) {
 		toSerialize["color"] = o.Color

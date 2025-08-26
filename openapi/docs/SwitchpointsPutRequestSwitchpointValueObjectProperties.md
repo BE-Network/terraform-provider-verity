@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **Aggregate** | Pointer to **bool** | For Switch Endpoints. Denotes switch aggregated with all of its sub switches | [optional] [default to false]
 **IsHost** | Pointer to **bool** | For Switch Endpoints. Denotes the Host Switch | [optional] [default to false]
 **Eths** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner**](SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner.md) |  | [optional] 
+**DrawAsEdgeDevice** | Pointer to **bool** | Turn on to display the switch as an edge device instead of as a switch | [optional] [default to false]
 
 ## Methods
 
@@ -215,6 +216,31 @@ SetEths sets Eths field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasEths() bool`
 
 HasEths returns a boolean if a field has been set.
+
+### GetDrawAsEdgeDevice
+
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDevice() bool`
+
+GetDrawAsEdgeDevice returns the DrawAsEdgeDevice field if non-nil, zero value otherwise.
+
+### GetDrawAsEdgeDeviceOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDeviceOk() (*bool, bool)`
+
+GetDrawAsEdgeDeviceOk returns a tuple with the DrawAsEdgeDevice field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDrawAsEdgeDevice
+
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetDrawAsEdgeDevice(v bool)`
+
+SetDrawAsEdgeDevice sets DrawAsEdgeDevice field to given value.
+
+### HasDrawAsEdgeDevice
+
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasDrawAsEdgeDevice() bool`
+
+HasDrawAsEdgeDevice returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

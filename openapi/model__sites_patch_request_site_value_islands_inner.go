@@ -19,7 +19,7 @@ var _ MappedNullable = &SitesPatchRequestSiteValueIslandsInner{}
 
 // SitesPatchRequestSiteValueIslandsInner struct for SitesPatchRequestSiteValueIslandsInner
 type SitesPatchRequestSiteValueIslandsInner struct {
-	// TOI Endpoint
+	// TOI Switchpoint
 	ToiSwitchpoint *string `json:"toi_switchpoint,omitempty"`
 	// Object type for toi_switchpoint field
 	ToiSwitchpointRefType *string `json:"toi_switchpoint_ref_type_,omitempty"`

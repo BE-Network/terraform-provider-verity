@@ -6,9 +6,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
-**TenantSliceManaged** | Pointer to **bool** | Profiles that Tenant Slice creates and manages | [optional] [default to false]
 **ExternalGateways** | Pointer to [**[]GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner**](GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**GatewayprofilesPutRequestGatewayProfileValueObjectProperties**](GatewayprofilesPutRequestGatewayProfileValueObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -79,31 +78,6 @@ SetEnable sets Enable field to given value.
 
 HasEnable returns a boolean if a field has been set.
 
-### GetTenantSliceManaged
-
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetTenantSliceManaged() bool`
-
-GetTenantSliceManaged returns the TenantSliceManaged field if non-nil, zero value otherwise.
-
-### GetTenantSliceManagedOk
-
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetTenantSliceManagedOk() (*bool, bool)`
-
-GetTenantSliceManagedOk returns a tuple with the TenantSliceManaged field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetTenantSliceManaged
-
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) SetTenantSliceManaged(v bool)`
-
-SetTenantSliceManaged sets TenantSliceManaged field to given value.
-
-### HasTenantSliceManaged
-
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) HasTenantSliceManaged() bool`
-
-HasTenantSliceManaged returns a boolean if a field has been set.
-
 ### GetExternalGateways
 
 `func (o *GatewayprofilesPutRequestGatewayProfileValue) GetExternalGateways() []GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner`
@@ -131,20 +105,20 @@ HasExternalGateways returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
+`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() GatewayprofilesPutRequestGatewayProfileValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
+`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*GatewayprofilesPutRequestGatewayProfileValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
+`func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v GatewayprofilesPutRequestGatewayProfileValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

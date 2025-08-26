@@ -73,7 +73,7 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	PriorityFlowControlWatchdogDetectTime *int32 `json:"priority_flow_control_watchdog_detect_time,omitempty"`
 	// A value between 100 to 60000
 	PriorityFlowControlWatchdogRestoreTime *int32 `json:"priority_flow_control_watchdog_restore_time,omitempty"`
-	ObjectProperties *EthportsettingsPutRequestEthPortSettingsValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
 	// Packet Queue
 	PacketQueue *string `json:"packet_queue,omitempty"`
 	// Object type for packet_queue field
@@ -1159,9 +1159,9 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWa
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() EthportsettingsPutRequestEthPortSettingsValueObjectProperties {
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret EthportsettingsPutRequestEthPortSettingsValueObjectProperties
+		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -1169,7 +1169,7 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() Et
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (*EthportsettingsPutRequestEthPortSettingsValueObjectProperties, bool) {
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -1185,8 +1185,8 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasObjectProperties() bo
 	return false
 }
 
-// SetObjectProperties gets a reference to the given EthportsettingsPutRequestEthPortSettingsValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v EthportsettingsPutRequestEthPortSettingsValueObjectProperties) {
+// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 

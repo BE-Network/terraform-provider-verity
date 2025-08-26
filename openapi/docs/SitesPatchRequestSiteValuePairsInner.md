@@ -5,9 +5,9 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
-**Switchpoint1** | Pointer to **string** | Endpoint | [optional] [default to ""]
+**Switchpoint1** | Pointer to **string** | Switchpoint | [optional] [default to ""]
 **Switchpoint1RefType** | Pointer to **string** | Object type for switchpoint_1 field | [optional] 
-**Switchpoint2** | Pointer to **string** | Endpoint | [optional] [default to ""]
+**Switchpoint2** | Pointer to **string** | Switchpoint | [optional] [default to ""]
 **Switchpoint2RefType** | Pointer to **string** | Object type for switchpoint_2 field | [optional] 
 **LagGroup** | Pointer to **string** | LAG Group | [optional] [default to ""]
 **LagGroupRefType** | Pointer to **string** | Object type for lag_group field | [optional] 

@@ -10,6 +10,8 @@ Name | Type | Description | Notes
 **EthPortNumEthPortSettingsRefType** | Pointer to **string** | Object type for eth_port_num_eth_port_settings field | [optional] 
 **EthPortNumGatewayProfile** | Pointer to **string** | Gateway Profile or LAG for Eth Port | [optional] [default to ""]
 **EthPortNumGatewayProfileRefType** | Pointer to **string** | Object type for eth_port_num_gateway_profile field | [optional] 
+**DiagnosticsPortProfileNumDiagnosticsPortProfile** | Pointer to **string** | Diagnostics Port Profile for port | [optional] [default to ""]
+**DiagnosticsPortProfileNumDiagnosticsPortProfileRefType** | Pointer to **string** | Object type for diagnostics_port_profile_num_diagnostics_port_profile field | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 **PortName** | Pointer to **string** | The name identifying the port. Used for reference only, it won&#39;t actually change the port name. | [optional] 
 
@@ -181,6 +183,56 @@ SetEthPortNumGatewayProfileRefType sets EthPortNumGatewayProfileRefType field to
 `func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumGatewayProfileRefType() bool`
 
 HasEthPortNumGatewayProfileRefType returns a boolean if a field has been set.
+
+### GetDiagnosticsPortProfileNumDiagnosticsPortProfile
+
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetDiagnosticsPortProfileNumDiagnosticsPortProfile() string`
+
+GetDiagnosticsPortProfileNumDiagnosticsPortProfile returns the DiagnosticsPortProfileNumDiagnosticsPortProfile field if non-nil, zero value otherwise.
+
+### GetDiagnosticsPortProfileNumDiagnosticsPortProfileOk
+
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetDiagnosticsPortProfileNumDiagnosticsPortProfileOk() (*string, bool)`
+
+GetDiagnosticsPortProfileNumDiagnosticsPortProfileOk returns a tuple with the DiagnosticsPortProfileNumDiagnosticsPortProfile field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDiagnosticsPortProfileNumDiagnosticsPortProfile
+
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetDiagnosticsPortProfileNumDiagnosticsPortProfile(v string)`
+
+SetDiagnosticsPortProfileNumDiagnosticsPortProfile sets DiagnosticsPortProfileNumDiagnosticsPortProfile field to given value.
+
+### HasDiagnosticsPortProfileNumDiagnosticsPortProfile
+
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasDiagnosticsPortProfileNumDiagnosticsPortProfile() bool`
+
+HasDiagnosticsPortProfileNumDiagnosticsPortProfile returns a boolean if a field has been set.
+
+### GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType
+
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType() string`
+
+GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType returns the DiagnosticsPortProfileNumDiagnosticsPortProfileRefType field if non-nil, zero value otherwise.
+
+### GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefTypeOk
+
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefTypeOk() (*string, bool)`
+
+GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefTypeOk returns a tuple with the DiagnosticsPortProfileNumDiagnosticsPortProfileRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType
+
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType(v string)`
+
+SetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType sets DiagnosticsPortProfileNumDiagnosticsPortProfileRefType field to given value.
+
+### HasDiagnosticsPortProfileNumDiagnosticsPortProfileRefType
+
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasDiagnosticsPortProfileNumDiagnosticsPortProfileRefType() bool`
+
+HasDiagnosticsPortProfileNumDiagnosticsPortProfileRefType returns a boolean if a field has been set.
 
 ### GetIndex
 

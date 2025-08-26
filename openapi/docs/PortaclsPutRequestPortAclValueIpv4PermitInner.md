@@ -1,0 +1,108 @@
+# PortaclsPutRequestPortAclValueIpv4PermitInner
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**Enable** | Pointer to **bool** | Enable | [optional] [default to false]
+**Filter** | Pointer to **string** | Filter | [optional] [default to ""]
+**FilterRefType** | Pointer to **string** | Object type for filter field | [optional] 
+
+## Methods
+
+### NewPortaclsPutRequestPortAclValueIpv4PermitInner
+
+`func NewPortaclsPutRequestPortAclValueIpv4PermitInner() *PortaclsPutRequestPortAclValueIpv4PermitInner`
+
+NewPortaclsPutRequestPortAclValueIpv4PermitInner instantiates a new PortaclsPutRequestPortAclValueIpv4PermitInner object
+This constructor will assign default values to properties that have it defined,
+and makes sure properties required by API are set, but the set of arguments
+will change when the set of required properties is changed
+
+### NewPortaclsPutRequestPortAclValueIpv4PermitInnerWithDefaults
+
+`func NewPortaclsPutRequestPortAclValueIpv4PermitInnerWithDefaults() *PortaclsPutRequestPortAclValueIpv4PermitInner`
+
+NewPortaclsPutRequestPortAclValueIpv4PermitInnerWithDefaults instantiates a new PortaclsPutRequestPortAclValueIpv4PermitInner object
+This constructor will only assign default values to properties that have it defined,
+but it doesn't guarantee that properties required by API are set
+
+### GetEnable
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetEnable() bool`
+
+GetEnable returns the Enable field if non-nil, zero value otherwise.
+
+### GetEnableOk
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetEnableOk() (*bool, bool)`
+
+GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnable
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetEnable(v bool)`
+
+SetEnable sets Enable field to given value.
+
+### HasEnable
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasEnable() bool`
+
+HasEnable returns a boolean if a field has been set.
+
+### GetFilter
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilter() string`
+
+GetFilter returns the Filter field if non-nil, zero value otherwise.
+
+### GetFilterOk
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterOk() (*string, bool)`
+
+GetFilterOk returns a tuple with the Filter field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFilter
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetFilter(v string)`
+
+SetFilter sets Filter field to given value.
+
+### HasFilter
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasFilter() bool`
+
+HasFilter returns a boolean if a field has been set.
+
+### GetFilterRefType
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterRefType() string`
+
+GetFilterRefType returns the FilterRefType field if non-nil, zero value otherwise.
+
+### GetFilterRefTypeOk
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterRefTypeOk() (*string, bool)`
+
+GetFilterRefTypeOk returns a tuple with the FilterRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFilterRefType
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetFilterRefType(v string)`
+
+SetFilterRefType sets FilterRefType field to given value.
+
+### HasFilterRefType
+
+`func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasFilterRefType() bool`
+
+HasFilterRefType returns a boolean if a field has been set.
+
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

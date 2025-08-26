@@ -35,6 +35,7 @@ Name | Type | Description | Notes
 **Pairs** | Pointer to [**[]SitesPatchRequestSiteValuePairsInner**](SitesPatchRequestSiteValuePairsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SitesPatchRequestSiteValueObjectProperties**](SitesPatchRequestSiteValueObjectProperties.md) |  | [optional] 
 **EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
+**IpSourceGuard** | Pointer to **bool** | On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings | [optional] [default to false]
 
 ## Methods
 
@@ -879,6 +880,31 @@ SetEnableDhcpSnooping sets EnableDhcpSnooping field to given value.
 `func (o *SitesPatchRequestSiteValue) HasEnableDhcpSnooping() bool`
 
 HasEnableDhcpSnooping returns a boolean if a field has been set.
+
+### GetIpSourceGuard
+
+`func (o *SitesPatchRequestSiteValue) GetIpSourceGuard() bool`
+
+GetIpSourceGuard returns the IpSourceGuard field if non-nil, zero value otherwise.
+
+### GetIpSourceGuardOk
+
+`func (o *SitesPatchRequestSiteValue) GetIpSourceGuardOk() (*bool, bool)`
+
+GetIpSourceGuardOk returns a tuple with the IpSourceGuard field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIpSourceGuard
+
+`func (o *SitesPatchRequestSiteValue) SetIpSourceGuard(v bool)`
+
+SetIpSourceGuard sets IpSourceGuard field to given value.
+
+### HasIpSourceGuard
+
+`func (o *SitesPatchRequestSiteValue) HasIpSourceGuard() bool`
+
+HasIpSourceGuard returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

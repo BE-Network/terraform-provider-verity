@@ -5,15 +5,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
+**Protocol** | Pointer to **string** | Voice Protocol: MGCP or SIP | [optional] [default to "SIP"]
 **DeviceSettings** | Pointer to **string** | Device Settings for device | [optional] [default to "eth_device_profile|(Device Settings)|"]
 **DeviceSettingsRefType** | Pointer to **string** | Object type for device_settings field | [optional] 
 **CliCommands** | Pointer to **string** | CLI Commands | [optional] [default to ""]
+**DiagnosticsProfile** | Pointer to **string** | Diagnostics Profile for device | [optional] [default to ""]
+**DiagnosticsProfileRefType** | Pointer to **string** | Object type for diagnostics_profile field | [optional] 
 **EthPortPaths** | Pointer to [**[]BundlesPutRequestEndpointBundleValueEthPortPathsInner**](BundlesPutRequestEndpointBundleValueEthPortPathsInner.md) |  | [optional] 
-**RgServices** | Pointer to [**[]BundlesPutRequestEndpointBundleValueRgServicesInner**](BundlesPutRequestEndpointBundleValueRgServicesInner.md) |  | [optional] 
 **UserServices** | Pointer to [**[]BundlesPutRequestEndpointBundleValueUserServicesInner**](BundlesPutRequestEndpointBundleValueUserServicesInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**BundlesPutRequestEndpointBundleValueObjectProperties**](BundlesPutRequestEndpointBundleValueObjectProperties.md) |  | [optional] 
-**Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
-**Protocol** | Pointer to **string** | Voice Protocol: MGCP or SIP | [optional] [default to "SIP"]
 **DeviceVoiceSettings** | Pointer to **string** | Device Voice Settings for device | [optional] [default to "voice_device_profile|(SIP Voice Device)|"]
 **DeviceVoiceSettingsRefType** | Pointer to **string** | Object type for device_voice_settings field | [optional] 
 **VoicePortProfilePaths** | Pointer to [**[]BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner**](BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner.md) |  | [optional] 
@@ -61,6 +62,56 @@ SetName sets Name field to given value.
 `func (o *BundlesPutRequestEndpointBundleValue) HasName() bool`
 
 HasName returns a boolean if a field has been set.
+
+### GetEnable
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetEnable() bool`
+
+GetEnable returns the Enable field if non-nil, zero value otherwise.
+
+### GetEnableOk
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetEnableOk() (*bool, bool)`
+
+GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnable
+
+`func (o *BundlesPutRequestEndpointBundleValue) SetEnable(v bool)`
+
+SetEnable sets Enable field to given value.
+
+### HasEnable
+
+`func (o *BundlesPutRequestEndpointBundleValue) HasEnable() bool`
+
+HasEnable returns a boolean if a field has been set.
+
+### GetProtocol
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetProtocol() string`
+
+GetProtocol returns the Protocol field if non-nil, zero value otherwise.
+
+### GetProtocolOk
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetProtocolOk() (*string, bool)`
+
+GetProtocolOk returns a tuple with the Protocol field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetProtocol
+
+`func (o *BundlesPutRequestEndpointBundleValue) SetProtocol(v string)`
+
+SetProtocol sets Protocol field to given value.
+
+### HasProtocol
+
+`func (o *BundlesPutRequestEndpointBundleValue) HasProtocol() bool`
+
+HasProtocol returns a boolean if a field has been set.
 
 ### GetDeviceSettings
 
@@ -137,6 +188,56 @@ SetCliCommands sets CliCommands field to given value.
 
 HasCliCommands returns a boolean if a field has been set.
 
+### GetDiagnosticsProfile
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetDiagnosticsProfile() string`
+
+GetDiagnosticsProfile returns the DiagnosticsProfile field if non-nil, zero value otherwise.
+
+### GetDiagnosticsProfileOk
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetDiagnosticsProfileOk() (*string, bool)`
+
+GetDiagnosticsProfileOk returns a tuple with the DiagnosticsProfile field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDiagnosticsProfile
+
+`func (o *BundlesPutRequestEndpointBundleValue) SetDiagnosticsProfile(v string)`
+
+SetDiagnosticsProfile sets DiagnosticsProfile field to given value.
+
+### HasDiagnosticsProfile
+
+`func (o *BundlesPutRequestEndpointBundleValue) HasDiagnosticsProfile() bool`
+
+HasDiagnosticsProfile returns a boolean if a field has been set.
+
+### GetDiagnosticsProfileRefType
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetDiagnosticsProfileRefType() string`
+
+GetDiagnosticsProfileRefType returns the DiagnosticsProfileRefType field if non-nil, zero value otherwise.
+
+### GetDiagnosticsProfileRefTypeOk
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetDiagnosticsProfileRefTypeOk() (*string, bool)`
+
+GetDiagnosticsProfileRefTypeOk returns a tuple with the DiagnosticsProfileRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDiagnosticsProfileRefType
+
+`func (o *BundlesPutRequestEndpointBundleValue) SetDiagnosticsProfileRefType(v string)`
+
+SetDiagnosticsProfileRefType sets DiagnosticsProfileRefType field to given value.
+
+### HasDiagnosticsProfileRefType
+
+`func (o *BundlesPutRequestEndpointBundleValue) HasDiagnosticsProfileRefType() bool`
+
+HasDiagnosticsProfileRefType returns a boolean if a field has been set.
+
 ### GetEthPortPaths
 
 `func (o *BundlesPutRequestEndpointBundleValue) GetEthPortPaths() []BundlesPutRequestEndpointBundleValueEthPortPathsInner`
@@ -161,31 +262,6 @@ SetEthPortPaths sets EthPortPaths field to given value.
 `func (o *BundlesPutRequestEndpointBundleValue) HasEthPortPaths() bool`
 
 HasEthPortPaths returns a boolean if a field has been set.
-
-### GetRgServices
-
-`func (o *BundlesPutRequestEndpointBundleValue) GetRgServices() []BundlesPutRequestEndpointBundleValueRgServicesInner`
-
-GetRgServices returns the RgServices field if non-nil, zero value otherwise.
-
-### GetRgServicesOk
-
-`func (o *BundlesPutRequestEndpointBundleValue) GetRgServicesOk() (*[]BundlesPutRequestEndpointBundleValueRgServicesInner, bool)`
-
-GetRgServicesOk returns a tuple with the RgServices field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetRgServices
-
-`func (o *BundlesPutRequestEndpointBundleValue) SetRgServices(v []BundlesPutRequestEndpointBundleValueRgServicesInner)`
-
-SetRgServices sets RgServices field to given value.
-
-### HasRgServices
-
-`func (o *BundlesPutRequestEndpointBundleValue) HasRgServices() bool`
-
-HasRgServices returns a boolean if a field has been set.
 
 ### GetUserServices
 
@@ -236,56 +312,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *BundlesPutRequestEndpointBundleValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetEnable
-
-`func (o *BundlesPutRequestEndpointBundleValue) GetEnable() bool`
-
-GetEnable returns the Enable field if non-nil, zero value otherwise.
-
-### GetEnableOk
-
-`func (o *BundlesPutRequestEndpointBundleValue) GetEnableOk() (*bool, bool)`
-
-GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEnable
-
-`func (o *BundlesPutRequestEndpointBundleValue) SetEnable(v bool)`
-
-SetEnable sets Enable field to given value.
-
-### HasEnable
-
-`func (o *BundlesPutRequestEndpointBundleValue) HasEnable() bool`
-
-HasEnable returns a boolean if a field has been set.
-
-### GetProtocol
-
-`func (o *BundlesPutRequestEndpointBundleValue) GetProtocol() string`
-
-GetProtocol returns the Protocol field if non-nil, zero value otherwise.
-
-### GetProtocolOk
-
-`func (o *BundlesPutRequestEndpointBundleValue) GetProtocolOk() (*string, bool)`
-
-GetProtocolOk returns a tuple with the Protocol field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetProtocol
-
-`func (o *BundlesPutRequestEndpointBundleValue) SetProtocol(v string)`
-
-SetProtocol sets Protocol field to given value.
-
-### HasProtocol
-
-`func (o *BundlesPutRequestEndpointBundleValue) HasProtocol() bool`
-
-HasProtocol returns a boolean if a field has been set.
 
 ### GetDeviceVoiceSettings
 

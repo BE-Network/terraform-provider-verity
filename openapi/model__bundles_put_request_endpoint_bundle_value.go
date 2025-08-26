@@ -21,20 +21,23 @@ var _ MappedNullable = &BundlesPutRequestEndpointBundleValue{}
 type BundlesPutRequestEndpointBundleValue struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+	Enable *bool `json:"enable,omitempty"`
+	// Voice Protocol: MGCP or SIP
+	Protocol *string `json:"protocol,omitempty"`
 	// Device Settings for device
 	DeviceSettings *string `json:"device_settings,omitempty"`
 	// Object type for device_settings field
 	DeviceSettingsRefType *string `json:"device_settings_ref_type_,omitempty"`
 	// CLI Commands
 	CliCommands *string `json:"cli_commands,omitempty"`
+	// Diagnostics Profile for device
+	DiagnosticsProfile *string `json:"diagnostics_profile,omitempty"`
+	// Object type for diagnostics_profile field
+	DiagnosticsProfileRefType *string `json:"diagnostics_profile_ref_type_,omitempty"`
 	EthPortPaths []BundlesPutRequestEndpointBundleValueEthPortPathsInner `json:"eth_port_paths,omitempty"`
-	RgServices []BundlesPutRequestEndpointBundleValueRgServicesInner `json:"rg_services,omitempty"`
 	UserServices []BundlesPutRequestEndpointBundleValueUserServicesInner `json:"user_services,omitempty"`
 	ObjectProperties *BundlesPutRequestEndpointBundleValueObjectProperties `json:"object_properties,omitempty"`
-	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
-	Enable *bool `json:"enable,omitempty"`
-	// Voice Protocol: MGCP or SIP
-	Protocol *string `json:"protocol,omitempty"`
 	// Device Voice Settings for device
 	DeviceVoiceSettings *string `json:"device_voice_settings,omitempty"`
 	// Object type for device_voice_settings field
@@ -50,14 +53,16 @@ func NewBundlesPutRequestEndpointBundleValue() *BundlesPutRequestEndpointBundleV
 	this := BundlesPutRequestEndpointBundleValue{}
 	var name string = ""
 	this.Name = &name
-	var deviceSettings string = "eth_device_profile|(Device Settings)|"
-	this.DeviceSettings = &deviceSettings
-	var cliCommands string = ""
-	this.CliCommands = &cliCommands
 	var enable bool = false
 	this.Enable = &enable
 	var protocol string = "SIP"
 	this.Protocol = &protocol
+	var deviceSettings string = "eth_device_profile|(Device Settings)|"
+	this.DeviceSettings = &deviceSettings
+	var cliCommands string = ""
+	this.CliCommands = &cliCommands
+	var diagnosticsProfile string = ""
+	this.DiagnosticsProfile = &diagnosticsProfile
 	var deviceVoiceSettings string = "voice_device_profile|(SIP Voice Device)|"
 	this.DeviceVoiceSettings = &deviceVoiceSettings
 	return &this
@@ -70,14 +75,16 @@ func NewBundlesPutRequestEndpointBundleValueWithDefaults() *BundlesPutRequestEnd
 	this := BundlesPutRequestEndpointBundleValue{}
 	var name string = ""
 	this.Name = &name
-	var deviceSettings string = "eth_device_profile|(Device Settings)|"
-	this.DeviceSettings = &deviceSettings
-	var cliCommands string = ""
-	this.CliCommands = &cliCommands
 	var enable bool = false
 	this.Enable = &enable
 	var protocol string = "SIP"
 	this.Protocol = &protocol
+	var deviceSettings string = "eth_device_profile|(Device Settings)|"
+	this.DeviceSettings = &deviceSettings
+	var cliCommands string = ""
+	this.CliCommands = &cliCommands
+	var diagnosticsProfile string = ""
+	this.DiagnosticsProfile = &diagnosticsProfile
 	var deviceVoiceSettings string = "voice_device_profile|(SIP Voice Device)|"
 	this.DeviceVoiceSettings = &deviceVoiceSettings
 	return &this
@@ -113,6 +120,70 @@ func (o *BundlesPutRequestEndpointBundleValue) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *BundlesPutRequestEndpointBundleValue) SetName(v string) {
 	o.Name = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *BundlesPutRequestEndpointBundleValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetProtocol returns the Protocol field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValue) GetProtocol() string {
+	if o == nil || IsNil(o.Protocol) {
+		var ret string
+		return ret
+	}
+	return *o.Protocol
+}
+
+// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValue) GetProtocolOk() (*string, bool) {
+	if o == nil || IsNil(o.Protocol) {
+		return nil, false
+	}
+	return o.Protocol, true
+}
+
+// HasProtocol returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValue) HasProtocol() bool {
+	if o != nil && !IsNil(o.Protocol) {
+		return true
+	}
+
+	return false
+}
+
+// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
+func (o *BundlesPutRequestEndpointBundleValue) SetProtocol(v string) {
+	o.Protocol = &v
 }
 
 // GetDeviceSettings returns the DeviceSettings field value if set, zero value otherwise.
@@ -211,6 +282,70 @@ func (o *BundlesPutRequestEndpointBundleValue) SetCliCommands(v string) {
 	o.CliCommands = &v
 }
 
+// GetDiagnosticsProfile returns the DiagnosticsProfile field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValue) GetDiagnosticsProfile() string {
+	if o == nil || IsNil(o.DiagnosticsProfile) {
+		var ret string
+		return ret
+	}
+	return *o.DiagnosticsProfile
+}
+
+// GetDiagnosticsProfileOk returns a tuple with the DiagnosticsProfile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValue) GetDiagnosticsProfileOk() (*string, bool) {
+	if o == nil || IsNil(o.DiagnosticsProfile) {
+		return nil, false
+	}
+	return o.DiagnosticsProfile, true
+}
+
+// HasDiagnosticsProfile returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValue) HasDiagnosticsProfile() bool {
+	if o != nil && !IsNil(o.DiagnosticsProfile) {
+		return true
+	}
+
+	return false
+}
+
+// SetDiagnosticsProfile gets a reference to the given string and assigns it to the DiagnosticsProfile field.
+func (o *BundlesPutRequestEndpointBundleValue) SetDiagnosticsProfile(v string) {
+	o.DiagnosticsProfile = &v
+}
+
+// GetDiagnosticsProfileRefType returns the DiagnosticsProfileRefType field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValue) GetDiagnosticsProfileRefType() string {
+	if o == nil || IsNil(o.DiagnosticsProfileRefType) {
+		var ret string
+		return ret
+	}
+	return *o.DiagnosticsProfileRefType
+}
+
+// GetDiagnosticsProfileRefTypeOk returns a tuple with the DiagnosticsProfileRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValue) GetDiagnosticsProfileRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.DiagnosticsProfileRefType) {
+		return nil, false
+	}
+	return o.DiagnosticsProfileRefType, true
+}
+
+// HasDiagnosticsProfileRefType returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValue) HasDiagnosticsProfileRefType() bool {
+	if o != nil && !IsNil(o.DiagnosticsProfileRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetDiagnosticsProfileRefType gets a reference to the given string and assigns it to the DiagnosticsProfileRefType field.
+func (o *BundlesPutRequestEndpointBundleValue) SetDiagnosticsProfileRefType(v string) {
+	o.DiagnosticsProfileRefType = &v
+}
+
 // GetEthPortPaths returns the EthPortPaths field value if set, zero value otherwise.
 func (o *BundlesPutRequestEndpointBundleValue) GetEthPortPaths() []BundlesPutRequestEndpointBundleValueEthPortPathsInner {
 	if o == nil || IsNil(o.EthPortPaths) {
@@ -241,38 +376,6 @@ func (o *BundlesPutRequestEndpointBundleValue) HasEthPortPaths() bool {
 // SetEthPortPaths gets a reference to the given []BundlesPutRequestEndpointBundleValueEthPortPathsInner and assigns it to the EthPortPaths field.
 func (o *BundlesPutRequestEndpointBundleValue) SetEthPortPaths(v []BundlesPutRequestEndpointBundleValueEthPortPathsInner) {
 	o.EthPortPaths = v
-}
-
-// GetRgServices returns the RgServices field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValue) GetRgServices() []BundlesPutRequestEndpointBundleValueRgServicesInner {
-	if o == nil || IsNil(o.RgServices) {
-		var ret []BundlesPutRequestEndpointBundleValueRgServicesInner
-		return ret
-	}
-	return o.RgServices
-}
-
-// GetRgServicesOk returns a tuple with the RgServices field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValue) GetRgServicesOk() ([]BundlesPutRequestEndpointBundleValueRgServicesInner, bool) {
-	if o == nil || IsNil(o.RgServices) {
-		return nil, false
-	}
-	return o.RgServices, true
-}
-
-// HasRgServices returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValue) HasRgServices() bool {
-	if o != nil && !IsNil(o.RgServices) {
-		return true
-	}
-
-	return false
-}
-
-// SetRgServices gets a reference to the given []BundlesPutRequestEndpointBundleValueRgServicesInner and assigns it to the RgServices field.
-func (o *BundlesPutRequestEndpointBundleValue) SetRgServices(v []BundlesPutRequestEndpointBundleValueRgServicesInner) {
-	o.RgServices = v
 }
 
 // GetUserServices returns the UserServices field value if set, zero value otherwise.
@@ -337,70 +440,6 @@ func (o *BundlesPutRequestEndpointBundleValue) HasObjectProperties() bool {
 // SetObjectProperties gets a reference to the given BundlesPutRequestEndpointBundleValueObjectProperties and assigns it to the ObjectProperties field.
 func (o *BundlesPutRequestEndpointBundleValue) SetObjectProperties(v BundlesPutRequestEndpointBundleValueObjectProperties) {
 	o.ObjectProperties = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *BundlesPutRequestEndpointBundleValue) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetProtocol returns the Protocol field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValue) GetProtocol() string {
-	if o == nil || IsNil(o.Protocol) {
-		var ret string
-		return ret
-	}
-	return *o.Protocol
-}
-
-// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValue) GetProtocolOk() (*string, bool) {
-	if o == nil || IsNil(o.Protocol) {
-		return nil, false
-	}
-	return o.Protocol, true
-}
-
-// HasProtocol returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValue) HasProtocol() bool {
-	if o != nil && !IsNil(o.Protocol) {
-		return true
-	}
-
-	return false
-}
-
-// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
-func (o *BundlesPutRequestEndpointBundleValue) SetProtocol(v string) {
-	o.Protocol = &v
 }
 
 // GetDeviceVoiceSettings returns the DeviceVoiceSettings field value if set, zero value otherwise.
@@ -512,6 +551,12 @@ func (o BundlesPutRequestEndpointBundleValue) ToMap() (map[string]interface{}, e
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.Protocol) {
+		toSerialize["protocol"] = o.Protocol
+	}
 	if !IsNil(o.DeviceSettings) {
 		toSerialize["device_settings"] = o.DeviceSettings
 	}
@@ -521,23 +566,20 @@ func (o BundlesPutRequestEndpointBundleValue) ToMap() (map[string]interface{}, e
 	if !IsNil(o.CliCommands) {
 		toSerialize["cli_commands"] = o.CliCommands
 	}
+	if !IsNil(o.DiagnosticsProfile) {
+		toSerialize["diagnostics_profile"] = o.DiagnosticsProfile
+	}
+	if !IsNil(o.DiagnosticsProfileRefType) {
+		toSerialize["diagnostics_profile_ref_type_"] = o.DiagnosticsProfileRefType
+	}
 	if !IsNil(o.EthPortPaths) {
 		toSerialize["eth_port_paths"] = o.EthPortPaths
-	}
-	if !IsNil(o.RgServices) {
-		toSerialize["rg_services"] = o.RgServices
 	}
 	if !IsNil(o.UserServices) {
 		toSerialize["user_services"] = o.UserServices
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Protocol) {
-		toSerialize["protocol"] = o.Protocol
 	}
 	if !IsNil(o.DeviceVoiceSettings) {
 		toSerialize["device_voice_settings"] = o.DeviceVoiceSettings

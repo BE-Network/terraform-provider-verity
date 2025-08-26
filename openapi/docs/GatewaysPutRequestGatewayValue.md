@@ -38,7 +38,7 @@ Name | Type | Description | Notes
 **BfdDetectMultiplier** | Pointer to **NullableInt32** | Configure the detection multiplier to determine packet loss | [optional] [default to 3]
 **NextHopSelf** | Pointer to **bool** | Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself. | [optional] [default to false]
 **StaticRoutes** | Pointer to [**[]GatewaysPutRequestGatewayValueStaticRoutesInner**](GatewaysPutRequestGatewayValueStaticRoutesInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**GatewayprofilesPutRequestGatewayProfileValueObjectProperties**](GatewayprofilesPutRequestGatewayProfileValueObjectProperties.md) |  | [optional] 
 **DefaultOriginate** | Pointer to **bool** | Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor. | [optional] [default to false]
 **BfdMultihop** | Pointer to **bool** | Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers. | [optional] [default to false]
 
@@ -993,20 +993,20 @@ HasStaticRoutes returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
+`func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() GatewayprofilesPutRequestGatewayProfileValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*GatewayprofilesPutRequestGatewayProfileValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
+`func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v GatewayprofilesPutRequestGatewayProfileValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

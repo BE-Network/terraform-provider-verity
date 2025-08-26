@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
 **Color** | Pointer to **string** | Badge color | [optional] 
 **Number** | Pointer to **int32** | Badge number | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
@@ -52,6 +53,31 @@ SetName sets Name field to given value.
 `func (o *BadgesPutRequestBadgeValue) HasName() bool`
 
 HasName returns a boolean if a field has been set.
+
+### GetEnable
+
+`func (o *BadgesPutRequestBadgeValue) GetEnable() bool`
+
+GetEnable returns the Enable field if non-nil, zero value otherwise.
+
+### GetEnableOk
+
+`func (o *BadgesPutRequestBadgeValue) GetEnableOk() (*bool, bool)`
+
+GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnable
+
+`func (o *BadgesPutRequestBadgeValue) SetEnable(v bool)`
+
+SetEnable sets Enable field to given value.
+
+### HasEnable
+
+`func (o *BadgesPutRequestBadgeValue) HasEnable() bool`
+
+HasEnable returns a boolean if a field has been set.
 
 ### GetColor
 

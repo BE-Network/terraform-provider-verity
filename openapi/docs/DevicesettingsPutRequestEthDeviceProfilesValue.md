@@ -10,13 +10,13 @@ Name | Type | Description | Notes
 **UsageThreshold** | Pointer to **float32** | Usage Threshold | [optional] 
 **ExternalBatteryPowerAvailable** | Pointer to **int32** | External Battery Power Available | [optional] [default to 40]
 **ExternalPowerAvailable** | Pointer to **int32** | External Power Available | [optional] [default to 75]
+**DisableTcpUdpLearnedPacketAcceleration** | Pointer to **bool** | Required for AVB, PTP and Cobranet Support | [optional] [default to false]
 **SecurityAuditInterval** | Pointer to **NullableInt32** | Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 &lt;br&gt;if the value is blank, audit will use default switch settings.                                                 &lt;br&gt;if the value is 0, audit will be turned off.                                                  | [optional] [default to 60]
 **CommitToFlashInterval** | Pointer to **NullableInt32** | Frequency in minutes to write the Switch configuration to flash.                                                 &lt;br&gt;if the value is blank, commit will use default switch settings.                                                 &lt;br&gt;if the value is 0, commit will be turned off. | [optional] [default to 60]
 **Rocev2** | Pointer to **bool** | Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs. | [optional] [default to false]
 **CutThroughSwitching** | Pointer to **bool** | Enable Cut-through Switching on all Switches | [optional] [default to false]
 **ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
 **HoldTimer** | Pointer to **NullableInt32** | Hold Timer | [optional] [default to 0]
-**DisableTcpUdpLearnedPacketAcceleration** | Pointer to **bool** | Required for AVB, PTP and Cobranet Support | [optional] [default to false]
 **MacAgingTimerOverride** | Pointer to **NullableInt32** | Blank uses the Device&#39;s default; otherwise an integer between 1 to 1,000,000 seconds | [optional] 
 **SpanningTreePriority** | Pointer to **string** | STP per switch, priority are in 4096 increments, the lower the number, the higher the priority. | [optional] [default to "byLevel"]
 **PacketQueueId** | Pointer to **string** | Packet Queue for device | [optional] [default to "packet_queue|(Packet Queue)|"]
@@ -190,6 +190,31 @@ SetExternalPowerAvailable sets ExternalPowerAvailable field to given value.
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasExternalPowerAvailable() bool`
 
 HasExternalPowerAvailable returns a boolean if a field has been set.
+
+### GetDisableTcpUdpLearnedPacketAcceleration
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAcceleration() bool`
+
+GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field if non-nil, zero value otherwise.
+
+### GetDisableTcpUdpLearnedPacketAccelerationOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAccelerationOk() (*bool, bool)`
+
+GetDisableTcpUdpLearnedPacketAccelerationOk returns a tuple with the DisableTcpUdpLearnedPacketAcceleration field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDisableTcpUdpLearnedPacketAcceleration
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDisableTcpUdpLearnedPacketAcceleration(v bool)`
+
+SetDisableTcpUdpLearnedPacketAcceleration sets DisableTcpUdpLearnedPacketAcceleration field to given value.
+
+### HasDisableTcpUdpLearnedPacketAcceleration
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDisableTcpUdpLearnedPacketAcceleration() bool`
+
+HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
 
 ### GetSecurityAuditInterval
 
@@ -371,31 +396,6 @@ HasHoldTimer returns a boolean if a field has been set.
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetHoldTimer()`
 
 UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
-### GetDisableTcpUdpLearnedPacketAcceleration
-
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAcceleration() bool`
-
-GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field if non-nil, zero value otherwise.
-
-### GetDisableTcpUdpLearnedPacketAccelerationOk
-
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAccelerationOk() (*bool, bool)`
-
-GetDisableTcpUdpLearnedPacketAccelerationOk returns a tuple with the DisableTcpUdpLearnedPacketAcceleration field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDisableTcpUdpLearnedPacketAcceleration
-
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDisableTcpUdpLearnedPacketAcceleration(v bool)`
-
-SetDisableTcpUdpLearnedPacketAcceleration sets DisableTcpUdpLearnedPacketAcceleration field to given value.
-
-### HasDisableTcpUdpLearnedPacketAcceleration
-
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDisableTcpUdpLearnedPacketAcceleration() bool`
-
-HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
-
 ### GetMacAgingTimerOverride
 
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverride() int32`
