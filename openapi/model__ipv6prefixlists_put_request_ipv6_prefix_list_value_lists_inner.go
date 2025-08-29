@@ -29,6 +29,8 @@ type Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner struct {
 	GreaterThanEqualValue NullableInt32 `json:"greater_than_equal_value,omitempty"`
 	// Match IP routes with a subnet mask less than or equal to the value indicated
 	LessThanEqualValue NullableInt32 `json:"less_than_equal_value,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int32 `json:"index,omitempty"`
 }
 
 // NewIpv6prefixlistsPutRequestIpv6PrefixListValueListsInner instantiates a new Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner object
@@ -240,6 +242,38 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) UnsetLessThanEq
 	o.LessThanEqualValue.Unset()
 }
 
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndex() int32 {
+	if o == nil || IsNil(o.Index) {
+		var ret int32
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndexOk() (*int32, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int32 and assigns it to the Index field.
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetIndex(v int32) {
+	o.Index = &v
+}
+
 func (o Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -264,6 +298,9 @@ func (o Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) ToMap() (map[str
 	}
 	if o.LessThanEqualValue.IsSet() {
 		toSerialize["less_than_equal_value"] = o.LessThanEqualValue.Get()
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }

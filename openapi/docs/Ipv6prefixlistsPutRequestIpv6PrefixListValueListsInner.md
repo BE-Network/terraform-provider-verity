@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **Ipv6Prefix** | Pointer to **string** | IPv6 address and subnet to match against  | [optional] [default to ""]
 **GreaterThanEqualValue** | Pointer to **NullableInt32** | Match IP routes with a subnet mask greater than or equal to the value indicated  | [optional] 
 **LessThanEqualValue** | Pointer to **NullableInt32** | Match IP routes with a subnet mask less than or equal to the value indicated | [optional] 
+**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -174,6 +175,31 @@ HasLessThanEqualValue returns a boolean if a field has been set.
 `func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) UnsetLessThanEqualValue()`
 
 UnsetLessThanEqualValue ensures that no value is present for LessThanEqualValue, not even an explicit nil
+### GetIndex
+
+`func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndex() int32`
+
+GetIndex returns the Index field if non-nil, zero value otherwise.
+
+### GetIndexOk
+
+`func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndexOk() (*int32, bool)`
+
+GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIndex
+
+`func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetIndex(v int32)`
+
+SetIndex sets Index field to given value.
+
+### HasIndex
+
+`func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) HasIndex() bool`
+
+HasIndex returns a boolean if a field has been set.
+
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -25,6 +25,8 @@ type PortaclsPutRequestPortAclValueIpv4PermitInner struct {
 	Filter *string `json:"filter,omitempty"`
 	// Object type for filter field
 	FilterRefType *string `json:"filter_ref_type_,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int32 `json:"index,omitempty"`
 }
 
 // NewPortaclsPutRequestPortAclValueIpv4PermitInner instantiates a new PortaclsPutRequestPortAclValueIpv4PermitInner object
@@ -148,6 +150,38 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetFilterRefType(v strin
 	o.FilterRefType = &v
 }
 
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetIndex() int32 {
+	if o == nil || IsNil(o.Index) {
+		var ret int32
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetIndexOk() (*int32, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int32 and assigns it to the Index field.
+func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetIndex(v int32) {
+	o.Index = &v
+}
+
 func (o PortaclsPutRequestPortAclValueIpv4PermitInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -166,6 +200,9 @@ func (o PortaclsPutRequestPortAclValueIpv4PermitInner) ToMap() (map[string]inter
 	}
 	if !IsNil(o.FilterRefType) {
 		toSerialize["filter_ref_type_"] = o.FilterRefType
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
