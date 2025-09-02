@@ -36,11 +36,10 @@ type verityGatewayProfileResource struct {
 }
 
 type verityGatewayProfileResourceModel struct {
-	Name               types.String                                `tfsdk:"name"`
-	Enable             types.Bool                                  `tfsdk:"enable"`
-	TenantSliceManaged types.Bool                                  `tfsdk:"tenant_slice_managed"`
-	ObjectProperties   []verityGatewayProfileObjectPropertiesModel `tfsdk:"object_properties"`
-	ExternalGateways   []verityGatewayProfileExternalGatewaysModel `tfsdk:"external_gateways"`
+	Name             types.String                                `tfsdk:"name"`
+	Enable           types.Bool                                  `tfsdk:"enable"`
+	ObjectProperties []verityGatewayProfileObjectPropertiesModel `tfsdk:"object_properties"`
+	ExternalGateways []verityGatewayProfileExternalGatewaysModel `tfsdk:"external_gateways"`
 }
 
 type verityGatewayProfileObjectPropertiesModel struct {
@@ -93,10 +92,6 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 			},
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
-				Optional:    true,
-			},
-			"tenant_slice_managed": schema.BoolAttribute{
-				Description: "Profiles that Tenant Slice creates and manages",
 				Optional:    true,
 			},
 		},
@@ -170,13 +165,8 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 		profileObj.Enable = openapi.PtrBool(enable)
 	}
 
-	if !data.TenantSliceManaged.IsNull() {
-		tenantSliceManaged := data.TenantSliceManaged.ValueBool()
-		profileObj.TenantSliceManaged = openapi.PtrBool(tenantSliceManaged)
-	}
-
 	if len(data.ObjectProperties) > 0 {
-		objProps := &openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{
+		objProps := &openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{
 			Group: openapi.PtrString(data.ObjectProperties[0].Group.ValueString()),
 		}
 		if data.ObjectProperties[0].Group.IsNull() {
@@ -325,10 +315,6 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 		data.Enable = types.BoolValue(v)
 	}
 
-	if v, ok := profileData["tenant_slice_managed"].(bool); ok {
-		data.TenantSliceManaged = types.BoolValue(v)
-	}
-
 	if objProps, ok := profileData["object_properties"].(map[string]interface{}); ok {
 		objectProps := verityGatewayProfileObjectPropertiesModel{}
 
@@ -433,14 +419,8 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		hasChanges = true
 	}
 
-	if !data.TenantSliceManaged.Equal(state.TenantSliceManaged) {
-		tenantSliceManaged := data.TenantSliceManaged.ValueBool()
-		profileObj.TenantSliceManaged = &tenantSliceManaged
-		hasChanges = true
-	}
-
 	if len(data.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
 		objPropsChanged := false
 
 		if len(state.ObjectProperties) == 0 ||

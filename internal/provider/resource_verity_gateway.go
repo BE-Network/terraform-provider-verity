@@ -426,7 +426,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
@@ -792,7 +792,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+			objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {

@@ -39,6 +39,7 @@ type veritySwitchpointResource struct {
 
 type veritySwitchpointResourceModel struct {
 	Name                             types.String                             `tfsdk:"name"`
+	Enable                           types.Bool                               `tfsdk:"enable"`
 	DeviceSerialNumber               types.String                             `tfsdk:"device_serial_number"`
 	ConnectedBundle                  types.String                             `tfsdk:"connected_bundle"`
 	ConnectedBundleRefType           types.String                             `tfsdk:"connected_bundle_ref_type_"`
@@ -49,6 +50,7 @@ type veritySwitchpointResourceModel struct {
 	Type                             types.String                             `tfsdk:"type"`
 	SuperPod                         types.String                             `tfsdk:"super_pod"`
 	Pod                              types.String                             `tfsdk:"pod"`
+	PodRefType                       types.String                             `tfsdk:"pod_ref_type_"`
 	Rack                             types.String                             `tfsdk:"rack"`
 	SwitchRouterIdIpMask             types.String                             `tfsdk:"switch_router_id_ip_mask"`
 	SwitchRouterIdIpMaskAutoAssigned types.Bool                               `tfsdk:"switch_router_id_ip_mask_auto_assigned_"`
@@ -56,6 +58,7 @@ type veritySwitchpointResourceModel struct {
 	SwitchVtepIdIpMaskAutoAssigned   types.Bool                               `tfsdk:"switch_vtep_id_ip_mask_auto_assigned_"`
 	BgpAsNumber                      types.Int64                              `tfsdk:"bgp_as_number"`
 	BgpAsNumberAutoAssigned          types.Bool                               `tfsdk:"bgp_as_number_auto_assigned_"`
+	IsFabric                         types.Bool                               `tfsdk:"is_fabric"`
 	Badges                           []veritySwitchpointBadgeModel            `tfsdk:"badges"`
 	Children                         []veritySwitchpointChildModel            `tfsdk:"children"`
 	TrafficMirrors                   []veritySwitchpointTrafficMirrorModel    `tfsdk:"traffic_mirrors"`
@@ -104,6 +107,7 @@ type veritySwitchpointObjectPropertiesModel struct {
 	NumberOfMultipoints           types.Int64                                 `tfsdk:"number_of_multipoints"`
 	Aggregate                     types.Bool                                  `tfsdk:"aggregate"`
 	IsHost                        types.Bool                                  `tfsdk:"is_host"`
+	DrawAsEdgeDevice              types.Bool                                  `tfsdk:"draw_as_edge_device"`
 	Eths                          []veritySwitchpointObjectPropertiesEthModel `tfsdk:"eths"`
 }
 
@@ -141,6 +145,10 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"enable": schema.BoolAttribute{
+				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
+				Optional:    true,
 			},
 			"device_serial_number": schema.StringAttribute{
 				Description: "Device Serial Number",
@@ -182,6 +190,10 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Description: "Pod - subgrouping of spine and leaf switches",
 				Optional:    true,
 			},
+			"pod_ref_type_": schema.StringAttribute{
+				Description: "Object type for pod field",
+				Optional:    true,
+			},
 			"rack": schema.StringAttribute{
 				Description: "Physical Rack location of the Switch",
 				Optional:    true,
@@ -211,6 +223,10 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"bgp_as_number_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether or not the value in bgp_as_number field has been automatically assigned",
+				Optional:    true,
+			},
+			"is_fabric": schema.BoolAttribute{
+				Description: "For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device",
 				Optional:    true,
 			},
 		},
@@ -335,6 +351,10 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 							Description: "For Switch Endpoints. Denotes the Host Switch",
 							Optional:    true,
 						},
+						"draw_as_edge_device": schema.BoolAttribute{
+							Description: "Turn on to display the switch as an edge device instead of as a switch",
+							Optional:    true,
+						},
 					},
 					Blocks: map[string]schema.Block{
 						"eths": schema.ListNestedBlock{
@@ -384,6 +404,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		Name: openapi.PtrString(name),
 	}
 
+	if !plan.Enable.IsNull() {
+		spProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+	}
 	if !plan.DeviceSerialNumber.IsNull() {
 		spProps.DeviceSerialNumber = openapi.PtrString(plan.DeviceSerialNumber.ValueString())
 	}
@@ -404,6 +427,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 	if !plan.Pod.IsNull() {
 		spProps.Pod = openapi.PtrString(plan.Pod.ValueString())
+	}
+	if !plan.PodRefType.IsNull() {
+		spProps.PodRefType = openapi.PtrString(plan.PodRefType.ValueString())
 	}
 	if !plan.Rack.IsNull() {
 		spProps.Rack = openapi.PtrString(plan.Rack.ValueString())
@@ -432,6 +458,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 	if !plan.BgpAsNumberAutoAssigned.IsNull() {
 		spProps.BgpAsNumberAutoAssigned = openapi.PtrBool(plan.BgpAsNumberAutoAssigned.ValueBool())
+	}
+	if !plan.IsFabric.IsNull() {
+		spProps.IsFabric = openapi.PtrBool(plan.IsFabric.ValueBool())
 	}
 
 	if !plan.BgpAsNumber.IsNull() {
@@ -548,6 +577,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		}
 		if !op.IsHost.IsNull() {
 			objProps.IsHost = openapi.PtrBool(op.IsHost.ValueBool())
+		}
+		if !op.DrawAsEdgeDevice.IsNull() {
+			objProps.DrawAsEdgeDevice = openapi.PtrBool(op.DrawAsEdgeDevice.ValueBool())
 		}
 
 		if len(op.Eths) > 0 {
@@ -804,20 +836,86 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		stateField types.String
 		setter     func(string)
 	}{
-		"device_serial_number":       {plan.DeviceSerialNumber, state.DeviceSerialNumber, func(v string) { spProps.DeviceSerialNumber = openapi.PtrString(v) }},
-		"connected_bundle":           {plan.ConnectedBundle, state.ConnectedBundle, func(v string) { spProps.ConnectedBundle = openapi.PtrString(v) }},
-		"connected_bundle_ref_type_": {plan.ConnectedBundleRefType, state.ConnectedBundleRefType, func(v string) { spProps.ConnectedBundleRefType = openapi.PtrString(v) }},
-		"disabled_ports":             {plan.DisabledPorts, state.DisabledPorts, func(v string) { spProps.DisabledPorts = openapi.PtrString(v) }},
-		"type":                       {plan.Type, state.Type, func(v string) { spProps.Type = openapi.PtrString(v) }},
-		"super_pod":                  {plan.SuperPod, state.SuperPod, func(v string) { spProps.SuperPod = openapi.PtrString(v) }},
-		"pod":                        {plan.Pod, state.Pod, func(v string) { spProps.Pod = openapi.PtrString(v) }},
-		"rack":                       {plan.Rack, state.Rack, func(v string) { spProps.Rack = openapi.PtrString(v) }},
+		"device_serial_number": {plan.DeviceSerialNumber, state.DeviceSerialNumber, func(v string) { spProps.DeviceSerialNumber = openapi.PtrString(v) }},
+		"disabled_ports":       {plan.DisabledPorts, state.DisabledPorts, func(v string) { spProps.DisabledPorts = openapi.PtrString(v) }},
+		"type":                 {plan.Type, state.Type, func(v string) { spProps.Type = openapi.PtrString(v) }},
+		"super_pod":            {plan.SuperPod, state.SuperPod, func(v string) { spProps.SuperPod = openapi.PtrString(v) }},
+		"rack":                 {plan.Rack, state.Rack, func(v string) { spProps.Rack = openapi.PtrString(v) }},
 	}
 
 	for _, field := range stringFields {
 		if !field.planField.Equal(field.stateField) {
 			field.setter(field.planField.ValueString())
 			hasChanges = true
+		}
+	}
+
+	connectedBundleChanged := !plan.ConnectedBundle.Equal(state.ConnectedBundle)
+	connectedBundleRefTypeChanged := !plan.ConnectedBundleRefType.Equal(state.ConnectedBundleRefType)
+
+	if connectedBundleChanged || connectedBundleRefTypeChanged {
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			plan.ConnectedBundle, plan.ConnectedBundleRefType,
+			"connected_bundle", "connected_bundle_ref_type_",
+			connectedBundleChanged, connectedBundleRefTypeChanged) {
+			return
+		}
+
+		// For fields with one reference type:
+		// If only base field changes, send only base field
+		// If ref type field changes (or both), send both fields
+		if connectedBundleChanged && !connectedBundleRefTypeChanged {
+			// Just send the base field
+			if !plan.ConnectedBundle.IsNull() && plan.ConnectedBundle.ValueString() != "" {
+				spProps.ConnectedBundle = openapi.PtrString(plan.ConnectedBundle.ValueString())
+			} else {
+				spProps.ConnectedBundle = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if connectedBundleRefTypeChanged {
+			// Send both fields
+			if !plan.ConnectedBundle.IsNull() && plan.ConnectedBundle.ValueString() != "" {
+				spProps.ConnectedBundle = openapi.PtrString(plan.ConnectedBundle.ValueString())
+			} else {
+				spProps.ConnectedBundle = openapi.PtrString("")
+			}
+
+			if !plan.ConnectedBundleRefType.IsNull() && plan.ConnectedBundleRefType.ValueString() != "" {
+				spProps.ConnectedBundleRefType = openapi.PtrString(plan.ConnectedBundleRefType.ValueString())
+			} else {
+				spProps.ConnectedBundleRefType = openapi.PtrString("")
+			}
+			hasChanges = true
+		}
+	}
+
+	if !plan.Pod.Equal(state.Pod) || !plan.PodRefType.Equal(state.PodRefType) {
+		hasChanges = true
+		hasPod := !plan.Pod.IsNull() && plan.Pod.ValueString() != ""
+		hasRefType := !plan.PodRefType.IsNull() && plan.PodRefType.ValueString() != ""
+
+		if hasPod || hasRefType {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				plan.Pod, plan.PodRefType,
+				"pod", "pod_ref_type_",
+				hasPod, hasRefType) {
+				return
+			}
+			// Set both fields when at least one is provided
+			if hasPod {
+				spProps.Pod = openapi.PtrString(plan.Pod.ValueString())
+			} else {
+				spProps.Pod = openapi.PtrString("")
+			}
+			if hasRefType {
+				spProps.PodRefType = openapi.PtrString(plan.PodRefType.ValueString())
+			} else {
+				spProps.PodRefType = openapi.PtrString("")
+			}
+		} else {
+			// Both fields are empty/null
+			spProps.Pod = openapi.PtrString("")
+			spProps.PodRefType = openapi.PtrString("")
 		}
 	}
 
@@ -842,9 +940,11 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		stateField types.Bool
 		setter     func(bool)
 	}{
+		"enable":                 {plan.Enable, state.Enable, func(v bool) { spProps.Enable = openapi.PtrBool(v) }},
 		"read_only_mode":         {plan.ReadOnlyMode, state.ReadOnlyMode, func(v bool) { spProps.ReadOnlyMode = openapi.PtrBool(v) }},
 		"locked":                 {plan.Locked, state.Locked, func(v bool) { spProps.Locked = openapi.PtrBool(v) }},
 		"out_of_band_management": {plan.OutOfBandManagement, state.OutOfBandManagement, func(v bool) { spProps.OutOfBandManagement = openapi.PtrBool(v) }},
+		"is_fabric":              {plan.IsFabric, state.IsFabric, func(v bool) { spProps.IsFabric = openapi.PtrBool(v) }},
 		"switch_router_id_ip_mask_auto_assigned_": {plan.SwitchRouterIdIpMaskAutoAssigned, state.SwitchRouterIdIpMaskAutoAssigned, func(v bool) { spProps.SwitchRouterIdIpMaskAutoAssigned = openapi.PtrBool(v) }},
 		"switch_vtep_id_ip_mask_auto_assigned_":   {plan.SwitchVtepIdIpMaskAutoAssigned, state.SwitchVtepIdIpMaskAutoAssigned, func(v bool) { spProps.SwitchVtepIdIpMaskAutoAssigned = openapi.PtrBool(v) }},
 		"bgp_as_number_auto_assigned_":            {plan.BgpAsNumberAutoAssigned, state.BgpAsNumberAutoAssigned, func(v bool) { spProps.BgpAsNumberAutoAssigned = openapi.PtrBool(v) }},
@@ -895,15 +995,31 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 
-			if !planBadge.Badge.IsNull() && planBadge.Badge.ValueString() != "" {
-				newBadge.Badge = openapi.PtrString(planBadge.Badge.ValueString())
-			} else {
-				newBadge.Badge = openapi.PtrString("")
-			}
+			badgeChanged := !planBadge.Badge.IsNull() && planBadge.Badge.ValueString() != ""
+			badgeRefTypeChanged := !planBadge.BadgeRefType.IsNull() && planBadge.BadgeRefType.ValueString() != ""
 
-			if !planBadge.BadgeRefType.IsNull() && planBadge.BadgeRefType.ValueString() != "" {
-				newBadge.BadgeRefType = openapi.PtrString(planBadge.BadgeRefType.ValueString())
+			if badgeChanged || badgeRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					planBadge.Badge, planBadge.BadgeRefType,
+					"badge", "badge_ref_type_",
+					badgeChanged, badgeRefTypeChanged) {
+					return
+				}
+
+				if !planBadge.Badge.IsNull() && planBadge.Badge.ValueString() != "" {
+					newBadge.Badge = openapi.PtrString(planBadge.Badge.ValueString())
+				} else {
+					newBadge.Badge = openapi.PtrString("")
+				}
+
+				if !planBadge.BadgeRefType.IsNull() && planBadge.BadgeRefType.ValueString() != "" {
+					newBadge.BadgeRefType = openapi.PtrString(planBadge.BadgeRefType.ValueString())
+				} else {
+					newBadge.BadgeRefType = openapi.PtrString("")
+				}
 			} else {
+				// Both empty
+				newBadge.Badge = openapi.PtrString("")
 				newBadge.BadgeRefType = openapi.PtrString("")
 			}
 
@@ -919,22 +1035,43 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 		fieldChanged := false
 
-		if !planBadge.Badge.Equal(stateBadge.Badge) {
-			if !planBadge.Badge.IsNull() && planBadge.Badge.ValueString() != "" {
-				updateBadge.Badge = openapi.PtrString(planBadge.Badge.ValueString())
-			} else {
-				updateBadge.Badge = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
+		badgeChanged := !planBadge.Badge.Equal(stateBadge.Badge)
+		badgeRefTypeChanged := !planBadge.BadgeRefType.Equal(stateBadge.BadgeRefType)
 
-		if !planBadge.BadgeRefType.Equal(stateBadge.BadgeRefType) {
-			if !planBadge.BadgeRefType.IsNull() && planBadge.BadgeRefType.ValueString() != "" {
-				updateBadge.BadgeRefType = openapi.PtrString(planBadge.BadgeRefType.ValueString())
-			} else {
-				updateBadge.BadgeRefType = openapi.PtrString("")
+		if badgeChanged || badgeRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				planBadge.Badge, planBadge.BadgeRefType,
+				"badge", "badge_ref_type_",
+				badgeChanged, badgeRefTypeChanged) {
+				return
 			}
-			fieldChanged = true
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if badgeChanged && !badgeRefTypeChanged {
+				// Just send the base field
+				if !planBadge.Badge.IsNull() && planBadge.Badge.ValueString() != "" {
+					updateBadge.Badge = openapi.PtrString(planBadge.Badge.ValueString())
+				} else {
+					updateBadge.Badge = openapi.PtrString("")
+				}
+				fieldChanged = true
+			} else if badgeRefTypeChanged {
+				// Send both fields
+				if !planBadge.Badge.IsNull() && planBadge.Badge.ValueString() != "" {
+					updateBadge.Badge = openapi.PtrString(planBadge.Badge.ValueString())
+				} else {
+					updateBadge.Badge = openapi.PtrString("")
+				}
+
+				if !planBadge.BadgeRefType.IsNull() && planBadge.BadgeRefType.ValueString() != "" {
+					updateBadge.BadgeRefType = openapi.PtrString(planBadge.BadgeRefType.ValueString())
+				} else {
+					updateBadge.BadgeRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 		}
 
 		if fieldChanged {
@@ -994,15 +1131,31 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				Index: openapi.PtrInt32(int32(idx)),
 			}
 
-			if !planChild.ChildNumEndpoint.IsNull() && planChild.ChildNumEndpoint.ValueString() != "" {
-				newChild.ChildNumEndpoint = openapi.PtrString(planChild.ChildNumEndpoint.ValueString())
-			} else {
-				newChild.ChildNumEndpoint = openapi.PtrString("")
-			}
+			childNumEndpointChanged := !planChild.ChildNumEndpoint.IsNull() && planChild.ChildNumEndpoint.ValueString() != ""
+			childNumEndpointRefTypeChanged := !planChild.ChildNumEndpointRefType.IsNull() && planChild.ChildNumEndpointRefType.ValueString() != ""
 
-			if !planChild.ChildNumEndpointRefType.IsNull() && planChild.ChildNumEndpointRefType.ValueString() != "" {
-				newChild.ChildNumEndpointRefType = openapi.PtrString(planChild.ChildNumEndpointRefType.ValueString())
+			if childNumEndpointChanged || childNumEndpointRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					planChild.ChildNumEndpoint, planChild.ChildNumEndpointRefType,
+					"child_num_endpoint", "child_num_endpoint_ref_type_",
+					childNumEndpointChanged, childNumEndpointRefTypeChanged) {
+					return
+				}
+
+				if !planChild.ChildNumEndpoint.IsNull() && planChild.ChildNumEndpoint.ValueString() != "" {
+					newChild.ChildNumEndpoint = openapi.PtrString(planChild.ChildNumEndpoint.ValueString())
+				} else {
+					newChild.ChildNumEndpoint = openapi.PtrString("")
+				}
+
+				if !planChild.ChildNumEndpointRefType.IsNull() && planChild.ChildNumEndpointRefType.ValueString() != "" {
+					newChild.ChildNumEndpointRefType = openapi.PtrString(planChild.ChildNumEndpointRefType.ValueString())
+				} else {
+					newChild.ChildNumEndpointRefType = openapi.PtrString("")
+				}
 			} else {
+				// Both empty
+				newChild.ChildNumEndpoint = openapi.PtrString("")
 				newChild.ChildNumEndpointRefType = openapi.PtrString("")
 			}
 
@@ -1024,22 +1177,43 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 		fieldChanged := false
 
-		if !planChild.ChildNumEndpoint.Equal(stateChild.ChildNumEndpoint) {
-			if !planChild.ChildNumEndpoint.IsNull() && planChild.ChildNumEndpoint.ValueString() != "" {
-				updateChild.ChildNumEndpoint = openapi.PtrString(planChild.ChildNumEndpoint.ValueString())
-			} else {
-				updateChild.ChildNumEndpoint = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
+		childNumEndpointChanged := !planChild.ChildNumEndpoint.Equal(stateChild.ChildNumEndpoint)
+		childNumEndpointRefTypeChanged := !planChild.ChildNumEndpointRefType.Equal(stateChild.ChildNumEndpointRefType)
 
-		if !planChild.ChildNumEndpointRefType.Equal(stateChild.ChildNumEndpointRefType) {
-			if !planChild.ChildNumEndpointRefType.IsNull() && planChild.ChildNumEndpointRefType.ValueString() != "" {
-				updateChild.ChildNumEndpointRefType = openapi.PtrString(planChild.ChildNumEndpointRefType.ValueString())
-			} else {
-				updateChild.ChildNumEndpointRefType = openapi.PtrString("")
+		if childNumEndpointChanged || childNumEndpointRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				planChild.ChildNumEndpoint, planChild.ChildNumEndpointRefType,
+				"child_num_endpoint", "child_num_endpoint_ref_type_",
+				childNumEndpointChanged, childNumEndpointRefTypeChanged) {
+				return
 			}
-			fieldChanged = true
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if childNumEndpointChanged && !childNumEndpointRefTypeChanged {
+				// Just send the base field
+				if !planChild.ChildNumEndpoint.IsNull() && planChild.ChildNumEndpoint.ValueString() != "" {
+					updateChild.ChildNumEndpoint = openapi.PtrString(planChild.ChildNumEndpoint.ValueString())
+				} else {
+					updateChild.ChildNumEndpoint = openapi.PtrString("")
+				}
+				fieldChanged = true
+			} else if childNumEndpointRefTypeChanged {
+				// Send both fields
+				if !planChild.ChildNumEndpoint.IsNull() && planChild.ChildNumEndpoint.ValueString() != "" {
+					updateChild.ChildNumEndpoint = openapi.PtrString(planChild.ChildNumEndpoint.ValueString())
+				} else {
+					updateChild.ChildNumEndpoint = openapi.PtrString("")
+				}
+
+				if !planChild.ChildNumEndpointRefType.IsNull() && planChild.ChildNumEndpointRefType.ValueString() != "" {
+					updateChild.ChildNumEndpointRefType = openapi.PtrString(planChild.ChildNumEndpointRefType.ValueString())
+				} else {
+					updateChild.ChildNumEndpointRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 		}
 
 		if !planChild.ChildNumDevice.Equal(stateChild.ChildNumDevice) {
@@ -1333,27 +1507,67 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			stateOP = &state.ObjectProperties[0]
 		}
 
-		// Check if non-eths fields changed
+		// Check if non-eths fields changed (excluding ref_type pairs)
 		fieldsChanged := false
 		if stateOP == nil ||
 			!planOP.UserNotes.Equal(stateOP.UserNotes) ||
-			!planOP.ExpectedParentEndpoint.Equal(stateOP.ExpectedParentEndpoint) ||
-			!planOP.ExpectedParentEndpointRefType.Equal(stateOP.ExpectedParentEndpointRefType) ||
 			!planOP.NumberOfMultipoints.Equal(stateOP.NumberOfMultipoints) ||
 			!planOP.Aggregate.Equal(stateOP.Aggregate) ||
-			!planOP.IsHost.Equal(stateOP.IsHost) {
+			!planOP.IsHost.Equal(stateOP.IsHost) ||
+			!planOP.DrawAsEdgeDevice.Equal(stateOP.DrawAsEdgeDevice) {
 			fieldsChanged = true
+		}
+
+		// Handle ExpectedParentEndpoint and ExpectedParentEndpointRefType as a pair
+		var stateExpectedParentEndpoint, stateExpectedParentEndpointRefType types.String
+		if stateOP != nil {
+			stateExpectedParentEndpoint = stateOP.ExpectedParentEndpoint
+			stateExpectedParentEndpointRefType = stateOP.ExpectedParentEndpointRefType
+		} else {
+			stateExpectedParentEndpoint = types.StringNull()
+			stateExpectedParentEndpointRefType = types.StringNull()
+		}
+
+		expectedParentEndpointChanged := !planOP.ExpectedParentEndpoint.Equal(stateExpectedParentEndpoint)
+		expectedParentEndpointRefTypeChanged := !planOP.ExpectedParentEndpointRefType.Equal(stateExpectedParentEndpointRefType)
+
+		if expectedParentEndpointChanged || expectedParentEndpointRefTypeChanged {
+			// Validate using one ref type supported rules
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				planOP.ExpectedParentEndpoint, planOP.ExpectedParentEndpointRefType,
+				"expected_parent_endpoint", "expected_parent_endpoint_ref_type_",
+				expectedParentEndpointChanged, expectedParentEndpointRefTypeChanged) {
+				return
+			}
+
+			// Only send the base field if only it changed
+			if expectedParentEndpointChanged && !expectedParentEndpointRefTypeChanged {
+				// Just send the base field
+				if !planOP.ExpectedParentEndpoint.IsNull() && planOP.ExpectedParentEndpoint.ValueString() != "" {
+					objProps.ExpectedParentEndpoint = openapi.PtrString(planOP.ExpectedParentEndpoint.ValueString())
+				} else {
+					objProps.ExpectedParentEndpoint = openapi.PtrString("")
+				}
+			} else if expectedParentEndpointRefTypeChanged {
+				// Send both fields
+				if !planOP.ExpectedParentEndpoint.IsNull() && planOP.ExpectedParentEndpoint.ValueString() != "" {
+					objProps.ExpectedParentEndpoint = openapi.PtrString(planOP.ExpectedParentEndpoint.ValueString())
+				} else {
+					objProps.ExpectedParentEndpoint = openapi.PtrString("")
+				}
+
+				if !planOP.ExpectedParentEndpointRefType.IsNull() && planOP.ExpectedParentEndpointRefType.ValueString() != "" {
+					objProps.ExpectedParentEndpointRefType = openapi.PtrString(planOP.ExpectedParentEndpointRefType.ValueString())
+				} else {
+					objProps.ExpectedParentEndpointRefType = openapi.PtrString("")
+				}
+			}
+			objectPropertiesChanged = true
 		}
 
 		if fieldsChanged {
 			if !planOP.UserNotes.IsNull() {
 				objProps.UserNotes = openapi.PtrString(planOP.UserNotes.ValueString())
-			}
-			if !planOP.ExpectedParentEndpoint.IsNull() {
-				objProps.ExpectedParentEndpoint = openapi.PtrString(planOP.ExpectedParentEndpoint.ValueString())
-			}
-			if !planOP.ExpectedParentEndpointRefType.IsNull() {
-				objProps.ExpectedParentEndpointRefType = openapi.PtrString(planOP.ExpectedParentEndpointRefType.ValueString())
 			}
 			if !planOP.NumberOfMultipoints.IsNull() {
 				val := int32(planOP.NumberOfMultipoints.ValueInt64())
@@ -1366,6 +1580,9 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			}
 			if !planOP.IsHost.IsNull() {
 				objProps.IsHost = openapi.PtrBool(planOP.IsHost.ValueBool())
+			}
+			if !planOP.DrawAsEdgeDevice.IsNull() {
+				objProps.DrawAsEdgeDevice = openapi.PtrBool(planOP.DrawAsEdgeDevice.ValueBool())
 			}
 			objectPropertiesChanged = true
 		}
@@ -1582,6 +1799,7 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 		"type":                       &state.Type,
 		"super_pod":                  &state.SuperPod,
 		"pod":                        &state.Pod,
+		"pod_ref_type_":              &state.PodRefType,
 		"rack":                       &state.Rack,
 	}
 
@@ -1618,6 +1836,10 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 				if !plan.Pod.IsNull() {
 					*stateField = plan.Pod
 				}
+			case "pod_ref_type_":
+				if !plan.PodRefType.IsNull() {
+					*stateField = plan.PodRefType
+				}
 			case "rack":
 				if !plan.Rack.IsNull() {
 					*stateField = plan.Rack
@@ -1652,6 +1874,12 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 		state.SwitchVtepIdIpMaskAutoAssigned = plan.SwitchVtepIdIpMaskAutoAssigned
 	}
 
+	if val, ok := switchpointData["enable"].(bool); ok {
+		state.Enable = types.BoolValue(val)
+	} else if plan != nil && !plan.Enable.IsNull() {
+		state.Enable = plan.Enable
+	}
+
 	if val, ok := switchpointData["read_only_mode"].(bool); ok {
 		state.ReadOnlyMode = types.BoolValue(val)
 	} else if plan != nil && !plan.ReadOnlyMode.IsNull() {
@@ -1668,6 +1896,12 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 		state.OutOfBandManagement = types.BoolValue(val)
 	} else if plan != nil && !plan.OutOfBandManagement.IsNull() {
 		state.OutOfBandManagement = plan.OutOfBandManagement
+	}
+
+	if val, ok := switchpointData["is_fabric"].(bool); ok {
+		state.IsFabric = types.BoolValue(val)
+	} else if plan != nil && !plan.IsFabric.IsNull() {
+		state.IsFabric = plan.IsFabric
 	}
 
 	if val, ok := switchpointData["bgp_as_number"]; ok {
@@ -1912,6 +2146,11 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 			op.IsHost = types.BoolValue(val)
 		} else {
 			op.IsHost = types.BoolNull()
+		}
+		if val, ok := objProps["draw_as_edge_device"].(bool); ok {
+			op.DrawAsEdgeDevice = types.BoolValue(val)
+		} else {
+			op.DrawAsEdgeDevice = types.BoolNull()
 		}
 
 		if ethsArray, ok := objProps["eths"].([]interface{}); ok && len(ethsArray) > 0 {

@@ -42,12 +42,13 @@ type verityBundleResourceModel struct {
 	DeviceSettingsRefType      types.String                        `tfsdk:"device_settings_ref_type_"`
 	CliCommands                types.String                        `tfsdk:"cli_commands"`
 	Protocol                   types.String                        `tfsdk:"protocol"`
+	DiagnosticsProfile         types.String                        `tfsdk:"diagnostics_profile"`
+	DiagnosticsProfileRefType  types.String                        `tfsdk:"diagnostics_profile_ref_type_"`
 	DeviceVoiceSettings        types.String                        `tfsdk:"device_voice_settings"`
 	DeviceVoiceSettingsRefType types.String                        `tfsdk:"device_voice_settings_ref_type_"`
 	ObjectProperties           []verityBundleObjectPropertiesModel `tfsdk:"object_properties"`
 	EthPortPaths               []ethPortPathsModel                 `tfsdk:"eth_port_paths"`
 	UserServices               []userServicesModel                 `tfsdk:"user_services"`
-	RgServices                 []rgServicesModel                   `tfsdk:"rg_services"`
 	VoicePortProfilePaths      []voicePortProfilePathsModel        `tfsdk:"voice_port_profile_paths"`
 }
 
@@ -58,14 +59,16 @@ type verityBundleObjectPropertiesModel struct {
 }
 
 type ethPortPathsModel struct {
-	EthPortNumEthPortProfile         types.String `tfsdk:"eth_port_num_eth_port_profile"`
-	EthPortNumEthPortProfileRefType  types.String `tfsdk:"eth_port_num_eth_port_profile_ref_type_"`
-	EthPortNumEthPortSettings        types.String `tfsdk:"eth_port_num_eth_port_settings"`
-	EthPortNumEthPortSettingsRefType types.String `tfsdk:"eth_port_num_eth_port_settings_ref_type_"`
-	EthPortNumGatewayProfile         types.String `tfsdk:"eth_port_num_gateway_profile"`
-	EthPortNumGatewayProfileRefType  types.String `tfsdk:"eth_port_num_gateway_profile_ref_type_"`
-	PortName                         types.String `tfsdk:"port_name"`
-	Index                            types.Int64  `tfsdk:"index"`
+	EthPortNumEthPortProfile                               types.String `tfsdk:"eth_port_num_eth_port_profile"`
+	EthPortNumEthPortProfileRefType                        types.String `tfsdk:"eth_port_num_eth_port_profile_ref_type_"`
+	EthPortNumEthPortSettings                              types.String `tfsdk:"eth_port_num_eth_port_settings"`
+	EthPortNumEthPortSettingsRefType                       types.String `tfsdk:"eth_port_num_eth_port_settings_ref_type_"`
+	EthPortNumGatewayProfile                               types.String `tfsdk:"eth_port_num_gateway_profile"`
+	EthPortNumGatewayProfileRefType                        types.String `tfsdk:"eth_port_num_gateway_profile_ref_type_"`
+	DiagnosticsPortProfileNumDiagnosticsPortProfile        types.String `tfsdk:"diagnostics_port_profile_num_diagnostics_port_profile"`
+	DiagnosticsPortProfileNumDiagnosticsPortProfileRefType types.String `tfsdk:"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_"`
+	PortName                                               types.String `tfsdk:"port_name"`
+	Index                                                  types.Int64  `tfsdk:"index"`
 }
 
 type voicePortProfilePathsModel struct {
@@ -79,15 +82,6 @@ type userServicesModel struct {
 	RowAppConnectedService        types.String `tfsdk:"row_app_connected_service"`
 	RowAppConnectedServiceRefType types.String `tfsdk:"row_app_connected_service_ref_type_"`
 	RowAppCliCommands             types.String `tfsdk:"row_app_cli_commands"`
-	RowIpMask                     types.String `tfsdk:"row_ip_mask"`
-	Index                         types.Int64  `tfsdk:"index"`
-}
-
-type rgServicesModel struct {
-	RowAppEnable                  types.Bool   `tfsdk:"row_app_enable"`
-	RowAppConnectedService        types.String `tfsdk:"row_app_connected_service"`
-	RowAppConnectedServiceRefType types.String `tfsdk:"row_app_connected_service_ref_type_"`
-	RowAppType                    types.String `tfsdk:"row_app_type"`
 	RowIpMask                     types.String `tfsdk:"row_ip_mask"`
 	Index                         types.Int64  `tfsdk:"index"`
 }
@@ -147,6 +141,14 @@ func (r *verityBundleResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Voice Protocol: MGCP or SIP",
 				Optional:    true,
 			},
+			"diagnostics_profile": schema.StringAttribute{
+				Description: "Diagnostics Profile for device",
+				Optional:    true,
+			},
+			"diagnostics_profile_ref_type_": schema.StringAttribute{
+				Description: "Object type for diagnostics_profile field",
+				Optional:    true,
+			},
 			"device_voice_settings": schema.StringAttribute{
 				Description: "Device Voice Settings for device",
 				Optional:    true,
@@ -204,6 +206,14 @@ func (r *verityBundleResource) Schema(_ context.Context, _ resource.SchemaReques
 							Description: "Object type for eth_port_num_gateway_profile field",
 							Optional:    true,
 						},
+						"diagnostics_port_profile_num_diagnostics_port_profile": schema.StringAttribute{
+							Description: "Diagnostics Port Profile for port",
+							Optional:    true,
+						},
+						"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": schema.StringAttribute{
+							Description: "Object type for diagnostics_port_profile_num_diagnostics_port_profile field",
+							Optional:    true,
+						},
 						"port_name": schema.StringAttribute{
 							Description: "The name identifying the port",
 							Optional:    true,
@@ -233,37 +243,6 @@ func (r *verityBundleResource) Schema(_ context.Context, _ resource.SchemaReques
 						},
 						"row_app_cli_commands": schema.StringAttribute{
 							Description: "CLI Commands of this User application",
-							Optional:    true,
-						},
-						"row_ip_mask": schema.StringAttribute{
-							Description: "IP/Mask in IPv4 format",
-							Optional:    true,
-						},
-						"index": schema.Int64Attribute{
-							Description: "The index identifying the object. Zero if you want to add an object to the list.",
-							Optional:    true,
-						},
-					},
-				},
-			},
-			"rg_services": schema.ListNestedBlock{
-				Description: "List of RG services configurations",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"row_app_enable": schema.BoolAttribute{
-							Description: "Enable of this ONT application",
-							Optional:    true,
-						},
-						"row_app_connected_service": schema.StringAttribute{
-							Description: "Service connected to this ONT application",
-							Optional:    true,
-						},
-						"row_app_connected_service_ref_type_": schema.StringAttribute{
-							Description: "Object type for row_app_connected_service field",
-							Optional:    true,
-						},
-						"row_app_type": schema.StringAttribute{
-							Description: "Type of ONT Application",
 							Optional:    true,
 						},
 						"row_ip_mask": schema.StringAttribute{
@@ -344,6 +323,12 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	if !plan.Protocol.IsNull() {
 		bundleProps.Protocol = openapi.PtrString(plan.Protocol.ValueString())
 	}
+	if !plan.DiagnosticsProfile.IsNull() {
+		bundleProps.DiagnosticsProfile = openapi.PtrString(plan.DiagnosticsProfile.ValueString())
+	}
+	if !plan.DiagnosticsProfileRefType.IsNull() {
+		bundleProps.DiagnosticsProfileRefType = openapi.PtrString(plan.DiagnosticsProfileRefType.ValueString())
+	}
 	if !plan.DeviceVoiceSettings.IsNull() {
 		bundleProps.DeviceVoiceSettings = openapi.PtrString(plan.DeviceVoiceSettings.ValueString())
 	}
@@ -388,6 +373,12 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 			if !path.EthPortNumGatewayProfileRefType.IsNull() {
 				pathItem.EthPortNumGatewayProfileRefType = openapi.PtrString(path.EthPortNumGatewayProfileRefType.ValueString())
 			}
+			if !path.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() {
+				pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
+			}
+			if !path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() {
+				pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString())
+			}
 			if !path.PortName.IsNull() {
 				pathItem.PortName = openapi.PtrString(path.PortName.ValueString())
 			}
@@ -424,33 +415,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 			userServices[i] = serviceItem
 		}
 		bundleProps.UserServices = userServices
-	}
-
-	if len(plan.RgServices) > 0 {
-		rgServices := make([]openapi.BundlesPutRequestEndpointBundleValueRgServicesInner, len(plan.RgServices))
-		for i, service := range plan.RgServices {
-			serviceItem := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{}
-			if !service.RowAppEnable.IsNull() {
-				serviceItem.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
-			}
-			if !service.RowAppConnectedService.IsNull() {
-				serviceItem.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-			}
-			if !service.RowAppConnectedServiceRefType.IsNull() {
-				serviceItem.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
-			}
-			if !service.RowAppType.IsNull() {
-				serviceItem.RowAppType = openapi.PtrString(service.RowAppType.ValueString())
-			}
-			if !service.RowIpMask.IsNull() {
-				serviceItem.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
-			}
-			if !service.Index.IsNull() {
-				serviceItem.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
-			}
-			rgServices[i] = serviceItem
-		}
-		bundleProps.RgServices = rgServices
 	}
 
 	if len(plan.VoicePortProfilePaths) > 0 {
@@ -620,6 +584,18 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 		data.Protocol = types.StringNull()
 	}
 
+	if diagnosticsProfile, ok := bundleData["diagnostics_profile"].(string); ok {
+		data.DiagnosticsProfile = types.StringValue(diagnosticsProfile)
+	} else {
+		data.DiagnosticsProfile = types.StringNull()
+	}
+
+	if diagnosticsProfileRefType, ok := bundleData["diagnostics_profile_ref_type_"].(string); ok {
+		data.DiagnosticsProfileRefType = types.StringValue(diagnosticsProfileRefType)
+	} else {
+		data.DiagnosticsProfileRefType = types.StringNull()
+	}
+
 	if deviceVoiceSettings, ok := bundleData["device_voice_settings"].(string); ok {
 		data.DeviceVoiceSettings = types.StringValue(deviceVoiceSettings)
 	} else {
@@ -666,10 +642,12 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 			ethPortPath := ethPortPathsModel{}
 
 			stringFields := map[string]*types.String{
-				"eth_port_num_eth_port_profile":            &ethPortPath.EthPortNumEthPortProfile,
-				"eth_port_num_eth_port_settings":           &ethPortPath.EthPortNumEthPortSettings,
-				"eth_port_num_eth_port_settings_ref_type_": &ethPortPath.EthPortNumEthPortSettingsRefType,
-				"eth_port_num_eth_port_profile_ref_type_":  &ethPortPath.EthPortNumEthPortProfileRefType,
+				"eth_port_num_eth_port_profile":                                   &ethPortPath.EthPortNumEthPortProfile,
+				"eth_port_num_eth_port_settings":                                  &ethPortPath.EthPortNumEthPortSettings,
+				"eth_port_num_eth_port_settings_ref_type_":                        &ethPortPath.EthPortNumEthPortSettingsRefType,
+				"eth_port_num_eth_port_profile_ref_type_":                         &ethPortPath.EthPortNumEthPortProfileRefType,
+				"diagnostics_port_profile_num_diagnostics_port_profile":           &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile,
+				"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
 				"port_name": &ethPortPath.PortName,
 			}
 
@@ -764,57 +742,6 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 		}
 	}
 	data.UserServices = userServices
-
-	var rgServices []rgServicesModel
-	if services, ok := bundleData["rg_services"].([]interface{}); ok {
-		for _, s := range services {
-			service, ok := s.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			rgService := rgServicesModel{}
-
-			if enable, ok := service["row_app_enable"].(bool); ok {
-				rgService.RowAppEnable = types.BoolValue(enable)
-			} else {
-				rgService.RowAppEnable = types.BoolNull()
-			}
-
-			stringFields := map[string]struct {
-				field  *types.String
-				apiKey string
-			}{
-				"row_app_connected_service":           {&rgService.RowAppConnectedService, "row_app_connected_service"},
-				"row_app_type":                        {&rgService.RowAppType, "row_app_type"},
-				"row_ip_mask":                         {&rgService.RowIpMask, "row_ip_mask"},
-				"row_app_connected_service_ref_type_": {&rgService.RowAppConnectedServiceRefType, "row_app_connected_service_ref_type_"},
-			}
-
-			for _, item := range stringFields {
-				if val, ok := service[item.apiKey]; ok && val != nil {
-					if strVal, ok := val.(string); ok {
-						*item.field = types.StringValue(strVal)
-					} else {
-						*item.field = types.StringNull()
-					}
-				} else {
-					*item.field = types.StringNull()
-				}
-			}
-
-			if index, ok := service["index"].(float64); ok {
-				rgService.Index = types.Int64Value(int64(index))
-			} else if index, ok := service["index"].(int); ok {
-				rgService.Index = types.Int64Value(int64(index))
-			} else {
-				rgService.Index = types.Int64Null()
-			}
-
-			rgServices = append(rgServices, rgService)
-		}
-	}
-	data.RgServices = rgServices
 
 	var voicePortProfilePaths []voicePortProfilePathsModel
 	if paths, ok := bundleData["voice_port_profile_paths"].([]interface{}); ok {
@@ -934,6 +861,43 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				bundleValue.DeviceSettingsRefType = openapi.PtrString(data.DeviceSettingsRefType.ValueString())
 			} else {
 				bundleValue.DeviceSettingsRefType = openapi.PtrString("")
+			}
+			hasChanges = true
+		}
+	}
+
+	diagnosticsProfileChanged := !data.DiagnosticsProfile.Equal(state.DiagnosticsProfile)
+	diagnosticsProfileRefTypeChanged := !data.DiagnosticsProfileRefType.Equal(state.DiagnosticsProfileRefType)
+
+	if diagnosticsProfileChanged || diagnosticsProfileRefTypeChanged {
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			data.DiagnosticsProfile, data.DiagnosticsProfileRefType,
+			"diagnostics_profile", "diagnostics_profile_ref_type_",
+			diagnosticsProfileChanged, diagnosticsProfileRefTypeChanged) {
+			return
+		}
+
+		// Only send the base field if only it changed
+		if diagnosticsProfileChanged && !diagnosticsProfileRefTypeChanged {
+			// Just send the base field
+			if !data.DiagnosticsProfile.IsNull() && data.DiagnosticsProfile.ValueString() != "" {
+				bundleValue.DiagnosticsProfile = openapi.PtrString(data.DiagnosticsProfile.ValueString())
+			} else {
+				bundleValue.DiagnosticsProfile = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if diagnosticsProfileRefTypeChanged {
+			// Send both fields
+			if !data.DiagnosticsProfile.IsNull() && data.DiagnosticsProfile.ValueString() != "" {
+				bundleValue.DiagnosticsProfile = openapi.PtrString(data.DiagnosticsProfile.ValueString())
+			} else {
+				bundleValue.DiagnosticsProfile = openapi.PtrString("")
+			}
+
+			if !data.DiagnosticsProfileRefType.IsNull() && data.DiagnosticsProfileRefType.ValueString() != "" {
+				bundleValue.DiagnosticsProfileRefType = openapi.PtrString(data.DiagnosticsProfileRefType.ValueString())
+			} else {
+				bundleValue.DiagnosticsProfileRefType = openapi.PtrString("")
 			}
 			hasChanges = true
 		}
@@ -1123,6 +1087,31 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
 			}
 
+			// Handle diagnostics port profile fields
+			hasDiagnosticsProfile := !path.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() && path.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString() != ""
+			hasDiagnosticsProfileRefType := !path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() && path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString() != ""
+
+			if hasDiagnosticsProfile || hasDiagnosticsProfileRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					path.DiagnosticsPortProfileNumDiagnosticsPortProfile, path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
+					"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+					hasDiagnosticsProfile, hasDiagnosticsProfileRefType) {
+					return
+				}
+			}
+
+			if !path.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() {
+				ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
+			} else {
+				ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString("")
+			}
+
+			if !path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() {
+				ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString())
+			} else {
+				ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString("")
+			}
+
 			changedPaths = append(changedPaths, ethPortPath)
 			ethPortPathsChanged = true
 			continue
@@ -1235,6 +1224,44 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(path.EthPortNumGatewayProfileRefType.ValueString())
 			} else {
 				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
+			}
+
+			fieldChanged = true
+		}
+
+		// Handle diagnostics port profile fields changes
+		diagnosticsProfileChanged := !path.DiagnosticsPortProfileNumDiagnosticsPortProfile.Equal(statePath.DiagnosticsPortProfileNumDiagnosticsPortProfile)
+		diagnosticsProfileRefTypeChanged := !path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.Equal(statePath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType)
+
+		if diagnosticsProfileChanged || diagnosticsProfileRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				path.DiagnosticsPortProfileNumDiagnosticsPortProfile, path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
+				"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+				diagnosticsProfileChanged, diagnosticsProfileRefTypeChanged) {
+				return
+			}
+
+			// Only send the base field if only it changed
+			if diagnosticsProfileChanged && !diagnosticsProfileRefTypeChanged {
+				// Just send the base field
+				if !path.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() && path.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString() != "" {
+					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
+				} else {
+					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString("")
+				}
+			} else if diagnosticsProfileRefTypeChanged {
+				// Send both fields
+				if !path.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() && path.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString() != "" {
+					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
+				} else {
+					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString("")
+				}
+
+				if !path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() && path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString() != "" {
+					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString())
+				} else {
+					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString("")
+				}
 			}
 
 			fieldChanged = true
@@ -1437,176 +1464,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 	if userServicesChanged && len(changedServices) > 0 {
 		bundleValue.UserServices = changedServices
-		hasChanges = true
-	}
-
-	stateRgServicesByIndex := make(map[int64]rgServicesModel)
-	for _, service := range state.RgServices {
-		if !service.Index.IsNull() {
-			stateRgServicesByIndex[service.Index.ValueInt64()] = service
-		}
-	}
-
-	var changedRgServices []openapi.BundlesPutRequestEndpointBundleValueRgServicesInner
-	rgServicesChanged := false
-
-	for _, service := range data.RgServices {
-		if service.Index.IsNull() {
-			continue
-		}
-
-		index := service.Index.ValueInt64()
-		stateService, exists := stateRgServicesByIndex[index]
-
-		if !exists {
-			// new rg service, include all fields
-			rgService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-
-			if !service.RowAppEnable.IsNull() {
-				rgService.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
-			} else {
-				rgService.RowAppEnable = openapi.PtrBool(false)
-			}
-
-			hasConnectedService := !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != ""
-			hasConnectedServiceRefType := !service.RowAppConnectedServiceRefType.IsNull() && service.RowAppConnectedServiceRefType.ValueString() != ""
-
-			if hasConnectedService || hasConnectedServiceRefType {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					service.RowAppConnectedService, service.RowAppConnectedServiceRefType,
-					"row_app_connected_service", "row_app_connected_service_ref_type_",
-					hasConnectedService, hasConnectedServiceRefType) {
-					return
-				}
-			}
-
-			if !service.RowAppConnectedService.IsNull() {
-				rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-			} else {
-				rgService.RowAppConnectedService = openapi.PtrString("")
-			}
-
-			if !service.RowAppConnectedServiceRefType.IsNull() {
-				rgService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
-			} else {
-				rgService.RowAppConnectedServiceRefType = openapi.PtrString("")
-			}
-
-			if !service.RowAppType.IsNull() {
-				rgService.RowAppType = openapi.PtrString(service.RowAppType.ValueString())
-			} else {
-				rgService.RowAppType = openapi.PtrString("")
-			}
-
-			if !service.RowIpMask.IsNull() {
-				rgService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
-			} else {
-				rgService.RowIpMask = openapi.PtrString("")
-			}
-
-			changedRgServices = append(changedRgServices, rgService)
-			rgServicesChanged = true
-			continue
-		}
-
-		// existing rg service, check which fields changed
-		rgService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{
-			Index: openapi.PtrInt32(int32(index)),
-		}
-
-		fieldChanged := false
-
-		if !service.RowAppEnable.Equal(stateService.RowAppEnable) {
-			rgService.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
-			fieldChanged = true
-		}
-
-		connectedServiceChanged := !service.RowAppConnectedService.Equal(stateService.RowAppConnectedService)
-		connectedServiceRefTypeChanged := !service.RowAppConnectedServiceRefType.Equal(stateService.RowAppConnectedServiceRefType)
-
-		if connectedServiceChanged || connectedServiceRefTypeChanged {
-			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-				service.RowAppConnectedService, service.RowAppConnectedServiceRefType,
-				"row_app_connected_service", "row_app_connected_service_ref_type_",
-				connectedServiceChanged, connectedServiceRefTypeChanged) {
-				return
-			}
-
-			// For fields with one reference type:
-			// If only base field changes, send only base field
-			// If ref type field changes (or both), send both fields
-			if connectedServiceChanged && !connectedServiceRefTypeChanged {
-				// Just send the base field
-				if !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != "" {
-					rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-				} else {
-					rgService.RowAppConnectedService = openapi.PtrString("")
-				}
-			} else if connectedServiceRefTypeChanged {
-				// Send both fields
-				if !service.RowAppConnectedService.IsNull() && service.RowAppConnectedService.ValueString() != "" {
-					rgService.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-				} else {
-					rgService.RowAppConnectedService = openapi.PtrString("")
-				}
-
-				if !service.RowAppConnectedServiceRefType.IsNull() && service.RowAppConnectedServiceRefType.ValueString() != "" {
-					rgService.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
-				} else {
-					rgService.RowAppConnectedServiceRefType = openapi.PtrString("")
-				}
-			}
-
-			fieldChanged = true
-		}
-
-		if !service.RowAppType.Equal(stateService.RowAppType) {
-			if !service.RowAppType.IsNull() {
-				rgService.RowAppType = openapi.PtrString(service.RowAppType.ValueString())
-			} else {
-				rgService.RowAppType = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !service.RowIpMask.Equal(stateService.RowIpMask) {
-			if !service.RowIpMask.IsNull() {
-				rgService.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
-			} else {
-				rgService.RowIpMask = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedRgServices = append(changedRgServices, rgService)
-			rgServicesChanged = true
-		}
-	}
-
-	for idx := range stateRgServicesByIndex {
-		found := false
-		for _, service := range data.RgServices {
-			if !service.Index.IsNull() && service.Index.ValueInt64() == idx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// service removed - include only the index for deletion
-			deletedService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-			changedRgServices = append(changedRgServices, deletedService)
-			rgServicesChanged = true
-		}
-	}
-
-	if rgServicesChanged && len(changedRgServices) > 0 {
-		bundleValue.RgServices = changedRgServices
 		hasChanges = true
 	}
 

@@ -37,15 +37,18 @@ type verityEthPortProfileResource struct {
 }
 
 type verityEthPortProfileResourceModel struct {
-	Name               types.String                                `tfsdk:"name"`
-	Enable             types.Bool                                  `tfsdk:"enable"`
-	TenantSliceManaged types.Bool                                  `tfsdk:"tenant_slice_managed"`
-	ObjectProperties   []verityEthPortProfileObjectPropertiesModel `tfsdk:"object_properties"`
-	Services           []servicesModel                             `tfsdk:"services"`
-	Tls                types.Bool                                  `tfsdk:"tls"`
-	TlsService         types.String                                `tfsdk:"tls_service"`
-	TlsServiceRefType  types.String                                `tfsdk:"tls_service_ref_type_"`
-	TrustedPort        types.Bool                                  `tfsdk:"trusted_port"`
+	Name              types.String                                `tfsdk:"name"`
+	Enable            types.Bool                                  `tfsdk:"enable"`
+	IngressAcl        types.String                                `tfsdk:"ingress_acl"`
+	IngressAclRefType types.String                                `tfsdk:"ingress_acl_ref_type_"`
+	EgressAcl         types.String                                `tfsdk:"egress_acl"`
+	EgressAclRefType  types.String                                `tfsdk:"egress_acl_ref_type_"`
+	ObjectProperties  []verityEthPortProfileObjectPropertiesModel `tfsdk:"object_properties"`
+	Services          []servicesModel                             `tfsdk:"services"`
+	Tls               types.Bool                                  `tfsdk:"tls"`
+	TlsService        types.String                                `tfsdk:"tls_service"`
+	TlsServiceRefType types.String                                `tfsdk:"tls_service_ref_type_"`
+	TrustedPort       types.Bool                                  `tfsdk:"trusted_port"`
 }
 
 type verityEthPortProfileObjectPropertiesModel struct {
@@ -57,14 +60,18 @@ type verityEthPortProfileObjectPropertiesModel struct {
 }
 
 type servicesModel struct {
-	RowNumEnable           types.Bool   `tfsdk:"row_num_enable"`
-	RowNumService          types.String `tfsdk:"row_num_service"`
-	RowNumServiceRefType   types.String `tfsdk:"row_num_service_ref_type_"`
-	RowNumExternalVlan     types.Int64  `tfsdk:"row_num_external_vlan"`
-	Index                  types.Int64  `tfsdk:"index"`
-	RowNumMacFilter        types.String `tfsdk:"row_num_mac_filter"`
-	RowNumMacFilterRefType types.String `tfsdk:"row_num_mac_filter_ref_type_"`
-	RowNumLanIptv          types.String `tfsdk:"row_num_lan_iptv"`
+	RowNumEnable            types.Bool   `tfsdk:"row_num_enable"`
+	RowNumService           types.String `tfsdk:"row_num_service"`
+	RowNumServiceRefType    types.String `tfsdk:"row_num_service_ref_type_"`
+	RowNumExternalVlan      types.Int64  `tfsdk:"row_num_external_vlan"`
+	RowNumIngressAcl        types.String `tfsdk:"row_num_ingress_acl"`
+	RowNumIngressAclRefType types.String `tfsdk:"row_num_ingress_acl_ref_type_"`
+	RowNumEgressAcl         types.String `tfsdk:"row_num_egress_acl"`
+	RowNumEgressAclRefType  types.String `tfsdk:"row_num_egress_acl_ref_type_"`
+	Index                   types.Int64  `tfsdk:"index"`
+	RowNumMacFilter         types.String `tfsdk:"row_num_mac_filter"`
+	RowNumMacFilterRefType  types.String `tfsdk:"row_num_mac_filter_ref_type_"`
+	RowNumLanIptv           types.String `tfsdk:"row_num_lan_iptv"`
 }
 
 func (r *verityEthPortProfileResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -106,10 +113,21 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 				Description: "Enable object.",
 				Optional:    true,
 			},
-			"tenant_slice_managed": schema.BoolAttribute{
-				Description: "Profiles that Tenant Slice creates and manages",
+			"ingress_acl": schema.StringAttribute{
+				Description: "Choose an ingress access control list",
 				Optional:    true,
-				Computed:    true,
+			},
+			"ingress_acl_ref_type_": schema.StringAttribute{
+				Description: "Object type for ingress_acl field",
+				Optional:    true,
+			},
+			"egress_acl": schema.StringAttribute{
+				Description: "Choose an egress access control list",
+				Optional:    true,
+			},
+			"egress_acl_ref_type_": schema.StringAttribute{
+				Description: "Object type for egress_acl field",
+				Optional:    true,
 			},
 			"tls": schema.BoolAttribute{
 				Description: "Transparent LAN Service Trunk",
@@ -176,6 +194,22 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 							Description: "Choose an external vlan. A value of 0 will make the VLAN untagged, while null will use service VLAN.",
 							Optional:    true,
 						},
+						"row_num_ingress_acl": schema.StringAttribute{
+							Description: "Choose an ingress access control list",
+							Optional:    true,
+						},
+						"row_num_ingress_acl_ref_type_": schema.StringAttribute{
+							Description: "Object type for row_num_ingress_acl field",
+							Optional:    true,
+						},
+						"row_num_egress_acl": schema.StringAttribute{
+							Description: "Choose an egress access control list",
+							Optional:    true,
+						},
+						"row_num_egress_acl_ref_type_": schema.StringAttribute{
+							Description: "Object type for row_num_egress_acl field",
+							Optional:    true,
+						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
@@ -224,8 +258,21 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	if !plan.Enable.IsNull() {
 		ethPortName.Enable = openapi.PtrBool(plan.Enable.ValueBool())
 	}
-	if !plan.TenantSliceManaged.IsNull() {
-		ethPortName.TenantSliceManaged = openapi.PtrBool(plan.TenantSliceManaged.ValueBool())
+
+	if !plan.IngressAcl.IsNull() {
+		ethPortName.IngressAcl = openapi.PtrString(plan.IngressAcl.ValueString())
+	}
+
+	if !plan.IngressAclRefType.IsNull() {
+		ethPortName.IngressAclRefType = openapi.PtrString(plan.IngressAclRefType.ValueString())
+	}
+
+	if !plan.EgressAcl.IsNull() {
+		ethPortName.EgressAcl = openapi.PtrString(plan.EgressAcl.ValueString())
+	}
+
+	if !plan.EgressAclRefType.IsNull() {
+		ethPortName.EgressAclRefType = openapi.PtrString(plan.EgressAclRefType.ValueString())
 	}
 
 	if !plan.Tls.IsNull() {
@@ -298,6 +345,22 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 				s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
 			} else {
 				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
+			}
+
+			if !service.RowNumIngressAcl.IsNull() {
+				s.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
+			}
+
+			if !service.RowNumIngressAclRefType.IsNull() {
+				s.RowNumIngressAclRefType = openapi.PtrString(service.RowNumIngressAclRefType.ValueString())
+			}
+
+			if !service.RowNumEgressAcl.IsNull() {
+				s.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
+			}
+
+			if !service.RowNumEgressAclRefType.IsNull() {
+				s.RowNumEgressAclRefType = openapi.PtrString(service.RowNumEgressAclRefType.ValueString())
 			}
 
 			if !service.Index.IsNull() {
@@ -445,8 +508,28 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 		state.Enable = types.BoolValue(enable)
 	}
 
-	if tenantSliceManaged, ok := profile["tenant_slice_managed"].(bool); ok {
-		state.TenantSliceManaged = types.BoolValue(tenantSliceManaged)
+	if ingressAcl, ok := profile["ingress_acl"].(string); ok {
+		state.IngressAcl = types.StringValue(ingressAcl)
+	} else {
+		state.IngressAcl = types.StringNull()
+	}
+
+	if ingressAclRefType, ok := profile["ingress_acl_ref_type_"].(string); ok {
+		state.IngressAclRefType = types.StringValue(ingressAclRefType)
+	} else {
+		state.IngressAclRefType = types.StringNull()
+	}
+
+	if egressAcl, ok := profile["egress_acl"].(string); ok {
+		state.EgressAcl = types.StringValue(egressAcl)
+	} else {
+		state.EgressAcl = types.StringNull()
+	}
+
+	if egressAclRefType, ok := profile["egress_acl_ref_type_"].(string); ok {
+		state.EgressAclRefType = types.StringValue(egressAclRefType)
+	} else {
+		state.EgressAclRefType = types.StringNull()
 	}
 
 	if tls, ok := profile["tls"].(bool); ok {
@@ -571,6 +654,31 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 				} else {
 					serviceModel.RowNumExternalVlan = types.Int64Null()
 				}
+
+				if ingressAcl, ok := serviceMap["row_num_ingress_acl"].(string); ok {
+					serviceModel.RowNumIngressAcl = types.StringValue(ingressAcl)
+				} else {
+					serviceModel.RowNumIngressAcl = types.StringNull()
+				}
+
+				if ingressAclRefType, ok := serviceMap["row_num_ingress_acl_ref_type_"].(string); ok {
+					serviceModel.RowNumIngressAclRefType = types.StringValue(ingressAclRefType)
+				} else {
+					serviceModel.RowNumIngressAclRefType = types.StringNull()
+				}
+
+				if egressAcl, ok := serviceMap["row_num_egress_acl"].(string); ok {
+					serviceModel.RowNumEgressAcl = types.StringValue(egressAcl)
+				} else {
+					serviceModel.RowNumEgressAcl = types.StringNull()
+				}
+
+				if egressAclRefType, ok := serviceMap["row_num_egress_acl_ref_type_"].(string); ok {
+					serviceModel.RowNumEgressAclRefType = types.StringValue(egressAclRefType)
+				} else {
+					serviceModel.RowNumEgressAclRefType = types.StringNull()
+				}
+
 				if index, ok := serviceMap["index"].(float64); ok {
 					serviceModel.Index = types.Int64Value(int64(index))
 				} else {
@@ -639,9 +747,82 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		hasChanges = true
 	}
 
-	if !plan.TenantSliceManaged.Equal(state.TenantSliceManaged) {
-		ethPortName.TenantSliceManaged = openapi.PtrBool(plan.TenantSliceManaged.ValueBool())
-		hasChanges = true
+	ingressAclChanged := !plan.IngressAcl.Equal(state.IngressAcl)
+	ingressAclRefTypeChanged := !plan.IngressAclRefType.Equal(state.IngressAclRefType)
+
+	if ingressAclChanged || ingressAclRefTypeChanged {
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			plan.IngressAcl, plan.IngressAclRefType,
+			"ingress_acl", "ingress_acl_ref_type_",
+			ingressAclChanged, ingressAclRefTypeChanged) {
+			return
+		}
+
+		// For fields with one reference type:
+		// If only base field changes, send only base field
+		// If ref type field changes (or both), send both fields
+		if ingressAclChanged && !ingressAclRefTypeChanged {
+			// Just send the base field
+			if !plan.IngressAcl.IsNull() && plan.IngressAcl.ValueString() != "" {
+				ethPortName.IngressAcl = openapi.PtrString(plan.IngressAcl.ValueString())
+			} else {
+				ethPortName.IngressAcl = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if ingressAclRefTypeChanged {
+			// Send both fields
+			if !plan.IngressAcl.IsNull() && plan.IngressAcl.ValueString() != "" {
+				ethPortName.IngressAcl = openapi.PtrString(plan.IngressAcl.ValueString())
+			} else {
+				ethPortName.IngressAcl = openapi.PtrString("")
+			}
+
+			if !plan.IngressAclRefType.IsNull() && plan.IngressAclRefType.ValueString() != "" {
+				ethPortName.IngressAclRefType = openapi.PtrString(plan.IngressAclRefType.ValueString())
+			} else {
+				ethPortName.IngressAclRefType = openapi.PtrString("")
+			}
+			hasChanges = true
+		}
+	}
+
+	egressAclChanged := !plan.EgressAcl.Equal(state.EgressAcl)
+	egressAclRefTypeChanged := !plan.EgressAclRefType.Equal(state.EgressAclRefType)
+
+	if egressAclChanged || egressAclRefTypeChanged {
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			plan.EgressAcl, plan.EgressAclRefType,
+			"egress_acl", "egress_acl_ref_type_",
+			egressAclChanged, egressAclRefTypeChanged) {
+			return
+		}
+
+		// For fields with one reference type:
+		// If only base field changes, send only base field
+		// If ref type field changes (or both), send both fields
+		if egressAclChanged && !egressAclRefTypeChanged {
+			// Just send the base field
+			if !plan.EgressAcl.IsNull() && plan.EgressAcl.ValueString() != "" {
+				ethPortName.EgressAcl = openapi.PtrString(plan.EgressAcl.ValueString())
+			} else {
+				ethPortName.EgressAcl = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if egressAclRefTypeChanged {
+			// Send both fields
+			if !plan.EgressAcl.IsNull() && plan.EgressAcl.ValueString() != "" {
+				ethPortName.EgressAcl = openapi.PtrString(plan.EgressAcl.ValueString())
+			} else {
+				ethPortName.EgressAcl = openapi.PtrString("")
+			}
+
+			if !plan.EgressAclRefType.IsNull() && plan.EgressAclRefType.ValueString() != "" {
+				ethPortName.EgressAclRefType = openapi.PtrString(plan.EgressAclRefType.ValueString())
+			} else {
+				ethPortName.EgressAclRefType = openapi.PtrString("")
+			}
+			hasChanges = true
+		}
 	}
 
 	if !plan.Tls.Equal(state.Tls) {
@@ -649,14 +830,43 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		hasChanges = true
 	}
 
-	if !plan.TlsService.Equal(state.TlsService) {
-		ethPortName.TlsService = openapi.PtrString(plan.TlsService.ValueString())
-		hasChanges = true
-	}
+	tlsServiceChanged := !plan.TlsService.Equal(state.TlsService)
+	tlsServiceRefTypeChanged := !plan.TlsServiceRefType.Equal(state.TlsServiceRefType)
 
-	if !plan.TlsServiceRefType.Equal(state.TlsServiceRefType) {
-		ethPortName.TlsServiceRefType = openapi.PtrString(plan.TlsServiceRefType.ValueString())
-		hasChanges = true
+	if tlsServiceChanged || tlsServiceRefTypeChanged {
+		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+			plan.TlsService, plan.TlsServiceRefType,
+			"tls_service", "tls_service_ref_type_",
+			tlsServiceChanged, tlsServiceRefTypeChanged) {
+			return
+		}
+
+		// For fields with one reference type:
+		// If only base field changes, send only base field
+		// If ref type field changes (or both), send both fields
+		if tlsServiceChanged && !tlsServiceRefTypeChanged {
+			// Just send the base field
+			if !plan.TlsService.IsNull() && plan.TlsService.ValueString() != "" {
+				ethPortName.TlsService = openapi.PtrString(plan.TlsService.ValueString())
+			} else {
+				ethPortName.TlsService = openapi.PtrString("")
+			}
+			hasChanges = true
+		} else if tlsServiceRefTypeChanged {
+			// Send both fields
+			if !plan.TlsService.IsNull() && plan.TlsService.ValueString() != "" {
+				ethPortName.TlsService = openapi.PtrString(plan.TlsService.ValueString())
+			} else {
+				ethPortName.TlsService = openapi.PtrString("")
+			}
+
+			if !plan.TlsServiceRefType.IsNull() && plan.TlsServiceRefType.ValueString() != "" {
+				ethPortName.TlsServiceRefType = openapi.PtrString(plan.TlsServiceRefType.ValueString())
+			} else {
+				ethPortName.TlsServiceRefType = openapi.PtrString("")
+			}
+			hasChanges = true
+		}
 	}
 
 	if !plan.TrustedPort.Equal(state.TrustedPort) {
@@ -789,6 +999,66 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
 			}
 
+			hasIngressAcl := !service.RowNumIngressAcl.IsNull() && service.RowNumIngressAcl.ValueString() != ""
+			hasIngressAclRefType := !service.RowNumIngressAclRefType.IsNull() && service.RowNumIngressAclRefType.ValueString() != ""
+
+			if hasIngressAcl || hasIngressAclRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					service.RowNumIngressAcl, service.RowNumIngressAclRefType,
+					"row_num_ingress_acl", "row_num_ingress_acl_ref_type_",
+					hasIngressAcl, hasIngressAclRefType) {
+					return
+				}
+			}
+
+			if !service.RowNumIngressAcl.IsNull() {
+				s.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
+			} else {
+				s.RowNumIngressAcl = openapi.PtrString("")
+			}
+
+			if !service.RowNumIngressAclRefType.IsNull() {
+				s.RowNumIngressAclRefType = openapi.PtrString(service.RowNumIngressAclRefType.ValueString())
+			} else {
+				s.RowNumIngressAclRefType = openapi.PtrString("")
+			}
+
+			hasEgressAcl := !service.RowNumEgressAcl.IsNull() && service.RowNumEgressAcl.ValueString() != ""
+			hasEgressAclRefType := !service.RowNumEgressAclRefType.IsNull() && service.RowNumEgressAclRefType.ValueString() != ""
+
+			if hasEgressAcl || hasEgressAclRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					service.RowNumEgressAcl, service.RowNumEgressAclRefType,
+					"row_num_egress_acl", "row_num_egress_acl_ref_type_",
+					hasEgressAcl, hasEgressAclRefType) {
+					return
+				}
+			}
+
+			if !service.RowNumEgressAcl.IsNull() {
+				s.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
+			} else {
+				s.RowNumEgressAcl = openapi.PtrString("")
+			}
+
+			if !service.RowNumEgressAclRefType.IsNull() {
+				s.RowNumEgressAclRefType = openapi.PtrString(service.RowNumEgressAclRefType.ValueString())
+			} else {
+				s.RowNumEgressAclRefType = openapi.PtrString("")
+			}
+
+			hasMacFilter := !service.RowNumMacFilter.IsNull() && service.RowNumMacFilter.ValueString() != ""
+			hasMacFilterRefType := !service.RowNumMacFilterRefType.IsNull() && service.RowNumMacFilterRefType.ValueString() != ""
+
+			if hasMacFilter || hasMacFilterRefType {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					service.RowNumMacFilter, service.RowNumMacFilterRefType,
+					"row_num_mac_filter", "row_num_mac_filter_ref_type_",
+					hasMacFilter, hasMacFilterRefType) {
+					return
+				}
+			}
+
 			if !service.RowNumMacFilter.IsNull() {
 				s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
 			} else {
@@ -875,22 +1145,121 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 			fieldChanged = true
 		}
 
-		if !service.RowNumMacFilter.Equal(oldService.RowNumMacFilter) {
-			if !service.RowNumMacFilter.IsNull() {
-				s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
-			} else {
-				s.RowNumMacFilter = openapi.PtrString("")
+		rowNumIngressAclChanged := !service.RowNumIngressAcl.Equal(oldService.RowNumIngressAcl)
+		rowNumIngressAclRefTypeChanged := !service.RowNumIngressAclRefType.Equal(oldService.RowNumIngressAclRefType)
+
+		if rowNumIngressAclChanged || rowNumIngressAclRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				service.RowNumIngressAcl, service.RowNumIngressAclRefType,
+				"row_num_ingress_acl", "row_num_ingress_acl_ref_type_",
+				rowNumIngressAclChanged, rowNumIngressAclRefTypeChanged) {
+				return
 			}
-			fieldChanged = true
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if rowNumIngressAclChanged && !rowNumIngressAclRefTypeChanged {
+				// Just send the base field
+				if !service.RowNumIngressAcl.IsNull() && service.RowNumIngressAcl.ValueString() != "" {
+					s.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
+				} else {
+					s.RowNumIngressAcl = openapi.PtrString("")
+				}
+				fieldChanged = true
+			} else if rowNumIngressAclRefTypeChanged {
+				// Send both fields
+				if !service.RowNumIngressAcl.IsNull() && service.RowNumIngressAcl.ValueString() != "" {
+					s.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
+				} else {
+					s.RowNumIngressAcl = openapi.PtrString("")
+				}
+
+				if !service.RowNumIngressAclRefType.IsNull() && service.RowNumIngressAclRefType.ValueString() != "" {
+					s.RowNumIngressAclRefType = openapi.PtrString(service.RowNumIngressAclRefType.ValueString())
+				} else {
+					s.RowNumIngressAclRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 		}
 
-		if !service.RowNumMacFilterRefType.Equal(oldService.RowNumMacFilterRefType) {
-			if !service.RowNumMacFilterRefType.IsNull() {
-				s.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
-			} else {
-				s.RowNumMacFilterRefType = openapi.PtrString("")
+		rowNumEgressAclChanged := !service.RowNumEgressAcl.Equal(oldService.RowNumEgressAcl)
+		rowNumEgressAclRefTypeChanged := !service.RowNumEgressAclRefType.Equal(oldService.RowNumEgressAclRefType)
+
+		if rowNumEgressAclChanged || rowNumEgressAclRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				service.RowNumEgressAcl, service.RowNumEgressAclRefType,
+				"row_num_egress_acl", "row_num_egress_acl_ref_type_",
+				rowNumEgressAclChanged, rowNumEgressAclRefTypeChanged) {
+				return
 			}
-			fieldChanged = true
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if rowNumEgressAclChanged && !rowNumEgressAclRefTypeChanged {
+				// Just send the base field
+				if !service.RowNumEgressAcl.IsNull() && service.RowNumEgressAcl.ValueString() != "" {
+					s.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
+				} else {
+					s.RowNumEgressAcl = openapi.PtrString("")
+				}
+				fieldChanged = true
+			} else if rowNumEgressAclRefTypeChanged {
+				// Send both fields
+				if !service.RowNumEgressAcl.IsNull() && service.RowNumEgressAcl.ValueString() != "" {
+					s.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
+				} else {
+					s.RowNumEgressAcl = openapi.PtrString("")
+				}
+
+				if !service.RowNumEgressAclRefType.IsNull() && service.RowNumEgressAclRefType.ValueString() != "" {
+					s.RowNumEgressAclRefType = openapi.PtrString(service.RowNumEgressAclRefType.ValueString())
+				} else {
+					s.RowNumEgressAclRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+		}
+
+		rowNumMacFilterChanged := !service.RowNumMacFilter.Equal(oldService.RowNumMacFilter)
+		rowNumMacFilterRefTypeChanged := !service.RowNumMacFilterRefType.Equal(oldService.RowNumMacFilterRefType)
+
+		if rowNumMacFilterChanged || rowNumMacFilterRefTypeChanged {
+			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+				service.RowNumMacFilter, service.RowNumMacFilterRefType,
+				"row_num_mac_filter", "row_num_mac_filter_ref_type_",
+				rowNumMacFilterChanged, rowNumMacFilterRefTypeChanged) {
+				return
+			}
+
+			// For fields with one reference type:
+			// If only base field changes, send only base field
+			// If ref type field changes (or both), send both fields
+			if rowNumMacFilterChanged && !rowNumMacFilterRefTypeChanged {
+				// Just send the base field
+				if !service.RowNumMacFilter.IsNull() && service.RowNumMacFilter.ValueString() != "" {
+					s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
+				} else {
+					s.RowNumMacFilter = openapi.PtrString("")
+				}
+				fieldChanged = true
+			} else if rowNumMacFilterRefTypeChanged {
+				// Send both fields
+				if !service.RowNumMacFilter.IsNull() && service.RowNumMacFilter.ValueString() != "" {
+					s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
+				} else {
+					s.RowNumMacFilter = openapi.PtrString("")
+				}
+
+				if !service.RowNumMacFilterRefType.IsNull() && service.RowNumMacFilterRefType.ValueString() != "" {
+					s.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
+				} else {
+					s.RowNumMacFilterRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 		}
 
 		if !service.RowNumLanIptv.Equal(oldService.RowNumLanIptv) {

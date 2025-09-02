@@ -84,10 +84,8 @@ type verityEthPortSettingsResourceModel struct {
 }
 
 type verityEthPortSettingsObjectPropertiesModel struct {
-	Group                   types.String `tfsdk:"group"`
-	OverriddenObject        types.String `tfsdk:"overridden_object"`
-	OverriddenObjectRefType types.String `tfsdk:"overridden_object_ref_type_"`
-	IsDefault               types.Bool   `tfsdk:"isdefault"`
+	Group     types.String `tfsdk:"group"`
+	IsDefault types.Bool   `tfsdk:"isdefault"`
 }
 
 type verityEthPortSettingsLldpMedModel struct {
@@ -311,14 +309,6 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 							Description: "Group",
 							Optional:    true,
 						},
-						"overridden_object": schema.StringAttribute{
-							Description: "Overridden object.",
-							Optional:    true,
-						},
-						"overridden_object_ref_type_": schema.StringAttribute{
-							Description: "Object type for overridden_object field",
-							Optional:    true,
-						},
 						"isdefault": schema.BoolAttribute{
 							Description: "Default object.",
 							Optional:    true,
@@ -515,17 +505,11 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
 			objProps.Group = nil
-		}
-		if !op.OverriddenObject.IsNull() {
-			objProps.OverriddenObject = openapi.PtrString(op.OverriddenObject.ValueString())
-		}
-		if !op.OverriddenObjectRefType.IsNull() {
-			objProps.OverriddenObjectRefType = openapi.PtrString(op.OverriddenObjectRefType.ValueString())
 		}
 		if !op.IsDefault.IsNull() {
 			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
@@ -709,18 +693,6 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 			objProp.Group = types.StringValue(group)
 		} else {
 			objProp.Group = types.StringNull()
-		}
-
-		if overriddenObject, ok := op["overridden_object"].(string); ok {
-			objProp.OverriddenObject = types.StringValue(overriddenObject)
-		} else {
-			objProp.OverriddenObject = types.StringNull()
-		}
-
-		if overriddenObjectRefType, ok := op["overridden_object_ref_type_"].(string); ok {
-			objProp.OverriddenObjectRefType = types.StringValue(overriddenObjectRefType)
-		} else {
-			objProp.OverriddenObjectRefType = types.StringNull()
 		}
 
 		if isDefault, ok := op["isdefault"].(bool); ok {
@@ -1118,8 +1090,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		objectPropertiesChanged = true
 	} else if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		if !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-			!plan.ObjectProperties[0].OverriddenObject.Equal(state.ObjectProperties[0].OverriddenObject) ||
-			!plan.ObjectProperties[0].OverriddenObjectRefType.Equal(state.ObjectProperties[0].OverriddenObjectRefType) ||
 			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) {
 			objectPropertiesChanged = true
 		}
@@ -1127,17 +1097,11 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 
 	if objectPropertiesChanged {
 		if len(plan.ObjectProperties) > 0 {
-			objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
+			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {
 				objProps.Group = nil
-			}
-			if !plan.ObjectProperties[0].OverriddenObject.IsNull() {
-				objProps.OverriddenObject = openapi.PtrString(plan.ObjectProperties[0].OverriddenObject.ValueString())
-			}
-			if !plan.ObjectProperties[0].OverriddenObjectRefType.IsNull() {
-				objProps.OverriddenObjectRefType = openapi.PtrString(plan.ObjectProperties[0].OverriddenObjectRefType.ValueString())
 			}
 			if !plan.ObjectProperties[0].IsDefault.IsNull() {
 				objProps.Isdefault = openapi.PtrBool(plan.ObjectProperties[0].IsDefault.ValueBool())

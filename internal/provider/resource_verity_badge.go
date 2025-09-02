@@ -37,6 +37,7 @@ type verityBadgeResource struct {
 
 type verityBadgeResourceModel struct {
 	Name             types.String                       `tfsdk:"name"`
+	Enable           types.Bool                         `tfsdk:"enable"`
 	Color            types.String                       `tfsdk:"color"`
 	Number           types.Int64                        `tfsdk:"number"`
 	ObjectProperties []verityBadgeObjectPropertiesModel `tfsdk:"object_properties"`
@@ -80,6 +81,10 @@ func (r *verityBadgeResource) Schema(ctx context.Context, req resource.SchemaReq
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"enable": schema.BoolAttribute{
+				Description: "Enable object.",
+				Optional:    true,
 			},
 			"color": schema.StringAttribute{
 				Description: "Badge color.",
@@ -125,6 +130,10 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 	name := plan.Name.ValueString()
 	badgeProps := &openapi.BadgesPutRequestBadgeValue{
 		Name: openapi.PtrString(name),
+	}
+
+	if !plan.Enable.IsNull() {
+		badgeProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
 	}
 
 	if !plan.Color.IsNull() {
@@ -263,6 +272,12 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 
 	state.Name = types.StringValue(fmt.Sprintf("%v", badgeData["name"]))
 
+	if enable, ok := badgeData["enable"].(bool); ok {
+		state.Enable = types.BoolValue(enable)
+	} else {
+		state.Enable = types.BoolNull()
+	}
+
 	if color, ok := badgeData["color"].(string); ok && color != "" {
 		state.Color = types.StringValue(color)
 	} else {
@@ -324,6 +339,13 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 
 	if !plan.Name.Equal(state.Name) {
 		badgeProps.Name = openapi.PtrString(name)
+		hasChanges = true
+	}
+
+	if !plan.Enable.Equal(state.Enable) {
+		if !plan.Enable.IsNull() {
+			badgeProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+		}
 		hasChanges = true
 	}
 
