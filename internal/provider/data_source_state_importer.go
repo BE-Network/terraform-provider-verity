@@ -183,28 +183,40 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 	}
 
 	resourceOrder := []string{
-		// Datacenter mode resources
 		"verity_tenant",
-		"verity_service",
-		"verity_eth_port_settings",
-		"verity_eth_port_profile",
 		"verity_gateway_profile",
 		"verity_gateway",
+		"verity_service",
+		"verity_packet_queue",
+		"verity_eth_port_profile",
+		"verity_eth_port_settings",
+		"verity_device_settings",
 		"verity_lag",
 		"verity_bundle",
 		"verity_acl_v4",
 		"verity_acl_v6",
+		"verity_ipv4_prefix_list",
+		"verity_ipv6_prefix_list",
+		"verity_ipv4_list",
+		"verity_ipv6_list",
 		"verity_packet_broker",
-		// Campus mode resources
+		"verity_port_acl",
+		"verity_badge",
+		"verity_pod",
+		"verity_switchpoint",
+		"verity_device_controller",
+		"verity_as_path_access_list",
+		"verity_community_list",
+		"verity_extended_community_list",
+		"verity_route_map_clause",
+		"verity_route_map",
+		"verity_sfp_breakout",
+		"verity_site",
 		"verity_authenticated_eth_port",
 		"verity_device_voice_settings",
 		"verity_packet_queue",
 		"verity_service_port_profile",
 		"verity_voice_port_profile",
-		// Both modes
-		"verity_badge",
-		"verity_switchpoint",
-		"verity_device_controller",
 	}
 
 	importBlocks := make(map[string]string)

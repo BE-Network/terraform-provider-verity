@@ -211,43 +211,137 @@ type BulkOperationManager struct {
 	deviceControllerPatch  map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue
 	deviceControllerDelete []string
 
+	// AS Path Access List operations
+	asPathAccessListPut    map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue
+	asPathAccessListPatch  map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue
+	asPathAccessListDelete []string
+
+	// Community List operations
+	communityListPut    map[string]openapi.CommunitylistsPutRequestCommunityListValue
+	communityListPatch  map[string]openapi.CommunitylistsPutRequestCommunityListValue
+	communityListDelete []string
+
+	// Device Settings operations
+	deviceSettingsPut    map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue
+	deviceSettingsPatch  map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue
+	deviceSettingsDelete []string
+
+	// Extended Community List operations
+	extendedCommunityListPut    map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue
+	extendedCommunityListPatch  map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue
+	extendedCommunityListDelete []string
+
+	// IPv4 List operations
+	ipv4ListPut    map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue
+	ipv4ListPatch  map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue
+	ipv4ListDelete []string
+
+	// IPv4 Prefix List operations
+	ipv4PrefixListPut    map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue
+	ipv4PrefixListPatch  map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue
+	ipv4PrefixListDelete []string
+
+	// IPv6 List operations
+	ipv6ListPut    map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue
+	ipv6ListPatch  map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue
+	ipv6ListDelete []string
+
+	// IPv6 Prefix List operations
+	ipv6PrefixListPut    map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue
+	ipv6PrefixListPatch  map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue
+	ipv6PrefixListDelete []string
+
+	// Route Map Clause operations
+	routeMapClausePut    map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue
+	routeMapClausePatch  map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue
+	routeMapClauseDelete []string
+
+	// Route Map operations
+	routeMapPut    map[string]openapi.RoutemapsPutRequestRouteMapValue
+	routeMapPatch  map[string]openapi.RoutemapsPutRequestRouteMapValue
+	routeMapDelete []string
+
+	// SFP Breakout operations (only PATCH available)
+	sfpBreakoutPatch map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue
+
+	// Site operations (only PATCH available)
+	sitePatch map[string]openapi.SitesPatchRequestSiteValue
+
+	// Pod operations
+	podPut    map[string]openapi.PodsPutRequestPodValue
+	podPatch  map[string]openapi.PodsPutRequestPodValue
+	podDelete []string
+
+	// Port ACL operations
+	portAclPut    map[string]openapi.PortaclsPutRequestPortAclValue
+	portAclPatch  map[string]openapi.PortaclsPutRequestPortAclValue
+	portAclDelete []string
+
 	// Track recent operations to avoid race conditions
-	recentGatewayOps                 bool
-	recentGatewayOpTime              time.Time
-	recentLagOps                     bool
-	recentLagOpTime                  time.Time
-	recentServiceOps                 bool
-	recentServiceOpTime              time.Time
-	recentTenantOps                  bool
-	recentTenantOpTime               time.Time
-	recentGatewayProfileOps          bool
-	recentGatewayProfileOpTime       time.Time
-	recentEthPortProfileOps          bool
-	recentEthPortProfileOpTime       time.Time
-	recentEthPortSettingsOps         bool
-	recentEthPortSettingsOpTime      time.Time
-	recentBundleOps                  bool
-	recentBundleOpTime               time.Time
-	recentAclOps                     bool
-	recentAclOpTime                  time.Time
-	recentAuthenticatedEthPortOps    bool
-	recentAuthenticatedEthPortOpTime time.Time
-	recentBadgeOps                   bool
-	recentBadgeOpTime                time.Time
-	recentVoicePortProfileOps        bool
-	recentVoicePortProfileOpTime     time.Time
-	recentSwitchpointOps             bool
-	recentSwitchpointOpTime          time.Time
-	recentServicePortProfileOps      bool
-	recentServicePortProfileOpTime   time.Time
-	recentPacketBrokerOps            bool
-	recentPacketBrokerOpTime         time.Time
-	recentPacketQueueOps             bool
-	recentPacketQueueOpTime          time.Time
-	recentDeviceVoiceSettingsOps     bool
-	recentDeviceVoiceSettingsOpTime  time.Time
-	recentDeviceControllerOps        bool
-	recentDeviceControllerOpTime     time.Time
+	recentGatewayOps                  bool
+	recentGatewayOpTime               time.Time
+	recentLagOps                      bool
+	recentLagOpTime                   time.Time
+	recentServiceOps                  bool
+	recentServiceOpTime               time.Time
+	recentTenantOps                   bool
+	recentTenantOpTime                time.Time
+	recentGatewayProfileOps           bool
+	recentGatewayProfileOpTime        time.Time
+	recentEthPortProfileOps           bool
+	recentEthPortProfileOpTime        time.Time
+	recentEthPortSettingsOps          bool
+	recentEthPortSettingsOpTime       time.Time
+	recentBundleOps                   bool
+	recentBundleOpTime                time.Time
+	recentAclOps                      bool
+	recentAclOpTime                   time.Time
+	recentAuthenticatedEthPortOps     bool
+	recentAuthenticatedEthPortOpTime  time.Time
+	recentBadgeOps                    bool
+	recentBadgeOpTime                 time.Time
+	recentVoicePortProfileOps         bool
+	recentVoicePortProfileOpTime      time.Time
+	recentSwitchpointOps              bool
+	recentSwitchpointOpTime           time.Time
+	recentServicePortProfileOps       bool
+	recentServicePortProfileOpTime    time.Time
+	recentPacketBrokerOps             bool
+	recentPacketBrokerOpTime          time.Time
+	recentPacketQueueOps              bool
+	recentPacketQueueOpTime           time.Time
+	recentDeviceVoiceSettingsOps      bool
+	recentDeviceVoiceSettingsOpTime   time.Time
+	recentDeviceControllerOps         bool
+	recentDeviceControllerOpTime      time.Time
+	recentAsPathAccessListOps         bool
+	recentAsPathAccessListOpTime      time.Time
+	recentCommunityListOps            bool
+	recentCommunityListOpTime         time.Time
+	recentDeviceSettingsOps           bool
+	recentDeviceSettingsOpTime        time.Time
+	recentExtendedCommunityListOps    bool
+	recentExtendedCommunityListOpTime time.Time
+	recentIpv4ListOps                 bool
+	recentIpv4ListOpTime              time.Time
+	recentIpv4PrefixListOps           bool
+	recentIpv4PrefixListOpTime        time.Time
+	recentIpv6ListOps                 bool
+	recentIpv6ListOpTime              time.Time
+	recentIpv6PrefixListOps           bool
+	recentIpv6PrefixListOpTime        time.Time
+	recentRouteMapClauseOps           bool
+	recentRouteMapClauseOpTime        time.Time
+	recentRouteMapOps                 bool
+	recentRouteMapOpTime              time.Time
+	recentSfpBreakoutOps              bool
+	recentSfpBreakoutOpTime           time.Time
+	recentSiteOps                     bool
+	recentSiteOpTime                  time.Time
+	recentPodOps                      bool
+	recentPodOpTime                   time.Time
+	recentPortAclOps                  bool
+	recentPortAclOpTime               time.Time
 
 	// For tracking operations
 	pendingOperations     map[string]*Operation
@@ -258,42 +352,70 @@ type BulkOperationManager struct {
 	closedChannels        map[string]bool
 
 	// Store API responses=
-	gatewayResponses                   map[string]map[string]interface{}
-	gatewayResponsesMutex              sync.RWMutex
-	lagResponses                       map[string]map[string]interface{}
-	lagResponsesMutex                  sync.RWMutex
-	serviceResponses                   map[string]map[string]interface{}
-	serviceResponsesMutex              sync.RWMutex
-	tenantResponses                    map[string]map[string]interface{}
-	tenantResponsesMutex               sync.RWMutex
-	gatewayProfileResponses            map[string]map[string]interface{}
-	gatewayProfileResponsesMutex       sync.RWMutex
-	ethPortProfileResponses            map[string]map[string]interface{}
-	ethPortProfileResponsesMutex       sync.RWMutex
-	ethPortSettingsResponses           map[string]map[string]interface{}
-	ethPortSettingsResponsesMutex      sync.RWMutex
-	bundleResponses                    map[string]map[string]interface{}
-	bundleResponsesMutex               sync.RWMutex
-	aclResponses                       map[string]map[string]interface{}
-	aclResponsesMutex                  sync.RWMutex
-	authenticatedEthPortResponses      map[string]map[string]interface{}
-	authenticatedEthPortResponsesMutex sync.RWMutex
-	badgeResponses                     map[string]map[string]interface{}
-	badgeResponsesMutex                sync.RWMutex
-	voicePortProfileResponses          map[string]map[string]interface{}
-	voicePortProfileResponsesMutex     sync.RWMutex
-	switchpointResponses               map[string]map[string]interface{}
-	switchpointResponsesMutex          sync.RWMutex
-	servicePortProfileResponses        map[string]map[string]interface{}
-	servicePortProfileResponsesMutex   sync.RWMutex
-	packetBrokerResponses              map[string]map[string]interface{}
-	packetBrokerResponsesMutex         sync.RWMutex
-	packetQueueResponses               map[string]map[string]interface{}
-	packetQueueResponsesMutex          sync.RWMutex
-	deviceVoiceSettingsResponses       map[string]map[string]interface{}
-	deviceVoiceSettingsResponsesMutex  sync.RWMutex
-	deviceControllerResponses          map[string]map[string]interface{}
-	deviceControllerResponsesMutex     sync.RWMutex
+	gatewayResponses                    map[string]map[string]interface{}
+	gatewayResponsesMutex               sync.RWMutex
+	lagResponses                        map[string]map[string]interface{}
+	lagResponsesMutex                   sync.RWMutex
+	serviceResponses                    map[string]map[string]interface{}
+	serviceResponsesMutex               sync.RWMutex
+	tenantResponses                     map[string]map[string]interface{}
+	tenantResponsesMutex                sync.RWMutex
+	gatewayProfileResponses             map[string]map[string]interface{}
+	gatewayProfileResponsesMutex        sync.RWMutex
+	ethPortProfileResponses             map[string]map[string]interface{}
+	ethPortProfileResponsesMutex        sync.RWMutex
+	ethPortSettingsResponses            map[string]map[string]interface{}
+	ethPortSettingsResponsesMutex       sync.RWMutex
+	bundleResponses                     map[string]map[string]interface{}
+	bundleResponsesMutex                sync.RWMutex
+	aclResponses                        map[string]map[string]interface{}
+	aclResponsesMutex                   sync.RWMutex
+	authenticatedEthPortResponses       map[string]map[string]interface{}
+	authenticatedEthPortResponsesMutex  sync.RWMutex
+	badgeResponses                      map[string]map[string]interface{}
+	badgeResponsesMutex                 sync.RWMutex
+	voicePortProfileResponses           map[string]map[string]interface{}
+	voicePortProfileResponsesMutex      sync.RWMutex
+	switchpointResponses                map[string]map[string]interface{}
+	switchpointResponsesMutex           sync.RWMutex
+	servicePortProfileResponses         map[string]map[string]interface{}
+	servicePortProfileResponsesMutex    sync.RWMutex
+	packetBrokerResponses               map[string]map[string]interface{}
+	packetBrokerResponsesMutex          sync.RWMutex
+	packetQueueResponses                map[string]map[string]interface{}
+	packetQueueResponsesMutex           sync.RWMutex
+	deviceVoiceSettingsResponses        map[string]map[string]interface{}
+	deviceVoiceSettingsResponsesMutex   sync.RWMutex
+	deviceControllerResponses           map[string]map[string]interface{}
+	deviceControllerResponsesMutex      sync.RWMutex
+	asPathAccessListResponses           map[string]map[string]interface{}
+	asPathAccessListResponsesMutex      sync.RWMutex
+	communityListResponses              map[string]map[string]interface{}
+	communityListResponsesMutex         sync.RWMutex
+	deviceSettingsResponses             map[string]map[string]interface{}
+	deviceSettingsResponsesMutex        sync.RWMutex
+	extendedCommunityListResponses      map[string]map[string]interface{}
+	extendedCommunityListResponsesMutex sync.RWMutex
+	ipv4ListResponses                   map[string]map[string]interface{}
+	ipv4ListResponsesMutex              sync.RWMutex
+	ipv4PrefixListResponses             map[string]map[string]interface{}
+	ipv4PrefixListResponsesMutex        sync.RWMutex
+	ipv6ListResponses                   map[string]map[string]interface{}
+	ipv6ListResponsesMutex              sync.RWMutex
+	ipv6PrefixListResponses             map[string]map[string]interface{}
+	ipv6PrefixListResponsesMutex        sync.RWMutex
+	routeMapClauseResponses             map[string]map[string]interface{}
+	routeMapClauseResponsesMutex        sync.RWMutex
+	routeMapResponses                   map[string]map[string]interface{}
+	routeMapResponsesMutex              sync.RWMutex
+	sfpBreakoutResponses                map[string]map[string]interface{}
+	sfpBreakoutResponsesMutex           sync.RWMutex
+	siteResponses                       map[string]map[string]interface{}
+	siteResponsesMutex                  sync.RWMutex
+	podResponses                        map[string]map[string]interface{}
+	podResponsesMutex                   sync.RWMutex
+	portAclResponses                    map[string]map[string]interface{}
+	portAclResponsesMutex               sync.RWMutex
 }
 
 // resourceRegistry is a mapping of resource types to their configuration details.
@@ -468,6 +590,132 @@ var resourceRegistry = map[string]ResourceConfig{
 			return &GenericAPIClient{client: c, resourceType: "service_port_profile"}
 		},
 	},
+	"as_path_access_list": {
+		ResourceType:     "as_path_access_list",
+		PutRequestType:   reflect.TypeOf(openapi.AspathaccesslistsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.AspathaccesslistsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "as_path_access_list"}
+		},
+	},
+	"community_list": {
+		ResourceType:     "community_list",
+		PutRequestType:   reflect.TypeOf(openapi.CommunitylistsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.CommunitylistsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "community_list"}
+		},
+	},
+	"device_settings": {
+		ResourceType:     "device_settings",
+		PutRequestType:   reflect.TypeOf(openapi.DevicesettingsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.DevicesettingsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "device_settings"}
+		},
+	},
+	"extended_community_list": {
+		ResourceType:     "extended_community_list",
+		PutRequestType:   reflect.TypeOf(openapi.ExtendedcommunitylistsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.ExtendedcommunitylistsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "extended_community_list"}
+		},
+	},
+	"ipv4_list": {
+		ResourceType:     "ipv4_list",
+		PutRequestType:   reflect.TypeOf(openapi.Ipv4listsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.Ipv4listsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "ipv4_list"}
+		},
+	},
+	"ipv4_prefix_list": {
+		ResourceType:     "ipv4_prefix_list",
+		PutRequestType:   reflect.TypeOf(openapi.Ipv4prefixlistsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.Ipv4prefixlistsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "ipv4_prefix_list"}
+		},
+	},
+	"ipv6_list": {
+		ResourceType:     "ipv6_list",
+		PutRequestType:   reflect.TypeOf(openapi.Ipv6listsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.Ipv6listsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "ipv6_list"}
+		},
+	},
+	"ipv6_prefix_list": {
+		ResourceType:     "ipv6_prefix_list",
+		PutRequestType:   reflect.TypeOf(openapi.Ipv6prefixlistsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.Ipv6prefixlistsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "ipv6_prefix_list"}
+		},
+	},
+	"route_map_clause": {
+		ResourceType:     "route_map_clause",
+		PutRequestType:   reflect.TypeOf(openapi.RoutemapclausesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.RoutemapclausesPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "route_map_clause"}
+		},
+	},
+	"route_map": {
+		ResourceType:     "route_map",
+		PutRequestType:   reflect.TypeOf(openapi.RoutemapsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.RoutemapsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "route_map"}
+		},
+	},
+	"sfp_breakout": {
+		ResourceType:     "sfp_breakout",
+		PutRequestType:   reflect.TypeOf(openapi.SfpbreakoutsPatchRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.SfpbreakoutsPatchRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "sfp_breakout"}
+		},
+	},
+	"site": {
+		ResourceType:     "site",
+		PutRequestType:   reflect.TypeOf(openapi.SitesPatchRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.SitesPatchRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "site"}
+		},
+	},
+	"pod": {
+		ResourceType:     "pod",
+		PutRequestType:   reflect.TypeOf(openapi.PodsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.PodsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "pod"}
+		},
+	},
+	"port_acl": {
+		ResourceType:     "port_acl",
+		PutRequestType:   reflect.TypeOf(openapi.PortaclsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.PortaclsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "port_acl"}
+		},
+	},
 }
 
 func (b *BulkOperationManager) FilterPreExistingResources(
@@ -581,129 +829,210 @@ func (b *BulkOperationManager) WaitForOperation(ctx context.Context, operationID
 
 func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextProviderFunc, clearCacheFunc ClearCacheFunc, mode string) *BulkOperationManager {
 	return &BulkOperationManager{
-		client:                     client,
-		contextProvider:            contextProvider,
-		clearCacheFunc:             clearCacheFunc,
-		mode:                       mode,
-		lastOperationTime:          time.Now(),
-		gatewayPut:                 make(map[string]openapi.GatewaysPutRequestGatewayValue),
-		gatewayPatch:               make(map[string]openapi.GatewaysPutRequestGatewayValue),
-		gatewayDelete:              make([]string, 0),
-		lagPut:                     make(map[string]openapi.LagsPutRequestLagValue),
-		lagPatch:                   make(map[string]openapi.LagsPutRequestLagValue),
-		lagDelete:                  make([]string, 0),
-		tenantPut:                  make(map[string]openapi.TenantsPutRequestTenantValue),
-		tenantPatch:                make(map[string]openapi.TenantsPutRequestTenantValue),
-		tenantDelete:               make([]string, 0),
-		servicePut:                 make(map[string]openapi.ServicesPutRequestServiceValue),
-		servicePatch:               make(map[string]openapi.ServicesPutRequestServiceValue),
-		serviceDelete:              make([]string, 0),
-		gatewayProfilePut:          make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
-		gatewayProfilePatch:        make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
-		gatewayProfileDelete:       make([]string, 0),
-		ethPortProfilePut:          make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
-		ethPortProfilePatch:        make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
-		ethPortProfileDelete:       make([]string, 0),
-		ethPortSettingsPut:         make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
-		ethPortSettingsPatch:       make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
-		ethPortSettingsDelete:      make([]string, 0),
-		bundlePut:                  make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
-		bundlePatch:                make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
-		bundleDelete:               make([]string, 0),
-		aclPut:                     make(map[string]openapi.AclsPutRequestIpFilterValue),
-		aclPatch:                   make(map[string]openapi.AclsPutRequestIpFilterValue),
-		aclDelete:                  make([]string, 0),
-		aclIpVersion:               make(map[string]string),
-		authenticatedEthPortPut:    make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
-		authenticatedEthPortPatch:  make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
-		authenticatedEthPortDelete: make([]string, 0),
-		badgePut:                   make(map[string]openapi.BadgesPutRequestBadgeValue),
-		badgePatch:                 make(map[string]openapi.BadgesPutRequestBadgeValue),
-		badgeDelete:                make([]string, 0),
-		voicePortProfilePut:        make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
-		voicePortProfilePatch:      make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
-		voicePortProfileDelete:     make([]string, 0),
-		switchpointPut:             make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
-		switchpointPatch:           make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
-		switchpointDelete:          make([]string, 0),
-		servicePortProfilePut:      make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
-		servicePortProfilePatch:    make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
-		servicePortProfileDelete:   make([]string, 0),
-		packetBrokerPut:            make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
-		packetBrokerPatch:          make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
-		packetBrokerDelete:         make([]string, 0),
-		packetQueuePut:             make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
-		packetQueuePatch:           make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
-		packetQueueDelete:          make([]string, 0),
-		deviceVoiceSettingsPut:     make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
-		deviceVoiceSettingsPatch:   make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
-		deviceVoiceSettingsDelete:  make([]string, 0),
-		deviceControllerPut:        make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
-		deviceControllerPatch:      make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
-		deviceControllerDelete:     make([]string, 0),
-		pendingOperations:          make(map[string]*Operation),
-		operationResults:           make(map[string]bool),
-		operationErrors:            make(map[string]error),
-		operationWaitChannels:      make(map[string]chan struct{}),
-		closedChannels:             make(map[string]bool),
+		client:                      client,
+		contextProvider:             contextProvider,
+		clearCacheFunc:              clearCacheFunc,
+		mode:                        mode,
+		lastOperationTime:           time.Now(),
+		gatewayPut:                  make(map[string]openapi.GatewaysPutRequestGatewayValue),
+		gatewayPatch:                make(map[string]openapi.GatewaysPutRequestGatewayValue),
+		gatewayDelete:               make([]string, 0),
+		lagPut:                      make(map[string]openapi.LagsPutRequestLagValue),
+		lagPatch:                    make(map[string]openapi.LagsPutRequestLagValue),
+		lagDelete:                   make([]string, 0),
+		tenantPut:                   make(map[string]openapi.TenantsPutRequestTenantValue),
+		tenantPatch:                 make(map[string]openapi.TenantsPutRequestTenantValue),
+		tenantDelete:                make([]string, 0),
+		servicePut:                  make(map[string]openapi.ServicesPutRequestServiceValue),
+		servicePatch:                make(map[string]openapi.ServicesPutRequestServiceValue),
+		serviceDelete:               make([]string, 0),
+		gatewayProfilePut:           make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
+		gatewayProfilePatch:         make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
+		gatewayProfileDelete:        make([]string, 0),
+		ethPortProfilePut:           make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
+		ethPortProfilePatch:         make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
+		ethPortProfileDelete:        make([]string, 0),
+		ethPortSettingsPut:          make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
+		ethPortSettingsPatch:        make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
+		ethPortSettingsDelete:       make([]string, 0),
+		bundlePut:                   make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
+		bundlePatch:                 make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
+		bundleDelete:                make([]string, 0),
+		aclPut:                      make(map[string]openapi.AclsPutRequestIpFilterValue),
+		aclPatch:                    make(map[string]openapi.AclsPutRequestIpFilterValue),
+		aclDelete:                   make([]string, 0),
+		aclIpVersion:                make(map[string]string),
+		authenticatedEthPortPut:     make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
+		authenticatedEthPortPatch:   make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
+		authenticatedEthPortDelete:  make([]string, 0),
+		badgePut:                    make(map[string]openapi.BadgesPutRequestBadgeValue),
+		badgePatch:                  make(map[string]openapi.BadgesPutRequestBadgeValue),
+		badgeDelete:                 make([]string, 0),
+		voicePortProfilePut:         make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
+		voicePortProfilePatch:       make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
+		voicePortProfileDelete:      make([]string, 0),
+		switchpointPut:              make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
+		switchpointPatch:            make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
+		switchpointDelete:           make([]string, 0),
+		servicePortProfilePut:       make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
+		servicePortProfilePatch:     make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
+		servicePortProfileDelete:    make([]string, 0),
+		packetBrokerPut:             make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
+		packetBrokerPatch:           make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
+		packetBrokerDelete:          make([]string, 0),
+		packetQueuePut:              make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
+		packetQueuePatch:            make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
+		packetQueueDelete:           make([]string, 0),
+		deviceVoiceSettingsPut:      make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
+		deviceVoiceSettingsPatch:    make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
+		deviceVoiceSettingsDelete:   make([]string, 0),
+		deviceControllerPut:         make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
+		deviceControllerPatch:       make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
+		deviceControllerDelete:      make([]string, 0),
+		asPathAccessListPut:         make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue),
+		asPathAccessListPatch:       make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue),
+		asPathAccessListDelete:      make([]string, 0),
+		communityListPut:            make(map[string]openapi.CommunitylistsPutRequestCommunityListValue),
+		communityListPatch:          make(map[string]openapi.CommunitylistsPutRequestCommunityListValue),
+		communityListDelete:         make([]string, 0),
+		deviceSettingsPut:           make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue),
+		deviceSettingsPatch:         make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue),
+		deviceSettingsDelete:        make([]string, 0),
+		extendedCommunityListPut:    make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue),
+		extendedCommunityListPatch:  make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue),
+		extendedCommunityListDelete: make([]string, 0),
+		ipv4ListPut:                 make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue),
+		ipv4ListPatch:               make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue),
+		ipv4ListDelete:              make([]string, 0),
+		ipv4PrefixListPut:           make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue),
+		ipv4PrefixListPatch:         make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue),
+		ipv4PrefixListDelete:        make([]string, 0),
+		ipv6ListPut:                 make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue),
+		ipv6ListPatch:               make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue),
+		ipv6ListDelete:              make([]string, 0),
+		ipv6PrefixListPut:           make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue),
+		ipv6PrefixListPatch:         make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue),
+		ipv6PrefixListDelete:        make([]string, 0),
+		routeMapClausePut:           make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue),
+		routeMapClausePatch:         make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue),
+		routeMapClauseDelete:        make([]string, 0),
+		routeMapPut:                 make(map[string]openapi.RoutemapsPutRequestRouteMapValue),
+		routeMapPatch:               make(map[string]openapi.RoutemapsPutRequestRouteMapValue),
+		routeMapDelete:              make([]string, 0),
+		sfpBreakoutPatch:            make(map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue),
+		sitePatch:                   make(map[string]openapi.SitesPatchRequestSiteValue),
+		podPut:                      make(map[string]openapi.PodsPutRequestPodValue),
+		podPatch:                    make(map[string]openapi.PodsPutRequestPodValue),
+		podDelete:                   make([]string, 0),
+		portAclPut:                  make(map[string]openapi.PortaclsPutRequestPortAclValue),
+		portAclPatch:                make(map[string]openapi.PortaclsPutRequestPortAclValue),
+		portAclDelete:               make([]string, 0),
+
+		pendingOperations:     make(map[string]*Operation),
+		operationResults:      make(map[string]bool),
+		operationErrors:       make(map[string]error),
+		operationWaitChannels: make(map[string]chan struct{}),
+		closedChannels:        make(map[string]bool),
 
 		// Initialize with no recent operations
-		recentGatewayOps:              false,
-		recentLagOps:                  false,
-		recentServiceOps:              false,
-		recentTenantOps:               false,
-		recentGatewayProfileOps:       false,
-		recentEthPortProfileOps:       false,
-		recentEthPortSettingsOps:      false,
-		recentBundleOps:               false,
-		recentAclOps:                  false,
-		recentAuthenticatedEthPortOps: false,
-		recentBadgeOps:                false,
-		recentVoicePortProfileOps:     false,
-		recentSwitchpointOps:          false,
-		recentServicePortProfileOps:   false,
-		recentPacketBrokerOps:         false,
-		recentPacketQueueOps:          false,
-		recentDeviceVoiceSettingsOps:  false,
-		recentDeviceControllerOps:     false,
+		recentGatewayOps:               false,
+		recentLagOps:                   false,
+		recentServiceOps:               false,
+		recentTenantOps:                false,
+		recentGatewayProfileOps:        false,
+		recentEthPortProfileOps:        false,
+		recentEthPortSettingsOps:       false,
+		recentBundleOps:                false,
+		recentAclOps:                   false,
+		recentAuthenticatedEthPortOps:  false,
+		recentBadgeOps:                 false,
+		recentVoicePortProfileOps:      false,
+		recentSwitchpointOps:           false,
+		recentServicePortProfileOps:    false,
+		recentPacketBrokerOps:          false,
+		recentPacketQueueOps:           false,
+		recentDeviceVoiceSettingsOps:   false,
+		recentDeviceControllerOps:      false,
+		recentAsPathAccessListOps:      false,
+		recentCommunityListOps:         false,
+		recentDeviceSettingsOps:        false,
+		recentExtendedCommunityListOps: false,
+		recentIpv4ListOps:              false,
+		recentIpv4PrefixListOps:        false,
+		recentIpv6ListOps:              false,
+		recentIpv6PrefixListOps:        false,
+		recentRouteMapClauseOps:        false,
+		recentRouteMapOps:              false,
+		recentSfpBreakoutOps:           false,
+		recentSiteOps:                  false,
+		recentPodOps:                   false,
+		recentPortAclOps:               false,
 
 		// Initialize response caches
-		gatewayResponses:                   make(map[string]map[string]interface{}),
-		gatewayResponsesMutex:              sync.RWMutex{},
-		lagResponses:                       make(map[string]map[string]interface{}),
-		lagResponsesMutex:                  sync.RWMutex{},
-		serviceResponses:                   make(map[string]map[string]interface{}),
-		serviceResponsesMutex:              sync.RWMutex{},
-		tenantResponses:                    make(map[string]map[string]interface{}),
-		tenantResponsesMutex:               sync.RWMutex{},
-		gatewayProfileResponses:            make(map[string]map[string]interface{}),
-		gatewayProfileResponsesMutex:       sync.RWMutex{},
-		ethPortProfileResponses:            make(map[string]map[string]interface{}),
-		ethPortProfileResponsesMutex:       sync.RWMutex{},
-		ethPortSettingsResponses:           make(map[string]map[string]interface{}),
-		ethPortSettingsResponsesMutex:      sync.RWMutex{},
-		bundleResponses:                    make(map[string]map[string]interface{}),
-		bundleResponsesMutex:               sync.RWMutex{},
-		aclResponses:                       make(map[string]map[string]interface{}),
-		aclResponsesMutex:                  sync.RWMutex{},
-		authenticatedEthPortResponses:      make(map[string]map[string]interface{}),
-		authenticatedEthPortResponsesMutex: sync.RWMutex{},
-		badgeResponses:                     make(map[string]map[string]interface{}),
-		badgeResponsesMutex:                sync.RWMutex{},
-		voicePortProfileResponses:          make(map[string]map[string]interface{}),
-		voicePortProfileResponsesMutex:     sync.RWMutex{},
-		switchpointResponses:               make(map[string]map[string]interface{}),
-		switchpointResponsesMutex:          sync.RWMutex{},
-		servicePortProfileResponses:        make(map[string]map[string]interface{}),
-		servicePortProfileResponsesMutex:   sync.RWMutex{},
-		packetBrokerResponses:              make(map[string]map[string]interface{}),
-		packetBrokerResponsesMutex:         sync.RWMutex{},
-		packetQueueResponses:               make(map[string]map[string]interface{}),
-		packetQueueResponsesMutex:          sync.RWMutex{},
-		deviceVoiceSettingsResponses:       make(map[string]map[string]interface{}),
-		deviceVoiceSettingsResponsesMutex:  sync.RWMutex{},
-		deviceControllerResponses:          make(map[string]map[string]interface{}),
-		deviceControllerResponsesMutex:     sync.RWMutex{},
+		gatewayResponses:                    make(map[string]map[string]interface{}),
+		gatewayResponsesMutex:               sync.RWMutex{},
+		lagResponses:                        make(map[string]map[string]interface{}),
+		lagResponsesMutex:                   sync.RWMutex{},
+		serviceResponses:                    make(map[string]map[string]interface{}),
+		serviceResponsesMutex:               sync.RWMutex{},
+		tenantResponses:                     make(map[string]map[string]interface{}),
+		tenantResponsesMutex:                sync.RWMutex{},
+		gatewayProfileResponses:             make(map[string]map[string]interface{}),
+		gatewayProfileResponsesMutex:        sync.RWMutex{},
+		ethPortProfileResponses:             make(map[string]map[string]interface{}),
+		ethPortProfileResponsesMutex:        sync.RWMutex{},
+		ethPortSettingsResponses:            make(map[string]map[string]interface{}),
+		ethPortSettingsResponsesMutex:       sync.RWMutex{},
+		bundleResponses:                     make(map[string]map[string]interface{}),
+		bundleResponsesMutex:                sync.RWMutex{},
+		aclResponses:                        make(map[string]map[string]interface{}),
+		aclResponsesMutex:                   sync.RWMutex{},
+		authenticatedEthPortResponses:       make(map[string]map[string]interface{}),
+		authenticatedEthPortResponsesMutex:  sync.RWMutex{},
+		badgeResponses:                      make(map[string]map[string]interface{}),
+		badgeResponsesMutex:                 sync.RWMutex{},
+		voicePortProfileResponses:           make(map[string]map[string]interface{}),
+		voicePortProfileResponsesMutex:      sync.RWMutex{},
+		switchpointResponses:                make(map[string]map[string]interface{}),
+		switchpointResponsesMutex:           sync.RWMutex{},
+		servicePortProfileResponses:         make(map[string]map[string]interface{}),
+		servicePortProfileResponsesMutex:    sync.RWMutex{},
+		packetBrokerResponses:               make(map[string]map[string]interface{}),
+		packetBrokerResponsesMutex:          sync.RWMutex{},
+		packetQueueResponses:                make(map[string]map[string]interface{}),
+		packetQueueResponsesMutex:           sync.RWMutex{},
+		deviceVoiceSettingsResponses:        make(map[string]map[string]interface{}),
+		deviceVoiceSettingsResponsesMutex:   sync.RWMutex{},
+		deviceControllerResponses:           make(map[string]map[string]interface{}),
+		deviceControllerResponsesMutex:      sync.RWMutex{},
+		asPathAccessListResponses:           make(map[string]map[string]interface{}),
+		asPathAccessListResponsesMutex:      sync.RWMutex{},
+		communityListResponses:              make(map[string]map[string]interface{}),
+		communityListResponsesMutex:         sync.RWMutex{},
+		deviceSettingsResponses:             make(map[string]map[string]interface{}),
+		deviceSettingsResponsesMutex:        sync.RWMutex{},
+		extendedCommunityListResponses:      make(map[string]map[string]interface{}),
+		extendedCommunityListResponsesMutex: sync.RWMutex{},
+		ipv4ListResponses:                   make(map[string]map[string]interface{}),
+		ipv4ListResponsesMutex:              sync.RWMutex{},
+		ipv4PrefixListResponses:             make(map[string]map[string]interface{}),
+		ipv4PrefixListResponsesMutex:        sync.RWMutex{},
+		ipv6ListResponses:                   make(map[string]map[string]interface{}),
+		ipv6ListResponsesMutex:              sync.RWMutex{},
+		ipv6PrefixListResponses:             make(map[string]map[string]interface{}),
+		ipv6PrefixListResponsesMutex:        sync.RWMutex{},
+		routeMapClauseResponses:             make(map[string]map[string]interface{}),
+		routeMapClauseResponsesMutex:        sync.RWMutex{},
+		routeMapResponses:                   make(map[string]map[string]interface{}),
+		routeMapResponsesMutex:              sync.RWMutex{},
+		sfpBreakoutResponses:                make(map[string]map[string]interface{}),
+		sfpBreakoutResponsesMutex:           sync.RWMutex{},
+		siteResponses:                       make(map[string]map[string]interface{}),
+		siteResponsesMutex:                  sync.RWMutex{},
+		podResponses:                        make(map[string]map[string]interface{}),
+		podResponsesMutex:                   sync.RWMutex{},
+		portAclResponses:                    make(map[string]map[string]interface{}),
+		portAclResponsesMutex:               sync.RWMutex{},
 	}
 }
 
@@ -817,6 +1146,90 @@ func (b *BulkOperationManager) GetResourceResponse(resourceType, resourceName st
 		response, exists := b.deviceControllerResponses[resourceName]
 		return response, exists
 
+	case "as_path_access_list":
+		b.asPathAccessListResponsesMutex.RLock()
+		defer b.asPathAccessListResponsesMutex.RUnlock()
+		response, exists := b.asPathAccessListResponses[resourceName]
+		return response, exists
+
+	case "community_list":
+		b.communityListResponsesMutex.RLock()
+		defer b.communityListResponsesMutex.RUnlock()
+		response, exists := b.communityListResponses[resourceName]
+		return response, exists
+
+	case "device_settings":
+		b.deviceSettingsResponsesMutex.RLock()
+		defer b.deviceSettingsResponsesMutex.RUnlock()
+		response, exists := b.deviceSettingsResponses[resourceName]
+		return response, exists
+
+	case "extended_community_list":
+		b.extendedCommunityListResponsesMutex.RLock()
+		defer b.extendedCommunityListResponsesMutex.RUnlock()
+		response, exists := b.extendedCommunityListResponses[resourceName]
+		return response, exists
+
+	case "ipv4_list":
+		b.ipv4ListResponsesMutex.RLock()
+		defer b.ipv4ListResponsesMutex.RUnlock()
+		response, exists := b.ipv4ListResponses[resourceName]
+		return response, exists
+
+	case "ipv4_prefix_list":
+		b.ipv4PrefixListResponsesMutex.RLock()
+		defer b.ipv4PrefixListResponsesMutex.RUnlock()
+		response, exists := b.ipv4PrefixListResponses[resourceName]
+		return response, exists
+
+	case "ipv6_list":
+		b.ipv6ListResponsesMutex.RLock()
+		defer b.ipv6ListResponsesMutex.RUnlock()
+		response, exists := b.ipv6ListResponses[resourceName]
+		return response, exists
+
+	case "ipv6_prefix_list":
+		b.ipv6PrefixListResponsesMutex.RLock()
+		defer b.ipv6PrefixListResponsesMutex.RUnlock()
+		response, exists := b.ipv6PrefixListResponses[resourceName]
+		return response, exists
+
+	case "route_map_clause":
+		b.routeMapClauseResponsesMutex.RLock()
+		defer b.routeMapClauseResponsesMutex.RUnlock()
+		response, exists := b.routeMapClauseResponses[resourceName]
+		return response, exists
+
+	case "route_map":
+		b.routeMapResponsesMutex.RLock()
+		defer b.routeMapResponsesMutex.RUnlock()
+		response, exists := b.routeMapResponses[resourceName]
+		return response, exists
+
+	case "sfp_breakout":
+		b.sfpBreakoutResponsesMutex.RLock()
+		defer b.sfpBreakoutResponsesMutex.RUnlock()
+		response, exists := b.sfpBreakoutResponses[resourceName]
+		return response, exists
+
+	case "site":
+		b.siteResponsesMutex.RLock()
+		defer b.siteResponsesMutex.RUnlock()
+		response, exists := b.siteResponses[resourceName]
+		return response, exists
+
+	case "pod":
+		b.podResponsesMutex.RLock()
+		defer b.podResponsesMutex.RUnlock()
+		response, exists := b.podResponses[resourceName]
+		return response, exists
+
+	case "port_acl":
+		b.portAclResponsesMutex.RLock()
+		defer b.portAclResponsesMutex.RUnlock()
+		response, exists := b.portAclResponses[resourceName]
+		return response, exists
+
 	default:
 		return nil, false
 	}
@@ -912,6 +1325,20 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 			b.clearCacheFunc(ctx, b.contextProvider(), "devicevoicesettings")
 			b.clearCacheFunc(ctx, b.contextProvider(), "serviceportprofiles")
 			b.clearCacheFunc(ctx, b.contextProvider(), "voiceportprofiles")
+			b.clearCacheFunc(ctx, b.contextProvider(), "aspathaccesslists")
+			b.clearCacheFunc(ctx, b.contextProvider(), "communitylists")
+			b.clearCacheFunc(ctx, b.contextProvider(), "devicesettings")
+			b.clearCacheFunc(ctx, b.contextProvider(), "extendedcommunitylists")
+			b.clearCacheFunc(ctx, b.contextProvider(), "ipv4lists")
+			b.clearCacheFunc(ctx, b.contextProvider(), "ipv4prefixlists")
+			b.clearCacheFunc(ctx, b.contextProvider(), "ipv6lists")
+			b.clearCacheFunc(ctx, b.contextProvider(), "ipv6prefixlists")
+			b.clearCacheFunc(ctx, b.contextProvider(), "routemapclauses")
+			b.clearCacheFunc(ctx, b.contextProvider(), "routemaps")
+			b.clearCacheFunc(ctx, b.contextProvider(), "sfpbreakouts")
+			b.clearCacheFunc(ctx, b.contextProvider(), "sites")
+			b.clearCacheFunc(ctx, b.contextProvider(), "pods")
+			b.clearCacheFunc(ctx, b.contextProvider(), "portacls")
 		}
 	}
 
@@ -961,6 +1388,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", len(b.ethPortSettingsPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "eth_port_settings", "PUT") }, "Eth Port Settings") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.deviceSettingsPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_settings", "PUT") }, "Device Settings") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.lagPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "lag", "PUT") }, "LAG") {
 		return diagnostics, operationsPerformed
 	}
@@ -970,10 +1400,28 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", len(b.aclPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "acl", "PUT") }, "ACL") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.ipv4PrefixListPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_prefix_list", "PUT") }, "IPv4 Prefix List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ipv6PrefixListPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_prefix_list", "PUT") }, "IPv6 Prefix List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ipv4ListPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PUT") }, "IPv4 List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ipv6ListPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PUT") }, "IPv6 List") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.packetBrokerPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "packet_broker", "PUT") }, "Packet Broker") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.portAclPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PUT") }, "Port ACL") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.badgePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "PUT") }, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.podPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "PUT") }, "Pod") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PUT", len(b.switchpointPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "PUT") }, "Switchpoint") {
@@ -982,22 +1430,53 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", len(b.deviceControllerPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_controller", "PUT") }, "Device Controller") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.asPathAccessListPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "as_path_access_list", "PUT") }, "AS Path Access List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.communityListPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "community_list", "PUT") }, "Community List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.extendedCommunityListPut), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "extended_community_list", "PUT")
+	}, "Extended Community List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.routeMapClausePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map_clause", "PUT") }, "Route Map Clause") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.routeMapPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map", "PUT") }, "Route Map") {
+		return diagnostics, operationsPerformed
+	}
 
 	// PATCH operations - DC Order
 	tflog.Debug(ctx, "Checking PATCH operation counts", map[string]interface{}{
-		"tenant_patch_count":            len(b.tenantPatch),
-		"gateway_patch_count":           len(b.gatewayPatch),
-		"gateway_profile_patch_count":   len(b.gatewayProfilePatch),
-		"service_patch_count":           len(b.servicePatch),
-		"packet_queue_patch_count":      len(b.packetQueuePatch),
-		"eth_port_profile_patch_count":  len(b.ethPortProfilePatch),
-		"eth_port_settings_patch_count": len(b.ethPortSettingsPatch),
-		"lag_patch_count":               len(b.lagPatch),
-		"bundle_patch_count":            len(b.bundlePatch),
-		"acl_patch_count":               len(b.aclPatch),
-		"packet_broker_patch_count":     len(b.packetBrokerPatch),
-		"badge_patch_count":             len(b.badgePatch),
-		"device_controller_patch_count": len(b.deviceControllerPatch),
+		"tenant_patch_count":                  len(b.tenantPatch),
+		"gateway_patch_count":                 len(b.gatewayPatch),
+		"gateway_profile_patch_count":         len(b.gatewayProfilePatch),
+		"service_patch_count":                 len(b.servicePatch),
+		"packet_queue_patch_count":            len(b.packetQueuePatch),
+		"eth_port_profile_patch_count":        len(b.ethPortProfilePatch),
+		"eth_port_settings_patch_count":       len(b.ethPortSettingsPatch),
+		"device_settings_patch_count":         len(b.deviceSettingsPatch),
+		"lag_patch_count":                     len(b.lagPatch),
+		"bundle_patch_count":                  len(b.bundlePatch),
+		"acl_patch_count":                     len(b.aclPatch),
+		"ipv4_prefix_list_patch_count":        len(b.ipv4PrefixListPatch),
+		"ipv6_prefix_list_patch_count":        len(b.ipv6PrefixListPatch),
+		"ipv4_list_patch_count":               len(b.ipv4ListPatch),
+		"ipv6_list_patch_count":               len(b.ipv6ListPatch),
+		"packet_broker_patch_count":           len(b.packetBrokerPatch),
+		"port_acl_patch_count":                len(b.portAclPatch),
+		"badge_patch_count":                   len(b.badgePatch),
+		"pod_patch_count":                     len(b.podPatch),
+		"device_controller_patch_count":       len(b.deviceControllerPatch),
+		"as_path_access_list_patch_count":     len(b.asPathAccessListPatch),
+		"community_list_patch_count":          len(b.communityListPatch),
+		"extended_community_list_patch_count": len(b.extendedCommunityListPatch),
+		"route_map_clause_patch_count":        len(b.routeMapClausePatch),
+		"route_map_patch_count":               len(b.routeMapPatch),
+		"sfp_breakout_patch_count":            len(b.sfpBreakoutPatch),
+		"site_patch_count":                    len(b.sitePatch),
 	})
 
 	if !execute("PATCH", len(b.tenantPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "tenant", "PATCH") }, "Tenant") {
@@ -1021,6 +1500,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PATCH", len(b.ethPortSettingsPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "eth_port_settings", "PATCH") }, "Eth Port Settings") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", len(b.deviceSettingsPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_settings", "PATCH") }, "Device Settings") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", len(b.lagPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "lag", "PATCH") }, "LAG") {
 		return diagnostics, operationsPerformed
 	}
@@ -1030,10 +1512,28 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PATCH", len(b.aclPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "acl", "PATCH") }, "ACL") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", len(b.ipv4PrefixListPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_prefix_list", "PATCH") }, "IPv4 Prefix List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.ipv6PrefixListPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_prefix_list", "PATCH") }, "IPv6 Prefix List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.ipv4ListPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PATCH") }, "IPv4 List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.ipv6ListPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PATCH") }, "IPv6 List") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", len(b.packetBrokerPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "packet_broker", "PATCH") }, "Packet Broker") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", len(b.portAclPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PATCH") }, "Port ACL") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", len(b.badgePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "PATCH") }, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.podPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "PATCH") }, "Pod") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", len(b.switchpointPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "PATCH") }, "Switchpoint") {
@@ -1042,15 +1542,61 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PATCH", len(b.deviceControllerPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_controller", "PATCH") }, "Device Controller") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", len(b.asPathAccessListPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "as_path_access_list", "PATCH") }, "AS Path Access List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.communityListPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "community_list", "PATCH") }, "Community List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.extendedCommunityListPatch), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "extended_community_list", "PATCH")
+	}, "Extended Community List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.routeMapClausePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map_clause", "PATCH") }, "Route Map Clause") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.routeMapPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map", "PATCH") }, "Route Map") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.sfpBreakoutPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "sfp_breakout", "PATCH") }, "SFP Breakout") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.sitePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "site", "PATCH") }, "Site") {
+		return diagnostics, operationsPerformed
+	}
 
 	// DELETE operations - Reverse DC Order
+	if !execute("DELETE", len(b.routeMapDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map", "DELETE") }, "Route Map") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.routeMapClauseDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map_clause", "DELETE") }, "Route Map Clause") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.extendedCommunityListDelete), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "extended_community_list", "DELETE")
+	}, "Extended Community List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.communityListDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "community_list", "DELETE") }, "Community List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.asPathAccessListDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "as_path_access_list", "DELETE") }, "AS Path Access List") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("DELETE", len(b.deviceControllerDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_controller", "DELETE") }, "Device Controller") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.switchpointDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "DELETE") }, "Switchpoint") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("DELETE", len(b.podDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "DELETE") }, "Pod") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("DELETE", len(b.badgeDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "DELETE") }, "Badge") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.portAclDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "DELETE") }, "Port ACL") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.packetBrokerDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "packet_broker", "DELETE") }, "Packet Broker") {
@@ -1081,6 +1627,21 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.gatewayDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "gateway", "DELETE") }, "Gateway") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ipv6PrefixListDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_prefix_list", "DELETE") }, "IPv6 Prefix List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ipv6ListDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list_filter", "DELETE") }, "IPv6 List Filter") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ipv4PrefixListDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_prefix_list", "DELETE") }, "IPv4 Prefix List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ipv4ListDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list_filter", "DELETE") }, "IPv4 List Filter") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.deviceSettingsDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_settings", "DELETE") }, "Device Settings") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.tenantDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "tenant", "DELETE") }, "Tenant") {
@@ -1145,6 +1706,12 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PUT", len(b.badgePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "PUT") }, "Badge") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.portAclPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PUT") }, "Port ACL") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.podPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "PUT") }, "Pod") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.switchpointPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "PUT") }, "Switchpoint") {
 		return diagnostics, operationsPerformed
 	}
@@ -1187,6 +1754,12 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PATCH", len(b.bundlePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "bundle", "PATCH") }, "Bundle") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", len(b.portAclPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PATCH") }, "Port ACL") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.podPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "PATCH") }, "Pod") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", len(b.badgePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "PATCH") }, "Badge") {
 		return diagnostics, operationsPerformed
 	}
@@ -1202,6 +1775,12 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.switchpointDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "DELETE") }, "Switchpoint") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.podDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "DELETE") }, "Pod") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.portAclDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "DELETE") }, "Port ACL") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.badgeDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "DELETE") }, "Badge") {
@@ -1259,8 +1838,13 @@ func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool
 		len(b.gatewayProfilePut) == 0 && len(b.gatewayProfilePatch) == 0 && len(b.gatewayProfileDelete) == 0 &&
 		len(b.ethPortProfilePut) == 0 && len(b.ethPortProfilePatch) == 0 && len(b.ethPortProfileDelete) == 0 &&
 		len(b.ethPortSettingsPut) == 0 && len(b.ethPortSettingsPatch) == 0 && len(b.ethPortSettingsDelete) == 0 &&
+		len(b.deviceSettingsPut) == 0 && len(b.deviceSettingsPatch) == 0 && len(b.deviceSettingsDelete) == 0 &&
 		len(b.bundlePut) == 0 && len(b.bundlePatch) == 0 && len(b.bundleDelete) == 0 && len(b.authenticatedEthPortPut) == 0 && len(b.authenticatedEthPortPatch) == 0 &&
 		len(b.authenticatedEthPortDelete) == 0 && len(b.aclPut) == 0 && len(b.aclPatch) == 0 && len(b.aclDelete) == 0 &&
+		len(b.ipv4ListPut) == 0 && len(b.ipv4ListPatch) == 0 && len(b.ipv4ListDelete) == 0 &&
+		len(b.ipv4PrefixListPut) == 0 && len(b.ipv4PrefixListPatch) == 0 && len(b.ipv4PrefixListDelete) == 0 &&
+		len(b.ipv6ListPut) == 0 && len(b.ipv6ListPatch) == 0 && len(b.ipv6ListDelete) == 0 &&
+		len(b.ipv6PrefixListPut) == 0 && len(b.ipv6PrefixListPatch) == 0 && len(b.ipv6PrefixListDelete) == 0 &&
 		len(b.badgePut) == 0 && len(b.badgePatch) == 0 && len(b.badgeDelete) == 0 &&
 		len(b.voicePortProfilePut) == 0 && len(b.voicePortProfilePatch) == 0 && len(b.voicePortProfileDelete) == 0 &&
 		len(b.switchpointPut) == 0 && len(b.switchpointPatch) == 0 && len(b.switchpointDelete) == 0 &&
@@ -1268,6 +1852,15 @@ func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool
 		len(b.packetBrokerPut) == 0 && len(b.packetBrokerPatch) == 0 && len(b.packetBrokerDelete) == 0 &&
 		len(b.packetQueuePut) == 0 && len(b.packetQueuePatch) == 0 && len(b.packetQueueDelete) == 0 &&
 		len(b.deviceVoiceSettingsPut) == 0 && len(b.deviceVoiceSettingsPatch) == 0 && len(b.deviceVoiceSettingsDelete) == 0 &&
+		len(b.asPathAccessListPut) == 0 && len(b.asPathAccessListPatch) == 0 && len(b.asPathAccessListDelete) == 0 &&
+		len(b.communityListPut) == 0 && len(b.communityListPatch) == 0 && len(b.communityListDelete) == 0 &&
+		len(b.extendedCommunityListPut) == 0 && len(b.extendedCommunityListPatch) == 0 && len(b.extendedCommunityListDelete) == 0 &&
+		len(b.routeMapClausePut) == 0 && len(b.routeMapClausePatch) == 0 && len(b.routeMapClauseDelete) == 0 &&
+		len(b.routeMapPut) == 0 && len(b.routeMapPatch) == 0 && len(b.routeMapDelete) == 0 &&
+		len(b.sfpBreakoutPatch) == 0 &&
+		len(b.sitePatch) == 0 &&
+		len(b.podPut) == 0 && len(b.podPatch) == 0 && len(b.podDelete) == 0 &&
+		len(b.portAclPut) == 0 && len(b.portAclPatch) == 0 && len(b.portAclDelete) == 0 &&
 		len(b.deviceControllerPut) == 0 && len(b.deviceControllerPatch) == 0 && len(b.deviceControllerDelete) == 0 {
 		return false
 	}
@@ -1314,6 +1907,10 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	ethPortSettingsPatchCount := len(b.ethPortSettingsPatch)
 	ethPortSettingsDeleteCount := len(b.ethPortSettingsDelete)
 
+	deviceSettingsPutCount := len(b.deviceSettingsPut)
+	deviceSettingsPatchCount := len(b.deviceSettingsPatch)
+	deviceSettingsDeleteCount := len(b.deviceSettingsDelete)
+
 	bundlePutCount := len(b.bundlePut)
 	bundlePatchCount := len(b.bundlePatch)
 	bundleDeleteCount := len(b.bundleDelete)
@@ -1321,6 +1918,22 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	aclPutCount := len(b.aclPut)
 	aclPatchCount := len(b.aclPatch)
 	aclDeleteCount := len(b.aclDelete)
+
+	ipv4ListPutCount := len(b.ipv4ListPut)
+	ipv4ListPatchCount := len(b.ipv4ListPatch)
+	ipv4ListDeleteCount := len(b.ipv4ListDelete)
+
+	ipv4PrefixListPutCount := len(b.ipv4PrefixListPut)
+	ipv4PrefixListPatchCount := len(b.ipv4PrefixListPatch)
+	ipv4PrefixListDeleteCount := len(b.ipv4PrefixListDelete)
+
+	ipv6ListPutCount := len(b.ipv6ListPut)
+	ipv6ListPatchCount := len(b.ipv6ListPatch)
+	ipv6ListDeleteCount := len(b.ipv6ListDelete)
+
+	ipv6PrefixListPutCount := len(b.ipv6PrefixListPut)
+	ipv6PrefixListPatchCount := len(b.ipv6PrefixListPatch)
+	ipv6PrefixListDeleteCount := len(b.ipv6PrefixListDelete)
 
 	authenticatedEthPortPutCount := len(b.authenticatedEthPortPut)
 	authenticatedEthPortPatchCount := len(b.authenticatedEthPortPatch)
@@ -1354,6 +1967,38 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	deviceVoiceSettingsPatchCount := len(b.deviceVoiceSettingsPatch)
 	deviceVoiceSettingsDeleteCount := len(b.deviceVoiceSettingsDelete)
 
+	asPathAccessListPutCount := len(b.asPathAccessListPut)
+	asPathAccessListPatchCount := len(b.asPathAccessListPatch)
+	asPathAccessListDeleteCount := len(b.asPathAccessListDelete)
+
+	communityListPutCount := len(b.communityListPut)
+	communityListPatchCount := len(b.communityListPatch)
+	communityListDeleteCount := len(b.communityListDelete)
+
+	extendedCommunityListPutCount := len(b.extendedCommunityListPut)
+	extendedCommunityListPatchCount := len(b.extendedCommunityListPatch)
+	extendedCommunityListDeleteCount := len(b.extendedCommunityListDelete)
+
+	routeMapClausePutCount := len(b.routeMapClausePut)
+	routeMapClausePatchCount := len(b.routeMapClausePatch)
+	routeMapClauseDeleteCount := len(b.routeMapClauseDelete)
+
+	routeMapPutCount := len(b.routeMapPut)
+	routeMapPatchCount := len(b.routeMapPatch)
+	routeMapDeleteCount := len(b.routeMapDelete)
+
+	sfpBreakoutPatchCount := len(b.sfpBreakoutPatch)
+
+	sitePatchCount := len(b.sitePatch)
+
+	podPutCount := len(b.podPut)
+	podPatchCount := len(b.podPatch)
+	podDeleteCount := len(b.podDelete)
+
+	portAclPutCount := len(b.portAclPut)
+	portAclPatchCount := len(b.portAclPatch)
+	portAclDeleteCount := len(b.portAclDelete)
+
 	deviceControllerPutCount := len(b.deviceControllerPut)
 	deviceControllerPatchCount := len(b.deviceControllerPatch)
 	deviceControllerDeleteCount := len(b.deviceControllerDelete)
@@ -1367,7 +2012,12 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 		gatewayProfilePutCount + gatewayProfilePatchCount + gatewayProfileDeleteCount +
 		ethPortProfilePutCount + ethPortProfilePatchCount + ethPortProfileDeleteCount +
 		ethPortSettingsPutCount + ethPortSettingsPatchCount + ethPortSettingsDeleteCount +
+		deviceSettingsPutCount + deviceSettingsPatchCount + deviceSettingsDeleteCount +
 		bundlePutCount + bundlePatchCount + bundleDeleteCount + aclPutCount + aclPatchCount + aclDeleteCount +
+		ipv4ListPutCount + ipv4ListPatchCount + ipv4ListDeleteCount +
+		ipv4PrefixListPutCount + ipv4PrefixListPatchCount + ipv4PrefixListDeleteCount +
+		ipv6ListPutCount + ipv6ListPatchCount + ipv6ListDeleteCount +
+		ipv6PrefixListPutCount + ipv6PrefixListPatchCount + ipv6PrefixListDeleteCount +
 		badgePutCount + badgePatchCount + badgeDeleteCount +
 		voicePortProfilePutCount + voicePortProfilePatchCount + voicePortProfileDeleteCount +
 		switchpointPutCount + switchpointPatchCount + switchpointDeleteCount +
@@ -1375,66 +2025,112 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 		packetBrokerPutCount + packetBrokerPatchCount + packetBrokerDeleteCount +
 		packetQueuePutCount + packetQueuePatchCount + packetQueueDeleteCount +
 		deviceVoiceSettingsPutCount + deviceVoiceSettingsPatchCount + deviceVoiceSettingsDeleteCount +
+		asPathAccessListPutCount + asPathAccessListPatchCount + asPathAccessListDeleteCount +
+		communityListPutCount + communityListPatchCount + communityListDeleteCount +
+		extendedCommunityListPutCount + extendedCommunityListPatchCount + extendedCommunityListDeleteCount +
+		routeMapClausePutCount + routeMapClausePatchCount + routeMapClauseDeleteCount +
+		routeMapPutCount + routeMapPatchCount + routeMapDeleteCount +
+		sfpBreakoutPatchCount + sitePatchCount +
+		podPutCount + podPatchCount + podDeleteCount +
+		portAclPutCount + portAclPatchCount + portAclDeleteCount +
 		authenticatedEthPortPutCount + authenticatedEthPortPatchCount + authenticatedEthPortDeleteCount +
 		deviceControllerPutCount + deviceControllerPatchCount + deviceControllerDeleteCount
 
 	if totalCount > 0 {
 		tflog.Debug(ctx, "Multiple operations detected, executing in sequence", map[string]interface{}{
-			"gateway_put_count":                   gatewayPutCount,
-			"gateway_patch_count":                 gatewayPatchCount,
-			"gateway_delete_count":                gatewayDeleteCount,
-			"lag_put_count":                       lagPutCount,
-			"lag_patch_count":                     lagPatchCount,
-			"lag_delete_count":                    lagDeleteCount,
-			"tenant_put_count":                    tenantPutCount,
-			"tenant_patch_count":                  tenantPatchCount,
-			"tenant_delete_count":                 tenantDeleteCount,
-			"service_put_count":                   servicePutCount,
-			"service_patch_count":                 servicePatchCount,
-			"service_delete_count":                serviceDeleteCount,
-			"gateway_profile_put_count":           gatewayProfilePutCount,
-			"gateway_profile_patch_count":         gatewayProfilePatchCount,
-			"gateway_profile_delete_count":        gatewayProfileDeleteCount,
-			"eth_port_profile_put_count":          ethPortProfilePutCount,
-			"eth_port_profile_patch_count":        ethPortProfilePatchCount,
-			"eth_port_profile_delete_count":       ethPortProfileDeleteCount,
-			"eth_port_settings_put_count":         ethPortSettingsPutCount,
-			"eth_port_settings_patch_count":       ethPortSettingsPatchCount,
-			"eth_port_settings_delete_count":      ethPortSettingsDeleteCount,
-			"bundle_put_count":                    bundlePutCount,
-			"bundle_patch_count":                  bundlePatchCount,
-			"bundle_delete_count":                 bundleDeleteCount,
-			"acl_put_count":                       aclPutCount,
-			"acl_patch_count":                     aclPatchCount,
-			"acl_delete_count":                    aclDeleteCount,
-			"badge_put_count":                     badgePutCount,
-			"badge_patch_count":                   badgePatchCount,
-			"badge_delete_count":                  badgeDeleteCount,
-			"voice_port_profile_put_count":        voicePortProfilePutCount,
-			"voice_port_profile_patch_count":      voicePortProfilePatchCount,
-			"voice_port_profile_delete_count":     voicePortProfileDeleteCount,
-			"switchpoint_put_count":               switchpointPutCount,
-			"switchpoint_patch_count":             switchpointPatchCount,
-			"switchpoint_delete_count":            switchpointDeleteCount,
-			"service_port_profile_put_count":      servicePortProfilePutCount,
-			"service_port_profile_patch_count":    servicePortProfilePatchCount,
-			"service_port_profile_delete_count":   servicePortProfileDeleteCount,
-			"packet_broker_put_count":             packetBrokerPutCount,
-			"packet_broker_patch_count":           packetBrokerPatchCount,
-			"packet_broker_delete_count":          packetBrokerDeleteCount,
-			"packet_queue_put_count":              packetQueuePutCount,
-			"packet_queue_patch_count":            packetQueuePatchCount,
-			"packet_queue_delete_count":           packetQueueDeleteCount,
-			"device_voice_settings_put_count":     deviceVoiceSettingsPutCount,
-			"device_voice_settings_patch_count":   deviceVoiceSettingsPatchCount,
-			"device_voice_settings_delete_count":  deviceVoiceSettingsDeleteCount,
-			"authenticated_eth_port_put_count":    authenticatedEthPortPutCount,
-			"authenticated_eth_port_patch_count":  authenticatedEthPortPatchCount,
-			"authenticated_eth_port_delete_count": authenticatedEthPortDeleteCount,
-			"device_controller_put_count":         deviceControllerPutCount,
-			"device_controller_patch_count":       deviceControllerPatchCount,
-			"device_controller_delete_count":      deviceControllerDeleteCount,
-			"total_count":                         totalCount,
+			"gateway_put_count":                    gatewayPutCount,
+			"gateway_patch_count":                  gatewayPatchCount,
+			"gateway_delete_count":                 gatewayDeleteCount,
+			"lag_put_count":                        lagPutCount,
+			"lag_patch_count":                      lagPatchCount,
+			"lag_delete_count":                     lagDeleteCount,
+			"tenant_put_count":                     tenantPutCount,
+			"tenant_patch_count":                   tenantPatchCount,
+			"tenant_delete_count":                  tenantDeleteCount,
+			"service_put_count":                    servicePutCount,
+			"service_patch_count":                  servicePatchCount,
+			"service_delete_count":                 serviceDeleteCount,
+			"gateway_profile_put_count":            gatewayProfilePutCount,
+			"gateway_profile_patch_count":          gatewayProfilePatchCount,
+			"gateway_profile_delete_count":         gatewayProfileDeleteCount,
+			"eth_port_profile_put_count":           ethPortProfilePutCount,
+			"eth_port_profile_patch_count":         ethPortProfilePatchCount,
+			"eth_port_profile_delete_count":        ethPortProfileDeleteCount,
+			"eth_port_settings_put_count":          ethPortSettingsPutCount,
+			"eth_port_settings_patch_count":        ethPortSettingsPatchCount,
+			"eth_port_settings_delete_count":       ethPortSettingsDeleteCount,
+			"device_settings_put_count":            deviceSettingsPutCount,
+			"device_settings_patch_count":          deviceSettingsPatchCount,
+			"device_settings_delete_count":         deviceSettingsDeleteCount,
+			"bundle_put_count":                     bundlePutCount,
+			"bundle_patch_count":                   bundlePatchCount,
+			"bundle_delete_count":                  bundleDeleteCount,
+			"acl_put_count":                        aclPutCount,
+			"acl_patch_count":                      aclPatchCount,
+			"acl_delete_count":                     aclDeleteCount,
+			"ipv4_list_put_count":                  ipv4ListPutCount,
+			"ipv4_list_patch_count":                ipv4ListPatchCount,
+			"ipv4_list_delete_count":               ipv4ListDeleteCount,
+			"ipv4_prefix_list_put_count":           ipv4PrefixListPutCount,
+			"ipv4_prefix_list_patch_count":         ipv4PrefixListPatchCount,
+			"ipv4_prefix_list_delete_count":        ipv4PrefixListDeleteCount,
+			"ipv6_list_put_count":                  ipv6ListPutCount,
+			"ipv6_list_patch_count":                ipv6ListPatchCount,
+			"ipv6_list_delete_count":               ipv6ListDeleteCount,
+			"ipv6_prefix_list_put_count":           ipv6PrefixListPutCount,
+			"ipv6_prefix_list_patch_count":         ipv6PrefixListPatchCount,
+			"ipv6_prefix_list_delete_count":        ipv6PrefixListDeleteCount,
+			"badge_put_count":                      badgePutCount,
+			"badge_patch_count":                    badgePatchCount,
+			"badge_delete_count":                   badgeDeleteCount,
+			"voice_port_profile_put_count":         voicePortProfilePutCount,
+			"voice_port_profile_patch_count":       voicePortProfilePatchCount,
+			"voice_port_profile_delete_count":      voicePortProfileDeleteCount,
+			"switchpoint_put_count":                switchpointPutCount,
+			"switchpoint_patch_count":              switchpointPatchCount,
+			"switchpoint_delete_count":             switchpointDeleteCount,
+			"service_port_profile_put_count":       servicePortProfilePutCount,
+			"service_port_profile_patch_count":     servicePortProfilePatchCount,
+			"service_port_profile_delete_count":    servicePortProfileDeleteCount,
+			"packet_broker_put_count":              packetBrokerPutCount,
+			"packet_broker_patch_count":            packetBrokerPatchCount,
+			"packet_broker_delete_count":           packetBrokerDeleteCount,
+			"packet_queue_put_count":               packetQueuePutCount,
+			"packet_queue_patch_count":             packetQueuePatchCount,
+			"packet_queue_delete_count":            packetQueueDeleteCount,
+			"device_voice_settings_put_count":      deviceVoiceSettingsPutCount,
+			"device_voice_settings_patch_count":    deviceVoiceSettingsPatchCount,
+			"device_voice_settings_delete_count":   deviceVoiceSettingsDeleteCount,
+			"as_path_access_list_put_count":        asPathAccessListPutCount,
+			"as_path_access_list_patch_count":      asPathAccessListPatchCount,
+			"as_path_access_list_delete_count":     asPathAccessListDeleteCount,
+			"community_list_put_count":             communityListPutCount,
+			"community_list_patch_count":           communityListPatchCount,
+			"community_list_delete_count":          communityListDeleteCount,
+			"extended_community_list_put_count":    extendedCommunityListPutCount,
+			"extended_community_list_patch_count":  extendedCommunityListPatchCount,
+			"extended_community_list_delete_count": extendedCommunityListDeleteCount,
+			"route_map_clause_put_count":           routeMapClausePutCount,
+			"route_map_clause_patch_count":         routeMapClausePatchCount,
+			"route_map_clause_delete_count":        routeMapClauseDeleteCount,
+			"route_map_put_count":                  routeMapPutCount,
+			"route_map_patch_count":                routeMapPatchCount,
+			"route_map_delete_count":               routeMapDeleteCount,
+			"sfp_breakout_patch_count":             sfpBreakoutPatchCount,
+			"site_patch_count":                     sitePatchCount,
+			"pod_put_count":                        podPutCount,
+			"pod_patch_count":                      podPatchCount,
+			"pod_delete_count":                     podDeleteCount,
+			"port_acl_put_count":                   portAclPutCount,
+			"port_acl_patch_count":                 portAclPatchCount,
+			"port_acl_delete_count":                portAclDeleteCount,
+			"authenticated_eth_port_put_count":     authenticatedEthPortPutCount,
+			"authenticated_eth_port_patch_count":   authenticatedEthPortPatchCount,
+			"authenticated_eth_port_delete_count":  authenticatedEthPortDeleteCount,
+			"device_controller_put_count":          deviceControllerPutCount,
+			"device_controller_patch_count":        deviceControllerPatchCount,
+			"device_controller_delete_count":       deviceControllerDeleteCount,
+			"total_count":                          totalCount,
 		})
 
 		return b.ExecuteAllPendingOperations(ctx)
@@ -1511,6 +2207,14 @@ func (b *BulkOperationManager) GetResourceOperationData(resourceType string) *Re
 			RecentOps:        &b.recentEthPortSettingsOps,
 			RecentOpTime:     &b.recentEthPortSettingsOpTime,
 		}
+	case "device_settings":
+		return &ResourceOperationData{
+			PutOperations:    b.deviceSettingsPut,
+			PatchOperations:  b.deviceSettingsPatch,
+			DeleteOperations: &b.deviceSettingsDelete,
+			RecentOps:        &b.recentDeviceSettingsOps,
+			RecentOpTime:     &b.recentDeviceSettingsOpTime,
+		}
 	case "bundle":
 		return &ResourceOperationData{
 			PutOperations:    b.bundlePut,
@@ -1526,6 +2230,38 @@ func (b *BulkOperationManager) GetResourceOperationData(resourceType string) *Re
 			DeleteOperations: &b.aclDelete,
 			RecentOps:        &b.recentAclOps,
 			RecentOpTime:     &b.recentAclOpTime,
+		}
+	case "ipv4_list_filter":
+		return &ResourceOperationData{
+			PutOperations:    b.ipv4ListPut,
+			PatchOperations:  b.ipv4ListPatch,
+			DeleteOperations: &b.ipv4ListDelete,
+			RecentOps:        &b.recentIpv4ListOps,
+			RecentOpTime:     &b.recentIpv4ListOpTime,
+		}
+	case "ipv4_prefix_list":
+		return &ResourceOperationData{
+			PutOperations:    b.ipv4PrefixListPut,
+			PatchOperations:  b.ipv4PrefixListPatch,
+			DeleteOperations: &b.ipv4PrefixListDelete,
+			RecentOps:        &b.recentIpv4PrefixListOps,
+			RecentOpTime:     &b.recentIpv4PrefixListOpTime,
+		}
+	case "ipv6_list_filter":
+		return &ResourceOperationData{
+			PutOperations:    b.ipv6ListPut,
+			PatchOperations:  b.ipv6ListPatch,
+			DeleteOperations: &b.ipv6ListDelete,
+			RecentOps:        &b.recentIpv6ListOps,
+			RecentOpTime:     &b.recentIpv6ListOpTime,
+		}
+	case "ipv6_prefix_list":
+		return &ResourceOperationData{
+			PutOperations:    b.ipv6PrefixListPut,
+			PatchOperations:  b.ipv6PrefixListPatch,
+			DeleteOperations: &b.ipv6PrefixListDelete,
+			RecentOps:        &b.recentIpv6PrefixListOps,
+			RecentOpTime:     &b.recentIpv6PrefixListOpTime,
 		}
 	case "authenticated_eth_port":
 		return &ResourceOperationData{
@@ -1550,6 +2286,62 @@ func (b *BulkOperationManager) GetResourceOperationData(resourceType string) *Re
 			DeleteOperations: &b.deviceVoiceSettingsDelete,
 			RecentOps:        &b.recentDeviceVoiceSettingsOps,
 			RecentOpTime:     &b.recentDeviceVoiceSettingsOpTime,
+		}
+	case "as_path_access_list":
+		return &ResourceOperationData{
+			PutOperations:    b.asPathAccessListPut,
+			PatchOperations:  b.asPathAccessListPatch,
+			DeleteOperations: &b.asPathAccessListDelete,
+			RecentOps:        &b.recentAsPathAccessListOps,
+			RecentOpTime:     &b.recentAsPathAccessListOpTime,
+		}
+	case "community_list":
+		return &ResourceOperationData{
+			PutOperations:    b.communityListPut,
+			PatchOperations:  b.communityListPatch,
+			DeleteOperations: &b.communityListDelete,
+			RecentOps:        &b.recentCommunityListOps,
+			RecentOpTime:     &b.recentCommunityListOpTime,
+		}
+	case "extended_community_list":
+		return &ResourceOperationData{
+			PutOperations:    b.extendedCommunityListPut,
+			PatchOperations:  b.extendedCommunityListPatch,
+			DeleteOperations: &b.extendedCommunityListDelete,
+			RecentOps:        &b.recentExtendedCommunityListOps,
+			RecentOpTime:     &b.recentExtendedCommunityListOpTime,
+		}
+	case "route_map_clause":
+		return &ResourceOperationData{
+			PutOperations:    b.routeMapClausePut,
+			PatchOperations:  b.routeMapClausePatch,
+			DeleteOperations: &b.routeMapClauseDelete,
+			RecentOps:        &b.recentRouteMapClauseOps,
+			RecentOpTime:     &b.recentRouteMapClauseOpTime,
+		}
+	case "route_map":
+		return &ResourceOperationData{
+			PutOperations:    b.routeMapPut,
+			PatchOperations:  b.routeMapPatch,
+			DeleteOperations: &b.routeMapDelete,
+			RecentOps:        &b.recentRouteMapOps,
+			RecentOpTime:     &b.recentRouteMapOpTime,
+		}
+	case "sfp_breakout":
+		return &ResourceOperationData{
+			PutOperations:    nil, // SFP Breakouts only support PATCH
+			PatchOperations:  b.sfpBreakoutPatch,
+			DeleteOperations: nil, // No DELETE operations for SFP Breakouts
+			RecentOps:        &b.recentSfpBreakoutOps,
+			RecentOpTime:     &b.recentSfpBreakoutOpTime,
+		}
+	case "site":
+		return &ResourceOperationData{
+			PutOperations:    nil, // Sites only support PATCH
+			PatchOperations:  b.sitePatch,
+			DeleteOperations: nil, // No DELETE operations for Sites
+			RecentOps:        &b.recentSiteOps,
+			RecentOpTime:     &b.recentSiteOpTime,
 		}
 	case "packet_broker":
 		return &ResourceOperationData{
@@ -1599,6 +2391,22 @@ func (b *BulkOperationManager) GetResourceOperationData(resourceType string) *Re
 			RecentOps:        &b.recentDeviceControllerOps,
 			RecentOpTime:     &b.recentDeviceControllerOpTime,
 		}
+	case "pod":
+		return &ResourceOperationData{
+			PutOperations:    b.podPut,
+			PatchOperations:  b.podPatch,
+			DeleteOperations: &b.podDelete,
+			RecentOps:        &b.recentPodOps,
+			RecentOpTime:     &b.recentPodOpTime,
+		}
+	case "port_acl":
+		return &ResourceOperationData{
+			PutOperations:    b.portAclPut,
+			PatchOperations:  b.portAclPatch,
+			DeleteOperations: &b.portAclDelete,
+			RecentOps:        &b.recentPortAclOps,
+			RecentOpTime:     &b.recentPortAclOpTime,
+		}
 	}
 	return nil
 }
@@ -1632,7 +2440,7 @@ func (b *BulkOperationManager) hasPendingOrRecentOperations(
 		}
 	}
 
-	hasPending = hasPending || len(*data.DeleteOperations) > 0
+	hasPending = hasPending || (data.DeleteOperations != nil && len(*data.DeleteOperations) > 0)
 
 	// Check if we've recently had operations (within the last 5 seconds)
 	hasRecent := *data.RecentOps && time.Since(*data.RecentOpTime) < 5*time.Second
@@ -1841,6 +2649,42 @@ func (g *GenericAPIClient) Put(ctx context.Context, request interface{}) (*http.
 	case "service_port_profile":
 		req := g.client.ServicePortProfilesAPI.ServiceportprofilesPut(ctx).ServiceportprofilesPutRequest(*request.(*openapi.ServiceportprofilesPutRequest))
 		return req.Execute()
+	case "device_settings":
+		req := g.client.DeviceSettingsAPI.DevicesettingsPut(ctx).DevicesettingsPutRequest(*request.(*openapi.DevicesettingsPutRequest))
+		return req.Execute()
+	case "ipv4_list_filter":
+		req := g.client.IPv4ListFiltersAPI.Ipv4listsPut(ctx).Ipv4listsPutRequest(*request.(*openapi.Ipv4listsPutRequest))
+		return req.Execute()
+	case "ipv4_prefix_list":
+		req := g.client.IPv4PrefixListsAPI.Ipv4prefixlistsPut(ctx).Ipv4prefixlistsPutRequest(*request.(*openapi.Ipv4prefixlistsPutRequest))
+		return req.Execute()
+	case "ipv6_list_filter":
+		req := g.client.IPv6ListFiltersAPI.Ipv6listsPut(ctx).Ipv6listsPutRequest(*request.(*openapi.Ipv6listsPutRequest))
+		return req.Execute()
+	case "ipv6_prefix_list":
+		req := g.client.IPv6PrefixListsAPI.Ipv6prefixlistsPut(ctx).Ipv6prefixlistsPutRequest(*request.(*openapi.Ipv6prefixlistsPutRequest))
+		return req.Execute()
+	case "as_path_access_list":
+		req := g.client.ASPathAccessListsAPI.AspathaccesslistsPut(ctx).AspathaccesslistsPutRequest(*request.(*openapi.AspathaccesslistsPutRequest))
+		return req.Execute()
+	case "community_list":
+		req := g.client.CommunityListsAPI.CommunitylistsPut(ctx).CommunitylistsPutRequest(*request.(*openapi.CommunitylistsPutRequest))
+		return req.Execute()
+	case "extended_community_list":
+		req := g.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsPut(ctx).ExtendedcommunitylistsPutRequest(*request.(*openapi.ExtendedcommunitylistsPutRequest))
+		return req.Execute()
+	case "route_map_clause":
+		req := g.client.RouteMapClausesAPI.RoutemapclausesPut(ctx).RoutemapclausesPutRequest(*request.(*openapi.RoutemapclausesPutRequest))
+		return req.Execute()
+	case "route_map":
+		req := g.client.RouteMapsAPI.RoutemapsPut(ctx).RoutemapsPutRequest(*request.(*openapi.RoutemapsPutRequest))
+		return req.Execute()
+	case "pod":
+		req := g.client.PodsAPI.PodsPut(ctx).PodsPutRequest(*request.(*openapi.PodsPutRequest))
+		return req.Execute()
+	case "port_acl":
+		req := g.client.PortACLsAPI.PortaclsPut(ctx).PortaclsPutRequest(*request.(*openapi.PortaclsPutRequest))
+		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
 	}
@@ -1901,6 +2745,48 @@ func (g *GenericAPIClient) Patch(ctx context.Context, request interface{}) (*htt
 		return req.Execute()
 	case "service_port_profile":
 		req := g.client.ServicePortProfilesAPI.ServiceportprofilesPatch(ctx).ServiceportprofilesPutRequest(*request.(*openapi.ServiceportprofilesPutRequest))
+		return req.Execute()
+	case "device_settings":
+		req := g.client.DeviceSettingsAPI.DevicesettingsPatch(ctx).DevicesettingsPutRequest(*request.(*openapi.DevicesettingsPutRequest))
+		return req.Execute()
+	case "ipv4_list_filter":
+		req := g.client.IPv4ListFiltersAPI.Ipv4listsPatch(ctx).Ipv4listsPutRequest(*request.(*openapi.Ipv4listsPutRequest))
+		return req.Execute()
+	case "ipv4_prefix_list":
+		req := g.client.IPv4PrefixListsAPI.Ipv4prefixlistsPatch(ctx).Ipv4prefixlistsPutRequest(*request.(*openapi.Ipv4prefixlistsPutRequest))
+		return req.Execute()
+	case "ipv6_list_filter":
+		req := g.client.IPv6ListFiltersAPI.Ipv6listsPatch(ctx).Ipv6listsPutRequest(*request.(*openapi.Ipv6listsPutRequest))
+		return req.Execute()
+	case "ipv6_prefix_list":
+		req := g.client.IPv6PrefixListsAPI.Ipv6prefixlistsPatch(ctx).Ipv6prefixlistsPutRequest(*request.(*openapi.Ipv6prefixlistsPutRequest))
+		return req.Execute()
+	case "as_path_access_list":
+		req := g.client.ASPathAccessListsAPI.AspathaccesslistsPatch(ctx).AspathaccesslistsPutRequest(*request.(*openapi.AspathaccesslistsPutRequest))
+		return req.Execute()
+	case "community_list":
+		req := g.client.CommunityListsAPI.CommunitylistsPatch(ctx).CommunitylistsPutRequest(*request.(*openapi.CommunitylistsPutRequest))
+		return req.Execute()
+	case "extended_community_list":
+		req := g.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsPatch(ctx).ExtendedcommunitylistsPutRequest(*request.(*openapi.ExtendedcommunitylistsPutRequest))
+		return req.Execute()
+	case "route_map_clause":
+		req := g.client.RouteMapClausesAPI.RoutemapclausesPatch(ctx).RoutemapclausesPutRequest(*request.(*openapi.RoutemapclausesPutRequest))
+		return req.Execute()
+	case "route_map":
+		req := g.client.RouteMapsAPI.RoutemapsPatch(ctx).RoutemapsPutRequest(*request.(*openapi.RoutemapsPutRequest))
+		return req.Execute()
+	case "sfp_breakout":
+		req := g.client.SFPBreakoutsAPI.SfpbreakoutsPatch(ctx).SfpbreakoutsPatchRequest(*request.(*openapi.SfpbreakoutsPatchRequest))
+		return req.Execute()
+	case "site":
+		req := g.client.SitesAPI.SitesPatch(ctx).SitesPatchRequest(*request.(*openapi.SitesPatchRequest))
+		return req.Execute()
+	case "pod":
+		req := g.client.PodsAPI.PodsPatch(ctx).PodsPutRequest(*request.(*openapi.PodsPutRequest))
+		return req.Execute()
+	case "port_acl":
+		req := g.client.PortACLsAPI.PortaclsPatch(ctx).PortaclsPutRequest(*request.(*openapi.PortaclsPutRequest))
 		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
@@ -1963,6 +2849,42 @@ func (g *GenericAPIClient) Delete(ctx context.Context, names []string) (*http.Re
 	case "service_port_profile":
 		req := g.client.ServicePortProfilesAPI.ServiceportprofilesDelete(ctx).ServicePortProfileName(names)
 		return req.Execute()
+	case "device_settings":
+		req := g.client.DeviceSettingsAPI.DevicesettingsDelete(ctx).EthDeviceProfilesName(names)
+		return req.Execute()
+	case "ipv4_list_filter":
+		req := g.client.IPv4ListFiltersAPI.Ipv4listsDelete(ctx).Ipv4ListFilterName(names)
+		return req.Execute()
+	case "ipv4_prefix_list":
+		req := g.client.IPv4PrefixListsAPI.Ipv4prefixlistsDelete(ctx).Ipv4PrefixListName(names)
+		return req.Execute()
+	case "ipv6_list_filter":
+		req := g.client.IPv6ListFiltersAPI.Ipv6listsDelete(ctx).Ipv6ListFilterName(names)
+		return req.Execute()
+	case "ipv6_prefix_list":
+		req := g.client.IPv6PrefixListsAPI.Ipv6prefixlistsDelete(ctx).Ipv6PrefixListName(names)
+		return req.Execute()
+	case "as_path_access_list":
+		req := g.client.ASPathAccessListsAPI.AspathaccesslistsDelete(ctx).AsPathAccessListName(names)
+		return req.Execute()
+	case "community_list":
+		req := g.client.CommunityListsAPI.CommunitylistsDelete(ctx).CommunityListName(names)
+		return req.Execute()
+	case "extended_community_list":
+		req := g.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsDelete(ctx).ExtendedCommunityListName(names)
+		return req.Execute()
+	case "route_map_clause":
+		req := g.client.RouteMapClausesAPI.RoutemapclausesDelete(ctx).RouteMapClauseName(names)
+		return req.Execute()
+	case "route_map":
+		req := g.client.RouteMapsAPI.RoutemapsDelete(ctx).RouteMapName(names)
+		return req.Execute()
+	case "pod":
+		req := g.client.PodsAPI.PodsDelete(ctx).PodName(names)
+		return req.Execute()
+	case "port_acl":
+		req := g.client.PortACLsAPI.PortaclsDelete(ctx).PortAclName(names)
+		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
 	}
@@ -2023,6 +2945,48 @@ func (g *GenericAPIClient) Get(ctx context.Context) (*http.Response, error) {
 		return req.Execute()
 	case "service_port_profile":
 		req := g.client.ServicePortProfilesAPI.ServiceportprofilesGet(ctx)
+		return req.Execute()
+	case "device_settings":
+		req := g.client.DeviceSettingsAPI.DevicesettingsGet(ctx)
+		return req.Execute()
+	case "ipv4_list_filter":
+		req := g.client.IPv4ListFiltersAPI.Ipv4listsGet(ctx)
+		return req.Execute()
+	case "ipv4_prefix_list":
+		req := g.client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(ctx)
+		return req.Execute()
+	case "ipv6_list_filter":
+		req := g.client.IPv6ListFiltersAPI.Ipv6listsGet(ctx)
+		return req.Execute()
+	case "ipv6_prefix_list":
+		req := g.client.IPv6PrefixListsAPI.Ipv6prefixlistsGet(ctx)
+		return req.Execute()
+	case "as_path_access_list":
+		req := g.client.ASPathAccessListsAPI.AspathaccesslistsGet(ctx)
+		return req.Execute()
+	case "community_list":
+		req := g.client.CommunityListsAPI.CommunitylistsGet(ctx)
+		return req.Execute()
+	case "extended_community_list":
+		req := g.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(ctx)
+		return req.Execute()
+	case "route_map_clause":
+		req := g.client.RouteMapClausesAPI.RoutemapclausesGet(ctx)
+		return req.Execute()
+	case "route_map":
+		req := g.client.RouteMapsAPI.RoutemapsGet(ctx)
+		return req.Execute()
+	case "sfp_breakout":
+		req := g.client.SFPBreakoutsAPI.SfpbreakoutsGet(ctx)
+		return req.Execute()
+	case "site":
+		req := g.client.SitesAPI.SitesGet(ctx)
+		return req.Execute()
+	case "pod":
+		req := g.client.PodsAPI.PodsGet(ctx)
+		return req.Execute()
+	case "port_acl":
+		req := g.client.PortACLsAPI.PortaclsGet(ctx)
 		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
@@ -2371,6 +3335,18 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 			}
 			b.ethPortSettingsPatch[resourceName] = props.(openapi.EthportsettingsPutRequestEthPortSettingsValue)
 		}
+	case "device_settings":
+		if operationType == "PUT" {
+			if b.deviceSettingsPut == nil {
+				b.deviceSettingsPut = make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
+			}
+			b.deviceSettingsPut[resourceName] = props.(openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
+		} else {
+			if b.deviceSettingsPatch == nil {
+				b.deviceSettingsPatch = make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
+			}
+			b.deviceSettingsPatch[resourceName] = props.(openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
+		}
 	case "bundle":
 		if operationType == "PUT" {
 			if b.bundlePut == nil {
@@ -2394,6 +3370,54 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 				b.aclPatch = make(map[string]openapi.AclsPutRequestIpFilterValue)
 			}
 			b.aclPatch[resourceName] = props.(openapi.AclsPutRequestIpFilterValue)
+		}
+	case "ipv4_list_filter":
+		if operationType == "PUT" {
+			if b.ipv4ListPut == nil {
+				b.ipv4ListPut = make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue)
+			}
+			b.ipv4ListPut[resourceName] = props.(openapi.Ipv4listsPutRequestIpv4ListFilterValue)
+		} else {
+			if b.ipv4ListPatch == nil {
+				b.ipv4ListPatch = make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue)
+			}
+			b.ipv4ListPatch[resourceName] = props.(openapi.Ipv4listsPutRequestIpv4ListFilterValue)
+		}
+	case "ipv4_prefix_list":
+		if operationType == "PUT" {
+			if b.ipv4PrefixListPut == nil {
+				b.ipv4PrefixListPut = make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
+			}
+			b.ipv4PrefixListPut[resourceName] = props.(openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
+		} else {
+			if b.ipv4PrefixListPatch == nil {
+				b.ipv4PrefixListPatch = make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
+			}
+			b.ipv4PrefixListPatch[resourceName] = props.(openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
+		}
+	case "ipv6_list_filter":
+		if operationType == "PUT" {
+			if b.ipv6ListPut == nil {
+				b.ipv6ListPut = make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue)
+			}
+			b.ipv6ListPut[resourceName] = props.(openapi.Ipv6listsPutRequestIpv6ListFilterValue)
+		} else {
+			if b.ipv6ListPatch == nil {
+				b.ipv6ListPatch = make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue)
+			}
+			b.ipv6ListPatch[resourceName] = props.(openapi.Ipv6listsPutRequestIpv6ListFilterValue)
+		}
+	case "ipv6_prefix_list":
+		if operationType == "PUT" {
+			if b.ipv6PrefixListPut == nil {
+				b.ipv6PrefixListPut = make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
+			}
+			b.ipv6PrefixListPut[resourceName] = props.(openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
+		} else {
+			if b.ipv6PrefixListPatch == nil {
+				b.ipv6PrefixListPatch = make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
+			}
+			b.ipv6PrefixListPatch[resourceName] = props.(openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
 		}
 	case "authenticated_eth_port":
 		if operationType == "PUT" {
@@ -2430,6 +3454,82 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 				b.deviceVoiceSettingsPatch = make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 			}
 			b.deviceVoiceSettingsPatch[resourceName] = props.(openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
+		}
+	case "as_path_access_list":
+		if operationType == "PUT" {
+			if b.asPathAccessListPut == nil {
+				b.asPathAccessListPut = make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
+			}
+			b.asPathAccessListPut[resourceName] = props.(openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
+		} else {
+			if b.asPathAccessListPatch == nil {
+				b.asPathAccessListPatch = make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
+			}
+			b.asPathAccessListPatch[resourceName] = props.(openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
+		}
+	case "community_list":
+		if operationType == "PUT" {
+			if b.communityListPut == nil {
+				b.communityListPut = make(map[string]openapi.CommunitylistsPutRequestCommunityListValue)
+			}
+			b.communityListPut[resourceName] = props.(openapi.CommunitylistsPutRequestCommunityListValue)
+		} else {
+			if b.communityListPatch == nil {
+				b.communityListPatch = make(map[string]openapi.CommunitylistsPutRequestCommunityListValue)
+			}
+			b.communityListPatch[resourceName] = props.(openapi.CommunitylistsPutRequestCommunityListValue)
+		}
+	case "extended_community_list":
+		if operationType == "PUT" {
+			if b.extendedCommunityListPut == nil {
+				b.extendedCommunityListPut = make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
+			}
+			b.extendedCommunityListPut[resourceName] = props.(openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
+		} else {
+			if b.extendedCommunityListPatch == nil {
+				b.extendedCommunityListPatch = make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
+			}
+			b.extendedCommunityListPatch[resourceName] = props.(openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
+		}
+	case "route_map_clause":
+		if operationType == "PUT" {
+			if b.routeMapClausePut == nil {
+				b.routeMapClausePut = make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue)
+			}
+			b.routeMapClausePut[resourceName] = props.(openapi.RoutemapclausesPutRequestRouteMapClauseValue)
+		} else {
+			if b.routeMapClausePatch == nil {
+				b.routeMapClausePatch = make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue)
+			}
+			b.routeMapClausePatch[resourceName] = props.(openapi.RoutemapclausesPutRequestRouteMapClauseValue)
+		}
+	case "route_map":
+		if operationType == "PUT" {
+			if b.routeMapPut == nil {
+				b.routeMapPut = make(map[string]openapi.RoutemapsPutRequestRouteMapValue)
+			}
+			b.routeMapPut[resourceName] = props.(openapi.RoutemapsPutRequestRouteMapValue)
+		} else {
+			if b.routeMapPatch == nil {
+				b.routeMapPatch = make(map[string]openapi.RoutemapsPutRequestRouteMapValue)
+			}
+			b.routeMapPatch[resourceName] = props.(openapi.RoutemapsPutRequestRouteMapValue)
+		}
+	case "sfp_breakout":
+		// SFP Breakouts only support PATCH operations
+		if operationType == "PATCH" {
+			if b.sfpBreakoutPatch == nil {
+				b.sfpBreakoutPatch = make(map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue)
+			}
+			b.sfpBreakoutPatch[resourceName] = props.(openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue)
+		}
+	case "site":
+		// Sites only support PATCH operations
+		if operationType == "PATCH" {
+			if b.sitePatch == nil {
+				b.sitePatch = make(map[string]openapi.SitesPatchRequestSiteValue)
+			}
+			b.sitePatch[resourceName] = props.(openapi.SitesPatchRequestSiteValue)
 		}
 	case "packet_broker":
 		if operationType == "PUT" {
@@ -2503,6 +3603,30 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 			}
 			b.voicePortProfilePatch[resourceName] = props.(openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 		}
+	case "pod":
+		if operationType == "PUT" {
+			if b.podPut == nil {
+				b.podPut = make(map[string]openapi.PodsPutRequestPodValue)
+			}
+			b.podPut[resourceName] = props.(openapi.PodsPutRequestPodValue)
+		} else {
+			if b.podPatch == nil {
+				b.podPatch = make(map[string]openapi.PodsPutRequestPodValue)
+			}
+			b.podPatch[resourceName] = props.(openapi.PodsPutRequestPodValue)
+		}
+	case "port_acl":
+		if operationType == "PUT" {
+			if b.portAclPut == nil {
+				b.portAclPut = make(map[string]openapi.PortaclsPutRequestPortAclValue)
+			}
+			b.portAclPut[resourceName] = props.(openapi.PortaclsPutRequestPortAclValue)
+		} else {
+			if b.portAclPatch == nil {
+				b.portAclPatch = make(map[string]openapi.PortaclsPutRequestPortAclValue)
+			}
+			b.portAclPatch[resourceName] = props.(openapi.PortaclsPutRequestPortAclValue)
+		}
 	}
 }
 
@@ -2522,16 +3646,36 @@ func (b *BulkOperationManager) getDeleteSlice(resourceType string) *[]string {
 		return &b.ethPortProfileDelete
 	case "eth_port_settings":
 		return &b.ethPortSettingsDelete
+	case "device_settings":
+		return &b.deviceSettingsDelete
 	case "bundle":
 		return &b.bundleDelete
 	case "acl":
 		return &b.aclDelete
+	case "ipv4_list_filter":
+		return &b.ipv4ListDelete
+	case "ipv4_prefix_list":
+		return &b.ipv4PrefixListDelete
+	case "ipv6_list_filter":
+		return &b.ipv6ListDelete
+	case "ipv6_prefix_list":
+		return &b.ipv6PrefixListDelete
 	case "authenticated_eth_port":
 		return &b.authenticatedEthPortDelete
 	case "badge":
 		return &b.badgeDelete
 	case "device_voice_settings":
 		return &b.deviceVoiceSettingsDelete
+	case "as_path_access_list":
+		return &b.asPathAccessListDelete
+	case "community_list":
+		return &b.communityListDelete
+	case "extended_community_list":
+		return &b.extendedCommunityListDelete
+	case "route_map_clause":
+		return &b.routeMapClauseDelete
+	case "route_map":
+		return &b.routeMapDelete
 	case "packet_broker":
 		return &b.packetBrokerDelete
 	case "packet_queue":
@@ -2544,6 +3688,10 @@ func (b *BulkOperationManager) getDeleteSlice(resourceType string) *[]string {
 		return &b.voicePortProfileDelete
 	case "device_controller":
 		return &b.deviceControllerDelete
+	case "pod":
+		return &b.podDelete
+	case "port_acl":
+		return &b.portAclDelete
 	}
 	return nil
 }
@@ -2564,7 +3712,10 @@ func (b *BulkOperationManager) getBatchSize(resourceType, operationType string) 
 			return v.Len()
 		}
 	case "DELETE":
-		return len(*data.DeleteOperations)
+		if data.DeleteOperations != nil {
+			return len(*data.DeleteOperations)
+		}
+		return 0
 	}
 	return 0
 }
@@ -2713,6 +3864,20 @@ func (b *BulkOperationManager) getOriginalOperationMap(resourceType, operationTy
 			}
 			return result
 		}
+	case "device_settings":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.deviceSettingsPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.deviceSettingsPatch {
+				result[k] = v
+			}
+			return result
+		}
 	case "bundle":
 		if operationType == "PUT" {
 			result := make(map[string]interface{})
@@ -2737,6 +3902,62 @@ func (b *BulkOperationManager) getOriginalOperationMap(resourceType, operationTy
 		} else {
 			result := make(map[string]interface{})
 			for k, v := range b.aclPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "ipv4_list_filter":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.ipv4ListPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.ipv4ListPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "ipv4_prefix_list":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.ipv4PrefixListPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.ipv4PrefixListPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "ipv6_list_filter":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.ipv6ListPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.ipv6ListPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "ipv6_prefix_list":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.ipv6PrefixListPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.ipv6PrefixListPatch {
 				result[k] = v
 			}
 			return result
@@ -2783,6 +4004,96 @@ func (b *BulkOperationManager) getOriginalOperationMap(resourceType, operationTy
 			}
 			return result
 		}
+	case "as_path_access_list":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.asPathAccessListPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.asPathAccessListPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "community_list":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.communityListPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.communityListPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "extended_community_list":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.extendedCommunityListPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.extendedCommunityListPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "route_map_clause":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.routeMapClausePut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.routeMapClausePatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "route_map":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.routeMapPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.routeMapPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "sfp_breakout":
+		// SFP Breakouts only support PATCH operations
+		if operationType == "PATCH" {
+			result := make(map[string]interface{})
+			for k, v := range b.sfpBreakoutPatch {
+				result[k] = v
+			}
+			return result
+		}
+		return make(map[string]interface{})
+	case "site":
+		// Sites only support PATCH operations
+		if operationType == "PATCH" {
+			result := make(map[string]interface{})
+			for k, v := range b.sitePatch {
+				result[k] = v
+			}
+			return result
+		}
+		return make(map[string]interface{})
 	case "packet_broker":
 		if operationType == "PUT" {
 			result := make(map[string]interface{})
@@ -2867,6 +4178,34 @@ func (b *BulkOperationManager) getOriginalOperationMap(resourceType, operationTy
 			}
 			return result
 		}
+	case "pod":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.podPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.podPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "port_acl":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.portAclPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.portAclPatch {
+				result[k] = v
+			}
+			return result
+		}
 	}
 	return make(map[string]interface{})
 }
@@ -2915,6 +4254,12 @@ func (b *BulkOperationManager) clearOperationMap(resourceType, operationType str
 		} else {
 			b.ethPortSettingsPatch = make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue)
 		}
+	case "device_settings":
+		if operationType == "PUT" {
+			b.deviceSettingsPut = make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
+		} else {
+			b.deviceSettingsPatch = make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
+		}
 	case "bundle":
 		if operationType == "PUT" {
 			b.bundlePut = make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
@@ -2926,6 +4271,30 @@ func (b *BulkOperationManager) clearOperationMap(resourceType, operationType str
 			b.aclPut = make(map[string]openapi.AclsPutRequestIpFilterValue)
 		} else {
 			b.aclPatch = make(map[string]openapi.AclsPutRequestIpFilterValue)
+		}
+	case "ipv4_list_filter":
+		if operationType == "PUT" {
+			b.ipv4ListPut = make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue)
+		} else {
+			b.ipv4ListPatch = make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue)
+		}
+	case "ipv4_prefix_list":
+		if operationType == "PUT" {
+			b.ipv4PrefixListPut = make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
+		} else {
+			b.ipv4PrefixListPatch = make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
+		}
+	case "ipv6_list_filter":
+		if operationType == "PUT" {
+			b.ipv6ListPut = make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue)
+		} else {
+			b.ipv6ListPatch = make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue)
+		}
+	case "ipv6_prefix_list":
+		if operationType == "PUT" {
+			b.ipv6PrefixListPut = make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
+		} else {
+			b.ipv6PrefixListPatch = make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
 		}
 	case "authenticated_eth_port":
 		if operationType == "PUT" {
@@ -2944,6 +4313,46 @@ func (b *BulkOperationManager) clearOperationMap(resourceType, operationType str
 			b.deviceVoiceSettingsPut = make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
 		} else {
 			b.deviceVoiceSettingsPatch = make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
+		}
+	case "as_path_access_list":
+		if operationType == "PUT" {
+			b.asPathAccessListPut = make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
+		} else {
+			b.asPathAccessListPatch = make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
+		}
+	case "community_list":
+		if operationType == "PUT" {
+			b.communityListPut = make(map[string]openapi.CommunitylistsPutRequestCommunityListValue)
+		} else {
+			b.communityListPatch = make(map[string]openapi.CommunitylistsPutRequestCommunityListValue)
+		}
+	case "extended_community_list":
+		if operationType == "PUT" {
+			b.extendedCommunityListPut = make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
+		} else {
+			b.extendedCommunityListPatch = make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
+		}
+	case "route_map_clause":
+		if operationType == "PUT" {
+			b.routeMapClausePut = make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue)
+		} else {
+			b.routeMapClausePatch = make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue)
+		}
+	case "route_map":
+		if operationType == "PUT" {
+			b.routeMapPut = make(map[string]openapi.RoutemapsPutRequestRouteMapValue)
+		} else {
+			b.routeMapPatch = make(map[string]openapi.RoutemapsPutRequestRouteMapValue)
+		}
+	case "sfp_breakout":
+		// SFP Breakouts only support PATCH operations
+		if operationType == "PATCH" {
+			b.sfpBreakoutPatch = make(map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue)
+		}
+	case "site":
+		// Sites only support PATCH operations
+		if operationType == "PATCH" {
+			b.sitePatch = make(map[string]openapi.SitesPatchRequestSiteValue)
 		}
 	case "packet_broker":
 		if operationType == "PUT" {
@@ -2980,6 +4389,18 @@ func (b *BulkOperationManager) clearOperationMap(resourceType, operationType str
 			b.deviceControllerPut = make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
 		} else {
 			b.deviceControllerPatch = make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
+		}
+	case "pod":
+		if operationType == "PUT" {
+			b.podPut = make(map[string]openapi.PodsPutRequestPodValue)
+		} else {
+			b.podPatch = make(map[string]openapi.PodsPutRequestPodValue)
+		}
+	case "port_acl":
+		if operationType == "PUT" {
+			b.portAclPut = make(map[string]openapi.PortaclsPutRequestPortAclValue)
+		} else {
+			b.portAclPatch = make(map[string]openapi.PortaclsPutRequestPortAclValue)
 		}
 	}
 }
@@ -3103,6 +4524,21 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 					}
 					return result.EthPortSettings, nil
 
+				case "device_settings":
+					resp, err := b.client.DeviceSettingsAPI.DevicesettingsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						EthDeviceProfiles map[string]interface{} `json:"eth_device_profiles"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.EthDeviceProfiles, nil
+
 				case "bundle":
 					resp, err := b.client.BundlesAPI.BundlesGet(apiCtx).Execute()
 					if err != nil {
@@ -3157,6 +4593,66 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 
 					return existingResources, nil
 
+				case "ipv4_list_filter":
+					resp, err := b.client.IPv4ListFiltersAPI.Ipv4listsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Ipv4ListFilter map[string]interface{} `json:"ipv4_list_filter"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Ipv4ListFilter, nil
+
+				case "ipv4_prefix_list":
+					resp, err := b.client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Ipv4PrefixList map[string]interface{} `json:"ipv4_prefix_list"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Ipv4PrefixList, nil
+
+				case "ipv6_list_filter":
+					resp, err := b.client.IPv6ListFiltersAPI.Ipv6listsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Ipv6ListFilter map[string]interface{} `json:"ipv6_list_filter"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Ipv6ListFilter, nil
+
+				case "ipv6_prefix_list":
+					resp, err := b.client.IPv6PrefixListsAPI.Ipv6prefixlistsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Ipv6PrefixList map[string]interface{} `json:"ipv6_prefix_list"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Ipv6PrefixList, nil
+
 				case "authenticated_eth_port":
 					resp, err := b.client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(apiCtx).Execute()
 					if err != nil {
@@ -3201,6 +4697,81 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 						return nil, err
 					}
 					return result.DeviceVoiceSettings, nil
+
+				case "as_path_access_list":
+					resp, err := b.client.ASPathAccessListsAPI.AspathaccesslistsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						AsPathAccessList map[string]interface{} `json:"as_path_access_list"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.AsPathAccessList, nil
+
+				case "community_list":
+					resp, err := b.client.CommunityListsAPI.CommunitylistsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						CommunityList map[string]interface{} `json:"community_list"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.CommunityList, nil
+
+				case "extended_community_list":
+					resp, err := b.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						ExtendedCommunityList map[string]interface{} `json:"extended_community_list"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.ExtendedCommunityList, nil
+
+				case "route_map_clause":
+					resp, err := b.client.RouteMapClausesAPI.RoutemapclausesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						RouteMapClause map[string]interface{} `json:"route_map_clause"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.RouteMapClause, nil
+
+				case "route_map":
+					resp, err := b.client.RouteMapsAPI.RoutemapsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						RouteMap map[string]interface{} `json:"route_map"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.RouteMap, nil
 
 				case "packet_broker":
 					resp, err := b.client.PacketBrokerAPI.PacketbrokerGet(apiCtx).Execute()
@@ -3291,6 +4862,36 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 						return nil, err
 					}
 					return result.DeviceController, nil
+
+				case "pod":
+					resp, err := b.client.PodsAPI.PodsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Pod map[string]interface{} `json:"pod"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Pod, nil
+
+				case "port_acl":
+					resp, err := b.client.PortACLsAPI.PortaclsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						PortAcl map[string]interface{} `json:"port_acl"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.PortAcl, nil
 
 				default:
 					// For unknown resource types, assume no existing resources to avoid errors
@@ -3384,6 +4985,14 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 			}
 			putRequest.SetEthPortSettings(settingsMap)
 			return putRequest
+		case "device_settings":
+			putRequest := openapi.NewDevicesettingsPutRequest()
+			settingsMap := make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
+			for name, props := range filteredData {
+				settingsMap[name] = props.(openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
+			}
+			putRequest.SetEthDeviceProfiles(settingsMap)
+			return putRequest
 		case "bundle":
 			putRequest := openapi.NewBundlesPutRequest()
 			bundleMap := make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
@@ -3399,6 +5008,38 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 				aclMap[name] = props.(openapi.AclsPutRequestIpFilterValue)
 			}
 			putRequest.SetIpFilter(aclMap)
+			return putRequest
+		case "ipv4_list_filter":
+			putRequest := openapi.NewIpv4listsPutRequest()
+			ipv4Map := make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue)
+			for name, props := range filteredData {
+				ipv4Map[name] = props.(openapi.Ipv4listsPutRequestIpv4ListFilterValue)
+			}
+			putRequest.SetIpv4ListFilter(ipv4Map)
+			return putRequest
+		case "ipv4_prefix_list":
+			putRequest := openapi.NewIpv4prefixlistsPutRequest()
+			ipv4PrefixMap := make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
+			for name, props := range filteredData {
+				ipv4PrefixMap[name] = props.(openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
+			}
+			putRequest.SetIpv4PrefixList(ipv4PrefixMap)
+			return putRequest
+		case "ipv6_list_filter":
+			putRequest := openapi.NewIpv6listsPutRequest()
+			ipv6Map := make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue)
+			for name, props := range filteredData {
+				ipv6Map[name] = props.(openapi.Ipv6listsPutRequestIpv6ListFilterValue)
+			}
+			putRequest.SetIpv6ListFilter(ipv6Map)
+			return putRequest
+		case "ipv6_prefix_list":
+			putRequest := openapi.NewIpv6prefixlistsPutRequest()
+			ipv6PrefixMap := make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
+			for name, props := range filteredData {
+				ipv6PrefixMap[name] = props.(openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
+			}
+			putRequest.SetIpv6PrefixList(ipv6PrefixMap)
 			return putRequest
 		case "authenticated_eth_port":
 			putRequest := openapi.NewAuthenticatedethportsPutRequest()
@@ -3424,6 +5065,64 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 			}
 			putRequest.SetDeviceVoiceSettings(settingsMap)
 			return putRequest
+		case "as_path_access_list":
+			putRequest := openapi.NewAspathaccesslistsPutRequest()
+			asPathMap := make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
+			for name, props := range filteredData {
+				asPathMap[name] = props.(openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
+			}
+			putRequest.SetAsPathAccessList(asPathMap)
+			return putRequest
+		case "community_list":
+			putRequest := openapi.NewCommunitylistsPutRequest()
+			communityMap := make(map[string]openapi.CommunitylistsPutRequestCommunityListValue)
+			for name, props := range filteredData {
+				communityMap[name] = props.(openapi.CommunitylistsPutRequestCommunityListValue)
+			}
+			putRequest.SetCommunityList(communityMap)
+			return putRequest
+		case "extended_community_list":
+			putRequest := openapi.NewExtendedcommunitylistsPutRequest()
+			extCommunityMap := make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
+			for name, props := range filteredData {
+				extCommunityMap[name] = props.(openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
+			}
+			putRequest.SetExtendedCommunityList(extCommunityMap)
+			return putRequest
+		case "route_map_clause":
+			putRequest := openapi.NewRoutemapclausesPutRequest()
+			routeMapClauseMap := make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue)
+			for name, props := range filteredData {
+				routeMapClauseMap[name] = props.(openapi.RoutemapclausesPutRequestRouteMapClauseValue)
+			}
+			putRequest.SetRouteMapClause(routeMapClauseMap)
+			return putRequest
+		case "route_map":
+			putRequest := openapi.NewRoutemapsPutRequest()
+			routeMapMap := make(map[string]openapi.RoutemapsPutRequestRouteMapValue)
+			for name, props := range filteredData {
+				routeMapMap[name] = props.(openapi.RoutemapsPutRequestRouteMapValue)
+			}
+			putRequest.SetRouteMap(routeMapMap)
+			return putRequest
+		case "sfp_breakout":
+			// SFP Breakouts only support PATCH operations
+			patchRequest := openapi.NewSfpbreakoutsPatchRequest()
+			sfpMap := make(map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue)
+			for name, props := range filteredData {
+				sfpMap[name] = props.(openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue)
+			}
+			patchRequest.SetSfpBreakouts(sfpMap)
+			return patchRequest
+		case "site":
+			// Sites only support PATCH operations
+			patchRequest := openapi.NewSitesPatchRequest()
+			siteMap := make(map[string]openapi.SitesPatchRequestSiteValue)
+			for name, props := range filteredData {
+				siteMap[name] = props.(openapi.SitesPatchRequestSiteValue)
+			}
+			patchRequest.SetSite(siteMap)
+			return patchRequest
 		case "packet_broker":
 			putRequest := openapi.NewPacketbrokerPutRequest()
 			brokerMap := make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
@@ -3471,6 +5170,22 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 				deviceMap[name] = props.(openapi.DevicecontrollersPutRequestDeviceControllerValue)
 			}
 			putRequest.SetDeviceController(deviceMap)
+			return putRequest
+		case "pod":
+			putRequest := openapi.NewPodsPutRequest()
+			podMap := make(map[string]openapi.PodsPutRequestPodValue)
+			for name, props := range filteredData {
+				podMap[name] = props.(openapi.PodsPutRequestPodValue)
+			}
+			putRequest.SetPod(podMap)
+			return putRequest
+		case "port_acl":
+			putRequest := openapi.NewPortaclsPutRequest()
+			portAclMap := make(map[string]openapi.PortaclsPutRequestPortAclValue)
+			for name, props := range filteredData {
+				portAclMap[name] = props.(openapi.PortaclsPutRequestPortAclValue)
+			}
+			putRequest.SetPortAcl(portAclMap)
 			return putRequest
 		}
 		return nil
@@ -3623,6 +5338,44 @@ func (b *BulkOperationManager) createResponseProcessor(config ResourceConfig, op
 				"switchpoint_count": len(switchpointsData.Switchpoint),
 			})
 
+		case "site":
+			sitesReq := b.client.SitesAPI.SitesGet(fetchCtx)
+			sitesResp, fetchErr := sitesReq.Execute()
+
+			if fetchErr != nil {
+				tflog.Error(ctx, "Failed to fetch sites after PATCH for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+				return fetchErr
+			}
+
+			defer sitesResp.Body.Close()
+
+			var sitesData struct {
+				Site map[string]map[string]interface{} `json:"site"`
+			}
+
+			if respErr := json.NewDecoder(sitesResp.Body).Decode(&sitesData); respErr != nil {
+				tflog.Error(ctx, "Failed to decode sites response for auto-generated fields", map[string]interface{}{
+					"error": respErr.Error(),
+				})
+				return respErr
+			}
+
+			b.siteResponsesMutex.Lock()
+			for siteName, siteData := range sitesData.Site {
+				b.siteResponses[siteName] = siteData
+
+				if name, ok := siteData["name"].(string); ok && name != siteName {
+					b.siteResponses[name] = siteData
+				}
+			}
+			b.siteResponsesMutex.Unlock()
+
+			tflog.Debug(ctx, "Successfully stored site data for auto-generated fields", map[string]interface{}{
+				"site_count": len(sitesData.Site),
+			})
+
 		default:
 			tflog.Warn(ctx, fmt.Sprintf("Unknown resource type with auto-generated fields: %s", config.ResourceType))
 		}
@@ -3656,12 +5409,27 @@ func (b *BulkOperationManager) createRecentOpsUpdater(resourceType string) func(
 		case "eth_port_settings":
 			b.recentEthPortSettingsOps = true
 			b.recentEthPortSettingsOpTime = now
+		case "device_settings":
+			b.recentDeviceSettingsOps = true
+			b.recentDeviceSettingsOpTime = now
 		case "bundle":
 			b.recentBundleOps = true
 			b.recentBundleOpTime = now
 		case "acl":
 			b.recentAclOps = true
 			b.recentAclOpTime = now
+		case "ipv4_list_filter":
+			b.recentIpv4ListOps = true
+			b.recentIpv4ListOpTime = now
+		case "ipv4_prefix_list":
+			b.recentIpv4PrefixListOps = true
+			b.recentIpv4PrefixListOpTime = now
+		case "ipv6_list_filter":
+			b.recentIpv6ListOps = true
+			b.recentIpv6ListOpTime = now
+		case "ipv6_prefix_list":
+			b.recentIpv6PrefixListOps = true
+			b.recentIpv6PrefixListOpTime = now
 		case "authenticated_eth_port":
 			b.recentAuthenticatedEthPortOps = true
 			b.recentAuthenticatedEthPortOpTime = now
@@ -3671,6 +5439,27 @@ func (b *BulkOperationManager) createRecentOpsUpdater(resourceType string) func(
 		case "device_voice_settings":
 			b.recentDeviceVoiceSettingsOps = true
 			b.recentDeviceVoiceSettingsOpTime = now
+		case "as_path_access_list":
+			b.recentAsPathAccessListOps = true
+			b.recentAsPathAccessListOpTime = now
+		case "community_list":
+			b.recentCommunityListOps = true
+			b.recentCommunityListOpTime = now
+		case "extended_community_list":
+			b.recentExtendedCommunityListOps = true
+			b.recentExtendedCommunityListOpTime = now
+		case "route_map_clause":
+			b.recentRouteMapClauseOps = true
+			b.recentRouteMapClauseOpTime = now
+		case "route_map":
+			b.recentRouteMapOps = true
+			b.recentRouteMapOpTime = now
+		case "sfp_breakout":
+			b.recentSfpBreakoutOps = true
+			b.recentSfpBreakoutOpTime = now
+		case "site":
+			b.recentSiteOps = true
+			b.recentSiteOpTime = now
 		case "packet_broker":
 			b.recentPacketBrokerOps = true
 			b.recentPacketBrokerOpTime = now
@@ -3689,6 +5478,12 @@ func (b *BulkOperationManager) createRecentOpsUpdater(resourceType string) func(
 		case "device_controller":
 			b.recentDeviceControllerOps = true
 			b.recentDeviceControllerOpTime = now
+		case "pod":
+			b.recentPodOps = true
+			b.recentPodOpTime = now
+		case "port_acl":
+			b.recentPortAclOps = true
+			b.recentPortAclOpTime = now
 		}
 	}
 }

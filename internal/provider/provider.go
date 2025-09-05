@@ -398,6 +398,7 @@ func (p *verityProvider) Resources(ctx context.Context) []func() resource.Resour
 
 func getAllResources() []func() resource.Resource {
 	return []func() resource.Resource{
+		NewVerityOperationStageResource,
 		NewVerityTenantResource,
 		NewVerityGatewayResource,
 		NewVerityServiceResource,
@@ -406,7 +407,6 @@ func getAllResources() []func() resource.Resource {
 		NewVerityBundleResource,
 		NewVerityLagResource,
 		NewVerityGatewayProfileResource,
-		NewVerityOperationStageResource,
 		NewVerityACLV4Resource,
 		NewVerityACLV6Resource,
 		NewVerityBadgeResource,
@@ -418,6 +418,20 @@ func getAllResources() []func() resource.Resource {
 		NewVerityVoicePortProfileResource,
 		NewVeritySwitchpointResource,
 		NewVerityDeviceControllerResource,
+		NewVerityAsPathAccessListResource,
+		NewVerityCommunityListResource,
+		NewVerityDeviceSettingsResource,
+		NewVerityExtendedCommunityListResource,
+		NewVerityIpv4ListResource,
+		NewVerityIpv4PrefixListResource,
+		NewVerityIpv6ListResource,
+		NewVerityIpv6PrefixListResource,
+		NewVerityRouteMapClauseResource,
+		NewVerityRouteMapResource,
+		NewVeritySfpBreakoutResource,
+		NewVeritySiteResource,
+		NewVerityPodResource,
+		NewVerityPortAclResource,
 	}
 }
 

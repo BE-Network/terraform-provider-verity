@@ -165,6 +165,20 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "serviceportprofiles", terraformResourceType: "verity_service_port_profile", importer: i.importServicePortProfiles, tfGenerator: i.generateServicePortProfilesTF},
 		{name: "voiceportprofiles", terraformResourceType: "verity_voice_port_profile", importer: i.importVoicePortProfiles, tfGenerator: i.generateVoicePortProfilesTF},
 		{name: "switchpoints", terraformResourceType: "verity_switchpoint", importer: i.importSwitchpoints, tfGenerator: i.generateSwitchpointsTF},
+		{name: "aspathaccesslists", terraformResourceType: "verity_as_path_access_list", importer: i.importAsPathAccessLists, tfGenerator: i.generateAsPathAccessListsTF},
+		{name: "communitylists", terraformResourceType: "verity_community_list", importer: i.importCommunityLists, tfGenerator: i.generateCommunityListsTF},
+		{name: "devicesettings", terraformResourceType: "verity_device_settings", importer: i.importDeviceSettings, tfGenerator: i.generateDeviceSettingsTF},
+		{name: "extendedcommunitylists", terraformResourceType: "verity_extended_community_list", importer: i.importExtendedCommunityLists, tfGenerator: i.generateExtendedCommunityListsTF},
+		{name: "ipv4lists", terraformResourceType: "verity_ipv4_list", importer: i.importIpv4Lists, tfGenerator: i.generateIpv4ListsTF},
+		{name: "ipv4prefixlists", terraformResourceType: "verity_ipv4_prefix_list", importer: i.importIpv4PrefixLists, tfGenerator: i.generateIpv4PrefixListsTF},
+		{name: "ipv6lists", terraformResourceType: "verity_ipv6_list", importer: i.importIpv6Lists, tfGenerator: i.generateIpv6ListsTF},
+		{name: "ipv6prefixlists", terraformResourceType: "verity_ipv6_prefix_list", importer: i.importIpv6PrefixLists, tfGenerator: i.generateIpv6PrefixListsTF},
+		{name: "routemapclauses", terraformResourceType: "verity_route_map_clause", importer: i.importRouteMapClauses, tfGenerator: i.generateRouteMapClausesTF},
+		{name: "routemaps", terraformResourceType: "verity_route_map", importer: i.importRouteMaps, tfGenerator: i.generateRouteMapsTF},
+		{name: "sfpbreakouts", terraformResourceType: "verity_sfp_breakout", importer: i.importSfpBreakouts, tfGenerator: i.generateSfpBreakoutsTF},
+		{name: "sites", terraformResourceType: "verity_site", importer: i.importSites, tfGenerator: i.generateSitesTF},
+		{name: "pods", terraformResourceType: "verity_pod", importer: i.importPods, tfGenerator: i.generatePodsTF},
+		{name: "portacls", terraformResourceType: "verity_port_acl", importer: i.importPortAcls, tfGenerator: i.generatePortAclsTF},
 	}
 
 	// Filter tasks based on mode and API version compatibility
@@ -374,7 +388,12 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", tfFieldName, v))
 			case float64:
-				tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", tfFieldName, int(v)))
+				// Check if it's a whole number
+				if v == float64(int(v)) {
+					tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", tfFieldName, int(v)))
+				} else {
+					tfConfig.WriteString(fmt.Sprintf("	%s = %g\n", tfFieldName, v))
+				}
 			case string:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", tfFieldName, formatValue(v)))
 			case []interface{}:
@@ -680,6 +699,170 @@ func (i *Importer) generateACLsIPv6TF(data interface{}) (string, error) {
 	return i.generateResourceTF(data, cfg)
 }
 
+func (i *Importer) generateAsPathAccessListsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "as_path_access_list",
+		StageName:                 "as_path_access_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateCommunityListsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "community_list",
+		StageName:                 "community_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateDeviceSettingsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "device_settings",
+		StageName:                 "device_settings_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateExtendedCommunityListsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "extended_community_list",
+		StageName:                 "extended_community_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateIpv4ListsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "ipv4_list",
+		StageName:                 "ipv4_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateIpv4PrefixListsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "ipv4_prefix_list",
+		StageName:                 "ipv4_prefix_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateIpv6ListsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "ipv6_list",
+		StageName:                 "ipv6_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateIpv6PrefixListsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "ipv6_prefix_list",
+		StageName:                 "ipv6_prefix_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateRouteMapClausesTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "route_map_clause",
+		StageName:                 "route_map_clause_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateRouteMapsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "route_map",
+		StageName:                 "route_map_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"route_map_clauses": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateSfpBreakoutsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "sfp_breakout",
+		StageName:                 "sfp_breakout_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"breakout": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateSitesTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:                 "site",
+		StageName:                    "site_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		NestedBlockFields:            map[string]bool{"islands": true, "pairs": true, "system_graphs": true},
+		ObjectPropsNestedBlockFields: map[string]bool{"system_graphs": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generatePodsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "pod",
+		StageName:                 "pod_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generatePortAclsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "port_acl",
+		StageName:                 "port_acl_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
 func (i *Importer) generateStagesTF() (string, error) {
 	var tfConfig strings.Builder
 
@@ -755,8 +938,11 @@ func (i *Importer) generateStagesTF() (string, error) {
 	} else {
 		// DATACENTER mode staging order:
 		// 1. Tenants, 2. Gateways, 3. Gateway Profiles, 4. Services, 5. Packet Queues,
-		// 6. Eth Port Profiles, 7. Eth Port Settings, 8. Lags, 9. Bundles,
-		// 10. IPv4 ACLs, 11. IPv6 ACLs, 12. PacketBroker, 13. Badges, 14. Switchpoints, 15. Device controllers
+		// 6. Eth Port Profiles, 7. Eth Port Settings, 8. Device Settings, 9. Lags, 10. Bundles,
+		// 11. ACLs, 12. IPv4 Prefix Lists, 13. IPv6 Prefix Lists, 14. IPv4 Lists, 15. IPv6 Lists,
+		// 16. PacketBroker, 17. portacls, 18. Badges, 19. Pods, 20. Switchpoints, 21. Device controllers,
+		// 22. AS Path Access Lists, 23. Community Lists, 24. Extended Community Lists,
+		// 25. Route Map Clauses, 26. Route Maps, 27. SFP Breakouts, 28. Sites
 		stageOrder = []StageDefinition{
 			{"tenant_stage", "verity_tenant", ""},
 			{"gateway_stage", "verity_gateway", "tenant_stage"},
@@ -765,14 +951,28 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"packet_queue_stage", "verity_packet_queue", "service_stage"},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "packet_queue_stage"},
 			{"eth_port_settings_stage", "verity_eth_port_settings", "eth_port_profile_stage"},
-			{"lag_stage", "verity_lag", "eth_port_settings_stage"},
+			{"device_settings_stage", "verity_device_settings", "eth_port_settings_stage"},
+			{"lag_stage", "verity_lag", "device_settings_stage"},
 			{"bundle_stage", "verity_bundle", "lag_stage"},
 			{"acl_v4_stage", "verity_acl_v4", "bundle_stage"},
 			{"acl_v6_stage", "verity_acl_v6", "acl_v4_stage"},
-			{"packet_broker_stage", "verity_packet_broker", "acl_v6_stage"},
-			{"badge_stage", "verity_badge", "packet_broker_stage"},
-			{"switchpoint_stage", "verity_switchpoint", "badge_stage"},
+			{"ipv4_prefix_list_stage", "verity_ipv4_prefix_list", "acl_v6_stage"},
+			{"ipv6_prefix_list_stage", "verity_ipv6_prefix_list", "ipv4_prefix_list_stage"},
+			{"ipv4_list_stage", "verity_ipv4_list", "ipv6_prefix_list_stage"},
+			{"ipv6_list_stage", "verity_ipv6_list", "ipv4_list_stage"},
+			{"packet_broker_stage", "verity_packet_broker", "ipv6_list_stage"},
+			{"port_acl_stage", "verity_port_acl", "packet_broker_stage"},
+			{"badge_stage", "verity_badge", "port_acl_stage"},
+			{"pod_stage", "verity_pod", "badge_stage"},
+			{"switchpoint_stage", "verity_switchpoint", "pod_stage"},
 			{"device_controller_stage", "verity_device_controller", "switchpoint_stage"},
+			{"as_path_access_list_stage", "verity_as_path_access_list", "device_controller_stage"},
+			{"community_list_stage", "verity_community_list", "as_path_access_list_stage"},
+			{"extended_community_list_stage", "verity_extended_community_list", "community_list_stage"},
+			{"route_map_clause_stage", "verity_route_map_clause", "extended_community_list_stage"},
+			{"route_map_stage", "verity_route_map", "route_map_clause_stage"},
+			{"sfp_breakout_stage", "verity_sfp_breakout", "route_map_stage"},
+			{"site_stage", "verity_site", "sfp_breakout_stage"},
 		}
 	}
 
@@ -1156,6 +1356,244 @@ func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface
 	}
 }
 
+func (i *Importer) importAsPathAccessLists() (interface{}, error) {
+	resp, err := i.client.ASPathAccessListsAPI.AspathaccesslistsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get as path access lists: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		AsPathAccessList map[string]map[string]interface{} `json:"as_path_access_list"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode as path access lists response: %v", err)
+	}
+
+	return result.AsPathAccessList, nil
+}
+
+func (i *Importer) importCommunityLists() (interface{}, error) {
+	resp, err := i.client.CommunityListsAPI.CommunitylistsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get community lists: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		CommunityList map[string]map[string]interface{} `json:"community_list"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode community lists response: %v", err)
+	}
+
+	return result.CommunityList, nil
+}
+
+func (i *Importer) importDeviceSettings() (interface{}, error) {
+	resp, err := i.client.DeviceSettingsAPI.DevicesettingsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get device settings: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		DeviceSettings map[string]map[string]interface{} `json:"eth_device_profiles"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode device settings response: %v", err)
+	}
+
+	return result.DeviceSettings, nil
+}
+
+func (i *Importer) importExtendedCommunityLists() (interface{}, error) {
+	resp, err := i.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get extended community lists: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		ExtendedCommunityList map[string]map[string]interface{} `json:"extended_community_list"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode extended community lists response: %v", err)
+	}
+
+	return result.ExtendedCommunityList, nil
+}
+
+func (i *Importer) importIpv4Lists() (interface{}, error) {
+	resp, err := i.client.IPv4ListFiltersAPI.Ipv4listsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get ipv4 list filters: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Ipv4ListFilter map[string]map[string]interface{} `json:"ipv4_list_filter"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode ipv4 list filters response: %v", err)
+	}
+
+	return result.Ipv4ListFilter, nil
+}
+
+func (i *Importer) importIpv4PrefixLists() (interface{}, error) {
+	resp, err := i.client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get ipv4 prefix lists: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Ipv4PrefixList map[string]map[string]interface{} `json:"ipv4_prefix_list"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode ipv4 prefix lists response: %v", err)
+	}
+
+	return result.Ipv4PrefixList, nil
+}
+
+func (i *Importer) importIpv6Lists() (interface{}, error) {
+	resp, err := i.client.IPv6ListFiltersAPI.Ipv6listsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get ipv6 list filters: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Ipv6ListFilter map[string]map[string]interface{} `json:"ipv6_list_filter"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode ipv6 list filters response: %v", err)
+	}
+
+	return result.Ipv6ListFilter, nil
+}
+
+func (i *Importer) importIpv6PrefixLists() (interface{}, error) {
+	resp, err := i.client.IPv6PrefixListsAPI.Ipv6prefixlistsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get ipv6 prefix lists: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Ipv6PrefixList map[string]map[string]interface{} `json:"ipv6_prefix_list"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode ipv6 prefix lists response: %v", err)
+	}
+
+	return result.Ipv6PrefixList, nil
+}
+
+func (i *Importer) importRouteMapClauses() (interface{}, error) {
+	resp, err := i.client.RouteMapClausesAPI.RoutemapclausesGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get route map clauses: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		RouteMapClause map[string]map[string]interface{} `json:"route_map_clause"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode route map clauses response: %v", err)
+	}
+
+	return result.RouteMapClause, nil
+}
+
+func (i *Importer) importRouteMaps() (interface{}, error) {
+	resp, err := i.client.RouteMapsAPI.RoutemapsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get route maps: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		RouteMap map[string]map[string]interface{} `json:"route_map"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode route maps response: %v", err)
+	}
+
+	return result.RouteMap, nil
+}
+
+func (i *Importer) importSfpBreakouts() (interface{}, error) {
+	resp, err := i.client.SFPBreakoutsAPI.SfpbreakoutsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sfp breakouts: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		SfpBreakouts map[string]map[string]interface{} `json:"sfp_breakouts"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode sfp breakouts response: %v", err)
+	}
+
+	return result.SfpBreakouts, nil
+}
+
+func (i *Importer) importSites() (interface{}, error) {
+	resp, err := i.client.SitesAPI.SitesGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sites: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Site map[string]map[string]interface{} `json:"site"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode sites response: %v", err)
+	}
+
+	return result.Site, nil
+}
+
+func (i *Importer) importPods() (interface{}, error) {
+	resp, err := i.client.PodsAPI.PodsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get pods: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Pod map[string]map[string]interface{} `json:"pod"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode pods response: %v", err)
+	}
+
+	return result.Pod, nil
+}
+
+func (i *Importer) importPortAcls() (interface{}, error) {
+	resp, err := i.client.PortACLsAPI.PortaclsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get port ACLs: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		PortAcl map[string]map[string]interface{} `json:"port_acl"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode port ACLs response: %v", err)
+	}
+
+	return result.PortAcl, nil
+}
+
 // universalObjectPropsHandler dynamically processes all fields present in the object_properties
 // section of the API response and converts them to Terraform configuration format.
 // - If objProps is nil or empty map: generates no content
@@ -1208,7 +1646,11 @@ func formatObjectPropsValue(value interface{}, indent string) string {
 	case bool:
 		return fmt.Sprintf("%t", v)
 	case float64:
-		return fmt.Sprintf("%d", int(v))
+		// Check if it's a whole number
+		if v == float64(int(v)) {
+			return fmt.Sprintf("%d", int(v))
+		}
+		return fmt.Sprintf("%g", v)
 	case nil:
 		return "null"
 	case []interface{}:
@@ -1281,7 +1723,11 @@ func formatValue(value interface{}) string {
 	case bool:
 		return fmt.Sprintf("%t", v)
 	case float64:
-		return fmt.Sprintf("%d", int(v))
+		// Check if it's a whole number
+		if v == float64(int(v)) {
+			return fmt.Sprintf("%d", int(v))
+		}
+		return fmt.Sprintf("%g", v)
 	case nil:
 		return "null"
 	default:
