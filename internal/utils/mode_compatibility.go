@@ -35,21 +35,15 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_tenant":                  ResourceModeDatacenter,
 	"verity_gateway":                 ResourceModeDatacenter,
 	"verity_gateway_profile":         ResourceModeDatacenter,
-	"verity_acl_v4":                  ResourceModeDatacenter,
-	"verity_acl_v6":                  ResourceModeDatacenter,
 	"verity_packet_broker":           ResourceModeDatacenter,
 	"verity_as_path_access_list":     ResourceModeDatacenter,
 	"verity_community_list":          ResourceModeDatacenter,
-	"verity_device_settings":         ResourceModeDatacenter,
 	"verity_extended_community_list": ResourceModeDatacenter,
-	"verity_ipv4_list":               ResourceModeDatacenter,
 	"verity_ipv4_prefix_list":        ResourceModeDatacenter,
-	"verity_ipv6_list":               ResourceModeDatacenter,
 	"verity_ipv6_prefix_list":        ResourceModeDatacenter,
 	"verity_route_map_clause":        ResourceModeDatacenter,
 	"verity_route_map":               ResourceModeDatacenter,
 	"verity_sfp_breakout":            ResourceModeDatacenter,
-	"verity_site":                    ResourceModeDatacenter,
 	"verity_pod":                     ResourceModeDatacenter,
 
 	// Campus-only resources
@@ -58,18 +52,24 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_service_port_profile":   ResourceModeCampus,
 	"verity_voice_port_profile":     ResourceModeCampus,
 
-	// Both mode resources
+	// Both mode resources (Campus 6.5 + Datacenter)
 	"verity_service":           ResourceModeBoth,
 	"verity_eth_port_profile":  ResourceModeBoth,
 	"verity_eth_port_settings": ResourceModeBoth,
-	"verity_bundle":            ResourceModeBoth,
+	"verity_device_settings":   ResourceModeBoth,
 	"verity_lag":               ResourceModeBoth,
+	"verity_bundle":            ResourceModeBoth,
+	"verity_acl_v4":            ResourceModeBoth,
+	"verity_acl_v6":            ResourceModeBoth,
+	"verity_ipv4_list":         ResourceModeBoth,
+	"verity_ipv6_list":         ResourceModeBoth,
+	"verity_port_acl":          ResourceModeBoth,
 	"verity_badge":             ResourceModeBoth,
 	"verity_switchpoint":       ResourceModeBoth,
-	"verity_packet_queue":      ResourceModeBoth,
 	"verity_device_controller": ResourceModeBoth,
+	"verity_site":              ResourceModeBoth,
+	"verity_packet_queue":      ResourceModeBoth,
 	"verity_operation_stage":   ResourceModeBoth,
-	"verity_port_acl":          ResourceModeBoth,
 }
 
 var ResourceVersionCompatibility = map[string]ApiVersionSupport{

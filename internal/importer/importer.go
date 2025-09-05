@@ -919,7 +919,8 @@ func (i *Importer) generateStagesTF() (string, error) {
 		// CAMPUS mode staging order:
 		// 1. Services, 2. Eth Port Profiles, 3. Authenticated Eth-Ports, 4. Device Voice Settings,
 		// 5. Packet Queues, 6. Service Port Profiles, 7. Voice-Port Profiles, 8. Eth Port Settings,
-		// 9. Lags, 10. Bundles, 11. Badges, 12. Switchpoints, 13. Device controllers
+		// 9. Device Settings, 10. Lags, 11. Bundles, 12. ACLs (acl_v4 and acl_v6), 13. IPv4 Lists,
+		// 14. IPv6 Lists, 15. portacls, 16. Badges, 17. Switchpoints, 18. Device controllers, 19. sites
 		stageOrder = []StageDefinition{
 			{"service_stage", "verity_service", ""},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "service_stage"},
@@ -929,11 +930,18 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"service_port_profile_stage", "verity_service_port_profile", "packet_queue_stage"},
 			{"voice_port_profile_stage", "verity_voice_port_profile", "service_port_profile_stage"},
 			{"eth_port_settings_stage", "verity_eth_port_settings", "voice_port_profile_stage"},
-			{"lag_stage", "verity_lag", "eth_port_settings_stage"},
+			{"device_settings_stage", "verity_device_settings", "eth_port_settings_stage"},
+			{"lag_stage", "verity_lag", "device_settings_stage"},
 			{"bundle_stage", "verity_bundle", "lag_stage"},
-			{"badge_stage", "verity_badge", "bundle_stage"},
+			{"acl_v4_stage", "verity_acl_v4", "bundle_stage"},
+			{"acl_v6_stage", "verity_acl_v6", "acl_v4_stage"},
+			{"ipv4_list_stage", "verity_ipv4_list", "acl_v6_stage"},
+			{"ipv6_list_stage", "verity_ipv6_list", "ipv4_list_stage"},
+			{"port_acl_stage", "verity_port_acl", "ipv6_list_stage"},
+			{"badge_stage", "verity_badge", "port_acl_stage"},
 			{"switchpoint_stage", "verity_switchpoint", "badge_stage"},
 			{"device_controller_stage", "verity_device_controller", "switchpoint_stage"},
+			{"site_stage", "verity_site", "device_controller_stage"},
 		}
 	} else {
 		// DATACENTER mode staging order:
