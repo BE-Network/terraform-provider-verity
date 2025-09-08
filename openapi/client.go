@@ -68,6 +68,10 @@ type APIClient struct {
 
 	DeviceVoiceSettingsAPI *DeviceVoiceSettingsAPIService
 
+	DiagnosticsPortProfilesAPI *DiagnosticsPortProfilesAPIService
+
+	DiagnosticsProfilesAPI *DiagnosticsProfilesAPIService
+
 	EthPortProfilesAPI *EthPortProfilesAPIService
 
 	EthPortSettingsAPI *EthPortSettingsAPIService
@@ -103,6 +107,8 @@ type APIClient struct {
 	RouteMapsAPI *RouteMapsAPIService
 
 	SFPBreakoutsAPI *SFPBreakoutsAPIService
+
+	SFlowCollectorsAPI *SFlowCollectorsAPIService
 
 	ServicePortProfilesAPI *ServicePortProfilesAPIService
 
@@ -145,6 +151,8 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.DeviceControllersAPI = (*DeviceControllersAPIService)(&c.common)
 	c.DeviceSettingsAPI = (*DeviceSettingsAPIService)(&c.common)
 	c.DeviceVoiceSettingsAPI = (*DeviceVoiceSettingsAPIService)(&c.common)
+	c.DiagnosticsPortProfilesAPI = (*DiagnosticsPortProfilesAPIService)(&c.common)
+	c.DiagnosticsProfilesAPI = (*DiagnosticsProfilesAPIService)(&c.common)
 	c.EthPortProfilesAPI = (*EthPortProfilesAPIService)(&c.common)
 	c.EthPortSettingsAPI = (*EthPortSettingsAPIService)(&c.common)
 	c.ExtendedCommunityListsAPI = (*ExtendedCommunityListsAPIService)(&c.common)
@@ -163,6 +171,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.RouteMapClausesAPI = (*RouteMapClausesAPIService)(&c.common)
 	c.RouteMapsAPI = (*RouteMapsAPIService)(&c.common)
 	c.SFPBreakoutsAPI = (*SFPBreakoutsAPIService)(&c.common)
+	c.SFlowCollectorsAPI = (*SFlowCollectorsAPIService)(&c.common)
 	c.ServicePortProfilesAPI = (*ServicePortProfilesAPIService)(&c.common)
 	c.ServicesAPI = (*ServicesAPIService)(&c.common)
 	c.SitesAPI = (*SitesAPIService)(&c.common)
@@ -228,6 +237,10 @@ func typeCheckParameter(obj interface{}, expected string, name string) error {
 
 func parameterValueToString(obj interface{}, key string) string {
 	if reflect.TypeOf(obj).Kind() != reflect.Ptr {
+		if actualObj, ok := obj.(interface{ GetActualInstanceValue() interface{} }); ok {
+			return fmt.Sprintf("%v", actualObj.GetActualInstanceValue())
+		}
+
 		return fmt.Sprintf("%v", obj)
 	}
 	var param, ok = obj.(MappedNullable)

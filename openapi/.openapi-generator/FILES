@@ -13,6 +13,8 @@ api_community_lists.go
 api_device_controllers.go
 api_device_settings.go
 api_device_voice_settings.go
+api_diagnostics_port_profiles.go
+api_diagnostics_profiles.go
 api_eth_port_profiles.go
 api_eth_port_settings.go
 api_extended_community_lists.go
@@ -30,6 +32,7 @@ api_pods.go
 api_port_acls.go
 api_route_map_clauses.go
 api_route_maps.go
+api_s_flow_collectors.go
 api_service_port_profiles.go
 api_services.go
 api_sfp_breakouts.go
@@ -81,6 +84,12 @@ docs/DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md
 docs/DevicevoicesettingsPutRequest.md
 docs/DevicevoicesettingsPutRequestDeviceVoiceSettingsValue.md
 docs/DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner.md
+docs/DiagnosticsPortProfilesAPI.md
+docs/DiagnosticsProfilesAPI.md
+docs/DiagnosticsportprofilesPutRequest.md
+docs/DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue.md
+docs/DiagnosticsprofilesPutRequest.md
+docs/DiagnosticsprofilesPutRequestDiagnosticsProfileValue.md
 docs/EthPortProfilesAPI.md
 docs/EthPortSettingsAPI.md
 docs/EthportprofilesPutRequest.md
@@ -155,6 +164,7 @@ docs/RoutemapsPutRequest.md
 docs/RoutemapsPutRequestRouteMapValue.md
 docs/RoutemapsPutRequestRouteMapValueRouteMapClausesInner.md
 docs/SFPBreakoutsAPI.md
+docs/SFlowCollectorsAPI.md
 docs/ServicePortProfilesAPI.md
 docs/ServiceportprofilesPutRequest.md
 docs/ServiceportprofilesPutRequestServicePortProfileValue.md
@@ -164,6 +174,8 @@ docs/ServicesAPI.md
 docs/ServicesPutRequest.md
 docs/ServicesPutRequestServiceValue.md
 docs/ServicesPutRequestServiceValueObjectProperties.md
+docs/SflowcollectorsPutRequest.md
+docs/SflowcollectorsPutRequestSflowCollectorValue.md
 docs/SfpbreakoutsPatchRequest.md
 docs/SfpbreakoutsPatchRequestSfpBreakoutsValue.md
 docs/SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner.md
@@ -228,6 +240,10 @@ model__devicesettings_put_request_eth_device_profiles_value_object_properties.go
 model__devicevoicesettings_put_request.go
 model__devicevoicesettings_put_request_device_voice_settings_value.go
 model__devicevoicesettings_put_request_device_voice_settings_value_codecs_inner.go
+model__diagnosticsportprofiles_put_request.go
+model__diagnosticsportprofiles_put_request_diagnostics_port_profile_value.go
+model__diagnosticsprofiles_put_request.go
+model__diagnosticsprofiles_put_request_diagnostics_profile_value.go
 model__ethportprofiles_put_request.go
 model__ethportprofiles_put_request_eth_port_profile__value.go
 model__ethportprofiles_put_request_eth_port_profile__value_object_properties.go
@@ -291,6 +307,8 @@ model__serviceportprofiles_put_request_service_port_profile_value_services_inner
 model__services_put_request.go
 model__services_put_request_service_value.go
 model__services_put_request_service_value_object_properties.go
+model__sflowcollectors_put_request.go
+model__sflowcollectors_put_request_sflow_collector_value.go
 model__sfpbreakouts_patch_request.go
 model__sfpbreakouts_patch_request_sfp_breakouts_value.go
 model__sfpbreakouts_patch_request_sfp_breakouts_value_breakout_inner.go
@@ -327,6 +345,8 @@ test/api_community_lists_test.go
 test/api_device_controllers_test.go
 test/api_device_settings_test.go
 test/api_device_voice_settings_test.go
+test/api_diagnostics_port_profiles_test.go
+test/api_diagnostics_profiles_test.go
 test/api_eth_port_profiles_test.go
 test/api_eth_port_settings_test.go
 test/api_extended_community_lists_test.go
@@ -344,6 +364,7 @@ test/api_pods_test.go
 test/api_port_acls_test.go
 test/api_route_map_clauses_test.go
 test/api_route_maps_test.go
+test/api_s_flow_collectors_test.go
 test/api_service_port_profiles_test.go
 test/api_services_test.go
 test/api_sfp_breakouts_test.go
