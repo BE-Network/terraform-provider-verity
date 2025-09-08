@@ -211,10 +211,7 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		lagReq.FastRate = openapi.PtrBool(plan.FastRate.ValueBool())
 	}
 	if !plan.EthPortProfileRefType.IsNull() {
-		refType := plan.EthPortProfileRefType.ValueString()
-		if refType != "" {
-			lagReq.EthPortProfileRefType = openapi.PtrString(refType)
-		}
+		lagReq.EthPortProfileRefType = openapi.PtrString(plan.EthPortProfileRefType.ValueString())
 	}
 	if !plan.Uplink.IsNull() {
 		lagReq.Uplink = openapi.PtrBool(plan.Uplink.ValueBool())

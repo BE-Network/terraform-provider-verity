@@ -298,6 +298,12 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	if !plan.DefaultOriginate.IsNull() {
 		tenantReq.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
 	}
+	if !plan.ImportRouteMapRefType.IsNull() {
+		tenantReq.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
+	}
+	if !plan.ExportRouteMapRefType.IsNull() {
+		tenantReq.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
+	}
 
 	if len(plan.RouteTenants) > 0 {
 		for _, rt := range plan.RouteTenants {
