@@ -769,7 +769,8 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+	// Only show warning and suppress diff if auto-assignment is enabled AND the field is actually changing
+	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() && !plan.Vni.Equal(state.Vni) {
 		resp.Diagnostics.AddWarning(
 			"Ignoring vni changes with auto-assignment enabled",
 			"The 'vni' field changes will be ignored because 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
