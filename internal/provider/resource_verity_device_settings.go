@@ -488,13 +488,13 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 		state.SpanningTreePriority = types.StringNull()
 	}
 
-	if packetQueue, ok := deviceData["packet_queue_id"].(string); ok && packetQueue != "" {
+	if packetQueue, ok := deviceData["packet_queue_id"].(string); ok {
 		state.PacketQueueId = types.StringValue(packetQueue)
 	} else {
 		state.PacketQueueId = types.StringNull()
 	}
 
-	if packetQueueRefType, ok := deviceData["packet_queue_id_ref_type_"].(string); ok && packetQueueRefType != "" {
+	if packetQueueRefType, ok := deviceData["packet_queue_id_ref_type_"].(string); ok {
 		state.PacketQueueIdRefType = types.StringValue(packetQueueRefType)
 	} else {
 		state.PacketQueueIdRefType = types.StringNull()

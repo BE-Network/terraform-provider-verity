@@ -958,7 +958,7 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 		}
 	}
 
-	if codecsArray, ok := dvsData["Codecs"].([]interface{}); ok && len(codecsArray) > 0 {
+	if codecsArray, ok := dvsData["codecs"].([]interface{}); ok && len(codecsArray) > 0 {
 		var codecs []verityDeviceVoiceSettingsCodecModel
 		for _, c := range codecsArray {
 			codec, ok := c.(map[string]interface{})
