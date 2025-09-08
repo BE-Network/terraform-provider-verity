@@ -151,6 +151,9 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "gatewayprofiles", terraformResourceType: "verity_gateway_profile", importer: i.importGatewayProfiles, tfGenerator: i.generateGatewayProfilesTF},
 		{name: "ethportprofiles", terraformResourceType: "verity_eth_port_profile", importer: i.importEthPortProfiles, tfGenerator: i.generateEthPortProfilesTF},
 		{name: "lags", terraformResourceType: "verity_lag", importer: i.importLags, tfGenerator: i.generateLagsTF},
+		{name: "sflowcollectors", terraformResourceType: "verity_sflow_collector", importer: i.importSflowCollectors, tfGenerator: i.generateSflowCollectorsTF},
+		{name: "diagnosticsprofiles", terraformResourceType: "verity_diagnostics_profile", importer: i.importDiagnosticsProfiles, tfGenerator: i.generateDiagnosticsProfilesTF},
+		{name: "diagnosticsportprofiles", terraformResourceType: "verity_diagnostics_port_profile", importer: i.importDiagnosticsPortProfiles, tfGenerator: i.generateDiagnosticsPortProfilesTF},
 		{name: "services", terraformResourceType: "verity_service", importer: i.importServices, tfGenerator: i.generateServicesTF},
 		{name: "ethportsettings", terraformResourceType: "verity_eth_port_settings", importer: i.importEthPortSettings, tfGenerator: i.generateEthPortSettingsTF},
 		{name: "bundles", terraformResourceType: "verity_bundle", importer: i.importBundles, tfGenerator: i.generateBundlesTF},
@@ -523,6 +526,42 @@ func (i *Importer) generateLagsTF(data interface{}) (string, error) {
 	cfg := ResourceConfig{
 		ResourceType:                 "lag",
 		StageName:                    "lag_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateSflowCollectorsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:                 "sflow_collector",
+		StageName:                    "sflow_collector_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateDiagnosticsProfilesTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:                 "diagnostics_profile",
+		StageName:                    "diagnostics_profile_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateDiagnosticsPortProfilesTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:                 "diagnostics_port_profile",
+		StageName:                    "diagnostics_port_profile_stage",
 		HeaderNameLineFormat:         "    name = \"%s\"\n",
 		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:           universalObjectPropsHandler,
@@ -919,8 +958,9 @@ func (i *Importer) generateStagesTF() (string, error) {
 		// CAMPUS mode staging order:
 		// 1. Services, 2. Eth Port Profiles, 3. Authenticated Eth-Ports, 4. Device Voice Settings,
 		// 5. Packet Queues, 6. Service Port Profiles, 7. Voice-Port Profiles, 8. Eth Port Settings,
-		// 9. Device Settings, 10. Lags, 11. Bundles, 12. ACLs (acl_v4 and acl_v6), 13. IPv4 Lists,
-		// 14. IPv6 Lists, 15. portacls, 16. Badges, 17. Switchpoints, 18. Device controllers, 19. sites
+		// 9. Device Settings, 10. Lags, 11. sflowcollectors, 12. diagnostics profiles,
+		// 13. diagnostics port profiles, 14. Bundles, 15. ACLs, 16. IPv4 Lists, 17. IPv6 Lists,
+		// 18. portacls, 19. Badges, 20. Switchpoints, 21. Device controllers, 22. sites
 		stageOrder = []StageDefinition{
 			{"service_stage", "verity_service", ""},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "service_stage"},
@@ -932,7 +972,10 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"eth_port_settings_stage", "verity_eth_port_settings", "voice_port_profile_stage"},
 			{"device_settings_stage", "verity_device_settings", "eth_port_settings_stage"},
 			{"lag_stage", "verity_lag", "device_settings_stage"},
-			{"bundle_stage", "verity_bundle", "lag_stage"},
+			{"sflow_collector_stage", "verity_sflow_collector", "lag_stage"},
+			{"diagnostics_profile_stage", "verity_diagnostics_profile", "sflow_collector_stage"},
+			{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "diagnostics_profile_stage"},
+			{"bundle_stage", "verity_bundle", "diagnostics_port_profile_stage"},
 			{"acl_v4_stage", "verity_acl_v4", "bundle_stage"},
 			{"acl_v6_stage", "verity_acl_v6", "acl_v4_stage"},
 			{"ipv4_list_stage", "verity_ipv4_list", "acl_v6_stage"},
@@ -946,11 +989,12 @@ func (i *Importer) generateStagesTF() (string, error) {
 	} else {
 		// DATACENTER mode staging order:
 		// 1. Tenants, 2. Gateways, 3. Gateway Profiles, 4. Services, 5. Packet Queues,
-		// 6. Eth Port Profiles, 7. Eth Port Settings, 8. Device Settings, 9. Lags, 10. Bundles,
-		// 11. ACLs, 12. IPv4 Prefix Lists, 13. IPv6 Prefix Lists, 14. IPv4 Lists, 15. IPv6 Lists,
-		// 16. PacketBroker, 17. portacls, 18. Badges, 19. Pods, 20. Switchpoints, 21. Device controllers,
-		// 22. AS Path Access Lists, 23. Community Lists, 24. Extended Community Lists,
-		// 25. Route Map Clauses, 26. Route Maps, 27. SFP Breakouts, 28. Sites
+		// 6. Eth Port Profiles, 7. Eth Port Settings, 8. Device Settings, 9. Lags,
+		// 10. SFlow Collectors, 11. Diagnostics Profile, 12. Diagnostics Port Profile, 13. Bundles,
+		// 14. ACLs, 15. IPv4 Prefix Lists, 16. IPv6 Prefix Lists, 17. IPv4 Lists, 18. IPv6 Lists,
+		// 19. PacketBroker, 20. portacls, 21. Badges, 22. Pods, 23. Switchpoints, 24. Device controllers,
+		// 25. AS Path Access Lists, 26. Community Lists, 27. Extended Community Lists,
+		// 28. Route Map Clauses, 29. Route Maps, 30. SFP Breakouts, 31. Sites
 		stageOrder = []StageDefinition{
 			{"tenant_stage", "verity_tenant", ""},
 			{"gateway_stage", "verity_gateway", "tenant_stage"},
@@ -961,7 +1005,10 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"eth_port_settings_stage", "verity_eth_port_settings", "eth_port_profile_stage"},
 			{"device_settings_stage", "verity_device_settings", "eth_port_settings_stage"},
 			{"lag_stage", "verity_lag", "device_settings_stage"},
-			{"bundle_stage", "verity_bundle", "lag_stage"},
+			{"sflow_collector_stage", "verity_sflow_collector", "lag_stage"},
+			{"diagnostics_profile_stage", "verity_diagnostics_profile", "sflow_collector_stage"},
+			{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "diagnostics_profile_stage"},
+			{"bundle_stage", "verity_bundle", "diagnostics_port_profile_stage"},
 			{"acl_v4_stage", "verity_acl_v4", "bundle_stage"},
 			{"acl_v6_stage", "verity_acl_v6", "acl_v4_stage"},
 			{"ipv4_prefix_list_stage", "verity_ipv4_prefix_list", "acl_v6_stage"},
@@ -1097,6 +1144,57 @@ func (i *Importer) importLags() (interface{}, error) {
 	}
 
 	return result.LaggGroup, nil
+}
+
+func (i *Importer) importSflowCollectors() (interface{}, error) {
+	resp, err := i.client.SFlowCollectorsAPI.SflowcollectorsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sflow collectors: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		SflowCollector map[string]map[string]interface{} `json:"sflow_collector"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode sflow collectors response: %v", err)
+	}
+
+	return result.SflowCollector, nil
+}
+
+func (i *Importer) importDiagnosticsProfiles() (interface{}, error) {
+	resp, err := i.client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get diagnostics profiles: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		DiagnosticsProfile map[string]map[string]interface{} `json:"diagnostics_profile"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode diagnostics profiles response: %v", err)
+	}
+
+	return result.DiagnosticsProfile, nil
+}
+
+func (i *Importer) importDiagnosticsPortProfiles() (interface{}, error) {
+	resp, err := i.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get diagnostics port profiles: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		DiagnosticsPortProfile map[string]map[string]interface{} `json:"diagnostics_port_profile"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode diagnostics port profiles response: %v", err)
+	}
+
+	return result.DiagnosticsPortProfile, nil
 }
 
 func (i *Importer) importServices() (interface{}, error) {

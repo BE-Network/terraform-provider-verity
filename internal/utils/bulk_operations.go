@@ -277,71 +277,92 @@ type BulkOperationManager struct {
 	portAclPatch  map[string]openapi.PortaclsPutRequestPortAclValue
 	portAclDelete []string
 
+	// SFlow Collector operations
+	sflowCollectorPut    map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue
+	sflowCollectorPatch  map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue
+	sflowCollectorDelete []string
+
+	// Diagnostics Profile operations
+	diagnosticsProfilePut    map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue
+	diagnosticsProfilePatch  map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue
+	diagnosticsProfileDelete []string
+
+	// Diagnostics Port Profile operations
+	diagnosticsPortProfilePut    map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue
+	diagnosticsPortProfilePatch  map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue
+	diagnosticsPortProfileDelete []string
+
 	// Track recent operations to avoid race conditions
-	recentGatewayOps                  bool
-	recentGatewayOpTime               time.Time
-	recentLagOps                      bool
-	recentLagOpTime                   time.Time
-	recentServiceOps                  bool
-	recentServiceOpTime               time.Time
-	recentTenantOps                   bool
-	recentTenantOpTime                time.Time
-	recentGatewayProfileOps           bool
-	recentGatewayProfileOpTime        time.Time
-	recentEthPortProfileOps           bool
-	recentEthPortProfileOpTime        time.Time
-	recentEthPortSettingsOps          bool
-	recentEthPortSettingsOpTime       time.Time
-	recentBundleOps                   bool
-	recentBundleOpTime                time.Time
-	recentAclOps                      bool
-	recentAclOpTime                   time.Time
-	recentAuthenticatedEthPortOps     bool
-	recentAuthenticatedEthPortOpTime  time.Time
-	recentBadgeOps                    bool
-	recentBadgeOpTime                 time.Time
-	recentVoicePortProfileOps         bool
-	recentVoicePortProfileOpTime      time.Time
-	recentSwitchpointOps              bool
-	recentSwitchpointOpTime           time.Time
-	recentServicePortProfileOps       bool
-	recentServicePortProfileOpTime    time.Time
-	recentPacketBrokerOps             bool
-	recentPacketBrokerOpTime          time.Time
-	recentPacketQueueOps              bool
-	recentPacketQueueOpTime           time.Time
-	recentDeviceVoiceSettingsOps      bool
-	recentDeviceVoiceSettingsOpTime   time.Time
-	recentDeviceControllerOps         bool
-	recentDeviceControllerOpTime      time.Time
-	recentAsPathAccessListOps         bool
-	recentAsPathAccessListOpTime      time.Time
-	recentCommunityListOps            bool
-	recentCommunityListOpTime         time.Time
-	recentDeviceSettingsOps           bool
-	recentDeviceSettingsOpTime        time.Time
-	recentExtendedCommunityListOps    bool
-	recentExtendedCommunityListOpTime time.Time
-	recentIpv4ListOps                 bool
-	recentIpv4ListOpTime              time.Time
-	recentIpv4PrefixListOps           bool
-	recentIpv4PrefixListOpTime        time.Time
-	recentIpv6ListOps                 bool
-	recentIpv6ListOpTime              time.Time
-	recentIpv6PrefixListOps           bool
-	recentIpv6PrefixListOpTime        time.Time
-	recentRouteMapClauseOps           bool
-	recentRouteMapClauseOpTime        time.Time
-	recentRouteMapOps                 bool
-	recentRouteMapOpTime              time.Time
-	recentSfpBreakoutOps              bool
-	recentSfpBreakoutOpTime           time.Time
-	recentSiteOps                     bool
-	recentSiteOpTime                  time.Time
-	recentPodOps                      bool
-	recentPodOpTime                   time.Time
-	recentPortAclOps                  bool
-	recentPortAclOpTime               time.Time
+	recentGatewayOps                   bool
+	recentGatewayOpTime                time.Time
+	recentLagOps                       bool
+	recentLagOpTime                    time.Time
+	recentServiceOps                   bool
+	recentServiceOpTime                time.Time
+	recentTenantOps                    bool
+	recentTenantOpTime                 time.Time
+	recentGatewayProfileOps            bool
+	recentGatewayProfileOpTime         time.Time
+	recentEthPortProfileOps            bool
+	recentEthPortProfileOpTime         time.Time
+	recentEthPortSettingsOps           bool
+	recentEthPortSettingsOpTime        time.Time
+	recentBundleOps                    bool
+	recentBundleOpTime                 time.Time
+	recentAclOps                       bool
+	recentAclOpTime                    time.Time
+	recentAuthenticatedEthPortOps      bool
+	recentAuthenticatedEthPortOpTime   time.Time
+	recentBadgeOps                     bool
+	recentBadgeOpTime                  time.Time
+	recentVoicePortProfileOps          bool
+	recentVoicePortProfileOpTime       time.Time
+	recentSwitchpointOps               bool
+	recentSwitchpointOpTime            time.Time
+	recentServicePortProfileOps        bool
+	recentServicePortProfileOpTime     time.Time
+	recentPacketBrokerOps              bool
+	recentPacketBrokerOpTime           time.Time
+	recentPacketQueueOps               bool
+	recentPacketQueueOpTime            time.Time
+	recentDeviceVoiceSettingsOps       bool
+	recentDeviceVoiceSettingsOpTime    time.Time
+	recentDeviceControllerOps          bool
+	recentDeviceControllerOpTime       time.Time
+	recentAsPathAccessListOps          bool
+	recentAsPathAccessListOpTime       time.Time
+	recentCommunityListOps             bool
+	recentCommunityListOpTime          time.Time
+	recentDeviceSettingsOps            bool
+	recentDeviceSettingsOpTime         time.Time
+	recentExtendedCommunityListOps     bool
+	recentExtendedCommunityListOpTime  time.Time
+	recentIpv4ListOps                  bool
+	recentIpv4ListOpTime               time.Time
+	recentIpv4PrefixListOps            bool
+	recentIpv4PrefixListOpTime         time.Time
+	recentIpv6ListOps                  bool
+	recentIpv6ListOpTime               time.Time
+	recentIpv6PrefixListOps            bool
+	recentIpv6PrefixListOpTime         time.Time
+	recentRouteMapClauseOps            bool
+	recentRouteMapClauseOpTime         time.Time
+	recentRouteMapOps                  bool
+	recentRouteMapOpTime               time.Time
+	recentSfpBreakoutOps               bool
+	recentSfpBreakoutOpTime            time.Time
+	recentSiteOps                      bool
+	recentSiteOpTime                   time.Time
+	recentPodOps                       bool
+	recentPodOpTime                    time.Time
+	recentPortAclOps                   bool
+	recentPortAclOpTime                time.Time
+	recentSflowCollectorOps            bool
+	recentSflowCollectorOpTime         time.Time
+	recentDiagnosticsProfileOps        bool
+	recentDiagnosticsProfileOpTime     time.Time
+	recentDiagnosticsPortProfileOps    bool
+	recentDiagnosticsPortProfileOpTime time.Time
 
 	// For tracking operations
 	pendingOperations     map[string]*Operation
@@ -352,70 +373,76 @@ type BulkOperationManager struct {
 	closedChannels        map[string]bool
 
 	// Store API responses=
-	gatewayResponses                    map[string]map[string]interface{}
-	gatewayResponsesMutex               sync.RWMutex
-	lagResponses                        map[string]map[string]interface{}
-	lagResponsesMutex                   sync.RWMutex
-	serviceResponses                    map[string]map[string]interface{}
-	serviceResponsesMutex               sync.RWMutex
-	tenantResponses                     map[string]map[string]interface{}
-	tenantResponsesMutex                sync.RWMutex
-	gatewayProfileResponses             map[string]map[string]interface{}
-	gatewayProfileResponsesMutex        sync.RWMutex
-	ethPortProfileResponses             map[string]map[string]interface{}
-	ethPortProfileResponsesMutex        sync.RWMutex
-	ethPortSettingsResponses            map[string]map[string]interface{}
-	ethPortSettingsResponsesMutex       sync.RWMutex
-	bundleResponses                     map[string]map[string]interface{}
-	bundleResponsesMutex                sync.RWMutex
-	aclResponses                        map[string]map[string]interface{}
-	aclResponsesMutex                   sync.RWMutex
-	authenticatedEthPortResponses       map[string]map[string]interface{}
-	authenticatedEthPortResponsesMutex  sync.RWMutex
-	badgeResponses                      map[string]map[string]interface{}
-	badgeResponsesMutex                 sync.RWMutex
-	voicePortProfileResponses           map[string]map[string]interface{}
-	voicePortProfileResponsesMutex      sync.RWMutex
-	switchpointResponses                map[string]map[string]interface{}
-	switchpointResponsesMutex           sync.RWMutex
-	servicePortProfileResponses         map[string]map[string]interface{}
-	servicePortProfileResponsesMutex    sync.RWMutex
-	packetBrokerResponses               map[string]map[string]interface{}
-	packetBrokerResponsesMutex          sync.RWMutex
-	packetQueueResponses                map[string]map[string]interface{}
-	packetQueueResponsesMutex           sync.RWMutex
-	deviceVoiceSettingsResponses        map[string]map[string]interface{}
-	deviceVoiceSettingsResponsesMutex   sync.RWMutex
-	deviceControllerResponses           map[string]map[string]interface{}
-	deviceControllerResponsesMutex      sync.RWMutex
-	asPathAccessListResponses           map[string]map[string]interface{}
-	asPathAccessListResponsesMutex      sync.RWMutex
-	communityListResponses              map[string]map[string]interface{}
-	communityListResponsesMutex         sync.RWMutex
-	deviceSettingsResponses             map[string]map[string]interface{}
-	deviceSettingsResponsesMutex        sync.RWMutex
-	extendedCommunityListResponses      map[string]map[string]interface{}
-	extendedCommunityListResponsesMutex sync.RWMutex
-	ipv4ListResponses                   map[string]map[string]interface{}
-	ipv4ListResponsesMutex              sync.RWMutex
-	ipv4PrefixListResponses             map[string]map[string]interface{}
-	ipv4PrefixListResponsesMutex        sync.RWMutex
-	ipv6ListResponses                   map[string]map[string]interface{}
-	ipv6ListResponsesMutex              sync.RWMutex
-	ipv6PrefixListResponses             map[string]map[string]interface{}
-	ipv6PrefixListResponsesMutex        sync.RWMutex
-	routeMapClauseResponses             map[string]map[string]interface{}
-	routeMapClauseResponsesMutex        sync.RWMutex
-	routeMapResponses                   map[string]map[string]interface{}
-	routeMapResponsesMutex              sync.RWMutex
-	sfpBreakoutResponses                map[string]map[string]interface{}
-	sfpBreakoutResponsesMutex           sync.RWMutex
-	siteResponses                       map[string]map[string]interface{}
-	siteResponsesMutex                  sync.RWMutex
-	podResponses                        map[string]map[string]interface{}
-	podResponsesMutex                   sync.RWMutex
-	portAclResponses                    map[string]map[string]interface{}
-	portAclResponsesMutex               sync.RWMutex
+	gatewayResponses                     map[string]map[string]interface{}
+	gatewayResponsesMutex                sync.RWMutex
+	lagResponses                         map[string]map[string]interface{}
+	lagResponsesMutex                    sync.RWMutex
+	serviceResponses                     map[string]map[string]interface{}
+	serviceResponsesMutex                sync.RWMutex
+	tenantResponses                      map[string]map[string]interface{}
+	tenantResponsesMutex                 sync.RWMutex
+	gatewayProfileResponses              map[string]map[string]interface{}
+	gatewayProfileResponsesMutex         sync.RWMutex
+	ethPortProfileResponses              map[string]map[string]interface{}
+	ethPortProfileResponsesMutex         sync.RWMutex
+	ethPortSettingsResponses             map[string]map[string]interface{}
+	ethPortSettingsResponsesMutex        sync.RWMutex
+	bundleResponses                      map[string]map[string]interface{}
+	bundleResponsesMutex                 sync.RWMutex
+	aclResponses                         map[string]map[string]interface{}
+	aclResponsesMutex                    sync.RWMutex
+	authenticatedEthPortResponses        map[string]map[string]interface{}
+	authenticatedEthPortResponsesMutex   sync.RWMutex
+	badgeResponses                       map[string]map[string]interface{}
+	badgeResponsesMutex                  sync.RWMutex
+	voicePortProfileResponses            map[string]map[string]interface{}
+	voicePortProfileResponsesMutex       sync.RWMutex
+	switchpointResponses                 map[string]map[string]interface{}
+	switchpointResponsesMutex            sync.RWMutex
+	servicePortProfileResponses          map[string]map[string]interface{}
+	servicePortProfileResponsesMutex     sync.RWMutex
+	packetBrokerResponses                map[string]map[string]interface{}
+	packetBrokerResponsesMutex           sync.RWMutex
+	packetQueueResponses                 map[string]map[string]interface{}
+	packetQueueResponsesMutex            sync.RWMutex
+	deviceVoiceSettingsResponses         map[string]map[string]interface{}
+	deviceVoiceSettingsResponsesMutex    sync.RWMutex
+	deviceControllerResponses            map[string]map[string]interface{}
+	deviceControllerResponsesMutex       sync.RWMutex
+	asPathAccessListResponses            map[string]map[string]interface{}
+	asPathAccessListResponsesMutex       sync.RWMutex
+	communityListResponses               map[string]map[string]interface{}
+	communityListResponsesMutex          sync.RWMutex
+	deviceSettingsResponses              map[string]map[string]interface{}
+	deviceSettingsResponsesMutex         sync.RWMutex
+	extendedCommunityListResponses       map[string]map[string]interface{}
+	extendedCommunityListResponsesMutex  sync.RWMutex
+	ipv4ListResponses                    map[string]map[string]interface{}
+	ipv4ListResponsesMutex               sync.RWMutex
+	ipv4PrefixListResponses              map[string]map[string]interface{}
+	ipv4PrefixListResponsesMutex         sync.RWMutex
+	ipv6ListResponses                    map[string]map[string]interface{}
+	ipv6ListResponsesMutex               sync.RWMutex
+	ipv6PrefixListResponses              map[string]map[string]interface{}
+	ipv6PrefixListResponsesMutex         sync.RWMutex
+	routeMapClauseResponses              map[string]map[string]interface{}
+	routeMapClauseResponsesMutex         sync.RWMutex
+	routeMapResponses                    map[string]map[string]interface{}
+	routeMapResponsesMutex               sync.RWMutex
+	sfpBreakoutResponses                 map[string]map[string]interface{}
+	sfpBreakoutResponsesMutex            sync.RWMutex
+	siteResponses                        map[string]map[string]interface{}
+	siteResponsesMutex                   sync.RWMutex
+	podResponses                         map[string]map[string]interface{}
+	podResponsesMutex                    sync.RWMutex
+	portAclResponses                     map[string]map[string]interface{}
+	portAclResponsesMutex                sync.RWMutex
+	sflowCollectorResponses              map[string]map[string]interface{}
+	sflowCollectorResponsesMutex         sync.RWMutex
+	diagnosticsProfileResponses          map[string]map[string]interface{}
+	diagnosticsProfileResponsesMutex     sync.RWMutex
+	diagnosticsPortProfileResponses      map[string]map[string]interface{}
+	diagnosticsPortProfileResponsesMutex sync.RWMutex
 }
 
 // resourceRegistry is a mapping of resource types to their configuration details.
@@ -716,6 +743,33 @@ var resourceRegistry = map[string]ResourceConfig{
 			return &GenericAPIClient{client: c, resourceType: "port_acl"}
 		},
 	},
+	"sflow_collector": {
+		ResourceType:     "sflow_collector",
+		PutRequestType:   reflect.TypeOf(openapi.SflowcollectorsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.SflowcollectorsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "sflow_collector"}
+		},
+	},
+	"diagnostics_profile": {
+		ResourceType:     "diagnostics_profile",
+		PutRequestType:   reflect.TypeOf(openapi.DiagnosticsprofilesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.DiagnosticsprofilesPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "diagnostics_profile"}
+		},
+	},
+	"diagnostics_port_profile": {
+		ResourceType:     "diagnostics_port_profile",
+		PutRequestType:   reflect.TypeOf(openapi.DiagnosticsportprofilesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.DiagnosticsportprofilesPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "diagnostics_port_profile"}
+		},
+	},
 }
 
 func (b *BulkOperationManager) FilterPreExistingResources(
@@ -829,104 +883,113 @@ func (b *BulkOperationManager) WaitForOperation(ctx context.Context, operationID
 
 func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextProviderFunc, clearCacheFunc ClearCacheFunc, mode string) *BulkOperationManager {
 	return &BulkOperationManager{
-		client:                      client,
-		contextProvider:             contextProvider,
-		clearCacheFunc:              clearCacheFunc,
-		mode:                        mode,
-		lastOperationTime:           time.Now(),
-		gatewayPut:                  make(map[string]openapi.GatewaysPutRequestGatewayValue),
-		gatewayPatch:                make(map[string]openapi.GatewaysPutRequestGatewayValue),
-		gatewayDelete:               make([]string, 0),
-		lagPut:                      make(map[string]openapi.LagsPutRequestLagValue),
-		lagPatch:                    make(map[string]openapi.LagsPutRequestLagValue),
-		lagDelete:                   make([]string, 0),
-		tenantPut:                   make(map[string]openapi.TenantsPutRequestTenantValue),
-		tenantPatch:                 make(map[string]openapi.TenantsPutRequestTenantValue),
-		tenantDelete:                make([]string, 0),
-		servicePut:                  make(map[string]openapi.ServicesPutRequestServiceValue),
-		servicePatch:                make(map[string]openapi.ServicesPutRequestServiceValue),
-		serviceDelete:               make([]string, 0),
-		gatewayProfilePut:           make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
-		gatewayProfilePatch:         make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
-		gatewayProfileDelete:        make([]string, 0),
-		ethPortProfilePut:           make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
-		ethPortProfilePatch:         make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
-		ethPortProfileDelete:        make([]string, 0),
-		ethPortSettingsPut:          make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
-		ethPortSettingsPatch:        make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
-		ethPortSettingsDelete:       make([]string, 0),
-		bundlePut:                   make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
-		bundlePatch:                 make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
-		bundleDelete:                make([]string, 0),
-		aclPut:                      make(map[string]openapi.AclsPutRequestIpFilterValue),
-		aclPatch:                    make(map[string]openapi.AclsPutRequestIpFilterValue),
-		aclDelete:                   make([]string, 0),
-		aclIpVersion:                make(map[string]string),
-		authenticatedEthPortPut:     make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
-		authenticatedEthPortPatch:   make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
-		authenticatedEthPortDelete:  make([]string, 0),
-		badgePut:                    make(map[string]openapi.BadgesPutRequestBadgeValue),
-		badgePatch:                  make(map[string]openapi.BadgesPutRequestBadgeValue),
-		badgeDelete:                 make([]string, 0),
-		voicePortProfilePut:         make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
-		voicePortProfilePatch:       make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
-		voicePortProfileDelete:      make([]string, 0),
-		switchpointPut:              make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
-		switchpointPatch:            make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
-		switchpointDelete:           make([]string, 0),
-		servicePortProfilePut:       make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
-		servicePortProfilePatch:     make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
-		servicePortProfileDelete:    make([]string, 0),
-		packetBrokerPut:             make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
-		packetBrokerPatch:           make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
-		packetBrokerDelete:          make([]string, 0),
-		packetQueuePut:              make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
-		packetQueuePatch:            make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
-		packetQueueDelete:           make([]string, 0),
-		deviceVoiceSettingsPut:      make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
-		deviceVoiceSettingsPatch:    make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
-		deviceVoiceSettingsDelete:   make([]string, 0),
-		deviceControllerPut:         make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
-		deviceControllerPatch:       make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
-		deviceControllerDelete:      make([]string, 0),
-		asPathAccessListPut:         make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue),
-		asPathAccessListPatch:       make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue),
-		asPathAccessListDelete:      make([]string, 0),
-		communityListPut:            make(map[string]openapi.CommunitylistsPutRequestCommunityListValue),
-		communityListPatch:          make(map[string]openapi.CommunitylistsPutRequestCommunityListValue),
-		communityListDelete:         make([]string, 0),
-		deviceSettingsPut:           make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue),
-		deviceSettingsPatch:         make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue),
-		deviceSettingsDelete:        make([]string, 0),
-		extendedCommunityListPut:    make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue),
-		extendedCommunityListPatch:  make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue),
-		extendedCommunityListDelete: make([]string, 0),
-		ipv4ListPut:                 make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue),
-		ipv4ListPatch:               make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue),
-		ipv4ListDelete:              make([]string, 0),
-		ipv4PrefixListPut:           make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue),
-		ipv4PrefixListPatch:         make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue),
-		ipv4PrefixListDelete:        make([]string, 0),
-		ipv6ListPut:                 make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue),
-		ipv6ListPatch:               make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue),
-		ipv6ListDelete:              make([]string, 0),
-		ipv6PrefixListPut:           make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue),
-		ipv6PrefixListPatch:         make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue),
-		ipv6PrefixListDelete:        make([]string, 0),
-		routeMapClausePut:           make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue),
-		routeMapClausePatch:         make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue),
-		routeMapClauseDelete:        make([]string, 0),
-		routeMapPut:                 make(map[string]openapi.RoutemapsPutRequestRouteMapValue),
-		routeMapPatch:               make(map[string]openapi.RoutemapsPutRequestRouteMapValue),
-		routeMapDelete:              make([]string, 0),
-		sfpBreakoutPatch:            make(map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue),
-		sitePatch:                   make(map[string]openapi.SitesPatchRequestSiteValue),
-		podPut:                      make(map[string]openapi.PodsPutRequestPodValue),
-		podPatch:                    make(map[string]openapi.PodsPutRequestPodValue),
-		podDelete:                   make([]string, 0),
-		portAclPut:                  make(map[string]openapi.PortaclsPutRequestPortAclValue),
-		portAclPatch:                make(map[string]openapi.PortaclsPutRequestPortAclValue),
-		portAclDelete:               make([]string, 0),
+		client:                       client,
+		contextProvider:              contextProvider,
+		clearCacheFunc:               clearCacheFunc,
+		mode:                         mode,
+		lastOperationTime:            time.Now(),
+		gatewayPut:                   make(map[string]openapi.GatewaysPutRequestGatewayValue),
+		gatewayPatch:                 make(map[string]openapi.GatewaysPutRequestGatewayValue),
+		gatewayDelete:                make([]string, 0),
+		lagPut:                       make(map[string]openapi.LagsPutRequestLagValue),
+		lagPatch:                     make(map[string]openapi.LagsPutRequestLagValue),
+		lagDelete:                    make([]string, 0),
+		tenantPut:                    make(map[string]openapi.TenantsPutRequestTenantValue),
+		tenantPatch:                  make(map[string]openapi.TenantsPutRequestTenantValue),
+		tenantDelete:                 make([]string, 0),
+		servicePut:                   make(map[string]openapi.ServicesPutRequestServiceValue),
+		servicePatch:                 make(map[string]openapi.ServicesPutRequestServiceValue),
+		serviceDelete:                make([]string, 0),
+		gatewayProfilePut:            make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
+		gatewayProfilePatch:          make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue),
+		gatewayProfileDelete:         make([]string, 0),
+		ethPortProfilePut:            make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
+		ethPortProfilePatch:          make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue),
+		ethPortProfileDelete:         make([]string, 0),
+		ethPortSettingsPut:           make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
+		ethPortSettingsPatch:         make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue),
+		ethPortSettingsDelete:        make([]string, 0),
+		bundlePut:                    make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
+		bundlePatch:                  make(map[string]openapi.BundlesPutRequestEndpointBundleValue),
+		bundleDelete:                 make([]string, 0),
+		aclPut:                       make(map[string]openapi.AclsPutRequestIpFilterValue),
+		aclPatch:                     make(map[string]openapi.AclsPutRequestIpFilterValue),
+		aclDelete:                    make([]string, 0),
+		aclIpVersion:                 make(map[string]string),
+		authenticatedEthPortPut:      make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
+		authenticatedEthPortPatch:    make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue),
+		authenticatedEthPortDelete:   make([]string, 0),
+		badgePut:                     make(map[string]openapi.BadgesPutRequestBadgeValue),
+		badgePatch:                   make(map[string]openapi.BadgesPutRequestBadgeValue),
+		badgeDelete:                  make([]string, 0),
+		voicePortProfilePut:          make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
+		voicePortProfilePatch:        make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue),
+		voicePortProfileDelete:       make([]string, 0),
+		switchpointPut:               make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
+		switchpointPatch:             make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue),
+		switchpointDelete:            make([]string, 0),
+		servicePortProfilePut:        make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
+		servicePortProfilePatch:      make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
+		servicePortProfileDelete:     make([]string, 0),
+		packetBrokerPut:              make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
+		packetBrokerPatch:            make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
+		packetBrokerDelete:           make([]string, 0),
+		packetQueuePut:               make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
+		packetQueuePatch:             make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
+		packetQueueDelete:            make([]string, 0),
+		deviceVoiceSettingsPut:       make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
+		deviceVoiceSettingsPatch:     make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue),
+		deviceVoiceSettingsDelete:    make([]string, 0),
+		deviceControllerPut:          make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
+		deviceControllerPatch:        make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue),
+		deviceControllerDelete:       make([]string, 0),
+		asPathAccessListPut:          make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue),
+		asPathAccessListPatch:        make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue),
+		asPathAccessListDelete:       make([]string, 0),
+		communityListPut:             make(map[string]openapi.CommunitylistsPutRequestCommunityListValue),
+		communityListPatch:           make(map[string]openapi.CommunitylistsPutRequestCommunityListValue),
+		communityListDelete:          make([]string, 0),
+		deviceSettingsPut:            make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue),
+		deviceSettingsPatch:          make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue),
+		deviceSettingsDelete:         make([]string, 0),
+		extendedCommunityListPut:     make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue),
+		extendedCommunityListPatch:   make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue),
+		extendedCommunityListDelete:  make([]string, 0),
+		ipv4ListPut:                  make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue),
+		ipv4ListPatch:                make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue),
+		ipv4ListDelete:               make([]string, 0),
+		ipv4PrefixListPut:            make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue),
+		ipv4PrefixListPatch:          make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue),
+		ipv4PrefixListDelete:         make([]string, 0),
+		ipv6ListPut:                  make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue),
+		ipv6ListPatch:                make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue),
+		ipv6ListDelete:               make([]string, 0),
+		ipv6PrefixListPut:            make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue),
+		ipv6PrefixListPatch:          make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue),
+		ipv6PrefixListDelete:         make([]string, 0),
+		routeMapClausePut:            make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue),
+		routeMapClausePatch:          make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue),
+		routeMapClauseDelete:         make([]string, 0),
+		routeMapPut:                  make(map[string]openapi.RoutemapsPutRequestRouteMapValue),
+		routeMapPatch:                make(map[string]openapi.RoutemapsPutRequestRouteMapValue),
+		routeMapDelete:               make([]string, 0),
+		sfpBreakoutPatch:             make(map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue),
+		sitePatch:                    make(map[string]openapi.SitesPatchRequestSiteValue),
+		podPut:                       make(map[string]openapi.PodsPutRequestPodValue),
+		podPatch:                     make(map[string]openapi.PodsPutRequestPodValue),
+		podDelete:                    make([]string, 0),
+		portAclPut:                   make(map[string]openapi.PortaclsPutRequestPortAclValue),
+		portAclPatch:                 make(map[string]openapi.PortaclsPutRequestPortAclValue),
+		portAclDelete:                make([]string, 0),
+		sflowCollectorPut:            make(map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue),
+		sflowCollectorPatch:          make(map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue),
+		sflowCollectorDelete:         make([]string, 0),
+		diagnosticsProfilePut:        make(map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue),
+		diagnosticsProfilePatch:      make(map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue),
+		diagnosticsProfileDelete:     make([]string, 0),
+		diagnosticsPortProfilePut:    make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue),
+		diagnosticsPortProfilePatch:  make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue),
+		diagnosticsPortProfileDelete: make([]string, 0),
 
 		pendingOperations:     make(map[string]*Operation),
 		operationResults:      make(map[string]bool),
@@ -935,104 +998,113 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		closedChannels:        make(map[string]bool),
 
 		// Initialize with no recent operations
-		recentGatewayOps:               false,
-		recentLagOps:                   false,
-		recentServiceOps:               false,
-		recentTenantOps:                false,
-		recentGatewayProfileOps:        false,
-		recentEthPortProfileOps:        false,
-		recentEthPortSettingsOps:       false,
-		recentBundleOps:                false,
-		recentAclOps:                   false,
-		recentAuthenticatedEthPortOps:  false,
-		recentBadgeOps:                 false,
-		recentVoicePortProfileOps:      false,
-		recentSwitchpointOps:           false,
-		recentServicePortProfileOps:    false,
-		recentPacketBrokerOps:          false,
-		recentPacketQueueOps:           false,
-		recentDeviceVoiceSettingsOps:   false,
-		recentDeviceControllerOps:      false,
-		recentAsPathAccessListOps:      false,
-		recentCommunityListOps:         false,
-		recentDeviceSettingsOps:        false,
-		recentExtendedCommunityListOps: false,
-		recentIpv4ListOps:              false,
-		recentIpv4PrefixListOps:        false,
-		recentIpv6ListOps:              false,
-		recentIpv6PrefixListOps:        false,
-		recentRouteMapClauseOps:        false,
-		recentRouteMapOps:              false,
-		recentSfpBreakoutOps:           false,
-		recentSiteOps:                  false,
-		recentPodOps:                   false,
-		recentPortAclOps:               false,
+		recentGatewayOps:                false,
+		recentLagOps:                    false,
+		recentServiceOps:                false,
+		recentTenantOps:                 false,
+		recentGatewayProfileOps:         false,
+		recentEthPortProfileOps:         false,
+		recentEthPortSettingsOps:        false,
+		recentBundleOps:                 false,
+		recentAclOps:                    false,
+		recentAuthenticatedEthPortOps:   false,
+		recentBadgeOps:                  false,
+		recentVoicePortProfileOps:       false,
+		recentSwitchpointOps:            false,
+		recentServicePortProfileOps:     false,
+		recentPacketBrokerOps:           false,
+		recentPacketQueueOps:            false,
+		recentDeviceVoiceSettingsOps:    false,
+		recentDeviceControllerOps:       false,
+		recentAsPathAccessListOps:       false,
+		recentCommunityListOps:          false,
+		recentDeviceSettingsOps:         false,
+		recentExtendedCommunityListOps:  false,
+		recentIpv4ListOps:               false,
+		recentIpv4PrefixListOps:         false,
+		recentIpv6ListOps:               false,
+		recentIpv6PrefixListOps:         false,
+		recentRouteMapClauseOps:         false,
+		recentRouteMapOps:               false,
+		recentSfpBreakoutOps:            false,
+		recentSiteOps:                   false,
+		recentPodOps:                    false,
+		recentPortAclOps:                false,
+		recentSflowCollectorOps:         false,
+		recentDiagnosticsProfileOps:     false,
+		recentDiagnosticsPortProfileOps: false,
 
 		// Initialize response caches
-		gatewayResponses:                    make(map[string]map[string]interface{}),
-		gatewayResponsesMutex:               sync.RWMutex{},
-		lagResponses:                        make(map[string]map[string]interface{}),
-		lagResponsesMutex:                   sync.RWMutex{},
-		serviceResponses:                    make(map[string]map[string]interface{}),
-		serviceResponsesMutex:               sync.RWMutex{},
-		tenantResponses:                     make(map[string]map[string]interface{}),
-		tenantResponsesMutex:                sync.RWMutex{},
-		gatewayProfileResponses:             make(map[string]map[string]interface{}),
-		gatewayProfileResponsesMutex:        sync.RWMutex{},
-		ethPortProfileResponses:             make(map[string]map[string]interface{}),
-		ethPortProfileResponsesMutex:        sync.RWMutex{},
-		ethPortSettingsResponses:            make(map[string]map[string]interface{}),
-		ethPortSettingsResponsesMutex:       sync.RWMutex{},
-		bundleResponses:                     make(map[string]map[string]interface{}),
-		bundleResponsesMutex:                sync.RWMutex{},
-		aclResponses:                        make(map[string]map[string]interface{}),
-		aclResponsesMutex:                   sync.RWMutex{},
-		authenticatedEthPortResponses:       make(map[string]map[string]interface{}),
-		authenticatedEthPortResponsesMutex:  sync.RWMutex{},
-		badgeResponses:                      make(map[string]map[string]interface{}),
-		badgeResponsesMutex:                 sync.RWMutex{},
-		voicePortProfileResponses:           make(map[string]map[string]interface{}),
-		voicePortProfileResponsesMutex:      sync.RWMutex{},
-		switchpointResponses:                make(map[string]map[string]interface{}),
-		switchpointResponsesMutex:           sync.RWMutex{},
-		servicePortProfileResponses:         make(map[string]map[string]interface{}),
-		servicePortProfileResponsesMutex:    sync.RWMutex{},
-		packetBrokerResponses:               make(map[string]map[string]interface{}),
-		packetBrokerResponsesMutex:          sync.RWMutex{},
-		packetQueueResponses:                make(map[string]map[string]interface{}),
-		packetQueueResponsesMutex:           sync.RWMutex{},
-		deviceVoiceSettingsResponses:        make(map[string]map[string]interface{}),
-		deviceVoiceSettingsResponsesMutex:   sync.RWMutex{},
-		deviceControllerResponses:           make(map[string]map[string]interface{}),
-		deviceControllerResponsesMutex:      sync.RWMutex{},
-		asPathAccessListResponses:           make(map[string]map[string]interface{}),
-		asPathAccessListResponsesMutex:      sync.RWMutex{},
-		communityListResponses:              make(map[string]map[string]interface{}),
-		communityListResponsesMutex:         sync.RWMutex{},
-		deviceSettingsResponses:             make(map[string]map[string]interface{}),
-		deviceSettingsResponsesMutex:        sync.RWMutex{},
-		extendedCommunityListResponses:      make(map[string]map[string]interface{}),
-		extendedCommunityListResponsesMutex: sync.RWMutex{},
-		ipv4ListResponses:                   make(map[string]map[string]interface{}),
-		ipv4ListResponsesMutex:              sync.RWMutex{},
-		ipv4PrefixListResponses:             make(map[string]map[string]interface{}),
-		ipv4PrefixListResponsesMutex:        sync.RWMutex{},
-		ipv6ListResponses:                   make(map[string]map[string]interface{}),
-		ipv6ListResponsesMutex:              sync.RWMutex{},
-		ipv6PrefixListResponses:             make(map[string]map[string]interface{}),
-		ipv6PrefixListResponsesMutex:        sync.RWMutex{},
-		routeMapClauseResponses:             make(map[string]map[string]interface{}),
-		routeMapClauseResponsesMutex:        sync.RWMutex{},
-		routeMapResponses:                   make(map[string]map[string]interface{}),
-		routeMapResponsesMutex:              sync.RWMutex{},
-		sfpBreakoutResponses:                make(map[string]map[string]interface{}),
-		sfpBreakoutResponsesMutex:           sync.RWMutex{},
-		siteResponses:                       make(map[string]map[string]interface{}),
-		siteResponsesMutex:                  sync.RWMutex{},
-		podResponses:                        make(map[string]map[string]interface{}),
-		podResponsesMutex:                   sync.RWMutex{},
-		portAclResponses:                    make(map[string]map[string]interface{}),
-		portAclResponsesMutex:               sync.RWMutex{},
+		gatewayResponses:                     make(map[string]map[string]interface{}),
+		gatewayResponsesMutex:                sync.RWMutex{},
+		lagResponses:                         make(map[string]map[string]interface{}),
+		lagResponsesMutex:                    sync.RWMutex{},
+		serviceResponses:                     make(map[string]map[string]interface{}),
+		serviceResponsesMutex:                sync.RWMutex{},
+		tenantResponses:                      make(map[string]map[string]interface{}),
+		tenantResponsesMutex:                 sync.RWMutex{},
+		gatewayProfileResponses:              make(map[string]map[string]interface{}),
+		gatewayProfileResponsesMutex:         sync.RWMutex{},
+		ethPortProfileResponses:              make(map[string]map[string]interface{}),
+		ethPortProfileResponsesMutex:         sync.RWMutex{},
+		ethPortSettingsResponses:             make(map[string]map[string]interface{}),
+		ethPortSettingsResponsesMutex:        sync.RWMutex{},
+		bundleResponses:                      make(map[string]map[string]interface{}),
+		bundleResponsesMutex:                 sync.RWMutex{},
+		aclResponses:                         make(map[string]map[string]interface{}),
+		aclResponsesMutex:                    sync.RWMutex{},
+		authenticatedEthPortResponses:        make(map[string]map[string]interface{}),
+		authenticatedEthPortResponsesMutex:   sync.RWMutex{},
+		badgeResponses:                       make(map[string]map[string]interface{}),
+		badgeResponsesMutex:                  sync.RWMutex{},
+		voicePortProfileResponses:            make(map[string]map[string]interface{}),
+		voicePortProfileResponsesMutex:       sync.RWMutex{},
+		switchpointResponses:                 make(map[string]map[string]interface{}),
+		switchpointResponsesMutex:            sync.RWMutex{},
+		servicePortProfileResponses:          make(map[string]map[string]interface{}),
+		servicePortProfileResponsesMutex:     sync.RWMutex{},
+		packetBrokerResponses:                make(map[string]map[string]interface{}),
+		packetBrokerResponsesMutex:           sync.RWMutex{},
+		packetQueueResponses:                 make(map[string]map[string]interface{}),
+		packetQueueResponsesMutex:            sync.RWMutex{},
+		deviceVoiceSettingsResponses:         make(map[string]map[string]interface{}),
+		deviceVoiceSettingsResponsesMutex:    sync.RWMutex{},
+		deviceControllerResponses:            make(map[string]map[string]interface{}),
+		deviceControllerResponsesMutex:       sync.RWMutex{},
+		asPathAccessListResponses:            make(map[string]map[string]interface{}),
+		asPathAccessListResponsesMutex:       sync.RWMutex{},
+		communityListResponses:               make(map[string]map[string]interface{}),
+		communityListResponsesMutex:          sync.RWMutex{},
+		deviceSettingsResponses:              make(map[string]map[string]interface{}),
+		deviceSettingsResponsesMutex:         sync.RWMutex{},
+		extendedCommunityListResponses:       make(map[string]map[string]interface{}),
+		extendedCommunityListResponsesMutex:  sync.RWMutex{},
+		ipv4ListResponses:                    make(map[string]map[string]interface{}),
+		ipv4ListResponsesMutex:               sync.RWMutex{},
+		ipv4PrefixListResponses:              make(map[string]map[string]interface{}),
+		ipv4PrefixListResponsesMutex:         sync.RWMutex{},
+		ipv6ListResponses:                    make(map[string]map[string]interface{}),
+		ipv6ListResponsesMutex:               sync.RWMutex{},
+		ipv6PrefixListResponses:              make(map[string]map[string]interface{}),
+		ipv6PrefixListResponsesMutex:         sync.RWMutex{},
+		routeMapClauseResponses:              make(map[string]map[string]interface{}),
+		routeMapClauseResponsesMutex:         sync.RWMutex{},
+		routeMapResponses:                    make(map[string]map[string]interface{}),
+		routeMapResponsesMutex:               sync.RWMutex{},
+		sfpBreakoutResponses:                 make(map[string]map[string]interface{}),
+		sfpBreakoutResponsesMutex:            sync.RWMutex{},
+		siteResponses:                        make(map[string]map[string]interface{}),
+		siteResponsesMutex:                   sync.RWMutex{},
+		podResponses:                         make(map[string]map[string]interface{}),
+		podResponsesMutex:                    sync.RWMutex{},
+		portAclResponses:                     make(map[string]map[string]interface{}),
+		portAclResponsesMutex:                sync.RWMutex{},
+		sflowCollectorResponses:              make(map[string]map[string]interface{}),
+		sflowCollectorResponsesMutex:         sync.RWMutex{},
+		diagnosticsProfileResponses:          make(map[string]map[string]interface{}),
+		diagnosticsProfileResponsesMutex:     sync.RWMutex{},
+		diagnosticsPortProfileResponses:      make(map[string]map[string]interface{}),
+		diagnosticsPortProfileResponsesMutex: sync.RWMutex{},
 	}
 }
 
@@ -1230,6 +1302,24 @@ func (b *BulkOperationManager) GetResourceResponse(resourceType, resourceName st
 		response, exists := b.portAclResponses[resourceName]
 		return response, exists
 
+	case "sflow_collector":
+		b.sflowCollectorResponsesMutex.RLock()
+		defer b.sflowCollectorResponsesMutex.RUnlock()
+		response, exists := b.sflowCollectorResponses[resourceName]
+		return response, exists
+
+	case "diagnostics_profile":
+		b.diagnosticsProfileResponsesMutex.RLock()
+		defer b.diagnosticsProfileResponsesMutex.RUnlock()
+		response, exists := b.diagnosticsProfileResponses[resourceName]
+		return response, exists
+
+	case "diagnostics_port_profile":
+		b.diagnosticsPortProfileResponsesMutex.RLock()
+		defer b.diagnosticsPortProfileResponsesMutex.RUnlock()
+		response, exists := b.diagnosticsPortProfileResponses[resourceName]
+		return response, exists
+
 	default:
 		return nil, false
 	}
@@ -1314,6 +1404,9 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 			b.clearCacheFunc(ctx, b.contextProvider(), "ethportprofiles")
 			b.clearCacheFunc(ctx, b.contextProvider(), "ethportsettings")
 			b.clearCacheFunc(ctx, b.contextProvider(), "lags")
+			b.clearCacheFunc(ctx, b.contextProvider(), "sflowcollectors")
+			b.clearCacheFunc(ctx, b.contextProvider(), "diagnosticsprofiles")
+			b.clearCacheFunc(ctx, b.contextProvider(), "diagnosticsportprofiles")
 			b.clearCacheFunc(ctx, b.contextProvider(), "bundles")
 			b.clearCacheFunc(ctx, b.contextProvider(), "acls_ipv4")
 			b.clearCacheFunc(ctx, b.contextProvider(), "acls_ipv6")
@@ -1394,6 +1487,17 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", len(b.lagPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "lag", "PUT") }, "LAG") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.sflowCollectorPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "sflow_collector", "PUT") }, "SFlow Collector") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.diagnosticsProfilePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "diagnostics_profile", "PUT") }, "Diagnostics Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.diagnosticsPortProfilePut), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "diagnostics_port_profile", "PUT")
+	}, "Diagnostics Port Profile") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.bundlePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "bundle", "PUT") }, "Bundle") {
 		return diagnostics, operationsPerformed
 	}
@@ -1449,36 +1553,6 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	}
 
 	// PATCH operations - DC Order
-	tflog.Debug(ctx, "Checking PATCH operation counts", map[string]interface{}{
-		"tenant_patch_count":                  len(b.tenantPatch),
-		"gateway_patch_count":                 len(b.gatewayPatch),
-		"gateway_profile_patch_count":         len(b.gatewayProfilePatch),
-		"service_patch_count":                 len(b.servicePatch),
-		"packet_queue_patch_count":            len(b.packetQueuePatch),
-		"eth_port_profile_patch_count":        len(b.ethPortProfilePatch),
-		"eth_port_settings_patch_count":       len(b.ethPortSettingsPatch),
-		"device_settings_patch_count":         len(b.deviceSettingsPatch),
-		"lag_patch_count":                     len(b.lagPatch),
-		"bundle_patch_count":                  len(b.bundlePatch),
-		"acl_patch_count":                     len(b.aclPatch),
-		"ipv4_prefix_list_patch_count":        len(b.ipv4PrefixListPatch),
-		"ipv6_prefix_list_patch_count":        len(b.ipv6PrefixListPatch),
-		"ipv4_list_patch_count":               len(b.ipv4ListPatch),
-		"ipv6_list_patch_count":               len(b.ipv6ListPatch),
-		"packet_broker_patch_count":           len(b.packetBrokerPatch),
-		"port_acl_patch_count":                len(b.portAclPatch),
-		"badge_patch_count":                   len(b.badgePatch),
-		"pod_patch_count":                     len(b.podPatch),
-		"device_controller_patch_count":       len(b.deviceControllerPatch),
-		"as_path_access_list_patch_count":     len(b.asPathAccessListPatch),
-		"community_list_patch_count":          len(b.communityListPatch),
-		"extended_community_list_patch_count": len(b.extendedCommunityListPatch),
-		"route_map_clause_patch_count":        len(b.routeMapClausePatch),
-		"route_map_patch_count":               len(b.routeMapPatch),
-		"sfp_breakout_patch_count":            len(b.sfpBreakoutPatch),
-		"site_patch_count":                    len(b.sitePatch),
-	})
-
 	if !execute("PATCH", len(b.tenantPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "tenant", "PATCH") }, "Tenant") {
 		return diagnostics, operationsPerformed
 	}
@@ -1504,6 +1578,17 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", len(b.lagPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "lag", "PATCH") }, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.sflowCollectorPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "sflow_collector", "PATCH") }, "SFlow Collector") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.diagnosticsProfilePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "diagnostics_profile", "PATCH") }, "Diagnostics Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.diagnosticsPortProfilePatch), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "diagnostics_port_profile", "PATCH")
+	}, "Diagnostics Port Profile") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", len(b.bundlePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "bundle", "PATCH") }, "Bundle") {
@@ -1608,6 +1693,17 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("DELETE", len(b.bundleDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "bundle", "DELETE") }, "Bundle") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("DELETE", len(b.diagnosticsPortProfileDelete), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "diagnostics_port_profile", "DELETE")
+	}, "Diagnostics Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.diagnosticsProfileDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "diagnostics_profile", "DELETE") }, "Diagnostics Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.sflowCollectorDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "sflow_collector", "DELETE") }, "SFlow Collector") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("DELETE", len(b.lagDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "lag", "DELETE") }, "LAG") {
 		return diagnostics, operationsPerformed
 	}
@@ -1697,19 +1793,39 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PUT", len(b.ethPortSettingsPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "eth_port_settings", "PUT") }, "Eth Port Settings") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.deviceSettingsPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_settings", "PUT") }, "Device Settings") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.lagPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "lag", "PUT") }, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.sflowCollectorPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "sflow_collector", "PUT") }, "SFlow Collector") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.diagnosticsProfilePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "diagnostics_profile", "PUT") }, "Diagnostics Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.diagnosticsPortProfilePut), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "diagnostics_port_profile", "PUT")
+	}, "Diagnostics Port Profile") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PUT", len(b.bundlePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "bundle", "PUT") }, "Bundle") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PUT", len(b.badgePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "PUT") }, "Badge") {
+	if !execute("PUT", len(b.aclPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "acl", "PUT") }, "ACL") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ipv4ListPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PUT") }, "IPv4 List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.ipv6ListPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PUT") }, "IPv6 List") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PUT", len(b.portAclPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PUT") }, "Port ACL") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PUT", len(b.podPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "PUT") }, "Pod") {
+	if !execute("PUT", len(b.badgePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "PUT") }, "Badge") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PUT", len(b.switchpointPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "PUT") }, "Switchpoint") {
@@ -1748,16 +1864,36 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PATCH", len(b.ethPortSettingsPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "eth_port_settings", "PATCH") }, "Eth Port Settings") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", len(b.deviceSettingsPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_settings", "PATCH") }, "Device Settings") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", len(b.lagPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "lag", "PATCH") }, "LAG") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.sflowCollectorPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "sflow_collector", "PATCH") }, "SFlow Collector") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.diagnosticsProfilePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "diagnostics_profile", "PATCH") }, "Diagnostics Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.diagnosticsPortProfilePatch), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "diagnostics_port_profile", "PATCH")
+	}, "Diagnostics Port Profile") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", len(b.bundlePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "bundle", "PATCH") }, "Bundle") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PATCH", len(b.portAclPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PATCH") }, "Port ACL") {
+	if !execute("PATCH", len(b.aclPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "acl", "PATCH") }, "ACL") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PATCH", len(b.podPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "PATCH") }, "Pod") {
+	if !execute("PATCH", len(b.ipv4ListPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PATCH") }, "IPv4 List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.ipv6ListPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PATCH") }, "IPv6 List") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.portAclPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PATCH") }, "Port ACL") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", len(b.badgePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "PATCH") }, "Badge") {
@@ -1767,6 +1903,9 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", len(b.deviceControllerPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_controller", "PATCH") }, "Device Controller") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.sitePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "site", "PATCH") }, "Site") {
 		return diagnostics, operationsPerformed
 	}
 
@@ -1787,6 +1926,17 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.bundleDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "bundle", "DELETE") }, "Bundle") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.diagnosticsPortProfileDelete), func(ctx context.Context) diag.Diagnostics {
+		return b.ExecuteBulk(ctx, "diagnostics_port_profile", "DELETE")
+	}, "Diagnostics Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.diagnosticsProfileDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "diagnostics_profile", "DELETE") }, "Diagnostics Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.sflowCollectorDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "sflow_collector", "DELETE") }, "SFlow Collector") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.lagDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "lag", "DELETE") }, "LAG") {
@@ -1861,6 +2011,9 @@ func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool
 		len(b.sitePatch) == 0 &&
 		len(b.podPut) == 0 && len(b.podPatch) == 0 && len(b.podDelete) == 0 &&
 		len(b.portAclPut) == 0 && len(b.portAclPatch) == 0 && len(b.portAclDelete) == 0 &&
+		len(b.sflowCollectorPut) == 0 && len(b.sflowCollectorPatch) == 0 && len(b.sflowCollectorDelete) == 0 &&
+		len(b.diagnosticsProfilePut) == 0 && len(b.diagnosticsProfilePatch) == 0 && len(b.diagnosticsProfileDelete) == 0 &&
+		len(b.diagnosticsPortProfilePut) == 0 && len(b.diagnosticsPortProfilePatch) == 0 && len(b.diagnosticsPortProfileDelete) == 0 &&
 		len(b.deviceControllerPut) == 0 && len(b.deviceControllerPatch) == 0 && len(b.deviceControllerDelete) == 0 {
 		return false
 	}
@@ -1910,6 +2063,18 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	deviceSettingsPutCount := len(b.deviceSettingsPut)
 	deviceSettingsPatchCount := len(b.deviceSettingsPatch)
 	deviceSettingsDeleteCount := len(b.deviceSettingsDelete)
+
+	sflowCollectorPutCount := len(b.sflowCollectorPut)
+	sflowCollectorPatchCount := len(b.sflowCollectorPatch)
+	sflowCollectorDeleteCount := len(b.sflowCollectorDelete)
+
+	diagnosticsProfilePutCount := len(b.diagnosticsProfilePut)
+	diagnosticsProfilePatchCount := len(b.diagnosticsProfilePatch)
+	diagnosticsProfileDeleteCount := len(b.diagnosticsProfileDelete)
+
+	diagnosticsPortProfilePutCount := len(b.diagnosticsPortProfilePut)
+	diagnosticsPortProfilePatchCount := len(b.diagnosticsPortProfilePatch)
+	diagnosticsPortProfileDeleteCount := len(b.diagnosticsPortProfileDelete)
 
 	bundlePutCount := len(b.bundlePut)
 	bundlePatchCount := len(b.bundlePatch)
@@ -2013,6 +2178,9 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 		ethPortProfilePutCount + ethPortProfilePatchCount + ethPortProfileDeleteCount +
 		ethPortSettingsPutCount + ethPortSettingsPatchCount + ethPortSettingsDeleteCount +
 		deviceSettingsPutCount + deviceSettingsPatchCount + deviceSettingsDeleteCount +
+		sflowCollectorPutCount + sflowCollectorPatchCount + sflowCollectorDeleteCount +
+		diagnosticsProfilePutCount + diagnosticsProfilePatchCount + diagnosticsProfileDeleteCount +
+		diagnosticsPortProfilePutCount + diagnosticsPortProfilePatchCount + diagnosticsPortProfileDeleteCount +
 		bundlePutCount + bundlePatchCount + bundleDeleteCount + aclPutCount + aclPatchCount + aclDeleteCount +
 		ipv4ListPutCount + ipv4ListPatchCount + ipv4ListDeleteCount +
 		ipv4PrefixListPutCount + ipv4PrefixListPatchCount + ipv4PrefixListDeleteCount +
@@ -2038,99 +2206,108 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 
 	if totalCount > 0 {
 		tflog.Debug(ctx, "Multiple operations detected, executing in sequence", map[string]interface{}{
-			"gateway_put_count":                    gatewayPutCount,
-			"gateway_patch_count":                  gatewayPatchCount,
-			"gateway_delete_count":                 gatewayDeleteCount,
-			"lag_put_count":                        lagPutCount,
-			"lag_patch_count":                      lagPatchCount,
-			"lag_delete_count":                     lagDeleteCount,
-			"tenant_put_count":                     tenantPutCount,
-			"tenant_patch_count":                   tenantPatchCount,
-			"tenant_delete_count":                  tenantDeleteCount,
-			"service_put_count":                    servicePutCount,
-			"service_patch_count":                  servicePatchCount,
-			"service_delete_count":                 serviceDeleteCount,
-			"gateway_profile_put_count":            gatewayProfilePutCount,
-			"gateway_profile_patch_count":          gatewayProfilePatchCount,
-			"gateway_profile_delete_count":         gatewayProfileDeleteCount,
-			"eth_port_profile_put_count":           ethPortProfilePutCount,
-			"eth_port_profile_patch_count":         ethPortProfilePatchCount,
-			"eth_port_profile_delete_count":        ethPortProfileDeleteCount,
-			"eth_port_settings_put_count":          ethPortSettingsPutCount,
-			"eth_port_settings_patch_count":        ethPortSettingsPatchCount,
-			"eth_port_settings_delete_count":       ethPortSettingsDeleteCount,
-			"device_settings_put_count":            deviceSettingsPutCount,
-			"device_settings_patch_count":          deviceSettingsPatchCount,
-			"device_settings_delete_count":         deviceSettingsDeleteCount,
-			"bundle_put_count":                     bundlePutCount,
-			"bundle_patch_count":                   bundlePatchCount,
-			"bundle_delete_count":                  bundleDeleteCount,
-			"acl_put_count":                        aclPutCount,
-			"acl_patch_count":                      aclPatchCount,
-			"acl_delete_count":                     aclDeleteCount,
-			"ipv4_list_put_count":                  ipv4ListPutCount,
-			"ipv4_list_patch_count":                ipv4ListPatchCount,
-			"ipv4_list_delete_count":               ipv4ListDeleteCount,
-			"ipv4_prefix_list_put_count":           ipv4PrefixListPutCount,
-			"ipv4_prefix_list_patch_count":         ipv4PrefixListPatchCount,
-			"ipv4_prefix_list_delete_count":        ipv4PrefixListDeleteCount,
-			"ipv6_list_put_count":                  ipv6ListPutCount,
-			"ipv6_list_patch_count":                ipv6ListPatchCount,
-			"ipv6_list_delete_count":               ipv6ListDeleteCount,
-			"ipv6_prefix_list_put_count":           ipv6PrefixListPutCount,
-			"ipv6_prefix_list_patch_count":         ipv6PrefixListPatchCount,
-			"ipv6_prefix_list_delete_count":        ipv6PrefixListDeleteCount,
-			"badge_put_count":                      badgePutCount,
-			"badge_patch_count":                    badgePatchCount,
-			"badge_delete_count":                   badgeDeleteCount,
-			"voice_port_profile_put_count":         voicePortProfilePutCount,
-			"voice_port_profile_patch_count":       voicePortProfilePatchCount,
-			"voice_port_profile_delete_count":      voicePortProfileDeleteCount,
-			"switchpoint_put_count":                switchpointPutCount,
-			"switchpoint_patch_count":              switchpointPatchCount,
-			"switchpoint_delete_count":             switchpointDeleteCount,
-			"service_port_profile_put_count":       servicePortProfilePutCount,
-			"service_port_profile_patch_count":     servicePortProfilePatchCount,
-			"service_port_profile_delete_count":    servicePortProfileDeleteCount,
-			"packet_broker_put_count":              packetBrokerPutCount,
-			"packet_broker_patch_count":            packetBrokerPatchCount,
-			"packet_broker_delete_count":           packetBrokerDeleteCount,
-			"packet_queue_put_count":               packetQueuePutCount,
-			"packet_queue_patch_count":             packetQueuePatchCount,
-			"packet_queue_delete_count":            packetQueueDeleteCount,
-			"device_voice_settings_put_count":      deviceVoiceSettingsPutCount,
-			"device_voice_settings_patch_count":    deviceVoiceSettingsPatchCount,
-			"device_voice_settings_delete_count":   deviceVoiceSettingsDeleteCount,
-			"as_path_access_list_put_count":        asPathAccessListPutCount,
-			"as_path_access_list_patch_count":      asPathAccessListPatchCount,
-			"as_path_access_list_delete_count":     asPathAccessListDeleteCount,
-			"community_list_put_count":             communityListPutCount,
-			"community_list_patch_count":           communityListPatchCount,
-			"community_list_delete_count":          communityListDeleteCount,
-			"extended_community_list_put_count":    extendedCommunityListPutCount,
-			"extended_community_list_patch_count":  extendedCommunityListPatchCount,
-			"extended_community_list_delete_count": extendedCommunityListDeleteCount,
-			"route_map_clause_put_count":           routeMapClausePutCount,
-			"route_map_clause_patch_count":         routeMapClausePatchCount,
-			"route_map_clause_delete_count":        routeMapClauseDeleteCount,
-			"route_map_put_count":                  routeMapPutCount,
-			"route_map_patch_count":                routeMapPatchCount,
-			"route_map_delete_count":               routeMapDeleteCount,
-			"sfp_breakout_patch_count":             sfpBreakoutPatchCount,
-			"site_patch_count":                     sitePatchCount,
-			"pod_put_count":                        podPutCount,
-			"pod_patch_count":                      podPatchCount,
-			"pod_delete_count":                     podDeleteCount,
-			"port_acl_put_count":                   portAclPutCount,
-			"port_acl_patch_count":                 portAclPatchCount,
-			"port_acl_delete_count":                portAclDeleteCount,
-			"authenticated_eth_port_put_count":     authenticatedEthPortPutCount,
-			"authenticated_eth_port_patch_count":   authenticatedEthPortPatchCount,
-			"authenticated_eth_port_delete_count":  authenticatedEthPortDeleteCount,
-			"device_controller_put_count":          deviceControllerPutCount,
-			"device_controller_patch_count":        deviceControllerPatchCount,
-			"device_controller_delete_count":       deviceControllerDeleteCount,
-			"total_count":                          totalCount,
+			"gateway_put_count":                     gatewayPutCount,
+			"gateway_patch_count":                   gatewayPatchCount,
+			"gateway_delete_count":                  gatewayDeleteCount,
+			"lag_put_count":                         lagPutCount,
+			"lag_patch_count":                       lagPatchCount,
+			"lag_delete_count":                      lagDeleteCount,
+			"tenant_put_count":                      tenantPutCount,
+			"tenant_patch_count":                    tenantPatchCount,
+			"tenant_delete_count":                   tenantDeleteCount,
+			"service_put_count":                     servicePutCount,
+			"service_patch_count":                   servicePatchCount,
+			"service_delete_count":                  serviceDeleteCount,
+			"gateway_profile_put_count":             gatewayProfilePutCount,
+			"gateway_profile_patch_count":           gatewayProfilePatchCount,
+			"gateway_profile_delete_count":          gatewayProfileDeleteCount,
+			"eth_port_profile_put_count":            ethPortProfilePutCount,
+			"eth_port_profile_patch_count":          ethPortProfilePatchCount,
+			"eth_port_profile_delete_count":         ethPortProfileDeleteCount,
+			"eth_port_settings_put_count":           ethPortSettingsPutCount,
+			"eth_port_settings_patch_count":         ethPortSettingsPatchCount,
+			"eth_port_settings_delete_count":        ethPortSettingsDeleteCount,
+			"device_settings_put_count":             deviceSettingsPutCount,
+			"device_settings_patch_count":           deviceSettingsPatchCount,
+			"device_settings_delete_count":          deviceSettingsDeleteCount,
+			"bundle_put_count":                      bundlePutCount,
+			"bundle_patch_count":                    bundlePatchCount,
+			"bundle_delete_count":                   bundleDeleteCount,
+			"acl_put_count":                         aclPutCount,
+			"acl_patch_count":                       aclPatchCount,
+			"acl_delete_count":                      aclDeleteCount,
+			"ipv4_list_put_count":                   ipv4ListPutCount,
+			"ipv4_list_patch_count":                 ipv4ListPatchCount,
+			"ipv4_list_delete_count":                ipv4ListDeleteCount,
+			"ipv4_prefix_list_put_count":            ipv4PrefixListPutCount,
+			"ipv4_prefix_list_patch_count":          ipv4PrefixListPatchCount,
+			"ipv4_prefix_list_delete_count":         ipv4PrefixListDeleteCount,
+			"ipv6_list_put_count":                   ipv6ListPutCount,
+			"ipv6_list_patch_count":                 ipv6ListPatchCount,
+			"ipv6_list_delete_count":                ipv6ListDeleteCount,
+			"ipv6_prefix_list_put_count":            ipv6PrefixListPutCount,
+			"ipv6_prefix_list_patch_count":          ipv6PrefixListPatchCount,
+			"ipv6_prefix_list_delete_count":         ipv6PrefixListDeleteCount,
+			"badge_put_count":                       badgePutCount,
+			"badge_patch_count":                     badgePatchCount,
+			"badge_delete_count":                    badgeDeleteCount,
+			"voice_port_profile_put_count":          voicePortProfilePutCount,
+			"voice_port_profile_patch_count":        voicePortProfilePatchCount,
+			"voice_port_profile_delete_count":       voicePortProfileDeleteCount,
+			"switchpoint_put_count":                 switchpointPutCount,
+			"switchpoint_patch_count":               switchpointPatchCount,
+			"switchpoint_delete_count":              switchpointDeleteCount,
+			"service_port_profile_put_count":        servicePortProfilePutCount,
+			"service_port_profile_patch_count":      servicePortProfilePatchCount,
+			"service_port_profile_delete_count":     servicePortProfileDeleteCount,
+			"packet_broker_put_count":               packetBrokerPutCount,
+			"packet_broker_patch_count":             packetBrokerPatchCount,
+			"packet_broker_delete_count":            packetBrokerDeleteCount,
+			"packet_queue_put_count":                packetQueuePutCount,
+			"packet_queue_patch_count":              packetQueuePatchCount,
+			"packet_queue_delete_count":             packetQueueDeleteCount,
+			"device_voice_settings_put_count":       deviceVoiceSettingsPutCount,
+			"device_voice_settings_patch_count":     deviceVoiceSettingsPatchCount,
+			"device_voice_settings_delete_count":    deviceVoiceSettingsDeleteCount,
+			"as_path_access_list_put_count":         asPathAccessListPutCount,
+			"as_path_access_list_patch_count":       asPathAccessListPatchCount,
+			"as_path_access_list_delete_count":      asPathAccessListDeleteCount,
+			"community_list_put_count":              communityListPutCount,
+			"community_list_patch_count":            communityListPatchCount,
+			"community_list_delete_count":           communityListDeleteCount,
+			"extended_community_list_put_count":     extendedCommunityListPutCount,
+			"extended_community_list_patch_count":   extendedCommunityListPatchCount,
+			"extended_community_list_delete_count":  extendedCommunityListDeleteCount,
+			"route_map_clause_put_count":            routeMapClausePutCount,
+			"route_map_clause_patch_count":          routeMapClausePatchCount,
+			"route_map_clause_delete_count":         routeMapClauseDeleteCount,
+			"route_map_put_count":                   routeMapPutCount,
+			"route_map_patch_count":                 routeMapPatchCount,
+			"route_map_delete_count":                routeMapDeleteCount,
+			"sfp_breakout_patch_count":              sfpBreakoutPatchCount,
+			"site_patch_count":                      sitePatchCount,
+			"pod_put_count":                         podPutCount,
+			"pod_patch_count":                       podPatchCount,
+			"pod_delete_count":                      podDeleteCount,
+			"port_acl_put_count":                    portAclPutCount,
+			"port_acl_patch_count":                  portAclPatchCount,
+			"port_acl_delete_count":                 portAclDeleteCount,
+			"authenticated_eth_port_put_count":      authenticatedEthPortPutCount,
+			"authenticated_eth_port_patch_count":    authenticatedEthPortPatchCount,
+			"authenticated_eth_port_delete_count":   authenticatedEthPortDeleteCount,
+			"device_controller_put_count":           deviceControllerPutCount,
+			"device_controller_patch_count":         deviceControllerPatchCount,
+			"device_controller_delete_count":        deviceControllerDeleteCount,
+			"sflow_collector_put_count":             sflowCollectorPutCount,
+			"sflow_collector_patch_count":           sflowCollectorPatchCount,
+			"sflow_collector_delete_count":          sflowCollectorDeleteCount,
+			"diagnostics_profile_put_count":         diagnosticsProfilePutCount,
+			"diagnostics_profile_patch_count":       diagnosticsProfilePatchCount,
+			"diagnostics_profile_delete_count":      diagnosticsProfileDeleteCount,
+			"diagnostics_port_profile_put_count":    diagnosticsPortProfilePutCount,
+			"diagnostics_port_profile_patch_count":  diagnosticsPortProfilePatchCount,
+			"diagnostics_port_profile_delete_count": diagnosticsPortProfileDeleteCount,
+			"total_count":                           totalCount,
 		})
 
 		return b.ExecuteAllPendingOperations(ctx)
@@ -2406,6 +2583,30 @@ func (b *BulkOperationManager) GetResourceOperationData(resourceType string) *Re
 			DeleteOperations: &b.portAclDelete,
 			RecentOps:        &b.recentPortAclOps,
 			RecentOpTime:     &b.recentPortAclOpTime,
+		}
+	case "sflow_collector":
+		return &ResourceOperationData{
+			PutOperations:    b.sflowCollectorPut,
+			PatchOperations:  b.sflowCollectorPatch,
+			DeleteOperations: &b.sflowCollectorDelete,
+			RecentOps:        &b.recentSflowCollectorOps,
+			RecentOpTime:     &b.recentSflowCollectorOpTime,
+		}
+	case "diagnostics_profile":
+		return &ResourceOperationData{
+			PutOperations:    b.diagnosticsProfilePut,
+			PatchOperations:  b.diagnosticsProfilePatch,
+			DeleteOperations: &b.diagnosticsProfileDelete,
+			RecentOps:        &b.recentDiagnosticsProfileOps,
+			RecentOpTime:     &b.recentDiagnosticsProfileOpTime,
+		}
+	case "diagnostics_port_profile":
+		return &ResourceOperationData{
+			PutOperations:    b.diagnosticsPortProfilePut,
+			PatchOperations:  b.diagnosticsPortProfilePatch,
+			DeleteOperations: &b.diagnosticsPortProfileDelete,
+			RecentOps:        &b.recentDiagnosticsPortProfileOps,
+			RecentOpTime:     &b.recentDiagnosticsPortProfileOpTime,
 		}
 	}
 	return nil
@@ -2685,6 +2886,15 @@ func (g *GenericAPIClient) Put(ctx context.Context, request interface{}) (*http.
 	case "port_acl":
 		req := g.client.PortACLsAPI.PortaclsPut(ctx).PortaclsPutRequest(*request.(*openapi.PortaclsPutRequest))
 		return req.Execute()
+	case "sflow_collector":
+		req := g.client.SFlowCollectorsAPI.SflowcollectorsPut(ctx).SflowcollectorsPutRequest(*request.(*openapi.SflowcollectorsPutRequest))
+		return req.Execute()
+	case "diagnostics_profile":
+		req := g.client.DiagnosticsProfilesAPI.DiagnosticsprofilesPut(ctx).DiagnosticsprofilesPutRequest(*request.(*openapi.DiagnosticsprofilesPutRequest))
+		return req.Execute()
+	case "diagnostics_port_profile":
+		req := g.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesPut(ctx).DiagnosticsportprofilesPutRequest(*request.(*openapi.DiagnosticsportprofilesPutRequest))
+		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
 	}
@@ -2788,6 +2998,15 @@ func (g *GenericAPIClient) Patch(ctx context.Context, request interface{}) (*htt
 	case "port_acl":
 		req := g.client.PortACLsAPI.PortaclsPatch(ctx).PortaclsPutRequest(*request.(*openapi.PortaclsPutRequest))
 		return req.Execute()
+	case "sflow_collector":
+		req := g.client.SFlowCollectorsAPI.SflowcollectorsPatch(ctx).SflowcollectorsPutRequest(*request.(*openapi.SflowcollectorsPutRequest))
+		return req.Execute()
+	case "diagnostics_profile":
+		req := g.client.DiagnosticsProfilesAPI.DiagnosticsprofilesPatch(ctx).DiagnosticsprofilesPutRequest(*request.(*openapi.DiagnosticsprofilesPutRequest))
+		return req.Execute()
+	case "diagnostics_port_profile":
+		req := g.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesPatch(ctx).DiagnosticsportprofilesPutRequest(*request.(*openapi.DiagnosticsportprofilesPutRequest))
+		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
 	}
@@ -2884,6 +3103,15 @@ func (g *GenericAPIClient) Delete(ctx context.Context, names []string) (*http.Re
 		return req.Execute()
 	case "port_acl":
 		req := g.client.PortACLsAPI.PortaclsDelete(ctx).PortAclName(names)
+		return req.Execute()
+	case "sflow_collector":
+		req := g.client.SFlowCollectorsAPI.SflowcollectorsDelete(ctx).SflowCollectorName(names)
+		return req.Execute()
+	case "diagnostics_profile":
+		req := g.client.DiagnosticsProfilesAPI.DiagnosticsprofilesDelete(ctx).DiagnosticsProfileName(names)
+		return req.Execute()
+	case "diagnostics_port_profile":
+		req := g.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesDelete(ctx).DiagnosticsPortProfileName(names)
 		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
@@ -2987,6 +3215,15 @@ func (g *GenericAPIClient) Get(ctx context.Context) (*http.Response, error) {
 		return req.Execute()
 	case "port_acl":
 		req := g.client.PortACLsAPI.PortaclsGet(ctx)
+		return req.Execute()
+	case "sflow_collector":
+		req := g.client.SFlowCollectorsAPI.SflowcollectorsGet(ctx)
+		return req.Execute()
+	case "diagnostics_profile":
+		req := g.client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(ctx)
+		return req.Execute()
+	case "diagnostics_port_profile":
+		req := g.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(ctx)
 		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
@@ -3627,6 +3864,42 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 			}
 			b.portAclPatch[resourceName] = props.(openapi.PortaclsPutRequestPortAclValue)
 		}
+	case "sflow_collector":
+		if operationType == "PUT" {
+			if b.sflowCollectorPut == nil {
+				b.sflowCollectorPut = make(map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue)
+			}
+			b.sflowCollectorPut[resourceName] = props.(openapi.SflowcollectorsPutRequestSflowCollectorValue)
+		} else {
+			if b.sflowCollectorPatch == nil {
+				b.sflowCollectorPatch = make(map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue)
+			}
+			b.sflowCollectorPatch[resourceName] = props.(openapi.SflowcollectorsPutRequestSflowCollectorValue)
+		}
+	case "diagnostics_profile":
+		if operationType == "PUT" {
+			if b.diagnosticsProfilePut == nil {
+				b.diagnosticsProfilePut = make(map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
+			}
+			b.diagnosticsProfilePut[resourceName] = props.(openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
+		} else {
+			if b.diagnosticsProfilePatch == nil {
+				b.diagnosticsProfilePatch = make(map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
+			}
+			b.diagnosticsProfilePatch[resourceName] = props.(openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
+		}
+	case "diagnostics_port_profile":
+		if operationType == "PUT" {
+			if b.diagnosticsPortProfilePut == nil {
+				b.diagnosticsPortProfilePut = make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
+			}
+			b.diagnosticsPortProfilePut[resourceName] = props.(openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
+		} else {
+			if b.diagnosticsPortProfilePatch == nil {
+				b.diagnosticsPortProfilePatch = make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
+			}
+			b.diagnosticsPortProfilePatch[resourceName] = props.(openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
+		}
 	}
 }
 
@@ -3692,6 +3965,12 @@ func (b *BulkOperationManager) getDeleteSlice(resourceType string) *[]string {
 		return &b.podDelete
 	case "port_acl":
 		return &b.portAclDelete
+	case "sflow_collector":
+		return &b.sflowCollectorDelete
+	case "diagnostics_profile":
+		return &b.diagnosticsProfileDelete
+	case "diagnostics_port_profile":
+		return &b.diagnosticsPortProfileDelete
 	}
 	return nil
 }
@@ -4206,6 +4485,48 @@ func (b *BulkOperationManager) getOriginalOperationMap(resourceType, operationTy
 			}
 			return result
 		}
+	case "sflow_collector":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.sflowCollectorPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.sflowCollectorPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "diagnostics_profile":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.diagnosticsProfilePut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.diagnosticsProfilePatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "diagnostics_port_profile":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.diagnosticsPortProfilePut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.diagnosticsPortProfilePatch {
+				result[k] = v
+			}
+			return result
+		}
 	}
 	return make(map[string]interface{})
 }
@@ -4401,6 +4722,24 @@ func (b *BulkOperationManager) clearOperationMap(resourceType, operationType str
 			b.portAclPut = make(map[string]openapi.PortaclsPutRequestPortAclValue)
 		} else {
 			b.portAclPatch = make(map[string]openapi.PortaclsPutRequestPortAclValue)
+		}
+	case "sflow_collector":
+		if operationType == "PUT" {
+			b.sflowCollectorPut = make(map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue)
+		} else {
+			b.sflowCollectorPatch = make(map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue)
+		}
+	case "diagnostics_profile":
+		if operationType == "PUT" {
+			b.diagnosticsProfilePut = make(map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
+		} else {
+			b.diagnosticsProfilePatch = make(map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
+		}
+	case "diagnostics_port_profile":
+		if operationType == "PUT" {
+			b.diagnosticsPortProfilePut = make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
+		} else {
+			b.diagnosticsPortProfilePatch = make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
 		}
 	}
 }
@@ -4893,6 +5232,51 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 					}
 					return result.PortAcl, nil
 
+				case "sflow_collector":
+					resp, err := b.client.SFlowCollectorsAPI.SflowcollectorsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						SflowCollector map[string]interface{} `json:"sflow_collector"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.SflowCollector, nil
+
+				case "diagnostics_profile":
+					resp, err := b.client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						DiagnosticsProfile map[string]interface{} `json:"diagnostics_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.DiagnosticsProfile, nil
+
+				case "diagnostics_port_profile":
+					resp, err := b.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						DiagnosticsPortProfile map[string]interface{} `json:"diagnostics_port_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.DiagnosticsPortProfile, nil
+
 				default:
 					// For unknown resource types, assume no existing resources to avoid errors
 					return make(map[string]interface{}), nil
@@ -5186,6 +5570,30 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 				portAclMap[name] = props.(openapi.PortaclsPutRequestPortAclValue)
 			}
 			putRequest.SetPortAcl(portAclMap)
+			return putRequest
+		case "sflow_collector":
+			putRequest := openapi.NewSflowcollectorsPutRequest()
+			sflowMap := make(map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue)
+			for name, props := range filteredData {
+				sflowMap[name] = props.(openapi.SflowcollectorsPutRequestSflowCollectorValue)
+			}
+			putRequest.SetSflowCollector(sflowMap)
+			return putRequest
+		case "diagnostics_profile":
+			putRequest := openapi.NewDiagnosticsprofilesPutRequest()
+			diagnosticsMap := make(map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
+			for name, props := range filteredData {
+				diagnosticsMap[name] = props.(openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
+			}
+			putRequest.SetDiagnosticsProfile(diagnosticsMap)
+			return putRequest
+		case "diagnostics_port_profile":
+			putRequest := openapi.NewDiagnosticsportprofilesPutRequest()
+			diagnosticsPortMap := make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
+			for name, props := range filteredData {
+				diagnosticsPortMap[name] = props.(openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
+			}
+			putRequest.SetDiagnosticsPortProfile(diagnosticsPortMap)
 			return putRequest
 		}
 		return nil
@@ -5484,6 +5892,15 @@ func (b *BulkOperationManager) createRecentOpsUpdater(resourceType string) func(
 		case "port_acl":
 			b.recentPortAclOps = true
 			b.recentPortAclOpTime = now
+		case "sflow_collector":
+			b.recentSflowCollectorOps = true
+			b.recentSflowCollectorOpTime = now
+		case "diagnostics_profile":
+			b.recentDiagnosticsProfileOps = true
+			b.recentDiagnosticsProfileOpTime = now
+		case "diagnostics_port_profile":
+			b.recentDiagnosticsPortProfileOps = true
+			b.recentDiagnosticsPortProfileOpTime = now
 		}
 	}
 }
