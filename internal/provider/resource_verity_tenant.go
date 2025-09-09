@@ -850,8 +850,8 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", state.Name.ValueString()); exists {
-			// Use the cached data from the API response
-			updatedState := populateTenantState(ctx, minState, tenantData, nil)
+			// Use the cached data from the API response with plan values as fallback
+			updatedState := populateTenantState(ctx, minState, tenantData, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &updatedState)...)
 			return
 		}
@@ -911,14 +911,12 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	state.Name = types.StringValue(fmt.Sprintf("%v", tenantData["name"]))
 
 	// For each field, check if it's in the API response first,
-	// if not and we have a plan value, use that instead of null
+	// if not: use plan value (if plan provided and not null), otherwise preserve current state value
 
 	if val, ok := tenantData["enable"].(bool); ok {
 		state.Enable = types.BoolValue(val)
 	} else if plan != nil && !plan.Enable.IsNull() {
 		state.Enable = plan.Enable
-	} else {
-		state.Enable = types.BoolNull()
 	}
 
 	if op, ok := tenantData["object_properties"].(map[string]interface{}); ok {
@@ -929,8 +927,6 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 		}
 	} else if plan != nil && len(plan.ObjectProperties) > 0 {
 		state.ObjectProperties = plan.ObjectProperties
-	} else {
-		state.ObjectProperties = nil
 	}
 
 	if val, ok := tenantData["layer_3_vni"]; ok {
@@ -947,23 +943,17 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 			default:
 				if plan != nil && !plan.Layer3Vni.IsNull() {
 					state.Layer3Vni = plan.Layer3Vni
-				} else {
-					state.Layer3Vni = types.Int64Null()
 				}
 			}
 		}
 	} else if plan != nil && !plan.Layer3Vni.IsNull() {
 		state.Layer3Vni = plan.Layer3Vni
-	} else {
-		state.Layer3Vni = types.Int64Null()
 	}
 
 	if val, ok := tenantData["layer_3_vni_auto_assigned_"].(bool); ok {
 		state.Layer3VniAutoAssigned = types.BoolValue(val)
 	} else if plan != nil && !plan.Layer3VniAutoAssigned.IsNull() {
 		state.Layer3VniAutoAssigned = plan.Layer3VniAutoAssigned
-	} else {
-		state.Layer3VniAutoAssigned = types.BoolNull()
 	}
 
 	if val, ok := tenantData["layer_3_vlan"]; ok {
@@ -980,8 +970,6 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 			default:
 				if plan != nil && !plan.Layer3Vlan.IsNull() {
 					state.Layer3Vlan = plan.Layer3Vlan
-				} else {
-					state.Layer3Vlan = types.Int64Null()
 				}
 			}
 		}
@@ -991,8 +979,6 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 		state.Layer3VlanAutoAssigned = types.BoolValue(val)
 	} else if plan != nil && !plan.Layer3VlanAutoAssigned.IsNull() {
 		state.Layer3VlanAutoAssigned = plan.Layer3VlanAutoAssigned
-	} else {
-		state.Layer3VlanAutoAssigned = types.BoolNull()
 	}
 
 	if val, ok := tenantData["vrf_name"].(string); ok {
@@ -1001,24 +987,18 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 		state.VrfName = types.StringValue("")
 	} else if plan != nil && !plan.VrfName.IsNull() {
 		state.VrfName = plan.VrfName
-	} else {
-		state.VrfName = types.StringNull()
 	}
 
 	if val, ok := tenantData["vrf_name_auto_assigned_"].(bool); ok {
 		state.VrfNameAutoAssigned = types.BoolValue(val)
 	} else if plan != nil && !plan.VrfNameAutoAssigned.IsNull() {
 		state.VrfNameAutoAssigned = plan.VrfNameAutoAssigned
-	} else {
-		state.VrfNameAutoAssigned = types.BoolNull()
 	}
 
 	if val, ok := tenantData["default_originate"].(bool); ok {
 		state.DefaultOriginate = types.BoolValue(val)
 	} else if plan != nil && !plan.DefaultOriginate.IsNull() {
 		state.DefaultOriginate = plan.DefaultOriginate
-	} else {
-		state.DefaultOriginate = types.BoolNull()
 	}
 
 	stringFields := map[string]*types.String{
@@ -1040,54 +1020,36 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 			case "dhcp_relay_source_ips_subnet":
 				if !plan.DhcpRelaySourceIpsSubnet.IsNull() {
 					*stateField = plan.DhcpRelaySourceIpsSubnet
-				} else {
-					*stateField = types.StringNull()
 				}
 			case "route_distinguisher":
 				if !plan.RouteDistinguisher.IsNull() {
 					*stateField = plan.RouteDistinguisher
-				} else {
-					*stateField = types.StringNull()
 				}
 			case "route_target_import":
 				if !plan.RouteTargetImport.IsNull() {
 					*stateField = plan.RouteTargetImport
-				} else {
-					*stateField = types.StringNull()
 				}
 			case "route_target_export":
 				if !plan.RouteTargetExport.IsNull() {
 					*stateField = plan.RouteTargetExport
-				} else {
-					*stateField = types.StringNull()
 				}
 			case "import_route_map":
 				if !plan.ImportRouteMap.IsNull() {
 					*stateField = plan.ImportRouteMap
-				} else {
-					*stateField = types.StringNull()
 				}
 			case "import_route_map_ref_type_":
 				if !plan.ImportRouteMapRefType.IsNull() {
 					*stateField = plan.ImportRouteMapRefType
-				} else {
-					*stateField = types.StringNull()
 				}
 			case "export_route_map":
 				if !plan.ExportRouteMap.IsNull() {
 					*stateField = plan.ExportRouteMap
-				} else {
-					*stateField = types.StringNull()
 				}
 			case "export_route_map_ref_type_":
 				if !plan.ExportRouteMapRefType.IsNull() {
 					*stateField = plan.ExportRouteMapRefType
-				} else {
-					*stateField = types.StringNull()
 				}
 			}
-		} else {
-			*stateField = types.StringNull()
 		}
 	}
 
@@ -1119,8 +1081,6 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 		state.RouteTenants = routeTenants
 	} else if plan != nil && len(plan.RouteTenants) > 0 {
 		state.RouteTenants = plan.RouteTenants
-	} else {
-		state.RouteTenants = nil
 	}
 
 	return state

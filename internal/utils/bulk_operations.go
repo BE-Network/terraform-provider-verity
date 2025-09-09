@@ -2810,7 +2810,7 @@ func (b *BulkOperationManager) ExecuteBulkTenantPatch(ctx context.Context) diag.
 	}
 	patchRequest.SetTenant(tenantMap)
 	retryConfig := DefaultRetryConfig()
-	var err error
+	var patchErr error
 
 	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
 		if retry > 0 {
@@ -2828,18 +2828,69 @@ func (b *BulkOperationManager) ExecuteBulkTenantPatch(ctx context.Context) diag.
 		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
 
 		req := b.client.TenantsAPI.TenantsPatch(apiCtx).TenantsPutRequest(*patchRequest)
-		_, err = req.Execute()
+		apiResp, err := req.Execute()
 
 		// Release the API call context
 		cancel()
 
 		if err == nil {
+			patchErr = nil
 			tflog.Debug(ctx, "Bulk Tenant PATCH operation successful", map[string]interface{}{
 				"count": len(tenantPatch),
 			})
+
+			// Fetch updated tenant data to capture any auto-assigned field changes
+			if apiResp != nil {
+				apiResp.Body.Close()
+			}
+
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching tenants", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching tenants after successful PATCH operation to retrieve current values")
+			tenantsReq := b.client.TenantsAPI.TenantsGet(fetchCtx)
+			tenantsResp, fetchErr := tenantsReq.Execute()
+
+			if fetchErr == nil {
+				defer tenantsResp.Body.Close()
+
+				var tenantsData struct {
+					Tenant map[string]map[string]interface{} `json:"tenant"`
+				}
+
+				if respErr := json.NewDecoder(tenantsResp.Body).Decode(&tenantsData); respErr == nil {
+					b.tenantResponsesMutex.Lock()
+					for tenantName, tenantData := range tenantsData.Tenant {
+						b.tenantResponses[tenantName] = tenantData
+
+						if name, ok := tenantData["name"].(string); ok && name != tenantName {
+							b.tenantResponses[name] = tenantData
+						}
+					}
+					b.tenantResponsesMutex.Unlock()
+
+					tflog.Debug(ctx, "Successfully stored tenant data for current field values after PATCH", map[string]interface{}{
+						"tenant_count": len(tenantsData.Tenant),
+					})
+				} else {
+					tflog.Error(ctx, "Failed to decode tenants response for current field values after PATCH", map[string]interface{}{
+						"error": respErr.Error(),
+					})
+				}
+			} else {
+				tflog.Error(ctx, "Failed to fetch tenants after PATCH for current field values", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+			}
+
 			break
 		}
 
+		patchErr = err
 		if !IsRetriableError(err) {
 			tflog.Error(ctx, "Bulk Tenant PATCH operation failed with non-retriable error", map[string]interface{}{
 				"error": err.Error(),
@@ -2857,7 +2908,7 @@ func (b *BulkOperationManager) ExecuteBulkTenantPatch(ctx context.Context) diag.
 		if op.ResourceType == "tenant" && op.OperationType == "PATCH" {
 			// Check if this operation's tenant name is in our batch
 			if _, exists := tenantPatch[op.ResourceName]; exists {
-				if err == nil {
+				if patchErr == nil {
 					// Mark operation as successful
 					updatedOp := op
 					updatedOp.Status = OperationSucceeded
@@ -2870,9 +2921,9 @@ func (b *BulkOperationManager) ExecuteBulkTenantPatch(ctx context.Context) diag.
 					// Mark operation as failed
 					updatedOp := op
 					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
+					updatedOp.Error = patchErr
 					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
+					b.operationErrors[opID] = patchErr
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
@@ -2882,10 +2933,10 @@ func (b *BulkOperationManager) ExecuteBulkTenantPatch(ctx context.Context) diag.
 		}
 	}
 
-	if err != nil {
+	if patchErr != nil {
 		diagnostics.AddError(
 			"Failed to execute bulk Tenant PATCH operation",
-			fmt.Sprintf("Error: %s", err),
+			fmt.Sprintf("Error: %s", patchErr),
 		)
 		return diagnostics
 	}
@@ -3398,7 +3449,7 @@ func (b *BulkOperationManager) ExecuteBulkServicePatch(ctx context.Context) diag
 	}
 	patchRequest.SetService(serviceMap)
 	retryConfig := DefaultRetryConfig()
-	var err error
+	var patchErr error
 
 	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
 		if retry > 0 {
@@ -3416,18 +3467,69 @@ func (b *BulkOperationManager) ExecuteBulkServicePatch(ctx context.Context) diag
 		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
 
 		req := b.client.ServicesAPI.ServicesPatch(apiCtx).ServicesPutRequest(*patchRequest)
-		_, err = req.Execute()
+		apiResp, err := req.Execute()
 
 		// Release the API call context
 		cancel()
 
 		if err == nil {
+			patchErr = nil
 			tflog.Debug(ctx, "Bulk Service PATCH operation successful", map[string]interface{}{
 				"count": len(servicePatch),
 			})
+
+			// Fetch updated service data to capture any auto-assigned field changes
+			if apiResp != nil {
+				apiResp.Body.Close()
+			}
+
+			delayTime := 2 * time.Second
+			tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching services", delayTime))
+			time.Sleep(delayTime)
+
+			fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
+			defer fetchCancel()
+
+			tflog.Debug(ctx, "Fetching services after successful PATCH operation to retrieve auto-generated values")
+			servicesReq := b.client.ServicesAPI.ServicesGet(fetchCtx)
+			servicesResp, fetchErr := servicesReq.Execute()
+
+			if fetchErr == nil {
+				defer servicesResp.Body.Close()
+
+				var servicesData struct {
+					Service map[string]map[string]interface{} `json:"service"`
+				}
+
+				if respErr := json.NewDecoder(servicesResp.Body).Decode(&servicesData); respErr == nil {
+					b.serviceResponsesMutex.Lock()
+					for serviceName, serviceData := range servicesData.Service {
+						b.serviceResponses[serviceName] = serviceData
+
+						if name, ok := serviceData["name"].(string); ok && name != serviceName {
+							b.serviceResponses[name] = serviceData
+						}
+					}
+					b.serviceResponsesMutex.Unlock()
+
+					tflog.Debug(ctx, "Successfully stored service data for auto-generated fields after PATCH", map[string]interface{}{
+						"service_count": len(servicesData.Service),
+					})
+				} else {
+					tflog.Error(ctx, "Failed to decode services response for auto-generated fields after PATCH", map[string]interface{}{
+						"error": respErr.Error(),
+					})
+				}
+			} else {
+				tflog.Error(ctx, "Failed to fetch services after PATCH for auto-generated fields", map[string]interface{}{
+					"error": fetchErr.Error(),
+				})
+			}
+
 			break
 		}
 
+		patchErr = err
 		if !IsRetriableError(err) {
 			tflog.Error(ctx, "Bulk Service PATCH operation failed with non-retriable error", map[string]interface{}{
 				"error": err.Error(),
@@ -3445,7 +3547,7 @@ func (b *BulkOperationManager) ExecuteBulkServicePatch(ctx context.Context) diag
 		if op.ResourceType == "service" && op.OperationType == "PATCH" {
 			// Check if this operation's service name is in our batch
 			if _, exists := servicePatch[op.ResourceName]; exists {
-				if err == nil {
+				if patchErr == nil {
 					// Mark operation as successful
 					updatedOp := op
 					updatedOp.Status = OperationSucceeded
@@ -3458,9 +3560,9 @@ func (b *BulkOperationManager) ExecuteBulkServicePatch(ctx context.Context) diag
 					// Mark operation as failed
 					updatedOp := op
 					updatedOp.Status = OperationFailed
-					updatedOp.Error = err
+					updatedOp.Error = patchErr
 					b.pendingOperations[opID] = updatedOp
-					b.operationErrors[opID] = err
+					b.operationErrors[opID] = patchErr
 					b.operationResults[opID] = false
 
 					// Signal waiting resources with the error
@@ -3470,10 +3572,10 @@ func (b *BulkOperationManager) ExecuteBulkServicePatch(ctx context.Context) diag
 		}
 	}
 
-	if err != nil {
+	if patchErr != nil {
 		diagnostics.AddError(
 			"Failed to execute bulk Service PATCH operation",
-			fmt.Sprintf("Error: %s", err),
+			fmt.Sprintf("Error: %s", patchErr),
 		)
 		return diagnostics
 	}

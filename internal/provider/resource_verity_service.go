@@ -551,8 +551,8 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
-			// Use the cached data from the API response
-			state := populateServiceState(ctx, minState, serviceData, nil)
+			// Use the cached data from the API response with plan values as fallback
+			state := populateServiceState(ctx, minState, serviceData, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -612,14 +612,12 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	state.Name = types.StringValue(fmt.Sprintf("%v", serviceData["name"]))
 
 	// For each field, check if it's in the API response first,
-	// if not and we have a plan value, use that instead of null
+	// if not: use plan value (if plan provided and not null), otherwise preserve current state value
 
 	if val, ok := serviceData["enable"].(bool); ok {
 		state.Enable = types.BoolValue(val)
 	} else if plan != nil && !plan.Enable.IsNull() {
 		state.Enable = plan.Enable
-	} else {
-		state.Enable = types.BoolNull()
 	}
 
 	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
@@ -643,14 +641,10 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		default:
 			if plan != nil && !plan.Vlan.IsNull() {
 				state.Vlan = plan.Vlan
-			} else {
-				state.Vlan = types.Int64Null()
 			}
 		}
 	} else if plan != nil && !plan.Vlan.IsNull() {
 		state.Vlan = plan.Vlan
-	} else {
-		state.Vlan = types.Int64Null()
 	}
 
 	if val, ok := serviceData["vni"]; ok {
@@ -667,15 +661,11 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 			default:
 				if plan != nil && !plan.Vni.IsNull() {
 					state.Vni = plan.Vni
-				} else {
-					state.Vni = types.Int64Null()
 				}
 			}
 		}
 	} else if plan != nil && !plan.Vni.IsNull() {
 		state.Vni = plan.Vni
-	} else {
-		state.Vni = types.Int64Null()
 	}
 
 	if val, ok := serviceData["vni_auto_assigned_"].(bool); ok {
