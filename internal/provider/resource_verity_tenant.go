@@ -109,21 +109,21 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Default:     booldefault.StaticBool(false),
 			},
 			"layer_3_vni": schema.Int64Attribute{
-				Description: "VNI value used to transport traffic between services of a Tenant",
+				Description: "VNI value used to transport traffic between services of a Tenant. This field should not be specified when 'layer_3_vni_auto_assigned_' is set to true, as the API will assign this value automatically.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"layer_3_vni_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether or not the value in layer_3_vni field has been automatically assigned",
+				Description: "Whether the Layer 3 VNI value should be automatically assigned by the API. When set to true, do not specify the 'layer_3_vni' field in your configuration.",
 				Optional:    true,
 			},
 			"layer_3_vlan": schema.Int64Attribute{
-				Description: "VLAN value used to transport traffic between services of a Tenant",
+				Description: "VLAN value used to transport traffic between services of a Tenant. This field should not be specified when 'layer_3_vlan_auto_assigned_' is set to true, as the API will assign this value automatically.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"layer_3_vlan_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether or not the value in layer_3_vlan field has been automatically assigned",
+				Description: "Whether the Layer 3 VLAN value should be automatically assigned by the API. When set to true, do not specify the 'layer_3_vlan' field in your configuration.",
 				Optional:    true,
 			},
 			"dhcp_relay_source_ips_subnet": schema.StringAttribute{
@@ -159,12 +159,12 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 			},
 			"vrf_name": schema.StringAttribute{
-				Description: "Virtual Routing and Forwarding instance name",
+				Description: "Virtual Routing and Forwarding instance name. This field should not be specified when 'vrf_name_auto_assigned_' is set to true, as the API will assign this value automatically.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"vrf_name_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether or not the value in vrf_name field has been automatically assigned",
+				Description: "Whether the VRF name should be automatically assigned by the API. When set to true, do not specify the 'vrf_name' field in your configuration.",
 				Optional:    true,
 			},
 			"default_originate": schema.BoolAttribute{
@@ -213,6 +213,37 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	// Validate auto-assigned field specifications
+	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
+		if !plan.Layer3Vni.IsNull() && !plan.Layer3Vni.IsUnknown() {
+			resp.Diagnostics.AddError(
+				"Layer 3 VNI cannot be specified when auto-assigned",
+				"The 'layer_3_vni' field cannot be specified in the configuration when 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
+		if !plan.Layer3Vlan.IsNull() && !plan.Layer3Vlan.IsUnknown() {
+			resp.Diagnostics.AddError(
+				"Layer 3 VLAN cannot be specified when auto-assigned",
+				"The 'layer_3_vlan' field cannot be specified in the configuration when 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
+		if !plan.VrfName.IsNull() && !plan.VrfName.IsUnknown() && plan.VrfName.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"VRF name cannot be specified when auto-assigned",
+				"The 'vrf_name' field cannot be specified in the configuration when 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
 	}
 
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
@@ -489,7 +520,8 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	if !plan.Layer3Vni.Equal(state.Layer3Vni) && !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
+	// Check for auto-assigned field modifications, but allow when fields are unknown (expecting API to set them)
+	if !plan.Layer3Vni.IsUnknown() && !plan.Layer3Vni.Equal(state.Layer3Vni) && !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'layer_3_vni' field cannot be modified because 'layer_3_vni_auto_assigned_' is set to true.",
@@ -497,7 +529,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	if !plan.Layer3Vlan.Equal(state.Layer3Vlan) && !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
+	if !plan.Layer3Vlan.IsUnknown() && !plan.Layer3Vlan.Equal(state.Layer3Vlan) && !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'layer_3_vlan' field cannot be modified because 'layer_3_vlan_auto_assigned_' is set to true.",
@@ -505,7 +537,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	if !plan.VrfName.Equal(state.VrfName) && !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
+	if !plan.VrfName.IsUnknown() && !plan.VrfName.Equal(state.VrfName) && !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'vrf_name' field cannot be modified because 'vrf_name_auto_assigned_' is set to true.",
@@ -544,69 +576,181 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	if !plan.Layer3Vni.Equal(state.Layer3Vni) {
-		if !plan.Layer3Vni.IsNull() {
-			val := int32(plan.Layer3Vni.ValueInt64())
-			tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
-		} else {
-			tenantReq.Layer3Vni = *openapi.NewNullableInt32(nil)
+	// Handle Layer3Vni and Layer3VniAutoAssigned changes in a coordinated way
+	layer3VniChanged := !plan.Layer3Vni.IsUnknown() && !plan.Layer3Vni.Equal(state.Layer3Vni)
+	layer3VniAutoAssignedChanged := !plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned)
+
+	if layer3VniChanged || layer3VniAutoAssignedChanged {
+		// Handle Layer3Vni field changes
+		if layer3VniChanged {
+			if !plan.Layer3Vni.IsNull() {
+				val := int32(plan.Layer3Vni.ValueInt64())
+				tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
+			} else {
+				tenantReq.Layer3Vni = *openapi.NewNullableInt32(nil)
+			}
 		}
-		if plan.Layer3VniAutoAssigned.IsNull() {
-			if !state.Layer3VniAutoAssigned.IsNull() {
+
+		// Handle Layer3VniAutoAssigned field changes
+		if layer3VniAutoAssignedChanged {
+			// Only send layer_3_vni_auto_assigned_ if the user has explicitly specified it in their configuration
+			var config verityTenantResourceModel
+			userSpecifiedLayer3VniAutoAssigned := false
+			if !req.Config.Raw.IsNull() {
+				if err := req.Config.Get(ctx, &config); err == nil {
+					userSpecifiedLayer3VniAutoAssigned = !config.Layer3VniAutoAssigned.IsNull()
+				}
+			}
+
+			if userSpecifiedLayer3VniAutoAssigned {
+				tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(plan.Layer3VniAutoAssigned.ValueBool())
+
+				// Special case: When changing from auto-assigned (true) to manual (false),
+				// the API requires both layer_3_vni_auto_assigned_ and layer_3_vni fields to be sent.
+				if !state.Layer3VniAutoAssigned.IsNull() && state.Layer3VniAutoAssigned.ValueBool() &&
+					!plan.Layer3VniAutoAssigned.ValueBool() {
+					// Changing from auto-assigned=true to auto-assigned=false
+					// Must include Layer3Vni value in the request for the change to take effect
+					if !plan.Layer3Vni.IsNull() {
+						val := int32(plan.Layer3Vni.ValueInt64())
+						tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
+					} else if !state.Layer3Vni.IsNull() {
+						// Use current state Layer3Vni if plan doesn't specify one
+						val := int32(state.Layer3Vni.ValueInt64())
+						tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
+					}
+				}
+			}
+		} else if layer3VniChanged {
+			// Layer3Vni changed but Layer3VniAutoAssigned didn't change
+			// Send the auto-assigned flag to maintain consistency with API
+			if !plan.Layer3VniAutoAssigned.IsNull() {
+				tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(plan.Layer3VniAutoAssigned.ValueBool())
+			} else if !state.Layer3VniAutoAssigned.IsNull() {
 				tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(state.Layer3VniAutoAssigned.ValueBool())
 			} else {
 				tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(false)
 			}
 		}
+
 		hasChanges = true
-	} else if !plan.Layer3VniAutoAssigned.IsNull() {
-		if !plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned) {
-			tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(plan.Layer3VniAutoAssigned.ValueBool())
-			hasChanges = true
-		}
 	}
 
-	if !plan.Layer3Vlan.Equal(state.Layer3Vlan) {
-		if !plan.Layer3Vlan.IsNull() {
-			val := int32(plan.Layer3Vlan.ValueInt64())
-			tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
-		} else {
-			tenantReq.Layer3Vlan = *openapi.NewNullableInt32(nil)
+	// Handle Layer3Vlan and Layer3VlanAutoAssigned changes in a coordinated way
+	layer3VlanChanged := !plan.Layer3Vlan.IsUnknown() && !plan.Layer3Vlan.Equal(state.Layer3Vlan)
+	layer3VlanAutoAssignedChanged := !plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned)
+
+	if layer3VlanChanged || layer3VlanAutoAssignedChanged {
+		// Handle Layer3Vlan field changes
+		if layer3VlanChanged {
+			if !plan.Layer3Vlan.IsNull() {
+				val := int32(plan.Layer3Vlan.ValueInt64())
+				tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
+			} else {
+				tenantReq.Layer3Vlan = *openapi.NewNullableInt32(nil)
+			}
 		}
-		if plan.Layer3VlanAutoAssigned.IsNull() {
-			if !state.Layer3VlanAutoAssigned.IsNull() {
+
+		// Handle Layer3VlanAutoAssigned field changes
+		if layer3VlanAutoAssignedChanged {
+			// Only send layer_3_vlan_auto_assigned_ if the user has explicitly specified it in their configuration
+			var config verityTenantResourceModel
+			userSpecifiedLayer3VlanAutoAssigned := false
+			if !req.Config.Raw.IsNull() {
+				if err := req.Config.Get(ctx, &config); err == nil {
+					userSpecifiedLayer3VlanAutoAssigned = !config.Layer3VlanAutoAssigned.IsNull()
+				}
+			}
+
+			if userSpecifiedLayer3VlanAutoAssigned {
+				tenantReq.Layer3VlanAutoAssigned = openapi.PtrBool(plan.Layer3VlanAutoAssigned.ValueBool())
+
+				// Special case: When changing from auto-assigned (true) to manual (false),
+				// the API requires both layer_3_vlan_auto_assigned_ and layer_3_vlan fields to be sent.
+				if !state.Layer3VlanAutoAssigned.IsNull() && state.Layer3VlanAutoAssigned.ValueBool() &&
+					!plan.Layer3VlanAutoAssigned.ValueBool() {
+					// Changing from auto-assigned=true to auto-assigned=false
+					// Must include Layer3Vlan value in the request for the change to take effect
+					if !plan.Layer3Vlan.IsNull() {
+						val := int32(plan.Layer3Vlan.ValueInt64())
+						tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
+					} else if !state.Layer3Vlan.IsNull() {
+						// Use current state Layer3Vlan if plan doesn't specify one
+						val := int32(state.Layer3Vlan.ValueInt64())
+						tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
+					}
+				}
+			}
+		} else if layer3VlanChanged {
+			// Layer3Vlan changed but Layer3VlanAutoAssigned didn't change
+			// Send the auto-assigned flag to maintain consistency with API
+			if !plan.Layer3VlanAutoAssigned.IsNull() {
+				tenantReq.Layer3VlanAutoAssigned = openapi.PtrBool(plan.Layer3VlanAutoAssigned.ValueBool())
+			} else if !state.Layer3VlanAutoAssigned.IsNull() {
 				tenantReq.Layer3VlanAutoAssigned = openapi.PtrBool(state.Layer3VlanAutoAssigned.ValueBool())
 			} else {
 				tenantReq.Layer3VlanAutoAssigned = openapi.PtrBool(false)
 			}
 		}
+
 		hasChanges = true
-	} else if !plan.Layer3VlanAutoAssigned.IsNull() {
-		if !plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned) {
-			tenantReq.Layer3VlanAutoAssigned = openapi.PtrBool(plan.Layer3VlanAutoAssigned.ValueBool())
-			hasChanges = true
-		}
 	}
 
-	if !plan.VrfName.Equal(state.VrfName) {
-		if !plan.VrfName.IsNull() && plan.VrfName.ValueString() != "" {
-			tenantReq.VrfName = openapi.PtrString(plan.VrfName.ValueString())
-		} else {
-			tenantReq.VrfName = openapi.PtrString("")
+	// Handle VrfName and VrfNameAutoAssigned changes in a coordinated way
+	vrfNameChanged := !plan.VrfName.IsUnknown() && !plan.VrfName.Equal(state.VrfName)
+	vrfNameAutoAssignedChanged := !plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned)
+
+	if vrfNameChanged || vrfNameAutoAssignedChanged {
+		// Handle VrfName field changes
+		if vrfNameChanged {
+			if !plan.VrfName.IsNull() && plan.VrfName.ValueString() != "" {
+				tenantReq.VrfName = openapi.PtrString(plan.VrfName.ValueString())
+			} else {
+				tenantReq.VrfName = openapi.PtrString("")
+			}
 		}
-		if plan.VrfNameAutoAssigned.IsNull() {
-			if !state.VrfNameAutoAssigned.IsNull() {
+
+		// Handle VrfNameAutoAssigned field changes
+		if vrfNameAutoAssignedChanged {
+			// Only send vrf_name_auto_assigned_ if the user has explicitly specified it in their configuration
+			var config verityTenantResourceModel
+			userSpecifiedVrfNameAutoAssigned := false
+			if !req.Config.Raw.IsNull() {
+				if err := req.Config.Get(ctx, &config); err == nil {
+					userSpecifiedVrfNameAutoAssigned = !config.VrfNameAutoAssigned.IsNull()
+				}
+			}
+
+			if userSpecifiedVrfNameAutoAssigned {
+				tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
+
+				// Special case: When changing from auto-assigned (true) to manual (false),
+				// the API requires both vrf_name_auto_assigned_ and vrf_name fields to be sent.
+				if !state.VrfNameAutoAssigned.IsNull() && state.VrfNameAutoAssigned.ValueBool() &&
+					!plan.VrfNameAutoAssigned.ValueBool() {
+					// Changing from auto-assigned=true to auto-assigned=false
+					// Must include VrfName value in the request for the change to take effect
+					if !plan.VrfName.IsNull() && plan.VrfName.ValueString() != "" {
+						tenantReq.VrfName = openapi.PtrString(plan.VrfName.ValueString())
+					} else if !state.VrfName.IsNull() && state.VrfName.ValueString() != "" {
+						// Use current state VrfName if plan doesn't specify one
+						tenantReq.VrfName = openapi.PtrString(state.VrfName.ValueString())
+					}
+				}
+			}
+		} else if vrfNameChanged {
+			// VrfName changed but VrfNameAutoAssigned didn't change
+			// Send the auto-assigned flag to maintain consistency with API
+			if !plan.VrfNameAutoAssigned.IsNull() {
+				tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
+			} else if !state.VrfNameAutoAssigned.IsNull() {
 				tenantReq.VrfNameAutoAssigned = openapi.PtrBool(state.VrfNameAutoAssigned.ValueBool())
 			} else {
 				tenantReq.VrfNameAutoAssigned = openapi.PtrBool(false)
 			}
 		}
+
 		hasChanges = true
-	} else if !plan.VrfNameAutoAssigned.IsNull() {
-		if !plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned) {
-			tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
-			hasChanges = true
-		}
 	}
 
 	if !plan.DhcpRelaySourceIpsSubnet.Equal(state.DhcpRelaySourceIpsSubnet) {
@@ -1098,6 +1242,46 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
+	// Validate auto-assigned field specifications in configuration
+	// Check the actual configuration, not the plan
+	var config verityTenantResourceModel
+	if !req.Config.Raw.IsNull() {
+		resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		if !config.Layer3VniAutoAssigned.IsNull() && config.Layer3VniAutoAssigned.ValueBool() {
+			if !config.Layer3Vni.IsNull() && !config.Layer3Vni.IsUnknown() {
+				resp.Diagnostics.AddError(
+					"Layer 3 VNI cannot be specified when auto-assigned",
+					"The 'layer_3_vni' field cannot be specified in the configuration when 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+
+		if !config.Layer3VlanAutoAssigned.IsNull() && config.Layer3VlanAutoAssigned.ValueBool() {
+			if !config.Layer3Vlan.IsNull() && !config.Layer3Vlan.IsUnknown() {
+				resp.Diagnostics.AddError(
+					"Layer 3 VLAN cannot be specified when auto-assigned",
+					"The 'layer_3_vlan' field cannot be specified in the configuration when 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+
+		if !config.VrfNameAutoAssigned.IsNull() && config.VrfNameAutoAssigned.ValueBool() {
+			if !config.VrfName.IsNull() && !config.VrfName.IsUnknown() && config.VrfName.ValueString() != "" {
+				resp.Diagnostics.AddError(
+					"VRF name cannot be specified when auto-assigned",
+					"The 'vrf_name' field cannot be specified in the configuration when 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+	}
+
 	// For new resources (where state is null)
 	if req.State.Raw.IsNull() {
 		if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
@@ -1129,6 +1313,70 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
+	// Handle auto-assigned field behavior for existing resources
+	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
+		if !plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned) {
+			// layer_3_vni_auto_assigned_ is changing to true, API will assign value
+			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), types.Int64Unknown())
+			resp.Diagnostics.AddWarning(
+				"Layer 3 VNI will be assigned by the API",
+				"The 'layer_3_vni' field will be automatically assigned by the API because 'layer_3_vni_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.Layer3Vni.Equal(state.Layer3Vni) {
+			// User tried to change Layer3Vni but it's auto-assigned
+			resp.Diagnostics.AddWarning(
+				"Ignoring layer_3_vni changes with auto-assignment enabled",
+				"The 'layer_3_vni' field changes will be ignored because 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			// Keep the current state value to suppress the diff
+			if !state.Layer3Vni.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), state.Layer3Vni)
+			}
+		}
+	}
+
+	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
+		if !plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned) {
+			// layer_3_vlan_auto_assigned_ is changing to true, API will assign value
+			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vlan"), types.Int64Unknown())
+			resp.Diagnostics.AddWarning(
+				"Layer 3 VLAN will be assigned by the API",
+				"The 'layer_3_vlan' field will be automatically assigned by the API because 'layer_3_vlan_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.Layer3Vlan.Equal(state.Layer3Vlan) {
+			// User tried to change Layer3Vlan but it's auto-assigned
+			resp.Diagnostics.AddWarning(
+				"Ignoring layer_3_vlan changes with auto-assignment enabled",
+				"The 'layer_3_vlan' field changes will be ignored because 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			// Keep the current state value to suppress the diff
+			if !state.Layer3Vlan.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("layer_3_vlan"), state.Layer3Vlan)
+			}
+		}
+	}
+
+	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
+		if !plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned) {
+			// vrf_name_auto_assigned_ is changing to true, API will assign value
+			resp.Plan.SetAttribute(ctx, path.Root("vrf_name"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"VRF name will be assigned by the API",
+				"The 'vrf_name' field will be automatically assigned by the API because 'vrf_name_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.VrfName.Equal(state.VrfName) {
+			// User tried to change VrfName but it's auto-assigned
+			resp.Diagnostics.AddWarning(
+				"Ignoring vrf_name changes with auto-assignment enabled",
+				"The 'vrf_name' field changes will be ignored because 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			// Keep the current state value to suppress the diff
+			if !state.VrfName.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("vrf_name"), state.VrfName)
+			}
+		}
+	}
+
 	// Check for ineffective changes to import_route_map_ref_type_
 	// Warn if import_route_map_ref_type_ is changing BUT import_route_map is empty and NOT changing.
 	if !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType) &&
@@ -1149,42 +1397,5 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 			"Ineffective change to export_route_map_ref_type_",
 			"The change to 'export_route_map_ref_type_' will likely be ignored by the API because 'export_route_map' is empty and not being changed. The API may require 'export_route_map' to have a value for 'export_route_map_ref_type_' to be effective.",
 		)
-	}
-
-	// Only show warning if layer_3_vni is actually changing AND auto-assignment is enabled
-	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() && !plan.Layer3Vni.Equal(state.Layer3Vni) {
-		resp.Diagnostics.AddWarning(
-			"Ignoring layer_3_vni changes with auto-assignment enabled",
-			"The 'layer_3_vni' field changes will be ignored because 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
-		)
-
-		// Use current state value to suppress the diff
-		if !state.Layer3Vni.IsNull() {
-			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), state.Layer3Vni)
-		}
-	}
-
-	// Only show warning if layer_3_vlan is actually changing AND auto-assignment is enabled
-	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() && !plan.Layer3Vlan.Equal(state.Layer3Vlan) {
-		resp.Diagnostics.AddWarning(
-			"Ignoring layer_3_vlan changes with auto-assignment enabled",
-			"The 'layer_3_vlan' field changes will be ignored because 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
-		)
-
-		if !state.Layer3Vlan.IsNull() {
-			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vlan"), state.Layer3Vlan)
-		}
-	}
-
-	// Only show warning if vrf_name is actually changing AND auto-assignment is enabled
-	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() && !plan.VrfName.Equal(state.VrfName) {
-		resp.Diagnostics.AddWarning(
-			"Ignoring vrf_name changes with auto-assignment enabled",
-			"The 'vrf_name' field changes will be ignored because 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
-		)
-
-		if !state.VrfName.IsNull() {
-			resp.Plan.SetAttribute(ctx, path.Root("vrf_name"), state.VrfName)
-		}
 	}
 }

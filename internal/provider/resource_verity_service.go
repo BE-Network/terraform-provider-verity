@@ -101,12 +101,12 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:    true,
 			},
 			"vni": schema.Int64Attribute{
-				Description: "Indication of the outgoing VLAN layer 2 service",
+				Description: "Indication of the outgoing VLAN layer 2 service. This field should not be specified when 'vni_auto_assigned_' is set to true, as the API will assign this value automatically. When specified, it represents an explicit VNI value.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"vni_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether or not the value in vni field has been automatically assigned or not.",
+				Description: "Whether the VNI value should be automatically assigned by the API. When set to true, do not specify the 'vni' field in your configuration. The API will assign the VNI value, typically as VLAN + 100000.",
 				Optional:    true,
 			},
 			"tenant": schema.StringAttribute{
@@ -152,6 +152,17 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	// Validate VNI specification when auto-assigned
+	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+		if !plan.Vni.IsNull() && !plan.Vni.IsUnknown() {
+			resp.Diagnostics.AddError(
+				"VNI cannot be specified when auto-assigned",
+				"The 'vni' field cannot be specified in the configuration when 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
 	}
 
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
@@ -397,7 +408,8 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	if !plan.Vni.Equal(state.Vni) && !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+	// Check for auto-assigned VNI modifications, but allow when VNI is unknown (expecting API to set it)
+	if !plan.Vni.IsUnknown() && !plan.Vni.Equal(state.Vni) && !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'vni' field cannot be modified because 'vni_auto_assigned_' is set to true.",
@@ -438,7 +450,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
-	if !plan.Vlan.Equal(state.Vlan) {
+	if !plan.Vlan.IsUnknown() && !plan.Vlan.Equal(state.Vlan) {
 		if !plan.Vlan.IsNull() {
 			vlanVal := int32(plan.Vlan.ValueInt64())
 			serviceReq.Vlan = *openapi.NewNullableInt32(&vlanVal)
@@ -448,18 +460,62 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
-	if !plan.Vni.Equal(state.Vni) {
-		if !plan.Vni.IsNull() {
-			vniVal := int32(plan.Vni.ValueInt64())
-			serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
-		} else {
-			serviceReq.Vni = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
+	// Handle VNI and VniAutoAssigned changes
+	vniChanged := !plan.Vni.IsUnknown() && !plan.Vni.Equal(state.Vni)
+	vniAutoAssignedChanged := !plan.VniAutoAssigned.Equal(state.VniAutoAssigned)
 
-	if !plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {
-		serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
+	if vniChanged || vniAutoAssignedChanged {
+		if vniChanged {
+			if !plan.Vni.IsNull() {
+				vniVal := int32(plan.Vni.ValueInt64())
+				serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+			} else {
+				serviceReq.Vni = *openapi.NewNullableInt32(nil)
+			}
+		}
+
+		if vniAutoAssignedChanged {
+			// Only send vni_auto_assigned_ if the user has explicitly specified it in their configuration
+			var config verityServiceResourceModel
+			userSpecifiedVniAutoAssigned := false
+			if !req.Config.Raw.IsNull() {
+				if err := req.Config.Get(ctx, &config); err == nil {
+					userSpecifiedVniAutoAssigned = !config.VniAutoAssigned.IsNull()
+				}
+			}
+
+			if userSpecifiedVniAutoAssigned {
+				serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
+
+				// Special case: When changing from auto-assigned (true) to manual (false),
+				// the API requires both vni_auto_assigned_ and vni fields to be sent.
+				// Otherwise, the vni_auto_assigned_ change will be ignored by the API.
+				if !state.VniAutoAssigned.IsNull() && state.VniAutoAssigned.ValueBool() &&
+					!plan.VniAutoAssigned.ValueBool() {
+					// Changing from auto-assigned=true to auto-assigned=false
+					// Must include VNI value in the request for the change to take effect
+					if !plan.Vni.IsNull() {
+						vniVal := int32(plan.Vni.ValueInt64())
+						serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+					} else if !state.Vni.IsNull() {
+						// Use current state VNI if plan doesn't specify one
+						vniVal := int32(state.Vni.ValueInt64())
+						serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+					}
+				}
+			}
+		} else if vniChanged {
+			// VNI changed but VniAutoAssigned didn't change
+			// Send the auto-assigned flag to maintain consistency with API
+			if !plan.VniAutoAssigned.IsNull() {
+				serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
+			} else if !state.VniAutoAssigned.IsNull() {
+				serviceReq.VniAutoAssigned = openapi.PtrBool(state.VniAutoAssigned.ValueBool())
+			} else {
+				serviceReq.VniAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+
 		hasChanges = true
 	}
 
@@ -639,11 +695,11 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		case int:
 			state.Vlan = types.Int64Value(int64(v))
 		default:
-			if plan != nil && !plan.Vlan.IsNull() {
+			if plan != nil && !plan.Vlan.IsNull() && !plan.Vlan.IsUnknown() {
 				state.Vlan = plan.Vlan
 			}
 		}
-	} else if plan != nil && !plan.Vlan.IsNull() {
+	} else if plan != nil && !plan.Vlan.IsNull() && !plan.Vlan.IsUnknown() {
 		state.Vlan = plan.Vlan
 	}
 
@@ -742,6 +798,26 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
+	// Validate VNI specification in configuration when auto-assigned
+	// Check the actual configuration, not the plan
+	var config verityServiceResourceModel
+	if !req.Config.Raw.IsNull() {
+		resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		if !config.VniAutoAssigned.IsNull() && config.VniAutoAssigned.ValueBool() {
+			if !config.Vni.IsNull() && !config.Vni.IsUnknown() {
+				resp.Diagnostics.AddError(
+					"VNI cannot be specified when auto-assigned",
+					"The 'vni' field cannot be specified in the configuration when 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+	}
+
 	// For new resources (where state is null)
 	if req.State.Raw.IsNull() {
 		if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
@@ -759,16 +835,52 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// Only show warning and suppress diff if auto-assignment is enabled AND the field is actually changing
-	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() && !plan.Vni.Equal(state.Vni) {
-		resp.Diagnostics.AddWarning(
-			"Ignoring vni changes with auto-assignment enabled",
-			"The 'vni' field changes will be ignored because 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
-		)
+	// Handle VNI behavior based on auto-assignment and VLAN changes
+	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+		if !plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {
+			// vni_auto_assigned_ is changing to true, API will assign VNI based on VLAN
+			// Only mark VNI as unknown, VLAN stays as configured
+			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
+			resp.Diagnostics.AddWarning(
+				"VNI will be assigned by the API",
+				"The 'vni' field will be automatically assigned by the API because 'vni_auto_assigned_' is being set to true. The API will assign VNI based on the VLAN value.",
+			)
+		} else if !plan.Vlan.Equal(state.Vlan) {
+			// VLAN is changing, so VNI will be auto-updated by API
+			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
+			resp.Diagnostics.AddWarning(
+				"VNI will be updated by the API",
+				"The 'vni' field will be automatically updated by the API because 'vni_auto_assigned_' is set to true and VLAN is changing.",
+			)
+		} else if !plan.Vni.Equal(state.Vni) {
+			// User tried to change VNI but it's auto-assigned
+			resp.Diagnostics.AddWarning(
+				"Ignoring vni changes with auto-assignment enabled",
+				"The 'vni' field changes will be ignored because 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			// Keep the current state value to suppress the diff
+			if !state.Vni.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("vni"), state.Vni)
+			}
+		}
+	} else if !plan.Vlan.Equal(state.Vlan) && plan.Vni.Equal(state.Vni) && (plan.VniAutoAssigned.IsNull() || !plan.VniAutoAssigned.ValueBool()) {
+		// VLAN is changing and VNI hasn't been explicitly changed by the user
+		// Only mark VNI as unknown when vni_auto_assigned_ is false
+		// AND the user hasn't explicitly specified VNI in their configuration
 
-		// Use current state value to suppress the diff
-		if !state.Vni.IsNull() {
-			resp.Plan.SetAttribute(ctx, path.Root("vni"), state.Vni)
+		// Check if user explicitly specified VNI in config
+		var config verityServiceResourceModel
+		hasExplicitVni := false
+		if !req.Config.Raw.IsNull() {
+			if err := req.Config.Get(ctx, &config); err == nil {
+				hasExplicitVni = !config.Vni.IsNull() && !config.Vni.IsUnknown()
+			}
+		}
+
+		// Only mark VNI as unknown if user hasn't explicitly specified it
+		if !hasExplicitVni {
+			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
+			tflog.Info(ctx, "Marking VNI as unknown due to VLAN change - API will determine the actual value")
 		}
 	}
 }
