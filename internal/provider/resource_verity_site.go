@@ -170,12 +170,12 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:    true,
 			},
 			"anycast_mac_address": schema.StringAttribute{
-				Description: "Site Level MAC Address for Anycast",
+				Description: "Anycast MAC address to use. This field should not be specified when 'anycast_mac_address_auto_assigned_' is set to true, as the API will assign this value automatically. Used for MAC VRRP.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"anycast_mac_address_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit.",
+				Description: "Whether the anycast MAC address should be automatically assigned by the API. When set to true, do not specify the 'anycast_mac_address' field in your configuration.",
 				Optional:    true,
 			},
 			"mac_address_aging_time": schema.Int64Attribute{
@@ -476,6 +476,9 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	// Validate auto-assigned fields - this check prevents ineffective API calls
+	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
+	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
+	// Don't error if the field is unknown (computed during plan recalculation)
 	if !plan.AnycastMacAddress.Equal(state.AnycastMacAddress) &&
 		!plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() &&
 		!plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() &&
@@ -623,13 +626,60 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 		hasChanges = true
 	}
 
-	if !plan.AnycastMacAddress.Equal(state.AnycastMacAddress) {
-		siteReq.AnycastMacAddress = openapi.PtrString(plan.AnycastMacAddress.ValueString())
-		hasChanges = true
-	}
+	// Handle AnycastMacAddress and AnycastMacAddressAutoAssigned changes in a coordinated way
+	anycastMacAddressChanged := !plan.AnycastMacAddress.IsUnknown() && !plan.AnycastMacAddress.Equal(state.AnycastMacAddress)
+	anycastMacAddressAutoAssignedChanged := !plan.AnycastMacAddressAutoAssigned.Equal(state.AnycastMacAddressAutoAssigned)
 
-	if !plan.AnycastMacAddressAutoAssigned.Equal(state.AnycastMacAddressAutoAssigned) {
-		siteReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
+	if anycastMacAddressChanged || anycastMacAddressAutoAssignedChanged {
+		// Handle AnycastMacAddress field changes
+		if anycastMacAddressChanged {
+			if !plan.AnycastMacAddress.IsNull() && plan.AnycastMacAddress.ValueString() != "" {
+				siteReq.AnycastMacAddress = openapi.PtrString(plan.AnycastMacAddress.ValueString())
+			} else {
+				siteReq.AnycastMacAddress = openapi.PtrString("")
+			}
+		}
+
+		// Handle AnycastMacAddressAutoAssigned field changes
+		if anycastMacAddressAutoAssignedChanged {
+			// Only send anycast_mac_address_auto_assigned_ if the user has explicitly specified it in their configuration
+			var config veritySiteResourceModel
+			userSpecifiedAnycastMacAddressAutoAssigned := false
+			if !req.Config.Raw.IsNull() {
+				if err := req.Config.Get(ctx, &config); err == nil {
+					userSpecifiedAnycastMacAddressAutoAssigned = !config.AnycastMacAddressAutoAssigned.IsNull()
+				}
+			}
+
+			if userSpecifiedAnycastMacAddressAutoAssigned {
+				siteReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
+
+				// Special case: When changing from auto-assigned (true) to manual (false),
+				// the API requires both anycast_mac_address_auto_assigned_ and anycast_mac_address fields to be sent.
+				if !state.AnycastMacAddressAutoAssigned.IsNull() && state.AnycastMacAddressAutoAssigned.ValueBool() &&
+					!plan.AnycastMacAddressAutoAssigned.ValueBool() {
+					// Changing from auto-assigned=true to auto-assigned=false
+					// Must include AnycastMacAddress value in the request for the change to take effect
+					if !plan.AnycastMacAddress.IsNull() && plan.AnycastMacAddress.ValueString() != "" {
+						siteReq.AnycastMacAddress = openapi.PtrString(plan.AnycastMacAddress.ValueString())
+					} else if !state.AnycastMacAddress.IsNull() && state.AnycastMacAddress.ValueString() != "" {
+						// Use current state AnycastMacAddress if plan doesn't specify one
+						siteReq.AnycastMacAddress = openapi.PtrString(state.AnycastMacAddress.ValueString())
+					}
+				}
+			}
+		} else if anycastMacAddressChanged {
+			// AnycastMacAddress changed but AnycastMacAddressAutoAssigned didn't change
+			// Send the auto-assigned flag to maintain consistency with API
+			if !plan.AnycastMacAddressAutoAssigned.IsNull() {
+				siteReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
+			} else if !state.AnycastMacAddressAutoAssigned.IsNull() {
+				siteReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(state.AnycastMacAddressAutoAssigned.ValueBool())
+			} else {
+				siteReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+
 		hasChanges = true
 	}
 
@@ -1008,7 +1058,7 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 
 	if val, ok := siteData["anycast_mac_address"].(string); ok {
 		state.AnycastMacAddress = types.StringValue(val)
-	} else if plan != nil && !plan.AnycastMacAddress.IsNull() {
+	} else if plan != nil && !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() {
 		state.AnycastMacAddress = plan.AnycastMacAddress
 	} else {
 		state.AnycastMacAddress = types.StringNull()
@@ -1531,13 +1581,30 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 		return
 	}
 
-	// For new resources (where state is null)
+	// Validate auto-assigned field specifications in configuration when auto-assigned
+	// Check the actual configuration, not the plan
+	var config veritySiteResourceModel
+	if !req.Config.Raw.IsNull() {
+		resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		if !config.AnycastMacAddressAutoAssigned.IsNull() && config.AnycastMacAddressAutoAssigned.ValueBool() {
+			if !config.AnycastMacAddress.IsNull() && !config.AnycastMacAddress.IsUnknown() && config.AnycastMacAddress.ValueString() != "" {
+				resp.Diagnostics.AddError(
+					"Anycast MAC Address cannot be specified when auto-assigned",
+					"The 'anycast_mac_address' field cannot be specified in the configuration when 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+	}
+
+	// For new resources (where state is null), mark auto-assigned fields as Unknown
 	if req.State.Raw.IsNull() {
 		if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
-			resp.Diagnostics.AddWarning(
-				"Anycast MAC Address will be assigned by the API",
-				"The 'anycast_mac_address' field value in your configuration will be ignored because 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
-			)
+			resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), types.StringUnknown())
 		}
 		return
 	}
@@ -1548,16 +1615,25 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 		return
 	}
 
-	// Only show warning and suppress diff if auto-assignment is enabled AND the field is actually changing
-	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() && !plan.AnycastMacAddress.Equal(state.AnycastMacAddress) {
-		resp.Diagnostics.AddWarning(
-			"Ignoring anycast_mac_address changes with auto-assignment enabled",
-			"The 'anycast_mac_address' field changes will be ignored because 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
-		)
-
-		// Use current state value to suppress the diff
-		if !state.AnycastMacAddress.IsNull() {
-			resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), state.AnycastMacAddress)
+	// Handle auto-assigned field behavior
+	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
+		if !plan.AnycastMacAddressAutoAssigned.Equal(state.AnycastMacAddressAutoAssigned) {
+			// anycast_mac_address_auto_assigned_ is changing to true, API will assign the value
+			resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"Anycast MAC Address will be assigned by the API",
+				"The 'anycast_mac_address' field will be automatically assigned by the API because 'anycast_mac_address_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.AnycastMacAddress.Equal(state.AnycastMacAddress) {
+			// User tried to change AnycastMacAddress but it's auto-assigned
+			resp.Diagnostics.AddWarning(
+				"Ignoring anycast_mac_address changes with auto-assignment enabled",
+				"The 'anycast_mac_address' field changes will be ignored because 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			// Keep the current state value to suppress the diff
+			if !state.AnycastMacAddress.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), state.AnycastMacAddress)
+			}
 		}
 	}
 }

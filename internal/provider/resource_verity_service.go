@@ -558,8 +558,10 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
 	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
 	// Don't error if the field is unknown (computed during plan recalculation)
-	// Check for auto-assigned VNI modifications, but allow when VNI is unknown (expecting API to set it)
-	if !plan.Vni.IsUnknown() && !plan.Vni.Equal(state.Vni) && !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
+	if !plan.Vni.Equal(state.Vni) &&
+		!plan.Vni.IsNull() && !plan.Vni.IsUnknown() && // User is explicitly setting a value
+		!plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() &&
+		plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {
 		resp.Diagnostics.AddError(
 			"Cannot modify auto-assigned field",
 			"The 'vni' field cannot be modified because 'vni_auto_assigned_' is set to true.",
@@ -994,12 +996,12 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 			case int32:
 				state.Vni = types.Int64Value(int64(v))
 			default:
-				if plan != nil && !plan.Vni.IsNull() {
+				if plan != nil && !plan.Vni.IsNull() && !plan.Vni.IsUnknown() {
 					state.Vni = plan.Vni
 				}
 			}
 		}
-	} else if plan != nil && !plan.Vni.IsNull() {
+	} else if plan != nil && !plan.Vni.IsNull() && !plan.Vni.IsUnknown() {
 		state.Vni = plan.Vni
 	}
 

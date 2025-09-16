@@ -199,30 +199,30 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 			},
 			"switch_router_id_ip_mask": schema.StringAttribute{
-				Description: "Switch BGP Router Identifier",
+				Description: "Switch BGP Router Identifier. This field should not be specified when 'switch_router_id_ip_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_router_id_ip_mask_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether or not the value in switch_router_id_ip_mask field has been automatically assigned",
+				Description: "Whether the Switch BGP Router Identifier should be automatically assigned by the API. When set to true, do not specify the 'switch_router_id_ip_mask' field in your configuration.",
 				Optional:    true,
 			},
 			"switch_vtep_id_ip_mask": schema.StringAttribute{
-				Description: "Switch VTEP Identifier",
+				Description: "Switch VTEP Identifier. This field should not be specified when 'switch_vtep_id_ip_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_vtep_id_ip_mask_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned",
+				Description: "Whether the Switch VTEP Identifier should be automatically assigned by the API. When set to true, do not specify the 'switch_vtep_id_ip_mask' field in your configuration.",
 				Optional:    true,
 			},
 			"bgp_as_number": schema.Int64Attribute{
-				Description: "BGP Autonomous System Number for the site underlay",
+				Description: "BGP Autonomous System Number for the site underlay. This field should not be specified when 'bgp_as_number_auto_assigned_' is set to true, as the API will assign this value automatically.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"bgp_as_number_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether or not the value in bgp_as_number field has been automatically assigned",
+				Description: "Whether the BGP AS Number should be automatically assigned by the API. When set to true, do not specify the 'bgp_as_number' field in your configuration.",
 				Optional:    true,
 			},
 			"is_fabric": schema.BoolAttribute{
@@ -389,6 +389,37 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	// Validate auto-assigned field specifications
+	if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
+		if !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
+			resp.Diagnostics.AddError(
+				"BGP AS Number cannot be specified when auto-assigned",
+				"The 'bgp_as_number' field cannot be specified in the configuration when 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+		if !plan.SwitchRouterIdIpMask.IsNull() && !plan.SwitchRouterIdIpMask.IsUnknown() && plan.SwitchRouterIdIpMask.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Switch Router ID IP Mask cannot be specified when auto-assigned",
+				"The 'switch_router_id_ip_mask' field cannot be specified in the configuration when 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+		if !plan.SwitchVtepIdIpMask.IsNull() && !plan.SwitchVtepIdIpMask.IsUnknown() && plan.SwitchVtepIdIpMask.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Switch VTEP ID IP Mask cannot be specified when auto-assigned",
+				"The 'switch_vtep_id_ip_mask' field cannot be specified in the configuration when 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
 	}
 
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
@@ -945,9 +976,6 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		"locked":                 {plan.Locked, state.Locked, func(v bool) { spProps.Locked = openapi.PtrBool(v) }},
 		"out_of_band_management": {plan.OutOfBandManagement, state.OutOfBandManagement, func(v bool) { spProps.OutOfBandManagement = openapi.PtrBool(v) }},
 		"is_fabric":              {plan.IsFabric, state.IsFabric, func(v bool) { spProps.IsFabric = openapi.PtrBool(v) }},
-		"switch_router_id_ip_mask_auto_assigned_": {plan.SwitchRouterIdIpMaskAutoAssigned, state.SwitchRouterIdIpMaskAutoAssigned, func(v bool) { spProps.SwitchRouterIdIpMaskAutoAssigned = openapi.PtrBool(v) }},
-		"switch_vtep_id_ip_mask_auto_assigned_":   {plan.SwitchVtepIdIpMaskAutoAssigned, state.SwitchVtepIdIpMaskAutoAssigned, func(v bool) { spProps.SwitchVtepIdIpMaskAutoAssigned = openapi.PtrBool(v) }},
-		"bgp_as_number_auto_assigned_":            {plan.BgpAsNumberAutoAssigned, state.BgpAsNumberAutoAssigned, func(v bool) { spProps.BgpAsNumberAutoAssigned = openapi.PtrBool(v) }},
 	}
 
 	for _, field := range boolFields {
@@ -957,17 +985,170 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		}
 	}
 
-	if !plan.BgpAsNumber.Equal(state.BgpAsNumber) {
-		if plan.BgpAsNumberAutoAssigned.IsNull() || !plan.BgpAsNumberAutoAssigned.ValueBool() ||
-			!plan.BgpAsNumberAutoAssigned.Equal(state.BgpAsNumberAutoAssigned) {
+	// Handle BgpAsNumber and BgpAsNumberAutoAssigned changes in a coordinated way
+	bgpAsNumberChanged := !plan.BgpAsNumber.IsUnknown() && !plan.BgpAsNumber.Equal(state.BgpAsNumber)
+	bgpAsNumberAutoAssignedChanged := !plan.BgpAsNumberAutoAssigned.Equal(state.BgpAsNumberAutoAssigned)
+
+	if bgpAsNumberChanged || bgpAsNumberAutoAssignedChanged {
+		// Handle BgpAsNumber field changes
+		if bgpAsNumberChanged {
 			if !plan.BgpAsNumber.IsNull() {
 				val := int32(plan.BgpAsNumber.ValueInt64())
 				spProps.BgpAsNumber = &val
 			} else {
 				spProps.BgpAsNumber = nil
 			}
-			hasChanges = true
 		}
+
+		// Handle BgpAsNumberAutoAssigned field changes
+		if bgpAsNumberAutoAssignedChanged {
+			// Only send bgp_as_number_auto_assigned_ if the user has explicitly specified it in their configuration
+			var config veritySwitchpointResourceModel
+			userSpecifiedBgpAsNumberAutoAssigned := false
+			if !req.Config.Raw.IsNull() {
+				if err := req.Config.Get(ctx, &config); err == nil {
+					userSpecifiedBgpAsNumberAutoAssigned = !config.BgpAsNumberAutoAssigned.IsNull()
+				}
+			}
+
+			if userSpecifiedBgpAsNumberAutoAssigned {
+				spProps.BgpAsNumberAutoAssigned = openapi.PtrBool(plan.BgpAsNumberAutoAssigned.ValueBool())
+
+				// Special case: When changing from auto-assigned (true) to manual (false),
+				// the API requires both bgp_as_number_auto_assigned_ and bgp_as_number fields to be sent.
+				if !state.BgpAsNumberAutoAssigned.IsNull() && state.BgpAsNumberAutoAssigned.ValueBool() &&
+					!plan.BgpAsNumberAutoAssigned.ValueBool() {
+					// Changing from auto-assigned=true to auto-assigned=false
+					// Must include BgpAsNumber value in the request for the change to take effect
+					if !plan.BgpAsNumber.IsNull() {
+						val := int32(plan.BgpAsNumber.ValueInt64())
+						spProps.BgpAsNumber = &val
+					} else if !state.BgpAsNumber.IsNull() {
+						// Use current state BgpAsNumber if plan doesn't specify one
+						val := int32(state.BgpAsNumber.ValueInt64())
+						spProps.BgpAsNumber = &val
+					}
+				}
+			}
+		} else if bgpAsNumberChanged {
+			// BgpAsNumber changed but BgpAsNumberAutoAssigned didn't change
+			// Send the auto-assigned flag to maintain consistency with API
+			if !plan.BgpAsNumberAutoAssigned.IsNull() {
+				spProps.BgpAsNumberAutoAssigned = openapi.PtrBool(plan.BgpAsNumberAutoAssigned.ValueBool())
+			} else if !state.BgpAsNumberAutoAssigned.IsNull() {
+				spProps.BgpAsNumberAutoAssigned = openapi.PtrBool(state.BgpAsNumberAutoAssigned.ValueBool())
+			} else {
+				spProps.BgpAsNumberAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+
+		hasChanges = true
+	}
+
+	// Handle SwitchRouterIdIpMask and SwitchRouterIdIpMaskAutoAssigned changes in a coordinated way
+	switchRouterIdIpMaskChanged := !plan.SwitchRouterIdIpMask.IsUnknown() && !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask)
+	switchRouterIdIpMaskAutoAssignedChanged := !plan.SwitchRouterIdIpMaskAutoAssigned.Equal(state.SwitchRouterIdIpMaskAutoAssigned)
+
+	if switchRouterIdIpMaskChanged || switchRouterIdIpMaskAutoAssignedChanged {
+		// Handle SwitchRouterIdIpMask field changes
+		if switchRouterIdIpMaskChanged {
+			spProps.SwitchRouterIdIpMask = openapi.PtrString(plan.SwitchRouterIdIpMask.ValueString())
+		}
+
+		// Handle SwitchRouterIdIpMaskAutoAssigned field changes
+		if switchRouterIdIpMaskAutoAssignedChanged {
+			// Only send switch_router_id_ip_mask_auto_assigned_ if the user has explicitly specified it in their configuration
+			var config veritySwitchpointResourceModel
+			userSpecifiedSwitchRouterIdIpMaskAutoAssigned := false
+			if !req.Config.Raw.IsNull() {
+				if err := req.Config.Get(ctx, &config); err == nil {
+					userSpecifiedSwitchRouterIdIpMaskAutoAssigned = !config.SwitchRouterIdIpMaskAutoAssigned.IsNull()
+				}
+			}
+
+			if userSpecifiedSwitchRouterIdIpMaskAutoAssigned {
+				spProps.SwitchRouterIdIpMaskAutoAssigned = openapi.PtrBool(plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool())
+
+				// Special case: When changing from auto-assigned (true) to manual (false),
+				// the API requires both switch_router_id_ip_mask_auto_assigned_ and switch_router_id_ip_mask fields to be sent.
+				if !state.SwitchRouterIdIpMaskAutoAssigned.IsNull() && state.SwitchRouterIdIpMaskAutoAssigned.ValueBool() &&
+					!plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+					// Changing from auto-assigned=true to auto-assigned=false
+					// Must include SwitchRouterIdIpMask value in the request for the change to take effect
+					if !plan.SwitchRouterIdIpMask.IsNull() {
+						spProps.SwitchRouterIdIpMask = openapi.PtrString(plan.SwitchRouterIdIpMask.ValueString())
+					} else if !state.SwitchRouterIdIpMask.IsNull() {
+						// Use current state SwitchRouterIdIpMask if plan doesn't specify one
+						spProps.SwitchRouterIdIpMask = openapi.PtrString(state.SwitchRouterIdIpMask.ValueString())
+					}
+				}
+			}
+		} else if switchRouterIdIpMaskChanged {
+			// SwitchRouterIdIpMask changed but SwitchRouterIdIpMaskAutoAssigned didn't change
+			// Send the auto-assigned flag to maintain consistency with API
+			if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() {
+				spProps.SwitchRouterIdIpMaskAutoAssigned = openapi.PtrBool(plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool())
+			} else if !state.SwitchRouterIdIpMaskAutoAssigned.IsNull() {
+				spProps.SwitchRouterIdIpMaskAutoAssigned = openapi.PtrBool(state.SwitchRouterIdIpMaskAutoAssigned.ValueBool())
+			} else {
+				spProps.SwitchRouterIdIpMaskAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+
+		hasChanges = true
+	}
+
+	// Handle SwitchVtepIdIpMask and SwitchVtepIdIpMaskAutoAssigned changes in a coordinated way
+	switchVtepIdIpMaskChanged := !plan.SwitchVtepIdIpMask.IsUnknown() && !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask)
+	switchVtepIdIpMaskAutoAssignedChanged := !plan.SwitchVtepIdIpMaskAutoAssigned.Equal(state.SwitchVtepIdIpMaskAutoAssigned)
+
+	if switchVtepIdIpMaskChanged || switchVtepIdIpMaskAutoAssignedChanged {
+		// Handle SwitchVtepIdIpMask field changes
+		if switchVtepIdIpMaskChanged {
+			spProps.SwitchVtepIdIpMask = openapi.PtrString(plan.SwitchVtepIdIpMask.ValueString())
+		}
+
+		// Handle SwitchVtepIdIpMaskAutoAssigned field changes
+		if switchVtepIdIpMaskAutoAssignedChanged {
+			// Only send switch_vtep_id_ip_mask_auto_assigned_ if the user has explicitly specified it in their configuration
+			var config veritySwitchpointResourceModel
+			userSpecifiedSwitchVtepIdIpMaskAutoAssigned := false
+			if !req.Config.Raw.IsNull() {
+				if err := req.Config.Get(ctx, &config); err == nil {
+					userSpecifiedSwitchVtepIdIpMaskAutoAssigned = !config.SwitchVtepIdIpMaskAutoAssigned.IsNull()
+				}
+			}
+
+			if userSpecifiedSwitchVtepIdIpMaskAutoAssigned {
+				spProps.SwitchVtepIdIpMaskAutoAssigned = openapi.PtrBool(plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool())
+
+				// Special case: When changing from auto-assigned (true) to manual (false),
+				// the API requires both switch_vtep_id_ip_mask_auto_assigned_ and switch_vtep_id_ip_mask fields to be sent.
+				if !state.SwitchVtepIdIpMaskAutoAssigned.IsNull() && state.SwitchVtepIdIpMaskAutoAssigned.ValueBool() &&
+					!plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+					// Changing from auto-assigned=true to auto-assigned=false
+					// Must include SwitchVtepIdIpMask value in the request for the change to take effect
+					if !plan.SwitchVtepIdIpMask.IsNull() {
+						spProps.SwitchVtepIdIpMask = openapi.PtrString(plan.SwitchVtepIdIpMask.ValueString())
+					} else if !state.SwitchVtepIdIpMask.IsNull() {
+						// Use current state SwitchVtepIdIpMask if plan doesn't specify one
+						spProps.SwitchVtepIdIpMask = openapi.PtrString(state.SwitchVtepIdIpMask.ValueString())
+					}
+				}
+			}
+		} else if switchVtepIdIpMaskChanged {
+			// SwitchVtepIdIpMask changed but SwitchVtepIdIpMaskAutoAssigned didn't change
+			// Send the auto-assigned flag to maintain consistency with API
+			if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() {
+				spProps.SwitchVtepIdIpMaskAutoAssigned = openapi.PtrBool(plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool())
+			} else if !state.SwitchVtepIdIpMaskAutoAssigned.IsNull() {
+				spProps.SwitchVtepIdIpMaskAutoAssigned = openapi.PtrBool(state.SwitchVtepIdIpMaskAutoAssigned.ValueBool())
+			} else {
+				spProps.SwitchVtepIdIpMaskAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+
+		hasChanges = true
 	}
 
 	oldBadgesByIndex := make(map[int64]veritySwitchpointBadgeModel)
@@ -1852,7 +2033,7 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 	// For auto-assigned fields, always use API values when available
 	if val, ok := switchpointData["switch_router_id_ip_mask"].(string); ok {
 		state.SwitchRouterIdIpMask = types.StringValue(val)
-	} else if plan != nil && !plan.SwitchRouterIdIpMask.IsNull() {
+	} else if plan != nil && !plan.SwitchRouterIdIpMask.IsNull() && !plan.SwitchRouterIdIpMask.IsUnknown() {
 		state.SwitchRouterIdIpMask = plan.SwitchRouterIdIpMask
 	}
 
@@ -1864,7 +2045,7 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 
 	if val, ok := switchpointData["switch_vtep_id_ip_mask"].(string); ok {
 		state.SwitchVtepIdIpMask = types.StringValue(val)
-	} else if plan != nil && !plan.SwitchVtepIdIpMask.IsNull() {
+	} else if plan != nil && !plan.SwitchVtepIdIpMask.IsNull() && !plan.SwitchVtepIdIpMask.IsUnknown() {
 		state.SwitchVtepIdIpMask = plan.SwitchVtepIdIpMask
 	}
 
@@ -1921,17 +2102,17 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 				if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
 					state.BgpAsNumber = types.Int64Value(intVal)
 				} else {
-					if plan != nil && !plan.BgpAsNumber.IsNull() {
+					if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
 						state.BgpAsNumber = plan.BgpAsNumber
 					}
 				}
 			default:
-				if plan != nil && !plan.BgpAsNumber.IsNull() {
+				if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
 					state.BgpAsNumber = plan.BgpAsNumber
 				}
 			}
 		}
-	} else if plan != nil && !plan.BgpAsNumber.IsNull() {
+	} else if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
 		state.BgpAsNumber = plan.BgpAsNumber
 	}
 
@@ -2209,25 +2390,56 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	// For new resources (where state is null)
+	// Validate auto-assigned field specifications in configuration when auto-assigned
+	// Check the actual configuration, not the plan
+	var config veritySwitchpointResourceModel
+	if !req.Config.Raw.IsNull() {
+		resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		if !config.BgpAsNumberAutoAssigned.IsNull() && config.BgpAsNumberAutoAssigned.ValueBool() {
+			if !config.BgpAsNumber.IsNull() && !config.BgpAsNumber.IsUnknown() {
+				resp.Diagnostics.AddError(
+					"BGP AS Number cannot be specified when auto-assigned",
+					"The 'bgp_as_number' field cannot be specified in the configuration when 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+
+		if !config.SwitchRouterIdIpMaskAutoAssigned.IsNull() && config.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+			if !config.SwitchRouterIdIpMask.IsNull() && !config.SwitchRouterIdIpMask.IsUnknown() && config.SwitchRouterIdIpMask.ValueString() != "" {
+				resp.Diagnostics.AddError(
+					"Switch Router ID IP Mask cannot be specified when auto-assigned",
+					"The 'switch_router_id_ip_mask' field cannot be specified in the configuration when 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+
+		if !config.SwitchVtepIdIpMaskAutoAssigned.IsNull() && config.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+			if !config.SwitchVtepIdIpMask.IsNull() && !config.SwitchVtepIdIpMask.IsUnknown() && config.SwitchVtepIdIpMask.ValueString() != "" {
+				resp.Diagnostics.AddError(
+					"Switch VTEP ID IP Mask cannot be specified when auto-assigned",
+					"The 'switch_vtep_id_ip_mask' field cannot be specified in the configuration when 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+	}
+
+	// For new resources (where state is null), mark auto-assigned fields as Unknown
 	if req.State.Raw.IsNull() {
 		if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
-			resp.Diagnostics.AddWarning(
-				"BGP AS Number will be assigned by the API",
-				"The 'bgp_as_number' field value in your configuration will be ignored because 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
-			)
+			resp.Plan.SetAttribute(ctx, path.Root("bgp_as_number"), types.Int64Unknown())
 		}
 		if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
-			resp.Diagnostics.AddWarning(
-				"Switch Router ID IP Mask will be assigned by the API",
-				"The 'switch_router_id_ip_mask' field value in your configuration will be ignored because 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-			)
+			resp.Plan.SetAttribute(ctx, path.Root("switch_router_id_ip_mask"), types.StringUnknown())
 		}
 		if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
-			resp.Diagnostics.AddWarning(
-				"Switch VTEP ID IP Mask will be assigned by the API",
-				"The 'switch_vtep_id_ip_mask' field value in your configuration will be ignored because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-			)
+			resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), types.StringUnknown())
 		}
 		return
 	}
@@ -2238,40 +2450,67 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	// Only show warning and suppress diff if auto-assignment is enabled AND the field is actually changing
-	if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() && !plan.BgpAsNumber.Equal(state.BgpAsNumber) {
-		resp.Diagnostics.AddWarning(
-			"Ignoring bgp_as_number changes with auto-assignment enabled",
-			"The 'bgp_as_number' field changes will be ignored because 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
-		)
-
-		// Use current state value to suppress the diff
-		if !state.BgpAsNumber.IsNull() {
-			resp.Plan.SetAttribute(ctx, path.Root("bgp_as_number"), state.BgpAsNumber)
+	// Handle auto-assigned field behavior
+	if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
+		if !plan.BgpAsNumberAutoAssigned.Equal(state.BgpAsNumberAutoAssigned) {
+			// bgp_as_number_auto_assigned_ is changing to true, API will assign the value
+			resp.Plan.SetAttribute(ctx, path.Root("bgp_as_number"), types.Int64Unknown())
+			resp.Diagnostics.AddWarning(
+				"BGP AS Number will be assigned by the API",
+				"The 'bgp_as_number' field will be automatically assigned by the API because 'bgp_as_number_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.BgpAsNumber.Equal(state.BgpAsNumber) {
+			// User tried to change BgpAsNumber but it's auto-assigned
+			resp.Diagnostics.AddWarning(
+				"Ignoring bgp_as_number changes with auto-assignment enabled",
+				"The 'bgp_as_number' field changes will be ignored because 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			// Keep the current state value to suppress the diff
+			if !state.BgpAsNumber.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("bgp_as_number"), state.BgpAsNumber)
+			}
 		}
 	}
 
-	if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() && !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask) {
-		resp.Diagnostics.AddWarning(
-			"Ignoring switch_router_id_ip_mask changes with auto-assignment enabled",
-			"The 'switch_router_id_ip_mask' field changes will be ignored because 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-		)
-
-		// Use current state value to suppress the diff
-		if !state.SwitchRouterIdIpMask.IsNull() {
-			resp.Plan.SetAttribute(ctx, path.Root("switch_router_id_ip_mask"), state.SwitchRouterIdIpMask)
+	if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+		if !plan.SwitchRouterIdIpMaskAutoAssigned.Equal(state.SwitchRouterIdIpMaskAutoAssigned) {
+			// switch_router_id_ip_mask_auto_assigned_ is changing to true, API will assign the value
+			resp.Plan.SetAttribute(ctx, path.Root("switch_router_id_ip_mask"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"Switch Router ID IP Mask will be assigned by the API",
+				"The 'switch_router_id_ip_mask' field will be automatically assigned by the API because 'switch_router_id_ip_mask_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask) {
+			// User tried to change SwitchRouterIdIpMask but it's auto-assigned
+			resp.Diagnostics.AddWarning(
+				"Ignoring switch_router_id_ip_mask changes with auto-assignment enabled",
+				"The 'switch_router_id_ip_mask' field changes will be ignored because 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			// Keep the current state value to suppress the diff
+			if !state.SwitchRouterIdIpMask.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("switch_router_id_ip_mask"), state.SwitchRouterIdIpMask)
+			}
 		}
 	}
 
-	if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() && !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask) {
-		resp.Diagnostics.AddWarning(
-			"Ignoring switch_vtep_id_ip_mask changes with auto-assignment enabled",
-			"The 'switch_vtep_id_ip_mask' field changes will be ignored because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-		)
-
-		// Use current state value to suppress the diff
-		if !state.SwitchVtepIdIpMask.IsNull() {
-			resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), state.SwitchVtepIdIpMask)
+	if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+		if !plan.SwitchVtepIdIpMaskAutoAssigned.Equal(state.SwitchVtepIdIpMaskAutoAssigned) {
+			// switch_vtep_id_ip_mask_auto_assigned_ is changing to true, API will assign the value
+			resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"Switch VTEP ID IP Mask will be assigned by the API",
+				"The 'switch_vtep_id_ip_mask' field will be automatically assigned by the API because 'switch_vtep_id_ip_mask_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask) {
+			// User tried to change SwitchVtepIdIpMask but it's auto-assigned
+			resp.Diagnostics.AddWarning(
+				"Ignoring switch_vtep_id_ip_mask changes with auto-assignment enabled",
+				"The 'switch_vtep_id_ip_mask' field changes will be ignored because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			// Keep the current state value to suppress the diff
+			if !state.SwitchVtepIdIpMask.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), state.SwitchVtepIdIpMask)
+			}
 		}
 	}
 }
