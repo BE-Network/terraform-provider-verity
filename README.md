@@ -149,7 +149,7 @@ terraform {
   required_providers {
     verity = {
       source  = "BE-Network/verity"
-      version = "1.0.20" # Replace with the desired release version
+      version = "6.4.0" # Replace with the desired release version
     }
   }
 }
@@ -159,7 +159,7 @@ provider "verity" {
 }
 ```
 
-> Replace `1.0.20` with the desired release version. Set `mode` to match your Verity deployment type.
+> Replace `6.4.0` with the desired release version. Set `mode` to match your Verity deployment type.
 
 
 
@@ -299,7 +299,7 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 > **Tip:** On Windows, you can use File Explorer to navigate to the provider's `tools` folder, then right-click the script and select "Copy as path" to get the exact path for your command.
 
 > **Note:** Replace:
-> - `<VERSION>` with the actual provider version (e.g. `1.0.3`)
+> - `<VERSION>` with the actual provider version (e.g. `6.4.0`)
 > - `<OS>` with your operating system (e.g. `linux`, `windows`, `darwin`)
 > - `<ARCH>` with your CPU architecture (e.g. `amd64`, `arm64`)
 
