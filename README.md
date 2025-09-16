@@ -4,11 +4,12 @@
 
 To compile the provider binary, run the following command in the root directory of the project:
 
+ For macOS/Linux:
 ```bash
 go build -o terraform-provider-verity
 ```
 
-If you are using windows...
+For Windows:
 
 ```bash
 go build -o terraform-provider-verity.exe
@@ -21,6 +22,8 @@ go build -o terraform-provider-verity.exe
 
 To use a local development version of the provider, you need to configure Terraform to use your custom provider binary instead of downloading it from the registry. This is done using a `.tfrc` configuration file. Here's an example (`dev.tfrc`):
 
+
+#### Example for macOS/Linux
 ```hcl
 provider_installation {
   dev_overrides {
@@ -29,7 +32,16 @@ provider_installation {
   direct {}
 }
 ```
-(Note: if using windows pay attention to the windows format for director naming)
+
+#### Example for Windows
+```hcl
+provider_installation {
+  dev_overrides {
+    "registry.terraform.io/local/verity" = "C:\\Users\\<user>\\terraform-provider-verity.exe"
+  }
+  direct {}
+}
+```
 
 Then in your Terraform configuration file, specify the local provider:
 
@@ -42,13 +54,15 @@ terraform {
   }
 }
 
-provider "verity" {}
+provider "verity" {
+  mode = mode = "datacenter" # Valid values: "datacenter" or "campus"
+}
 ```
 
 
-To use this configuration, you can either:
-- Copy it to `~/.terraformrc`
-- Set the `TF_CLI_CONFIG_FILE` environment variable to point to your custom `.tfrc` file:
+To use this configuration, set the `TF_CLI_CONFIG_FILE` environment variable to point to your custom `.tfrc` file:
+  
+  For macOS/Linux
   ```bash
   export TF_CLI_CONFIG_FILE=/home/<user>/terraform-provider-verity/examples/dev.tfrc
   ```
@@ -65,62 +79,31 @@ The Verity provider offers flexible configuration options, allowing you to speci
 - `TF_VAR_username`: Your Verity API username
 - `TF_VAR_password`: Your Verity API password
 
-You can use these configuration options in three ways:
 
-1. **Using only environment variables**:
-   ```terraform
-   provider "verity" {}
-   ```
-   All configuration is taken from environment variables.
+You can configure the Verity provider in two ways:
 
-2. **Using provider configuration block with variables**:
-   
-   First, create a `variables.tf` file:
-   ```terraform
-   variable "uri" {
-     description = "The base URL of the API"
-     type        = string
-     sensitive   = true
-   }
+1. **Recommended: Export environment variables**
+  Export the following environment variables before running Terraform:
+  ```bash
+  export TF_VAR_uri="<your-verity-uri>"
+  export TF_VAR_username="<your-username>"
+  export TF_VAR_password="<your-password>"
+  ```
+  Then use a minimal provider block:
+  ```terraform
+  provider "verity" {}
+  ```
+  All configuration is taken from environment variables.
 
-   variable "username" {
-     description = "API username"
-     type        = string
-     sensitive   = true
-   }
-
-   variable "password" {
-     description = "API password"
-     type        = string
-     sensitive   = true
-   }
-
-   variable "config_dir" {
-     description = "Directory where Terraform configuration files will be generated"
-     type        = string
-     default     = "."
-   }
-   ```
-   
-   Then reference these variables in your provider configuration:
-   ```terraform
-   provider "verity" {
-     uri      = var.uri
-     username = var.username
-     password = var.password
-   }
-   ```
-
-3. **Mixed approach**:
-   ```terraform
-   provider "verity" {
-     uri = "<your-verity-uri>"  # URI specified directly as a string
-     # username and password will be read from environment variables
-   }
-   ```
-   This approach allows you to hardcode the URI directly as a string in your configuration, while still retrieving username and password from environment variables. This approach doesn't require the variables.tf file.
-
-If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable.
+2. **Alternative: Specify fields directly in the provider block**
+  ```terraform
+  provider "verity" {
+    uri = "<your-verity-uri>"
+    # username and password should NOT be written in plain text here
+    # prefer environment variables for sensitive values
+  }
+  ```
+  You may specify any or all fields directly. If a field is not specified, the provider will look for it in the corresponding environment variable. For security, do not write sensitive values (like username and password) directly in your configuration files.
 
 For Linux and macOS, use the following commands to set environment variables:
 
@@ -156,47 +139,75 @@ Make sure to set these environment variables before running any Terraform comman
 
 ## Production Setup
 
-For production use, configure Terraform to download the provider from the registry:
+
+For production use, configure Terraform to download the provider from the registry. You can find all available versions on the HashiCorp Registry:
+
+**Provider Versions:** [View all releases on HashiCorp Registry](https://registry.terraform.io/providers/BE-Network/verity/latest)
 
 ```hcl
 terraform {
   required_providers {
     verity = {
       source  = "BE-Network/verity"
-      version = "1.0.3"
+      version = "1.0.20" # Replace with the desired release version
     }
   }
 }
 
-provider "verity" {}
+provider "verity" {
+  mode = "datacenter" # Valid values: "datacenter" or "campus"
+}
 ```
 
-> Replace `1.0.3` with the desired release version.
+> Replace `1.0.20` with the desired release version. Set `mode` to match your Verity deployment type.
 
 
 
 ## Regenerating the OpenAPI Go SDK
 
-If there are changes to the Verity API (reflected in a new swagger.json file), you'll need to regenerate the OpenAPI Go SDK. Follow these steps:
+To regenerate the OpenAPI SDK for Go:
 
-1. Save the new swagger.json file
+1. Get the latest Swagger JSON file(s)
+2. **Remove unnecessary endpoints**: Before processing the Swagger file, use the `remove_endpoints.py` script to remove API endpoints that are not needed for the Terraform provider. This script removes endpoints like `/config`, `/changesets`, `/readmode`, `/request`, `/snmp`, `/syslog`, `/backups`, and `/timetraveler` which are not relevant for Terraform resource management:
+   ```bash
+   python3 tools/remove_endpoints.py swagger.json
+   ```
+   This will create a backup of your original file (as `swagger.json.backup`) and modify the original file to exclude the unnecessary endpoints.
 
-2. Run the tools/transform_swagger.py script to prepare the swagger file for code generation:
+3. If you have multiple Swagger JSON files that need to be combined (e.g., from different API versions), use the `merge_swagger.py` script to merge them:
+   ```bash
+   python3 tools/merge_swagger.py <file1> [<file2> ...] --output swagger_merged.json
+   ```
+   This will combine multiple Swagger specifications into a unified file, merging paths, components, and other sections. For example:
+   ```bash
+   python3 tools/merge_swagger.py swagger_65_dc.json swagger_65_campus.json --output swagger_merged.json
+   ```
+   **Note**: If you used the merge script, make sure to also run the `remove_endpoints.py` script on the merged file:
+   ```bash
+   python3 tools/remove_endpoints.py swagger_merged.json
+   ```
+
+4. Transform the Swagger file to be compatible with the Go SDK generator:
    ```bash
    python3 tools/transform_swagger.py swagger.json
    ```
+   Or if you used the merge script:
+   ```bash
+   python3 tools/transform_swagger.py swagger_merged.json
+   ```
 
-3. Install the OpenAPI Generator CLI (if not already installed):
+5. Install the OpenAPI Generator CLI (if not already installed):
    ```bash
    npm install @openapitools/openapi-generator-cli -g
    ```
 
-4. Generate the Go SDK using openapi-generator-cli:
+6. Generate the Go SDK using openapi-generator-cli:
    ```bash
    openapi-generator-cli generate -i swagger_transformed.json -g go -o ./openapi
    ```
 
-5. Replace the existing openapi folder with the newly generated one
+7. Replace the existing openapi folder with the newly generated one
+
 
 ### Updating Provider Resource Files
 
@@ -264,6 +275,7 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 
 #### Linux and macOS
 
+
 ```bash
 # Production
 .terraform/providers/registry.terraform.io/be-network/verity/<VERSION>/<OS>_<ARCH>/tools/import_verity_state.sh
@@ -271,6 +283,8 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 # Local (skip terraform init)
 ../tools/import_verity_state.sh --local
 ```
+
+> **Tip:** For production, you can always locate the `tools` folder inside the provider directory (where the provider binary is installed). Use your file browser or terminal to navigate to the correct folder, then right-click the script and choose "Copy Path" to avoid manually typing the full path.
 
 #### Windows PowerShell
 
@@ -281,6 +295,8 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 # Local (skip terraform init)
 ..\tools\import_verity_state.ps1 -Local
 ```
+
+> **Tip:** On Windows, you can use File Explorer to navigate to the provider's `tools` folder, then right-click the script and select "Copy as path" to get the exact path for your command.
 
 > **Note:** Replace:
 > - `<VERSION>` with the actual provider version (e.g. `1.0.3`)
