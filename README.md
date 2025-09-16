@@ -54,9 +54,7 @@ terraform {
   }
 }
 
-provider "verity" {
-  mode = mode = "datacenter" # Valid values: "datacenter" or "campus"
-}
+provider "verity" {}
 ```
 
 
@@ -154,12 +152,10 @@ terraform {
   }
 }
 
-provider "verity" {
-  mode = "datacenter" # Valid values: "datacenter" or "campus"
-}
+provider "verity" {}
 ```
 
-> Replace `6.4.0` with the desired release version. Set `mode` to match your Verity deployment type.
+> Replace `6.4.0` with the desired release version.
 
 
 

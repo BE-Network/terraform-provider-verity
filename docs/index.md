@@ -34,12 +34,10 @@ terraform {
   }
 }
 
-provider "verity" {
-  mode = "datacenter" # Valid values: "datacenter" or "campus"
-}
+provider "verity" {}
 ```
 
-> Replace `6.4.0` with the desired release version. Set `mode` to match your Verity deployment type.
+> Replace `6.4.0` with the desired release version.
 
 If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable. For security, do not write sensitive values (like username and password) directly in your configuration files.
 
