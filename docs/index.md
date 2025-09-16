@@ -1,114 +1,48 @@
 # Verity Terraform Provider Documentation
 
+
 ## 1. Provider Configuration
 
-The Verity provider offers flexible configuration options, allowing you to specify credentials through provider configuration blocks, variable files, or environment variables.
+The Verity provider offers flexible configuration options, allowing you to specify credentials through provider configuration blocks or (recommended) environment variables.
 
-### Configuration Methods
+### Recommended: Using Environment Variables
 
-#### Using only environment variables:
-
-```hcl
-terraform {
-  required_providers {
-    verity = {
-      source  = "BE-Network/verity"
-      version = "<VERSION>"
-    }
-  }
-}
-
-provider "verity" {}
-```
-
-#### Using provider configuration block with variables:
-
-First, create a `variables.tf` file:
-
-```terraform
-variable "uri" {
-  description = "The base URL of the API"
-  type        = string
-  sensitive   = true
-}
-
-variable "username" {
-  description = "API username"
-  type        = string
-  sensitive   = true
-}
-
-variable "password" {
-  description = "API password"
-  type        = string
-  sensitive   = true
-}
-
-variable "config_dir" {
-  description = "Directory where Terraform configuration files will be generated"
-  type        = string
-  default     = "."
-}
-```
-
-Then reference these variables in your provider configuration:
-
-```hcl
-terraform {
-  required_providers {
-    verity = {
-      source  = "BE-Network/verity"
-      version = "<VERSION>"
-    }
-  }
-}
-
-provider "verity" {
-  uri      = var.uri
-  username = var.username
-  password = var.password
-}
-```
-
-#### Mixed approach (hardcoded URI with environment variables):
-
-```hcl
-terraform {
-  required_providers {
-    verity = {
-      source  = "BE-Network/verity"
-      version = "<VERSION>"
-    }
-  }
-}
-
-provider "verity" {
-  uri = "https://your-verity-instance"  # URI specified directly as a string
-  # username and password will be read from environment variables
-}
-```
-
-> **Note:** Replace `<VERSION>` with the actual provider version (e.g. `1.0.3`)
-
-Required parameters:
-- **uri**: Base URL for the API
-- **username** and **password**: For authentication
-
-You can export these environment variables as follows:
+Export the following environment variables before running Terraform:
 
 ```bash
-# For Linux/MacOS
-export TF_VAR_uri="https://your-verity-instance"
-export TF_VAR_username="your-username"
-export TF_VAR_password="your-password"
-
+# For Linux/macOS
+export TF_VAR_uri="<your-verity-uri>"
+export TF_VAR_username="<your-username>"
+export TF_VAR_password="<your-password>"
+```
+```powershell
 # For Windows PowerShell
-$env:TF_VAR_uri="https://your-verity-instance"
-$env:TF_VAR_username="your-username"
-$env:TF_VAR_password="your-password"
+$env:TF_VAR_uri="<your-verity-uri>"
+$env:TF_VAR_username="<your-username>"
+$env:TF_VAR_password="<your-password>"
 ```
 
-If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable.
+Then use a minimal provider block:
+
+```hcl
+terraform {
+  required_providers {
+    verity = {
+      source  = "BE-Network/verity"
+      version = "6.4.0" # Replace with the desired release version
+    }
+  }
+}
+
+provider "verity" {
+  mode = "datacenter" # Valid values: "datacenter" or "campus"
+}
+```
+
+> Replace `6.4.0` with the desired release version. Set `mode` to match your Verity deployment type.
+
+If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable. For security, do not write sensitive values (like username and password) directly in your configuration files.
+
 
 ### Required CLI Parallelism
 
@@ -215,6 +149,7 @@ resource "verity_service" "example" {
 
 This ensures proper ordering of operations and helps avoid dependency issues when managing your infrastructure.
 
+
 ## 4. Tools
 
 When you run `terraform init`, the provider binary and a `tools` folder are placed alongside the plugin in the `.terraform/providers` directory. This `tools` folder contains:
@@ -225,15 +160,20 @@ When you run `terraform init`, the provider binary and a `tools` folder are plac
 To import your existing Verity system state into Terraform, run the appropriate script from your Terraform project directory:
 
 **Linux/macOS**:
+
 ```bash
+# Production (Linux/macOS)
 .terraform/providers/registry.terraform.io/be-network/verity/<VERSION>/<OS>_<ARCH>/tools/import_verity_state.sh
 ```
 
 **Windows PowerShell**:
 ```powershell
+# Production (Windows)
 .terraform\providers\registry.terraform.io\be-network\verity\<VERSION>\<OS>_<ARCH>\tools\import_verity_state.ps1
 ```
+> **Tip:** You can always locate the `tools` folder inside the provider directory (where the provider binary is installed). Use your file browser or terminal to navigate to the correct folder, then right-click the script and choose "Copy Path" (Linux/macOS) or "Copy as path" (Windows) to avoid manually typing the full path.
+
 > **Note:** Replace:
-> - `<VERSION>` with the actual provider version (e.g. `1.0.3`)
+> - `<VERSION>` with the actual provider version (e.g. `6.4.0`)
 > - `<OS>` with your operating system (e.g. `linux`, `windows`, `darwin`)
 > - `<ARCH>` with your CPU architecture (e.g. `amd64`, `arm64`)
