@@ -819,14 +819,14 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 
 		tflog.Debug(ctx, "Final cache clear after all operations to ensure verification with fresh data")
 		if b.clearCacheFunc != nil && b.contextProvider != nil {
+			b.clearCacheFunc(ctx, b.contextProvider(), "gateway_profiles")
+			b.clearCacheFunc(ctx, b.contextProvider(), "eth_port_profiles")
+			b.clearCacheFunc(ctx, b.contextProvider(), "eth_port_settings")
+			b.clearCacheFunc(ctx, b.contextProvider(), "bundles")
 			b.clearCacheFunc(ctx, b.contextProvider(), "gateways")
 			b.clearCacheFunc(ctx, b.contextProvider(), "lags")
 			b.clearCacheFunc(ctx, b.contextProvider(), "tenants")
 			b.clearCacheFunc(ctx, b.contextProvider(), "services")
-			b.clearCacheFunc(ctx, b.contextProvider(), "gatewayprofiles")
-			b.clearCacheFunc(ctx, b.contextProvider(), "ethportprofiles")
-			b.clearCacheFunc(ctx, b.contextProvider(), "ethportsettings")
-			b.clearCacheFunc(ctx, b.contextProvider(), "bundles")
 		}
 	}
 
