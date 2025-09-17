@@ -297,7 +297,7 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("Device Settings %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "devicesettings")
+	clearCache(ctx, r.provCtx, "device_settings")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -716,7 +716,7 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("Device Settings %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "devicesettings")
+	clearCache(ctx, r.provCtx, "device_settings")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -749,7 +749,7 @@ func (r *verityDeviceSettingsResource) Delete(ctx context.Context, req resource.
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("Device Settings %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "devicesettings")
+	clearCache(ctx, r.provCtx, "device_settings")
 	resp.State.RemoveResource(ctx)
 }
 

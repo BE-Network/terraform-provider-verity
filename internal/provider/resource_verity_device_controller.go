@@ -448,7 +448,7 @@ func (r *verityDeviceControllerResource) Create(ctx context.Context, req resourc
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("Device Controller %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "devicecontrollers")
+	clearCache(ctx, r.provCtx, "device_controllers")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -938,7 +938,7 @@ func (r *verityDeviceControllerResource) Update(ctx context.Context, req resourc
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("Device Controller %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "devicecontrollers")
+	clearCache(ctx, r.provCtx, "device_controllers")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -972,7 +972,7 @@ func (r *verityDeviceControllerResource) Delete(ctx context.Context, req resourc
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("Device Controller %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "devicecontrollers")
+	clearCache(ctx, r.provCtx, "device_controllers")
 	resp.State.RemoveResource(ctx)
 }
 

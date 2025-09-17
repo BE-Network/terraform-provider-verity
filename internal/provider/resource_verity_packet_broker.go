@@ -309,7 +309,7 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("PB Egress Profile %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "pb_egress_profiles")
+	clearCache(ctx, r.provCtx, "packet_brokers")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -1075,7 +1075,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("PB Egress Profile %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "pb_egress_profiles")
+	clearCache(ctx, r.provCtx, "packet_brokers")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -1108,7 +1108,7 @@ func (r *verityPacketBrokerResource) Delete(ctx context.Context, req resource.De
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("PB Egress Profile %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "pb_egress_profiles")
+	clearCache(ctx, r.provCtx, "packet_brokers")
 	resp.State.RemoveResource(ctx)
 }
 

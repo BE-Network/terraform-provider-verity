@@ -202,7 +202,7 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("AS Path Access List %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "aspathaccesslists")
+	clearCache(ctx, r.provCtx, "as_path_access_lists")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -545,7 +545,7 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("AS Path Access List %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "aspathaccesslists")
+	clearCache(ctx, r.provCtx, "as_path_access_lists")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -578,7 +578,7 @@ func (r *verityAsPathAccessListResource) Delete(ctx context.Context, req resourc
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("AS Path Access List %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "aspathaccesslists")
+	clearCache(ctx, r.provCtx, "as_path_access_lists")
 	resp.State.RemoveResource(ctx)
 }
 

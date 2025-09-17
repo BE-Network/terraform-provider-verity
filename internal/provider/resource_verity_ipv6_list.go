@@ -128,7 +128,7 @@ func (r *verityIpv6ListResource) Create(ctx context.Context, req resource.Create
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s create operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv6_list_filters")
+	clearCache(ctx, r.provCtx, "ipv6_lists")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -300,7 +300,7 @@ func (r *verityIpv6ListResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv6_list_filters")
+	clearCache(ctx, r.provCtx, "ipv6_lists")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -332,7 +332,7 @@ func (r *verityIpv6ListResource) Delete(ctx context.Context, req resource.Delete
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s delete operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv6_list_filters")
+	clearCache(ctx, r.provCtx, "ipv6_lists")
 	resp.State.RemoveResource(ctx)
 }
 

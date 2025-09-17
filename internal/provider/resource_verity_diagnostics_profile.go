@@ -165,7 +165,7 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Profile %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "diagnosticsprofiles")
+	clearCache(ctx, r.provCtx, "diagnostics_profiles")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -421,7 +421,7 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Profile %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "diagnosticsprofiles")
+	clearCache(ctx, r.provCtx, "diagnostics_profiles")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -453,7 +453,7 @@ func (r *verityDiagnosticsProfileResource) Delete(ctx context.Context, req resou
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Profile %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "diagnosticsprofiles")
+	clearCache(ctx, r.provCtx, "diagnostics_profiles")
 	resp.State.RemoveResource(ctx)
 }
 

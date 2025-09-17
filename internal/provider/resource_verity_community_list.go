@@ -229,7 +229,7 @@ func (r *verityCommunityListResource) Create(ctx context.Context, req resource.C
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("Community List %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "communitylists")
+	clearCache(ctx, r.provCtx, "community_lists")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -594,7 +594,7 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("Community List %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "communitylists")
+	clearCache(ctx, r.provCtx, "community_lists")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -627,7 +627,7 @@ func (r *verityCommunityListResource) Delete(ctx context.Context, req resource.D
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("Community List %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "communitylists")
+	clearCache(ctx, r.provCtx, "community_lists")
 	resp.State.RemoveResource(ctx)
 }
 

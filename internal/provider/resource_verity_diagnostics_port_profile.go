@@ -128,7 +128,7 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Port Profile %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "diagnosticsportprofiles")
+	clearCache(ctx, r.provCtx, "diagnostics_port_profiles")
 	resp.State.Set(ctx, plan)
 }
 
@@ -303,7 +303,7 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Port Profile %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "diagnosticsportprofiles")
+	clearCache(ctx, r.provCtx, "diagnostics_port_profiles")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -335,7 +335,7 @@ func (r *verityDiagnosticsPortProfileResource) Delete(ctx context.Context, req r
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Port Profile %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "diagnosticsportprofiles")
+	clearCache(ctx, r.provCtx, "diagnostics_port_profiles")
 	resp.State.RemoveResource(ctx)
 }
 

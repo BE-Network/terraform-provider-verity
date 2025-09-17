@@ -138,7 +138,7 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "sflowcollectors")
+	clearCache(ctx, r.provCtx, "sflow_collectors")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -337,7 +337,7 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "sflowcollectors")
+	clearCache(ctx, r.provCtx, "sflow_collectors")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -370,7 +370,7 @@ func (r *veritySflowCollectorResource) Delete(ctx context.Context, req resource.
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "sflowcollectors")
+	clearCache(ctx, r.provCtx, "sflow_collectors")
 	resp.State.RemoveResource(ctx)
 }
 
