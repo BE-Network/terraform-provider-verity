@@ -177,3 +177,12 @@ To import your existing Verity system state into Terraform, run the appropriate 
 > - `<VERSION>` with the actual provider version (e.g. `6.4.0`)
 > - `<OS>` with your operating system (e.g. `linux`, `windows`, `darwin`)
 > - `<ARCH>` with your CPU architecture (e.g. `amd64`, `arm64`)
+
+## 5. Handling Auto-Assigned Fields
+
+When you change an auto-assigned field's flag (such as `auto_assigned_vni`, `auto_assigned_vlan`, etc.) from `false` to `true`, you must remove the corresponding field (such as `vni`, `vlan`, etc.) from your Terraform resource block. Leaving the field present will cause issues, as the backend will automatically assign its value and may overwrite or ignore the value you specify in Terraform.
+
+Our `data_source_state_importer` is designed to check if a field has a corresponding auto-assigned flag. If the flag is set to `true`, the importer will not write that field in the generated Terraform resource file — only the auto-assigned flag will be present. This ensures your configuration matches the backend's behavior and avoids conflicts.
+
+**Best Practice:**
+Whenever you enable auto-assignment for a field, always remove the manually specified value for that field from your `.tf` resource block.

@@ -308,3 +308,12 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 - Terraform must be installed and in your PATH
 - Your Terraform files must include a Verity provider configuration
 - Environment variables for authentication must be set (see "Required Environment Variables" section)
+
+## Handling Auto-Assigned Fields
+
+When you change an auto-assigned field's flag (such as `auto_assigned_vni`, `auto_assigned_vlan`, etc.) from `false` to `true`, you must remove the corresponding field (such as `vni`, `vlan`, etc.) from your Terraform resource block. Leaving the field present will cause issues, as the backend will automatically assign its value and may overwrite or ignore the value you specify in Terraform.
+
+Our `data_source_state_importer` is designed to check if a field has a corresponding auto-assigned flag. If the flag is set to `true`, the importer will not write that field in the generated Terraform resource file — only the auto-assigned flag will be present. This ensures your configuration matches the backend's behavior and avoids conflicts.
+
+**Best Practice:**
+Whenever you enable auto-assignment for a field, always remove the manually specified value for that field from your `.tf` resource block.
