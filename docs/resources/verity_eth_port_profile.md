@@ -49,3 +49,6 @@ resource "verity_eth_port_profile" "example" {
 
 Ethernet port profile resources can be imported using the `name` attribute:
 
+```sh
+terraform import verity_eth_port_profile.<resource_name> <name>
+```

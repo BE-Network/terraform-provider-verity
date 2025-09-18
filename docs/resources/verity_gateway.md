@@ -80,3 +80,6 @@ resource "verity_gateway" "example" {
 
 Gateway resources can be imported using the `name` attribute:
 
+```sh
+terraform import verity_gateway.<resource_name> <name>
+```

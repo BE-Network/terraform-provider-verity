@@ -64,3 +64,6 @@ resource "verity_tenant" "example" {
 
 Tenant resources can be imported using the `name` attribute:
 
+```sh
+terraform import verity_tenant.<resource_name> <name>
+```

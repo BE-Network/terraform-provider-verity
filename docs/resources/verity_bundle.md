@@ -66,5 +66,8 @@ resource "verity_bundle" "example" {
 ## Import
 
 Bundle resources can be imported using the `name` attribute:
-````
+
+```sh
+terraform import verity_bundle.<resource_name> <name>
+```
 
