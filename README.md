@@ -230,18 +230,66 @@ The import process creates a special `stages.tf` file that defines explicit depe
 
 Each imported resource is configured with the appropriate `depends_on` attribute referring to its corresponding stage. This prevents Terraform from attempting to create resources before their dependencies are ready, which is particularly important when working with the Verity API's interdependent resources.
 
-The operation stages maintain the following order for creation and update operations:
+Since API version 6.5, the provider supports two modes: **campus** and **datacenter**. Each mode has its own resource dependency ordering for creation and update operations:
 
-1. tenant_stage
-2. gateway_stage
-3. gateway_profile_stage
-4. service_stage
-5. eth_port_profile_stage
-6. eth_port_settings_stage
-7. lag_stage
-8. bundle_stage
+**Order for CAMPUS:**
+1. Services
+2. Eth Port Profiles
+3. Authenticated Eth-Ports
+4. Device Voice Settings
+5. Packet Queues
+6. Service Port Profiles
+7. Voice-Port Profiles
+8. Eth Port Settings
+9. Device Settings
+10. Lags
+11. Sflowcollectors
+12. Diagnostics Profiles
+13. Diagnostics Port Profiles
+14. Bundles
+15. ACLSs
+16. IPv4 Lists
+17. IPv6 Lists
+18. Portacls
+19. Badges
+20. Switchpoints
+21. Device Controllers
+22. Sites
 
-For delete operations, this order is automatically reversed (8→1) to ensure proper dependency handling when removing resources.
+**Order for DATACENTER:**
+1. Tenants
+2. Gateways
+3. Gateway Profiles
+4. Services
+5. Packet Queues
+6. Eth Port Profiles
+7. Eth Port Settings
+8. Device Settings
+9. Lags
+10. Sflowcollectors
+11. Diagnostics Profiles
+12. Diagnostics Port Profiles
+13. Bundles
+14. ACLSs
+15. IPv4 Prefix Lists
+16. IPv6 Prefix Lists
+17. IPv4 Lists
+18. IPv6 Lists
+19. PacketBroker
+20. Portacls
+21. Badges
+22. Pods
+23. Switchpoints
+24. Device Controllers
+25. AS Path Access Lists
+26. Community Lists
+27. Extended Community Lists
+28. Route Map Clauses
+29. Route Maps
+30. SFP Breakouts
+31. Sites
+
+For delete operations, the order is automatically reversed to ensure proper dependency handling when removing resources.
 
 #### Creating New Resources
 
