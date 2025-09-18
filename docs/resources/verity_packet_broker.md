@@ -72,6 +72,6 @@ resource "verity_packet_broker" "example" {
 
 Packet Broker resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_packet_broker.example example
+```sh
+terraform import verity_packet_broker.<resource_name> <name>
 ```

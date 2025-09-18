@@ -45,6 +45,6 @@ The following arguments are supported:
 
 Extended Community Lists can be imported using the name:
 
-```hcl
+```sh
 terraform import verity_extended_community_list.<resource_name> <name>
 ```

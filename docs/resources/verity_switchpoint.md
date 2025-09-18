@@ -128,6 +128,6 @@ resource "verity_switchpoint" "example" {
 
 Switchpoint resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_switchpoint.example example
+```sh
+terraform import verity_switchpoint.<resource_name> <name>
 ```

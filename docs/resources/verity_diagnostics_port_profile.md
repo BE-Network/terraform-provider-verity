@@ -23,6 +23,6 @@ resource "verity_diagnostics_port_profile" "diagnostics_port_profile1" {
 
 Diagnostics Port Profile resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_diagnostics_port_profile.<resource_name> <name>
+```sh
+terraform import verity_diagnostics_port_profile.<resource_name> <name>
 ```

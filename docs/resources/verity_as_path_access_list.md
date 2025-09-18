@@ -37,6 +37,6 @@ resource "verity_as_path_access_list" "test1" {
 
 AS Path Access List resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_as_path_access_list.<resource_name> <name>
+```sh
+terraform import verity_as_path_access_list.<resource_name> <name>
 ```

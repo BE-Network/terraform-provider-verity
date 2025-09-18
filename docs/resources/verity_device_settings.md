@@ -51,6 +51,6 @@ resource "verity_device_settings" "test1" {
 
 Device Settings resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_device_settings.<resource_name> <name>
+```sh
+terraform import verity_device_settings.<resource_name> <name>
 ```

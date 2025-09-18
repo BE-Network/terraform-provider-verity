@@ -32,6 +32,6 @@ resource "verity_badge" "example" {
 
 Badge resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_badge.example example
+```sh
+terraform import verity_badge.<resource_name> <name>
 ```

@@ -43,6 +43,6 @@ resource "verity_community_list" "test1" {
 
 Community List resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_community_list.<resource_name> <name>
+```sh
+terraform import verity_community_list.<resource_name> <name>
 ```

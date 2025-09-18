@@ -43,6 +43,6 @@ The following arguments are supported:
 
 IPv4 Prefix Lists can be imported using the name:
 
-```hcl
+```sh
 terraform import verity_ipv4_prefix_list.<resource_name> <name>
 ```

@@ -90,6 +90,6 @@ The following arguments are supported:
 
 Route Map Clauses can be imported using the name:
 
-```hcl
+```sh
 terraform import verity_route_map_clause.<resource_name> <name>
 ```

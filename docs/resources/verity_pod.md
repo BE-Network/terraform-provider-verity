@@ -23,6 +23,6 @@ The following arguments are supported:
 
 Pods can be imported using the name:
 
-```hcl
+```sh
 terraform import verity_pod.<resource_name> <name>
 ```

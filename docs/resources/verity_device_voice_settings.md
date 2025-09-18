@@ -80,6 +80,6 @@ resource "verity_device_voice_settings" "example" {
 
 Device Voice Settings resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_device_voice_settings.example example
+```sh
+terraform import verity_device_voice_settings.<resource_name> <name>
 ```

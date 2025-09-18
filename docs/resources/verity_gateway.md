@@ -103,6 +103,6 @@ resource "verity_gateway" "example" {
 
 Gateway resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_gateway.example example
+```sh
+terraform import verity_gateway.<resource_name> <name>
 ```

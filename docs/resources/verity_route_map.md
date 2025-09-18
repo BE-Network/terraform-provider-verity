@@ -39,6 +39,6 @@ The following arguments are supported:
 
 Route Maps can be imported using the name:
 
-```hcl
+```sh
 terraform import verity_route_map.<resource_name> <name>
 ```

@@ -64,6 +64,6 @@ resource "verity_packet_queue" "example" {
 
 Packet Queue resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_packet_queue.example example
+```sh
+terraform import verity_packet_queue.<resource_name> <name>
 ```

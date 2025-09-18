@@ -63,6 +63,6 @@ The following arguments are supported:
 
 Port ACLs can be imported using the name:
 
-```hcl
+```sh
 terraform import verity_port_acl.<resource_name> <name>
 ```

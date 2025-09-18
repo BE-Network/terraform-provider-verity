@@ -61,6 +61,6 @@ resource "verity_service" "example" {
 
 Service resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_service.example example
+```sh
+terraform import verity_service.<resource_name> <name>
 ```

@@ -18,10 +18,3 @@ This resource does not require any configuration arguments.
 
 * `id` - The unique identifier for this stage.
 
-## Import
-
-Operation Stage resources can be imported using the `id` attribute:
-
-```
-$ terraform import verity_operation_stage.example_stage example_stage
-```

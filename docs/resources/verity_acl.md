@@ -68,7 +68,7 @@ resource "verity_acl_v6" "ipv6_filter_example" {
 
 ACL IP Filter resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_acl_v4.ipv4_filter_example ipv4_filter_example
-$ terraform import verity_acl_v6.ipv6_filter_example ipv6_filter_example
+```sh
+terraform import verity_acl_v4.<resource_name> <name>
+terraform import verity_acl_v6.<resource_name> <name>
 ```

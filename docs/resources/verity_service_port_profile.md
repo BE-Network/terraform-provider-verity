@@ -74,6 +74,6 @@ resource "verity_service_port_profile" "example" {
 
 Service Port Profile resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_service_port_profile.example example
+```sh
+terraform import verity_service_port_profile.<resource_name> <name>
 ```

@@ -77,6 +77,6 @@ resource "verity_device_controller" "example" {
 
 Device Controller resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_device_controller.example example
+```sh
+terraform import verity_device_controller.<resource_name> <name>
 ```

@@ -58,6 +58,6 @@ resource "verity_authenticated_eth_port" "example" {
 
 Authenticated Ethernet Port resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_authenticated_eth_port.example example
+```sh
+terraform import verity_authenticated_eth_port.<resource_name> <name>
 ```

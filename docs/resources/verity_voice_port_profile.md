@@ -108,6 +108,6 @@ resource "verity_voice_port_profile" "example" {
 
 Voice Port Profile resources can be imported using the `name` attribute:
 
-```
-$ terraform import verity_voice_port_profile.example example
+```sh
+terraform import verity_voice_port_profile.<resource_name> <name>
 ```

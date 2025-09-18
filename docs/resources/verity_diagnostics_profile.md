@@ -33,6 +33,6 @@ The following arguments are supported:
 
 Diagnostics Profiles can be imported using the name:
 
-```hcl
+```sh
 terraform import verity_diagnostics_profile.<resource_name> <name>
 ```
