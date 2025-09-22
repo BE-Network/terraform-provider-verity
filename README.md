@@ -55,7 +55,7 @@ terraform {
 }
 
 provider "verity" {
-  mode = mode = "datacenter" # Valid values: "datacenter" or "campus"
+  mode = "datacenter" # Valid values: "datacenter" or "campus"
 }
 ```
 
