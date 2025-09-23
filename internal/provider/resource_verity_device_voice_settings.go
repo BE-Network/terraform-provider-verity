@@ -1139,25 +1139,158 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		stateField types.Int64
 		setter     func(types.Int64)
 	}{
-		"proxy_server_port":               {plan.ProxyServerPort, state.ProxyServerPort, func(v types.Int64) { setNullableInt32(&dvsProps.ProxyServerPort, v) }},
-		"proxy_server_secondary_port":     {plan.ProxyServerSecondaryPort, state.ProxyServerSecondaryPort, func(v types.Int64) { setNullableInt32(&dvsProps.ProxyServerSecondaryPort, v) }},
-		"registrar_server_port":           {plan.RegistrarServerPort, state.RegistrarServerPort, func(v types.Int64) { setNullableInt32(&dvsProps.RegistrarServerPort, v) }},
-		"registrar_server_secondary_port": {plan.RegistrarServerSecondaryPort, state.RegistrarServerSecondaryPort, func(v types.Int64) { setNullableInt32(&dvsProps.RegistrarServerSecondaryPort, v) }},
-		"user_agent_port":                 {plan.UserAgentPort, state.UserAgentPort, func(v types.Int64) { setNullableInt32(&dvsProps.UserAgentPort, v) }},
-		"outbound_proxy_port":             {plan.OutboundProxyPort, state.OutboundProxyPort, func(v types.Int64) { setNullableInt32(&dvsProps.OutboundProxyPort, v) }},
-		"outbound_proxy_secondary_port":   {plan.OutboundProxySecondaryPort, state.OutboundProxySecondaryPort, func(v types.Int64) { setNullableInt32(&dvsProps.OutboundProxySecondaryPort, v) }},
-		"registration_period":             {plan.RegistrationPeriod, state.RegistrationPeriod, func(v types.Int64) { setNullableInt32(&dvsProps.RegistrationPeriod, v) }},
-		"register_expires":                {plan.RegisterExpires, state.RegisterExpires, func(v types.Int64) { setNullableInt32(&dvsProps.RegisterExpires, v) }},
-		"voicemail_server_port":           {plan.VoicemailServerPort, state.VoicemailServerPort, func(v types.Int64) { setNullableInt32(&dvsProps.VoicemailServerPort, v) }},
-		"voicemail_server_expires":        {plan.VoicemailServerExpires, state.VoicemailServerExpires, func(v types.Int64) { setNullableInt32(&dvsProps.VoicemailServerExpires, v) }},
-		"sip_dscp_mark":                   {plan.SipDscpMark, state.SipDscpMark, func(v types.Int64) { setNullableInt32(&dvsProps.SipDscpMark, v) }},
-		"call_agent_port_1":               {plan.CallAgentPort1, state.CallAgentPort1, func(v types.Int64) { setNullableInt32(&dvsProps.CallAgentPort1, v) }},
-		"call_agent_port_2":               {plan.CallAgentPort2, state.CallAgentPort2, func(v types.Int64) { setNullableInt32(&dvsProps.CallAgentPort2, v) }},
-		"mgcp_dscp_mark":                  {plan.MgcpDscpMark, state.MgcpDscpMark, func(v types.Int64) { setNullableInt32(&dvsProps.MgcpDscpMark, v) }},
-		"local_port_min":                  {plan.LocalPortMin, state.LocalPortMin, func(v types.Int64) { setNullableInt32(&dvsProps.LocalPortMin, v) }},
-		"local_port_max":                  {plan.LocalPortMax, state.LocalPortMax, func(v types.Int64) { setNullableInt32(&dvsProps.LocalPortMax, v) }},
-		"event_payload_type":              {plan.EventPayloadType, state.EventPayloadType, func(v types.Int64) { setNullableInt32(&dvsProps.EventPayloadType, v) }},
-		"dscp_mark":                       {plan.DscpMark, state.DscpMark, func(v types.Int64) { setNullableInt32(&dvsProps.DscpMark, v) }},
+		"proxy_server_port": {plan.ProxyServerPort, state.ProxyServerPort, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.ProxyServerPort = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.ProxyServerPort = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"proxy_server_secondary_port": {plan.ProxyServerSecondaryPort, state.ProxyServerSecondaryPort, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.ProxyServerSecondaryPort = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.ProxyServerSecondaryPort = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"registrar_server_port": {plan.RegistrarServerPort, state.RegistrarServerPort, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.RegistrarServerPort = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.RegistrarServerPort = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"registrar_server_secondary_port": {plan.RegistrarServerSecondaryPort, state.RegistrarServerSecondaryPort, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.RegistrarServerSecondaryPort = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.RegistrarServerSecondaryPort = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"user_agent_port": {plan.UserAgentPort, state.UserAgentPort, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.UserAgentPort = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.UserAgentPort = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"outbound_proxy_port": {plan.OutboundProxyPort, state.OutboundProxyPort, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.OutboundProxyPort = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.OutboundProxyPort = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"outbound_proxy_secondary_port": {plan.OutboundProxySecondaryPort, state.OutboundProxySecondaryPort, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.OutboundProxySecondaryPort = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.OutboundProxySecondaryPort = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"registration_period": {plan.RegistrationPeriod, state.RegistrationPeriod, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.RegistrationPeriod = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.RegistrationPeriod = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"register_expires": {plan.RegisterExpires, state.RegisterExpires, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.RegisterExpires = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.RegisterExpires = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"voicemail_server_port": {plan.VoicemailServerPort, state.VoicemailServerPort, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.VoicemailServerPort = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.VoicemailServerPort = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"voicemail_server_expires": {plan.VoicemailServerExpires, state.VoicemailServerExpires, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.VoicemailServerExpires = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.VoicemailServerExpires = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"sip_dscp_mark": {plan.SipDscpMark, state.SipDscpMark, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.SipDscpMark = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.SipDscpMark = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"call_agent_port_1": {plan.CallAgentPort1, state.CallAgentPort1, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.CallAgentPort1 = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.CallAgentPort1 = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"call_agent_port_2": {plan.CallAgentPort2, state.CallAgentPort2, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.CallAgentPort2 = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.CallAgentPort2 = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"mgcp_dscp_mark": {plan.MgcpDscpMark, state.MgcpDscpMark, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.MgcpDscpMark = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.MgcpDscpMark = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"local_port_min": {plan.LocalPortMin, state.LocalPortMin, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.LocalPortMin = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.LocalPortMin = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"local_port_max": {plan.LocalPortMax, state.LocalPortMax, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.LocalPortMax = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.LocalPortMax = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"event_payload_type": {plan.EventPayloadType, state.EventPayloadType, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.EventPayloadType = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.EventPayloadType = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"dscp_mark": {plan.DscpMark, state.DscpMark, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				dvsProps.DscpMark = *openapi.NewNullableInt32(&val)
+			} else {
+				dvsProps.DscpMark = *openapi.NewNullableInt32(nil)
+			}
+		}},
 	}
 
 	for _, field := range intFields {
@@ -1293,7 +1426,9 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
+		if len(state.ObjectProperties) == 0 ||
+			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) ||
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
 			op := plan.ObjectProperties[0]
 			objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
 			if !op.IsDefault.IsNull() {
@@ -1362,17 +1497,4 @@ func (r *verityDeviceVoiceSettingsResource) Delete(ctx context.Context, req reso
 
 func (r *verityDeviceVoiceSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func (r *verityDeviceVoiceSettingsResource) equalObjectProperties(a, b verityDeviceVoiceSettingsObjectPropertiesModel) bool {
-	return a.IsDefault.Equal(b.IsDefault) && a.Group.Equal(b.Group)
-}
-
-func setNullableInt32(field *openapi.NullableInt32, value types.Int64) {
-	if !value.IsNull() {
-		val := int32(value.ValueInt64())
-		*field = *openapi.NewNullableInt32(&val)
-	} else {
-		*field = *openapi.NewNullableInt32(nil)
-	}
 }

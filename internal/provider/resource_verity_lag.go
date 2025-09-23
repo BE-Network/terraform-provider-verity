@@ -427,31 +427,33 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		hasChanges = true
 	}
 
-	boolFields := []string{"enable", "is_peer_link", "lacp", "fallback", "fast_rate", "uplink"}
-	for _, field := range boolFields {
-		if planField, stateField := getBoolField(field, plan, state); !planField.Equal(stateField) {
-			boolVal := planField.ValueBool()
-			switch field {
-			case "enable":
-				lagReq.Enable = openapi.PtrBool(boolVal)
-			case "is_peer_link":
-				lagReq.IsPeerLink = openapi.PtrBool(boolVal)
-			case "lacp":
-				lagReq.Lacp = openapi.PtrBool(boolVal)
-			case "fallback":
-				lagReq.Fallback = openapi.PtrBool(boolVal)
-			case "fast_rate":
-				lagReq.FastRate = openapi.PtrBool(boolVal)
-			case "uplink":
-				lagReq.Uplink = openapi.PtrBool(boolVal)
-			}
-			hasChanges = true
-		}
+	if !plan.Enable.Equal(state.Enable) {
+		lagReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+		hasChanges = true
+	}
+	if !plan.IsPeerLink.Equal(state.IsPeerLink) {
+		lagReq.IsPeerLink = openapi.PtrBool(plan.IsPeerLink.ValueBool())
+		hasChanges = true
+	}
+	if !plan.Lacp.Equal(state.Lacp) {
+		lagReq.Lacp = openapi.PtrBool(plan.Lacp.ValueBool())
+		hasChanges = true
+	}
+	if !plan.Fallback.Equal(state.Fallback) {
+		lagReq.Fallback = openapi.PtrBool(plan.Fallback.ValueBool())
+		hasChanges = true
+	}
+	if !plan.FastRate.Equal(state.FastRate) {
+		lagReq.FastRate = openapi.PtrBool(plan.FastRate.ValueBool())
+		hasChanges = true
+	}
+	if !plan.Uplink.Equal(state.Uplink) {
+		lagReq.Uplink = openapi.PtrBool(plan.Uplink.ValueBool())
+		hasChanges = true
 	}
 
-	planColor, stateColor := getStringField("color", plan, state)
-	if !planColor.Equal(stateColor) {
-		lagReq.Color = openapi.PtrString(planColor.ValueString())
+	if !plan.Color.Equal(state.Color) {
+		lagReq.Color = openapi.PtrString(plan.Color.ValueString())
 		hasChanges = true
 	}
 
@@ -550,36 +552,4 @@ func (r *verityLagResource) Delete(ctx context.Context, req resource.DeleteReque
 
 func (r *verityLagResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func getBoolField(field string, plan verityLagResourceModel, state verityLagResourceModel) (types.Bool, types.Bool) {
-	switch field {
-	case "enable":
-		return plan.Enable, state.Enable
-	case "is_peer_link":
-		return plan.IsPeerLink, state.IsPeerLink
-	case "lacp":
-		return plan.Lacp, state.Lacp
-	case "fallback":
-		return plan.Fallback, state.Fallback
-	case "fast_rate":
-		return plan.FastRate, state.FastRate
-	case "uplink":
-		return plan.Uplink, state.Uplink
-	default:
-		return types.BoolNull(), types.BoolNull()
-	}
-}
-
-func getStringField(field string, plan verityLagResourceModel, state verityLagResourceModel) (types.String, types.String) {
-	switch field {
-	case "color":
-		return plan.Color, state.Color
-	case "eth_port_profile":
-		return plan.EthPortProfile, state.EthPortProfile
-	case "eth_port_profile_ref_type_":
-		return plan.EthPortProfileRefType, state.EthPortProfileRefType
-	default:
-		return types.StringNull(), types.StringNull()
-	}
 }

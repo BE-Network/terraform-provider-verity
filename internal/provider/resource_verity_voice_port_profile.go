@@ -768,15 +768,78 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		stateField types.Int64
 		setter     func(types.Int64)
 	}{
-		"call_forward_on_no_answer_ring_count": {plan.CallForwardOnNoAnswerRingCount, state.CallForwardOnNoAnswerRingCount, func(v types.Int64) { setNullableInt32(&vppProps.CallForwardOnNoAnswerRingCount, v) }},
-		"mwi_refresh_timer":                    {plan.MwiRefreshTimer, state.MwiRefreshTimer, func(v types.Int64) { setNullableInt32(&vppProps.MwiRefreshTimer, v) }},
-		"dial_tone_feature_delay":              {plan.DialToneFeatureDelay, state.DialToneFeatureDelay, func(v types.Int64) { setNullableInt32(&vppProps.DialToneFeatureDelay, v) }},
-		"transmit_gain":                        {plan.TransmitGain, state.TransmitGain, func(v types.Int64) { setNullableInt32(&vppProps.TransmitGain, v) }},
-		"receive_gain":                         {plan.ReceiveGain, state.ReceiveGain, func(v types.Int64) { setNullableInt32(&vppProps.ReceiveGain, v) }},
-		"jitter_target":                        {plan.JitterTarget, state.JitterTarget, func(v types.Int64) { setNullableInt32(&vppProps.JitterTarget, v) }},
-		"jitter_buffer_max":                    {plan.JitterBufferMax, state.JitterBufferMax, func(v types.Int64) { setNullableInt32(&vppProps.JitterBufferMax, v) }},
-		"release_timer":                        {plan.ReleaseTimer, state.ReleaseTimer, func(v types.Int64) { setNullableInt32(&vppProps.ReleaseTimer, v) }},
-		"roh_timer":                            {plan.RohTimer, state.RohTimer, func(v types.Int64) { setNullableInt32(&vppProps.RohTimer, v) }},
+		"call_forward_on_no_answer_ring_count": {plan.CallForwardOnNoAnswerRingCount, state.CallForwardOnNoAnswerRingCount, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.CallForwardOnNoAnswerRingCount = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.CallForwardOnNoAnswerRingCount = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"mwi_refresh_timer": {plan.MwiRefreshTimer, state.MwiRefreshTimer, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.MwiRefreshTimer = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.MwiRefreshTimer = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"dial_tone_feature_delay": {plan.DialToneFeatureDelay, state.DialToneFeatureDelay, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.DialToneFeatureDelay = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.DialToneFeatureDelay = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"transmit_gain": {plan.TransmitGain, state.TransmitGain, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.TransmitGain = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.TransmitGain = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"receive_gain": {plan.ReceiveGain, state.ReceiveGain, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.ReceiveGain = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.ReceiveGain = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"jitter_target": {plan.JitterTarget, state.JitterTarget, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.JitterTarget = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.JitterTarget = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"jitter_buffer_max": {plan.JitterBufferMax, state.JitterBufferMax, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.JitterBufferMax = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.JitterBufferMax = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"release_timer": {plan.ReleaseTimer, state.ReleaseTimer, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.ReleaseTimer = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.ReleaseTimer = *openapi.NewNullableInt32(nil)
+			}
+		}},
+		"roh_timer": {plan.RohTimer, state.RohTimer, func(v types.Int64) {
+			if !v.IsNull() {
+				val := int32(v.ValueInt64())
+				vppProps.RohTimer = *openapi.NewNullableInt32(&val)
+			} else {
+				vppProps.RohTimer = *openapi.NewNullableInt32(nil)
+			}
+		}},
 	}
 
 	for _, field := range intFields {
@@ -787,7 +850,11 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
+		if len(state.ObjectProperties) == 0 ||
+			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) ||
+			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
+			!plan.ObjectProperties[0].FormatDialPlan.Equal(state.ObjectProperties[0].FormatDialPlan) {
 			op := plan.ObjectProperties[0]
 			objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
 			if !op.IsDefault.IsNull() {
@@ -862,11 +929,4 @@ func (r *verityVoicePortProfileResource) Delete(ctx context.Context, req resourc
 
 func (r *verityVoicePortProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func (r *verityVoicePortProfileResource) equalObjectProperties(a, b verityVoicePortProfileObjectPropertiesModel) bool {
-	return a.IsDefault.Equal(b.IsDefault) &&
-		a.PortMonitoring.Equal(b.PortMonitoring) &&
-		a.Group.Equal(b.Group) &&
-		a.FormatDialPlan.Equal(b.FormatDialPlan)
 }

@@ -709,7 +709,9 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
+		if len(state.ObjectProperties) == 0 ||
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
+			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) {
 			op := plan.ObjectProperties[0]
 			objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
 			if !op.Group.IsNull() {
@@ -778,8 +780,4 @@ func (r *verityAuthenticatedEthPortResource) Delete(ctx context.Context, req res
 
 func (r *verityAuthenticatedEthPortResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func (r *verityAuthenticatedEthPortResource) equalObjectProperties(a, b verityAuthenticatedEthPortObjectPropertiesModel) bool {
-	return a.Group.Equal(b.Group) && a.PortMonitoring.Equal(b.PortMonitoring)
 }

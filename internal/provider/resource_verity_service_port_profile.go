@@ -793,7 +793,10 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	}
 
 	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !r.equalObjectProperties(plan.ObjectProperties[0], state.ObjectProperties[0]) {
+		if len(state.ObjectProperties) == 0 ||
+			!plan.ObjectProperties[0].OnSummary.Equal(state.ObjectProperties[0].OnSummary) ||
+			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
 			op := plan.ObjectProperties[0]
 			objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
 			if !op.OnSummary.IsNull() {
@@ -865,10 +868,4 @@ func (r *verityServicePortProfileResource) Delete(ctx context.Context, req resou
 
 func (r *verityServicePortProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
-}
-
-func (r *verityServicePortProfileResource) equalObjectProperties(a, b verityServicePortProfileObjectPropertiesModel) bool {
-	return a.OnSummary.Equal(b.OnSummary) &&
-		a.PortMonitoring.Equal(b.PortMonitoring) &&
-		a.Group.Equal(b.Group)
 }
