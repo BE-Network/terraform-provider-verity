@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -100,22 +99,17 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	name := plan.Name.ValueString()
-	podProps := &openapi.PodsPutRequestPodValue{
+	podReq := &openapi.PodsPutRequestPodValue{
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		podProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &podReq.Enable, TFValue: plan.Enable},
+	})
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "pod", name, *podProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for pod creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Pod %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "pod", name, *podReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -145,46 +139,35 @@ func (r *verityPodResource) Read(ctx context.Context, req resource.ReadRequest, 
 	podName := state.Name.ValueString()
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("pod") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping Pod %s verification – trusting recent successful API operation", podName))
+		tflog.Info(ctx, fmt.Sprintf("Skipping Pod %s verification - trusting recent successful API operation", podName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Fetching Pods for verification of %s", podName))
+	tflog.Debug(ctx, fmt.Sprintf("No recent Pod operations found, performing normal verification for %s", podName))
 
-	type PodResponse struct {
+	type PodsResponse struct {
 		Pod map[string]map[string]interface{} `json:"pod"`
 	}
 
-	var result PodResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		podsData, fetchErr := getCachedResponse(ctx, r.provCtx, "pods", func() (interface{}, error) {
-			tflog.Debug(ctx, "Making API call to fetch pods")
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "pods", podName,
+		func() (PodsResponse, error) {
+			tflog.Debug(ctx, "Making API call to fetch Pods")
 			respAPI, err := r.client.PodsAPI.PodsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading pods: %v", err)
+				return PodsResponse{}, fmt.Errorf("error reading Pod: %v", err)
 			}
 			defer respAPI.Body.Close()
 
-			var result PodResponse
-			if err := json.NewDecoder(respAPI.Body).Decode(&result); err != nil {
-				return nil, fmt.Errorf("failed to decode pods response: %v", err)
+			var res PodsResponse
+			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
+				return PodsResponse{}, fmt.Errorf("failed to decode Pods response: %v", err)
 			}
 
-			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d pods", len(result.Pod)))
-			return result, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch pods on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = podsData.(PodResponse)
-		break
-	}
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Pods from API", len(res.Pod)))
+			return res, nil
+		},
+		getCachedResponse,
+	)
 
 	if err != nil {
 		resp.Diagnostics.Append(
@@ -193,38 +176,45 @@ func (r *verityPodResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for pod with ID: %s", podName))
-	var podData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for Pod with name: %s", podName))
 
-	if data, ok := result.Pod[podName]; ok {
-		podData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found pod directly by ID: %s", podName))
-	} else {
-		for apiName, pod := range result.Pod {
-			if resourceName, ok := pod["name"].(string); ok && resourceName == podName {
-				podData = pod
-				podName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found pod with name '%s' under API key '%s'", resourceName, apiName))
-				break
+	podData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Pod,
+		podName,
+		func(data map[string]interface{}) (string, bool) {
+			if name, ok := data["name"].(string); ok {
+				return name, true
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Pod with ID '%s' not found in API response", podName))
+		tflog.Debug(ctx, fmt.Sprintf("Pod with name '%s' not found in API response", podName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", podData["name"]))
+	podMap, ok := (interface{}(podData)).(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Pod Data",
+			fmt.Sprintf("Pod data is not in expected format for %s", podName),
+		)
+		return
+	}
 
-	if enable, ok := podData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	tflog.Debug(ctx, fmt.Sprintf("Found Pod '%s' under API key '%s'", podName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(podMap["name"])
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(podMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -253,32 +243,22 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	name := plan.Name.ValueString()
-	podProps := openapi.PodsPutRequestPodValue{}
+	podReq := openapi.PodsPutRequestPodValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		podProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { podReq.Name = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		podProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { podReq.Enable = v }, &hasChanges)
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "pod", name, podProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for pod update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Pod %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "pod", name, podReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -304,14 +284,9 @@ func (r *verityPodResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "pod", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for pod deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Pod %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "pod", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

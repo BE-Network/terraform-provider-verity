@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -109,26 +108,21 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		diagnosticsPortProfileProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", TFValue: plan.Enable, APIField: &diagnosticsPortProfileProps.Enable},
+		{FieldName: "EnableSflow", TFValue: plan.EnableSflow, APIField: &diagnosticsPortProfileProps.EnableSflow},
+	})
 
-	if !plan.EnableSflow.IsNull() {
-		diagnosticsPortProfileProps.EnableSflow = openapi.PtrBool(plan.EnableSflow.ValueBool())
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "diagnostics_port_profile", name, *diagnosticsPortProfileProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for diagnostics port profile creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Diagnostics Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_port_profile", name, diagnosticsPortProfileProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Port Profile %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_port_profiles")
+
+	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
 }
 
@@ -150,7 +144,7 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 
 	diagnosticsPortProfileName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("diagnosticsportprofile") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("diagnostics_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping diagnostics port profile %s verification – trusting recent successful API operation", diagnosticsPortProfileName))
 		return
 	}
@@ -161,36 +155,26 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 		DiagnosticsPortProfile map[string]interface{} `json:"diagnostics_port_profile"`
 	}
 
-	var result DiagnosticsPortProfilesResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		diagnosticsPortProfilesData, fetchErr := getCachedResponse(ctx, r.provCtx, "diagnosticsportprofiles", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "diagnostics_port_profiles", diagnosticsPortProfileName,
+		func() (DiagnosticsPortProfilesResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch diagnostics port profiles")
 			respAPI, err := r.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading diagnostics port profiles: %v", err)
+				return DiagnosticsPortProfilesResponse{}, fmt.Errorf("error reading diagnostics port profiles: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res DiagnosticsPortProfilesResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode diagnostics port profiles response: %v", err)
+				return DiagnosticsPortProfilesResponse{}, fmt.Errorf("failed to decode diagnostics port profiles response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d diagnostics port profiles", len(res.DiagnosticsPortProfile)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch diagnostics port profiles on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = diagnosticsPortProfilesData.(DiagnosticsPortProfilesResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Diagnostics Port Profile %s", diagnosticsPortProfileName))...,
@@ -198,49 +182,48 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for diagnostics port profile with ID: %s", diagnosticsPortProfileName))
-	var diagnosticsPortProfileData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for diagnostics port profile with name: %s", diagnosticsPortProfileName))
 
-	if data, ok := result.DiagnosticsPortProfile[diagnosticsPortProfileName].(map[string]interface{}); ok {
-		diagnosticsPortProfileData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found diagnostics port profile directly by ID: %s", diagnosticsPortProfileName))
-	} else {
-		for apiName, d := range result.DiagnosticsPortProfile {
-			diagnosticsPortProfile, ok := d.(map[string]interface{})
-			if !ok {
-				continue
+	diagnosticsPortProfileData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.DiagnosticsPortProfile,
+		diagnosticsPortProfileName,
+		func(data interface{}) (string, bool) {
+			if diagnosticsPortProfile, ok := data.(map[string]interface{}); ok {
+				if name, ok := diagnosticsPortProfile["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := diagnosticsPortProfile["name"].(string); ok && name == diagnosticsPortProfileName {
-				diagnosticsPortProfileData = diagnosticsPortProfile
-				diagnosticsPortProfileName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found diagnostics port profile with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Diagnostics Port Profile with ID '%s' not found in API response", diagnosticsPortProfileName))
+		tflog.Debug(ctx, fmt.Sprintf("Diagnostics Port Profile with name '%s' not found in API response", diagnosticsPortProfileName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", diagnosticsPortProfileData["name"]))
-
-	if enable, ok := diagnosticsPortProfileData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	diagnosticsPortProfileMap, ok := diagnosticsPortProfileData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Diagnostics Port Profile Data",
+			fmt.Sprintf("Diagnostics Port Profile data is not in expected format for %s", diagnosticsPortProfileName),
+		)
+		return
 	}
 
-	if enableSflow, ok := diagnosticsPortProfileData["enable_sflow"].(bool); ok {
-		state.EnableSflow = types.BoolValue(enableSflow)
-	} else {
-		state.EnableSflow = types.BoolNull()
+	tflog.Debug(ctx, fmt.Sprintf("Found diagnostics port profile '%s' under API key '%s'", diagnosticsPortProfileName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(diagnosticsPortProfileMap["name"])
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":       &state.Enable,
+		"enable_sflow": &state.EnableSflow,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(diagnosticsPortProfileMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -272,36 +255,23 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 	diagnosticsPortProfileProps := openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		diagnosticsPortProfileProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { diagnosticsPortProfileProps.Name = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		diagnosticsPortProfileProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.EnableSflow.Equal(state.EnableSflow) {
-		diagnosticsPortProfileProps.EnableSflow = openapi.PtrBool(plan.EnableSflow.ValueBool())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { diagnosticsPortProfileProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableSflow, state.EnableSflow, func(v *bool) { diagnosticsPortProfileProps.EnableSflow = v }, &hasChanges)
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "diagnostics_port_profile", name, diagnosticsPortProfileProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for diagnostics port profile update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Diagnostics Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "diagnostics_port_profile", name, diagnosticsPortProfileProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Port Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_port_profiles")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -324,16 +294,12 @@ func (r *verityDiagnosticsPortProfileResource) Delete(ctx context.Context, req r
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "diagnostics_port_profile", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for diagnostics port profile deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Diagnostics Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "diagnostics_port_profile", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Port Profile %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_port_profiles")
 	resp.State.RemoveResource(ctx)

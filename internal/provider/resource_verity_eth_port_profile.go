@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -72,6 +70,10 @@ type servicesModel struct {
 	RowNumMacFilter         types.String `tfsdk:"row_num_mac_filter"`
 	RowNumMacFilterRefType  types.String `tfsdk:"row_num_mac_filter_ref_type_"`
 	RowNumLanIptv           types.String `tfsdk:"row_num_lan_iptv"`
+}
+
+func (s servicesModel) GetIndex() types.Int64 {
+	return s.Index
 }
 
 func (r *verityEthPortProfileResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -241,8 +243,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		return
 	}
 
-	err := ensureAuthenticated(ctx, r.provCtx)
-	if err != nil {
+	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
 			fmt.Sprintf("Error authenticating with API: %s", err),
@@ -251,154 +252,112 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	name := plan.Name.ValueString()
-	ethPortName := &openapi.EthportprofilesPutRequestEthPortProfileValue{
+	ethPortProfileProps := &openapi.EthportprofilesPutRequestEthPortProfileValue{
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		ethPortName.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "IngressAcl", APIField: &ethPortProfileProps.IngressAcl, TFValue: plan.IngressAcl},
+		{FieldName: "IngressAclRefType", APIField: &ethPortProfileProps.IngressAclRefType, TFValue: plan.IngressAclRefType},
+		{FieldName: "EgressAcl", APIField: &ethPortProfileProps.EgressAcl, TFValue: plan.EgressAcl},
+		{FieldName: "EgressAclRefType", APIField: &ethPortProfileProps.EgressAclRefType, TFValue: plan.EgressAclRefType},
+		{FieldName: "TlsService", APIField: &ethPortProfileProps.TlsService, TFValue: plan.TlsService},
+		{FieldName: "TlsServiceRefType", APIField: &ethPortProfileProps.TlsServiceRefType, TFValue: plan.TlsServiceRefType},
+	})
 
-	if !plan.IngressAcl.IsNull() {
-		ethPortName.IngressAcl = openapi.PtrString(plan.IngressAcl.ValueString())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &ethPortProfileProps.Enable, TFValue: plan.Enable},
+		{FieldName: "Tls", APIField: &ethPortProfileProps.Tls, TFValue: plan.Tls},
+		{FieldName: "TrustedPort", APIField: &ethPortProfileProps.TrustedPort, TFValue: plan.TrustedPort},
+	})
 
-	if !plan.IngressAclRefType.IsNull() {
-		ethPortName.IngressAclRefType = openapi.PtrString(plan.IngressAclRefType.ValueString())
-	}
-
-	if !plan.EgressAcl.IsNull() {
-		ethPortName.EgressAcl = openapi.PtrString(plan.EgressAcl.ValueString())
-	}
-
-	if !plan.EgressAclRefType.IsNull() {
-		ethPortName.EgressAclRefType = openapi.PtrString(plan.EgressAclRefType.ValueString())
-	}
-
-	if !plan.Tls.IsNull() {
-		ethPortName.Tls = openapi.PtrBool(plan.Tls.ValueBool())
-	}
-
-	if !plan.TlsService.IsNull() {
-		ethPortName.TlsService = openapi.PtrString(plan.TlsService.ValueString())
-	}
-
-	if !plan.TlsServiceRefType.IsNull() {
-		ethPortName.TlsServiceRefType = openapi.PtrString(plan.TlsServiceRefType.ValueString())
-	}
-
-	if !plan.TrustedPort.IsNull() {
-		ethPortName.TrustedPort = openapi.PtrBool(plan.TrustedPort.ValueBool())
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
 		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
-		objProp := plan.ObjectProperties[0]
-
-		if !objProp.Group.IsNull() {
-			objProps.Group = openapi.PtrString(objProp.Group.ValueString())
+		if !op.Group.IsNull() {
+			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
 			objProps.Group = nil
 		}
-
-		if !objProp.PortMonitoring.IsNull() {
-			objProps.PortMonitoring = openapi.PtrString(objProp.PortMonitoring.ValueString())
+		if !op.PortMonitoring.IsNull() {
+			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
 		} else {
 			objProps.PortMonitoring = nil
 		}
-
-		if !objProp.SortByName.IsNull() {
-			objProps.SortByName = openapi.PtrBool(objProp.SortByName.ValueBool())
+		if !op.SortByName.IsNull() {
+			objProps.SortByName = openapi.PtrBool(op.SortByName.ValueBool())
 		}
-
-		if !objProp.Label.IsNull() {
-			objProps.Label = openapi.PtrString(objProp.Label.ValueString())
+		if !op.Label.IsNull() {
+			objProps.Label = openapi.PtrString(op.Label.ValueString())
 		}
-
-		if !objProp.Icon.IsNull() {
-			objProps.Icon = openapi.PtrString(objProp.Icon.ValueString())
+		if !op.Icon.IsNull() {
+			objProps.Icon = openapi.PtrString(op.Icon.ValueString())
 		}
-
-		ethPortName.ObjectProperties = &objProps
+		ethPortProfileProps.ObjectProperties = &objProps
 	}
 
+	// Handle Services
 	if len(plan.Services) > 0 {
-		services := make([]openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner, len(plan.Services))
-
+		servicesItems := make([]openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner, len(plan.Services))
 		for i, service := range plan.Services {
-			s := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
+			serviceItem := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
 
 			if !service.RowNumEnable.IsNull() {
-				s.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
+				serviceItem.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
 			}
-
 			if !service.RowNumService.IsNull() {
-				s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
+				serviceItem.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
 			}
-
 			if !service.RowNumServiceRefType.IsNull() {
-				s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
+				serviceItem.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
 			}
-
 			if !service.RowNumExternalVlan.IsNull() {
 				intVal := int32(service.RowNumExternalVlan.ValueInt64())
-				s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
+				serviceItem.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
 			} else {
-				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
+				serviceItem.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
 			}
-
 			if !service.RowNumIngressAcl.IsNull() {
-				s.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
+				serviceItem.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
 			}
-
 			if !service.RowNumIngressAclRefType.IsNull() {
-				s.RowNumIngressAclRefType = openapi.PtrString(service.RowNumIngressAclRefType.ValueString())
+				serviceItem.RowNumIngressAclRefType = openapi.PtrString(service.RowNumIngressAclRefType.ValueString())
 			}
-
 			if !service.RowNumEgressAcl.IsNull() {
-				s.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
+				serviceItem.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
 			}
-
 			if !service.RowNumEgressAclRefType.IsNull() {
-				s.RowNumEgressAclRefType = openapi.PtrString(service.RowNumEgressAclRefType.ValueString())
+				serviceItem.RowNumEgressAclRefType = openapi.PtrString(service.RowNumEgressAclRefType.ValueString())
 			}
-
 			if !service.Index.IsNull() {
-				s.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
+				serviceItem.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
 			}
-
 			if !service.RowNumMacFilter.IsNull() {
-				s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
+				serviceItem.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
 			}
-
 			if !service.RowNumMacFilterRefType.IsNull() {
-				s.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
+				serviceItem.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
 			}
-
 			if !service.RowNumLanIptv.IsNull() {
-				s.RowNumLanIptv = openapi.PtrString(service.RowNumLanIptv.ValueString())
+				serviceItem.RowNumLanIptv = openapi.PtrString(service.RowNumLanIptv.ValueString())
 			}
 
-			services[i] = s
+			servicesItems[i] = serviceItem
 		}
-
-		ethPortName.Services = services
+		ethPortProfileProps.Services = servicesItems
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "eth_port_profile", name, *ethPortName)
-
-	r.notifyOperationAdded()
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile creation operation %s to complete", operationID))
-
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Eth Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "eth_port_profile", name, *ethPortProfileProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
-	tflog.Info(ctx, fmt.Sprintf("Eth port profile %s creation operation completed successfully", name))
+	tflog.Info(ctx, fmt.Sprintf("Eth Port Profile %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_profiles")
+
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
 }
@@ -414,300 +373,156 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
-	profileName := state.Name.ValueString()
+	ethPortProfileName := state.Name.ValueString()
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("eth_port_profile") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping eth port profile %s verification - trusting recent successful API operation", profileName))
+		tflog.Info(ctx, fmt.Sprintf("Skipping eth port profile %s verification – trusting recent successful API operation", ethPortProfileName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent eth port profile operations found, performing normal verification for %s", profileName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching eth port profiles for verification of %s", ethPortProfileName))
 
 	type EthPortProfileResponse struct {
-		EthPortProfile map[string]map[string]interface{} `json:"eth_port_profile_"`
+		EthPortProfile map[string]interface{} `json:"eth_port_profile_"`
 	}
 
-	var result EthPortProfileResponse
-	var err error
-	maxRetries := 3
-
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		if attempt > 0 {
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch eth port profiles on attempt %d, retrying in %v", attempt, sleepTime))
-			time.Sleep(sleepTime)
-		}
-
-		profilesData, fetchErr := getCachedResponse(ctx, r.provCtx, "eth_port_profiles", func() (interface{}, error) {
-			tflog.Debug(ctx, "Making API call to fetch Ethernet port profiles")
-			resp, err := r.client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "eth_port_profiles", ethPortProfileName,
+		func() (EthPortProfileResponse, error) {
+			tflog.Debug(ctx, "Making API call to fetch eth port profiles")
+			respAPI, err := r.client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading EthPort profiles: %v", err)
+				return EthPortProfileResponse{}, fmt.Errorf("error reading eth port profiles: %v", err)
 			}
-			defer resp.Body.Close()
+			defer respAPI.Body.Close()
 
-			var result EthPortProfileResponse
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, fmt.Errorf("error decoding EthPort profiles response: %v", err)
+			var res EthPortProfileResponse
+			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
+				return EthPortProfileResponse{}, fmt.Errorf("failed to decode eth port profiles response: %v", err)
 			}
 
-			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Ethernet port profiles from API", len(result.EthPortProfile)))
-			return result, nil
-		})
-
-		if fetchErr == nil {
-			result = profilesData.(EthPortProfileResponse)
-			break
-		}
-		err = fetchErr
-	}
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d eth port profiles", len(res.EthPortProfile)))
+			return res, nil
+		},
+		getCachedResponse,
+	)
 
 	if err != nil {
 		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, "Failed to Read Eth Port Profiles")...,
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Eth Port Profile %s", ethPortProfileName))...,
 		)
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for Ethernet port profile with ID: %s", profileName))
+	tflog.Debug(ctx, fmt.Sprintf("Looking for eth port profile with name: %s", ethPortProfileName))
 
-	profile, exists := result.EthPortProfile[profileName]
-	if exists {
-		tflog.Debug(ctx, fmt.Sprintf("Found Ethernet port profile directly by ID: %s", profileName))
-	}
-
-	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Profile not found directly by ID '%s', searching through all profiles", profileName))
-		for apiName, p := range result.EthPortProfile {
-			if name, ok := p["name"].(string); ok && name == profileName {
-				profile = p
-				profileName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Ethernet port profile with name '%s' under API key '%s'", name, apiName))
-				break
+	ethPortProfileData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.EthPortProfile,
+		ethPortProfileName,
+		func(data interface{}) (string, bool) {
+			if ethPortProfile, ok := data.(map[string]interface{}); ok {
+				if name, ok := ethPortProfile["name"].(string); ok {
+					return name, true
+				}
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Ethernet port profile with ID '%s' not found in API response", profileName))
+		tflog.Debug(ctx, fmt.Sprintf("Eth Port Profile with name '%s' not found in API response", ethPortProfileName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	if name, ok := profile["name"].(string); ok {
-		state.Name = types.StringValue(name)
+	ethPortProfileMap, ok := ethPortProfileData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Eth Port Profile Data",
+			fmt.Sprintf("Eth Port Profile data is not in expected format for %s", ethPortProfileName),
+		)
+		return
 	}
 
-	if enable, ok := profile["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	}
+	tflog.Debug(ctx, fmt.Sprintf("Found eth port profile '%s' under API key '%s'", ethPortProfileName, actualAPIName))
 
-	if ingressAcl, ok := profile["ingress_acl"].(string); ok {
-		state.IngressAcl = types.StringValue(ingressAcl)
-	} else {
-		state.IngressAcl = types.StringNull()
-	}
+	state.Name = utils.MapStringFromAPI(ethPortProfileMap["name"])
 
-	if ingressAclRefType, ok := profile["ingress_acl_ref_type_"].(string); ok {
-		state.IngressAclRefType = types.StringValue(ingressAclRefType)
-	} else {
-		state.IngressAclRefType = types.StringNull()
-	}
-
-	if egressAcl, ok := profile["egress_acl"].(string); ok {
-		state.EgressAcl = types.StringValue(egressAcl)
-	} else {
-		state.EgressAcl = types.StringNull()
-	}
-
-	if egressAclRefType, ok := profile["egress_acl_ref_type_"].(string); ok {
-		state.EgressAclRefType = types.StringValue(egressAclRefType)
-	} else {
-		state.EgressAclRefType = types.StringNull()
-	}
-
-	if tls, ok := profile["tls"].(bool); ok {
-		state.Tls = types.BoolValue(tls)
-	} else {
-		state.Tls = types.BoolNull()
-	}
-
-	if tlsService, ok := profile["tls_service"].(string); ok {
-		state.TlsService = types.StringValue(tlsService)
-	} else {
-		state.TlsService = types.StringNull()
-	}
-
-	if tlsServiceRefType, ok := profile["tls_service_ref_type_"].(string); ok {
-		state.TlsServiceRefType = types.StringValue(tlsServiceRefType)
-	} else {
-		state.TlsServiceRefType = types.StringNull()
-	}
-
-	if trustedPort, ok := profile["trusted_port"].(bool); ok {
-		state.TrustedPort = types.BoolValue(trustedPort)
-	} else {
-		state.TrustedPort = types.BoolNull()
-	}
-
-	if objProps, ok := profile["object_properties"].(map[string]interface{}); ok {
-		var objProperties []verityEthPortProfileObjectPropertiesModel
-		objProperty := verityEthPortProfileObjectPropertiesModel{}
-
-		if group, ok := objProps["group"].(string); ok {
-			objProperty.Group = types.StringValue(group)
-		} else {
-			objProperty.Group = types.StringNull()
+	// Handle object properties
+	if objProps, ok := ethPortProfileMap["object_properties"].(map[string]interface{}); ok {
+		state.ObjectProperties = []verityEthPortProfileObjectPropertiesModel{
+			{
+				Group:          utils.MapStringFromAPI(objProps["group"]),
+				PortMonitoring: utils.MapStringFromAPI(objProps["port_monitoring"]),
+				SortByName:     utils.MapBoolFromAPI(objProps["sort_by_name"]),
+				Label:          utils.MapStringFromAPI(objProps["label"]),
+				Icon:           utils.MapStringFromAPI(objProps["icon"]),
+			},
 		}
-
-		if portMonitoring, ok := objProps["port_monitoring"].(string); ok {
-			objProperty.PortMonitoring = types.StringValue(portMonitoring)
-		} else {
-			objProperty.PortMonitoring = types.StringNull()
-		}
-
-		if sortByName, ok := objProps["sort_by_name"].(bool); ok {
-			objProperty.SortByName = types.BoolValue(sortByName)
-		} else {
-			objProperty.SortByName = types.BoolNull()
-		}
-
-		if label, ok := objProps["label"].(string); ok {
-			objProperty.Label = types.StringValue(label)
-		} else {
-			objProperty.Label = types.StringNull()
-		}
-
-		if icon, ok := objProps["icon"].(string); ok {
-			objProperty.Icon = types.StringValue(icon)
-		} else {
-			objProperty.Icon = types.StringNull()
-		}
-
-		objProperties = append(objProperties, objProperty)
-		state.ObjectProperties = objProperties
 	} else {
 		state.ObjectProperties = nil
 	}
 
-	if services, ok := profile["services"].([]interface{}); ok {
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"ingress_acl":           &state.IngressAcl,
+		"ingress_acl_ref_type_": &state.IngressAclRefType,
+		"egress_acl":            &state.EgressAcl,
+		"egress_acl_ref_type_":  &state.EgressAclRefType,
+		"tls_service":           &state.TlsService,
+		"tls_service_ref_type_": &state.TlsServiceRefType,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(ethPortProfileMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":       &state.Enable,
+		"tls":          &state.Tls,
+		"trusted_port": &state.TrustedPort,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(ethPortProfileMap[apiKey])
+	}
+
+	// Handle services
+	if services, ok := ethPortProfileMap["services"].([]interface{}); ok && len(services) > 0 {
 		var servicesList []servicesModel
 
-		for _, service := range services {
-			if serviceMap, ok := service.(map[string]interface{}); ok {
-				serviceModel := servicesModel{}
-
-				if enable, ok := serviceMap["row_num_enable"].(bool); ok {
-					serviceModel.RowNumEnable = types.BoolValue(enable)
-				} else {
-					serviceModel.RowNumEnable = types.BoolNull()
-				}
-
-				if service, ok := serviceMap["row_num_service"].(string); ok {
-					serviceModel.RowNumService = types.StringValue(service)
-				} else {
-					serviceModel.RowNumService = types.StringNull()
-				}
-
-				if refType, ok := serviceMap["row_num_service_ref_type_"].(string); ok {
-					serviceModel.RowNumServiceRefType = types.StringValue(refType)
-				} else {
-					serviceModel.RowNumServiceRefType = types.StringNull()
-				}
-
-				if vlan, ok := serviceMap["row_num_external_vlan"]; ok {
-					if vlan == nil {
-						serviceModel.RowNumExternalVlan = types.Int64Null()
-					} else {
-						switch v := vlan.(type) {
-						case float64:
-							serviceModel.RowNumExternalVlan = types.Int64Value(int64(v))
-						case int:
-							serviceModel.RowNumExternalVlan = types.Int64Value(int64(v))
-						case int32:
-							serviceModel.RowNumExternalVlan = types.Int64Value(int64(v))
-						case int64:
-							serviceModel.RowNumExternalVlan = types.Int64Value(v)
-						case string:
-							if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-								serviceModel.RowNumExternalVlan = types.Int64Value(intVal)
-							} else {
-								tflog.Warn(ctx, fmt.Sprintf("Cannot convert row_num_external_vlan value '%s' to integer", v))
-								serviceModel.RowNumExternalVlan = types.Int64Null()
-							}
-						default:
-							strVal := fmt.Sprintf("%v", v)
-							if intVal, err := strconv.ParseInt(strVal, 10, 64); err == nil {
-								serviceModel.RowNumExternalVlan = types.Int64Value(intVal)
-							} else {
-								tflog.Warn(ctx, fmt.Sprintf("Cannot convert row_num_external_vlan value '%v' to integer", v))
-								serviceModel.RowNumExternalVlan = types.Int64Null()
-							}
-						}
-					}
-				} else {
-					serviceModel.RowNumExternalVlan = types.Int64Null()
-				}
-
-				if ingressAcl, ok := serviceMap["row_num_ingress_acl"].(string); ok {
-					serviceModel.RowNumIngressAcl = types.StringValue(ingressAcl)
-				} else {
-					serviceModel.RowNumIngressAcl = types.StringNull()
-				}
-
-				if ingressAclRefType, ok := serviceMap["row_num_ingress_acl_ref_type_"].(string); ok {
-					serviceModel.RowNumIngressAclRefType = types.StringValue(ingressAclRefType)
-				} else {
-					serviceModel.RowNumIngressAclRefType = types.StringNull()
-				}
-
-				if egressAcl, ok := serviceMap["row_num_egress_acl"].(string); ok {
-					serviceModel.RowNumEgressAcl = types.StringValue(egressAcl)
-				} else {
-					serviceModel.RowNumEgressAcl = types.StringNull()
-				}
-
-				if egressAclRefType, ok := serviceMap["row_num_egress_acl_ref_type_"].(string); ok {
-					serviceModel.RowNumEgressAclRefType = types.StringValue(egressAclRefType)
-				} else {
-					serviceModel.RowNumEgressAclRefType = types.StringNull()
-				}
-
-				if index, ok := serviceMap["index"].(float64); ok {
-					serviceModel.Index = types.Int64Value(int64(index))
-				} else {
-					serviceModel.Index = types.Int64Null()
-				}
-
-				if macFilter, ok := serviceMap["row_num_mac_filter"].(string); ok {
-					serviceModel.RowNumMacFilter = types.StringValue(macFilter)
-				} else {
-					serviceModel.RowNumMacFilter = types.StringNull()
-				}
-
-				if macFilterRefType, ok := serviceMap["row_num_mac_filter_ref_type_"].(string); ok {
-					serviceModel.RowNumMacFilterRefType = types.StringValue(macFilterRefType)
-				} else {
-					serviceModel.RowNumMacFilterRefType = types.StringNull()
-				}
-
-				if lanIptv, ok := serviceMap["row_num_lan_iptv"].(string); ok {
-					serviceModel.RowNumLanIptv = types.StringValue(lanIptv)
-				} else {
-					serviceModel.RowNumLanIptv = types.StringNull()
-				}
-
-				servicesList = append(servicesList, serviceModel)
+		for _, s := range services {
+			service, ok := s.(map[string]interface{})
+			if !ok {
+				continue
 			}
+
+			serviceModel := servicesModel{
+				RowNumEnable:            utils.MapBoolFromAPI(service["row_num_enable"]),
+				RowNumService:           utils.MapStringFromAPI(service["row_num_service"]),
+				RowNumServiceRefType:    utils.MapStringFromAPI(service["row_num_service_ref_type_"]),
+				RowNumExternalVlan:      utils.MapInt64FromAPI(service["row_num_external_vlan"]),
+				RowNumIngressAcl:        utils.MapStringFromAPI(service["row_num_ingress_acl"]),
+				RowNumIngressAclRefType: utils.MapStringFromAPI(service["row_num_ingress_acl_ref_type_"]),
+				RowNumEgressAcl:         utils.MapStringFromAPI(service["row_num_egress_acl"]),
+				RowNumEgressAclRefType:  utils.MapStringFromAPI(service["row_num_egress_acl_ref_type_"]),
+				Index:                   utils.MapInt64FromAPI(service["index"]),
+				RowNumMacFilter:         utils.MapStringFromAPI(service["row_num_mac_filter"]),
+				RowNumMacFilterRefType:  utils.MapStringFromAPI(service["row_num_mac_filter_ref_type_"]),
+				RowNumLanIptv:           utils.MapStringFromAPI(service["row_num_lan_iptv"]),
+			}
+
+			servicesList = append(servicesList, serviceModel)
 		}
 
 		state.Services = servicesList
+	} else {
+		state.Services = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -728,8 +543,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	err := ensureAuthenticated(ctx, r.provCtx)
-	if err != nil {
+	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
 			fmt.Sprintf("Error authenticating with API: %s", err),
@@ -738,566 +552,286 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	}
 
 	name := plan.Name.ValueString()
-	ethPortName := openapi.EthportprofilesPutRequestEthPortProfileValue{}
-
+	ethPortProfileProps := openapi.EthportprofilesPutRequestEthPortProfileValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		ethPortName.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ethPortProfileProps.Name = v }, &hasChanges)
 
-	ingressAclChanged := !plan.IngressAcl.Equal(state.IngressAcl)
-	ingressAclRefTypeChanged := !plan.IngressAclRefType.Equal(state.IngressAclRefType)
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ethPortProfileProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Tls, state.Tls, func(v *bool) { ethPortProfileProps.Tls = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { ethPortProfileProps.TrustedPort = v }, &hasChanges)
 
-	if ingressAclChanged || ingressAclRefTypeChanged {
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.IngressAcl, plan.IngressAclRefType,
-			"ingress_acl", "ingress_acl_ref_type_",
-			ingressAclChanged, ingressAclRefTypeChanged) {
-			return
-		}
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 ||
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
+			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
+			!plan.ObjectProperties[0].SortByName.Equal(state.ObjectProperties[0].SortByName) ||
+			!plan.ObjectProperties[0].Label.Equal(state.ObjectProperties[0].Label) ||
+			!plan.ObjectProperties[0].Icon.Equal(state.ObjectProperties[0].Icon) {
 
-		// For fields with one reference type:
-		// If only base field changes, send only base field
-		// If ref type field changes (or both), send both fields
-		if ingressAclChanged && !ingressAclRefTypeChanged {
-			// Just send the base field
-			if !plan.IngressAcl.IsNull() && plan.IngressAcl.ValueString() != "" {
-				ethPortName.IngressAcl = openapi.PtrString(plan.IngressAcl.ValueString())
+			objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
+			op := plan.ObjectProperties[0]
+
+			if !op.Group.IsNull() {
+				objProps.Group = openapi.PtrString(op.Group.ValueString())
 			} else {
-				ethPortName.IngressAcl = openapi.PtrString("")
+				objProps.Group = nil
 			}
-			hasChanges = true
-		} else if ingressAclRefTypeChanged {
-			// Send both fields
-			if !plan.IngressAcl.IsNull() && plan.IngressAcl.ValueString() != "" {
-				ethPortName.IngressAcl = openapi.PtrString(plan.IngressAcl.ValueString())
+			if !op.PortMonitoring.IsNull() {
+				objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
 			} else {
-				ethPortName.IngressAcl = openapi.PtrString("")
+				objProps.PortMonitoring = nil
 			}
-
-			if !plan.IngressAclRefType.IsNull() && plan.IngressAclRefType.ValueString() != "" {
-				ethPortName.IngressAclRefType = openapi.PtrString(plan.IngressAclRefType.ValueString())
+			if !op.SortByName.IsNull() {
+				objProps.SortByName = openapi.PtrBool(op.SortByName.ValueBool())
 			} else {
-				ethPortName.IngressAclRefType = openapi.PtrString("")
+				objProps.SortByName = nil
 			}
-			hasChanges = true
-		}
-	}
-
-	egressAclChanged := !plan.EgressAcl.Equal(state.EgressAcl)
-	egressAclRefTypeChanged := !plan.EgressAclRefType.Equal(state.EgressAclRefType)
-
-	if egressAclChanged || egressAclRefTypeChanged {
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.EgressAcl, plan.EgressAclRefType,
-			"egress_acl", "egress_acl_ref_type_",
-			egressAclChanged, egressAclRefTypeChanged) {
-			return
-		}
-
-		// For fields with one reference type:
-		// If only base field changes, send only base field
-		// If ref type field changes (or both), send both fields
-		if egressAclChanged && !egressAclRefTypeChanged {
-			// Just send the base field
-			if !plan.EgressAcl.IsNull() && plan.EgressAcl.ValueString() != "" {
-				ethPortName.EgressAcl = openapi.PtrString(plan.EgressAcl.ValueString())
+			if !op.Label.IsNull() {
+				objProps.Label = openapi.PtrString(op.Label.ValueString())
 			} else {
-				ethPortName.EgressAcl = openapi.PtrString("")
+				objProps.Label = nil
 			}
-			hasChanges = true
-		} else if egressAclRefTypeChanged {
-			// Send both fields
-			if !plan.EgressAcl.IsNull() && plan.EgressAcl.ValueString() != "" {
-				ethPortName.EgressAcl = openapi.PtrString(plan.EgressAcl.ValueString())
+			if !op.Icon.IsNull() {
+				objProps.Icon = openapi.PtrString(op.Icon.ValueString())
 			} else {
-				ethPortName.EgressAcl = openapi.PtrString("")
+				objProps.Icon = nil
 			}
-
-			if !plan.EgressAclRefType.IsNull() && plan.EgressAclRefType.ValueString() != "" {
-				ethPortName.EgressAclRefType = openapi.PtrString(plan.EgressAclRefType.ValueString())
-			} else {
-				ethPortName.EgressAclRefType = openapi.PtrString("")
-			}
+			ethPortProfileProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
 	}
 
-	if !plan.Tls.Equal(state.Tls) {
-		ethPortName.Tls = openapi.PtrBool(plan.Tls.ValueBool())
-		hasChanges = true
+	// Handle ingress_acl and ingress_acl_ref_type_ using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.IngressAcl, state.IngressAcl, plan.IngressAclRefType, state.IngressAclRefType,
+		func(v *string) { ethPortProfileProps.IngressAcl = v },
+		func(v *string) { ethPortProfileProps.IngressAclRefType = v },
+		"ingress_acl", "ingress_acl_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	tlsServiceChanged := !plan.TlsService.Equal(state.TlsService)
-	tlsServiceRefTypeChanged := !plan.TlsServiceRefType.Equal(state.TlsServiceRefType)
-
-	if tlsServiceChanged || tlsServiceRefTypeChanged {
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.TlsService, plan.TlsServiceRefType,
-			"tls_service", "tls_service_ref_type_",
-			tlsServiceChanged, tlsServiceRefTypeChanged) {
-			return
-		}
-
-		// For fields with one reference type:
-		// If only base field changes, send only base field
-		// If ref type field changes (or both), send both fields
-		if tlsServiceChanged && !tlsServiceRefTypeChanged {
-			// Just send the base field
-			if !plan.TlsService.IsNull() && plan.TlsService.ValueString() != "" {
-				ethPortName.TlsService = openapi.PtrString(plan.TlsService.ValueString())
-			} else {
-				ethPortName.TlsService = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if tlsServiceRefTypeChanged {
-			// Send both fields
-			if !plan.TlsService.IsNull() && plan.TlsService.ValueString() != "" {
-				ethPortName.TlsService = openapi.PtrString(plan.TlsService.ValueString())
-			} else {
-				ethPortName.TlsService = openapi.PtrString("")
-			}
-
-			if !plan.TlsServiceRefType.IsNull() && plan.TlsServiceRefType.ValueString() != "" {
-				ethPortName.TlsServiceRefType = openapi.PtrString(plan.TlsServiceRefType.ValueString())
-			} else {
-				ethPortName.TlsServiceRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
+	// Handle egress_acl and egress_acl_ref_type_ using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.EgressAcl, state.EgressAcl, plan.EgressAclRefType, state.EgressAclRefType,
+		func(v *string) { ethPortProfileProps.EgressAcl = v },
+		func(v *string) { ethPortProfileProps.EgressAclRefType = v },
+		"egress_acl", "egress_acl_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	if !plan.TrustedPort.Equal(state.TrustedPort) {
-		ethPortName.TrustedPort = openapi.PtrBool(plan.TrustedPort.ValueBool())
-		hasChanges = true
+	// Handle tls_service and tls_service_ref_type_ using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.TlsService, state.TlsService, plan.TlsServiceRefType, state.TlsServiceRefType,
+		func(v *string) { ethPortProfileProps.TlsService = v },
+		func(v *string) { ethPortProfileProps.TlsServiceRefType = v },
+		"tls_service", "tls_service_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	if len(plan.ObjectProperties) > 0 && (len(state.ObjectProperties) == 0 ||
-		!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-		!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
-		!plan.ObjectProperties[0].SortByName.Equal(state.ObjectProperties[0].SortByName) ||
-		!plan.ObjectProperties[0].Label.Equal(state.ObjectProperties[0].Label) ||
-		!plan.ObjectProperties[0].Icon.Equal(state.ObjectProperties[0].Icon)) {
+	// Handle services
+	servicesHandler := utils.IndexedItemHandler[servicesModel, openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner]{
+		CreateNew: func(planItem servicesModel) openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner {
+			service := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
 
-		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
-		hasObjPropsChanges := false
+			if !planItem.RowNumEnable.IsNull() {
+				service.RowNumEnable = openapi.PtrBool(planItem.RowNumEnable.ValueBool())
+			} else {
+				service.RowNumEnable = openapi.PtrBool(false)
+			}
 
-		if len(plan.ObjectProperties) > 0 {
-			objProp := plan.ObjectProperties[0]
+			if !planItem.RowNumService.IsNull() {
+				service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
+			} else {
+				service.RowNumService = openapi.PtrString("")
+			}
 
-			if len(state.ObjectProperties) == 0 || !objProp.Group.Equal(state.ObjectProperties[0].Group) {
-				hasObjPropsChanges = true
-				if !objProp.Group.IsNull() {
-					objProps.Group = openapi.PtrString(objProp.Group.ValueString())
+			if !planItem.RowNumServiceRefType.IsNull() {
+				service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
+			} else {
+				service.RowNumServiceRefType = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumExternalVlan.IsNull() {
+				intVal := int32(planItem.RowNumExternalVlan.ValueInt64())
+				service.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
+			} else {
+				service.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
+			}
+
+			if !planItem.RowNumIngressAcl.IsNull() {
+				service.RowNumIngressAcl = openapi.PtrString(planItem.RowNumIngressAcl.ValueString())
+			} else {
+				service.RowNumIngressAcl = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumIngressAclRefType.IsNull() {
+				service.RowNumIngressAclRefType = openapi.PtrString(planItem.RowNumIngressAclRefType.ValueString())
+			} else {
+				service.RowNumIngressAclRefType = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumEgressAcl.IsNull() {
+				service.RowNumEgressAcl = openapi.PtrString(planItem.RowNumEgressAcl.ValueString())
+			} else {
+				service.RowNumEgressAcl = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumEgressAclRefType.IsNull() {
+				service.RowNumEgressAclRefType = openapi.PtrString(planItem.RowNumEgressAclRefType.ValueString())
+			} else {
+				service.RowNumEgressAclRefType = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumMacFilter.IsNull() {
+				service.RowNumMacFilter = openapi.PtrString(planItem.RowNumMacFilter.ValueString())
+			} else {
+				service.RowNumMacFilter = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumMacFilterRefType.IsNull() {
+				service.RowNumMacFilterRefType = openapi.PtrString(planItem.RowNumMacFilterRefType.ValueString())
+			} else {
+				service.RowNumMacFilterRefType = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumLanIptv.IsNull() {
+				service.RowNumLanIptv = openapi.PtrString(planItem.RowNumLanIptv.ValueString())
+			} else {
+				service.RowNumLanIptv = openapi.PtrString("")
+			}
+
+			return service
+		},
+		UpdateExisting: func(planItem servicesModel, stateItem servicesModel) (openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner, bool) {
+			service := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.RowNumEnable.Equal(stateItem.RowNumEnable) {
+				service.RowNumEnable = openapi.PtrBool(planItem.RowNumEnable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.RowNumService.Equal(stateItem.RowNumService) {
+				if !planItem.RowNumService.IsNull() {
+					service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
 				} else {
-					objProps.Group = nil
+					service.RowNumService = openapi.PtrString("")
 				}
+				fieldChanged = true
 			}
 
-			if len(state.ObjectProperties) == 0 || !objProp.PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) {
-				hasObjPropsChanges = true
-				if !objProp.PortMonitoring.IsNull() {
-					objProps.PortMonitoring = openapi.PtrString(objProp.PortMonitoring.ValueString())
+			if !planItem.RowNumServiceRefType.Equal(stateItem.RowNumServiceRefType) {
+				if !planItem.RowNumServiceRefType.IsNull() {
+					service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
 				} else {
-					objProps.PortMonitoring = nil
+					service.RowNumServiceRefType = openapi.PtrString("")
 				}
+				fieldChanged = true
 			}
 
-			if len(state.ObjectProperties) == 0 || !objProp.SortByName.Equal(state.ObjectProperties[0].SortByName) {
-				hasObjPropsChanges = true
-				if !objProp.SortByName.IsNull() {
-					objProps.SortByName = openapi.PtrBool(objProp.SortByName.ValueBool())
+			if !planItem.RowNumExternalVlan.Equal(stateItem.RowNumExternalVlan) {
+				if !planItem.RowNumExternalVlan.IsNull() {
+					intVal := int32(planItem.RowNumExternalVlan.ValueInt64())
+					service.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
+				} else {
+					service.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
 				}
+				fieldChanged = true
 			}
 
-			if len(state.ObjectProperties) == 0 || !objProp.Label.Equal(state.ObjectProperties[0].Label) {
-				hasObjPropsChanges = true
-				if !objProp.Label.IsNull() {
-					objProps.Label = openapi.PtrString(objProp.Label.ValueString())
+			if !planItem.RowNumIngressAcl.Equal(stateItem.RowNumIngressAcl) {
+				if !planItem.RowNumIngressAcl.IsNull() {
+					service.RowNumIngressAcl = openapi.PtrString(planItem.RowNumIngressAcl.ValueString())
+				} else {
+					service.RowNumIngressAcl = openapi.PtrString("")
 				}
+				fieldChanged = true
 			}
 
-			if len(state.ObjectProperties) == 0 || !objProp.Icon.Equal(state.ObjectProperties[0].Icon) {
-				hasObjPropsChanges = true
-				if !objProp.Icon.IsNull() {
-					objProps.Icon = openapi.PtrString(objProp.Icon.ValueString())
+			if !planItem.RowNumIngressAclRefType.Equal(stateItem.RowNumIngressAclRefType) {
+				if !planItem.RowNumIngressAclRefType.IsNull() {
+					service.RowNumIngressAclRefType = openapi.PtrString(planItem.RowNumIngressAclRefType.ValueString())
+				} else {
+					service.RowNumIngressAclRefType = openapi.PtrString("")
 				}
+				fieldChanged = true
 			}
-		}
 
-		if hasObjPropsChanges {
-			ethPortName.ObjectProperties = &objProps
-			hasChanges = true
-		}
-	}
+			if !planItem.RowNumEgressAcl.Equal(stateItem.RowNumEgressAcl) {
+				if !planItem.RowNumEgressAcl.IsNull() {
+					service.RowNumEgressAcl = openapi.PtrString(planItem.RowNumEgressAcl.ValueString())
+				} else {
+					service.RowNumEgressAcl = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 
-	oldServicesByIndex := make(map[int64]servicesModel)
-	for _, service := range state.Services {
-		if !service.Index.IsNull() {
-			oldServicesByIndex[service.Index.ValueInt64()] = service
-		}
-	}
+			if !planItem.RowNumEgressAclRefType.Equal(stateItem.RowNumEgressAclRefType) {
+				if !planItem.RowNumEgressAclRefType.IsNull() {
+					service.RowNumEgressAclRefType = openapi.PtrString(planItem.RowNumEgressAclRefType.ValueString())
+				} else {
+					service.RowNumEgressAclRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 
-	var changedServices []openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner
-	servicesChanged := false
+			if !planItem.RowNumMacFilter.Equal(stateItem.RowNumMacFilter) {
+				if !planItem.RowNumMacFilter.IsNull() {
+					service.RowNumMacFilter = openapi.PtrString(planItem.RowNumMacFilter.ValueString())
+				} else {
+					service.RowNumMacFilter = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 
-	for _, service := range plan.Services {
-		if service.Index.IsNull() {
-			continue
-		}
+			if !planItem.RowNumMacFilterRefType.Equal(stateItem.RowNumMacFilterRefType) {
+				if !planItem.RowNumMacFilterRefType.IsNull() {
+					service.RowNumMacFilterRefType = openapi.PtrString(planItem.RowNumMacFilterRefType.ValueString())
+				} else {
+					service.RowNumMacFilterRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 
-		index := service.Index.ValueInt64()
-		oldService, exists := oldServicesByIndex[index]
+			if !planItem.RowNumLanIptv.Equal(stateItem.RowNumLanIptv) {
+				if !planItem.RowNumLanIptv.IsNull() {
+					service.RowNumLanIptv = openapi.PtrString(planItem.RowNumLanIptv.ValueString())
+				} else {
+					service.RowNumLanIptv = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
 
-		if !exists {
-			// new service, include all fields
-			s := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
+			return service, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner {
+			return openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
 				Index: openapi.PtrInt32(int32(index)),
 			}
-
-			if !service.RowNumEnable.IsNull() {
-				s.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
-			} else {
-				s.RowNumEnable = openapi.PtrBool(false)
-			}
-
-			hasService := !service.RowNumService.IsNull() && service.RowNumService.ValueString() != ""
-			hasRefType := !service.RowNumServiceRefType.IsNull() && service.RowNumServiceRefType.ValueString() != ""
-
-			if hasService || hasRefType {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					service.RowNumService, service.RowNumServiceRefType,
-					"row_num_service", "row_num_service_ref_type_",
-					hasService, hasRefType) {
-					return
-				}
-
-				// Set both fields for new entries that have at least one of the fields
-				if !service.RowNumService.IsNull() {
-					s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
-				} else {
-					s.RowNumService = openapi.PtrString("")
-				}
-
-				if !service.RowNumServiceRefType.IsNull() {
-					s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
-				} else {
-					s.RowNumServiceRefType = openapi.PtrString("")
-				}
-			} else {
-				// If neither field is set, set both to empty strings
-				s.RowNumService = openapi.PtrString("")
-				s.RowNumServiceRefType = openapi.PtrString("")
-			}
-
-			if !service.RowNumExternalVlan.IsNull() {
-				intVal := int32(service.RowNumExternalVlan.ValueInt64())
-				s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
-			} else {
-				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-			}
-
-			hasIngressAcl := !service.RowNumIngressAcl.IsNull() && service.RowNumIngressAcl.ValueString() != ""
-			hasIngressAclRefType := !service.RowNumIngressAclRefType.IsNull() && service.RowNumIngressAclRefType.ValueString() != ""
-
-			if hasIngressAcl || hasIngressAclRefType {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					service.RowNumIngressAcl, service.RowNumIngressAclRefType,
-					"row_num_ingress_acl", "row_num_ingress_acl_ref_type_",
-					hasIngressAcl, hasIngressAclRefType) {
-					return
-				}
-			}
-
-			if !service.RowNumIngressAcl.IsNull() {
-				s.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
-			} else {
-				s.RowNumIngressAcl = openapi.PtrString("")
-			}
-
-			if !service.RowNumIngressAclRefType.IsNull() {
-				s.RowNumIngressAclRefType = openapi.PtrString(service.RowNumIngressAclRefType.ValueString())
-			} else {
-				s.RowNumIngressAclRefType = openapi.PtrString("")
-			}
-
-			hasEgressAcl := !service.RowNumEgressAcl.IsNull() && service.RowNumEgressAcl.ValueString() != ""
-			hasEgressAclRefType := !service.RowNumEgressAclRefType.IsNull() && service.RowNumEgressAclRefType.ValueString() != ""
-
-			if hasEgressAcl || hasEgressAclRefType {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					service.RowNumEgressAcl, service.RowNumEgressAclRefType,
-					"row_num_egress_acl", "row_num_egress_acl_ref_type_",
-					hasEgressAcl, hasEgressAclRefType) {
-					return
-				}
-			}
-
-			if !service.RowNumEgressAcl.IsNull() {
-				s.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
-			} else {
-				s.RowNumEgressAcl = openapi.PtrString("")
-			}
-
-			if !service.RowNumEgressAclRefType.IsNull() {
-				s.RowNumEgressAclRefType = openapi.PtrString(service.RowNumEgressAclRefType.ValueString())
-			} else {
-				s.RowNumEgressAclRefType = openapi.PtrString("")
-			}
-
-			hasMacFilter := !service.RowNumMacFilter.IsNull() && service.RowNumMacFilter.ValueString() != ""
-			hasMacFilterRefType := !service.RowNumMacFilterRefType.IsNull() && service.RowNumMacFilterRefType.ValueString() != ""
-
-			if hasMacFilter || hasMacFilterRefType {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					service.RowNumMacFilter, service.RowNumMacFilterRefType,
-					"row_num_mac_filter", "row_num_mac_filter_ref_type_",
-					hasMacFilter, hasMacFilterRefType) {
-					return
-				}
-			}
-
-			if !service.RowNumMacFilter.IsNull() {
-				s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
-			} else {
-				s.RowNumMacFilter = openapi.PtrString("")
-			}
-
-			if !service.RowNumMacFilterRefType.IsNull() {
-				s.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
-			} else {
-				s.RowNumMacFilterRefType = openapi.PtrString("")
-			}
-
-			if !service.RowNumLanIptv.IsNull() {
-				s.RowNumLanIptv = openapi.PtrString(service.RowNumLanIptv.ValueString())
-			} else {
-				s.RowNumLanIptv = openapi.PtrString("")
-			}
-
-			changedServices = append(changedServices, s)
-			servicesChanged = true
-			continue
-		}
-
-		// existing service, check which fields changed
-		s := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
-			Index: openapi.PtrInt32(int32(index)),
-		}
-
-		fieldChanged := false
-
-		if !service.RowNumEnable.Equal(oldService.RowNumEnable) {
-			s.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
-			fieldChanged = true
-		}
-
-		rowNumServiceChanged := !service.RowNumService.Equal(oldService.RowNumService)
-		rowNumServiceRefTypeChanged := !service.RowNumServiceRefType.Equal(oldService.RowNumServiceRefType)
-
-		if rowNumServiceChanged || rowNumServiceRefTypeChanged {
-			// Validate using one ref type supported rules
-			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-				service.RowNumService, service.RowNumServiceRefType,
-				"row_num_service", "row_num_service_ref_type_",
-				rowNumServiceChanged, rowNumServiceRefTypeChanged) {
-				return
-			}
-
-			// For fields with one reference type:
-			// If only base field changes, send only base field
-			// If ref type field changes (or both), send both fields
-			if rowNumServiceChanged {
-				if !service.RowNumService.IsNull() {
-					s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
-				} else {
-					s.RowNumService = openapi.PtrString("")
-				}
-			}
-
-			if rowNumServiceRefTypeChanged {
-				if !service.RowNumServiceRefType.IsNull() {
-					s.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
-				} else {
-					s.RowNumServiceRefType = openapi.PtrString("")
-				}
-
-				if !rowNumServiceChanged {
-					if !service.RowNumService.IsNull() {
-						s.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
-					} else {
-						s.RowNumService = openapi.PtrString("")
-					}
-				}
-			}
-			fieldChanged = true
-		}
-
-		if !service.RowNumExternalVlan.Equal(oldService.RowNumExternalVlan) {
-			if !service.RowNumExternalVlan.IsNull() {
-				intVal := int32(service.RowNumExternalVlan.ValueInt64())
-				s.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
-			} else {
-				s.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-			}
-			fieldChanged = true
-		}
-
-		rowNumIngressAclChanged := !service.RowNumIngressAcl.Equal(oldService.RowNumIngressAcl)
-		rowNumIngressAclRefTypeChanged := !service.RowNumIngressAclRefType.Equal(oldService.RowNumIngressAclRefType)
-
-		if rowNumIngressAclChanged || rowNumIngressAclRefTypeChanged {
-			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-				service.RowNumIngressAcl, service.RowNumIngressAclRefType,
-				"row_num_ingress_acl", "row_num_ingress_acl_ref_type_",
-				rowNumIngressAclChanged, rowNumIngressAclRefTypeChanged) {
-				return
-			}
-
-			// For fields with one reference type:
-			// If only base field changes, send only base field
-			// If ref type field changes (or both), send both fields
-			if rowNumIngressAclChanged && !rowNumIngressAclRefTypeChanged {
-				// Just send the base field
-				if !service.RowNumIngressAcl.IsNull() && service.RowNumIngressAcl.ValueString() != "" {
-					s.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
-				} else {
-					s.RowNumIngressAcl = openapi.PtrString("")
-				}
-				fieldChanged = true
-			} else if rowNumIngressAclRefTypeChanged {
-				// Send both fields
-				if !service.RowNumIngressAcl.IsNull() && service.RowNumIngressAcl.ValueString() != "" {
-					s.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
-				} else {
-					s.RowNumIngressAcl = openapi.PtrString("")
-				}
-
-				if !service.RowNumIngressAclRefType.IsNull() && service.RowNumIngressAclRefType.ValueString() != "" {
-					s.RowNumIngressAclRefType = openapi.PtrString(service.RowNumIngressAclRefType.ValueString())
-				} else {
-					s.RowNumIngressAclRefType = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-		}
-
-		rowNumEgressAclChanged := !service.RowNumEgressAcl.Equal(oldService.RowNumEgressAcl)
-		rowNumEgressAclRefTypeChanged := !service.RowNumEgressAclRefType.Equal(oldService.RowNumEgressAclRefType)
-
-		if rowNumEgressAclChanged || rowNumEgressAclRefTypeChanged {
-			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-				service.RowNumEgressAcl, service.RowNumEgressAclRefType,
-				"row_num_egress_acl", "row_num_egress_acl_ref_type_",
-				rowNumEgressAclChanged, rowNumEgressAclRefTypeChanged) {
-				return
-			}
-
-			// For fields with one reference type:
-			// If only base field changes, send only base field
-			// If ref type field changes (or both), send both fields
-			if rowNumEgressAclChanged && !rowNumEgressAclRefTypeChanged {
-				// Just send the base field
-				if !service.RowNumEgressAcl.IsNull() && service.RowNumEgressAcl.ValueString() != "" {
-					s.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
-				} else {
-					s.RowNumEgressAcl = openapi.PtrString("")
-				}
-				fieldChanged = true
-			} else if rowNumEgressAclRefTypeChanged {
-				// Send both fields
-				if !service.RowNumEgressAcl.IsNull() && service.RowNumEgressAcl.ValueString() != "" {
-					s.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
-				} else {
-					s.RowNumEgressAcl = openapi.PtrString("")
-				}
-
-				if !service.RowNumEgressAclRefType.IsNull() && service.RowNumEgressAclRefType.ValueString() != "" {
-					s.RowNumEgressAclRefType = openapi.PtrString(service.RowNumEgressAclRefType.ValueString())
-				} else {
-					s.RowNumEgressAclRefType = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-		}
-
-		rowNumMacFilterChanged := !service.RowNumMacFilter.Equal(oldService.RowNumMacFilter)
-		rowNumMacFilterRefTypeChanged := !service.RowNumMacFilterRefType.Equal(oldService.RowNumMacFilterRefType)
-
-		if rowNumMacFilterChanged || rowNumMacFilterRefTypeChanged {
-			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-				service.RowNumMacFilter, service.RowNumMacFilterRefType,
-				"row_num_mac_filter", "row_num_mac_filter_ref_type_",
-				rowNumMacFilterChanged, rowNumMacFilterRefTypeChanged) {
-				return
-			}
-
-			// For fields with one reference type:
-			// If only base field changes, send only base field
-			// If ref type field changes (or both), send both fields
-			if rowNumMacFilterChanged && !rowNumMacFilterRefTypeChanged {
-				// Just send the base field
-				if !service.RowNumMacFilter.IsNull() && service.RowNumMacFilter.ValueString() != "" {
-					s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
-				} else {
-					s.RowNumMacFilter = openapi.PtrString("")
-				}
-				fieldChanged = true
-			} else if rowNumMacFilterRefTypeChanged {
-				// Send both fields
-				if !service.RowNumMacFilter.IsNull() && service.RowNumMacFilter.ValueString() != "" {
-					s.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
-				} else {
-					s.RowNumMacFilter = openapi.PtrString("")
-				}
-
-				if !service.RowNumMacFilterRefType.IsNull() && service.RowNumMacFilterRefType.ValueString() != "" {
-					s.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
-				} else {
-					s.RowNumMacFilterRefType = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-		}
-
-		if !service.RowNumLanIptv.Equal(oldService.RowNumLanIptv) {
-			if !service.RowNumLanIptv.IsNull() {
-				s.RowNumLanIptv = openapi.PtrString(service.RowNumLanIptv.ValueString())
-			} else {
-				s.RowNumLanIptv = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedServices = append(changedServices, s)
-			servicesChanged = true
-		}
+		},
 	}
 
-	for idx := range oldServicesByIndex {
-		found := false
-		for _, service := range plan.Services {
-			if !service.Index.IsNull() && service.Index.ValueInt64() == idx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// service removed - include only the index for deletion
-			deletedService := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-			changedServices = append(changedServices, deletedService)
-			servicesChanged = true
-		}
-	}
-
-	if servicesChanged && len(changedServices) > 0 {
-		ethPortName.Services = changedServices
+	changedServices, servicesChanged := utils.ProcessIndexedArrayUpdates(plan.Services, state.Services, servicesHandler)
+	if servicesChanged {
+		ethPortProfileProps.Services = changedServices
 		hasChanges = true
 	}
 
@@ -1306,18 +840,12 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "eth_port_profile", name, ethPortName)
-	r.notifyOperationAdded()
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile update operation %s to complete", operationID))
-
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Eth Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "eth_port_profile", name, ethPortProfileProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
-	tflog.Info(ctx, fmt.Sprintf("Eth port profile %s update operation completed successfully", name))
+	tflog.Info(ctx, fmt.Sprintf("Eth Port Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_profiles")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
@@ -1330,8 +858,7 @@ func (r *verityEthPortProfileResource) Delete(ctx context.Context, req resource.
 		return
 	}
 
-	err := ensureAuthenticated(ctx, r.provCtx)
-	if err != nil {
+	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
 			fmt.Sprintf("Error authenticating with API: %s", err),
@@ -1341,19 +868,12 @@ func (r *verityEthPortProfileResource) Delete(ctx context.Context, req resource.
 
 	name := state.Name.ValueString()
 
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "eth_port_profile", name)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for eth port profile deletion operation %s to complete", operationID))
-
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Eth Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "eth_port_profile", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
-	tflog.Info(ctx, fmt.Sprintf("Eth port profile %s deletion operation completed successfully", name))
+	tflog.Info(ctx, fmt.Sprintf("Eth Port Profile %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_profiles")
 	resp.State.RemoveResource(ctx)
 }

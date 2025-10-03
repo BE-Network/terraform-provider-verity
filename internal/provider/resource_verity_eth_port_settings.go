@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -96,6 +95,10 @@ type verityEthPortSettingsLldpMedModel struct {
 	LldpMedRowNumService               types.String `tfsdk:"lldp_med_row_num_service"`
 	LldpMedRowNumServiceRefType        types.String `tfsdk:"lldp_med_row_num_service_ref_type_"`
 	Index                              types.Int64  `tfsdk:"index"`
+}
+
+func (lm verityEthPortSettingsLldpMedModel) GetIndex() types.Int64 {
+	return lm.Index
 }
 
 func (r *verityEthPortSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -366,143 +369,71 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
 	name := plan.Name.ValueString()
-	ethPortSettingsReq := &openapi.EthportsettingsPutRequestEthPortSettingsValue{
+	ethPortSettingsProps := &openapi.EthportsettingsPutRequestEthPortSettingsValue{
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		ethPortSettingsReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.AutoNegotiation.IsNull() {
-		ethPortSettingsReq.AutoNegotiation = openapi.PtrBool(plan.AutoNegotiation.ValueBool())
-	}
-	if !plan.MaxBitRate.IsNull() {
-		ethPortSettingsReq.MaxBitRate = openapi.PtrString(plan.MaxBitRate.ValueString())
-	}
-	if !plan.DuplexMode.IsNull() {
-		ethPortSettingsReq.DuplexMode = openapi.PtrString(plan.DuplexMode.ValueString())
-	}
-	if !plan.StpEnable.IsNull() {
-		ethPortSettingsReq.StpEnable = openapi.PtrBool(plan.StpEnable.ValueBool())
-	}
-	if !plan.FastLearningMode.IsNull() {
-		ethPortSettingsReq.FastLearningMode = openapi.PtrBool(plan.FastLearningMode.ValueBool())
-	}
-	if !plan.BpduGuard.IsNull() {
-		ethPortSettingsReq.BpduGuard = openapi.PtrBool(plan.BpduGuard.ValueBool())
-	}
-	if !plan.BpduFilter.IsNull() {
-		ethPortSettingsReq.BpduFilter = openapi.PtrBool(plan.BpduFilter.ValueBool())
-	}
-	if !plan.GuardLoop.IsNull() {
-		ethPortSettingsReq.GuardLoop = openapi.PtrBool(plan.GuardLoop.ValueBool())
-	}
-	if !plan.PoeEnable.IsNull() {
-		ethPortSettingsReq.PoeEnable = openapi.PtrBool(plan.PoeEnable.ValueBool())
-	}
-	if !plan.Priority.IsNull() {
-		ethPortSettingsReq.Priority = openapi.PtrString(plan.Priority.ValueString())
-	}
-	if !plan.AllocatedPower.IsNull() {
-		ethPortSettingsReq.AllocatedPower = openapi.PtrString(plan.AllocatedPower.ValueString())
-	}
-	if !plan.BspEnable.IsNull() {
-		ethPortSettingsReq.BspEnable = openapi.PtrBool(plan.BspEnable.ValueBool())
-	}
-	if !plan.Broadcast.IsNull() {
-		ethPortSettingsReq.Broadcast = openapi.PtrBool(plan.Broadcast.ValueBool())
-	}
-	if !plan.Multicast.IsNull() {
-		ethPortSettingsReq.Multicast = openapi.PtrBool(plan.Multicast.ValueBool())
-	}
-	if !plan.MaxAllowedValue.IsNull() {
-		ethPortSettingsReq.MaxAllowedValue = openapi.PtrInt32(int32(plan.MaxAllowedValue.ValueInt64()))
-	}
-	if !plan.MaxAllowedUnit.IsNull() {
-		ethPortSettingsReq.MaxAllowedUnit = openapi.PtrString(plan.MaxAllowedUnit.ValueString())
-	}
-	if !plan.Action.IsNull() {
-		ethPortSettingsReq.Action = openapi.PtrString(plan.Action.ValueString())
-	}
-	if !plan.Fec.IsNull() {
-		ethPortSettingsReq.Fec = openapi.PtrString(plan.Fec.ValueString())
-	}
-	if !plan.SingleLink.IsNull() {
-		ethPortSettingsReq.SingleLink = openapi.PtrBool(plan.SingleLink.ValueBool())
-	}
-	if !plan.MinimumWredThreshold.IsNull() {
-		ethPortSettingsReq.MinimumWredThreshold = openapi.PtrInt32(int32(plan.MinimumWredThreshold.ValueInt64()))
-	}
-	if !plan.MaximumWredThreshold.IsNull() {
-		ethPortSettingsReq.MaximumWredThreshold = openapi.PtrInt32(int32(plan.MaximumWredThreshold.ValueInt64()))
-	}
-	if !plan.WredDropProbability.IsNull() {
-		ethPortSettingsReq.WredDropProbability = openapi.PtrInt32(int32(plan.WredDropProbability.ValueInt64()))
-	}
-	if !plan.PriorityFlowControlWatchdogAction.IsNull() {
-		ethPortSettingsReq.PriorityFlowControlWatchdogAction = openapi.PtrString(plan.PriorityFlowControlWatchdogAction.ValueString())
-	}
-	if !plan.PriorityFlowControlWatchdogDetectTime.IsNull() {
-		ethPortSettingsReq.PriorityFlowControlWatchdogDetectTime = openapi.PtrInt32(int32(plan.PriorityFlowControlWatchdogDetectTime.ValueInt64()))
-	}
-	if !plan.PriorityFlowControlWatchdogRestoreTime.IsNull() {
-		ethPortSettingsReq.PriorityFlowControlWatchdogRestoreTime = openapi.PtrInt32(int32(plan.PriorityFlowControlWatchdogRestoreTime.ValueInt64()))
-	}
-	if !plan.PacketQueue.IsNull() {
-		ethPortSettingsReq.PacketQueue = openapi.PtrString(plan.PacketQueue.ValueString())
-	}
-	if !plan.PacketQueueRefType.IsNull() {
-		ethPortSettingsReq.PacketQueueRefType = openapi.PtrString(plan.PacketQueueRefType.ValueString())
-	}
-	if !plan.EnableWredTuning.IsNull() {
-		ethPortSettingsReq.EnableWredTuning = openapi.PtrBool(plan.EnableWredTuning.ValueBool())
-	}
-	if !plan.EnableEcn.IsNull() {
-		ethPortSettingsReq.EnableEcn = openapi.PtrBool(plan.EnableEcn.ValueBool())
-	}
-	if !plan.EnableWatchdogTuning.IsNull() {
-		ethPortSettingsReq.EnableWatchdogTuning = openapi.PtrBool(plan.EnableWatchdogTuning.ValueBool())
-	}
-	if !plan.CliCommands.IsNull() {
-		ethPortSettingsReq.CliCommands = openapi.PtrString(plan.CliCommands.ValueString())
-	}
-	if !plan.DetectBridgingLoops.IsNull() {
-		ethPortSettingsReq.DetectBridgingLoops = openapi.PtrBool(plan.DetectBridgingLoops.ValueBool())
-	}
-	if !plan.UnidirectionalLinkDetection.IsNull() {
-		ethPortSettingsReq.UnidirectionalLinkDetection = openapi.PtrBool(plan.UnidirectionalLinkDetection.ValueBool())
-	}
-	if !plan.MacSecurityMode.IsNull() {
-		ethPortSettingsReq.MacSecurityMode = openapi.PtrString(plan.MacSecurityMode.ValueString())
-	}
-	if !plan.MacLimit.IsNull() {
-		ethPortSettingsReq.MacLimit = openapi.PtrInt32(int32(plan.MacLimit.ValueInt64()))
-	}
-	if !plan.SecurityViolationAction.IsNull() {
-		ethPortSettingsReq.SecurityViolationAction = openapi.PtrString(plan.SecurityViolationAction.ValueString())
-	}
-	if !plan.AgingType.IsNull() {
-		ethPortSettingsReq.AgingType = openapi.PtrString(plan.AgingType.ValueString())
-	}
-	if !plan.AgingTime.IsNull() {
-		ethPortSettingsReq.AgingTime = openapi.PtrInt32(int32(plan.AgingTime.ValueInt64()))
-	}
-	if !plan.LldpEnable.IsNull() {
-		ethPortSettingsReq.LldpEnable = openapi.PtrBool(plan.LldpEnable.ValueBool())
-	}
-	if !plan.LldpMode.IsNull() {
-		ethPortSettingsReq.LldpMode = openapi.PtrString(plan.LldpMode.ValueString())
-	}
-	if !plan.LldpMedEnable.IsNull() {
-		ethPortSettingsReq.LldpMedEnable = openapi.PtrBool(plan.LldpMedEnable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "MaxBitRate", APIField: &ethPortSettingsProps.MaxBitRate, TFValue: plan.MaxBitRate},
+		{FieldName: "DuplexMode", APIField: &ethPortSettingsProps.DuplexMode, TFValue: plan.DuplexMode},
+		{FieldName: "Priority", APIField: &ethPortSettingsProps.Priority, TFValue: plan.Priority},
+		{FieldName: "AllocatedPower", APIField: &ethPortSettingsProps.AllocatedPower, TFValue: plan.AllocatedPower},
+		{FieldName: "MaxAllowedUnit", APIField: &ethPortSettingsProps.MaxAllowedUnit, TFValue: plan.MaxAllowedUnit},
+		{FieldName: "Action", APIField: &ethPortSettingsProps.Action, TFValue: plan.Action},
+		{FieldName: "Fec", APIField: &ethPortSettingsProps.Fec, TFValue: plan.Fec},
+		{FieldName: "PriorityFlowControlWatchdogAction", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogAction, TFValue: plan.PriorityFlowControlWatchdogAction},
+		{FieldName: "PacketQueue", APIField: &ethPortSettingsProps.PacketQueue, TFValue: plan.PacketQueue},
+		{FieldName: "PacketQueueRefType", APIField: &ethPortSettingsProps.PacketQueueRefType, TFValue: plan.PacketQueueRefType},
+		{FieldName: "CliCommands", APIField: &ethPortSettingsProps.CliCommands, TFValue: plan.CliCommands},
+		{FieldName: "MacSecurityMode", APIField: &ethPortSettingsProps.MacSecurityMode, TFValue: plan.MacSecurityMode},
+		{FieldName: "SecurityViolationAction", APIField: &ethPortSettingsProps.SecurityViolationAction, TFValue: plan.SecurityViolationAction},
+		{FieldName: "AgingType", APIField: &ethPortSettingsProps.AgingType, TFValue: plan.AgingType},
+		{FieldName: "LldpMode", APIField: &ethPortSettingsProps.LldpMode, TFValue: plan.LldpMode},
+	})
 
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &ethPortSettingsProps.Enable, TFValue: plan.Enable},
+		{FieldName: "AutoNegotiation", APIField: &ethPortSettingsProps.AutoNegotiation, TFValue: plan.AutoNegotiation},
+		{FieldName: "StpEnable", APIField: &ethPortSettingsProps.StpEnable, TFValue: plan.StpEnable},
+		{FieldName: "FastLearningMode", APIField: &ethPortSettingsProps.FastLearningMode, TFValue: plan.FastLearningMode},
+		{FieldName: "BpduGuard", APIField: &ethPortSettingsProps.BpduGuard, TFValue: plan.BpduGuard},
+		{FieldName: "BpduFilter", APIField: &ethPortSettingsProps.BpduFilter, TFValue: plan.BpduFilter},
+		{FieldName: "GuardLoop", APIField: &ethPortSettingsProps.GuardLoop, TFValue: plan.GuardLoop},
+		{FieldName: "PoeEnable", APIField: &ethPortSettingsProps.PoeEnable, TFValue: plan.PoeEnable},
+		{FieldName: "BspEnable", APIField: &ethPortSettingsProps.BspEnable, TFValue: plan.BspEnable},
+		{FieldName: "Broadcast", APIField: &ethPortSettingsProps.Broadcast, TFValue: plan.Broadcast},
+		{FieldName: "Multicast", APIField: &ethPortSettingsProps.Multicast, TFValue: plan.Multicast},
+		{FieldName: "SingleLink", APIField: &ethPortSettingsProps.SingleLink, TFValue: plan.SingleLink},
+		{FieldName: "EnableWredTuning", APIField: &ethPortSettingsProps.EnableWredTuning, TFValue: plan.EnableWredTuning},
+		{FieldName: "EnableEcn", APIField: &ethPortSettingsProps.EnableEcn, TFValue: plan.EnableEcn},
+		{FieldName: "EnableWatchdogTuning", APIField: &ethPortSettingsProps.EnableWatchdogTuning, TFValue: plan.EnableWatchdogTuning},
+		{FieldName: "DetectBridgingLoops", APIField: &ethPortSettingsProps.DetectBridgingLoops, TFValue: plan.DetectBridgingLoops},
+		{FieldName: "UnidirectionalLinkDetection", APIField: &ethPortSettingsProps.UnidirectionalLinkDetection, TFValue: plan.UnidirectionalLinkDetection},
+		{FieldName: "LldpEnable", APIField: &ethPortSettingsProps.LldpEnable, TFValue: plan.LldpEnable},
+		{FieldName: "LldpMedEnable", APIField: &ethPortSettingsProps.LldpMedEnable, TFValue: plan.LldpMedEnable},
+	})
+
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "MaxAllowedValue", APIField: &ethPortSettingsProps.MaxAllowedValue, TFValue: plan.MaxAllowedValue},
+		{FieldName: "MinimumWredThreshold", APIField: &ethPortSettingsProps.MinimumWredThreshold, TFValue: plan.MinimumWredThreshold},
+		{FieldName: "MaximumWredThreshold", APIField: &ethPortSettingsProps.MaximumWredThreshold, TFValue: plan.MaximumWredThreshold},
+		{FieldName: "WredDropProbability", APIField: &ethPortSettingsProps.WredDropProbability, TFValue: plan.WredDropProbability},
+		{FieldName: "PriorityFlowControlWatchdogDetectTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime, TFValue: plan.PriorityFlowControlWatchdogDetectTime},
+		{FieldName: "PriorityFlowControlWatchdogRestoreTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime, TFValue: plan.PriorityFlowControlWatchdogRestoreTime},
+		{FieldName: "MacLimit", APIField: &ethPortSettingsProps.MacLimit, TFValue: plan.MacLimit},
+		{FieldName: "AgingTime", APIField: &ethPortSettingsProps.AgingTime, TFValue: plan.AgingTime},
+	})
+
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
@@ -514,14 +445,12 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		if !op.IsDefault.IsNull() {
 			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
 		}
-		ethPortSettingsReq.ObjectProperties = &objProps
-	} else {
-		ethPortSettingsReq.ObjectProperties = nil
+		ethPortSettingsProps.ObjectProperties = &objProps
 	}
 
+	// Handle LLDP Med
 	if len(plan.LldpMed) > 0 {
 		lldpMedItems := make([]openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, len(plan.LldpMed))
-
 		for i, lldpMedItem := range plan.LldpMed {
 			item := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
 
@@ -549,21 +478,11 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 			lldpMedItems[i] = item
 		}
-
-		ethPortSettingsReq.LldpMed = lldpMedItems
+		ethPortSettingsProps.LldpMed = lldpMedItems
 	}
 
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPut(ctx, "eth_port_settings", name, *ethPortSettingsReq)
-
-	provCtx.NotifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings creation operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Eth Port Settings %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "eth_port_settings", name, *ethPortSettingsProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -585,473 +504,197 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
-	settingsName := state.Name.ValueString()
+	ethPortSettingsName := state.Name.ValueString()
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("eth_port_settings") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping eth port settings %s verification - trusting recent successful API operation", settingsName))
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("eth_port_settings") {
+		tflog.Info(ctx, fmt.Sprintf("Skipping eth port settings %s verification – trusting recent successful API operation", ethPortSettingsName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent eth port settings operations found, performing normal verification for %s", settingsName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching eth port settings for verification of %s", ethPortSettingsName))
 
 	type EthPortSettingsResponse struct {
-		EthPortSettings map[string]map[string]interface{} `json:"eth_port_settings"`
+		EthPortSettings map[string]interface{} `json:"eth_port_settings"`
 	}
 
-	var result EthPortSettingsResponse
-	var err error
-	maxRetries := 3
-
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		settingsData, fetchErr := getCachedResponse(ctx, provCtx, "eth_port_settings", func() (interface{}, error) {
-			tflog.Debug(ctx, "Making API call to fetch Ethernet port settings")
-			apiResp, err := provCtx.client.EthPortSettingsAPI.EthportsettingsGet(ctx).Execute()
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "eth_port_settings", ethPortSettingsName,
+		func() (EthPortSettingsResponse, error) {
+			tflog.Debug(ctx, "Making API call to fetch eth port settings")
+			respAPI, err := r.client.EthPortSettingsAPI.EthportsettingsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading eth port settings: %v", err)
+				return EthPortSettingsResponse{}, fmt.Errorf("error reading eth port settings: %v", err)
 			}
-			defer apiResp.Body.Close()
+			defer respAPI.Body.Close()
 
 			var res EthPortSettingsResponse
-			if err := json.NewDecoder(apiResp.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("error decoding eth port settings response: %v", err)
+			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
+				return EthPortSettingsResponse{}, fmt.Errorf("failed to decode eth port settings response: %v", err)
 			}
-			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Ethernet port settings from API", len(res.EthPortSettings)))
-			return res, nil
-		})
 
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch eth port settings on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = settingsData.(EthPortSettingsResponse)
-		break
-	}
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d eth port settings", len(res.EthPortSettings)))
+			return res, nil
+		},
+		getCachedResponse,
+	)
 
 	if err != nil {
 		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Eth Port Settings %s", settingsName))...,
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Eth Port Settings %s", ethPortSettingsName))...,
 		)
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for Ethernet port settings with ID: %s", settingsName))
-	var settings map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for eth port settings with name: %s", ethPortSettingsName))
 
-	if data, ok := result.EthPortSettings[settingsName]; ok {
-		settings = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found Ethernet port settings directly by ID: %s", settingsName))
-	} else {
-		var nameStr types.String
-		diags := req.State.GetAttribute(ctx, path.Root("name"), &nameStr)
-		if !diags.HasError() && !nameStr.IsNull() {
-			settingsNameFromAttr := nameStr.ValueString()
-			tflog.Debug(ctx, fmt.Sprintf("Settings not found by ID, trying name attribute: %s", settingsNameFromAttr))
-			if data, ok := result.EthPortSettings[settingsNameFromAttr]; ok {
-				settings = data
-				settingsName = settingsNameFromAttr
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Ethernet port settings by name attribute: %s", settingsNameFromAttr))
+	ethPortSettingsData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.EthPortSettings,
+		ethPortSettingsName,
+		func(data interface{}) (string, bool) {
+			if ethPortSettings, ok := data.(map[string]interface{}); ok {
+				if name, ok := ethPortSettings["name"].(string); ok {
+					return name, true
+				}
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Settings not found directly by ID '%s', searching through all settings", settingsName))
-		for apiName, s := range result.EthPortSettings {
-			if name, ok := s["name"].(string); ok && name == settingsName {
-				settings = s
-				settingsName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Ethernet port settings with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
-
-	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Ethernet port settings with ID '%s' not found in API response", settingsName))
+		tflog.Debug(ctx, fmt.Sprintf("Eth Port Settings with name '%s' not found in API response", ethPortSettingsName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	if op, ok := settings["object_properties"].(map[string]interface{}); ok {
-		objProp := verityEthPortSettingsObjectPropertiesModel{}
+	ethPortSettingsMap, ok := ethPortSettingsData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Eth Port Settings Data",
+			fmt.Sprintf("Eth Port Settings data is not in expected format for %s", ethPortSettingsName),
+		)
+		return
+	}
 
-		if group, ok := op["group"].(string); ok {
-			objProp.Group = types.StringValue(group)
-		} else {
-			objProp.Group = types.StringNull()
+	tflog.Debug(ctx, fmt.Sprintf("Found eth port settings '%s' under API key '%s'", ethPortSettingsName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(ethPortSettingsMap["name"])
+
+	// Handle object properties
+	if objProps, ok := ethPortSettingsMap["object_properties"].(map[string]interface{}); ok {
+		group := utils.MapStringFromAPI(objProps["group"])
+		if group.IsNull() {
+			group = types.StringValue("")
 		}
-
-		if isDefault, ok := op["isdefault"].(bool); ok {
-			objProp.IsDefault = types.BoolValue(isDefault)
-		} else {
-			objProp.IsDefault = types.BoolNull()
+		isDefault := utils.MapBoolFromAPI(objProps["isdefault"])
+		if isDefault.IsNull() {
+			isDefault = types.BoolValue(false)
 		}
-
-		state.ObjectProperties = []verityEthPortSettingsObjectPropertiesModel{objProp}
+		state.ObjectProperties = []verityEthPortSettingsObjectPropertiesModel{
+			{
+				Group:     group,
+				IsDefault: isDefault,
+			},
+		}
 	} else {
 		state.ObjectProperties = nil
 	}
 
-	if val, ok := settings["name"]; ok {
-		state.Name = types.StringValue(fmt.Sprintf("%v", val))
-	}
-	if val, ok := settings["enable"].(bool); ok {
-		state.Enable = types.BoolValue(val)
-	} else {
-		state.Enable = types.BoolNull()
-	}
-	if val, ok := settings["auto_negotiation"].(bool); ok {
-		state.AutoNegotiation = types.BoolValue(val)
-	} else {
-		state.AutoNegotiation = types.BoolNull()
-	}
-	if val, ok := settings["max_bit_rate"].(string); ok {
-		state.MaxBitRate = types.StringValue(val)
-	} else {
-		state.MaxBitRate = types.StringNull()
-	}
-	if val, ok := settings["duplex_mode"].(string); ok {
-		state.DuplexMode = types.StringValue(val)
-	} else {
-		state.DuplexMode = types.StringNull()
-	}
-	if val, ok := settings["stp_enable"].(bool); ok {
-		state.StpEnable = types.BoolValue(val)
-	} else {
-		state.StpEnable = types.BoolNull()
-	}
-	if val, ok := settings["fast_learning_mode"].(bool); ok {
-		state.FastLearningMode = types.BoolValue(val)
-	} else {
-		state.FastLearningMode = types.BoolNull()
-	}
-	if val, ok := settings["bpdu_guard"].(bool); ok {
-		state.BpduGuard = types.BoolValue(val)
-	} else {
-		state.BpduGuard = types.BoolNull()
-	}
-	if val, ok := settings["bpdu_filter"].(bool); ok {
-		state.BpduFilter = types.BoolValue(val)
-	} else {
-		state.BpduFilter = types.BoolNull()
-	}
-	if val, ok := settings["guard_loop"].(bool); ok {
-		state.GuardLoop = types.BoolValue(val)
-	} else {
-		state.GuardLoop = types.BoolNull()
-	}
-	if val, ok := settings["poe_enable"].(bool); ok {
-		state.PoeEnable = types.BoolValue(val)
-	} else {
-		state.PoeEnable = types.BoolNull()
-	}
-	if val, ok := settings["priority"].(string); ok {
-		state.Priority = types.StringValue(val)
-	} else {
-		state.Priority = types.StringNull()
-	}
-	if val, ok := settings["allocated_power"].(string); ok {
-		state.AllocatedPower = types.StringValue(val)
-	} else {
-		state.AllocatedPower = types.StringNull()
-	}
-	if val, ok := settings["bsp_enable"].(bool); ok {
-		state.BspEnable = types.BoolValue(val)
-	} else {
-		state.BspEnable = types.BoolNull()
-	}
-	if val, ok := settings["broadcast"].(bool); ok {
-		state.Broadcast = types.BoolValue(val)
-	} else {
-		state.Broadcast = types.BoolNull()
-	}
-	if val, ok := settings["multicast"].(bool); ok {
-		state.Multicast = types.BoolValue(val)
-	} else {
-		state.Multicast = types.BoolNull()
-	}
-	if val, ok := settings["max_allowed_value"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MaxAllowedValue = types.Int64Value(int64(v))
-		case int:
-			state.MaxAllowedValue = types.Int64Value(int64(v))
-		default:
-			state.MaxAllowedValue = types.Int64Null()
-		}
-	} else {
-		state.MaxAllowedValue = types.Int64Null()
-	}
-	if val, ok := settings["max_allowed_unit"].(string); ok {
-		state.MaxAllowedUnit = types.StringValue(val)
-	} else {
-		state.MaxAllowedUnit = types.StringNull()
-	}
-	if val, ok := settings["action"].(string); ok {
-		state.Action = types.StringValue(val)
-	} else {
-		state.Action = types.StringNull()
-	}
-	if val, ok := settings["fec"].(string); ok {
-		state.Fec = types.StringValue(val)
-	} else {
-		state.Fec = types.StringNull()
-	}
-	if val, ok := settings["single_link"].(bool); ok {
-		state.SingleLink = types.BoolValue(val)
-	} else {
-		state.SingleLink = types.BoolNull()
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"max_bit_rate":                          &state.MaxBitRate,
+		"duplex_mode":                           &state.DuplexMode,
+		"priority":                              &state.Priority,
+		"allocated_power":                       &state.AllocatedPower,
+		"max_allowed_unit":                      &state.MaxAllowedUnit,
+		"action":                                &state.Action,
+		"fec":                                   &state.Fec,
+		"priority_flow_control_watchdog_action": &state.PriorityFlowControlWatchdogAction,
+		"packet_queue":                          &state.PacketQueue,
+		"packet_queue_ref_type_":                &state.PacketQueueRefType,
+		"cli_commands":                          &state.CliCommands,
+		"mac_security_mode":                     &state.MacSecurityMode,
+		"security_violation_action":             &state.SecurityViolationAction,
+		"aging_type":                            &state.AgingType,
+		"lldp_mode":                             &state.LldpMode,
 	}
 
-	if val, ok := settings["minimum_wred_threshold"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MinimumWredThreshold = types.Int64Value(int64(v))
-		case int:
-			state.MinimumWredThreshold = types.Int64Value(int64(v))
-		default:
-			state.MinimumWredThreshold = types.Int64Null()
-		}
-	} else {
-		state.MinimumWredThreshold = types.Int64Null()
-	}
-	if val, ok := settings["maximum_wred_threshold"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MaximumWredThreshold = types.Int64Value(int64(v))
-		case int:
-			state.MaximumWredThreshold = types.Int64Value(int64(v))
-		default:
-			state.MaximumWredThreshold = types.Int64Null()
-		}
-	} else {
-		state.MaximumWredThreshold = types.Int64Null()
-	}
-	if val, ok := settings["wred_drop_probability"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.WredDropProbability = types.Int64Value(int64(v))
-		case int:
-			state.WredDropProbability = types.Int64Value(int64(v))
-		default:
-			state.WredDropProbability = types.Int64Null()
-		}
-	} else {
-		state.WredDropProbability = types.Int64Null()
-	}
-	if val, ok := settings["priority_flow_control_watchdog_action"].(string); ok {
-		state.PriorityFlowControlWatchdogAction = types.StringValue(val)
-	} else {
-		state.PriorityFlowControlWatchdogAction = types.StringNull()
-	}
-	if val, ok := settings["priority_flow_control_watchdog_detect_time"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.PriorityFlowControlWatchdogDetectTime = types.Int64Value(int64(v))
-		case int:
-			state.PriorityFlowControlWatchdogDetectTime = types.Int64Value(int64(v))
-		default:
-			state.PriorityFlowControlWatchdogDetectTime = types.Int64Null()
-		}
-	} else {
-		state.PriorityFlowControlWatchdogDetectTime = types.Int64Null()
-	}
-	if val, ok := settings["priority_flow_control_watchdog_restore_time"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.PriorityFlowControlWatchdogRestoreTime = types.Int64Value(int64(v))
-		case int:
-			state.PriorityFlowControlWatchdogRestoreTime = types.Int64Value(int64(v))
-		default:
-			state.PriorityFlowControlWatchdogRestoreTime = types.Int64Null()
-		}
-	} else {
-		state.PriorityFlowControlWatchdogRestoreTime = types.Int64Null()
-	}
-	if val, ok := settings["packet_queue"].(string); ok {
-		state.PacketQueue = types.StringValue(val)
-	} else {
-		state.PacketQueue = types.StringNull()
-	}
-	if val, ok := settings["packet_queue_ref_type_"].(string); ok {
-		state.PacketQueueRefType = types.StringValue(val)
-	} else {
-		state.PacketQueueRefType = types.StringNull()
-	}
-	if val, ok := settings["enable_wred_tuning"].(bool); ok {
-		state.EnableWredTuning = types.BoolValue(val)
-	} else {
-		state.EnableWredTuning = types.BoolNull()
-	}
-	if val, ok := settings["enable_ecn"].(bool); ok {
-		state.EnableEcn = types.BoolValue(val)
-	} else {
-		state.EnableEcn = types.BoolNull()
-	}
-	if val, ok := settings["enable_watchdog_tuning"].(bool); ok {
-		state.EnableWatchdogTuning = types.BoolValue(val)
-	} else {
-		state.EnableWatchdogTuning = types.BoolNull()
-	}
-	if val, ok := settings["cli_commands"].(string); ok {
-		state.CliCommands = types.StringValue(val)
-	} else {
-		state.CliCommands = types.StringNull()
-	}
-	if val, ok := settings["detect_bridging_loops"].(bool); ok {
-		state.DetectBridgingLoops = types.BoolValue(val)
-	} else {
-		state.DetectBridgingLoops = types.BoolNull()
-	}
-	if val, ok := settings["unidirectional_link_detection"].(bool); ok {
-		state.UnidirectionalLinkDetection = types.BoolValue(val)
-	} else {
-		state.UnidirectionalLinkDetection = types.BoolNull()
-	}
-	if val, ok := settings["mac_security_mode"].(string); ok {
-		state.MacSecurityMode = types.StringValue(val)
-	} else {
-		state.MacSecurityMode = types.StringNull()
-	}
-	if val, ok := settings["mac_limit"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MacLimit = types.Int64Value(int64(v))
-		case int:
-			state.MacLimit = types.Int64Value(int64(v))
-		default:
-			state.MacLimit = types.Int64Null()
-		}
-	} else {
-		state.MacLimit = types.Int64Null()
-	}
-	if val, ok := settings["security_violation_action"].(string); ok {
-		state.SecurityViolationAction = types.StringValue(val)
-	} else {
-		state.SecurityViolationAction = types.StringNull()
-	}
-	if val, ok := settings["aging_type"].(string); ok {
-		state.AgingType = types.StringValue(val)
-	} else {
-		state.AgingType = types.StringNull()
-	}
-	if val, ok := settings["aging_time"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.AgingTime = types.Int64Value(int64(v))
-		case int:
-			state.AgingTime = types.Int64Value(int64(v))
-		default:
-			state.AgingTime = types.Int64Null()
-		}
-	} else {
-		state.AgingTime = types.Int64Null()
-	}
-	if val, ok := settings["lldp_enable"].(bool); ok {
-		state.LldpEnable = types.BoolValue(val)
-	} else {
-		state.LldpEnable = types.BoolNull()
-	}
-	if val, ok := settings["lldp_mode"].(string); ok {
-		state.LldpMode = types.StringValue(val)
-	} else {
-		state.LldpMode = types.StringNull()
-	}
-	if val, ok := settings["lldp_med_enable"].(bool); ok {
-		state.LldpMedEnable = types.BoolValue(val)
-	} else {
-		state.LldpMedEnable = types.BoolNull()
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(ethPortSettingsMap[apiKey])
 	}
 
-	if lldpMedData, ok := settings["lldp_med"].([]interface{}); ok {
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":                        &state.Enable,
+		"auto_negotiation":              &state.AutoNegotiation,
+		"stp_enable":                    &state.StpEnable,
+		"fast_learning_mode":            &state.FastLearningMode,
+		"bpdu_guard":                    &state.BpduGuard,
+		"bpdu_filter":                   &state.BpduFilter,
+		"guard_loop":                    &state.GuardLoop,
+		"poe_enable":                    &state.PoeEnable,
+		"bsp_enable":                    &state.BspEnable,
+		"broadcast":                     &state.Broadcast,
+		"multicast":                     &state.Multicast,
+		"single_link":                   &state.SingleLink,
+		"enable_wred_tuning":            &state.EnableWredTuning,
+		"enable_ecn":                    &state.EnableEcn,
+		"enable_watchdog_tuning":        &state.EnableWatchdogTuning,
+		"detect_bridging_loops":         &state.DetectBridgingLoops,
+		"unidirectional_link_detection": &state.UnidirectionalLinkDetection,
+		"lldp_enable":                   &state.LldpEnable,
+		"lldp_med_enable":               &state.LldpMedEnable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(ethPortSettingsMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"max_allowed_value":                           &state.MaxAllowedValue,
+		"minimum_wred_threshold":                      &state.MinimumWredThreshold,
+		"maximum_wred_threshold":                      &state.MaximumWredThreshold,
+		"wred_drop_probability":                       &state.WredDropProbability,
+		"priority_flow_control_watchdog_detect_time":  &state.PriorityFlowControlWatchdogDetectTime,
+		"priority_flow_control_watchdog_restore_time": &state.PriorityFlowControlWatchdogRestoreTime,
+		"mac_limit":  &state.MacLimit,
+		"aging_time": &state.AgingTime,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(ethPortSettingsMap[apiKey])
+	}
+
+	// Handle LLDP Med
+	if lldpMedData, ok := ethPortSettingsMap["lldp_med"].([]interface{}); ok && len(lldpMedData) > 0 {
 		var lldpMedList []verityEthPortSettingsLldpMedModel
 
 		for _, item := range lldpMedData {
-			if itemMap, ok := item.(map[string]interface{}); ok {
-				lldpMedItem := verityEthPortSettingsLldpMedModel{}
-
-				if enable, ok := itemMap["lldp_med_row_num_enable"].(bool); ok {
-					lldpMedItem.LldpMedRowNumEnable = types.BoolValue(enable)
-				} else {
-					lldpMedItem.LldpMedRowNumEnable = types.BoolNull()
-				}
-
-				if app, ok := itemMap["lldp_med_row_num_advertised_applicatio"].(string); ok {
-					lldpMedItem.LldpMedRowNumAdvertisedApplication = types.StringValue(app)
-				} else {
-					lldpMedItem.LldpMedRowNumAdvertisedApplication = types.StringNull()
-				}
-
-				if dscpMark, ok := itemMap["lldp_med_row_num_dscp_mark"]; ok {
-					switch v := dscpMark.(type) {
-					case float64:
-						lldpMedItem.LldpMedRowNumDscpMark = types.Int64Value(int64(v))
-					case int:
-						lldpMedItem.LldpMedRowNumDscpMark = types.Int64Value(int64(v))
-					default:
-						lldpMedItem.LldpMedRowNumDscpMark = types.Int64Null()
-					}
-				} else {
-					lldpMedItem.LldpMedRowNumDscpMark = types.Int64Null()
-				}
-
-				if priority, ok := itemMap["lldp_med_row_num_priority"]; ok {
-					switch v := priority.(type) {
-					case float64:
-						lldpMedItem.LldpMedRowNumPriority = types.Int64Value(int64(v))
-					case int:
-						lldpMedItem.LldpMedRowNumPriority = types.Int64Value(int64(v))
-					default:
-						lldpMedItem.LldpMedRowNumPriority = types.Int64Null()
-					}
-				} else {
-					lldpMedItem.LldpMedRowNumPriority = types.Int64Null()
-				}
-
-				if service, ok := itemMap["lldp_med_row_num_service"].(string); ok {
-					lldpMedItem.LldpMedRowNumService = types.StringValue(service)
-				} else {
-					lldpMedItem.LldpMedRowNumService = types.StringNull()
-				}
-
-				if serviceRefType, ok := itemMap["lldp_med_row_num_service_ref_type_"].(string); ok {
-					lldpMedItem.LldpMedRowNumServiceRefType = types.StringValue(serviceRefType)
-				} else {
-					lldpMedItem.LldpMedRowNumServiceRefType = types.StringNull()
-				}
-
-				if index, ok := itemMap["index"]; ok {
-					switch v := index.(type) {
-					case float64:
-						lldpMedItem.Index = types.Int64Value(int64(v))
-					case int:
-						lldpMedItem.Index = types.Int64Value(int64(v))
-					default:
-						lldpMedItem.Index = types.Int64Null()
-					}
-				} else {
-					lldpMedItem.Index = types.Int64Null()
-				}
-
-				lldpMedList = append(lldpMedList, lldpMedItem)
+			itemMap, ok := item.(map[string]interface{})
+			if !ok {
+				continue
 			}
+
+			lldpMedItem := verityEthPortSettingsLldpMedModel{
+				LldpMedRowNumEnable:                utils.MapBoolFromAPI(itemMap["lldp_med_row_num_enable"]),
+				LldpMedRowNumAdvertisedApplication: utils.MapStringFromAPI(itemMap["lldp_med_row_num_advertised_applicatio"]),
+				LldpMedRowNumDscpMark:              utils.MapInt64FromAPI(itemMap["lldp_med_row_num_dscp_mark"]),
+				LldpMedRowNumPriority:              utils.MapInt64FromAPI(itemMap["lldp_med_row_num_priority"]),
+				LldpMedRowNumService:               utils.MapStringFromAPI(itemMap["lldp_med_row_num_service"]),
+				LldpMedRowNumServiceRefType:        utils.MapStringFromAPI(itemMap["lldp_med_row_num_service_ref_type_"]),
+				Index:                              utils.MapInt64FromAPI(itemMap["index"]),
+			}
+
+			lldpMedList = append(lldpMedList, lldpMedItem)
 		}
 
 		state.LldpMed = lldpMedList
+	} else {
+		state.LldpMed = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1080,23 +723,62 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	ethPortSettingsReq := openapi.EthportsettingsPutRequestEthPortSettingsValue{}
+	name := plan.Name.ValueString()
+	ethPortSettingsProps := openapi.EthportsettingsPutRequestEthPortSettingsValue{}
 	hasChanges := false
 
-	objectPropertiesChanged := false
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ethPortSettingsProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MaxBitRate, state.MaxBitRate, func(v *string) { ethPortSettingsProps.MaxBitRate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DuplexMode, state.DuplexMode, func(v *string) { ethPortSettingsProps.DuplexMode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Priority, state.Priority, func(v *string) { ethPortSettingsProps.Priority = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AllocatedPower, state.AllocatedPower, func(v *string) { ethPortSettingsProps.AllocatedPower = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MaxAllowedUnit, state.MaxAllowedUnit, func(v *string) { ethPortSettingsProps.MaxAllowedUnit = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Action, state.Action, func(v *string) { ethPortSettingsProps.Action = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Fec, state.Fec, func(v *string) { ethPortSettingsProps.Fec = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PriorityFlowControlWatchdogAction, state.PriorityFlowControlWatchdogAction, func(v *string) { ethPortSettingsProps.PriorityFlowControlWatchdogAction = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CliCommands, state.CliCommands, func(v *string) { ethPortSettingsProps.CliCommands = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MacSecurityMode, state.MacSecurityMode, func(v *string) { ethPortSettingsProps.MacSecurityMode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SecurityViolationAction, state.SecurityViolationAction, func(v *string) { ethPortSettingsProps.SecurityViolationAction = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AgingType, state.AgingType, func(v *string) { ethPortSettingsProps.AgingType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.LldpMode, state.LldpMode, func(v *string) { ethPortSettingsProps.LldpMode = v }, &hasChanges)
 
-	if (len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) == 0) ||
-		(len(plan.ObjectProperties) == 0 && len(state.ObjectProperties) > 0) {
-		objectPropertiesChanged = true
-	} else if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		if !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ethPortSettingsProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AutoNegotiation, state.AutoNegotiation, func(v *bool) { ethPortSettingsProps.AutoNegotiation = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.StpEnable, state.StpEnable, func(v *bool) { ethPortSettingsProps.StpEnable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.FastLearningMode, state.FastLearningMode, func(v *bool) { ethPortSettingsProps.FastLearningMode = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.BpduGuard, state.BpduGuard, func(v *bool) { ethPortSettingsProps.BpduGuard = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.BpduFilter, state.BpduFilter, func(v *bool) { ethPortSettingsProps.BpduFilter = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.GuardLoop, state.GuardLoop, func(v *bool) { ethPortSettingsProps.GuardLoop = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.PoeEnable, state.PoeEnable, func(v *bool) { ethPortSettingsProps.PoeEnable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.BspEnable, state.BspEnable, func(v *bool) { ethPortSettingsProps.BspEnable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Broadcast, state.Broadcast, func(v *bool) { ethPortSettingsProps.Broadcast = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Multicast, state.Multicast, func(v *bool) { ethPortSettingsProps.Multicast = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.SingleLink, state.SingleLink, func(v *bool) { ethPortSettingsProps.SingleLink = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableWredTuning, state.EnableWredTuning, func(v *bool) { ethPortSettingsProps.EnableWredTuning = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableEcn, state.EnableEcn, func(v *bool) { ethPortSettingsProps.EnableEcn = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableWatchdogTuning, state.EnableWatchdogTuning, func(v *bool) { ethPortSettingsProps.EnableWatchdogTuning = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.DetectBridgingLoops, state.DetectBridgingLoops, func(v *bool) { ethPortSettingsProps.DetectBridgingLoops = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.UnidirectionalLinkDetection, state.UnidirectionalLinkDetection, func(v *bool) { ethPortSettingsProps.UnidirectionalLinkDetection = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.LldpEnable, state.LldpEnable, func(v *bool) { ethPortSettingsProps.LldpEnable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.LldpMedEnable, state.LldpMedEnable, func(v *bool) { ethPortSettingsProps.LldpMedEnable = v }, &hasChanges)
+
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.MaxAllowedValue, state.MaxAllowedValue, func(v *int32) { ethPortSettingsProps.MaxAllowedValue = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.MinimumWredThreshold, state.MinimumWredThreshold, func(v *int32) { ethPortSettingsProps.MinimumWredThreshold = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.MaximumWredThreshold, state.MaximumWredThreshold, func(v *int32) { ethPortSettingsProps.MaximumWredThreshold = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.WredDropProbability, state.WredDropProbability, func(v *int32) { ethPortSettingsProps.WredDropProbability = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, func(v *int32) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, func(v *int32) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.MacLimit, state.MacLimit, func(v *int32) { ethPortSettingsProps.MacLimit = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.AgingTime, state.AgingTime, func(v *int32) { ethPortSettingsProps.AgingTime = v }, &hasChanges)
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 ||
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
 			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) {
-			objectPropertiesChanged = true
-		}
-	}
-
-	if objectPropertiesChanged {
-		if len(plan.ObjectProperties) > 0 {
 			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
@@ -1106,492 +788,102 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 			if !plan.ObjectProperties[0].IsDefault.IsNull() {
 				objProps.Isdefault = openapi.PtrBool(plan.ObjectProperties[0].IsDefault.ValueBool())
 			}
-			ethPortSettingsReq.ObjectProperties = &objProps
-		} else {
-			ethPortSettingsReq.ObjectProperties = nil
-		}
-		hasChanges = true
-	}
-
-	boolFields := []struct {
-		planValue  types.Bool
-		stateValue types.Bool
-		setter     func(val bool)
-	}{
-		{
-			planValue:  plan.Enable,
-			stateValue: state.Enable,
-			setter: func(val bool) {
-				ethPortSettingsReq.Enable = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.AutoNegotiation,
-			stateValue: state.AutoNegotiation,
-			setter: func(val bool) {
-				ethPortSettingsReq.AutoNegotiation = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.StpEnable,
-			stateValue: state.StpEnable,
-			setter: func(val bool) {
-				ethPortSettingsReq.StpEnable = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.FastLearningMode,
-			stateValue: state.FastLearningMode,
-			setter: func(val bool) {
-				ethPortSettingsReq.FastLearningMode = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.BpduGuard,
-			stateValue: state.BpduGuard,
-			setter: func(val bool) {
-				ethPortSettingsReq.BpduGuard = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.BpduFilter,
-			stateValue: state.BpduFilter,
-			setter: func(val bool) {
-				ethPortSettingsReq.BpduFilter = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.GuardLoop,
-			stateValue: state.GuardLoop,
-			setter: func(val bool) {
-				ethPortSettingsReq.GuardLoop = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.PoeEnable,
-			stateValue: state.PoeEnable,
-			setter: func(val bool) {
-				ethPortSettingsReq.PoeEnable = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.BspEnable,
-			stateValue: state.BspEnable,
-			setter: func(val bool) {
-				ethPortSettingsReq.BspEnable = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.Broadcast,
-			stateValue: state.Broadcast,
-			setter: func(val bool) {
-				ethPortSettingsReq.Broadcast = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.Multicast,
-			stateValue: state.Multicast,
-			setter: func(val bool) {
-				ethPortSettingsReq.Multicast = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.SingleLink,
-			stateValue: state.SingleLink,
-			setter: func(val bool) {
-				ethPortSettingsReq.SingleLink = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.EnableWredTuning,
-			stateValue: state.EnableWredTuning,
-			setter: func(val bool) {
-				ethPortSettingsReq.EnableWredTuning = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.EnableEcn,
-			stateValue: state.EnableEcn,
-			setter: func(val bool) {
-				ethPortSettingsReq.EnableEcn = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.EnableWatchdogTuning,
-			stateValue: state.EnableWatchdogTuning,
-			setter: func(val bool) {
-				ethPortSettingsReq.EnableWatchdogTuning = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.DetectBridgingLoops,
-			stateValue: state.DetectBridgingLoops,
-			setter: func(val bool) {
-				ethPortSettingsReq.DetectBridgingLoops = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.UnidirectionalLinkDetection,
-			stateValue: state.UnidirectionalLinkDetection,
-			setter: func(val bool) {
-				ethPortSettingsReq.UnidirectionalLinkDetection = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.LldpEnable,
-			stateValue: state.LldpEnable,
-			setter: func(val bool) {
-				ethPortSettingsReq.LldpEnable = openapi.PtrBool(val)
-			},
-		},
-		{
-			planValue:  plan.LldpMedEnable,
-			stateValue: state.LldpMedEnable,
-			setter: func(val bool) {
-				ethPortSettingsReq.LldpMedEnable = openapi.PtrBool(val)
-			},
-		},
-	}
-
-	for _, field := range boolFields {
-		if !field.planValue.Equal(field.stateValue) {
-			field.setter(field.planValue.ValueBool())
+			ethPortSettingsProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
 	}
 
-	stringFields := []struct {
-		planValue  types.String
-		stateValue types.String
-		setter     func(val string)
-	}{
-		{
-			planValue:  plan.MaxBitRate,
-			stateValue: state.MaxBitRate,
-			setter: func(val string) {
-				ethPortSettingsReq.MaxBitRate = openapi.PtrString(val)
-			},
+	// Handle packet_queue and packet_queue_ref_type_ using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.PacketQueue, state.PacketQueue, plan.PacketQueueRefType, state.PacketQueueRefType,
+		func(v *string) { ethPortSettingsProps.PacketQueue = v },
+		func(v *string) { ethPortSettingsProps.PacketQueueRefType = v },
+		"packet_queue", "packet_queue_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle LLDP Med
+	lldpMedHandler := utils.IndexedItemHandler[verityEthPortSettingsLldpMedModel, openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner]{
+		CreateNew: func(item verityEthPortSettingsLldpMedModel) openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
+			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
+
+			if !item.Index.IsNull() {
+				lldpMedItem.Index = openapi.PtrInt32(int32(item.Index.ValueInt64()))
+			}
+			if !item.LldpMedRowNumEnable.IsNull() {
+				lldpMedItem.LldpMedRowNumEnable = openapi.PtrBool(item.LldpMedRowNumEnable.ValueBool())
+			}
+			if !item.LldpMedRowNumAdvertisedApplication.IsNull() {
+				lldpMedItem.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(item.LldpMedRowNumAdvertisedApplication.ValueString())
+			}
+			if !item.LldpMedRowNumDscpMark.IsNull() {
+				lldpMedItem.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(item.LldpMedRowNumDscpMark.ValueInt64()))
+			}
+			if !item.LldpMedRowNumPriority.IsNull() {
+				lldpMedItem.LldpMedRowNumPriority = openapi.PtrInt32(int32(item.LldpMedRowNumPriority.ValueInt64()))
+			}
+			if !item.LldpMedRowNumService.IsNull() {
+				lldpMedItem.LldpMedRowNumService = openapi.PtrString(item.LldpMedRowNumService.ValueString())
+			}
+			if !item.LldpMedRowNumServiceRefType.IsNull() {
+				lldpMedItem.LldpMedRowNumServiceRefType = openapi.PtrString(item.LldpMedRowNumServiceRefType.ValueString())
+			}
+
+			return lldpMedItem
 		},
-		{
-			planValue:  plan.DuplexMode,
-			stateValue: state.DuplexMode,
-			setter: func(val string) {
-				ethPortSettingsReq.DuplexMode = openapi.PtrString(val)
-			},
+		UpdateExisting: func(planItem, stateItem verityEthPortSettingsLldpMedModel) (openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, bool) {
+			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+			hasChanges := false
+
+			if !planItem.LldpMedRowNumEnable.Equal(stateItem.LldpMedRowNumEnable) {
+				lldpMedItem.LldpMedRowNumEnable = openapi.PtrBool(planItem.LldpMedRowNumEnable.ValueBool())
+				hasChanges = true
+			}
+			if !planItem.LldpMedRowNumAdvertisedApplication.Equal(stateItem.LldpMedRowNumAdvertisedApplication) {
+				if !planItem.LldpMedRowNumAdvertisedApplication.IsNull() {
+					lldpMedItem.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(planItem.LldpMedRowNumAdvertisedApplication.ValueString())
+				}
+				hasChanges = true
+			}
+			if !planItem.LldpMedRowNumDscpMark.Equal(stateItem.LldpMedRowNumDscpMark) {
+				lldpMedItem.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(planItem.LldpMedRowNumDscpMark.ValueInt64()))
+				hasChanges = true
+			}
+			if !planItem.LldpMedRowNumPriority.Equal(stateItem.LldpMedRowNumPriority) {
+				lldpMedItem.LldpMedRowNumPriority = openapi.PtrInt32(int32(planItem.LldpMedRowNumPriority.ValueInt64()))
+				hasChanges = true
+			}
+			if !planItem.LldpMedRowNumService.Equal(stateItem.LldpMedRowNumService) {
+				if !planItem.LldpMedRowNumService.IsNull() {
+					lldpMedItem.LldpMedRowNumService = openapi.PtrString(planItem.LldpMedRowNumService.ValueString())
+				}
+				hasChanges = true
+			}
+			if !planItem.LldpMedRowNumServiceRefType.Equal(stateItem.LldpMedRowNumServiceRefType) {
+				if !planItem.LldpMedRowNumServiceRefType.IsNull() {
+					lldpMedItem.LldpMedRowNumServiceRefType = openapi.PtrString(planItem.LldpMedRowNumServiceRefType.ValueString())
+				}
+				hasChanges = true
+			}
+
+			return lldpMedItem, hasChanges
 		},
-		{
-			planValue:  plan.Priority,
-			stateValue: state.Priority,
-			setter: func(val string) {
-				ethPortSettingsReq.Priority = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.AllocatedPower,
-			stateValue: state.AllocatedPower,
-			setter: func(val string) {
-				ethPortSettingsReq.AllocatedPower = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.MaxAllowedUnit,
-			stateValue: state.MaxAllowedUnit,
-			setter: func(val string) {
-				ethPortSettingsReq.MaxAllowedUnit = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.Action,
-			stateValue: state.Action,
-			setter: func(val string) {
-				ethPortSettingsReq.Action = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.Fec,
-			stateValue: state.Fec,
-			setter: func(val string) {
-				ethPortSettingsReq.Fec = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.PriorityFlowControlWatchdogAction,
-			stateValue: state.PriorityFlowControlWatchdogAction,
-			setter: func(val string) {
-				ethPortSettingsReq.PriorityFlowControlWatchdogAction = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.PacketQueue,
-			stateValue: state.PacketQueue,
-			setter: func(val string) {
-				ethPortSettingsReq.PacketQueue = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.PacketQueueRefType,
-			stateValue: state.PacketQueueRefType,
-			setter: func(val string) {
-				ethPortSettingsReq.PacketQueueRefType = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.CliCommands,
-			stateValue: state.CliCommands,
-			setter: func(val string) {
-				ethPortSettingsReq.CliCommands = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.MacSecurityMode,
-			stateValue: state.MacSecurityMode,
-			setter: func(val string) {
-				ethPortSettingsReq.MacSecurityMode = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.SecurityViolationAction,
-			stateValue: state.SecurityViolationAction,
-			setter: func(val string) {
-				ethPortSettingsReq.SecurityViolationAction = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.AgingType,
-			stateValue: state.AgingType,
-			setter: func(val string) {
-				ethPortSettingsReq.AgingType = openapi.PtrString(val)
-			},
-		},
-		{
-			planValue:  plan.LldpMode,
-			stateValue: state.LldpMode,
-			setter: func(val string) {
-				ethPortSettingsReq.LldpMode = openapi.PtrString(val)
-			},
+		CreateDeleted: func(index int64) openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
+			return openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
 		},
 	}
 
-	for _, field := range stringFields {
-		if !field.planValue.Equal(field.stateValue) {
-			field.setter(field.planValue.ValueString())
-			hasChanges = true
-		}
-	}
+	changedLldpMed, lldpMedChanged := utils.ProcessIndexedArrayUpdates(plan.LldpMed, state.LldpMed, lldpMedHandler)
 
-	intFields := []struct {
-		planValue  types.Int64
-		stateValue types.Int64
-		setter     func(val int32)
-	}{
-		{
-			planValue:  plan.MaxAllowedValue,
-			stateValue: state.MaxAllowedValue,
-			setter: func(val int32) {
-				ethPortSettingsReq.MaxAllowedValue = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.MinimumWredThreshold,
-			stateValue: state.MinimumWredThreshold,
-			setter: func(val int32) {
-				ethPortSettingsReq.MinimumWredThreshold = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.MaximumWredThreshold,
-			stateValue: state.MaximumWredThreshold,
-			setter: func(val int32) {
-				ethPortSettingsReq.MaximumWredThreshold = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.WredDropProbability,
-			stateValue: state.WredDropProbability,
-			setter: func(val int32) {
-				ethPortSettingsReq.WredDropProbability = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.PriorityFlowControlWatchdogDetectTime,
-			stateValue: state.PriorityFlowControlWatchdogDetectTime,
-			setter: func(val int32) {
-				ethPortSettingsReq.PriorityFlowControlWatchdogDetectTime = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.PriorityFlowControlWatchdogRestoreTime,
-			stateValue: state.PriorityFlowControlWatchdogRestoreTime,
-			setter: func(val int32) {
-				ethPortSettingsReq.PriorityFlowControlWatchdogRestoreTime = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.MacLimit,
-			stateValue: state.MacLimit,
-			setter: func(val int32) {
-				ethPortSettingsReq.MacLimit = openapi.PtrInt32(val)
-			},
-		},
-		{
-			planValue:  plan.AgingTime,
-			stateValue: state.AgingTime,
-			setter: func(val int32) {
-				ethPortSettingsReq.AgingTime = openapi.PtrInt32(val)
-			},
-		},
-	}
-
-	for _, field := range intFields {
-		if !field.planValue.Equal(field.stateValue) {
-			field.setter(int32(field.planValue.ValueInt64()))
-			hasChanges = true
-		}
-	}
-
-	oldLldpMedByIndex := make(map[int64]verityEthPortSettingsLldpMedModel)
-	for _, lldpMed := range state.LldpMed {
-		if !lldpMed.Index.IsNull() {
-			idx := lldpMed.Index.ValueInt64()
-			oldLldpMedByIndex[idx] = lldpMed
-		}
-	}
-
-	var changedLldpMed []openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner
-	lldpMedChanged := false
-
-	for _, planLldpMed := range plan.LldpMed {
-		if planLldpMed.Index.IsNull() {
-			continue // Skip items without identifier
-		}
-
-		idx := planLldpMed.Index.ValueInt64()
-		stateLldpMed, exists := oldLldpMedByIndex[idx]
-
-		if !exists {
-			// CREATE: new lldp_med, include all fields
-			newLldpMed := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-
-			if !planLldpMed.LldpMedRowNumEnable.IsNull() {
-				newLldpMed.LldpMedRowNumEnable = openapi.PtrBool(planLldpMed.LldpMedRowNumEnable.ValueBool())
-			} else {
-				newLldpMed.LldpMedRowNumEnable = openapi.PtrBool(false)
-			}
-
-			if !planLldpMed.LldpMedRowNumAdvertisedApplication.IsNull() && planLldpMed.LldpMedRowNumAdvertisedApplication.ValueString() != "" {
-				newLldpMed.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(planLldpMed.LldpMedRowNumAdvertisedApplication.ValueString())
-			} else {
-				newLldpMed.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString("")
-			}
-
-			if !planLldpMed.LldpMedRowNumDscpMark.IsNull() {
-				newLldpMed.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(planLldpMed.LldpMedRowNumDscpMark.ValueInt64()))
-			} else {
-				newLldpMed.LldpMedRowNumDscpMark = openapi.PtrInt32(0)
-			}
-
-			if !planLldpMed.LldpMedRowNumPriority.IsNull() {
-				newLldpMed.LldpMedRowNumPriority = openapi.PtrInt32(int32(planLldpMed.LldpMedRowNumPriority.ValueInt64()))
-			} else {
-				newLldpMed.LldpMedRowNumPriority = openapi.PtrInt32(0)
-			}
-
-			if !planLldpMed.LldpMedRowNumService.IsNull() && planLldpMed.LldpMedRowNumService.ValueString() != "" {
-				newLldpMed.LldpMedRowNumService = openapi.PtrString(planLldpMed.LldpMedRowNumService.ValueString())
-			} else {
-				newLldpMed.LldpMedRowNumService = openapi.PtrString("")
-			}
-
-			if !planLldpMed.LldpMedRowNumServiceRefType.IsNull() && planLldpMed.LldpMedRowNumServiceRefType.ValueString() != "" {
-				newLldpMed.LldpMedRowNumServiceRefType = openapi.PtrString(planLldpMed.LldpMedRowNumServiceRefType.ValueString())
-			} else {
-				newLldpMed.LldpMedRowNumServiceRefType = openapi.PtrString("")
-			}
-
-			changedLldpMed = append(changedLldpMed, newLldpMed)
-			lldpMedChanged = true
-			continue
-		}
-
-		// UPDATE: existing lldp_med, check which fields changed
-		updateLldpMed := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
-			Index: openapi.PtrInt32(int32(idx)),
-		}
-
-		fieldChanged := false
-
-		if !planLldpMed.LldpMedRowNumEnable.Equal(stateLldpMed.LldpMedRowNumEnable) {
-			updateLldpMed.LldpMedRowNumEnable = openapi.PtrBool(planLldpMed.LldpMedRowNumEnable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !planLldpMed.LldpMedRowNumAdvertisedApplication.Equal(stateLldpMed.LldpMedRowNumAdvertisedApplication) {
-			if !planLldpMed.LldpMedRowNumAdvertisedApplication.IsNull() && planLldpMed.LldpMedRowNumAdvertisedApplication.ValueString() != "" {
-				updateLldpMed.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(planLldpMed.LldpMedRowNumAdvertisedApplication.ValueString())
-			} else {
-				updateLldpMed.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !planLldpMed.LldpMedRowNumDscpMark.Equal(stateLldpMed.LldpMedRowNumDscpMark) {
-			updateLldpMed.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(planLldpMed.LldpMedRowNumDscpMark.ValueInt64()))
-			fieldChanged = true
-		}
-
-		if !planLldpMed.LldpMedRowNumPriority.Equal(stateLldpMed.LldpMedRowNumPriority) {
-			updateLldpMed.LldpMedRowNumPriority = openapi.PtrInt32(int32(planLldpMed.LldpMedRowNumPriority.ValueInt64()))
-			fieldChanged = true
-		}
-
-		if !planLldpMed.LldpMedRowNumService.Equal(stateLldpMed.LldpMedRowNumService) {
-			if !planLldpMed.LldpMedRowNumService.IsNull() && planLldpMed.LldpMedRowNumService.ValueString() != "" {
-				updateLldpMed.LldpMedRowNumService = openapi.PtrString(planLldpMed.LldpMedRowNumService.ValueString())
-			} else {
-				updateLldpMed.LldpMedRowNumService = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !planLldpMed.LldpMedRowNumServiceRefType.Equal(stateLldpMed.LldpMedRowNumServiceRefType) {
-			if !planLldpMed.LldpMedRowNumServiceRefType.IsNull() && planLldpMed.LldpMedRowNumServiceRefType.ValueString() != "" {
-				updateLldpMed.LldpMedRowNumServiceRefType = openapi.PtrString(planLldpMed.LldpMedRowNumServiceRefType.ValueString())
-			} else {
-				updateLldpMed.LldpMedRowNumServiceRefType = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedLldpMed = append(changedLldpMed, updateLldpMed)
-			lldpMedChanged = true
-		}
-	}
-
-	// DELETE: Check for deleted items
-	for stateIdx := range oldLldpMedByIndex {
-		found := false
-		for _, planLldpMed := range plan.LldpMed {
-			if !planLldpMed.Index.IsNull() && planLldpMed.Index.ValueInt64() == stateIdx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// lldp_med removed - include only the index for deletion
-			deletedLldpMed := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
-				Index: openapi.PtrInt32(int32(stateIdx)),
-			}
-			changedLldpMed = append(changedLldpMed, deletedLldpMed)
-			lldpMedChanged = true
-		}
-	}
-
-	if lldpMedChanged && len(changedLldpMed) > 0 {
-		ethPortSettingsReq.LldpMed = changedLldpMed
+	if lldpMedChanged {
+		ethPortSettingsProps.LldpMed = changedLldpMed
 		hasChanges = true
 	}
 
@@ -1600,23 +892,13 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	provCtx := r.provCtx
-	bulkMgr := provCtx.bulkOpsMgr
-	resourceName := plan.Name.ValueString()
-
-	operationID := bulkMgr.AddPatch(ctx, "eth_port_settings", resourceName, ethPortSettingsReq)
-	provCtx.NotifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Eth Port Settings %s", resourceName))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "eth_port_settings", name, ethPortSettingsProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
-	tflog.Info(ctx, fmt.Sprintf("Ethernet port settings %s update operation completed successfully", resourceName))
-	clearCache(ctx, provCtx, "eth_port_settings")
+	tflog.Info(ctx, fmt.Sprintf("Eth Port Settings %s update operation completed successfully", name))
+	clearCache(ctx, r.provCtx, "eth_port_settings")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -1631,25 +913,19 @@ func (r *verityEthPortSettingsResource) Delete(ctx context.Context, req resource
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
 	name := state.Name.ValueString()
-	bulkMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkMgr.AddDelete(ctx, "eth_port_settings", name)
-	r.provCtx.NotifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Ethernet port settings deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Eth Port Settings %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "eth_port_settings", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
-	tflog.Info(ctx, fmt.Sprintf("Ethernet port settings %s deletion operation completed successfully", name))
+	tflog.Info(ctx, fmt.Sprintf("Eth Port Settings %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_settings")
 	resp.State.RemoveResource(ctx)
 }

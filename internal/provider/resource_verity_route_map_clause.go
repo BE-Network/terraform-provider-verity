@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -278,154 +276,50 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		routeMapClauseProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "PermitDeny", APIField: &routeMapClauseProps.PermitDeny, TFValue: plan.PermitDeny},
+		{FieldName: "MatchAsPathAccessList", APIField: &routeMapClauseProps.MatchAsPathAccessList, TFValue: plan.MatchAsPathAccessList},
+		{FieldName: "MatchAsPathAccessListRefType", APIField: &routeMapClauseProps.MatchAsPathAccessListRefType, TFValue: plan.MatchAsPathAccessListRefType},
+		{FieldName: "MatchCommunityList", APIField: &routeMapClauseProps.MatchCommunityList, TFValue: plan.MatchCommunityList},
+		{FieldName: "MatchCommunityListRefType", APIField: &routeMapClauseProps.MatchCommunityListRefType, TFValue: plan.MatchCommunityListRefType},
+		{FieldName: "MatchExtendedCommunityList", APIField: &routeMapClauseProps.MatchExtendedCommunityList, TFValue: plan.MatchExtendedCommunityList},
+		{FieldName: "MatchExtendedCommunityListRefType", APIField: &routeMapClauseProps.MatchExtendedCommunityListRefType, TFValue: plan.MatchExtendedCommunityListRefType},
+		{FieldName: "MatchIpv4AddressIpPrefixList", APIField: &routeMapClauseProps.MatchIpv4AddressIpPrefixList, TFValue: plan.MatchIpv4AddressIpPrefixList},
+		{FieldName: "MatchIpv4AddressIpPrefixListRefType", APIField: &routeMapClauseProps.MatchIpv4AddressIpPrefixListRefType, TFValue: plan.MatchIpv4AddressIpPrefixListRefType},
+		{FieldName: "MatchIpv4NextHopIpPrefixList", APIField: &routeMapClauseProps.MatchIpv4NextHopIpPrefixList, TFValue: plan.MatchIpv4NextHopIpPrefixList},
+		{FieldName: "MatchIpv4NextHopIpPrefixListRefType", APIField: &routeMapClauseProps.MatchIpv4NextHopIpPrefixListRefType, TFValue: plan.MatchIpv4NextHopIpPrefixListRefType},
+		{FieldName: "MatchOrigin", APIField: &routeMapClauseProps.MatchOrigin, TFValue: plan.MatchOrigin},
+		{FieldName: "MatchPeerIpAddress", APIField: &routeMapClauseProps.MatchPeerIpAddress, TFValue: plan.MatchPeerIpAddress},
+		{FieldName: "MatchSourceProtocol", APIField: &routeMapClauseProps.MatchSourceProtocol, TFValue: plan.MatchSourceProtocol},
+		{FieldName: "MatchVrf", APIField: &routeMapClauseProps.MatchVrf, TFValue: plan.MatchVrf},
+		{FieldName: "MatchVrfRefType", APIField: &routeMapClauseProps.MatchVrfRefType, TFValue: plan.MatchVrfRefType},
+		{FieldName: "MatchEvpnRouteType", APIField: &routeMapClauseProps.MatchEvpnRouteType, TFValue: plan.MatchEvpnRouteType},
+		{FieldName: "MatchIpv6AddressIpv6PrefixList", APIField: &routeMapClauseProps.MatchIpv6AddressIpv6PrefixList, TFValue: plan.MatchIpv6AddressIpv6PrefixList},
+		{FieldName: "MatchIpv6AddressIpv6PrefixListRefType", APIField: &routeMapClauseProps.MatchIpv6AddressIpv6PrefixListRefType, TFValue: plan.MatchIpv6AddressIpv6PrefixListRefType},
+		{FieldName: "MatchIpv6NextHopIpv6PrefixList", APIField: &routeMapClauseProps.MatchIpv6NextHopIpv6PrefixList, TFValue: plan.MatchIpv6NextHopIpv6PrefixList},
+		{FieldName: "MatchIpv6NextHopIpv6PrefixListRefType", APIField: &routeMapClauseProps.MatchIpv6NextHopIpv6PrefixListRefType, TFValue: plan.MatchIpv6NextHopIpv6PrefixListRefType},
+	})
 
-	if !plan.PermitDeny.IsNull() {
-		routeMapClauseProps.PermitDeny = openapi.PtrString(plan.PermitDeny.ValueString())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &routeMapClauseProps.Enable, TFValue: plan.Enable},
+		{FieldName: "MatchEvpnRouteTypeDefault", APIField: &routeMapClauseProps.MatchEvpnRouteTypeDefault, TFValue: plan.MatchEvpnRouteTypeDefault},
+	})
 
-	if !plan.MatchAsPathAccessList.IsNull() {
-		routeMapClauseProps.MatchAsPathAccessList = openapi.PtrString(plan.MatchAsPathAccessList.ValueString())
-	}
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "MatchInterfaceNumber", APIField: &routeMapClauseProps.MatchInterfaceNumber, TFValue: plan.MatchInterfaceNumber},
+		{FieldName: "MatchInterfaceVlan", APIField: &routeMapClauseProps.MatchInterfaceVlan, TFValue: plan.MatchInterfaceVlan},
+		{FieldName: "MatchLocalPreference", APIField: &routeMapClauseProps.MatchLocalPreference, TFValue: plan.MatchLocalPreference},
+		{FieldName: "MatchMetric", APIField: &routeMapClauseProps.MatchMetric, TFValue: plan.MatchMetric},
+		{FieldName: "MatchPeerInterface", APIField: &routeMapClauseProps.MatchPeerInterface, TFValue: plan.MatchPeerInterface},
+		{FieldName: "MatchPeerVlan", APIField: &routeMapClauseProps.MatchPeerVlan, TFValue: plan.MatchPeerVlan},
+		{FieldName: "MatchTag", APIField: &routeMapClauseProps.MatchTag, TFValue: plan.MatchTag},
+		{FieldName: "MatchVni", APIField: &routeMapClauseProps.MatchVni, TFValue: plan.MatchVni},
+	})
 
-	if !plan.MatchAsPathAccessListRefType.IsNull() {
-		routeMapClauseProps.MatchAsPathAccessListRefType = openapi.PtrString(plan.MatchAsPathAccessListRefType.ValueString())
-	}
-
-	if !plan.MatchCommunityList.IsNull() {
-		routeMapClauseProps.MatchCommunityList = openapi.PtrString(plan.MatchCommunityList.ValueString())
-	}
-
-	if !plan.MatchCommunityListRefType.IsNull() {
-		routeMapClauseProps.MatchCommunityListRefType = openapi.PtrString(plan.MatchCommunityListRefType.ValueString())
-	}
-
-	if !plan.MatchExtendedCommunityList.IsNull() {
-		routeMapClauseProps.MatchExtendedCommunityList = openapi.PtrString(plan.MatchExtendedCommunityList.ValueString())
-	}
-
-	if !plan.MatchExtendedCommunityListRefType.IsNull() {
-		routeMapClauseProps.MatchExtendedCommunityListRefType = openapi.PtrString(plan.MatchExtendedCommunityListRefType.ValueString())
-	}
-
-	if !plan.MatchInterfaceNumber.IsNull() {
-		val := int32(plan.MatchInterfaceNumber.ValueInt64())
-		routeMapClauseProps.MatchInterfaceNumber = *openapi.NewNullableInt32(&val)
-	} else {
-		routeMapClauseProps.MatchInterfaceNumber = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.MatchInterfaceVlan.IsNull() {
-		val := int32(plan.MatchInterfaceVlan.ValueInt64())
-		routeMapClauseProps.MatchInterfaceVlan = *openapi.NewNullableInt32(&val)
-	} else {
-		routeMapClauseProps.MatchInterfaceVlan = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.MatchIpv4AddressIpPrefixList.IsNull() {
-		routeMapClauseProps.MatchIpv4AddressIpPrefixList = openapi.PtrString(plan.MatchIpv4AddressIpPrefixList.ValueString())
-	}
-
-	if !plan.MatchIpv4AddressIpPrefixListRefType.IsNull() {
-		routeMapClauseProps.MatchIpv4AddressIpPrefixListRefType = openapi.PtrString(plan.MatchIpv4AddressIpPrefixListRefType.ValueString())
-	}
-
-	if !plan.MatchIpv4NextHopIpPrefixList.IsNull() {
-		routeMapClauseProps.MatchIpv4NextHopIpPrefixList = openapi.PtrString(plan.MatchIpv4NextHopIpPrefixList.ValueString())
-	}
-
-	if !plan.MatchIpv4NextHopIpPrefixListRefType.IsNull() {
-		routeMapClauseProps.MatchIpv4NextHopIpPrefixListRefType = openapi.PtrString(plan.MatchIpv4NextHopIpPrefixListRefType.ValueString())
-	}
-
-	if !plan.MatchLocalPreference.IsNull() {
-		val := int32(plan.MatchLocalPreference.ValueInt64())
-		routeMapClauseProps.MatchLocalPreference = *openapi.NewNullableInt32(&val)
-	} else {
-		routeMapClauseProps.MatchLocalPreference = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.MatchMetric.IsNull() {
-		val := int32(plan.MatchMetric.ValueInt64())
-		routeMapClauseProps.MatchMetric = *openapi.NewNullableInt32(&val)
-	} else {
-		routeMapClauseProps.MatchMetric = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.MatchOrigin.IsNull() {
-		routeMapClauseProps.MatchOrigin = openapi.PtrString(plan.MatchOrigin.ValueString())
-	}
-
-	if !plan.MatchPeerIpAddress.IsNull() {
-		routeMapClauseProps.MatchPeerIpAddress = openapi.PtrString(plan.MatchPeerIpAddress.ValueString())
-	}
-
-	if !plan.MatchPeerInterface.IsNull() {
-		val := int32(plan.MatchPeerInterface.ValueInt64())
-		routeMapClauseProps.MatchPeerInterface = *openapi.NewNullableInt32(&val)
-	} else {
-		routeMapClauseProps.MatchPeerInterface = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.MatchPeerVlan.IsNull() {
-		val := int32(plan.MatchPeerVlan.ValueInt64())
-		routeMapClauseProps.MatchPeerVlan = *openapi.NewNullableInt32(&val)
-	} else {
-		routeMapClauseProps.MatchPeerVlan = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.MatchSourceProtocol.IsNull() {
-		routeMapClauseProps.MatchSourceProtocol = openapi.PtrString(plan.MatchSourceProtocol.ValueString())
-	}
-
-	if !plan.MatchVrf.IsNull() {
-		routeMapClauseProps.MatchVrf = openapi.PtrString(plan.MatchVrf.ValueString())
-	}
-
-	if !plan.MatchVrfRefType.IsNull() {
-		routeMapClauseProps.MatchVrfRefType = openapi.PtrString(plan.MatchVrfRefType.ValueString())
-	}
-
-	if !plan.MatchTag.IsNull() {
-		val := int32(plan.MatchTag.ValueInt64())
-		routeMapClauseProps.MatchTag = *openapi.NewNullableInt32(&val)
-	} else {
-		routeMapClauseProps.MatchTag = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.MatchEvpnRouteTypeDefault.IsNull() {
-		routeMapClauseProps.MatchEvpnRouteTypeDefault = openapi.PtrBool(plan.MatchEvpnRouteTypeDefault.ValueBool())
-	}
-
-	if !plan.MatchEvpnRouteType.IsNull() {
-		routeMapClauseProps.MatchEvpnRouteType = openapi.PtrString(plan.MatchEvpnRouteType.ValueString())
-	}
-
-	if !plan.MatchVni.IsNull() {
-		val := int32(plan.MatchVni.ValueInt64())
-		routeMapClauseProps.MatchVni = *openapi.NewNullableInt32(&val)
-	} else {
-		routeMapClauseProps.MatchVni = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.MatchIpv6AddressIpv6PrefixList.IsNull() {
-		routeMapClauseProps.MatchIpv6AddressIpv6PrefixList = openapi.PtrString(plan.MatchIpv6AddressIpv6PrefixList.ValueString())
-	}
-
-	if !plan.MatchIpv6AddressIpv6PrefixListRefType.IsNull() {
-		routeMapClauseProps.MatchIpv6AddressIpv6PrefixListRefType = openapi.PtrString(plan.MatchIpv6AddressIpv6PrefixListRefType.ValueString())
-	}
-
-	if !plan.MatchIpv6NextHopIpv6PrefixList.IsNull() {
-		routeMapClauseProps.MatchIpv6NextHopIpv6PrefixList = openapi.PtrString(plan.MatchIpv6NextHopIpv6PrefixList.ValueString())
-	}
-
-	if !plan.MatchIpv6NextHopIpv6PrefixListRefType.IsNull() {
-		routeMapClauseProps.MatchIpv6NextHopIpv6PrefixListRefType = openapi.PtrString(plan.MatchIpv6NextHopIpv6PrefixListRefType.ValueString())
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objectProps := openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
@@ -442,17 +336,12 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		routeMapClauseProps.ObjectProperties = &objectProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "route_map_clause", name, *routeMapClauseProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Route Map Clause create operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Route Map Clause %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "route_map_clause", name, *routeMapClauseProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf("Route Map Clause %s create operation completed successfully", name))
+
+	tflog.Info(ctx, fmt.Sprintf("Route Map Clause %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_map_clauses")
 
 	plan.Name = types.StringValue(name)
@@ -482,42 +371,32 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Fetching Route Map Clauses for verification of %s", name))
+	tflog.Debug(ctx, fmt.Sprintf("No recent Route Map Clause operations found, performing normal verification for %s", name))
 
 	type RouteMapClauseResponse struct {
 		RouteMapClause map[string]map[string]interface{} `json:"route_map_clause"`
 	}
 
-	var result RouteMapClauseResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		routeMapClausesData, fetchErr := getCachedResponse(ctx, r.provCtx, "route_map_clauses", func() (interface{}, error) {
-			tflog.Debug(ctx, "Making API call to fetch route map clauses")
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "route_map_clauses", name,
+		func() (RouteMapClauseResponse, error) {
+			tflog.Debug(ctx, "Making API call to fetch Route Map Clauses")
 			respAPI, err := r.client.RouteMapClausesAPI.RoutemapclausesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading route map clauses: %v", err)
+				return RouteMapClauseResponse{}, fmt.Errorf("error reading Route Map Clause: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res RouteMapClauseResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode route map clauses response: %v", err)
+				return RouteMapClauseResponse{}, fmt.Errorf("failed to decode Route Map Clauses response: %v", err)
 			}
 
-			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d route map clauses", len(res.RouteMapClause)))
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Route Map Clauses from API", len(res.RouteMapClause)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch route map clauses on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = routeMapClausesData.(RouteMapClauseResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Route Map Clause %s", name))...,
@@ -525,64 +404,60 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for route map clause with ID: %s", name))
-	var routeMapClauseData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for Route Map Clause with name: %s", name))
 
-	if data, ok := result.RouteMapClause[name]; ok {
-		routeMapClauseData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found route map clause directly by ID: %s", name))
-	} else {
-		for apiName, p := range result.RouteMapClause {
-			if nameVal, ok := p["name"].(string); ok && nameVal == name {
-				routeMapClauseData = p
-				name = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found route map clause with name '%s' under API key '%s'", nameVal, apiName))
-				break
+	routeMapClauseData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.RouteMapClause,
+		name,
+		func(data map[string]interface{}) (string, bool) {
+			if name, ok := data["name"].(string); ok {
+				return name, true
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Route Map Clause with ID '%s' not found in API response", name))
+		tflog.Debug(ctx, fmt.Sprintf("Route Map Clause with name '%s' not found in API response", name))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", routeMapClauseData["name"]))
-
-	if enable, ok := routeMapClauseData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	routeMapClauseMap, ok := (interface{}(routeMapClauseData)).(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Route Map Clause Data",
+			fmt.Sprintf("Route Map Clause data is not in expected format for %s", name),
+		)
+		return
 	}
 
-	// Only set object_properties if it exists in the API response
-	if objProps, ok := routeMapClauseData["object_properties"].(map[string]interface{}); ok {
-		if notes, ok := objProps["notes"].(string); ok {
-			state.ObjectProperties = []verityRouteMapClauseObjectPropertiesModel{
-				{Notes: types.StringValue(notes)},
-			}
-		} else {
-			state.ObjectProperties = []verityRouteMapClauseObjectPropertiesModel{
-				{Notes: types.StringValue("")},
-			}
+	tflog.Debug(ctx, fmt.Sprintf("Found Route Map Clause '%s' under API key '%s'", name, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(routeMapClauseMap["name"])
+
+	// Handle object properties
+	if objProps, ok := routeMapClauseMap["object_properties"].(map[string]interface{}); ok {
+		notes := utils.MapStringFromAPI(objProps["notes"])
+		if notes.IsNull() {
+			notes = types.StringValue("")
 		}
-		// Update match_fields_shown if it exists
-		if len(state.ObjectProperties) > 0 {
-			if matchFieldsShown, ok := objProps["match_fields_shown"].(string); ok {
-				state.ObjectProperties[0].MatchFieldsShown = types.StringValue(matchFieldsShown)
-			} else {
-				state.ObjectProperties[0].MatchFieldsShown = types.StringValue("")
-			}
+		matchFieldsShown := utils.MapStringFromAPI(objProps["match_fields_shown"])
+		if matchFieldsShown.IsNull() {
+			matchFieldsShown = types.StringValue("")
+		}
+		state.ObjectProperties = []verityRouteMapClauseObjectPropertiesModel{
+			{
+				Notes:            notes,
+				MatchFieldsShown: matchFieldsShown,
+			},
 		}
 	} else {
 		state.ObjectProperties = nil
 	}
 
-	stringAttrs := map[string]*types.String{
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
 		"permit_deny":                                    &state.PermitDeny,
 		"match_as_path_access_list":                      &state.MatchAsPathAccessList,
 		"match_as_path_access_list_ref_type_":            &state.MatchAsPathAccessListRefType,
@@ -606,27 +481,22 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 		"match_ipv6_next_hop_ipv6_prefix_list_ref_type_": &state.MatchIpv6NextHopIpv6PrefixListRefType,
 	}
 
-	for apiKey, stateField := range stringAttrs {
-		if value, ok := routeMapClauseData[apiKey].(string); ok {
-			*stateField = types.StringValue(value)
-		} else {
-			*stateField = types.StringNull()
-		}
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(routeMapClauseMap[apiKey])
 	}
 
-	boolAttrs := map[string]*types.Bool{
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":                        &state.Enable,
 		"match_evpn_route_type_default": &state.MatchEvpnRouteTypeDefault,
 	}
 
-	for apiKey, stateField := range boolAttrs {
-		if value, ok := routeMapClauseData[apiKey].(bool); ok {
-			*stateField = types.BoolValue(value)
-		} else {
-			*stateField = types.BoolNull()
-		}
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(routeMapClauseMap[apiKey])
 	}
 
-	intAttrs := map[string]*types.Int64{
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
 		"match_interface_number": &state.MatchInterfaceNumber,
 		"match_interface_vlan":   &state.MatchInterfaceVlan,
 		"match_local_preference": &state.MatchLocalPreference,
@@ -637,29 +507,8 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 		"match_vni":              &state.MatchVni,
 	}
 
-	for apiKey, stateField := range intAttrs {
-		if value, ok := routeMapClauseData[apiKey]; ok && value != nil {
-			switch v := value.(type) {
-			case int:
-				*stateField = types.Int64Value(int64(v))
-			case int32:
-				*stateField = types.Int64Value(int64(v))
-			case int64:
-				*stateField = types.Int64Value(v)
-			case float64:
-				*stateField = types.Int64Value(int64(v))
-			case string:
-				if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-					*stateField = types.Int64Value(intVal)
-				} else {
-					*stateField = types.Int64Null()
-				}
-			default:
-				*stateField = types.Int64Null()
-			}
-		} else {
-			*stateField = types.Int64Null()
-		}
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(routeMapClauseMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -691,244 +540,29 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 	routeMapClauseProps := openapi.RoutemapclausesPutRequestRouteMapClauseValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		routeMapClauseProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { routeMapClauseProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PermitDeny, state.PermitDeny, func(v *string) { routeMapClauseProps.PermitDeny = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MatchOrigin, state.MatchOrigin, func(v *string) { routeMapClauseProps.MatchOrigin = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MatchPeerIpAddress, state.MatchPeerIpAddress, func(v *string) { routeMapClauseProps.MatchPeerIpAddress = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MatchSourceProtocol, state.MatchSourceProtocol, func(v *string) { routeMapClauseProps.MatchSourceProtocol = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MatchEvpnRouteType, state.MatchEvpnRouteType, func(v *string) { routeMapClauseProps.MatchEvpnRouteType = v }, &hasChanges)
 
-	if !plan.PermitDeny.Equal(state.PermitDeny) {
-		routeMapClauseProps.PermitDeny = openapi.PtrString(plan.PermitDeny.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { routeMapClauseProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.MatchEvpnRouteTypeDefault, state.MatchEvpnRouteTypeDefault, func(v *bool) { routeMapClauseProps.MatchEvpnRouteTypeDefault = v }, &hasChanges)
 
-	// Handle MatchAsPathAccessList and MatchAsPathAccessListRefType according to "One ref type supported" rules
-	matchAsPathAccessListChanged := !plan.MatchAsPathAccessList.Equal(state.MatchAsPathAccessList)
-	matchAsPathAccessListRefTypeChanged := !plan.MatchAsPathAccessListRefType.Equal(state.MatchAsPathAccessListRefType)
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.MatchInterfaceNumber, state.MatchInterfaceNumber, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchInterfaceNumber = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MatchInterfaceVlan, state.MatchInterfaceVlan, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchInterfaceVlan = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MatchLocalPreference, state.MatchLocalPreference, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchLocalPreference = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MatchMetric, state.MatchMetric, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchMetric = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MatchPeerInterface, state.MatchPeerInterface, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchPeerInterface = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MatchPeerVlan, state.MatchPeerVlan, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchPeerVlan = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MatchTag, state.MatchTag, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchTag = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MatchVni, state.MatchVni, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchVni = *v }, &hasChanges)
 
-	if matchAsPathAccessListChanged || matchAsPathAccessListRefTypeChanged {
-		// Validate using "one ref type supported" rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.MatchAsPathAccessList, plan.MatchAsPathAccessListRefType,
-			"match_as_path_access_list", "match_as_path_access_list_ref_type_",
-			matchAsPathAccessListChanged, matchAsPathAccessListRefTypeChanged) {
-			return
-		}
-
-		if matchAsPathAccessListChanged && !matchAsPathAccessListRefTypeChanged {
-			// Only the base field changes, only the base field is sent
-			if !plan.MatchAsPathAccessList.IsNull() && plan.MatchAsPathAccessList.ValueString() != "" {
-				routeMapClauseProps.MatchAsPathAccessList = openapi.PtrString(plan.MatchAsPathAccessList.ValueString())
-			} else {
-				routeMapClauseProps.MatchAsPathAccessList = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if matchAsPathAccessListRefTypeChanged {
-			// ref_type changes (or both change), both fields are sent
-			if !plan.MatchAsPathAccessList.IsNull() && plan.MatchAsPathAccessList.ValueString() != "" {
-				routeMapClauseProps.MatchAsPathAccessList = openapi.PtrString(plan.MatchAsPathAccessList.ValueString())
-			} else {
-				routeMapClauseProps.MatchAsPathAccessList = openapi.PtrString("")
-			}
-
-			if !plan.MatchAsPathAccessListRefType.IsNull() && plan.MatchAsPathAccessListRefType.ValueString() != "" {
-				routeMapClauseProps.MatchAsPathAccessListRefType = openapi.PtrString(plan.MatchAsPathAccessListRefType.ValueString())
-			} else {
-				routeMapClauseProps.MatchAsPathAccessListRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	// Handle MatchCommunityList and MatchCommunityListRefType according to "One ref type supported" rules
-	matchCommunityListChanged := !plan.MatchCommunityList.Equal(state.MatchCommunityList)
-	matchCommunityListRefTypeChanged := !plan.MatchCommunityListRefType.Equal(state.MatchCommunityListRefType)
-
-	if matchCommunityListChanged || matchCommunityListRefTypeChanged {
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.MatchCommunityList, plan.MatchCommunityListRefType,
-			"match_community_list", "match_community_list_ref_type_",
-			matchCommunityListChanged, matchCommunityListRefTypeChanged) {
-			return
-		}
-
-		if matchCommunityListChanged && !matchCommunityListRefTypeChanged {
-			if !plan.MatchCommunityList.IsNull() && plan.MatchCommunityList.ValueString() != "" {
-				routeMapClauseProps.MatchCommunityList = openapi.PtrString(plan.MatchCommunityList.ValueString())
-			} else {
-				routeMapClauseProps.MatchCommunityList = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if matchCommunityListRefTypeChanged {
-			if !plan.MatchCommunityList.IsNull() && plan.MatchCommunityList.ValueString() != "" {
-				routeMapClauseProps.MatchCommunityList = openapi.PtrString(plan.MatchCommunityList.ValueString())
-			} else {
-				routeMapClauseProps.MatchCommunityList = openapi.PtrString("")
-			}
-
-			if !plan.MatchCommunityListRefType.IsNull() && plan.MatchCommunityListRefType.ValueString() != "" {
-				routeMapClauseProps.MatchCommunityListRefType = openapi.PtrString(plan.MatchCommunityListRefType.ValueString())
-			} else {
-				routeMapClauseProps.MatchCommunityListRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	// Handle MatchExtendedCommunityList and MatchExtendedCommunityListRefType according to "One ref type supported" rules
-	matchExtendedCommunityListChanged := !plan.MatchExtendedCommunityList.Equal(state.MatchExtendedCommunityList)
-	matchExtendedCommunityListRefTypeChanged := !plan.MatchExtendedCommunityListRefType.Equal(state.MatchExtendedCommunityListRefType)
-
-	if matchExtendedCommunityListChanged || matchExtendedCommunityListRefTypeChanged {
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.MatchExtendedCommunityList, plan.MatchExtendedCommunityListRefType,
-			"match_extended_community_list", "match_extended_community_list_ref_type_",
-			matchExtendedCommunityListChanged, matchExtendedCommunityListRefTypeChanged) {
-			return
-		}
-
-		if matchExtendedCommunityListChanged && !matchExtendedCommunityListRefTypeChanged {
-			if !plan.MatchExtendedCommunityList.IsNull() && plan.MatchExtendedCommunityList.ValueString() != "" {
-				routeMapClauseProps.MatchExtendedCommunityList = openapi.PtrString(plan.MatchExtendedCommunityList.ValueString())
-			} else {
-				routeMapClauseProps.MatchExtendedCommunityList = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if matchExtendedCommunityListRefTypeChanged {
-			if !plan.MatchExtendedCommunityList.IsNull() && plan.MatchExtendedCommunityList.ValueString() != "" {
-				routeMapClauseProps.MatchExtendedCommunityList = openapi.PtrString(plan.MatchExtendedCommunityList.ValueString())
-			} else {
-				routeMapClauseProps.MatchExtendedCommunityList = openapi.PtrString("")
-			}
-
-			if !plan.MatchExtendedCommunityListRefType.IsNull() && plan.MatchExtendedCommunityListRefType.ValueString() != "" {
-				routeMapClauseProps.MatchExtendedCommunityListRefType = openapi.PtrString(plan.MatchExtendedCommunityListRefType.ValueString())
-			} else {
-				routeMapClauseProps.MatchExtendedCommunityListRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	if !plan.MatchInterfaceNumber.Equal(state.MatchInterfaceNumber) {
-		if !plan.MatchInterfaceNumber.IsNull() {
-			val := int32(plan.MatchInterfaceNumber.ValueInt64())
-			routeMapClauseProps.MatchInterfaceNumber = *openapi.NewNullableInt32(&val)
-		} else {
-			routeMapClauseProps.MatchInterfaceNumber = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.MatchInterfaceVlan.Equal(state.MatchInterfaceVlan) {
-		if !plan.MatchInterfaceVlan.IsNull() {
-			val := int32(plan.MatchInterfaceVlan.ValueInt64())
-			routeMapClauseProps.MatchInterfaceVlan = *openapi.NewNullableInt32(&val)
-		} else {
-			routeMapClauseProps.MatchInterfaceVlan = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	// Handle MatchIpv4AddressIpPrefixList and MatchIpv4AddressIpPrefixListRefType according to "One ref type supported" rules
-	matchIpv4AddressIpPrefixListChanged := !plan.MatchIpv4AddressIpPrefixList.Equal(state.MatchIpv4AddressIpPrefixList)
-	matchIpv4AddressIpPrefixListRefTypeChanged := !plan.MatchIpv4AddressIpPrefixListRefType.Equal(state.MatchIpv4AddressIpPrefixListRefType)
-
-	if matchIpv4AddressIpPrefixListChanged || matchIpv4AddressIpPrefixListRefTypeChanged {
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.MatchIpv4AddressIpPrefixList, plan.MatchIpv4AddressIpPrefixListRefType,
-			"match_ipv4_address_ip_prefix_list", "match_ipv4_address_ip_prefix_list_ref_type_",
-			matchIpv4AddressIpPrefixListChanged, matchIpv4AddressIpPrefixListRefTypeChanged) {
-			return
-		}
-
-		if matchIpv4AddressIpPrefixListChanged && !matchIpv4AddressIpPrefixListRefTypeChanged {
-			if !plan.MatchIpv4AddressIpPrefixList.IsNull() && plan.MatchIpv4AddressIpPrefixList.ValueString() != "" {
-				routeMapClauseProps.MatchIpv4AddressIpPrefixList = openapi.PtrString(plan.MatchIpv4AddressIpPrefixList.ValueString())
-			} else {
-				routeMapClauseProps.MatchIpv4AddressIpPrefixList = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if matchIpv4AddressIpPrefixListRefTypeChanged {
-			if !plan.MatchIpv4AddressIpPrefixList.IsNull() && plan.MatchIpv4AddressIpPrefixList.ValueString() != "" {
-				routeMapClauseProps.MatchIpv4AddressIpPrefixList = openapi.PtrString(plan.MatchIpv4AddressIpPrefixList.ValueString())
-			} else {
-				routeMapClauseProps.MatchIpv4AddressIpPrefixList = openapi.PtrString("")
-			}
-
-			if !plan.MatchIpv4AddressIpPrefixListRefType.IsNull() && plan.MatchIpv4AddressIpPrefixListRefType.ValueString() != "" {
-				routeMapClauseProps.MatchIpv4AddressIpPrefixListRefType = openapi.PtrString(plan.MatchIpv4AddressIpPrefixListRefType.ValueString())
-			} else {
-				routeMapClauseProps.MatchIpv4AddressIpPrefixListRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	// Handle MatchIpv4NextHopIpPrefixList and MatchIpv4NextHopIpPrefixListRefType according to "One ref type supported" rules
-	matchIpv4NextHopIpPrefixListChanged := !plan.MatchIpv4NextHopIpPrefixList.Equal(state.MatchIpv4NextHopIpPrefixList)
-	matchIpv4NextHopIpPrefixListRefTypeChanged := !plan.MatchIpv4NextHopIpPrefixListRefType.Equal(state.MatchIpv4NextHopIpPrefixListRefType)
-
-	if matchIpv4NextHopIpPrefixListChanged || matchIpv4NextHopIpPrefixListRefTypeChanged {
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.MatchIpv4NextHopIpPrefixList, plan.MatchIpv4NextHopIpPrefixListRefType,
-			"match_ipv4_next_hop_ip_prefix_list", "match_ipv4_next_hop_ip_prefix_list_ref_type_",
-			matchIpv4NextHopIpPrefixListChanged, matchIpv4NextHopIpPrefixListRefTypeChanged) {
-			return
-		}
-
-		if matchIpv4NextHopIpPrefixListChanged && !matchIpv4NextHopIpPrefixListRefTypeChanged {
-			if !plan.MatchIpv4NextHopIpPrefixList.IsNull() && plan.MatchIpv4NextHopIpPrefixList.ValueString() != "" {
-				routeMapClauseProps.MatchIpv4NextHopIpPrefixList = openapi.PtrString(plan.MatchIpv4NextHopIpPrefixList.ValueString())
-			} else {
-				routeMapClauseProps.MatchIpv4NextHopIpPrefixList = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if matchIpv4NextHopIpPrefixListRefTypeChanged {
-			if !plan.MatchIpv4NextHopIpPrefixList.IsNull() && plan.MatchIpv4NextHopIpPrefixList.ValueString() != "" {
-				routeMapClauseProps.MatchIpv4NextHopIpPrefixList = openapi.PtrString(plan.MatchIpv4NextHopIpPrefixList.ValueString())
-			} else {
-				routeMapClauseProps.MatchIpv4NextHopIpPrefixList = openapi.PtrString("")
-			}
-
-			if !plan.MatchIpv4NextHopIpPrefixListRefType.IsNull() && plan.MatchIpv4NextHopIpPrefixListRefType.ValueString() != "" {
-				routeMapClauseProps.MatchIpv4NextHopIpPrefixListRefType = openapi.PtrString(plan.MatchIpv4NextHopIpPrefixListRefType.ValueString())
-			} else {
-				routeMapClauseProps.MatchIpv4NextHopIpPrefixListRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	if !plan.MatchLocalPreference.Equal(state.MatchLocalPreference) {
-		if !plan.MatchLocalPreference.IsNull() {
-			val := int32(plan.MatchLocalPreference.ValueInt64())
-			routeMapClauseProps.MatchLocalPreference = *openapi.NewNullableInt32(&val)
-		} else {
-			routeMapClauseProps.MatchLocalPreference = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.MatchMetric.Equal(state.MatchMetric) {
-		if !plan.MatchMetric.IsNull() {
-			val := int32(plan.MatchMetric.ValueInt64())
-			routeMapClauseProps.MatchMetric = *openapi.NewNullableInt32(&val)
-		} else {
-			routeMapClauseProps.MatchMetric = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.MatchTag.Equal(state.MatchTag) {
-		if !plan.MatchTag.IsNull() {
-			val := int32(plan.MatchTag.ValueInt64())
-			routeMapClauseProps.MatchTag = *openapi.NewNullableInt32(&val)
-		} else {
-			routeMapClauseProps.MatchTag = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
 			!plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) ||
@@ -952,21 +586,112 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		}
 	}
 
+	// Handle MatchAsPathAccessList and MatchAsPathAccessListRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MatchAsPathAccessList, state.MatchAsPathAccessList, plan.MatchAsPathAccessListRefType, state.MatchAsPathAccessListRefType,
+		func(v *string) { routeMapClauseProps.MatchAsPathAccessList = v },
+		func(v *string) { routeMapClauseProps.MatchAsPathAccessListRefType = v },
+		"match_as_path_access_list", "match_as_path_access_list_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle MatchCommunityList and MatchCommunityListRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MatchCommunityList, state.MatchCommunityList, plan.MatchCommunityListRefType, state.MatchCommunityListRefType,
+		func(v *string) { routeMapClauseProps.MatchCommunityList = v },
+		func(v *string) { routeMapClauseProps.MatchCommunityListRefType = v },
+		"match_community_list", "match_community_list_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle MatchExtendedCommunityList and MatchExtendedCommunityListRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MatchExtendedCommunityList, state.MatchExtendedCommunityList, plan.MatchExtendedCommunityListRefType, state.MatchExtendedCommunityListRefType,
+		func(v *string) { routeMapClauseProps.MatchExtendedCommunityList = v },
+		func(v *string) { routeMapClauseProps.MatchExtendedCommunityListRefType = v },
+		"match_extended_community_list", "match_extended_community_list_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle MatchIpv4AddressIpPrefixList and MatchIpv4AddressIpPrefixListRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MatchIpv4AddressIpPrefixList, state.MatchIpv4AddressIpPrefixList, plan.MatchIpv4AddressIpPrefixListRefType, state.MatchIpv4AddressIpPrefixListRefType,
+		func(v *string) { routeMapClauseProps.MatchIpv4AddressIpPrefixList = v },
+		func(v *string) { routeMapClauseProps.MatchIpv4AddressIpPrefixListRefType = v },
+		"match_ipv4_address_ip_prefix_list", "match_ipv4_address_ip_prefix_list_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle MatchIpv4NextHopIpPrefixList and MatchIpv4NextHopIpPrefixListRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MatchIpv4NextHopIpPrefixList, state.MatchIpv4NextHopIpPrefixList, plan.MatchIpv4NextHopIpPrefixListRefType, state.MatchIpv4NextHopIpPrefixListRefType,
+		func(v *string) { routeMapClauseProps.MatchIpv4NextHopIpPrefixList = v },
+		func(v *string) { routeMapClauseProps.MatchIpv4NextHopIpPrefixListRefType = v },
+		"match_ipv4_next_hop_ip_prefix_list", "match_ipv4_next_hop_ip_prefix_list_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle MatchVrf and MatchVrfRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MatchVrf, state.MatchVrf, plan.MatchVrfRefType, state.MatchVrfRefType,
+		func(v *string) { routeMapClauseProps.MatchVrf = v },
+		func(v *string) { routeMapClauseProps.MatchVrfRefType = v },
+		"match_vrf", "match_vrf_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle MatchIpv6AddressIpv6PrefixList and MatchIpv6AddressIpv6PrefixListRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MatchIpv6AddressIpv6PrefixList, state.MatchIpv6AddressIpv6PrefixList, plan.MatchIpv6AddressIpv6PrefixListRefType, state.MatchIpv6AddressIpv6PrefixListRefType,
+		func(v *string) { routeMapClauseProps.MatchIpv6AddressIpv6PrefixList = v },
+		func(v *string) { routeMapClauseProps.MatchIpv6AddressIpv6PrefixListRefType = v },
+		"match_ipv6_address_ipv6_prefix_list", "match_ipv6_address_ipv6_prefix_list_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle MatchIpv6NextHopIpv6PrefixList and MatchIpv6NextHopIpv6PrefixListRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MatchIpv6NextHopIpv6PrefixList, state.MatchIpv6NextHopIpv6PrefixList, plan.MatchIpv6NextHopIpv6PrefixListRefType, state.MatchIpv6NextHopIpv6PrefixListRefType,
+		func(v *string) { routeMapClauseProps.MatchIpv6NextHopIpv6PrefixList = v },
+		func(v *string) { routeMapClauseProps.MatchIpv6NextHopIpv6PrefixListRefType = v },
+		"match_ipv6_next_hop_ipv6_prefix_list", "match_ipv6_next_hop_ipv6_prefix_list_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "route_map_clause", name, routeMapClauseProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Route Map Clause update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Route Map Clause %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "route_map_clause", name, routeMapClauseProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Route Map Clause %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_map_clauses")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -989,14 +714,9 @@ func (r *verityRouteMapClauseResource) Delete(ctx context.Context, req resource.
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "route_map_clause", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Route Map Clause deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Route Map Clause %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "route_map_clause", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

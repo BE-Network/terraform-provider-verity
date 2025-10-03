@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -265,13 +264,49 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		serviceReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Tenant", APIField: &serviceReq.Tenant, TFValue: plan.Tenant},
+		{FieldName: "TenantRefType", APIField: &serviceReq.TenantRefType, TFValue: plan.TenantRefType},
+		{FieldName: "DhcpServerIpv4", APIField: &serviceReq.DhcpServerIpv4, TFValue: plan.DhcpServerIpv4},
+		{FieldName: "DhcpServerIpv6", APIField: &serviceReq.DhcpServerIpv6, TFValue: plan.DhcpServerIpv6},
+		{FieldName: "AnycastIpv4Mask", APIField: &serviceReq.AnycastIpv4Mask, TFValue: plan.AnycastIpv4Mask},
+		{FieldName: "AnycastIpv6Mask", APIField: &serviceReq.AnycastIpv6Mask, TFValue: plan.AnycastIpv6Mask},
+		{FieldName: "PacketPriority", APIField: &serviceReq.PacketPriority, TFValue: plan.PacketPriority},
+		{FieldName: "MulticastManagementMode", APIField: &serviceReq.MulticastManagementMode, TFValue: plan.MulticastManagementMode},
+	})
 
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &serviceReq.Enable, TFValue: plan.Enable},
+		{FieldName: "TaggedPackets", APIField: &serviceReq.TaggedPackets, TFValue: plan.TaggedPackets},
+		{FieldName: "Tls", APIField: &serviceReq.Tls, TFValue: plan.Tls},
+		{FieldName: "AllowLocalSwitching", APIField: &serviceReq.AllowLocalSwitching, TFValue: plan.AllowLocalSwitching},
+		{FieldName: "ActAsMulticastQuerier", APIField: &serviceReq.ActAsMulticastQuerier, TFValue: plan.ActAsMulticastQuerier},
+		{FieldName: "BlockUnknownUnicastFlood", APIField: &serviceReq.BlockUnknownUnicastFlood, TFValue: plan.BlockUnknownUnicastFlood},
+		{FieldName: "BlockDownstreamDhcpServer", APIField: &serviceReq.BlockDownstreamDhcpServer, TFValue: plan.BlockDownstreamDhcpServer},
+		{FieldName: "IsManagementService", APIField: &serviceReq.IsManagementService, TFValue: plan.IsManagementService},
+		{FieldName: "UseDscpToPBitMappingForL3PacketsIfAvailable", APIField: &serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable, TFValue: plan.UseDscpToPBitMappingForL3PacketsIfAvailable},
+		{FieldName: "AllowFastLeave", APIField: &serviceReq.AllowFastLeave, TFValue: plan.AllowFastLeave},
+	})
+
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "MaxUpstreamRateMbps", APIField: &serviceReq.MaxUpstreamRateMbps, TFValue: plan.MaxUpstreamRateMbps},
+		{FieldName: "MaxDownstreamRateMbps", APIField: &serviceReq.MaxDownstreamRateMbps, TFValue: plan.MaxDownstreamRateMbps},
+		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: plan.MstInstance},
+	})
+
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "Vlan", APIField: &serviceReq.Vlan, TFValue: plan.Vlan},
+		{FieldName: "Mtu", APIField: &serviceReq.Mtu, TFValue: plan.Mtu},
+	})
+
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
-		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
 		op := plan.ObjectProperties[0]
+		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
@@ -288,16 +323,9 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 			objProps.WarnOnNoExternalSource = nil
 		}
 		serviceReq.ObjectProperties = &objProps
-	} else {
-		serviceReq.ObjectProperties = nil
 	}
 
-	if !plan.Vlan.IsNull() {
-		vlanVal := int32(plan.Vlan.ValueInt64())
-		serviceReq.Vlan = *openapi.NewNullableInt32(&vlanVal)
-	} else {
-		serviceReq.Vlan = *openapi.NewNullableInt32(nil)
-	}
+	// Handle auto-assigned VNI logic
 	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		serviceReq.VniAutoAssigned = openapi.PtrBool(true)
 		// Don't include the specific VNI in the request
@@ -314,84 +342,9 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 			serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
 		}
 	}
-	if !plan.Tenant.IsNull() {
-		serviceReq.Tenant = openapi.PtrString(plan.Tenant.ValueString())
-	}
-	if !plan.TenantRefType.IsNull() {
-		serviceReq.TenantRefType = openapi.PtrString(plan.TenantRefType.ValueString())
-	}
-	if !plan.DhcpServerIpv4.IsNull() {
-		serviceReq.DhcpServerIpv4 = openapi.PtrString(plan.DhcpServerIpv4.ValueString())
-	}
-	if !plan.DhcpServerIpv6.IsNull() {
-		serviceReq.DhcpServerIpv6 = openapi.PtrString(plan.DhcpServerIpv6.ValueString())
-	}
-	if !plan.Mtu.IsNull() {
-		mtuVal := int32(plan.Mtu.ValueInt64())
-		serviceReq.Mtu = *openapi.NewNullableInt32(&mtuVal)
-	} else {
-		serviceReq.Mtu = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.AnycastIpv4Mask.IsNull() {
-		serviceReq.AnycastIpv4Mask = openapi.PtrString(plan.AnycastIpv4Mask.ValueString())
-	}
-	if !plan.AnycastIpv6Mask.IsNull() {
-		serviceReq.AnycastIpv6Mask = openapi.PtrString(plan.AnycastIpv6Mask.ValueString())
-	}
-	if !plan.MaxUpstreamRateMbps.IsNull() {
-		serviceReq.MaxUpstreamRateMbps = openapi.PtrInt32(int32(plan.MaxUpstreamRateMbps.ValueInt64()))
-	}
-	if !plan.MaxDownstreamRateMbps.IsNull() {
-		serviceReq.MaxDownstreamRateMbps = openapi.PtrInt32(int32(plan.MaxDownstreamRateMbps.ValueInt64()))
-	}
-	if !plan.PacketPriority.IsNull() {
-		serviceReq.PacketPriority = openapi.PtrString(plan.PacketPriority.ValueString())
-	}
-	if !plan.MulticastManagementMode.IsNull() {
-		serviceReq.MulticastManagementMode = openapi.PtrString(plan.MulticastManagementMode.ValueString())
-	}
-	if !plan.TaggedPackets.IsNull() {
-		serviceReq.TaggedPackets = openapi.PtrBool(plan.TaggedPackets.ValueBool())
-	}
-	if !plan.Tls.IsNull() {
-		serviceReq.Tls = openapi.PtrBool(plan.Tls.ValueBool())
-	}
-	if !plan.AllowLocalSwitching.IsNull() {
-		serviceReq.AllowLocalSwitching = openapi.PtrBool(plan.AllowLocalSwitching.ValueBool())
-	}
-	if !plan.ActAsMulticastQuerier.IsNull() {
-		serviceReq.ActAsMulticastQuerier = openapi.PtrBool(plan.ActAsMulticastQuerier.ValueBool())
-	}
-	if !plan.BlockUnknownUnicastFlood.IsNull() {
-		serviceReq.BlockUnknownUnicastFlood = openapi.PtrBool(plan.BlockUnknownUnicastFlood.ValueBool())
-	}
-	if !plan.BlockDownstreamDhcpServer.IsNull() {
-		serviceReq.BlockDownstreamDhcpServer = openapi.PtrBool(plan.BlockDownstreamDhcpServer.ValueBool())
-	}
-	if !plan.IsManagementService.IsNull() {
-		serviceReq.IsManagementService = openapi.PtrBool(plan.IsManagementService.ValueBool())
-	}
-	if !plan.UseDscpToPBitMappingForL3PacketsIfAvailable.IsNull() {
-		serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = openapi.PtrBool(plan.UseDscpToPBitMappingForL3PacketsIfAvailable.ValueBool())
-	}
-	if !plan.AllowFastLeave.IsNull() {
-		serviceReq.AllowFastLeave = openapi.PtrBool(plan.AllowFastLeave.ValueBool())
-	}
-	if !plan.MstInstance.IsNull() {
-		serviceReq.MstInstance = openapi.PtrInt32(int32(plan.MstInstance.ValueInt64()))
-	}
 
-	provCtx := r.provCtx
-	bulkMgr := provCtx.bulkOpsMgr
-	operationID := bulkMgr.AddPut(ctx, "service", name, *serviceReq)
-
-	provCtx.NotifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for service creation operation %s to complete", operationID))
-	if err := bulkMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Service %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "service", name, *serviceReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -438,23 +391,16 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
-	tflog.Debug(ctx, "Reading service resource")
-
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
 	serviceName := state.Name.ValueString()
 
-	var serviceData map[string]interface{}
-	var exists bool
-
-	if bulkOpsMgr != nil {
-		serviceData, exists = bulkOpsMgr.GetResourceResponse("service", serviceName)
-		if exists {
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if serviceData, exists := r.bulkOpsMgr.GetResourceResponse("service", serviceName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached service data for %s from recent operation", serviceName))
 			state = populateServiceState(ctx, state, serviceData, nil)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -462,52 +408,36 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 		}
 	}
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("service") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping service %s verification - trusting recent successful API operation", serviceName))
-		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("service") {
+		tflog.Info(ctx, fmt.Sprintf("Skipping service %s verification – trusting recent successful API operation", serviceName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent service operations found, performing normal verification for %s", serviceName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching services for verification of %s", serviceName))
 
 	type ServicesResponse struct {
-		Service map[string]map[string]interface{} `json:"service"`
+		Service map[string]interface{} `json:"service"`
 	}
 
-	var result ServicesResponse
-	var err error
-	maxRetries := 3
-
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		if attempt > 0 {
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch services on attempt %d, retrying in %v", attempt, sleepTime))
-			time.Sleep(sleepTime)
-		}
-
-		servicesData, fetchErr := getCachedResponse(ctx, provCtx, "services", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "services", serviceName,
+		func() (ServicesResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch services")
-			apiReq := provCtx.client.ServicesAPI.ServicesGet(ctx)
-			apiResp, err := apiReq.Execute()
+			respAPI, err := r.client.ServicesAPI.ServicesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading service: %v", err)
+				return ServicesResponse{}, fmt.Errorf("error reading services: %v", err)
 			}
-			defer apiResp.Body.Close()
+			defer respAPI.Body.Close()
 
 			var res ServicesResponse
-			if err := json.NewDecoder(apiResp.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode services response: %v", err)
+			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
+				return ServicesResponse{}, fmt.Errorf("failed to decode services response: %v", err)
 			}
-			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched services data with %d services", len(res.Service)))
-			return res, nil
-		})
 
-		if fetchErr == nil {
-			result = servicesData.(ServicesResponse)
-			break
-		}
-		err = fetchErr
-	}
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d services", len(res.Service)))
+			return res, nil
+		},
+		getCachedResponse,
+	)
 
 	if err != nil {
 		resp.Diagnostics.Append(
@@ -516,38 +446,50 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for service with ID: %s", serviceName))
-	if data, ok := result.Service[serviceName]; ok {
-		serviceData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found service directly by ID: %s", serviceName))
-	} else {
-		for apiName, s := range result.Service {
-			if name, ok := s["name"].(string); ok && name == serviceName {
-				serviceData = s
-				serviceName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found service with name '%s' under API key '%s'", name, apiName))
-				break
+	tflog.Debug(ctx, fmt.Sprintf("Looking for service with name: %s", serviceName))
+
+	serviceData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Service,
+		serviceName,
+		func(data interface{}) (string, bool) {
+			if service, ok := data.(map[string]interface{}); ok {
+				if name, ok := service["name"].(string); ok {
+					return name, true
+				}
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Service with ID '%s' not found in API response", serviceName))
+		tflog.Debug(ctx, fmt.Sprintf("Service with name '%s' not found in API response", serviceName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state = populateServiceState(ctx, state, serviceData, nil)
+	serviceMap, ok := serviceData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Service Data",
+			fmt.Sprintf("Service data is not in expected format for %s", serviceName),
+		)
+		return
+	}
 
+	tflog.Debug(ctx, fmt.Sprintf("Found service '%s' under API key '%s'", serviceName, actualAPIName))
+
+	state = populateServiceState(ctx, state, serviceMap, nil)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state verityServiceResourceModel
+
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -578,59 +520,69 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	name := plan.Name.ValueString()
-	serviceReq := &openapi.ServicesPutRequestServiceValue{}
+	serviceReq := openapi.ServicesPutRequestServiceValue{}
 	hasChanges := false
 
-	objPropsChanged := false
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		op_plan := plan.ObjectProperties[0]
-		op_state := state.ObjectProperties[0]
-		if !op_plan.Group.Equal(op_state.Group) || !op_plan.OnSummary.Equal(op_state.OnSummary) || !op_plan.WarnOnNoExternalSource.Equal(op_state.WarnOnNoExternalSource) {
-			objPropsChanged = true
-		}
-	} else if len(plan.ObjectProperties) != len(state.ObjectProperties) {
-		objPropsChanged = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { serviceReq.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Tenant, state.Tenant, func(v *string) { serviceReq.Tenant = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DhcpServerIpv4, state.DhcpServerIpv4, func(v *string) { serviceReq.DhcpServerIpv4 = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DhcpServerIpv6, state.DhcpServerIpv6, func(v *string) { serviceReq.DhcpServerIpv6 = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AnycastIpv4Mask, state.AnycastIpv4Mask, func(v *string) { serviceReq.AnycastIpv4Mask = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AnycastIpv6Mask, state.AnycastIpv6Mask, func(v *string) { serviceReq.AnycastIpv6Mask = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PacketPriority, state.PacketPriority, func(v *string) { serviceReq.PacketPriority = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MulticastManagementMode, state.MulticastManagementMode, func(v *string) { serviceReq.MulticastManagementMode = v }, &hasChanges)
 
-	if objPropsChanged {
-		if len(plan.ObjectProperties) > 0 {
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { serviceReq.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.TaggedPackets, state.TaggedPackets, func(v *bool) { serviceReq.TaggedPackets = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Tls, state.Tls, func(v *bool) { serviceReq.Tls = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AllowLocalSwitching, state.AllowLocalSwitching, func(v *bool) { serviceReq.AllowLocalSwitching = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.ActAsMulticastQuerier, state.ActAsMulticastQuerier, func(v *bool) { serviceReq.ActAsMulticastQuerier = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.BlockUnknownUnicastFlood, state.BlockUnknownUnicastFlood, func(v *bool) { serviceReq.BlockUnknownUnicastFlood = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.BlockDownstreamDhcpServer, state.BlockDownstreamDhcpServer, func(v *bool) { serviceReq.BlockDownstreamDhcpServer = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.IsManagementService, state.IsManagementService, func(v *bool) { serviceReq.IsManagementService = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.UseDscpToPBitMappingForL3PacketsIfAvailable, state.UseDscpToPBitMappingForL3PacketsIfAvailable, func(v *bool) { serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AllowFastLeave, state.AllowFastLeave, func(v *bool) { serviceReq.AllowFastLeave = v }, &hasChanges)
+
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, func(v *int32) { serviceReq.MaxUpstreamRateMbps = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, func(v *int32) { serviceReq.MaxDownstreamRateMbps = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.MstInstance, state.MstInstance, func(v *int32) { serviceReq.MstInstance = v }, &hasChanges)
+
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.Mtu, state.Mtu, func(v *openapi.NullableInt32) { serviceReq.Mtu = *v }, &hasChanges)
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 ||
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
+			!plan.ObjectProperties[0].OnSummary.Equal(state.ObjectProperties[0].OnSummary) ||
+			!plan.ObjectProperties[0].WarnOnNoExternalSource.Equal(state.ObjectProperties[0].WarnOnNoExternalSource) {
 			objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
-			op := plan.ObjectProperties[0]
-			if !op.Group.IsNull() {
-				objProps.Group = openapi.PtrString(op.Group.ValueString())
+			if !plan.ObjectProperties[0].Group.IsNull() {
+				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {
 				objProps.Group = nil
 			}
-			if !op.OnSummary.IsNull() {
-				objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
+			if !plan.ObjectProperties[0].OnSummary.IsNull() {
+				objProps.OnSummary = openapi.PtrBool(plan.ObjectProperties[0].OnSummary.ValueBool())
 			} else {
 				objProps.OnSummary = nil
 			}
-			if !op.WarnOnNoExternalSource.IsNull() {
-				objProps.WarnOnNoExternalSource = openapi.PtrBool(op.WarnOnNoExternalSource.ValueBool())
+			if !plan.ObjectProperties[0].WarnOnNoExternalSource.IsNull() {
+				objProps.WarnOnNoExternalSource = openapi.PtrBool(plan.ObjectProperties[0].WarnOnNoExternalSource.ValueBool())
 			} else {
 				objProps.WarnOnNoExternalSource = nil
 			}
 			serviceReq.ObjectProperties = &objProps
-		} else {
-			serviceReq.ObjectProperties = nil
+			hasChanges = true
 		}
-		hasChanges = true
 	}
 
-	if !plan.Enable.Equal(state.Enable) {
-		serviceReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-
+	// Handle VLAN changes (preserve special handling for Unknown state)
 	if !plan.Vlan.IsUnknown() && !plan.Vlan.Equal(state.Vlan) {
-		if !plan.Vlan.IsNull() {
-			vlanVal := int32(plan.Vlan.ValueInt64())
-			serviceReq.Vlan = *openapi.NewNullableInt32(&vlanVal)
-		} else {
-			serviceReq.Vlan = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
+		utils.CompareAndSetNullableInt64Field(plan.Vlan, state.Vlan, func(v *openapi.NullableInt32) { serviceReq.Vlan = *v }, &hasChanges)
 	}
 
 	// Handle VNI and VniAutoAssigned changes
@@ -692,146 +644,16 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
-	tenantChanged := !plan.Tenant.Equal(state.Tenant)
-	tenantRefTypeChanged := !plan.TenantRefType.Equal(state.TenantRefType)
-
-	if tenantChanged || tenantRefTypeChanged {
-		// Validate using one ref type supported rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.Tenant, plan.TenantRefType,
-			"tenant", "tenant_ref_type_",
-			tenantChanged, tenantRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if tenantChanged && !tenantRefTypeChanged {
-			// Just send the base field
-			if !plan.Tenant.IsNull() && plan.Tenant.ValueString() != "" {
-				serviceReq.Tenant = openapi.PtrString(plan.Tenant.ValueString())
-			} else {
-				serviceReq.Tenant = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if tenantRefTypeChanged {
-			// Send both fields
-			if !plan.Tenant.IsNull() && plan.Tenant.ValueString() != "" {
-				serviceReq.Tenant = openapi.PtrString(plan.Tenant.ValueString())
-			} else {
-				serviceReq.Tenant = openapi.PtrString("")
-			}
-
-			if !plan.TenantRefType.IsNull() && plan.TenantRefType.ValueString() != "" {
-				serviceReq.TenantRefType = openapi.PtrString(plan.TenantRefType.ValueString())
-			} else {
-				serviceReq.TenantRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	if !plan.DhcpServerIpv4.Equal(state.DhcpServerIpv4) {
-		serviceReq.DhcpServerIpv4 = openapi.PtrString(plan.DhcpServerIpv4.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.DhcpServerIpv6.Equal(state.DhcpServerIpv6) {
-		serviceReq.DhcpServerIpv6 = openapi.PtrString(plan.DhcpServerIpv6.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.Mtu.Equal(state.Mtu) {
-		if !plan.Mtu.IsNull() {
-			mtuVal := int32(plan.Mtu.ValueInt64())
-			serviceReq.Mtu = *openapi.NewNullableInt32(&mtuVal)
-		} else {
-			serviceReq.Mtu = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.AnycastIpv4Mask.Equal(state.AnycastIpv4Mask) {
-		serviceReq.AnycastIpv4Mask = openapi.PtrString(plan.AnycastIpv4Mask.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.AnycastIpv6Mask.Equal(state.AnycastIpv6Mask) {
-		serviceReq.AnycastIpv6Mask = openapi.PtrString(plan.AnycastIpv6Mask.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.MaxUpstreamRateMbps.Equal(state.MaxUpstreamRateMbps) {
-		if !plan.MaxUpstreamRateMbps.IsNull() {
-			serviceReq.MaxUpstreamRateMbps = openapi.PtrInt32(int32(plan.MaxUpstreamRateMbps.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.MaxDownstreamRateMbps.Equal(state.MaxDownstreamRateMbps) {
-		if !plan.MaxDownstreamRateMbps.IsNull() {
-			serviceReq.MaxDownstreamRateMbps = openapi.PtrInt32(int32(plan.MaxDownstreamRateMbps.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.PacketPriority.Equal(state.PacketPriority) {
-		serviceReq.PacketPriority = openapi.PtrString(plan.PacketPriority.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.MulticastManagementMode.Equal(state.MulticastManagementMode) {
-		serviceReq.MulticastManagementMode = openapi.PtrString(plan.MulticastManagementMode.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.TaggedPackets.Equal(state.TaggedPackets) {
-		serviceReq.TaggedPackets = openapi.PtrBool(plan.TaggedPackets.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.Tls.Equal(state.Tls) {
-		serviceReq.Tls = openapi.PtrBool(plan.Tls.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.AllowLocalSwitching.Equal(state.AllowLocalSwitching) {
-		serviceReq.AllowLocalSwitching = openapi.PtrBool(plan.AllowLocalSwitching.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.ActAsMulticastQuerier.Equal(state.ActAsMulticastQuerier) {
-		serviceReq.ActAsMulticastQuerier = openapi.PtrBool(plan.ActAsMulticastQuerier.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.BlockUnknownUnicastFlood.Equal(state.BlockUnknownUnicastFlood) {
-		serviceReq.BlockUnknownUnicastFlood = openapi.PtrBool(plan.BlockUnknownUnicastFlood.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.BlockDownstreamDhcpServer.Equal(state.BlockDownstreamDhcpServer) {
-		serviceReq.BlockDownstreamDhcpServer = openapi.PtrBool(plan.BlockDownstreamDhcpServer.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.IsManagementService.Equal(state.IsManagementService) {
-		serviceReq.IsManagementService = openapi.PtrBool(plan.IsManagementService.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.UseDscpToPBitMappingForL3PacketsIfAvailable.Equal(state.UseDscpToPBitMappingForL3PacketsIfAvailable) {
-		serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = openapi.PtrBool(plan.UseDscpToPBitMappingForL3PacketsIfAvailable.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.AllowFastLeave.Equal(state.AllowFastLeave) {
-		serviceReq.AllowFastLeave = openapi.PtrBool(plan.AllowFastLeave.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.MstInstance.Equal(state.MstInstance) {
-		serviceReq.MstInstance = openapi.PtrInt32(int32(plan.MstInstance.ValueInt64()))
-		hasChanges = true
+	// Handle tenant and tenant_ref_type_ fields using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.Tenant, state.Tenant, plan.TenantRefType, state.TenantRefType,
+		func(v *string) { serviceReq.Tenant = v },
+		func(v *string) { serviceReq.TenantRefType = v },
+		"tenant", "tenant_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
 	if !hasChanges {
@@ -839,15 +661,8 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPatch(ctx, "service", name, *serviceReq)
-	r.provCtx.NotifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for service update operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Service %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "service", name, serviceReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -894,21 +709,15 @@ func (r *verityServiceResource) Delete(ctx context.Context, req resource.DeleteR
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
 	name := state.Name.ValueString()
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddDelete(ctx, "service", name)
-	r.provCtx.NotifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for service deletion operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Service %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "service", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

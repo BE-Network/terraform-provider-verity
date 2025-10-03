@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -55,6 +53,10 @@ type verityAuthenticatedEthPortEthPortModel struct {
 	EthPortProfileNumWalledGardenSet types.Bool   `tfsdk:"eth_port_profile_num_walled_garden_set"`
 	EthPortProfileNumRadiusFilterId  types.String `tfsdk:"eth_port_profile_num_radius_filter_id"`
 	Index                            types.Int64  `tfsdk:"index"`
+}
+
+func (ep verityAuthenticatedEthPortEthPortModel) GetIndex() types.Int64 {
+	return ep.Index
 }
 
 type verityAuthenticatedEthPortObjectPropertiesModel struct {
@@ -194,25 +196,42 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		aepProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.ConnectionMode.IsNull() {
-		aepProps.ConnectionMode = openapi.PtrString(plan.ConnectionMode.ValueString())
-	}
-	if !plan.ReauthorizationPeriodSec.IsNull() {
-		aepProps.ReauthorizationPeriodSec = openapi.PtrInt32(int32(plan.ReauthorizationPeriodSec.ValueInt64()))
-	}
-	if !plan.AllowMacBasedAuthentication.IsNull() {
-		aepProps.AllowMacBasedAuthentication = openapi.PtrBool(plan.AllowMacBasedAuthentication.ValueBool())
-	}
-	if !plan.MacAuthenticationHoldoffSec.IsNull() {
-		aepProps.MacAuthenticationHoldoffSec = openapi.PtrInt32(int32(plan.MacAuthenticationHoldoffSec.ValueInt64()))
-	}
-	if !plan.TrustedPort.IsNull() {
-		aepProps.TrustedPort = openapi.PtrBool(plan.TrustedPort.ValueBool())
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "ConnectionMode", APIField: &aepProps.ConnectionMode, TFValue: plan.ConnectionMode},
+	})
+
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &aepProps.Enable, TFValue: plan.Enable},
+		{FieldName: "AllowMacBasedAuthentication", APIField: &aepProps.AllowMacBasedAuthentication, TFValue: plan.AllowMacBasedAuthentication},
+		{FieldName: "TrustedPort", APIField: &aepProps.TrustedPort, TFValue: plan.TrustedPort},
+	})
+
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "ReauthorizationPeriodSec", APIField: &aepProps.ReauthorizationPeriodSec, TFValue: plan.ReauthorizationPeriodSec},
+		{FieldName: "MacAuthenticationHoldoffSec", APIField: &aepProps.MacAuthenticationHoldoffSec, TFValue: plan.MacAuthenticationHoldoffSec},
+	})
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
+		if !op.Group.IsNull() {
+			objProps.Group = openapi.PtrString(op.Group.ValueString())
+		} else {
+			objProps.Group = nil
+		}
+		if !op.PortMonitoring.IsNull() {
+			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
+		} else {
+			objProps.PortMonitoring = nil
+		}
+		aepProps.ObjectProperties = &objProps
 	}
 
+	// Handle eth ports
 	if len(plan.EthPorts) > 0 {
 		ethPorts := make([]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner, len(plan.EthPorts))
 		for i, ethPort := range plan.EthPorts {
@@ -240,26 +259,8 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		aepProps.EthPorts = ethPorts
 	}
 
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		}
-		if !op.PortMonitoring.IsNull() {
-			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-		}
-		aepProps.ObjectProperties = &objProps
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "authenticated_eth_port", name, *aepProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for authenticated eth-port creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Authenticated Eth-Port %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "authenticated_eth_port", name, *aepProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -299,36 +300,25 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 		AuthenticatedEthPort map[string]interface{} `json:"authenticated_eth_port"`
 	}
 
-	var result AuthenticatedEthPortResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		aepData, fetchErr := getCachedResponse(ctx, r.provCtx, "authenticated_eth_ports", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "authenticated_eth_ports", aepName,
+		func() (AuthenticatedEthPortResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch Authenticated Eth-Ports")
 			respAPI, err := r.client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading Authenticated Eth-Ports: %v", err)
+				return AuthenticatedEthPortResponse{}, fmt.Errorf("error reading Authenticated Eth-Ports: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res AuthenticatedEthPortResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode Authenticated Eth-Ports response: %v", err)
+				return AuthenticatedEthPortResponse{}, fmt.Errorf("failed to decode Authenticated Eth-Ports response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Authenticated Eth-Ports", len(res.AuthenticatedEthPort)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch Authenticated Eth-Ports on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = aepData.(AuthenticatedEthPortResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Authenticated Eth-Port %s", aepName))...,
@@ -336,182 +326,112 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for Authenticated Eth-Port with ID: %s", aepName))
-	var aepData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for Authenticated Eth-Port with name: %s", aepName))
 
-	if data, ok := result.AuthenticatedEthPort[aepName].(map[string]interface{}); ok {
-		aepData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found Authenticated Eth-Port directly by ID: %s", aepName))
-	} else {
-		for apiName, a := range result.AuthenticatedEthPort {
-			aethPort, ok := a.(map[string]interface{})
-			if !ok {
-				continue
+	aepData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.AuthenticatedEthPort,
+		aepName,
+		func(data interface{}) (string, bool) {
+			if aethPort, ok := data.(map[string]interface{}); ok {
+				if name, ok := aethPort["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := aethPort["name"].(string); ok && name == aepName {
-				aepData = aethPort
-				aepName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Authenticated Eth-Port with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Authenticated Eth-Port with ID '%s' not found in API response", aepName))
+		tflog.Debug(ctx, fmt.Sprintf("Authenticated Eth-Port with name '%s' not found in API response", aepName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", aepData["name"]))
-
-	if enable, ok := aepData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	aepMap, ok := aepData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Authenticated Eth-Port Data",
+			fmt.Sprintf("Authenticated Eth-Port data is not in expected format for %s", aepName),
+		)
+		return
 	}
 
-	if allowMac, ok := aepData["allow_mac_based_authentication"].(bool); ok {
-		state.AllowMacBasedAuthentication = types.BoolValue(allowMac)
-	} else {
-		state.AllowMacBasedAuthentication = types.BoolNull()
-	}
+	tflog.Debug(ctx, fmt.Sprintf("Found Authenticated Eth-Port '%s' under API key '%s'", aepName, actualAPIName))
 
-	if trusted, ok := aepData["trusted_port"].(bool); ok {
-		state.TrustedPort = types.BoolValue(trusted)
-	} else {
-		state.TrustedPort = types.BoolNull()
-	}
+	state.Name = utils.MapStringFromAPI(aepMap["name"])
 
-	if connMode, ok := aepData["connection_mode"].(string); ok {
-		state.ConnectionMode = types.StringValue(connMode)
-	} else {
-		state.ConnectionMode = types.StringNull()
-	}
-
-	if reauth, ok := aepData["reauthorization_period_sec"]; ok && reauth != nil {
-		switch v := reauth.(type) {
-		case int:
-			state.ReauthorizationPeriodSec = types.Int64Value(int64(v))
-		case int32:
-			state.ReauthorizationPeriodSec = types.Int64Value(int64(v))
-		case int64:
-			state.ReauthorizationPeriodSec = types.Int64Value(v)
-		case float64:
-			state.ReauthorizationPeriodSec = types.Int64Value(int64(v))
-		case string:
-			if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-				state.ReauthorizationPeriodSec = types.Int64Value(intVal)
-			} else {
-				state.ReauthorizationPeriodSec = types.Int64Null()
-			}
-		default:
-			state.ReauthorizationPeriodSec = types.Int64Null()
+	// Handle object properties
+	if objProps, ok := aepMap["object_properties"].(map[string]interface{}); ok {
+		group := utils.MapStringFromAPI(objProps["group"])
+		if group.IsNull() {
+			group = types.StringValue("")
+		}
+		portMonitoring := utils.MapStringFromAPI(objProps["port_monitoring"])
+		if portMonitoring.IsNull() {
+			portMonitoring = types.StringValue("")
+		}
+		state.ObjectProperties = []verityAuthenticatedEthPortObjectPropertiesModel{
+			{Group: group, PortMonitoring: portMonitoring},
 		}
 	} else {
-		state.ReauthorizationPeriodSec = types.Int64Null()
+		state.ObjectProperties = nil
 	}
 
-	if macHoldoff, ok := aepData["mac_authentication_holdoff_sec"]; ok && macHoldoff != nil {
-		switch v := macHoldoff.(type) {
-		case int:
-			state.MacAuthenticationHoldoffSec = types.Int64Value(int64(v))
-		case int32:
-			state.MacAuthenticationHoldoffSec = types.Int64Value(int64(v))
-		case int64:
-			state.MacAuthenticationHoldoffSec = types.Int64Value(v)
-		case float64:
-			state.MacAuthenticationHoldoffSec = types.Int64Value(int64(v))
-		case string:
-			if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-				state.MacAuthenticationHoldoffSec = types.Int64Value(intVal)
-			} else {
-				state.MacAuthenticationHoldoffSec = types.Int64Null()
-			}
-		default:
-			state.MacAuthenticationHoldoffSec = types.Int64Null()
-		}
-	} else {
-		state.MacAuthenticationHoldoffSec = types.Int64Null()
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"connection_mode": &state.ConnectionMode,
 	}
 
-	if ethPortsArray, ok := aepData["eth_ports"].([]interface{}); ok && len(ethPortsArray) > 0 {
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(aepMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":                         &state.Enable,
+		"allow_mac_based_authentication": &state.AllowMacBasedAuthentication,
+		"trusted_port":                   &state.TrustedPort,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(aepMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"reauthorization_period_sec":     &state.ReauthorizationPeriodSec,
+		"mac_authentication_holdoff_sec": &state.MacAuthenticationHoldoffSec,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(aepMap[apiKey])
+	}
+
+	// Handle eth ports
+	if ethPortsArray, ok := aepMap["eth_ports"].([]interface{}); ok && len(ethPortsArray) > 0 {
 		var ethPorts []verityAuthenticatedEthPortEthPortModel
+
 		for _, e := range ethPortsArray {
 			ethPort, ok := e.(map[string]interface{})
 			if !ok {
 				continue
 			}
-			ethPortModel := verityAuthenticatedEthPortEthPortModel{}
 
-			if enable, ok := ethPort["eth_port_profile_num_enable"].(bool); ok {
-				ethPortModel.EthPortProfileNumEnable = types.BoolValue(enable)
-			} else {
-				ethPortModel.EthPortProfileNumEnable = types.BoolNull()
-			}
-
-			if ethPortProfile, ok := ethPort["eth_port_profile_num_eth_port"].(string); ok {
-				ethPortModel.EthPortProfileNumEthPort = types.StringValue(ethPortProfile)
-			} else {
-				ethPortModel.EthPortProfileNumEthPort = types.StringNull()
-			}
-
-			if refType, ok := ethPort["eth_port_profile_num_eth_port_ref_type_"].(string); ok {
-				ethPortModel.EthPortProfileNumEthPortRefType = types.StringValue(refType)
-			} else {
-				ethPortModel.EthPortProfileNumEthPortRefType = types.StringNull()
-			}
-
-			if walledGarden, ok := ethPort["eth_port_profile_num_walled_garden_set"].(bool); ok {
-				ethPortModel.EthPortProfileNumWalledGardenSet = types.BoolValue(walledGarden)
-			} else {
-				ethPortModel.EthPortProfileNumWalledGardenSet = types.BoolNull()
-			}
-
-			if radiusFilter, ok := ethPort["eth_port_profile_num_radius_filter_id"].(string); ok {
-				ethPortModel.EthPortProfileNumRadiusFilterId = types.StringValue(radiusFilter)
-			} else {
-				ethPortModel.EthPortProfileNumRadiusFilterId = types.StringNull()
-			}
-
-			if index, ok := ethPort["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					ethPortModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					ethPortModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					ethPortModel.Index = types.Int64Null()
-				}
-			} else {
-				ethPortModel.Index = types.Int64Null()
+			ethPortModel := verityAuthenticatedEthPortEthPortModel{
+				EthPortProfileNumEnable:          utils.MapBoolFromAPI(ethPort["eth_port_profile_num_enable"]),
+				EthPortProfileNumEthPort:         utils.MapStringFromAPI(ethPort["eth_port_profile_num_eth_port"]),
+				EthPortProfileNumEthPortRefType:  utils.MapStringFromAPI(ethPort["eth_port_profile_num_eth_port_ref_type_"]),
+				EthPortProfileNumWalledGardenSet: utils.MapBoolFromAPI(ethPort["eth_port_profile_num_walled_garden_set"]),
+				EthPortProfileNumRadiusFilterId:  utils.MapStringFromAPI(ethPort["eth_port_profile_num_radius_filter_id"]),
+				Index:                            utils.MapInt64FromAPI(ethPort["index"]),
 			}
 
 			ethPorts = append(ethPorts, ethPortModel)
 		}
+
 		state.EthPorts = ethPorts
 	} else {
 		state.EthPorts = nil
-	}
-
-	if objProps, ok := aepData["object_properties"].(map[string]interface{}); ok {
-		op := verityAuthenticatedEthPortObjectPropertiesModel{}
-		if group, ok := objProps["group"].(string); ok {
-			op.Group = types.StringValue(group)
-		} else {
-			op.Group = types.StringNull()
-		}
-		if portMon, ok := objProps["port_monitoring"].(string); ok {
-			op.PortMonitoring = types.StringValue(portMon)
-		} else {
-			op.PortMonitoring = types.StringNull()
-		}
-		state.ObjectProperties = []verityAuthenticatedEthPortObjectPropertiesModel{op}
-	} else {
-		state.ObjectProperties = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -543,171 +463,20 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	aepProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		aepProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { aepProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ConnectionMode, state.ConnectionMode, func(v *string) { aepProps.ConnectionMode = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		aepProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-	if !plan.ConnectionMode.Equal(state.ConnectionMode) {
-		aepProps.ConnectionMode = openapi.PtrString(plan.ConnectionMode.ValueString())
-		hasChanges = true
-	}
-	if !plan.ReauthorizationPeriodSec.Equal(state.ReauthorizationPeriodSec) {
-		aepProps.ReauthorizationPeriodSec = openapi.PtrInt32(int32(plan.ReauthorizationPeriodSec.ValueInt64()))
-		hasChanges = true
-	}
-	if !plan.AllowMacBasedAuthentication.Equal(state.AllowMacBasedAuthentication) {
-		aepProps.AllowMacBasedAuthentication = openapi.PtrBool(plan.AllowMacBasedAuthentication.ValueBool())
-		hasChanges = true
-	}
-	if !plan.MacAuthenticationHoldoffSec.Equal(state.MacAuthenticationHoldoffSec) {
-		aepProps.MacAuthenticationHoldoffSec = openapi.PtrInt32(int32(plan.MacAuthenticationHoldoffSec.ValueInt64()))
-		hasChanges = true
-	}
-	if !plan.TrustedPort.Equal(state.TrustedPort) {
-		aepProps.TrustedPort = openapi.PtrBool(plan.TrustedPort.ValueBool())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { aepProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AllowMacBasedAuthentication, state.AllowMacBasedAuthentication, func(v *bool) { aepProps.AllowMacBasedAuthentication = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { aepProps.TrustedPort = v }, &hasChanges)
 
-	oldEthPortsByIndex := make(map[int64]verityAuthenticatedEthPortEthPortModel)
-	for _, ethPort := range state.EthPorts {
-		if !ethPort.Index.IsNull() {
-			idx := ethPort.Index.ValueInt64()
-			oldEthPortsByIndex[idx] = ethPort
-		}
-	}
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.ReauthorizationPeriodSec, state.ReauthorizationPeriodSec, func(v *int32) { aepProps.ReauthorizationPeriodSec = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, func(v *int32) { aepProps.MacAuthenticationHoldoffSec = v }, &hasChanges)
 
-	var changedEthPorts []openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner
-	ethPortsChanged := false
-
-	for _, planEthPort := range plan.EthPorts {
-		if planEthPort.Index.IsNull() {
-			continue // Skip items without identifier
-		}
-
-		idx := planEthPort.Index.ValueInt64()
-		stateEthPort, exists := oldEthPortsByIndex[idx]
-
-		if !exists {
-			// CREATE: new eth port, include all fields
-			newEthPort := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-
-			if !planEthPort.EthPortProfileNumEnable.IsNull() {
-				newEthPort.EthPortProfileNumEnable = openapi.PtrBool(planEthPort.EthPortProfileNumEnable.ValueBool())
-			} else {
-				newEthPort.EthPortProfileNumEnable = openapi.PtrBool(false)
-			}
-
-			if !planEthPort.EthPortProfileNumEthPort.IsNull() && planEthPort.EthPortProfileNumEthPort.ValueString() != "" {
-				newEthPort.EthPortProfileNumEthPort = openapi.PtrString(planEthPort.EthPortProfileNumEthPort.ValueString())
-			} else {
-				newEthPort.EthPortProfileNumEthPort = openapi.PtrString("")
-			}
-
-			if !planEthPort.EthPortProfileNumEthPortRefType.IsNull() && planEthPort.EthPortProfileNumEthPortRefType.ValueString() != "" {
-				newEthPort.EthPortProfileNumEthPortRefType = openapi.PtrString(planEthPort.EthPortProfileNumEthPortRefType.ValueString())
-			} else {
-				newEthPort.EthPortProfileNumEthPortRefType = openapi.PtrString("")
-			}
-
-			if !planEthPort.EthPortProfileNumWalledGardenSet.IsNull() {
-				newEthPort.EthPortProfileNumWalledGardenSet = openapi.PtrBool(planEthPort.EthPortProfileNumWalledGardenSet.ValueBool())
-			} else {
-				newEthPort.EthPortProfileNumWalledGardenSet = openapi.PtrBool(false)
-			}
-
-			if !planEthPort.EthPortProfileNumRadiusFilterId.IsNull() && planEthPort.EthPortProfileNumRadiusFilterId.ValueString() != "" {
-				newEthPort.EthPortProfileNumRadiusFilterId = openapi.PtrString(planEthPort.EthPortProfileNumRadiusFilterId.ValueString())
-			} else {
-				newEthPort.EthPortProfileNumRadiusFilterId = openapi.PtrString("")
-			}
-
-			changedEthPorts = append(changedEthPorts, newEthPort)
-			ethPortsChanged = true
-			continue
-		}
-
-		// UPDATE: existing eth port, check which fields changed
-		updateEthPort := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
-			Index: openapi.PtrInt32(int32(idx)),
-		}
-
-		fieldChanged := false
-
-		if !planEthPort.EthPortProfileNumEnable.Equal(stateEthPort.EthPortProfileNumEnable) {
-			updateEthPort.EthPortProfileNumEnable = openapi.PtrBool(planEthPort.EthPortProfileNumEnable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !planEthPort.EthPortProfileNumEthPort.Equal(stateEthPort.EthPortProfileNumEthPort) {
-			if !planEthPort.EthPortProfileNumEthPort.IsNull() && planEthPort.EthPortProfileNumEthPort.ValueString() != "" {
-				updateEthPort.EthPortProfileNumEthPort = openapi.PtrString(planEthPort.EthPortProfileNumEthPort.ValueString())
-			} else {
-				updateEthPort.EthPortProfileNumEthPort = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !planEthPort.EthPortProfileNumEthPortRefType.Equal(stateEthPort.EthPortProfileNumEthPortRefType) {
-			if !planEthPort.EthPortProfileNumEthPortRefType.IsNull() && planEthPort.EthPortProfileNumEthPortRefType.ValueString() != "" {
-				updateEthPort.EthPortProfileNumEthPortRefType = openapi.PtrString(planEthPort.EthPortProfileNumEthPortRefType.ValueString())
-			} else {
-				updateEthPort.EthPortProfileNumEthPortRefType = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !planEthPort.EthPortProfileNumWalledGardenSet.Equal(stateEthPort.EthPortProfileNumWalledGardenSet) {
-			updateEthPort.EthPortProfileNumWalledGardenSet = openapi.PtrBool(planEthPort.EthPortProfileNumWalledGardenSet.ValueBool())
-			fieldChanged = true
-		}
-
-		if !planEthPort.EthPortProfileNumRadiusFilterId.Equal(stateEthPort.EthPortProfileNumRadiusFilterId) {
-			if !planEthPort.EthPortProfileNumRadiusFilterId.IsNull() && planEthPort.EthPortProfileNumRadiusFilterId.ValueString() != "" {
-				updateEthPort.EthPortProfileNumRadiusFilterId = openapi.PtrString(planEthPort.EthPortProfileNumRadiusFilterId.ValueString())
-			} else {
-				updateEthPort.EthPortProfileNumRadiusFilterId = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedEthPorts = append(changedEthPorts, updateEthPort)
-			ethPortsChanged = true
-		}
-	}
-
-	// DELETE: Check for deleted items
-	for stateIdx := range oldEthPortsByIndex {
-		found := false
-		for _, planEthPort := range plan.EthPorts {
-			if !planEthPort.Index.IsNull() && planEthPort.Index.ValueInt64() == stateIdx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// eth port removed - include only the index for deletion
-			deletedEthPort := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
-				Index: openapi.PtrInt32(int32(stateIdx)),
-			}
-			changedEthPorts = append(changedEthPorts, deletedEthPort)
-			ethPortsChanged = true
-		}
-	}
-
-	if ethPortsChanged && len(changedEthPorts) > 0 {
-		aepProps.EthPorts = changedEthPorts
-		hasChanges = true
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
 			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
@@ -716,13 +485,115 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 			objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
 			if !op.Group.IsNull() {
 				objProps.Group = openapi.PtrString(op.Group.ValueString())
+			} else {
+				objProps.Group = nil
 			}
 			if !op.PortMonitoring.IsNull() {
 				objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
+			} else {
+				objProps.PortMonitoring = nil
 			}
 			aepProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
+	}
+
+	// Handle eth ports
+	ethPortsHandler := utils.IndexedItemHandler[verityAuthenticatedEthPortEthPortModel, openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner]{
+		CreateNew: func(planItem verityAuthenticatedEthPortEthPortModel) openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner {
+			item := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			if !planItem.EthPortProfileNumEnable.IsNull() {
+				item.EthPortProfileNumEnable = openapi.PtrBool(planItem.EthPortProfileNumEnable.ValueBool())
+			} else {
+				item.EthPortProfileNumEnable = openapi.PtrBool(false)
+			}
+
+			if !planItem.EthPortProfileNumEthPort.IsNull() && planItem.EthPortProfileNumEthPort.ValueString() != "" {
+				item.EthPortProfileNumEthPort = openapi.PtrString(planItem.EthPortProfileNumEthPort.ValueString())
+			} else {
+				item.EthPortProfileNumEthPort = openapi.PtrString("")
+			}
+
+			if !planItem.EthPortProfileNumEthPortRefType.IsNull() && planItem.EthPortProfileNumEthPortRefType.ValueString() != "" {
+				item.EthPortProfileNumEthPortRefType = openapi.PtrString(planItem.EthPortProfileNumEthPortRefType.ValueString())
+			} else {
+				item.EthPortProfileNumEthPortRefType = openapi.PtrString("")
+			}
+
+			if !planItem.EthPortProfileNumWalledGardenSet.IsNull() {
+				item.EthPortProfileNumWalledGardenSet = openapi.PtrBool(planItem.EthPortProfileNumWalledGardenSet.ValueBool())
+			} else {
+				item.EthPortProfileNumWalledGardenSet = openapi.PtrBool(false)
+			}
+
+			if !planItem.EthPortProfileNumRadiusFilterId.IsNull() && planItem.EthPortProfileNumRadiusFilterId.ValueString() != "" {
+				item.EthPortProfileNumRadiusFilterId = openapi.PtrString(planItem.EthPortProfileNumRadiusFilterId.ValueString())
+			} else {
+				item.EthPortProfileNumRadiusFilterId = openapi.PtrString("")
+			}
+
+			return item
+		},
+		UpdateExisting: func(planItem verityAuthenticatedEthPortEthPortModel, stateItem verityAuthenticatedEthPortEthPortModel) (openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner, bool) {
+			item := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.EthPortProfileNumEnable.Equal(stateItem.EthPortProfileNumEnable) {
+				item.EthPortProfileNumEnable = openapi.PtrBool(planItem.EthPortProfileNumEnable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.EthPortProfileNumEthPort.Equal(stateItem.EthPortProfileNumEthPort) {
+				if !planItem.EthPortProfileNumEthPort.IsNull() && planItem.EthPortProfileNumEthPort.ValueString() != "" {
+					item.EthPortProfileNumEthPort = openapi.PtrString(planItem.EthPortProfileNumEthPort.ValueString())
+				} else {
+					item.EthPortProfileNumEthPort = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.EthPortProfileNumEthPortRefType.Equal(stateItem.EthPortProfileNumEthPortRefType) {
+				if !planItem.EthPortProfileNumEthPortRefType.IsNull() && planItem.EthPortProfileNumEthPortRefType.ValueString() != "" {
+					item.EthPortProfileNumEthPortRefType = openapi.PtrString(planItem.EthPortProfileNumEthPortRefType.ValueString())
+				} else {
+					item.EthPortProfileNumEthPortRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.EthPortProfileNumWalledGardenSet.Equal(stateItem.EthPortProfileNumWalledGardenSet) {
+				item.EthPortProfileNumWalledGardenSet = openapi.PtrBool(planItem.EthPortProfileNumWalledGardenSet.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.EthPortProfileNumRadiusFilterId.Equal(stateItem.EthPortProfileNumRadiusFilterId) {
+				if !planItem.EthPortProfileNumRadiusFilterId.IsNull() && planItem.EthPortProfileNumRadiusFilterId.ValueString() != "" {
+					item.EthPortProfileNumRadiusFilterId = openapi.PtrString(planItem.EthPortProfileNumRadiusFilterId.ValueString())
+				} else {
+					item.EthPortProfileNumRadiusFilterId = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			return item, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner {
+			return openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
+	}
+
+	changedEthPorts, ethPortsChanged := utils.ProcessIndexedArrayUpdates(plan.EthPorts, state.EthPorts, ethPortsHandler)
+	if ethPortsChanged {
+		aepProps.EthPorts = changedEthPorts
+		hasChanges = true
 	}
 
 	if !hasChanges {
@@ -730,16 +601,11 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "authenticated_eth_port", name, aepProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Authenticated Eth-Port update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Authenticated Eth-Port %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "authenticated_eth_port", name, aepProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Authenticated Eth-Port %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "authenticated_eth_ports")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -762,14 +628,9 @@ func (r *verityAuthenticatedEthPortResource) Delete(ctx context.Context, req res
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "authenticated_eth_port", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Authenticated Eth-Port deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Authenticated Eth-Port %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "authenticated_eth_port", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

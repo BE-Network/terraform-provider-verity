@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -57,6 +55,10 @@ type verityServicePortProfileServiceModel struct {
 	RowNumLimitIn        types.Int64  `tfsdk:"row_num_limit_in"`
 	RowNumLimitOut       types.Int64  `tfsdk:"row_num_limit_out"`
 	Index                types.Int64  `tfsdk:"index"`
+}
+
+func (m verityServicePortProfileServiceModel) GetIndex() types.Int64 {
+	return m.Index
 }
 
 type verityServicePortProfileObjectPropertiesModel struct {
@@ -209,43 +211,61 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		sppProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.PortType.IsNull() {
-		sppProps.PortType = openapi.PtrString(plan.PortType.ValueString())
-	}
-	if !plan.TlsLimitIn.IsNull() {
-		val := int32(plan.TlsLimitIn.ValueInt64())
-		sppProps.TlsLimitIn = *openapi.NewNullableInt32(&val)
-	} else {
-		sppProps.TlsLimitIn = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.TlsService.IsNull() {
-		sppProps.TlsService = openapi.PtrString(plan.TlsService.ValueString())
-	}
-	if !plan.TlsServiceRefType.IsNull() {
-		sppProps.TlsServiceRefType = openapi.PtrString(plan.TlsServiceRefType.ValueString())
-	}
-	if !plan.TrustedPort.IsNull() {
-		sppProps.TrustedPort = openapi.PtrBool(plan.TrustedPort.ValueBool())
-	}
-	if !plan.IpMask.IsNull() {
-		sppProps.IpMask = openapi.PtrString(plan.IpMask.ValueString())
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "PortType", APIField: &sppProps.PortType, TFValue: plan.PortType},
+		{FieldName: "TlsService", APIField: &sppProps.TlsService, TFValue: plan.TlsService},
+		{FieldName: "TlsServiceRefType", APIField: &sppProps.TlsServiceRefType, TFValue: plan.TlsServiceRefType},
+		{FieldName: "IpMask", APIField: &sppProps.IpMask, TFValue: plan.IpMask},
+	})
+
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &sppProps.Enable, TFValue: plan.Enable},
+		{FieldName: "TrustedPort", APIField: &sppProps.TrustedPort, TFValue: plan.TrustedPort},
+	})
+
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "TlsLimitIn", APIField: &sppProps.TlsLimitIn, TFValue: plan.TlsLimitIn},
+	})
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
+		if !op.OnSummary.IsNull() {
+			objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
+		} else {
+			objProps.OnSummary = nil
+		}
+		if !op.PortMonitoring.IsNull() {
+			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
+		} else {
+			objProps.PortMonitoring = nil
+		}
+		if !op.Group.IsNull() {
+			objProps.Group = openapi.PtrString(op.Group.ValueString())
+		} else {
+			objProps.Group = nil
+		}
+		sppProps.ObjectProperties = &objProps
 	}
 
+	// Handle services
 	if len(plan.Services) > 0 {
 		services := make([]openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner, len(plan.Services))
 		for i, service := range plan.Services {
 			serviceItem := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
-			if !service.RowNumEnable.IsNull() {
-				serviceItem.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
-			}
+
 			if !service.RowNumService.IsNull() {
 				serviceItem.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
 			}
 			if !service.RowNumServiceRefType.IsNull() {
 				serviceItem.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
+			}
+			if !service.RowNumEnable.IsNull() {
+				serviceItem.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
 			}
 			if !service.RowNumExternalVlan.IsNull() {
 				val := int32(service.RowNumExternalVlan.ValueInt64())
@@ -273,29 +293,8 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		sppProps.Services = services
 	}
 
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
-		if !op.OnSummary.IsNull() {
-			objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
-		}
-		if !op.PortMonitoring.IsNull() {
-			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-		}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		}
-		sppProps.ObjectProperties = &objProps
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "service_port_profile", name, *sppProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for service port profile creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Service Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "service_port_profile", name, *sppProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -335,36 +334,26 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 		ServicePortProfile map[string]interface{} `json:"service_port_profile"`
 	}
 
-	var result ServicePortProfileResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		sppData, fetchErr := getCachedResponse(ctx, r.provCtx, "service_port_profiles", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "service_port_profiles", sppName,
+		func() (ServicePortProfileResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch Service Port Profiles")
 			respAPI, err := r.client.ServicePortProfilesAPI.ServiceportprofilesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading Service Port Profiles: %v", err)
+				return ServicePortProfileResponse{}, fmt.Errorf("error reading Service Port Profiles: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res ServicePortProfileResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode Service Port Profiles response: %v", err)
+				return ServicePortProfileResponse{}, fmt.Errorf("failed to decode Service Port Profiles response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Service Port Profiles", len(res.ServicePortProfile)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch Service Port Profiles on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = sppData.(ServicePortProfileResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Service Port Profile %s", sppName))...,
@@ -372,195 +361,120 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for Service Port Profile with ID: %s", sppName))
-	var sppData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for Service Port Profile with name: %s", sppName))
 
-	if data, ok := result.ServicePortProfile[sppName].(map[string]interface{}); ok {
-		sppData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found Service Port Profile directly by ID: %s", sppName))
-	} else {
-		for apiName, s := range result.ServicePortProfile {
-			servicePortProfile, ok := s.(map[string]interface{})
-			if !ok {
-				continue
+	sppData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.ServicePortProfile,
+		sppName,
+		func(data interface{}) (string, bool) {
+			if spp, ok := data.(map[string]interface{}); ok {
+				if name, ok := spp["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := servicePortProfile["name"].(string); ok && name == sppName {
-				sppData = servicePortProfile
-				sppName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Service Port Profile with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Service Port Profile with ID '%s' not found in API response", sppName))
+		tflog.Debug(ctx, fmt.Sprintf("Service Port Profile with name '%s' not found in API response", sppName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", sppData["name"]))
-
-	if enable, ok := sppData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	sppMap, ok := sppData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Service Port Profile Data",
+			fmt.Sprintf("Service Port Profile data is not in expected format for %s", sppName),
+		)
+		return
 	}
 
-	if trustedPort, ok := sppData["trusted_port"].(bool); ok {
-		state.TrustedPort = types.BoolValue(trustedPort)
-	} else {
-		state.TrustedPort = types.BoolNull()
-	}
+	tflog.Debug(ctx, fmt.Sprintf("Found Service Port Profile '%s' under API key '%s'", sppName, actualAPIName))
 
-	if portType, ok := sppData["port_type"].(string); ok {
-		state.PortType = types.StringValue(portType)
-	} else {
-		state.PortType = types.StringNull()
-	}
+	state.Name = utils.MapStringFromAPI(sppMap["name"])
 
-	if tlsService, ok := sppData["tls_service"].(string); ok {
-		state.TlsService = types.StringValue(tlsService)
-	} else {
-		state.TlsService = types.StringNull()
-	}
-
-	if tlsServiceRefType, ok := sppData["tls_service_ref_type_"].(string); ok {
-		state.TlsServiceRefType = types.StringValue(tlsServiceRefType)
-	} else {
-		state.TlsServiceRefType = types.StringNull()
-	}
-
-	if ipMask, ok := sppData["ip_mask"].(string); ok {
-		state.IpMask = types.StringValue(ipMask)
-	} else {
-		state.IpMask = types.StringNull()
-	}
-
-	if tlsLimitIn, ok := sppData["tls_limit_in"]; ok && tlsLimitIn != nil {
-		switch v := tlsLimitIn.(type) {
-		case int:
-			state.TlsLimitIn = types.Int64Value(int64(v))
-		case int32:
-			state.TlsLimitIn = types.Int64Value(int64(v))
-		case int64:
-			state.TlsLimitIn = types.Int64Value(v)
-		case float64:
-			state.TlsLimitIn = types.Int64Value(int64(v))
-		case string:
-			if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-				state.TlsLimitIn = types.Int64Value(intVal)
-			} else {
-				state.TlsLimitIn = types.Int64Null()
-			}
-		default:
-			state.TlsLimitIn = types.Int64Null()
+	// Handle object properties
+	if objProps, ok := sppMap["object_properties"].(map[string]interface{}); ok {
+		onSummary := utils.MapBoolFromAPI(objProps["on_summary"])
+		if onSummary.IsNull() {
+			onSummary = types.BoolValue(false)
+		}
+		portMonitoring := utils.MapStringFromAPI(objProps["port_monitoring"])
+		if portMonitoring.IsNull() {
+			portMonitoring = types.StringValue("")
+		}
+		group := utils.MapStringFromAPI(objProps["group"])
+		if group.IsNull() {
+			group = types.StringValue("")
+		}
+		state.ObjectProperties = []verityServicePortProfileObjectPropertiesModel{
+			{
+				OnSummary:      onSummary,
+				PortMonitoring: portMonitoring,
+				Group:          group,
+			},
 		}
 	} else {
-		state.TlsLimitIn = types.Int64Null()
+		state.ObjectProperties = nil
 	}
 
-	if servicesArray, ok := sppData["services"].([]interface{}); ok && len(servicesArray) > 0 {
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"port_type":             &state.PortType,
+		"tls_service":           &state.TlsService,
+		"tls_service_ref_type_": &state.TlsServiceRefType,
+		"ip_mask":               &state.IpMask,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(sppMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":       &state.Enable,
+		"trusted_port": &state.TrustedPort,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(sppMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"tls_limit_in": &state.TlsLimitIn,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(sppMap[apiKey])
+	}
+
+	// Handle services
+	if servicesArray, ok := sppMap["services"].([]interface{}); ok && len(servicesArray) > 0 {
 		var services []verityServicePortProfileServiceModel
 		for _, s := range servicesArray {
 			service, ok := s.(map[string]interface{})
 			if !ok {
 				continue
 			}
-			serviceModel := verityServicePortProfileServiceModel{}
 
-			if enable, ok := service["row_num_enable"].(bool); ok {
-				serviceModel.RowNumEnable = types.BoolValue(enable)
-			} else {
-				serviceModel.RowNumEnable = types.BoolNull()
+			srModel := verityServicePortProfileServiceModel{
+				RowNumEnable:         utils.MapBoolFromAPI(service["row_num_enable"]),
+				RowNumService:        utils.MapStringFromAPI(service["row_num_service"]),
+				RowNumServiceRefType: utils.MapStringFromAPI(service["row_num_service_ref_type_"]),
+				RowNumExternalVlan:   utils.MapInt64FromAPI(service["row_num_external_vlan"]),
+				RowNumLimitIn:        utils.MapInt64FromAPI(service["row_num_limit_in"]),
+				RowNumLimitOut:       utils.MapInt64FromAPI(service["row_num_limit_out"]),
+				Index:                utils.MapInt64FromAPI(service["index"]),
 			}
 
-			if serviceName, ok := service["row_num_service"].(string); ok {
-				serviceModel.RowNumService = types.StringValue(serviceName)
-			} else {
-				serviceModel.RowNumService = types.StringNull()
-			}
-
-			if serviceRefType, ok := service["row_num_service_ref_type_"].(string); ok {
-				serviceModel.RowNumServiceRefType = types.StringValue(serviceRefType)
-			} else {
-				serviceModel.RowNumServiceRefType = types.StringNull()
-			}
-
-			intFields := map[string]*types.Int64{
-				"row_num_external_vlan": &serviceModel.RowNumExternalVlan,
-				"row_num_limit_in":      &serviceModel.RowNumLimitIn,
-				"row_num_limit_out":     &serviceModel.RowNumLimitOut,
-			}
-
-			for apiKey, stateField := range intFields {
-				if value, ok := service[apiKey]; ok && value != nil {
-					switch v := value.(type) {
-					case int:
-						*stateField = types.Int64Value(int64(v))
-					case int32:
-						*stateField = types.Int64Value(int64(v))
-					case int64:
-						*stateField = types.Int64Value(v)
-					case float64:
-						*stateField = types.Int64Value(int64(v))
-					case string:
-						if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-							*stateField = types.Int64Value(intVal)
-						} else {
-							*stateField = types.Int64Null()
-						}
-					default:
-						*stateField = types.Int64Null()
-					}
-				} else {
-					*stateField = types.Int64Null()
-				}
-			}
-
-			if index, ok := service["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					serviceModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					serviceModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					serviceModel.Index = types.Int64Null()
-				}
-			} else {
-				serviceModel.Index = types.Int64Null()
-			}
-
-			services = append(services, serviceModel)
+			services = append(services, srModel)
 		}
 		state.Services = services
 	} else {
 		state.Services = nil
-	}
-
-	if objProps, ok := sppData["object_properties"].(map[string]interface{}); ok {
-		op := verityServicePortProfileObjectPropertiesModel{}
-		if onSummary, ok := objProps["on_summary"].(bool); ok {
-			op.OnSummary = types.BoolValue(onSummary)
-		} else {
-			op.OnSummary = types.BoolNull()
-		}
-		if portMonitoring, ok := objProps["port_monitoring"].(string); ok {
-			op.PortMonitoring = types.StringValue(portMonitoring)
-		} else {
-			op.PortMonitoring = types.StringNull()
-		}
-		if group, ok := objProps["group"].(string); ok {
-			op.Group = types.StringValue(group)
-		} else {
-			op.Group = types.StringNull()
-		}
-		state.ObjectProperties = []verityServicePortProfileObjectPropertiesModel{op}
-	} else {
-		state.ObjectProperties = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -592,206 +506,21 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	sppProps := openapi.ServiceportprofilesPutRequestServicePortProfileValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		sppProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sppProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PortType, state.PortType, func(v *string) { sppProps.PortType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.TlsService, state.TlsService, func(v *string) { sppProps.TlsService = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.TlsServiceRefType, state.TlsServiceRefType, func(v *string) { sppProps.TlsServiceRefType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.IpMask, state.IpMask, func(v *string) { sppProps.IpMask = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		sppProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-	if !plan.PortType.Equal(state.PortType) {
-		sppProps.PortType = openapi.PtrString(plan.PortType.ValueString())
-		hasChanges = true
-	}
-	if !plan.TlsService.Equal(state.TlsService) {
-		sppProps.TlsService = openapi.PtrString(plan.TlsService.ValueString())
-		hasChanges = true
-	}
-	if !plan.TlsServiceRefType.Equal(state.TlsServiceRefType) {
-		sppProps.TlsServiceRefType = openapi.PtrString(plan.TlsServiceRefType.ValueString())
-		hasChanges = true
-	}
-	if !plan.TrustedPort.Equal(state.TrustedPort) {
-		sppProps.TrustedPort = openapi.PtrBool(plan.TrustedPort.ValueBool())
-		hasChanges = true
-	}
-	if !plan.IpMask.Equal(state.IpMask) {
-		sppProps.IpMask = openapi.PtrString(plan.IpMask.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sppProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { sppProps.TrustedPort = v }, &hasChanges)
 
-	if !plan.TlsLimitIn.Equal(state.TlsLimitIn) {
-		if !plan.TlsLimitIn.IsNull() {
-			val := int32(plan.TlsLimitIn.ValueInt64())
-			sppProps.TlsLimitIn = *openapi.NewNullableInt32(&val)
-		} else {
-			sppProps.TlsLimitIn = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.TlsLimitIn, state.TlsLimitIn, func(v *openapi.NullableInt32) { sppProps.TlsLimitIn = *v }, &hasChanges)
 
-	oldServicesByIndex := make(map[int64]verityServicePortProfileServiceModel)
-	for _, service := range state.Services {
-		if !service.Index.IsNull() {
-			idx := service.Index.ValueInt64()
-			oldServicesByIndex[idx] = service
-		}
-	}
-
-	var changedServices []openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner
-	servicesChanged := false
-
-	for _, planService := range plan.Services {
-		if planService.Index.IsNull() {
-			continue // Skip items without identifier
-		}
-
-		idx := planService.Index.ValueInt64()
-		stateService, exists := oldServicesByIndex[idx]
-
-		if !exists {
-			// CREATE: new service, include all fields
-			newService := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-
-			if !planService.RowNumEnable.IsNull() {
-				newService.RowNumEnable = openapi.PtrBool(planService.RowNumEnable.ValueBool())
-			} else {
-				newService.RowNumEnable = openapi.PtrBool(false)
-			}
-
-			if !planService.RowNumService.IsNull() && planService.RowNumService.ValueString() != "" {
-				newService.RowNumService = openapi.PtrString(planService.RowNumService.ValueString())
-			} else {
-				newService.RowNumService = openapi.PtrString("")
-			}
-
-			if !planService.RowNumServiceRefType.IsNull() && planService.RowNumServiceRefType.ValueString() != "" {
-				newService.RowNumServiceRefType = openapi.PtrString(planService.RowNumServiceRefType.ValueString())
-			} else {
-				newService.RowNumServiceRefType = openapi.PtrString("")
-			}
-
-			if !planService.RowNumExternalVlan.IsNull() {
-				val := int32(planService.RowNumExternalVlan.ValueInt64())
-				newService.RowNumExternalVlan = *openapi.NewNullableInt32(&val)
-			} else {
-				newService.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-			}
-
-			if !planService.RowNumLimitIn.IsNull() {
-				val := int32(planService.RowNumLimitIn.ValueInt64())
-				newService.RowNumLimitIn = *openapi.NewNullableInt32(&val)
-			} else {
-				newService.RowNumLimitIn = *openapi.NewNullableInt32(nil)
-			}
-
-			if !planService.RowNumLimitOut.IsNull() {
-				val := int32(planService.RowNumLimitOut.ValueInt64())
-				newService.RowNumLimitOut = *openapi.NewNullableInt32(&val)
-			} else {
-				newService.RowNumLimitOut = *openapi.NewNullableInt32(nil)
-			}
-
-			changedServices = append(changedServices, newService)
-			servicesChanged = true
-			continue
-		}
-
-		// UPDATE: existing service, check which fields changed
-		updateService := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
-			Index: openapi.PtrInt32(int32(idx)),
-		}
-
-		fieldChanged := false
-
-		if !planService.RowNumEnable.Equal(stateService.RowNumEnable) {
-			updateService.RowNumEnable = openapi.PtrBool(planService.RowNumEnable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !planService.RowNumService.Equal(stateService.RowNumService) {
-			if !planService.RowNumService.IsNull() && planService.RowNumService.ValueString() != "" {
-				updateService.RowNumService = openapi.PtrString(planService.RowNumService.ValueString())
-			} else {
-				updateService.RowNumService = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !planService.RowNumServiceRefType.Equal(stateService.RowNumServiceRefType) {
-			if !planService.RowNumServiceRefType.IsNull() && planService.RowNumServiceRefType.ValueString() != "" {
-				updateService.RowNumServiceRefType = openapi.PtrString(planService.RowNumServiceRefType.ValueString())
-			} else {
-				updateService.RowNumServiceRefType = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !planService.RowNumExternalVlan.Equal(stateService.RowNumExternalVlan) {
-			if !planService.RowNumExternalVlan.IsNull() {
-				val := int32(planService.RowNumExternalVlan.ValueInt64())
-				updateService.RowNumExternalVlan = *openapi.NewNullableInt32(&val)
-			} else {
-				updateService.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-			}
-			fieldChanged = true
-		}
-
-		if !planService.RowNumLimitIn.Equal(stateService.RowNumLimitIn) {
-			if !planService.RowNumLimitIn.IsNull() {
-				val := int32(planService.RowNumLimitIn.ValueInt64())
-				updateService.RowNumLimitIn = *openapi.NewNullableInt32(&val)
-			} else {
-				updateService.RowNumLimitIn = *openapi.NewNullableInt32(nil)
-			}
-			fieldChanged = true
-		}
-
-		if !planService.RowNumLimitOut.Equal(stateService.RowNumLimitOut) {
-			if !planService.RowNumLimitOut.IsNull() {
-				val := int32(planService.RowNumLimitOut.ValueInt64())
-				updateService.RowNumLimitOut = *openapi.NewNullableInt32(&val)
-			} else {
-				updateService.RowNumLimitOut = *openapi.NewNullableInt32(nil)
-			}
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedServices = append(changedServices, updateService)
-			servicesChanged = true
-		}
-	}
-
-	// DELETE: Check for deleted items
-	for stateIdx := range oldServicesByIndex {
-		found := false
-		for _, planService := range plan.Services {
-			if !planService.Index.IsNull() && planService.Index.ValueInt64() == stateIdx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// service removed - include only the index for deletion
-			deletedService := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(stateIdx)),
-			}
-			changedServices = append(changedServices, deletedService)
-			servicesChanged = true
-		}
-	}
-
-	if servicesChanged && len(changedServices) > 0 {
-		sppProps.Services = changedServices
-		hasChanges = true
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
 			!plan.ObjectProperties[0].OnSummary.Equal(state.ObjectProperties[0].OnSummary) ||
@@ -801,16 +530,157 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 			objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
 			if !op.OnSummary.IsNull() {
 				objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
+			} else {
+				objProps.OnSummary = nil
 			}
 			if !op.PortMonitoring.IsNull() {
 				objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
+			} else {
+				objProps.PortMonitoring = nil
 			}
 			if !op.Group.IsNull() {
 				objProps.Group = openapi.PtrString(op.Group.ValueString())
+			} else {
+				objProps.Group = nil
 			}
 			sppProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
+	}
+
+	// Handle TlsService and TlsServiceRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.TlsService, state.TlsService, plan.TlsServiceRefType, state.TlsServiceRefType,
+		func(v *string) { sppProps.TlsService = v },
+		func(v *string) { sppProps.TlsServiceRefType = v },
+		"tls_service", "tls_service_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle services
+	servicesHandler := utils.IndexedItemHandler[verityServicePortProfileServiceModel, openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner]{
+		CreateNew: func(planItem verityServicePortProfileServiceModel) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
+			service := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			if !planItem.RowNumEnable.IsNull() {
+				service.RowNumEnable = openapi.PtrBool(planItem.RowNumEnable.ValueBool())
+			} else {
+				service.RowNumEnable = openapi.PtrBool(false)
+			}
+
+			if !planItem.RowNumService.IsNull() {
+				service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
+			} else {
+				service.RowNumService = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumServiceRefType.IsNull() {
+				service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
+			} else {
+				service.RowNumServiceRefType = openapi.PtrString("")
+			}
+
+			if !planItem.RowNumExternalVlan.IsNull() {
+				val := int32(planItem.RowNumExternalVlan.ValueInt64())
+				service.RowNumExternalVlan = *openapi.NewNullableInt32(&val)
+			} else {
+				service.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
+			}
+
+			if !planItem.RowNumLimitIn.IsNull() {
+				val := int32(planItem.RowNumLimitIn.ValueInt64())
+				service.RowNumLimitIn = *openapi.NewNullableInt32(&val)
+			} else {
+				service.RowNumLimitIn = *openapi.NewNullableInt32(nil)
+			}
+
+			if !planItem.RowNumLimitOut.IsNull() {
+				val := int32(planItem.RowNumLimitOut.ValueInt64())
+				service.RowNumLimitOut = *openapi.NewNullableInt32(&val)
+			} else {
+				service.RowNumLimitOut = *openapi.NewNullableInt32(nil)
+			}
+
+			return service
+		},
+		UpdateExisting: func(planItem verityServicePortProfileServiceModel, stateItem verityServicePortProfileServiceModel) (openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner, bool) {
+			service := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.RowNumEnable.Equal(stateItem.RowNumEnable) {
+				service.RowNumEnable = openapi.PtrBool(planItem.RowNumEnable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.RowNumService.Equal(stateItem.RowNumService) {
+				if !planItem.RowNumService.IsNull() {
+					service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
+				} else {
+					service.RowNumService = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.RowNumServiceRefType.Equal(stateItem.RowNumServiceRefType) {
+				if !planItem.RowNumServiceRefType.IsNull() {
+					service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
+				} else {
+					service.RowNumServiceRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.RowNumExternalVlan.Equal(stateItem.RowNumExternalVlan) {
+				if !planItem.RowNumExternalVlan.IsNull() {
+					val := int32(planItem.RowNumExternalVlan.ValueInt64())
+					service.RowNumExternalVlan = *openapi.NewNullableInt32(&val)
+				} else {
+					service.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.RowNumLimitIn.Equal(stateItem.RowNumLimitIn) {
+				if !planItem.RowNumLimitIn.IsNull() {
+					val := int32(planItem.RowNumLimitIn.ValueInt64())
+					service.RowNumLimitIn = *openapi.NewNullableInt32(&val)
+				} else {
+					service.RowNumLimitIn = *openapi.NewNullableInt32(nil)
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.RowNumLimitOut.Equal(stateItem.RowNumLimitOut) {
+				if !planItem.RowNumLimitOut.IsNull() {
+					val := int32(planItem.RowNumLimitOut.ValueInt64())
+					service.RowNumLimitOut = *openapi.NewNullableInt32(&val)
+				} else {
+					service.RowNumLimitOut = *openapi.NewNullableInt32(nil)
+				}
+				fieldChanged = true
+			}
+
+			return service, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
+			return openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
+	}
+
+	changedServices, servicesChanged := utils.ProcessIndexedArrayUpdates(plan.Services, state.Services, servicesHandler)
+	if servicesChanged {
+		sppProps.Services = changedServices
+		hasChanges = true
 	}
 
 	if !hasChanges {
@@ -818,16 +688,11 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "service_port_profile", name, sppProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Service Port Profile update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Service Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "service_port_profile", name, sppProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Service Port Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "service_port_profiles")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -850,14 +715,9 @@ func (r *verityServicePortProfileResource) Delete(ctx context.Context, req resou
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "service_port_profile", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Service Port Profile deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Service Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "service_port_profile", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

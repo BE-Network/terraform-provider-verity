@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -55,11 +54,15 @@ type verityGatewayProfileExternalGatewaysModel struct {
 	Index          types.Int64  `tfsdk:"index"`
 }
 
+func (eg verityGatewayProfileExternalGatewaysModel) GetIndex() types.Int64 {
+	return eg.Index
+}
+
 func (r *verityGatewayProfileResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_gateway_profile"
 }
 
-func (r *verityGatewayProfileResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *verityGatewayProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -68,7 +71,7 @@ func (r *verityGatewayProfileResource) Configure(_ context.Context, req resource
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Resource Configure Type",
-			fmt.Sprintf("Expected *providerContext, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected *providerContext, got: %T", req.ProviderData),
 		)
 		return
 	}
@@ -143,146 +146,131 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 }
 
 func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data verityGatewayProfileResourceModel
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	var plan verityGatewayProfileResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
-		resp.Diagnostics.AddError("Authentication Error", fmt.Sprintf("Unable to authenticate client: %s", err))
-		return
-	}
-
-	name := data.Name.ValueString()
-	profileObj := &openapi.GatewayprofilesPutRequestGatewayProfileValue{
-		Name: openapi.PtrString(name),
-	}
-
-	if !data.Enable.IsNull() {
-		enable := data.Enable.ValueBool()
-		profileObj.Enable = openapi.PtrBool(enable)
-	}
-
-	if len(data.ObjectProperties) > 0 {
-		objProps := &openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{
-			Group: openapi.PtrString(data.ObjectProperties[0].Group.ValueString()),
-		}
-		if data.ObjectProperties[0].Group.IsNull() {
-			objProps.Group = nil
-		}
-		profileObj.ObjectProperties = objProps
-	}
-
-	if len(data.ExternalGateways) > 0 {
-		var externalGatewaysList []openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner
-
-		for _, eg := range data.ExternalGateways {
-			gatewayObj := &openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{}
-
-			if !eg.Enable.IsNull() {
-				gatewayObj.Enable = openapi.PtrBool(eg.Enable.ValueBool())
-			}
-
-			if !eg.Gateway.IsNull() {
-				gatewayObj.Gateway = openapi.PtrString(eg.Gateway.ValueString())
-			}
-
-			if !eg.GatewayRefType.IsNull() {
-				gatewayObj.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
-			}
-
-			if !eg.SourceIpMask.IsNull() {
-				gatewayObj.SourceIpMask = openapi.PtrString(eg.SourceIpMask.ValueString())
-			}
-
-			if !eg.PeerGw.IsNull() {
-				gatewayObj.PeerGw = openapi.PtrBool(eg.PeerGw.ValueBool())
-			}
-
-			if !eg.Index.IsNull() {
-				index := int32(eg.Index.ValueInt64())
-				gatewayObj.Index = openapi.PtrInt32(index)
-			}
-
-			externalGatewaysList = append(externalGatewaysList, *gatewayObj)
-		}
-
-		profileObj.ExternalGateways = externalGatewaysList
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "gateway_profile", name, *profileObj)
-	r.notifyOperationAdded()
-
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Gateway Profile %s", name))...,
+		resp.Diagnostics.AddError(
+			"Failed to Authenticate",
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
+	name := plan.Name.ValueString()
+	profileProps := &openapi.GatewayprofilesPutRequestGatewayProfileValue{
+		Name: openapi.PtrString(name),
+	}
+
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &profileProps.Enable, TFValue: plan.Enable},
+	})
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
+		if !op.Group.IsNull() {
+			objProps.Group = openapi.PtrString(op.Group.ValueString())
+		} else {
+			objProps.Group = nil
+		}
+		profileProps.ObjectProperties = &objProps
+	}
+
+	// Handle external gateways
+	if len(plan.ExternalGateways) > 0 {
+		gateways := make([]openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner, len(plan.ExternalGateways))
+		for i, gateway := range plan.ExternalGateways {
+			gwItem := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{}
+			if !gateway.Enable.IsNull() {
+				gwItem.Enable = openapi.PtrBool(gateway.Enable.ValueBool())
+			}
+			if !gateway.Gateway.IsNull() {
+				gwItem.Gateway = openapi.PtrString(gateway.Gateway.ValueString())
+			}
+			if !gateway.GatewayRefType.IsNull() {
+				gwItem.GatewayRefType = openapi.PtrString(gateway.GatewayRefType.ValueString())
+			}
+			if !gateway.SourceIpMask.IsNull() {
+				gwItem.SourceIpMask = openapi.PtrString(gateway.SourceIpMask.ValueString())
+			}
+			if !gateway.PeerGw.IsNull() {
+				gwItem.PeerGw = openapi.PtrBool(gateway.PeerGw.ValueBool())
+			}
+			if !gateway.Index.IsNull() {
+				gwItem.Index = openapi.PtrInt32(int32(gateway.Index.ValueInt64()))
+			}
+			gateways[i] = gwItem
+		}
+		profileProps.ExternalGateways = gateways
+	}
+
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "gateway_profile", name, *profileProps, &resp.Diagnostics)
+	if !success {
+		return
+	}
+
+	tflog.Info(ctx, fmt.Sprintf("Gateway Profile %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateway_profiles")
-	data.Name = types.StringValue(name)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+
+	plan.Name = types.StringValue(name)
+	resp.State.Set(ctx, plan)
 }
 
 func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data verityGatewayProfileResourceModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	var state verityGatewayProfileResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
-		resp.Diagnostics.AddError("Authentication Error", fmt.Sprintf("Unable to authenticate client: %s", err))
+		resp.Diagnostics.AddError(
+			"Failed to Authenticate",
+			fmt.Sprintf("Error authenticating with API: %s", err),
+		)
 		return
 	}
 
-	profileName := data.Name.ValueString()
+	profileName := state.Name.ValueString()
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gateway_profile") {
+		tflog.Info(ctx, fmt.Sprintf("Skipping gateway profile %s verification – trusting recent successful API operation", profileName))
 		return
 	}
 
+	tflog.Debug(ctx, fmt.Sprintf("Fetching gateway profiles for verification of %s", profileName))
+
 	type GatewayProfileResponse struct {
-		GatewayProfile map[string]map[string]interface{} `json:"gateway_profile"`
+		GatewayProfile map[string]interface{} `json:"gateway_profile"`
 	}
 
-	var result GatewayProfileResponse
-	var err error
-	maxRetries := 3
-
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		if attempt > 0 {
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch gateway profiles on attempt %d, retrying in %v", attempt, sleepTime))
-			time.Sleep(sleepTime)
-		}
-
-		profilesData, fetchErr := getCachedResponse(ctx, r.provCtx, "gateway_profiles", func() (interface{}, error) {
-			req := r.client.GatewayProfilesAPI.GatewayprofilesGet(ctx)
-			resp, err := req.Execute()
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "gateway_profiles", profileName,
+		func() (GatewayProfileResponse, error) {
+			tflog.Debug(ctx, "Making API call to fetch gateway profiles")
+			respAPI, err := r.client.GatewayProfilesAPI.GatewayprofilesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading gateway profiles: %v", err)
+				return GatewayProfileResponse{}, fmt.Errorf("error reading gateway profiles: %v", err)
 			}
-			defer resp.Body.Close()
+			defer respAPI.Body.Close()
 
-			var result GatewayProfileResponse
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, fmt.Errorf("error decoding gateway profile response: %v", err)
+			var res GatewayProfileResponse
+			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
+				return GatewayProfileResponse{}, fmt.Errorf("failed to decode gateway profiles response: %v", err)
 			}
 
-			return result, nil
-		})
-
-		if fetchErr == nil {
-			result = profilesData.(GatewayProfileResponse)
-			break
-		}
-		err = fetchErr
-	}
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d gateway profiles", len(res.GatewayProfile)))
+			return res, nil
+		},
+		getCachedResponse,
+	)
 
 	if err != nil {
 		resp.Diagnostics.Append(
@@ -291,372 +279,275 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	profileData, exists := result.GatewayProfile[profileName]
-	if !exists {
-		for apiName, p := range result.GatewayProfile {
-			if name, ok := p["name"].(string); ok && name == profileName {
-				profileData = p
-				profileName = apiName
-				exists = true
-				break
+	tflog.Debug(ctx, fmt.Sprintf("Looking for gateway profile with name: %s", profileName))
+
+	profileData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.GatewayProfile,
+		profileName,
+		func(data interface{}) (string, bool) {
+			if profile, ok := data.(map[string]interface{}); ok {
+				if name, ok := profile["name"].(string); ok {
+					return name, true
+				}
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Gateway profile with ID '%s' not found in API response", profileName))
+		tflog.Debug(ctx, fmt.Sprintf("Gateway Profile with name '%s' not found in API response", profileName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	data.Name = types.StringValue(profileName)
-
-	if v, ok := profileData["enable"].(bool); ok {
-		data.Enable = types.BoolValue(v)
+	profileMap, ok := profileData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Gateway Profile Data",
+			fmt.Sprintf("Gateway Profile data is not in expected format for %s", profileName),
+		)
+		return
 	}
 
-	if objProps, ok := profileData["object_properties"].(map[string]interface{}); ok {
-		objectProps := verityGatewayProfileObjectPropertiesModel{}
+	tflog.Debug(ctx, fmt.Sprintf("Found gateway profile '%s' under API key '%s'", profileName, actualAPIName))
 
-		if group, ok := objProps["group"]; ok && group != nil {
-			groupStr, isString := group.(string)
-			if isString {
-				objectProps.Group = types.StringValue(groupStr)
-			}
+	state.Name = utils.MapStringFromAPI(profileMap["name"])
+
+	// Handle object properties
+	if objProps, ok := profileMap["object_properties"].(map[string]interface{}); ok {
+		group := utils.MapStringFromAPI(objProps["group"])
+		if group.IsNull() {
+			group = types.StringValue("")
 		}
-
-		data.ObjectProperties = []verityGatewayProfileObjectPropertiesModel{objectProps}
+		state.ObjectProperties = []verityGatewayProfileObjectPropertiesModel{
+			{Group: group},
+		}
 	} else {
-		data.ObjectProperties = nil
+		state.ObjectProperties = nil
 	}
 
-	if ext, ok := profileData["external_gateways"].([]interface{}); ok {
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(profileMap[apiKey])
+	}
+
+	// Handle external gateways
+	if ext, ok := profileMap["external_gateways"].([]interface{}); ok && len(ext) > 0 {
 		var egList []verityGatewayProfileExternalGatewaysModel
 
 		for _, item := range ext {
-			if m, ok := item.(map[string]interface{}); ok {
-				gateway := verityGatewayProfileExternalGatewaysModel{}
-
-				if v, exists := m["enable"]; exists && v != nil {
-					if boolVal, ok := v.(bool); ok {
-						gateway.Enable = types.BoolValue(boolVal)
-					}
-				}
-
-				if v, exists := m["gateway"]; exists && v != nil {
-					if strVal, ok := v.(string); ok {
-						gateway.Gateway = types.StringValue(strVal)
-					}
-				}
-
-				if v, exists := m["gateway_ref_type_"]; exists && v != nil {
-					if strVal, ok := v.(string); ok {
-						gateway.GatewayRefType = types.StringValue(strVal)
-					}
-				}
-
-				if v, exists := m["source_ip_mask"]; exists && v != nil {
-					if strVal, ok := v.(string); ok {
-						gateway.SourceIpMask = types.StringValue(strVal)
-					}
-				}
-
-				if v, exists := m["peer_gw"]; exists && v != nil {
-					if boolVal, ok := v.(bool); ok {
-						gateway.PeerGw = types.BoolValue(boolVal)
-					}
-				}
-
-				if v, exists := m["index"]; exists && v != nil {
-					var indexVal int64
-					switch val := v.(type) {
-					case float64:
-						indexVal = int64(val)
-					case int:
-						indexVal = int64(val)
-					case int64:
-						indexVal = val
-					case float32:
-						indexVal = int64(val)
-					case int32:
-						indexVal = int64(val)
-					}
-					gateway.Index = types.Int64Value(indexVal)
-				}
-
-				egList = append(egList, gateway)
+			gateway, ok := item.(map[string]interface{})
+			if !ok {
+				continue
 			}
+
+			egModel := verityGatewayProfileExternalGatewaysModel{
+				Enable:         utils.MapBoolFromAPI(gateway["enable"]),
+				Gateway:        utils.MapStringFromAPI(gateway["gateway"]),
+				GatewayRefType: utils.MapStringFromAPI(gateway["gateway_ref_type_"]),
+				SourceIpMask:   utils.MapStringFromAPI(gateway["source_ip_mask"]),
+				PeerGw:         utils.MapBoolFromAPI(gateway["peer_gw"]),
+				Index:          utils.MapInt64FromAPI(gateway["index"]),
+			}
+
+			egList = append(egList, egModel)
 		}
 
-		data.ExternalGateways = egList
+		state.ExternalGateways = egList
+	} else {
+		state.ExternalGateways = nil
 	}
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data verityGatewayProfileResourceModel
-	var state verityGatewayProfileResourceModel
+	var plan, state verityGatewayProfileResourceModel
 
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
-		resp.Diagnostics.AddError("Authentication Error", fmt.Sprintf("Unable to authenticate client: %s", err))
+		resp.Diagnostics.AddError(
+			"Failed to Authenticate",
+			fmt.Sprintf("Error authenticating with API: %s", err),
+		)
 		return
 	}
 
-	name := data.Name.ValueString()
+	name := plan.Name.ValueString()
+	profileProps := openapi.GatewayprofilesPutRequestGatewayProfileValue{}
 	hasChanges := false
-	profileObj := openapi.GatewayprofilesPutRequestGatewayProfileValue{}
 
-	if !data.Enable.Equal(state.Enable) {
-		enable := data.Enable.ValueBool()
-		profileObj.Enable = &enable
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { profileProps.Name = v }, &hasChanges)
 
-	if len(data.ObjectProperties) > 0 {
-		objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
-		objPropsChanged := false
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { profileProps.Enable = v }, &hasChanges)
 
-		if len(state.ObjectProperties) == 0 ||
-			!data.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objPropsChanged = true
-
-			if !data.ObjectProperties[0].Group.IsNull() {
-				groupVal := data.ObjectProperties[0].Group.ValueString()
-				objProps.Group = openapi.PtrString(groupVal)
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
+			objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
+			if !plan.ObjectProperties[0].Group.IsNull() {
+				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {
 				objProps.Group = nil
 			}
-		}
-
-		if objPropsChanged {
-			profileObj.ObjectProperties = &objProps
+			profileProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
 	}
 
-	stateGatewaysByIndex := make(map[int64]verityGatewayProfileExternalGatewaysModel)
-	for _, eg := range state.ExternalGateways {
-		if !eg.Index.IsNull() {
-			stateGatewaysByIndex[eg.Index.ValueInt64()] = eg
-		}
-	}
-
-	var changedExternalGateways []openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner
-	externalGatewaysChanged := false
-
-	for _, eg := range data.ExternalGateways {
-		if eg.Index.IsNull() {
-			continue
-		}
-
-		index := eg.Index.ValueInt64()
-		stateEg, exists := stateGatewaysByIndex[index]
-
-		if !exists {
-			// new gateway, include all fields
+	// Handle external gateways
+	externalGatewaysHandler := utils.IndexedItemHandler[verityGatewayProfileExternalGatewaysModel, openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner]{
+		CreateNew: func(planItem verityGatewayProfileExternalGatewaysModel) openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner {
 			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
-				Index: openapi.PtrInt32(int32(index)),
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
 
-			if !eg.Enable.IsNull() {
-				gateway.Enable = openapi.PtrBool(eg.Enable.ValueBool())
+			if !planItem.Enable.IsNull() {
+				gateway.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
 			} else {
 				gateway.Enable = openapi.PtrBool(false)
 			}
 
-			hasGateway := !eg.Gateway.IsNull() && eg.Gateway.ValueString() != ""
-			hasRefType := !eg.GatewayRefType.IsNull() && eg.GatewayRefType.ValueString() != ""
-
-			if hasGateway || hasRefType {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					eg.Gateway, eg.GatewayRefType,
-					"gateway", "gateway_ref_type_",
-					hasGateway, hasRefType) {
-					return
-				}
-
-				// Set both fields for new entries that have at least one of the fields
-				if !eg.Gateway.IsNull() {
-					gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
-				} else {
-					gateway.Gateway = openapi.PtrString("")
-				}
-
-				if !eg.GatewayRefType.IsNull() {
-					gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
-				} else {
-					gateway.GatewayRefType = openapi.PtrString("")
-				}
+			if !planItem.Gateway.IsNull() {
+				gateway.Gateway = openapi.PtrString(planItem.Gateway.ValueString())
 			} else {
-				// If neither field is set, set both to empty strings
 				gateway.Gateway = openapi.PtrString("")
+			}
+
+			if !planItem.GatewayRefType.IsNull() {
+				gateway.GatewayRefType = openapi.PtrString(planItem.GatewayRefType.ValueString())
+			} else {
 				gateway.GatewayRefType = openapi.PtrString("")
 			}
 
-			if !eg.SourceIpMask.IsNull() {
-				gateway.SourceIpMask = openapi.PtrString(eg.SourceIpMask.ValueString())
+			if !planItem.SourceIpMask.IsNull() {
+				gateway.SourceIpMask = openapi.PtrString(planItem.SourceIpMask.ValueString())
 			} else {
 				gateway.SourceIpMask = openapi.PtrString("")
 			}
 
-			if !eg.PeerGw.IsNull() {
-				gateway.PeerGw = openapi.PtrBool(eg.PeerGw.ValueBool())
+			if !planItem.PeerGw.IsNull() {
+				gateway.PeerGw = openapi.PtrBool(planItem.PeerGw.ValueBool())
 			} else {
 				gateway.PeerGw = openapi.PtrBool(false)
 			}
 
-			changedExternalGateways = append(changedExternalGateways, gateway)
-			externalGatewaysChanged = true
-			continue
-		}
-
-		// existing gateway, check which fields changed
-		gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
-			Index: openapi.PtrInt32(int32(index)),
-		}
-
-		fieldChanged := false
-
-		if !eg.Enable.Equal(stateEg.Enable) {
-			gateway.Enable = openapi.PtrBool(eg.Enable.ValueBool())
-			fieldChanged = true
-		}
-
-		gatewayChanged := !eg.Gateway.Equal(stateEg.Gateway)
-		gatewayRefTypeChanged := !eg.GatewayRefType.Equal(stateEg.GatewayRefType)
-
-		if gatewayChanged || gatewayRefTypeChanged {
-			// Validate using one ref type supported rules
-			if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-				eg.Gateway, eg.GatewayRefType,
-				"gateway", "gateway_ref_type_",
-				gatewayChanged, gatewayRefTypeChanged) {
-				return
+			return gateway
+		},
+		UpdateExisting: func(planItem verityGatewayProfileExternalGatewaysModel, stateItem verityGatewayProfileExternalGatewaysModel) (openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner, bool) {
+			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
 
-			// For fields with one reference type:
-			// If only base field changes, send only base field
-			// If ref type field changes (or both), send both fields
-			if gatewayChanged {
-				if !eg.Gateway.IsNull() {
-					gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
+			fieldChanged := false
+
+			if !planItem.Enable.Equal(stateItem.Enable) {
+				gateway.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.Gateway.Equal(stateItem.Gateway) {
+				if !planItem.Gateway.IsNull() {
+					gateway.Gateway = openapi.PtrString(planItem.Gateway.ValueString())
 				} else {
 					gateway.Gateway = openapi.PtrString("")
 				}
+				fieldChanged = true
 			}
 
-			if gatewayRefTypeChanged {
-				if !eg.GatewayRefType.IsNull() {
-					gateway.GatewayRefType = openapi.PtrString(eg.GatewayRefType.ValueString())
+			if !planItem.GatewayRefType.Equal(stateItem.GatewayRefType) {
+				if !planItem.GatewayRefType.IsNull() {
+					gateway.GatewayRefType = openapi.PtrString(planItem.GatewayRefType.ValueString())
 				} else {
 					gateway.GatewayRefType = openapi.PtrString("")
 				}
+				fieldChanged = true
+			}
 
-				// If ref type changes, also send base field
-				if !gatewayChanged {
-					if !eg.Gateway.IsNull() {
-						gateway.Gateway = openapi.PtrString(eg.Gateway.ValueString())
-					} else {
-						gateway.Gateway = openapi.PtrString("")
-					}
+			if !planItem.SourceIpMask.Equal(stateItem.SourceIpMask) {
+				if !planItem.SourceIpMask.IsNull() {
+					gateway.SourceIpMask = openapi.PtrString(planItem.SourceIpMask.ValueString())
+				} else {
+					gateway.SourceIpMask = openapi.PtrString("")
 				}
+				fieldChanged = true
 			}
-			fieldChanged = true
-		}
 
-		if !eg.SourceIpMask.Equal(stateEg.SourceIpMask) {
-			if !eg.SourceIpMask.IsNull() {
-				gateway.SourceIpMask = openapi.PtrString(eg.SourceIpMask.ValueString())
-			} else {
-				gateway.SourceIpMask = openapi.PtrString("")
+			if !planItem.PeerGw.Equal(stateItem.PeerGw) {
+				gateway.PeerGw = openapi.PtrBool(planItem.PeerGw.ValueBool())
+				fieldChanged = true
 			}
-			fieldChanged = true
-		}
 
-		if !eg.PeerGw.Equal(stateEg.PeerGw) {
-			gateway.PeerGw = openapi.PtrBool(eg.PeerGw.ValueBool())
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedExternalGateways = append(changedExternalGateways, gateway)
-			externalGatewaysChanged = true
-		}
+			return gateway, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner {
+			return openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
 	}
 
-	for idx := range stateGatewaysByIndex {
-		found := false
-		for _, eg := range data.ExternalGateways {
-			if !eg.Index.IsNull() && eg.Index.ValueInt64() == idx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// gateway removed - include only the index for deletion
-			deletedGateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-			changedExternalGateways = append(changedExternalGateways, deletedGateway)
-			externalGatewaysChanged = true
-		}
-	}
-
-	if externalGatewaysChanged && len(changedExternalGateways) > 0 {
-		profileObj.ExternalGateways = changedExternalGateways
+	changedExternalGateways, externalGatewaysChanged := utils.ProcessIndexedArrayUpdates(plan.ExternalGateways, state.ExternalGateways, externalGatewaysHandler)
+	if externalGatewaysChanged {
+		profileProps.ExternalGateways = changedExternalGateways
 		hasChanges = true
 	}
 
 	if !hasChanges {
-		resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "gateway_profile", name, profileObj)
-	r.notifyOperationAdded()
-
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Gateway Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "gateway_profile", name, profileProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
+	tflog.Info(ctx, fmt.Sprintf("Gateway Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateway_profiles")
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
 func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data verityGatewayProfileResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	var state verityGatewayProfileResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
-		resp.Diagnostics.AddError("Authentication Error", fmt.Sprintf("Unable to authenticate client: %s", err))
-		return
-	}
-
-	name := data.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "gateway_profile", name)
-	r.notifyOperationAdded()
-
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Gateway Profile %s", name))...,
+		resp.Diagnostics.AddError(
+			"Failed to Authenticate",
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
+	name := state.Name.ValueString()
+
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "gateway_profile", name, nil, &resp.Diagnostics)
+	if !success {
+		return
+	}
+
+	tflog.Info(ctx, fmt.Sprintf("Gateway Profile %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateway_profiles")
 	resp.State.RemoveResource(ctx)
 }

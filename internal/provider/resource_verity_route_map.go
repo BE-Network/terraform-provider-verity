@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -47,6 +46,10 @@ type verityRouteMapClausesModel struct {
 	RouteMapClause        types.String `tfsdk:"route_map_clause"`
 	RouteMapClauseRefType types.String `tfsdk:"route_map_clause_ref_type_"`
 	Index                 types.Int64  `tfsdk:"index"`
+}
+
+func (m verityRouteMapClausesModel) GetIndex() types.Int64 {
+	return m.Index
 }
 
 type verityRouteMapObjectPropertiesModel struct {
@@ -149,12 +152,25 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 	}
 
 	name := plan.Name.ValueString()
-	routeMapProps := openapi.RoutemapsPutRequestRouteMapValue{
+	routeMapReq := &openapi.RoutemapsPutRequestRouteMapValue{
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		routeMapProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &routeMapReq.Enable, TFValue: plan.Enable},
+	})
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		if !op.Notes.IsNull() {
+			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
+		} else {
+			objProps.Notes = nil
+		}
+		routeMapReq.ObjectProperties = &objProps
 	}
 
 	// Handle route_map_clauses list
@@ -166,47 +182,27 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 			if !clause.Enable.IsNull() {
 				clauseProps.Enable = openapi.PtrBool(clause.Enable.ValueBool())
 			}
-
-			if !clause.RouteMapClause.IsNull() && clause.RouteMapClause.ValueString() != "" {
+			if !clause.RouteMapClause.IsNull() {
 				clauseProps.RouteMapClause = openapi.PtrString(clause.RouteMapClause.ValueString())
 			}
-
-			if !clause.RouteMapClauseRefType.IsNull() && clause.RouteMapClauseRefType.ValueString() != "" {
+			if !clause.RouteMapClauseRefType.IsNull() {
 				clauseProps.RouteMapClauseRefType = openapi.PtrString(clause.RouteMapClauseRefType.ValueString())
 			}
-
 			if !clause.Index.IsNull() {
 				clauseProps.Index = openapi.PtrInt32(int32(clause.Index.ValueInt64()))
 			}
 
 			routeMapClausesList[i] = clauseProps
 		}
-		routeMapProps.RouteMapClauses = routeMapClausesList
+		routeMapReq.RouteMapClauses = routeMapClausesList
 	}
 
-	// Handle object properties following Gateway pattern
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		routeMapObjProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			routeMapObjProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			routeMapObjProps.Notes = nil
-		}
-		routeMapProps.ObjectProperties = &routeMapObjProps
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "route_map", name, routeMapProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Route Map create operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Route Map %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "route_map", name, *routeMapReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf("Route Map %s create operation completed successfully", name))
+
+	tflog.Info(ctx, fmt.Sprintf("Route Map %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_maps")
 
 	plan.Name = types.StringValue(name)
@@ -232,46 +228,36 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 	name := state.Name.ValueString()
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("route_map") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping route map %s verification – trusting recent successful API operation", name))
+		tflog.Info(ctx, fmt.Sprintf("Skipping Route Map %s verification - trusting recent successful API operation", name))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Fetching route maps for verification of %s", name))
+	tflog.Debug(ctx, fmt.Sprintf("No recent Route Map operations found, performing normal verification for %s", name))
 
 	type RouteMapResponse struct {
 		RouteMap map[string]interface{} `json:"route_map"`
 	}
 
-	var result RouteMapResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		routeMapsData, fetchErr := getCachedResponse(ctx, r.provCtx, "route_maps", func() (interface{}, error) {
-			tflog.Debug(ctx, "Making API call to fetch route maps")
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "route_maps", name,
+		func() (RouteMapResponse, error) {
+			tflog.Debug(ctx, "Making API call to fetch Route Maps")
 			respAPI, err := r.client.RouteMapsAPI.RoutemapsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading route maps: %v", err)
+				return RouteMapResponse{}, fmt.Errorf("error reading Route Map: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res RouteMapResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode route maps response: %v", err)
+				return RouteMapResponse{}, fmt.Errorf("failed to decode Route Maps response: %v", err)
 			}
 
-			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d route maps", len(res.RouteMap)))
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Route Maps from API", len(res.RouteMap)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch route maps on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = routeMapsData.(RouteMapResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Route Map %s", name))...,
@@ -279,47 +265,64 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for route map with ID: %s", name))
-	var routeMapData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for Route Map with name: %s", name))
 
-	if data, ok := result.RouteMap[name].(map[string]interface{}); ok {
-		routeMapData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found route map directly by ID: %s", name))
-	} else {
-		for apiName, r := range result.RouteMap {
-			routeMap, ok := r.(map[string]interface{})
-			if !ok {
-				continue
+	routeMapData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.RouteMap,
+		name,
+		func(data interface{}) (string, bool) {
+			if routeMapMap, ok := data.(map[string]interface{}); ok {
+				if name, ok := routeMapMap["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if routeMapName, ok := routeMap["name"].(string); ok && routeMapName == name {
-				routeMapData = routeMap
-				name = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found route map with name '%s' under API key '%s'", routeMapName, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Route Map with ID '%s' not found in API response", name))
+		tflog.Debug(ctx, fmt.Sprintf("Route Map with name '%s' not found in API response", name))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", routeMapData["name"]))
+	routeMapMap, ok := (interface{}(routeMapData)).(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Route Map Data",
+			fmt.Sprintf("Route Map data is not in expected format for %s", name),
+		)
+		return
+	}
 
-	if enable, ok := routeMapData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
+	tflog.Debug(ctx, fmt.Sprintf("Found Route Map '%s' under API key '%s'", name, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(routeMapMap["name"])
+
+	// Handle object properties
+	if objProps, ok := routeMapMap["object_properties"].(map[string]interface{}); ok {
+		notes := utils.MapStringFromAPI(objProps["notes"])
+		if notes.IsNull() {
+			notes = types.StringValue("")
+		}
+		state.ObjectProperties = []verityRouteMapObjectPropertiesModel{
+			{Notes: notes},
+		}
 	} else {
-		state.Enable = types.BoolNull()
+		state.ObjectProperties = nil
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(routeMapMap[apiKey])
 	}
 
 	// Handle route_map_clauses
-	if routeMapClausesData, ok := routeMapData["route_map_clauses"].([]interface{}); ok && len(routeMapClausesData) > 0 {
+	if routeMapClausesData, ok := routeMapMap["route_map_clauses"].([]interface{}); ok && len(routeMapClausesData) > 0 {
 		var routeMapClauses []verityRouteMapClausesModel
 
 		for _, clauseInterface := range routeMapClausesData {
@@ -328,41 +331,11 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 				continue
 			}
 
-			clauseModel := verityRouteMapClausesModel{}
-
-			if enable, ok := clause["enable"].(bool); ok {
-				clauseModel.Enable = types.BoolValue(enable)
-			} else {
-				clauseModel.Enable = types.BoolNull()
-			}
-
-			if routeMapClause, ok := clause["route_map_clause"].(string); ok {
-				clauseModel.RouteMapClause = types.StringValue(routeMapClause)
-			} else {
-				clauseModel.RouteMapClause = types.StringNull()
-			}
-
-			if routeMapClauseRefType, ok := clause["route_map_clause_ref_type_"].(string); ok {
-				clauseModel.RouteMapClauseRefType = types.StringValue(routeMapClauseRefType)
-			} else {
-				clauseModel.RouteMapClauseRefType = types.StringNull()
-			}
-
-			if indexValue, exists := clause["index"]; exists && indexValue != nil {
-				switch v := indexValue.(type) {
-				case int:
-					clauseModel.Index = types.Int64Value(int64(v))
-				case int32:
-					clauseModel.Index = types.Int64Value(int64(v))
-				case int64:
-					clauseModel.Index = types.Int64Value(v)
-				case float64:
-					clauseModel.Index = types.Int64Value(int64(v))
-				default:
-					clauseModel.Index = types.Int64Null()
-				}
-			} else {
-				clauseModel.Index = types.Int64Null()
+			clauseModel := verityRouteMapClausesModel{
+				Enable:                utils.MapBoolFromAPI(clause["enable"]),
+				RouteMapClause:        utils.MapStringFromAPI(clause["route_map_clause"]),
+				RouteMapClauseRefType: utils.MapStringFromAPI(clause["route_map_clause_ref_type_"]),
+				Index:                 utils.MapInt64FromAPI(clause["index"]),
 			}
 
 			routeMapClauses = append(routeMapClauses, clauseModel)
@@ -371,21 +344,6 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 		state.RouteMapClauses = routeMapClauses
 	} else {
 		state.RouteMapClauses = nil
-	}
-
-	// Only set object_properties if it exists in the API response
-	if objProps, ok := routeMapData["object_properties"].(map[string]interface{}); ok {
-		if notes, ok := objProps["notes"].(string); ok {
-			state.ObjectProperties = []verityRouteMapObjectPropertiesModel{
-				{Notes: types.StringValue(notes)},
-			}
-		} else {
-			state.ObjectProperties = []verityRouteMapObjectPropertiesModel{
-				{Notes: types.StringNull()},
-			}
-		}
-	} else {
-		state.ObjectProperties = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, state)...)
@@ -417,125 +375,13 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 	routeMapProps := openapi.RoutemapsPutRequestRouteMapValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		routeMapProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { routeMapProps.Name = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		routeMapProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { routeMapProps.Enable = v }, &hasChanges)
 
-	// Handle route_map_clauses changes using Gateway pattern
-	oldRouteMapClausesByIndex := make(map[int64]verityRouteMapClausesModel)
-	for _, clause := range state.RouteMapClauses {
-		if !clause.Index.IsNull() {
-			oldRouteMapClausesByIndex[clause.Index.ValueInt64()] = clause
-		}
-	}
-
-	var changedRouteMapClauses []openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner
-	routeMapClausesChanged := false
-
-	for _, clause := range plan.RouteMapClauses {
-		if clause.Index.IsNull() {
-			continue
-		}
-
-		index := clause.Index.ValueInt64()
-		oldClause, exists := oldRouteMapClausesByIndex[index]
-
-		if !exists {
-			// new route map clause, include all fields
-			clauseProps := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-
-			if !clause.Enable.IsNull() {
-				clauseProps.Enable = openapi.PtrBool(clause.Enable.ValueBool())
-			} else {
-				clauseProps.Enable = openapi.PtrBool(false)
-			}
-
-			if !clause.RouteMapClause.IsNull() {
-				clauseProps.RouteMapClause = openapi.PtrString(clause.RouteMapClause.ValueString())
-			} else {
-				clauseProps.RouteMapClause = openapi.PtrString("")
-			}
-
-			if !clause.RouteMapClauseRefType.IsNull() {
-				clauseProps.RouteMapClauseRefType = openapi.PtrString(clause.RouteMapClauseRefType.ValueString())
-			} else {
-				clauseProps.RouteMapClauseRefType = openapi.PtrString("")
-			}
-
-			changedRouteMapClauses = append(changedRouteMapClauses, clauseProps)
-			routeMapClausesChanged = true
-			continue
-		}
-
-		// existing route map clause, check which fields changed
-		clauseProps := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
-			Index: openapi.PtrInt32(int32(index)),
-		}
-
-		fieldChanged := false
-
-		if !clause.Enable.Equal(oldClause.Enable) {
-			clauseProps.Enable = openapi.PtrBool(clause.Enable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !clause.RouteMapClause.Equal(oldClause.RouteMapClause) {
-			if !clause.RouteMapClause.IsNull() {
-				clauseProps.RouteMapClause = openapi.PtrString(clause.RouteMapClause.ValueString())
-			} else {
-				clauseProps.RouteMapClause = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !clause.RouteMapClauseRefType.Equal(oldClause.RouteMapClauseRefType) {
-			if !clause.RouteMapClauseRefType.IsNull() {
-				clauseProps.RouteMapClauseRefType = openapi.PtrString(clause.RouteMapClauseRefType.ValueString())
-			} else {
-				clauseProps.RouteMapClauseRefType = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedRouteMapClauses = append(changedRouteMapClauses, clauseProps)
-			routeMapClausesChanged = true
-		}
-	}
-
-	for idx := range oldRouteMapClausesByIndex {
-		found := false
-		for _, clause := range plan.RouteMapClauses {
-			if !clause.Index.IsNull() && clause.Index.ValueInt64() == idx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// route map clause removed - include only the index for deletion
-			deletedClause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-			changedRouteMapClauses = append(changedRouteMapClauses, deletedClause)
-			routeMapClausesChanged = true
-		}
-	}
-
-	if routeMapClausesChanged && len(changedRouteMapClauses) > 0 {
-		routeMapProps.RouteMapClauses = changedRouteMapClauses
-		hasChanges = true
-	}
-
-	// Handle object_properties changes following Gateway pattern
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
 			routeMapObjProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -549,21 +395,88 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 		}
 	}
 
+	// Handle route_map_clauses
+	routeMapClausesHandler := utils.IndexedItemHandler[verityRouteMapClausesModel, openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner]{
+		CreateNew: func(planItem verityRouteMapClausesModel) openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
+			clause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			if !planItem.Enable.IsNull() {
+				clause.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+			} else {
+				clause.Enable = openapi.PtrBool(false)
+			}
+
+			if !planItem.RouteMapClause.IsNull() {
+				clause.RouteMapClause = openapi.PtrString(planItem.RouteMapClause.ValueString())
+			} else {
+				clause.RouteMapClause = openapi.PtrString("")
+			}
+
+			if !planItem.RouteMapClauseRefType.IsNull() {
+				clause.RouteMapClauseRefType = openapi.PtrString(planItem.RouteMapClauseRefType.ValueString())
+			} else {
+				clause.RouteMapClauseRefType = openapi.PtrString("")
+			}
+
+			return clause
+		},
+		UpdateExisting: func(planItem verityRouteMapClausesModel, stateItem verityRouteMapClausesModel) (openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner, bool) {
+			clause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.Enable.Equal(stateItem.Enable) {
+				clause.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.RouteMapClause.Equal(stateItem.RouteMapClause) {
+				if !planItem.RouteMapClause.IsNull() {
+					clause.RouteMapClause = openapi.PtrString(planItem.RouteMapClause.ValueString())
+				} else {
+					clause.RouteMapClause = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.RouteMapClauseRefType.Equal(stateItem.RouteMapClauseRefType) {
+				if !planItem.RouteMapClauseRefType.IsNull() {
+					clause.RouteMapClauseRefType = openapi.PtrString(planItem.RouteMapClauseRefType.ValueString())
+				} else {
+					clause.RouteMapClauseRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			return clause, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
+			return openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
+	}
+
+	changedRouteMapClauses, routeMapClausesChanged := utils.ProcessIndexedArrayUpdates(plan.RouteMapClauses, state.RouteMapClauses, routeMapClausesHandler)
+	if routeMapClausesChanged {
+		routeMapProps.RouteMapClauses = changedRouteMapClauses
+		hasChanges = true
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "route_map", name, routeMapProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Route Map update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Route Map %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "route_map", name, routeMapProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Route Map %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_maps")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -586,17 +499,13 @@ func (r *verityRouteMapResource) Delete(ctx context.Context, req resource.Delete
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "route_map", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Route Map delete operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Route Map %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "route_map", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf("Route Map %s delete operation completed successfully", name))
+
+	tflog.Info(ctx, fmt.Sprintf("Route Map %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_maps")
 	resp.State.RemoveResource(ctx)
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -109,25 +108,22 @@ func (r *verityIpv6ListResource) Create(ctx context.Context, req resource.Create
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		ipv6ListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Ipv6List", APIField: &ipv6ListProps.Ipv6List, TFValue: plan.Ipv6List},
+	})
 
-	if !plan.Ipv6List.IsNull() {
-		ipv6ListProps.Ipv6List = openapi.PtrString(plan.Ipv6List.ValueString())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &ipv6ListProps.Enable, TFValue: plan.Enable},
+	})
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "ipv6_list_filter", name, *ipv6ListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv6 List create operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create IPv6 List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv6_list_filter", name, *ipv6ListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s create operation completed successfully", name))
+
+	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv6_lists")
 
 	plan.Name = types.StringValue(name)
@@ -163,36 +159,26 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 		Ipv6ListFilter map[string]interface{} `json:"ipv6_list_filter"`
 	}
 
-	var result Ipv6ListsResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		ipv6ListsData, fetchErr := getCachedResponse(ctx, r.provCtx, "ipv6_list_filters", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "ipv6_lists", ipv6ListName,
+		func() (Ipv6ListsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch IPv6 List Filters")
 			respAPI, err := r.client.IPv6ListFiltersAPI.Ipv6listsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading IPv6 List Filters: %v", err)
+				return Ipv6ListsResponse{}, fmt.Errorf("error reading IPv6 List Filters: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res Ipv6ListsResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode IPv6 List Filters response: %v", err)
+				return Ipv6ListsResponse{}, fmt.Errorf("failed to decode IPv6 List Filters response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d IPv6 List Filters", len(res.Ipv6ListFilter)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch IPv6 List Filters on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = ipv6ListsData.(Ipv6ListsResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read IPv6 List %s", ipv6ListName))...,
@@ -200,49 +186,56 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv6 List Filter with ID: %s", ipv6ListName))
-	var ipv6ListData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv6 List with name: %s", ipv6ListName))
 
-	if data, ok := result.Ipv6ListFilter[ipv6ListName].(map[string]interface{}); ok {
-		ipv6ListData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found IPv6 List Filter directly by ID: %s", ipv6ListName))
-	} else {
-		for apiName, i := range result.Ipv6ListFilter {
-			ipv6List, ok := i.(map[string]interface{})
-			if !ok {
-				continue
+	ipv6ListData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Ipv6ListFilter,
+		ipv6ListName,
+		func(data interface{}) (string, bool) {
+			if ipv6List, ok := data.(map[string]interface{}); ok {
+				if resourceName, ok := ipv6List["name"].(string); ok {
+					return resourceName, true
+				}
 			}
-
-			if name, ok := ipv6List["name"].(string); ok && name == ipv6ListName {
-				ipv6ListData = ipv6List
-				ipv6ListName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found IPv6 List Filter with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("IPv6 List Filter with ID '%s' not found in API response", ipv6ListName))
+		tflog.Debug(ctx, fmt.Sprintf("IPv6 List with name '%s' not found in API response", ipv6ListName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", ipv6ListData["name"]))
-
-	if enable, ok := ipv6ListData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	ipv6ListMap, ok := ipv6ListData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid IPv6 List Data",
+			fmt.Sprintf("IPv6 List data is not in expected format for %s", ipv6ListName),
+		)
+		return
 	}
 
-	if ipv6List, ok := ipv6ListData["ipv6_list"].(string); ok {
-		state.Ipv6List = types.StringValue(ipv6List)
-	} else {
-		state.Ipv6List = types.StringNull()
+	tflog.Debug(ctx, fmt.Sprintf("Found IPv6 List '%s' under API key '%s'", ipv6ListName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(ipv6ListMap["name"])
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(ipv6ListMap[apiKey])
+	}
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"ipv6_list": &state.Ipv6List,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(ipv6ListMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -274,31 +267,23 @@ func (r *verityIpv6ListResource) Update(ctx context.Context, req resource.Update
 	ipv6ListProps := openapi.Ipv6listsPutRequestIpv6ListFilterValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		ipv6ListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ipv6ListProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Ipv6List, state.Ipv6List, func(v *string) { ipv6ListProps.Ipv6List = v }, &hasChanges)
 
-	if !plan.Ipv6List.Equal(state.Ipv6List) {
-		ipv6ListProps.Ipv6List = openapi.PtrString(plan.Ipv6List.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ipv6ListProps.Enable = v }, &hasChanges)
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "ipv6_list_filter", name, ipv6ListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv6 List update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update IPv6 List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv6_list_filter", name, ipv6ListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv6_lists")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -321,17 +306,13 @@ func (r *verityIpv6ListResource) Delete(ctx context.Context, req resource.Delete
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "ipv6_list_filter", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv6 List delete operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete IPv6 List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv6_list_filter", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s delete operation completed successfully", name))
+
+	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv6_lists")
 	resp.State.RemoveResource(ctx)
 }

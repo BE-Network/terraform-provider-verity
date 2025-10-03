@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -47,6 +46,10 @@ type verityAsPathAccessListListsModel struct {
 	Enable            types.Bool   `tfsdk:"enable"`
 	RegularExpression types.String `tfsdk:"regular_expression"`
 	Index             types.Int64  `tfsdk:"index"`
+}
+
+func (l verityAsPathAccessListListsModel) GetIndex() types.Int64 {
+	return l.Index
 }
 
 type verityAsPathAccessListObjectPropertiesModel struct {
@@ -153,14 +156,29 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		asPathAccessListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "PermitDeny", APIField: &asPathAccessListProps.PermitDeny, TFValue: plan.PermitDeny},
+	})
+
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &asPathAccessListProps.Enable, TFValue: plan.Enable},
+	})
+
+	//Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		if !op.Notes.IsNull() {
+			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
+		} else {
+			objProps.Notes = nil
+		}
+		asPathAccessListProps.ObjectProperties = &objProps
 	}
 
-	if !plan.PermitDeny.IsNull() {
-		asPathAccessListProps.PermitDeny = openapi.PtrString(plan.PermitDeny.ValueString())
-	}
-
+	// Handle lists
 	if len(plan.Lists) > 0 {
 		lists := make([]openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner, len(plan.Lists))
 		for i, listItem := range plan.Lists {
@@ -179,25 +197,8 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 		asPathAccessListProps.Lists = lists
 	}
 
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			objProps.Notes = nil
-		}
-		asPathAccessListProps.ObjectProperties = &objProps
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "as_path_access_list", name, *asPathAccessListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for AS Path Access List creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create AS Path Access List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "as_path_access_list", name, *asPathAccessListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -237,36 +238,26 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 		AsPathAccessList map[string]interface{} `json:"as_path_access_list"`
 	}
 
-	var result AsPathAccessListsResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		asPathAccessListsData, fetchErr := getCachedResponse(ctx, r.provCtx, "aspathaccesslists", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "as_path_access_lists", asPathAccessListName,
+		func() (AsPathAccessListsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch AS Path Access Lists")
 			respAPI, err := r.client.ASPathAccessListsAPI.AspathaccesslistsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading AS Path Access Lists: %v", err)
+				return AsPathAccessListsResponse{}, fmt.Errorf("error reading AS Path Access Lists: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res AsPathAccessListsResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode AS Path Access Lists response: %v", err)
+				return AsPathAccessListsResponse{}, fmt.Errorf("failed to decode AS Path Access Lists response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d AS Path Access Lists", len(res.AsPathAccessList)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch AS Path Access Lists on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = asPathAccessListsData.(AsPathAccessListsResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read AS Path Access List %s", asPathAccessListName))...,
@@ -274,99 +265,93 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for AS Path Access List with ID: %s", asPathAccessListName))
-	var asPathAccessListData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for AS Path Access List with name: %s", asPathAccessListName))
 
-	if data, ok := result.AsPathAccessList[asPathAccessListName].(map[string]interface{}); ok {
-		asPathAccessListData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found AS Path Access List directly by ID: %s", asPathAccessListName))
-	} else {
-		for apiName, apal := range result.AsPathAccessList {
-			asPathAccessList, ok := apal.(map[string]interface{})
-			if !ok {
-				continue
+	asPathAccessListData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.AsPathAccessList,
+		asPathAccessListName,
+		func(data interface{}) (string, bool) {
+			if asPathAccessList, ok := data.(map[string]interface{}); ok {
+				if name, ok := asPathAccessList["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := asPathAccessList["name"].(string); ok && name == asPathAccessListName {
-				asPathAccessListData = asPathAccessList
-				asPathAccessListName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found AS Path Access List with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("AS Path Access List with ID '%s' not found in API response", asPathAccessListName))
+		tflog.Debug(ctx, fmt.Sprintf("AS Path Access List with name '%s' not found in API response", asPathAccessListName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", asPathAccessListData["name"]))
-
-	if enable, ok := asPathAccessListData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	asPathAccessListMap, ok := asPathAccessListData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid AS Path Access List Data",
+			fmt.Sprintf("AS Path Access List data is not in expected format for %s", asPathAccessListName),
+		)
+		return
 	}
 
-	if permitDeny, ok := asPathAccessListData["permit_deny"].(string); ok && permitDeny != "" {
-		state.PermitDeny = types.StringValue(permitDeny)
-	} else {
-		state.PermitDeny = types.StringNull()
-	}
+	tflog.Debug(ctx, fmt.Sprintf("Found AS Path Access List '%s' under API key '%s'", asPathAccessListName, actualAPIName))
 
-	if listsData, ok := asPathAccessListData["lists"].([]interface{}); ok {
-		var lists []verityAsPathAccessListListsModel
-		for _, listItemData := range listsData {
-			if listItem, ok := listItemData.(map[string]interface{}); ok {
-				var list verityAsPathAccessListListsModel
+	state.Name = utils.MapStringFromAPI(asPathAccessListMap["name"])
 
-				if enable, ok := listItem["enable"].(bool); ok {
-					list.Enable = types.BoolValue(enable)
-				} else {
-					list.Enable = types.BoolNull()
-				}
-
-				if regexpr, ok := listItem["regular_expression"].(string); ok {
-					list.RegularExpression = types.StringValue(regexpr)
-				} else {
-					list.RegularExpression = types.StringNull()
-				}
-
-				if index, ok := listItem["index"].(float64); ok {
-					list.Index = types.Int64Value(int64(index))
-				} else if index, ok := listItem["index"].(int); ok {
-					list.Index = types.Int64Value(int64(index))
-				} else if index, ok := listItem["index"].(int64); ok {
-					list.Index = types.Int64Value(index)
-				} else {
-					list.Index = types.Int64Null()
-				}
-
-				lists = append(lists, list)
-			}
+	// Handle object properties
+	if objProps, ok := asPathAccessListMap["object_properties"].(map[string]interface{}); ok {
+		notes := utils.MapStringFromAPI(objProps["notes"])
+		if notes.IsNull() {
+			notes = types.StringValue("")
 		}
-		state.Lists = lists
-	} else {
-		state.Lists = nil
-	}
-
-	if objProps, ok := asPathAccessListData["object_properties"].(map[string]interface{}); ok {
-		if notes, ok := objProps["notes"].(string); ok {
-			state.ObjectProperties = []verityAsPathAccessListObjectPropertiesModel{
-				{Notes: types.StringValue(notes)},
-			}
-		} else {
-			state.ObjectProperties = []verityAsPathAccessListObjectPropertiesModel{
-				{Notes: types.StringValue("")},
-			}
+		state.ObjectProperties = []verityAsPathAccessListObjectPropertiesModel{
+			{Notes: notes},
 		}
 	} else {
 		state.ObjectProperties = nil
+	}
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"permit_deny": &state.PermitDeny,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(asPathAccessListMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(asPathAccessListMap[apiKey])
+	}
+
+	// Handle lists
+	if listsData, ok := asPathAccessListMap["lists"].([]interface{}); ok && len(listsData) > 0 {
+		var lists []verityAsPathAccessListListsModel
+
+		for _, l := range listsData {
+			listItem, ok := l.(map[string]interface{})
+			if !ok {
+				continue
+			}
+
+			listModel := verityAsPathAccessListListsModel{
+				Enable:            utils.MapBoolFromAPI(listItem["enable"]),
+				RegularExpression: utils.MapStringFromAPI(listItem["regular_expression"]),
+				Index:             utils.MapInt64FromAPI(listItem["index"]),
+			}
+
+			lists = append(lists, listModel)
+		}
+
+		state.Lists = lists
+	} else {
+		state.Lists = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -398,126 +383,16 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 	asPathAccessListProps := openapi.AspathaccesslistsPutRequestAsPathAccessListValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		asPathAccessListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { asPathAccessListProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PermitDeny, state.PermitDeny, func(val *string) { asPathAccessListProps.PermitDeny = val }, &hasChanges)
 
-	if !plan.PermitDeny.Equal(state.PermitDeny) {
-		asPathAccessListProps.PermitDeny = openapi.PtrString(plan.PermitDeny.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(val *bool) { asPathAccessListProps.Enable = val }, &hasChanges)
 
-	stateListsByIndex := make(map[int64]verityAsPathAccessListListsModel)
-	for _, item := range state.Lists {
-		if !item.Index.IsNull() {
-			idx := item.Index.ValueInt64()
-			stateListsByIndex[idx] = item
-		}
-	}
-
-	var changedLists []openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner
-	listsChanged := false
-
-	// Process plan items (CREATE and UPDATE operations)
-	for _, planItem := range plan.Lists {
-		if planItem.Index.IsNull() {
-			continue // Skip items without identifier
-		}
-
-		idx := planItem.Index.ValueInt64()
-		stateItem, exists := stateListsByIndex[idx]
-
-		if !exists {
-			// CREATE: new item, include all fields
-			newItem := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-
-			if !planItem.Enable.IsNull() {
-				newItem.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				newItem.Enable = openapi.PtrBool(false)
-			}
-
-			if !planItem.RegularExpression.IsNull() && planItem.RegularExpression.ValueString() != "" {
-				newItem.RegularExpression = openapi.PtrString(planItem.RegularExpression.ValueString())
-			} else {
-				newItem.RegularExpression = openapi.PtrString("")
-			}
-
-			changedLists = append(changedLists, newItem)
-			listsChanged = true
-			continue
-		}
-
-		// UPDATE: existing item, check which fields changed
-		updateItem := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
-			Index: openapi.PtrInt32(int32(idx)),
-		}
-
-		fieldChanged := false
-
-		if !planItem.Enable.Equal(stateItem.Enable) {
-			if !planItem.Enable.IsNull() {
-				updateItem.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				updateItem.Enable = openapi.PtrBool(false)
-			}
-			fieldChanged = true
-		}
-
-		if !planItem.RegularExpression.Equal(stateItem.RegularExpression) {
-			if !planItem.RegularExpression.IsNull() && planItem.RegularExpression.ValueString() != "" {
-				updateItem.RegularExpression = openapi.PtrString(planItem.RegularExpression.ValueString())
-			} else {
-				updateItem.RegularExpression = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedLists = append(changedLists, updateItem)
-			listsChanged = true
-		}
-	}
-
-	// DELETE: Check for removed items
-	for stateIdx := range stateListsByIndex {
-		found := false
-		for _, planItem := range plan.Lists {
-			if !planItem.Index.IsNull() && planItem.Index.ValueInt64() == stateIdx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// item removed - include only the index for deletion
-			deletedItem := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
-				Index: openapi.PtrInt32(int32(stateIdx)),
-			}
-			changedLists = append(changedLists, deletedItem)
-			listsChanged = true
-		}
-	}
-
-	if listsChanged && len(changedLists) > 0 {
-		asPathAccessListProps.Lists = changedLists
-		hasChanges = true
-	}
-
-	objPropsChanged := false
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		if !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
-			objPropsChanged = true
-		}
-	} else if len(plan.ObjectProperties) > 0 || len(state.ObjectProperties) > 0 {
-		objPropsChanged = true
-	}
-
-	if objPropsChanged {
-		if len(plan.ObjectProperties) > 0 {
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
 			objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 			if !plan.ObjectProperties[0].Notes.IsNull() {
 				objProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
@@ -525,7 +400,68 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 				objProps.Notes = nil
 			}
 			asPathAccessListProps.ObjectProperties = &objProps
+			hasChanges = true
 		}
+	}
+
+	// Handle lists
+	listsHandler := utils.IndexedItemHandler[verityAsPathAccessListListsModel, openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner]{
+		CreateNew: func(planItem verityAsPathAccessListListsModel) openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner {
+			item := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			if !planItem.Enable.IsNull() {
+				item.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+			} else {
+				item.Enable = openapi.PtrBool(false)
+			}
+
+			if !planItem.RegularExpression.IsNull() && planItem.RegularExpression.ValueString() != "" {
+				item.RegularExpression = openapi.PtrString(planItem.RegularExpression.ValueString())
+			} else {
+				item.RegularExpression = openapi.PtrString("")
+			}
+
+			return item
+		},
+		UpdateExisting: func(planItem verityAsPathAccessListListsModel, stateItem verityAsPathAccessListListsModel) (openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner, bool) {
+			item := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.Enable.Equal(stateItem.Enable) {
+				if !planItem.Enable.IsNull() {
+					item.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+				} else {
+					item.Enable = openapi.PtrBool(false)
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.RegularExpression.Equal(stateItem.RegularExpression) {
+				if !planItem.RegularExpression.IsNull() && planItem.RegularExpression.ValueString() != "" {
+					item.RegularExpression = openapi.PtrString(planItem.RegularExpression.ValueString())
+				} else {
+					item.RegularExpression = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			return item, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner {
+			return openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
+	}
+
+	changedLists, listsChanged := utils.ProcessIndexedArrayUpdates(plan.Lists, state.Lists, listsHandler)
+	if listsChanged {
+		asPathAccessListProps.Lists = changedLists
 		hasChanges = true
 	}
 
@@ -534,16 +470,11 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "as_path_access_list", name, asPathAccessListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for AS Path Access List update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update AS Path Access List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "as_path_access_list", name, asPathAccessListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("AS Path Access List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "as_path_access_lists")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -566,14 +497,9 @@ func (r *verityAsPathAccessListResource) Delete(ctx context.Context, req resourc
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "as_path_access_list", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for AS Path Access List deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete AS Path Access List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "as_path_access_list", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

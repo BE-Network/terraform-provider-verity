@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -107,6 +105,10 @@ type verityDeviceVoiceSettingsCodecModel struct {
 	CodecNumPacketizationPeriod types.String `tfsdk:"codec_num_packetization_period"`
 	CodecNumSilenceSuppression  types.Bool   `tfsdk:"codec_num_silence_suppression"`
 	Index                       types.Int64  `tfsdk:"index"`
+}
+
+func (c verityDeviceVoiceSettingsCodecModel) GetIndex() types.Int64 {
+	return c.Index
 }
 
 type verityDeviceVoiceSettingsObjectPropertiesModel struct {
@@ -454,244 +456,99 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		dvsProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.DtmfMethod.IsNull() {
-		dvsProps.DtmfMethod = openapi.PtrString(plan.DtmfMethod.ValueString())
-	}
-	if !plan.Region.IsNull() {
-		dvsProps.Region = openapi.PtrString(plan.Region.ValueString())
-	}
-	if !plan.Protocol.IsNull() {
-		dvsProps.Protocol = openapi.PtrString(plan.Protocol.ValueString())
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "DtmfMethod", APIField: &dvsProps.DtmfMethod, TFValue: plan.DtmfMethod},
+		{FieldName: "Region", APIField: &dvsProps.Region, TFValue: plan.Region},
+		{FieldName: "Protocol", APIField: &dvsProps.Protocol, TFValue: plan.Protocol},
+		{FieldName: "ProxyServer", APIField: &dvsProps.ProxyServer, TFValue: plan.ProxyServer},
+		{FieldName: "ProxyServerSecondary", APIField: &dvsProps.ProxyServerSecondary, TFValue: plan.ProxyServerSecondary},
+		{FieldName: "RegistrarServer", APIField: &dvsProps.RegistrarServer, TFValue: plan.RegistrarServer},
+		{FieldName: "RegistrarServerSecondary", APIField: &dvsProps.RegistrarServerSecondary, TFValue: plan.RegistrarServerSecondary},
+		{FieldName: "UserAgentDomain", APIField: &dvsProps.UserAgentDomain, TFValue: plan.UserAgentDomain},
+		{FieldName: "UserAgentTransport", APIField: &dvsProps.UserAgentTransport, TFValue: plan.UserAgentTransport},
+		{FieldName: "OutboundProxy", APIField: &dvsProps.OutboundProxy, TFValue: plan.OutboundProxy},
+		{FieldName: "OutboundProxySecondary", APIField: &dvsProps.OutboundProxySecondary, TFValue: plan.OutboundProxySecondary},
+		{FieldName: "VoicemailServer", APIField: &dvsProps.VoicemailServer, TFValue: plan.VoicemailServer},
+		{FieldName: "CallAgent1", APIField: &dvsProps.CallAgent1, TFValue: plan.CallAgent1},
+		{FieldName: "CallAgent2", APIField: &dvsProps.CallAgent2, TFValue: plan.CallAgent2},
+		{FieldName: "Domain", APIField: &dvsProps.Domain, TFValue: plan.Domain},
+		{FieldName: "TerminationBase", APIField: &dvsProps.TerminationBase, TFValue: plan.TerminationBase},
+		{FieldName: "BitRate", APIField: &dvsProps.BitRate, TFValue: plan.BitRate},
+		{FieldName: "CancelCallWaiting", APIField: &dvsProps.CancelCallWaiting, TFValue: plan.CancelCallWaiting},
+		{FieldName: "CallHold", APIField: &dvsProps.CallHold, TFValue: plan.CallHold},
+		{FieldName: "CidsActivate", APIField: &dvsProps.CidsActivate, TFValue: plan.CidsActivate},
+		{FieldName: "CidsDeactivate", APIField: &dvsProps.CidsDeactivate, TFValue: plan.CidsDeactivate},
+		{FieldName: "DoNotDisturbActivate", APIField: &dvsProps.DoNotDisturbActivate, TFValue: plan.DoNotDisturbActivate},
+		{FieldName: "DoNotDisturbDeactivate", APIField: &dvsProps.DoNotDisturbDeactivate, TFValue: plan.DoNotDisturbDeactivate},
+		{FieldName: "DoNotDisturbPinChange", APIField: &dvsProps.DoNotDisturbPinChange, TFValue: plan.DoNotDisturbPinChange},
+		{FieldName: "EmergencyServiceNumber", APIField: &dvsProps.EmergencyServiceNumber, TFValue: plan.EmergencyServiceNumber},
+		{FieldName: "AnonCidBlockActivate", APIField: &dvsProps.AnonCidBlockActivate, TFValue: plan.AnonCidBlockActivate},
+		{FieldName: "AnonCidBlockDeactivate", APIField: &dvsProps.AnonCidBlockDeactivate, TFValue: plan.AnonCidBlockDeactivate},
+		{FieldName: "CallForwardUnconditionalActivate", APIField: &dvsProps.CallForwardUnconditionalActivate, TFValue: plan.CallForwardUnconditionalActivate},
+		{FieldName: "CallForwardUnconditionalDeactivate", APIField: &dvsProps.CallForwardUnconditionalDeactivate, TFValue: plan.CallForwardUnconditionalDeactivate},
+		{FieldName: "CallForwardOnBusyActivate", APIField: &dvsProps.CallForwardOnBusyActivate, TFValue: plan.CallForwardOnBusyActivate},
+		{FieldName: "CallForwardOnBusyDeactivate", APIField: &dvsProps.CallForwardOnBusyDeactivate, TFValue: plan.CallForwardOnBusyDeactivate},
+		{FieldName: "CallForwardOnNoAnswerActivate", APIField: &dvsProps.CallForwardOnNoAnswerActivate, TFValue: plan.CallForwardOnNoAnswerActivate},
+		{FieldName: "CallForwardOnNoAnswerDeactivate", APIField: &dvsProps.CallForwardOnNoAnswerDeactivate, TFValue: plan.CallForwardOnNoAnswerDeactivate},
+		{FieldName: "Intercom1", APIField: &dvsProps.Intercom1, TFValue: plan.Intercom1},
+		{FieldName: "Intercom2", APIField: &dvsProps.Intercom2, TFValue: plan.Intercom2},
+		{FieldName: "Intercom3", APIField: &dvsProps.Intercom3, TFValue: plan.Intercom3},
+	})
+
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &dvsProps.Enable, TFValue: plan.Enable},
+		{FieldName: "Rtcp", APIField: &dvsProps.Rtcp, TFValue: plan.Rtcp},
+		{FieldName: "FaxT38", APIField: &dvsProps.FaxT38, TFValue: plan.FaxT38},
+	})
+
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "CasEvents", APIField: &dvsProps.CasEvents, TFValue: plan.CasEvents},
+	})
+
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "ProxyServerPort", APIField: &dvsProps.ProxyServerPort, TFValue: plan.ProxyServerPort},
+		{FieldName: "ProxyServerSecondaryPort", APIField: &dvsProps.ProxyServerSecondaryPort, TFValue: plan.ProxyServerSecondaryPort},
+		{FieldName: "RegistrarServerPort", APIField: &dvsProps.RegistrarServerPort, TFValue: plan.RegistrarServerPort},
+		{FieldName: "RegistrarServerSecondaryPort", APIField: &dvsProps.RegistrarServerSecondaryPort, TFValue: plan.RegistrarServerSecondaryPort},
+		{FieldName: "UserAgentPort", APIField: &dvsProps.UserAgentPort, TFValue: plan.UserAgentPort},
+		{FieldName: "OutboundProxyPort", APIField: &dvsProps.OutboundProxyPort, TFValue: plan.OutboundProxyPort},
+		{FieldName: "OutboundProxySecondaryPort", APIField: &dvsProps.OutboundProxySecondaryPort, TFValue: plan.OutboundProxySecondaryPort},
+		{FieldName: "RegistrationPeriod", APIField: &dvsProps.RegistrationPeriod, TFValue: plan.RegistrationPeriod},
+		{FieldName: "RegisterExpires", APIField: &dvsProps.RegisterExpires, TFValue: plan.RegisterExpires},
+		{FieldName: "VoicemailServerPort", APIField: &dvsProps.VoicemailServerPort, TFValue: plan.VoicemailServerPort},
+		{FieldName: "VoicemailServerExpires", APIField: &dvsProps.VoicemailServerExpires, TFValue: plan.VoicemailServerExpires},
+		{FieldName: "SipDscpMark", APIField: &dvsProps.SipDscpMark, TFValue: plan.SipDscpMark},
+		{FieldName: "CallAgentPort1", APIField: &dvsProps.CallAgentPort1, TFValue: plan.CallAgentPort1},
+		{FieldName: "CallAgentPort2", APIField: &dvsProps.CallAgentPort2, TFValue: plan.CallAgentPort2},
+		{FieldName: "MgcpDscpMark", APIField: &dvsProps.MgcpDscpMark, TFValue: plan.MgcpDscpMark},
+		{FieldName: "LocalPortMin", APIField: &dvsProps.LocalPortMin, TFValue: plan.LocalPortMin},
+		{FieldName: "LocalPortMax", APIField: &dvsProps.LocalPortMax, TFValue: plan.LocalPortMax},
+		{FieldName: "EventPayloadType", APIField: &dvsProps.EventPayloadType, TFValue: plan.EventPayloadType},
+		{FieldName: "DscpMark", APIField: &dvsProps.DscpMark, TFValue: plan.DscpMark},
+	})
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
+		if !op.Group.IsNull() {
+			objProps.Group = openapi.PtrString(op.Group.ValueString())
+		} else {
+			objProps.Group = nil
+		}
+		if !op.IsDefault.IsNull() {
+			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
+		} else {
+			objProps.Isdefault = nil
+		}
+		dvsProps.ObjectProperties = &objProps
 	}
 
-	if !plan.ProxyServer.IsNull() {
-		dvsProps.ProxyServer = openapi.PtrString(plan.ProxyServer.ValueString())
-	}
-	if !plan.ProxyServerSecondary.IsNull() {
-		dvsProps.ProxyServerSecondary = openapi.PtrString(plan.ProxyServerSecondary.ValueString())
-	}
-	if !plan.RegistrarServer.IsNull() {
-		dvsProps.RegistrarServer = openapi.PtrString(plan.RegistrarServer.ValueString())
-	}
-	if !plan.RegistrarServerSecondary.IsNull() {
-		dvsProps.RegistrarServerSecondary = openapi.PtrString(plan.RegistrarServerSecondary.ValueString())
-	}
-	if !plan.UserAgentDomain.IsNull() {
-		dvsProps.UserAgentDomain = openapi.PtrString(plan.UserAgentDomain.ValueString())
-	}
-	if !plan.UserAgentTransport.IsNull() {
-		dvsProps.UserAgentTransport = openapi.PtrString(plan.UserAgentTransport.ValueString())
-	}
-	if !plan.OutboundProxy.IsNull() {
-		dvsProps.OutboundProxy = openapi.PtrString(plan.OutboundProxy.ValueString())
-	}
-	if !plan.OutboundProxySecondary.IsNull() {
-		dvsProps.OutboundProxySecondary = openapi.PtrString(plan.OutboundProxySecondary.ValueString())
-	}
-	if !plan.VoicemailServer.IsNull() {
-		dvsProps.VoicemailServer = openapi.PtrString(plan.VoicemailServer.ValueString())
-	}
-	if !plan.CallAgent1.IsNull() {
-		dvsProps.CallAgent1 = openapi.PtrString(plan.CallAgent1.ValueString())
-	}
-	if !plan.CallAgent2.IsNull() {
-		dvsProps.CallAgent2 = openapi.PtrString(plan.CallAgent2.ValueString())
-	}
-	if !plan.Domain.IsNull() {
-		dvsProps.Domain = openapi.PtrString(plan.Domain.ValueString())
-	}
-	if !plan.TerminationBase.IsNull() {
-		dvsProps.TerminationBase = openapi.PtrString(plan.TerminationBase.ValueString())
-	}
-	if !plan.BitRate.IsNull() {
-		dvsProps.BitRate = openapi.PtrString(plan.BitRate.ValueString())
-	}
-	if !plan.CancelCallWaiting.IsNull() {
-		dvsProps.CancelCallWaiting = openapi.PtrString(plan.CancelCallWaiting.ValueString())
-	}
-	if !plan.CallHold.IsNull() {
-		dvsProps.CallHold = openapi.PtrString(plan.CallHold.ValueString())
-	}
-	if !plan.CidsActivate.IsNull() {
-		dvsProps.CidsActivate = openapi.PtrString(plan.CidsActivate.ValueString())
-	}
-	if !plan.CidsDeactivate.IsNull() {
-		dvsProps.CidsDeactivate = openapi.PtrString(plan.CidsDeactivate.ValueString())
-	}
-	if !plan.DoNotDisturbActivate.IsNull() {
-		dvsProps.DoNotDisturbActivate = openapi.PtrString(plan.DoNotDisturbActivate.ValueString())
-	}
-	if !plan.DoNotDisturbDeactivate.IsNull() {
-		dvsProps.DoNotDisturbDeactivate = openapi.PtrString(plan.DoNotDisturbDeactivate.ValueString())
-	}
-	if !plan.DoNotDisturbPinChange.IsNull() {
-		dvsProps.DoNotDisturbPinChange = openapi.PtrString(plan.DoNotDisturbPinChange.ValueString())
-	}
-	if !plan.EmergencyServiceNumber.IsNull() {
-		dvsProps.EmergencyServiceNumber = openapi.PtrString(plan.EmergencyServiceNumber.ValueString())
-	}
-	if !plan.AnonCidBlockActivate.IsNull() {
-		dvsProps.AnonCidBlockActivate = openapi.PtrString(plan.AnonCidBlockActivate.ValueString())
-	}
-	if !plan.AnonCidBlockDeactivate.IsNull() {
-		dvsProps.AnonCidBlockDeactivate = openapi.PtrString(plan.AnonCidBlockDeactivate.ValueString())
-	}
-	if !plan.CallForwardUnconditionalActivate.IsNull() {
-		dvsProps.CallForwardUnconditionalActivate = openapi.PtrString(plan.CallForwardUnconditionalActivate.ValueString())
-	}
-	if !plan.CallForwardUnconditionalDeactivate.IsNull() {
-		dvsProps.CallForwardUnconditionalDeactivate = openapi.PtrString(plan.CallForwardUnconditionalDeactivate.ValueString())
-	}
-	if !plan.CallForwardOnBusyActivate.IsNull() {
-		dvsProps.CallForwardOnBusyActivate = openapi.PtrString(plan.CallForwardOnBusyActivate.ValueString())
-	}
-	if !plan.CallForwardOnBusyDeactivate.IsNull() {
-		dvsProps.CallForwardOnBusyDeactivate = openapi.PtrString(plan.CallForwardOnBusyDeactivate.ValueString())
-	}
-	if !plan.CallForwardOnNoAnswerActivate.IsNull() {
-		dvsProps.CallForwardOnNoAnswerActivate = openapi.PtrString(plan.CallForwardOnNoAnswerActivate.ValueString())
-	}
-	if !plan.CallForwardOnNoAnswerDeactivate.IsNull() {
-		dvsProps.CallForwardOnNoAnswerDeactivate = openapi.PtrString(plan.CallForwardOnNoAnswerDeactivate.ValueString())
-	}
-	if !plan.Intercom1.IsNull() {
-		dvsProps.Intercom1 = openapi.PtrString(plan.Intercom1.ValueString())
-	}
-	if !plan.Intercom2.IsNull() {
-		dvsProps.Intercom2 = openapi.PtrString(plan.Intercom2.ValueString())
-	}
-	if !plan.Intercom3.IsNull() {
-		dvsProps.Intercom3 = openapi.PtrString(plan.Intercom3.ValueString())
-	}
-
-	if !plan.ProxyServerPort.IsNull() {
-		val := int32(plan.ProxyServerPort.ValueInt64())
-		dvsProps.ProxyServerPort = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.ProxyServerPort = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.ProxyServerSecondaryPort.IsNull() {
-		val := int32(plan.ProxyServerSecondaryPort.ValueInt64())
-		dvsProps.ProxyServerSecondaryPort = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.ProxyServerSecondaryPort = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.RegistrarServerPort.IsNull() {
-		val := int32(plan.RegistrarServerPort.ValueInt64())
-		dvsProps.RegistrarServerPort = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.RegistrarServerPort = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.RegistrarServerSecondaryPort.IsNull() {
-		val := int32(plan.RegistrarServerSecondaryPort.ValueInt64())
-		dvsProps.RegistrarServerSecondaryPort = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.RegistrarServerSecondaryPort = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.UserAgentPort.IsNull() {
-		val := int32(plan.UserAgentPort.ValueInt64())
-		dvsProps.UserAgentPort = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.UserAgentPort = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.OutboundProxyPort.IsNull() {
-		val := int32(plan.OutboundProxyPort.ValueInt64())
-		dvsProps.OutboundProxyPort = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.OutboundProxyPort = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.OutboundProxySecondaryPort.IsNull() {
-		val := int32(plan.OutboundProxySecondaryPort.ValueInt64())
-		dvsProps.OutboundProxySecondaryPort = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.OutboundProxySecondaryPort = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.RegistrationPeriod.IsNull() {
-		val := int32(plan.RegistrationPeriod.ValueInt64())
-		dvsProps.RegistrationPeriod = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.RegistrationPeriod = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.RegisterExpires.IsNull() {
-		val := int32(plan.RegisterExpires.ValueInt64())
-		dvsProps.RegisterExpires = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.RegisterExpires = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.VoicemailServerPort.IsNull() {
-		val := int32(plan.VoicemailServerPort.ValueInt64())
-		dvsProps.VoicemailServerPort = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.VoicemailServerPort = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.VoicemailServerExpires.IsNull() {
-		val := int32(plan.VoicemailServerExpires.ValueInt64())
-		dvsProps.VoicemailServerExpires = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.VoicemailServerExpires = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.SipDscpMark.IsNull() {
-		val := int32(plan.SipDscpMark.ValueInt64())
-		dvsProps.SipDscpMark = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.SipDscpMark = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.CallAgentPort1.IsNull() {
-		val := int32(plan.CallAgentPort1.ValueInt64())
-		dvsProps.CallAgentPort1 = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.CallAgentPort1 = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.CallAgentPort2.IsNull() {
-		val := int32(plan.CallAgentPort2.ValueInt64())
-		dvsProps.CallAgentPort2 = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.CallAgentPort2 = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.MgcpDscpMark.IsNull() {
-		val := int32(plan.MgcpDscpMark.ValueInt64())
-		dvsProps.MgcpDscpMark = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.MgcpDscpMark = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.LocalPortMin.IsNull() {
-		val := int32(plan.LocalPortMin.ValueInt64())
-		dvsProps.LocalPortMin = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.LocalPortMin = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.LocalPortMax.IsNull() {
-		val := int32(plan.LocalPortMax.ValueInt64())
-		dvsProps.LocalPortMax = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.LocalPortMax = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.EventPayloadType.IsNull() {
-		val := int32(plan.EventPayloadType.ValueInt64())
-		dvsProps.EventPayloadType = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.EventPayloadType = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.CasEvents.IsNull() {
-		dvsProps.CasEvents = openapi.PtrInt32(int32(plan.CasEvents.ValueInt64()))
-	}
-	if !plan.DscpMark.IsNull() {
-		val := int32(plan.DscpMark.ValueInt64())
-		dvsProps.DscpMark = *openapi.NewNullableInt32(&val)
-	} else {
-		dvsProps.DscpMark = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.Rtcp.IsNull() {
-		dvsProps.Rtcp = openapi.PtrBool(plan.Rtcp.ValueBool())
-	}
-	if !plan.FaxT38.IsNull() {
-		dvsProps.FaxT38 = openapi.PtrBool(plan.FaxT38.ValueBool())
-	}
-
+	// Handle codecs
 	if len(plan.Codecs) > 0 {
 		codecs := make([]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, len(plan.Codecs))
 		for i, codec := range plan.Codecs {
@@ -716,26 +573,8 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		dvsProps.Codecs = codecs
 	}
 
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
-		if !op.IsDefault.IsNull() {
-			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
-		}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		}
-		dvsProps.ObjectProperties = &objProps
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "device_voice_settings", name, *dvsProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for device voice settings creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Device Voice Settings %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_voice_settings", name, *dvsProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -775,36 +614,26 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 		DeviceVoiceSettings map[string]interface{} `json:"device_voice_settings"`
 	}
 
-	var result DeviceVoiceSettingsResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		dvsData, fetchErr := getCachedResponse(ctx, r.provCtx, "device_voice_settings", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "device_voice_settings", dvsName,
+		func() (DeviceVoiceSettingsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch Device Voice Settings")
 			respAPI, err := r.client.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading Device Voice Settings: %v", err)
+				return DeviceVoiceSettingsResponse{}, fmt.Errorf("error reading Device Voice Settings: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res DeviceVoiceSettingsResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode Device Voice Settings response: %v", err)
+				return DeviceVoiceSettingsResponse{}, fmt.Errorf("failed to decode Device Voice Settings response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Device Voice Settings", len(res.DeviceVoiceSettings)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch Device Voice Settings on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = dvsData.(DeviceVoiceSettingsResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Device Voice Settings %s", dvsName))...,
@@ -812,58 +641,56 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for Device Voice Settings with ID: %s", dvsName))
-	var dvsData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for Device Voice Settings with name: %s", dvsName))
 
-	if data, ok := result.DeviceVoiceSettings[dvsName].(map[string]interface{}); ok {
-		dvsData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found Device Voice Settings directly by ID: %s", dvsName))
-	} else {
-		for apiName, d := range result.DeviceVoiceSettings {
-			deviceVoice, ok := d.(map[string]interface{})
-			if !ok {
-				continue
+	dvsData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.DeviceVoiceSettings,
+		dvsName,
+		func(data interface{}) (string, bool) {
+			if dvs, ok := data.(map[string]interface{}); ok {
+				if name, ok := dvs["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := deviceVoice["name"].(string); ok && name == dvsName {
-				dvsData = deviceVoice
-				dvsName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Device Voice Settings with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Device Voice Settings with ID '%s' not found in API response", dvsName))
+		tflog.Debug(ctx, fmt.Sprintf("Device Voice Settings with name '%s' not found in API response", dvsName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", dvsData["name"]))
-
-	if enable, ok := dvsData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	dvsMap, ok := dvsData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Device Voice Settings Data",
+			fmt.Sprintf("Device Voice Settings data is not in expected format for %s", dvsName),
+		)
+		return
 	}
 
-	if rtcp, ok := dvsData["rtcp"].(bool); ok {
-		state.Rtcp = types.BoolValue(rtcp)
+	tflog.Debug(ctx, fmt.Sprintf("Found Device Voice Settings '%s' under API key '%s'", dvsName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(dvsMap["name"])
+
+	// Handle object properties
+	if objProps, ok := dvsMap["object_properties"].(map[string]interface{}); ok {
+		group := utils.MapStringFromAPI(objProps["group"])
+		if group.IsNull() {
+			group = types.StringValue("")
+		}
+		isdefault := utils.MapBoolFromAPI(objProps["isdefault"])
+		state.ObjectProperties = []verityDeviceVoiceSettingsObjectPropertiesModel{
+			{Group: group, IsDefault: isdefault},
+		}
 	} else {
-		state.Rtcp = types.BoolNull()
+		state.ObjectProperties = nil
 	}
 
-	if faxT38, ok := dvsData["fax_t38"].(bool); ok {
-		state.FaxT38 = types.BoolValue(faxT38)
-	} else {
-		state.FaxT38 = types.BoolNull()
-	}
-
-	stringFields := map[string]*types.String{
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
 		"dtmf_method":                           &state.DtmfMethod,
 		"region":                                &state.Region,
 		"protocol":                              &state.Protocol,
@@ -902,15 +729,23 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 		"intercom_3":                            &state.Intercom3,
 	}
 
-	for apiKey, stateField := range stringFields {
-		if value, ok := dvsData[apiKey].(string); ok {
-			*stateField = types.StringValue(value)
-		} else {
-			*stateField = types.StringNull()
-		}
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(dvsMap[apiKey])
 	}
 
-	intFields := map[string]*types.Int64{
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":  &state.Enable,
+		"rtcp":    &state.Rtcp,
+		"fax_t38": &state.FaxT38,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(dvsMap[apiKey])
+	}
+
+	// Map nullable int64 fields
+	nullableInt64FieldMappings := map[string]*types.Int64{
 		"proxy_server_port":               &state.ProxyServerPort,
 		"proxy_server_secondary_port":     &state.ProxyServerSecondaryPort,
 		"registrar_server_port":           &state.RegistrarServerPort,
@@ -929,105 +764,41 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 		"local_port_min":                  &state.LocalPortMin,
 		"local_port_max":                  &state.LocalPortMax,
 		"event_payload_type":              &state.EventPayloadType,
-		"cas_events":                      &state.CasEvents,
 		"dscp_mark":                       &state.DscpMark,
+		"cas_events":                      &state.CasEvents,
 	}
 
-	for apiKey, stateField := range intFields {
-		if value, ok := dvsData[apiKey]; ok && value != nil {
-			switch v := value.(type) {
-			case int:
-				*stateField = types.Int64Value(int64(v))
-			case int32:
-				*stateField = types.Int64Value(int64(v))
-			case int64:
-				*stateField = types.Int64Value(v)
-			case float64:
-				*stateField = types.Int64Value(int64(v))
-			case string:
-				if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-					*stateField = types.Int64Value(intVal)
-				} else {
-					*stateField = types.Int64Null()
-				}
-			default:
-				*stateField = types.Int64Null()
-			}
-		} else {
-			*stateField = types.Int64Null()
-		}
+	for apiKey, stateField := range nullableInt64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(dvsMap[apiKey])
 	}
 
-	if codecsArray, ok := dvsData["codecs"].([]interface{}); ok && len(codecsArray) > 0 {
+	// Handle codecs
+	if codecsArray, ok := dvsMap["codecs"].([]interface{}); ok && len(codecsArray) > 0 {
 		var codecs []verityDeviceVoiceSettingsCodecModel
+
 		for _, c := range codecsArray {
 			codec, ok := c.(map[string]interface{})
 			if !ok {
 				continue
 			}
-			codecModel := verityDeviceVoiceSettingsCodecModel{}
 
-			if name, ok := codec["codec_num_name"].(string); ok {
-				codecModel.CodecNumName = types.StringValue(name)
-			} else {
-				codecModel.CodecNumName = types.StringNull()
-			}
-
-			if enable, ok := codec["codec_num_enable"].(bool); ok {
-				codecModel.CodecNumEnable = types.BoolValue(enable)
-			} else {
-				codecModel.CodecNumEnable = types.BoolNull()
-			}
-
-			if period, ok := codec["codec_num_packetization_period"].(string); ok {
-				codecModel.CodecNumPacketizationPeriod = types.StringValue(period)
-			} else {
-				codecModel.CodecNumPacketizationPeriod = types.StringNull()
-			}
-
-			if suppression, ok := codec["codec_num_silence_suppression"].(bool); ok {
-				codecModel.CodecNumSilenceSuppression = types.BoolValue(suppression)
-			} else {
-				codecModel.CodecNumSilenceSuppression = types.BoolNull()
-			}
-
-			if index, ok := codec["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					codecModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					codecModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					codecModel.Index = types.Int64Null()
-				}
-			} else {
-				codecModel.Index = types.Int64Null()
+			codecModel := verityDeviceVoiceSettingsCodecModel{
+				CodecNumName:                utils.MapStringFromAPI(codec["codec_num_name"]),
+				CodecNumEnable:              utils.MapBoolFromAPI(codec["codec_num_enable"]),
+				CodecNumPacketizationPeriod: utils.MapStringFromAPI(codec["codec_num_packetization_period"]),
+				CodecNumSilenceSuppression:  utils.MapBoolFromAPI(codec["codec_num_silence_suppression"]),
+				Index:                       utils.MapInt64FromAPI(codec["index"]),
 			}
 
 			codecs = append(codecs, codecModel)
 		}
+
 		state.Codecs = codecs
 	} else {
 		state.Codecs = nil
 	}
 
-	if objProps, ok := dvsData["object_properties"].(map[string]interface{}); ok {
-		op := verityDeviceVoiceSettingsObjectPropertiesModel{}
-		if isDefault, ok := objProps["isdefault"].(bool); ok {
-			op.IsDefault = types.BoolValue(isDefault)
-		} else {
-			op.IsDefault = types.BoolNull()
-		}
-		if group, ok := objProps["group"].(string); ok {
-			op.Group = types.StringValue(group)
-		} else {
-			op.Group = types.StringNull()
-		}
-		state.ObjectProperties = []verityDeviceVoiceSettingsObjectPropertiesModel{op}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, state)...)
 }
 
 func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -1056,375 +827,75 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	dvsProps := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		dvsProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { dvsProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DtmfMethod, state.DtmfMethod, func(v *string) { dvsProps.DtmfMethod = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Region, state.Region, func(v *string) { dvsProps.Region = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Protocol, state.Protocol, func(v *string) { dvsProps.Protocol = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ProxyServer, state.ProxyServer, func(v *string) { dvsProps.ProxyServer = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ProxyServerSecondary, state.ProxyServerSecondary, func(v *string) { dvsProps.ProxyServerSecondary = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RegistrarServer, state.RegistrarServer, func(v *string) { dvsProps.RegistrarServer = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RegistrarServerSecondary, state.RegistrarServerSecondary, func(v *string) { dvsProps.RegistrarServerSecondary = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.UserAgentDomain, state.UserAgentDomain, func(v *string) { dvsProps.UserAgentDomain = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.UserAgentTransport, state.UserAgentTransport, func(v *string) { dvsProps.UserAgentTransport = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.OutboundProxy, state.OutboundProxy, func(v *string) { dvsProps.OutboundProxy = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.OutboundProxySecondary, state.OutboundProxySecondary, func(v *string) { dvsProps.OutboundProxySecondary = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.VoicemailServer, state.VoicemailServer, func(v *string) { dvsProps.VoicemailServer = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallAgent1, state.CallAgent1, func(v *string) { dvsProps.CallAgent1 = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallAgent2, state.CallAgent2, func(v *string) { dvsProps.CallAgent2 = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Domain, state.Domain, func(v *string) { dvsProps.Domain = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.TerminationBase, state.TerminationBase, func(v *string) { dvsProps.TerminationBase = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.BitRate, state.BitRate, func(v *string) { dvsProps.BitRate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CancelCallWaiting, state.CancelCallWaiting, func(v *string) { dvsProps.CancelCallWaiting = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallHold, state.CallHold, func(v *string) { dvsProps.CallHold = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CidsActivate, state.CidsActivate, func(v *string) { dvsProps.CidsActivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CidsDeactivate, state.CidsDeactivate, func(v *string) { dvsProps.CidsDeactivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DoNotDisturbActivate, state.DoNotDisturbActivate, func(v *string) { dvsProps.DoNotDisturbActivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DoNotDisturbDeactivate, state.DoNotDisturbDeactivate, func(v *string) { dvsProps.DoNotDisturbDeactivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DoNotDisturbPinChange, state.DoNotDisturbPinChange, func(v *string) { dvsProps.DoNotDisturbPinChange = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.EmergencyServiceNumber, state.EmergencyServiceNumber, func(v *string) { dvsProps.EmergencyServiceNumber = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AnonCidBlockActivate, state.AnonCidBlockActivate, func(v *string) { dvsProps.AnonCidBlockActivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AnonCidBlockDeactivate, state.AnonCidBlockDeactivate, func(v *string) { dvsProps.AnonCidBlockDeactivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallForwardUnconditionalActivate, state.CallForwardUnconditionalActivate, func(v *string) { dvsProps.CallForwardUnconditionalActivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallForwardUnconditionalDeactivate, state.CallForwardUnconditionalDeactivate, func(v *string) { dvsProps.CallForwardUnconditionalDeactivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallForwardOnBusyActivate, state.CallForwardOnBusyActivate, func(v *string) { dvsProps.CallForwardOnBusyActivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallForwardOnBusyDeactivate, state.CallForwardOnBusyDeactivate, func(v *string) { dvsProps.CallForwardOnBusyDeactivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallForwardOnNoAnswerActivate, state.CallForwardOnNoAnswerActivate, func(v *string) { dvsProps.CallForwardOnNoAnswerActivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CallForwardOnNoAnswerDeactivate, state.CallForwardOnNoAnswerDeactivate, func(v *string) { dvsProps.CallForwardOnNoAnswerDeactivate = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Intercom1, state.Intercom1, func(v *string) { dvsProps.Intercom1 = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Intercom2, state.Intercom2, func(v *string) { dvsProps.Intercom2 = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Intercom3, state.Intercom3, func(v *string) { dvsProps.Intercom3 = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		dvsProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-	if !plan.DtmfMethod.Equal(state.DtmfMethod) {
-		dvsProps.DtmfMethod = openapi.PtrString(plan.DtmfMethod.ValueString())
-		hasChanges = true
-	}
-	if !plan.Region.Equal(state.Region) {
-		dvsProps.Region = openapi.PtrString(plan.Region.ValueString())
-		hasChanges = true
-	}
-	if !plan.Protocol.Equal(state.Protocol) {
-		dvsProps.Protocol = openapi.PtrString(plan.Protocol.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { dvsProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Rtcp, state.Rtcp, func(v *bool) { dvsProps.Rtcp = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.FaxT38, state.FaxT38, func(v *bool) { dvsProps.FaxT38 = v }, &hasChanges)
 
-	stringFields := map[string]struct {
-		planField  types.String
-		stateField types.String
-		setter     func(string)
-	}{
-		"proxy_server":                          {plan.ProxyServer, state.ProxyServer, func(v string) { dvsProps.ProxyServer = openapi.PtrString(v) }},
-		"proxy_server_secondary":                {plan.ProxyServerSecondary, state.ProxyServerSecondary, func(v string) { dvsProps.ProxyServerSecondary = openapi.PtrString(v) }},
-		"registrar_server":                      {plan.RegistrarServer, state.RegistrarServer, func(v string) { dvsProps.RegistrarServer = openapi.PtrString(v) }},
-		"registrar_server_secondary":            {plan.RegistrarServerSecondary, state.RegistrarServerSecondary, func(v string) { dvsProps.RegistrarServerSecondary = openapi.PtrString(v) }},
-		"user_agent_domain":                     {plan.UserAgentDomain, state.UserAgentDomain, func(v string) { dvsProps.UserAgentDomain = openapi.PtrString(v) }},
-		"user_agent_transport":                  {plan.UserAgentTransport, state.UserAgentTransport, func(v string) { dvsProps.UserAgentTransport = openapi.PtrString(v) }},
-		"outbound_proxy":                        {plan.OutboundProxy, state.OutboundProxy, func(v string) { dvsProps.OutboundProxy = openapi.PtrString(v) }},
-		"outbound_proxy_secondary":              {plan.OutboundProxySecondary, state.OutboundProxySecondary, func(v string) { dvsProps.OutboundProxySecondary = openapi.PtrString(v) }},
-		"voicemail_server":                      {plan.VoicemailServer, state.VoicemailServer, func(v string) { dvsProps.VoicemailServer = openapi.PtrString(v) }},
-		"call_agent_1":                          {plan.CallAgent1, state.CallAgent1, func(v string) { dvsProps.CallAgent1 = openapi.PtrString(v) }},
-		"call_agent_2":                          {plan.CallAgent2, state.CallAgent2, func(v string) { dvsProps.CallAgent2 = openapi.PtrString(v) }},
-		"domain":                                {plan.Domain, state.Domain, func(v string) { dvsProps.Domain = openapi.PtrString(v) }},
-		"termination_base":                      {plan.TerminationBase, state.TerminationBase, func(v string) { dvsProps.TerminationBase = openapi.PtrString(v) }},
-		"bit_rate":                              {plan.BitRate, state.BitRate, func(v string) { dvsProps.BitRate = openapi.PtrString(v) }},
-		"cancel_call_waiting":                   {plan.CancelCallWaiting, state.CancelCallWaiting, func(v string) { dvsProps.CancelCallWaiting = openapi.PtrString(v) }},
-		"call_hold":                             {plan.CallHold, state.CallHold, func(v string) { dvsProps.CallHold = openapi.PtrString(v) }},
-		"cids_activate":                         {plan.CidsActivate, state.CidsActivate, func(v string) { dvsProps.CidsActivate = openapi.PtrString(v) }},
-		"cids_deactivate":                       {plan.CidsDeactivate, state.CidsDeactivate, func(v string) { dvsProps.CidsDeactivate = openapi.PtrString(v) }},
-		"do_not_disturb_activate":               {plan.DoNotDisturbActivate, state.DoNotDisturbActivate, func(v string) { dvsProps.DoNotDisturbActivate = openapi.PtrString(v) }},
-		"do_not_disturb_deactivate":             {plan.DoNotDisturbDeactivate, state.DoNotDisturbDeactivate, func(v string) { dvsProps.DoNotDisturbDeactivate = openapi.PtrString(v) }},
-		"do_not_disturb_pin_change":             {plan.DoNotDisturbPinChange, state.DoNotDisturbPinChange, func(v string) { dvsProps.DoNotDisturbPinChange = openapi.PtrString(v) }},
-		"emergency_service_number":              {plan.EmergencyServiceNumber, state.EmergencyServiceNumber, func(v string) { dvsProps.EmergencyServiceNumber = openapi.PtrString(v) }},
-		"anon_cid_block_activate":               {plan.AnonCidBlockActivate, state.AnonCidBlockActivate, func(v string) { dvsProps.AnonCidBlockActivate = openapi.PtrString(v) }},
-		"anon_cid_block_deactivate":             {plan.AnonCidBlockDeactivate, state.AnonCidBlockDeactivate, func(v string) { dvsProps.AnonCidBlockDeactivate = openapi.PtrString(v) }},
-		"call_forward_unconditional_activate":   {plan.CallForwardUnconditionalActivate, state.CallForwardUnconditionalActivate, func(v string) { dvsProps.CallForwardUnconditionalActivate = openapi.PtrString(v) }},
-		"call_forward_unconditional_deactivate": {plan.CallForwardUnconditionalDeactivate, state.CallForwardUnconditionalDeactivate, func(v string) { dvsProps.CallForwardUnconditionalDeactivate = openapi.PtrString(v) }},
-		"call_forward_on_busy_activate":         {plan.CallForwardOnBusyActivate, state.CallForwardOnBusyActivate, func(v string) { dvsProps.CallForwardOnBusyActivate = openapi.PtrString(v) }},
-		"call_forward_on_busy_deactivate":       {plan.CallForwardOnBusyDeactivate, state.CallForwardOnBusyDeactivate, func(v string) { dvsProps.CallForwardOnBusyDeactivate = openapi.PtrString(v) }},
-		"call_forward_on_no_answer_activate":    {plan.CallForwardOnNoAnswerActivate, state.CallForwardOnNoAnswerActivate, func(v string) { dvsProps.CallForwardOnNoAnswerActivate = openapi.PtrString(v) }},
-		"call_forward_on_no_answer_deactivate":  {plan.CallForwardOnNoAnswerDeactivate, state.CallForwardOnNoAnswerDeactivate, func(v string) { dvsProps.CallForwardOnNoAnswerDeactivate = openapi.PtrString(v) }},
-		"intercom_1":                            {plan.Intercom1, state.Intercom1, func(v string) { dvsProps.Intercom1 = openapi.PtrString(v) }},
-		"intercom_2":                            {plan.Intercom2, state.Intercom2, func(v string) { dvsProps.Intercom2 = openapi.PtrString(v) }},
-		"intercom_3":                            {plan.Intercom3, state.Intercom3, func(v string) { dvsProps.Intercom3 = openapi.PtrString(v) }},
-	}
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.ProxyServerPort, state.ProxyServerPort, func(v *openapi.NullableInt32) { dvsProps.ProxyServerPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.ProxyServerSecondaryPort, state.ProxyServerSecondaryPort, func(v *openapi.NullableInt32) { dvsProps.ProxyServerSecondaryPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.RegistrarServerPort, state.RegistrarServerPort, func(v *openapi.NullableInt32) { dvsProps.RegistrarServerPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.RegistrarServerSecondaryPort, state.RegistrarServerSecondaryPort, func(v *openapi.NullableInt32) { dvsProps.RegistrarServerSecondaryPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.UserAgentPort, state.UserAgentPort, func(v *openapi.NullableInt32) { dvsProps.UserAgentPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.OutboundProxyPort, state.OutboundProxyPort, func(v *openapi.NullableInt32) { dvsProps.OutboundProxyPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.OutboundProxySecondaryPort, state.OutboundProxySecondaryPort, func(v *openapi.NullableInt32) { dvsProps.OutboundProxySecondaryPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.RegistrationPeriod, state.RegistrationPeriod, func(v *openapi.NullableInt32) { dvsProps.RegistrationPeriod = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.RegisterExpires, state.RegisterExpires, func(v *openapi.NullableInt32) { dvsProps.RegisterExpires = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.VoicemailServerPort, state.VoicemailServerPort, func(v *openapi.NullableInt32) { dvsProps.VoicemailServerPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.VoicemailServerExpires, state.VoicemailServerExpires, func(v *openapi.NullableInt32) { dvsProps.VoicemailServerExpires = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.SipDscpMark, state.SipDscpMark, func(v *openapi.NullableInt32) { dvsProps.SipDscpMark = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.CallAgentPort1, state.CallAgentPort1, func(v *openapi.NullableInt32) { dvsProps.CallAgentPort1 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.CallAgentPort2, state.CallAgentPort2, func(v *openapi.NullableInt32) { dvsProps.CallAgentPort2 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MgcpDscpMark, state.MgcpDscpMark, func(v *openapi.NullableInt32) { dvsProps.MgcpDscpMark = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.LocalPortMin, state.LocalPortMin, func(v *openapi.NullableInt32) { dvsProps.LocalPortMin = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.LocalPortMax, state.LocalPortMax, func(v *openapi.NullableInt32) { dvsProps.LocalPortMax = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.EventPayloadType, state.EventPayloadType, func(v *openapi.NullableInt32) { dvsProps.EventPayloadType = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.DscpMark, state.DscpMark, func(v *openapi.NullableInt32) { dvsProps.DscpMark = *v }, &hasChanges)
 
-	for _, field := range stringFields {
-		if !field.planField.Equal(field.stateField) {
-			field.setter(field.planField.ValueString())
-			hasChanges = true
-		}
-	}
+	// Handle non-nullable int64 field
+	utils.CompareAndSetInt64Field(plan.CasEvents, state.CasEvents, func(v *int32) { dvsProps.CasEvents = v }, &hasChanges)
 
-	if !plan.Rtcp.Equal(state.Rtcp) {
-		dvsProps.Rtcp = openapi.PtrBool(plan.Rtcp.ValueBool())
-		hasChanges = true
-	}
-	if !plan.FaxT38.Equal(state.FaxT38) {
-		dvsProps.FaxT38 = openapi.PtrBool(plan.FaxT38.ValueBool())
-		hasChanges = true
-	}
-
-	intFields := map[string]struct {
-		planField  types.Int64
-		stateField types.Int64
-		setter     func(types.Int64)
-	}{
-		"proxy_server_port": {plan.ProxyServerPort, state.ProxyServerPort, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.ProxyServerPort = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.ProxyServerPort = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"proxy_server_secondary_port": {plan.ProxyServerSecondaryPort, state.ProxyServerSecondaryPort, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.ProxyServerSecondaryPort = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.ProxyServerSecondaryPort = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"registrar_server_port": {plan.RegistrarServerPort, state.RegistrarServerPort, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.RegistrarServerPort = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.RegistrarServerPort = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"registrar_server_secondary_port": {plan.RegistrarServerSecondaryPort, state.RegistrarServerSecondaryPort, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.RegistrarServerSecondaryPort = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.RegistrarServerSecondaryPort = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"user_agent_port": {plan.UserAgentPort, state.UserAgentPort, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.UserAgentPort = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.UserAgentPort = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"outbound_proxy_port": {plan.OutboundProxyPort, state.OutboundProxyPort, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.OutboundProxyPort = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.OutboundProxyPort = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"outbound_proxy_secondary_port": {plan.OutboundProxySecondaryPort, state.OutboundProxySecondaryPort, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.OutboundProxySecondaryPort = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.OutboundProxySecondaryPort = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"registration_period": {plan.RegistrationPeriod, state.RegistrationPeriod, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.RegistrationPeriod = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.RegistrationPeriod = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"register_expires": {plan.RegisterExpires, state.RegisterExpires, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.RegisterExpires = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.RegisterExpires = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"voicemail_server_port": {plan.VoicemailServerPort, state.VoicemailServerPort, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.VoicemailServerPort = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.VoicemailServerPort = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"voicemail_server_expires": {plan.VoicemailServerExpires, state.VoicemailServerExpires, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.VoicemailServerExpires = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.VoicemailServerExpires = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"sip_dscp_mark": {plan.SipDscpMark, state.SipDscpMark, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.SipDscpMark = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.SipDscpMark = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"call_agent_port_1": {plan.CallAgentPort1, state.CallAgentPort1, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.CallAgentPort1 = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.CallAgentPort1 = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"call_agent_port_2": {plan.CallAgentPort2, state.CallAgentPort2, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.CallAgentPort2 = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.CallAgentPort2 = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"mgcp_dscp_mark": {plan.MgcpDscpMark, state.MgcpDscpMark, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.MgcpDscpMark = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.MgcpDscpMark = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"local_port_min": {plan.LocalPortMin, state.LocalPortMin, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.LocalPortMin = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.LocalPortMin = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"local_port_max": {plan.LocalPortMax, state.LocalPortMax, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.LocalPortMax = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.LocalPortMax = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"event_payload_type": {plan.EventPayloadType, state.EventPayloadType, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.EventPayloadType = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.EventPayloadType = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"dscp_mark": {plan.DscpMark, state.DscpMark, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				dvsProps.DscpMark = *openapi.NewNullableInt32(&val)
-			} else {
-				dvsProps.DscpMark = *openapi.NewNullableInt32(nil)
-			}
-		}},
-	}
-
-	for _, field := range intFields {
-		if !field.planField.Equal(field.stateField) {
-			field.setter(field.planField)
-			hasChanges = true
-		}
-	}
-
-	if !plan.CasEvents.Equal(state.CasEvents) {
-		dvsProps.CasEvents = openapi.PtrInt32(int32(plan.CasEvents.ValueInt64()))
-		hasChanges = true
-	}
-
-	oldCodecsByIndex := make(map[int64]verityDeviceVoiceSettingsCodecModel)
-	for _, codec := range state.Codecs {
-		if !codec.Index.IsNull() {
-			idx := codec.Index.ValueInt64()
-			oldCodecsByIndex[idx] = codec
-		}
-	}
-
-	var changedCodecs []openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner
-	codecsChanged := false
-
-	for _, planCodec := range plan.Codecs {
-		if planCodec.Index.IsNull() {
-			continue // Skip items without identifier
-		}
-
-		idx := planCodec.Index.ValueInt64()
-		stateCodec, exists := oldCodecsByIndex[idx]
-
-		if !exists {
-			// CREATE: new codec, include all fields
-			newCodec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-
-			if !planCodec.CodecNumName.IsNull() && planCodec.CodecNumName.ValueString() != "" {
-				newCodec.CodecNumName = openapi.PtrString(planCodec.CodecNumName.ValueString())
-			} else {
-				newCodec.CodecNumName = openapi.PtrString("")
-			}
-
-			if !planCodec.CodecNumEnable.IsNull() {
-				newCodec.CodecNumEnable = openapi.PtrBool(planCodec.CodecNumEnable.ValueBool())
-			} else {
-				newCodec.CodecNumEnable = openapi.PtrBool(false)
-			}
-
-			if !planCodec.CodecNumPacketizationPeriod.IsNull() && planCodec.CodecNumPacketizationPeriod.ValueString() != "" {
-				newCodec.CodecNumPacketizationPeriod = openapi.PtrString(planCodec.CodecNumPacketizationPeriod.ValueString())
-			} else {
-				newCodec.CodecNumPacketizationPeriod = openapi.PtrString("")
-			}
-
-			if !planCodec.CodecNumSilenceSuppression.IsNull() {
-				newCodec.CodecNumSilenceSuppression = openapi.PtrBool(planCodec.CodecNumSilenceSuppression.ValueBool())
-			} else {
-				newCodec.CodecNumSilenceSuppression = openapi.PtrBool(false)
-			}
-
-			changedCodecs = append(changedCodecs, newCodec)
-			codecsChanged = true
-			continue
-		}
-
-		// UPDATE: existing codec, check which fields changed
-		updateCodec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
-			Index: openapi.PtrInt32(int32(idx)),
-		}
-
-		fieldChanged := false
-
-		if !planCodec.CodecNumName.Equal(stateCodec.CodecNumName) {
-			if !planCodec.CodecNumName.IsNull() && planCodec.CodecNumName.ValueString() != "" {
-				updateCodec.CodecNumName = openapi.PtrString(planCodec.CodecNumName.ValueString())
-			} else {
-				updateCodec.CodecNumName = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !planCodec.CodecNumEnable.Equal(stateCodec.CodecNumEnable) {
-			updateCodec.CodecNumEnable = openapi.PtrBool(planCodec.CodecNumEnable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !planCodec.CodecNumPacketizationPeriod.Equal(stateCodec.CodecNumPacketizationPeriod) {
-			if !planCodec.CodecNumPacketizationPeriod.IsNull() && planCodec.CodecNumPacketizationPeriod.ValueString() != "" {
-				updateCodec.CodecNumPacketizationPeriod = openapi.PtrString(planCodec.CodecNumPacketizationPeriod.ValueString())
-			} else {
-				updateCodec.CodecNumPacketizationPeriod = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !planCodec.CodecNumSilenceSuppression.Equal(stateCodec.CodecNumSilenceSuppression) {
-			updateCodec.CodecNumSilenceSuppression = openapi.PtrBool(planCodec.CodecNumSilenceSuppression.ValueBool())
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedCodecs = append(changedCodecs, updateCodec)
-			codecsChanged = true
-		}
-	}
-
-	// DELETE: Check for deleted items
-	for stateIdx := range oldCodecsByIndex {
-		found := false
-		for _, planCodec := range plan.Codecs {
-			if !planCodec.Index.IsNull() && planCodec.Index.ValueInt64() == stateIdx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// codec removed - include only the index for deletion
-			deletedCodec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
-				Index: openapi.PtrInt32(int32(stateIdx)),
-			}
-			changedCodecs = append(changedCodecs, deletedCodec)
-			codecsChanged = true
-		}
-	}
-
-	if codecsChanged && len(changedCodecs) > 0 {
-		dvsProps.Codecs = changedCodecs
-		hasChanges = true
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
 			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) ||
@@ -1442,21 +913,99 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		}
 	}
 
+	// Handle codecs
+	codecsHandler := utils.IndexedItemHandler[verityDeviceVoiceSettingsCodecModel, openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner]{
+		CreateNew: func(planItem verityDeviceVoiceSettingsCodecModel) openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
+			codec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			if !planItem.CodecNumName.IsNull() {
+				codec.CodecNumName = openapi.PtrString(planItem.CodecNumName.ValueString())
+			} else {
+				codec.CodecNumName = openapi.PtrString("")
+			}
+
+			if !planItem.CodecNumEnable.IsNull() {
+				codec.CodecNumEnable = openapi.PtrBool(planItem.CodecNumEnable.ValueBool())
+			} else {
+				codec.CodecNumEnable = openapi.PtrBool(false)
+			}
+
+			if !planItem.CodecNumPacketizationPeriod.IsNull() {
+				codec.CodecNumPacketizationPeriod = openapi.PtrString(planItem.CodecNumPacketizationPeriod.ValueString())
+			} else {
+				codec.CodecNumPacketizationPeriod = openapi.PtrString("")
+			}
+
+			if !planItem.CodecNumSilenceSuppression.IsNull() {
+				codec.CodecNumSilenceSuppression = openapi.PtrBool(planItem.CodecNumSilenceSuppression.ValueBool())
+			} else {
+				codec.CodecNumSilenceSuppression = openapi.PtrBool(false)
+			}
+
+			return codec
+		},
+		UpdateExisting: func(planItem verityDeviceVoiceSettingsCodecModel, stateItem verityDeviceVoiceSettingsCodecModel) (openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, bool) {
+			codec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.CodecNumName.Equal(stateItem.CodecNumName) {
+				if !planItem.CodecNumName.IsNull() {
+					codec.CodecNumName = openapi.PtrString(planItem.CodecNumName.ValueString())
+				} else {
+					codec.CodecNumName = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.CodecNumEnable.Equal(stateItem.CodecNumEnable) {
+				codec.CodecNumEnable = openapi.PtrBool(planItem.CodecNumEnable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.CodecNumPacketizationPeriod.Equal(stateItem.CodecNumPacketizationPeriod) {
+				if !planItem.CodecNumPacketizationPeriod.IsNull() {
+					codec.CodecNumPacketizationPeriod = openapi.PtrString(planItem.CodecNumPacketizationPeriod.ValueString())
+				} else {
+					codec.CodecNumPacketizationPeriod = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.CodecNumSilenceSuppression.Equal(stateItem.CodecNumSilenceSuppression) {
+				codec.CodecNumSilenceSuppression = openapi.PtrBool(planItem.CodecNumSilenceSuppression.ValueBool())
+				fieldChanged = true
+			}
+
+			return codec, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
+			return openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
+	}
+
+	changedCodecs, codecsChanged := utils.ProcessIndexedArrayUpdates(plan.Codecs, state.Codecs, codecsHandler)
+	if codecsChanged {
+		dvsProps.Codecs = changedCodecs
+		hasChanges = true
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "device_voice_settings", name, dvsProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Voice Settings update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Device Voice Settings %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_voice_settings", name, dvsProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Device Voice Settings %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "device_voice_settings")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -1479,14 +1028,9 @@ func (r *verityDeviceVoiceSettingsResource) Delete(ctx context.Context, req reso
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "device_voice_settings", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Voice Settings deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Device Voice Settings %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_voice_settings", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

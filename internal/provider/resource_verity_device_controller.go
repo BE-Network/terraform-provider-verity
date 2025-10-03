@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -309,141 +308,58 @@ func (r *verityDeviceControllerResource) Create(ctx context.Context, req resourc
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		deviceControllerProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.IpSource.IsNull() {
-		deviceControllerProps.IpSource = openapi.PtrString(plan.IpSource.ValueString())
-	}
-	if !plan.ControllerIpAndMask.IsNull() {
-		deviceControllerProps.ControllerIpAndMask = openapi.PtrString(plan.ControllerIpAndMask.ValueString())
-	}
-	if !plan.Gateway.IsNull() {
-		deviceControllerProps.Gateway = openapi.PtrString(plan.Gateway.ValueString())
-	}
-	if !plan.SwitchIpAndMask.IsNull() {
-		deviceControllerProps.SwitchIpAndMask = openapi.PtrString(plan.SwitchIpAndMask.ValueString())
-	}
-	if !plan.SwitchGateway.IsNull() {
-		deviceControllerProps.SwitchGateway = openapi.PtrString(plan.SwitchGateway.ValueString())
-	}
-	if !plan.CommType.IsNull() {
-		deviceControllerProps.CommType = openapi.PtrString(plan.CommType.ValueString())
-	}
-	if !plan.SnmpCommunityString.IsNull() {
-		deviceControllerProps.SnmpCommunityString = openapi.PtrString(plan.SnmpCommunityString.ValueString())
-	}
-	if !plan.UplinkPort.IsNull() {
-		deviceControllerProps.UplinkPort = openapi.PtrString(plan.UplinkPort.ValueString())
-	}
-	if !plan.LldpSearchString.IsNull() {
-		deviceControllerProps.LldpSearchString = openapi.PtrString(plan.LldpSearchString.ValueString())
-	}
-	if !plan.ZtpIdentification.IsNull() {
-		deviceControllerProps.ZtpIdentification = openapi.PtrString(plan.ZtpIdentification.ValueString())
-	}
-	if !plan.LocatedBy.IsNull() {
-		deviceControllerProps.LocatedBy = openapi.PtrString(plan.LocatedBy.ValueString())
-	}
-	if !plan.PowerState.IsNull() {
-		deviceControllerProps.PowerState = openapi.PtrString(plan.PowerState.ValueString())
-	}
-	if !plan.CommunicationMode.IsNull() {
-		deviceControllerProps.CommunicationMode = openapi.PtrString(plan.CommunicationMode.ValueString())
-	}
-	if !plan.CliAccessMode.IsNull() {
-		deviceControllerProps.CliAccessMode = openapi.PtrString(plan.CliAccessMode.ValueString())
-	}
-	if !plan.Username.IsNull() {
-		deviceControllerProps.Username = openapi.PtrString(plan.Username.ValueString())
-	}
-	if !plan.Password.IsNull() {
-		deviceControllerProps.Password = openapi.PtrString(plan.Password.ValueString())
-	}
-	if !plan.EnablePassword.IsNull() {
-		deviceControllerProps.EnablePassword = openapi.PtrString(plan.EnablePassword.ValueString())
-	}
-	if !plan.SshKeyOrPassword.IsNull() {
-		deviceControllerProps.SshKeyOrPassword = openapi.PtrString(plan.SshKeyOrPassword.ValueString())
-	}
-	if !plan.ManagedOnNativeVlan.IsNull() {
-		deviceControllerProps.ManagedOnNativeVlan = openapi.PtrBool(plan.ManagedOnNativeVlan.ValueBool())
-	}
-	if !plan.Sdlc.IsNull() {
-		deviceControllerProps.Sdlc = openapi.PtrString(plan.Sdlc.ValueString())
-	}
-	if !plan.Switchpoint.IsNull() {
-		deviceControllerProps.Switchpoint = openapi.PtrString(plan.Switchpoint.ValueString())
-	}
-	if !plan.SwitchpointRefType.IsNull() {
-		deviceControllerProps.SwitchpointRefType = openapi.PtrString(plan.SwitchpointRefType.ValueString())
-	}
-	if !plan.SecurityType.IsNull() {
-		deviceControllerProps.SecurityType = openapi.PtrString(plan.SecurityType.ValueString())
-	}
-	if !plan.Snmpv3Username.IsNull() {
-		deviceControllerProps.Snmpv3Username = openapi.PtrString(plan.Snmpv3Username.ValueString())
-	}
-	if !plan.AuthenticationProtocol.IsNull() {
-		deviceControllerProps.AuthenticationProtocol = openapi.PtrString(plan.AuthenticationProtocol.ValueString())
-	}
-	if !plan.Passphrase.IsNull() {
-		deviceControllerProps.Passphrase = openapi.PtrString(plan.Passphrase.ValueString())
-	}
-	if !plan.PrivateProtocol.IsNull() {
-		deviceControllerProps.PrivateProtocol = openapi.PtrString(plan.PrivateProtocol.ValueString())
-	}
-	if !plan.PrivatePassword.IsNull() {
-		deviceControllerProps.PrivatePassword = openapi.PtrString(plan.PrivatePassword.ValueString())
-	}
-	if !plan.PasswordEncrypted.IsNull() {
-		deviceControllerProps.PasswordEncrypted = openapi.PtrString(plan.PasswordEncrypted.ValueString())
-	}
-	if !plan.EnablePasswordEncrypted.IsNull() {
-		deviceControllerProps.EnablePasswordEncrypted = openapi.PtrString(plan.EnablePasswordEncrypted.ValueString())
-	}
-	if !plan.SshKeyOrPasswordEncrypted.IsNull() {
-		deviceControllerProps.SshKeyOrPasswordEncrypted = openapi.PtrString(plan.SshKeyOrPasswordEncrypted.ValueString())
-	}
-	if !plan.PassphraseEncrypted.IsNull() {
-		deviceControllerProps.PassphraseEncrypted = openapi.PtrString(plan.PassphraseEncrypted.ValueString())
-	}
-	if !plan.PrivatePasswordEncrypted.IsNull() {
-		deviceControllerProps.PrivatePasswordEncrypted = openapi.PtrString(plan.PrivatePasswordEncrypted.ValueString())
-	}
-	if !plan.DeviceManagedAs.IsNull() {
-		deviceControllerProps.DeviceManagedAs = openapi.PtrString(plan.DeviceManagedAs.ValueString())
-	}
-	if !plan.Switch.IsNull() {
-		deviceControllerProps.Switch = openapi.PtrString(plan.Switch.ValueString())
-	}
-	if !plan.SwitchRefType.IsNull() {
-		deviceControllerProps.SwitchRefType = openapi.PtrString(plan.SwitchRefType.ValueString())
-	}
-	if !plan.ConnectionService.IsNull() {
-		deviceControllerProps.ConnectionService = openapi.PtrString(plan.ConnectionService.ValueString())
-	}
-	if !plan.ConnectionServiceRefType.IsNull() {
-		deviceControllerProps.ConnectionServiceRefType = openapi.PtrString(plan.ConnectionServiceRefType.ValueString())
-	}
-	if !plan.Port.IsNull() {
-		deviceControllerProps.Port = openapi.PtrString(plan.Port.ValueString())
-	}
-	if !plan.SfpMacAddressOrSn.IsNull() {
-		deviceControllerProps.SfpMacAddressOrSn = openapi.PtrString(plan.SfpMacAddressOrSn.ValueString())
-	}
-	if !plan.UsesTaggedPackets.IsNull() {
-		deviceControllerProps.UsesTaggedPackets = openapi.PtrBool(plan.UsesTaggedPackets.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "IpSource", APIField: &deviceControllerProps.IpSource, TFValue: plan.IpSource},
+		{FieldName: "ControllerIpAndMask", APIField: &deviceControllerProps.ControllerIpAndMask, TFValue: plan.ControllerIpAndMask},
+		{FieldName: "Gateway", APIField: &deviceControllerProps.Gateway, TFValue: plan.Gateway},
+		{FieldName: "SwitchIpAndMask", APIField: &deviceControllerProps.SwitchIpAndMask, TFValue: plan.SwitchIpAndMask},
+		{FieldName: "SwitchGateway", APIField: &deviceControllerProps.SwitchGateway, TFValue: plan.SwitchGateway},
+		{FieldName: "CommType", APIField: &deviceControllerProps.CommType, TFValue: plan.CommType},
+		{FieldName: "SnmpCommunityString", APIField: &deviceControllerProps.SnmpCommunityString, TFValue: plan.SnmpCommunityString},
+		{FieldName: "UplinkPort", APIField: &deviceControllerProps.UplinkPort, TFValue: plan.UplinkPort},
+		{FieldName: "LldpSearchString", APIField: &deviceControllerProps.LldpSearchString, TFValue: plan.LldpSearchString},
+		{FieldName: "ZtpIdentification", APIField: &deviceControllerProps.ZtpIdentification, TFValue: plan.ZtpIdentification},
+		{FieldName: "LocatedBy", APIField: &deviceControllerProps.LocatedBy, TFValue: plan.LocatedBy},
+		{FieldName: "PowerState", APIField: &deviceControllerProps.PowerState, TFValue: plan.PowerState},
+		{FieldName: "CommunicationMode", APIField: &deviceControllerProps.CommunicationMode, TFValue: plan.CommunicationMode},
+		{FieldName: "CliAccessMode", APIField: &deviceControllerProps.CliAccessMode, TFValue: plan.CliAccessMode},
+		{FieldName: "Username", APIField: &deviceControllerProps.Username, TFValue: plan.Username},
+		{FieldName: "Password", APIField: &deviceControllerProps.Password, TFValue: plan.Password},
+		{FieldName: "EnablePassword", APIField: &deviceControllerProps.EnablePassword, TFValue: plan.EnablePassword},
+		{FieldName: "SshKeyOrPassword", APIField: &deviceControllerProps.SshKeyOrPassword, TFValue: plan.SshKeyOrPassword},
+		{FieldName: "Sdlc", APIField: &deviceControllerProps.Sdlc, TFValue: plan.Sdlc},
+		{FieldName: "Switchpoint", APIField: &deviceControllerProps.Switchpoint, TFValue: plan.Switchpoint},
+		{FieldName: "SwitchpointRefType", APIField: &deviceControllerProps.SwitchpointRefType, TFValue: plan.SwitchpointRefType},
+		{FieldName: "SecurityType", APIField: &deviceControllerProps.SecurityType, TFValue: plan.SecurityType},
+		{FieldName: "Snmpv3Username", APIField: &deviceControllerProps.Snmpv3Username, TFValue: plan.Snmpv3Username},
+		{FieldName: "AuthenticationProtocol", APIField: &deviceControllerProps.AuthenticationProtocol, TFValue: plan.AuthenticationProtocol},
+		{FieldName: "Passphrase", APIField: &deviceControllerProps.Passphrase, TFValue: plan.Passphrase},
+		{FieldName: "PrivateProtocol", APIField: &deviceControllerProps.PrivateProtocol, TFValue: plan.PrivateProtocol},
+		{FieldName: "PrivatePassword", APIField: &deviceControllerProps.PrivatePassword, TFValue: plan.PrivatePassword},
+		{FieldName: "PasswordEncrypted", APIField: &deviceControllerProps.PasswordEncrypted, TFValue: plan.PasswordEncrypted},
+		{FieldName: "EnablePasswordEncrypted", APIField: &deviceControllerProps.EnablePasswordEncrypted, TFValue: plan.EnablePasswordEncrypted},
+		{FieldName: "SshKeyOrPasswordEncrypted", APIField: &deviceControllerProps.SshKeyOrPasswordEncrypted, TFValue: plan.SshKeyOrPasswordEncrypted},
+		{FieldName: "PassphraseEncrypted", APIField: &deviceControllerProps.PassphraseEncrypted, TFValue: plan.PassphraseEncrypted},
+		{FieldName: "PrivatePasswordEncrypted", APIField: &deviceControllerProps.PrivatePasswordEncrypted, TFValue: plan.PrivatePasswordEncrypted},
+		{FieldName: "DeviceManagedAs", APIField: &deviceControllerProps.DeviceManagedAs, TFValue: plan.DeviceManagedAs},
+		{FieldName: "Switch", APIField: &deviceControllerProps.Switch, TFValue: plan.Switch},
+		{FieldName: "SwitchRefType", APIField: &deviceControllerProps.SwitchRefType, TFValue: plan.SwitchRefType},
+		{FieldName: "ConnectionService", APIField: &deviceControllerProps.ConnectionService, TFValue: plan.ConnectionService},
+		{FieldName: "ConnectionServiceRefType", APIField: &deviceControllerProps.ConnectionServiceRefType, TFValue: plan.ConnectionServiceRefType},
+		{FieldName: "Port", APIField: &deviceControllerProps.Port, TFValue: plan.Port},
+		{FieldName: "SfpMacAddressOrSn", APIField: &deviceControllerProps.SfpMacAddressOrSn, TFValue: plan.SfpMacAddressOrSn},
+	})
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "device_controller", name, *deviceControllerProps)
-	r.notifyOperationAdded()
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &deviceControllerProps.Enable, TFValue: plan.Enable},
+		{FieldName: "ManagedOnNativeVlan", APIField: &deviceControllerProps.ManagedOnNativeVlan, TFValue: plan.ManagedOnNativeVlan},
+		{FieldName: "UsesTaggedPackets", APIField: &deviceControllerProps.UsesTaggedPackets, TFValue: plan.UsesTaggedPackets},
+	})
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for device controller creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Device Controller %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_controller", name, *deviceControllerProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -470,60 +386,39 @@ func (r *verityDeviceControllerResource) Read(ctx context.Context, req resource.
 		return
 	}
 
-	tflog.Debug(ctx, "Reading device controller resource")
-
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
 	deviceControllerName := state.Name.ValueString()
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("device_controller") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping device controller %s verification - trusting recent successful API operation", deviceControllerName))
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("device_controller") {
+		tflog.Info(ctx, fmt.Sprintf("Skipping device controller %s verification – trusting recent successful API operation", deviceControllerName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent device controller operations found, performing normal verification for %s", deviceControllerName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching device controllers for verification of %s", deviceControllerName))
 
 	type DeviceControllersResponse struct {
 		DeviceController map[string]interface{} `json:"device_controller"`
 	}
 
-	var result DeviceControllersResponse
-	var err error
-	maxRetries := 3
-
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		if attempt > 0 {
-			sleepTime := time.Duration(100*(attempt)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Retrying device controller fetch in %v", sleepTime))
-			time.Sleep(sleepTime)
-		}
-
-		deviceControllersData, fetchErr := getCachedResponse(ctx, r.provCtx, "devicecontrollers", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "device_controllers", deviceControllerName,
+		func() (DeviceControllersResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch device controllers")
 			respAPI, err := r.client.DeviceControllersAPI.DevicecontrollersGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading device controllers: %v", err)
+				return DeviceControllersResponse{}, fmt.Errorf("error reading device controllers: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res DeviceControllersResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode device controllers response: %v", err)
+				return DeviceControllersResponse{}, fmt.Errorf("failed to decode device controllers response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d device controllers", len(res.DeviceController)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch device controllers on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = deviceControllersData.(DeviceControllersResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Device Controller %s", deviceControllerName))...,
@@ -531,46 +426,42 @@ func (r *verityDeviceControllerResource) Read(ctx context.Context, req resource.
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for device controller with ID: %s", deviceControllerName))
-	var deviceControllerData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for device controller with name: %s", deviceControllerName))
 
-	if data, ok := result.DeviceController[deviceControllerName].(map[string]interface{}); ok {
-		deviceControllerData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found device controller directly by ID: %s", deviceControllerName))
-	} else {
-		for apiName, dc := range result.DeviceController {
-			deviceController, ok := dc.(map[string]interface{})
-			if !ok {
-				continue
+	deviceControllerData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.DeviceController,
+		deviceControllerName,
+		func(data interface{}) (string, bool) {
+			if deviceController, ok := data.(map[string]interface{}); ok {
+				if name, ok := deviceController["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := deviceController["name"].(string); ok && name == deviceControllerName {
-				deviceControllerData = deviceController
-				deviceControllerName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found device controller with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Device Controller with ID '%s' not found in API response", deviceControllerName))
+		tflog.Debug(ctx, fmt.Sprintf("Device Controller with name '%s' not found in API response", deviceControllerName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", deviceControllerData["name"]))
-
-	if enable, ok := deviceControllerData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	deviceControllerMap, ok := deviceControllerData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Device Controller Data",
+			fmt.Sprintf("Device Controller data is not in expected format for %s", deviceControllerName),
+		)
+		return
 	}
 
-	stringFields := map[string]*types.String{
+	tflog.Debug(ctx, fmt.Sprintf("Found device controller '%s' under API key '%s'", deviceControllerName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(deviceControllerMap["name"])
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
 		"ip_source":                     &state.IpSource,
 		"controller_ip_and_mask":        &state.ControllerIpAndMask,
 		"gateway":                       &state.Gateway,
@@ -612,24 +503,19 @@ func (r *verityDeviceControllerResource) Read(ctx context.Context, req resource.
 		"sfp_mac_address_or_sn":         &state.SfpMacAddressOrSn,
 	}
 
-	for apiKey, stateField := range stringFields {
-		if val, ok := deviceControllerData[apiKey].(string); ok {
-			*stateField = types.StringValue(val)
-		} else {
-			*stateField = types.StringNull()
-		}
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(deviceControllerMap[apiKey])
 	}
 
-	if managedOnNativeVlan, ok := deviceControllerData["managed_on_native_vlan"].(bool); ok {
-		state.ManagedOnNativeVlan = types.BoolValue(managedOnNativeVlan)
-	} else {
-		state.ManagedOnNativeVlan = types.BoolNull()
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":                 &state.Enable,
+		"managed_on_native_vlan": &state.ManagedOnNativeVlan,
+		"uses_tagged_packets":    &state.UsesTaggedPackets,
 	}
 
-	if usesTaggedPackets, ok := deviceControllerData["uses_tagged_packets"].(bool); ok {
-		state.UsesTaggedPackets = types.BoolValue(usesTaggedPackets)
-	} else {
-		state.UsesTaggedPackets = types.BoolNull()
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(deviceControllerMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -640,6 +526,9 @@ func (r *verityDeviceControllerResource) Update(ctx context.Context, req resourc
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -658,266 +547,81 @@ func (r *verityDeviceControllerResource) Update(ctx context.Context, req resourc
 	deviceControllerProps := openapi.DevicecontrollersPutRequestDeviceControllerValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		deviceControllerProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-	if !plan.IpSource.Equal(state.IpSource) {
-		deviceControllerProps.IpSource = openapi.PtrString(plan.IpSource.ValueString())
-		hasChanges = true
-	}
-	if !plan.ControllerIpAndMask.Equal(state.ControllerIpAndMask) {
-		deviceControllerProps.ControllerIpAndMask = openapi.PtrString(plan.ControllerIpAndMask.ValueString())
-		hasChanges = true
-	}
-	if !plan.Gateway.Equal(state.Gateway) {
-		deviceControllerProps.Gateway = openapi.PtrString(plan.Gateway.ValueString())
-		hasChanges = true
-	}
-	if !plan.SwitchIpAndMask.Equal(state.SwitchIpAndMask) {
-		deviceControllerProps.SwitchIpAndMask = openapi.PtrString(plan.SwitchIpAndMask.ValueString())
-		hasChanges = true
-	}
-	if !plan.SwitchGateway.Equal(state.SwitchGateway) {
-		deviceControllerProps.SwitchGateway = openapi.PtrString(plan.SwitchGateway.ValueString())
-		hasChanges = true
-	}
-	if !plan.CommType.Equal(state.CommType) {
-		deviceControllerProps.CommType = openapi.PtrString(plan.CommType.ValueString())
-		hasChanges = true
-	}
-	if !plan.SnmpCommunityString.Equal(state.SnmpCommunityString) {
-		deviceControllerProps.SnmpCommunityString = openapi.PtrString(plan.SnmpCommunityString.ValueString())
-		hasChanges = true
-	}
-	if !plan.UplinkPort.Equal(state.UplinkPort) {
-		deviceControllerProps.UplinkPort = openapi.PtrString(plan.UplinkPort.ValueString())
-		hasChanges = true
-	}
-	if !plan.LldpSearchString.Equal(state.LldpSearchString) {
-		deviceControllerProps.LldpSearchString = openapi.PtrString(plan.LldpSearchString.ValueString())
-		hasChanges = true
-	}
-	if !plan.ZtpIdentification.Equal(state.ZtpIdentification) {
-		deviceControllerProps.ZtpIdentification = openapi.PtrString(plan.ZtpIdentification.ValueString())
-		hasChanges = true
-	}
-	if !plan.LocatedBy.Equal(state.LocatedBy) {
-		deviceControllerProps.LocatedBy = openapi.PtrString(plan.LocatedBy.ValueString())
-		hasChanges = true
-	}
-	if !plan.PowerState.Equal(state.PowerState) {
-		deviceControllerProps.PowerState = openapi.PtrString(plan.PowerState.ValueString())
-		hasChanges = true
-	}
-	if !plan.CommunicationMode.Equal(state.CommunicationMode) {
-		deviceControllerProps.CommunicationMode = openapi.PtrString(plan.CommunicationMode.ValueString())
-		hasChanges = true
-	}
-	if !plan.CliAccessMode.Equal(state.CliAccessMode) {
-		deviceControllerProps.CliAccessMode = openapi.PtrString(plan.CliAccessMode.ValueString())
-		hasChanges = true
-	}
-	if !plan.Username.Equal(state.Username) {
-		deviceControllerProps.Username = openapi.PtrString(plan.Username.ValueString())
-		hasChanges = true
-	}
-	if !plan.Password.Equal(state.Password) {
-		deviceControllerProps.Password = openapi.PtrString(plan.Password.ValueString())
-		hasChanges = true
-	}
-	if !plan.EnablePassword.Equal(state.EnablePassword) {
-		deviceControllerProps.EnablePassword = openapi.PtrString(plan.EnablePassword.ValueString())
-		hasChanges = true
-	}
-	if !plan.SshKeyOrPassword.Equal(state.SshKeyOrPassword) {
-		deviceControllerProps.SshKeyOrPassword = openapi.PtrString(plan.SshKeyOrPassword.ValueString())
-		hasChanges = true
-	}
-	if !plan.ManagedOnNativeVlan.Equal(state.ManagedOnNativeVlan) {
-		deviceControllerProps.ManagedOnNativeVlan = openapi.PtrBool(plan.ManagedOnNativeVlan.ValueBool())
-		hasChanges = true
-	}
-	if !plan.Sdlc.Equal(state.Sdlc) {
-		deviceControllerProps.Sdlc = openapi.PtrString(plan.Sdlc.ValueString())
-		hasChanges = true
-	}
-	if !plan.SecurityType.Equal(state.SecurityType) {
-		deviceControllerProps.SecurityType = openapi.PtrString(plan.SecurityType.ValueString())
-		hasChanges = true
-	}
-	if !plan.Snmpv3Username.Equal(state.Snmpv3Username) {
-		deviceControllerProps.Snmpv3Username = openapi.PtrString(plan.Snmpv3Username.ValueString())
-		hasChanges = true
-	}
-	if !plan.AuthenticationProtocol.Equal(state.AuthenticationProtocol) {
-		deviceControllerProps.AuthenticationProtocol = openapi.PtrString(plan.AuthenticationProtocol.ValueString())
-		hasChanges = true
-	}
-	if !plan.Passphrase.Equal(state.Passphrase) {
-		deviceControllerProps.Passphrase = openapi.PtrString(plan.Passphrase.ValueString())
-		hasChanges = true
-	}
-	if !plan.PrivateProtocol.Equal(state.PrivateProtocol) {
-		deviceControllerProps.PrivateProtocol = openapi.PtrString(plan.PrivateProtocol.ValueString())
-		hasChanges = true
-	}
-	if !plan.PrivatePassword.Equal(state.PrivatePassword) {
-		deviceControllerProps.PrivatePassword = openapi.PtrString(plan.PrivatePassword.ValueString())
-		hasChanges = true
-	}
-	if !plan.PasswordEncrypted.Equal(state.PasswordEncrypted) {
-		deviceControllerProps.PasswordEncrypted = openapi.PtrString(plan.PasswordEncrypted.ValueString())
-		hasChanges = true
-	}
-	if !plan.EnablePasswordEncrypted.Equal(state.EnablePasswordEncrypted) {
-		deviceControllerProps.EnablePasswordEncrypted = openapi.PtrString(plan.EnablePasswordEncrypted.ValueString())
-		hasChanges = true
-	}
-	if !plan.SshKeyOrPasswordEncrypted.Equal(state.SshKeyOrPasswordEncrypted) {
-		deviceControllerProps.SshKeyOrPasswordEncrypted = openapi.PtrString(plan.SshKeyOrPasswordEncrypted.ValueString())
-		hasChanges = true
-	}
-	if !plan.PassphraseEncrypted.Equal(state.PassphraseEncrypted) {
-		deviceControllerProps.PassphraseEncrypted = openapi.PtrString(plan.PassphraseEncrypted.ValueString())
-		hasChanges = true
-	}
-	if !plan.PrivatePasswordEncrypted.Equal(state.PrivatePasswordEncrypted) {
-		deviceControllerProps.PrivatePasswordEncrypted = openapi.PtrString(plan.PrivatePasswordEncrypted.ValueString())
-		hasChanges = true
-	}
-	if !plan.DeviceManagedAs.Equal(state.DeviceManagedAs) {
-		deviceControllerProps.DeviceManagedAs = openapi.PtrString(plan.DeviceManagedAs.ValueString())
-		hasChanges = true
-	}
-	if !plan.Port.Equal(state.Port) {
-		deviceControllerProps.Port = openapi.PtrString(plan.Port.ValueString())
-		hasChanges = true
-	}
-	if !plan.SfpMacAddressOrSn.Equal(state.SfpMacAddressOrSn) {
-		deviceControllerProps.SfpMacAddressOrSn = openapi.PtrString(plan.SfpMacAddressOrSn.ValueString())
-		hasChanges = true
-	}
-	if !plan.UsesTaggedPackets.Equal(state.UsesTaggedPackets) {
-		deviceControllerProps.UsesTaggedPackets = openapi.PtrBool(plan.UsesTaggedPackets.ValueBool())
-		hasChanges = true
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { deviceControllerProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.IpSource, state.IpSource, func(v *string) { deviceControllerProps.IpSource = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ControllerIpAndMask, state.ControllerIpAndMask, func(v *string) { deviceControllerProps.ControllerIpAndMask = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Gateway, state.Gateway, func(v *string) { deviceControllerProps.Gateway = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchIpAndMask, state.SwitchIpAndMask, func(v *string) { deviceControllerProps.SwitchIpAndMask = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchGateway, state.SwitchGateway, func(v *string) { deviceControllerProps.SwitchGateway = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CommType, state.CommType, func(v *string) { deviceControllerProps.CommType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SnmpCommunityString, state.SnmpCommunityString, func(v *string) { deviceControllerProps.SnmpCommunityString = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.UplinkPort, state.UplinkPort, func(v *string) { deviceControllerProps.UplinkPort = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.LldpSearchString, state.LldpSearchString, func(v *string) { deviceControllerProps.LldpSearchString = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ZtpIdentification, state.ZtpIdentification, func(v *string) { deviceControllerProps.ZtpIdentification = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.LocatedBy, state.LocatedBy, func(v *string) { deviceControllerProps.LocatedBy = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PowerState, state.PowerState, func(v *string) { deviceControllerProps.PowerState = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CommunicationMode, state.CommunicationMode, func(v *string) { deviceControllerProps.CommunicationMode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CliAccessMode, state.CliAccessMode, func(v *string) { deviceControllerProps.CliAccessMode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Username, state.Username, func(v *string) { deviceControllerProps.Username = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Password, state.Password, func(v *string) { deviceControllerProps.Password = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.EnablePassword, state.EnablePassword, func(v *string) { deviceControllerProps.EnablePassword = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SshKeyOrPassword, state.SshKeyOrPassword, func(v *string) { deviceControllerProps.SshKeyOrPassword = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Sdlc, state.Sdlc, func(v *string) { deviceControllerProps.Sdlc = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SecurityType, state.SecurityType, func(v *string) { deviceControllerProps.SecurityType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Snmpv3Username, state.Snmpv3Username, func(v *string) { deviceControllerProps.Snmpv3Username = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AuthenticationProtocol, state.AuthenticationProtocol, func(v *string) { deviceControllerProps.AuthenticationProtocol = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Passphrase, state.Passphrase, func(v *string) { deviceControllerProps.Passphrase = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PrivateProtocol, state.PrivateProtocol, func(v *string) { deviceControllerProps.PrivateProtocol = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PrivatePassword, state.PrivatePassword, func(v *string) { deviceControllerProps.PrivatePassword = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PasswordEncrypted, state.PasswordEncrypted, func(v *string) { deviceControllerProps.PasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.EnablePasswordEncrypted, state.EnablePasswordEncrypted, func(v *string) { deviceControllerProps.EnablePasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SshKeyOrPasswordEncrypted, state.SshKeyOrPasswordEncrypted, func(v *string) { deviceControllerProps.SshKeyOrPasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PassphraseEncrypted, state.PassphraseEncrypted, func(v *string) { deviceControllerProps.PassphraseEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PrivatePasswordEncrypted, state.PrivatePasswordEncrypted, func(v *string) { deviceControllerProps.PrivatePasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DeviceManagedAs, state.DeviceManagedAs, func(v *string) { deviceControllerProps.DeviceManagedAs = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Port, state.Port, func(v *string) { deviceControllerProps.Port = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SfpMacAddressOrSn, state.SfpMacAddressOrSn, func(v *string) { deviceControllerProps.SfpMacAddressOrSn = v }, &hasChanges)
+
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { deviceControllerProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.ManagedOnNativeVlan, state.ManagedOnNativeVlan, func(v *bool) { deviceControllerProps.ManagedOnNativeVlan = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.UsesTaggedPackets, state.UsesTaggedPackets, func(v *bool) { deviceControllerProps.UsesTaggedPackets = v }, &hasChanges)
+
+	// Handle Switchpoint and SwitchpointRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.Switchpoint, state.Switchpoint, plan.SwitchpointRefType, state.SwitchpointRefType,
+		func(v *string) { deviceControllerProps.Switchpoint = v },
+		func(v *string) { deviceControllerProps.SwitchpointRefType = v },
+		"switchpoint", "switchpoint_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	// Handle switchpoint and switchpoint_ref_type_ according to "One ref type supported" rules
-	switchpointChanged := !plan.Switchpoint.Equal(state.Switchpoint)
-	switchpointRefTypeChanged := !plan.SwitchpointRefType.Equal(state.SwitchpointRefType)
-
-	if switchpointChanged || switchpointRefTypeChanged {
-		// Validate using "one ref type supported" rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.Switchpoint, plan.SwitchpointRefType,
-			"switchpoint", "switchpoint_ref_type_",
-			switchpointChanged, switchpointRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if switchpointChanged && !switchpointRefTypeChanged {
-			// Just send the base field
-			if !plan.Switchpoint.IsNull() && plan.Switchpoint.ValueString() != "" {
-				deviceControllerProps.Switchpoint = openapi.PtrString(plan.Switchpoint.ValueString())
-			} else {
-				deviceControllerProps.Switchpoint = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if switchpointRefTypeChanged {
-			// Send both fields
-			if !plan.Switchpoint.IsNull() && plan.Switchpoint.ValueString() != "" {
-				deviceControllerProps.Switchpoint = openapi.PtrString(plan.Switchpoint.ValueString())
-			} else {
-				deviceControllerProps.Switchpoint = openapi.PtrString("")
-			}
-
-			if !plan.SwitchpointRefType.IsNull() && plan.SwitchpointRefType.ValueString() != "" {
-				deviceControllerProps.SwitchpointRefType = openapi.PtrString(plan.SwitchpointRefType.ValueString())
-			} else {
-				deviceControllerProps.SwitchpointRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
+	// Handle Switch and SwitchRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.Switch, state.Switch, plan.SwitchRefType, state.SwitchRefType,
+		func(v *string) { deviceControllerProps.Switch = v },
+		func(v *string) { deviceControllerProps.SwitchRefType = v },
+		"switch", "switch_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	// Handle switch and switch_ref_type_ according to "One ref type supported" rules
-	switchChanged := !plan.Switch.Equal(state.Switch)
-	switchRefTypeChanged := !plan.SwitchRefType.Equal(state.SwitchRefType)
-
-	if switchChanged || switchRefTypeChanged {
-		// Validate using "one ref type supported" rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.Switch, plan.SwitchRefType,
-			"switch", "switch_ref_type_",
-			switchChanged, switchRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if switchChanged && !switchRefTypeChanged {
-			// Just send the base field
-			if !plan.Switch.IsNull() && plan.Switch.ValueString() != "" {
-				deviceControllerProps.Switch = openapi.PtrString(plan.Switch.ValueString())
-			} else {
-				deviceControllerProps.Switch = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if switchRefTypeChanged {
-			// Send both fields
-			if !plan.Switch.IsNull() && plan.Switch.ValueString() != "" {
-				deviceControllerProps.Switch = openapi.PtrString(plan.Switch.ValueString())
-			} else {
-				deviceControllerProps.Switch = openapi.PtrString("")
-			}
-
-			if !plan.SwitchRefType.IsNull() && plan.SwitchRefType.ValueString() != "" {
-				deviceControllerProps.SwitchRefType = openapi.PtrString(plan.SwitchRefType.ValueString())
-			} else {
-				deviceControllerProps.SwitchRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	// Handle connection_service and connection_service_ref_type_ according to "One ref type supported" rules
-	connectionServiceChanged := !plan.ConnectionService.Equal(state.ConnectionService)
-	connectionServiceRefTypeChanged := !plan.ConnectionServiceRefType.Equal(state.ConnectionServiceRefType)
-
-	if connectionServiceChanged || connectionServiceRefTypeChanged {
-		// Validate using "one ref type supported" rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.ConnectionService, plan.ConnectionServiceRefType,
-			"connection_service", "connection_service_ref_type_",
-			connectionServiceChanged, connectionServiceRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if connectionServiceChanged && !connectionServiceRefTypeChanged {
-			// Just send the base field
-			if !plan.ConnectionService.IsNull() && plan.ConnectionService.ValueString() != "" {
-				deviceControllerProps.ConnectionService = openapi.PtrString(plan.ConnectionService.ValueString())
-			} else {
-				deviceControllerProps.ConnectionService = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if connectionServiceRefTypeChanged {
-			// Send both fields
-			if !plan.ConnectionService.IsNull() && plan.ConnectionService.ValueString() != "" {
-				deviceControllerProps.ConnectionService = openapi.PtrString(plan.ConnectionService.ValueString())
-			} else {
-				deviceControllerProps.ConnectionService = openapi.PtrString("")
-			}
-
-			if !plan.ConnectionServiceRefType.IsNull() && plan.ConnectionServiceRefType.ValueString() != "" {
-				deviceControllerProps.ConnectionServiceRefType = openapi.PtrString(plan.ConnectionServiceRefType.ValueString())
-			} else {
-				deviceControllerProps.ConnectionServiceRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
+	// Handle ConnectionService and ConnectionServiceRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.ConnectionService, state.ConnectionService, plan.ConnectionServiceRefType, state.ConnectionServiceRefType,
+		func(v *string) { deviceControllerProps.ConnectionService = v },
+		func(v *string) { deviceControllerProps.ConnectionServiceRefType = v },
+		"connection_service", "connection_service_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
 	if !hasChanges {
@@ -925,15 +629,8 @@ func (r *verityDeviceControllerResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	bulkOpsMgr := r.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPatch(ctx, "device_controller", name, deviceControllerProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for device controller update operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Device Controller %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_controller", name, deviceControllerProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -959,15 +656,9 @@ func (r *verityDeviceControllerResource) Delete(ctx context.Context, req resourc
 	}
 
 	name := state.Name.ValueString()
-	bulkOpsMgr := r.bulkOpsMgr
-	operationID := bulkOpsMgr.AddDelete(ctx, "device_controller", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for device controller deletion operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Device Controller %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_controller", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

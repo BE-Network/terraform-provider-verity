@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -13,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
-	"encoding/json"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -184,66 +184,44 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		aclProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.Protocol.IsNull() {
-		aclProps.Protocol = openapi.PtrString(plan.Protocol.ValueString())
-	}
-	if !plan.Bidirectional.IsNull() {
-		aclProps.Bidirectional = openapi.PtrBool(plan.Bidirectional.ValueBool())
-	}
-	if !plan.SourceIP.IsNull() {
-		aclProps.SourceIp = openapi.PtrString(plan.SourceIP.ValueString())
-	}
-	if !plan.SourcePortOperator.IsNull() {
-		aclProps.SourcePortOperator = openapi.PtrString(plan.SourcePortOperator.ValueString())
-	}
-	if !plan.DestinationIP.IsNull() {
-		aclProps.DestinationIp = openapi.PtrString(plan.DestinationIP.ValueString())
-	}
-	if !plan.DestinationPortOperator.IsNull() {
-		aclProps.DestinationPortOperator = openapi.PtrString(plan.DestinationPortOperator.ValueString())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Protocol", APIField: &aclProps.Protocol, TFValue: plan.Protocol},
+		{FieldName: "SourceIp", APIField: &aclProps.SourceIp, TFValue: plan.SourceIP},
+		{FieldName: "SourcePortOperator", APIField: &aclProps.SourcePortOperator, TFValue: plan.SourcePortOperator},
+		{FieldName: "DestinationIp", APIField: &aclProps.DestinationIp, TFValue: plan.DestinationIP},
+		{FieldName: "DestinationPortOperator", APIField: &aclProps.DestinationPortOperator, TFValue: plan.DestinationPortOperator},
+	})
 
-	if !plan.SourcePort1.IsNull() {
-		sourcePort1 := int32(plan.SourcePort1.ValueInt64())
-		aclProps.SourcePort1 = *openapi.NewNullableInt32(&sourcePort1)
-	} else {
-		aclProps.SourcePort1 = *openapi.NewNullableInt32(nil)
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &aclProps.Enable, TFValue: plan.Enable},
+		{FieldName: "Bidirectional", APIField: &aclProps.Bidirectional, TFValue: plan.Bidirectional},
+	})
 
-	if !plan.SourcePort2.IsNull() {
-		sourcePort2 := int32(plan.SourcePort2.ValueInt64())
-		aclProps.SourcePort2 = *openapi.NewNullableInt32(&sourcePort2)
-	} else {
-		aclProps.SourcePort2 = *openapi.NewNullableInt32(nil)
-	}
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "SourcePort1", APIField: &aclProps.SourcePort1, TFValue: plan.SourcePort1},
+		{FieldName: "SourcePort2", APIField: &aclProps.SourcePort2, TFValue: plan.SourcePort2},
+		{FieldName: "DestinationPort1", APIField: &aclProps.DestinationPort1, TFValue: plan.DestinationPort1},
+		{FieldName: "DestinationPort2", APIField: &aclProps.DestinationPort2, TFValue: plan.DestinationPort2},
+	})
 
-	if !plan.DestinationPort1.IsNull() {
-		destinationPort1 := int32(plan.DestinationPort1.ValueInt64())
-		aclProps.DestinationPort1 = *openapi.NewNullableInt32(&destinationPort1)
-	} else {
-		aclProps.DestinationPort1 = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.DestinationPort2.IsNull() {
-		destinationPort2 := int32(plan.DestinationPort2.ValueInt64())
-		aclProps.DestinationPort2 = *openapi.NewNullableInt32(&destinationPort2)
-	} else {
-		aclProps.DestinationPort2 = *openapi.NewNullableInt32(nil)
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
-		objProps := &openapi.AclsPutRequestIpFilterValueObjectProperties{
-			Notes: openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString()),
+		objProps := &openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		if !plan.ObjectProperties[0].Notes.IsNull() {
+			objProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
+		} else {
+			objProps.Notes = nil
 		}
 		aclProps.ObjectProperties = objProps
 	}
 
+	// Special handling for dual resource types
 	bulkOpsMgr := r.provCtx.bulkOpsMgr
 	operationID := bulkOpsMgr.AddAclPut(ctx, name, *aclProps, r.ipVersion)
-	r.provCtx.NotifyOperationAdded()
+	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv%s ACL creation operation %s to complete", r.ipVersion, operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
@@ -257,7 +235,7 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 	clearCache(ctx, r.provCtx, r.getCacheKey())
 
 	plan.Name = types.StringValue(name)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.State.Set(ctx, plan)
 }
 
 func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -276,28 +254,24 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Reading IPv%s ACL resource", r.ipVersion))
-
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
 	aclName := state.Name.ValueString()
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("acl") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping IPv%s ACL %s verification - trusting recent successful API operation", r.ipVersion, aclName))
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("acl") {
+		tflog.Info(ctx, fmt.Sprintf("Skipping IPv%s ACL %s verification – trusting recent successful API operation", r.ipVersion, aclName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent IPv%s ACL operations found, performing normal verification for %s", r.ipVersion, aclName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching IPv%s ACLs for verification of %s", r.ipVersion, aclName))
 
 	var err error
 	maxRetries := 3
 	var aclsMap map[string]interface{}
 
 	for attempt := 0; attempt < maxRetries; attempt++ {
-		aclsData, fetchErr := getCachedResponse(ctx, provCtx, r.getCacheKey(), func() (interface{}, error) {
+		aclsData, fetchErr := getCachedResponse(ctx, r.provCtx, r.getCacheKey(), func() (interface{}, error) {
 			tflog.Debug(ctx, fmt.Sprintf("Making API call to fetch IPv%s ACLs", r.ipVersion))
 
-			req := provCtx.client.ACLsAPI.AclsGet(ctx).IpVersion(r.ipVersion)
+			req := r.client.ACLsAPI.AclsGet(ctx).IpVersion(r.ipVersion)
 			apiResp, err := req.Execute()
 
 			if err != nil {
@@ -344,137 +318,72 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv%s ACL with name: %s", r.ipVersion, aclName))
-	var aclData map[string]interface{}
-	exists := false
 
-	if data, ok := aclsMap[aclName]; ok {
-		if aclProps, ok := data.(map[string]interface{}); ok {
-			aclData = aclProps
-			exists = true
-			tflog.Debug(ctx, fmt.Sprintf("Found IPv%s ACL with name: %s", r.ipVersion, aclName))
-		}
-	}
-
+	// ACLs use the map key as the name
+	aclData, exists := aclsMap[aclName]
 	if !exists {
 		tflog.Debug(ctx, fmt.Sprintf("IPv%s ACL with name '%s' not found in API response", r.ipVersion, aclName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
+	aclDataMap, ok := aclData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid ACL Data",
+			fmt.Sprintf("IPv%s ACL data is not in expected format for %s", r.ipVersion, aclName),
+		)
+		return
+	}
+
 	state.Name = types.StringValue(aclName)
 
-	if val, ok := aclData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(val)
-	} else {
-		state.Enable = types.BoolNull()
-	}
-
-	if val, ok := aclData["protocol"].(string); ok {
-		state.Protocol = types.StringValue(val)
-	} else {
-		state.Protocol = types.StringNull()
-	}
-
-	if val, ok := aclData["bidirectional"].(bool); ok {
-		state.Bidirectional = types.BoolValue(val)
-	} else {
-		state.Bidirectional = types.BoolNull()
-	}
-
-	if val, ok := aclData["source_ip"].(string); ok {
-		state.SourceIP = types.StringValue(val)
-	} else {
-		state.SourceIP = types.StringNull()
-	}
-
-	if val, ok := aclData["source_port_operator"].(string); ok {
-		state.SourcePortOperator = types.StringValue(val)
-	} else {
-		state.SourcePortOperator = types.StringNull()
-	}
-
-	if val, ok := aclData["source_port_1"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.SourcePort1 = types.Int64Value(int64(v))
-		case int:
-			state.SourcePort1 = types.Int64Value(int64(v))
-		case int32:
-			state.SourcePort1 = types.Int64Value(int64(v))
-		default:
-			state.SourcePort1 = types.Int64Null()
+	// Handle object properties
+	if objProps, ok := aclDataMap["object_properties"].(map[string]interface{}); ok {
+		notes := utils.MapStringFromAPI(objProps["notes"])
+		if notes.IsNull() {
+			notes = types.StringValue("")
 		}
-	} else {
-		state.SourcePort1 = types.Int64Null()
-	}
-
-	if val, ok := aclData["source_port_2"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.SourcePort2 = types.Int64Value(int64(v))
-		case int:
-			state.SourcePort2 = types.Int64Value(int64(v))
-		case int32:
-			state.SourcePort2 = types.Int64Value(int64(v))
-		default:
-			state.SourcePort2 = types.Int64Null()
+		state.ObjectProperties = []verityACLUnifiedObjectPropertiesModel{
+			{Notes: notes},
 		}
-	} else {
-		state.SourcePort2 = types.Int64Null()
-	}
-
-	if val, ok := aclData["destination_ip"].(string); ok {
-		state.DestinationIP = types.StringValue(val)
-	} else {
-		state.DestinationIP = types.StringNull()
-	}
-
-	if val, ok := aclData["destination_port_operator"].(string); ok {
-		state.DestinationPortOperator = types.StringValue(val)
-	} else {
-		state.DestinationPortOperator = types.StringNull()
-	}
-
-	if val, ok := aclData["destination_port_1"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.DestinationPort1 = types.Int64Value(int64(v))
-		case int:
-			state.DestinationPort1 = types.Int64Value(int64(v))
-		case int32:
-			state.DestinationPort1 = types.Int64Value(int64(v))
-		default:
-			state.DestinationPort1 = types.Int64Null()
-		}
-	} else {
-		state.DestinationPort1 = types.Int64Null()
-	}
-
-	if val, ok := aclData["destination_port_2"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.DestinationPort2 = types.Int64Value(int64(v))
-		case int:
-			state.DestinationPort2 = types.Int64Value(int64(v))
-		case int32:
-			state.DestinationPort2 = types.Int64Value(int64(v))
-		default:
-			state.DestinationPort2 = types.Int64Null()
-		}
-	} else {
-		state.DestinationPort2 = types.Int64Null()
-	}
-
-	if objProps, ok := aclData["object_properties"].(map[string]interface{}); ok {
-		objPropsModel := verityACLUnifiedObjectPropertiesModel{}
-		if notes, ok := objProps["notes"].(string); ok {
-			objPropsModel.Notes = types.StringValue(notes)
-		} else {
-			objPropsModel.Notes = types.StringNull()
-		}
-		state.ObjectProperties = []verityACLUnifiedObjectPropertiesModel{objPropsModel}
 	} else {
 		state.ObjectProperties = nil
+	}
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"protocol":                  &state.Protocol,
+		"source_ip":                 &state.SourceIP,
+		"source_port_operator":      &state.SourcePortOperator,
+		"destination_ip":            &state.DestinationIP,
+		"destination_port_operator": &state.DestinationPortOperator,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(aclDataMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":        &state.Enable,
+		"bidirectional": &state.Bidirectional,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(aclDataMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"source_port_1":      &state.SourcePort1,
+		"source_port_2":      &state.SourcePort2,
+		"destination_port_1": &state.DestinationPort1,
+		"destination_port_2": &state.DestinationPort2,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(aclDataMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -482,8 +391,12 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 
 func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state verityACLUnifiedResourceModel
+
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -493,117 +406,56 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
 	name := plan.Name.ValueString()
-	aclProps := &openapi.AclsPutRequestIpFilterValue{}
+	aclProps := openapi.AclsPutRequestIpFilterValue{}
 	hasChanges := false
 
-	objPropsChanged := false
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		if !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
-			objPropsChanged = true
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { aclProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Protocol, state.Protocol, func(v *string) { aclProps.Protocol = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SourceIP, state.SourceIP, func(v *string) { aclProps.SourceIp = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SourcePortOperator, state.SourcePortOperator, func(v *string) { aclProps.SourcePortOperator = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DestinationIP, state.DestinationIP, func(v *string) { aclProps.DestinationIp = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DestinationPortOperator, state.DestinationPortOperator, func(v *string) { aclProps.DestinationPortOperator = v }, &hasChanges)
+
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { aclProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Bidirectional, state.Bidirectional, func(v *bool) { aclProps.Bidirectional = v }, &hasChanges)
+
+	// Handle nullable int64 field changes (ports)
+	utils.CompareAndSetNullableInt64Field(plan.SourcePort1, state.SourcePort1, func(v *openapi.NullableInt32) { aclProps.SourcePort1 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.SourcePort2, state.SourcePort2, func(v *openapi.NullableInt32) { aclProps.SourcePort2 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.DestinationPort1, state.DestinationPort1, func(v *openapi.NullableInt32) { aclProps.DestinationPort1 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.DestinationPort2, state.DestinationPort2, func(v *openapi.NullableInt32) { aclProps.DestinationPort2 = *v }, &hasChanges)
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
+			objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+			if !plan.ObjectProperties[0].Notes.IsNull() {
+				objProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
+			} else {
+				objProps.Notes = nil
+			}
+			aclProps.ObjectProperties = &objProps
+			hasChanges = true
 		}
-	} else if len(plan.ObjectProperties) != len(state.ObjectProperties) {
-		objPropsChanged = true
-	}
-
-	if objPropsChanged {
-		if len(plan.ObjectProperties) > 0 {
-			objProps := openapi.NewAclsPutRequestIpFilterValueObjectProperties()
-			objProps.SetNotes(plan.ObjectProperties[0].Notes.ValueString())
-			aclProps.SetObjectProperties(*objProps)
-		}
-		hasChanges = true
-	}
-
-	if !plan.Enable.Equal(state.Enable) {
-		aclProps.SetEnable(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.Protocol.Equal(state.Protocol) {
-		aclProps.SetProtocol(plan.Protocol.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.Bidirectional.Equal(state.Bidirectional) {
-		aclProps.SetBidirectional(plan.Bidirectional.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.SourceIP.Equal(state.SourceIP) {
-		aclProps.SetSourceIp(plan.SourceIP.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.SourcePortOperator.Equal(state.SourcePortOperator) {
-		aclProps.SetSourcePortOperator(plan.SourcePortOperator.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.SourcePort1.Equal(state.SourcePort1) {
-		if !plan.SourcePort1.IsNull() {
-			sourcePort1 := int32(plan.SourcePort1.ValueInt64())
-			aclProps.SourcePort1 = *openapi.NewNullableInt32(&sourcePort1)
-		} else {
-			aclProps.SourcePort1 = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.SourcePort2.Equal(state.SourcePort2) {
-		if !plan.SourcePort2.IsNull() {
-			sourcePort2 := int32(plan.SourcePort2.ValueInt64())
-			aclProps.SourcePort2 = *openapi.NewNullableInt32(&sourcePort2)
-		} else {
-			aclProps.SourcePort2 = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.DestinationIP.Equal(state.DestinationIP) {
-		aclProps.SetDestinationIp(plan.DestinationIP.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.DestinationPortOperator.Equal(state.DestinationPortOperator) {
-		aclProps.SetDestinationPortOperator(plan.DestinationPortOperator.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.DestinationPort1.Equal(state.DestinationPort1) {
-		if !plan.DestinationPort1.IsNull() {
-			destinationPort1 := int32(plan.DestinationPort1.ValueInt64())
-			aclProps.DestinationPort1 = *openapi.NewNullableInt32(&destinationPort1)
-		} else {
-			aclProps.DestinationPort1 = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.DestinationPort2.Equal(state.DestinationPort2) {
-		if !plan.DestinationPort2.IsNull() {
-			destinationPort2 := int32(plan.DestinationPort2.ValueInt64())
-			aclProps.DestinationPort2 = *openapi.NewNullableInt32(&destinationPort2)
-		} else {
-			aclProps.DestinationPort2 = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
 	}
 
 	if !hasChanges {
-		tflog.Info(ctx, fmt.Sprintf("No changes detected for IPv%s ACL %s, skipping update", r.ipVersion, name))
-		resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
+	// Special handling for dual resource types
 	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddAclPatch(ctx, name, *aclProps, r.ipVersion)
-	r.provCtx.NotifyOperationAdded()
+	operationID := bulkOpsMgr.AddAclPatch(ctx, name, aclProps, r.ipVersion)
+	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv%s ACL update operation %s to complete", r.ipVersion, operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
@@ -615,8 +467,7 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 
 	tflog.Info(ctx, fmt.Sprintf("IPv%s ACL %s update operation completed successfully", r.ipVersion, name))
 	clearCache(ctx, r.provCtx, r.getCacheKey())
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
 func (r *verityACLUnifiedResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -630,26 +481,27 @@ func (r *verityACLUnifiedResource) Delete(ctx context.Context, req resource.Dele
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
-	aclName := state.Name.ValueString()
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
+	name := state.Name.ValueString()
 
-	operationID := bulkOpsMgr.AddAclDelete(ctx, aclName, r.ipVersion)
-	r.provCtx.NotifyOperationAdded()
+	// Special handling for dual resource types
+	bulkOpsMgr := r.provCtx.bulkOpsMgr
+	operationID := bulkOpsMgr.AddAclDelete(ctx, name, r.ipVersion)
+	r.notifyOperationAdded()
 
 	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv%s ACL deletion operation %s to complete", r.ipVersion, operationID))
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
 		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete IPv%s ACL %s", r.ipVersion, aclName))...,
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete IPv%s ACL %s", r.ipVersion, name))...,
 		)
 		return
 	}
 
-	tflog.Info(ctx, fmt.Sprintf("IPv%s ACL %s deletion operation completed successfully", r.ipVersion, aclName))
+	tflog.Info(ctx, fmt.Sprintf("IPv%s ACL %s deletion operation completed successfully", r.ipVersion, name))
 	clearCache(ctx, r.provCtx, r.getCacheKey())
 	resp.State.RemoveResource(ctx)
 }

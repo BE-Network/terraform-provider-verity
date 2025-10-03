@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -77,6 +76,10 @@ type veritySiteIslandsModel struct {
 	Index                 types.Int64  `tfsdk:"index"`
 }
 
+func (m veritySiteIslandsModel) GetIndex() types.Int64 {
+	return m.Index
+}
+
 type veritySitePairsModel struct {
 	Name                types.String `tfsdk:"name"`
 	Switchpoint1        types.String `tfsdk:"switchpoint_1"`
@@ -87,6 +90,10 @@ type veritySitePairsModel struct {
 	LagGroupRefType     types.String `tfsdk:"lag_group_ref_type_"`
 	IsWhiteboxPair      types.Bool   `tfsdk:"is_whitebox_pair"`
 	Index               types.Int64  `tfsdk:"index"`
+}
+
+func (m veritySitePairsModel) GetIndex() types.Int64 {
+	return m.Index
 }
 
 type veritySiteObjectPropertiesModel struct {
@@ -359,18 +366,11 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	tflog.Debug(ctx, "Reading site resource")
-
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
 	siteName := state.Name.ValueString()
 
-	var siteData map[string]interface{}
-	var exists bool
-
-	if bulkOpsMgr != nil {
-		siteData, exists = bulkOpsMgr.GetResourceResponse("site", siteName)
-		if exists {
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if siteData, exists := r.bulkOpsMgr.GetResourceResponse("site", siteName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached site data for %s from recent operation", siteName))
 			state = populateSiteState(ctx, state, siteData, nil)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -378,52 +378,35 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 		}
 	}
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("site") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping site %s verification - trusting recent successful API operation", siteName))
-		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("site") {
+		tflog.Info(ctx, fmt.Sprintf("Skipping site %s verification – trusting recent successful API operation", siteName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent site operations found, performing normal verification for %s", siteName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching sites for verification of %s", siteName))
 
 	type SitesResponse struct {
 		Site map[string]interface{} `json:"site"`
 	}
 
-	var result SitesResponse
-	var err error
-	maxRetries := 3
-
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		if attempt > 0 {
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch sites on attempt %d, retrying in %v", attempt, sleepTime))
-			time.Sleep(sleepTime)
-		}
-
-		sitesData, fetchErr := getCachedResponse(ctx, provCtx, "sites", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "sites", siteName,
+		func() (SitesResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch sites")
 			respAPI, err := r.client.SitesAPI.SitesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading sites: %v", err)
+				return SitesResponse{}, fmt.Errorf("error reading sites: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res SitesResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode sites response: %v", err)
+				return SitesResponse{}, fmt.Errorf("failed to decode sites response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched sites data with %d sites", len(res.Site)))
 			return res, nil
-		})
-
-		if fetchErr == nil {
-			result = sitesData.(SitesResponse)
-			break
-		}
-		err = fetchErr
-	}
+		}, getCachedResponse,
+	)
 
 	if err != nil {
 		resp.Diagnostics.Append(
@@ -432,43 +415,50 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for site with ID: %s", siteName))
-	if data, ok := result.Site[siteName].(map[string]interface{}); ok {
-		siteData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found site directly by ID: %s", siteName))
-	} else {
-		for apiName, s := range result.Site {
-			site, ok := s.(map[string]interface{})
-			if !ok {
-				continue
-			}
+	tflog.Debug(ctx, fmt.Sprintf("Looking for site with name: %s", siteName))
 
-			if name, ok := site["name"].(string); ok && name == siteName {
-				siteData = site
-				siteName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found site with name '%s' under API key '%s'", name, apiName))
-				break
+	siteData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Site,
+		siteName,
+		func(data interface{}) (string, bool) {
+			if site, ok := data.(map[string]interface{}); ok {
+				if name, ok := site["name"].(string); ok {
+					return name, true
+				}
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Site with ID '%s' not found in API response", siteName))
+		tflog.Debug(ctx, fmt.Sprintf("Site with name '%s' not found in API response", siteName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state = populateSiteState(ctx, state, siteData, nil)
+	siteMap, ok := siteData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Site Data",
+			fmt.Sprintf("Site data is not in expected format for %s", siteName),
+		)
+		return
+	}
 
+	tflog.Debug(ctx, fmt.Sprintf("Found site '%s' under API key '%s'", siteName, actualAPIName))
+
+	state = populateSiteState(ctx, state, siteMap, nil)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state veritySiteResourceModel
+
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -499,29 +489,46 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	name := plan.Name.ValueString()
-	siteReq := &openapi.SitesPatchRequestSiteValue{}
+	siteReq := openapi.SitesPatchRequestSiteValue{}
 	hasChanges := false
 
-	objPropsChanged := false
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		if len(plan.ObjectProperties[0].SystemGraphs) != len(state.ObjectProperties[0].SystemGraphs) {
-			objPropsChanged = true
-		} else {
-			for i, planGraph := range plan.ObjectProperties[0].SystemGraphs {
-				if i >= len(state.ObjectProperties[0].SystemGraphs) ||
-					!planGraph.GraphNumData.Equal(state.ObjectProperties[0].SystemGraphs[i].GraphNumData) ||
-					!planGraph.Index.Equal(state.ObjectProperties[0].SystemGraphs[i].Index) {
-					objPropsChanged = true
-					break
-				}
-			}
-		}
-	} else if len(plan.ObjectProperties) != len(state.ObjectProperties) {
-		objPropsChanged = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { siteReq.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SpanningTreeType, state.SpanningTreeType, func(v *string) { siteReq.SpanningTreeType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RegionName, state.RegionName, func(v *string) { siteReq.RegionName = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DscpToPBitMap, state.DscpToPBitMap, func(v *string) { siteReq.DscpToPBitMap = v }, &hasChanges)
 
-	if objPropsChanged {
-		if len(plan.ObjectProperties) > 0 {
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { siteReq.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.ForceSpanningTreeOnFabricPorts, state.ForceSpanningTreeOnFabricPorts, func(v *bool) { siteReq.ForceSpanningTreeOnFabricPorts = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.ReadOnlyMode, state.ReadOnlyMode, func(v *bool) { siteReq.ReadOnlyMode = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AggressiveReporting, state.AggressiveReporting, func(v *bool) { siteReq.AggressiveReporting = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableDhcpSnooping, state.EnableDhcpSnooping, func(v *bool) { siteReq.EnableDhcpSnooping = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.IpSourceGuard, state.IpSourceGuard, func(v *bool) { siteReq.IpSourceGuard = v }, &hasChanges)
+
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.MacAddressAgingTime, state.MacAddressAgingTime, func(v *int32) { siteReq.MacAddressAgingTime = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.MlagDelayRestoreTimer, state.MlagDelayRestoreTimer, func(v *int32) { siteReq.MlagDelayRestoreTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.BgpKeepaliveTimer, state.BgpKeepaliveTimer, func(v *int32) { siteReq.BgpKeepaliveTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.BgpHoldDownTimer, state.BgpHoldDownTimer, func(v *int32) { siteReq.BgpHoldDownTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.SpineBgpAdvertisementInterval, state.SpineBgpAdvertisementInterval, func(v *int32) { siteReq.SpineBgpAdvertisementInterval = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.SpineBgpConnectTimer, state.SpineBgpConnectTimer, func(v *int32) { siteReq.SpineBgpConnectTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.LeafBgpKeepAliveTimer, state.LeafBgpKeepAliveTimer, func(v *int32) { siteReq.LeafBgpKeepAliveTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.LeafBgpHoldDownTimer, state.LeafBgpHoldDownTimer, func(v *int32) { siteReq.LeafBgpHoldDownTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.LeafBgpAdvertisementInterval, state.LeafBgpAdvertisementInterval, func(v *int32) { siteReq.LeafBgpAdvertisementInterval = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.LeafBgpConnectTimer, state.LeafBgpConnectTimer, func(v *int32) { siteReq.LeafBgpConnectTimer = v }, &hasChanges)
+
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.Revision, state.Revision, func(v *openapi.NullableInt32) { siteReq.Revision = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.LinkStateTimeoutValue, state.LinkStateTimeoutValue, func(v *openapi.NullableInt32) { siteReq.LinkStateTimeoutValue = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.EvpnMultihomingStartupDelay, state.EvpnMultihomingStartupDelay, func(v *openapi.NullableInt32) { siteReq.EvpnMultihomingStartupDelay = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.EvpnMacHoldtime, state.EvpnMacHoldtime, func(v *openapi.NullableInt32) { siteReq.EvpnMacHoldtime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.CrcFailureThreshold, state.CrcFailureThreshold, func(v *openapi.NullableInt32) { siteReq.CrcFailureThreshold = *v }, &hasChanges)
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 ||
+			len(plan.ObjectProperties[0].SystemGraphs) != len(state.ObjectProperties[0].SystemGraphs) {
 			siteObjProps := openapi.SitesPatchRequestSiteValueObjectProperties{}
 			if len(plan.ObjectProperties[0].SystemGraphs) > 0 {
 				systemGraphsList := make([]openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner, len(plan.ObjectProperties[0].SystemGraphs))
@@ -542,91 +549,56 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 				siteObjProps.SystemGraphs = systemGraphsList
 			}
 			siteReq.ObjectProperties = &siteObjProps
-		} else {
-			siteReq.ObjectProperties = nil
-		}
-		hasChanges = true
-	}
-
-	if !plan.Enable.Equal(state.Enable) {
-		siteReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-
-	serviceForSiteChanged := !plan.ServiceForSite.Equal(state.ServiceForSite)
-	serviceForSiteRefTypeChanged := !plan.ServiceForSiteRefType.Equal(state.ServiceForSiteRefType)
-
-	if serviceForSiteChanged || serviceForSiteRefTypeChanged {
-		// Validate using one ref type supported rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.ServiceForSite, plan.ServiceForSiteRefType,
-			"service_for_site", "service_for_site_ref_type_",
-			serviceForSiteChanged, serviceForSiteRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if serviceForSiteChanged && !serviceForSiteRefTypeChanged {
-			// Just send the base field
-			if !plan.ServiceForSite.IsNull() && plan.ServiceForSite.ValueString() != "" {
-				siteReq.ServiceForSite = openapi.PtrString(plan.ServiceForSite.ValueString())
-			} else {
-				siteReq.ServiceForSite = openapi.PtrString("")
-			}
 			hasChanges = true
-		} else if serviceForSiteRefTypeChanged {
-			// Send both fields
-			if !plan.ServiceForSite.IsNull() && plan.ServiceForSite.ValueString() != "" {
-				siteReq.ServiceForSite = openapi.PtrString(plan.ServiceForSite.ValueString())
-			} else {
-				siteReq.ServiceForSite = openapi.PtrString("")
-			}
-
-			if !plan.ServiceForSiteRefType.IsNull() && plan.ServiceForSiteRefType.ValueString() != "" {
-				siteReq.ServiceForSiteRefType = openapi.PtrString(plan.ServiceForSiteRefType.ValueString())
-			} else {
-				siteReq.ServiceForSiteRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	if !plan.SpanningTreeType.Equal(state.SpanningTreeType) {
-		siteReq.SpanningTreeType = openapi.PtrString(plan.SpanningTreeType.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.RegionName.Equal(state.RegionName) {
-		siteReq.RegionName = openapi.PtrString(plan.RegionName.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.Revision.Equal(state.Revision) {
-		if !plan.Revision.IsNull() {
-			revisionVal := int32(plan.Revision.ValueInt64())
-			siteReq.Revision = *openapi.NewNullableInt32(&revisionVal)
 		} else {
-			siteReq.Revision = *openapi.NewNullableInt32(nil)
+			// Check if any individual graph changed
+			graphsChanged := false
+			for i, planGraph := range plan.ObjectProperties[0].SystemGraphs {
+				if i >= len(state.ObjectProperties[0].SystemGraphs) ||
+					!planGraph.GraphNumData.Equal(state.ObjectProperties[0].SystemGraphs[i].GraphNumData) ||
+					!planGraph.Index.Equal(state.ObjectProperties[0].SystemGraphs[i].Index) {
+					graphsChanged = true
+					break
+				}
+			}
+			if graphsChanged {
+				siteObjProps := openapi.SitesPatchRequestSiteValueObjectProperties{}
+				if len(plan.ObjectProperties[0].SystemGraphs) > 0 {
+					systemGraphsList := make([]openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner, len(plan.ObjectProperties[0].SystemGraphs))
+					for i, graph := range plan.ObjectProperties[0].SystemGraphs {
+						graphProps := openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{}
+						if !graph.GraphNumData.IsNull() {
+							graphProps.GraphNumData = openapi.PtrString(graph.GraphNumData.ValueString())
+						} else {
+							graphProps.GraphNumData = nil
+						}
+						if !graph.Index.IsNull() {
+							graphProps.Index = openapi.PtrInt32(int32(graph.Index.ValueInt64()))
+						} else {
+							graphProps.Index = nil
+						}
+						systemGraphsList[i] = graphProps
+					}
+					siteObjProps.SystemGraphs = systemGraphsList
+				}
+				siteReq.ObjectProperties = &siteObjProps
+				hasChanges = true
+			}
 		}
-		hasChanges = true
 	}
 
-	if !plan.ForceSpanningTreeOnFabricPorts.Equal(state.ForceSpanningTreeOnFabricPorts) {
-		siteReq.ForceSpanningTreeOnFabricPorts = openapi.PtrBool(plan.ForceSpanningTreeOnFabricPorts.ValueBool())
-		hasChanges = true
+	// Handle service_for_site and service_for_site_ref_type_ fields using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.ServiceForSite, state.ServiceForSite, plan.ServiceForSiteRefType, state.ServiceForSiteRefType,
+		func(v *string) { siteReq.ServiceForSite = v },
+		func(v *string) { siteReq.ServiceForSiteRefType = v },
+		"service_for_site", "service_for_site_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
 	}
 
-	if !plan.ReadOnlyMode.Equal(state.ReadOnlyMode) {
-		siteReq.ReadOnlyMode = openapi.PtrBool(plan.ReadOnlyMode.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.DscpToPBitMap.Equal(state.DscpToPBitMap) {
-		siteReq.DscpToPBitMap = openapi.PtrString(plan.DscpToPBitMap.ValueString())
-		hasChanges = true
-	}
-
-	// Handle AnycastMacAddress and AnycastMacAddressAutoAssigned changes in a coordinated way
+	// Handle AnycastMacAddress and AnycastMacAddressAutoAssigned changes
 	anycastMacAddressChanged := !plan.AnycastMacAddress.IsUnknown() && !plan.AnycastMacAddress.Equal(state.AnycastMacAddress)
 	anycastMacAddressAutoAssignedChanged := !plan.AnycastMacAddressAutoAssigned.Equal(state.AnycastMacAddressAutoAssigned)
 
@@ -683,224 +655,215 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 		hasChanges = true
 	}
 
-	if !plan.MacAddressAgingTime.Equal(state.MacAddressAgingTime) {
-		if !plan.MacAddressAgingTime.IsNull() {
-			siteReq.MacAddressAgingTime = openapi.PtrInt32(int32(plan.MacAddressAgingTime.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.MlagDelayRestoreTimer.Equal(state.MlagDelayRestoreTimer) {
-		if !plan.MlagDelayRestoreTimer.IsNull() {
-			siteReq.MlagDelayRestoreTimer = openapi.PtrInt32(int32(plan.MlagDelayRestoreTimer.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.BgpKeepaliveTimer.Equal(state.BgpKeepaliveTimer) {
-		if !plan.BgpKeepaliveTimer.IsNull() {
-			siteReq.BgpKeepaliveTimer = openapi.PtrInt32(int32(plan.BgpKeepaliveTimer.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.BgpHoldDownTimer.Equal(state.BgpHoldDownTimer) {
-		if !plan.BgpHoldDownTimer.IsNull() {
-			siteReq.BgpHoldDownTimer = openapi.PtrInt32(int32(plan.BgpHoldDownTimer.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.SpineBgpAdvertisementInterval.Equal(state.SpineBgpAdvertisementInterval) {
-		if !plan.SpineBgpAdvertisementInterval.IsNull() {
-			siteReq.SpineBgpAdvertisementInterval = openapi.PtrInt32(int32(plan.SpineBgpAdvertisementInterval.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.SpineBgpConnectTimer.Equal(state.SpineBgpConnectTimer) {
-		if !plan.SpineBgpConnectTimer.IsNull() {
-			siteReq.SpineBgpConnectTimer = openapi.PtrInt32(int32(plan.SpineBgpConnectTimer.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.LeafBgpKeepAliveTimer.Equal(state.LeafBgpKeepAliveTimer) {
-		if !plan.LeafBgpKeepAliveTimer.IsNull() {
-			siteReq.LeafBgpKeepAliveTimer = openapi.PtrInt32(int32(plan.LeafBgpKeepAliveTimer.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.LeafBgpHoldDownTimer.Equal(state.LeafBgpHoldDownTimer) {
-		if !plan.LeafBgpHoldDownTimer.IsNull() {
-			siteReq.LeafBgpHoldDownTimer = openapi.PtrInt32(int32(plan.LeafBgpHoldDownTimer.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.LeafBgpAdvertisementInterval.Equal(state.LeafBgpAdvertisementInterval) {
-		if !plan.LeafBgpAdvertisementInterval.IsNull() {
-			siteReq.LeafBgpAdvertisementInterval = openapi.PtrInt32(int32(plan.LeafBgpAdvertisementInterval.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.LeafBgpConnectTimer.Equal(state.LeafBgpConnectTimer) {
-		if !plan.LeafBgpConnectTimer.IsNull() {
-			siteReq.LeafBgpConnectTimer = openapi.PtrInt32(int32(plan.LeafBgpConnectTimer.ValueInt64()))
-		}
-		hasChanges = true
-	}
-
-	if !plan.LinkStateTimeoutValue.Equal(state.LinkStateTimeoutValue) {
-		if !plan.LinkStateTimeoutValue.IsNull() {
-			val := int32(plan.LinkStateTimeoutValue.ValueInt64())
-			siteReq.LinkStateTimeoutValue = *openapi.NewNullableInt32(&val)
-		} else {
-			siteReq.LinkStateTimeoutValue = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.EvpnMultihomingStartupDelay.Equal(state.EvpnMultihomingStartupDelay) {
-		if !plan.EvpnMultihomingStartupDelay.IsNull() {
-			val := int32(plan.EvpnMultihomingStartupDelay.ValueInt64())
-			siteReq.EvpnMultihomingStartupDelay = *openapi.NewNullableInt32(&val)
-		} else {
-			siteReq.EvpnMultihomingStartupDelay = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.EvpnMacHoldtime.Equal(state.EvpnMacHoldtime) {
-		if !plan.EvpnMacHoldtime.IsNull() {
-			val := int32(plan.EvpnMacHoldtime.ValueInt64())
-			siteReq.EvpnMacHoldtime = *openapi.NewNullableInt32(&val)
-		} else {
-			siteReq.EvpnMacHoldtime = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.AggressiveReporting.Equal(state.AggressiveReporting) {
-		siteReq.AggressiveReporting = openapi.PtrBool(plan.AggressiveReporting.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.CrcFailureThreshold.Equal(state.CrcFailureThreshold) {
-		if !plan.CrcFailureThreshold.IsNull() {
-			val := int32(plan.CrcFailureThreshold.ValueInt64())
-			siteReq.CrcFailureThreshold = *openapi.NewNullableInt32(&val)
-		} else {
-			siteReq.CrcFailureThreshold = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.EnableDhcpSnooping.Equal(state.EnableDhcpSnooping) {
-		siteReq.EnableDhcpSnooping = openapi.PtrBool(plan.EnableDhcpSnooping.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.IpSourceGuard.Equal(state.IpSourceGuard) {
-		siteReq.IpSourceGuard = openapi.PtrBool(plan.IpSourceGuard.ValueBool())
-		hasChanges = true
-	}
-
-	islandsChanged := len(plan.Islands) != len(state.Islands)
-	if !islandsChanged {
-		for i, planIsland := range plan.Islands {
-			if i >= len(state.Islands) ||
-				!planIsland.ToiSwitchpoint.Equal(state.Islands[i].ToiSwitchpoint) ||
-				!planIsland.ToiSwitchpointRefType.Equal(state.Islands[i].ToiSwitchpointRefType) ||
-				!planIsland.Index.Equal(state.Islands[i].Index) {
-				islandsChanged = true
-				break
+	// Handle islands
+	islandsHandler := utils.IndexedItemHandler[veritySiteIslandsModel, openapi.SitesPatchRequestSiteValueIslandsInner]{
+		CreateNew: func(planItem veritySiteIslandsModel) openapi.SitesPatchRequestSiteValueIslandsInner {
+			island := openapi.SitesPatchRequestSiteValueIslandsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
-		}
+
+			if !planItem.ToiSwitchpoint.IsNull() {
+				island.ToiSwitchpoint = openapi.PtrString(planItem.ToiSwitchpoint.ValueString())
+			} else {
+				island.ToiSwitchpoint = openapi.PtrString("")
+			}
+
+			if !planItem.ToiSwitchpointRefType.IsNull() {
+				island.ToiSwitchpointRefType = openapi.PtrString(planItem.ToiSwitchpointRefType.ValueString())
+			} else {
+				island.ToiSwitchpointRefType = openapi.PtrString("")
+			}
+
+			return island
+		},
+		UpdateExisting: func(planItem veritySiteIslandsModel, stateItem veritySiteIslandsModel) (openapi.SitesPatchRequestSiteValueIslandsInner, bool) {
+			island := openapi.SitesPatchRequestSiteValueIslandsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.ToiSwitchpoint.Equal(stateItem.ToiSwitchpoint) {
+				if !planItem.ToiSwitchpoint.IsNull() {
+					island.ToiSwitchpoint = openapi.PtrString(planItem.ToiSwitchpoint.ValueString())
+				} else {
+					island.ToiSwitchpoint = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.ToiSwitchpointRefType.Equal(stateItem.ToiSwitchpointRefType) {
+				if !planItem.ToiSwitchpointRefType.IsNull() {
+					island.ToiSwitchpointRefType = openapi.PtrString(planItem.ToiSwitchpointRefType.ValueString())
+				} else {
+					island.ToiSwitchpointRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			return island, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValueIslandsInner {
+			return openapi.SitesPatchRequestSiteValueIslandsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
 	}
 
+	changedIslands, islandsChanged := utils.ProcessIndexedArrayUpdates(plan.Islands, state.Islands, islandsHandler)
 	if islandsChanged {
-		if len(plan.Islands) > 0 {
-			islandsList := make([]openapi.SitesPatchRequestSiteValueIslandsInner, len(plan.Islands))
-			for i, island := range plan.Islands {
-				islandProps := openapi.SitesPatchRequestSiteValueIslandsInner{}
-				if !island.ToiSwitchpoint.IsNull() {
-					islandProps.ToiSwitchpoint = openapi.PtrString(island.ToiSwitchpoint.ValueString())
-				}
-				if !island.ToiSwitchpointRefType.IsNull() {
-					islandProps.ToiSwitchpointRefType = openapi.PtrString(island.ToiSwitchpointRefType.ValueString())
-				}
-				if !island.Index.IsNull() {
-					islandProps.Index = openapi.PtrInt32(int32(island.Index.ValueInt64()))
-				}
-				islandsList[i] = islandProps
-			}
-			siteReq.Islands = islandsList
-		} else {
-			siteReq.Islands = []openapi.SitesPatchRequestSiteValueIslandsInner{}
-		}
+		siteReq.Islands = changedIslands
 		hasChanges = true
 	}
 
-	pairsChanged := len(plan.Pairs) != len(state.Pairs)
-	if !pairsChanged {
-		for i, planPair := range plan.Pairs {
-			if i >= len(state.Pairs) ||
-				!planPair.Name.Equal(state.Pairs[i].Name) ||
-				!planPair.Switchpoint1.Equal(state.Pairs[i].Switchpoint1) ||
-				!planPair.Switchpoint1RefType.Equal(state.Pairs[i].Switchpoint1RefType) ||
-				!planPair.Switchpoint2.Equal(state.Pairs[i].Switchpoint2) ||
-				!planPair.Switchpoint2RefType.Equal(state.Pairs[i].Switchpoint2RefType) ||
-				!planPair.LagGroup.Equal(state.Pairs[i].LagGroup) ||
-				!planPair.LagGroupRefType.Equal(state.Pairs[i].LagGroupRefType) ||
-				!planPair.IsWhiteboxPair.Equal(state.Pairs[i].IsWhiteboxPair) ||
-				!planPair.Index.Equal(state.Pairs[i].Index) {
-				pairsChanged = true
-				break
+	// Handle pairs list
+	pairsHandler := utils.IndexedItemHandler[veritySitePairsModel, openapi.SitesPatchRequestSiteValuePairsInner]{
+		CreateNew: func(planItem veritySitePairsModel) openapi.SitesPatchRequestSiteValuePairsInner {
+			pair := openapi.SitesPatchRequestSiteValuePairsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
-		}
+
+			if !planItem.Name.IsNull() {
+				pair.Name = openapi.PtrString(planItem.Name.ValueString())
+			} else {
+				pair.Name = openapi.PtrString("")
+			}
+
+			if !planItem.Switchpoint1.IsNull() {
+				pair.Switchpoint1 = openapi.PtrString(planItem.Switchpoint1.ValueString())
+			} else {
+				pair.Switchpoint1 = openapi.PtrString("")
+			}
+
+			if !planItem.Switchpoint1RefType.IsNull() {
+				pair.Switchpoint1RefType = openapi.PtrString(planItem.Switchpoint1RefType.ValueString())
+			} else {
+				pair.Switchpoint1RefType = openapi.PtrString("")
+			}
+
+			if !planItem.Switchpoint2.IsNull() {
+				pair.Switchpoint2 = openapi.PtrString(planItem.Switchpoint2.ValueString())
+			} else {
+				pair.Switchpoint2 = openapi.PtrString("")
+			}
+
+			if !planItem.Switchpoint2RefType.IsNull() {
+				pair.Switchpoint2RefType = openapi.PtrString(planItem.Switchpoint2RefType.ValueString())
+			} else {
+				pair.Switchpoint2RefType = openapi.PtrString("")
+			}
+
+			if !planItem.LagGroup.IsNull() {
+				pair.LagGroup = openapi.PtrString(planItem.LagGroup.ValueString())
+			} else {
+				pair.LagGroup = openapi.PtrString("")
+			}
+
+			if !planItem.LagGroupRefType.IsNull() {
+				pair.LagGroupRefType = openapi.PtrString(planItem.LagGroupRefType.ValueString())
+			} else {
+				pair.LagGroupRefType = openapi.PtrString("")
+			}
+
+			if !planItem.IsWhiteboxPair.IsNull() {
+				pair.IsWhiteboxPair = openapi.PtrBool(planItem.IsWhiteboxPair.ValueBool())
+			} else {
+				pair.IsWhiteboxPair = openapi.PtrBool(false)
+			}
+
+			return pair
+		},
+		UpdateExisting: func(planItem veritySitePairsModel, stateItem veritySitePairsModel) (openapi.SitesPatchRequestSiteValuePairsInner, bool) {
+			pair := openapi.SitesPatchRequestSiteValuePairsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.Name.Equal(stateItem.Name) {
+				if !planItem.Name.IsNull() {
+					pair.Name = openapi.PtrString(planItem.Name.ValueString())
+				} else {
+					pair.Name = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.Switchpoint1.Equal(stateItem.Switchpoint1) {
+				if !planItem.Switchpoint1.IsNull() {
+					pair.Switchpoint1 = openapi.PtrString(planItem.Switchpoint1.ValueString())
+				} else {
+					pair.Switchpoint1 = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.Switchpoint1RefType.Equal(stateItem.Switchpoint1RefType) {
+				if !planItem.Switchpoint1RefType.IsNull() {
+					pair.Switchpoint1RefType = openapi.PtrString(planItem.Switchpoint1RefType.ValueString())
+				} else {
+					pair.Switchpoint1RefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.Switchpoint2.Equal(stateItem.Switchpoint2) {
+				if !planItem.Switchpoint2.IsNull() {
+					pair.Switchpoint2 = openapi.PtrString(planItem.Switchpoint2.ValueString())
+				} else {
+					pair.Switchpoint2 = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.Switchpoint2RefType.Equal(stateItem.Switchpoint2RefType) {
+				if !planItem.Switchpoint2RefType.IsNull() {
+					pair.Switchpoint2RefType = openapi.PtrString(planItem.Switchpoint2RefType.ValueString())
+				} else {
+					pair.Switchpoint2RefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.LagGroup.Equal(stateItem.LagGroup) {
+				if !planItem.LagGroup.IsNull() {
+					pair.LagGroup = openapi.PtrString(planItem.LagGroup.ValueString())
+				} else {
+					pair.LagGroup = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.LagGroupRefType.Equal(stateItem.LagGroupRefType) {
+				if !planItem.LagGroupRefType.IsNull() {
+					pair.LagGroupRefType = openapi.PtrString(planItem.LagGroupRefType.ValueString())
+				} else {
+					pair.LagGroupRefType = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.IsWhiteboxPair.Equal(stateItem.IsWhiteboxPair) {
+				if !planItem.IsWhiteboxPair.IsNull() {
+					pair.IsWhiteboxPair = openapi.PtrBool(planItem.IsWhiteboxPair.ValueBool())
+				} else {
+					pair.IsWhiteboxPair = openapi.PtrBool(false)
+				}
+				fieldChanged = true
+			}
+
+			return pair, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValuePairsInner {
+			return openapi.SitesPatchRequestSiteValuePairsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
 	}
 
+	changedPairs, pairsChanged := utils.ProcessIndexedArrayUpdates(plan.Pairs, state.Pairs, pairsHandler)
 	if pairsChanged {
-		if len(plan.Pairs) > 0 {
-			pairsList := make([]openapi.SitesPatchRequestSiteValuePairsInner, len(plan.Pairs))
-			for i, pair := range plan.Pairs {
-				pairProps := openapi.SitesPatchRequestSiteValuePairsInner{}
-				if !pair.Name.IsNull() {
-					pairProps.Name = openapi.PtrString(pair.Name.ValueString())
-				}
-				if !pair.Switchpoint1.IsNull() {
-					pairProps.Switchpoint1 = openapi.PtrString(pair.Switchpoint1.ValueString())
-				}
-				if !pair.Switchpoint1RefType.IsNull() {
-					pairProps.Switchpoint1RefType = openapi.PtrString(pair.Switchpoint1RefType.ValueString())
-				}
-				if !pair.Switchpoint2.IsNull() {
-					pairProps.Switchpoint2 = openapi.PtrString(pair.Switchpoint2.ValueString())
-				}
-				if !pair.Switchpoint2RefType.IsNull() {
-					pairProps.Switchpoint2RefType = openapi.PtrString(pair.Switchpoint2RefType.ValueString())
-				}
-				if !pair.LagGroup.IsNull() {
-					pairProps.LagGroup = openapi.PtrString(pair.LagGroup.ValueString())
-				}
-				if !pair.LagGroupRefType.IsNull() {
-					pairProps.LagGroupRefType = openapi.PtrString(pair.LagGroupRefType.ValueString())
-				}
-				if !pair.IsWhiteboxPair.IsNull() {
-					pairProps.IsWhiteboxPair = openapi.PtrBool(pair.IsWhiteboxPair.ValueBool())
-				}
-				if !pair.Index.IsNull() {
-					pairProps.Index = openapi.PtrInt32(int32(pair.Index.ValueInt64()))
-				}
-				pairsList[i] = pairProps
-			}
-			siteReq.Pairs = pairsList
-		} else {
-			siteReq.Pairs = []openapi.SitesPatchRequestSiteValuePairsInner{}
-		}
+		siteReq.Pairs = changedPairs
 		hasChanges = true
 	}
 
@@ -909,17 +872,11 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPatch(ctx, "site", name, *siteReq)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Site update operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Site %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "site", name, siteReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Site %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "sites")
 
@@ -1560,7 +1517,6 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			objProps.SystemGraphs = []veritySiteSystemGraphsModel{}
 		}
 
-		// Following Gateway pattern - set as slice with single element
 		state.ObjectProperties = []veritySiteObjectPropertiesModel{*objProps}
 	} else if plan != nil && len(plan.ObjectProperties) > 0 {
 		state.ObjectProperties = plan.ObjectProperties

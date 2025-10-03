@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -110,30 +109,27 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 	}
 
 	name := plan.Name.ValueString()
-	sflowCollectorProps := &openapi.SflowcollectorsPutRequestSflowCollectorValue{
+	sflowCollectorReq := &openapi.SflowcollectorsPutRequestSflowCollectorValue{
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		sflowCollectorProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Ip", APIField: &sflowCollectorReq.Ip, TFValue: plan.Ip},
+	})
 
-	if !plan.Ip.IsNull() {
-		sflowCollectorProps.Ip = openapi.PtrString(plan.Ip.ValueString())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &sflowCollectorReq.Enable, TFValue: plan.Enable},
+	})
 
-	if !plan.Port.IsNull() {
-		sflowCollectorProps.Port = openapi.PtrInt32(int32(plan.Port.ValueInt64()))
-	}
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "Port", APIField: &sflowCollectorReq.Port, TFValue: plan.Port},
+	})
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "sflow_collector", name, *sflowCollectorProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for sflow collector creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create SFlow Collector %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "sflow_collector", name, *sflowCollectorReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -173,36 +169,26 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 		SflowCollector map[string]interface{} `json:"sflow_collector"`
 	}
 
-	var result SflowCollectorsResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		sflowCollectorsData, fetchErr := getCachedResponse(ctx, r.provCtx, "sflowcollectors", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "sflow_collectors", sflowCollectorName,
+		func() (SflowCollectorsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch sflow collectors")
 			respAPI, err := r.client.SFlowCollectorsAPI.SflowcollectorsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading sflow collectors: %v", err)
+				return SflowCollectorsResponse{}, fmt.Errorf("error reading sflow collectors: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res SflowCollectorsResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode sflow collectors response: %v", err)
+				return SflowCollectorsResponse{}, fmt.Errorf("failed to decode sflow collectors response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d sflow collectors", len(res.SflowCollector)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch sflow collectors on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = sflowCollectorsData.(SflowCollectorsResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read SFlow Collector %s", sflowCollectorName))...,
@@ -210,66 +196,65 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for sflow collector with ID: %s", sflowCollectorName))
-	var sflowCollectorData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for sflow collector with name: %s", sflowCollectorName))
 
-	if data, ok := result.SflowCollector[sflowCollectorName].(map[string]interface{}); ok {
-		sflowCollectorData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found sflow collector directly by ID: %s", sflowCollectorName))
-	} else {
-		for apiName, s := range result.SflowCollector {
-			sflowCollector, ok := s.(map[string]interface{})
-			if !ok {
-				continue
+	sflowCollectorData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.SflowCollector,
+		sflowCollectorName,
+		func(data interface{}) (string, bool) {
+			if sflowCollector, ok := data.(map[string]interface{}); ok {
+				if name, ok := sflowCollector["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := sflowCollector["name"].(string); ok && name == sflowCollectorName {
-				sflowCollectorData = sflowCollector
-				sflowCollectorName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found sflow collector with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("SFlow Collector with ID '%s' not found in API response", sflowCollectorName))
+		tflog.Debug(ctx, fmt.Sprintf("SFlow Collector with name '%s' not found in API response", sflowCollectorName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", sflowCollectorData["name"]))
-
-	if ip, ok := sflowCollectorData["ip"].(string); ok {
-		state.Ip = types.StringValue(ip)
-	} else {
-		state.Ip = types.StringNull()
+	sflowCollectorMap, ok := sflowCollectorData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid SFlow Collector Data",
+			fmt.Sprintf("SFlow Collector data is not in expected format for %s", sflowCollectorName),
+		)
+		return
 	}
 
-	if enable, ok := sflowCollectorData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	tflog.Debug(ctx, fmt.Sprintf("Found sflow collector '%s' under API key '%s'", sflowCollectorName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(sflowCollectorMap["name"])
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"ip": &state.Ip,
 	}
 
-	if value, ok := sflowCollectorData["port"]; ok && value != nil {
-		switch v := value.(type) {
-		case int:
-			state.Port = types.Int64Value(int64(v))
-		case int32:
-			state.Port = types.Int64Value(int64(v))
-		case int64:
-			state.Port = types.Int64Value(v)
-		case float64:
-			state.Port = types.Int64Value(int64(v))
-		default:
-			state.Port = types.Int64Null()
-		}
-	} else {
-		state.Port = types.Int64Null()
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(sflowCollectorMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(sflowCollectorMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"port": &state.Port,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(sflowCollectorMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -301,41 +286,26 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 	sflowCollectorProps := openapi.SflowcollectorsPutRequestSflowCollectorValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		sflowCollectorProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sflowCollectorProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Ip, state.Ip, func(v *string) { sflowCollectorProps.Ip = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		sflowCollectorProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sflowCollectorProps.Enable = v }, &hasChanges)
 
-	if !plan.Ip.Equal(state.Ip) {
-		sflowCollectorProps.Ip = openapi.PtrString(plan.Ip.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.Port.Equal(state.Port) {
-		sflowCollectorProps.Port = openapi.PtrInt32(int32(plan.Port.ValueInt64()))
-		hasChanges = true
-	}
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.Port, state.Port, func(v *int32) { sflowCollectorProps.Port = v }, &hasChanges)
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "sflow_collector", name, sflowCollectorProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for sflow collector update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update SFlow Collector %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "sflow_collector", name, sflowCollectorProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "sflow_collectors")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -358,14 +328,9 @@ func (r *veritySflowCollectorResource) Delete(ctx context.Context, req resource.
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "sflow_collector", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for sflow collector deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete SFlow Collector %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "sflow_collector", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

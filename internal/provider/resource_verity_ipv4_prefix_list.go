@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -50,6 +48,10 @@ type verityIpv4PrefixListListsModel struct {
 	GreaterThanEqualValue types.Int64  `tfsdk:"greater_than_equal_value"`
 	LessThanEqualValue    types.Int64  `tfsdk:"less_than_equal_value"`
 	Index                 types.Int64  `tfsdk:"index"`
+}
+
+func (l verityIpv4PrefixListListsModel) GetIndex() types.Int64 {
+	return l.Index
 }
 
 type verityIpv4PrefixListObjectPropertiesModel struct {
@@ -164,10 +166,24 @@ func (r *verityIpv4PrefixListResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		ipv4PrefixListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &ipv4PrefixListProps.Enable, TFValue: plan.Enable},
+	})
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		if !op.Notes.IsNull() {
+			objectProps.Notes = openapi.PtrString(op.Notes.ValueString())
+		} else {
+			objectProps.Notes = nil
+		}
+		ipv4PrefixListProps.ObjectProperties = &objectProps
 	}
 
+	// Handle lists
 	if len(plan.Lists) > 0 {
 		var lists []openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner
 		for _, listItem := range plan.Lists {
@@ -202,27 +218,11 @@ func (r *verityIpv4PrefixListResource) Create(ctx context.Context, req resource.
 		ipv4PrefixListProps.Lists = lists
 	}
 
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			objectProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			objectProps.Notes = nil
-		}
-		ipv4PrefixListProps.ObjectProperties = &objectProps
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "ipv4_prefix_list", name, ipv4PrefixListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv4 Prefix List create operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create IPv4 Prefix List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv4_prefix_list", name, *ipv4PrefixListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("IPv4 Prefix List %s create operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv4_prefix_lists")
 
@@ -259,36 +259,26 @@ func (r *verityIpv4PrefixListResource) Read(ctx context.Context, req resource.Re
 		Ipv4PrefixList map[string]map[string]interface{} `json:"ipv4_prefix_list"`
 	}
 
-	var result Ipv4PrefixListResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		ipv4PrefixListsData, fetchErr := getCachedResponse(ctx, r.provCtx, "ipv4_prefix_lists", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "ipv4_prefix_lists", name,
+		func() (Ipv4PrefixListResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch IPv4 prefix lists")
 			resp, err := r.client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading IPv4 prefix lists: %v", err)
+				return Ipv4PrefixListResponse{}, fmt.Errorf("error reading IPv4 prefix lists: %v", err)
 			}
 			defer resp.Body.Close()
 
 			var result Ipv4PrefixListResponse
 			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return nil, fmt.Errorf("error decoding IPv4 prefix list response: %v", err)
+				return Ipv4PrefixListResponse{}, fmt.Errorf("error decoding IPv4 prefix list response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d IPv4 prefix lists", len(result.Ipv4PrefixList)))
 			return result, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch IPv4 prefix lists on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = ipv4PrefixListsData.(Ipv4PrefixListResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read IPv4 Prefix List %s", name))...,
@@ -296,41 +286,62 @@ func (r *verityIpv4PrefixListResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv4 prefix list with ID: %s", name))
-	var ipv4PrefixListData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv4 prefix list with name: %s", name))
 
-	if data, ok := result.Ipv4PrefixList[name]; ok {
-		ipv4PrefixListData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found IPv4 prefix list directly by ID: %s", name))
-	} else {
-		for apiName, p := range result.Ipv4PrefixList {
-			if nameVal, ok := p["name"].(string); ok && nameVal == name {
-				ipv4PrefixListData = p
-				name = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found IPv4 prefix list with name '%s' under API key '%s'", nameVal, apiName))
-				break
+	ipv4PrefixListData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Ipv4PrefixList,
+		name,
+		func(data map[string]interface{}) (string, bool) {
+			if name, ok := data["name"].(string); ok {
+				return name, true
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("IPv4 Prefix List with ID '%s' not found in API response", name))
+		tflog.Debug(ctx, fmt.Sprintf("IPv4 Prefix List with name '%s' not found in API response", name))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", ipv4PrefixListData["name"]))
-
-	if enable, ok := ipv4PrefixListData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	ipv4PrefixListMap, ok := ipv4PrefixListData, true
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid IPv4 Prefix List Data",
+			fmt.Sprintf("IPv4 Prefix List data is not in expected format for %s", name),
+		)
+		return
 	}
 
-	if listsData, ok := ipv4PrefixListData["lists"].([]interface{}); ok && len(listsData) > 0 {
+	tflog.Debug(ctx, fmt.Sprintf("Found IPv4 prefix list '%s' under API key '%s'", name, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(ipv4PrefixListMap["name"])
+
+	// Handle object properties
+	if objectPropsData, ok := ipv4PrefixListMap["object_properties"].(map[string]interface{}); ok {
+		notes := utils.MapStringFromAPI(objectPropsData["notes"])
+		if notes.IsNull() {
+			notes = types.StringValue("")
+		}
+		state.ObjectProperties = []verityIpv4PrefixListObjectPropertiesModel{
+			{Notes: notes},
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(ipv4PrefixListMap[apiKey])
+	}
+
+	// Handle lists
+	if listsData, ok := ipv4PrefixListMap["lists"].([]interface{}); ok && len(listsData) > 0 {
 		var lists []verityIpv4PrefixListListsModel
 
 		for _, item := range listsData {
@@ -339,93 +350,13 @@ func (r *verityIpv4PrefixListResource) Read(ctx context.Context, req resource.Re
 				continue
 			}
 
-			listModel := verityIpv4PrefixListListsModel{}
-
-			if enable, ok := listItem["enable"].(bool); ok {
-				listModel.Enable = types.BoolValue(enable)
-			} else {
-				listModel.Enable = types.BoolNull()
-			}
-
-			if permitDeny, ok := listItem["permit_deny"].(string); ok {
-				listModel.PermitDeny = types.StringValue(permitDeny)
-			} else {
-				listModel.PermitDeny = types.StringNull()
-			}
-
-			if ipv4Prefix, ok := listItem["ipv4_prefix"].(string); ok {
-				listModel.Ipv4Prefix = types.StringValue(ipv4Prefix)
-			} else {
-				listModel.Ipv4Prefix = types.StringNull()
-			}
-
-			if greaterThanEqual, exists := listItem["greater_than_equal_value"]; exists && greaterThanEqual != nil {
-				switch v := greaterThanEqual.(type) {
-				case int:
-					listModel.GreaterThanEqualValue = types.Int64Value(int64(v))
-				case int32:
-					listModel.GreaterThanEqualValue = types.Int64Value(int64(v))
-				case int64:
-					listModel.GreaterThanEqualValue = types.Int64Value(v)
-				case float64:
-					listModel.GreaterThanEqualValue = types.Int64Value(int64(v))
-				case string:
-					if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-						listModel.GreaterThanEqualValue = types.Int64Value(intVal)
-					} else {
-						listModel.GreaterThanEqualValue = types.Int64Null()
-					}
-				default:
-					listModel.GreaterThanEqualValue = types.Int64Null()
-				}
-			} else {
-				listModel.GreaterThanEqualValue = types.Int64Null()
-			}
-
-			if lessThanEqual, exists := listItem["less_than_equal_value"]; exists && lessThanEqual != nil {
-				switch v := lessThanEqual.(type) {
-				case int:
-					listModel.LessThanEqualValue = types.Int64Value(int64(v))
-				case int32:
-					listModel.LessThanEqualValue = types.Int64Value(int64(v))
-				case int64:
-					listModel.LessThanEqualValue = types.Int64Value(v)
-				case float64:
-					listModel.LessThanEqualValue = types.Int64Value(int64(v))
-				case string:
-					if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-						listModel.LessThanEqualValue = types.Int64Value(intVal)
-					} else {
-						listModel.LessThanEqualValue = types.Int64Null()
-					}
-				default:
-					listModel.LessThanEqualValue = types.Int64Null()
-				}
-			} else {
-				listModel.LessThanEqualValue = types.Int64Null()
-			}
-
-			if index, exists := listItem["index"]; exists && index != nil {
-				switch v := index.(type) {
-				case int:
-					listModel.Index = types.Int64Value(int64(v))
-				case int32:
-					listModel.Index = types.Int64Value(int64(v))
-				case int64:
-					listModel.Index = types.Int64Value(v)
-				case float64:
-					listModel.Index = types.Int64Value(int64(v))
-				case string:
-					if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-						listModel.Index = types.Int64Value(intVal)
-					} else {
-						listModel.Index = types.Int64Null()
-					}
-				default:
-					listModel.Index = types.Int64Null()
-				}
-			} else {
-				listModel.Index = types.Int64Null()
+			listModel := verityIpv4PrefixListListsModel{
+				Enable:                utils.MapBoolFromAPI(listItem["enable"]),
+				PermitDeny:            utils.MapStringFromAPI(listItem["permit_deny"]),
+				Ipv4Prefix:            utils.MapStringFromAPI(listItem["ipv4_prefix"]),
+				GreaterThanEqualValue: utils.MapInt64FromAPI(listItem["greater_than_equal_value"]),
+				LessThanEqualValue:    utils.MapInt64FromAPI(listItem["less_than_equal_value"]),
+				Index:                 utils.MapInt64FromAPI(listItem["index"]),
 			}
 
 			lists = append(lists, listModel)
@@ -433,20 +364,6 @@ func (r *verityIpv4PrefixListResource) Read(ctx context.Context, req resource.Re
 		state.Lists = lists
 	} else {
 		state.Lists = nil
-	}
-
-	if objectPropsData, ok := ipv4PrefixListData["object_properties"].(map[string]interface{}); ok {
-		if notes, ok := objectPropsData["notes"].(string); ok {
-			state.ObjectProperties = []verityIpv4PrefixListObjectPropertiesModel{
-				{Notes: types.StringValue(notes)},
-			}
-		} else {
-			state.ObjectProperties = []verityIpv4PrefixListObjectPropertiesModel{
-				{Notes: types.StringValue("")},
-			}
-		}
-	} else {
-		state.ObjectProperties = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -478,34 +395,31 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 	ipv4PrefixListProps := openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		ipv4PrefixListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	//handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ipv4PrefixListProps.Name = v }, &hasChanges)
 
-	oldListsByIndex := make(map[int64]verityIpv4PrefixListListsModel)
-	for _, item := range state.Lists {
-		if !item.Index.IsNull() {
-			idx := item.Index.ValueInt64()
-			oldListsByIndex[idx] = item
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ipv4PrefixListProps.Enable = v }, &hasChanges)
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
+			objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+			if !plan.ObjectProperties[0].Notes.IsNull() {
+				objectProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
+			} else {
+				objectProps.Notes = nil
+			}
+			ipv4PrefixListProps.ObjectProperties = &objectProps
+			hasChanges = true
 		}
 	}
 
-	var changedLists []openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner
-	listsChanged := false
-
-	for _, planItem := range plan.Lists {
-		if planItem.Index.IsNull() {
-			continue // Skip items without identifier
-		}
-
-		idx := planItem.Index.ValueInt64()
-		stateItem, exists := oldListsByIndex[idx]
-
-		if !exists {
-			// CREATE: new item, include all fields
+	// Handle lists
+	listsHandler := utils.IndexedItemHandler[verityIpv4PrefixListListsModel, openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner]{
+		CreateNew: func(planItem verityIpv4PrefixListListsModel) openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner {
 			newItem := openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{
-				Index: openapi.PtrInt32(int32(idx)),
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
 
 			if !planItem.Enable.IsNull() {
@@ -534,100 +448,69 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 				newItem.LessThanEqualValue = *openapi.NewNullableInt32(nil)
 			}
 
-			changedLists = append(changedLists, newItem)
-			listsChanged = true
-			continue
-		}
-
-		// UPDATE: existing item, check which fields changed
-		updateItem := openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{
-			Index: openapi.PtrInt32(int32(idx)),
-		}
-
-		fieldChanged := false
-
-		if !planItem.Enable.Equal(stateItem.Enable) {
-			if !planItem.Enable.IsNull() {
-				updateItem.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+			return newItem
+		},
+		UpdateExisting: func(planItem verityIpv4PrefixListListsModel, stateItem verityIpv4PrefixListListsModel) (openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner, bool) {
+			updateItem := openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
-			fieldChanged = true
-		}
 
-		if !planItem.PermitDeny.Equal(stateItem.PermitDeny) {
-			if !planItem.PermitDeny.IsNull() {
-				updateItem.PermitDeny = openapi.PtrString(planItem.PermitDeny.ValueString())
+			fieldChanged := false
+
+			if !planItem.Enable.Equal(stateItem.Enable) {
+				if !planItem.Enable.IsNull() {
+					updateItem.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+				}
+				fieldChanged = true
 			}
-			fieldChanged = true
-		}
 
-		if !planItem.Ipv4Prefix.Equal(stateItem.Ipv4Prefix) {
-			if !planItem.Ipv4Prefix.IsNull() {
-				updateItem.Ipv4Prefix = openapi.PtrString(planItem.Ipv4Prefix.ValueString())
+			if !planItem.PermitDeny.Equal(stateItem.PermitDeny) {
+				if !planItem.PermitDeny.IsNull() {
+					updateItem.PermitDeny = openapi.PtrString(planItem.PermitDeny.ValueString())
+				}
+				fieldChanged = true
 			}
-			fieldChanged = true
-		}
 
-		if !planItem.GreaterThanEqualValue.Equal(stateItem.GreaterThanEqualValue) {
-			if !planItem.GreaterThanEqualValue.IsNull() {
-				val := int32(planItem.GreaterThanEqualValue.ValueInt64())
-				updateItem.GreaterThanEqualValue = *openapi.NewNullableInt32(&val)
-			} else {
-				updateItem.GreaterThanEqualValue = *openapi.NewNullableInt32(nil)
+			if !planItem.Ipv4Prefix.Equal(stateItem.Ipv4Prefix) {
+				if !planItem.Ipv4Prefix.IsNull() {
+					updateItem.Ipv4Prefix = openapi.PtrString(planItem.Ipv4Prefix.ValueString())
+				}
+				fieldChanged = true
 			}
-			fieldChanged = true
-		}
 
-		if !planItem.LessThanEqualValue.Equal(stateItem.LessThanEqualValue) {
-			if !planItem.LessThanEqualValue.IsNull() {
-				val := int32(planItem.LessThanEqualValue.ValueInt64())
-				updateItem.LessThanEqualValue = *openapi.NewNullableInt32(&val)
-			} else {
-				updateItem.LessThanEqualValue = *openapi.NewNullableInt32(nil)
+			if !planItem.GreaterThanEqualValue.Equal(stateItem.GreaterThanEqualValue) {
+				if !planItem.GreaterThanEqualValue.IsNull() {
+					val := int32(planItem.GreaterThanEqualValue.ValueInt64())
+					updateItem.GreaterThanEqualValue = *openapi.NewNullableInt32(&val)
+				} else {
+					updateItem.GreaterThanEqualValue = *openapi.NewNullableInt32(nil)
+				}
+				fieldChanged = true
 			}
-			fieldChanged = true
-		}
 
-		if fieldChanged {
-			changedLists = append(changedLists, updateItem)
-			listsChanged = true
-		}
+			if !planItem.LessThanEqualValue.Equal(stateItem.LessThanEqualValue) {
+				if !planItem.LessThanEqualValue.IsNull() {
+					val := int32(planItem.LessThanEqualValue.ValueInt64())
+					updateItem.LessThanEqualValue = *openapi.NewNullableInt32(&val)
+				} else {
+					updateItem.LessThanEqualValue = *openapi.NewNullableInt32(nil)
+				}
+				fieldChanged = true
+			}
+
+			return updateItem, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner {
+			return openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
 	}
 
-	for stateIdx := range oldListsByIndex {
-		found := false
-		for _, planItem := range plan.Lists {
-			if !planItem.Index.IsNull() && planItem.Index.ValueInt64() == stateIdx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// item removed - include only the index for deletion
-			deletedItem := openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{
-				Index: openapi.PtrInt32(int32(stateIdx)),
-			}
-			changedLists = append(changedLists, deletedItem)
-			listsChanged = true
-		}
-	}
-
-	if listsChanged && len(changedLists) > 0 {
+	changedLists, listsChanged := utils.ProcessIndexedArrayUpdates(plan.Lists, state.Lists, listsHandler)
+	if listsChanged {
 		ipv4PrefixListProps.Lists = changedLists
 		hasChanges = true
-	}
-
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
-			objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-			if !plan.ObjectProperties[0].Notes.IsNull() {
-				objectProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
-			} else {
-				objectProps.Notes = nil
-			}
-			ipv4PrefixListProps.ObjectProperties = &objectProps
-			hasChanges = true
-		}
 	}
 
 	if !hasChanges {
@@ -635,16 +518,11 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "ipv4_prefix_list", name, ipv4PrefixListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv4 Prefix List update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update IPv4 Prefix List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv4_prefix_list", name, ipv4PrefixListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("IPv4 Prefix List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv4_prefix_lists")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -667,16 +545,12 @@ func (r *verityIpv4PrefixListResource) Delete(ctx context.Context, req resource.
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "ipv4_prefix_list", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv4 Prefix List delete operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete IPv4 Prefix List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv4_prefix_list", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("IPv4 Prefix List %s delete operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv4_prefix_lists")
 	resp.State.RemoveResource(ctx)

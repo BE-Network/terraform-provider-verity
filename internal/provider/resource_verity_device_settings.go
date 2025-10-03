@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -197,78 +196,42 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		deviceSettingsProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Mode", APIField: &deviceSettingsProps.Mode, TFValue: plan.Mode},
+		{FieldName: "SpanningTreePriority", APIField: &deviceSettingsProps.SpanningTreePriority, TFValue: plan.SpanningTreePriority},
+		{FieldName: "PacketQueueId", APIField: &deviceSettingsProps.PacketQueueId, TFValue: plan.PacketQueueId},
+		{FieldName: "PacketQueueIdRefType", APIField: &deviceSettingsProps.PacketQueueIdRefType, TFValue: plan.PacketQueueIdRefType},
+	})
 
-	if !plan.Mode.IsNull() {
-		deviceSettingsProps.Mode = openapi.PtrString(plan.Mode.ValueString())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &deviceSettingsProps.Enable, TFValue: plan.Enable},
+		{FieldName: "Rocev2", APIField: &deviceSettingsProps.Rocev2, TFValue: plan.Rocev2},
+		{FieldName: "CutThroughSwitching", APIField: &deviceSettingsProps.CutThroughSwitching, TFValue: plan.CutThroughSwitching},
+		{FieldName: "DisableTcpUdpLearnedPacketAcceleration", APIField: &deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration, TFValue: plan.DisableTcpUdpLearnedPacketAcceleration},
+	})
 
-	if !plan.UsageThreshold.IsNull() {
-		deviceSettingsProps.UsageThreshold = openapi.PtrFloat32(float32(plan.UsageThreshold.ValueFloat64()))
-	}
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "ExternalBatteryPowerAvailable", APIField: &deviceSettingsProps.ExternalBatteryPowerAvailable, TFValue: plan.ExternalBatteryPowerAvailable},
+		{FieldName: "ExternalPowerAvailable", APIField: &deviceSettingsProps.ExternalPowerAvailable, TFValue: plan.ExternalPowerAvailable},
+	})
 
-	if !plan.ExternalBatteryPowerAvailable.IsNull() {
-		deviceSettingsProps.ExternalBatteryPowerAvailable = openapi.PtrInt32(int32(plan.ExternalBatteryPowerAvailable.ValueInt64()))
-	}
+	// Handle float64 fields
+	utils.SetFloat64Fields([]utils.Float64FieldMapping{
+		{FieldName: "UsageThreshold", APIField: &deviceSettingsProps.UsageThreshold, TFValue: plan.UsageThreshold},
+	})
 
-	if !plan.ExternalPowerAvailable.IsNull() {
-		deviceSettingsProps.ExternalPowerAvailable = openapi.PtrInt32(int32(plan.ExternalPowerAvailable.ValueInt64()))
-	}
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "SecurityAuditInterval", APIField: &deviceSettingsProps.SecurityAuditInterval, TFValue: plan.SecurityAuditInterval},
+		{FieldName: "CommitToFlashInterval", APIField: &deviceSettingsProps.CommitToFlashInterval, TFValue: plan.CommitToFlashInterval},
+		{FieldName: "HoldTimer", APIField: &deviceSettingsProps.HoldTimer, TFValue: plan.HoldTimer},
+		{FieldName: "MacAgingTimerOverride", APIField: &deviceSettingsProps.MacAgingTimerOverride, TFValue: plan.MacAgingTimerOverride},
+	})
 
-	if !plan.SecurityAuditInterval.IsNull() {
-		val := int32(plan.SecurityAuditInterval.ValueInt64())
-		deviceSettingsProps.SecurityAuditInterval = *openapi.NewNullableInt32(&val)
-	} else {
-		deviceSettingsProps.SecurityAuditInterval = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.CommitToFlashInterval.IsNull() {
-		val := int32(plan.CommitToFlashInterval.ValueInt64())
-		deviceSettingsProps.CommitToFlashInterval = *openapi.NewNullableInt32(&val)
-	} else {
-		deviceSettingsProps.CommitToFlashInterval = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.Rocev2.IsNull() {
-		deviceSettingsProps.Rocev2 = openapi.PtrBool(plan.Rocev2.ValueBool())
-	}
-
-	if !plan.CutThroughSwitching.IsNull() {
-		deviceSettingsProps.CutThroughSwitching = openapi.PtrBool(plan.CutThroughSwitching.ValueBool())
-	}
-
-	if !plan.HoldTimer.IsNull() {
-		val := int32(plan.HoldTimer.ValueInt64())
-		deviceSettingsProps.HoldTimer = *openapi.NewNullableInt32(&val)
-	} else {
-		deviceSettingsProps.HoldTimer = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.DisableTcpUdpLearnedPacketAcceleration.IsNull() {
-		deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration = openapi.PtrBool(plan.DisableTcpUdpLearnedPacketAcceleration.ValueBool())
-	}
-
-	if !plan.MacAgingTimerOverride.IsNull() {
-		val := int32(plan.MacAgingTimerOverride.ValueInt64())
-		deviceSettingsProps.MacAgingTimerOverride = *openapi.NewNullableInt32(&val)
-	} else {
-		deviceSettingsProps.MacAgingTimerOverride = *openapi.NewNullableInt32(nil)
-	}
-
-	if !plan.SpanningTreePriority.IsNull() {
-		deviceSettingsProps.SpanningTreePriority = openapi.PtrString(plan.SpanningTreePriority.ValueString())
-	}
-
-	if !plan.PacketQueueId.IsNull() {
-		deviceSettingsProps.PacketQueueId = openapi.PtrString(plan.PacketQueueId.ValueString())
-	}
-
-	if !plan.PacketQueueIdRefType.IsNull() {
-		deviceSettingsProps.PacketQueueIdRefType = openapi.PtrString(plan.PacketQueueIdRefType.ValueString())
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
@@ -285,14 +248,8 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		deviceSettingsProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "device_settings", name, *deviceSettingsProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Settings creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Device Settings %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_settings", name, *deviceSettingsProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -326,42 +283,31 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Fetching Device Settings for verification of %s", deviceSettingsName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching device settings for verification of %s", deviceSettingsName))
 
 	type DeviceSettingsResponse struct {
 		EthDeviceProfiles map[string]interface{} `json:"eth_device_profiles"`
 	}
 
-	var result DeviceSettingsResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		deviceSettingsData, fetchErr := getCachedResponse(ctx, r.provCtx, "devicesettings", func() (interface{}, error) {
-			tflog.Debug(ctx, "Making API call to fetch Device Settings")
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "device_settings", deviceSettingsName,
+		func() (DeviceSettingsResponse, error) {
+			tflog.Debug(ctx, "Making API call to fetch device settings")
 			respAPI, err := r.client.DeviceSettingsAPI.DevicesettingsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading Device Settings: %v", err)
+				return DeviceSettingsResponse{}, fmt.Errorf("error reading Device Settings: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res DeviceSettingsResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode Device Settings response: %v", err)
+				return DeviceSettingsResponse{}, fmt.Errorf("failed to decode Device Settings response: %v", err)
 			}
 
-			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Device Settings", len(res.EthDeviceProfiles)))
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d device settings", len(res.EthDeviceProfiles)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch Device Settings on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = deviceSettingsData.(DeviceSettingsResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Device Settings %s", deviceSettingsName))...,
@@ -369,161 +315,107 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for Device Settings with ID: %s", deviceSettingsName))
-	var deviceData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for device settings with name: %s", deviceSettingsName))
 
-	if data, ok := result.EthDeviceProfiles[deviceSettingsName].(map[string]interface{}); ok {
-		deviceData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found Device Settings directly by ID: %s", deviceSettingsName))
-	} else {
-		for apiName, device := range result.EthDeviceProfiles {
-			deviceProfile, ok := device.(map[string]interface{})
-			if !ok {
-				continue
+	deviceData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.EthDeviceProfiles,
+		deviceSettingsName,
+		func(data interface{}) (string, bool) {
+			if device, ok := data.(map[string]interface{}); ok {
+				if name, ok := device["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := deviceProfile["name"].(string); ok && name == deviceSettingsName {
-				deviceData = deviceProfile
-				deviceSettingsName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Device Settings with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Device Settings with ID '%s' not found in API response", deviceSettingsName))
+		tflog.Debug(ctx, fmt.Sprintf("Device Settings with name '%s' not found in API response", deviceSettingsName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", deviceData["name"]))
-
-	if enable, ok := deviceData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	deviceMap, ok := deviceData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Device Settings Data",
+			fmt.Sprintf("Device Settings data is not in expected format for %s", deviceSettingsName),
+		)
+		return
 	}
 
-	if mode, ok := deviceData["mode"].(string); ok && mode != "" {
-		state.Mode = types.StringValue(mode)
-	} else {
-		state.Mode = types.StringNull()
-	}
+	tflog.Debug(ctx, fmt.Sprintf("Found device settings '%s' under API key '%s'", deviceSettingsName, actualAPIName))
 
-	if usageThreshold, ok := deviceData["usage_threshold"].(float64); ok {
-		state.UsageThreshold = types.Float64Value(usageThreshold)
-	} else {
-		state.UsageThreshold = types.Float64Null()
-	}
+	state.Name = utils.MapStringFromAPI(deviceMap["name"])
 
-	if extBatteryPower, ok := deviceData["external_battery_power_available"].(float64); ok {
-		state.ExternalBatteryPowerAvailable = types.Int64Value(int64(extBatteryPower))
-	} else {
-		state.ExternalBatteryPowerAvailable = types.Int64Null()
-	}
-
-	if extPower, ok := deviceData["external_power_available"].(float64); ok {
-		state.ExternalPowerAvailable = types.Int64Value(int64(extPower))
-	} else {
-		state.ExternalPowerAvailable = types.Int64Null()
-	}
-
-	if securityAudit, ok := deviceData["security_audit_interval"]; ok && securityAudit != nil {
-		if val, ok := securityAudit.(float64); ok {
-			state.SecurityAuditInterval = types.Int64Value(int64(val))
+	// Handle object properties
+	if objProps, ok := deviceMap["object_properties"].(map[string]interface{}); ok {
+		group := utils.MapStringFromAPI(objProps["group"])
+		isDefault := utils.MapBoolFromAPI(objProps["isdefault"])
+		if group.IsNull() {
+			group = types.StringValue("")
 		}
-	} else {
-		state.SecurityAuditInterval = types.Int64Null()
-	}
-
-	if commitFlash, ok := deviceData["commit_to_flash_interval"]; ok && commitFlash != nil {
-		if val, ok := commitFlash.(float64); ok {
-			state.CommitToFlashInterval = types.Int64Value(int64(val))
-		}
-	} else {
-		state.CommitToFlashInterval = types.Int64Null()
-	}
-
-	if rocev2, ok := deviceData["rocev2"].(bool); ok {
-		state.Rocev2 = types.BoolValue(rocev2)
-	} else {
-		state.Rocev2 = types.BoolNull()
-	}
-
-	if cutThrough, ok := deviceData["cut_through_switching"].(bool); ok {
-		state.CutThroughSwitching = types.BoolValue(cutThrough)
-	} else {
-		state.CutThroughSwitching = types.BoolNull()
-	}
-
-	if holdTimer, ok := deviceData["hold_timer"]; ok && holdTimer != nil {
-		if val, ok := holdTimer.(float64); ok {
-			state.HoldTimer = types.Int64Value(int64(val))
-		}
-	} else {
-		state.HoldTimer = types.Int64Null()
-	}
-
-	if disableTcp, ok := deviceData["disable_tcp_udp_learned_packet_acceleration"].(bool); ok {
-		state.DisableTcpUdpLearnedPacketAcceleration = types.BoolValue(disableTcp)
-	} else {
-		state.DisableTcpUdpLearnedPacketAcceleration = types.BoolNull()
-	}
-
-	if macAging, ok := deviceData["mac_aging_timer_override"]; ok && macAging != nil {
-		if val, ok := macAging.(float64); ok {
-			state.MacAgingTimerOverride = types.Int64Value(int64(val))
-		}
-	} else {
-		state.MacAgingTimerOverride = types.Int64Null()
-	}
-
-	if spanningTree, ok := deviceData["spanning_tree_priority"].(string); ok && spanningTree != "" {
-		state.SpanningTreePriority = types.StringValue(spanningTree)
-	} else {
-		state.SpanningTreePriority = types.StringNull()
-	}
-
-	if packetQueue, ok := deviceData["packet_queue_id"].(string); ok {
-		state.PacketQueueId = types.StringValue(packetQueue)
-	} else {
-		state.PacketQueueId = types.StringNull()
-	}
-
-	if packetQueueRefType, ok := deviceData["packet_queue_id_ref_type_"].(string); ok {
-		state.PacketQueueIdRefType = types.StringValue(packetQueueRefType)
-	} else {
-		state.PacketQueueIdRefType = types.StringNull()
-	}
-
-	if objProps, ok := deviceData["object_properties"].(map[string]interface{}); ok {
-		if group, ok := objProps["group"].(string); ok {
-			if isDefault, ok := objProps["isdefault"].(bool); ok {
-				state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{
-					{Group: types.StringValue(group), IsDefault: types.BoolValue(isDefault)},
-				}
-			} else {
-				state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{
-					{Group: types.StringValue(group), IsDefault: types.BoolNull()},
-				}
-			}
-		} else {
-			if isDefault, ok := objProps["isdefault"].(bool); ok {
-				state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{
-					{Group: types.StringValue(""), IsDefault: types.BoolValue(isDefault)},
-				}
-			} else {
-				state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{
-					{Group: types.StringValue(""), IsDefault: types.BoolNull()},
-				}
-			}
+		state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{
+			{Group: group, IsDefault: isDefault},
 		}
 	} else {
 		state.ObjectProperties = nil
+	}
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"mode":                      &state.Mode,
+		"spanning_tree_priority":    &state.SpanningTreePriority,
+		"packet_queue_id":           &state.PacketQueueId,
+		"packet_queue_id_ref_type_": &state.PacketQueueIdRefType,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(deviceMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":                &state.Enable,
+		"rocev2":                &state.Rocev2,
+		"cut_through_switching": &state.CutThroughSwitching,
+		"disable_tcp_udp_learned_packet_acceleration": &state.DisableTcpUdpLearnedPacketAcceleration,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(deviceMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"external_battery_power_available": &state.ExternalBatteryPowerAvailable,
+		"external_power_available":         &state.ExternalPowerAvailable,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(deviceMap[apiKey])
+	}
+
+	// Map nullable int64 fields
+	nullableInt64FieldMappings := map[string]*types.Int64{
+		"security_audit_interval":  &state.SecurityAuditInterval,
+		"commit_to_flash_interval": &state.CommitToFlashInterval,
+		"hold_timer":               &state.HoldTimer,
+		"mac_aging_timer_override": &state.MacAgingTimerOverride,
+	}
+
+	for apiKey, stateField := range nullableInt64FieldMappings {
+		*stateField = utils.MapNullableInt64FromAPI(deviceMap[apiKey])
+	}
+
+	// Map float64 fields
+	float64FieldMappings := map[string]*types.Float64{
+		"usage_threshold": &state.UsageThreshold,
+	}
+
+	for apiKey, stateField := range float64FieldMappings {
+		*stateField = utils.MapFloat64FromAPI(deviceMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -555,131 +447,31 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	deviceSettingsProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		deviceSettingsProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { deviceSettingsProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Mode, state.Mode, func(v *string) { deviceSettingsProps.Mode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SpanningTreePriority, state.SpanningTreePriority, func(v *string) { deviceSettingsProps.SpanningTreePriority = v }, &hasChanges)
 
-	if !plan.Mode.Equal(state.Mode) {
-		deviceSettingsProps.Mode = openapi.PtrString(plan.Mode.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { deviceSettingsProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Rocev2, state.Rocev2, func(v *bool) { deviceSettingsProps.Rocev2 = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CutThroughSwitching, state.CutThroughSwitching, func(v *bool) { deviceSettingsProps.CutThroughSwitching = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.DisableTcpUdpLearnedPacketAcceleration, state.DisableTcpUdpLearnedPacketAcceleration, func(v *bool) { deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration = v }, &hasChanges)
 
-	if !plan.UsageThreshold.Equal(state.UsageThreshold) {
-		deviceSettingsProps.UsageThreshold = openapi.PtrFloat32(float32(plan.UsageThreshold.ValueFloat64()))
-		hasChanges = true
-	}
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.ExternalBatteryPowerAvailable, state.ExternalBatteryPowerAvailable, func(v *int32) { deviceSettingsProps.ExternalBatteryPowerAvailable = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.ExternalPowerAvailable, state.ExternalPowerAvailable, func(v *int32) { deviceSettingsProps.ExternalPowerAvailable = v }, &hasChanges)
 
-	if !plan.ExternalBatteryPowerAvailable.Equal(state.ExternalBatteryPowerAvailable) {
-		deviceSettingsProps.ExternalBatteryPowerAvailable = openapi.PtrInt32(int32(plan.ExternalBatteryPowerAvailable.ValueInt64()))
-		hasChanges = true
-	}
+	// Handle float64 field changes
+	utils.CompareAndSetFloat64Field(plan.UsageThreshold, state.UsageThreshold, func(v *float32) { deviceSettingsProps.UsageThreshold = v }, &hasChanges)
 
-	if !plan.ExternalPowerAvailable.Equal(state.ExternalPowerAvailable) {
-		deviceSettingsProps.ExternalPowerAvailable = openapi.PtrInt32(int32(plan.ExternalPowerAvailable.ValueInt64()))
-		hasChanges = true
-	}
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.SecurityAuditInterval, state.SecurityAuditInterval, func(v *openapi.NullableInt32) { deviceSettingsProps.SecurityAuditInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.CommitToFlashInterval, state.CommitToFlashInterval, func(v *openapi.NullableInt32) { deviceSettingsProps.CommitToFlashInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.HoldTimer, state.HoldTimer, func(v *openapi.NullableInt32) { deviceSettingsProps.HoldTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MacAgingTimerOverride, state.MacAgingTimerOverride, func(v *openapi.NullableInt32) { deviceSettingsProps.MacAgingTimerOverride = *v }, &hasChanges)
 
-	if !plan.SecurityAuditInterval.Equal(state.SecurityAuditInterval) {
-		if !plan.SecurityAuditInterval.IsNull() {
-			val := int32(plan.SecurityAuditInterval.ValueInt64())
-			deviceSettingsProps.SecurityAuditInterval = *openapi.NewNullableInt32(&val)
-		} else {
-			deviceSettingsProps.SecurityAuditInterval = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.CommitToFlashInterval.Equal(state.CommitToFlashInterval) {
-		if !plan.CommitToFlashInterval.IsNull() {
-			val := int32(plan.CommitToFlashInterval.ValueInt64())
-			deviceSettingsProps.CommitToFlashInterval = *openapi.NewNullableInt32(&val)
-		} else {
-			deviceSettingsProps.CommitToFlashInterval = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.Rocev2.Equal(state.Rocev2) {
-		deviceSettingsProps.Rocev2 = openapi.PtrBool(plan.Rocev2.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.CutThroughSwitching.Equal(state.CutThroughSwitching) {
-		deviceSettingsProps.CutThroughSwitching = openapi.PtrBool(plan.CutThroughSwitching.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.HoldTimer.Equal(state.HoldTimer) {
-		if !plan.HoldTimer.IsNull() {
-			val := int32(plan.HoldTimer.ValueInt64())
-			deviceSettingsProps.HoldTimer = *openapi.NewNullableInt32(&val)
-		} else {
-			deviceSettingsProps.HoldTimer = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.DisableTcpUdpLearnedPacketAcceleration.Equal(state.DisableTcpUdpLearnedPacketAcceleration) {
-		deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration = openapi.PtrBool(plan.DisableTcpUdpLearnedPacketAcceleration.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.MacAgingTimerOverride.Equal(state.MacAgingTimerOverride) {
-		if !plan.MacAgingTimerOverride.IsNull() {
-			val := int32(plan.MacAgingTimerOverride.ValueInt64())
-			deviceSettingsProps.MacAgingTimerOverride = *openapi.NewNullableInt32(&val)
-		} else {
-			deviceSettingsProps.MacAgingTimerOverride = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-
-	if !plan.SpanningTreePriority.Equal(state.SpanningTreePriority) {
-		deviceSettingsProps.SpanningTreePriority = openapi.PtrString(plan.SpanningTreePriority.ValueString())
-		hasChanges = true
-	}
-
-	// Handle PacketQueueId and PacketQueueIdRefType according to "One ref type supported" rules
-	packetQueueChanged := !plan.PacketQueueId.Equal(state.PacketQueueId)
-	packetQueueRefTypeChanged := !plan.PacketQueueIdRefType.Equal(state.PacketQueueIdRefType)
-
-	// Case: Validate using "one ref type supported" rules
-	if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-		plan.PacketQueueId, plan.PacketQueueIdRefType,
-		"packet_queue_id", "packet_queue_id_ref_type_",
-		packetQueueChanged, packetQueueRefTypeChanged) {
-		return
-	}
-
-	if packetQueueChanged && !packetQueueRefTypeChanged {
-		// Case: Only the base field changes, only the base field is sent
-		// Just send the base field
-		if !plan.PacketQueueId.IsNull() && plan.PacketQueueId.ValueString() != "" {
-			deviceSettingsProps.PacketQueueId = openapi.PtrString(plan.PacketQueueId.ValueString())
-		} else {
-			deviceSettingsProps.PacketQueueId = openapi.PtrString("")
-		}
-		hasChanges = true
-	} else if packetQueueRefTypeChanged {
-		// Case: ref_type changes (or both change), both fields are sent
-
-		// Send both fields
-		if !plan.PacketQueueId.IsNull() && plan.PacketQueueId.ValueString() != "" {
-			deviceSettingsProps.PacketQueueId = openapi.PtrString(plan.PacketQueueId.ValueString())
-		} else {
-			deviceSettingsProps.PacketQueueId = openapi.PtrString("")
-		}
-
-		if !plan.PacketQueueIdRefType.IsNull() && plan.PacketQueueIdRefType.ValueString() != "" {
-			deviceSettingsProps.PacketQueueIdRefType = openapi.PtrString(plan.PacketQueueIdRefType.ValueString())
-		} else {
-			deviceSettingsProps.PacketQueueIdRefType = openapi.PtrString("")
-		}
-
-		hasChanges = true
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
 			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
@@ -700,21 +492,28 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		}
 	}
 
+	// Handle PacketQueueId and PacketQueueIdRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.PacketQueueId, state.PacketQueueId, plan.PacketQueueIdRefType, state.PacketQueueIdRefType,
+		func(v *string) { deviceSettingsProps.PacketQueueId = v },
+		func(v *string) { deviceSettingsProps.PacketQueueIdRefType = v },
+		"packet_queue_id", "packet_queue_id_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "device_settings", name, deviceSettingsProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Settings update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Device Settings %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_settings", name, deviceSettingsProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Device Settings %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "device_settings")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -737,14 +536,9 @@ func (r *verityDeviceSettingsResource) Delete(ctx context.Context, req resource.
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "device_settings", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Device Settings deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Device Settings %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_settings", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

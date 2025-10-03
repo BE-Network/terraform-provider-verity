@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -67,6 +66,10 @@ type verityTenantRouteTenantModel struct {
 	Enable types.Bool   `tfsdk:"enable"`
 	Tenant types.String `tfsdk:"tenant"`
 	Index  types.Int64  `tfsdk:"index"`
+}
+
+func (rt verityTenantRouteTenantModel) GetIndex() types.Int64 {
+	return rt.Index
 }
 
 func (r *verityTenantResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -258,51 +261,38 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	name := plan.Name.ValueString()
 	tenantReq := &openapi.TenantsPutRequestTenantValue{
-		Name:         openapi.PtrString(name),
-		RouteTenants: []openapi.TenantsPutRequestTenantValueRouteTenantsInner{},
+		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		tenantReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.DhcpRelaySourceIpv4sSubnet.IsNull() {
-		tenantReq.DhcpRelaySourceIpv4sSubnet = openapi.PtrString(plan.DhcpRelaySourceIpv4sSubnet.ValueString())
-	}
-	if !plan.DhcpRelaySourceIpv6sSubnet.IsNull() {
-		tenantReq.DhcpRelaySourceIpv6sSubnet = openapi.PtrString(plan.DhcpRelaySourceIpv6sSubnet.ValueString())
-	}
-	if !plan.RouteDistinguisher.IsNull() {
-		tenantReq.RouteDistinguisher = openapi.PtrString(plan.RouteDistinguisher.ValueString())
-	}
-	if !plan.RouteTargetImport.IsNull() {
-		tenantReq.RouteTargetImport = openapi.PtrString(plan.RouteTargetImport.ValueString())
-	}
-	if !plan.RouteTargetExport.IsNull() {
-		tenantReq.RouteTargetExport = openapi.PtrString(plan.RouteTargetExport.ValueString())
-	}
-	if !plan.ImportRouteMap.IsNull() {
-		tenantReq.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
-	}
-	if !plan.ImportRouteMapRefType.IsNull() {
-		tenantReq.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
-	}
-	if !plan.ExportRouteMap.IsNull() {
-		tenantReq.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
-	}
-	if !plan.ExportRouteMapRefType.IsNull() {
-		tenantReq.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "DhcpRelaySourceIpv4sSubnet", APIField: &tenantReq.DhcpRelaySourceIpv4sSubnet, TFValue: plan.DhcpRelaySourceIpv4sSubnet},
+		{FieldName: "DhcpRelaySourceIpv6sSubnet", APIField: &tenantReq.DhcpRelaySourceIpv6sSubnet, TFValue: plan.DhcpRelaySourceIpv6sSubnet},
+		{FieldName: "RouteDistinguisher", APIField: &tenantReq.RouteDistinguisher, TFValue: plan.RouteDistinguisher},
+		{FieldName: "RouteTargetImport", APIField: &tenantReq.RouteTargetImport, TFValue: plan.RouteTargetImport},
+		{FieldName: "RouteTargetExport", APIField: &tenantReq.RouteTargetExport, TFValue: plan.RouteTargetExport},
+		{FieldName: "ImportRouteMap", APIField: &tenantReq.ImportRouteMap, TFValue: plan.ImportRouteMap},
+		{FieldName: "ImportRouteMapRefType", APIField: &tenantReq.ImportRouteMapRefType, TFValue: plan.ImportRouteMapRefType},
+		{FieldName: "ExportRouteMap", APIField: &tenantReq.ExportRouteMap, TFValue: plan.ExportRouteMap},
+		{FieldName: "ExportRouteMapRefType", APIField: &tenantReq.ExportRouteMapRefType, TFValue: plan.ExportRouteMapRefType},
+	})
 
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &tenantReq.Enable, TFValue: plan.Enable},
+		{FieldName: "DefaultOriginate", APIField: &tenantReq.DefaultOriginate, TFValue: plan.DefaultOriginate},
+	})
+
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
 		objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
-		if !plan.ObjectProperties[0].Group.IsNull() {
-			objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
+		if !op.Group.IsNull() {
+			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
 			objProps.Group = nil
 		}
 		tenantReq.ObjectProperties = &objProps
-	} else {
-		tenantReq.ObjectProperties = nil
 	}
 
 	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
@@ -351,34 +341,28 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 			tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
 		}
 	}
-	if !plan.DefaultOriginate.IsNull() {
-		tenantReq.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
-	}
 
+	// Handle route tenants
 	if len(plan.RouteTenants) > 0 {
-		for _, rt := range plan.RouteTenants {
-			tenant := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
-				Enable: openapi.PtrBool(rt.Enable.ValueBool()),
-				Tenant: openapi.PtrString(rt.Tenant.ValueString()),
+		routeTenants := make([]openapi.TenantsPutRequestTenantValueRouteTenantsInner, len(plan.RouteTenants))
+		for i, rt := range plan.RouteTenants {
+			rItem := openapi.TenantsPutRequestTenantValueRouteTenantsInner{}
+			if !rt.Enable.IsNull() {
+				rItem.Enable = openapi.PtrBool(rt.Enable.ValueBool())
+			}
+			if !rt.Tenant.IsNull() {
+				rItem.Tenant = openapi.PtrString(rt.Tenant.ValueString())
 			}
 			if !rt.Index.IsNull() {
-				tenant.Index = openapi.PtrInt32(int32(rt.Index.ValueInt64()))
+				rItem.Index = openapi.PtrInt32(int32(rt.Index.ValueInt64()))
 			}
-			tenantReq.RouteTenants = append(tenantReq.RouteTenants, tenant)
+			routeTenants[i] = rItem
 		}
+		tenantReq.RouteTenants = routeTenants
 	}
 
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPut(ctx, "tenant", name, *tenantReq)
-
-	provCtx.NotifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for tenant creation operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Tenant %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "tenant", name, *tenantReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -425,23 +409,16 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %v", err),
+			fmt.Sprintf("Error authenticating with API: %s", err),
 		)
 		return
 	}
 
-	tflog.Debug(ctx, "Reading tenant resource")
-
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
 	tenantName := state.Name.ValueString()
 
-	var tenantData map[string]interface{}
-	var exists bool
-
-	if bulkOpsMgr != nil {
-		tenantData, exists = bulkOpsMgr.GetResourceResponse("tenant", tenantName)
-		if exists {
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if tenantData, exists := r.bulkOpsMgr.GetResourceResponse("tenant", tenantName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached tenant data for %s from recent operation", tenantName))
 			state = populateTenantState(ctx, state, tenantData, nil)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -449,48 +426,36 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 		}
 	}
 
-	if bulkOpsMgr != nil && bulkOpsMgr.HasPendingOrRecentOperations("tenant") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping tenant %s verification - trusting recent successful API operation", tenantName))
-		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("tenant") {
+		tflog.Info(ctx, fmt.Sprintf("Skipping tenant %s verification – trusting recent successful API operation", tenantName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent tenant operations found, performing normal verification for %s", tenantName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching tenants for verification of %s", tenantName))
 
 	type TenantsResponse struct {
-		Tenant map[string]map[string]interface{} `json:"tenant"`
+		Tenant map[string]interface{} `json:"tenant"`
 	}
 
-	var result TenantsResponse
-	var err error
-	maxRetries := 3
-
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		tenantsData, fetchErr := getCachedResponse(ctx, provCtx, "tenants", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "tenants", tenantName,
+		func() (TenantsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch tenants")
-			apiResp, err := provCtx.client.TenantsAPI.TenantsGet(ctx).Execute()
+			respAPI, err := r.client.TenantsAPI.TenantsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading tenant: %v", err)
+				return TenantsResponse{}, fmt.Errorf("error reading tenants: %v", err)
 			}
-			defer apiResp.Body.Close()
+			defer respAPI.Body.Close()
 
 			var res TenantsResponse
-			if err := json.NewDecoder(apiResp.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode tenants response: %v", err)
+			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
+				return TenantsResponse{}, fmt.Errorf("failed to decode tenants response: %v", err)
 			}
-			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d tenants from API", len(res.Tenant)))
+
+			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d tenants", len(res.Tenant)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch tenants on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = tenantsData.(TenantsResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
 
 	if err != nil {
 		resp.Diagnostics.Append(
@@ -499,32 +464,39 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for tenant with ID: %s", tenantName))
-	exists = false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for tenant with name: %s", tenantName))
 
-	if data, ok := result.Tenant[tenantName]; ok {
-		tenantData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found tenant directly by ID: %s", tenantName))
-	} else {
-		for apiName, t := range result.Tenant {
-			if nameVal, ok := t["name"].(string); ok && nameVal == tenantName {
-				tenantData = t
-				tenantName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found tenant with name '%s' under API key '%s'", nameVal, apiName))
-				break
+	tenantData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Tenant,
+		tenantName,
+		func(data interface{}) (string, bool) {
+			if tenant, ok := data.(map[string]interface{}); ok {
+				if name, ok := tenant["name"].(string); ok {
+					return name, true
+				}
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Tenant with ID '%s' not found in API response", tenantName))
+		tflog.Debug(ctx, fmt.Sprintf("Tenant with name '%s' not found in API response", tenantName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state = populateTenantState(ctx, state, tenantData, nil)
+	tenantMap, ok := tenantData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Tenant Data",
+			fmt.Sprintf("Tenant data is not in expected format for %s", tenantName),
+		)
+		return
+	}
+
+	tflog.Debug(ctx, fmt.Sprintf("Found tenant '%s' under API key '%s'", tenantName, actualAPIName))
+
+	state = populateTenantState(ctx, state, tenantMap, nil)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -533,6 +505,9 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -584,9 +559,23 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	tenantReq := &openapi.TenantsPutRequestTenantValue{}
+	name := plan.Name.ValueString()
+	tenantReq := openapi.TenantsPutRequestTenantValue{}
 	hasChanges := false
 
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { tenantReq.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DhcpRelaySourceIpv4sSubnet, state.DhcpRelaySourceIpv4sSubnet, func(v *string) { tenantReq.DhcpRelaySourceIpv4sSubnet = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DhcpRelaySourceIpv6sSubnet, state.DhcpRelaySourceIpv6sSubnet, func(v *string) { tenantReq.DhcpRelaySourceIpv6sSubnet = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RouteDistinguisher, state.RouteDistinguisher, func(v *string) { tenantReq.RouteDistinguisher = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RouteTargetImport, state.RouteTargetImport, func(v *string) { tenantReq.RouteTargetImport = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RouteTargetExport, state.RouteTargetExport, func(v *string) { tenantReq.RouteTargetExport = v }, &hasChanges)
+
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { tenantReq.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.DefaultOriginate, state.DefaultOriginate, func(v *bool) { tenantReq.DefaultOriginate = v }, &hasChanges)
+
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
 			objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
@@ -598,31 +587,22 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 			tenantReq.ObjectProperties = &objProps
 			hasChanges = true
 		}
-	} else {
-		tenantReq.ObjectProperties = nil
 	}
 
-	if !plan.Enable.Equal(state.Enable) {
-		tenantReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-
-	// Handle Layer3Vni and Layer3VniAutoAssigned changes in a coordinated way
+	// Handle Layer3Vni and Layer3VniAutoAssigned changes
 	layer3VniChanged := !plan.Layer3Vni.IsUnknown() && !plan.Layer3Vni.Equal(state.Layer3Vni)
 	layer3VniAutoAssignedChanged := !plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned)
 
 	if layer3VniChanged || layer3VniAutoAssignedChanged {
-		// Handle Layer3Vni field changes
 		if layer3VniChanged {
 			if !plan.Layer3Vni.IsNull() {
-				val := int32(plan.Layer3Vni.ValueInt64())
-				tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
+				vniVal := int32(plan.Layer3Vni.ValueInt64())
+				tenantReq.Layer3Vni = *openapi.NewNullableInt32(&vniVal)
 			} else {
 				tenantReq.Layer3Vni = *openapi.NewNullableInt32(nil)
 			}
 		}
 
-		// Handle Layer3VniAutoAssigned field changes
 		if layer3VniAutoAssignedChanged {
 			// Only send layer_3_vni_auto_assigned_ if the user has explicitly specified it in their configuration
 			var config verityTenantResourceModel
@@ -638,17 +618,18 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 				// Special case: When changing from auto-assigned (true) to manual (false),
 				// the API requires both layer_3_vni_auto_assigned_ and layer_3_vni fields to be sent.
+				// Otherwise, the layer_3_vni_auto_assigned_ change will be ignored by the API.
 				if !state.Layer3VniAutoAssigned.IsNull() && state.Layer3VniAutoAssigned.ValueBool() &&
 					!plan.Layer3VniAutoAssigned.ValueBool() {
 					// Changing from auto-assigned=true to auto-assigned=false
 					// Must include Layer3Vni value in the request for the change to take effect
 					if !plan.Layer3Vni.IsNull() {
-						val := int32(plan.Layer3Vni.ValueInt64())
-						tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
+						vniVal := int32(plan.Layer3Vni.ValueInt64())
+						tenantReq.Layer3Vni = *openapi.NewNullableInt32(&vniVal)
 					} else if !state.Layer3Vni.IsNull() {
 						// Use current state Layer3Vni if plan doesn't specify one
-						val := int32(state.Layer3Vni.ValueInt64())
-						tenantReq.Layer3Vni = *openapi.NewNullableInt32(&val)
+						vniVal := int32(state.Layer3Vni.ValueInt64())
+						tenantReq.Layer3Vni = *openapi.NewNullableInt32(&vniVal)
 					}
 				}
 			}
@@ -667,22 +648,20 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle Layer3Vlan and Layer3VlanAutoAssigned changes in a coordinated way
+	// Handle Layer3Vlan and Layer3VlanAutoAssigned changes
 	layer3VlanChanged := !plan.Layer3Vlan.IsUnknown() && !plan.Layer3Vlan.Equal(state.Layer3Vlan)
 	layer3VlanAutoAssignedChanged := !plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned)
 
 	if layer3VlanChanged || layer3VlanAutoAssignedChanged {
-		// Handle Layer3Vlan field changes
 		if layer3VlanChanged {
 			if !plan.Layer3Vlan.IsNull() {
-				val := int32(plan.Layer3Vlan.ValueInt64())
-				tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
+				vlanVal := int32(plan.Layer3Vlan.ValueInt64())
+				tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&vlanVal)
 			} else {
 				tenantReq.Layer3Vlan = *openapi.NewNullableInt32(nil)
 			}
 		}
 
-		// Handle Layer3VlanAutoAssigned field changes
 		if layer3VlanAutoAssignedChanged {
 			// Only send layer_3_vlan_auto_assigned_ if the user has explicitly specified it in their configuration
 			var config verityTenantResourceModel
@@ -698,17 +677,18 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 				// Special case: When changing from auto-assigned (true) to manual (false),
 				// the API requires both layer_3_vlan_auto_assigned_ and layer_3_vlan fields to be sent.
+				// Otherwise, the layer_3_vlan_auto_assigned_ change will be ignored by the API.
 				if !state.Layer3VlanAutoAssigned.IsNull() && state.Layer3VlanAutoAssigned.ValueBool() &&
 					!plan.Layer3VlanAutoAssigned.ValueBool() {
 					// Changing from auto-assigned=true to auto-assigned=false
 					// Must include Layer3Vlan value in the request for the change to take effect
 					if !plan.Layer3Vlan.IsNull() {
-						val := int32(plan.Layer3Vlan.ValueInt64())
-						tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
+						vlanVal := int32(plan.Layer3Vlan.ValueInt64())
+						tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&vlanVal)
 					} else if !state.Layer3Vlan.IsNull() {
 						// Use current state Layer3Vlan if plan doesn't specify one
-						val := int32(state.Layer3Vlan.ValueInt64())
-						tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&val)
+						vlanVal := int32(state.Layer3Vlan.ValueInt64())
+						tenantReq.Layer3Vlan = *openapi.NewNullableInt32(&vlanVal)
 					}
 				}
 			}
@@ -727,12 +707,11 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle VrfName and VrfNameAutoAssigned changes in a coordinated way
+	// Handle VrfName and VrfNameAutoAssigned changes
 	vrfNameChanged := !plan.VrfName.IsUnknown() && !plan.VrfName.Equal(state.VrfName)
 	vrfNameAutoAssignedChanged := !plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned)
 
 	if vrfNameChanged || vrfNameAutoAssignedChanged {
-		// Handle VrfName field changes
 		if vrfNameChanged {
 			if !plan.VrfName.IsNull() && plan.VrfName.ValueString() != "" {
 				tenantReq.VrfName = openapi.PtrString(plan.VrfName.ValueString())
@@ -741,7 +720,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 			}
 		}
 
-		// Handle VrfNameAutoAssigned field changes
 		if vrfNameAutoAssignedChanged {
 			// Only send vrf_name_auto_assigned_ if the user has explicitly specified it in their configuration
 			var config verityTenantResourceModel
@@ -757,6 +735,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 				// Special case: When changing from auto-assigned (true) to manual (false),
 				// the API requires both vrf_name_auto_assigned_ and vrf_name fields to be sent.
+				// Otherwise, the vrf_name_auto_assigned_ change will be ignored by the API.
 				if !state.VrfNameAutoAssigned.IsNull() && state.VrfNameAutoAssigned.ValueBool() &&
 					!plan.VrfNameAutoAssigned.ValueBool() {
 					// Changing from auto-assigned=true to auto-assigned=false
@@ -784,222 +763,83 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	if !plan.DhcpRelaySourceIpv4sSubnet.Equal(state.DhcpRelaySourceIpv4sSubnet) {
-		if !plan.DhcpRelaySourceIpv4sSubnet.IsNull() && plan.DhcpRelaySourceIpv4sSubnet.ValueString() != "" {
-			tenantReq.DhcpRelaySourceIpv4sSubnet = openapi.PtrString(plan.DhcpRelaySourceIpv4sSubnet.ValueString())
-		} else {
-			tenantReq.DhcpRelaySourceIpv4sSubnet = openapi.PtrString("")
-		}
-		hasChanges = true
+	// Handle import_route_map and import_route_map_ref_type_ fields using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.ImportRouteMap, state.ImportRouteMap, plan.ImportRouteMapRefType, state.ImportRouteMapRefType,
+		func(v *string) { tenantReq.ImportRouteMap = v },
+		func(v *string) { tenantReq.ImportRouteMapRefType = v },
+		"import_route_map", "import_route_map_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	if !plan.DhcpRelaySourceIpv6sSubnet.Equal(state.DhcpRelaySourceIpv6sSubnet) {
-		if !plan.DhcpRelaySourceIpv6sSubnet.IsNull() && plan.DhcpRelaySourceIpv6sSubnet.ValueString() != "" {
-			tenantReq.DhcpRelaySourceIpv6sSubnet = openapi.PtrString(plan.DhcpRelaySourceIpv6sSubnet.ValueString())
-		} else {
-			tenantReq.DhcpRelaySourceIpv6sSubnet = openapi.PtrString("")
-		}
-		hasChanges = true
+	// Handle export_route_map and export_route_map_ref_type_ fields using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.ExportRouteMap, state.ExportRouteMap, plan.ExportRouteMapRefType, state.ExportRouteMapRefType,
+		func(v *string) { tenantReq.ExportRouteMap = v },
+		func(v *string) { tenantReq.ExportRouteMapRefType = v },
+		"export_route_map", "export_route_map_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	if !plan.RouteDistinguisher.Equal(state.RouteDistinguisher) {
-		if !plan.RouteDistinguisher.IsNull() && plan.RouteDistinguisher.ValueString() != "" {
-			tenantReq.RouteDistinguisher = openapi.PtrString(plan.RouteDistinguisher.ValueString())
-		} else {
-			tenantReq.RouteDistinguisher = openapi.PtrString("")
-		}
-		hasChanges = true
-	}
-
-	if !plan.RouteTargetImport.Equal(state.RouteTargetImport) {
-		if !plan.RouteTargetImport.IsNull() && plan.RouteTargetImport.ValueString() != "" {
-			tenantReq.RouteTargetImport = openapi.PtrString(plan.RouteTargetImport.ValueString())
-		} else {
-			tenantReq.RouteTargetImport = openapi.PtrString("")
-		}
-		hasChanges = true
-	}
-
-	if !plan.RouteTargetExport.Equal(state.RouteTargetExport) {
-		if !plan.RouteTargetExport.IsNull() && plan.RouteTargetExport.ValueString() != "" {
-			tenantReq.RouteTargetExport = openapi.PtrString(plan.RouteTargetExport.ValueString())
-		} else {
-			tenantReq.RouteTargetExport = openapi.PtrString("")
-		}
-		hasChanges = true
-	}
-
-	importRouteMapChanged := !plan.ImportRouteMap.Equal(state.ImportRouteMap)
-	importRouteMapRefTypeChanged := !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType)
-
-	if importRouteMapChanged || importRouteMapRefTypeChanged {
-		// Validate using one ref type supported rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.ImportRouteMap, plan.ImportRouteMapRefType,
-			"import_route_map", "import_route_map_ref_type_",
-			importRouteMapChanged, importRouteMapRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if importRouteMapChanged && !importRouteMapRefTypeChanged {
-			// Just send the base field
-			if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
-				tenantReq.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
-			} else {
-				tenantReq.ImportRouteMap = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if importRouteMapRefTypeChanged {
-			// Send both fields
-			if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
-				tenantReq.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
-			} else {
-				tenantReq.ImportRouteMap = openapi.PtrString("")
-			}
-
-			if !plan.ImportRouteMapRefType.IsNull() && plan.ImportRouteMapRefType.ValueString() != "" {
-				tenantReq.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
-			} else {
-				tenantReq.ImportRouteMapRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	// Handle ExportRouteMap and ExportRouteMapRefType
-	exportRouteMapChanged := !plan.ExportRouteMap.Equal(state.ExportRouteMap)
-	exportRouteMapRefTypeChanged := !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType)
-
-	if exportRouteMapChanged || exportRouteMapRefTypeChanged {
-		// Validate using one ref type supported rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.ExportRouteMap, plan.ExportRouteMapRefType,
-			"export_route_map", "export_route_map_ref_type_",
-			exportRouteMapChanged, exportRouteMapRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if exportRouteMapChanged && !exportRouteMapRefTypeChanged {
-			// Just send the base field
-			if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
-				tenantReq.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
-			} else {
-				tenantReq.ExportRouteMap = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if exportRouteMapRefTypeChanged {
-			// Send both fields
-			if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
-				tenantReq.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
-			} else {
-				tenantReq.ExportRouteMap = openapi.PtrString("")
-			}
-
-			if !plan.ExportRouteMapRefType.IsNull() && plan.ExportRouteMapRefType.ValueString() != "" {
-				tenantReq.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
-			} else {
-				tenantReq.ExportRouteMapRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-
-	if !plan.DefaultOriginate.Equal(state.DefaultOriginate) {
-		tenantReq.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
-		hasChanges = true
-	}
-
-	oldRouteTenantsByIndex := make(map[int64]verityTenantRouteTenantModel)
-	for _, rt := range state.RouteTenants {
-		if !rt.Index.IsNull() {
-			idx := rt.Index.ValueInt64()
-			oldRouteTenantsByIndex[idx] = rt
-		}
-	}
-
-	var changedRouteTenants []openapi.TenantsPutRequestTenantValueRouteTenantsInner
-	routeTenantsChanged := false
-
-	for _, rt := range plan.RouteTenants {
-		if rt.Index.IsNull() {
-			continue
-		}
-
-		idx := rt.Index.ValueInt64()
-		oldRouteTenant, exists := oldRouteTenantsByIndex[idx]
-
-		if !exists {
-			// new route tenant, include all fields
+	// Handle route tenants
+	routeTenantsHandler := utils.IndexedItemHandler[verityTenantRouteTenantModel, openapi.TenantsPutRequestTenantValueRouteTenantsInner]{
+		CreateNew: func(planItem verityTenantRouteTenantModel) openapi.TenantsPutRequestTenantValueRouteTenantsInner {
 			tenantRoute := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
-				Index: openapi.PtrInt32(int32(idx)),
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
 
-			if !rt.Enable.IsNull() {
-				tenantRoute.Enable = openapi.PtrBool(rt.Enable.ValueBool())
+			if !planItem.Enable.IsNull() {
+				tenantRoute.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
 			} else {
 				tenantRoute.Enable = openapi.PtrBool(false)
 			}
 
-			if !rt.Tenant.IsNull() && rt.Tenant.ValueString() != "" {
-				tenantRoute.Tenant = openapi.PtrString(rt.Tenant.ValueString())
+			if !planItem.Tenant.IsNull() {
+				tenantRoute.Tenant = openapi.PtrString(planItem.Tenant.ValueString())
 			} else {
 				tenantRoute.Tenant = openapi.PtrString("")
 			}
 
-			changedRouteTenants = append(changedRouteTenants, tenantRoute)
-			routeTenantsChanged = true
-			continue
-		}
-
-		// existing route tenant, check which fields changed
-		tenantRoute := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
-			Index: openapi.PtrInt32(int32(idx)),
-		}
-
-		fieldChanged := false
-
-		if !rt.Enable.Equal(oldRouteTenant.Enable) {
-			tenantRoute.Enable = openapi.PtrBool(rt.Enable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !rt.Tenant.Equal(oldRouteTenant.Tenant) {
-			if !rt.Tenant.IsNull() && rt.Tenant.ValueString() != "" {
-				tenantRoute.Tenant = openapi.PtrString(rt.Tenant.ValueString())
-			} else {
-				tenantRoute.Tenant = openapi.PtrString("")
+			return tenantRoute
+		},
+		UpdateExisting: func(planItem verityTenantRouteTenantModel, stateItem verityTenantRouteTenantModel) (openapi.TenantsPutRequestTenantValueRouteTenantsInner, bool) {
+			tenantRoute := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
-			fieldChanged = true
-		}
 
-		if fieldChanged {
-			changedRouteTenants = append(changedRouteTenants, tenantRoute)
-			routeTenantsChanged = true
-		}
+			fieldChanged := false
+
+			if !planItem.Enable.Equal(stateItem.Enable) {
+				tenantRoute.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.Tenant.Equal(stateItem.Tenant) {
+				if !planItem.Tenant.IsNull() {
+					tenantRoute.Tenant = openapi.PtrString(planItem.Tenant.ValueString())
+				} else {
+					tenantRoute.Tenant = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			return tenantRoute, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.TenantsPutRequestTenantValueRouteTenantsInner {
+			return openapi.TenantsPutRequestTenantValueRouteTenantsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
 	}
 
-	for idx := range oldRouteTenantsByIndex {
-		found := false
-		for _, rt := range plan.RouteTenants {
-			if !rt.Index.IsNull() && rt.Index.ValueInt64() == idx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// route tenant removed - include only the index for deletion
-			deletedTenant := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-			changedRouteTenants = append(changedRouteTenants, deletedTenant)
-			routeTenantsChanged = true
-		}
-	}
-
-	if routeTenantsChanged && len(changedRouteTenants) > 0 {
+	changedRouteTenants, routeTenantsChanged := utils.ProcessIndexedArrayUpdates(plan.RouteTenants, state.RouteTenants, routeTenantsHandler)
+	if routeTenantsChanged {
 		tenantReq.RouteTenants = changedRouteTenants
 		hasChanges = true
 	}
@@ -1009,23 +849,16 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPatch(ctx, "tenant", state.Name.ValueString(), tenantReq)
-	r.provCtx.NotifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for tenant update operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Tenant %s", state.Name.ValueString()))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "tenant", name, tenantReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
-	tflog.Info(ctx, fmt.Sprintf("Tenant %s update operation completed successfully", state.Name.ValueString()))
+	tflog.Info(ctx, fmt.Sprintf("Tenant %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "tenants")
 
 	var minState verityTenantResourceModel
-	minState.Name = types.StringValue(state.Name.ValueString())
+	minState.Name = types.StringValue(name)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
 
 	if resp.Diagnostics.HasError() {
@@ -1033,10 +866,10 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
-		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", state.Name.ValueString()); exists {
+		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", name); exists {
 			// Use the cached data from the API response with plan values as fallback
-			updatedState := populateTenantState(ctx, minState, tenantData, &plan)
-			resp.Diagnostics.Append(resp.State.Set(ctx, &updatedState)...)
+			state := populateTenantState(ctx, minState, tenantData, &plan)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
 	}
@@ -1070,15 +903,9 @@ func (r *verityTenantResource) Delete(ctx context.Context, req resource.DeleteRe
 	}
 
 	tenantName := state.Name.ValueString()
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddDelete(ctx, "tenant", tenantName)
-	r.provCtx.NotifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for tenant deletion operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Tenant %s", tenantName))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "tenant", tenantName, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

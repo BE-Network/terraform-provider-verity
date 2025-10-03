@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -298,161 +296,80 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		vppProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.Protocol.IsNull() {
-		vppProps.Protocol = openapi.PtrString(plan.Protocol.ValueString())
-	}
-	if !plan.DigitMap.IsNull() {
-		vppProps.DigitMap = openapi.PtrString(plan.DigitMap.ValueString())
-	}
-	if !plan.SignalingCode.IsNull() {
-		vppProps.SignalingCode = openapi.PtrString(plan.SignalingCode.ValueString())
-	}
-	if !plan.CidNumPresentationStatus.IsNull() {
-		vppProps.CidNumPresentationStatus = openapi.PtrString(plan.CidNumPresentationStatus.ValueString())
-	}
-	if !plan.CidNamePresentationStatus.IsNull() {
-		vppProps.CidNamePresentationStatus = openapi.PtrString(plan.CidNamePresentationStatus.ValueString())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Protocol", APIField: &vppProps.Protocol, TFValue: plan.Protocol},
+		{FieldName: "DigitMap", APIField: &vppProps.DigitMap, TFValue: plan.DigitMap},
+		{FieldName: "SignalingCode", APIField: &vppProps.SignalingCode, TFValue: plan.SignalingCode},
+		{FieldName: "CidNumPresentationStatus", APIField: &vppProps.CidNumPresentationStatus, TFValue: plan.CidNumPresentationStatus},
+		{FieldName: "CidNamePresentationStatus", APIField: &vppProps.CidNamePresentationStatus, TFValue: plan.CidNamePresentationStatus},
+	})
 
-	if !plan.CallThreeWayEnable.IsNull() {
-		vppProps.CallThreeWayEnable = openapi.PtrBool(plan.CallThreeWayEnable.ValueBool())
-	}
-	if !plan.CallerIdEnable.IsNull() {
-		vppProps.CallerIdEnable = openapi.PtrBool(plan.CallerIdEnable.ValueBool())
-	}
-	if !plan.CallerIdNameEnable.IsNull() {
-		vppProps.CallerIdNameEnable = openapi.PtrBool(plan.CallerIdNameEnable.ValueBool())
-	}
-	if !plan.CallWaitingEnable.IsNull() {
-		vppProps.CallWaitingEnable = openapi.PtrBool(plan.CallWaitingEnable.ValueBool())
-	}
-	if !plan.CallForwardUnconditionalEnable.IsNull() {
-		vppProps.CallForwardUnconditionalEnable = openapi.PtrBool(plan.CallForwardUnconditionalEnable.ValueBool())
-	}
-	if !plan.CallForwardOnBusyEnable.IsNull() {
-		vppProps.CallForwardOnBusyEnable = openapi.PtrBool(plan.CallForwardOnBusyEnable.ValueBool())
-	}
-	if !plan.CallTransferEnable.IsNull() {
-		vppProps.CallTransferEnable = openapi.PtrBool(plan.CallTransferEnable.ValueBool())
-	}
-	if !plan.AudioMwiEnable.IsNull() {
-		vppProps.AudioMwiEnable = openapi.PtrBool(plan.AudioMwiEnable.ValueBool())
-	}
-	if !plan.AnonymousCallBlockEnable.IsNull() {
-		vppProps.AnonymousCallBlockEnable = openapi.PtrBool(plan.AnonymousCallBlockEnable.ValueBool())
-	}
-	if !plan.DoNotDisturbEnable.IsNull() {
-		vppProps.DoNotDisturbEnable = openapi.PtrBool(plan.DoNotDisturbEnable.ValueBool())
-	}
-	if !plan.CidBlockingEnable.IsNull() {
-		vppProps.CidBlockingEnable = openapi.PtrBool(plan.CidBlockingEnable.ValueBool())
-	}
-	if !plan.CallWaitingCallerIdEnable.IsNull() {
-		vppProps.CallWaitingCallerIdEnable = openapi.PtrBool(plan.CallWaitingCallerIdEnable.ValueBool())
-	}
-	if !plan.CallHoldEnable.IsNull() {
-		vppProps.CallHoldEnable = openapi.PtrBool(plan.CallHoldEnable.ValueBool())
-	}
-	if !plan.VisualMwiEnable.IsNull() {
-		vppProps.VisualMwiEnable = openapi.PtrBool(plan.VisualMwiEnable.ValueBool())
-	}
-	if !plan.HotlineEnable.IsNull() {
-		vppProps.HotlineEnable = openapi.PtrBool(plan.HotlineEnable.ValueBool())
-	}
-	if !plan.IntercomEnable.IsNull() {
-		vppProps.IntercomEnable = openapi.PtrBool(plan.IntercomEnable.ValueBool())
-	}
-	if !plan.IntercomTransferEnable.IsNull() {
-		vppProps.IntercomTransferEnable = openapi.PtrBool(plan.IntercomTransferEnable.ValueBool())
-	}
-	if !plan.EchoCancellationEnable.IsNull() {
-		vppProps.EchoCancellationEnable = openapi.PtrBool(plan.EchoCancellationEnable.ValueBool())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &vppProps.Enable, TFValue: plan.Enable},
+		{FieldName: "CallThreeWayEnable", APIField: &vppProps.CallThreeWayEnable, TFValue: plan.CallThreeWayEnable},
+		{FieldName: "CallerIdEnable", APIField: &vppProps.CallerIdEnable, TFValue: plan.CallerIdEnable},
+		{FieldName: "CallerIdNameEnable", APIField: &vppProps.CallerIdNameEnable, TFValue: plan.CallerIdNameEnable},
+		{FieldName: "CallWaitingEnable", APIField: &vppProps.CallWaitingEnable, TFValue: plan.CallWaitingEnable},
+		{FieldName: "CallForwardUnconditionalEnable", APIField: &vppProps.CallForwardUnconditionalEnable, TFValue: plan.CallForwardUnconditionalEnable},
+		{FieldName: "CallForwardOnBusyEnable", APIField: &vppProps.CallForwardOnBusyEnable, TFValue: plan.CallForwardOnBusyEnable},
+		{FieldName: "CallTransferEnable", APIField: &vppProps.CallTransferEnable, TFValue: plan.CallTransferEnable},
+		{FieldName: "AudioMwiEnable", APIField: &vppProps.AudioMwiEnable, TFValue: plan.AudioMwiEnable},
+		{FieldName: "AnonymousCallBlockEnable", APIField: &vppProps.AnonymousCallBlockEnable, TFValue: plan.AnonymousCallBlockEnable},
+		{FieldName: "DoNotDisturbEnable", APIField: &vppProps.DoNotDisturbEnable, TFValue: plan.DoNotDisturbEnable},
+		{FieldName: "CidBlockingEnable", APIField: &vppProps.CidBlockingEnable, TFValue: plan.CidBlockingEnable},
+		{FieldName: "CallWaitingCallerIdEnable", APIField: &vppProps.CallWaitingCallerIdEnable, TFValue: plan.CallWaitingCallerIdEnable},
+		{FieldName: "CallHoldEnable", APIField: &vppProps.CallHoldEnable, TFValue: plan.CallHoldEnable},
+		{FieldName: "VisualMwiEnable", APIField: &vppProps.VisualMwiEnable, TFValue: plan.VisualMwiEnable},
+		{FieldName: "HotlineEnable", APIField: &vppProps.HotlineEnable, TFValue: plan.HotlineEnable},
+		{FieldName: "IntercomEnable", APIField: &vppProps.IntercomEnable, TFValue: plan.IntercomEnable},
+		{FieldName: "IntercomTransferEnable", APIField: &vppProps.IntercomTransferEnable, TFValue: plan.IntercomTransferEnable},
+		{FieldName: "EchoCancellationEnable", APIField: &vppProps.EchoCancellationEnable, TFValue: plan.EchoCancellationEnable},
+	})
 
-	if !plan.CallForwardOnNoAnswerRingCount.IsNull() {
-		val := int32(plan.CallForwardOnNoAnswerRingCount.ValueInt64())
-		vppProps.CallForwardOnNoAnswerRingCount = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.CallForwardOnNoAnswerRingCount = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.MwiRefreshTimer.IsNull() {
-		val := int32(plan.MwiRefreshTimer.ValueInt64())
-		vppProps.MwiRefreshTimer = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.MwiRefreshTimer = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.DialToneFeatureDelay.IsNull() {
-		val := int32(plan.DialToneFeatureDelay.ValueInt64())
-		vppProps.DialToneFeatureDelay = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.DialToneFeatureDelay = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.TransmitGain.IsNull() {
-		val := int32(plan.TransmitGain.ValueInt64())
-		vppProps.TransmitGain = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.TransmitGain = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.ReceiveGain.IsNull() {
-		val := int32(plan.ReceiveGain.ValueInt64())
-		vppProps.ReceiveGain = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.ReceiveGain = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.JitterTarget.IsNull() {
-		val := int32(plan.JitterTarget.ValueInt64())
-		vppProps.JitterTarget = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.JitterTarget = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.JitterBufferMax.IsNull() {
-		val := int32(plan.JitterBufferMax.ValueInt64())
-		vppProps.JitterBufferMax = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.JitterBufferMax = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.ReleaseTimer.IsNull() {
-		val := int32(plan.ReleaseTimer.ValueInt64())
-		vppProps.ReleaseTimer = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.ReleaseTimer = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.RohTimer.IsNull() {
-		val := int32(plan.RohTimer.ValueInt64())
-		vppProps.RohTimer = *openapi.NewNullableInt32(&val)
-	} else {
-		vppProps.RohTimer = *openapi.NewNullableInt32(nil)
-	}
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "CallForwardOnNoAnswerRingCount", APIField: &vppProps.CallForwardOnNoAnswerRingCount, TFValue: plan.CallForwardOnNoAnswerRingCount},
+		{FieldName: "MwiRefreshTimer", APIField: &vppProps.MwiRefreshTimer, TFValue: plan.MwiRefreshTimer},
+		{FieldName: "DialToneFeatureDelay", APIField: &vppProps.DialToneFeatureDelay, TFValue: plan.DialToneFeatureDelay},
+		{FieldName: "TransmitGain", APIField: &vppProps.TransmitGain, TFValue: plan.TransmitGain},
+		{FieldName: "ReceiveGain", APIField: &vppProps.ReceiveGain, TFValue: plan.ReceiveGain},
+		{FieldName: "JitterTarget", APIField: &vppProps.JitterTarget, TFValue: plan.JitterTarget},
+		{FieldName: "JitterBufferMax", APIField: &vppProps.JitterBufferMax, TFValue: plan.JitterBufferMax},
+		{FieldName: "ReleaseTimer", APIField: &vppProps.ReleaseTimer, TFValue: plan.ReleaseTimer},
+		{FieldName: "RohTimer", APIField: &vppProps.RohTimer, TFValue: plan.RohTimer},
+	})
 
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
 		if !op.IsDefault.IsNull() {
 			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
+		} else {
+			objProps.Isdefault = nil
 		}
 		if !op.PortMonitoring.IsNull() {
 			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
+		} else {
+			objProps.PortMonitoring = nil
 		}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
+		} else {
+			objProps.Group = nil
 		}
 		if !op.FormatDialPlan.IsNull() {
 			objProps.FormatDialPlan = openapi.PtrBool(op.FormatDialPlan.ValueBool())
+		} else {
+			objProps.FormatDialPlan = nil
 		}
 		vppProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "voice_port_profile", name, *vppProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for voice port profile creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Voice Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "voice_port_profile", name, *vppProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -492,36 +409,25 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 		VoicePortProfiles map[string]interface{} `json:"voice_port_profiles"`
 	}
 
-	var result VoicePortProfileResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		vppData, fetchErr := getCachedResponse(ctx, r.provCtx, "voice_port_profiles", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "voice_port_profiles", vppName,
+		func() (VoicePortProfileResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch Voice Port Profiles")
 			respAPI, err := r.client.VoicePortProfilesAPI.VoiceportprofilesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading Voice Port Profiles: %v", err)
+				return VoicePortProfileResponse{}, fmt.Errorf("error reading Voice Port Profiles: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res VoicePortProfileResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode Voice Port Profiles response: %v", err)
+				return VoicePortProfileResponse{}, fmt.Errorf("failed to decode Voice Port Profiles response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Voice Port Profiles", len(res.VoicePortProfiles)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch Voice Port Profiles on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = vppData.(VoicePortProfileResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Voice Port Profile %s", vppName))...,
@@ -529,40 +435,85 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for Voice Port Profile with ID: %s", vppName))
-	var vppData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for Voice Port Profile with name: %s", vppName))
 
-	if data, ok := result.VoicePortProfiles[vppName].(map[string]interface{}); ok {
-		vppData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found Voice Port Profile directly by ID: %s", vppName))
-	} else {
-		for apiName, v := range result.VoicePortProfiles {
-			voicePortProfile, ok := v.(map[string]interface{})
-			if !ok {
-				continue
+	vppData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.VoicePortProfiles,
+		vppName,
+		func(data interface{}) (string, bool) {
+			if voicePortProfile, ok := data.(map[string]interface{}); ok {
+				if name, ok := voicePortProfile["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := voicePortProfile["name"].(string); ok && name == vppName {
-				vppData = voicePortProfile
-				vppName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Voice Port Profile with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Voice Port Profile with ID '%s' not found in API response", vppName))
+		tflog.Debug(ctx, fmt.Sprintf("Voice Port Profile with name '%s' not found in API response", vppName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", vppData["name"]))
+	vppMap, ok := vppData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Voice Port Profile Data",
+			fmt.Sprintf("Voice Port Profile data is not in expected format for %s", vppName),
+		)
+		return
+	}
 
-	boolFields := map[string]*types.Bool{
+	tflog.Debug(ctx, fmt.Sprintf("Found Voice Port Profile '%s' under API key '%s'", vppName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(vppMap["name"])
+
+	// Handle object properties
+	if objProps, ok := vppMap["object_properties"].(map[string]interface{}); ok {
+		isDefault := utils.MapBoolFromAPI(objProps["isdefault"])
+		if isDefault.IsNull() {
+			isDefault = types.BoolValue(false)
+		}
+		portMonitoring := utils.MapStringFromAPI(objProps["port_monitoring"])
+		if portMonitoring.IsNull() {
+			portMonitoring = types.StringValue("")
+		}
+		group := utils.MapStringFromAPI(objProps["group"])
+		if group.IsNull() {
+			group = types.StringValue("")
+		}
+		formatDialPlan := utils.MapBoolFromAPI(objProps["format_dial_plan"])
+		if formatDialPlan.IsNull() {
+			formatDialPlan = types.BoolValue(false)
+		}
+		state.ObjectProperties = []verityVoicePortProfileObjectPropertiesModel{
+			{
+				IsDefault:      isDefault,
+				PortMonitoring: portMonitoring,
+				Group:          group,
+				FormatDialPlan: formatDialPlan,
+			},
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"protocol":                     &state.Protocol,
+		"digit_map":                    &state.DigitMap,
+		"signaling_code":               &state.SignalingCode,
+		"cid_num_presentation_status":  &state.CidNumPresentationStatus,
+		"cid_name_presentation_status": &state.CidNamePresentationStatus,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(vppMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
 		"enable":                            &state.Enable,
 		"call_three_way_enable":             &state.CallThreeWayEnable,
 		"caller_id_enable":                  &state.CallerIdEnable,
@@ -584,31 +535,12 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 		"echo_cancellation_enable":          &state.EchoCancellationEnable,
 	}
 
-	for apiKey, stateField := range boolFields {
-		if value, ok := vppData[apiKey].(bool); ok {
-			*stateField = types.BoolValue(value)
-		} else {
-			*stateField = types.BoolNull()
-		}
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(vppMap[apiKey])
 	}
 
-	stringFields := map[string]*types.String{
-		"protocol":                     &state.Protocol,
-		"digit_map":                    &state.DigitMap,
-		"cid_num_presentation_status":  &state.CidNumPresentationStatus,
-		"cid_name_presentation_status": &state.CidNamePresentationStatus,
-		"signaling_code":               &state.SignalingCode,
-	}
-
-	for apiKey, stateField := range stringFields {
-		if value, ok := vppData[apiKey].(string); ok {
-			*stateField = types.StringValue(value)
-		} else {
-			*stateField = types.StringNull()
-		}
-	}
-
-	intFields := map[string]*types.Int64{
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
 		"call_forward_on_no_answer_ring_count": &state.CallForwardOnNoAnswerRingCount,
 		"mwi_refresh_timer":                    &state.MwiRefreshTimer,
 		"dial_tone_feature_delay":              &state.DialToneFeatureDelay,
@@ -620,56 +552,8 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 		"roh_timer":                            &state.RohTimer,
 	}
 
-	for apiKey, stateField := range intFields {
-		if value, ok := vppData[apiKey]; ok && value != nil {
-			switch v := value.(type) {
-			case int:
-				*stateField = types.Int64Value(int64(v))
-			case int32:
-				*stateField = types.Int64Value(int64(v))
-			case int64:
-				*stateField = types.Int64Value(v)
-			case float64:
-				*stateField = types.Int64Value(int64(v))
-			case string:
-				if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-					*stateField = types.Int64Value(intVal)
-				} else {
-					*stateField = types.Int64Null()
-				}
-			default:
-				*stateField = types.Int64Null()
-			}
-		} else {
-			*stateField = types.Int64Null()
-		}
-	}
-
-	if objProps, ok := vppData["object_properties"].(map[string]interface{}); ok {
-		op := verityVoicePortProfileObjectPropertiesModel{}
-		if isDefault, ok := objProps["isdefault"].(bool); ok {
-			op.IsDefault = types.BoolValue(isDefault)
-		} else {
-			op.IsDefault = types.BoolNull()
-		}
-		if portMonitoring, ok := objProps["port_monitoring"].(string); ok {
-			op.PortMonitoring = types.StringValue(portMonitoring)
-		} else {
-			op.PortMonitoring = types.StringNull()
-		}
-		if group, ok := objProps["group"].(string); ok {
-			op.Group = types.StringValue(group)
-		} else {
-			op.Group = types.StringNull()
-		}
-		if formatDialPlan, ok := objProps["format_dial_plan"].(bool); ok {
-			op.FormatDialPlan = types.BoolValue(formatDialPlan)
-		} else {
-			op.FormatDialPlan = types.BoolNull()
-		}
-		state.ObjectProperties = []verityVoicePortProfileObjectPropertiesModel{op}
-	} else {
-		state.ObjectProperties = nil
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapNullableInt64FromAPI(vppMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -701,154 +585,47 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	vppProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		vppProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(val *string) { vppProps.Name = val }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Protocol, state.Protocol, func(val *string) { vppProps.Protocol = val }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DigitMap, state.DigitMap, func(val *string) { vppProps.DigitMap = val }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SignalingCode, state.SignalingCode, func(val *string) { vppProps.SignalingCode = val }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CidNumPresentationStatus, state.CidNumPresentationStatus, func(val *string) { vppProps.CidNumPresentationStatus = val }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CidNamePresentationStatus, state.CidNamePresentationStatus, func(val *string) { vppProps.CidNamePresentationStatus = val }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		vppProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-	if !plan.Protocol.Equal(state.Protocol) {
-		vppProps.Protocol = openapi.PtrString(plan.Protocol.ValueString())
-		hasChanges = true
-	}
-	if !plan.DigitMap.Equal(state.DigitMap) {
-		vppProps.DigitMap = openapi.PtrString(plan.DigitMap.ValueString())
-		hasChanges = true
-	}
-	if !plan.SignalingCode.Equal(state.SignalingCode) {
-		vppProps.SignalingCode = openapi.PtrString(plan.SignalingCode.ValueString())
-		hasChanges = true
-	}
-	if !plan.CidNumPresentationStatus.Equal(state.CidNumPresentationStatus) {
-		vppProps.CidNumPresentationStatus = openapi.PtrString(plan.CidNumPresentationStatus.ValueString())
-		hasChanges = true
-	}
-	if !plan.CidNamePresentationStatus.Equal(state.CidNamePresentationStatus) {
-		vppProps.CidNamePresentationStatus = openapi.PtrString(plan.CidNamePresentationStatus.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(val *bool) { vppProps.Enable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallThreeWayEnable, state.CallThreeWayEnable, func(val *bool) { vppProps.CallThreeWayEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallerIdEnable, state.CallerIdEnable, func(val *bool) { vppProps.CallerIdEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallerIdNameEnable, state.CallerIdNameEnable, func(val *bool) { vppProps.CallerIdNameEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallWaitingEnable, state.CallWaitingEnable, func(val *bool) { vppProps.CallWaitingEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallForwardUnconditionalEnable, state.CallForwardUnconditionalEnable, func(val *bool) { vppProps.CallForwardUnconditionalEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallForwardOnBusyEnable, state.CallForwardOnBusyEnable, func(val *bool) { vppProps.CallForwardOnBusyEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallTransferEnable, state.CallTransferEnable, func(val *bool) { vppProps.CallTransferEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AudioMwiEnable, state.AudioMwiEnable, func(val *bool) { vppProps.AudioMwiEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AnonymousCallBlockEnable, state.AnonymousCallBlockEnable, func(val *bool) { vppProps.AnonymousCallBlockEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.DoNotDisturbEnable, state.DoNotDisturbEnable, func(val *bool) { vppProps.DoNotDisturbEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CidBlockingEnable, state.CidBlockingEnable, func(val *bool) { vppProps.CidBlockingEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallWaitingCallerIdEnable, state.CallWaitingCallerIdEnable, func(val *bool) { vppProps.CallWaitingCallerIdEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.CallHoldEnable, state.CallHoldEnable, func(val *bool) { vppProps.CallHoldEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.VisualMwiEnable, state.VisualMwiEnable, func(val *bool) { vppProps.VisualMwiEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.HotlineEnable, state.HotlineEnable, func(val *bool) { vppProps.HotlineEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.IntercomEnable, state.IntercomEnable, func(val *bool) { vppProps.IntercomEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.IntercomTransferEnable, state.IntercomTransferEnable, func(val *bool) { vppProps.IntercomTransferEnable = val }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EchoCancellationEnable, state.EchoCancellationEnable, func(val *bool) { vppProps.EchoCancellationEnable = val }, &hasChanges)
 
-	boolFields := map[string]struct {
-		planField  types.Bool
-		stateField types.Bool
-		setter     func(bool)
-	}{
-		"call_three_way_enable":             {plan.CallThreeWayEnable, state.CallThreeWayEnable, func(v bool) { vppProps.CallThreeWayEnable = openapi.PtrBool(v) }},
-		"caller_id_enable":                  {plan.CallerIdEnable, state.CallerIdEnable, func(v bool) { vppProps.CallerIdEnable = openapi.PtrBool(v) }},
-		"caller_id_name_enable":             {plan.CallerIdNameEnable, state.CallerIdNameEnable, func(v bool) { vppProps.CallerIdNameEnable = openapi.PtrBool(v) }},
-		"call_waiting_enable":               {plan.CallWaitingEnable, state.CallWaitingEnable, func(v bool) { vppProps.CallWaitingEnable = openapi.PtrBool(v) }},
-		"call_forward_unconditional_enable": {plan.CallForwardUnconditionalEnable, state.CallForwardUnconditionalEnable, func(v bool) { vppProps.CallForwardUnconditionalEnable = openapi.PtrBool(v) }},
-		"call_forward_on_busy_enable":       {plan.CallForwardOnBusyEnable, state.CallForwardOnBusyEnable, func(v bool) { vppProps.CallForwardOnBusyEnable = openapi.PtrBool(v) }},
-		"call_transfer_enable":              {plan.CallTransferEnable, state.CallTransferEnable, func(v bool) { vppProps.CallTransferEnable = openapi.PtrBool(v) }},
-		"audio_mwi_enable":                  {plan.AudioMwiEnable, state.AudioMwiEnable, func(v bool) { vppProps.AudioMwiEnable = openapi.PtrBool(v) }},
-		"anonymous_call_block_enable":       {plan.AnonymousCallBlockEnable, state.AnonymousCallBlockEnable, func(v bool) { vppProps.AnonymousCallBlockEnable = openapi.PtrBool(v) }},
-		"do_not_disturb_enable":             {plan.DoNotDisturbEnable, state.DoNotDisturbEnable, func(v bool) { vppProps.DoNotDisturbEnable = openapi.PtrBool(v) }},
-		"cid_blocking_enable":               {plan.CidBlockingEnable, state.CidBlockingEnable, func(v bool) { vppProps.CidBlockingEnable = openapi.PtrBool(v) }},
-		"call_waiting_caller_id_enable":     {plan.CallWaitingCallerIdEnable, state.CallWaitingCallerIdEnable, func(v bool) { vppProps.CallWaitingCallerIdEnable = openapi.PtrBool(v) }},
-		"call_hold_enable":                  {plan.CallHoldEnable, state.CallHoldEnable, func(v bool) { vppProps.CallHoldEnable = openapi.PtrBool(v) }},
-		"visual_mwi_enable":                 {plan.VisualMwiEnable, state.VisualMwiEnable, func(v bool) { vppProps.VisualMwiEnable = openapi.PtrBool(v) }},
-		"hotline_enable":                    {plan.HotlineEnable, state.HotlineEnable, func(v bool) { vppProps.HotlineEnable = openapi.PtrBool(v) }},
-		"intercom_enable":                   {plan.IntercomEnable, state.IntercomEnable, func(v bool) { vppProps.IntercomEnable = openapi.PtrBool(v) }},
-		"intercom_transfer_enable":          {plan.IntercomTransferEnable, state.IntercomTransferEnable, func(v bool) { vppProps.IntercomTransferEnable = openapi.PtrBool(v) }},
-		"echo_cancellation_enable":          {plan.EchoCancellationEnable, state.EchoCancellationEnable, func(v bool) { vppProps.EchoCancellationEnable = openapi.PtrBool(v) }},
-	}
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.CallForwardOnNoAnswerRingCount, state.CallForwardOnNoAnswerRingCount, func(val *openapi.NullableInt32) { vppProps.CallForwardOnNoAnswerRingCount = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MwiRefreshTimer, state.MwiRefreshTimer, func(val *openapi.NullableInt32) { vppProps.MwiRefreshTimer = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.DialToneFeatureDelay, state.DialToneFeatureDelay, func(val *openapi.NullableInt32) { vppProps.DialToneFeatureDelay = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.TransmitGain, state.TransmitGain, func(val *openapi.NullableInt32) { vppProps.TransmitGain = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.ReceiveGain, state.ReceiveGain, func(val *openapi.NullableInt32) { vppProps.ReceiveGain = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.JitterTarget, state.JitterTarget, func(val *openapi.NullableInt32) { vppProps.JitterTarget = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.JitterBufferMax, state.JitterBufferMax, func(val *openapi.NullableInt32) { vppProps.JitterBufferMax = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.ReleaseTimer, state.ReleaseTimer, func(val *openapi.NullableInt32) { vppProps.ReleaseTimer = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.RohTimer, state.RohTimer, func(val *openapi.NullableInt32) { vppProps.RohTimer = *val }, &hasChanges)
 
-	for _, field := range boolFields {
-		if !field.planField.Equal(field.stateField) {
-			field.setter(field.planField.ValueBool())
-			hasChanges = true
-		}
-	}
-
-	intFields := map[string]struct {
-		planField  types.Int64
-		stateField types.Int64
-		setter     func(types.Int64)
-	}{
-		"call_forward_on_no_answer_ring_count": {plan.CallForwardOnNoAnswerRingCount, state.CallForwardOnNoAnswerRingCount, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.CallForwardOnNoAnswerRingCount = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.CallForwardOnNoAnswerRingCount = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"mwi_refresh_timer": {plan.MwiRefreshTimer, state.MwiRefreshTimer, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.MwiRefreshTimer = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.MwiRefreshTimer = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"dial_tone_feature_delay": {plan.DialToneFeatureDelay, state.DialToneFeatureDelay, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.DialToneFeatureDelay = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.DialToneFeatureDelay = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"transmit_gain": {plan.TransmitGain, state.TransmitGain, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.TransmitGain = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.TransmitGain = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"receive_gain": {plan.ReceiveGain, state.ReceiveGain, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.ReceiveGain = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.ReceiveGain = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"jitter_target": {plan.JitterTarget, state.JitterTarget, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.JitterTarget = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.JitterTarget = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"jitter_buffer_max": {plan.JitterBufferMax, state.JitterBufferMax, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.JitterBufferMax = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.JitterBufferMax = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"release_timer": {plan.ReleaseTimer, state.ReleaseTimer, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.ReleaseTimer = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.ReleaseTimer = *openapi.NewNullableInt32(nil)
-			}
-		}},
-		"roh_timer": {plan.RohTimer, state.RohTimer, func(v types.Int64) {
-			if !v.IsNull() {
-				val := int32(v.ValueInt64())
-				vppProps.RohTimer = *openapi.NewNullableInt32(&val)
-			} else {
-				vppProps.RohTimer = *openapi.NewNullableInt32(nil)
-			}
-		}},
-	}
-
-	for _, field := range intFields {
-		if !field.planField.Equal(field.stateField) {
-			field.setter(field.planField)
-			hasChanges = true
-		}
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
 			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) ||
@@ -879,16 +656,11 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "voice_port_profile", name, vppProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Voice Port Profile update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Voice Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "voice_port_profile", name, vppProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Voice Port Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "voice_port_profiles")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -911,14 +683,9 @@ func (r *verityVoicePortProfileResource) Delete(ctx context.Context, req resourc
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "voice_port_profile", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Voice Port Profile deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Voice Port Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "voice_port_profile", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

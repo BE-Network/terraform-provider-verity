@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -48,6 +47,10 @@ type veritySfpBreakoutBreakoutModel struct {
 	PartNumber types.String `tfsdk:"part_number"`
 	Breakout   types.String `tfsdk:"breakout"`
 	Index      types.Int64  `tfsdk:"index"`
+}
+
+func (m veritySfpBreakoutBreakoutModel) GetIndex() types.Int64 {
+	return m.Index
 }
 
 type veritySfpBreakoutObjectPropertiesModel struct {
@@ -157,7 +160,7 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 
 	sfpBreakoutName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("sfp_breakouts") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("sfp_breakout") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping SFP Breakout %s verification – trusting recent successful API operation", sfpBreakoutName))
 		return
 	}
@@ -168,36 +171,26 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 		SfpBreakouts map[string]interface{} `json:"sfp_breakouts"`
 	}
 
-	var result SfpBreakoutsResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		sfpBreakoutsData, fetchErr := getCachedResponse(ctx, r.provCtx, "sfp_breakouts", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "sfp_breakouts", sfpBreakoutName,
+		func() (SfpBreakoutsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch SFP Breakouts")
 			respAPI, err := r.client.SFPBreakoutsAPI.SfpbreakoutsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading SFP Breakouts: %v", err)
+				return SfpBreakoutsResponse{}, fmt.Errorf("error reading SFP Breakouts: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res SfpBreakoutsResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode SFP Breakouts response: %v", err)
+				return SfpBreakoutsResponse{}, fmt.Errorf("failed to decode SFP Breakouts response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d SFP Breakouts", len(res.SfpBreakouts)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch SFP Breakouts on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = sfpBreakoutsData.(SfpBreakoutsResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read SFP Breakout %s", sfpBreakoutName))...,
@@ -205,47 +198,51 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for SFP Breakout with ID: %s", sfpBreakoutName))
-	var sfpBreakoutData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for SFP Breakout with name: %s", sfpBreakoutName))
 
-	if data, ok := result.SfpBreakouts[sfpBreakoutName].(map[string]interface{}); ok {
-		sfpBreakoutData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found SFP Breakout directly by ID: %s", sfpBreakoutName))
-	} else {
-		for apiName, g := range result.SfpBreakouts {
-			sfpBreakout, ok := g.(map[string]interface{})
-			if !ok {
-				continue
+	sfpBreakoutData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.SfpBreakouts,
+		sfpBreakoutName,
+		func(data interface{}) (string, bool) {
+			if sfpBreakout, ok := data.(map[string]interface{}); ok {
+				if name, ok := sfpBreakout["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := sfpBreakout["name"].(string); ok && name == sfpBreakoutName {
-				sfpBreakoutData = sfpBreakout
-				sfpBreakoutName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found SFP Breakout with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("SFP Breakout with ID '%s' not found in API response", sfpBreakoutName))
+		tflog.Debug(ctx, fmt.Sprintf("SFP Breakout with name '%s' not found in API response", sfpBreakoutName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", sfpBreakoutData["name"]))
+	sfpBreakoutMap, ok := sfpBreakoutData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid SFP Breakout Data",
+			fmt.Sprintf("SFP Breakout data is not in expected format for %s", sfpBreakoutName),
+		)
+		return
+	}
 
-	if enable, ok := sfpBreakoutData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	tflog.Debug(ctx, fmt.Sprintf("Found SFP Breakout '%s' under API key '%s'", sfpBreakoutName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(sfpBreakoutMap["name"])
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(sfpBreakoutMap[apiKey])
 	}
 
 	// Handle breakout list
-	if breakoutData, ok := sfpBreakoutData["breakout"].([]interface{}); ok && len(breakoutData) > 0 {
+	if breakoutData, ok := sfpBreakoutMap["breakout"].([]interface{}); ok && len(breakoutData) > 0 {
 		var breakouts []veritySfpBreakoutBreakoutModel
 
 		for _, b := range breakoutData {
@@ -254,43 +251,12 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 				continue
 			}
 
-			breakoutModel := veritySfpBreakoutBreakoutModel{}
-
-			if enable, ok := breakout["enable"].(bool); ok {
-				breakoutModel.Enable = types.BoolValue(enable)
-			} else {
-				breakoutModel.Enable = types.BoolNull()
-			}
-
-			if vendor, ok := breakout["vendor"].(string); ok {
-				breakoutModel.Vendor = types.StringValue(vendor)
-			} else {
-				breakoutModel.Vendor = types.StringNull()
-			}
-
-			if partNumber, ok := breakout["part_number"].(string); ok {
-				breakoutModel.PartNumber = types.StringValue(partNumber)
-			} else {
-				breakoutModel.PartNumber = types.StringNull()
-			}
-
-			if breakoutVal, ok := breakout["breakout"].(string); ok {
-				breakoutModel.Breakout = types.StringValue(breakoutVal)
-			} else {
-				breakoutModel.Breakout = types.StringNull()
-			}
-
-			if index, exists := breakout["index"]; exists && index != nil {
-				switch v := index.(type) {
-				case int:
-					breakoutModel.Index = types.Int64Value(int64(v))
-				case float64:
-					breakoutModel.Index = types.Int64Value(int64(v))
-				default:
-					breakoutModel.Index = types.Int64Null()
-				}
-			} else {
-				breakoutModel.Index = types.Int64Null()
+			breakoutModel := veritySfpBreakoutBreakoutModel{
+				Enable:     utils.MapBoolFromAPI(breakout["enable"]),
+				Vendor:     utils.MapStringFromAPI(breakout["vendor"]),
+				PartNumber: utils.MapStringFromAPI(breakout["part_number"]),
+				Breakout:   utils.MapStringFromAPI(breakout["breakout"]),
+				Index:      utils.MapInt64FromAPI(breakout["index"]),
 			}
 
 			breakouts = append(breakouts, breakoutModel)
@@ -330,138 +296,13 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 	sfpBreakoutProps := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		sfpBreakoutProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sfpBreakoutProps.Name = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		sfpBreakoutProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sfpBreakoutProps.Enable = v }, &hasChanges)
 
-	oldBreakoutsByIndex := make(map[int64]veritySfpBreakoutBreakoutModel)
-	for _, breakout := range state.Breakout {
-		if !breakout.Index.IsNull() {
-			oldBreakoutsByIndex[breakout.Index.ValueInt64()] = breakout
-		}
-	}
-
-	var changedBreakouts []openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner
-	breakoutsChanged := false
-
-	for _, breakout := range plan.Breakout {
-		if breakout.Index.IsNull() {
-			continue
-		}
-
-		index := breakout.Index.ValueInt64()
-		oldBreakout, exists := oldBreakoutsByIndex[index]
-
-		if !exists {
-			// new breakout, include all fields
-			breakoutProps := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-
-			if !breakout.Enable.IsNull() {
-				breakoutProps.Enable = openapi.PtrBool(breakout.Enable.ValueBool())
-			} else {
-				breakoutProps.Enable = openapi.PtrBool(false)
-			}
-
-			if !breakout.Vendor.IsNull() {
-				breakoutProps.Vendor = openapi.PtrString(breakout.Vendor.ValueString())
-			} else {
-				breakoutProps.Vendor = openapi.PtrString("")
-			}
-
-			if !breakout.PartNumber.IsNull() {
-				breakoutProps.PartNumber = openapi.PtrString(breakout.PartNumber.ValueString())
-			} else {
-				breakoutProps.PartNumber = openapi.PtrString("")
-			}
-
-			if !breakout.Breakout.IsNull() {
-				breakoutProps.Breakout = openapi.PtrString(breakout.Breakout.ValueString())
-			} else {
-				breakoutProps.Breakout = openapi.PtrString("")
-			}
-
-			changedBreakouts = append(changedBreakouts, breakoutProps)
-			breakoutsChanged = true
-			continue
-		}
-
-		// existing breakout, check which fields changed
-		breakoutProps := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
-			Index: openapi.PtrInt32(int32(index)),
-		}
-
-		fieldChanged := false
-
-		if !breakout.Enable.Equal(oldBreakout.Enable) {
-			breakoutProps.Enable = openapi.PtrBool(breakout.Enable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !breakout.Vendor.Equal(oldBreakout.Vendor) {
-			if !breakout.Vendor.IsNull() {
-				breakoutProps.Vendor = openapi.PtrString(breakout.Vendor.ValueString())
-			} else {
-				breakoutProps.Vendor = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !breakout.PartNumber.Equal(oldBreakout.PartNumber) {
-			if !breakout.PartNumber.IsNull() {
-				breakoutProps.PartNumber = openapi.PtrString(breakout.PartNumber.ValueString())
-			} else {
-				breakoutProps.PartNumber = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if !breakout.Breakout.Equal(oldBreakout.Breakout) {
-			if !breakout.Breakout.IsNull() {
-				breakoutProps.Breakout = openapi.PtrString(breakout.Breakout.ValueString())
-			} else {
-				breakoutProps.Breakout = openapi.PtrString("")
-			}
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedBreakouts = append(changedBreakouts, breakoutProps)
-			breakoutsChanged = true
-		}
-	}
-
-	for idx := range oldBreakoutsByIndex {
-		found := false
-		for _, breakout := range plan.Breakout {
-			if !breakout.Index.IsNull() && breakout.Index.ValueInt64() == idx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// breakout removed - include only the index for deletion
-			deletedBreakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-			changedBreakouts = append(changedBreakouts, deletedBreakout)
-			breakoutsChanged = true
-		}
-	}
-
-	if breakoutsChanged && len(changedBreakouts) > 0 {
-		sfpBreakoutProps.Breakout = changedBreakouts
-		hasChanges = true
-	}
-
+	// Handle object properties
 	if (plan.ObjectProperties == nil) != (state.ObjectProperties == nil) {
 		if plan.ObjectProperties != nil {
 			// SFP Breakout object properties are empty according to schema
@@ -471,21 +312,103 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 		hasChanges = true
 	}
 
+	// Handle breakout list
+	breakoutHandler := utils.IndexedItemHandler[veritySfpBreakoutBreakoutModel, openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner]{
+		CreateNew: func(planItem veritySfpBreakoutBreakoutModel) openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
+			breakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			if !planItem.Enable.IsNull() {
+				breakout.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+			} else {
+				breakout.Enable = openapi.PtrBool(false)
+			}
+
+			if !planItem.Vendor.IsNull() {
+				breakout.Vendor = openapi.PtrString(planItem.Vendor.ValueString())
+			} else {
+				breakout.Vendor = openapi.PtrString("")
+			}
+
+			if !planItem.PartNumber.IsNull() {
+				breakout.PartNumber = openapi.PtrString(planItem.PartNumber.ValueString())
+			} else {
+				breakout.PartNumber = openapi.PtrString("")
+			}
+
+			if !planItem.Breakout.IsNull() {
+				breakout.Breakout = openapi.PtrString(planItem.Breakout.ValueString())
+			} else {
+				breakout.Breakout = openapi.PtrString("")
+			}
+
+			return breakout
+		},
+		UpdateExisting: func(planItem veritySfpBreakoutBreakoutModel, stateItem veritySfpBreakoutBreakoutModel) (openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner, bool) {
+			breakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.Enable.Equal(stateItem.Enable) {
+				breakout.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.Vendor.Equal(stateItem.Vendor) {
+				if !planItem.Vendor.IsNull() {
+					breakout.Vendor = openapi.PtrString(planItem.Vendor.ValueString())
+				} else {
+					breakout.Vendor = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.PartNumber.Equal(stateItem.PartNumber) {
+				if !planItem.PartNumber.IsNull() {
+					breakout.PartNumber = openapi.PtrString(planItem.PartNumber.ValueString())
+				} else {
+					breakout.PartNumber = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.Breakout.Equal(stateItem.Breakout) {
+				if !planItem.Breakout.IsNull() {
+					breakout.Breakout = openapi.PtrString(planItem.Breakout.ValueString())
+				} else {
+					breakout.Breakout = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			return breakout, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
+			return openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
+	}
+
+	changedBreakouts, breakoutsChanged := utils.ProcessIndexedArrayUpdates(plan.Breakout, state.Breakout, breakoutHandler)
+	if breakoutsChanged {
+		sfpBreakoutProps.Breakout = changedBreakouts
+		hasChanges = true
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "sfp_breakout", name, sfpBreakoutProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for SFP Breakout update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update SFP Breakout %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "sfp_breakout", name, sfpBreakoutProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("SFP Breakout %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "sfp_breakouts")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)

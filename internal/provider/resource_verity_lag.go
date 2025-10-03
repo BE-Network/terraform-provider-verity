@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -164,68 +163,42 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		lagReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.IsPeerLink.IsNull() {
-		lagReq.IsPeerLink = openapi.PtrBool(plan.IsPeerLink.ValueBool())
-	}
-	if !plan.Color.IsNull() {
-		color := plan.Color.ValueString()
-		if color != "" {
-			lagReq.Color = openapi.PtrString(color)
-		}
-	}
-	if !plan.Lacp.IsNull() {
-		lagReq.Lacp = openapi.PtrBool(plan.Lacp.ValueBool())
-	}
-	if !plan.EthPortProfile.IsNull() {
-		ethPortProfile := plan.EthPortProfile.ValueString()
-		if ethPortProfile != "" {
-			lagReq.EthPortProfile = openapi.PtrString(ethPortProfile)
-		}
-	}
-	if !plan.PeerLinkVlan.IsNull() {
-		peerLinkVlan := int32(plan.PeerLinkVlan.ValueInt64())
-		lagReq.PeerLinkVlan = *openapi.NewNullableInt32(&peerLinkVlan)
-	} else {
-		lagReq.PeerLinkVlan = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.Fallback.IsNull() {
-		lagReq.Fallback = openapi.PtrBool(plan.Fallback.ValueBool())
-	}
-	if !plan.FastRate.IsNull() {
-		lagReq.FastRate = openapi.PtrBool(plan.FastRate.ValueBool())
-	}
-	if !plan.EthPortProfileRefType.IsNull() {
-		lagReq.EthPortProfileRefType = openapi.PtrString(plan.EthPortProfileRefType.ValueString())
-	}
-	if !plan.Uplink.IsNull() {
-		lagReq.Uplink = openapi.PtrBool(plan.Uplink.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Color", APIField: &lagReq.Color, TFValue: plan.Color},
+		{FieldName: "EthPortProfile", APIField: &lagReq.EthPortProfile, TFValue: plan.EthPortProfile},
+		{FieldName: "EthPortProfileRefType", APIField: &lagReq.EthPortProfileRefType, TFValue: plan.EthPortProfileRefType},
+	})
 
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &lagReq.Enable, TFValue: plan.Enable},
+		{FieldName: "IsPeerLink", APIField: &lagReq.IsPeerLink, TFValue: plan.IsPeerLink},
+		{FieldName: "Lacp", APIField: &lagReq.Lacp, TFValue: plan.Lacp},
+		{FieldName: "Fallback", APIField: &lagReq.Fallback, TFValue: plan.Fallback},
+		{FieldName: "FastRate", APIField: &lagReq.FastRate, TFValue: plan.FastRate},
+		{FieldName: "Uplink", APIField: &lagReq.Uplink, TFValue: plan.Uplink},
+	})
+
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "PeerLinkVlan", APIField: &lagReq.PeerLinkVlan, TFValue: plan.PeerLinkVlan},
+	})
+
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		lagReq.ObjectProperties = make(map[string]interface{})
 	} else {
 		lagReq.ObjectProperties = nil
 	}
 
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPut(ctx, "lag", name, *lagReq)
-
-	provCtx.NotifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for LAG creation operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create LAG %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "lag", name, *lagReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("LAG %s creation operation completed successfully", name))
-	clearCache(ctx, provCtx, "lags")
+	clearCache(ctx, r.provCtx, "lags")
 
 	plan.Name = types.StringValue(name)
 	resp.State.Set(ctx, plan)
@@ -260,38 +233,25 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 		Lag map[string]map[string]interface{} `json:"lag"`
 	}
 
-	var result LagsResponse
-	var err error
-	maxRetries := 3
-
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		lagsData, fetchErr := getCachedResponse(ctx, r.provCtx, "lags", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "lags", lagName,
+		func() (LagsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch LAGs")
 			respAPI, err := r.client.LAGsAPI.LagsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading LAG: %v", err)
+				return LagsResponse{}, fmt.Errorf("error reading LAG: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res LagsResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode LAGs response: %v", err)
+				return LagsResponse{}, fmt.Errorf("failed to decode LAGs response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d LAGs from API", len(res.Lag)))
 			return res, nil
-		})
-
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch LAGs on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = lagsData.(LagsResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
 
 	if err != nil {
 		resp.Diagnostics.Append(
@@ -300,97 +260,77 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for LAG with ID: %s", lagName))
-	var lagData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for LAG with name: %s", lagName))
 
-	if data, ok := result.Lag[lagName]; ok {
-		lagData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found LAG directly by ID: %s", lagName))
-	} else {
-		for apiName, l := range result.Lag {
-			if name, ok := l["name"].(string); ok && name == lagName {
-				lagData = l
-				lagName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found LAG with name '%s' under API key '%s'", name, apiName))
-				break
+	lagData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Lag,
+		lagName,
+		func(data map[string]interface{}) (string, bool) {
+			if name, ok := data["name"].(string); ok {
+				return name, true
 			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("LAG with ID '%s' not found in API response", lagName))
+		tflog.Debug(ctx, fmt.Sprintf("LAG with name '%s' not found in API response", lagName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", lagData["name"]))
-
-	if val, ok := lagData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(val)
-	} else {
-		state.Enable = types.BoolNull()
-	}
-	if val, ok := lagData["is_peer_link"].(bool); ok {
-		state.IsPeerLink = types.BoolValue(val)
-	} else {
-		state.IsPeerLink = types.BoolNull()
-	}
-	if val, ok := lagData["color"].(string); ok {
-		state.Color = types.StringValue(val)
-	} else {
-		state.Color = types.StringNull()
-	}
-	if val, ok := lagData["lacp"].(bool); ok {
-		state.Lacp = types.BoolValue(val)
-	} else {
-		state.Lacp = types.BoolNull()
-	}
-	if val, ok := lagData["eth_port_profile"].(string); ok {
-		state.EthPortProfile = types.StringValue(val)
-	} else {
-		state.EthPortProfile = types.StringNull()
-	}
-	if val, ok := lagData["peer_link_vlan"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.PeerLinkVlan = types.Int64Value(int64(v))
-		case int:
-			state.PeerLinkVlan = types.Int64Value(int64(v))
-		default:
-			state.PeerLinkVlan = types.Int64Null()
-		}
-	} else {
-		state.PeerLinkVlan = types.Int64Null()
-	}
-	if val, ok := lagData["fallback"].(bool); ok {
-		state.Fallback = types.BoolValue(val)
-	} else {
-		state.Fallback = types.BoolNull()
-	}
-	if val, ok := lagData["fast_rate"].(bool); ok {
-		state.FastRate = types.BoolValue(val)
-	} else {
-		state.FastRate = types.BoolNull()
-	}
-	if val, ok := lagData["eth_port_profile_ref_type_"].(string); ok {
-		state.EthPortProfileRefType = types.StringValue(val)
-	} else {
-		state.EthPortProfileRefType = types.StringNull()
-	}
-	if val, ok := lagData["uplink"].(bool); ok {
-		state.Uplink = types.BoolValue(val)
-	} else {
-		state.Uplink = types.BoolNull()
+	lagMap, ok := lagData, true
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid LAG Data",
+			fmt.Sprintf("LAG data is not in expected format for %s", lagName),
+		)
+		return
 	}
 
-	// Only set object_properties if it exists in the API response
-	if _, ok := lagData["object_properties"]; ok {
+	tflog.Debug(ctx, fmt.Sprintf("Found LAG '%s' under API key '%s'", lagName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(lagMap["name"])
+
+	// Handle object properties
+	if _, ok := lagMap["object_properties"]; ok {
 		state.ObjectProperties = []verityLagObjectPropertiesModel{{}}
 	} else {
 		state.ObjectProperties = nil
+	}
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"color":                      &state.Color,
+		"eth_port_profile":           &state.EthPortProfile,
+		"eth_port_profile_ref_type_": &state.EthPortProfileRefType,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(lagMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":       &state.Enable,
+		"is_peer_link": &state.IsPeerLink,
+		"lacp":         &state.Lacp,
+		"fallback":     &state.Fallback,
+		"fast_rate":    &state.FastRate,
+		"uplink":       &state.Uplink,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(lagMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"peer_link_vlan": &state.PeerLinkVlan,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(lagMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -419,78 +359,40 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	name := plan.Name.ValueString()
-	lagReq := &openapi.LagsPutRequestLagValue{}
+	lagReq := openapi.LagsPutRequestLagValue{}
 	hasChanges := false
 
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { lagReq.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Color, state.Color, func(v *string) { lagReq.Color = v }, &hasChanges)
+
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { lagReq.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.IsPeerLink, state.IsPeerLink, func(v *bool) { lagReq.IsPeerLink = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Lacp, state.Lacp, func(v *bool) { lagReq.Lacp = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Fallback, state.Fallback, func(v *bool) { lagReq.Fallback = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.FastRate, state.FastRate, func(v *bool) { lagReq.FastRate = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.Uplink, state.Uplink, func(v *bool) { lagReq.Uplink = v }, &hasChanges)
+
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.PeerLinkVlan, state.PeerLinkVlan, func(v *openapi.NullableInt32) { lagReq.PeerLinkVlan = *v }, &hasChanges)
+
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) == 0 {
 		lagReq.ObjectProperties = make(map[string]interface{})
 		hasChanges = true
 	}
 
-	if !plan.Enable.Equal(state.Enable) {
-		lagReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-	if !plan.IsPeerLink.Equal(state.IsPeerLink) {
-		lagReq.IsPeerLink = openapi.PtrBool(plan.IsPeerLink.ValueBool())
-		hasChanges = true
-	}
-	if !plan.Lacp.Equal(state.Lacp) {
-		lagReq.Lacp = openapi.PtrBool(plan.Lacp.ValueBool())
-		hasChanges = true
-	}
-	if !plan.Fallback.Equal(state.Fallback) {
-		lagReq.Fallback = openapi.PtrBool(plan.Fallback.ValueBool())
-		hasChanges = true
-	}
-	if !plan.FastRate.Equal(state.FastRate) {
-		lagReq.FastRate = openapi.PtrBool(plan.FastRate.ValueBool())
-		hasChanges = true
-	}
-	if !plan.Uplink.Equal(state.Uplink) {
-		lagReq.Uplink = openapi.PtrBool(plan.Uplink.ValueBool())
-		hasChanges = true
-	}
-
-	if !plan.Color.Equal(state.Color) {
-		lagReq.Color = openapi.PtrString(plan.Color.ValueString())
-		hasChanges = true
-	}
-
-	ethPortProfileChanged := !plan.EthPortProfile.Equal(state.EthPortProfile)
-	ethPortProfileRefTypeChanged := !plan.EthPortProfileRefType.Equal(state.EthPortProfileRefType)
-
-	if ethPortProfileChanged || ethPortProfileRefTypeChanged {
-		// Validate using multiple ref types supported rules
-		if !utils.ValidateReferenceFields(&resp.Diagnostics,
-			plan.EthPortProfile, plan.EthPortProfileRefType,
-			"eth_port_profile", "eth_port_profile_ref_type_") {
-			return
-		}
-
-		// For multiple ref types supported: When either field changes, always send both fields
-		if !plan.EthPortProfile.IsNull() && plan.EthPortProfile.ValueString() != "" {
-			lagReq.EthPortProfile = openapi.PtrString(plan.EthPortProfile.ValueString())
-		} else {
-			lagReq.EthPortProfile = openapi.PtrString("")
-		}
-
-		if !plan.EthPortProfileRefType.IsNull() && plan.EthPortProfileRefType.ValueString() != "" {
-			lagReq.EthPortProfileRefType = openapi.PtrString(plan.EthPortProfileRefType.ValueString())
-		} else {
-			lagReq.EthPortProfileRefType = openapi.PtrString("")
-		}
-		hasChanges = true
-	}
-
-	if !plan.PeerLinkVlan.Equal(state.PeerLinkVlan) {
-		if !plan.PeerLinkVlan.IsNull() {
-			peerLinkVlan := int32(plan.PeerLinkVlan.ValueInt64())
-			lagReq.PeerLinkVlan = *openapi.NewNullableInt32(&peerLinkVlan)
-		} else {
-			lagReq.PeerLinkVlan = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
+	// Handle EthPortProfile and EthPortProfileRefType using "Many ref types supported" pattern
+	if !utils.HandleMultipleRefTypesSupported(
+		plan.EthPortProfile, state.EthPortProfile, plan.EthPortProfileRefType, state.EthPortProfileRefType,
+		func(v *string) { lagReq.EthPortProfile = v },
+		func(v *string) { lagReq.EthPortProfileRefType = v },
+		"eth_port_profile", "eth_port_profile_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
 	if !hasChanges {
@@ -498,22 +400,13 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	provCtx := r.provCtx
-	bulkOpsMgr := provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddPatch(ctx, "lag", name, *lagReq)
-
-	provCtx.NotifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for LAG update operation %s to complete", operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update LAG %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "lag", name, lagReq, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("LAG %s update operation completed successfully", name))
-	clearCache(ctx, provCtx, "lags")
+	clearCache(ctx, r.provCtx, "lags")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
@@ -534,14 +427,9 @@ func (r *verityLagResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "lag", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for LAG deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete LAG %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "lag", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

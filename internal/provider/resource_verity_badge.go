@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -132,18 +131,22 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		badgeProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Color", APIField: &badgeProps.Color, TFValue: plan.Color},
+	})
 
-	if !plan.Color.IsNull() {
-		badgeProps.Color = openapi.PtrString(plan.Color.ValueString())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &badgeProps.Enable, TFValue: plan.Enable},
+	})
 
-	if !plan.Number.IsNull() {
-		badgeProps.Number = openapi.PtrInt32(int32(plan.Number.ValueInt64()))
-	}
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "Number", APIField: &badgeProps.Number, TFValue: plan.Number},
+	})
 
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -155,14 +158,8 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		badgeProps.ObjectProperties = &objProps
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "badge", name, *badgeProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for badge creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Badge %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "badge", name, *badgeProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -202,36 +199,25 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 		Badge map[string]interface{} `json:"badge"`
 	}
 
-	var result BadgesResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		badgesData, fetchErr := getCachedResponse(ctx, r.provCtx, "badges", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "badges", badgeName,
+		func() (BadgesResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch badges")
 			respAPI, err := r.client.BadgesAPI.BadgesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading badges: %v", err)
+				return BadgesResponse{}, fmt.Errorf("error reading badges: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res BadgesResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode badges response: %v", err)
+				return BadgesResponse{}, fmt.Errorf("failed to decode badges response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d badges", len(res.Badge)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch badges on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = badgesData.(BadgesResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Badge %s", badgeName))...,
@@ -239,73 +225,78 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for badge with ID: %s", badgeName))
-	var badgeData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for badge with name: %s", badgeName))
 
-	if data, ok := result.Badge[badgeName].(map[string]interface{}); ok {
-		badgeData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found badge directly by ID: %s", badgeName))
-	} else {
-		for apiName, b := range result.Badge {
-			badge, ok := b.(map[string]interface{})
-			if !ok {
-				continue
+	badgeData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Badge,
+		badgeName,
+		func(data interface{}) (string, bool) {
+			if badge, ok := data.(map[string]interface{}); ok {
+				if name, ok := badge["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := badge["name"].(string); ok && name == badgeName {
-				badgeData = badge
-				badgeName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found badge with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Badge with ID '%s' not found in API response", badgeName))
+		tflog.Debug(ctx, fmt.Sprintf("Badge with name '%s' not found in API response", badgeName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", badgeData["name"]))
-
-	if enable, ok := badgeData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	badgeMap, ok := badgeData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Badge Data",
+			fmt.Sprintf("Badge data is not in expected format for %s", badgeName),
+		)
+		return
 	}
 
-	if color, ok := badgeData["color"].(string); ok && color != "" {
-		state.Color = types.StringValue(color)
-	} else {
-		state.Color = types.StringNull()
-	}
+	tflog.Debug(ctx, fmt.Sprintf("Found badge '%s' under API key '%s'", badgeName, actualAPIName))
 
-	if number, ok := badgeData["number"].(float64); ok {
-		state.Number = types.Int64Value(int64(number))
-	} else if number, ok := badgeData["number"].(int); ok {
-		state.Number = types.Int64Value(int64(number))
-	} else if number, ok := badgeData["number"].(int64); ok {
-		state.Number = types.Int64Value(number)
-	} else {
-		state.Number = types.Int64Null()
-	}
+	state.Name = utils.MapStringFromAPI(badgeMap["name"])
 
-	if objProps, ok := badgeData["object_properties"].(map[string]interface{}); ok {
-		if notes, ok := objProps["notes"].(string); ok {
-			state.ObjectProperties = []verityBadgeObjectPropertiesModel{
-				{Notes: types.StringValue(notes)},
-			}
-		} else {
-			state.ObjectProperties = []verityBadgeObjectPropertiesModel{
-				{Notes: types.StringNull()},
-			}
+	// Handle object properties
+	if objProps, ok := badgeMap["object_properties"].(map[string]interface{}); ok {
+		notes := utils.MapStringFromAPI(objProps["notes"])
+		if notes.IsNull() {
+			notes = types.StringValue("")
+		}
+		state.ObjectProperties = []verityBadgeObjectPropertiesModel{
+			{Notes: notes},
 		}
 	} else {
 		state.ObjectProperties = nil
+	}
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"color": &state.Color,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(badgeMap[apiKey])
+	}
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(badgeMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"number": &state.Number,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(badgeMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -337,36 +328,17 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	badgeProps := openapi.BadgesPutRequestBadgeValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		badgeProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { badgeProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Color, state.Color, func(v *string) { badgeProps.Color = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		if !plan.Enable.IsNull() {
-			badgeProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		}
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { badgeProps.Enable = v }, &hasChanges)
 
-	if !plan.Color.Equal(state.Color) {
-		if !plan.Color.IsNull() {
-			badgeProps.Color = openapi.PtrString(plan.Color.ValueString())
-		} else {
-			badgeProps.Color = nil
-		}
-		hasChanges = true
-	}
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.Number, state.Number, func(v *int32) { badgeProps.Number = v }, &hasChanges)
 
-	if !plan.Number.Equal(state.Number) {
-		if !plan.Number.IsNull() {
-			badgeProps.Number = openapi.PtrInt32(int32(plan.Number.ValueInt64()))
-		} else {
-			badgeProps.Number = nil
-		}
-		hasChanges = true
-	}
-
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
 			objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -385,16 +357,11 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "badge", name, badgeProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for badge update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Badge %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "badge", name, badgeProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Badge %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "badges")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -417,14 +384,9 @@ func (r *verityBadgeResource) Delete(ctx context.Context, req resource.DeleteReq
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "badge", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for badge deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Badge %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "badge", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

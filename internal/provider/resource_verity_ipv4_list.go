@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -109,25 +108,22 @@ func (r *verityIpv4ListResource) Create(ctx context.Context, req resource.Create
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		ipv4ListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Ipv4List", APIField: &ipv4ListProps.Ipv4List, TFValue: plan.Ipv4List},
+	})
 
-	if !plan.Ipv4List.IsNull() {
-		ipv4ListProps.Ipv4List = openapi.PtrString(plan.Ipv4List.ValueString())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &ipv4ListProps.Enable, TFValue: plan.Enable},
+	})
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "ipv4_list_filter", name, *ipv4ListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv4 List create operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create IPv4 List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv4_list_filter", name, *ipv4ListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s create operation completed successfully", name))
+
+	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv4_lists")
 
 	plan.Name = types.StringValue(name)
@@ -163,36 +159,26 @@ func (r *verityIpv4ListResource) Read(ctx context.Context, req resource.ReadRequ
 		Ipv4ListFilter map[string]interface{} `json:"ipv4_list_filter"`
 	}
 
-	var result Ipv4ListResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		ipv4Data, fetchErr := getCachedResponse(ctx, r.provCtx, "ipv4_list_filters", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "ipv4_lists", name,
+		func() (Ipv4ListResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch IPv4 List Filters")
 			respAPI, err := r.client.IPv4ListFiltersAPI.Ipv4listsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading IPv4 List Filters: %v", err)
+				return Ipv4ListResponse{}, fmt.Errorf("error reading IPv4 List Filters: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res Ipv4ListResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode IPv4 List Filters response: %v", err)
+				return Ipv4ListResponse{}, fmt.Errorf("failed to decode IPv4 List Filters response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d IPv4 List Filters", len(res.Ipv4ListFilter)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch IPv4 List Filters on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = ipv4Data.(Ipv4ListResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read IPv4 List %s", name))...,
@@ -200,49 +186,56 @@ func (r *verityIpv4ListResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv4 List with ID: %s", name))
-	var ipv4ListData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv4 List with name: %s", name))
 
-	if data, ok := result.Ipv4ListFilter[name].(map[string]interface{}); ok {
-		ipv4ListData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found IPv4 List directly by ID: %s", name))
-	} else {
-		for apiName, ipv4 := range result.Ipv4ListFilter {
-			ipv4List, ok := ipv4.(map[string]interface{})
-			if !ok {
-				continue
+	ipv4ListData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Ipv4ListFilter,
+		name,
+		func(data interface{}) (string, bool) {
+			if ipv4List, ok := data.(map[string]interface{}); ok {
+				if resourceName, ok := ipv4List["name"].(string); ok {
+					return resourceName, true
+				}
 			}
-
-			if resourceName, ok := ipv4List["name"].(string); ok && resourceName == name {
-				ipv4ListData = ipv4List
-				name = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found IPv4 List with name '%s' under API key '%s'", resourceName, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("IPv4 List with ID '%s' not found in API response", name))
+		tflog.Debug(ctx, fmt.Sprintf("IPv4 List with name '%s' not found in API response", name))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", ipv4ListData["name"]))
-
-	if enable, ok := ipv4ListData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	ipv4ListMap, ok := ipv4ListData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid IPv4 List Data",
+			fmt.Sprintf("IPv4 List data is not in expected format for %s", name),
+		)
+		return
 	}
 
-	if ipv4List, ok := ipv4ListData["ipv4_list"].(string); ok {
-		state.Ipv4List = types.StringValue(ipv4List)
-	} else {
-		state.Ipv4List = types.StringNull()
+	tflog.Debug(ctx, fmt.Sprintf("Found IPv4 List '%s' under API key '%s'", name, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(ipv4ListMap["name"])
+
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(ipv4ListMap[apiKey])
+	}
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"ipv4_list": &state.Ipv4List,
+	}
+
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(ipv4ListMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -274,31 +267,23 @@ func (r *verityIpv4ListResource) Update(ctx context.Context, req resource.Update
 	ipv4ListProps := openapi.Ipv4listsPutRequestIpv4ListFilterValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		ipv4ListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ipv4ListProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Ipv4List, state.Ipv4List, func(v *string) { ipv4ListProps.Ipv4List = v }, &hasChanges)
 
-	if !plan.Ipv4List.Equal(state.Ipv4List) {
-		ipv4ListProps.Ipv4List = openapi.PtrString(plan.Ipv4List.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ipv4ListProps.Enable = v }, &hasChanges)
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "ipv4_list_filter", name, ipv4ListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv4 List update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update IPv4 List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv4_list_filter", name, ipv4ListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv4_lists")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -321,17 +306,13 @@ func (r *verityIpv4ListResource) Delete(ctx context.Context, req resource.Delete
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "ipv4_list_filter", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv4 List delete operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete IPv4 List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv4_list_filter", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s delete operation completed successfully", name))
+
+	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv4_lists")
 	resp.State.RemoveResource(ctx)
 }

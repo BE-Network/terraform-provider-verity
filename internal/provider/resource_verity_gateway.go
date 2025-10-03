@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -86,6 +84,10 @@ type verityGatewayStaticRoutesModel struct {
 	NextHopIpAddress types.String `tfsdk:"next_hop_ip_address"`
 	AdValue          types.Int64  `tfsdk:"ad_value"`
 	Index            types.Int64  `tfsdk:"index"`
+}
+
+func (sr verityGatewayStaticRoutesModel) GetIndex() types.Int64 {
+	return sr.Index
 }
 
 func (r *verityGatewayResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -297,133 +299,57 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		gatewayProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.Tenant.IsNull() {
-		gatewayProps.Tenant = openapi.PtrString(plan.Tenant.ValueString())
-	}
-	if !plan.TenantRefType.IsNull() {
-		gatewayProps.TenantRefType = openapi.PtrString(plan.TenantRefType.ValueString())
-	}
-	if !plan.NeighborIpAddress.IsNull() {
-		gatewayProps.NeighborIpAddress = openapi.PtrString(plan.NeighborIpAddress.ValueString())
-	}
-	if !plan.NeighborAsNumber.IsNull() {
-		val := int32(plan.NeighborAsNumber.ValueInt64())
-		gatewayProps.NeighborAsNumber = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.NeighborAsNumber = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.FabricInterconnect.IsNull() {
-		gatewayProps.FabricInterconnect = openapi.PtrBool(plan.FabricInterconnect.ValueBool())
-	}
-	if !plan.KeepaliveTimer.IsNull() {
-		gatewayProps.KeepaliveTimer = openapi.PtrInt32(int32(plan.KeepaliveTimer.ValueInt64()))
-	}
-	if !plan.HoldTimer.IsNull() {
-		gatewayProps.HoldTimer = openapi.PtrInt32(int32(plan.HoldTimer.ValueInt64()))
-	}
-	if !plan.ConnectTimer.IsNull() {
-		gatewayProps.ConnectTimer = openapi.PtrInt32(int32(plan.ConnectTimer.ValueInt64()))
-	}
-	if !plan.AdvertisementInterval.IsNull() {
-		gatewayProps.AdvertisementInterval = openapi.PtrInt32(int32(plan.AdvertisementInterval.ValueInt64()))
-	}
-	if !plan.EbgpMultihop.IsNull() {
-		gatewayProps.SetEbgpMultihop(int32(plan.EbgpMultihop.ValueInt64()))
-	}
-	if !plan.EgressVlan.IsNull() {
-		val := int32(plan.EgressVlan.ValueInt64())
-		gatewayProps.EgressVlan = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.EgressVlan = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.SourceIpAddress.IsNull() {
-		gatewayProps.SourceIpAddress = openapi.PtrString(plan.SourceIpAddress.ValueString())
-	}
-	if !plan.AnycastIpMask.IsNull() {
-		gatewayProps.AnycastIpMask = openapi.PtrString(plan.AnycastIpMask.ValueString())
-	}
-	if !plan.Md5Password.IsNull() {
-		gatewayProps.Md5Password = openapi.PtrString(plan.Md5Password.ValueString())
-	}
-	if !plan.ImportRouteMap.IsNull() {
-		gatewayProps.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
-	}
-	if !plan.ExportRouteMap.IsNull() {
-		gatewayProps.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
-	}
-	if !plan.GatewayMode.IsNull() {
-		gatewayProps.GatewayMode = openapi.PtrString(plan.GatewayMode.ValueString())
-	}
-	if !plan.LocalAsNumber.IsNull() {
-		val := int32(plan.LocalAsNumber.ValueInt64())
-		gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.LocalAsNoPrepend.IsNull() {
-		gatewayProps.LocalAsNoPrepend = openapi.PtrBool(plan.LocalAsNoPrepend.ValueBool())
-	}
-	if !plan.ReplaceAs.IsNull() {
-		gatewayProps.ReplaceAs = openapi.PtrBool(plan.ReplaceAs.ValueBool())
-	}
-	if !plan.MaxLocalAsOccurrences.IsNull() {
-		val := int32(plan.MaxLocalAsOccurrences.ValueInt64())
-		gatewayProps.MaxLocalAsOccurrences = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.MaxLocalAsOccurrences = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.DynamicBgpSubnet.IsNull() {
-		gatewayProps.DynamicBgpSubnet = openapi.PtrString(plan.DynamicBgpSubnet.ValueString())
-	}
-	if !plan.DynamicBgpLimits.IsNull() {
-		val := int32(plan.DynamicBgpLimits.ValueInt64())
-		gatewayProps.DynamicBgpLimits = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.DynamicBgpLimits = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.HelperHopIpAddress.IsNull() {
-		gatewayProps.HelperHopIpAddress = openapi.PtrString(plan.HelperHopIpAddress.ValueString())
-	}
-	if !plan.EnableBfd.IsNull() {
-		gatewayProps.EnableBfd = openapi.PtrBool(plan.EnableBfd.ValueBool())
-	}
-	if !plan.BfdReceiveInterval.IsNull() {
-		val := int32(plan.BfdReceiveInterval.ValueInt64())
-		gatewayProps.BfdReceiveInterval = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.BfdReceiveInterval = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.BfdTransmissionInterval.IsNull() {
-		val := int32(plan.BfdTransmissionInterval.ValueInt64())
-		gatewayProps.BfdTransmissionInterval = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.BfdTransmissionInterval = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.BfdDetectMultiplier.IsNull() {
-		val := int32(plan.BfdDetectMultiplier.ValueInt64())
-		gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(&val)
-	} else {
-		gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(nil)
-	}
-	if !plan.BfdMultihop.IsNull() {
-		gatewayProps.BfdMultihop = openapi.PtrBool(plan.BfdMultihop.ValueBool())
-	}
-	if !plan.NextHopSelf.IsNull() {
-		gatewayProps.NextHopSelf = openapi.PtrBool(plan.NextHopSelf.ValueBool())
-	}
-	if !plan.DefaultOriginate.IsNull() {
-		gatewayProps.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
-	}
-	if !plan.ExportRouteMapRefType.IsNull() {
-		gatewayProps.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
-	}
-	if !plan.ImportRouteMapRefType.IsNull() {
-		gatewayProps.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Tenant", APIField: &gatewayProps.Tenant, TFValue: plan.Tenant},
+		{FieldName: "TenantRefType", APIField: &gatewayProps.TenantRefType, TFValue: plan.TenantRefType},
+		{FieldName: "NeighborIpAddress", APIField: &gatewayProps.NeighborIpAddress, TFValue: plan.NeighborIpAddress},
+		{FieldName: "SourceIpAddress", APIField: &gatewayProps.SourceIpAddress, TFValue: plan.SourceIpAddress},
+		{FieldName: "AnycastIpMask", APIField: &gatewayProps.AnycastIpMask, TFValue: plan.AnycastIpMask},
+		{FieldName: "Md5Password", APIField: &gatewayProps.Md5Password, TFValue: plan.Md5Password},
+		{FieldName: "ImportRouteMap", APIField: &gatewayProps.ImportRouteMap, TFValue: plan.ImportRouteMap},
+		{FieldName: "ExportRouteMap", APIField: &gatewayProps.ExportRouteMap, TFValue: plan.ExportRouteMap},
+		{FieldName: "GatewayMode", APIField: &gatewayProps.GatewayMode, TFValue: plan.GatewayMode},
+		{FieldName: "DynamicBgpSubnet", APIField: &gatewayProps.DynamicBgpSubnet, TFValue: plan.DynamicBgpSubnet},
+		{FieldName: "HelperHopIpAddress", APIField: &gatewayProps.HelperHopIpAddress, TFValue: plan.HelperHopIpAddress},
+		{FieldName: "ExportRouteMapRefType", APIField: &gatewayProps.ExportRouteMapRefType, TFValue: plan.ExportRouteMapRefType},
+		{FieldName: "ImportRouteMapRefType", APIField: &gatewayProps.ImportRouteMapRefType, TFValue: plan.ImportRouteMapRefType},
+	})
 
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &gatewayProps.Enable, TFValue: plan.Enable},
+		{FieldName: "FabricInterconnect", APIField: &gatewayProps.FabricInterconnect, TFValue: plan.FabricInterconnect},
+		{FieldName: "LocalAsNoPrepend", APIField: &gatewayProps.LocalAsNoPrepend, TFValue: plan.LocalAsNoPrepend},
+		{FieldName: "ReplaceAs", APIField: &gatewayProps.ReplaceAs, TFValue: plan.ReplaceAs},
+		{FieldName: "EnableBfd", APIField: &gatewayProps.EnableBfd, TFValue: plan.EnableBfd},
+		{FieldName: "BfdMultihop", APIField: &gatewayProps.BfdMultihop, TFValue: plan.BfdMultihop},
+		{FieldName: "NextHopSelf", APIField: &gatewayProps.NextHopSelf, TFValue: plan.NextHopSelf},
+		{FieldName: "DefaultOriginate", APIField: &gatewayProps.DefaultOriginate, TFValue: plan.DefaultOriginate},
+	})
+
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "KeepaliveTimer", APIField: &gatewayProps.KeepaliveTimer, TFValue: plan.KeepaliveTimer},
+		{FieldName: "HoldTimer", APIField: &gatewayProps.HoldTimer, TFValue: plan.HoldTimer},
+		{FieldName: "ConnectTimer", APIField: &gatewayProps.ConnectTimer, TFValue: plan.ConnectTimer},
+		{FieldName: "AdvertisementInterval", APIField: &gatewayProps.AdvertisementInterval, TFValue: plan.AdvertisementInterval},
+		{FieldName: "EbgpMultihop", APIField: &gatewayProps.EbgpMultihop, TFValue: plan.EbgpMultihop},
+	})
+
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "NeighborAsNumber", APIField: &gatewayProps.NeighborAsNumber, TFValue: plan.NeighborAsNumber},
+		{FieldName: "EgressVlan", APIField: &gatewayProps.EgressVlan, TFValue: plan.EgressVlan},
+		{FieldName: "LocalAsNumber", APIField: &gatewayProps.LocalAsNumber, TFValue: plan.LocalAsNumber},
+		{FieldName: "MaxLocalAsOccurrences", APIField: &gatewayProps.MaxLocalAsOccurrences, TFValue: plan.MaxLocalAsOccurrences},
+		{FieldName: "DynamicBgpLimits", APIField: &gatewayProps.DynamicBgpLimits, TFValue: plan.DynamicBgpLimits},
+		{FieldName: "BfdReceiveInterval", APIField: &gatewayProps.BfdReceiveInterval, TFValue: plan.BfdReceiveInterval},
+		{FieldName: "BfdTransmissionInterval", APIField: &gatewayProps.BfdTransmissionInterval, TFValue: plan.BfdTransmissionInterval},
+		{FieldName: "BfdDetectMultiplier", APIField: &gatewayProps.BfdDetectMultiplier, TFValue: plan.BfdDetectMultiplier},
+	})
+
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
@@ -435,6 +361,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		gatewayProps.ObjectProperties = &objProps
 	}
 
+	// Handle static routes
 	if len(plan.StaticRoutes) > 0 {
 		routes := make([]openapi.GatewaysPutRequestGatewayValueStaticRoutesInner, len(plan.StaticRoutes))
 		for i, route := range plan.StaticRoutes {
@@ -462,14 +389,8 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		gatewayProps.StaticRoutes = routes
 	}
 
-	operationID := r.bulkOpsMgr.AddPut(ctx, "gateway", name, *gatewayProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Gateway %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "gateway", name, *gatewayProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -509,36 +430,26 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		Gateway map[string]interface{} `json:"gateway"`
 	}
 
-	var result GatewaysResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		gatewaysData, fetchErr := getCachedResponse(ctx, r.provCtx, "gateways", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "gateways", gatewayName,
+		func() (GatewaysResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch gateways")
 			respAPI, err := r.client.GatewaysAPI.GatewaysGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading gateways: %v", err)
+				return GatewaysResponse{}, fmt.Errorf("error reading gateways: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res GatewaysResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode gateways response: %v", err)
+				return GatewaysResponse{}, fmt.Errorf("failed to decode gateways response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d gateways", len(res.Gateway)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch gateways on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = gatewaysData.(GatewaysResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Gateway %s", gatewayName))...,
@@ -546,61 +457,55 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for gateway with ID: %s", gatewayName))
-	var gatewayData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for gateway with name: %s", gatewayName))
 
-	if data, ok := result.Gateway[gatewayName].(map[string]interface{}); ok {
-		gatewayData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found gateway directly by ID: %s", gatewayName))
-	} else {
-		for apiName, g := range result.Gateway {
-			gateway, ok := g.(map[string]interface{})
-			if !ok {
-				continue
+	gatewayData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.Gateway,
+		gatewayName,
+		func(data interface{}) (string, bool) {
+			if gateway, ok := data.(map[string]interface{}); ok {
+				if name, ok := gateway["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := gateway["name"].(string); ok && name == gatewayName {
-				gatewayData = gateway
-				gatewayName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found gateway with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Gateway with ID '%s' not found in API response", gatewayName))
+		tflog.Debug(ctx, fmt.Sprintf("Gateway with name '%s' not found in API response", gatewayName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", gatewayData["name"]))
-
-	if enable, ok := gatewayData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	gatewayMap, ok := gatewayData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Gateway Data",
+			fmt.Sprintf("Gateway data is not in expected format for %s", gatewayName),
+		)
+		return
 	}
 
-	// Only set object_properties if it exists in the API response
-	if objProps, ok := gatewayData["object_properties"].(map[string]interface{}); ok {
-		if group, ok := objProps["group"].(string); ok {
-			state.ObjectProperties = []verityGatewayObjectPropertiesModel{
-				{Group: types.StringValue(group)},
-			}
-		} else {
-			state.ObjectProperties = []verityGatewayObjectPropertiesModel{
-				{Group: types.StringValue("")},
-			}
+	tflog.Debug(ctx, fmt.Sprintf("Found gateway '%s' under API key '%s'", gatewayName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(gatewayMap["name"])
+
+	// Handle object properties
+	if objProps, ok := gatewayMap["object_properties"].(map[string]interface{}); ok {
+		group := utils.MapStringFromAPI(objProps["group"])
+		if group.IsNull() {
+			group = types.StringValue("")
+		}
+		state.ObjectProperties = []verityGatewayObjectPropertiesModel{
+			{Group: group},
 		}
 	} else {
 		state.ObjectProperties = nil
 	}
 
-	stringAttrs := map[string]*types.String{
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
 		"tenant":                     &state.Tenant,
 		"tenant_ref_type_":           &state.TenantRefType,
 		"neighbor_ip_address":        &state.NeighborIpAddress,
@@ -616,15 +521,13 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		"import_route_map_ref_type_": &state.ImportRouteMapRefType,
 	}
 
-	for apiKey, stateField := range stringAttrs {
-		if value, ok := gatewayData[apiKey].(string); ok {
-			*stateField = types.StringValue(value)
-		} else {
-			*stateField = types.StringNull()
-		}
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(gatewayMap[apiKey])
 	}
 
-	boolAttrs := map[string]*types.Bool{
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":              &state.Enable,
 		"fabric_interconnect": &state.FabricInterconnect,
 		"local_as_no_prepend": &state.LocalAsNoPrepend,
 		"replace_as":          &state.ReplaceAs,
@@ -634,15 +537,12 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		"default_originate":   &state.DefaultOriginate,
 	}
 
-	for apiKey, stateField := range boolAttrs {
-		if value, ok := gatewayData[apiKey].(bool); ok {
-			*stateField = types.BoolValue(value)
-		} else {
-			*stateField = types.BoolNull()
-		}
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(gatewayMap[apiKey])
 	}
 
-	intAttrs := map[string]*types.Int64{
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
 		"neighbor_as_number":        &state.NeighborAsNumber,
 		"keepalive_timer":           &state.KeepaliveTimer,
 		"hold_timer":                &state.HoldTimer,
@@ -658,32 +558,12 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 		"bfd_detect_multiplier":     &state.BfdDetectMultiplier,
 	}
 
-	for apiKey, stateField := range intAttrs {
-		if value, ok := gatewayData[apiKey]; ok && value != nil {
-			switch v := value.(type) {
-			case int:
-				*stateField = types.Int64Value(int64(v))
-			case int32:
-				*stateField = types.Int64Value(int64(v))
-			case int64:
-				*stateField = types.Int64Value(v)
-			case float64:
-				*stateField = types.Int64Value(int64(v))
-			case string:
-				if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-					*stateField = types.Int64Value(intVal)
-				} else {
-					*stateField = types.Int64Null()
-				}
-			default:
-				*stateField = types.Int64Null()
-			}
-		} else {
-			*stateField = types.Int64Null()
-		}
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(gatewayMap[apiKey])
 	}
 
-	if routes, ok := gatewayData["static_routes"].([]interface{}); ok && len(routes) > 0 {
+	// Handle static routes
+	if routes, ok := gatewayMap["static_routes"].([]interface{}); ok && len(routes) > 0 {
 		var staticRoutes []verityGatewayStaticRoutesModel
 
 		for _, r := range routes {
@@ -692,60 +572,12 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 				continue
 			}
 
-			srModel := verityGatewayStaticRoutesModel{}
-
-			if enable, ok := route["enable"].(bool); ok {
-				srModel.Enable = types.BoolValue(enable)
-			} else {
-				srModel.Enable = types.BoolNull()
-			}
-
-			if prefix, ok := route["ipv4_route_prefix"].(string); ok {
-				srModel.Ipv4RoutePrefix = types.StringValue(prefix)
-			} else {
-				srModel.Ipv4RoutePrefix = types.StringNull()
-			}
-
-			if nextHop, ok := route["next_hop_ip_address"].(string); ok {
-				srModel.NextHopIpAddress = types.StringValue(nextHop)
-			} else {
-				srModel.NextHopIpAddress = types.StringNull()
-			}
-
-			if adValue, exists := route["ad_value"]; exists && adValue != nil {
-				switch v := adValue.(type) {
-				case int:
-					srModel.AdValue = types.Int64Value(int64(v))
-				case int32:
-					srModel.AdValue = types.Int64Value(int64(v))
-				case int64:
-					srModel.AdValue = types.Int64Value(v)
-				case float64:
-					srModel.AdValue = types.Int64Value(int64(v))
-				case string:
-					if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-						srModel.AdValue = types.Int64Value(intVal)
-					} else {
-						srModel.AdValue = types.Int64Null()
-					}
-				default:
-					srModel.AdValue = types.Int64Null()
-				}
-			} else {
-				srModel.AdValue = types.Int64Null()
-			}
-
-			if index, exists := route["index"]; exists && index != nil {
-				switch v := index.(type) {
-				case int:
-					srModel.Index = types.Int64Value(int64(v))
-				case float64:
-					srModel.Index = types.Int64Value(int64(v))
-				default:
-					srModel.Index = types.Int64Null()
-				}
-			} else {
-				srModel.Index = types.Int64Null()
+			srModel := verityGatewayStaticRoutesModel{
+				Enable:           utils.MapBoolFromAPI(route["enable"]),
+				Ipv4RoutePrefix:  utils.MapStringFromAPI(route["ipv4_route_prefix"]),
+				NextHopIpAddress: utils.MapStringFromAPI(route["next_hop_ip_address"]),
+				AdValue:          utils.MapInt64FromAPI(route["ad_value"]),
+				Index:            utils.MapInt64FromAPI(route["index"]),
 			}
 
 			staticRoutes = append(staticRoutes, srModel)
@@ -785,11 +617,44 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	gatewayProps := openapi.GatewaysPutRequestGatewayValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		gatewayProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { gatewayProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.NeighborIpAddress, state.NeighborIpAddress, func(v *string) { gatewayProps.NeighborIpAddress = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SourceIpAddress, state.SourceIpAddress, func(v *string) { gatewayProps.SourceIpAddress = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AnycastIpMask, state.AnycastIpMask, func(v *string) { gatewayProps.AnycastIpMask = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Md5Password, state.Md5Password, func(v *string) { gatewayProps.Md5Password = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.GatewayMode, state.GatewayMode, func(v *string) { gatewayProps.GatewayMode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DynamicBgpSubnet, state.DynamicBgpSubnet, func(v *string) { gatewayProps.DynamicBgpSubnet = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.HelperHopIpAddress, state.HelperHopIpAddress, func(v *string) { gatewayProps.HelperHopIpAddress = v }, &hasChanges)
 
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { gatewayProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.FabricInterconnect, state.FabricInterconnect, func(v *bool) { gatewayProps.FabricInterconnect = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.LocalAsNoPrepend, state.LocalAsNoPrepend, func(v *bool) { gatewayProps.LocalAsNoPrepend = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.ReplaceAs, state.ReplaceAs, func(v *bool) { gatewayProps.ReplaceAs = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableBfd, state.EnableBfd, func(v *bool) { gatewayProps.EnableBfd = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.BfdMultihop, state.BfdMultihop, func(v *bool) { gatewayProps.BfdMultihop = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.NextHopSelf, state.NextHopSelf, func(v *bool) { gatewayProps.NextHopSelf = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.DefaultOriginate, state.DefaultOriginate, func(v *bool) { gatewayProps.DefaultOriginate = v }, &hasChanges)
+
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.KeepaliveTimer, state.KeepaliveTimer, func(v *int32) { gatewayProps.KeepaliveTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.HoldTimer, state.HoldTimer, func(v *int32) { gatewayProps.HoldTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.ConnectTimer, state.ConnectTimer, func(v *int32) { gatewayProps.ConnectTimer = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.AdvertisementInterval, state.AdvertisementInterval, func(v *int32) { gatewayProps.AdvertisementInterval = v }, &hasChanges)
+	utils.CompareAndSetInt64Field(plan.EbgpMultihop, state.EbgpMultihop, func(v *int32) { gatewayProps.EbgpMultihop = v }, &hasChanges)
+
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.NeighborAsNumber, state.NeighborAsNumber, func(v *openapi.NullableInt32) { gatewayProps.NeighborAsNumber = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.EgressVlan, state.EgressVlan, func(v *openapi.NullableInt32) { gatewayProps.EgressVlan = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.LocalAsNumber, state.LocalAsNumber, func(v *openapi.NullableInt32) { gatewayProps.LocalAsNumber = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MaxLocalAsOccurrences, state.MaxLocalAsOccurrences, func(v *openapi.NullableInt32) { gatewayProps.MaxLocalAsOccurrences = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.DynamicBgpLimits, state.DynamicBgpLimits, func(v *openapi.NullableInt32) { gatewayProps.DynamicBgpLimits = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.BfdReceiveInterval, state.BfdReceiveInterval, func(v *openapi.NullableInt32) { gatewayProps.BfdReceiveInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.BfdTransmissionInterval, state.BfdTransmissionInterval, func(v *openapi.NullableInt32) { gatewayProps.BfdTransmissionInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.BfdDetectMultiplier, state.BfdDetectMultiplier, func(v *openapi.NullableInt32) { gatewayProps.BfdDetectMultiplier = *v }, &hasChanges)
+
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
 			objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
@@ -803,395 +668,127 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		}
 	}
 
-	if !plan.Enable.Equal(state.Enable) {
-		gatewayProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
-	if !plan.FabricInterconnect.Equal(state.FabricInterconnect) {
-		gatewayProps.FabricInterconnect = openapi.PtrBool(plan.FabricInterconnect.ValueBool())
-		hasChanges = true
-	}
-	if !plan.LocalAsNoPrepend.Equal(state.LocalAsNoPrepend) {
-		gatewayProps.LocalAsNoPrepend = openapi.PtrBool(plan.LocalAsNoPrepend.ValueBool())
-		hasChanges = true
-	}
-	if !plan.ReplaceAs.Equal(state.ReplaceAs) {
-		gatewayProps.ReplaceAs = openapi.PtrBool(plan.ReplaceAs.ValueBool())
-		hasChanges = true
-	}
-	if !plan.EnableBfd.Equal(state.EnableBfd) {
-		gatewayProps.EnableBfd = openapi.PtrBool(plan.EnableBfd.ValueBool())
-		hasChanges = true
-	}
-	if !plan.BfdMultihop.Equal(state.BfdMultihop) {
-		gatewayProps.BfdMultihop = openapi.PtrBool(plan.BfdMultihop.ValueBool())
-		hasChanges = true
-	}
-	if !plan.NextHopSelf.Equal(state.NextHopSelf) {
-		gatewayProps.NextHopSelf = openapi.PtrBool(plan.NextHopSelf.ValueBool())
-		hasChanges = true
-	}
-	// Handle tenant and tenant_ref_type_ fields according to "Many ref types supported" rules
-	tenantChanged := !plan.Tenant.Equal(state.Tenant)
-	tenantRefTypeChanged := !plan.TenantRefType.Equal(state.TenantRefType)
-
-	if tenantChanged || tenantRefTypeChanged {
-
-		if !utils.ValidateReferenceFields(&resp.Diagnostics, plan.Tenant, plan.TenantRefType, "tenant", "tenant_ref_type_") {
-			return
-		}
-
-		tenantValue := state.Tenant
-		if tenantChanged {
-			tenantValue = plan.Tenant
-		}
-		if !tenantValue.IsNull() && tenantValue.ValueString() != "" {
-			gatewayProps.Tenant = openapi.PtrString(tenantValue.ValueString())
-		} else {
-			gatewayProps.Tenant = openapi.PtrString("")
-		}
-
-		tenantRefTypeValue := state.TenantRefType
-		if tenantRefTypeChanged {
-			tenantRefTypeValue = plan.TenantRefType
-		}
-		if !tenantRefTypeValue.IsNull() && tenantRefTypeValue.ValueString() != "" {
-			gatewayProps.TenantRefType = openapi.PtrString(tenantRefTypeValue.ValueString())
-		} else {
-			gatewayProps.TenantRefType = openapi.PtrString("")
-		}
-
-		hasChanges = true
-	}
-	// Handle ImportRouteMap and ImportRouteMapRefType according to "One ref type supported" rules
-	importRouteMapChanged := !plan.ImportRouteMap.Equal(state.ImportRouteMap)
-	importRouteMapRefTypeChanged := !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType)
-
-	// Case: Validate using "one ref type supported" rules
-	if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-		plan.ImportRouteMap, plan.ImportRouteMapRefType,
-		"import_route_map", "import_route_map_ref_type_",
-		importRouteMapChanged, importRouteMapRefTypeChanged) {
+	// Handle tenant and tenant_ref_type_ fields using "Many ref types supported" pattern
+	if !utils.HandleMultipleRefTypesSupported(
+		plan.Tenant, state.Tenant, plan.TenantRefType, state.TenantRefType,
+		func(v *string) { gatewayProps.Tenant = v },
+		func(v *string) { gatewayProps.TenantRefType = v },
+		"tenant", "tenant_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
 		return
 	}
 
-	if importRouteMapChanged && !importRouteMapRefTypeChanged {
-		// Case: Only the base field changes, only the base field is sent
-		// Just send the base field
-		if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
-			gatewayProps.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
-		} else {
-			gatewayProps.ImportRouteMap = openapi.PtrString("")
-		}
-		hasChanges = true
-	} else if importRouteMapRefTypeChanged {
-		// Case: ref_type changes (or both change), both fields are sent
-
-		// Send both fields
-		if !plan.ImportRouteMap.IsNull() && plan.ImportRouteMap.ValueString() != "" {
-			gatewayProps.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
-		} else {
-			gatewayProps.ImportRouteMap = openapi.PtrString("")
-		}
-
-		if !plan.ImportRouteMapRefType.IsNull() && plan.ImportRouteMapRefType.ValueString() != "" {
-			gatewayProps.ImportRouteMapRefType = openapi.PtrString(plan.ImportRouteMapRefType.ValueString())
-		} else {
-			gatewayProps.ImportRouteMapRefType = openapi.PtrString("")
-		}
-		hasChanges = true
-	}
-	if !plan.NeighborIpAddress.Equal(state.NeighborIpAddress) {
-		gatewayProps.NeighborIpAddress = openapi.PtrString(plan.NeighborIpAddress.ValueString())
-		hasChanges = true
-	}
-	if !plan.SourceIpAddress.Equal(state.SourceIpAddress) {
-		gatewayProps.SourceIpAddress = openapi.PtrString(plan.SourceIpAddress.ValueString())
-		hasChanges = true
-	}
-	if !plan.AnycastIpMask.Equal(state.AnycastIpMask) {
-		gatewayProps.AnycastIpMask = openapi.PtrString(plan.AnycastIpMask.ValueString())
-		hasChanges = true
-	}
-	if !plan.Md5Password.Equal(state.Md5Password) {
-		gatewayProps.Md5Password = openapi.PtrString(plan.Md5Password.ValueString())
-		hasChanges = true
-	}
-	if !plan.ImportRouteMap.Equal(state.ImportRouteMap) {
-		gatewayProps.ImportRouteMap = openapi.PtrString(plan.ImportRouteMap.ValueString())
-		hasChanges = true
-	}
-	if !plan.ExportRouteMap.Equal(state.ExportRouteMap) {
-		gatewayProps.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
-		hasChanges = true
-	}
-	if !plan.GatewayMode.Equal(state.GatewayMode) {
-		gatewayProps.GatewayMode = openapi.PtrString(plan.GatewayMode.ValueString())
-		hasChanges = true
-	}
-	if !plan.DynamicBgpSubnet.Equal(state.DynamicBgpSubnet) {
-		gatewayProps.DynamicBgpSubnet = openapi.PtrString(plan.DynamicBgpSubnet.ValueString())
-		hasChanges = true
-	}
-	if !plan.HelperHopIpAddress.Equal(state.HelperHopIpAddress) {
-		gatewayProps.HelperHopIpAddress = openapi.PtrString(plan.HelperHopIpAddress.ValueString())
-		hasChanges = true
-	}
-	if !plan.DefaultOriginate.Equal(state.DefaultOriginate) {
-		gatewayProps.DefaultOriginate = openapi.PtrBool(plan.DefaultOriginate.ValueBool())
-		hasChanges = true
-	}
-	// Handle ExportRouteMap and ExportRouteMapRefType according to "One ref type supported" rules
-	exportRouteMapChanged := !plan.ExportRouteMap.Equal(state.ExportRouteMap)
-	exportRouteMapRefTypeChanged := !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType)
-
-	if exportRouteMapChanged || exportRouteMapRefTypeChanged {
-		// Case: Validate using "one ref type supported" rules
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.ExportRouteMap, plan.ExportRouteMapRefType,
-			"export_route_map", "export_route_map_ref_type_",
-			exportRouteMapChanged, exportRouteMapRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if exportRouteMapChanged && !exportRouteMapRefTypeChanged {
-			// Just send the base field
-			if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
-				gatewayProps.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
-			} else {
-				gatewayProps.ExportRouteMap = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if exportRouteMapRefTypeChanged {
-			// Send both fields
-			if !plan.ExportRouteMap.IsNull() && plan.ExportRouteMap.ValueString() != "" {
-				gatewayProps.ExportRouteMap = openapi.PtrString(plan.ExportRouteMap.ValueString())
-			} else {
-				gatewayProps.ExportRouteMap = openapi.PtrString("")
-			}
-
-			if !plan.ExportRouteMapRefType.IsNull() && plan.ExportRouteMapRefType.ValueString() != "" {
-				gatewayProps.ExportRouteMapRefType = openapi.PtrString(plan.ExportRouteMapRefType.ValueString())
-			} else {
-				gatewayProps.ExportRouteMapRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
-	}
-	if !plan.NeighborAsNumber.Equal(state.NeighborAsNumber) {
-		if !plan.NeighborAsNumber.IsNull() {
-			val := int32(plan.NeighborAsNumber.ValueInt64())
-			gatewayProps.NeighborAsNumber = *openapi.NewNullableInt32(&val)
-		} else {
-			gatewayProps.NeighborAsNumber = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-	if !plan.KeepaliveTimer.Equal(state.KeepaliveTimer) {
-		gatewayProps.KeepaliveTimer = openapi.PtrInt32(int32(plan.KeepaliveTimer.ValueInt64()))
-		hasChanges = true
-	}
-	if !plan.HoldTimer.Equal(state.HoldTimer) {
-		gatewayProps.HoldTimer = openapi.PtrInt32(int32(plan.HoldTimer.ValueInt64()))
-		hasChanges = true
-	}
-	if !plan.ConnectTimer.Equal(state.ConnectTimer) {
-		gatewayProps.ConnectTimer = openapi.PtrInt32(int32(plan.ConnectTimer.ValueInt64()))
-		hasChanges = true
-	}
-	if !plan.AdvertisementInterval.Equal(state.AdvertisementInterval) {
-		gatewayProps.AdvertisementInterval = openapi.PtrInt32(int32(plan.AdvertisementInterval.ValueInt64()))
-		hasChanges = true
-	}
-	if !plan.EbgpMultihop.Equal(state.EbgpMultihop) {
-		gatewayProps.SetEbgpMultihop(int32(plan.EbgpMultihop.ValueInt64()))
-		hasChanges = true
-	}
-	if !plan.EgressVlan.Equal(state.EgressVlan) {
-		if !plan.EgressVlan.IsNull() {
-			val := int32(plan.EgressVlan.ValueInt64())
-			gatewayProps.EgressVlan = *openapi.NewNullableInt32(&val)
-		} else {
-			gatewayProps.EgressVlan = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-	if !plan.LocalAsNumber.Equal(state.LocalAsNumber) {
-		if !plan.LocalAsNumber.IsNull() {
-			val := int32(plan.LocalAsNumber.ValueInt64())
-			gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(&val)
-		} else {
-			gatewayProps.LocalAsNumber = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-	if !plan.MaxLocalAsOccurrences.Equal(state.MaxLocalAsOccurrences) {
-		if !plan.MaxLocalAsOccurrences.IsNull() {
-			val := int32(plan.MaxLocalAsOccurrences.ValueInt64())
-			gatewayProps.MaxLocalAsOccurrences = *openapi.NewNullableInt32(&val)
-		} else {
-			gatewayProps.MaxLocalAsOccurrences = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-	if !plan.DynamicBgpLimits.Equal(state.DynamicBgpLimits) {
-		if !plan.DynamicBgpLimits.IsNull() {
-			val := int32(plan.DynamicBgpLimits.ValueInt64())
-			gatewayProps.DynamicBgpLimits = *openapi.NewNullableInt32(&val)
-		} else {
-			gatewayProps.DynamicBgpLimits = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-	if !plan.BfdReceiveInterval.Equal(state.BfdReceiveInterval) {
-		if !plan.BfdReceiveInterval.IsNull() {
-			val := int32(plan.BfdReceiveInterval.ValueInt64())
-			gatewayProps.BfdReceiveInterval = *openapi.NewNullableInt32(&val)
-		} else {
-			gatewayProps.BfdReceiveInterval = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-	if !plan.BfdTransmissionInterval.Equal(state.BfdTransmissionInterval) {
-		if !plan.BfdTransmissionInterval.IsNull() {
-			val := int32(plan.BfdTransmissionInterval.ValueInt64())
-			gatewayProps.BfdTransmissionInterval = *openapi.NewNullableInt32(&val)
-		} else {
-			gatewayProps.BfdTransmissionInterval = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
-	}
-	if !plan.BfdDetectMultiplier.Equal(state.BfdDetectMultiplier) {
-		if !plan.BfdDetectMultiplier.IsNull() {
-			val := int32(plan.BfdDetectMultiplier.ValueInt64())
-			gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(&val)
-		} else {
-			gatewayProps.BfdDetectMultiplier = *openapi.NewNullableInt32(nil)
-		}
-		hasChanges = true
+	// Handle ImportRouteMap and ImportRouteMapRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.ImportRouteMap, state.ImportRouteMap, plan.ImportRouteMapRefType, state.ImportRouteMapRefType,
+		func(v *string) { gatewayProps.ImportRouteMap = v },
+		func(v *string) { gatewayProps.ImportRouteMapRefType = v },
+		"import_route_map", "import_route_map_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	oldStaticRoutesByIndex := make(map[int64]verityGatewayStaticRoutesModel)
-	for _, sr := range state.StaticRoutes {
-		if !sr.Index.IsNull() {
-			oldStaticRoutesByIndex[sr.Index.ValueInt64()] = sr
-		}
+	// Handle ExportRouteMap and ExportRouteMapRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.ExportRouteMap, state.ExportRouteMap, plan.ExportRouteMapRefType, state.ExportRouteMapRefType,
+		func(v *string) { gatewayProps.ExportRouteMap = v },
+		func(v *string) { gatewayProps.ExportRouteMapRefType = v },
+		"export_route_map", "export_route_map_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
-	var changedStaticRoutes []openapi.GatewaysPutRequestGatewayValueStaticRoutesInner
-	staticRoutesChanged := false
-
-	for _, sr := range plan.StaticRoutes {
-		if sr.Index.IsNull() {
-			continue
-		}
-
-		index := sr.Index.ValueInt64()
-		oldRoute, exists := oldStaticRoutesByIndex[index]
-
-		if !exists {
-			// new static route, include all fields
+	// Handle static routes
+	staticRoutesHandler := utils.IndexedItemHandler[verityGatewayStaticRoutesModel, openapi.GatewaysPutRequestGatewayValueStaticRoutesInner]{
+		CreateNew: func(planItem verityGatewayStaticRoutesModel) openapi.GatewaysPutRequestGatewayValueStaticRoutesInner {
 			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
-				Index: openapi.PtrInt32(int32(index)),
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
 
-			if !sr.Enable.IsNull() {
-				route.Enable = openapi.PtrBool(sr.Enable.ValueBool())
+			if !planItem.Enable.IsNull() {
+				route.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
 			} else {
 				route.Enable = openapi.PtrBool(false)
 			}
 
-			if !sr.Ipv4RoutePrefix.IsNull() {
-				route.Ipv4RoutePrefix = openapi.PtrString(sr.Ipv4RoutePrefix.ValueString())
+			if !planItem.Ipv4RoutePrefix.IsNull() {
+				route.Ipv4RoutePrefix = openapi.PtrString(planItem.Ipv4RoutePrefix.ValueString())
 			} else {
 				route.Ipv4RoutePrefix = openapi.PtrString("")
 			}
 
-			if !sr.NextHopIpAddress.IsNull() {
-				route.NextHopIpAddress = openapi.PtrString(sr.NextHopIpAddress.ValueString())
+			if !planItem.NextHopIpAddress.IsNull() {
+				route.NextHopIpAddress = openapi.PtrString(planItem.NextHopIpAddress.ValueString())
 			} else {
 				route.NextHopIpAddress = openapi.PtrString("")
 			}
 
-			if !sr.AdValue.IsNull() {
-				adVal := int32(sr.AdValue.ValueInt64())
+			if !planItem.AdValue.IsNull() {
+				adVal := int32(planItem.AdValue.ValueInt64())
 				route.AdValue = *openapi.NewNullableInt32(&adVal)
 			} else {
 				route.AdValue = *openapi.NewNullableInt32(nil)
 			}
 
-			changedStaticRoutes = append(changedStaticRoutes, route)
-			staticRoutesChanged = true
-			continue
-		}
-
-		// existing static route, check which fields changed
-		route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
-			Index: openapi.PtrInt32(int32(index)),
-		}
-
-		fieldChanged := false
-
-		if !sr.Enable.Equal(oldRoute.Enable) {
-			route.Enable = openapi.PtrBool(sr.Enable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !sr.Ipv4RoutePrefix.Equal(oldRoute.Ipv4RoutePrefix) {
-			if !sr.Ipv4RoutePrefix.IsNull() {
-				route.Ipv4RoutePrefix = openapi.PtrString(sr.Ipv4RoutePrefix.ValueString())
-			} else {
-				route.Ipv4RoutePrefix = openapi.PtrString("")
+			return route
+		},
+		UpdateExisting: func(planItem verityGatewayStaticRoutesModel, stateItem verityGatewayStaticRoutesModel) (openapi.GatewaysPutRequestGatewayValueStaticRoutesInner, bool) {
+			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
 			}
-			fieldChanged = true
-		}
 
-		if !sr.NextHopIpAddress.Equal(oldRoute.NextHopIpAddress) {
-			if !sr.NextHopIpAddress.IsNull() {
-				route.NextHopIpAddress = openapi.PtrString(sr.NextHopIpAddress.ValueString())
-			} else {
-				route.NextHopIpAddress = openapi.PtrString("")
+			fieldChanged := false
+
+			if !planItem.Enable.Equal(stateItem.Enable) {
+				route.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+				fieldChanged = true
 			}
-			fieldChanged = true
-		}
 
-		if !sr.AdValue.Equal(oldRoute.AdValue) {
-			if !sr.AdValue.IsNull() {
-				adVal := int32(sr.AdValue.ValueInt64())
-				route.AdValue = *openapi.NewNullableInt32(&adVal)
-			} else {
-				route.AdValue = *openapi.NewNullableInt32(nil)
+			if !planItem.Ipv4RoutePrefix.Equal(stateItem.Ipv4RoutePrefix) {
+				if !planItem.Ipv4RoutePrefix.IsNull() {
+					route.Ipv4RoutePrefix = openapi.PtrString(planItem.Ipv4RoutePrefix.ValueString())
+				} else {
+					route.Ipv4RoutePrefix = openapi.PtrString("")
+				}
+				fieldChanged = true
 			}
-			fieldChanged = true
-		}
 
-		if fieldChanged {
-			changedStaticRoutes = append(changedStaticRoutes, route)
-			staticRoutesChanged = true
-		}
+			if !planItem.NextHopIpAddress.Equal(stateItem.NextHopIpAddress) {
+				if !planItem.NextHopIpAddress.IsNull() {
+					route.NextHopIpAddress = openapi.PtrString(planItem.NextHopIpAddress.ValueString())
+				} else {
+					route.NextHopIpAddress = openapi.PtrString("")
+				}
+				fieldChanged = true
+			}
+
+			if !planItem.AdValue.Equal(stateItem.AdValue) {
+				if !planItem.AdValue.IsNull() {
+					adVal := int32(planItem.AdValue.ValueInt64())
+					route.AdValue = *openapi.NewNullableInt32(&adVal)
+				} else {
+					route.AdValue = *openapi.NewNullableInt32(nil)
+				}
+				fieldChanged = true
+			}
+
+			return route, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.GatewaysPutRequestGatewayValueStaticRoutesInner {
+			return openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
 	}
 
-	for idx := range oldStaticRoutesByIndex {
-		found := false
-		for _, sr := range plan.StaticRoutes {
-			if !sr.Index.IsNull() && sr.Index.ValueInt64() == idx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// static route removed - include only the index for deletion
-			deletedRoute := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-			changedStaticRoutes = append(changedStaticRoutes, deletedRoute)
-			staticRoutesChanged = true
-		}
-	}
-
-	if staticRoutesChanged && len(changedStaticRoutes) > 0 {
+	changedStaticRoutes, staticRoutesChanged := utils.ProcessIndexedArrayUpdates(plan.StaticRoutes, state.StaticRoutes, staticRoutesHandler)
+	if staticRoutesChanged {
 		gatewayProps.StaticRoutes = changedStaticRoutes
 		hasChanges = true
 	}
@@ -1201,16 +798,11 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "gateway", name, gatewayProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Gateway %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "gateway", name, gatewayProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Gateway %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateways")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -1233,14 +825,9 @@ func (r *verityGatewayResource) Delete(ctx context.Context, req resource.DeleteR
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "gateway", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for gateway deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Gateway %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "gateway", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
 

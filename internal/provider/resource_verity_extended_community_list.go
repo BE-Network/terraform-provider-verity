@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -50,6 +49,10 @@ type verityExtendedCommunityListListsModel struct {
 	Mode                          types.String `tfsdk:"mode"`
 	RouteTargetExpandedExpression types.String `tfsdk:"route_target_expanded_expression"`
 	Index                         types.Int64  `tfsdk:"index"`
+}
+
+func (l verityExtendedCommunityListListsModel) GetIndex() types.Int64 {
+	return l.Index
 }
 
 type verityExtendedCommunityListObjectPropertiesModel struct {
@@ -164,23 +167,35 @@ func (r *verityExtendedCommunityListResource) Create(ctx context.Context, req re
 	}
 
 	name := plan.Name.ValueString()
-	extCommunityListReq := &openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue{
+	extCommListProps := &openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue{
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		extCommunityListReq.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
-	if !plan.PermitDeny.IsNull() {
-		extCommunityListReq.PermitDeny = openapi.PtrString(plan.PermitDeny.ValueString())
-	}
-	if !plan.AnyAll.IsNull() {
-		extCommunityListReq.AnyAll = openapi.PtrString(plan.AnyAll.ValueString())
-	}
-	if !plan.StandardExpanded.IsNull() {
-		extCommunityListReq.StandardExpanded = openapi.PtrString(plan.StandardExpanded.ValueString())
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "PermitDeny", APIField: &extCommListProps.PermitDeny, TFValue: plan.PermitDeny},
+		{FieldName: "AnyAll", APIField: &extCommListProps.AnyAll, TFValue: plan.AnyAll},
+		{FieldName: "StandardExpanded", APIField: &extCommListProps.StandardExpanded, TFValue: plan.StandardExpanded},
+	})
+
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &extCommListProps.Enable, TFValue: plan.Enable},
+	})
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		if !op.Notes.IsNull() {
+			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
+		} else {
+			objProps.Notes = nil
+		}
+		extCommListProps.ObjectProperties = &objProps
 	}
 
+	// Handle lists
 	if len(plan.Lists) > 0 {
 		lists := make([]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner, len(plan.Lists))
 		for i, listItem := range plan.Lists {
@@ -201,28 +216,11 @@ func (r *verityExtendedCommunityListResource) Create(ctx context.Context, req re
 
 			lists[i] = apiListItem
 		}
-		extCommunityListReq.Lists = lists
+		extCommListProps.Lists = lists
 	}
 
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			objectProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			objectProps.Notes = nil
-		}
-		extCommunityListReq.ObjectProperties = &objectProps
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "extended_community_list", name, *extCommunityListReq)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for extended community list creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Extended Community List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "extended_community_list", name, *extCommListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -262,36 +260,26 @@ func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req reso
 		ExtendedCommunityList map[string]interface{} `json:"extended_community_list"`
 	}
 
-	var result ExtendedCommunityListResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		extCommListData, fetchErr := getCachedResponse(ctx, r.provCtx, "extended_community_lists", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "extended_community_lists", extCommListName,
+		func() (ExtendedCommunityListResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch Extended Community Lists")
 			respAPI, err := r.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading Extended Community Lists: %v", err)
+				return ExtendedCommunityListResponse{}, fmt.Errorf("error reading Extended Community Lists: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res ExtendedCommunityListResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode Extended Community Lists response: %v", err)
+				return ExtendedCommunityListResponse{}, fmt.Errorf("failed to decode Extended Community Lists response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d Extended Community Lists", len(res.ExtendedCommunityList)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch Extended Community Lists on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = extCommListData.(ExtendedCommunityListResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Extended Community List %s", extCommListName))...,
@@ -299,117 +287,94 @@ func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req reso
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for Extended Community List with ID: %s", extCommListName))
-	var extCommListData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for Extended Community List with name: %s", extCommListName))
 
-	if data, ok := result.ExtendedCommunityList[extCommListName].(map[string]interface{}); ok {
-		extCommListData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found Extended Community List directly by ID: %s", extCommListName))
-	} else {
-		for apiName, ecl := range result.ExtendedCommunityList {
-			extCommList, ok := ecl.(map[string]interface{})
-			if !ok {
-				continue
+	extCommListData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.ExtendedCommunityList,
+		extCommListName,
+		func(data interface{}) (string, bool) {
+			if extCommList, ok := data.(map[string]interface{}); ok {
+				if name, ok := extCommList["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := extCommList["name"].(string); ok && name == extCommListName {
-				extCommListData = extCommList
-				extCommListName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found Extended Community List with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Extended Community List with ID '%s' not found in API response", extCommListName))
+		tflog.Debug(ctx, fmt.Sprintf("Extended Community List with name '%s' not found in API response", extCommListName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", extCommListData["name"]))
-
-	if enable, ok := extCommListData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	extCommListMap, ok := extCommListData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Extended Community List Data",
+			fmt.Sprintf("Extended Community List data is not in expected format for %s", extCommListName),
+		)
+		return
 	}
 
-	if permitDeny, ok := extCommListData["permit_deny"].(string); ok {
-		state.PermitDeny = types.StringValue(permitDeny)
+	tflog.Debug(ctx, fmt.Sprintf("Found Extended Community List '%s' under API key '%s'", extCommListName, actualAPIName))
+
+	state.Name = utils.MapStringFromAPI(extCommListMap["name"])
+
+	// Handle object properties
+	if objectProps, ok := extCommListMap["object_properties"].(map[string]interface{}); ok {
+		notes := utils.MapStringFromAPI(objectProps["notes"])
+		if notes.IsNull() {
+			notes = types.StringNull()
+		}
+		state.ObjectProperties = []verityExtendedCommunityListObjectPropertiesModel{
+			{Notes: notes},
+		}
 	} else {
-		state.PermitDeny = types.StringNull()
+		state.ObjectProperties = nil
 	}
 
-	if anyAll, ok := extCommListData["any_all"].(string); ok {
-		state.AnyAll = types.StringValue(anyAll)
-	} else {
-		state.AnyAll = types.StringNull()
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
+		"permit_deny":       &state.PermitDeny,
+		"any_all":           &state.AnyAll,
+		"standard_expanded": &state.StandardExpanded,
 	}
 
-	if standardExpanded, ok := extCommListData["standard_expanded"].(string); ok {
-		state.StandardExpanded = types.StringValue(standardExpanded)
-	} else {
-		state.StandardExpanded = types.StringNull()
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(extCommListMap[apiKey])
 	}
 
-	if lists, ok := extCommListData["lists"].([]interface{}); ok && len(lists) > 0 {
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable": &state.Enable,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(extCommListMap[apiKey])
+	}
+
+	// Handle lists
+	if lists, ok := extCommListMap["lists"].([]interface{}); ok && len(lists) > 0 {
 		var listItems []verityExtendedCommunityListListsModel
 		for _, l := range lists {
 			listItem, ok := l.(map[string]interface{})
 			if !ok {
 				continue
 			}
-			listModel := verityExtendedCommunityListListsModel{}
-			if enable, ok := listItem["enable"].(bool); ok {
-				listModel.Enable = types.BoolValue(enable)
-			} else {
-				listModel.Enable = types.BoolNull()
+
+			listModel := verityExtendedCommunityListListsModel{
+				Enable:                        utils.MapBoolFromAPI(listItem["enable"]),
+				Mode:                          utils.MapStringFromAPI(listItem["mode"]),
+				RouteTargetExpandedExpression: utils.MapStringFromAPI(listItem["route_target_expanded_expression"]),
+				Index:                         utils.MapInt64FromAPI(listItem["index"]),
 			}
-			if mode, ok := listItem["mode"].(string); ok {
-				listModel.Mode = types.StringValue(mode)
-			} else {
-				listModel.Mode = types.StringNull()
-			}
-			if routeTarget, ok := listItem["route_target_expanded_expression"].(string); ok {
-				listModel.RouteTargetExpandedExpression = types.StringValue(routeTarget)
-			} else {
-				listModel.RouteTargetExpandedExpression = types.StringNull()
-			}
-			if index, ok := listItem["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					listModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					listModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					listModel.Index = types.Int64Null()
-				}
-			} else {
-				listModel.Index = types.Int64Null()
-			}
+
 			listItems = append(listItems, listModel)
 		}
 		state.Lists = listItems
 	} else {
 		state.Lists = nil
-	}
-
-	// Only set object_properties if it exists in the API response
-	if objectProps, ok := extCommListData["object_properties"].(map[string]interface{}); ok {
-		if notes, ok := objectProps["notes"].(string); ok {
-			state.ObjectProperties = []verityExtendedCommunityListObjectPropertiesModel{
-				{Notes: types.StringValue(notes)},
-			}
-		} else {
-			state.ObjectProperties = []verityExtendedCommunityListObjectPropertiesModel{
-				{Notes: types.StringNull()},
-			}
-		}
-	} else {
-		state.ObjectProperties = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -441,122 +406,16 @@ func (r *verityExtendedCommunityListResource) Update(ctx context.Context, req re
 	extCommListProps := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue{}
 	hasChanges := false
 
-	if !plan.Enable.Equal(state.Enable) {
-		extCommListProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { extCommListProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PermitDeny, state.PermitDeny, func(v *string) { extCommListProps.PermitDeny = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AnyAll, state.AnyAll, func(v *string) { extCommListProps.AnyAll = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.StandardExpanded, state.StandardExpanded, func(v *string) { extCommListProps.StandardExpanded = v }, &hasChanges)
 
-	if !plan.PermitDeny.Equal(state.PermitDeny) {
-		extCommListProps.PermitDeny = openapi.PtrString(plan.PermitDeny.ValueString())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { extCommListProps.Enable = v }, &hasChanges)
 
-	if !plan.AnyAll.Equal(state.AnyAll) {
-		extCommListProps.AnyAll = openapi.PtrString(plan.AnyAll.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.StandardExpanded.Equal(state.StandardExpanded) {
-		extCommListProps.StandardExpanded = openapi.PtrString(plan.StandardExpanded.ValueString())
-		hasChanges = true
-	}
-
-	oldListsByIndex := make(map[int64]verityExtendedCommunityListListsModel)
-	for _, item := range state.Lists {
-		if !item.Index.IsNull() {
-			idx := item.Index.ValueInt64()
-			oldListsByIndex[idx] = item
-		}
-	}
-
-	var changedLists []openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner
-	listsChanged := false
-
-	for _, planItem := range plan.Lists {
-		if planItem.Index.IsNull() {
-			continue // Skip items without identifier
-		}
-
-		idx := planItem.Index.ValueInt64()
-		stateItem, exists := oldListsByIndex[idx]
-
-		if !exists {
-			// CREATE: new item, include all fields
-			newItem := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
-				Index: openapi.PtrInt32(int32(idx)),
-			}
-
-			if !planItem.Enable.IsNull() {
-				newItem.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			}
-
-			if !planItem.Mode.IsNull() {
-				newItem.Mode = openapi.PtrString(planItem.Mode.ValueString())
-			}
-
-			if !planItem.RouteTargetExpandedExpression.IsNull() {
-				newItem.RouteTargetExpandedExpression = openapi.PtrString(planItem.RouteTargetExpandedExpression.ValueString())
-			}
-
-			changedLists = append(changedLists, newItem)
-			listsChanged = true
-			continue
-		}
-
-		// UPDATE: existing item, check which fields changed
-		updateItem := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
-			Index: openapi.PtrInt32(int32(idx)),
-		}
-
-		fieldChanged := false
-
-		if !planItem.Enable.Equal(stateItem.Enable) {
-			updateItem.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			fieldChanged = true
-		}
-
-		if !planItem.Mode.Equal(stateItem.Mode) {
-			updateItem.Mode = openapi.PtrString(planItem.Mode.ValueString())
-			fieldChanged = true
-		}
-
-		if !planItem.RouteTargetExpandedExpression.Equal(stateItem.RouteTargetExpandedExpression) {
-			updateItem.RouteTargetExpandedExpression = openapi.PtrString(planItem.RouteTargetExpandedExpression.ValueString())
-			fieldChanged = true
-		}
-
-		if fieldChanged {
-			changedLists = append(changedLists, updateItem)
-			listsChanged = true
-		}
-	}
-
-	// DELETE: Check for deleted items
-	for stateIdx := range oldListsByIndex {
-		found := false
-		for _, planItem := range plan.Lists {
-			if !planItem.Index.IsNull() && planItem.Index.ValueInt64() == stateIdx {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			// item removed - include only the index for deletion
-			deletedItem := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
-				Index: openapi.PtrInt32(int32(stateIdx)),
-			}
-			changedLists = append(changedLists, deletedItem)
-			listsChanged = true
-		}
-	}
-
-	if listsChanged && len(changedLists) > 0 {
-		extCommListProps.Lists = changedLists
-		hasChanges = true
-	}
-
-	// Handle ObjectProperties changes
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
 			objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -570,21 +429,74 @@ func (r *verityExtendedCommunityListResource) Update(ctx context.Context, req re
 		}
 	}
 
+	// Handle lists
+	listsHandler := utils.IndexedItemHandler[verityExtendedCommunityListListsModel, openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner]{
+		CreateNew: func(planItem verityExtendedCommunityListListsModel) openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner {
+			item := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			if !planItem.Enable.IsNull() {
+				item.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+			}
+
+			if !planItem.Mode.IsNull() {
+				item.Mode = openapi.PtrString(planItem.Mode.ValueString())
+			}
+
+			if !planItem.RouteTargetExpandedExpression.IsNull() {
+				item.RouteTargetExpandedExpression = openapi.PtrString(planItem.RouteTargetExpandedExpression.ValueString())
+			}
+
+			return item
+		},
+		UpdateExisting: func(planItem verityExtendedCommunityListListsModel, stateItem verityExtendedCommunityListListsModel) (openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner, bool) {
+			item := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
+				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
+			}
+
+			fieldChanged := false
+
+			if !planItem.Enable.Equal(stateItem.Enable) {
+				item.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
+				fieldChanged = true
+			}
+
+			if !planItem.Mode.Equal(stateItem.Mode) {
+				item.Mode = openapi.PtrString(planItem.Mode.ValueString())
+				fieldChanged = true
+			}
+
+			if !planItem.RouteTargetExpandedExpression.Equal(stateItem.RouteTargetExpandedExpression) {
+				item.RouteTargetExpandedExpression = openapi.PtrString(planItem.RouteTargetExpandedExpression.ValueString())
+				fieldChanged = true
+			}
+
+			return item, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner {
+			return openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
+				Index: openapi.PtrInt32(int32(index)),
+			}
+		},
+	}
+
+	changedLists, listsChanged := utils.ProcessIndexedArrayUpdates(plan.Lists, state.Lists, listsHandler)
+	if listsChanged {
+		extCommListProps.Lists = changedLists
+		hasChanges = true
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "extended_community_list", name, extCommListProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Extended Community List update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Extended Community List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "extended_community_list", name, extCommListProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Extended Community List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "extended_community_lists")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -607,17 +519,13 @@ func (r *verityExtendedCommunityListResource) Delete(ctx context.Context, req re
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "extended_community_list", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for Extended Community List delete operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Extended Community List %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "extended_community_list", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf("Extended Community List %s delete operation completed successfully", name))
+
+	tflog.Info(ctx, fmt.Sprintf("Extended Community List %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "extended_community_lists")
 	resp.State.RemoveResource(ctx)
 }

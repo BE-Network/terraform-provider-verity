@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -129,38 +128,26 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 		Name: openapi.PtrString(name),
 	}
 
-	if !plan.Enable.IsNull() {
-		diagnosticsProfileProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-	}
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "FlowCollector", APIField: &diagnosticsProfileProps.FlowCollector, TFValue: plan.FlowCollector},
+		{FieldName: "FlowCollectorRefType", APIField: &diagnosticsProfileProps.FlowCollectorRefType, TFValue: plan.FlowCollectorRefType},
+		{FieldName: "VrfType", APIField: &diagnosticsProfileProps.VrfType, TFValue: plan.VrfType},
+	})
 
-	if !plan.EnableSflow.IsNull() {
-		diagnosticsProfileProps.EnableSflow = openapi.PtrBool(plan.EnableSflow.ValueBool())
-	}
+	// Handle boolean fields
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &diagnosticsProfileProps.Enable, TFValue: plan.Enable},
+		{FieldName: "EnableSflow", APIField: &diagnosticsProfileProps.EnableSflow, TFValue: plan.EnableSflow},
+	})
 
-	if !plan.FlowCollector.IsNull() {
-		diagnosticsProfileProps.FlowCollector = openapi.PtrString(plan.FlowCollector.ValueString())
-	}
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "PollInterval", APIField: &diagnosticsProfileProps.PollInterval, TFValue: plan.PollInterval},
+	})
 
-	if !plan.FlowCollectorRefType.IsNull() {
-		diagnosticsProfileProps.FlowCollectorRefType = openapi.PtrString(plan.FlowCollectorRefType.ValueString())
-	}
-
-	if !plan.PollInterval.IsNull() {
-		diagnosticsProfileProps.PollInterval = openapi.PtrInt32(int32(plan.PollInterval.ValueInt64()))
-	}
-
-	if !plan.VrfType.IsNull() {
-		diagnosticsProfileProps.VrfType = openapi.PtrString(plan.VrfType.ValueString())
-	}
-
-	operationID := r.bulkOpsMgr.AddPut(ctx, "diagnostics_profile", name, *diagnosticsProfileProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for diagnostics profile creation operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Create Diagnostics Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_profile", name, *diagnosticsProfileProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
 
@@ -200,36 +187,26 @@ func (r *verityDiagnosticsProfileResource) Read(ctx context.Context, req resourc
 		DiagnosticsProfile map[string]interface{} `json:"diagnostics_profile"`
 	}
 
-	var result DiagnosticsProfilesResponse
-	var err error
-	maxRetries := 3
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		diagnosticsProfilesData, fetchErr := getCachedResponse(ctx, r.provCtx, "diagnosticsprofiles", func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "diagnostics_profiles", diagnosticsProfileName,
+		func() (DiagnosticsProfilesResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch diagnostics profiles")
 			respAPI, err := r.client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(ctx).Execute()
 			if err != nil {
-				return nil, fmt.Errorf("error reading diagnostics profiles: %v", err)
+				return DiagnosticsProfilesResponse{}, fmt.Errorf("error reading diagnostics profiles: %v", err)
 			}
 			defer respAPI.Body.Close()
 
 			var res DiagnosticsProfilesResponse
 			if err := json.NewDecoder(respAPI.Body).Decode(&res); err != nil {
-				return nil, fmt.Errorf("failed to decode diagnostics profiles response: %v", err)
+				return DiagnosticsProfilesResponse{}, fmt.Errorf("failed to decode diagnostics profiles response: %v", err)
 			}
 
 			tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d diagnostics profiles", len(res.DiagnosticsProfile)))
 			return res, nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch diagnostics profiles on attempt %d, retrying in %v", attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		result = diagnosticsProfilesData.(DiagnosticsProfilesResponse)
-		break
-	}
+		},
+		getCachedResponse,
+	)
+
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read Diagnostics Profile %s", diagnosticsProfileName))...,
@@ -237,80 +214,68 @@ func (r *verityDiagnosticsProfileResource) Read(ctx context.Context, req resourc
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("Looking for diagnostics profile with ID: %s", diagnosticsProfileName))
-	var diagnosticsProfileData map[string]interface{}
-	exists := false
+	tflog.Debug(ctx, fmt.Sprintf("Looking for diagnostics profile with name: %s", diagnosticsProfileName))
 
-	if data, ok := result.DiagnosticsProfile[diagnosticsProfileName].(map[string]interface{}); ok {
-		diagnosticsProfileData = data
-		exists = true
-		tflog.Debug(ctx, fmt.Sprintf("Found diagnostics profile directly by ID: %s", diagnosticsProfileName))
-	} else {
-		for apiName, d := range result.DiagnosticsProfile {
-			diagnosticsProfile, ok := d.(map[string]interface{})
-			if !ok {
-				continue
+	diagnosticsProfileData, actualAPIName, exists := utils.FindResourceByAPIName(
+		result.DiagnosticsProfile,
+		diagnosticsProfileName,
+		func(data interface{}) (string, bool) {
+			if diagnosticsProfile, ok := data.(map[string]interface{}); ok {
+				if name, ok := diagnosticsProfile["name"].(string); ok {
+					return name, true
+				}
 			}
-
-			if name, ok := diagnosticsProfile["name"].(string); ok && name == diagnosticsProfileName {
-				diagnosticsProfileData = diagnosticsProfile
-				diagnosticsProfileName = apiName
-				exists = true
-				tflog.Debug(ctx, fmt.Sprintf("Found diagnostics profile with name '%s' under API key '%s'", name, apiName))
-				break
-			}
-		}
-	}
+			return "", false
+		},
+	)
 
 	if !exists {
-		tflog.Debug(ctx, fmt.Sprintf("Diagnostics Profile with ID '%s' not found in API response", diagnosticsProfileName))
+		tflog.Debug(ctx, fmt.Sprintf("Diagnostics Profile with name '%s' not found in API response", diagnosticsProfileName))
 		resp.State.RemoveResource(ctx)
 		return
 	}
 
-	state.Name = types.StringValue(fmt.Sprintf("%v", diagnosticsProfileData["name"]))
-
-	if enable, ok := diagnosticsProfileData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(enable)
-	} else {
-		state.Enable = types.BoolNull()
+	diagnosticsProfileMap, ok := diagnosticsProfileData.(map[string]interface{})
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Invalid Diagnostics Profile Data",
+			fmt.Sprintf("Diagnostics Profile data is not in expected format for %s", diagnosticsProfileName),
+		)
+		return
 	}
 
-	if enableSflow, ok := diagnosticsProfileData["enable_sflow"].(bool); ok {
-		state.EnableSflow = types.BoolValue(enableSflow)
-	} else {
-		state.EnableSflow = types.BoolNull()
-	}
+	tflog.Debug(ctx, fmt.Sprintf("Found diagnostics profile '%s' under API key '%s'", diagnosticsProfileName, actualAPIName))
 
-	stringAttrs := map[string]*types.String{
+	state.Name = utils.MapStringFromAPI(diagnosticsProfileMap["name"])
+
+	// Map string fields
+	stringFieldMappings := map[string]*types.String{
 		"flow_collector":           &state.FlowCollector,
 		"flow_collector_ref_type_": &state.FlowCollectorRefType,
 		"vrf_type":                 &state.VrfType,
 	}
 
-	for apiKey, stateField := range stringAttrs {
-		if value, ok := diagnosticsProfileData[apiKey].(string); ok {
-			*stateField = types.StringValue(value)
-		} else {
-			*stateField = types.StringNull()
-		}
+	for apiKey, stateField := range stringFieldMappings {
+		*stateField = utils.MapStringFromAPI(diagnosticsProfileMap[apiKey])
 	}
 
-	if value, ok := diagnosticsProfileData["poll_interval"]; ok && value != nil {
-		switch v := value.(type) {
-		case int:
-			state.PollInterval = types.Int64Value(int64(v))
-		case int32:
-			state.PollInterval = types.Int64Value(int64(v))
-		case int64:
-			state.PollInterval = types.Int64Value(v)
-		case float64:
-			state.PollInterval = types.Int64Value(int64(v))
-		default:
-			state.PollInterval = types.Int64Null()
-		}
-	} else {
-		state.PollInterval = types.Int64Null()
+	// Map boolean fields
+	boolFieldMappings := map[string]*types.Bool{
+		"enable":       &state.Enable,
+		"enable_sflow": &state.EnableSflow,
+	}
+
+	for apiKey, stateField := range boolFieldMappings {
+		*stateField = utils.MapBoolFromAPI(diagnosticsProfileMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"poll_interval": &state.PollInterval,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(diagnosticsProfileMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -342,67 +307,27 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	diagnosticsProfileProps := openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue{}
 	hasChanges := false
 
-	if !plan.Name.Equal(state.Name) {
-		diagnosticsProfileProps.Name = openapi.PtrString(name)
-		hasChanges = true
-	}
+	// Handle string field changes
+	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { diagnosticsProfileProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.VrfType, state.VrfType, func(v *string) { diagnosticsProfileProps.VrfType = v }, &hasChanges)
 
-	if !plan.Enable.Equal(state.Enable) {
-		diagnosticsProfileProps.Enable = openapi.PtrBool(plan.Enable.ValueBool())
-		hasChanges = true
-	}
+	// Handle boolean field changes
+	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { diagnosticsProfileProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableSflow, state.EnableSflow, func(v *bool) { diagnosticsProfileProps.EnableSflow = v }, &hasChanges)
 
-	if !plan.EnableSflow.Equal(state.EnableSflow) {
-		diagnosticsProfileProps.EnableSflow = openapi.PtrBool(plan.EnableSflow.ValueBool())
-		hasChanges = true
-	}
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.PollInterval, state.PollInterval, func(v *int32) { diagnosticsProfileProps.PollInterval = v }, &hasChanges)
 
-	if !plan.VrfType.Equal(state.VrfType) {
-		diagnosticsProfileProps.VrfType = openapi.PtrString(plan.VrfType.ValueString())
-		hasChanges = true
-	}
-
-	if !plan.PollInterval.Equal(state.PollInterval) {
-		diagnosticsProfileProps.PollInterval = openapi.PtrInt32(int32(plan.PollInterval.ValueInt64()))
-		hasChanges = true
-	}
-
-	// Handle FlowCollector and FlowCollectorRefType according to "One ref type supported" rules
-	flowCollectorChanged := !plan.FlowCollector.Equal(state.FlowCollector)
-	flowCollectorRefTypeChanged := !plan.FlowCollectorRefType.Equal(state.FlowCollectorRefType)
-
-	if flowCollectorChanged || flowCollectorRefTypeChanged {
-		if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-			plan.FlowCollector, plan.FlowCollectorRefType,
-			"flow_collector", "flow_collector_ref_type_",
-			flowCollectorChanged, flowCollectorRefTypeChanged) {
-			return
-		}
-
-		// Only send the base field if only it changed
-		if flowCollectorChanged && !flowCollectorRefTypeChanged {
-			// Just send the base field
-			if !plan.FlowCollector.IsNull() && plan.FlowCollector.ValueString() != "" {
-				diagnosticsProfileProps.FlowCollector = openapi.PtrString(plan.FlowCollector.ValueString())
-			} else {
-				diagnosticsProfileProps.FlowCollector = openapi.PtrString("")
-			}
-			hasChanges = true
-		} else if flowCollectorRefTypeChanged {
-			// Send both fields
-			if !plan.FlowCollector.IsNull() && plan.FlowCollector.ValueString() != "" {
-				diagnosticsProfileProps.FlowCollector = openapi.PtrString(plan.FlowCollector.ValueString())
-			} else {
-				diagnosticsProfileProps.FlowCollector = openapi.PtrString("")
-			}
-
-			if !plan.FlowCollectorRefType.IsNull() && plan.FlowCollectorRefType.ValueString() != "" {
-				diagnosticsProfileProps.FlowCollectorRefType = openapi.PtrString(plan.FlowCollectorRefType.ValueString())
-			} else {
-				diagnosticsProfileProps.FlowCollectorRefType = openapi.PtrString("")
-			}
-			hasChanges = true
-		}
+	// Handle FlowCollector and FlowCollectorRefType fields using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.FlowCollector, state.FlowCollector, plan.FlowCollectorRefType, state.FlowCollectorRefType,
+		func(v *string) { diagnosticsProfileProps.FlowCollector = v },
+		func(v *string) { diagnosticsProfileProps.FlowCollectorRefType = v },
+		"flow_collector", "flow_collector_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
 	}
 
 	if !hasChanges {
@@ -410,16 +335,11 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	operationID := r.bulkOpsMgr.AddPatch(ctx, "diagnostics_profile", name, diagnosticsProfileProps)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for diagnostics profile update operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update Diagnostics Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "diagnostics_profile", name, diagnosticsProfileProps, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_profiles")
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
@@ -442,16 +362,12 @@ func (r *verityDiagnosticsProfileResource) Delete(ctx context.Context, req resou
 	}
 
 	name := state.Name.ValueString()
-	operationID := r.bulkOpsMgr.AddDelete(ctx, "diagnostics_profile", name)
-	r.notifyOperationAdded()
 
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for diagnostics profile deletion operation %s to complete", operationID))
-	if err := r.bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete Diagnostics Profile %s", name))...,
-		)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "diagnostics_profile", name, nil, &resp.Diagnostics)
+	if !success {
 		return
 	}
+
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Profile %s deletion operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_profiles")
 	resp.State.RemoveResource(ctx)
