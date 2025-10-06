@@ -63,6 +63,8 @@ type verityServiceResourceModel struct {
 	UseDscpToPBitMappingForL3PacketsIfAvailable types.Bool                           `tfsdk:"use_dscp_to_p_bit_mapping_for_l3_packets_if_available"`
 	AllowFastLeave                              types.Bool                           `tfsdk:"allow_fast_leave"`
 	MstInstance                                 types.Int64                          `tfsdk:"mst_instance"`
+	PolicyBasedRouting                          types.String                         `tfsdk:"policy_based_routing"`
+	PolicyBasedRoutingRefType                   types.String                         `tfsdk:"policy_based_routing_ref_type_"`
 }
 
 type verityServiceObjectPropertiesModel struct {
@@ -207,6 +209,14 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 				Description: "MST Instance ID (0-4094)",
 				Optional:    true,
 			},
+			"policy_based_routing": schema.StringAttribute{
+				Description: "Policy Based Routing",
+				Optional:    true,
+			},
+			"policy_based_routing_ref_type_": schema.StringAttribute{
+				Description: "Object type for policy_based_routing field",
+				Optional:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
@@ -274,6 +284,8 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "AnycastIpv6Mask", APIField: &serviceReq.AnycastIpv6Mask, TFValue: plan.AnycastIpv6Mask},
 		{FieldName: "PacketPriority", APIField: &serviceReq.PacketPriority, TFValue: plan.PacketPriority},
 		{FieldName: "MulticastManagementMode", APIField: &serviceReq.MulticastManagementMode, TFValue: plan.MulticastManagementMode},
+		{FieldName: "PolicyBasedRouting", APIField: &serviceReq.PolicyBasedRouting, TFValue: plan.PolicyBasedRouting},
+		{FieldName: "PolicyBasedRoutingRefType", APIField: &serviceReq.PolicyBasedRoutingRefType, TFValue: plan.PolicyBasedRoutingRefType},
 	})
 
 	// Handle boolean fields
@@ -652,6 +664,16 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		"tenant", "tenant_ref_type_",
 		&hasChanges,
 		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.PolicyBasedRouting, state.PolicyBasedRouting, plan.PolicyBasedRoutingRefType, state.PolicyBasedRoutingRefType,
+		func(val *string) { serviceReq.PolicyBasedRouting = val },
+		func(val *string) { serviceReq.PolicyBasedRoutingRefType = val },
+		"policy_based_routing", "policy_based_routing_ref_type_",
+		&hasChanges, &resp.Diagnostics,
 	) {
 		return
 	}
@@ -1038,6 +1060,22 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 		state.MstInstance = plan.MstInstance
 	} else {
 		state.MstInstance = types.Int64Null()
+	}
+
+	if val, ok := serviceData["policy_based_routing"].(string); ok {
+		state.PolicyBasedRouting = types.StringValue(val)
+	} else if plan != nil && !plan.PolicyBasedRouting.IsNull() {
+		state.PolicyBasedRouting = plan.PolicyBasedRouting
+	} else {
+		state.PolicyBasedRouting = types.StringNull()
+	}
+
+	if val, ok := serviceData["policy_based_routing_ref_type_"].(string); ok {
+		state.PolicyBasedRoutingRefType = types.StringValue(val)
+	} else if plan != nil && !plan.PolicyBasedRoutingRefType.IsNull() {
+		state.PolicyBasedRoutingRefType = plan.PolicyBasedRoutingRefType
+	} else {
+		state.PolicyBasedRoutingRefType = types.StringNull()
 	}
 
 	return state
