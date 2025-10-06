@@ -4,7 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Isdefault** | Pointer to **bool** | Default object. | [optional] [default to false]
 **PortMonitoring** | Pointer to **string** | Defines importance of Link Down on this port | [optional] [default to ""]
 **Group** | Pointer to **string** | Group | [optional] [default to ""]
 **FormatDialPlan** | Pointer to **bool** | Format dial plan for easier viewing | [optional] [default to true]
@@ -27,31 +26,6 @@ will change when the set of required properties is changed
 NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectPropertiesWithDefaults instantiates a new VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
-
-### GetIsdefault
-
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetIsdefault() bool`
-
-GetIsdefault returns the Isdefault field if non-nil, zero value otherwise.
-
-### GetIsdefaultOk
-
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetIsdefaultOk() (*bool, bool)`
-
-GetIsdefaultOk returns a tuple with the Isdefault field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetIsdefault
-
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) SetIsdefault(v bool)`
-
-SetIsdefault sets Isdefault field to given value.
-
-### HasIsdefault
-
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) HasIsdefault() bool`
-
-HasIsdefault returns a boolean if a field has been set.
 
 ### GetPortMonitoring
 

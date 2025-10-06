@@ -6996,10 +6996,6 @@ components:
       type: object
     _voiceportprofiles_put_request_voice_port_profiles_value_object_properties:
       properties:
-        isdefault:
-          default: false
-          description: Default object.
-          type: boolean
         port_monitoring:
           default: ""
           description: Defines importance of Link Down on this port
@@ -9303,6 +9299,15 @@ components:
           description: MST Instance ID (0-4094)
           maximum: 4094
           type: integer
+        policy_based_routing:
+          default: ""
+          description: Policy Based Routing
+          type: string
+        policy_based_routing_ref_type_:
+          description: Object type for policy_based_routing field
+          enum:
+          - pb_routing
+          type: string
       type: object
     _bundles_put_request:
       properties:

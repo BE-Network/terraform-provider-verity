@@ -19,8 +19,6 @@ var _ MappedNullable = &VoiceportprofilesPutRequestVoicePortProfilesValueObjectP
 
 // VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties struct for VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties
 type VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties struct {
-	// Default object.
-	Isdefault *bool `json:"isdefault,omitempty"`
 	// Defines importance of Link Down on this port
 	PortMonitoring *string `json:"port_monitoring,omitempty"`
 	// Group
@@ -35,8 +33,6 @@ type VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties() *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties {
 	this := VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
-	var isdefault bool = false
-	this.Isdefault = &isdefault
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
 	var group string = ""
@@ -51,8 +47,6 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties() *Voi
 // but it doesn't guarantee that properties required by API are set
 func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectPropertiesWithDefaults() *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties {
 	this := VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
-	var isdefault bool = false
-	this.Isdefault = &isdefault
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
 	var group string = ""
@@ -60,38 +54,6 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectPropertiesWithDef
 	var formatDialPlan bool = true
 	this.FormatDialPlan = &formatDialPlan
 	return &this
-}
-
-// GetIsdefault returns the Isdefault field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetIsdefault() bool {
-	if o == nil || IsNil(o.Isdefault) {
-		var ret bool
-		return ret
-	}
-	return *o.Isdefault
-}
-
-// GetIsdefaultOk returns a tuple with the Isdefault field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetIsdefaultOk() (*bool, bool) {
-	if o == nil || IsNil(o.Isdefault) {
-		return nil, false
-	}
-	return o.Isdefault, true
-}
-
-// HasIsdefault returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) HasIsdefault() bool {
-	if o != nil && !IsNil(o.Isdefault) {
-		return true
-	}
-
-	return false
-}
-
-// SetIsdefault gets a reference to the given bool and assigns it to the Isdefault field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) SetIsdefault(v bool) {
-	o.Isdefault = &v
 }
 
 // GetPortMonitoring returns the PortMonitoring field value if set, zero value otherwise.
@@ -200,9 +162,6 @@ func (o VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) Marsh
 
 func (o VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Isdefault) {
-		toSerialize["isdefault"] = o.Isdefault
-	}
 	if !IsNil(o.PortMonitoring) {
 		toSerialize["port_monitoring"] = o.PortMonitoring
 	}
