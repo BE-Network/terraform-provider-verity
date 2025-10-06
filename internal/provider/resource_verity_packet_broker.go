@@ -557,6 +557,20 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		},
 	}
 
+	for _, filterPlan := range plan.Ipv4Permit {
+		if !filterPlan.Filter.IsNull() && !filterPlan.FilterRefType.IsNull() && filterPlan.Filter.ValueString() != "" {
+			if !utils.ValidateMultipleRefTypesSupported(
+				&resp.Diagnostics,
+				filterPlan.Filter,
+				filterPlan.FilterRefType,
+				"filter",
+				"filter_ref_type_",
+			) {
+				return
+			}
+		}
+	}
+
 	changedIpv4Permit, ipv4PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit, ipv4PermitHandler)
 	if ipv4PermitChanged {
 		pbProps.Ipv4Permit = changedIpv4Permit
@@ -564,6 +578,20 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	}
 
 	// Handle IPv4 Deny
+	for _, filterPlan := range plan.Ipv4Deny {
+		if !filterPlan.Filter.IsNull() && !filterPlan.FilterRefType.IsNull() && filterPlan.Filter.ValueString() != "" {
+			if !utils.ValidateMultipleRefTypesSupported(
+				&resp.Diagnostics,
+				filterPlan.Filter,
+				filterPlan.FilterRefType,
+				"filter",
+				"filter_ref_type_",
+			) {
+				return
+			}
+		}
+	}
+
 	ipv4DenyHandler := ipv4PermitHandler // Reuse the same handler structure
 	changedIpv4Deny, ipv4DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny, ipv4DenyHandler)
 	if ipv4DenyChanged {
@@ -637,13 +665,40 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		},
 	}
 
+	for _, filterPlan := range plan.Ipv6Permit {
+		if !filterPlan.Filter.IsNull() && !filterPlan.FilterRefType.IsNull() && filterPlan.Filter.ValueString() != "" {
+			if !utils.ValidateMultipleRefTypesSupported(
+				&resp.Diagnostics,
+				filterPlan.Filter,
+				filterPlan.FilterRefType,
+				"filter",
+				"filter_ref_type_",
+			) {
+				return
+			}
+		}
+	}
+
 	changedIpv6Permit, ipv6PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit, ipv6PermitHandler)
 	if ipv6PermitChanged {
 		pbProps.Ipv6Permit = changedIpv6Permit
 		hasChanges = true
 	}
 
-	// Handle IPv6 Deny filters using the same handler structure
+	for _, filterPlan := range plan.Ipv6Deny {
+		if !filterPlan.Filter.IsNull() && !filterPlan.FilterRefType.IsNull() && filterPlan.Filter.ValueString() != "" {
+			if !utils.ValidateMultipleRefTypesSupported(
+				&resp.Diagnostics,
+				filterPlan.Filter,
+				filterPlan.FilterRefType,
+				"filter",
+				"filter_ref_type_",
+			) {
+				return
+			}
+		}
+	}
+
 	changedIpv6Deny, ipv6DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny, ipv6PermitHandler)
 	if ipv6DenyChanged {
 		pbProps.Ipv6Deny = changedIpv6Deny

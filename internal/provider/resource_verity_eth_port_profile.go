@@ -729,21 +729,39 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				fieldChanged = true
 			}
 
-			if !planItem.RowNumService.Equal(stateItem.RowNumService) {
-				if !planItem.RowNumService.IsNull() {
-					service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
-				} else {
-					service.RowNumService = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle row_num_service and row_num_service_ref_type_ using "One ref type supported" pattern
+			serviceChanged := !planItem.RowNumService.Equal(stateItem.RowNumService)
+			serviceRefTypeChanged := !planItem.RowNumServiceRefType.Equal(stateItem.RowNumServiceRefType)
 
-			if !planItem.RowNumServiceRefType.Equal(stateItem.RowNumServiceRefType) {
-				if !planItem.RowNumServiceRefType.IsNull() {
-					service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
-				} else {
-					service.RowNumServiceRefType = openapi.PtrString("")
+			if serviceChanged || serviceRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.RowNumService,
+					planItem.RowNumServiceRefType,
+					"row_num_service",
+					"row_num_service_ref_type_",
+					serviceChanged,
+					serviceRefTypeChanged,
+				) {
+					return service, false
 				}
+
+				if serviceChanged {
+					if !planItem.RowNumService.IsNull() {
+						service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
+					} else {
+						service.RowNumService = openapi.PtrString("")
+					}
+				}
+
+				if serviceRefTypeChanged {
+					if !planItem.RowNumServiceRefType.IsNull() {
+						service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
+					} else {
+						service.RowNumServiceRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
@@ -757,57 +775,111 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				fieldChanged = true
 			}
 
-			if !planItem.RowNumIngressAcl.Equal(stateItem.RowNumIngressAcl) {
-				if !planItem.RowNumIngressAcl.IsNull() {
-					service.RowNumIngressAcl = openapi.PtrString(planItem.RowNumIngressAcl.ValueString())
-				} else {
-					service.RowNumIngressAcl = openapi.PtrString("")
+			// Validate and handle row_num_ingress_acl and row_num_ingress_acl_ref_type_ using "One ref type supported" pattern
+			ingressAclChanged := !planItem.RowNumIngressAcl.Equal(stateItem.RowNumIngressAcl)
+			ingressAclRefTypeChanged := !planItem.RowNumIngressAclRefType.Equal(stateItem.RowNumIngressAclRefType)
+
+			if ingressAclChanged || ingressAclRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.RowNumIngressAcl,
+					planItem.RowNumIngressAclRefType,
+					"row_num_ingress_acl",
+					"row_num_ingress_acl_ref_type_",
+					ingressAclChanged,
+					ingressAclRefTypeChanged,
+				) {
+					return service, false
 				}
+
+				if ingressAclChanged {
+					if !planItem.RowNumIngressAcl.IsNull() {
+						service.RowNumIngressAcl = openapi.PtrString(planItem.RowNumIngressAcl.ValueString())
+					} else {
+						service.RowNumIngressAcl = openapi.PtrString("")
+					}
+				}
+
+				if ingressAclRefTypeChanged {
+					if !planItem.RowNumIngressAclRefType.IsNull() {
+						service.RowNumIngressAclRefType = openapi.PtrString(planItem.RowNumIngressAclRefType.ValueString())
+					} else {
+						service.RowNumIngressAclRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
-			if !planItem.RowNumIngressAclRefType.Equal(stateItem.RowNumIngressAclRefType) {
-				if !planItem.RowNumIngressAclRefType.IsNull() {
-					service.RowNumIngressAclRefType = openapi.PtrString(planItem.RowNumIngressAclRefType.ValueString())
-				} else {
-					service.RowNumIngressAclRefType = openapi.PtrString("")
+			// Validate and handle row_num_egress_acl and row_num_egress_acl_ref_type_ using "One ref type supported" pattern
+			egressAclChanged := !planItem.RowNumEgressAcl.Equal(stateItem.RowNumEgressAcl)
+			egressAclRefTypeChanged := !planItem.RowNumEgressAclRefType.Equal(stateItem.RowNumEgressAclRefType)
+
+			if egressAclChanged || egressAclRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.RowNumEgressAcl,
+					planItem.RowNumEgressAclRefType,
+					"row_num_egress_acl",
+					"row_num_egress_acl_ref_type_",
+					egressAclChanged,
+					egressAclRefTypeChanged,
+				) {
+					return service, false
 				}
+
+				if egressAclChanged {
+					if !planItem.RowNumEgressAcl.IsNull() {
+						service.RowNumEgressAcl = openapi.PtrString(planItem.RowNumEgressAcl.ValueString())
+					} else {
+						service.RowNumEgressAcl = openapi.PtrString("")
+					}
+				}
+
+				if egressAclRefTypeChanged {
+					if !planItem.RowNumEgressAclRefType.IsNull() {
+						service.RowNumEgressAclRefType = openapi.PtrString(planItem.RowNumEgressAclRefType.ValueString())
+					} else {
+						service.RowNumEgressAclRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
-			if !planItem.RowNumEgressAcl.Equal(stateItem.RowNumEgressAcl) {
-				if !planItem.RowNumEgressAcl.IsNull() {
-					service.RowNumEgressAcl = openapi.PtrString(planItem.RowNumEgressAcl.ValueString())
-				} else {
-					service.RowNumEgressAcl = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle row_num_mac_filter and row_num_mac_filter_ref_type_ using "One ref type supported" pattern
+			macFilterChanged := !planItem.RowNumMacFilter.Equal(stateItem.RowNumMacFilter)
+			macFilterRefTypeChanged := !planItem.RowNumMacFilterRefType.Equal(stateItem.RowNumMacFilterRefType)
 
-			if !planItem.RowNumEgressAclRefType.Equal(stateItem.RowNumEgressAclRefType) {
-				if !planItem.RowNumEgressAclRefType.IsNull() {
-					service.RowNumEgressAclRefType = openapi.PtrString(planItem.RowNumEgressAclRefType.ValueString())
-				} else {
-					service.RowNumEgressAclRefType = openapi.PtrString("")
+			if macFilterChanged || macFilterRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.RowNumMacFilter,
+					planItem.RowNumMacFilterRefType,
+					"row_num_mac_filter",
+					"row_num_mac_filter_ref_type_",
+					macFilterChanged,
+					macFilterRefTypeChanged,
+				) {
+					return service, false
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.RowNumMacFilter.Equal(stateItem.RowNumMacFilter) {
-				if !planItem.RowNumMacFilter.IsNull() {
-					service.RowNumMacFilter = openapi.PtrString(planItem.RowNumMacFilter.ValueString())
-				} else {
-					service.RowNumMacFilter = openapi.PtrString("")
+				if macFilterChanged {
+					if !planItem.RowNumMacFilter.IsNull() {
+						service.RowNumMacFilter = openapi.PtrString(planItem.RowNumMacFilter.ValueString())
+					} else {
+						service.RowNumMacFilter = openapi.PtrString("")
+					}
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.RowNumMacFilterRefType.Equal(stateItem.RowNumMacFilterRefType) {
-				if !planItem.RowNumMacFilterRefType.IsNull() {
-					service.RowNumMacFilterRefType = openapi.PtrString(planItem.RowNumMacFilterRefType.ValueString())
-				} else {
-					service.RowNumMacFilterRefType = openapi.PtrString("")
+				if macFilterRefTypeChanged {
+					if !planItem.RowNumMacFilterRefType.IsNull() {
+						service.RowNumMacFilterRefType = openapi.PtrString(planItem.RowNumMacFilterRefType.ValueString())
+					} else {
+						service.RowNumMacFilterRefType = openapi.PtrString("")
+					}
 				}
+
 				fieldChanged = true
 			}
 

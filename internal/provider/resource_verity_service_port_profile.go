@@ -608,22 +608,38 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 				fieldChanged = true
 			}
 
-			if !planItem.RowNumService.Equal(stateItem.RowNumService) {
-				if !planItem.RowNumService.IsNull() {
-					service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
-				} else {
-					service.RowNumService = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			rowNumServiceChanged := !planItem.RowNumService.Equal(stateItem.RowNumService)
+			rowNumServiceRefTypeChanged := !planItem.RowNumServiceRefType.Equal(stateItem.RowNumServiceRefType)
 
-			if !planItem.RowNumServiceRefType.Equal(stateItem.RowNumServiceRefType) {
-				if !planItem.RowNumServiceRefType.IsNull() {
-					service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
-				} else {
-					service.RowNumServiceRefType = openapi.PtrString("")
+			if rowNumServiceChanged || rowNumServiceRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					planItem.RowNumService, planItem.RowNumServiceRefType,
+					"row_num_service", "row_num_service_ref_type_",
+					rowNumServiceChanged, rowNumServiceRefTypeChanged) {
+					return service, false
 				}
-				fieldChanged = true
+
+				if rowNumServiceChanged && !rowNumServiceRefTypeChanged {
+					if !planItem.RowNumService.IsNull() {
+						service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
+					} else {
+						service.RowNumService = openapi.PtrString("")
+					}
+					fieldChanged = true
+				} else if rowNumServiceRefTypeChanged {
+					if !planItem.RowNumService.IsNull() {
+						service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
+					} else {
+						service.RowNumService = openapi.PtrString("")
+					}
+
+					if !planItem.RowNumServiceRefType.IsNull() {
+						service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
+					} else {
+						service.RowNumServiceRefType = openapi.PtrString("")
+					}
+					fieldChanged = true
+				}
 			}
 
 			if !planItem.RowNumExternalVlan.Equal(stateItem.RowNumExternalVlan) {

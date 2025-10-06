@@ -544,21 +544,39 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 				fieldChanged = true
 			}
 
-			if !planItem.EthPortProfileNumEthPort.Equal(stateItem.EthPortProfileNumEthPort) {
-				if !planItem.EthPortProfileNumEthPort.IsNull() && planItem.EthPortProfileNumEthPort.ValueString() != "" {
-					item.EthPortProfileNumEthPort = openapi.PtrString(planItem.EthPortProfileNumEthPort.ValueString())
-				} else {
-					item.EthPortProfileNumEthPort = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle eth_port_profile_num_eth_port and eth_port_profile_num_eth_port_ref_type_ using "One ref type supported" pattern
+			ethPortChanged := !planItem.EthPortProfileNumEthPort.Equal(stateItem.EthPortProfileNumEthPort)
+			ethPortRefTypeChanged := !planItem.EthPortProfileNumEthPortRefType.Equal(stateItem.EthPortProfileNumEthPortRefType)
 
-			if !planItem.EthPortProfileNumEthPortRefType.Equal(stateItem.EthPortProfileNumEthPortRefType) {
-				if !planItem.EthPortProfileNumEthPortRefType.IsNull() && planItem.EthPortProfileNumEthPortRefType.ValueString() != "" {
-					item.EthPortProfileNumEthPortRefType = openapi.PtrString(planItem.EthPortProfileNumEthPortRefType.ValueString())
-				} else {
-					item.EthPortProfileNumEthPortRefType = openapi.PtrString("")
+			if ethPortChanged || ethPortRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.EthPortProfileNumEthPort,
+					planItem.EthPortProfileNumEthPortRefType,
+					"eth_port_profile_num_eth_port",
+					"eth_port_profile_num_eth_port_ref_type_",
+					ethPortChanged,
+					ethPortRefTypeChanged,
+				) {
+					return item, false
 				}
+
+				if ethPortChanged {
+					if !planItem.EthPortProfileNumEthPort.IsNull() && planItem.EthPortProfileNumEthPort.ValueString() != "" {
+						item.EthPortProfileNumEthPort = openapi.PtrString(planItem.EthPortProfileNumEthPort.ValueString())
+					} else {
+						item.EthPortProfileNumEthPort = openapi.PtrString("")
+					}
+				}
+
+				if ethPortRefTypeChanged {
+					if !planItem.EthPortProfileNumEthPortRefType.IsNull() && planItem.EthPortProfileNumEthPortRefType.ValueString() != "" {
+						item.EthPortProfileNumEthPortRefType = openapi.PtrString(planItem.EthPortProfileNumEthPortRefType.ValueString())
+					} else {
+						item.EthPortProfileNumEthPortRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 

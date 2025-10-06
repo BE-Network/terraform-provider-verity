@@ -850,16 +850,36 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 				lldpMedItem.LldpMedRowNumPriority = openapi.PtrInt32(int32(planItem.LldpMedRowNumPriority.ValueInt64()))
 				hasChanges = true
 			}
-			if !planItem.LldpMedRowNumService.Equal(stateItem.LldpMedRowNumService) {
-				if !planItem.LldpMedRowNumService.IsNull() {
-					lldpMedItem.LldpMedRowNumService = openapi.PtrString(planItem.LldpMedRowNumService.ValueString())
+
+			// Validate and handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
+			serviceChanged := !planItem.LldpMedRowNumService.Equal(stateItem.LldpMedRowNumService)
+			serviceRefTypeChanged := !planItem.LldpMedRowNumServiceRefType.Equal(stateItem.LldpMedRowNumServiceRefType)
+
+			if serviceChanged || serviceRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.LldpMedRowNumService,
+					planItem.LldpMedRowNumServiceRefType,
+					"lldp_med_row_num_service",
+					"lldp_med_row_num_service_ref_type_",
+					serviceChanged,
+					serviceRefTypeChanged,
+				) {
+					return lldpMedItem, false
 				}
-				hasChanges = true
-			}
-			if !planItem.LldpMedRowNumServiceRefType.Equal(stateItem.LldpMedRowNumServiceRefType) {
-				if !planItem.LldpMedRowNumServiceRefType.IsNull() {
-					lldpMedItem.LldpMedRowNumServiceRefType = openapi.PtrString(planItem.LldpMedRowNumServiceRefType.ValueString())
+
+				if serviceChanged {
+					if !planItem.LldpMedRowNumService.IsNull() {
+						lldpMedItem.LldpMedRowNumService = openapi.PtrString(planItem.LldpMedRowNumService.ValueString())
+					}
 				}
+
+				if serviceRefTypeChanged {
+					if !planItem.LldpMedRowNumServiceRefType.IsNull() {
+						lldpMedItem.LldpMedRowNumServiceRefType = openapi.PtrString(planItem.LldpMedRowNumServiceRefType.ValueString())
+					}
+				}
+
 				hasChanges = true
 			}
 

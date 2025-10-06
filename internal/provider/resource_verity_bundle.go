@@ -842,75 +842,143 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				fieldChanged = true
 			}
 
-			if !planItem.EthPortNumEthPortSettings.Equal(stateItem.EthPortNumEthPortSettings) {
-				if !planItem.EthPortNumEthPortSettings.IsNull() {
-					ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(planItem.EthPortNumEthPortSettings.ValueString())
-				} else {
-					ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
+			// Validate and handle eth_port_num_eth_port_settings and eth_port_num_eth_port_settings_ref_type_ using "One ref type supported" pattern
+			ethPortSettingsChanged := !planItem.EthPortNumEthPortSettings.Equal(stateItem.EthPortNumEthPortSettings)
+			ethPortSettingsRefTypeChanged := !planItem.EthPortNumEthPortSettingsRefType.Equal(stateItem.EthPortNumEthPortSettingsRefType)
+
+			if ethPortSettingsChanged || ethPortSettingsRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.EthPortNumEthPortSettings,
+					planItem.EthPortNumEthPortSettingsRefType,
+					"eth_port_num_eth_port_settings",
+					"eth_port_num_eth_port_settings_ref_type_",
+					ethPortSettingsChanged,
+					ethPortSettingsRefTypeChanged,
+				) {
+					return ethPortPath, false
 				}
+
+				if ethPortSettingsChanged {
+					if !planItem.EthPortNumEthPortSettings.IsNull() {
+						ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(planItem.EthPortNumEthPortSettings.ValueString())
+					} else {
+						ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
+					}
+				}
+
+				if ethPortSettingsRefTypeChanged {
+					if !planItem.EthPortNumEthPortSettingsRefType.IsNull() {
+						ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(planItem.EthPortNumEthPortSettingsRefType.ValueString())
+					} else {
+						ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
-			if !planItem.EthPortNumEthPortSettingsRefType.Equal(stateItem.EthPortNumEthPortSettingsRefType) {
-				if !planItem.EthPortNumEthPortSettingsRefType.IsNull() {
-					ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(planItem.EthPortNumEthPortSettingsRefType.ValueString())
-				} else {
-					ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
+			// Validate and handle eth_port_num_eth_port_profile and eth_port_num_eth_port_profile_ref_type_ using "Many ref types supported" pattern
+			ethPortProfileChanged := !planItem.EthPortNumEthPortProfile.Equal(stateItem.EthPortNumEthPortProfile)
+			ethPortProfileRefTypeChanged := !planItem.EthPortNumEthPortProfileRefType.Equal(stateItem.EthPortNumEthPortProfileRefType)
+
+			if ethPortProfileChanged || ethPortProfileRefTypeChanged {
+				if !utils.ValidateMultipleRefTypesSupported(
+					&resp.Diagnostics,
+					planItem.EthPortNumEthPortProfile,
+					planItem.EthPortNumEthPortProfileRefType,
+					"eth_port_num_eth_port_profile",
+					"eth_port_num_eth_port_profile_ref_type_",
+				) {
+					return ethPortPath, false
 				}
+
+				if ethPortProfileChanged {
+					if !planItem.EthPortNumEthPortProfile.IsNull() {
+						ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(planItem.EthPortNumEthPortProfile.ValueString())
+					} else {
+						ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
+					}
+				}
+
+				if ethPortProfileRefTypeChanged {
+					if !planItem.EthPortNumEthPortProfileRefType.IsNull() {
+						ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString(planItem.EthPortNumEthPortProfileRefType.ValueString())
+					} else {
+						ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
-			if !planItem.EthPortNumEthPortProfile.Equal(stateItem.EthPortNumEthPortProfile) {
-				if !planItem.EthPortNumEthPortProfile.IsNull() {
-					ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(planItem.EthPortNumEthPortProfile.ValueString())
-				} else {
-					ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
+			// Validate and handle eth_port_num_gateway_profile and eth_port_num_gateway_profile_ref_type_ using "Many ref types supported" pattern
+			gatewayProfileChanged := !planItem.EthPortNumGatewayProfile.Equal(stateItem.EthPortNumGatewayProfile)
+			gatewayProfileRefTypeChanged := !planItem.EthPortNumGatewayProfileRefType.Equal(stateItem.EthPortNumGatewayProfileRefType)
+
+			if gatewayProfileChanged || gatewayProfileRefTypeChanged {
+				if !utils.ValidateMultipleRefTypesSupported(
+					&resp.Diagnostics,
+					planItem.EthPortNumGatewayProfile,
+					planItem.EthPortNumGatewayProfileRefType,
+					"eth_port_num_gateway_profile",
+					"eth_port_num_gateway_profile_ref_type_",
+				) {
+					return ethPortPath, false
 				}
+
+				if gatewayProfileChanged {
+					if !planItem.EthPortNumGatewayProfile.IsNull() {
+						ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(planItem.EthPortNumGatewayProfile.ValueString())
+					} else {
+						ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
+					}
+				}
+
+				if gatewayProfileRefTypeChanged {
+					if !planItem.EthPortNumGatewayProfileRefType.IsNull() {
+						ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(planItem.EthPortNumGatewayProfileRefType.ValueString())
+					} else {
+						ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
-			if !planItem.EthPortNumEthPortProfileRefType.Equal(stateItem.EthPortNumEthPortProfileRefType) {
-				if !planItem.EthPortNumEthPortProfileRefType.IsNull() {
-					ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString(planItem.EthPortNumEthPortProfileRefType.ValueString())
-				} else {
-					ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle diagnostics_port_profile_num_diagnostics_port_profile and diagnostics_port_profile_num_diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
+			diagnosticsPortProfileChanged := !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.Equal(stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfile)
+			diagnosticsPortProfileRefTypeChanged := !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.Equal(stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType)
 
-			if !planItem.EthPortNumGatewayProfile.Equal(stateItem.EthPortNumGatewayProfile) {
-				if !planItem.EthPortNumGatewayProfile.IsNull() {
-					ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(planItem.EthPortNumGatewayProfile.ValueString())
-				} else {
-					ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
+			if diagnosticsPortProfileChanged || diagnosticsPortProfileRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile,
+					planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
+					"diagnostics_port_profile_num_diagnostics_port_profile",
+					"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+					diagnosticsPortProfileChanged,
+					diagnosticsPortProfileRefTypeChanged,
+				) {
+					return ethPortPath, false
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.EthPortNumGatewayProfileRefType.Equal(stateItem.EthPortNumGatewayProfileRefType) {
-				if !planItem.EthPortNumGatewayProfileRefType.IsNull() {
-					ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(planItem.EthPortNumGatewayProfileRefType.ValueString())
-				} else {
-					ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
+				if diagnosticsPortProfileChanged {
+					if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() {
+						ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
+					} else {
+						ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString("")
+					}
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.Equal(stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfile) {
-				if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() {
-					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
-				} else {
-					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString("")
+				if diagnosticsPortProfileRefTypeChanged {
+					if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() {
+						ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString(planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString())
+					} else {
+						ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString("")
+					}
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.Equal(stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType) {
-				if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() {
-					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString(planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString())
-				} else {
-					ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString("")
-				}
 				fieldChanged = true
 			}
 
@@ -980,21 +1048,39 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				fieldChanged = true
 			}
 
-			if !planItem.RowAppConnectedService.Equal(stateItem.RowAppConnectedService) {
-				if !planItem.RowAppConnectedService.IsNull() {
-					userService.RowAppConnectedService = openapi.PtrString(planItem.RowAppConnectedService.ValueString())
-				} else {
-					userService.RowAppConnectedService = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle row_app_connected_service and row_app_connected_service_ref_type_ using "One ref type supported" pattern
+			connectedServiceChanged := !planItem.RowAppConnectedService.Equal(stateItem.RowAppConnectedService)
+			connectedServiceRefTypeChanged := !planItem.RowAppConnectedServiceRefType.Equal(stateItem.RowAppConnectedServiceRefType)
 
-			if !planItem.RowAppConnectedServiceRefType.Equal(stateItem.RowAppConnectedServiceRefType) {
-				if !planItem.RowAppConnectedServiceRefType.IsNull() {
-					userService.RowAppConnectedServiceRefType = openapi.PtrString(planItem.RowAppConnectedServiceRefType.ValueString())
-				} else {
-					userService.RowAppConnectedServiceRefType = openapi.PtrString("")
+			if connectedServiceChanged || connectedServiceRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.RowAppConnectedService,
+					planItem.RowAppConnectedServiceRefType,
+					"row_app_connected_service",
+					"row_app_connected_service_ref_type_",
+					connectedServiceChanged,
+					connectedServiceRefTypeChanged,
+				) {
+					return userService, false
 				}
+
+				if connectedServiceChanged {
+					if !planItem.RowAppConnectedService.IsNull() {
+						userService.RowAppConnectedService = openapi.PtrString(planItem.RowAppConnectedService.ValueString())
+					} else {
+						userService.RowAppConnectedService = openapi.PtrString("")
+					}
+				}
+
+				if connectedServiceRefTypeChanged {
+					if !planItem.RowAppConnectedServiceRefType.IsNull() {
+						userService.RowAppConnectedServiceRefType = openapi.PtrString(planItem.RowAppConnectedServiceRefType.ValueString())
+					} else {
+						userService.RowAppConnectedServiceRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
@@ -1059,21 +1145,39 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 			fieldChanged := false
 
-			if !planItem.VoicePortNumVoicePortProfiles.Equal(stateItem.VoicePortNumVoicePortProfiles) {
-				if !planItem.VoicePortNumVoicePortProfiles.IsNull() {
-					voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString(planItem.VoicePortNumVoicePortProfiles.ValueString())
-				} else {
-					voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle voice_port_num_voice_port_profiles and voice_port_num_voice_port_profiles_ref_type_ using "One ref type supported" pattern
+			voicePortProfilesChanged := !planItem.VoicePortNumVoicePortProfiles.Equal(stateItem.VoicePortNumVoicePortProfiles)
+			voicePortProfilesRefTypeChanged := !planItem.VoicePortNumVoicePortProfilesRefType.Equal(stateItem.VoicePortNumVoicePortProfilesRefType)
 
-			if !planItem.VoicePortNumVoicePortProfilesRefType.Equal(stateItem.VoicePortNumVoicePortProfilesRefType) {
-				if !planItem.VoicePortNumVoicePortProfilesRefType.IsNull() {
-					voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString(planItem.VoicePortNumVoicePortProfilesRefType.ValueString())
-				} else {
-					voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString("")
+			if voicePortProfilesChanged || voicePortProfilesRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.VoicePortNumVoicePortProfiles,
+					planItem.VoicePortNumVoicePortProfilesRefType,
+					"voice_port_num_voice_port_profiles",
+					"voice_port_num_voice_port_profiles_ref_type_",
+					voicePortProfilesChanged,
+					voicePortProfilesRefTypeChanged,
+				) {
+					return voicePortPath, false
 				}
+
+				if voicePortProfilesChanged {
+					if !planItem.VoicePortNumVoicePortProfiles.IsNull() {
+						voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString(planItem.VoicePortNumVoicePortProfiles.ValueString())
+					} else {
+						voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString("")
+					}
+				}
+
+				if voicePortProfilesRefTypeChanged {
+					if !planItem.VoicePortNumVoicePortProfilesRefType.IsNull() {
+						voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString(planItem.VoicePortNumVoicePortProfilesRefType.ValueString())
+					} else {
+						voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 

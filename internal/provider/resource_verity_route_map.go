@@ -430,22 +430,38 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 				fieldChanged = true
 			}
 
-			if !planItem.RouteMapClause.Equal(stateItem.RouteMapClause) {
-				if !planItem.RouteMapClause.IsNull() {
-					clause.RouteMapClause = openapi.PtrString(planItem.RouteMapClause.ValueString())
-				} else {
-					clause.RouteMapClause = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			routeMapClauseChanged := !planItem.RouteMapClause.Equal(stateItem.RouteMapClause)
+			routeMapClauseRefTypeChanged := !planItem.RouteMapClauseRefType.Equal(stateItem.RouteMapClauseRefType)
 
-			if !planItem.RouteMapClauseRefType.Equal(stateItem.RouteMapClauseRefType) {
-				if !planItem.RouteMapClauseRefType.IsNull() {
-					clause.RouteMapClauseRefType = openapi.PtrString(planItem.RouteMapClauseRefType.ValueString())
-				} else {
-					clause.RouteMapClauseRefType = openapi.PtrString("")
+			if routeMapClauseChanged || routeMapClauseRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
+					planItem.RouteMapClause, planItem.RouteMapClauseRefType,
+					"route_map_clause", "route_map_clause_ref_type_",
+					routeMapClauseChanged, routeMapClauseRefTypeChanged) {
+					return clause, false
 				}
-				fieldChanged = true
+
+				if routeMapClauseChanged && !routeMapClauseRefTypeChanged {
+					if !planItem.RouteMapClause.IsNull() {
+						clause.RouteMapClause = openapi.PtrString(planItem.RouteMapClause.ValueString())
+					} else {
+						clause.RouteMapClause = openapi.PtrString("")
+					}
+					fieldChanged = true
+				} else if routeMapClauseRefTypeChanged {
+					if !planItem.RouteMapClause.IsNull() {
+						clause.RouteMapClause = openapi.PtrString(planItem.RouteMapClause.ValueString())
+					} else {
+						clause.RouteMapClause = openapi.PtrString("")
+					}
+
+					if !planItem.RouteMapClauseRefType.IsNull() {
+						clause.RouteMapClauseRefType = openapi.PtrString(planItem.RouteMapClauseRefType.ValueString())
+					} else {
+						clause.RouteMapClauseRefType = openapi.PtrString("")
+					}
+					fieldChanged = true
+				}
 			}
 
 			return clause, fieldChanged

@@ -683,21 +683,39 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 
 			fieldChanged := false
 
-			if !planItem.ToiSwitchpoint.Equal(stateItem.ToiSwitchpoint) {
-				if !planItem.ToiSwitchpoint.IsNull() {
-					island.ToiSwitchpoint = openapi.PtrString(planItem.ToiSwitchpoint.ValueString())
-				} else {
-					island.ToiSwitchpoint = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle toi_switchpoint and toi_switchpoint_ref_type_ using "One ref type supported" pattern
+			toiSwitchpointChanged := !planItem.ToiSwitchpoint.Equal(stateItem.ToiSwitchpoint)
+			toiSwitchpointRefTypeChanged := !planItem.ToiSwitchpointRefType.Equal(stateItem.ToiSwitchpointRefType)
 
-			if !planItem.ToiSwitchpointRefType.Equal(stateItem.ToiSwitchpointRefType) {
-				if !planItem.ToiSwitchpointRefType.IsNull() {
-					island.ToiSwitchpointRefType = openapi.PtrString(planItem.ToiSwitchpointRefType.ValueString())
-				} else {
-					island.ToiSwitchpointRefType = openapi.PtrString("")
+			if toiSwitchpointChanged || toiSwitchpointRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.ToiSwitchpoint,
+					planItem.ToiSwitchpointRefType,
+					"toi_switchpoint",
+					"toi_switchpoint_ref_type_",
+					toiSwitchpointChanged,
+					toiSwitchpointRefTypeChanged,
+				) {
+					return island, false
 				}
+
+				if toiSwitchpointChanged {
+					if !planItem.ToiSwitchpoint.IsNull() {
+						island.ToiSwitchpoint = openapi.PtrString(planItem.ToiSwitchpoint.ValueString())
+					} else {
+						island.ToiSwitchpoint = openapi.PtrString("")
+					}
+				}
+
+				if toiSwitchpointRefTypeChanged {
+					if !planItem.ToiSwitchpointRefType.IsNull() {
+						island.ToiSwitchpointRefType = openapi.PtrString(planItem.ToiSwitchpointRefType.ValueString())
+					} else {
+						island.ToiSwitchpointRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
@@ -789,57 +807,111 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 				fieldChanged = true
 			}
 
-			if !planItem.Switchpoint1.Equal(stateItem.Switchpoint1) {
-				if !planItem.Switchpoint1.IsNull() {
-					pair.Switchpoint1 = openapi.PtrString(planItem.Switchpoint1.ValueString())
-				} else {
-					pair.Switchpoint1 = openapi.PtrString("")
+			// Validate and handle switchpoint_1 and switchpoint_1_ref_type_ using "One ref type supported" pattern
+			switchpoint1Changed := !planItem.Switchpoint1.Equal(stateItem.Switchpoint1)
+			switchpoint1RefTypeChanged := !planItem.Switchpoint1RefType.Equal(stateItem.Switchpoint1RefType)
+
+			if switchpoint1Changed || switchpoint1RefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.Switchpoint1,
+					planItem.Switchpoint1RefType,
+					"switchpoint_1",
+					"switchpoint_1_ref_type_",
+					switchpoint1Changed,
+					switchpoint1RefTypeChanged,
+				) {
+					return pair, false
 				}
+
+				if switchpoint1Changed {
+					if !planItem.Switchpoint1.IsNull() {
+						pair.Switchpoint1 = openapi.PtrString(planItem.Switchpoint1.ValueString())
+					} else {
+						pair.Switchpoint1 = openapi.PtrString("")
+					}
+				}
+
+				if switchpoint1RefTypeChanged {
+					if !planItem.Switchpoint1RefType.IsNull() {
+						pair.Switchpoint1RefType = openapi.PtrString(planItem.Switchpoint1RefType.ValueString())
+					} else {
+						pair.Switchpoint1RefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
-			if !planItem.Switchpoint1RefType.Equal(stateItem.Switchpoint1RefType) {
-				if !planItem.Switchpoint1RefType.IsNull() {
-					pair.Switchpoint1RefType = openapi.PtrString(planItem.Switchpoint1RefType.ValueString())
-				} else {
-					pair.Switchpoint1RefType = openapi.PtrString("")
+			// Validate and handle switchpoint_2 and switchpoint_2_ref_type_ using "One ref type supported" pattern
+			switchpoint2Changed := !planItem.Switchpoint2.Equal(stateItem.Switchpoint2)
+			switchpoint2RefTypeChanged := !planItem.Switchpoint2RefType.Equal(stateItem.Switchpoint2RefType)
+
+			if switchpoint2Changed || switchpoint2RefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.Switchpoint2,
+					planItem.Switchpoint2RefType,
+					"switchpoint_2",
+					"switchpoint_2_ref_type_",
+					switchpoint2Changed,
+					switchpoint2RefTypeChanged,
+				) {
+					return pair, false
 				}
+
+				if switchpoint2Changed {
+					if !planItem.Switchpoint2.IsNull() {
+						pair.Switchpoint2 = openapi.PtrString(planItem.Switchpoint2.ValueString())
+					} else {
+						pair.Switchpoint2 = openapi.PtrString("")
+					}
+				}
+
+				if switchpoint2RefTypeChanged {
+					if !planItem.Switchpoint2RefType.IsNull() {
+						pair.Switchpoint2RefType = openapi.PtrString(planItem.Switchpoint2RefType.ValueString())
+					} else {
+						pair.Switchpoint2RefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
-			if !planItem.Switchpoint2.Equal(stateItem.Switchpoint2) {
-				if !planItem.Switchpoint2.IsNull() {
-					pair.Switchpoint2 = openapi.PtrString(planItem.Switchpoint2.ValueString())
-				} else {
-					pair.Switchpoint2 = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle lag_group and lag_group_ref_type_ using "One ref type supported" pattern
+			lagGroupChanged := !planItem.LagGroup.Equal(stateItem.LagGroup)
+			lagGroupRefTypeChanged := !planItem.LagGroupRefType.Equal(stateItem.LagGroupRefType)
 
-			if !planItem.Switchpoint2RefType.Equal(stateItem.Switchpoint2RefType) {
-				if !planItem.Switchpoint2RefType.IsNull() {
-					pair.Switchpoint2RefType = openapi.PtrString(planItem.Switchpoint2RefType.ValueString())
-				} else {
-					pair.Switchpoint2RefType = openapi.PtrString("")
+			if lagGroupChanged || lagGroupRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.LagGroup,
+					planItem.LagGroupRefType,
+					"lag_group",
+					"lag_group_ref_type_",
+					lagGroupChanged,
+					lagGroupRefTypeChanged,
+				) {
+					return pair, false
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.LagGroup.Equal(stateItem.LagGroup) {
-				if !planItem.LagGroup.IsNull() {
-					pair.LagGroup = openapi.PtrString(planItem.LagGroup.ValueString())
-				} else {
-					pair.LagGroup = openapi.PtrString("")
+				if lagGroupChanged {
+					if !planItem.LagGroup.IsNull() {
+						pair.LagGroup = openapi.PtrString(planItem.LagGroup.ValueString())
+					} else {
+						pair.LagGroup = openapi.PtrString("")
+					}
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.LagGroupRefType.Equal(stateItem.LagGroupRefType) {
-				if !planItem.LagGroupRefType.IsNull() {
-					pair.LagGroupRefType = openapi.PtrString(planItem.LagGroupRefType.ValueString())
-				} else {
-					pair.LagGroupRefType = openapi.PtrString("")
+				if lagGroupRefTypeChanged {
+					if !planItem.LagGroupRefType.IsNull() {
+						pair.LagGroupRefType = openapi.PtrString(planItem.LagGroupRefType.ValueString())
+					} else {
+						pair.LagGroupRefType = openapi.PtrString("")
+					}
 				}
+
 				fieldChanged = true
 			}
 

@@ -458,21 +458,39 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 				fieldChanged = true
 			}
 
-			if !planItem.Gateway.Equal(stateItem.Gateway) {
-				if !planItem.Gateway.IsNull() {
-					gateway.Gateway = openapi.PtrString(planItem.Gateway.ValueString())
-				} else {
-					gateway.Gateway = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Validate and handle gateway and gateway_ref_type_ using "One ref type supported" pattern
+			gatewayChanged := !planItem.Gateway.Equal(stateItem.Gateway)
+			gatewayRefTypeChanged := !planItem.GatewayRefType.Equal(stateItem.GatewayRefType)
 
-			if !planItem.GatewayRefType.Equal(stateItem.GatewayRefType) {
-				if !planItem.GatewayRefType.IsNull() {
-					gateway.GatewayRefType = openapi.PtrString(planItem.GatewayRefType.ValueString())
-				} else {
-					gateway.GatewayRefType = openapi.PtrString("")
+			if gatewayChanged || gatewayRefTypeChanged {
+				if !utils.ValidateOneRefTypeSupported(
+					&resp.Diagnostics,
+					planItem.Gateway,
+					planItem.GatewayRefType,
+					"gateway",
+					"gateway_ref_type_",
+					gatewayChanged,
+					gatewayRefTypeChanged,
+				) {
+					return gateway, false
 				}
+
+				if gatewayChanged {
+					if !planItem.Gateway.IsNull() {
+						gateway.Gateway = openapi.PtrString(planItem.Gateway.ValueString())
+					} else {
+						gateway.Gateway = openapi.PtrString("")
+					}
+				}
+
+				if gatewayRefTypeChanged {
+					if !planItem.GatewayRefType.IsNull() {
+						gateway.GatewayRefType = openapi.PtrString(planItem.GatewayRefType.ValueString())
+					} else {
+						gateway.GatewayRefType = openapi.PtrString("")
+					}
+				}
+
 				fieldChanged = true
 			}
 
