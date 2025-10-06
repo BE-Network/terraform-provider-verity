@@ -340,12 +340,8 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 
 	// Handle object properties
 	if objProps, ok := aclDataMap["object_properties"].(map[string]interface{}); ok {
-		notes := utils.MapStringFromAPI(objProps["notes"])
-		if notes.IsNull() {
-			notes = types.StringValue("")
-		}
 		state.ObjectProperties = []verityACLUnifiedObjectPropertiesModel{
-			{Notes: notes},
+			{Notes: utils.MapStringFromAPI(objProps["notes"])},
 		}
 	} else {
 		state.ObjectProperties = nil

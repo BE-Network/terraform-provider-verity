@@ -315,12 +315,8 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 
 	// Handle object properties
 	if objProps, ok := profileMap["object_properties"].(map[string]interface{}); ok {
-		group := utils.MapStringFromAPI(objProps["group"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
 		state.ObjectProperties = []verityGatewayProfileObjectPropertiesModel{
-			{Group: group},
+			{Group: utils.MapStringFromAPI(objProps["group"])},
 		}
 	} else {
 		state.ObjectProperties = nil

@@ -301,12 +301,8 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 
 	// Handle object properties
 	if objProps, ok := routeMapMap["object_properties"].(map[string]interface{}); ok {
-		notes := utils.MapStringFromAPI(objProps["notes"])
-		if notes.IsNull() {
-			notes = types.StringValue("")
-		}
 		state.ObjectProperties = []verityRouteMapObjectPropertiesModel{
-			{Notes: notes},
+			{Notes: utils.MapStringFromAPI(objProps["notes"])},
 		}
 	} else {
 		state.ObjectProperties = nil

@@ -438,18 +438,10 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 
 	// Handle object properties
 	if objProps, ok := routeMapClauseMap["object_properties"].(map[string]interface{}); ok {
-		notes := utils.MapStringFromAPI(objProps["notes"])
-		if notes.IsNull() {
-			notes = types.StringValue("")
-		}
-		matchFieldsShown := utils.MapStringFromAPI(objProps["match_fields_shown"])
-		if matchFieldsShown.IsNull() {
-			matchFieldsShown = types.StringValue("")
-		}
 		state.ObjectProperties = []verityRouteMapClauseObjectPropertiesModel{
 			{
-				Notes:            notes,
-				MatchFieldsShown: matchFieldsShown,
+				Notes:            utils.MapStringFromAPI(objProps["notes"]),
+				MatchFieldsShown: utils.MapStringFromAPI(objProps["match_fields_shown"]),
 			},
 		}
 	} else {

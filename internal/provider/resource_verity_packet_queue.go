@@ -356,18 +356,10 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 
 	// Handle object properties
 	if objProps, ok := pqMap["object_properties"].(map[string]interface{}); ok {
-		isdefault := utils.MapBoolFromAPI(objProps["isdefault"])
-		if isdefault.IsNull() {
-			isdefault = types.BoolValue(false)
-		}
-		group := utils.MapStringFromAPI(objProps["group"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
 		state.ObjectProperties = []verityPacketQueueObjectPropertiesModel{
 			{
-				IsDefault: isdefault,
-				Group:     group,
+				IsDefault: utils.MapBoolFromAPI(objProps["isdefault"]),
+				Group:     utils.MapStringFromAPI(objProps["group"]),
 			},
 		}
 	} else {

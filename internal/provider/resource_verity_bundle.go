@@ -551,17 +551,11 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 
 	// Handle object properties
 	if objProps, ok := bundleMap["object_properties"].(map[string]interface{}); ok {
-		isForSwitch := utils.MapBoolFromAPI(objProps["is_for_switch"])
-		group := utils.MapStringFromAPI(objProps["group"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
-		isPublic := utils.MapBoolFromAPI(objProps["is_public"])
 		state.ObjectProperties = []verityBundleObjectPropertiesModel{
 			{
-				IsForSwitch: isForSwitch,
-				Group:       group,
-				IsPublic:    isPublic,
+				IsForSwitch: utils.MapBoolFromAPI(objProps["is_for_switch"]),
+				Group:       utils.MapStringFromAPI(objProps["group"]),
+				IsPublic:    utils.MapBoolFromAPI(objProps["is_public"]),
 			},
 		}
 	} else {

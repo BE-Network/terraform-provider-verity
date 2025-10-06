@@ -745,7 +745,7 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
 		objProps := verityServiceObjectPropertiesModel{}
 
-		if group, exists := op["group"]; exists {
+		if group, exists := op["group"]; exists && group != nil {
 			objProps.Group = types.StringValue(fmt.Sprintf("%v", group))
 		} else if len(state.ObjectProperties) > 0 {
 			objProps.Group = state.ObjectProperties[0].Group

@@ -351,13 +351,11 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 
 	// Handle object properties
 	if objProps, ok := deviceMap["object_properties"].(map[string]interface{}); ok {
-		group := utils.MapStringFromAPI(objProps["group"])
-		isDefault := utils.MapBoolFromAPI(objProps["isdefault"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
 		state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{
-			{Group: group, IsDefault: isDefault},
+			{
+				Group:     utils.MapStringFromAPI(objProps["group"]),
+				IsDefault: utils.MapBoolFromAPI(objProps["isdefault"]),
+			},
 		}
 	} else {
 		state.ObjectProperties = nil

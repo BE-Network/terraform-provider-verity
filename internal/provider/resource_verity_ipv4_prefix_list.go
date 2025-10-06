@@ -320,12 +320,8 @@ func (r *verityIpv4PrefixListResource) Read(ctx context.Context, req resource.Re
 
 	// Handle object properties
 	if objectPropsData, ok := ipv4PrefixListMap["object_properties"].(map[string]interface{}); ok {
-		notes := utils.MapStringFromAPI(objectPropsData["notes"])
-		if notes.IsNull() {
-			notes = types.StringValue("")
-		}
 		state.ObjectProperties = []verityIpv4PrefixListObjectPropertiesModel{
-			{Notes: notes},
+			{Notes: utils.MapStringFromAPI(objectPropsData["notes"])},
 		}
 	} else {
 		state.ObjectProperties = nil

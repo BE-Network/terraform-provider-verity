@@ -362,16 +362,11 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 
 	// Handle object properties
 	if objProps, ok := aepMap["object_properties"].(map[string]interface{}); ok {
-		group := utils.MapStringFromAPI(objProps["group"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
-		portMonitoring := utils.MapStringFromAPI(objProps["port_monitoring"])
-		if portMonitoring.IsNull() {
-			portMonitoring = types.StringValue("")
-		}
 		state.ObjectProperties = []verityAuthenticatedEthPortObjectPropertiesModel{
-			{Group: group, PortMonitoring: portMonitoring},
+			{
+				Group:          utils.MapStringFromAPI(objProps["group"]),
+				PortMonitoring: utils.MapStringFromAPI(objProps["port_monitoring"]),
+			},
 		}
 	} else {
 		state.ObjectProperties = nil

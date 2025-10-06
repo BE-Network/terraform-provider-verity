@@ -323,12 +323,8 @@ func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req reso
 
 	// Handle object properties
 	if objectProps, ok := extCommListMap["object_properties"].(map[string]interface{}); ok {
-		notes := utils.MapStringFromAPI(objectProps["notes"])
-		if notes.IsNull() {
-			notes = types.StringNull()
-		}
 		state.ObjectProperties = []verityExtendedCommunityListObjectPropertiesModel{
-			{Notes: notes},
+			{Notes: utils.MapStringFromAPI(objectProps["notes"])},
 		}
 	} else {
 		state.ObjectProperties = nil

@@ -931,11 +931,13 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	}
 
 	if op, ok := tenantData["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityTenantObjectPropertiesModel{
-			{
-				Group: types.StringValue(fmt.Sprintf("%v", op["group"])),
-			},
+		objProps := verityTenantObjectPropertiesModel{}
+		if group, exists := op["group"]; exists && group != nil {
+			objProps.Group = types.StringValue(fmt.Sprintf("%v", group))
+		} else {
+			objProps.Group = types.StringNull()
 		}
+		state.ObjectProperties = []verityTenantObjectPropertiesModel{objProps}
 	} else if plan != nil && len(plan.ObjectProperties) > 0 {
 		state.ObjectProperties = plan.ObjectProperties
 	}

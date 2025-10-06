@@ -166,7 +166,7 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 		{FieldName: "Enable", APIField: &asPathAccessListProps.Enable, TFValue: plan.Enable},
 	})
 
-	//Handle object properties
+	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -301,12 +301,8 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 
 	// Handle object properties
 	if objProps, ok := asPathAccessListMap["object_properties"].(map[string]interface{}); ok {
-		notes := utils.MapStringFromAPI(objProps["notes"])
-		if notes.IsNull() {
-			notes = types.StringValue("")
-		}
 		state.ObjectProperties = []verityAsPathAccessListObjectPropertiesModel{
-			{Notes: notes},
+			{Notes: utils.MapStringFromAPI(objProps["notes"])},
 		}
 	} else {
 		state.ObjectProperties = nil

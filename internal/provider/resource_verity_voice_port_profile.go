@@ -73,7 +73,6 @@ type verityVoicePortProfileResourceModel struct {
 }
 
 type verityVoicePortProfileObjectPropertiesModel struct {
-	IsDefault      types.Bool   `tfsdk:"isdefault"`
 	PortMonitoring types.String `tfsdk:"port_monitoring"`
 	Group          types.String `tfsdk:"group"`
 	FormatDialPlan types.Bool   `tfsdk:"format_dial_plan"`
@@ -252,10 +251,6 @@ func (r *verityVoicePortProfileResource) Schema(ctx context.Context, req resourc
 				Description: "Object properties for the voice port profile",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"isdefault": schema.BoolAttribute{
-							Description: "Default object.",
-							Optional:    true,
-						},
 						"port_monitoring": schema.StringAttribute{
 							Description: "Defines importance of Link Down on this port",
 							Optional:    true,
@@ -345,11 +340,6 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
-		if !op.IsDefault.IsNull() {
-			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
-		} else {
-			objProps.Isdefault = nil
-		}
 		if !op.PortMonitoring.IsNull() {
 			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
 		} else {
@@ -471,28 +461,11 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 
 	// Handle object properties
 	if objProps, ok := vppMap["object_properties"].(map[string]interface{}); ok {
-		isDefault := utils.MapBoolFromAPI(objProps["isdefault"])
-		if isDefault.IsNull() {
-			isDefault = types.BoolValue(false)
-		}
-		portMonitoring := utils.MapStringFromAPI(objProps["port_monitoring"])
-		if portMonitoring.IsNull() {
-			portMonitoring = types.StringValue("")
-		}
-		group := utils.MapStringFromAPI(objProps["group"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
-		formatDialPlan := utils.MapBoolFromAPI(objProps["format_dial_plan"])
-		if formatDialPlan.IsNull() {
-			formatDialPlan = types.BoolValue(false)
-		}
 		state.ObjectProperties = []verityVoicePortProfileObjectPropertiesModel{
 			{
-				IsDefault:      isDefault,
-				PortMonitoring: portMonitoring,
-				Group:          group,
-				FormatDialPlan: formatDialPlan,
+				PortMonitoring: utils.MapStringFromAPI(objProps["port_monitoring"]),
+				Group:          utils.MapStringFromAPI(objProps["group"]),
+				FormatDialPlan: utils.MapBoolFromAPI(objProps["format_dial_plan"]),
 			},
 		}
 	} else {
@@ -628,15 +601,11 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) ||
 			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
 			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
 			!plan.ObjectProperties[0].FormatDialPlan.Equal(state.ObjectProperties[0].FormatDialPlan) {
 			op := plan.ObjectProperties[0]
 			objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
-			if !op.IsDefault.IsNull() {
-				objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
-			}
 			if !op.PortMonitoring.IsNull() {
 				objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
 			}

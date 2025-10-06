@@ -261,12 +261,8 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 
 	// Handle object properties
 	if objProps, ok := badgeMap["object_properties"].(map[string]interface{}); ok {
-		notes := utils.MapStringFromAPI(objProps["notes"])
-		if notes.IsNull() {
-			notes = types.StringValue("")
-		}
 		state.ObjectProperties = []verityBadgeObjectPropertiesModel{
-			{Notes: notes},
+			{Notes: utils.MapStringFromAPI(objProps["notes"])},
 		}
 	} else {
 		state.ObjectProperties = nil

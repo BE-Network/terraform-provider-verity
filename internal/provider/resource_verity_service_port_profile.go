@@ -397,23 +397,11 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 
 	// Handle object properties
 	if objProps, ok := sppMap["object_properties"].(map[string]interface{}); ok {
-		onSummary := utils.MapBoolFromAPI(objProps["on_summary"])
-		if onSummary.IsNull() {
-			onSummary = types.BoolValue(false)
-		}
-		portMonitoring := utils.MapStringFromAPI(objProps["port_monitoring"])
-		if portMonitoring.IsNull() {
-			portMonitoring = types.StringValue("")
-		}
-		group := utils.MapStringFromAPI(objProps["group"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
 		state.ObjectProperties = []verityServicePortProfileObjectPropertiesModel{
 			{
-				OnSummary:      onSummary,
-				PortMonitoring: portMonitoring,
-				Group:          group,
+				OnSummary:      utils.MapBoolFromAPI(objProps["on_summary"]),
+				PortMonitoring: utils.MapStringFromAPI(objProps["port_monitoring"]),
+				Group:          utils.MapStringFromAPI(objProps["group"]),
 			},
 		}
 	} else {

@@ -493,12 +493,8 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 
 	// Handle object properties
 	if objProps, ok := gatewayMap["object_properties"].(map[string]interface{}); ok {
-		group := utils.MapStringFromAPI(objProps["group"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
 		state.ObjectProperties = []verityGatewayObjectPropertiesModel{
-			{Group: group},
+			{Group: utils.MapStringFromAPI(objProps["group"])},
 		}
 	} else {
 		state.ObjectProperties = nil

@@ -585,18 +585,10 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 
 	// Handle object properties
 	if objProps, ok := ethPortSettingsMap["object_properties"].(map[string]interface{}); ok {
-		group := utils.MapStringFromAPI(objProps["group"])
-		if group.IsNull() {
-			group = types.StringValue("")
-		}
-		isDefault := utils.MapBoolFromAPI(objProps["isdefault"])
-		if isDefault.IsNull() {
-			isDefault = types.BoolValue(false)
-		}
 		state.ObjectProperties = []verityEthPortSettingsObjectPropertiesModel{
 			{
-				Group:     group,
-				IsDefault: isDefault,
+				Group:     utils.MapStringFromAPI(objProps["group"]),
+				IsDefault: utils.MapBoolFromAPI(objProps["isdefault"]),
 			},
 		}
 	} else {
