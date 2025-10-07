@@ -4806,7 +4806,7 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 			ResourceType:  config.ResourceType,
 			OperationType: "PUT",
 			FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
-				apiCtx, cancel := context.WithTimeout(ctx, OperationTimeout)
+				apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
 				defer cancel()
 
 				switch config.ResourceType {
