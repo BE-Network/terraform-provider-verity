@@ -3416,7 +3416,59 @@ func (b *BulkOperationManager) executeAclForIpVersion(ctx context.Context, aclDa
 			return result, names
 		},
 
-		CheckPreExistence: nil,
+		CheckPreExistence: func(ctx context.Context, resourceNames []string, originalOperations map[string]interface{}) ([]string, map[string]interface{}, error) {
+			if operationType != "PUT" {
+				return nil, nil, nil
+			}
+
+			checker := ResourceExistenceCheck{
+				ResourceType:  "acl",
+				OperationType: "PUT",
+				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
+					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+					defer cancel()
+
+					resp, err := b.client.ACLsAPI.AclsGet(apiCtx).IpVersion(ipVersion).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result map[string]interface{}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+
+					// Extract the correct field based on IP version
+					var filterKey string
+					if ipVersion == "6" {
+						filterKey = "ipv6_filter"
+					} else {
+						filterKey = "ipv4_filter"
+					}
+
+					if ipFilter, ok := result[filterKey].(map[string]interface{}); ok {
+						return ipFilter, nil
+					}
+
+					return make(map[string]interface{}), nil
+				},
+			}
+
+			filteredNames, err := b.FilterPreExistingResources(ctx, resourceNames, checker)
+			if err != nil {
+				return resourceNames, nil, err
+			}
+
+			filteredOperations := make(map[string]interface{})
+			for _, name := range filteredNames {
+				if val, ok := originalOperations[name]; ok {
+					filteredOperations[name] = val
+				}
+			}
+
+			return filteredNames, filteredOperations, nil
+		},
 
 		PrepareRequest: func(filteredData map[string]interface{}) interface{} {
 			if operationType == "DELETE" {
