@@ -312,88 +312,54 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 		hasChanges = true
 	}
 
-	// Handle breakout list
-	breakoutHandler := utils.IndexedItemHandler[veritySfpBreakoutBreakoutModel, openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner]{
-		CreateNew: func(planItem veritySfpBreakoutBreakoutModel) openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
-			breakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	// Handle breakout
+	changedBreakouts, breakoutsChanged := utils.ProcessIndexedArrayUpdates(plan.Breakout, state.Breakout,
+		utils.IndexedItemHandler[veritySfpBreakoutBreakoutModel, openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner]{
+			CreateNew: func(planItem veritySfpBreakoutBreakoutModel) openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
+				newBreakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
 
-			if !planItem.Enable.IsNull() {
-				breakout.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				breakout.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newBreakout.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.Vendor.IsNull() {
-				breakout.Vendor = openapi.PtrString(planItem.Vendor.ValueString())
-			} else {
-				breakout.Vendor = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Vendor", APIField: &newBreakout.Vendor, TFValue: planItem.Vendor},
+					{FieldName: "PartNumber", APIField: &newBreakout.PartNumber, TFValue: planItem.PartNumber},
+					{FieldName: "Breakout", APIField: &newBreakout.Breakout, TFValue: planItem.Breakout},
+				})
 
-			if !planItem.PartNumber.IsNull() {
-				breakout.PartNumber = openapi.PtrString(planItem.PartNumber.ValueString())
-			} else {
-				breakout.PartNumber = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newBreakout.Index, TFValue: planItem.Index},
+				})
 
-			if !planItem.Breakout.IsNull() {
-				breakout.Breakout = openapi.PtrString(planItem.Breakout.ValueString())
-			} else {
-				breakout.Breakout = openapi.PtrString("")
-			}
+				return newBreakout
+			},
+			UpdateExisting: func(planItem veritySfpBreakoutBreakoutModel, stateItem veritySfpBreakoutBreakoutModel) (openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner, bool) {
+				updateBreakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
+				fieldChanged := false
 
-			return breakout
-		},
-		UpdateExisting: func(planItem veritySfpBreakoutBreakoutModel, stateItem veritySfpBreakoutBreakoutModel) (openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner, bool) {
-			breakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateBreakout.Enable = v }, &fieldChanged)
 
-			fieldChanged := false
+				// Handle string field changes
+				utils.CompareAndSetStringField(planItem.Vendor, stateItem.Vendor, func(v *string) { updateBreakout.Vendor = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.PartNumber, stateItem.PartNumber, func(v *string) { updateBreakout.PartNumber = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.Breakout, stateItem.Breakout, func(v *string) { updateBreakout.Breakout = v }, &fieldChanged)
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				breakout.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateBreakout.Index = v }, &fieldChanged)
 
-			if !planItem.Vendor.Equal(stateItem.Vendor) {
-				if !planItem.Vendor.IsNull() {
-					breakout.Vendor = openapi.PtrString(planItem.Vendor.ValueString())
-				} else {
-					breakout.Vendor = openapi.PtrString("")
+				return updateBreakout, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
+				return openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-				fieldChanged = true
-			}
-
-			if !planItem.PartNumber.Equal(stateItem.PartNumber) {
-				if !planItem.PartNumber.IsNull() {
-					breakout.PartNumber = openapi.PtrString(planItem.PartNumber.ValueString())
-				} else {
-					breakout.PartNumber = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.Breakout.Equal(stateItem.Breakout) {
-				if !planItem.Breakout.IsNull() {
-					breakout.Breakout = openapi.PtrString(planItem.Breakout.ValueString())
-				} else {
-					breakout.Breakout = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			return breakout, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
-			return openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedBreakouts, breakoutsChanged := utils.ProcessIndexedArrayUpdates(plan.Breakout, state.Breakout, breakoutHandler)
+			},
+		})
 	if breakoutsChanged {
 		sfpBreakoutProps.Breakout = changedBreakouts
 		hasChanges = true

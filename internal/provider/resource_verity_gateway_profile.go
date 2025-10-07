@@ -186,26 +186,20 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	// Handle external gateways
 	if len(plan.ExternalGateways) > 0 {
 		gateways := make([]openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner, len(plan.ExternalGateways))
-		for i, gateway := range plan.ExternalGateways {
+		for i, item := range plan.ExternalGateways {
 			gwItem := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{}
-			if !gateway.Enable.IsNull() {
-				gwItem.Enable = openapi.PtrBool(gateway.Enable.ValueBool())
-			}
-			if !gateway.Gateway.IsNull() {
-				gwItem.Gateway = openapi.PtrString(gateway.Gateway.ValueString())
-			}
-			if !gateway.GatewayRefType.IsNull() {
-				gwItem.GatewayRefType = openapi.PtrString(gateway.GatewayRefType.ValueString())
-			}
-			if !gateway.SourceIpMask.IsNull() {
-				gwItem.SourceIpMask = openapi.PtrString(gateway.SourceIpMask.ValueString())
-			}
-			if !gateway.PeerGw.IsNull() {
-				gwItem.PeerGw = openapi.PtrBool(gateway.PeerGw.ValueBool())
-			}
-			if !gateway.Index.IsNull() {
-				gwItem.Index = openapi.PtrInt32(int32(gateway.Index.ValueInt64()))
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &gwItem.Enable, TFValue: item.Enable},
+				{FieldName: "PeerGw", APIField: &gwItem.PeerGw, TFValue: item.PeerGw},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Gateway", APIField: &gwItem.Gateway, TFValue: item.Gateway},
+				{FieldName: "GatewayRefType", APIField: &gwItem.GatewayRefType, TFValue: item.GatewayRefType},
+				{FieldName: "SourceIpMask", APIField: &gwItem.SourceIpMask, TFValue: item.SourceIpMask},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &gwItem.Index, TFValue: item.Index},
+			})
 			gateways[i] = gwItem
 		}
 		profileProps.ExternalGateways = gateways
@@ -410,110 +404,62 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 	// Handle external gateways
 	externalGatewaysHandler := utils.IndexedItemHandler[verityGatewayProfileExternalGatewaysModel, openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner]{
 		CreateNew: func(planItem verityGatewayProfileExternalGatewaysModel) openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner {
-			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{}
 
-			if !planItem.Enable.IsNull() {
-				gateway.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				gateway.Enable = openapi.PtrBool(false)
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &gateway.Index, TFValue: planItem.Index},
+			})
 
-			if !planItem.Gateway.IsNull() {
-				gateway.Gateway = openapi.PtrString(planItem.Gateway.ValueString())
-			} else {
-				gateway.Gateway = openapi.PtrString("")
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &gateway.Enable, TFValue: planItem.Enable},
+				{FieldName: "PeerGw", APIField: &gateway.PeerGw, TFValue: planItem.PeerGw},
+			})
 
-			if !planItem.GatewayRefType.IsNull() {
-				gateway.GatewayRefType = openapi.PtrString(planItem.GatewayRefType.ValueString())
-			} else {
-				gateway.GatewayRefType = openapi.PtrString("")
-			}
-
-			if !planItem.SourceIpMask.IsNull() {
-				gateway.SourceIpMask = openapi.PtrString(planItem.SourceIpMask.ValueString())
-			} else {
-				gateway.SourceIpMask = openapi.PtrString("")
-			}
-
-			if !planItem.PeerGw.IsNull() {
-				gateway.PeerGw = openapi.PtrBool(planItem.PeerGw.ValueBool())
-			} else {
-				gateway.PeerGw = openapi.PtrBool(false)
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Gateway", APIField: &gateway.Gateway, TFValue: planItem.Gateway},
+				{FieldName: "GatewayRefType", APIField: &gateway.GatewayRefType, TFValue: planItem.GatewayRefType},
+				{FieldName: "SourceIpMask", APIField: &gateway.SourceIpMask, TFValue: planItem.SourceIpMask},
+			})
 
 			return gateway
 		},
 		UpdateExisting: func(planItem verityGatewayProfileExternalGatewaysModel, stateItem verityGatewayProfileExternalGatewaysModel) (openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner, bool) {
-			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &gateway.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				gateway.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { gateway.Enable = v }, &fieldChanged)
+
+			// Handle gateway and gateway_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.Gateway, stateItem.Gateway, planItem.GatewayRefType, stateItem.GatewayRefType,
+				func(v *string) { gateway.Gateway = v },
+				func(v *string) { gateway.GatewayRefType = v },
+				"gateway", "gateway_ref_type_",
+				&fieldChanged, &resp.Diagnostics,
+			) {
+				return gateway, false
 			}
 
-			// Validate and handle gateway and gateway_ref_type_ using "One ref type supported" pattern
-			gatewayChanged := !planItem.Gateway.Equal(stateItem.Gateway)
-			gatewayRefTypeChanged := !planItem.GatewayRefType.Equal(stateItem.GatewayRefType)
+			// Handle non-ref-type string fields
+			utils.CompareAndSetStringField(planItem.SourceIpMask, stateItem.SourceIpMask, func(v *string) { gateway.SourceIpMask = v }, &fieldChanged)
 
-			if gatewayChanged || gatewayRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.Gateway,
-					planItem.GatewayRefType,
-					"gateway",
-					"gateway_ref_type_",
-					gatewayChanged,
-					gatewayRefTypeChanged,
-				) {
-					return gateway, false
-				}
-
-				if gatewayChanged {
-					if !planItem.Gateway.IsNull() {
-						gateway.Gateway = openapi.PtrString(planItem.Gateway.ValueString())
-					} else {
-						gateway.Gateway = openapi.PtrString("")
-					}
-				}
-
-				if gatewayRefTypeChanged {
-					if !planItem.GatewayRefType.IsNull() {
-						gateway.GatewayRefType = openapi.PtrString(planItem.GatewayRefType.ValueString())
-					} else {
-						gateway.GatewayRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
-			if !planItem.SourceIpMask.Equal(stateItem.SourceIpMask) {
-				if !planItem.SourceIpMask.IsNull() {
-					gateway.SourceIpMask = openapi.PtrString(planItem.SourceIpMask.ValueString())
-				} else {
-					gateway.SourceIpMask = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.PeerGw.Equal(stateItem.PeerGw) {
-				gateway.PeerGw = openapi.PtrBool(planItem.PeerGw.ValueBool())
-				fieldChanged = true
-			}
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.PeerGw, stateItem.PeerGw, func(v *bool) { gateway.PeerGw = v }, &fieldChanged)
 
 			return gateway, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner {
-			return openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &gateway.Index, TFValue: types.Int64Value(index)},
+			})
+			return gateway
 		},
 	}
 

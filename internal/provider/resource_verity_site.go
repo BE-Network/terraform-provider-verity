@@ -656,284 +656,138 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	// Handle islands
-	islandsHandler := utils.IndexedItemHandler[veritySiteIslandsModel, openapi.SitesPatchRequestSiteValueIslandsInner]{
-		CreateNew: func(planItem veritySiteIslandsModel) openapi.SitesPatchRequestSiteValueIslandsInner {
-			island := openapi.SitesPatchRequestSiteValueIslandsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedIslands, islandsChanged := utils.ProcessIndexedArrayUpdates(plan.Islands, state.Islands,
+		utils.IndexedItemHandler[veritySiteIslandsModel, openapi.SitesPatchRequestSiteValueIslandsInner]{
+			CreateNew: func(planItem veritySiteIslandsModel) openapi.SitesPatchRequestSiteValueIslandsInner {
+				newIsland := openapi.SitesPatchRequestSiteValueIslandsInner{}
 
-			if !planItem.ToiSwitchpoint.IsNull() {
-				island.ToiSwitchpoint = openapi.PtrString(planItem.ToiSwitchpoint.ValueString())
-			} else {
-				island.ToiSwitchpoint = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "ToiSwitchpoint", APIField: &newIsland.ToiSwitchpoint, TFValue: planItem.ToiSwitchpoint},
+					{FieldName: "ToiSwitchpointRefType", APIField: &newIsland.ToiSwitchpointRefType, TFValue: planItem.ToiSwitchpointRefType},
+				})
 
-			if !planItem.ToiSwitchpointRefType.IsNull() {
-				island.ToiSwitchpointRefType = openapi.PtrString(planItem.ToiSwitchpointRefType.ValueString())
-			} else {
-				island.ToiSwitchpointRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newIsland.Index, TFValue: planItem.Index},
+				})
 
-			return island
-		},
-		UpdateExisting: func(planItem veritySiteIslandsModel, stateItem veritySiteIslandsModel) (openapi.SitesPatchRequestSiteValueIslandsInner, bool) {
-			island := openapi.SitesPatchRequestSiteValueIslandsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				return newIsland
+			},
+			UpdateExisting: func(planItem veritySiteIslandsModel, stateItem veritySiteIslandsModel) (openapi.SitesPatchRequestSiteValueIslandsInner, bool) {
+				updateIsland := openapi.SitesPatchRequestSiteValueIslandsInner{}
+				fieldChanged := false
 
-			fieldChanged := false
-
-			// Validate and handle toi_switchpoint and toi_switchpoint_ref_type_ using "One ref type supported" pattern
-			toiSwitchpointChanged := !planItem.ToiSwitchpoint.Equal(stateItem.ToiSwitchpoint)
-			toiSwitchpointRefTypeChanged := !planItem.ToiSwitchpointRefType.Equal(stateItem.ToiSwitchpointRefType)
-
-			if toiSwitchpointChanged || toiSwitchpointRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.ToiSwitchpoint,
-					planItem.ToiSwitchpointRefType,
-					"toi_switchpoint",
-					"toi_switchpoint_ref_type_",
-					toiSwitchpointChanged,
-					toiSwitchpointRefTypeChanged,
+				// Handle toi_switchpoint and toi_switchpoint_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.ToiSwitchpoint, stateItem.ToiSwitchpoint, planItem.ToiSwitchpointRefType, stateItem.ToiSwitchpointRefType,
+					func(v *string) { updateIsland.ToiSwitchpoint = v },
+					func(v *string) { updateIsland.ToiSwitchpointRefType = v },
+					"toi_switchpoint", "toi_switchpoint_ref_type_",
+					&fieldChanged, &resp.Diagnostics,
 				) {
-					return island, false
+					return updateIsland, false
 				}
 
-				if toiSwitchpointChanged {
-					if !planItem.ToiSwitchpoint.IsNull() {
-						island.ToiSwitchpoint = openapi.PtrString(planItem.ToiSwitchpoint.ValueString())
-					} else {
-						island.ToiSwitchpoint = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateIsland.Index = v }, &fieldChanged)
+
+				return updateIsland, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValueIslandsInner {
+				return openapi.SitesPatchRequestSiteValueIslandsInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-
-				if toiSwitchpointRefTypeChanged {
-					if !planItem.ToiSwitchpointRefType.IsNull() {
-						island.ToiSwitchpointRefType = openapi.PtrString(planItem.ToiSwitchpointRefType.ValueString())
-					} else {
-						island.ToiSwitchpointRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
-			return island, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValueIslandsInner {
-			return openapi.SitesPatchRequestSiteValueIslandsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedIslands, islandsChanged := utils.ProcessIndexedArrayUpdates(plan.Islands, state.Islands, islandsHandler)
+			},
+		})
 	if islandsChanged {
 		siteReq.Islands = changedIslands
 		hasChanges = true
 	}
 
 	// Handle pairs list
-	pairsHandler := utils.IndexedItemHandler[veritySitePairsModel, openapi.SitesPatchRequestSiteValuePairsInner]{
-		CreateNew: func(planItem veritySitePairsModel) openapi.SitesPatchRequestSiteValuePairsInner {
-			pair := openapi.SitesPatchRequestSiteValuePairsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedPairs, pairsChanged := utils.ProcessIndexedArrayUpdates(plan.Pairs, state.Pairs,
+		utils.IndexedItemHandler[veritySitePairsModel, openapi.SitesPatchRequestSiteValuePairsInner]{
+			CreateNew: func(planItem veritySitePairsModel) openapi.SitesPatchRequestSiteValuePairsInner {
+				newPair := openapi.SitesPatchRequestSiteValuePairsInner{}
 
-			if !planItem.Name.IsNull() {
-				pair.Name = openapi.PtrString(planItem.Name.ValueString())
-			} else {
-				pair.Name = openapi.PtrString("")
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "IsWhiteboxPair", APIField: &newPair.IsWhiteboxPair, TFValue: planItem.IsWhiteboxPair},
+				})
 
-			if !planItem.Switchpoint1.IsNull() {
-				pair.Switchpoint1 = openapi.PtrString(planItem.Switchpoint1.ValueString())
-			} else {
-				pair.Switchpoint1 = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Name", APIField: &newPair.Name, TFValue: planItem.Name},
+					{FieldName: "Switchpoint1", APIField: &newPair.Switchpoint1, TFValue: planItem.Switchpoint1},
+					{FieldName: "Switchpoint1RefType", APIField: &newPair.Switchpoint1RefType, TFValue: planItem.Switchpoint1RefType},
+					{FieldName: "Switchpoint2", APIField: &newPair.Switchpoint2, TFValue: planItem.Switchpoint2},
+					{FieldName: "Switchpoint2RefType", APIField: &newPair.Switchpoint2RefType, TFValue: planItem.Switchpoint2RefType},
+					{FieldName: "LagGroup", APIField: &newPair.LagGroup, TFValue: planItem.LagGroup},
+					{FieldName: "LagGroupRefType", APIField: &newPair.LagGroupRefType, TFValue: planItem.LagGroupRefType},
+				})
 
-			if !planItem.Switchpoint1RefType.IsNull() {
-				pair.Switchpoint1RefType = openapi.PtrString(planItem.Switchpoint1RefType.ValueString())
-			} else {
-				pair.Switchpoint1RefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newPair.Index, TFValue: planItem.Index},
+				})
 
-			if !planItem.Switchpoint2.IsNull() {
-				pair.Switchpoint2 = openapi.PtrString(planItem.Switchpoint2.ValueString())
-			} else {
-				pair.Switchpoint2 = openapi.PtrString("")
-			}
+				return newPair
+			},
+			UpdateExisting: func(planItem veritySitePairsModel, stateItem veritySitePairsModel) (openapi.SitesPatchRequestSiteValuePairsInner, bool) {
+				updatePair := openapi.SitesPatchRequestSiteValuePairsInner{}
+				fieldChanged := false
 
-			if !planItem.Switchpoint2RefType.IsNull() {
-				pair.Switchpoint2RefType = openapi.PtrString(planItem.Switchpoint2RefType.ValueString())
-			} else {
-				pair.Switchpoint2RefType = openapi.PtrString("")
-			}
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.IsWhiteboxPair, stateItem.IsWhiteboxPair, func(v *bool) { updatePair.IsWhiteboxPair = v }, &fieldChanged)
 
-			if !planItem.LagGroup.IsNull() {
-				pair.LagGroup = openapi.PtrString(planItem.LagGroup.ValueString())
-			} else {
-				pair.LagGroup = openapi.PtrString("")
-			}
+				// Handle simple string field changes
+				utils.CompareAndSetStringField(planItem.Name, stateItem.Name, func(v *string) { updatePair.Name = v }, &fieldChanged)
 
-			if !planItem.LagGroupRefType.IsNull() {
-				pair.LagGroupRefType = openapi.PtrString(planItem.LagGroupRefType.ValueString())
-			} else {
-				pair.LagGroupRefType = openapi.PtrString("")
-			}
-
-			if !planItem.IsWhiteboxPair.IsNull() {
-				pair.IsWhiteboxPair = openapi.PtrBool(planItem.IsWhiteboxPair.ValueBool())
-			} else {
-				pair.IsWhiteboxPair = openapi.PtrBool(false)
-			}
-
-			return pair
-		},
-		UpdateExisting: func(planItem veritySitePairsModel, stateItem veritySitePairsModel) (openapi.SitesPatchRequestSiteValuePairsInner, bool) {
-			pair := openapi.SitesPatchRequestSiteValuePairsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
-
-			fieldChanged := false
-
-			if !planItem.Name.Equal(stateItem.Name) {
-				if !planItem.Name.IsNull() {
-					pair.Name = openapi.PtrString(planItem.Name.ValueString())
-				} else {
-					pair.Name = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			// Validate and handle switchpoint_1 and switchpoint_1_ref_type_ using "One ref type supported" pattern
-			switchpoint1Changed := !planItem.Switchpoint1.Equal(stateItem.Switchpoint1)
-			switchpoint1RefTypeChanged := !planItem.Switchpoint1RefType.Equal(stateItem.Switchpoint1RefType)
-
-			if switchpoint1Changed || switchpoint1RefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.Switchpoint1,
-					planItem.Switchpoint1RefType,
-					"switchpoint_1",
-					"switchpoint_1_ref_type_",
-					switchpoint1Changed,
-					switchpoint1RefTypeChanged,
+				// Handle switchpoint_1 and switchpoint_1_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.Switchpoint1, stateItem.Switchpoint1, planItem.Switchpoint1RefType, stateItem.Switchpoint1RefType,
+					func(v *string) { updatePair.Switchpoint1 = v },
+					func(v *string) { updatePair.Switchpoint1RefType = v },
+					"switchpoint_1", "switchpoint_1_ref_type_",
+					&fieldChanged, &resp.Diagnostics,
 				) {
-					return pair, false
+					return updatePair, false
 				}
 
-				if switchpoint1Changed {
-					if !planItem.Switchpoint1.IsNull() {
-						pair.Switchpoint1 = openapi.PtrString(planItem.Switchpoint1.ValueString())
-					} else {
-						pair.Switchpoint1 = openapi.PtrString("")
-					}
-				}
-
-				if switchpoint1RefTypeChanged {
-					if !planItem.Switchpoint1RefType.IsNull() {
-						pair.Switchpoint1RefType = openapi.PtrString(planItem.Switchpoint1RefType.ValueString())
-					} else {
-						pair.Switchpoint1RefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
-			// Validate and handle switchpoint_2 and switchpoint_2_ref_type_ using "One ref type supported" pattern
-			switchpoint2Changed := !planItem.Switchpoint2.Equal(stateItem.Switchpoint2)
-			switchpoint2RefTypeChanged := !planItem.Switchpoint2RefType.Equal(stateItem.Switchpoint2RefType)
-
-			if switchpoint2Changed || switchpoint2RefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.Switchpoint2,
-					planItem.Switchpoint2RefType,
-					"switchpoint_2",
-					"switchpoint_2_ref_type_",
-					switchpoint2Changed,
-					switchpoint2RefTypeChanged,
+				// Handle switchpoint_2 and switchpoint_2_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.Switchpoint2, stateItem.Switchpoint2, planItem.Switchpoint2RefType, stateItem.Switchpoint2RefType,
+					func(v *string) { updatePair.Switchpoint2 = v },
+					func(v *string) { updatePair.Switchpoint2RefType = v },
+					"switchpoint_2", "switchpoint_2_ref_type_",
+					&fieldChanged, &resp.Diagnostics,
 				) {
-					return pair, false
+					return updatePair, false
 				}
 
-				if switchpoint2Changed {
-					if !planItem.Switchpoint2.IsNull() {
-						pair.Switchpoint2 = openapi.PtrString(planItem.Switchpoint2.ValueString())
-					} else {
-						pair.Switchpoint2 = openapi.PtrString("")
-					}
-				}
-
-				if switchpoint2RefTypeChanged {
-					if !planItem.Switchpoint2RefType.IsNull() {
-						pair.Switchpoint2RefType = openapi.PtrString(planItem.Switchpoint2RefType.ValueString())
-					} else {
-						pair.Switchpoint2RefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
-			// Validate and handle lag_group and lag_group_ref_type_ using "One ref type supported" pattern
-			lagGroupChanged := !planItem.LagGroup.Equal(stateItem.LagGroup)
-			lagGroupRefTypeChanged := !planItem.LagGroupRefType.Equal(stateItem.LagGroupRefType)
-
-			if lagGroupChanged || lagGroupRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.LagGroup,
-					planItem.LagGroupRefType,
-					"lag_group",
-					"lag_group_ref_type_",
-					lagGroupChanged,
-					lagGroupRefTypeChanged,
+				// Handle lag_group and lag_group_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.LagGroup, stateItem.LagGroup, planItem.LagGroupRefType, stateItem.LagGroupRefType,
+					func(v *string) { updatePair.LagGroup = v },
+					func(v *string) { updatePair.LagGroupRefType = v },
+					"lag_group", "lag_group_ref_type_",
+					&fieldChanged, &resp.Diagnostics,
 				) {
-					return pair, false
+					return updatePair, false
 				}
 
-				if lagGroupChanged {
-					if !planItem.LagGroup.IsNull() {
-						pair.LagGroup = openapi.PtrString(planItem.LagGroup.ValueString())
-					} else {
-						pair.LagGroup = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updatePair.Index = v }, &fieldChanged)
+
+				return updatePair, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValuePairsInner {
+				return openapi.SitesPatchRequestSiteValuePairsInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-
-				if lagGroupRefTypeChanged {
-					if !planItem.LagGroupRefType.IsNull() {
-						pair.LagGroupRefType = openapi.PtrString(planItem.LagGroupRefType.ValueString())
-					} else {
-						pair.LagGroupRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
-			if !planItem.IsWhiteboxPair.Equal(stateItem.IsWhiteboxPair) {
-				if !planItem.IsWhiteboxPair.IsNull() {
-					pair.IsWhiteboxPair = openapi.PtrBool(planItem.IsWhiteboxPair.ValueBool())
-				} else {
-					pair.IsWhiteboxPair = openapi.PtrBool(false)
-				}
-				fieldChanged = true
-			}
-
-			return pair, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValuePairsInner {
-			return openapi.SitesPatchRequestSiteValuePairsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedPairs, pairsChanged := utils.ProcessIndexedArrayUpdates(plan.Pairs, state.Pairs, pairsHandler)
+			},
+		})
 	if pairsChanged {
 		siteReq.Pairs = changedPairs
 		hasChanges = true

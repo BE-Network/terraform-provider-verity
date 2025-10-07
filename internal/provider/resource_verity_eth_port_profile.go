@@ -302,48 +302,27 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	// Handle Services
 	if len(plan.Services) > 0 {
 		servicesItems := make([]openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner, len(plan.Services))
-		for i, service := range plan.Services {
+		for i, item := range plan.Services {
 			serviceItem := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
 
-			if !service.RowNumEnable.IsNull() {
-				serviceItem.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
-			}
-			if !service.RowNumService.IsNull() {
-				serviceItem.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
-			}
-			if !service.RowNumServiceRefType.IsNull() {
-				serviceItem.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
-			}
-			if !service.RowNumExternalVlan.IsNull() {
-				intVal := int32(service.RowNumExternalVlan.ValueInt64())
-				serviceItem.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
-			} else {
-				serviceItem.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-			}
-			if !service.RowNumIngressAcl.IsNull() {
-				serviceItem.RowNumIngressAcl = openapi.PtrString(service.RowNumIngressAcl.ValueString())
-			}
-			if !service.RowNumIngressAclRefType.IsNull() {
-				serviceItem.RowNumIngressAclRefType = openapi.PtrString(service.RowNumIngressAclRefType.ValueString())
-			}
-			if !service.RowNumEgressAcl.IsNull() {
-				serviceItem.RowNumEgressAcl = openapi.PtrString(service.RowNumEgressAcl.ValueString())
-			}
-			if !service.RowNumEgressAclRefType.IsNull() {
-				serviceItem.RowNumEgressAclRefType = openapi.PtrString(service.RowNumEgressAclRefType.ValueString())
-			}
-			if !service.Index.IsNull() {
-				serviceItem.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
-			}
-			if !service.RowNumMacFilter.IsNull() {
-				serviceItem.RowNumMacFilter = openapi.PtrString(service.RowNumMacFilter.ValueString())
-			}
-			if !service.RowNumMacFilterRefType.IsNull() {
-				serviceItem.RowNumMacFilterRefType = openapi.PtrString(service.RowNumMacFilterRefType.ValueString())
-			}
-			if !service.RowNumLanIptv.IsNull() {
-				serviceItem.RowNumLanIptv = openapi.PtrString(service.RowNumLanIptv.ValueString())
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RowNumEnable", APIField: &serviceItem.RowNumEnable, TFValue: item.RowNumEnable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RowNumService", APIField: &serviceItem.RowNumService, TFValue: item.RowNumService},
+				{FieldName: "RowNumServiceRefType", APIField: &serviceItem.RowNumServiceRefType, TFValue: item.RowNumServiceRefType},
+				{FieldName: "RowNumIngressAcl", APIField: &serviceItem.RowNumIngressAcl, TFValue: item.RowNumIngressAcl},
+				{FieldName: "RowNumIngressAclRefType", APIField: &serviceItem.RowNumIngressAclRefType, TFValue: item.RowNumIngressAclRefType},
+				{FieldName: "RowNumEgressAcl", APIField: &serviceItem.RowNumEgressAcl, TFValue: item.RowNumEgressAcl},
+				{FieldName: "RowNumEgressAclRefType", APIField: &serviceItem.RowNumEgressAclRefType, TFValue: item.RowNumEgressAclRefType},
+				{FieldName: "RowNumMacFilter", APIField: &serviceItem.RowNumMacFilter, TFValue: item.RowNumMacFilter},
+				{FieldName: "RowNumMacFilterRefType", APIField: &serviceItem.RowNumMacFilterRefType, TFValue: item.RowNumMacFilterRefType},
+				{FieldName: "RowNumLanIptv", APIField: &serviceItem.RowNumLanIptv, TFValue: item.RowNumLanIptv},
+			})
+			utils.SetNullableInt64Field(&serviceItem.RowNumExternalVlan, item.RowNumExternalVlan)
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: item.Index},
+			})
 
 			servicesItems[i] = serviceItem
 		}
@@ -644,260 +623,109 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	// Handle services
 	servicesHandler := utils.IndexedItemHandler[servicesModel, openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner]{
 		CreateNew: func(planItem servicesModel) openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner {
-			service := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			service := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
 
-			if !planItem.RowNumEnable.IsNull() {
-				service.RowNumEnable = openapi.PtrBool(planItem.RowNumEnable.ValueBool())
-			} else {
-				service.RowNumEnable = openapi.PtrBool(false)
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &service.Index, TFValue: planItem.Index},
+			})
 
-			if !planItem.RowNumService.IsNull() {
-				service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
-			} else {
-				service.RowNumService = openapi.PtrString("")
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RowNumEnable", APIField: &service.RowNumEnable, TFValue: planItem.RowNumEnable},
+			})
 
-			if !planItem.RowNumServiceRefType.IsNull() {
-				service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
-			} else {
-				service.RowNumServiceRefType = openapi.PtrString("")
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RowNumService", APIField: &service.RowNumService, TFValue: planItem.RowNumService},
+				{FieldName: "RowNumServiceRefType", APIField: &service.RowNumServiceRefType, TFValue: planItem.RowNumServiceRefType},
+				{FieldName: "RowNumIngressAcl", APIField: &service.RowNumIngressAcl, TFValue: planItem.RowNumIngressAcl},
+				{FieldName: "RowNumIngressAclRefType", APIField: &service.RowNumIngressAclRefType, TFValue: planItem.RowNumIngressAclRefType},
+				{FieldName: "RowNumEgressAcl", APIField: &service.RowNumEgressAcl, TFValue: planItem.RowNumEgressAcl},
+				{FieldName: "RowNumEgressAclRefType", APIField: &service.RowNumEgressAclRefType, TFValue: planItem.RowNumEgressAclRefType},
+				{FieldName: "RowNumMacFilter", APIField: &service.RowNumMacFilter, TFValue: planItem.RowNumMacFilter},
+				{FieldName: "RowNumMacFilterRefType", APIField: &service.RowNumMacFilterRefType, TFValue: planItem.RowNumMacFilterRefType},
+				{FieldName: "RowNumLanIptv", APIField: &service.RowNumLanIptv, TFValue: planItem.RowNumLanIptv},
+			})
 
-			if !planItem.RowNumExternalVlan.IsNull() {
-				intVal := int32(planItem.RowNumExternalVlan.ValueInt64())
-				service.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
-			} else {
-				service.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-			}
-
-			if !planItem.RowNumIngressAcl.IsNull() {
-				service.RowNumIngressAcl = openapi.PtrString(planItem.RowNumIngressAcl.ValueString())
-			} else {
-				service.RowNumIngressAcl = openapi.PtrString("")
-			}
-
-			if !planItem.RowNumIngressAclRefType.IsNull() {
-				service.RowNumIngressAclRefType = openapi.PtrString(planItem.RowNumIngressAclRefType.ValueString())
-			} else {
-				service.RowNumIngressAclRefType = openapi.PtrString("")
-			}
-
-			if !planItem.RowNumEgressAcl.IsNull() {
-				service.RowNumEgressAcl = openapi.PtrString(planItem.RowNumEgressAcl.ValueString())
-			} else {
-				service.RowNumEgressAcl = openapi.PtrString("")
-			}
-
-			if !planItem.RowNumEgressAclRefType.IsNull() {
-				service.RowNumEgressAclRefType = openapi.PtrString(planItem.RowNumEgressAclRefType.ValueString())
-			} else {
-				service.RowNumEgressAclRefType = openapi.PtrString("")
-			}
-
-			if !planItem.RowNumMacFilter.IsNull() {
-				service.RowNumMacFilter = openapi.PtrString(planItem.RowNumMacFilter.ValueString())
-			} else {
-				service.RowNumMacFilter = openapi.PtrString("")
-			}
-
-			if !planItem.RowNumMacFilterRefType.IsNull() {
-				service.RowNumMacFilterRefType = openapi.PtrString(planItem.RowNumMacFilterRefType.ValueString())
-			} else {
-				service.RowNumMacFilterRefType = openapi.PtrString("")
-			}
-
-			if !planItem.RowNumLanIptv.IsNull() {
-				service.RowNumLanIptv = openapi.PtrString(planItem.RowNumLanIptv.ValueString())
-			} else {
-				service.RowNumLanIptv = openapi.PtrString("")
-			}
+			utils.SetNullableInt64Field(&service.RowNumExternalVlan, planItem.RowNumExternalVlan)
 
 			return service
 		},
 		UpdateExisting: func(planItem servicesModel, stateItem servicesModel) (openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner, bool) {
-			service := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			service := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &service.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			if !planItem.RowNumEnable.Equal(stateItem.RowNumEnable) {
-				service.RowNumEnable = openapi.PtrBool(planItem.RowNumEnable.ValueBool())
-				fieldChanged = true
-			}
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.RowNumEnable, stateItem.RowNumEnable, func(v *bool) { service.RowNumEnable = v }, &fieldChanged)
 
-			// Validate and handle row_num_service and row_num_service_ref_type_ using "One ref type supported" pattern
-			serviceChanged := !planItem.RowNumService.Equal(stateItem.RowNumService)
-			serviceRefTypeChanged := !planItem.RowNumServiceRefType.Equal(stateItem.RowNumServiceRefType)
-
-			if serviceChanged || serviceRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.RowNumService,
-					planItem.RowNumServiceRefType,
-					"row_num_service",
-					"row_num_service_ref_type_",
-					serviceChanged,
-					serviceRefTypeChanged,
-				) {
-					return service, false
-				}
-
-				if serviceChanged {
-					if !planItem.RowNumService.IsNull() {
-						service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
-					} else {
-						service.RowNumService = openapi.PtrString("")
-					}
-				}
-
-				if serviceRefTypeChanged {
-					if !planItem.RowNumServiceRefType.IsNull() {
-						service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
-					} else {
-						service.RowNumServiceRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
+			// Handle nullable int64 fields
 			if !planItem.RowNumExternalVlan.Equal(stateItem.RowNumExternalVlan) {
-				if !planItem.RowNumExternalVlan.IsNull() {
-					intVal := int32(planItem.RowNumExternalVlan.ValueInt64())
-					service.RowNumExternalVlan = *openapi.NewNullableInt32(&intVal)
-				} else {
-					service.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-				}
+				utils.SetNullableInt64Field(&service.RowNumExternalVlan, planItem.RowNumExternalVlan)
 				fieldChanged = true
 			}
 
-			// Validate and handle row_num_ingress_acl and row_num_ingress_acl_ref_type_ using "One ref type supported" pattern
-			ingressAclChanged := !planItem.RowNumIngressAcl.Equal(stateItem.RowNumIngressAcl)
-			ingressAclRefTypeChanged := !planItem.RowNumIngressAclRefType.Equal(stateItem.RowNumIngressAclRefType)
-
-			if ingressAclChanged || ingressAclRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.RowNumIngressAcl,
-					planItem.RowNumIngressAclRefType,
-					"row_num_ingress_acl",
-					"row_num_ingress_acl_ref_type_",
-					ingressAclChanged,
-					ingressAclRefTypeChanged,
-				) {
-					return service, false
-				}
-
-				if ingressAclChanged {
-					if !planItem.RowNumIngressAcl.IsNull() {
-						service.RowNumIngressAcl = openapi.PtrString(planItem.RowNumIngressAcl.ValueString())
-					} else {
-						service.RowNumIngressAcl = openapi.PtrString("")
-					}
-				}
-
-				if ingressAclRefTypeChanged {
-					if !planItem.RowNumIngressAclRefType.IsNull() {
-						service.RowNumIngressAclRefType = openapi.PtrString(planItem.RowNumIngressAclRefType.ValueString())
-					} else {
-						service.RowNumIngressAclRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
+			// Handle row_num_service and row_num_service_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.RowNumService, stateItem.RowNumService, planItem.RowNumServiceRefType, stateItem.RowNumServiceRefType,
+				func(v *string) { service.RowNumService = v },
+				func(v *string) { service.RowNumServiceRefType = v },
+				"row_num_service", "row_num_service_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return service, false
 			}
 
-			// Validate and handle row_num_egress_acl and row_num_egress_acl_ref_type_ using "One ref type supported" pattern
-			egressAclChanged := !planItem.RowNumEgressAcl.Equal(stateItem.RowNumEgressAcl)
-			egressAclRefTypeChanged := !planItem.RowNumEgressAclRefType.Equal(stateItem.RowNumEgressAclRefType)
+			// Handle non-ref-type string fields
+			utils.CompareAndSetStringField(planItem.RowNumLanIptv, stateItem.RowNumLanIptv, func(v *string) { service.RowNumLanIptv = v }, &fieldChanged)
 
-			if egressAclChanged || egressAclRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.RowNumEgressAcl,
-					planItem.RowNumEgressAclRefType,
-					"row_num_egress_acl",
-					"row_num_egress_acl_ref_type_",
-					egressAclChanged,
-					egressAclRefTypeChanged,
-				) {
-					return service, false
-				}
-
-				if egressAclChanged {
-					if !planItem.RowNumEgressAcl.IsNull() {
-						service.RowNumEgressAcl = openapi.PtrString(planItem.RowNumEgressAcl.ValueString())
-					} else {
-						service.RowNumEgressAcl = openapi.PtrString("")
-					}
-				}
-
-				if egressAclRefTypeChanged {
-					if !planItem.RowNumEgressAclRefType.IsNull() {
-						service.RowNumEgressAclRefType = openapi.PtrString(planItem.RowNumEgressAclRefType.ValueString())
-					} else {
-						service.RowNumEgressAclRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
+			// Handle row_num_ingress_acl and row_num_ingress_acl_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.RowNumIngressAcl, stateItem.RowNumIngressAcl, planItem.RowNumIngressAclRefType, stateItem.RowNumIngressAclRefType,
+				func(v *string) { service.RowNumIngressAcl = v },
+				func(v *string) { service.RowNumIngressAclRefType = v },
+				"row_num_ingress_acl", "row_num_ingress_acl_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return service, false
 			}
 
-			// Validate and handle row_num_mac_filter and row_num_mac_filter_ref_type_ using "One ref type supported" pattern
-			macFilterChanged := !planItem.RowNumMacFilter.Equal(stateItem.RowNumMacFilter)
-			macFilterRefTypeChanged := !planItem.RowNumMacFilterRefType.Equal(stateItem.RowNumMacFilterRefType)
-
-			if macFilterChanged || macFilterRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.RowNumMacFilter,
-					planItem.RowNumMacFilterRefType,
-					"row_num_mac_filter",
-					"row_num_mac_filter_ref_type_",
-					macFilterChanged,
-					macFilterRefTypeChanged,
-				) {
-					return service, false
-				}
-
-				if macFilterChanged {
-					if !planItem.RowNumMacFilter.IsNull() {
-						service.RowNumMacFilter = openapi.PtrString(planItem.RowNumMacFilter.ValueString())
-					} else {
-						service.RowNumMacFilter = openapi.PtrString("")
-					}
-				}
-
-				if macFilterRefTypeChanged {
-					if !planItem.RowNumMacFilterRefType.IsNull() {
-						service.RowNumMacFilterRefType = openapi.PtrString(planItem.RowNumMacFilterRefType.ValueString())
-					} else {
-						service.RowNumMacFilterRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
+			// Handle row_num_egress_acl and row_num_egress_acl_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.RowNumEgressAcl, stateItem.RowNumEgressAcl, planItem.RowNumEgressAclRefType, stateItem.RowNumEgressAclRefType,
+				func(v *string) { service.RowNumEgressAcl = v },
+				func(v *string) { service.RowNumEgressAclRefType = v },
+				"row_num_egress_acl", "row_num_egress_acl_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return service, false
 			}
 
-			if !planItem.RowNumLanIptv.Equal(stateItem.RowNumLanIptv) {
-				if !planItem.RowNumLanIptv.IsNull() {
-					service.RowNumLanIptv = openapi.PtrString(planItem.RowNumLanIptv.ValueString())
-				} else {
-					service.RowNumLanIptv = openapi.PtrString("")
-				}
-				fieldChanged = true
+			// Handle row_num_mac_filter and row_num_mac_filter_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.RowNumMacFilter, stateItem.RowNumMacFilter, planItem.RowNumMacFilterRefType, stateItem.RowNumMacFilterRefType,
+				func(v *string) { service.RowNumMacFilter = v },
+				func(v *string) { service.RowNumMacFilterRefType = v },
+				"row_num_mac_filter", "row_num_mac_filter_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return service, false
 			}
 
 			return service, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner {
-			return openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			service := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &service.Index, TFValue: types.Int64Value(index)},
+			})
+			return service
 		},
 	}
 

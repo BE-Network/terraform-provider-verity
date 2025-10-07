@@ -364,38 +364,22 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	// Handle eth port paths
 	if len(plan.EthPortPaths) > 0 {
 		ethPortPaths := make([]openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner, len(plan.EthPortPaths))
-		for i, path := range plan.EthPortPaths {
+		for i, item := range plan.EthPortPaths {
 			pathItem := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
-			if !path.EthPortNumEthPortProfile.IsNull() {
-				pathItem.EthPortNumEthPortProfile = openapi.PtrString(path.EthPortNumEthPortProfile.ValueString())
-			}
-			if !path.EthPortNumEthPortProfileRefType.IsNull() {
-				pathItem.EthPortNumEthPortProfileRefType = openapi.PtrString(path.EthPortNumEthPortProfileRefType.ValueString())
-			}
-			if !path.EthPortNumEthPortSettings.IsNull() {
-				pathItem.EthPortNumEthPortSettings = openapi.PtrString(path.EthPortNumEthPortSettings.ValueString())
-			}
-			if !path.EthPortNumEthPortSettingsRefType.IsNull() {
-				pathItem.EthPortNumEthPortSettingsRefType = openapi.PtrString(path.EthPortNumEthPortSettingsRefType.ValueString())
-			}
-			if !path.EthPortNumGatewayProfile.IsNull() {
-				pathItem.EthPortNumGatewayProfile = openapi.PtrString(path.EthPortNumGatewayProfile.ValueString())
-			}
-			if !path.EthPortNumGatewayProfileRefType.IsNull() {
-				pathItem.EthPortNumGatewayProfileRefType = openapi.PtrString(path.EthPortNumGatewayProfileRefType.ValueString())
-			}
-			if !path.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() {
-				pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
-			}
-			if !path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() {
-				pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString(path.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString())
-			}
-			if !path.PortName.IsNull() {
-				pathItem.PortName = openapi.PtrString(path.PortName.ValueString())
-			}
-			if !path.Index.IsNull() {
-				pathItem.Index = openapi.PtrInt32(int32(path.Index.ValueInt64()))
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "EthPortNumEthPortProfile", APIField: &pathItem.EthPortNumEthPortProfile, TFValue: item.EthPortNumEthPortProfile},
+				{FieldName: "EthPortNumEthPortProfileRefType", APIField: &pathItem.EthPortNumEthPortProfileRefType, TFValue: item.EthPortNumEthPortProfileRefType},
+				{FieldName: "EthPortNumEthPortSettings", APIField: &pathItem.EthPortNumEthPortSettings, TFValue: item.EthPortNumEthPortSettings},
+				{FieldName: "EthPortNumEthPortSettingsRefType", APIField: &pathItem.EthPortNumEthPortSettingsRefType, TFValue: item.EthPortNumEthPortSettingsRefType},
+				{FieldName: "EthPortNumGatewayProfile", APIField: &pathItem.EthPortNumGatewayProfile, TFValue: item.EthPortNumGatewayProfile},
+				{FieldName: "EthPortNumGatewayProfileRefType", APIField: &pathItem.EthPortNumGatewayProfileRefType, TFValue: item.EthPortNumGatewayProfileRefType},
+				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfile", APIField: &pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, TFValue: item.DiagnosticsPortProfileNumDiagnosticsPortProfile},
+				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfileRefType", APIField: &pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, TFValue: item.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType},
+				{FieldName: "PortName", APIField: &pathItem.PortName, TFValue: item.PortName},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &pathItem.Index, TFValue: item.Index},
+			})
 			ethPortPaths[i] = pathItem
 		}
 		bundleProps.EthPortPaths = ethPortPaths
@@ -404,26 +388,20 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	// Handle user services
 	if len(plan.UserServices) > 0 {
 		userServices := make([]openapi.BundlesPutRequestEndpointBundleValueUserServicesInner, len(plan.UserServices))
-		for i, service := range plan.UserServices {
+		for i, item := range plan.UserServices {
 			serviceItem := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
-			if !service.RowAppEnable.IsNull() {
-				serviceItem.RowAppEnable = openapi.PtrBool(service.RowAppEnable.ValueBool())
-			}
-			if !service.RowAppConnectedService.IsNull() {
-				serviceItem.RowAppConnectedService = openapi.PtrString(service.RowAppConnectedService.ValueString())
-			}
-			if !service.RowAppConnectedServiceRefType.IsNull() {
-				serviceItem.RowAppConnectedServiceRefType = openapi.PtrString(service.RowAppConnectedServiceRefType.ValueString())
-			}
-			if !service.RowAppCliCommands.IsNull() {
-				serviceItem.RowAppCliCommands = openapi.PtrString(service.RowAppCliCommands.ValueString())
-			}
-			if !service.RowIpMask.IsNull() {
-				serviceItem.RowIpMask = openapi.PtrString(service.RowIpMask.ValueString())
-			}
-			if !service.Index.IsNull() {
-				serviceItem.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RowAppEnable", APIField: &serviceItem.RowAppEnable, TFValue: item.RowAppEnable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RowAppConnectedService", APIField: &serviceItem.RowAppConnectedService, TFValue: item.RowAppConnectedService},
+				{FieldName: "RowAppConnectedServiceRefType", APIField: &serviceItem.RowAppConnectedServiceRefType, TFValue: item.RowAppConnectedServiceRefType},
+				{FieldName: "RowAppCliCommands", APIField: &serviceItem.RowAppCliCommands, TFValue: item.RowAppCliCommands},
+				{FieldName: "RowIpMask", APIField: &serviceItem.RowIpMask, TFValue: item.RowIpMask},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: item.Index},
+			})
 			userServices[i] = serviceItem
 		}
 		bundleProps.UserServices = userServices
@@ -432,17 +410,15 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	// Handle voice port profile paths
 	if len(plan.VoicePortProfilePaths) > 0 {
 		voicePortProfilePaths := make([]openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner, len(plan.VoicePortProfilePaths))
-		for i, path := range plan.VoicePortProfilePaths {
+		for i, item := range plan.VoicePortProfilePaths {
 			pathItem := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
-			if !path.VoicePortNumVoicePortProfiles.IsNull() {
-				pathItem.VoicePortNumVoicePortProfiles = openapi.PtrString(path.VoicePortNumVoicePortProfiles.ValueString())
-			}
-			if !path.VoicePortNumVoicePortProfilesRefType.IsNull() {
-				pathItem.VoicePortNumVoicePortProfilesRefType = openapi.PtrString(path.VoicePortNumVoicePortProfilesRefType.ValueString())
-			}
-			if !path.Index.IsNull() {
-				pathItem.Index = openapi.PtrInt32(int32(path.Index.ValueInt64()))
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "VoicePortNumVoicePortProfiles", APIField: &pathItem.VoicePortNumVoicePortProfiles, TFValue: item.VoicePortNumVoicePortProfiles},
+				{FieldName: "VoicePortNumVoicePortProfilesRefType", APIField: &pathItem.VoicePortNumVoicePortProfilesRefType, TFValue: item.VoicePortNumVoicePortProfilesRefType},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &pathItem.Index, TFValue: item.Index},
+			})
 			voicePortProfilePaths[i] = pathItem
 		}
 		bundleProps.VoicePortProfilePaths = voicePortProfilePaths
@@ -766,228 +742,94 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	// Handle eth port paths
 	ethPortPathsHandler := utils.IndexedItemHandler[ethPortPathsModel, openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner]{
 		CreateNew: func(planItem ethPortPathsModel) openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner {
-			ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
 
-			if !planItem.PortName.IsNull() {
-				ethPortPath.PortName = openapi.PtrString(planItem.PortName.ValueString())
-			} else {
-				ethPortPath.PortName = openapi.PtrString("")
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &ethPortPath.Index, TFValue: planItem.Index},
+			})
 
-			if !planItem.EthPortNumEthPortSettings.IsNull() {
-				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(planItem.EthPortNumEthPortSettings.ValueString())
-			} else {
-				ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
-			}
-
-			if !planItem.EthPortNumEthPortSettingsRefType.IsNull() {
-				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(planItem.EthPortNumEthPortSettingsRefType.ValueString())
-			} else {
-				ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
-			}
-
-			if !planItem.EthPortNumEthPortProfile.IsNull() {
-				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(planItem.EthPortNumEthPortProfile.ValueString())
-			} else {
-				ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
-			}
-
-			if !planItem.EthPortNumEthPortProfileRefType.IsNull() {
-				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString(planItem.EthPortNumEthPortProfileRefType.ValueString())
-			} else {
-				ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
-			}
-
-			if !planItem.EthPortNumGatewayProfile.IsNull() {
-				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(planItem.EthPortNumGatewayProfile.ValueString())
-			} else {
-				ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
-			}
-
-			if !planItem.EthPortNumGatewayProfileRefType.IsNull() {
-				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(planItem.EthPortNumGatewayProfileRefType.ValueString())
-			} else {
-				ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
-			}
-
-			if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() {
-				ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
-			} else {
-				ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString("")
-			}
-
-			if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() {
-				ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString(planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString())
-			} else {
-				ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString("")
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "PortName", APIField: &ethPortPath.PortName, TFValue: planItem.PortName},
+				{FieldName: "EthPortNumEthPortSettings", APIField: &ethPortPath.EthPortNumEthPortSettings, TFValue: planItem.EthPortNumEthPortSettings},
+				{FieldName: "EthPortNumEthPortSettingsRefType", APIField: &ethPortPath.EthPortNumEthPortSettingsRefType, TFValue: planItem.EthPortNumEthPortSettingsRefType},
+				{FieldName: "EthPortNumEthPortProfile", APIField: &ethPortPath.EthPortNumEthPortProfile, TFValue: planItem.EthPortNumEthPortProfile},
+				{FieldName: "EthPortNumEthPortProfileRefType", APIField: &ethPortPath.EthPortNumEthPortProfileRefType, TFValue: planItem.EthPortNumEthPortProfileRefType},
+				{FieldName: "EthPortNumGatewayProfile", APIField: &ethPortPath.EthPortNumGatewayProfile, TFValue: planItem.EthPortNumGatewayProfile},
+				{FieldName: "EthPortNumGatewayProfileRefType", APIField: &ethPortPath.EthPortNumGatewayProfileRefType, TFValue: planItem.EthPortNumGatewayProfileRefType},
+				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfile", APIField: &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile, TFValue: planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile},
+				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfileRefType", APIField: &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, TFValue: planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType},
+			})
 
 			return ethPortPath
 		},
 		UpdateExisting: func(planItem ethPortPathsModel, stateItem ethPortPathsModel) (openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner, bool) {
-			ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &ethPortPath.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			if !planItem.PortName.Equal(stateItem.PortName) {
-				if !planItem.PortName.IsNull() {
-					ethPortPath.PortName = openapi.PtrString(planItem.PortName.ValueString())
-				} else {
-					ethPortPath.PortName = openapi.PtrString("")
-				}
-				fieldChanged = true
+			// Handle non-ref-type string fields
+			utils.CompareAndSetStringField(planItem.PortName, stateItem.PortName, func(v *string) { ethPortPath.PortName = v }, &fieldChanged)
+
+			// Handle eth_port_num_eth_port_settings and eth_port_num_eth_port_settings_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.EthPortNumEthPortSettings, stateItem.EthPortNumEthPortSettings, planItem.EthPortNumEthPortSettingsRefType, stateItem.EthPortNumEthPortSettingsRefType,
+				func(v *string) { ethPortPath.EthPortNumEthPortSettings = v },
+				func(v *string) { ethPortPath.EthPortNumEthPortSettingsRefType = v },
+				"eth_port_num_eth_port_settings", "eth_port_num_eth_port_settings_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return ethPortPath, false
 			}
 
-			// Validate and handle eth_port_num_eth_port_settings and eth_port_num_eth_port_settings_ref_type_ using "One ref type supported" pattern
-			ethPortSettingsChanged := !planItem.EthPortNumEthPortSettings.Equal(stateItem.EthPortNumEthPortSettings)
-			ethPortSettingsRefTypeChanged := !planItem.EthPortNumEthPortSettingsRefType.Equal(stateItem.EthPortNumEthPortSettingsRefType)
-
-			if ethPortSettingsChanged || ethPortSettingsRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.EthPortNumEthPortSettings,
-					planItem.EthPortNumEthPortSettingsRefType,
-					"eth_port_num_eth_port_settings",
-					"eth_port_num_eth_port_settings_ref_type_",
-					ethPortSettingsChanged,
-					ethPortSettingsRefTypeChanged,
-				) {
-					return ethPortPath, false
-				}
-
-				if ethPortSettingsChanged {
-					if !planItem.EthPortNumEthPortSettings.IsNull() {
-						ethPortPath.EthPortNumEthPortSettings = openapi.PtrString(planItem.EthPortNumEthPortSettings.ValueString())
-					} else {
-						ethPortPath.EthPortNumEthPortSettings = openapi.PtrString("")
-					}
-				}
-
-				if ethPortSettingsRefTypeChanged {
-					if !planItem.EthPortNumEthPortSettingsRefType.IsNull() {
-						ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString(planItem.EthPortNumEthPortSettingsRefType.ValueString())
-					} else {
-						ethPortPath.EthPortNumEthPortSettingsRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
+			// Handle eth_port_num_eth_port_profile and eth_port_num_eth_port_profile_ref_type_ using "Many ref types supported" pattern
+			if !utils.HandleMultipleRefTypesSupported(
+				planItem.EthPortNumEthPortProfile, stateItem.EthPortNumEthPortProfile, planItem.EthPortNumEthPortProfileRefType, stateItem.EthPortNumEthPortProfileRefType,
+				func(v *string) { ethPortPath.EthPortNumEthPortProfile = v },
+				func(v *string) { ethPortPath.EthPortNumEthPortProfileRefType = v },
+				"eth_port_num_eth_port_profile", "eth_port_num_eth_port_profile_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return ethPortPath, false
 			}
 
-			// Validate and handle eth_port_num_eth_port_profile and eth_port_num_eth_port_profile_ref_type_ using "Many ref types supported" pattern
-			ethPortProfileChanged := !planItem.EthPortNumEthPortProfile.Equal(stateItem.EthPortNumEthPortProfile)
-			ethPortProfileRefTypeChanged := !planItem.EthPortNumEthPortProfileRefType.Equal(stateItem.EthPortNumEthPortProfileRefType)
-
-			if ethPortProfileChanged || ethPortProfileRefTypeChanged {
-				if !utils.ValidateMultipleRefTypesSupported(
-					&resp.Diagnostics,
-					planItem.EthPortNumEthPortProfile,
-					planItem.EthPortNumEthPortProfileRefType,
-					"eth_port_num_eth_port_profile",
-					"eth_port_num_eth_port_profile_ref_type_",
-				) {
-					return ethPortPath, false
-				}
-
-				if ethPortProfileChanged {
-					if !planItem.EthPortNumEthPortProfile.IsNull() {
-						ethPortPath.EthPortNumEthPortProfile = openapi.PtrString(planItem.EthPortNumEthPortProfile.ValueString())
-					} else {
-						ethPortPath.EthPortNumEthPortProfile = openapi.PtrString("")
-					}
-				}
-
-				if ethPortProfileRefTypeChanged {
-					if !planItem.EthPortNumEthPortProfileRefType.IsNull() {
-						ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString(planItem.EthPortNumEthPortProfileRefType.ValueString())
-					} else {
-						ethPortPath.EthPortNumEthPortProfileRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
+			// Handle eth_port_num_gateway_profile and eth_port_num_gateway_profile_ref_type_ using "Many ref types supported" pattern
+			if !utils.HandleMultipleRefTypesSupported(
+				planItem.EthPortNumGatewayProfile, stateItem.EthPortNumGatewayProfile, planItem.EthPortNumGatewayProfileRefType, stateItem.EthPortNumGatewayProfileRefType,
+				func(v *string) { ethPortPath.EthPortNumGatewayProfile = v },
+				func(v *string) { ethPortPath.EthPortNumGatewayProfileRefType = v },
+				"eth_port_num_gateway_profile", "eth_port_num_gateway_profile_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return ethPortPath, false
 			}
 
-			// Validate and handle eth_port_num_gateway_profile and eth_port_num_gateway_profile_ref_type_ using "Many ref types supported" pattern
-			gatewayProfileChanged := !planItem.EthPortNumGatewayProfile.Equal(stateItem.EthPortNumGatewayProfile)
-			gatewayProfileRefTypeChanged := !planItem.EthPortNumGatewayProfileRefType.Equal(stateItem.EthPortNumGatewayProfileRefType)
-
-			if gatewayProfileChanged || gatewayProfileRefTypeChanged {
-				if !utils.ValidateMultipleRefTypesSupported(
-					&resp.Diagnostics,
-					planItem.EthPortNumGatewayProfile,
-					planItem.EthPortNumGatewayProfileRefType,
-					"eth_port_num_gateway_profile",
-					"eth_port_num_gateway_profile_ref_type_",
-				) {
-					return ethPortPath, false
-				}
-
-				if gatewayProfileChanged {
-					if !planItem.EthPortNumGatewayProfile.IsNull() {
-						ethPortPath.EthPortNumGatewayProfile = openapi.PtrString(planItem.EthPortNumGatewayProfile.ValueString())
-					} else {
-						ethPortPath.EthPortNumGatewayProfile = openapi.PtrString("")
-					}
-				}
-
-				if gatewayProfileRefTypeChanged {
-					if !planItem.EthPortNumGatewayProfileRefType.IsNull() {
-						ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString(planItem.EthPortNumGatewayProfileRefType.ValueString())
-					} else {
-						ethPortPath.EthPortNumGatewayProfileRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
-			// Validate and handle diagnostics_port_profile_num_diagnostics_port_profile and diagnostics_port_profile_num_diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
-			diagnosticsPortProfileChanged := !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.Equal(stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfile)
-			diagnosticsPortProfileRefTypeChanged := !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.Equal(stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType)
-
-			if diagnosticsPortProfileChanged || diagnosticsPortProfileRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile,
-					planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
-					"diagnostics_port_profile_num_diagnostics_port_profile",
-					"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
-					diagnosticsPortProfileChanged,
-					diagnosticsPortProfileRefTypeChanged,
-				) {
-					return ethPortPath, false
-				}
-
-				if diagnosticsPortProfileChanged {
-					if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.IsNull() {
-						ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString(planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile.ValueString())
-					} else {
-						ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = openapi.PtrString("")
-					}
-				}
-
-				if diagnosticsPortProfileRefTypeChanged {
-					if !planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.IsNull() {
-						ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString(planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType.ValueString())
-					} else {
-						ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
+			// Handle diagnostics_port_profile_num_diagnostics_port_profile and diagnostics_port_profile_num_diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
+				func(v *string) { ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = v },
+				func(v *string) { ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = v },
+				"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return ethPortPath, false
 			}
 
 			return ethPortPath, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner {
-			return openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			item := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
+			})
+			return item
 		},
 	}
 
@@ -1000,114 +842,61 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	// Handle user services
 	userServicesHandler := utils.IndexedItemHandler[userServicesModel, openapi.BundlesPutRequestEndpointBundleValueUserServicesInner]{
 		CreateNew: func(planItem userServicesModel) openapi.BundlesPutRequestEndpointBundleValueUserServicesInner {
-			userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
 
-			if !planItem.RowAppEnable.IsNull() {
-				userService.RowAppEnable = openapi.PtrBool(planItem.RowAppEnable.ValueBool())
-			} else {
-				userService.RowAppEnable = openapi.PtrBool(false)
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &userService.Index, TFValue: planItem.Index},
+			})
 
-			if !planItem.RowAppConnectedService.IsNull() {
-				userService.RowAppConnectedService = openapi.PtrString(planItem.RowAppConnectedService.ValueString())
-			} else {
-				userService.RowAppConnectedService = openapi.PtrString("")
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RowAppEnable", APIField: &userService.RowAppEnable, TFValue: planItem.RowAppEnable},
+			})
 
-			if !planItem.RowAppConnectedServiceRefType.IsNull() {
-				userService.RowAppConnectedServiceRefType = openapi.PtrString(planItem.RowAppConnectedServiceRefType.ValueString())
-			} else {
-				userService.RowAppConnectedServiceRefType = openapi.PtrString("")
-			}
-
-			if !planItem.RowAppCliCommands.IsNull() {
-				userService.RowAppCliCommands = openapi.PtrString(planItem.RowAppCliCommands.ValueString())
-			} else {
-				userService.RowAppCliCommands = openapi.PtrString("")
-			}
-
-			if !planItem.RowIpMask.IsNull() {
-				userService.RowIpMask = openapi.PtrString(planItem.RowIpMask.ValueString())
-			} else {
-				userService.RowIpMask = openapi.PtrString("")
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RowAppConnectedService", APIField: &userService.RowAppConnectedService, TFValue: planItem.RowAppConnectedService},
+				{FieldName: "RowAppConnectedServiceRefType", APIField: &userService.RowAppConnectedServiceRefType, TFValue: planItem.RowAppConnectedServiceRefType},
+				{FieldName: "RowAppCliCommands", APIField: &userService.RowAppCliCommands, TFValue: planItem.RowAppCliCommands},
+				{FieldName: "RowIpMask", APIField: &userService.RowIpMask, TFValue: planItem.RowIpMask},
+			})
 
 			return userService
 		},
 		UpdateExisting: func(planItem userServicesModel, stateItem userServicesModel) (openapi.BundlesPutRequestEndpointBundleValueUserServicesInner, bool) {
-			userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &userService.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			if !planItem.RowAppEnable.Equal(stateItem.RowAppEnable) {
-				userService.RowAppEnable = openapi.PtrBool(planItem.RowAppEnable.ValueBool())
-				fieldChanged = true
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.RowAppEnable, stateItem.RowAppEnable, func(v *bool) { userService.RowAppEnable = v }, &fieldChanged)
+
+			// Handle row_app_connected_service and row_app_connected_service_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.RowAppConnectedService, stateItem.RowAppConnectedService, planItem.RowAppConnectedServiceRefType, stateItem.RowAppConnectedServiceRefType,
+				func(v *string) { userService.RowAppConnectedService = v },
+				func(v *string) { userService.RowAppConnectedServiceRefType = v },
+				"row_app_connected_service", "row_app_connected_service_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return userService, false
 			}
 
-			// Validate and handle row_app_connected_service and row_app_connected_service_ref_type_ using "One ref type supported" pattern
-			connectedServiceChanged := !planItem.RowAppConnectedService.Equal(stateItem.RowAppConnectedService)
-			connectedServiceRefTypeChanged := !planItem.RowAppConnectedServiceRefType.Equal(stateItem.RowAppConnectedServiceRefType)
-
-			if connectedServiceChanged || connectedServiceRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.RowAppConnectedService,
-					planItem.RowAppConnectedServiceRefType,
-					"row_app_connected_service",
-					"row_app_connected_service_ref_type_",
-					connectedServiceChanged,
-					connectedServiceRefTypeChanged,
-				) {
-					return userService, false
-				}
-
-				if connectedServiceChanged {
-					if !planItem.RowAppConnectedService.IsNull() {
-						userService.RowAppConnectedService = openapi.PtrString(planItem.RowAppConnectedService.ValueString())
-					} else {
-						userService.RowAppConnectedService = openapi.PtrString("")
-					}
-				}
-
-				if connectedServiceRefTypeChanged {
-					if !planItem.RowAppConnectedServiceRefType.IsNull() {
-						userService.RowAppConnectedServiceRefType = openapi.PtrString(planItem.RowAppConnectedServiceRefType.ValueString())
-					} else {
-						userService.RowAppConnectedServiceRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
-			if !planItem.RowAppCliCommands.Equal(stateItem.RowAppCliCommands) {
-				if !planItem.RowAppCliCommands.IsNull() {
-					userService.RowAppCliCommands = openapi.PtrString(planItem.RowAppCliCommands.ValueString())
-				} else {
-					userService.RowAppCliCommands = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.RowIpMask.Equal(stateItem.RowIpMask) {
-				if !planItem.RowIpMask.IsNull() {
-					userService.RowIpMask = openapi.PtrString(planItem.RowIpMask.ValueString())
-				} else {
-					userService.RowIpMask = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Handle non-ref-type string fields
+			utils.CompareAndSetStringField(planItem.RowAppCliCommands, stateItem.RowAppCliCommands, func(v *string) { userService.RowAppCliCommands = v }, &fieldChanged)
+			utils.CompareAndSetStringField(planItem.RowIpMask, stateItem.RowIpMask, func(v *string) { userService.RowIpMask = v }, &fieldChanged)
 
 			return userService, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.BundlesPutRequestEndpointBundleValueUserServicesInner {
-			return openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			item := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
+			})
+			return item
 		},
 	}
 
@@ -1120,73 +909,48 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	// Handle voice port profile paths
 	voicePortProfilePathsHandler := utils.IndexedItemHandler[voicePortProfilePathsModel, openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner]{
 		CreateNew: func(planItem voicePortProfilePathsModel) openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
-			voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
 
-			if !planItem.VoicePortNumVoicePortProfiles.IsNull() {
-				voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString(planItem.VoicePortNumVoicePortProfiles.ValueString())
-			} else {
-				voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString("")
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &voicePortPath.Index, TFValue: planItem.Index},
+			})
 
-			if !planItem.VoicePortNumVoicePortProfilesRefType.IsNull() {
-				voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString(planItem.VoicePortNumVoicePortProfilesRefType.ValueString())
-			} else {
-				voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString("")
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "VoicePortNumVoicePortProfiles", APIField: &voicePortPath.VoicePortNumVoicePortProfiles, TFValue: planItem.VoicePortNumVoicePortProfiles},
+				{FieldName: "VoicePortNumVoicePortProfilesRefType", APIField: &voicePortPath.VoicePortNumVoicePortProfilesRefType, TFValue: planItem.VoicePortNumVoicePortProfilesRefType},
+			})
 
 			return voicePortPath
 		},
 		UpdateExisting: func(planItem voicePortProfilePathsModel, stateItem voicePortProfilePathsModel) (openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner, bool) {
-			voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &voicePortPath.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			// Validate and handle voice_port_num_voice_port_profiles and voice_port_num_voice_port_profiles_ref_type_ using "One ref type supported" pattern
-			voicePortProfilesChanged := !planItem.VoicePortNumVoicePortProfiles.Equal(stateItem.VoicePortNumVoicePortProfiles)
-			voicePortProfilesRefTypeChanged := !planItem.VoicePortNumVoicePortProfilesRefType.Equal(stateItem.VoicePortNumVoicePortProfilesRefType)
-
-			if voicePortProfilesChanged || voicePortProfilesRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.VoicePortNumVoicePortProfiles,
-					planItem.VoicePortNumVoicePortProfilesRefType,
-					"voice_port_num_voice_port_profiles",
-					"voice_port_num_voice_port_profiles_ref_type_",
-					voicePortProfilesChanged,
-					voicePortProfilesRefTypeChanged,
-				) {
-					return voicePortPath, false
-				}
-
-				if voicePortProfilesChanged {
-					if !planItem.VoicePortNumVoicePortProfiles.IsNull() {
-						voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString(planItem.VoicePortNumVoicePortProfiles.ValueString())
-					} else {
-						voicePortPath.VoicePortNumVoicePortProfiles = openapi.PtrString("")
-					}
-				}
-
-				if voicePortProfilesRefTypeChanged {
-					if !planItem.VoicePortNumVoicePortProfilesRefType.IsNull() {
-						voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString(planItem.VoicePortNumVoicePortProfilesRefType.ValueString())
-					} else {
-						voicePortPath.VoicePortNumVoicePortProfilesRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
+			// Handle voice_port_num_voice_port_profiles and voice_port_num_voice_port_profiles_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.VoicePortNumVoicePortProfiles, stateItem.VoicePortNumVoicePortProfiles, planItem.VoicePortNumVoicePortProfilesRefType, stateItem.VoicePortNumVoicePortProfilesRefType,
+				func(v *string) { voicePortPath.VoicePortNumVoicePortProfiles = v },
+				func(v *string) { voicePortPath.VoicePortNumVoicePortProfilesRefType = v },
+				"voice_port_num_voice_port_profiles", "voice_port_num_voice_port_profiles_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return voicePortPath, false
 			}
 
 			return voicePortPath, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
-			return openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			item := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
+			})
+			return item
 		},
 	}
 

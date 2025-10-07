@@ -234,26 +234,20 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 	// Handle eth ports
 	if len(plan.EthPorts) > 0 {
 		ethPorts := make([]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner, len(plan.EthPorts))
-		for i, ethPort := range plan.EthPorts {
+		for i, item := range plan.EthPorts {
 			ethPortItem := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{}
-			if !ethPort.EthPortProfileNumEnable.IsNull() {
-				ethPortItem.EthPortProfileNumEnable = openapi.PtrBool(ethPort.EthPortProfileNumEnable.ValueBool())
-			}
-			if !ethPort.EthPortProfileNumEthPort.IsNull() {
-				ethPortItem.EthPortProfileNumEthPort = openapi.PtrString(ethPort.EthPortProfileNumEthPort.ValueString())
-			}
-			if !ethPort.EthPortProfileNumEthPortRefType.IsNull() {
-				ethPortItem.EthPortProfileNumEthPortRefType = openapi.PtrString(ethPort.EthPortProfileNumEthPortRefType.ValueString())
-			}
-			if !ethPort.EthPortProfileNumWalledGardenSet.IsNull() {
-				ethPortItem.EthPortProfileNumWalledGardenSet = openapi.PtrBool(ethPort.EthPortProfileNumWalledGardenSet.ValueBool())
-			}
-			if !ethPort.EthPortProfileNumRadiusFilterId.IsNull() {
-				ethPortItem.EthPortProfileNumRadiusFilterId = openapi.PtrString(ethPort.EthPortProfileNumRadiusFilterId.ValueString())
-			}
-			if !ethPort.Index.IsNull() {
-				ethPortItem.Index = openapi.PtrInt32(int32(ethPort.Index.ValueInt64()))
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "EthPortProfileNumEnable", APIField: &ethPortItem.EthPortProfileNumEnable, TFValue: item.EthPortProfileNumEnable},
+				{FieldName: "EthPortProfileNumWalledGardenSet", APIField: &ethPortItem.EthPortProfileNumWalledGardenSet, TFValue: item.EthPortProfileNumWalledGardenSet},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "EthPortProfileNumEthPort", APIField: &ethPortItem.EthPortProfileNumEthPort, TFValue: item.EthPortProfileNumEthPort},
+				{FieldName: "EthPortProfileNumEthPortRefType", APIField: &ethPortItem.EthPortProfileNumEthPortRefType, TFValue: item.EthPortProfileNumEthPortRefType},
+				{FieldName: "EthPortProfileNumRadiusFilterId", APIField: &ethPortItem.EthPortProfileNumRadiusFilterId, TFValue: item.EthPortProfileNumRadiusFilterId},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &ethPortItem.Index, TFValue: item.Index},
+			})
 			ethPorts[i] = ethPortItem
 		}
 		aepProps.EthPorts = ethPorts
@@ -496,110 +490,60 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	// Handle eth ports
 	ethPortsHandler := utils.IndexedItemHandler[verityAuthenticatedEthPortEthPortModel, openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner]{
 		CreateNew: func(planItem verityAuthenticatedEthPortEthPortModel) openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner {
-			item := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			item := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{}
 
-			if !planItem.EthPortProfileNumEnable.IsNull() {
-				item.EthPortProfileNumEnable = openapi.PtrBool(planItem.EthPortProfileNumEnable.ValueBool())
-			} else {
-				item.EthPortProfileNumEnable = openapi.PtrBool(false)
-			}
-
-			if !planItem.EthPortProfileNumEthPort.IsNull() && planItem.EthPortProfileNumEthPort.ValueString() != "" {
-				item.EthPortProfileNumEthPort = openapi.PtrString(planItem.EthPortProfileNumEthPort.ValueString())
-			} else {
-				item.EthPortProfileNumEthPort = openapi.PtrString("")
-			}
-
-			if !planItem.EthPortProfileNumEthPortRefType.IsNull() && planItem.EthPortProfileNumEthPortRefType.ValueString() != "" {
-				item.EthPortProfileNumEthPortRefType = openapi.PtrString(planItem.EthPortProfileNumEthPortRefType.ValueString())
-			} else {
-				item.EthPortProfileNumEthPortRefType = openapi.PtrString("")
-			}
-
-			if !planItem.EthPortProfileNumWalledGardenSet.IsNull() {
-				item.EthPortProfileNumWalledGardenSet = openapi.PtrBool(planItem.EthPortProfileNumWalledGardenSet.ValueBool())
-			} else {
-				item.EthPortProfileNumWalledGardenSet = openapi.PtrBool(false)
-			}
-
-			if !planItem.EthPortProfileNumRadiusFilterId.IsNull() && planItem.EthPortProfileNumRadiusFilterId.ValueString() != "" {
-				item.EthPortProfileNumRadiusFilterId = openapi.PtrString(planItem.EthPortProfileNumRadiusFilterId.ValueString())
-			} else {
-				item.EthPortProfileNumRadiusFilterId = openapi.PtrString("")
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: planItem.Index},
+			})
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "EthPortProfileNumEnable", APIField: &item.EthPortProfileNumEnable, TFValue: planItem.EthPortProfileNumEnable},
+				{FieldName: "EthPortProfileNumWalledGardenSet", APIField: &item.EthPortProfileNumWalledGardenSet, TFValue: planItem.EthPortProfileNumWalledGardenSet},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "EthPortProfileNumEthPort", APIField: &item.EthPortProfileNumEthPort, TFValue: planItem.EthPortProfileNumEthPort},
+				{FieldName: "EthPortProfileNumEthPortRefType", APIField: &item.EthPortProfileNumEthPortRefType, TFValue: planItem.EthPortProfileNumEthPortRefType},
+				{FieldName: "EthPortProfileNumRadiusFilterId", APIField: &item.EthPortProfileNumRadiusFilterId, TFValue: planItem.EthPortProfileNumRadiusFilterId},
+			})
 
 			return item
 		},
 		UpdateExisting: func(planItem verityAuthenticatedEthPortEthPortModel, stateItem verityAuthenticatedEthPortEthPortModel) (openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner, bool) {
-			item := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			item := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			if !planItem.EthPortProfileNumEnable.Equal(stateItem.EthPortProfileNumEnable) {
-				item.EthPortProfileNumEnable = openapi.PtrBool(planItem.EthPortProfileNumEnable.ValueBool())
-				fieldChanged = true
+			// Handle boolean field changes
+			utils.CompareAndSetBoolField(planItem.EthPortProfileNumEnable, stateItem.EthPortProfileNumEnable, func(v *bool) { item.EthPortProfileNumEnable = v }, &fieldChanged)
+
+			// Handle eth_port_profile_num_eth_port and eth_port_profile_num_eth_port_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.EthPortProfileNumEthPort, stateItem.EthPortProfileNumEthPort, planItem.EthPortProfileNumEthPortRefType, stateItem.EthPortProfileNumEthPortRefType,
+				func(v *string) { item.EthPortProfileNumEthPort = v },
+				func(v *string) { item.EthPortProfileNumEthPortRefType = v },
+				"eth_port_profile_num_eth_port", "eth_port_profile_num_eth_port_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return item, false
 			}
 
-			// Validate and handle eth_port_profile_num_eth_port and eth_port_profile_num_eth_port_ref_type_ using "One ref type supported" pattern
-			ethPortChanged := !planItem.EthPortProfileNumEthPort.Equal(stateItem.EthPortProfileNumEthPort)
-			ethPortRefTypeChanged := !planItem.EthPortProfileNumEthPortRefType.Equal(stateItem.EthPortProfileNumEthPortRefType)
+			utils.CompareAndSetBoolField(planItem.EthPortProfileNumWalledGardenSet, stateItem.EthPortProfileNumWalledGardenSet, func(v *bool) { item.EthPortProfileNumWalledGardenSet = v }, &fieldChanged)
 
-			if ethPortChanged || ethPortRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.EthPortProfileNumEthPort,
-					planItem.EthPortProfileNumEthPortRefType,
-					"eth_port_profile_num_eth_port",
-					"eth_port_profile_num_eth_port_ref_type_",
-					ethPortChanged,
-					ethPortRefTypeChanged,
-				) {
-					return item, false
-				}
-
-				if ethPortChanged {
-					if !planItem.EthPortProfileNumEthPort.IsNull() && planItem.EthPortProfileNumEthPort.ValueString() != "" {
-						item.EthPortProfileNumEthPort = openapi.PtrString(planItem.EthPortProfileNumEthPort.ValueString())
-					} else {
-						item.EthPortProfileNumEthPort = openapi.PtrString("")
-					}
-				}
-
-				if ethPortRefTypeChanged {
-					if !planItem.EthPortProfileNumEthPortRefType.IsNull() && planItem.EthPortProfileNumEthPortRefType.ValueString() != "" {
-						item.EthPortProfileNumEthPortRefType = openapi.PtrString(planItem.EthPortProfileNumEthPortRefType.ValueString())
-					} else {
-						item.EthPortProfileNumEthPortRefType = openapi.PtrString("")
-					}
-				}
-
-				fieldChanged = true
-			}
-
-			if !planItem.EthPortProfileNumWalledGardenSet.Equal(stateItem.EthPortProfileNumWalledGardenSet) {
-				item.EthPortProfileNumWalledGardenSet = openapi.PtrBool(planItem.EthPortProfileNumWalledGardenSet.ValueBool())
-				fieldChanged = true
-			}
-
-			if !planItem.EthPortProfileNumRadiusFilterId.Equal(stateItem.EthPortProfileNumRadiusFilterId) {
-				if !planItem.EthPortProfileNumRadiusFilterId.IsNull() && planItem.EthPortProfileNumRadiusFilterId.ValueString() != "" {
-					item.EthPortProfileNumRadiusFilterId = openapi.PtrString(planItem.EthPortProfileNumRadiusFilterId.ValueString())
-				} else {
-					item.EthPortProfileNumRadiusFilterId = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Handle string field changes
+			utils.CompareAndSetStringField(planItem.EthPortProfileNumRadiusFilterId, stateItem.EthPortProfileNumRadiusFilterId, func(v *string) { item.EthPortProfileNumRadiusFilterId = v }, &fieldChanged)
 
 			return item, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner {
-			return openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			item := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
+			})
+			return item
 		},
 	}
 

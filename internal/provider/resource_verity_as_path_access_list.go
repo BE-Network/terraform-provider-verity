@@ -181,18 +181,18 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 	// Handle lists
 	if len(plan.Lists) > 0 {
 		lists := make([]openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner, len(plan.Lists))
-		for i, listItem := range plan.Lists {
-			lItem := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{}
-			if !listItem.Index.IsNull() {
-				lItem.Index = openapi.PtrInt32(int32(listItem.Index.ValueInt64()))
-			}
-			if !listItem.Enable.IsNull() {
-				lItem.Enable = openapi.PtrBool(listItem.Enable.ValueBool())
-			}
-			if !listItem.RegularExpression.IsNull() {
-				lItem.RegularExpression = openapi.PtrString(listItem.RegularExpression.ValueString())
-			}
-			lists[i] = lItem
+		for i, item := range plan.Lists {
+			list := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &list.Enable, TFValue: item.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RegularExpression", APIField: &list.RegularExpression, TFValue: item.RegularExpression},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &list.Index, TFValue: item.Index},
+			})
+			lists[i] = list
 		}
 		asPathAccessListProps.Lists = lists
 	}
@@ -403,55 +403,51 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 	// Handle lists
 	listsHandler := utils.IndexedItemHandler[verityAsPathAccessListListsModel, openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner]{
 		CreateNew: func(planItem verityAsPathAccessListListsModel) openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner {
-			item := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			item := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{}
 
-			if !planItem.Enable.IsNull() {
-				item.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				item.Enable = openapi.PtrBool(false)
-			}
-
-			if !planItem.RegularExpression.IsNull() && planItem.RegularExpression.ValueString() != "" {
-				item.RegularExpression = openapi.PtrString(planItem.RegularExpression.ValueString())
-			} else {
-				item.RegularExpression = openapi.PtrString("")
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: planItem.Index},
+			})
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &item.Enable, TFValue: planItem.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RegularExpression", APIField: &item.RegularExpression, TFValue: planItem.RegularExpression},
+			})
 
 			return item
 		},
 		UpdateExisting: func(planItem verityAsPathAccessListListsModel, stateItem verityAsPathAccessListListsModel) (openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner, bool) {
-			item := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			item := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
 			if !planItem.Enable.Equal(stateItem.Enable) {
-				if !planItem.Enable.IsNull() {
-					item.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				} else {
-					item.Enable = openapi.PtrBool(false)
-				}
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &item.Enable, TFValue: planItem.Enable},
+				})
 				fieldChanged = true
 			}
 
 			if !planItem.RegularExpression.Equal(stateItem.RegularExpression) {
-				if !planItem.RegularExpression.IsNull() && planItem.RegularExpression.ValueString() != "" {
-					item.RegularExpression = openapi.PtrString(planItem.RegularExpression.ValueString())
-				} else {
-					item.RegularExpression = openapi.PtrString("")
-				}
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "RegularExpression", APIField: &item.RegularExpression, TFValue: planItem.RegularExpression},
+				})
 				fieldChanged = true
 			}
 
 			return item, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner {
-			return openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			item := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
+			})
+			return item
 		},
 	}
 

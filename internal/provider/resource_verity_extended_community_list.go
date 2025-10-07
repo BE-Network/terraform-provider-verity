@@ -198,21 +198,19 @@ func (r *verityExtendedCommunityListResource) Create(ctx context.Context, req re
 	// Handle lists
 	if len(plan.Lists) > 0 {
 		lists := make([]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner, len(plan.Lists))
-		for i, listItem := range plan.Lists {
+		for i, item := range plan.Lists {
 			apiListItem := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{}
 
-			if !listItem.Enable.IsNull() {
-				apiListItem.Enable = openapi.PtrBool(listItem.Enable.ValueBool())
-			}
-			if !listItem.Mode.IsNull() {
-				apiListItem.Mode = openapi.PtrString(listItem.Mode.ValueString())
-			}
-			if !listItem.RouteTargetExpandedExpression.IsNull() {
-				apiListItem.RouteTargetExpandedExpression = openapi.PtrString(listItem.RouteTargetExpandedExpression.ValueString())
-			}
-			if !listItem.Index.IsNull() {
-				apiListItem.Index = openapi.PtrInt32(int32(listItem.Index.ValueInt64()))
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &apiListItem.Enable, TFValue: item.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Mode", APIField: &apiListItem.Mode, TFValue: item.Mode},
+				{FieldName: "RouteTargetExpandedExpression", APIField: &apiListItem.RouteTargetExpandedExpression, TFValue: item.RouteTargetExpandedExpression},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &apiListItem.Index, TFValue: item.Index},
+			})
 
 			lists[i] = apiListItem
 		}
@@ -428,52 +426,47 @@ func (r *verityExtendedCommunityListResource) Update(ctx context.Context, req re
 	// Handle lists
 	listsHandler := utils.IndexedItemHandler[verityExtendedCommunityListListsModel, openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner]{
 		CreateNew: func(planItem verityExtendedCommunityListListsModel) openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner {
-			item := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			item := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{}
 
-			if !planItem.Enable.IsNull() {
-				item.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: planItem.Index},
+			})
 
-			if !planItem.Mode.IsNull() {
-				item.Mode = openapi.PtrString(planItem.Mode.ValueString())
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &item.Enable, TFValue: planItem.Enable},
+			})
 
-			if !planItem.RouteTargetExpandedExpression.IsNull() {
-				item.RouteTargetExpandedExpression = openapi.PtrString(planItem.RouteTargetExpandedExpression.ValueString())
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Mode", APIField: &item.Mode, TFValue: planItem.Mode},
+				{FieldName: "RouteTargetExpandedExpression", APIField: &item.RouteTargetExpandedExpression, TFValue: planItem.RouteTargetExpandedExpression},
+			})
 
 			return item
 		},
 		UpdateExisting: func(planItem verityExtendedCommunityListListsModel, stateItem verityExtendedCommunityListListsModel) (openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner, bool) {
-			item := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			item := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				item.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { item.Enable = v }, &fieldChanged)
 
-			if !planItem.Mode.Equal(stateItem.Mode) {
-				item.Mode = openapi.PtrString(planItem.Mode.ValueString())
-				fieldChanged = true
-			}
-
-			if !planItem.RouteTargetExpandedExpression.Equal(stateItem.RouteTargetExpandedExpression) {
-				item.RouteTargetExpandedExpression = openapi.PtrString(planItem.RouteTargetExpandedExpression.ValueString())
-				fieldChanged = true
-			}
+			// Handle string fields
+			utils.CompareAndSetStringField(planItem.Mode, stateItem.Mode, func(v *string) { item.Mode = v }, &fieldChanged)
+			utils.CompareAndSetStringField(planItem.RouteTargetExpandedExpression, stateItem.RouteTargetExpandedExpression, func(v *string) { item.RouteTargetExpandedExpression = v }, &fieldChanged)
 
 			return item, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner {
-			return openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			item := openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
+			})
+			return item
 		},
 	}
 

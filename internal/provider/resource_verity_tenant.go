@@ -347,15 +347,22 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		routeTenants := make([]openapi.TenantsPutRequestTenantValueRouteTenantsInner, len(plan.RouteTenants))
 		for i, rt := range plan.RouteTenants {
 			rItem := openapi.TenantsPutRequestTenantValueRouteTenantsInner{}
-			if !rt.Enable.IsNull() {
-				rItem.Enable = openapi.PtrBool(rt.Enable.ValueBool())
-			}
-			if !rt.Tenant.IsNull() {
-				rItem.Tenant = openapi.PtrString(rt.Tenant.ValueString())
-			}
-			if !rt.Index.IsNull() {
-				rItem.Index = openapi.PtrInt32(int32(rt.Index.ValueInt64()))
-			}
+
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &rItem.Enable, TFValue: rt.Enable},
+			})
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Tenant", APIField: &rItem.Tenant, TFValue: rt.Tenant},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &rItem.Index, TFValue: rt.Index},
+			})
+
 			routeTenants[i] = rItem
 		}
 		tenantReq.RouteTenants = routeTenants
@@ -788,57 +795,49 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	// Handle route tenants
-	routeTenantsHandler := utils.IndexedItemHandler[verityTenantRouteTenantModel, openapi.TenantsPutRequestTenantValueRouteTenantsInner]{
-		CreateNew: func(planItem verityTenantRouteTenantModel) openapi.TenantsPutRequestTenantValueRouteTenantsInner {
-			tenantRoute := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedRouteTenants, routeTenantsChanged := utils.ProcessIndexedArrayUpdates(plan.RouteTenants, state.RouteTenants,
+		utils.IndexedItemHandler[verityTenantRouteTenantModel, openapi.TenantsPutRequestTenantValueRouteTenantsInner]{
+			CreateNew: func(planItem verityTenantRouteTenantModel) openapi.TenantsPutRequestTenantValueRouteTenantsInner {
+				newRouteTenant := openapi.TenantsPutRequestTenantValueRouteTenantsInner{}
 
-			if !planItem.Enable.IsNull() {
-				tenantRoute.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				tenantRoute.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newRouteTenant.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.Tenant.IsNull() {
-				tenantRoute.Tenant = openapi.PtrString(planItem.Tenant.ValueString())
-			} else {
-				tenantRoute.Tenant = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Tenant", APIField: &newRouteTenant.Tenant, TFValue: planItem.Tenant},
+				})
 
-			return tenantRoute
-		},
-		UpdateExisting: func(planItem verityTenantRouteTenantModel, stateItem verityTenantRouteTenantModel) (openapi.TenantsPutRequestTenantValueRouteTenantsInner, bool) {
-			tenantRoute := openapi.TenantsPutRequestTenantValueRouteTenantsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newRouteTenant.Index, TFValue: planItem.Index},
+				})
 
-			fieldChanged := false
+				return newRouteTenant
+			},
+			UpdateExisting: func(planItem verityTenantRouteTenantModel, stateItem verityTenantRouteTenantModel) (openapi.TenantsPutRequestTenantValueRouteTenantsInner, bool) {
+				updateRouteTenant := openapi.TenantsPutRequestTenantValueRouteTenantsInner{}
+				fieldChanged := false
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				tenantRoute.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateRouteTenant.Enable = v }, &fieldChanged)
 
-			if !planItem.Tenant.Equal(stateItem.Tenant) {
-				if !planItem.Tenant.IsNull() {
-					tenantRoute.Tenant = openapi.PtrString(planItem.Tenant.ValueString())
-				} else {
-					tenantRoute.Tenant = openapi.PtrString("")
+				// Handle string field changes
+				utils.CompareAndSetStringField(planItem.Tenant, stateItem.Tenant, func(v *string) { updateRouteTenant.Tenant = v }, &fieldChanged)
+
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateRouteTenant.Index = v }, &fieldChanged)
+
+				return updateRouteTenant, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.TenantsPutRequestTenantValueRouteTenantsInner {
+				return openapi.TenantsPutRequestTenantValueRouteTenantsInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-				fieldChanged = true
-			}
-
-			return tenantRoute, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.TenantsPutRequestTenantValueRouteTenantsInner {
-			return openapi.TenantsPutRequestTenantValueRouteTenantsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedRouteTenants, routeTenantsChanged := utils.ProcessIndexedArrayUpdates(plan.RouteTenants, state.RouteTenants, routeTenantsHandler)
+			},
+		})
 	if routeTenantsChanged {
 		tenantReq.RouteTenants = changedRouteTenants
 		hasChanges = true

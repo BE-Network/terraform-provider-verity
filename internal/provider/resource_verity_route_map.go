@@ -179,18 +179,21 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 		for i, clause := range plan.RouteMapClauses {
 			clauseProps := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{}
 
-			if !clause.Enable.IsNull() {
-				clauseProps.Enable = openapi.PtrBool(clause.Enable.ValueBool())
-			}
-			if !clause.RouteMapClause.IsNull() {
-				clauseProps.RouteMapClause = openapi.PtrString(clause.RouteMapClause.ValueString())
-			}
-			if !clause.RouteMapClauseRefType.IsNull() {
-				clauseProps.RouteMapClauseRefType = openapi.PtrString(clause.RouteMapClauseRefType.ValueString())
-			}
-			if !clause.Index.IsNull() {
-				clauseProps.Index = openapi.PtrInt32(int32(clause.Index.ValueInt64()))
-			}
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &clauseProps.Enable, TFValue: clause.Enable},
+			})
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RouteMapClause", APIField: &clauseProps.RouteMapClause, TFValue: clause.RouteMapClause},
+				{FieldName: "RouteMapClauseRefType", APIField: &clauseProps.RouteMapClauseRefType, TFValue: clause.RouteMapClauseRefType},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &clauseProps.Index, TFValue: clause.Index},
+			})
 
 			routeMapClausesList[i] = clauseProps
 		}
@@ -392,88 +395,58 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 	}
 
 	// Handle route_map_clauses
-	routeMapClausesHandler := utils.IndexedItemHandler[verityRouteMapClausesModel, openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner]{
-		CreateNew: func(planItem verityRouteMapClausesModel) openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
-			clause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedRouteMapClauses, routeMapClausesChanged := utils.ProcessIndexedArrayUpdates(plan.RouteMapClauses, state.RouteMapClauses,
+		utils.IndexedItemHandler[verityRouteMapClausesModel, openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner]{
+			CreateNew: func(planItem verityRouteMapClausesModel) openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
+				newClause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{}
 
-			if !planItem.Enable.IsNull() {
-				clause.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				clause.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newClause.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.RouteMapClause.IsNull() {
-				clause.RouteMapClause = openapi.PtrString(planItem.RouteMapClause.ValueString())
-			} else {
-				clause.RouteMapClause = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "RouteMapClause", APIField: &newClause.RouteMapClause, TFValue: planItem.RouteMapClause},
+					{FieldName: "RouteMapClauseRefType", APIField: &newClause.RouteMapClauseRefType, TFValue: planItem.RouteMapClauseRefType},
+				})
 
-			if !planItem.RouteMapClauseRefType.IsNull() {
-				clause.RouteMapClauseRefType = openapi.PtrString(planItem.RouteMapClauseRefType.ValueString())
-			} else {
-				clause.RouteMapClauseRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newClause.Index, TFValue: planItem.Index},
+				})
 
-			return clause
-		},
-		UpdateExisting: func(planItem verityRouteMapClausesModel, stateItem verityRouteMapClausesModel) (openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner, bool) {
-			clause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				return newClause
+			},
+			UpdateExisting: func(planItem verityRouteMapClausesModel, stateItem verityRouteMapClausesModel) (openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner, bool) {
+				updateClause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{}
+				fieldChanged := false
 
-			fieldChanged := false
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateClause.Enable = v }, &fieldChanged)
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				clause.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
-
-			routeMapClauseChanged := !planItem.RouteMapClause.Equal(stateItem.RouteMapClause)
-			routeMapClauseRefTypeChanged := !planItem.RouteMapClauseRefType.Equal(stateItem.RouteMapClauseRefType)
-
-			if routeMapClauseChanged || routeMapClauseRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					planItem.RouteMapClause, planItem.RouteMapClauseRefType,
+				// Handle route_map_clause and route_map_clause_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.RouteMapClause, stateItem.RouteMapClause, planItem.RouteMapClauseRefType, stateItem.RouteMapClauseRefType,
+					func(v *string) { updateClause.RouteMapClause = v },
+					func(v *string) { updateClause.RouteMapClauseRefType = v },
 					"route_map_clause", "route_map_clause_ref_type_",
-					routeMapClauseChanged, routeMapClauseRefTypeChanged) {
-					return clause, false
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateClause, false
 				}
 
-				if routeMapClauseChanged && !routeMapClauseRefTypeChanged {
-					if !planItem.RouteMapClause.IsNull() {
-						clause.RouteMapClause = openapi.PtrString(planItem.RouteMapClause.ValueString())
-					} else {
-						clause.RouteMapClause = openapi.PtrString("")
-					}
-					fieldChanged = true
-				} else if routeMapClauseRefTypeChanged {
-					if !planItem.RouteMapClause.IsNull() {
-						clause.RouteMapClause = openapi.PtrString(planItem.RouteMapClause.ValueString())
-					} else {
-						clause.RouteMapClause = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateClause.Index = v }, &fieldChanged)
 
-					if !planItem.RouteMapClauseRefType.IsNull() {
-						clause.RouteMapClauseRefType = openapi.PtrString(planItem.RouteMapClauseRefType.ValueString())
-					} else {
-						clause.RouteMapClauseRefType = openapi.PtrString("")
-					}
-					fieldChanged = true
+				return updateClause, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
+				return openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-			}
-
-			return clause, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
-			return openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedRouteMapClauses, routeMapClausesChanged := utils.ProcessIndexedArrayUpdates(plan.RouteMapClauses, state.RouteMapClauses, routeMapClausesHandler)
+			},
+		})
 	if routeMapClausesChanged {
 		routeMapProps.RouteMapClauses = changedRouteMapClauses
 		hasChanges = true

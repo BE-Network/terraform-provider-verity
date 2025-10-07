@@ -221,18 +221,18 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		ipv4Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Permit))
 		for i, filter := range plan.Ipv4Permit {
 			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
-			if !filter.Enable.IsNull() {
-				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
-			}
-			if !filter.Filter.IsNull() {
-				filterItem.Filter = openapi.PtrString(filter.Filter.ValueString())
-			}
-			if !filter.FilterRefType.IsNull() {
-				filterItem.FilterRefType = openapi.PtrString(filter.FilterRefType.ValueString())
-			}
-			if !filter.Index.IsNull() {
-				filterItem.Index = openapi.PtrInt32(int32(filter.Index.ValueInt64()))
-			}
+
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &filterItem.Enable, TFValue: filter.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Filter", APIField: &filterItem.Filter, TFValue: filter.Filter},
+				{FieldName: "FilterRefType", APIField: &filterItem.FilterRefType, TFValue: filter.FilterRefType},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &filterItem.Index, TFValue: filter.Index},
+			})
+
 			ipv4Permit[i] = filterItem
 		}
 		pbProps.Ipv4Permit = ipv4Permit
@@ -242,18 +242,18 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		ipv4Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Deny))
 		for i, filter := range plan.Ipv4Deny {
 			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
-			if !filter.Enable.IsNull() {
-				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
-			}
-			if !filter.Filter.IsNull() {
-				filterItem.Filter = openapi.PtrString(filter.Filter.ValueString())
-			}
-			if !filter.FilterRefType.IsNull() {
-				filterItem.FilterRefType = openapi.PtrString(filter.FilterRefType.ValueString())
-			}
-			if !filter.Index.IsNull() {
-				filterItem.Index = openapi.PtrInt32(int32(filter.Index.ValueInt64()))
-			}
+
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &filterItem.Enable, TFValue: filter.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Filter", APIField: &filterItem.Filter, TFValue: filter.Filter},
+				{FieldName: "FilterRefType", APIField: &filterItem.FilterRefType, TFValue: filter.FilterRefType},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &filterItem.Index, TFValue: filter.Index},
+			})
+
 			ipv4Deny[i] = filterItem
 		}
 		pbProps.Ipv4Deny = ipv4Deny
@@ -263,18 +263,18 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		ipv6Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Permit))
 		for i, filter := range plan.Ipv6Permit {
 			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
-			if !filter.Enable.IsNull() {
-				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
-			}
-			if !filter.Filter.IsNull() {
-				filterItem.Filter = openapi.PtrString(filter.Filter.ValueString())
-			}
-			if !filter.FilterRefType.IsNull() {
-				filterItem.FilterRefType = openapi.PtrString(filter.FilterRefType.ValueString())
-			}
-			if !filter.Index.IsNull() {
-				filterItem.Index = openapi.PtrInt32(int32(filter.Index.ValueInt64()))
-			}
+
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &filterItem.Enable, TFValue: filter.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Filter", APIField: &filterItem.Filter, TFValue: filter.Filter},
+				{FieldName: "FilterRefType", APIField: &filterItem.FilterRefType, TFValue: filter.FilterRefType},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &filterItem.Index, TFValue: filter.Index},
+			})
+
 			ipv6Permit[i] = filterItem
 		}
 		pbProps.Ipv6Permit = ipv6Permit
@@ -284,18 +284,18 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		ipv6Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Deny))
 		for i, filter := range plan.Ipv6Deny {
 			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
-			if !filter.Enable.IsNull() {
-				filterItem.Enable = openapi.PtrBool(filter.Enable.ValueBool())
-			}
-			if !filter.Filter.IsNull() {
-				filterItem.Filter = openapi.PtrString(filter.Filter.ValueString())
-			}
-			if !filter.FilterRefType.IsNull() {
-				filterItem.FilterRefType = openapi.PtrString(filter.FilterRefType.ValueString())
-			}
-			if !filter.Index.IsNull() {
-				filterItem.Index = openapi.PtrInt32(int32(filter.Index.ValueInt64()))
-			}
+
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &filterItem.Enable, TFValue: filter.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Filter", APIField: &filterItem.Filter, TFValue: filter.Filter},
+				{FieldName: "FilterRefType", APIField: &filterItem.FilterRefType, TFValue: filter.FilterRefType},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &filterItem.Index, TFValue: filter.Index},
+			})
+
 			ipv6Deny[i] = filterItem
 		}
 		pbProps.Ipv6Deny = ipv6Deny
@@ -491,215 +491,232 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { pbProps.Enable = v }, &hasChanges)
 
-	// Handle IPv4 Permit
-	ipv4PermitHandler := utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner]{
-		CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
-			newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	// Handle IPv4 Permit using consolidated handler
+	changedIpv4Permit, ipv4PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit,
+		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner]{
+			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
-			if !planItem.Enable.IsNull() {
-				newFilter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				newFilter.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.Filter.IsNull() && planItem.Filter.ValueString() != "" {
-				newFilter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-			} else {
-				newFilter.Filter = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
+					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
+				})
 
-			if !planItem.FilterRefType.IsNull() && planItem.FilterRefType.ValueString() != "" {
-				newFilter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-			} else {
-				newFilter.FilterRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
+				})
 
-			return newFilter
-		},
-		UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, bool) {
-			updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				return newFilter
+			},
+			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, bool) {
+				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
+				fieldChanged := false
 
-			fieldChanged := false
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				updateFilter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
-
-			if !planItem.Filter.Equal(stateItem.Filter) {
-				if !planItem.Filter.IsNull() && planItem.Filter.ValueString() != "" {
-					updateFilter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-				} else {
-					updateFilter.Filter = openapi.PtrString("")
+				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
+				if !utils.HandleMultipleRefTypesSupported(
+					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
+					func(v *string) { updateFilter.Filter = v },
+					func(v *string) { updateFilter.FilterRefType = v },
+					"filter", "filter_ref_type_",
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateFilter, false
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.FilterRefType.Equal(stateItem.FilterRefType) {
-				if !planItem.FilterRefType.IsNull() && planItem.FilterRefType.ValueString() != "" {
-					updateFilter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-				} else {
-					updateFilter.FilterRefType = openapi.PtrString("")
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
+
+				return updateFilter, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-				fieldChanged = true
-			}
-
-			return updateFilter, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
-			return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	for _, filterPlan := range plan.Ipv4Permit {
-		if !filterPlan.Filter.IsNull() && !filterPlan.FilterRefType.IsNull() && filterPlan.Filter.ValueString() != "" {
-			if !utils.ValidateMultipleRefTypesSupported(
-				&resp.Diagnostics,
-				filterPlan.Filter,
-				filterPlan.FilterRefType,
-				"filter",
-				"filter_ref_type_",
-			) {
-				return
-			}
-		}
-	}
-
-	changedIpv4Permit, ipv4PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit, ipv4PermitHandler)
+			},
+		})
 	if ipv4PermitChanged {
 		pbProps.Ipv4Permit = changedIpv4Permit
 		hasChanges = true
 	}
 
 	// Handle IPv4 Deny
-	for _, filterPlan := range plan.Ipv4Deny {
-		if !filterPlan.Filter.IsNull() && !filterPlan.FilterRefType.IsNull() && filterPlan.Filter.ValueString() != "" {
-			if !utils.ValidateMultipleRefTypesSupported(
-				&resp.Diagnostics,
-				filterPlan.Filter,
-				filterPlan.FilterRefType,
-				"filter",
-				"filter_ref_type_",
-			) {
-				return
-			}
-		}
-	}
+	changedIpv4Deny, ipv4DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny,
+		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner]{
+			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
-	ipv4DenyHandler := ipv4PermitHandler // Reuse the same handler structure
-	changedIpv4Deny, ipv4DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny, ipv4DenyHandler)
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
+				})
+
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
+					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
+				})
+
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
+				})
+
+				return newFilter
+			},
+			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, bool) {
+				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
+				fieldChanged := false
+
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
+
+				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
+				if !utils.HandleMultipleRefTypesSupported(
+					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
+					func(v *string) { updateFilter.Filter = v },
+					func(v *string) { updateFilter.FilterRefType = v },
+					"filter", "filter_ref_type_",
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateFilter, false
+				}
+
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
+
+				return updateFilter, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
+					Index: openapi.PtrInt32(int32(index)),
+				}
+			},
+		})
 	if ipv4DenyChanged {
 		pbProps.Ipv4Deny = changedIpv4Deny
 		hasChanges = true
 	}
 
 	// Handle IPv6 Permit
-	ipv6PermitHandler := utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner]{
-		CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
-			newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedIpv6Permit, ipv6PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit,
+		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner]{
+			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 
-			if !planItem.Enable.IsNull() {
-				newFilter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				newFilter.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.Filter.IsNull() && planItem.Filter.ValueString() != "" {
-				newFilter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-			} else {
-				newFilter.Filter = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
+					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
+				})
 
-			if !planItem.FilterRefType.IsNull() && planItem.FilterRefType.ValueString() != "" {
-				newFilter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-			} else {
-				newFilter.FilterRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
+				})
 
-			return newFilter
-		},
-		UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
-			updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				return newFilter
+			},
+			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
+				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
+				fieldChanged := false
 
-			fieldChanged := false
+				// Handle boolean field changes
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				updateFilter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
-
-			if !planItem.Filter.Equal(stateItem.Filter) {
-				if !planItem.Filter.IsNull() && planItem.Filter.ValueString() != "" {
-					updateFilter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-				} else {
-					updateFilter.Filter = openapi.PtrString("")
+				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
+				if !utils.HandleMultipleRefTypesSupported(
+					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
+					func(v *string) { updateFilter.Filter = v },
+					func(v *string) { updateFilter.FilterRefType = v },
+					"filter", "filter_ref_type_",
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateFilter, false
 				}
-				fieldChanged = true
-			}
 
-			if !planItem.FilterRefType.Equal(stateItem.FilterRefType) {
-				if !planItem.FilterRefType.IsNull() && planItem.FilterRefType.ValueString() != "" {
-					updateFilter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-				} else {
-					updateFilter.FilterRefType = openapi.PtrString("")
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
+
+				return updateFilter, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-				fieldChanged = true
-			}
-
-			return updateFilter, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
-			return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	for _, filterPlan := range plan.Ipv6Permit {
-		if !filterPlan.Filter.IsNull() && !filterPlan.FilterRefType.IsNull() && filterPlan.Filter.ValueString() != "" {
-			if !utils.ValidateMultipleRefTypesSupported(
-				&resp.Diagnostics,
-				filterPlan.Filter,
-				filterPlan.FilterRefType,
-				"filter",
-				"filter_ref_type_",
-			) {
-				return
-			}
-		}
-	}
-
-	changedIpv6Permit, ipv6PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit, ipv6PermitHandler)
+			},
+		})
 	if ipv6PermitChanged {
 		pbProps.Ipv6Permit = changedIpv6Permit
 		hasChanges = true
 	}
 
-	for _, filterPlan := range plan.Ipv6Deny {
-		if !filterPlan.Filter.IsNull() && !filterPlan.FilterRefType.IsNull() && filterPlan.Filter.ValueString() != "" {
-			if !utils.ValidateMultipleRefTypesSupported(
-				&resp.Diagnostics,
-				filterPlan.Filter,
-				filterPlan.FilterRefType,
-				"filter",
-				"filter_ref_type_",
-			) {
-				return
-			}
-		}
-	}
+	// Handle IPv6 Deny
+	changedIpv6Deny, ipv6DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny,
+		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner]{
+			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 
-	changedIpv6Deny, ipv6DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny, ipv6PermitHandler)
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
+				})
+
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
+					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
+				})
+
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
+				})
+
+				return newFilter
+			},
+			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
+				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
+				fieldChanged := false
+
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
+
+				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
+				if !utils.HandleMultipleRefTypesSupported(
+					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
+					func(v *string) { updateFilter.Filter = v },
+					func(v *string) { updateFilter.FilterRefType = v },
+					"filter", "filter_ref_type_",
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateFilter, false
+				}
+
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
+
+				return updateFilter, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
+					Index: openapi.PtrInt32(int32(index)),
+				}
+			},
+		})
 	if ipv6DenyChanged {
 		pbProps.Ipv6Deny = changedIpv6Deny
 		hasChanges = true

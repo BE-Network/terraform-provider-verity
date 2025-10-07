@@ -364,26 +364,21 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	// Handle static routes
 	if len(plan.StaticRoutes) > 0 {
 		routes := make([]openapi.GatewaysPutRequestGatewayValueStaticRoutesInner, len(plan.StaticRoutes))
-		for i, route := range plan.StaticRoutes {
+		for i, item := range plan.StaticRoutes {
 			rItem := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{}
-			if !route.Enable.IsNull() {
-				rItem.Enable = openapi.PtrBool(route.Enable.ValueBool())
-			}
-			if !route.Ipv4RoutePrefix.IsNull() {
-				rItem.Ipv4RoutePrefix = openapi.PtrString(route.Ipv4RoutePrefix.ValueString())
-			}
-			if !route.NextHopIpAddress.IsNull() {
-				rItem.NextHopIpAddress = openapi.PtrString(route.NextHopIpAddress.ValueString())
-			}
-			if !route.AdValue.IsNull() {
-				adVal := int32(route.AdValue.ValueInt64())
-				rItem.AdValue = *openapi.NewNullableInt32(&adVal)
-			} else {
-				rItem.AdValue = *openapi.NewNullableInt32(nil)
-			}
-			if !route.Index.IsNull() {
-				rItem.Index = openapi.PtrInt32(int32(route.Index.ValueInt64()))
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &rItem.Enable, TFValue: item.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Ipv4RoutePrefix", APIField: &rItem.Ipv4RoutePrefix, TFValue: item.Ipv4RoutePrefix},
+				{FieldName: "NextHopIpAddress", APIField: &rItem.NextHopIpAddress, TFValue: item.NextHopIpAddress},
+			})
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+				{FieldName: "AdValue", APIField: &rItem.AdValue, TFValue: item.AdValue},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &rItem.Index, TFValue: item.Index},
+			})
 			routes[i] = rItem
 		}
 		gatewayProps.StaticRoutes = routes
@@ -703,83 +698,54 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	// Handle static routes
 	staticRoutesHandler := utils.IndexedItemHandler[verityGatewayStaticRoutesModel, openapi.GatewaysPutRequestGatewayValueStaticRoutesInner]{
 		CreateNew: func(planItem verityGatewayStaticRoutesModel) openapi.GatewaysPutRequestGatewayValueStaticRoutesInner {
-			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{}
 
-			if !planItem.Enable.IsNull() {
-				route.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				route.Enable = openapi.PtrBool(false)
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &route.Index, TFValue: planItem.Index},
+			})
 
-			if !planItem.Ipv4RoutePrefix.IsNull() {
-				route.Ipv4RoutePrefix = openapi.PtrString(planItem.Ipv4RoutePrefix.ValueString())
-			} else {
-				route.Ipv4RoutePrefix = openapi.PtrString("")
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &route.Enable, TFValue: planItem.Enable},
+			})
 
-			if !planItem.NextHopIpAddress.IsNull() {
-				route.NextHopIpAddress = openapi.PtrString(planItem.NextHopIpAddress.ValueString())
-			} else {
-				route.NextHopIpAddress = openapi.PtrString("")
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Ipv4RoutePrefix", APIField: &route.Ipv4RoutePrefix, TFValue: planItem.Ipv4RoutePrefix},
+				{FieldName: "NextHopIpAddress", APIField: &route.NextHopIpAddress, TFValue: planItem.NextHopIpAddress},
+			})
 
-			if !planItem.AdValue.IsNull() {
-				adVal := int32(planItem.AdValue.ValueInt64())
-				route.AdValue = *openapi.NewNullableInt32(&adVal)
-			} else {
-				route.AdValue = *openapi.NewNullableInt32(nil)
-			}
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+				{FieldName: "AdValue", APIField: &route.AdValue, TFValue: planItem.AdValue},
+			})
 
 			return route
 		},
 		UpdateExisting: func(planItem verityGatewayStaticRoutesModel, stateItem verityGatewayStaticRoutesModel) (openapi.GatewaysPutRequestGatewayValueStaticRoutesInner, bool) {
-			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &route.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				route.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { route.Enable = v }, &fieldChanged)
 
-			if !planItem.Ipv4RoutePrefix.Equal(stateItem.Ipv4RoutePrefix) {
-				if !planItem.Ipv4RoutePrefix.IsNull() {
-					route.Ipv4RoutePrefix = openapi.PtrString(planItem.Ipv4RoutePrefix.ValueString())
-				} else {
-					route.Ipv4RoutePrefix = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Handle string fields
+			utils.CompareAndSetStringField(planItem.Ipv4RoutePrefix, stateItem.Ipv4RoutePrefix, func(v *string) { route.Ipv4RoutePrefix = v }, &fieldChanged)
+			utils.CompareAndSetStringField(planItem.NextHopIpAddress, stateItem.NextHopIpAddress, func(v *string) { route.NextHopIpAddress = v }, &fieldChanged)
 
-			if !planItem.NextHopIpAddress.Equal(stateItem.NextHopIpAddress) {
-				if !planItem.NextHopIpAddress.IsNull() {
-					route.NextHopIpAddress = openapi.PtrString(planItem.NextHopIpAddress.ValueString())
-				} else {
-					route.NextHopIpAddress = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.AdValue.Equal(stateItem.AdValue) {
-				if !planItem.AdValue.IsNull() {
-					adVal := int32(planItem.AdValue.ValueInt64())
-					route.AdValue = *openapi.NewNullableInt32(&adVal)
-				} else {
-					route.AdValue = *openapi.NewNullableInt32(nil)
-				}
-				fieldChanged = true
-			}
+			// Handle nullable int64 fields
+			utils.CompareAndSetNullableInt64Field(planItem.AdValue, stateItem.AdValue, func(v *openapi.NullableInt32) { route.AdValue = *v }, &fieldChanged)
 
 			return route, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.GatewaysPutRequestGatewayValueStaticRoutesInner {
-			return openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &route.Index, TFValue: types.Int64Value(index)},
+			})
+			return route
 		},
 	}
 

@@ -551,23 +551,19 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 	// Handle codecs
 	if len(plan.Codecs) > 0 {
 		codecs := make([]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, len(plan.Codecs))
-		for i, codec := range plan.Codecs {
+		for i, item := range plan.Codecs {
 			codecItem := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
-			if !codec.CodecNumName.IsNull() {
-				codecItem.CodecNumName = openapi.PtrString(codec.CodecNumName.ValueString())
-			}
-			if !codec.CodecNumEnable.IsNull() {
-				codecItem.CodecNumEnable = openapi.PtrBool(codec.CodecNumEnable.ValueBool())
-			}
-			if !codec.CodecNumPacketizationPeriod.IsNull() {
-				codecItem.CodecNumPacketizationPeriod = openapi.PtrString(codec.CodecNumPacketizationPeriod.ValueString())
-			}
-			if !codec.CodecNumSilenceSuppression.IsNull() {
-				codecItem.CodecNumSilenceSuppression = openapi.PtrBool(codec.CodecNumSilenceSuppression.ValueBool())
-			}
-			if !codec.Index.IsNull() {
-				codecItem.Index = openapi.PtrInt32(int32(codec.Index.ValueInt64()))
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "CodecNumEnable", APIField: &codecItem.CodecNumEnable, TFValue: item.CodecNumEnable},
+				{FieldName: "CodecNumSilenceSuppression", APIField: &codecItem.CodecNumSilenceSuppression, TFValue: item.CodecNumSilenceSuppression},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "CodecNumName", APIField: &codecItem.CodecNumName, TFValue: item.CodecNumName},
+				{FieldName: "CodecNumPacketizationPeriod", APIField: &codecItem.CodecNumPacketizationPeriod, TFValue: item.CodecNumPacketizationPeriod},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &codecItem.Index, TFValue: item.Index},
+			})
 			codecs[i] = codecItem
 		}
 		dvsProps.Codecs = codecs
@@ -914,77 +910,49 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	// Handle codecs
 	codecsHandler := utils.IndexedItemHandler[verityDeviceVoiceSettingsCodecModel, openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner]{
 		CreateNew: func(planItem verityDeviceVoiceSettingsCodecModel) openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
-			codec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			codec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
 
-			if !planItem.CodecNumName.IsNull() {
-				codec.CodecNumName = openapi.PtrString(planItem.CodecNumName.ValueString())
-			} else {
-				codec.CodecNumName = openapi.PtrString("")
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &codec.Index, TFValue: planItem.Index},
+			})
 
-			if !planItem.CodecNumEnable.IsNull() {
-				codec.CodecNumEnable = openapi.PtrBool(planItem.CodecNumEnable.ValueBool())
-			} else {
-				codec.CodecNumEnable = openapi.PtrBool(false)
-			}
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "CodecNumName", APIField: &codec.CodecNumName, TFValue: planItem.CodecNumName},
+				{FieldName: "CodecNumPacketizationPeriod", APIField: &codec.CodecNumPacketizationPeriod, TFValue: planItem.CodecNumPacketizationPeriod},
+			})
 
-			if !planItem.CodecNumPacketizationPeriod.IsNull() {
-				codec.CodecNumPacketizationPeriod = openapi.PtrString(planItem.CodecNumPacketizationPeriod.ValueString())
-			} else {
-				codec.CodecNumPacketizationPeriod = openapi.PtrString("")
-			}
-
-			if !planItem.CodecNumSilenceSuppression.IsNull() {
-				codec.CodecNumSilenceSuppression = openapi.PtrBool(planItem.CodecNumSilenceSuppression.ValueBool())
-			} else {
-				codec.CodecNumSilenceSuppression = openapi.PtrBool(false)
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "CodecNumEnable", APIField: &codec.CodecNumEnable, TFValue: planItem.CodecNumEnable},
+				{FieldName: "CodecNumSilenceSuppression", APIField: &codec.CodecNumSilenceSuppression, TFValue: planItem.CodecNumSilenceSuppression},
+			})
 
 			return codec
 		},
 		UpdateExisting: func(planItem verityDeviceVoiceSettingsCodecModel, stateItem verityDeviceVoiceSettingsCodecModel) (openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, bool) {
-			codec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			codec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &codec.Index, TFValue: planItem.Index},
+			})
 
 			fieldChanged := false
 
-			if !planItem.CodecNumName.Equal(stateItem.CodecNumName) {
-				if !planItem.CodecNumName.IsNull() {
-					codec.CodecNumName = openapi.PtrString(planItem.CodecNumName.ValueString())
-				} else {
-					codec.CodecNumName = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
+			// Handle string fields
+			utils.CompareAndSetStringField(planItem.CodecNumName, stateItem.CodecNumName, func(v *string) { codec.CodecNumName = v }, &fieldChanged)
+			utils.CompareAndSetStringField(planItem.CodecNumPacketizationPeriod, stateItem.CodecNumPacketizationPeriod, func(v *string) { codec.CodecNumPacketizationPeriod = v }, &fieldChanged)
 
-			if !planItem.CodecNumEnable.Equal(stateItem.CodecNumEnable) {
-				codec.CodecNumEnable = openapi.PtrBool(planItem.CodecNumEnable.ValueBool())
-				fieldChanged = true
-			}
-
-			if !planItem.CodecNumPacketizationPeriod.Equal(stateItem.CodecNumPacketizationPeriod) {
-				if !planItem.CodecNumPacketizationPeriod.IsNull() {
-					codec.CodecNumPacketizationPeriod = openapi.PtrString(planItem.CodecNumPacketizationPeriod.ValueString())
-				} else {
-					codec.CodecNumPacketizationPeriod = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.CodecNumSilenceSuppression.Equal(stateItem.CodecNumSilenceSuppression) {
-				codec.CodecNumSilenceSuppression = openapi.PtrBool(planItem.CodecNumSilenceSuppression.ValueBool())
-				fieldChanged = true
-			}
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.CodecNumEnable, stateItem.CodecNumEnable, func(v *bool) { codec.CodecNumEnable = v }, &fieldChanged)
+			utils.CompareAndSetBoolField(planItem.CodecNumSilenceSuppression, stateItem.CodecNumSilenceSuppression, func(v *bool) { codec.CodecNumSilenceSuppression = v }, &fieldChanged)
 
 			return codec, fieldChanged
 		},
 		CreateDeleted: func(index int64) openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
-			return openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			codec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &codec.Index, TFValue: types.Int64Value(index)},
+			})
+			return codec
 		},
 	}
 

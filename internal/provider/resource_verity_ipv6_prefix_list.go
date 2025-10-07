@@ -188,31 +188,21 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 		var lists []openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner
 		for _, listItem := range plan.Lists {
 			item := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner{}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &item.Enable, TFValue: listItem.Enable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "PermitDeny", APIField: &item.PermitDeny, TFValue: listItem.PermitDeny},
+				{FieldName: "Ipv6Prefix", APIField: &item.Ipv6Prefix, TFValue: listItem.Ipv6Prefix},
+			})
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+				{FieldName: "GreaterThanEqualValue", APIField: &item.GreaterThanEqualValue, TFValue: listItem.GreaterThanEqualValue},
+				{FieldName: "LessThanEqualValue", APIField: &item.LessThanEqualValue, TFValue: listItem.LessThanEqualValue},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: listItem.Index},
+			})
 
-			if !listItem.Enable.IsNull() {
-				item.Enable = openapi.PtrBool(listItem.Enable.ValueBool())
-			}
-			if !listItem.PermitDeny.IsNull() {
-				item.PermitDeny = openapi.PtrString(listItem.PermitDeny.ValueString())
-			}
-			if !listItem.Ipv6Prefix.IsNull() {
-				item.Ipv6Prefix = openapi.PtrString(listItem.Ipv6Prefix.ValueString())
-			}
-			if !listItem.GreaterThanEqualValue.IsNull() {
-				val := int32(listItem.GreaterThanEqualValue.ValueInt64())
-				item.GreaterThanEqualValue = *openapi.NewNullableInt32(&val)
-			} else {
-				item.GreaterThanEqualValue = *openapi.NewNullableInt32(nil)
-			}
-			if !listItem.LessThanEqualValue.IsNull() {
-				val := int32(listItem.LessThanEqualValue.ValueInt64())
-				item.LessThanEqualValue = *openapi.NewNullableInt32(&val)
-			} else {
-				item.LessThanEqualValue = *openapi.NewNullableInt32(nil)
-			}
-			if !listItem.Index.IsNull() {
-				item.Index = openapi.PtrInt32(int32(listItem.Index.ValueInt64()))
-			}
 			lists = append(lists, item)
 		}
 		ipv6PrefixListProps.Lists = lists
@@ -414,85 +404,49 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 	// Handle lists
 	listsHandler := utils.IndexedItemHandler[verityIpv6PrefixListListsModel, openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner]{
 		CreateNew: func(planItem verityIpv6PrefixListListsModel) openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner {
-			newItem := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			newItem := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner{}
 
-			if !planItem.Enable.IsNull() {
-				newItem.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			}
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &newItem.Enable, TFValue: planItem.Enable},
+			})
 
-			if !planItem.PermitDeny.IsNull() {
-				newItem.PermitDeny = openapi.PtrString(planItem.PermitDeny.ValueString())
-			}
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "PermitDeny", APIField: &newItem.PermitDeny, TFValue: planItem.PermitDeny},
+				{FieldName: "Ipv6Prefix", APIField: &newItem.Ipv6Prefix, TFValue: planItem.Ipv6Prefix},
+			})
 
-			if !planItem.Ipv6Prefix.IsNull() {
-				newItem.Ipv6Prefix = openapi.PtrString(planItem.Ipv6Prefix.ValueString())
-			}
+			// Handle nullable int64 fields
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+				{FieldName: "GreaterThanEqualValue", APIField: &newItem.GreaterThanEqualValue, TFValue: planItem.GreaterThanEqualValue},
+				{FieldName: "LessThanEqualValue", APIField: &newItem.LessThanEqualValue, TFValue: planItem.LessThanEqualValue},
+			})
 
-			if !planItem.GreaterThanEqualValue.IsNull() {
-				val := int32(planItem.GreaterThanEqualValue.ValueInt64())
-				newItem.GreaterThanEqualValue = *openapi.NewNullableInt32(&val)
-			} else {
-				newItem.GreaterThanEqualValue = *openapi.NewNullableInt32(nil)
-			}
-
-			if !planItem.LessThanEqualValue.IsNull() {
-				val := int32(planItem.LessThanEqualValue.ValueInt64())
-				newItem.LessThanEqualValue = *openapi.NewNullableInt32(&val)
-			} else {
-				newItem.LessThanEqualValue = *openapi.NewNullableInt32(nil)
-			}
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &newItem.Index, TFValue: planItem.Index},
+			})
 
 			return newItem
 		},
 		UpdateExisting: func(planItem verityIpv6PrefixListListsModel, stateItem verityIpv6PrefixListListsModel) (openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner, bool) {
-			updateItem := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
-
+			updateItem := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner{}
 			fieldChanged := false
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				if !planItem.Enable.IsNull() {
-					updateItem.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				}
-				fieldChanged = true
-			}
+			// Handle boolean field changes
+			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateItem.Enable = v }, &fieldChanged)
 
-			if !planItem.PermitDeny.Equal(stateItem.PermitDeny) {
-				if !planItem.PermitDeny.IsNull() {
-					updateItem.PermitDeny = openapi.PtrString(planItem.PermitDeny.ValueString())
-				}
-				fieldChanged = true
-			}
+			// Handle string field changes
+			utils.CompareAndSetStringField(planItem.PermitDeny, stateItem.PermitDeny, func(v *string) { updateItem.PermitDeny = v }, &fieldChanged)
+			utils.CompareAndSetStringField(planItem.Ipv6Prefix, stateItem.Ipv6Prefix, func(v *string) { updateItem.Ipv6Prefix = v }, &fieldChanged)
 
-			if !planItem.Ipv6Prefix.Equal(stateItem.Ipv6Prefix) {
-				if !planItem.Ipv6Prefix.IsNull() {
-					updateItem.Ipv6Prefix = openapi.PtrString(planItem.Ipv6Prefix.ValueString())
-				}
-				fieldChanged = true
-			}
+			// Handle nullable int64 field changes
+			utils.CompareAndSetNullableInt64Field(planItem.GreaterThanEqualValue, stateItem.GreaterThanEqualValue, func(v *openapi.NullableInt32) { updateItem.GreaterThanEqualValue = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(planItem.LessThanEqualValue, stateItem.LessThanEqualValue, func(v *openapi.NullableInt32) { updateItem.LessThanEqualValue = *v }, &fieldChanged)
 
-			if !planItem.GreaterThanEqualValue.Equal(stateItem.GreaterThanEqualValue) {
-				if !planItem.GreaterThanEqualValue.IsNull() {
-					val := int32(planItem.GreaterThanEqualValue.ValueInt64())
-					updateItem.GreaterThanEqualValue = *openapi.NewNullableInt32(&val)
-				} else {
-					updateItem.GreaterThanEqualValue = *openapi.NewNullableInt32(nil)
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.LessThanEqualValue.Equal(stateItem.LessThanEqualValue) {
-				if !planItem.LessThanEqualValue.IsNull() {
-					val := int32(planItem.LessThanEqualValue.ValueInt64())
-					updateItem.LessThanEqualValue = *openapi.NewNullableInt32(&val)
-				} else {
-					updateItem.LessThanEqualValue = *openapi.NewNullableInt32(nil)
-				}
-				fieldChanged = true
-			}
+			// Handle index field change
+			utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateItem.Index = v }, &fieldChanged)
 
 			return updateItem, fieldChanged
 		},

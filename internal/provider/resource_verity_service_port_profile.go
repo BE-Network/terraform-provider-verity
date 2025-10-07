@@ -258,36 +258,29 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		for i, service := range plan.Services {
 			serviceItem := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 
-			if !service.RowNumService.IsNull() {
-				serviceItem.RowNumService = openapi.PtrString(service.RowNumService.ValueString())
-			}
-			if !service.RowNumServiceRefType.IsNull() {
-				serviceItem.RowNumServiceRefType = openapi.PtrString(service.RowNumServiceRefType.ValueString())
-			}
-			if !service.RowNumEnable.IsNull() {
-				serviceItem.RowNumEnable = openapi.PtrBool(service.RowNumEnable.ValueBool())
-			}
-			if !service.RowNumExternalVlan.IsNull() {
-				val := int32(service.RowNumExternalVlan.ValueInt64())
-				serviceItem.RowNumExternalVlan = *openapi.NewNullableInt32(&val)
-			} else {
-				serviceItem.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-			}
-			if !service.RowNumLimitIn.IsNull() {
-				val := int32(service.RowNumLimitIn.ValueInt64())
-				serviceItem.RowNumLimitIn = *openapi.NewNullableInt32(&val)
-			} else {
-				serviceItem.RowNumLimitIn = *openapi.NewNullableInt32(nil)
-			}
-			if !service.RowNumLimitOut.IsNull() {
-				val := int32(service.RowNumLimitOut.ValueInt64())
-				serviceItem.RowNumLimitOut = *openapi.NewNullableInt32(&val)
-			} else {
-				serviceItem.RowNumLimitOut = *openapi.NewNullableInt32(nil)
-			}
-			if !service.Index.IsNull() {
-				serviceItem.Index = openapi.PtrInt32(int32(service.Index.ValueInt64()))
-			}
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RowNumEnable", APIField: &serviceItem.RowNumEnable, TFValue: service.RowNumEnable},
+			})
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RowNumService", APIField: &serviceItem.RowNumService, TFValue: service.RowNumService},
+				{FieldName: "RowNumServiceRefType", APIField: &serviceItem.RowNumServiceRefType, TFValue: service.RowNumServiceRefType},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: service.Index},
+			})
+
+			// Handle nullable int64 fields
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: service.RowNumExternalVlan},
+				{FieldName: "RowNumLimitIn", APIField: &serviceItem.RowNumLimitIn, TFValue: service.RowNumLimitIn},
+				{FieldName: "RowNumLimitOut", APIField: &serviceItem.RowNumLimitOut, TFValue: service.RowNumLimitOut},
+			})
+
 			services[i] = serviceItem
 		}
 		sppProps.Services = services
@@ -549,139 +542,70 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	}
 
 	// Handle services
-	servicesHandler := utils.IndexedItemHandler[verityServicePortProfileServiceModel, openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner]{
-		CreateNew: func(planItem verityServicePortProfileServiceModel) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
-			service := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedServices, servicesChanged := utils.ProcessIndexedArrayUpdates(plan.Services, state.Services,
+		utils.IndexedItemHandler[verityServicePortProfileServiceModel, openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner]{
+			CreateNew: func(planItem verityServicePortProfileServiceModel) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
+				newService := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 
-			if !planItem.RowNumEnable.IsNull() {
-				service.RowNumEnable = openapi.PtrBool(planItem.RowNumEnable.ValueBool())
-			} else {
-				service.RowNumEnable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "RowNumEnable", APIField: &newService.RowNumEnable, TFValue: planItem.RowNumEnable},
+				})
 
-			if !planItem.RowNumService.IsNull() {
-				service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
-			} else {
-				service.RowNumService = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "RowNumService", APIField: &newService.RowNumService, TFValue: planItem.RowNumService},
+					{FieldName: "RowNumServiceRefType", APIField: &newService.RowNumServiceRefType, TFValue: planItem.RowNumServiceRefType},
+				})
 
-			if !planItem.RowNumServiceRefType.IsNull() {
-				service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
-			} else {
-				service.RowNumServiceRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newService.Index, TFValue: planItem.Index},
+				})
 
-			if !planItem.RowNumExternalVlan.IsNull() {
-				val := int32(planItem.RowNumExternalVlan.ValueInt64())
-				service.RowNumExternalVlan = *openapi.NewNullableInt32(&val)
-			} else {
-				service.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-			}
+				// Handle nullable int64 fields
+				utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+					{FieldName: "RowNumExternalVlan", APIField: &newService.RowNumExternalVlan, TFValue: planItem.RowNumExternalVlan},
+					{FieldName: "RowNumLimitIn", APIField: &newService.RowNumLimitIn, TFValue: planItem.RowNumLimitIn},
+					{FieldName: "RowNumLimitOut", APIField: &newService.RowNumLimitOut, TFValue: planItem.RowNumLimitOut},
+				})
 
-			if !planItem.RowNumLimitIn.IsNull() {
-				val := int32(planItem.RowNumLimitIn.ValueInt64())
-				service.RowNumLimitIn = *openapi.NewNullableInt32(&val)
-			} else {
-				service.RowNumLimitIn = *openapi.NewNullableInt32(nil)
-			}
+				return newService
+			},
+			UpdateExisting: func(planItem verityServicePortProfileServiceModel, stateItem verityServicePortProfileServiceModel) (openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner, bool) {
+				updateService := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
+				fieldChanged := false
 
-			if !planItem.RowNumLimitOut.IsNull() {
-				val := int32(planItem.RowNumLimitOut.ValueInt64())
-				service.RowNumLimitOut = *openapi.NewNullableInt32(&val)
-			} else {
-				service.RowNumLimitOut = *openapi.NewNullableInt32(nil)
-			}
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.RowNumEnable, stateItem.RowNumEnable, func(v *bool) { updateService.RowNumEnable = v }, &fieldChanged)
 
-			return service
-		},
-		UpdateExisting: func(planItem verityServicePortProfileServiceModel, stateItem verityServicePortProfileServiceModel) (openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner, bool) {
-			service := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
-
-			fieldChanged := false
-
-			if !planItem.RowNumEnable.Equal(stateItem.RowNumEnable) {
-				service.RowNumEnable = openapi.PtrBool(planItem.RowNumEnable.ValueBool())
-				fieldChanged = true
-			}
-
-			rowNumServiceChanged := !planItem.RowNumService.Equal(stateItem.RowNumService)
-			rowNumServiceRefTypeChanged := !planItem.RowNumServiceRefType.Equal(stateItem.RowNumServiceRefType)
-
-			if rowNumServiceChanged || rowNumServiceRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					planItem.RowNumService, planItem.RowNumServiceRefType,
+				// Handle row_num_service and row_num_service_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.RowNumService, stateItem.RowNumService, planItem.RowNumServiceRefType, stateItem.RowNumServiceRefType,
+					func(v *string) { updateService.RowNumService = v },
+					func(v *string) { updateService.RowNumServiceRefType = v },
 					"row_num_service", "row_num_service_ref_type_",
-					rowNumServiceChanged, rowNumServiceRefTypeChanged) {
-					return service, false
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateService, false
 				}
 
-				if rowNumServiceChanged && !rowNumServiceRefTypeChanged {
-					if !planItem.RowNumService.IsNull() {
-						service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
-					} else {
-						service.RowNumService = openapi.PtrString("")
-					}
-					fieldChanged = true
-				} else if rowNumServiceRefTypeChanged {
-					if !planItem.RowNumService.IsNull() {
-						service.RowNumService = openapi.PtrString(planItem.RowNumService.ValueString())
-					} else {
-						service.RowNumService = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateService.Index = v }, &fieldChanged)
 
-					if !planItem.RowNumServiceRefType.IsNull() {
-						service.RowNumServiceRefType = openapi.PtrString(planItem.RowNumServiceRefType.ValueString())
-					} else {
-						service.RowNumServiceRefType = openapi.PtrString("")
-					}
-					fieldChanged = true
+				// Handle nullable int64 field changes
+				utils.CompareAndSetNullableInt64Field(planItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, func(v *openapi.NullableInt32) { updateService.RowNumExternalVlan = *v }, &fieldChanged)
+				utils.CompareAndSetNullableInt64Field(planItem.RowNumLimitIn, stateItem.RowNumLimitIn, func(v *openapi.NullableInt32) { updateService.RowNumLimitIn = *v }, &fieldChanged)
+				utils.CompareAndSetNullableInt64Field(planItem.RowNumLimitOut, stateItem.RowNumLimitOut, func(v *openapi.NullableInt32) { updateService.RowNumLimitOut = *v }, &fieldChanged)
+
+				return updateService, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
+				return openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-			}
-
-			if !planItem.RowNumExternalVlan.Equal(stateItem.RowNumExternalVlan) {
-				if !planItem.RowNumExternalVlan.IsNull() {
-					val := int32(planItem.RowNumExternalVlan.ValueInt64())
-					service.RowNumExternalVlan = *openapi.NewNullableInt32(&val)
-				} else {
-					service.RowNumExternalVlan = *openapi.NewNullableInt32(nil)
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.RowNumLimitIn.Equal(stateItem.RowNumLimitIn) {
-				if !planItem.RowNumLimitIn.IsNull() {
-					val := int32(planItem.RowNumLimitIn.ValueInt64())
-					service.RowNumLimitIn = *openapi.NewNullableInt32(&val)
-				} else {
-					service.RowNumLimitIn = *openapi.NewNullableInt32(nil)
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.RowNumLimitOut.Equal(stateItem.RowNumLimitOut) {
-				if !planItem.RowNumLimitOut.IsNull() {
-					val := int32(planItem.RowNumLimitOut.ValueInt64())
-					service.RowNumLimitOut = *openapi.NewNullableInt32(&val)
-				} else {
-					service.RowNumLimitOut = *openapi.NewNullableInt32(nil)
-				}
-				fieldChanged = true
-			}
-
-			return service, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
-			return openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedServices, servicesChanged := utils.ProcessIndexedArrayUpdates(plan.Services, state.Services, servicesHandler)
+			},
+		})
 	if servicesChanged {
 		sppProps.Services = changedServices
 		hasChanges = true

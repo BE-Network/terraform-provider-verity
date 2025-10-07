@@ -222,16 +222,23 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		filters := make([]openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, len(plan.Ipv4Permit))
 		for i, item := range plan.Ipv4Permit {
 			filter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+
+			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filter.Enable, TFValue: item.Enable},
 			})
+
+			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Filter", APIField: &filter.Filter, TFValue: item.Filter},
 				{FieldName: "FilterRefType", APIField: &filter.FilterRefType, TFValue: item.FilterRefType},
 			})
-			if !item.Index.IsNull() {
-				filter.Index = openapi.PtrInt32(int32(item.Index.ValueInt64()))
-			}
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &filter.Index, TFValue: item.Index},
+			})
+
 			filters[i] = filter
 		}
 		portAclProps.Ipv4Permit = filters
@@ -242,16 +249,23 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		filters := make([]openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, len(plan.Ipv4Deny))
 		for i, item := range plan.Ipv4Deny {
 			filter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+
+			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filter.Enable, TFValue: item.Enable},
 			})
+
+			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Filter", APIField: &filter.Filter, TFValue: item.Filter},
 				{FieldName: "FilterRefType", APIField: &filter.FilterRefType, TFValue: item.FilterRefType},
 			})
-			if !item.Index.IsNull() {
-				filter.Index = openapi.PtrInt32(int32(item.Index.ValueInt64()))
-			}
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &filter.Index, TFValue: item.Index},
+			})
+
 			filters[i] = filter
 		}
 		portAclProps.Ipv4Deny = filters
@@ -262,16 +276,23 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		filters := make([]openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, len(plan.Ipv6Permit))
 		for i, item := range plan.Ipv6Permit {
 			filter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+
+			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filter.Enable, TFValue: item.Enable},
 			})
+
+			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Filter", APIField: &filter.Filter, TFValue: item.Filter},
 				{FieldName: "FilterRefType", APIField: &filter.FilterRefType, TFValue: item.FilterRefType},
 			})
-			if !item.Index.IsNull() {
-				filter.Index = openapi.PtrInt32(int32(item.Index.ValueInt64()))
-			}
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &filter.Index, TFValue: item.Index},
+			})
+
 			filters[i] = filter
 		}
 		portAclProps.Ipv6Permit = filters
@@ -282,16 +303,23 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		filters := make([]openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, len(plan.Ipv6Deny))
 		for i, item := range plan.Ipv6Deny {
 			filter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+
+			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filter.Enable, TFValue: item.Enable},
 			})
+
+			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Filter", APIField: &filter.Filter, TFValue: item.Filter},
 				{FieldName: "FilterRefType", APIField: &filter.FilterRefType, TFValue: item.FilterRefType},
 			})
-			if !item.Index.IsNull() {
-				filter.Index = openapi.PtrInt32(int32(item.Index.ValueInt64()))
-			}
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &filter.Index, TFValue: item.Index},
+			})
+
 			filters[i] = filter
 		}
 		portAclProps.Ipv6Deny = filters
@@ -542,352 +570,232 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { portAclProps.Enable = v }, &hasChanges)
 
 	// Handle IPv4 Permit
-	ipv4PermitHandler := utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv4PermitInner]{
-		CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedIpv4Permits, ipv4PermitsChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit,
+		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv4PermitInner]{
+			CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
+				newFilter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
 
-			if !planItem.Enable.IsNull() {
-				filter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				filter.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.Filter.IsNull() {
-				filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-			} else {
-				filter.Filter = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
+					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
+				})
 
-			if !planItem.FilterRefType.IsNull() {
-				filter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-			} else {
-				filter.FilterRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
+				})
 
-			return filter
-		},
-		UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, bool) {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				return newFilter
+			},
+			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, bool) {
+				updateFilter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+				fieldChanged := false
 
-			fieldChanged := false
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				filter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
-
-			filterChanged := !planItem.Filter.Equal(stateItem.Filter)
-			filterRefTypeChanged := !planItem.FilterRefType.Equal(stateItem.FilterRefType)
-
-			if filterChanged || filterRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					planItem.Filter, planItem.FilterRefType,
+				// Handle filter and filter_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
+					func(v *string) { updateFilter.Filter = v },
+					func(v *string) { updateFilter.FilterRefType = v },
 					"filter", "filter_ref_type_",
-					filterChanged, filterRefTypeChanged) {
-					return filter, false
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateFilter, false
 				}
 
-				if filterChanged && !filterRefTypeChanged {
-					if !planItem.Filter.IsNull() {
-						filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-					} else {
-						filter.Filter = openapi.PtrString("")
-					}
-					fieldChanged = true
-				} else if filterRefTypeChanged {
-					if !planItem.Filter.IsNull() {
-						filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-					} else {
-						filter.Filter = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
 
-					if !planItem.FilterRefType.IsNull() {
-						filter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-					} else {
-						filter.FilterRefType = openapi.PtrString("")
-					}
-					fieldChanged = true
+				return updateFilter, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
+				return openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-			}
-
-			return filter, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
-			return openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedIpv4Permits, ipv4PermitsChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit, ipv4PermitHandler)
+			},
+		})
 	if ipv4PermitsChanged {
 		portAclProps.Ipv4Permit = changedIpv4Permits
 		hasChanges = true
 	}
 
 	// Handle IPv4 Deny
-	ipv4DenyHandler := utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv4PermitInner]{
-		CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedIpv4Denies, ipv4DeniesChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny,
+		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv4PermitInner]{
+			CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
+				newFilter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
 
-			if !planItem.Enable.IsNull() {
-				filter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				filter.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.Filter.IsNull() {
-				filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-			} else {
-				filter.Filter = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
+					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
+				})
 
-			if !planItem.FilterRefType.IsNull() {
-				filter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-			} else {
-				filter.FilterRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
+				})
 
-			return filter
-		},
-		UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, bool) {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				return newFilter
+			},
+			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, bool) {
+				updateFilter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+				fieldChanged := false
 
-			fieldChanged := false
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				filter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
-
-			filterChanged := !planItem.Filter.Equal(stateItem.Filter)
-			filterRefTypeChanged := !planItem.FilterRefType.Equal(stateItem.FilterRefType)
-
-			if filterChanged || filterRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					planItem.Filter, planItem.FilterRefType,
+				// Handle filter and filter_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
+					func(v *string) { updateFilter.Filter = v },
+					func(v *string) { updateFilter.FilterRefType = v },
 					"filter", "filter_ref_type_",
-					filterChanged, filterRefTypeChanged) {
-					return filter, false
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateFilter, false
 				}
 
-				if filterChanged && !filterRefTypeChanged {
-					if !planItem.Filter.IsNull() {
-						filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-					} else {
-						filter.Filter = openapi.PtrString("")
-					}
-					fieldChanged = true
-				} else if filterRefTypeChanged {
-					if !planItem.Filter.IsNull() {
-						filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-					} else {
-						filter.Filter = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
 
-					if !planItem.FilterRefType.IsNull() {
-						filter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-					} else {
-						filter.FilterRefType = openapi.PtrString("")
-					}
-					fieldChanged = true
+				return updateFilter, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
+				return openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-			}
-
-			return filter, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
-			return openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedIpv4Denies, ipv4DeniesChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny, ipv4DenyHandler)
+			},
+		})
 	if ipv4DeniesChanged {
 		portAclProps.Ipv4Deny = changedIpv4Denies
 		hasChanges = true
 	}
 
 	// Handle IPv6 Permit
-	ipv6PermitHandler := utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv6PermitInner]{
-		CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedIpv6Permits, ipv6PermitsChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit,
+		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv6PermitInner]{
+			CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
+				newFilter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
 
-			if !planItem.Enable.IsNull() {
-				filter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				filter.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.Filter.IsNull() {
-				filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-			} else {
-				filter.Filter = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
+					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
+				})
 
-			if !planItem.FilterRefType.IsNull() {
-				filter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-			} else {
-				filter.FilterRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
+				})
 
-			return filter
-		},
-		UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, bool) {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				return newFilter
+			},
+			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, bool) {
+				updateFilter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+				fieldChanged := false
 
-			fieldChanged := false
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				filter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
-
-			filterChanged := !planItem.Filter.Equal(stateItem.Filter)
-			filterRefTypeChanged := !planItem.FilterRefType.Equal(stateItem.FilterRefType)
-
-			if filterChanged || filterRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					planItem.Filter, planItem.FilterRefType,
+				// Handle filter and filter_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
+					func(v *string) { updateFilter.Filter = v },
+					func(v *string) { updateFilter.FilterRefType = v },
 					"filter", "filter_ref_type_",
-					filterChanged, filterRefTypeChanged) {
-					return filter, false
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateFilter, false
 				}
 
-				if filterChanged && !filterRefTypeChanged {
-					if !planItem.Filter.IsNull() {
-						filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-					} else {
-						filter.Filter = openapi.PtrString("")
-					}
-					fieldChanged = true
-				} else if filterRefTypeChanged {
-					if !planItem.Filter.IsNull() {
-						filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-					} else {
-						filter.Filter = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
 
-					if !planItem.FilterRefType.IsNull() {
-						filter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-					} else {
-						filter.FilterRefType = openapi.PtrString("")
-					}
-					fieldChanged = true
+				return updateFilter, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
+				return openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-			}
-
-			return filter, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
-			return openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedIpv6Permits, ipv6PermitsChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit, ipv6PermitHandler)
+			},
+		})
 	if ipv6PermitsChanged {
 		portAclProps.Ipv6Permit = changedIpv6Permits
 		hasChanges = true
 	}
 
 	// Handle IPv6 Deny
-	ipv6DenyHandler := utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv6PermitInner]{
-		CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedIpv6Denies, ipv6DeniesChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny,
+		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv6PermitInner]{
+			CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
+				newFilter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
 
-			if !planItem.Enable.IsNull() {
-				filter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-			} else {
-				filter.Enable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
+				})
 
-			if !planItem.Filter.IsNull() {
-				filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-			} else {
-				filter.Filter = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
+					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
+				})
 
-			if !planItem.FilterRefType.IsNull() {
-				filter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-			} else {
-				filter.FilterRefType = openapi.PtrString("")
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
+				})
 
-			return filter
-		},
-		UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, bool) {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				return newFilter
+			},
+			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, bool) {
+				updateFilter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+				fieldChanged := false
 
-			fieldChanged := false
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-			if !planItem.Enable.Equal(stateItem.Enable) {
-				filter.Enable = openapi.PtrBool(planItem.Enable.ValueBool())
-				fieldChanged = true
-			}
-
-			filterChanged := !planItem.Filter.Equal(stateItem.Filter)
-			filterRefTypeChanged := !planItem.FilterRefType.Equal(stateItem.FilterRefType)
-
-			if filterChanged || filterRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					planItem.Filter, planItem.FilterRefType,
+				// Handle filter and filter_ref_type_ using one ref type supported pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
+					func(v *string) { updateFilter.Filter = v },
+					func(v *string) { updateFilter.FilterRefType = v },
 					"filter", "filter_ref_type_",
-					filterChanged, filterRefTypeChanged) {
-					return filter, false
+					&fieldChanged, &resp.Diagnostics,
+				) {
+					return updateFilter, false
 				}
 
-				if filterChanged && !filterRefTypeChanged {
-					if !planItem.Filter.IsNull() {
-						filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-					} else {
-						filter.Filter = openapi.PtrString("")
-					}
-					fieldChanged = true
-				} else if filterRefTypeChanged {
-					if !planItem.Filter.IsNull() {
-						filter.Filter = openapi.PtrString(planItem.Filter.ValueString())
-					} else {
-						filter.Filter = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
 
-					if !planItem.FilterRefType.IsNull() {
-						filter.FilterRefType = openapi.PtrString(planItem.FilterRefType.ValueString())
-					} else {
-						filter.FilterRefType = openapi.PtrString("")
-					}
-					fieldChanged = true
+				return updateFilter, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
+				return openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-			}
-
-			return filter, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
-			return openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedIpv6Denies, ipv6DeniesChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny, ipv6DenyHandler)
+			},
+		})
 	if ipv6DeniesChanged {
 		portAclProps.Ipv6Deny = changedIpv6Denies
 		hasChanges = true

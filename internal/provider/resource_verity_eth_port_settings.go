@@ -451,32 +451,24 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	// Handle LLDP Med
 	if len(plan.LldpMed) > 0 {
 		lldpMedItems := make([]openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, len(plan.LldpMed))
-		for i, lldpMedItem := range plan.LldpMed {
-			item := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
+		for i, item := range plan.LldpMed {
+			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
 
-			if !lldpMedItem.LldpMedRowNumEnable.IsNull() {
-				item.LldpMedRowNumEnable = openapi.PtrBool(lldpMedItem.LldpMedRowNumEnable.ValueBool())
-			}
-			if !lldpMedItem.LldpMedRowNumAdvertisedApplication.IsNull() {
-				item.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(lldpMedItem.LldpMedRowNumAdvertisedApplication.ValueString())
-			}
-			if !lldpMedItem.LldpMedRowNumDscpMark.IsNull() {
-				item.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(lldpMedItem.LldpMedRowNumDscpMark.ValueInt64()))
-			}
-			if !lldpMedItem.LldpMedRowNumPriority.IsNull() {
-				item.LldpMedRowNumPriority = openapi.PtrInt32(int32(lldpMedItem.LldpMedRowNumPriority.ValueInt64()))
-			}
-			if !lldpMedItem.LldpMedRowNumService.IsNull() {
-				item.LldpMedRowNumService = openapi.PtrString(lldpMedItem.LldpMedRowNumService.ValueString())
-			}
-			if !lldpMedItem.LldpMedRowNumServiceRefType.IsNull() {
-				item.LldpMedRowNumServiceRefType = openapi.PtrString(lldpMedItem.LldpMedRowNumServiceRefType.ValueString())
-			}
-			if !lldpMedItem.Index.IsNull() {
-				item.Index = openapi.PtrInt32(int32(lldpMedItem.Index.ValueInt64()))
-			}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "LldpMedRowNumEnable", APIField: &lldpMedItem.LldpMedRowNumEnable, TFValue: item.LldpMedRowNumEnable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "LldpMedRowNumAdvertisedApplication", APIField: &lldpMedItem.LldpMedRowNumAdvertisedApplicatio, TFValue: item.LldpMedRowNumAdvertisedApplication},
+				{FieldName: "LldpMedRowNumService", APIField: &lldpMedItem.LldpMedRowNumService, TFValue: item.LldpMedRowNumService},
+				{FieldName: "LldpMedRowNumServiceRefType", APIField: &lldpMedItem.LldpMedRowNumServiceRefType, TFValue: item.LldpMedRowNumServiceRefType},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: item.LldpMedRowNumDscpMark},
+				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: item.LldpMedRowNumPriority},
+				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
+			})
 
-			lldpMedItems[i] = item
+			lldpMedItems[i] = lldpMedItem
 		}
 		ethPortSettingsProps.LldpMed = lldpMedItems
 	}
@@ -802,93 +794,63 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		CreateNew: func(item verityEthPortSettingsLldpMedModel) openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
 			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
 
-			if !item.Index.IsNull() {
-				lldpMedItem.Index = openapi.PtrInt32(int32(item.Index.ValueInt64()))
-			}
-			if !item.LldpMedRowNumEnable.IsNull() {
-				lldpMedItem.LldpMedRowNumEnable = openapi.PtrBool(item.LldpMedRowNumEnable.ValueBool())
-			}
-			if !item.LldpMedRowNumAdvertisedApplication.IsNull() {
-				lldpMedItem.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(item.LldpMedRowNumAdvertisedApplication.ValueString())
-			}
-			if !item.LldpMedRowNumDscpMark.IsNull() {
-				lldpMedItem.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(item.LldpMedRowNumDscpMark.ValueInt64()))
-			}
-			if !item.LldpMedRowNumPriority.IsNull() {
-				lldpMedItem.LldpMedRowNumPriority = openapi.PtrInt32(int32(item.LldpMedRowNumPriority.ValueInt64()))
-			}
-			if !item.LldpMedRowNumService.IsNull() {
-				lldpMedItem.LldpMedRowNumService = openapi.PtrString(item.LldpMedRowNumService.ValueString())
-			}
-			if !item.LldpMedRowNumServiceRefType.IsNull() {
-				lldpMedItem.LldpMedRowNumServiceRefType = openapi.PtrString(item.LldpMedRowNumServiceRefType.ValueString())
-			}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
+				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: item.LldpMedRowNumDscpMark},
+				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: item.LldpMedRowNumPriority},
+			})
+
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "LldpMedRowNumEnable", APIField: &lldpMedItem.LldpMedRowNumEnable, TFValue: item.LldpMedRowNumEnable},
+			})
+
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "LldpMedRowNumAdvertisedApplication", APIField: &lldpMedItem.LldpMedRowNumAdvertisedApplicatio, TFValue: item.LldpMedRowNumAdvertisedApplication},
+				{FieldName: "LldpMedRowNumService", APIField: &lldpMedItem.LldpMedRowNumService, TFValue: item.LldpMedRowNumService},
+				{FieldName: "LldpMedRowNumServiceRefType", APIField: &lldpMedItem.LldpMedRowNumServiceRefType, TFValue: item.LldpMedRowNumServiceRefType},
+			})
 
 			return lldpMedItem
 		},
 		UpdateExisting: func(planItem, stateItem verityEthPortSettingsLldpMedModel) (openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, bool) {
-			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: planItem.Index},
+			})
+
 			hasChanges := false
 
-			if !planItem.LldpMedRowNumEnable.Equal(stateItem.LldpMedRowNumEnable) {
-				lldpMedItem.LldpMedRowNumEnable = openapi.PtrBool(planItem.LldpMedRowNumEnable.ValueBool())
-				hasChanges = true
-			}
-			if !planItem.LldpMedRowNumAdvertisedApplication.Equal(stateItem.LldpMedRowNumAdvertisedApplication) {
-				if !planItem.LldpMedRowNumAdvertisedApplication.IsNull() {
-					lldpMedItem.LldpMedRowNumAdvertisedApplicatio = openapi.PtrString(planItem.LldpMedRowNumAdvertisedApplication.ValueString())
-				}
-				hasChanges = true
-			}
-			if !planItem.LldpMedRowNumDscpMark.Equal(stateItem.LldpMedRowNumDscpMark) {
-				lldpMedItem.LldpMedRowNumDscpMark = openapi.PtrInt32(int32(planItem.LldpMedRowNumDscpMark.ValueInt64()))
-				hasChanges = true
-			}
-			if !planItem.LldpMedRowNumPriority.Equal(stateItem.LldpMedRowNumPriority) {
-				lldpMedItem.LldpMedRowNumPriority = openapi.PtrInt32(int32(planItem.LldpMedRowNumPriority.ValueInt64()))
-				hasChanges = true
-			}
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.LldpMedRowNumEnable, stateItem.LldpMedRowNumEnable, func(v *bool) { lldpMedItem.LldpMedRowNumEnable = v }, &hasChanges)
 
-			// Validate and handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
-			serviceChanged := !planItem.LldpMedRowNumService.Equal(stateItem.LldpMedRowNumService)
-			serviceRefTypeChanged := !planItem.LldpMedRowNumServiceRefType.Equal(stateItem.LldpMedRowNumServiceRefType)
+			// Handle string fields (non-ref-type)
+			utils.CompareAndSetStringField(planItem.LldpMedRowNumAdvertisedApplication, stateItem.LldpMedRowNumAdvertisedApplication, func(v *string) { lldpMedItem.LldpMedRowNumAdvertisedApplicatio = v }, &hasChanges)
 
-			if serviceChanged || serviceRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(
-					&resp.Diagnostics,
-					planItem.LldpMedRowNumService,
-					planItem.LldpMedRowNumServiceRefType,
-					"lldp_med_row_num_service",
-					"lldp_med_row_num_service_ref_type_",
-					serviceChanged,
-					serviceRefTypeChanged,
-				) {
-					return lldpMedItem, false
-				}
+			// Handle int64 fields
+			utils.CompareAndSetInt64Field(planItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, func(v *int32) { lldpMedItem.LldpMedRowNumDscpMark = v }, &hasChanges)
+			utils.CompareAndSetInt64Field(planItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, func(v *int32) { lldpMedItem.LldpMedRowNumPriority = v }, &hasChanges)
 
-				if serviceChanged {
-					if !planItem.LldpMedRowNumService.IsNull() {
-						lldpMedItem.LldpMedRowNumService = openapi.PtrString(planItem.LldpMedRowNumService.ValueString())
-					}
-				}
-
-				if serviceRefTypeChanged {
-					if !planItem.LldpMedRowNumServiceRefType.IsNull() {
-						lldpMedItem.LldpMedRowNumServiceRefType = openapi.PtrString(planItem.LldpMedRowNumServiceRefType.ValueString())
-					}
-				}
-
-				hasChanges = true
+			// Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.LldpMedRowNumService, stateItem.LldpMedRowNumService, planItem.LldpMedRowNumServiceRefType, stateItem.LldpMedRowNumServiceRefType,
+				func(v *string) { lldpMedItem.LldpMedRowNumService = v },
+				func(v *string) { lldpMedItem.LldpMedRowNumServiceRefType = v },
+				"lldp_med_row_num_service", "lldp_med_row_num_service_ref_type_",
+				&hasChanges,
+				&resp.Diagnostics,
+			) {
+				return lldpMedItem, false
 			}
 
 			return lldpMedItem, hasChanges
 		},
 		CreateDeleted: func(index int64) openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
-			return openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
+			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: types.Int64Value(index)},
+			})
+			return lldpMedItem
 		},
 	}
 

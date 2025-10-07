@@ -553,15 +553,18 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		badges := make([]openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner, len(plan.Badges))
 		for i, badge := range plan.Badges {
 			badgeItem := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{}
-			if !badge.Index.IsNull() {
-				badgeItem.Index = openapi.PtrInt32(int32(badge.Index.ValueInt64()))
-			}
-			if !badge.Badge.IsNull() {
-				badgeItem.Badge = openapi.PtrString(badge.Badge.ValueString())
-			}
-			if !badge.BadgeRefType.IsNull() {
-				badgeItem.BadgeRefType = openapi.PtrString(badge.BadgeRefType.ValueString())
-			}
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Badge", APIField: &badgeItem.Badge, TFValue: badge.Badge},
+				{FieldName: "BadgeRefType", APIField: &badgeItem.BadgeRefType, TFValue: badge.BadgeRefType},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &badgeItem.Index, TFValue: badge.Index},
+			})
+
 			badges[i] = badgeItem
 		}
 		spProps.Badges = badges
@@ -572,18 +575,19 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		children := make([]openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner, len(plan.Children))
 		for i, child := range plan.Children {
 			childItem := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{}
-			if !child.Index.IsNull() {
-				childItem.Index = openapi.PtrInt32(int32(child.Index.ValueInt64()))
-			}
-			if !child.ChildNumEndpoint.IsNull() {
-				childItem.ChildNumEndpoint = openapi.PtrString(child.ChildNumEndpoint.ValueString())
-			}
-			if !child.ChildNumEndpointRefType.IsNull() {
-				childItem.ChildNumEndpointRefType = openapi.PtrString(child.ChildNumEndpointRefType.ValueString())
-			}
-			if !child.ChildNumDevice.IsNull() {
-				childItem.ChildNumDevice = openapi.PtrString(child.ChildNumDevice.ValueString())
-			}
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "ChildNumEndpoint", APIField: &childItem.ChildNumEndpoint, TFValue: child.ChildNumEndpoint},
+				{FieldName: "ChildNumEndpointRefType", APIField: &childItem.ChildNumEndpointRefType, TFValue: child.ChildNumEndpointRefType},
+				{FieldName: "ChildNumDevice", APIField: &childItem.ChildNumDevice, TFValue: child.ChildNumDevice},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &childItem.Index, TFValue: child.Index},
+			})
+
 			children[i] = childItem
 		}
 		spProps.Children = children
@@ -594,27 +598,26 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		mirrors := make([]openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, len(plan.TrafficMirrors))
 		for i, mirror := range plan.TrafficMirrors {
 			mirrorItem := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{}
-			if !mirror.Index.IsNull() {
-				mirrorItem.Index = openapi.PtrInt32(int32(mirror.Index.ValueInt64()))
-			}
-			if !mirror.TrafficMirrorNumEnable.IsNull() {
-				mirrorItem.TrafficMirrorNumEnable = openapi.PtrBool(mirror.TrafficMirrorNumEnable.ValueBool())
-			}
-			if !mirror.TrafficMirrorNumSourcePort.IsNull() {
-				mirrorItem.TrafficMirrorNumSourcePort = openapi.PtrString(mirror.TrafficMirrorNumSourcePort.ValueString())
-			}
-			if !mirror.TrafficMirrorNumSourceLagIndicator.IsNull() {
-				mirrorItem.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(mirror.TrafficMirrorNumSourceLagIndicator.ValueBool())
-			}
-			if !mirror.TrafficMirrorNumDestinationPort.IsNull() {
-				mirrorItem.TrafficMirrorNumDestinationPort = openapi.PtrString(mirror.TrafficMirrorNumDestinationPort.ValueString())
-			}
-			if !mirror.TrafficMirrorNumInboundTraffic.IsNull() {
-				mirrorItem.TrafficMirrorNumInboundTraffic = openapi.PtrBool(mirror.TrafficMirrorNumInboundTraffic.ValueBool())
-			}
-			if !mirror.TrafficMirrorNumOutboundTraffic.IsNull() {
-				mirrorItem.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(mirror.TrafficMirrorNumOutboundTraffic.ValueBool())
-			}
+
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "TrafficMirrorNumEnable", APIField: &mirrorItem.TrafficMirrorNumEnable, TFValue: mirror.TrafficMirrorNumEnable},
+				{FieldName: "TrafficMirrorNumSourceLagIndicator", APIField: &mirrorItem.TrafficMirrorNumSourceLagIndicator, TFValue: mirror.TrafficMirrorNumSourceLagIndicator},
+				{FieldName: "TrafficMirrorNumInboundTraffic", APIField: &mirrorItem.TrafficMirrorNumInboundTraffic, TFValue: mirror.TrafficMirrorNumInboundTraffic},
+				{FieldName: "TrafficMirrorNumOutboundTraffic", APIField: &mirrorItem.TrafficMirrorNumOutboundTraffic, TFValue: mirror.TrafficMirrorNumOutboundTraffic},
+			})
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "TrafficMirrorNumSourcePort", APIField: &mirrorItem.TrafficMirrorNumSourcePort, TFValue: mirror.TrafficMirrorNumSourcePort},
+				{FieldName: "TrafficMirrorNumDestinationPort", APIField: &mirrorItem.TrafficMirrorNumDestinationPort, TFValue: mirror.TrafficMirrorNumDestinationPort},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &mirrorItem.Index, TFValue: mirror.Index},
+			})
+
 			mirrors[i] = mirrorItem
 		}
 		spProps.TrafficMirrors = mirrors
@@ -625,12 +628,17 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		eths := make([]openapi.SwitchpointsPutRequestSwitchpointValueEthsInner, len(plan.Eths))
 		for i, eth := range plan.Eths {
 			ethItem := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{}
-			if !eth.Index.IsNull() {
-				ethItem.Index = openapi.PtrInt32(int32(eth.Index.ValueInt64()))
-			}
-			if !eth.Breakout.IsNull() {
-				ethItem.Breakout = openapi.PtrString(eth.Breakout.ValueString())
-			}
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Breakout", APIField: &ethItem.Breakout, TFValue: eth.Breakout},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &ethItem.Index, TFValue: eth.Index},
+			})
+
 			eths[i] = ethItem
 		}
 		spProps.Eths = eths
@@ -1043,364 +1051,204 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	// Handle badges
-	badgesHandler := utils.IndexedItemHandler[veritySwitchpointBadgeModel, openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner]{
-		CreateNew: func(planItem veritySwitchpointBadgeModel) openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner {
-			badge := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedBadges, badgesChanged := utils.ProcessIndexedArrayUpdates(plan.Badges, state.Badges,
+		utils.IndexedItemHandler[veritySwitchpointBadgeModel, openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner]{
+			CreateNew: func(planItem veritySwitchpointBadgeModel) openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner {
+				badge := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{}
 
-			badgeChanged := !planItem.Badge.IsNull() && planItem.Badge.ValueString() != ""
-			badgeRefTypeChanged := !planItem.BadgeRefType.IsNull() && planItem.BadgeRefType.ValueString() != ""
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Badge", APIField: &badge.Badge, TFValue: planItem.Badge},
+					{FieldName: "BadgeRefType", APIField: &badge.BadgeRefType, TFValue: planItem.BadgeRefType},
+				})
 
-			if badgeChanged || badgeRefTypeChanged {
-				if !planItem.Badge.IsNull() && planItem.Badge.ValueString() != "" {
-					badge.Badge = openapi.PtrString(planItem.Badge.ValueString())
-				} else {
-					badge.Badge = openapi.PtrString("")
-				}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &badge.Index, TFValue: planItem.Index},
+				})
 
-				if !planItem.BadgeRefType.IsNull() && planItem.BadgeRefType.ValueString() != "" {
-					badge.BadgeRefType = openapi.PtrString(planItem.BadgeRefType.ValueString())
-				} else {
-					badge.BadgeRefType = openapi.PtrString("")
-				}
-			} else {
-				// Both empty
-				badge.Badge = openapi.PtrString("")
-				badge.BadgeRefType = openapi.PtrString("")
-			}
+				return badge
+			},
+			UpdateExisting: func(planItem veritySwitchpointBadgeModel, stateItem veritySwitchpointBadgeModel) (openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner, bool) {
+				badge := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{}
+				fieldChanged := false
 
-			return badge
-		},
-		UpdateExisting: func(planItem veritySwitchpointBadgeModel, stateItem veritySwitchpointBadgeModel) (openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner, bool) {
-			badge := openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
-
-			fieldChanged := false
-
-			badgeChanged := !planItem.Badge.Equal(stateItem.Badge)
-			badgeRefTypeChanged := !planItem.BadgeRefType.Equal(stateItem.BadgeRefType)
-
-			if badgeChanged || badgeRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					planItem.Badge, planItem.BadgeRefType,
+				// Handle badge and badge_ref_type_ using "One ref type supported" pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.Badge, stateItem.Badge, planItem.BadgeRefType, stateItem.BadgeRefType,
+					func(v *string) { badge.Badge = v },
+					func(v *string) { badge.BadgeRefType = v },
 					"badge", "badge_ref_type_",
-					badgeChanged, badgeRefTypeChanged) {
+					&fieldChanged,
+					&resp.Diagnostics,
+				) {
 					return badge, false
 				}
 
-				// For fields with one reference type:
-				// If only base field changes, send only base field
-				// If ref type field changes (or both), send both fields
-				if badgeChanged && !badgeRefTypeChanged {
-					// Just send the base field
-					if !planItem.Badge.IsNull() && planItem.Badge.ValueString() != "" {
-						badge.Badge = openapi.PtrString(planItem.Badge.ValueString())
-					} else {
-						badge.Badge = openapi.PtrString("")
-					}
-					fieldChanged = true
-				} else if badgeRefTypeChanged {
-					// Send both fields
-					if !planItem.Badge.IsNull() && planItem.Badge.ValueString() != "" {
-						badge.Badge = openapi.PtrString(planItem.Badge.ValueString())
-					} else {
-						badge.Badge = openapi.PtrString("")
-					}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { badge.Index = v }, &fieldChanged)
 
-					if !planItem.BadgeRefType.IsNull() && planItem.BadgeRefType.ValueString() != "" {
-						badge.BadgeRefType = openapi.PtrString(planItem.BadgeRefType.ValueString())
-					} else {
-						badge.BadgeRefType = openapi.PtrString("")
-					}
-					fieldChanged = true
+				return badge, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner {
+				return openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-			}
-
-			return badge, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner {
-			return openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedBadges, badgesChanged := utils.ProcessIndexedArrayUpdates(plan.Badges, state.Badges, badgesHandler)
+			},
+		})
 	if badgesChanged {
 		spProps.Badges = changedBadges
 		hasChanges = true
 	}
 
 	// Handle children
-	childrenHandler := utils.IndexedItemHandler[veritySwitchpointChildModel, openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner]{
-		CreateNew: func(planItem veritySwitchpointChildModel) openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner {
-			child := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedChildren, childrenChanged := utils.ProcessIndexedArrayUpdates(plan.Children, state.Children,
+		utils.IndexedItemHandler[veritySwitchpointChildModel, openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner]{
+			CreateNew: func(planItem veritySwitchpointChildModel) openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner {
+				child := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{}
 
-			childNumEndpointChanged := !planItem.ChildNumEndpoint.IsNull() && planItem.ChildNumEndpoint.ValueString() != ""
-			childNumEndpointRefTypeChanged := !planItem.ChildNumEndpointRefType.IsNull() && planItem.ChildNumEndpointRefType.ValueString() != ""
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "ChildNumEndpoint", APIField: &child.ChildNumEndpoint, TFValue: planItem.ChildNumEndpoint},
+					{FieldName: "ChildNumEndpointRefType", APIField: &child.ChildNumEndpointRefType, TFValue: planItem.ChildNumEndpointRefType},
+					{FieldName: "ChildNumDevice", APIField: &child.ChildNumDevice, TFValue: planItem.ChildNumDevice},
+				})
 
-			if childNumEndpointChanged || childNumEndpointRefTypeChanged {
-				if !planItem.ChildNumEndpoint.IsNull() && planItem.ChildNumEndpoint.ValueString() != "" {
-					child.ChildNumEndpoint = openapi.PtrString(planItem.ChildNumEndpoint.ValueString())
-				} else {
-					child.ChildNumEndpoint = openapi.PtrString("")
-				}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &child.Index, TFValue: planItem.Index},
+				})
 
-				if !planItem.ChildNumEndpointRefType.IsNull() && planItem.ChildNumEndpointRefType.ValueString() != "" {
-					child.ChildNumEndpointRefType = openapi.PtrString(planItem.ChildNumEndpointRefType.ValueString())
-				} else {
-					child.ChildNumEndpointRefType = openapi.PtrString("")
-				}
-			} else {
-				// Both empty
-				child.ChildNumEndpoint = openapi.PtrString("")
-				child.ChildNumEndpointRefType = openapi.PtrString("")
-			}
+				return child
+			},
+			UpdateExisting: func(planItem veritySwitchpointChildModel, stateItem veritySwitchpointChildModel) (openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner, bool) {
+				child := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{}
+				fieldChanged := false
 
-			if !planItem.ChildNumDevice.IsNull() && planItem.ChildNumDevice.ValueString() != "" {
-				child.ChildNumDevice = openapi.PtrString(planItem.ChildNumDevice.ValueString())
-			} else {
-				child.ChildNumDevice = openapi.PtrString("")
-			}
-
-			return child
-		},
-		UpdateExisting: func(planItem veritySwitchpointChildModel, stateItem veritySwitchpointChildModel) (openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner, bool) {
-			child := openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
-
-			fieldChanged := false
-
-			childNumEndpointChanged := !planItem.ChildNumEndpoint.Equal(stateItem.ChildNumEndpoint)
-			childNumEndpointRefTypeChanged := !planItem.ChildNumEndpointRefType.Equal(stateItem.ChildNumEndpointRefType)
-
-			if childNumEndpointChanged || childNumEndpointRefTypeChanged {
-				if !utils.ValidateOneRefTypeSupported(&resp.Diagnostics,
-					planItem.ChildNumEndpoint, planItem.ChildNumEndpointRefType,
+				// Handle child_num_endpoint and child_num_endpoint_ref_type_ using "One ref type supported" pattern
+				if !utils.HandleOneRefTypeSupported(
+					planItem.ChildNumEndpoint, stateItem.ChildNumEndpoint, planItem.ChildNumEndpointRefType, stateItem.ChildNumEndpointRefType,
+					func(v *string) { child.ChildNumEndpoint = v },
+					func(v *string) { child.ChildNumEndpointRefType = v },
 					"child_num_endpoint", "child_num_endpoint_ref_type_",
-					childNumEndpointChanged, childNumEndpointRefTypeChanged) {
+					&fieldChanged,
+					&resp.Diagnostics,
+				) {
 					return child, false
 				}
 
-				// For fields with one reference type:
-				// If only base field changes, send only base field
-				// If ref type field changes (or both), send both fields
-				if childNumEndpointChanged && !childNumEndpointRefTypeChanged {
-					// Just send the base field
-					if !planItem.ChildNumEndpoint.IsNull() && planItem.ChildNumEndpoint.ValueString() != "" {
-						child.ChildNumEndpoint = openapi.PtrString(planItem.ChildNumEndpoint.ValueString())
-					} else {
-						child.ChildNumEndpoint = openapi.PtrString("")
-					}
-					fieldChanged = true
-				} else if childNumEndpointRefTypeChanged {
-					// Send both fields
-					if !planItem.ChildNumEndpoint.IsNull() && planItem.ChildNumEndpoint.ValueString() != "" {
-						child.ChildNumEndpoint = openapi.PtrString(planItem.ChildNumEndpoint.ValueString())
-					} else {
-						child.ChildNumEndpoint = openapi.PtrString("")
-					}
+				// Handle other string field changes
+				utils.CompareAndSetStringField(planItem.ChildNumDevice, stateItem.ChildNumDevice, func(v *string) { child.ChildNumDevice = v }, &fieldChanged)
 
-					if !planItem.ChildNumEndpointRefType.IsNull() && planItem.ChildNumEndpointRefType.ValueString() != "" {
-						child.ChildNumEndpointRefType = openapi.PtrString(planItem.ChildNumEndpointRefType.ValueString())
-					} else {
-						child.ChildNumEndpointRefType = openapi.PtrString("")
-					}
-					fieldChanged = true
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { child.Index = v }, &fieldChanged)
+
+				return child, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner {
+				return openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-			}
-
-			if !planItem.ChildNumDevice.Equal(stateItem.ChildNumDevice) {
-				if !planItem.ChildNumDevice.IsNull() && planItem.ChildNumDevice.ValueString() != "" {
-					child.ChildNumDevice = openapi.PtrString(planItem.ChildNumDevice.ValueString())
-				} else {
-					child.ChildNumDevice = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			return child, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner {
-			return openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedChildren, childrenChanged := utils.ProcessIndexedArrayUpdates(plan.Children, state.Children, childrenHandler)
+			},
+		})
 	if childrenChanged {
 		spProps.Children = changedChildren
 		hasChanges = true
 	}
 
 	// Handle traffic mirrors
-	trafficMirrorsHandler := utils.IndexedItemHandler[veritySwitchpointTrafficMirrorModel, openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner]{
-		CreateNew: func(planItem veritySwitchpointTrafficMirrorModel) openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner {
-			mirror := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedTrafficMirrors, trafficMirrorsChanged := utils.ProcessIndexedArrayUpdates(plan.TrafficMirrors, state.TrafficMirrors,
+		utils.IndexedItemHandler[veritySwitchpointTrafficMirrorModel, openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner]{
+			CreateNew: func(planItem veritySwitchpointTrafficMirrorModel) openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner {
+				mirror := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{}
 
-			if !planItem.TrafficMirrorNumEnable.IsNull() {
-				mirror.TrafficMirrorNumEnable = openapi.PtrBool(planItem.TrafficMirrorNumEnable.ValueBool())
-			} else {
-				mirror.TrafficMirrorNumEnable = openapi.PtrBool(false)
-			}
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "TrafficMirrorNumEnable", APIField: &mirror.TrafficMirrorNumEnable, TFValue: planItem.TrafficMirrorNumEnable},
+					{FieldName: "TrafficMirrorNumSourceLagIndicator", APIField: &mirror.TrafficMirrorNumSourceLagIndicator, TFValue: planItem.TrafficMirrorNumSourceLagIndicator},
+					{FieldName: "TrafficMirrorNumInboundTraffic", APIField: &mirror.TrafficMirrorNumInboundTraffic, TFValue: planItem.TrafficMirrorNumInboundTraffic},
+					{FieldName: "TrafficMirrorNumOutboundTraffic", APIField: &mirror.TrafficMirrorNumOutboundTraffic, TFValue: planItem.TrafficMirrorNumOutboundTraffic},
+				})
 
-			if !planItem.TrafficMirrorNumSourcePort.IsNull() && planItem.TrafficMirrorNumSourcePort.ValueString() != "" {
-				mirror.TrafficMirrorNumSourcePort = openapi.PtrString(planItem.TrafficMirrorNumSourcePort.ValueString())
-			} else {
-				mirror.TrafficMirrorNumSourcePort = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "TrafficMirrorNumSourcePort", APIField: &mirror.TrafficMirrorNumSourcePort, TFValue: planItem.TrafficMirrorNumSourcePort},
+					{FieldName: "TrafficMirrorNumDestinationPort", APIField: &mirror.TrafficMirrorNumDestinationPort, TFValue: planItem.TrafficMirrorNumDestinationPort},
+				})
 
-			if !planItem.TrafficMirrorNumSourceLagIndicator.IsNull() {
-				mirror.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(planItem.TrafficMirrorNumSourceLagIndicator.ValueBool())
-			} else {
-				mirror.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(false)
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &mirror.Index, TFValue: planItem.Index},
+				})
 
-			if !planItem.TrafficMirrorNumDestinationPort.IsNull() && planItem.TrafficMirrorNumDestinationPort.ValueString() != "" {
-				mirror.TrafficMirrorNumDestinationPort = openapi.PtrString(planItem.TrafficMirrorNumDestinationPort.ValueString())
-			} else {
-				mirror.TrafficMirrorNumDestinationPort = openapi.PtrString("")
-			}
+				return mirror
+			},
+			UpdateExisting: func(planItem veritySwitchpointTrafficMirrorModel, stateItem veritySwitchpointTrafficMirrorModel) (openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, bool) {
+				mirror := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{}
+				fieldChanged := false
 
-			if !planItem.TrafficMirrorNumInboundTraffic.IsNull() {
-				mirror.TrafficMirrorNumInboundTraffic = openapi.PtrBool(planItem.TrafficMirrorNumInboundTraffic.ValueBool())
-			} else {
-				mirror.TrafficMirrorNumInboundTraffic = openapi.PtrBool(false)
-			}
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.TrafficMirrorNumEnable, stateItem.TrafficMirrorNumEnable, func(v *bool) { mirror.TrafficMirrorNumEnable = v }, &fieldChanged)
+				utils.CompareAndSetBoolField(planItem.TrafficMirrorNumSourceLagIndicator, stateItem.TrafficMirrorNumSourceLagIndicator, func(v *bool) { mirror.TrafficMirrorNumSourceLagIndicator = v }, &fieldChanged)
+				utils.CompareAndSetBoolField(planItem.TrafficMirrorNumInboundTraffic, stateItem.TrafficMirrorNumInboundTraffic, func(v *bool) { mirror.TrafficMirrorNumInboundTraffic = v }, &fieldChanged)
+				utils.CompareAndSetBoolField(planItem.TrafficMirrorNumOutboundTraffic, stateItem.TrafficMirrorNumOutboundTraffic, func(v *bool) { mirror.TrafficMirrorNumOutboundTraffic = v }, &fieldChanged)
 
-			if !planItem.TrafficMirrorNumOutboundTraffic.IsNull() {
-				mirror.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(planItem.TrafficMirrorNumOutboundTraffic.ValueBool())
-			} else {
-				mirror.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(false)
-			}
+				// Handle string field changes
+				utils.CompareAndSetStringField(planItem.TrafficMirrorNumSourcePort, stateItem.TrafficMirrorNumSourcePort, func(v *string) { mirror.TrafficMirrorNumSourcePort = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.TrafficMirrorNumDestinationPort, stateItem.TrafficMirrorNumDestinationPort, func(v *string) { mirror.TrafficMirrorNumDestinationPort = v }, &fieldChanged)
 
-			return mirror
-		},
-		UpdateExisting: func(planItem veritySwitchpointTrafficMirrorModel, stateItem veritySwitchpointTrafficMirrorModel) (openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, bool) {
-			mirror := openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { mirror.Index = v }, &fieldChanged)
 
-			fieldChanged := false
-
-			if !planItem.TrafficMirrorNumEnable.Equal(stateItem.TrafficMirrorNumEnable) {
-				if !planItem.TrafficMirrorNumEnable.IsNull() {
-					mirror.TrafficMirrorNumEnable = openapi.PtrBool(planItem.TrafficMirrorNumEnable.ValueBool())
-				} else {
-					mirror.TrafficMirrorNumEnable = openapi.PtrBool(false)
+				return mirror, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner {
+				return openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-				fieldChanged = true
-			}
-
-			if !planItem.TrafficMirrorNumSourcePort.Equal(stateItem.TrafficMirrorNumSourcePort) {
-				if !planItem.TrafficMirrorNumSourcePort.IsNull() && planItem.TrafficMirrorNumSourcePort.ValueString() != "" {
-					mirror.TrafficMirrorNumSourcePort = openapi.PtrString(planItem.TrafficMirrorNumSourcePort.ValueString())
-				} else {
-					mirror.TrafficMirrorNumSourcePort = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.TrafficMirrorNumSourceLagIndicator.Equal(stateItem.TrafficMirrorNumSourceLagIndicator) {
-				if !planItem.TrafficMirrorNumSourceLagIndicator.IsNull() {
-					mirror.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(planItem.TrafficMirrorNumSourceLagIndicator.ValueBool())
-				} else {
-					mirror.TrafficMirrorNumSourceLagIndicator = openapi.PtrBool(false)
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.TrafficMirrorNumDestinationPort.Equal(stateItem.TrafficMirrorNumDestinationPort) {
-				if !planItem.TrafficMirrorNumDestinationPort.IsNull() && planItem.TrafficMirrorNumDestinationPort.ValueString() != "" {
-					mirror.TrafficMirrorNumDestinationPort = openapi.PtrString(planItem.TrafficMirrorNumDestinationPort.ValueString())
-				} else {
-					mirror.TrafficMirrorNumDestinationPort = openapi.PtrString("")
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.TrafficMirrorNumInboundTraffic.Equal(stateItem.TrafficMirrorNumInboundTraffic) {
-				if !planItem.TrafficMirrorNumInboundTraffic.IsNull() {
-					mirror.TrafficMirrorNumInboundTraffic = openapi.PtrBool(planItem.TrafficMirrorNumInboundTraffic.ValueBool())
-				} else {
-					mirror.TrafficMirrorNumInboundTraffic = openapi.PtrBool(false)
-				}
-				fieldChanged = true
-			}
-
-			if !planItem.TrafficMirrorNumOutboundTraffic.Equal(stateItem.TrafficMirrorNumOutboundTraffic) {
-				if !planItem.TrafficMirrorNumOutboundTraffic.IsNull() {
-					mirror.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(planItem.TrafficMirrorNumOutboundTraffic.ValueBool())
-				} else {
-					mirror.TrafficMirrorNumOutboundTraffic = openapi.PtrBool(false)
-				}
-				fieldChanged = true
-			}
-
-			return mirror, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner {
-			return openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedTrafficMirrors, trafficMirrorsChanged := utils.ProcessIndexedArrayUpdates(plan.TrafficMirrors, state.TrafficMirrors, trafficMirrorsHandler)
+			},
+		})
 	if trafficMirrorsChanged {
 		spProps.TrafficMirrors = changedTrafficMirrors
 		hasChanges = true
 	}
 
 	// Handle eths
-	ethsHandler := utils.IndexedItemHandler[veritySwitchpointEthModel, openapi.SwitchpointsPutRequestSwitchpointValueEthsInner]{
-		CreateNew: func(planItem veritySwitchpointEthModel) openapi.SwitchpointsPutRequestSwitchpointValueEthsInner {
-			eth := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+	changedEths, ethsChanged := utils.ProcessIndexedArrayUpdates(plan.Eths, state.Eths,
+		utils.IndexedItemHandler[veritySwitchpointEthModel, openapi.SwitchpointsPutRequestSwitchpointValueEthsInner]{
+			CreateNew: func(planItem veritySwitchpointEthModel) openapi.SwitchpointsPutRequestSwitchpointValueEthsInner {
+				eth := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{}
 
-			if !planItem.Breakout.IsNull() && planItem.Breakout.ValueString() != "" {
-				eth.Breakout = openapi.PtrString(planItem.Breakout.ValueString())
-			} else {
-				eth.Breakout = openapi.PtrString("")
-			}
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Breakout", APIField: &eth.Breakout, TFValue: planItem.Breakout},
+				})
 
-			return eth
-		},
-		UpdateExisting: func(planItem veritySwitchpointEthModel, stateItem veritySwitchpointEthModel) (openapi.SwitchpointsPutRequestSwitchpointValueEthsInner, bool) {
-			eth := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{
-				Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-			}
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &eth.Index, TFValue: planItem.Index},
+				})
 
-			fieldChanged := false
+				return eth
+			},
+			UpdateExisting: func(planItem veritySwitchpointEthModel, stateItem veritySwitchpointEthModel) (openapi.SwitchpointsPutRequestSwitchpointValueEthsInner, bool) {
+				eth := openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{}
+				fieldChanged := false
 
-			if !planItem.Breakout.Equal(stateItem.Breakout) {
-				if !planItem.Breakout.IsNull() && planItem.Breakout.ValueString() != "" {
-					eth.Breakout = openapi.PtrString(planItem.Breakout.ValueString())
-				} else {
-					eth.Breakout = openapi.PtrString("")
+				// Handle string field changes
+				utils.CompareAndSetStringField(planItem.Breakout, stateItem.Breakout, func(v *string) { eth.Breakout = v }, &fieldChanged)
+
+				// Handle index field change
+				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { eth.Index = v }, &fieldChanged)
+
+				return eth, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueEthsInner {
+				return openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{
+					Index: openapi.PtrInt32(int32(index)),
 				}
-				fieldChanged = true
-			}
-
-			return eth, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueEthsInner {
-			return openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{
-				Index: openapi.PtrInt32(int32(index)),
-			}
-		},
-	}
-
-	changedEths, ethsChanged := utils.ProcessIndexedArrayUpdates(plan.Eths, state.Eths, ethsHandler)
+			},
+		})
 	if ethsChanged {
 		spProps.Eths = changedEths
 		hasChanges = true
@@ -1497,61 +1345,44 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			stateEths = stateOP.Eths
 		}
 
-		objectPropertiesEthsHandler := utils.IndexedItemHandler[veritySwitchpointObjectPropertiesEthModel, openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner]{
-			CreateNew: func(planItem veritySwitchpointObjectPropertiesEthModel) openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner {
-				eth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{
-					Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-				}
+		changedEths, ethsChanged := utils.ProcessIndexedArrayUpdates(planOP.Eths, stateEths,
+			utils.IndexedItemHandler[veritySwitchpointObjectPropertiesEthModel, openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner]{
+				CreateNew: func(planItem veritySwitchpointObjectPropertiesEthModel) openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner {
+					eth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{}
 
-				if !planItem.EthNumIcon.IsNull() && planItem.EthNumIcon.ValueString() != "" {
-					eth.EthNumIcon = openapi.PtrString(planItem.EthNumIcon.ValueString())
-				} else {
-					eth.EthNumIcon = openapi.PtrString("empty")
-				}
+					// Handle string fields
+					utils.SetStringFields([]utils.StringFieldMapping{
+						{FieldName: "EthNumIcon", APIField: &eth.EthNumIcon, TFValue: planItem.EthNumIcon},
+						{FieldName: "EthNumLabel", APIField: &eth.EthNumLabel, TFValue: planItem.EthNumLabel},
+					})
 
-				if !planItem.EthNumLabel.IsNull() && planItem.EthNumLabel.ValueString() != "" {
-					eth.EthNumLabel = openapi.PtrString(planItem.EthNumLabel.ValueString())
-				} else {
-					eth.EthNumLabel = openapi.PtrString("")
-				}
+					// Handle int64 fields
+					utils.SetInt64Fields([]utils.Int64FieldMapping{
+						{FieldName: "Index", APIField: &eth.Index, TFValue: planItem.Index},
+					})
 
-				return eth
-			},
-			UpdateExisting: func(planItem veritySwitchpointObjectPropertiesEthModel, stateItem veritySwitchpointObjectPropertiesEthModel) (openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner, bool) {
-				eth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{
-					Index: openapi.PtrInt32(int32(planItem.Index.ValueInt64())),
-				}
+					return eth
+				},
+				UpdateExisting: func(planItem veritySwitchpointObjectPropertiesEthModel, stateItem veritySwitchpointObjectPropertiesEthModel) (openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner, bool) {
+					eth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{}
+					fieldChanged := false
 
-				fieldChanged := false
+					// Handle string field changes
+					utils.CompareAndSetStringField(planItem.EthNumIcon, stateItem.EthNumIcon, func(v *string) { eth.EthNumIcon = v }, &fieldChanged)
+					utils.CompareAndSetStringField(planItem.EthNumLabel, stateItem.EthNumLabel, func(v *string) { eth.EthNumLabel = v }, &fieldChanged)
 
-				if !planItem.EthNumIcon.Equal(stateItem.EthNumIcon) {
-					if !planItem.EthNumIcon.IsNull() && planItem.EthNumIcon.ValueString() != "" {
-						eth.EthNumIcon = openapi.PtrString(planItem.EthNumIcon.ValueString())
-					} else {
-						eth.EthNumIcon = openapi.PtrString("empty")
+					// Handle index field change
+					utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { eth.Index = v }, &fieldChanged)
+
+					return eth, fieldChanged
+				},
+				CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner {
+					return openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{
+						Index: openapi.PtrInt32(int32(index)),
 					}
-					fieldChanged = true
-				}
+				},
+			})
 
-				if !planItem.EthNumLabel.Equal(stateItem.EthNumLabel) {
-					if !planItem.EthNumLabel.IsNull() && planItem.EthNumLabel.ValueString() != "" {
-						eth.EthNumLabel = openapi.PtrString(planItem.EthNumLabel.ValueString())
-					} else {
-						eth.EthNumLabel = openapi.PtrString("")
-					}
-					fieldChanged = true
-				}
-
-				return eth, fieldChanged
-			},
-			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner {
-				return openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{
-					Index: openapi.PtrInt32(int32(index)),
-				}
-			},
-		}
-
-		changedEths, ethsChanged := utils.ProcessIndexedArrayUpdates(planOP.Eths, stateEths, objectPropertiesEthsHandler)
 		if ethsChanged {
 			objProps.Eths = changedEths
 			objectPropertiesChanged = true
