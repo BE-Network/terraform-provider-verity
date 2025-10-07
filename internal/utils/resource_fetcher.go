@@ -59,11 +59,3 @@ func FindResourceByAPIName[T any](
 	}
 	return resource, "", false
 }
-
-// MapExtractNameFromInterface is a helper function for extracting names from map[string]interface{}
-func MapExtractNameFromInterface(data map[string]interface{}) (string, bool) {
-	if name, ok := data["name"].(string); ok {
-		return name, true
-	}
-	return "", false
-}

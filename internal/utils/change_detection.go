@@ -75,18 +75,6 @@ func CompareAndSetNullableFloat64Field(plan, state types.Float64, setter func(*o
 	}
 }
 
-// CompareAndSetStringFieldWithEmpty compares and sets string field, using empty string for null values
-func CompareAndSetStringFieldWithEmpty(plan, state types.String, setter func(*string), hasChanges *bool) {
-	if !plan.Equal(state) {
-		if !plan.IsNull() {
-			setter(openapi.PtrString(plan.ValueString()))
-		} else {
-			setter(openapi.PtrString(""))
-		}
-		*hasChanges = true
-	}
-}
-
 // HandleMultipleRefTypesSupported handles ref type logic for "many ref types supported" pattern
 // Always sends both fields when either changes
 func HandleMultipleRefTypesSupported(
