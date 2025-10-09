@@ -35,8 +35,14 @@ type verityPodResource struct {
 }
 
 type verityPodResourceModel struct {
-	Name   types.String `tfsdk:"name"`
-	Enable types.Bool   `tfsdk:"enable"`
+	Name               types.String                     `tfsdk:"name"`
+	Enable             types.Bool                       `tfsdk:"enable"`
+	ExpectedSpineCount types.Int64                      `tfsdk:"expected_spine_count"`
+	ObjectProperties   []verityPodObjectPropertiesModel `tfsdk:"object_properties"`
+}
+
+type verityPodObjectPropertiesModel struct {
+	Notes types.String `tfsdk:"notes"`
 }
 
 func (r *verityPodResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -78,6 +84,23 @@ func (r *verityPodResource) Schema(ctx context.Context, req resource.SchemaReque
 				Description: "Enable object.",
 				Optional:    true,
 			},
+			"expected_spine_count": schema.Int64Attribute{
+				Description: "Number of spine switches expected in this pod",
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{
+			"object_properties": schema.ListNestedBlock{
+				Description: "Object properties for the pod",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"notes": schema.StringAttribute{
+							Description: "User Notes.",
+							Optional:    true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -107,6 +130,23 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &podReq.Enable, TFValue: plan.Enable},
 	})
+
+	// Handle int64 fields
+	utils.SetInt64Fields([]utils.Int64FieldMapping{
+		{FieldName: "ExpectedSpineCount", APIField: &podReq.ExpectedSpineCount, TFValue: plan.ExpectedSpineCount},
+	})
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		if !op.Notes.IsNull() {
+			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
+		} else {
+			objProps.Notes = nil
+		}
+		podReq.ObjectProperties = &objProps
+	}
 
 	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "pod", name, *podReq, &resp.Diagnostics)
 	if !success {
@@ -208,6 +248,15 @@ func (r *verityPodResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	state.Name = utils.MapStringFromAPI(podMap["name"])
 
+	// Handle object properties
+	if objProps, ok := podMap["object_properties"].(map[string]interface{}); ok {
+		state.ObjectProperties = []verityPodObjectPropertiesModel{
+			{Notes: utils.MapStringFromAPI(objProps["notes"])},
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
 	// Map boolean fields
 	boolFieldMappings := map[string]*types.Bool{
 		"enable": &state.Enable,
@@ -215,6 +264,15 @@ func (r *verityPodResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	for apiKey, stateField := range boolFieldMappings {
 		*stateField = utils.MapBoolFromAPI(podMap[apiKey])
+	}
+
+	// Map int64 fields
+	int64FieldMappings := map[string]*types.Int64{
+		"expected_spine_count": &state.ExpectedSpineCount,
+	}
+
+	for apiKey, stateField := range int64FieldMappings {
+		*stateField = utils.MapInt64FromAPI(podMap[apiKey])
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -251,6 +309,23 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { podReq.Enable = v }, &hasChanges)
+
+	// Handle int64 field changes
+	utils.CompareAndSetInt64Field(plan.ExpectedSpineCount, state.ExpectedSpineCount, func(v *int32) { podReq.ExpectedSpineCount = v }, &hasChanges)
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
+			objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+			if !plan.ObjectProperties[0].Notes.IsNull() {
+				objProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
+			} else {
+				objProps.Notes = nil
+			}
+			podReq.ObjectProperties = &objProps
+			hasChanges = true
+		}
+	}
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)

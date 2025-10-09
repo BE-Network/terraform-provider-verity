@@ -47,6 +47,8 @@ type veritySwitchpointResourceModel struct {
 	DisabledPorts                    types.String                             `tfsdk:"disabled_ports"`
 	OutOfBandManagement              types.Bool                               `tfsdk:"out_of_band_management"`
 	Type                             types.String                             `tfsdk:"type"`
+	SpinePlane                       types.String                             `tfsdk:"spine_plane"`
+	SpinePlaneRefType                types.String                             `tfsdk:"spine_plane_ref_type_"`
 	Pod                              types.String                             `tfsdk:"pod"`
 	PodRefType                       types.String                             `tfsdk:"pod_ref_type_"`
 	Rack                             types.String                             `tfsdk:"rack"`
@@ -198,6 +200,14 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"type": schema.StringAttribute{
 				Description: "Type of Switchpoint",
+				Optional:    true,
+			},
+			"spine_plane": schema.StringAttribute{
+				Description: "Spine Plane - subgrouping of super spine and spine",
+				Optional:    true,
+			},
+			"spine_plane_ref_type_": schema.StringAttribute{
+				Description: "Object type for spine_plane field",
 				Optional:    true,
 			},
 			"pod": schema.StringAttribute{
@@ -456,6 +466,8 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "ConnectedBundleRefType", APIField: &spProps.ConnectedBundleRefType, TFValue: plan.ConnectedBundleRefType},
 		{FieldName: "DisabledPorts", APIField: &spProps.DisabledPorts, TFValue: plan.DisabledPorts},
 		{FieldName: "Type", APIField: &spProps.Type, TFValue: plan.Type},
+		{FieldName: "SpinePlane", APIField: &spProps.SpinePlane, TFValue: plan.SpinePlane},
+		{FieldName: "SpinePlaneRefType", APIField: &spProps.SpinePlaneRefType, TFValue: plan.SpinePlaneRefType},
 		{FieldName: "Pod", APIField: &spProps.Pod, TFValue: plan.Pod},
 		{FieldName: "PodRefType", APIField: &spProps.PodRefType, TFValue: plan.PodRefType},
 		{FieldName: "Rack", APIField: &spProps.Rack, TFValue: plan.Rack},
@@ -861,6 +873,18 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		func(val *string) { spProps.ConnectedBundleRefType = val },
 		"connected_bundle", "connected_bundle_ref_type_",
 		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle SpinePlane and SpinePlaneRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.SpinePlane, state.SpinePlane, plan.SpinePlaneRefType, state.SpinePlaneRefType,
+		func(v *string) { spProps.SpinePlane = v },
+		func(v *string) { spProps.SpinePlaneRefType = v },
+		"spine_plane", "spine_plane_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
 	) {
 		return
 	}
@@ -1478,6 +1502,8 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 		"connected_bundle_ref_type_": &state.ConnectedBundleRefType,
 		"disabled_ports":             &state.DisabledPorts,
 		"type":                       &state.Type,
+		"spine_plane":                &state.SpinePlane,
+		"spine_plane_ref_type_":      &state.SpinePlaneRefType,
 		"pod":                        &state.Pod,
 		"pod_ref_type_":              &state.PodRefType,
 		"rack":                       &state.Rack,
@@ -1507,6 +1533,14 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 			case "type":
 				if !plan.Type.IsNull() {
 					*stateField = plan.Type
+				}
+			case "spine_plane":
+				if !plan.SpinePlane.IsNull() {
+					*stateField = plan.SpinePlane
+				}
+			case "spine_plane_ref_type_":
+				if !plan.SpinePlaneRefType.IsNull() {
+					*stateField = plan.SpinePlaneRefType
 				}
 			case "pod":
 				if !plan.Pod.IsNull() {
