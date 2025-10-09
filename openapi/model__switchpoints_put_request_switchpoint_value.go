@@ -39,8 +39,14 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	OutOfBandManagement *bool `json:"out_of_band_management,omitempty"`
 	// Type of Switchpoint
 	Type *string `json:"type,omitempty"`
-	// Super Pod  subgrouping of super spines and pods
-	SuperPod *string `json:"super_pod,omitempty"`
+	// Spine Plane - subgrouping of super spine and spine
+	SpinePlane *string `json:"spine_plane,omitempty"`
+	// Object type for spine_plane field
+	SpinePlaneRefType *string `json:"spine_plane_ref_type_,omitempty"`
+	// Pod - subgrouping of spine and leaf switches
+	Pod *string `json:"pod,omitempty"`
+	// Object type for pod field
+	PodRefType *string `json:"pod_ref_type_,omitempty"`
 	// Physical Rack location of the Switch 
 	Rack *string `json:"rack,omitempty"`
 	// Switch BGP Router Identifier
@@ -60,10 +66,6 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	TrafficMirrors []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner `json:"traffic_mirrors,omitempty"`
 	Eths []SwitchpointsPutRequestSwitchpointValueEthsInner `json:"eths,omitempty"`
 	ObjectProperties *SwitchpointsPutRequestSwitchpointValueObjectProperties `json:"object_properties,omitempty"`
-	// Pod - subgrouping of spine and leaf switches
-	Pod *string `json:"pod,omitempty"`
-	// Object type for pod field
-	PodRefType *string `json:"pod_ref_type_,omitempty"`
 	// For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device
 	IsFabric *bool `json:"is_fabric,omitempty"`
 }
@@ -92,16 +94,16 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.OutOfBandManagement = &outOfBandManagement
 	var type_ string = "leaf"
 	this.Type = &type_
-	var superPod string = ""
-	this.SuperPod = &superPod
+	var spinePlane string = ""
+	this.SpinePlane = &spinePlane
+	var pod string = ""
+	this.Pod = &pod
 	var rack string = ""
 	this.Rack = &rack
 	var switchRouterIdIpMask string = "(auto)"
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
-	var pod string = ""
-	this.Pod = &pod
 	var isFabric bool = false
 	this.IsFabric = &isFabric
 	return &this
@@ -130,16 +132,16 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.OutOfBandManagement = &outOfBandManagement
 	var type_ string = "leaf"
 	this.Type = &type_
-	var superPod string = ""
-	this.SuperPod = &superPod
+	var spinePlane string = ""
+	this.SpinePlane = &spinePlane
+	var pod string = ""
+	this.Pod = &pod
 	var rack string = ""
 	this.Rack = &rack
 	var switchRouterIdIpMask string = "(auto)"
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
-	var pod string = ""
-	this.Pod = &pod
 	var isFabric bool = false
 	this.IsFabric = &isFabric
 	return &this
@@ -465,36 +467,132 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetType(v string) {
 	o.Type = &v
 }
 
-// GetSuperPod returns the SuperPod field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetSuperPod() string {
-	if o == nil || IsNil(o.SuperPod) {
+// GetSpinePlane returns the SpinePlane field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSpinePlane() string {
+	if o == nil || IsNil(o.SpinePlane) {
 		var ret string
 		return ret
 	}
-	return *o.SuperPod
+	return *o.SpinePlane
 }
 
-// GetSuperPodOk returns a tuple with the SuperPod field value if set, nil otherwise
+// GetSpinePlaneOk returns a tuple with the SpinePlane field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetSuperPodOk() (*string, bool) {
-	if o == nil || IsNil(o.SuperPod) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSpinePlaneOk() (*string, bool) {
+	if o == nil || IsNil(o.SpinePlane) {
 		return nil, false
 	}
-	return o.SuperPod, true
+	return o.SpinePlane, true
 }
 
-// HasSuperPod returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) HasSuperPod() bool {
-	if o != nil && !IsNil(o.SuperPod) {
+// HasSpinePlane returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSpinePlane() bool {
+	if o != nil && !IsNil(o.SpinePlane) {
 		return true
 	}
 
 	return false
 }
 
-// SetSuperPod gets a reference to the given string and assigns it to the SuperPod field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetSuperPod(v string) {
-	o.SuperPod = &v
+// SetSpinePlane gets a reference to the given string and assigns it to the SpinePlane field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSpinePlane(v string) {
+	o.SpinePlane = &v
+}
+
+// GetSpinePlaneRefType returns the SpinePlaneRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSpinePlaneRefType() string {
+	if o == nil || IsNil(o.SpinePlaneRefType) {
+		var ret string
+		return ret
+	}
+	return *o.SpinePlaneRefType
+}
+
+// GetSpinePlaneRefTypeOk returns a tuple with the SpinePlaneRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSpinePlaneRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SpinePlaneRefType) {
+		return nil, false
+	}
+	return o.SpinePlaneRefType, true
+}
+
+// HasSpinePlaneRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSpinePlaneRefType() bool {
+	if o != nil && !IsNil(o.SpinePlaneRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpinePlaneRefType gets a reference to the given string and assigns it to the SpinePlaneRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSpinePlaneRefType(v string) {
+	o.SpinePlaneRefType = &v
+}
+
+// GetPod returns the Pod field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPod() string {
+	if o == nil || IsNil(o.Pod) {
+		var ret string
+		return ret
+	}
+	return *o.Pod
+}
+
+// GetPodOk returns a tuple with the Pod field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPodOk() (*string, bool) {
+	if o == nil || IsNil(o.Pod) {
+		return nil, false
+	}
+	return o.Pod, true
+}
+
+// HasPod returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPod() bool {
+	if o != nil && !IsNil(o.Pod) {
+		return true
+	}
+
+	return false
+}
+
+// SetPod gets a reference to the given string and assigns it to the Pod field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPod(v string) {
+	o.Pod = &v
+}
+
+// GetPodRefType returns the PodRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefType() string {
+	if o == nil || IsNil(o.PodRefType) {
+		var ret string
+		return ret
+	}
+	return *o.PodRefType
+}
+
+// GetPodRefTypeOk returns a tuple with the PodRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PodRefType) {
+		return nil, false
+	}
+	return o.PodRefType, true
+}
+
+// HasPodRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPodRefType() bool {
+	if o != nil && !IsNil(o.PodRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPodRefType gets a reference to the given string and assigns it to the PodRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPodRefType(v string) {
+	o.PodRefType = &v
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise.
@@ -881,70 +979,6 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetObjectProperties(v Switchpoi
 	o.ObjectProperties = &v
 }
 
-// GetPod returns the Pod field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetPod() string {
-	if o == nil || IsNil(o.Pod) {
-		var ret string
-		return ret
-	}
-	return *o.Pod
-}
-
-// GetPodOk returns a tuple with the Pod field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetPodOk() (*string, bool) {
-	if o == nil || IsNil(o.Pod) {
-		return nil, false
-	}
-	return o.Pod, true
-}
-
-// HasPod returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) HasPod() bool {
-	if o != nil && !IsNil(o.Pod) {
-		return true
-	}
-
-	return false
-}
-
-// SetPod gets a reference to the given string and assigns it to the Pod field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetPod(v string) {
-	o.Pod = &v
-}
-
-// GetPodRefType returns the PodRefType field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefType() string {
-	if o == nil || IsNil(o.PodRefType) {
-		var ret string
-		return ret
-	}
-	return *o.PodRefType
-}
-
-// GetPodRefTypeOk returns a tuple with the PodRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.PodRefType) {
-		return nil, false
-	}
-	return o.PodRefType, true
-}
-
-// HasPodRefType returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) HasPodRefType() bool {
-	if o != nil && !IsNil(o.PodRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetPodRefType gets a reference to the given string and assigns it to the PodRefType field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetPodRefType(v string) {
-	o.PodRefType = &v
-}
-
 // GetIsFabric returns the IsFabric field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetIsFabric() bool {
 	if o == nil || IsNil(o.IsFabric) {
@@ -1017,8 +1051,17 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type
 	}
-	if !IsNil(o.SuperPod) {
-		toSerialize["super_pod"] = o.SuperPod
+	if !IsNil(o.SpinePlane) {
+		toSerialize["spine_plane"] = o.SpinePlane
+	}
+	if !IsNil(o.SpinePlaneRefType) {
+		toSerialize["spine_plane_ref_type_"] = o.SpinePlaneRefType
+	}
+	if !IsNil(o.Pod) {
+		toSerialize["pod"] = o.Pod
+	}
+	if !IsNil(o.PodRefType) {
+		toSerialize["pod_ref_type_"] = o.PodRefType
 	}
 	if !IsNil(o.Rack) {
 		toSerialize["rack"] = o.Rack
@@ -1055,12 +1098,6 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.Pod) {
-		toSerialize["pod"] = o.Pod
-	}
-	if !IsNil(o.PodRefType) {
-		toSerialize["pod_ref_type_"] = o.PodRefType
 	}
 	if !IsNil(o.IsFabric) {
 		toSerialize["is_fabric"] = o.IsFabric

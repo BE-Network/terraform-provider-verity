@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Pbit** | Pointer to [**[]PacketqueuesPutRequestPacketQueueValuePbitInner**](PacketqueuesPutRequestPacketQueueValuePbitInner.md) |  | [optional] 
 **Queue** | Pointer to [**[]PacketqueuesPutRequestPacketQueueValueQueueInner**](PacketqueuesPutRequestPacketQueueValueQueueInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**PacketqueuesPutRequestPacketQueueValueObjectProperties**](PacketqueuesPutRequestPacketQueueValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -131,20 +131,20 @@ HasQueue returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() PacketqueuesPutRequestPacketQueueValueObjectProperties`
+`func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (*PacketqueuesPutRequestPacketQueueValueObjectProperties, bool)`
+`func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v PacketqueuesPutRequestPacketQueueValueObjectProperties)`
+`func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

@@ -14,51 +14,45 @@ import (
 	"encoding/json"
 )
 
-// checks if the PodsPutRequestPodValue type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &PodsPutRequestPodValue{}
+// checks if the SpineplanesPutRequestSpinePlaneValue type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &SpineplanesPutRequestSpinePlaneValue{}
 
-// PodsPutRequestPodValue struct for PodsPutRequestPodValue
-type PodsPutRequestPodValue struct {
+// SpineplanesPutRequestSpinePlaneValue struct for SpineplanesPutRequestSpinePlaneValue
+type SpineplanesPutRequestSpinePlaneValue struct {
 	// Object Name. Must be unique.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
-	// Number of spine switches expected in this pod
-	ExpectedSpineCount *int32 `json:"expected_spine_count,omitempty"`
 }
 
-// NewPodsPutRequestPodValue instantiates a new PodsPutRequestPodValue object
+// NewSpineplanesPutRequestSpinePlaneValue instantiates a new SpineplanesPutRequestSpinePlaneValue object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPodsPutRequestPodValue() *PodsPutRequestPodValue {
-	this := PodsPutRequestPodValue{}
+func NewSpineplanesPutRequestSpinePlaneValue() *SpineplanesPutRequestSpinePlaneValue {
+	this := SpineplanesPutRequestSpinePlaneValue{}
 	var name string = ""
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var expectedSpineCount int32 = 1
-	this.ExpectedSpineCount = &expectedSpineCount
 	return &this
 }
 
-// NewPodsPutRequestPodValueWithDefaults instantiates a new PodsPutRequestPodValue object
+// NewSpineplanesPutRequestSpinePlaneValueWithDefaults instantiates a new SpineplanesPutRequestSpinePlaneValue object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewPodsPutRequestPodValueWithDefaults() *PodsPutRequestPodValue {
-	this := PodsPutRequestPodValue{}
+func NewSpineplanesPutRequestSpinePlaneValueWithDefaults() *SpineplanesPutRequestSpinePlaneValue {
+	this := SpineplanesPutRequestSpinePlaneValue{}
 	var name string = ""
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var expectedSpineCount int32 = 1
-	this.ExpectedSpineCount = &expectedSpineCount
 	return &this
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
-func (o *PodsPutRequestPodValue) GetName() string {
+func (o *SpineplanesPutRequestSpinePlaneValue) GetName() string {
 	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
@@ -68,7 +62,7 @@ func (o *PodsPutRequestPodValue) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PodsPutRequestPodValue) GetNameOk() (*string, bool) {
+func (o *SpineplanesPutRequestSpinePlaneValue) GetNameOk() (*string, bool) {
 	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
@@ -76,7 +70,7 @@ func (o *PodsPutRequestPodValue) GetNameOk() (*string, bool) {
 }
 
 // HasName returns a boolean if a field has been set.
-func (o *PodsPutRequestPodValue) HasName() bool {
+func (o *SpineplanesPutRequestSpinePlaneValue) HasName() bool {
 	if o != nil && !IsNil(o.Name) {
 		return true
 	}
@@ -85,12 +79,12 @@ func (o *PodsPutRequestPodValue) HasName() bool {
 }
 
 // SetName gets a reference to the given string and assigns it to the Name field.
-func (o *PodsPutRequestPodValue) SetName(v string) {
+func (o *SpineplanesPutRequestSpinePlaneValue) SetName(v string) {
 	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *PodsPutRequestPodValue) GetEnable() bool {
+func (o *SpineplanesPutRequestSpinePlaneValue) GetEnable() bool {
 	if o == nil || IsNil(o.Enable) {
 		var ret bool
 		return ret
@@ -100,7 +94,7 @@ func (o *PodsPutRequestPodValue) GetEnable() bool {
 
 // GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PodsPutRequestPodValue) GetEnableOk() (*bool, bool) {
+func (o *SpineplanesPutRequestSpinePlaneValue) GetEnableOk() (*bool, bool) {
 	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
@@ -108,7 +102,7 @@ func (o *PodsPutRequestPodValue) GetEnableOk() (*bool, bool) {
 }
 
 // HasEnable returns a boolean if a field has been set.
-func (o *PodsPutRequestPodValue) HasEnable() bool {
+func (o *SpineplanesPutRequestSpinePlaneValue) HasEnable() bool {
 	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
@@ -117,12 +111,12 @@ func (o *PodsPutRequestPodValue) HasEnable() bool {
 }
 
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *PodsPutRequestPodValue) SetEnable(v bool) {
+func (o *SpineplanesPutRequestSpinePlaneValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *PodsPutRequestPodValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
+func (o *SpineplanesPutRequestSpinePlaneValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
 		var ret AclsPutRequestIpFilterValueObjectProperties
 		return ret
@@ -132,7 +126,7 @@ func (o *PodsPutRequestPodValue) GetObjectProperties() AclsPutRequestIpFilterVal
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PodsPutRequestPodValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilterValueObjectProperties, bool) {
+func (o *SpineplanesPutRequestSpinePlaneValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilterValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -140,7 +134,7 @@ func (o *PodsPutRequestPodValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilte
 }
 
 // HasObjectProperties returns a boolean if a field has been set.
-func (o *PodsPutRequestPodValue) HasObjectProperties() bool {
+func (o *SpineplanesPutRequestSpinePlaneValue) HasObjectProperties() bool {
 	if o != nil && !IsNil(o.ObjectProperties) {
 		return true
 	}
@@ -149,43 +143,11 @@ func (o *PodsPutRequestPodValue) HasObjectProperties() bool {
 }
 
 // SetObjectProperties gets a reference to the given AclsPutRequestIpFilterValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *PodsPutRequestPodValue) SetObjectProperties(v AclsPutRequestIpFilterValueObjectProperties) {
+func (o *SpineplanesPutRequestSpinePlaneValue) SetObjectProperties(v AclsPutRequestIpFilterValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 
-// GetExpectedSpineCount returns the ExpectedSpineCount field value if set, zero value otherwise.
-func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int32 {
-	if o == nil || IsNil(o.ExpectedSpineCount) {
-		var ret int32
-		return ret
-	}
-	return *o.ExpectedSpineCount
-}
-
-// GetExpectedSpineCountOk returns a tuple with the ExpectedSpineCount field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PodsPutRequestPodValue) GetExpectedSpineCountOk() (*int32, bool) {
-	if o == nil || IsNil(o.ExpectedSpineCount) {
-		return nil, false
-	}
-	return o.ExpectedSpineCount, true
-}
-
-// HasExpectedSpineCount returns a boolean if a field has been set.
-func (o *PodsPutRequestPodValue) HasExpectedSpineCount() bool {
-	if o != nil && !IsNil(o.ExpectedSpineCount) {
-		return true
-	}
-
-	return false
-}
-
-// SetExpectedSpineCount gets a reference to the given int32 and assigns it to the ExpectedSpineCount field.
-func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int32) {
-	o.ExpectedSpineCount = &v
-}
-
-func (o PodsPutRequestPodValue) MarshalJSON() ([]byte, error) {
+func (o SpineplanesPutRequestSpinePlaneValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -193,7 +155,7 @@ func (o PodsPutRequestPodValue) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o PodsPutRequestPodValue) ToMap() (map[string]interface{}, error) {
+func (o SpineplanesPutRequestSpinePlaneValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
@@ -204,44 +166,41 @@ func (o PodsPutRequestPodValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
 	}
-	if !IsNil(o.ExpectedSpineCount) {
-		toSerialize["expected_spine_count"] = o.ExpectedSpineCount
-	}
 	return toSerialize, nil
 }
 
-type NullablePodsPutRequestPodValue struct {
-	value *PodsPutRequestPodValue
+type NullableSpineplanesPutRequestSpinePlaneValue struct {
+	value *SpineplanesPutRequestSpinePlaneValue
 	isSet bool
 }
 
-func (v NullablePodsPutRequestPodValue) Get() *PodsPutRequestPodValue {
+func (v NullableSpineplanesPutRequestSpinePlaneValue) Get() *SpineplanesPutRequestSpinePlaneValue {
 	return v.value
 }
 
-func (v *NullablePodsPutRequestPodValue) Set(val *PodsPutRequestPodValue) {
+func (v *NullableSpineplanesPutRequestSpinePlaneValue) Set(val *SpineplanesPutRequestSpinePlaneValue) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullablePodsPutRequestPodValue) IsSet() bool {
+func (v NullableSpineplanesPutRequestSpinePlaneValue) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullablePodsPutRequestPodValue) Unset() {
+func (v *NullableSpineplanesPutRequestSpinePlaneValue) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullablePodsPutRequestPodValue(val *PodsPutRequestPodValue) *NullablePodsPutRequestPodValue {
-	return &NullablePodsPutRequestPodValue{value: val, isSet: true}
+func NewNullableSpineplanesPutRequestSpinePlaneValue(val *SpineplanesPutRequestSpinePlaneValue) *NullableSpineplanesPutRequestSpinePlaneValue {
+	return &NullableSpineplanesPutRequestSpinePlaneValue{value: val, isSet: true}
 }
 
-func (v NullablePodsPutRequestPodValue) MarshalJSON() ([]byte, error) {
+func (v NullableSpineplanesPutRequestSpinePlaneValue) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullablePodsPutRequestPodValue) UnmarshalJSON(src []byte) error {
+func (v *NullableSpineplanesPutRequestSpinePlaneValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

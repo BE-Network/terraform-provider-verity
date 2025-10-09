@@ -21,8 +21,6 @@ var _ MappedNullable = &DevicesettingsPutRequestEthDeviceProfilesValueObjectProp
 type DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties struct {
 	// Group
 	Group *string `json:"group,omitempty"`
-	// Default object.
-	Isdefault *bool `json:"isdefault,omitempty"`
 }
 
 // NewDevicesettingsPutRequestEthDeviceProfilesValueObjectProperties instantiates a new DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties object
@@ -33,8 +31,6 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueObjectProperties() *Device
 	this := DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 	var group string = ""
 	this.Group = &group
-	var isdefault bool = false
-	this.Isdefault = &isdefault
 	return &this
 }
 
@@ -45,8 +41,6 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueObjectPropertiesWithDefaul
 	this := DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 	var group string = ""
 	this.Group = &group
-	var isdefault bool = false
-	this.Isdefault = &isdefault
 	return &this
 }
 
@@ -82,38 +76,6 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) SetGrou
 	o.Group = &v
 }
 
-// GetIsdefault returns the Isdefault field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) GetIsdefault() bool {
-	if o == nil || IsNil(o.Isdefault) {
-		var ret bool
-		return ret
-	}
-	return *o.Isdefault
-}
-
-// GetIsdefaultOk returns a tuple with the Isdefault field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) GetIsdefaultOk() (*bool, bool) {
-	if o == nil || IsNil(o.Isdefault) {
-		return nil, false
-	}
-	return o.Isdefault, true
-}
-
-// HasIsdefault returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) HasIsdefault() bool {
-	if o != nil && !IsNil(o.Isdefault) {
-		return true
-	}
-
-	return false
-}
-
-// SetIsdefault gets a reference to the given bool and assigns it to the Isdefault field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) SetIsdefault(v bool) {
-	o.Isdefault = &v
-}
-
 func (o DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -126,9 +88,6 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) ToMap() 
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Group) {
 		toSerialize["group"] = o.Group
-	}
-	if !IsNil(o.Isdefault) {
-		toSerialize["isdefault"] = o.Isdefault
 	}
 	return toSerialize, nil
 }

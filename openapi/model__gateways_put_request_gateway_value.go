@@ -86,7 +86,7 @@ type GatewaysPutRequestGatewayValue struct {
 	// Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself.
 	NextHopSelf *bool `json:"next_hop_self,omitempty"`
 	StaticRoutes []GatewaysPutRequestGatewayValueStaticRoutesInner `json:"static_routes,omitempty"`
-	ObjectProperties *GatewayprofilesPutRequestGatewayProfileValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
 	// Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.
 	DefaultOriginate *bool `json:"default_originate,omitempty"`
 	// Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers.
@@ -1395,9 +1395,9 @@ func (o *GatewaysPutRequestGatewayValue) SetStaticRoutes(v []GatewaysPutRequestG
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() GatewayprofilesPutRequestGatewayProfileValueObjectProperties {
+func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret GatewayprofilesPutRequestGatewayProfileValueObjectProperties
+		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -1405,7 +1405,7 @@ func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() GatewayprofilesPu
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*GatewayprofilesPutRequestGatewayProfileValueObjectProperties, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -1421,8 +1421,8 @@ func (o *GatewaysPutRequestGatewayValue) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given GatewayprofilesPutRequestGatewayProfileValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v GatewayprofilesPutRequestGatewayProfileValueObjectProperties) {
+// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 

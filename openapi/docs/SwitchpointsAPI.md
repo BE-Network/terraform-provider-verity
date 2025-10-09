@@ -7,6 +7,7 @@ Method | HTTP request | Description
 [**SwitchpointsCurrentconfigGet**](SwitchpointsAPI.md#SwitchpointsCurrentconfigGet) | **Get** /switchpoints/currentconfig | Get all Switchpoint current configs
 [**SwitchpointsDelete**](SwitchpointsAPI.md#SwitchpointsDelete) | **Delete** /switchpoints | Delete Switchpoint
 [**SwitchpointsGet**](SwitchpointsAPI.md#SwitchpointsGet) | **Get** /switchpoints | Get all Switchpoints
+[**SwitchpointsMarkoutofserviceGet**](SwitchpointsAPI.md#SwitchpointsMarkoutofserviceGet) | **Get** /switchpoints/markoutofservice | Get all marked out of service Switchpoint names
 [**SwitchpointsMarkoutofservicePut**](SwitchpointsAPI.md#SwitchpointsMarkoutofservicePut) | **Put** /switchpoints/markoutofservice | Mark switchpoints out of service or back in service
 [**SwitchpointsPatch**](SwitchpointsAPI.md#SwitchpointsPatch) | **Patch** /switchpoints | Update Switchpoint
 [**SwitchpointsPut**](SwitchpointsAPI.md#SwitchpointsPut) | **Put** /switchpoints | Create Switchpoint
@@ -193,6 +194,70 @@ Name | Type | Description  | Notes
  **switchpointName** | **string** |  | 
  **includeData** | **bool** |  | 
  **changesetName** | **string** |  | 
+
+### Return type
+
+ (empty response body)
+
+### Authorization
+
+[TokenAuth](../README.md#TokenAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: Not defined
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## SwitchpointsMarkoutofserviceGet
+
+> SwitchpointsMarkoutofserviceGet(ctx).Mos(mos).Execute()
+
+Get all marked out of service Switchpoint names
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+)
+
+func main() {
+	mos := true // bool |  (optional)
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	r, err := apiClient.SwitchpointsAPI.SwitchpointsMarkoutofserviceGet(context.Background()).Mos(mos).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `SwitchpointsAPI.SwitchpointsMarkoutofserviceGet``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiSwitchpointsMarkoutofserviceGetRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **mos** | **bool** |  | 
 
 ### Return type
 

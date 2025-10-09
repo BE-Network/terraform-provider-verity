@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **ExternalGateways** | Pointer to [**[]GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner**](GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**GatewayprofilesPutRequestGatewayProfileValueObjectProperties**](GatewayprofilesPutRequestGatewayProfileValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -105,20 +105,20 @@ HasExternalGateways returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() GatewayprofilesPutRequestGatewayProfileValueObjectProperties`
+`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*GatewayprofilesPutRequestGatewayProfileValueObjectProperties, bool)`
+`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v GatewayprofilesPutRequestGatewayProfileValueObjectProperties)`
+`func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

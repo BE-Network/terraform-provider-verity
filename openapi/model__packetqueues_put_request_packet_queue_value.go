@@ -25,7 +25,7 @@ type PacketqueuesPutRequestPacketQueueValue struct {
 	Enable *bool `json:"enable,omitempty"`
 	Pbit []PacketqueuesPutRequestPacketQueueValuePbitInner `json:"pbit,omitempty"`
 	Queue []PacketqueuesPutRequestPacketQueueValueQueueInner `json:"queue,omitempty"`
-	ObjectProperties *PacketqueuesPutRequestPacketQueueValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewPacketqueuesPutRequestPacketQueueValue instantiates a new PacketqueuesPutRequestPacketQueueValue object
@@ -182,9 +182,9 @@ func (o *PacketqueuesPutRequestPacketQueueValue) SetQueue(v []PacketqueuesPutReq
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() PacketqueuesPutRequestPacketQueueValueObjectProperties {
+func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret PacketqueuesPutRequestPacketQueueValueObjectProperties
+		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -192,7 +192,7 @@ func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() Packetque
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (*PacketqueuesPutRequestPacketQueueValueObjectProperties, bool) {
+func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -208,8 +208,8 @@ func (o *PacketqueuesPutRequestPacketQueueValue) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given PacketqueuesPutRequestPacketQueueValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v PacketqueuesPutRequestPacketQueueValueObjectProperties) {
+// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 

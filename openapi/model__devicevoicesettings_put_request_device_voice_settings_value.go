@@ -140,7 +140,7 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
 	// Intercom 3
 	Intercom3 *string `json:"intercom_3,omitempty"`
 	Codecs []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner `json:"codecs,omitempty"`
-	ObjectProperties *PacketqueuesPutRequestPacketQueueValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValue instantiates a new DevicevoicesettingsPutRequestDeviceVoiceSettingsValue object
@@ -2543,9 +2543,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCodecs(v []De
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectProperties() PacketqueuesPutRequestPacketQueueValueObjectProperties {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret PacketqueuesPutRequestPacketQueueValueObjectProperties
+		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -2553,7 +2553,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropert
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropertiesOk() (*PacketqueuesPutRequestPacketQueueValueObjectProperties, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -2569,8 +2569,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasObjectPropert
 	return false
 }
 
-// SetObjectProperties gets a reference to the given PacketqueuesPutRequestPacketQueueValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectProperties(v PacketqueuesPutRequestPacketQueueValueObjectProperties) {
+// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 

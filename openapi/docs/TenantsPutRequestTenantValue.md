@@ -22,7 +22,7 @@ Name | Type | Description | Notes
 **VrfName** | Pointer to **string** | Virtual Routing and Forwarding instance name associated to tenants  | [optional] [default to "(auto)"]
 **VrfNameAutoAssigned** | Pointer to **bool** | Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit. | [optional] 
 **RouteTenants** | Pointer to [**[]TenantsPutRequestTenantValueRouteTenantsInner**](TenantsPutRequestTenantValueRouteTenantsInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**GatewayprofilesPutRequestGatewayProfileValueObjectProperties**](GatewayprofilesPutRequestGatewayProfileValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
 **DefaultOriginate** | Pointer to **bool** | Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric. | [optional] [default to false]
 
 ## Methods
@@ -516,20 +516,20 @@ HasRouteTenants returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *TenantsPutRequestTenantValue) GetObjectProperties() GatewayprofilesPutRequestGatewayProfileValueObjectProperties`
+`func (o *TenantsPutRequestTenantValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*GatewayprofilesPutRequestGatewayProfileValueObjectProperties, bool)`
+`func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *TenantsPutRequestTenantValue) SetObjectProperties(v GatewayprofilesPutRequestGatewayProfileValueObjectProperties)`
+`func (o *TenantsPutRequestTenantValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

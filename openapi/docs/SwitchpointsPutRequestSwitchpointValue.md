@@ -14,7 +14,10 @@ Name | Type | Description | Notes
 **DisabledPorts** | Pointer to **string** | Disabled Ports It&#39;s a comma separated list of ports to disable. | [optional] [default to ""]
 **OutOfBandManagement** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch is managed out of band via the management port | [optional] [default to false]
 **Type** | Pointer to **string** | Type of Switchpoint | [optional] [default to "leaf"]
-**SuperPod** | Pointer to **string** | Super Pod  subgrouping of super spines and pods | [optional] [default to ""]
+**SpinePlane** | Pointer to **string** | Spine Plane - subgrouping of super spine and spine | [optional] [default to ""]
+**SpinePlaneRefType** | Pointer to **string** | Object type for spine_plane field | [optional] 
+**Pod** | Pointer to **string** | Pod - subgrouping of spine and leaf switches | [optional] [default to ""]
+**PodRefType** | Pointer to **string** | Object type for pod field | [optional] 
 **Rack** | Pointer to **string** | Physical Rack location of the Switch  | [optional] [default to ""]
 **SwitchRouterIdIpMask** | Pointer to **string** | Switch BGP Router Identifier | [optional] [default to "(auto)"]
 **SwitchRouterIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit. | [optional] 
@@ -27,8 +30,6 @@ Name | Type | Description | Notes
 **TrafficMirrors** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner**](SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner.md) |  | [optional] 
 **Eths** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueEthsInner**](SwitchpointsPutRequestSwitchpointValueEthsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SwitchpointsPutRequestSwitchpointValueObjectProperties**](SwitchpointsPutRequestSwitchpointValueObjectProperties.md) |  | [optional] 
-**Pod** | Pointer to **string** | Pod - subgrouping of spine and leaf switches | [optional] [default to ""]
-**PodRefType** | Pointer to **string** | Object type for pod field | [optional] 
 **IsFabric** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device | [optional] [default to false]
 
 ## Methods
@@ -300,30 +301,105 @@ SetType sets Type field to given value.
 
 HasType returns a boolean if a field has been set.
 
-### GetSuperPod
+### GetSpinePlane
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetSuperPod() string`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSpinePlane() string`
 
-GetSuperPod returns the SuperPod field if non-nil, zero value otherwise.
+GetSpinePlane returns the SpinePlane field if non-nil, zero value otherwise.
 
-### GetSuperPodOk
+### GetSpinePlaneOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetSuperPodOk() (*string, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSpinePlaneOk() (*string, bool)`
 
-GetSuperPodOk returns a tuple with the SuperPod field if it's non-nil, zero value otherwise
+GetSpinePlaneOk returns a tuple with the SpinePlane field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSuperPod
+### SetSpinePlane
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetSuperPod(v string)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetSpinePlane(v string)`
 
-SetSuperPod sets SuperPod field to given value.
+SetSpinePlane sets SpinePlane field to given value.
 
-### HasSuperPod
+### HasSpinePlane
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasSuperPod() bool`
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasSpinePlane() bool`
 
-HasSuperPod returns a boolean if a field has been set.
+HasSpinePlane returns a boolean if a field has been set.
+
+### GetSpinePlaneRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSpinePlaneRefType() string`
+
+GetSpinePlaneRefType returns the SpinePlaneRefType field if non-nil, zero value otherwise.
+
+### GetSpinePlaneRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSpinePlaneRefTypeOk() (*string, bool)`
+
+GetSpinePlaneRefTypeOk returns a tuple with the SpinePlaneRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpinePlaneRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetSpinePlaneRefType(v string)`
+
+SetSpinePlaneRefType sets SpinePlaneRefType field to given value.
+
+### HasSpinePlaneRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasSpinePlaneRefType() bool`
+
+HasSpinePlaneRefType returns a boolean if a field has been set.
+
+### GetPod
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPod() string`
+
+GetPod returns the Pod field if non-nil, zero value otherwise.
+
+### GetPodOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodOk() (*string, bool)`
+
+GetPodOk returns a tuple with the Pod field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPod
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPod(v string)`
+
+SetPod sets Pod field to given value.
+
+### HasPod
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasPod() bool`
+
+HasPod returns a boolean if a field has been set.
+
+### GetPodRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefType() string`
+
+GetPodRefType returns the PodRefType field if non-nil, zero value otherwise.
+
+### GetPodRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefTypeOk() (*string, bool)`
+
+GetPodRefTypeOk returns a tuple with the PodRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPodRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPodRefType(v string)`
+
+SetPodRefType sets PodRefType field to given value.
+
+### HasPodRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasPodRefType() bool`
+
+HasPodRefType returns a boolean if a field has been set.
 
 ### GetRack
 
@@ -624,56 +700,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetPod
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetPod() string`
-
-GetPod returns the Pod field if non-nil, zero value otherwise.
-
-### GetPodOk
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodOk() (*string, bool)`
-
-GetPodOk returns a tuple with the Pod field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPod
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetPod(v string)`
-
-SetPod sets Pod field to given value.
-
-### HasPod
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasPod() bool`
-
-HasPod returns a boolean if a field has been set.
-
-### GetPodRefType
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefType() string`
-
-GetPodRefType returns the PodRefType field if non-nil, zero value otherwise.
-
-### GetPodRefTypeOk
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetPodRefTypeOk() (*string, bool)`
-
-GetPodRefTypeOk returns a tuple with the PodRefType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPodRefType
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetPodRefType(v string)`
-
-SetPodRefType sets PodRefType field to given value.
-
-### HasPodRefType
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasPodRefType() bool`
-
-HasPodRefType returns a boolean if a field has been set.
 
 ### GetIsFabric
 

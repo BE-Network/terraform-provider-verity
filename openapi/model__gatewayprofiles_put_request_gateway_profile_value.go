@@ -24,7 +24,7 @@ type GatewayprofilesPutRequestGatewayProfileValue struct {
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	ExternalGateways []GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner `json:"external_gateways,omitempty"`
-	ObjectProperties *GatewayprofilesPutRequestGatewayProfileValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewGatewayprofilesPutRequestGatewayProfileValue instantiates a new GatewayprofilesPutRequestGatewayProfileValue object
@@ -149,9 +149,9 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) SetExternalGateways(v []G
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() GatewayprofilesPutRequestGatewayProfileValueObjectProperties {
+func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret GatewayprofilesPutRequestGatewayProfileValueObjectProperties
+		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -159,7 +159,7 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() Gat
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*GatewayprofilesPutRequestGatewayProfileValueObjectProperties, bool) {
+func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -175,8 +175,8 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) HasObjectProperties() boo
 	return false
 }
 
-// SetObjectProperties gets a reference to the given GatewayprofilesPutRequestGatewayProfileValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v GatewayprofilesPutRequestGatewayProfileValueObjectProperties) {
+// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 

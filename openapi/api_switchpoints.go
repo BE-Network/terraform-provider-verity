@@ -355,6 +355,104 @@ func (a *SwitchpointsAPIService) SwitchpointsGetExecute(r ApiSwitchpointsGetRequ
 	return localVarHTTPResponse, nil
 }
 
+type ApiSwitchpointsMarkoutofserviceGetRequest struct {
+	ctx context.Context
+	ApiService *SwitchpointsAPIService
+	mos *bool
+}
+
+func (r ApiSwitchpointsMarkoutofserviceGetRequest) Mos(mos bool) ApiSwitchpointsMarkoutofserviceGetRequest {
+	r.mos = &mos
+	return r
+}
+
+func (r ApiSwitchpointsMarkoutofserviceGetRequest) Execute() (*http.Response, error) {
+	return r.ApiService.SwitchpointsMarkoutofserviceGetExecute(r)
+}
+
+/*
+SwitchpointsMarkoutofserviceGet Get all marked out of service Switchpoint names
+
+Retrieves all marked out of service Switchpoint names from the system.
+
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiSwitchpointsMarkoutofserviceGetRequest
+*/
+func (a *SwitchpointsAPIService) SwitchpointsMarkoutofserviceGet(ctx context.Context) ApiSwitchpointsMarkoutofserviceGetRequest {
+	return ApiSwitchpointsMarkoutofserviceGetRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+func (a *SwitchpointsAPIService) SwitchpointsMarkoutofserviceGetExecute(r ApiSwitchpointsMarkoutofserviceGetRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsMarkoutofserviceGet")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/switchpoints/markoutofservice"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.mos != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "mos", r.mos, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type ApiSwitchpointsMarkoutofservicePutRequest struct {
 	ctx context.Context
 	ApiService *SwitchpointsAPIService

@@ -28,6 +28,7 @@ api_ipv6_prefix_lists.go
 api_lags.go
 api_packet_broker.go
 api_packet_queues.go
+api_pb_routing.go
 api_pods.go
 api_port_acls.go
 api_route_map_clauses.go
@@ -37,6 +38,7 @@ api_service_port_profiles.go
 api_services.go
 api_sfp_breakouts.go
 api_sites.go
+api_spine_planes.go
 api_switchpoints.go
 api_tenants.go
 api_version.go
@@ -107,7 +109,6 @@ docs/GatewayProfilesAPI.md
 docs/GatewayprofilesPutRequest.md
 docs/GatewayprofilesPutRequestGatewayProfileValue.md
 docs/GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md
-docs/GatewayprofilesPutRequestGatewayProfileValueObjectProperties.md
 docs/GatewaysAPI.md
 docs/GatewaysPutRequest.md
 docs/GatewaysPutRequestGatewayValue.md
@@ -136,6 +137,7 @@ docs/Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner.md
 docs/LAGsAPI.md
 docs/LagsPutRequest.md
 docs/LagsPutRequestLagValue.md
+docs/PBRoutingAPI.md
 docs/PacketBrokerAPI.md
 docs/PacketQueuesAPI.md
 docs/PacketbrokerPutRequest.md
@@ -144,12 +146,14 @@ docs/PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner.md
 docs/PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner.md
 docs/PacketqueuesPutRequest.md
 docs/PacketqueuesPutRequestPacketQueueValue.md
-docs/PacketqueuesPutRequestPacketQueueValueObjectProperties.md
 docs/PacketqueuesPutRequestPacketQueueValuePbitInner.md
 docs/PacketqueuesPutRequestPacketQueueValueQueueInner.md
 docs/PodsAPI.md
 docs/PodsPutRequest.md
 docs/PodsPutRequestPodValue.md
+docs/PolicybasedroutingPutRequest.md
+docs/PolicybasedroutingPutRequestPbRoutingValue.md
+docs/PolicybasedroutingPutRequestPbRoutingValuePolicyInner.md
 docs/PortACLsAPI.md
 docs/PortaclsPutRequest.md
 docs/PortaclsPutRequestPortAclValue.md
@@ -186,6 +190,9 @@ docs/SitesPatchRequestSiteValueIslandsInner.md
 docs/SitesPatchRequestSiteValueObjectProperties.md
 docs/SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner.md
 docs/SitesPatchRequestSiteValuePairsInner.md
+docs/SpinePlanesAPI.md
+docs/SpineplanesPutRequest.md
+docs/SpineplanesPutRequestSpinePlaneValue.md
 docs/SwitchpointsAPI.md
 docs/SwitchpointsMarkoutofservicePutRequest.md
 docs/SwitchpointsPutRequest.md
@@ -257,7 +264,6 @@ model__extendedcommunitylists_put_request_extended_community_list_value_lists_in
 model__gatewayprofiles_put_request.go
 model__gatewayprofiles_put_request_gateway_profile_value.go
 model__gatewayprofiles_put_request_gateway_profile_value_external_gateways_inner.go
-model__gatewayprofiles_put_request_gateway_profile_value_object_properties.go
 model__gateways_put_request.go
 model__gateways_put_request_gateway_value.go
 model__gateways_put_request_gateway_value_static_routes_inner.go
@@ -285,11 +291,13 @@ model__packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner.go
 model__packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner.go
 model__packetqueues_put_request.go
 model__packetqueues_put_request_packet_queue_value.go
-model__packetqueues_put_request_packet_queue_value_object_properties.go
 model__packetqueues_put_request_packet_queue_value_pbit_inner.go
 model__packetqueues_put_request_packet_queue_value_queue_inner.go
 model__pods_put_request.go
 model__pods_put_request_pod_value.go
+model__policybasedrouting_put_request.go
+model__policybasedrouting_put_request_pb_routing_value.go
+model__policybasedrouting_put_request_pb_routing_value_policy_inner.go
 model__portacls_put_request.go
 model__portacls_put_request_port_acl_value.go
 model__portacls_put_request_port_acl_value_ipv4_permit_inner.go
@@ -318,6 +326,8 @@ model__sites_patch_request_site_value_islands_inner.go
 model__sites_patch_request_site_value_object_properties.go
 model__sites_patch_request_site_value_object_properties_system_graphs_inner.go
 model__sites_patch_request_site_value_pairs_inner.go
+model__spineplanes_put_request.go
+model__spineplanes_put_request_spine_plane_value.go
 model__switchpoints_markoutofservice_put_request.go
 model__switchpoints_put_request.go
 model__switchpoints_put_request_switchpoint_value.go
@@ -360,6 +370,7 @@ test/api_ipv6_prefix_lists_test.go
 test/api_lags_test.go
 test/api_packet_broker_test.go
 test/api_packet_queues_test.go
+test/api_pb_routing_test.go
 test/api_pods_test.go
 test/api_port_acls_test.go
 test/api_route_map_clauses_test.go
@@ -369,6 +380,7 @@ test/api_service_port_profiles_test.go
 test/api_services_test.go
 test/api_sfp_breakouts_test.go
 test/api_sites_test.go
+test/api_spine_planes_test.go
 test/api_switchpoints_test.go
 test/api_tenants_test.go
 test/api_version_test.go

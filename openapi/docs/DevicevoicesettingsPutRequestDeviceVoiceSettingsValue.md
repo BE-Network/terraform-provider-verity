@@ -65,7 +65,7 @@ Name | Type | Description | Notes
 **Intercom2** | Pointer to **string** | Intercom 2 | [optional] [default to "*54"]
 **Intercom3** | Pointer to **string** | Intercom 3 | [optional] [default to "*55"]
 **Codecs** | Pointer to [**[]DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner**](DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**PacketqueuesPutRequestPacketQueueValueObjectProperties**](PacketqueuesPutRequestPacketQueueValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -1803,20 +1803,20 @@ HasCodecs returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectProperties() PacketqueuesPutRequestPacketQueueValueObjectProperties`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropertiesOk() (*PacketqueuesPutRequestPacketQueueValueObjectProperties, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectProperties(v PacketqueuesPutRequestPacketQueueValueObjectProperties)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

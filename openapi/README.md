@@ -166,6 +166,10 @@ Class | Method | HTTP request | Description
 *LAGsAPI* | [**LagsGet**](docs/LAGsAPI.md#lagsget) | **Get** /lags | Get all LAGs
 *LAGsAPI* | [**LagsPatch**](docs/LAGsAPI.md#lagspatch) | **Patch** /lags | Update LAG
 *LAGsAPI* | [**LagsPut**](docs/LAGsAPI.md#lagsput) | **Put** /lags | Create LAG
+*PBRoutingAPI* | [**PolicybasedroutingDelete**](docs/PBRoutingAPI.md#policybasedroutingdelete) | **Delete** /policybasedrouting | Delete PB Routing object
+*PBRoutingAPI* | [**PolicybasedroutingGet**](docs/PBRoutingAPI.md#policybasedroutingget) | **Get** /policybasedrouting | Get all PB Routing objects
+*PBRoutingAPI* | [**PolicybasedroutingPatch**](docs/PBRoutingAPI.md#policybasedroutingpatch) | **Patch** /policybasedrouting | Update PB Routing object
+*PBRoutingAPI* | [**PolicybasedroutingPut**](docs/PBRoutingAPI.md#policybasedroutingput) | **Put** /policybasedrouting | Create PB Routing object
 *PacketBrokerAPI* | [**PacketbrokerDelete**](docs/PacketBrokerAPI.md#packetbrokerdelete) | **Delete** /packetbroker | Delete PB Egress Profile
 *PacketBrokerAPI* | [**PacketbrokerGet**](docs/PacketBrokerAPI.md#packetbrokerget) | **Get** /packetbroker | Get all PB Egress Profiles
 *PacketBrokerAPI* | [**PacketbrokerPatch**](docs/PacketBrokerAPI.md#packetbrokerpatch) | **Patch** /packetbroker | Update PB Egress Profile
@@ -206,9 +210,14 @@ Class | Method | HTTP request | Description
 *ServicesAPI* | [**ServicesPut**](docs/ServicesAPI.md#servicesput) | **Put** /services | Create service
 *SitesAPI* | [**SitesGet**](docs/SitesAPI.md#sitesget) | **Get** /sites | Get all Sites
 *SitesAPI* | [**SitesPatch**](docs/SitesAPI.md#sitespatch) | **Patch** /sites | Update Site
+*SpinePlanesAPI* | [**SpineplanesDelete**](docs/SpinePlanesAPI.md#spineplanesdelete) | **Delete** /spineplanes | Delete Spine Plane
+*SpinePlanesAPI* | [**SpineplanesGet**](docs/SpinePlanesAPI.md#spineplanesget) | **Get** /spineplanes | Get all Spine Planes
+*SpinePlanesAPI* | [**SpineplanesPatch**](docs/SpinePlanesAPI.md#spineplanespatch) | **Patch** /spineplanes | Update Spine Plane
+*SpinePlanesAPI* | [**SpineplanesPut**](docs/SpinePlanesAPI.md#spineplanesput) | **Put** /spineplanes | Create Spine Plane
 *SwitchpointsAPI* | [**SwitchpointsCurrentconfigGet**](docs/SwitchpointsAPI.md#switchpointscurrentconfigget) | **Get** /switchpoints/currentconfig | Get all Switchpoint current configs
 *SwitchpointsAPI* | [**SwitchpointsDelete**](docs/SwitchpointsAPI.md#switchpointsdelete) | **Delete** /switchpoints | Delete Switchpoint
 *SwitchpointsAPI* | [**SwitchpointsGet**](docs/SwitchpointsAPI.md#switchpointsget) | **Get** /switchpoints | Get all Switchpoints
+*SwitchpointsAPI* | [**SwitchpointsMarkoutofserviceGet**](docs/SwitchpointsAPI.md#switchpointsmarkoutofserviceget) | **Get** /switchpoints/markoutofservice | Get all marked out of service Switchpoint names
 *SwitchpointsAPI* | [**SwitchpointsMarkoutofservicePut**](docs/SwitchpointsAPI.md#switchpointsmarkoutofserviceput) | **Put** /switchpoints/markoutofservice | Mark switchpoints out of service or back in service
 *SwitchpointsAPI* | [**SwitchpointsPatch**](docs/SwitchpointsAPI.md#switchpointspatch) | **Patch** /switchpoints | Update Switchpoint
 *SwitchpointsAPI* | [**SwitchpointsPut**](docs/SwitchpointsAPI.md#switchpointsput) | **Put** /switchpoints | Create Switchpoint
@@ -274,7 +283,6 @@ Class | Method | HTTP request | Description
  - [GatewayprofilesPutRequest](docs/GatewayprofilesPutRequest.md)
  - [GatewayprofilesPutRequestGatewayProfileValue](docs/GatewayprofilesPutRequestGatewayProfileValue.md)
  - [GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner](docs/GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md)
- - [GatewayprofilesPutRequestGatewayProfileValueObjectProperties](docs/GatewayprofilesPutRequestGatewayProfileValueObjectProperties.md)
  - [GatewaysPutRequest](docs/GatewaysPutRequest.md)
  - [GatewaysPutRequestGatewayValue](docs/GatewaysPutRequestGatewayValue.md)
  - [GatewaysPutRequestGatewayValueStaticRoutesInner](docs/GatewaysPutRequestGatewayValueStaticRoutesInner.md)
@@ -302,11 +310,13 @@ Class | Method | HTTP request | Description
  - [PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner](docs/PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner.md)
  - [PacketqueuesPutRequest](docs/PacketqueuesPutRequest.md)
  - [PacketqueuesPutRequestPacketQueueValue](docs/PacketqueuesPutRequestPacketQueueValue.md)
- - [PacketqueuesPutRequestPacketQueueValueObjectProperties](docs/PacketqueuesPutRequestPacketQueueValueObjectProperties.md)
  - [PacketqueuesPutRequestPacketQueueValuePbitInner](docs/PacketqueuesPutRequestPacketQueueValuePbitInner.md)
  - [PacketqueuesPutRequestPacketQueueValueQueueInner](docs/PacketqueuesPutRequestPacketQueueValueQueueInner.md)
  - [PodsPutRequest](docs/PodsPutRequest.md)
  - [PodsPutRequestPodValue](docs/PodsPutRequestPodValue.md)
+ - [PolicybasedroutingPutRequest](docs/PolicybasedroutingPutRequest.md)
+ - [PolicybasedroutingPutRequestPbRoutingValue](docs/PolicybasedroutingPutRequestPbRoutingValue.md)
+ - [PolicybasedroutingPutRequestPbRoutingValuePolicyInner](docs/PolicybasedroutingPutRequestPbRoutingValuePolicyInner.md)
  - [PortaclsPutRequest](docs/PortaclsPutRequest.md)
  - [PortaclsPutRequestPortAclValue](docs/PortaclsPutRequestPortAclValue.md)
  - [PortaclsPutRequestPortAclValueIpv4PermitInner](docs/PortaclsPutRequestPortAclValueIpv4PermitInner.md)
@@ -335,6 +345,8 @@ Class | Method | HTTP request | Description
  - [SitesPatchRequestSiteValueObjectProperties](docs/SitesPatchRequestSiteValueObjectProperties.md)
  - [SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner](docs/SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner.md)
  - [SitesPatchRequestSiteValuePairsInner](docs/SitesPatchRequestSiteValuePairsInner.md)
+ - [SpineplanesPutRequest](docs/SpineplanesPutRequest.md)
+ - [SpineplanesPutRequestSpinePlaneValue](docs/SpineplanesPutRequestSpinePlaneValue.md)
  - [SwitchpointsMarkoutofservicePutRequest](docs/SwitchpointsMarkoutofservicePutRequest.md)
  - [SwitchpointsPutRequest](docs/SwitchpointsPutRequest.md)
  - [SwitchpointsPutRequestSwitchpointValue](docs/SwitchpointsPutRequestSwitchpointValue.md)

@@ -17,6 +17,8 @@ Name | Type | Description | Notes
 **DhcpServerIpv6** | Pointer to **string** | IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
 **Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] [default to 1500]
 **ObjectProperties** | Pointer to [**ServicesPutRequestServiceValueObjectProperties**](ServicesPutRequestServiceValueObjectProperties.md) |  | [optional] 
+**PolicyBasedRouting** | Pointer to **string** | Policy Based Routing | [optional] [default to ""]
+**PolicyBasedRoutingRefType** | Pointer to **string** | Object type for policy_based_routing field | [optional] 
 **MaxUpstreamRateMbps** | Pointer to **int32** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
 **MaxDownstreamRateMbps** | Pointer to **int32** | Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps) | [optional] 
 **PacketPriority** | Pointer to **string** | Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped | [optional] [default to "0"]
@@ -31,8 +33,6 @@ Name | Type | Description | Notes
 **UseDscpToPBitMappingForL3PacketsIfAvailable** | Pointer to **bool** | use DSCP to p-bit Mapping for L3 packets if available | [optional] [default to false]
 **AllowFastLeave** | Pointer to **bool** | The Fast Leave feature causes the switch to immediately remove a port from the forwarding list for a IGMP multicast group when the port receives a leave message. Not recommended unless there is only a single receiver present on every point in the VLAN | [optional] [default to false]
 **MstInstance** | Pointer to **int32** | MST Instance ID (0-4094) | [optional] [default to 0]
-**PolicyBasedRouting** | Pointer to **string** | Policy Based Routing | [optional] [default to ""]
-**PolicyBasedRoutingRefType** | Pointer to **string** | Object type for policy_based_routing field | [optional] 
 
 ## Methods
 
@@ -408,6 +408,56 @@ SetObjectProperties sets ObjectProperties field to given value.
 
 HasObjectProperties returns a boolean if a field has been set.
 
+### GetPolicyBasedRouting
+
+`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRouting() string`
+
+GetPolicyBasedRouting returns the PolicyBasedRouting field if non-nil, zero value otherwise.
+
+### GetPolicyBasedRoutingOk
+
+`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingOk() (*string, bool)`
+
+GetPolicyBasedRoutingOk returns a tuple with the PolicyBasedRouting field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPolicyBasedRouting
+
+`func (o *ServicesPutRequestServiceValue) SetPolicyBasedRouting(v string)`
+
+SetPolicyBasedRouting sets PolicyBasedRouting field to given value.
+
+### HasPolicyBasedRouting
+
+`func (o *ServicesPutRequestServiceValue) HasPolicyBasedRouting() bool`
+
+HasPolicyBasedRouting returns a boolean if a field has been set.
+
+### GetPolicyBasedRoutingRefType
+
+`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefType() string`
+
+GetPolicyBasedRoutingRefType returns the PolicyBasedRoutingRefType field if non-nil, zero value otherwise.
+
+### GetPolicyBasedRoutingRefTypeOk
+
+`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefTypeOk() (*string, bool)`
+
+GetPolicyBasedRoutingRefTypeOk returns a tuple with the PolicyBasedRoutingRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPolicyBasedRoutingRefType
+
+`func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string)`
+
+SetPolicyBasedRoutingRefType sets PolicyBasedRoutingRefType field to given value.
+
+### HasPolicyBasedRoutingRefType
+
+`func (o *ServicesPutRequestServiceValue) HasPolicyBasedRoutingRefType() bool`
+
+HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
+
 ### GetMaxUpstreamRateMbps
 
 `func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbps() int32`
@@ -757,56 +807,6 @@ SetMstInstance sets MstInstance field to given value.
 `func (o *ServicesPutRequestServiceValue) HasMstInstance() bool`
 
 HasMstInstance returns a boolean if a field has been set.
-
-### GetPolicyBasedRouting
-
-`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRouting() string`
-
-GetPolicyBasedRouting returns the PolicyBasedRouting field if non-nil, zero value otherwise.
-
-### GetPolicyBasedRoutingOk
-
-`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingOk() (*string, bool)`
-
-GetPolicyBasedRoutingOk returns a tuple with the PolicyBasedRouting field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPolicyBasedRouting
-
-`func (o *ServicesPutRequestServiceValue) SetPolicyBasedRouting(v string)`
-
-SetPolicyBasedRouting sets PolicyBasedRouting field to given value.
-
-### HasPolicyBasedRouting
-
-`func (o *ServicesPutRequestServiceValue) HasPolicyBasedRouting() bool`
-
-HasPolicyBasedRouting returns a boolean if a field has been set.
-
-### GetPolicyBasedRoutingRefType
-
-`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefType() string`
-
-GetPolicyBasedRoutingRefType returns the PolicyBasedRoutingRefType field if non-nil, zero value otherwise.
-
-### GetPolicyBasedRoutingRefTypeOk
-
-`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefTypeOk() (*string, bool)`
-
-GetPolicyBasedRoutingRefTypeOk returns a tuple with the PolicyBasedRoutingRefType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPolicyBasedRoutingRefType
-
-`func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string)`
-
-SetPolicyBasedRoutingRefType sets PolicyBasedRoutingRefType field to given value.
-
-### HasPolicyBasedRoutingRefType
-
-`func (o *ServicesPutRequestServiceValue) HasPolicyBasedRoutingRefType() bool`
-
-HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

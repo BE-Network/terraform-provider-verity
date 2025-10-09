@@ -44,6 +44,10 @@ type ServicesPutRequestServiceValue struct {
 	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
 	Mtu NullableInt32 `json:"mtu,omitempty"`
 	ObjectProperties *ServicesPutRequestServiceValueObjectProperties `json:"object_properties,omitempty"`
+	// Policy Based Routing
+	PolicyBasedRouting *string `json:"policy_based_routing,omitempty"`
+	// Object type for policy_based_routing field
+	PolicyBasedRoutingRefType *string `json:"policy_based_routing_ref_type_,omitempty"`
 	// Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)
 	MaxUpstreamRateMbps *int32 `json:"max_upstream_rate_mbps,omitempty"`
 	// Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)
@@ -72,10 +76,6 @@ type ServicesPutRequestServiceValue struct {
 	AllowFastLeave *bool `json:"allow_fast_leave,omitempty"`
 	// MST Instance ID (0-4094)
 	MstInstance *int32 `json:"mst_instance,omitempty"`
-	// Policy Based Routing
-	PolicyBasedRouting *string `json:"policy_based_routing,omitempty"`
-	// Object type for policy_based_routing field
-	PolicyBasedRoutingRefType *string `json:"policy_based_routing_ref_type_,omitempty"`
 }
 
 // NewServicesPutRequestServiceValue instantiates a new ServicesPutRequestServiceValue object
@@ -100,6 +100,8 @@ func NewServicesPutRequestServiceValue() *ServicesPutRequestServiceValue {
 	this.DhcpServerIpv6 = &dhcpServerIpv6
 	var mtu int32 = 1500
 	this.Mtu = *NewNullableInt32(&mtu)
+	var policyBasedRouting string = ""
+	this.PolicyBasedRouting = &policyBasedRouting
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var multicastManagementMode string = "flooding"
@@ -124,8 +126,6 @@ func NewServicesPutRequestServiceValue() *ServicesPutRequestServiceValue {
 	this.AllowFastLeave = &allowFastLeave
 	var mstInstance int32 = 0
 	this.MstInstance = &mstInstance
-	var policyBasedRouting string = ""
-	this.PolicyBasedRouting = &policyBasedRouting
 	return &this
 }
 
@@ -150,6 +150,8 @@ func NewServicesPutRequestServiceValueWithDefaults() *ServicesPutRequestServiceV
 	this.DhcpServerIpv6 = &dhcpServerIpv6
 	var mtu int32 = 1500
 	this.Mtu = *NewNullableInt32(&mtu)
+	var policyBasedRouting string = ""
+	this.PolicyBasedRouting = &policyBasedRouting
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var multicastManagementMode string = "flooding"
@@ -174,8 +176,6 @@ func NewServicesPutRequestServiceValueWithDefaults() *ServicesPutRequestServiceV
 	this.AllowFastLeave = &allowFastLeave
 	var mstInstance int32 = 0
 	this.MstInstance = &mstInstance
-	var policyBasedRouting string = ""
-	this.PolicyBasedRouting = &policyBasedRouting
 	return &this
 }
 
@@ -623,6 +623,70 @@ func (o *ServicesPutRequestServiceValue) HasObjectProperties() bool {
 // SetObjectProperties gets a reference to the given ServicesPutRequestServiceValueObjectProperties and assigns it to the ObjectProperties field.
 func (o *ServicesPutRequestServiceValue) SetObjectProperties(v ServicesPutRequestServiceValueObjectProperties) {
 	o.ObjectProperties = &v
+}
+
+// GetPolicyBasedRouting returns the PolicyBasedRouting field value if set, zero value otherwise.
+func (o *ServicesPutRequestServiceValue) GetPolicyBasedRouting() string {
+	if o == nil || IsNil(o.PolicyBasedRouting) {
+		var ret string
+		return ret
+	}
+	return *o.PolicyBasedRouting
+}
+
+// GetPolicyBasedRoutingOk returns a tuple with the PolicyBasedRouting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingOk() (*string, bool) {
+	if o == nil || IsNil(o.PolicyBasedRouting) {
+		return nil, false
+	}
+	return o.PolicyBasedRouting, true
+}
+
+// HasPolicyBasedRouting returns a boolean if a field has been set.
+func (o *ServicesPutRequestServiceValue) HasPolicyBasedRouting() bool {
+	if o != nil && !IsNil(o.PolicyBasedRouting) {
+		return true
+	}
+
+	return false
+}
+
+// SetPolicyBasedRouting gets a reference to the given string and assigns it to the PolicyBasedRouting field.
+func (o *ServicesPutRequestServiceValue) SetPolicyBasedRouting(v string) {
+	o.PolicyBasedRouting = &v
+}
+
+// GetPolicyBasedRoutingRefType returns the PolicyBasedRoutingRefType field value if set, zero value otherwise.
+func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefType() string {
+	if o == nil || IsNil(o.PolicyBasedRoutingRefType) {
+		var ret string
+		return ret
+	}
+	return *o.PolicyBasedRoutingRefType
+}
+
+// GetPolicyBasedRoutingRefTypeOk returns a tuple with the PolicyBasedRoutingRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PolicyBasedRoutingRefType) {
+		return nil, false
+	}
+	return o.PolicyBasedRoutingRefType, true
+}
+
+// HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
+func (o *ServicesPutRequestServiceValue) HasPolicyBasedRoutingRefType() bool {
+	if o != nil && !IsNil(o.PolicyBasedRoutingRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPolicyBasedRoutingRefType gets a reference to the given string and assigns it to the PolicyBasedRoutingRefType field.
+func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string) {
+	o.PolicyBasedRoutingRefType = &v
 }
 
 // GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field value if set, zero value otherwise.
@@ -1073,70 +1137,6 @@ func (o *ServicesPutRequestServiceValue) SetMstInstance(v int32) {
 	o.MstInstance = &v
 }
 
-// GetPolicyBasedRouting returns the PolicyBasedRouting field value if set, zero value otherwise.
-func (o *ServicesPutRequestServiceValue) GetPolicyBasedRouting() string {
-	if o == nil || IsNil(o.PolicyBasedRouting) {
-		var ret string
-		return ret
-	}
-	return *o.PolicyBasedRouting
-}
-
-// GetPolicyBasedRoutingOk returns a tuple with the PolicyBasedRouting field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingOk() (*string, bool) {
-	if o == nil || IsNil(o.PolicyBasedRouting) {
-		return nil, false
-	}
-	return o.PolicyBasedRouting, true
-}
-
-// HasPolicyBasedRouting returns a boolean if a field has been set.
-func (o *ServicesPutRequestServiceValue) HasPolicyBasedRouting() bool {
-	if o != nil && !IsNil(o.PolicyBasedRouting) {
-		return true
-	}
-
-	return false
-}
-
-// SetPolicyBasedRouting gets a reference to the given string and assigns it to the PolicyBasedRouting field.
-func (o *ServicesPutRequestServiceValue) SetPolicyBasedRouting(v string) {
-	o.PolicyBasedRouting = &v
-}
-
-// GetPolicyBasedRoutingRefType returns the PolicyBasedRoutingRefType field value if set, zero value otherwise.
-func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefType() string {
-	if o == nil || IsNil(o.PolicyBasedRoutingRefType) {
-		var ret string
-		return ret
-	}
-	return *o.PolicyBasedRoutingRefType
-}
-
-// GetPolicyBasedRoutingRefTypeOk returns a tuple with the PolicyBasedRoutingRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.PolicyBasedRoutingRefType) {
-		return nil, false
-	}
-	return o.PolicyBasedRoutingRefType, true
-}
-
-// HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
-func (o *ServicesPutRequestServiceValue) HasPolicyBasedRoutingRefType() bool {
-	if o != nil && !IsNil(o.PolicyBasedRoutingRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetPolicyBasedRoutingRefType gets a reference to the given string and assigns it to the PolicyBasedRoutingRefType field.
-func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string) {
-	o.PolicyBasedRoutingRefType = &v
-}
-
 func (o ServicesPutRequestServiceValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -1186,6 +1186,12 @@ func (o ServicesPutRequestServiceValue) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
 	}
+	if !IsNil(o.PolicyBasedRouting) {
+		toSerialize["policy_based_routing"] = o.PolicyBasedRouting
+	}
+	if !IsNil(o.PolicyBasedRoutingRefType) {
+		toSerialize["policy_based_routing_ref_type_"] = o.PolicyBasedRoutingRefType
+	}
 	if !IsNil(o.MaxUpstreamRateMbps) {
 		toSerialize["max_upstream_rate_mbps"] = o.MaxUpstreamRateMbps
 	}
@@ -1227,12 +1233,6 @@ func (o ServicesPutRequestServiceValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.MstInstance) {
 		toSerialize["mst_instance"] = o.MstInstance
-	}
-	if !IsNil(o.PolicyBasedRouting) {
-		toSerialize["policy_based_routing"] = o.PolicyBasedRouting
-	}
-	if !IsNil(o.PolicyBasedRoutingRefType) {
-		toSerialize["policy_based_routing_ref_type_"] = o.PolicyBasedRoutingRefType
 	}
 	return toSerialize, nil
 }
