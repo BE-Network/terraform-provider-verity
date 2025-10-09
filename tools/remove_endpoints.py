@@ -75,6 +75,7 @@ def main():
     
     # Define the endpoints to remove
     endpoints_to_remove = [
+        "/alarms/mask",
         "/config",
         "/changesets", 
         "/readmode",
