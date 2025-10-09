@@ -286,7 +286,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
@@ -585,7 +585,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.GatewayprofilesPutRequestGatewayProfileValueObjectProperties{}
+			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {

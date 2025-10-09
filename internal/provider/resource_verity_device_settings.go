@@ -55,8 +55,7 @@ type verityDeviceSettingsResourceModel struct {
 }
 
 type verityDeviceSettingsObjectPropertiesModel struct {
-	Group     types.String `tfsdk:"group"`
-	IsDefault types.Bool   `tfsdk:"isdefault"`
+	Group types.String `tfsdk:"group"`
 }
 
 func (r *verityDeviceSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -164,10 +163,6 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 							Description: "Group",
 							Optional:    true,
 						},
-						"isdefault": schema.BoolAttribute{
-							Description: "Default object.",
-							Optional:    true,
-						},
 					},
 				},
 			},
@@ -239,11 +234,6 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
 			objProps.Group = nil
-		}
-		if !op.IsDefault.IsNull() {
-			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
-		} else {
-			objProps.Isdefault = nil
 		}
 		deviceSettingsProps.ObjectProperties = &objProps
 	}
@@ -353,8 +343,7 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 	if objProps, ok := deviceMap["object_properties"].(map[string]interface{}); ok {
 		state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{
 			{
-				Group:     utils.MapStringFromAPI(objProps["group"]),
-				IsDefault: utils.MapBoolFromAPI(objProps["isdefault"]),
+				Group: utils.MapStringFromAPI(objProps["group"]),
 			},
 		}
 	} else {
@@ -472,18 +461,12 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) {
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
 			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {
 				objProps.Group = nil
-			}
-			if !plan.ObjectProperties[0].IsDefault.IsNull() {
-				objProps.Isdefault = openapi.PtrBool(plan.ObjectProperties[0].IsDefault.ValueBool())
-			} else {
-				objProps.Isdefault = nil
 			}
 			deviceSettingsProps.ObjectProperties = &objProps
 			hasChanges = true

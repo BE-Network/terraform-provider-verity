@@ -63,8 +63,7 @@ func (q verityPacketQueueQueueModel) GetIndex() types.Int64 {
 }
 
 type verityPacketQueueObjectPropertiesModel struct {
-	IsDefault types.Bool   `tfsdk:"isdefault"`
-	Group     types.String `tfsdk:"group"`
+	Group types.String `tfsdk:"group"`
 }
 
 func (r *verityPacketQueueResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -150,10 +149,6 @@ func (r *verityPacketQueueResource) Schema(ctx context.Context, req resource.Sch
 				Description: "Object properties for the packet queue",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"isdefault": schema.BoolAttribute{
-							Description: "Default object.",
-							Optional:    true,
-						},
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
@@ -194,12 +189,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
-		if !op.IsDefault.IsNull() {
-			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
-		} else {
-			objProps.Isdefault = nil
-		}
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
@@ -358,8 +348,7 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 	if objProps, ok := pqMap["object_properties"].(map[string]interface{}); ok {
 		state.ObjectProperties = []verityPacketQueueObjectPropertiesModel{
 			{
-				IsDefault: utils.MapBoolFromAPI(objProps["isdefault"]),
-				Group:     utils.MapStringFromAPI(objProps["group"]),
+				Group: utils.MapStringFromAPI(objProps["group"]),
 			},
 		}
 	} else {
@@ -453,14 +442,8 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) ||
 			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
-			if !plan.ObjectProperties[0].IsDefault.IsNull() {
-				objProps.Isdefault = openapi.PtrBool(plan.ObjectProperties[0].IsDefault.ValueBool())
-			} else {
-				objProps.Isdefault = nil
-			}
+			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {

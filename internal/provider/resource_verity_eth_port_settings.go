@@ -83,8 +83,7 @@ type verityEthPortSettingsResourceModel struct {
 }
 
 type verityEthPortSettingsObjectPropertiesModel struct {
-	Group     types.String `tfsdk:"group"`
-	IsDefault types.Bool   `tfsdk:"isdefault"`
+	Group types.String `tfsdk:"group"`
 }
 
 type verityEthPortSettingsLldpMedModel struct {
@@ -312,10 +311,6 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 							Description: "Group",
 							Optional:    true,
 						},
-						"isdefault": schema.BoolAttribute{
-							Description: "Default object.",
-							Optional:    true,
-						},
 					},
 				},
 			},
@@ -441,9 +436,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
 			objProps.Group = nil
-		}
-		if !op.IsDefault.IsNull() {
-			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
 		}
 		ethPortSettingsProps.ObjectProperties = &objProps
 	}
@@ -579,8 +571,7 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 	if objProps, ok := ethPortSettingsMap["object_properties"].(map[string]interface{}); ok {
 		state.ObjectProperties = []verityEthPortSettingsObjectPropertiesModel{
 			{
-				Group:     utils.MapStringFromAPI(objProps["group"]),
-				IsDefault: utils.MapBoolFromAPI(objProps["isdefault"]),
+				Group: utils.MapStringFromAPI(objProps["group"]),
 			},
 		}
 	} else {
@@ -761,16 +752,12 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) {
+			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
 			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !plan.ObjectProperties[0].Group.IsNull() {
 				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
 			} else {
 				objProps.Group = nil
-			}
-			if !plan.ObjectProperties[0].IsDefault.IsNull() {
-				objProps.Isdefault = openapi.PtrBool(plan.ObjectProperties[0].IsDefault.ValueBool())
 			}
 			ethPortSettingsProps.ObjectProperties = &objProps
 			hasChanges = true

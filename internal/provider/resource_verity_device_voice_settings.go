@@ -112,8 +112,7 @@ func (c verityDeviceVoiceSettingsCodecModel) GetIndex() types.Int64 {
 }
 
 type verityDeviceVoiceSettingsObjectPropertiesModel struct {
-	IsDefault types.Bool   `tfsdk:"isdefault"`
-	Group     types.String `tfsdk:"group"`
+	Group types.String `tfsdk:"group"`
 }
 
 func (r *verityDeviceVoiceSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -420,10 +419,6 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Description: "Object properties for the device voice settings",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"isdefault": schema.BoolAttribute{
-							Description: "Default object.",
-							Optional:    true,
-						},
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
@@ -534,16 +529,11 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 		if !op.Group.IsNull() {
 			objProps.Group = openapi.PtrString(op.Group.ValueString())
 		} else {
 			objProps.Group = nil
-		}
-		if !op.IsDefault.IsNull() {
-			objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
-		} else {
-			objProps.Isdefault = nil
 		}
 		dvsProps.ObjectProperties = &objProps
 	}
@@ -675,8 +665,7 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 	if objProps, ok := dvsMap["object_properties"].(map[string]interface{}); ok {
 		state.ObjectProperties = []verityDeviceVoiceSettingsObjectPropertiesModel{
 			{
-				Group:     utils.MapStringFromAPI(objProps["group"]),
-				IsDefault: utils.MapBoolFromAPI(objProps["isdefault"]),
+				Group: utils.MapStringFromAPI(objProps["group"]),
 			},
 		}
 	} else {
@@ -892,13 +881,9 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].IsDefault.Equal(state.ObjectProperties[0].IsDefault) ||
 			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
 			op := plan.ObjectProperties[0]
-			objProps := openapi.PacketqueuesPutRequestPacketQueueValueObjectProperties{}
-			if !op.IsDefault.IsNull() {
-				objProps.Isdefault = openapi.PtrBool(op.IsDefault.ValueBool())
-			}
+			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
 			if !op.Group.IsNull() {
 				objProps.Group = openapi.PtrString(op.Group.ValueString())
 			}

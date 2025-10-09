@@ -47,7 +47,6 @@ type veritySwitchpointResourceModel struct {
 	DisabledPorts                    types.String                             `tfsdk:"disabled_ports"`
 	OutOfBandManagement              types.Bool                               `tfsdk:"out_of_band_management"`
 	Type                             types.String                             `tfsdk:"type"`
-	SuperPod                         types.String                             `tfsdk:"super_pod"`
 	Pod                              types.String                             `tfsdk:"pod"`
 	PodRefType                       types.String                             `tfsdk:"pod_ref_type_"`
 	Rack                             types.String                             `tfsdk:"rack"`
@@ -199,10 +198,6 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"type": schema.StringAttribute{
 				Description: "Type of Switchpoint",
-				Optional:    true,
-			},
-			"super_pod": schema.StringAttribute{
-				Description: "Super Pod - subgrouping of super spines and pods",
 				Optional:    true,
 			},
 			"pod": schema.StringAttribute{
@@ -461,7 +456,6 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "ConnectedBundleRefType", APIField: &spProps.ConnectedBundleRefType, TFValue: plan.ConnectedBundleRefType},
 		{FieldName: "DisabledPorts", APIField: &spProps.DisabledPorts, TFValue: plan.DisabledPorts},
 		{FieldName: "Type", APIField: &spProps.Type, TFValue: plan.Type},
-		{FieldName: "SuperPod", APIField: &spProps.SuperPod, TFValue: plan.SuperPod},
 		{FieldName: "Pod", APIField: &spProps.Pod, TFValue: plan.Pod},
 		{FieldName: "PodRefType", APIField: &spProps.PodRefType, TFValue: plan.PodRefType},
 		{FieldName: "Rack", APIField: &spProps.Rack, TFValue: plan.Rack},
@@ -851,7 +845,6 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	utils.CompareAndSetStringField(plan.DeviceSerialNumber, state.DeviceSerialNumber, func(v *string) { spProps.DeviceSerialNumber = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DisabledPorts, state.DisabledPorts, func(v *string) { spProps.DisabledPorts = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { spProps.Type = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.SuperPod, state.SuperPod, func(v *string) { spProps.SuperPod = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Rack, state.Rack, func(v *string) { spProps.Rack = v }, &hasChanges)
 
 	// Handle boolean field changes
@@ -1485,7 +1478,6 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 		"connected_bundle_ref_type_": &state.ConnectedBundleRefType,
 		"disabled_ports":             &state.DisabledPorts,
 		"type":                       &state.Type,
-		"super_pod":                  &state.SuperPod,
 		"pod":                        &state.Pod,
 		"pod_ref_type_":              &state.PodRefType,
 		"rack":                       &state.Rack,
@@ -1515,10 +1507,6 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 			case "type":
 				if !plan.Type.IsNull() {
 					*stateField = plan.Type
-				}
-			case "super_pod":
-				if !plan.SuperPod.IsNull() {
-					*stateField = plan.SuperPod
 				}
 			case "pod":
 				if !plan.Pod.IsNull() {
