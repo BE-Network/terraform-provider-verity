@@ -25,6 +25,8 @@ type PolicybasedroutingPutRequestPbRoutingValuePolicyInner struct {
 	PbRoutingAcl *string `json:"pb_routing_acl,omitempty"`
 	// Object type for pb_routing_acl field
 	PbRoutingAclRefType *string `json:"pb_routing_acl_ref_type_,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int32 `json:"index,omitempty"`
 }
 
 // NewPolicybasedroutingPutRequestPbRoutingValuePolicyInner instantiates a new PolicybasedroutingPutRequestPbRoutingValuePolicyInner object
@@ -148,6 +150,38 @@ func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) SetPbRoutingAclR
 	o.PbRoutingAclRefType = &v
 }
 
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) GetIndex() int32 {
+	if o == nil || IsNil(o.Index) {
+		var ret int32
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) GetIndexOk() (*int32, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int32 and assigns it to the Index field.
+func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) SetIndex(v int32) {
+	o.Index = &v
+}
+
 func (o PolicybasedroutingPutRequestPbRoutingValuePolicyInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -166,6 +200,9 @@ func (o PolicybasedroutingPutRequestPbRoutingValuePolicyInner) ToMap() (map[stri
 	}
 	if !IsNil(o.PbRoutingAclRefType) {
 		toSerialize["pb_routing_acl_ref_type_"] = o.PbRoutingAclRefType
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }

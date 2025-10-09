@@ -6287,6 +6287,10 @@ components:
           enum:
           - pb_routing_acl
           type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _portacls_put_request_port_acl_value_ipv6_permit_inner:
       properties:

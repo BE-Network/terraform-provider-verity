@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable | [optional] [default to false]
 **PbRoutingAcl** | Pointer to **string** | Path to the PB Routing ACL | [optional] [default to ""]
 **PbRoutingAclRefType** | Pointer to **string** | Object type for pb_routing_acl field | [optional] 
+**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -101,6 +102,31 @@ SetPbRoutingAclRefType sets PbRoutingAclRefType field to given value.
 `func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) HasPbRoutingAclRefType() bool`
 
 HasPbRoutingAclRefType returns a boolean if a field has been set.
+
+### GetIndex
+
+`func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) GetIndex() int32`
+
+GetIndex returns the Index field if non-nil, zero value otherwise.
+
+### GetIndexOk
+
+`func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) GetIndexOk() (*int32, bool)`
+
+GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIndex
+
+`func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) SetIndex(v int32)`
+
+SetIndex sets Index field to given value.
+
+### HasIndex
+
+`func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) HasIndex() bool`
+
+HasIndex returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
