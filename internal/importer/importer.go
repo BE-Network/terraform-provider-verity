@@ -154,6 +154,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "sflowcollectors", terraformResourceType: "verity_sflow_collector", importer: i.importSflowCollectors, tfGenerator: i.generateSflowCollectorsTF},
 		{name: "diagnosticsprofiles", terraformResourceType: "verity_diagnostics_profile", importer: i.importDiagnosticsProfiles, tfGenerator: i.generateDiagnosticsProfilesTF},
 		{name: "diagnosticsportprofiles", terraformResourceType: "verity_diagnostics_port_profile", importer: i.importDiagnosticsPortProfiles, tfGenerator: i.generateDiagnosticsPortProfilesTF},
+		{name: "policybasedrouting", terraformResourceType: "verity_pb_routing", importer: i.importPBRouting, tfGenerator: i.generatePBRoutingTF},
 		{name: "services", terraformResourceType: "verity_service", importer: i.importServices, tfGenerator: i.generateServicesTF},
 		{name: "ethportsettings", terraformResourceType: "verity_eth_port_settings", importer: i.importEthPortSettings, tfGenerator: i.generateEthPortSettingsTF},
 		{name: "bundles", terraformResourceType: "verity_bundle", importer: i.importBundles, tfGenerator: i.generateBundlesTF},
@@ -167,6 +168,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "packetqueues", terraformResourceType: "verity_packet_queue", importer: i.importPacketQueues, tfGenerator: i.generatePacketQueuesTF},
 		{name: "serviceportprofiles", terraformResourceType: "verity_service_port_profile", importer: i.importServicePortProfiles, tfGenerator: i.generateServicePortProfilesTF},
 		{name: "voiceportprofiles", terraformResourceType: "verity_voice_port_profile", importer: i.importVoicePortProfiles, tfGenerator: i.generateVoicePortProfilesTF},
+		{name: "spineplanes", terraformResourceType: "verity_spine_plane", importer: i.importSpinePlanes, tfGenerator: i.generateSpinePlanesTF},
 		{name: "switchpoints", terraformResourceType: "verity_switchpoint", importer: i.importSwitchpoints, tfGenerator: i.generateSwitchpointsTF},
 		{name: "aspathaccesslists", terraformResourceType: "verity_as_path_access_list", importer: i.importAsPathAccessLists, tfGenerator: i.generateAsPathAccessListsTF},
 		{name: "communitylists", terraformResourceType: "verity_community_list", importer: i.importCommunityLists, tfGenerator: i.generateCommunityListsTF},
@@ -890,6 +892,29 @@ func (i *Importer) generatePodsTF(data interface{}) (string, error) {
 	return i.generateResourceTF(data, cfg)
 }
 
+func (i *Importer) generateSpinePlanesTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "spine_plane",
+		StageName:                 "spine_plane_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generatePBRoutingTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "pb_routing",
+		StageName:                 "pb_routing_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"policy": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
 func (i *Importer) generatePortAclsTF(data interface{}) (string, error) {
 	cfg := ResourceConfig{
 		ResourceType:              "port_acl",
@@ -956,13 +981,14 @@ func (i *Importer) generateStagesTF() (string, error) {
 
 	if i.Mode == "campus" {
 		// CAMPUS mode staging order:
-		// 1. Services, 2. Eth Port Profiles, 3. Authenticated Eth-Ports, 4. Device Voice Settings,
-		// 5. Packet Queues, 6. Service Port Profiles, 7. Voice-Port Profiles, 8. Eth Port Settings,
-		// 9. Device Settings, 10. Lags, 11. sflowcollectors, 12. diagnostics profiles,
-		// 13. diagnostics port profiles, 14. Bundles, 15. ACLs, 16. IPv4 Lists, 17. IPv6 Lists,
-		// 18. portacls, 19. Badges, 20. Switchpoints, 21. Device controllers, 22. sites
+		// 1. PB Routing, 2. Services, 3. Eth Port Profiles, 4. Authenticated Eth-Ports, 5. Device Voice Settings,
+		// 6. Packet Queues, 7. Service Port Profiles, 8. Voice-Port Profiles, 9. Eth Port Settings,
+		// 10. Device Settings, 11. Lags, 12. sflowcollectors, 13. diagnostics profiles,
+		// 14. diagnostics port profiles, 15. Bundles, 16. ACLs, 17. IPv4 Lists, 18. IPv6 Lists,
+		// 19. portacls, 20. Badges, 21. Switchpoints, 22. Device controllers, 23. sites
 		stageOrder = []StageDefinition{
-			{"service_stage", "verity_service", ""},
+			{"pb_routing_stage", "verity_pb_routing", ""},
+			{"service_stage", "verity_service", "pb_routing_stage"},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "service_stage"},
 			{"authenticated_eth_port_stage", "verity_authenticated_eth_port", "eth_port_profile_stage"},
 			{"device_voice_setting_stage", "verity_device_voice_settings", "authenticated_eth_port_stage"},
@@ -988,18 +1014,19 @@ func (i *Importer) generateStagesTF() (string, error) {
 		}
 	} else {
 		// DATACENTER mode staging order:
-		// 1. Tenants, 2. Gateways, 3. Gateway Profiles, 4. Services, 5. Packet Queues,
-		// 6. Eth Port Profiles, 7. Eth Port Settings, 8. Device Settings, 9. Lags,
-		// 10. SFlow Collectors, 11. Diagnostics Profile, 12. Diagnostics Port Profile, 13. Bundles,
-		// 14. ACLs, 15. IPv4 Prefix Lists, 16. IPv6 Prefix Lists, 17. IPv4 Lists, 18. IPv6 Lists,
-		// 19. PacketBroker, 20. portacls, 21. Badges, 22. Pods, 23. Switchpoints, 24. Device controllers,
-		// 25. AS Path Access Lists, 26. Community Lists, 27. Extended Community Lists,
-		// 28. Route Map Clauses, 29. Route Maps, 30. SFP Breakouts, 31. Sites
+		// 1. Tenants, 2. Gateways, 3. Gateway Profiles, 4. PB Routing, 5. Services, 6. Packet Queues,
+		// 7. Eth Port Profiles, 8. Eth Port Settings, 9. Device Settings, 10. Lags,
+		// 11. SFlow Collectors, 12. Diagnostics Profile, 13. Diagnostics Port Profile, 14. Bundles,
+		// 15. ACLs, 16. IPv4 Prefix Lists, 17. IPv6 Prefix Lists, 18. IPv4 Lists, 19. IPv6 Lists,
+		// 20. PacketBroker, 21. portacls, 22. Badges, 23. Pods, 24. Spine Planes, 25. Switchpoints, 26. Device controllers,
+		// 27. AS Path Access Lists, 28. Community Lists, 29. Extended Community Lists,
+		// 30. Route Map Clauses, 31. Route Maps, 32. SFP Breakouts, 33. Sites
 		stageOrder = []StageDefinition{
 			{"tenant_stage", "verity_tenant", ""},
 			{"gateway_stage", "verity_gateway", "tenant_stage"},
 			{"gateway_profile_stage", "verity_gateway_profile", "gateway_stage"},
-			{"service_stage", "verity_service", "gateway_profile_stage"},
+			{"pb_routing_stage", "verity_pb_routing", "gateway_profile_stage"},
+			{"service_stage", "verity_service", "pb_routing_stage"},
 			{"packet_queue_stage", "verity_packet_queue", "service_stage"},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "packet_queue_stage"},
 			{"eth_port_settings_stage", "verity_eth_port_settings", "eth_port_profile_stage"},
@@ -1019,7 +1046,8 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"port_acl_stage", "verity_port_acl", "packet_broker_stage"},
 			{"badge_stage", "verity_badge", "port_acl_stage"},
 			{"pod_stage", "verity_pod", "badge_stage"},
-			{"switchpoint_stage", "verity_switchpoint", "pod_stage"},
+			{"spine_plane_stage", "verity_spine_plane", "pod_stage"},
+			{"switchpoint_stage", "verity_switchpoint", "spine_plane_stage"},
 			{"device_controller_stage", "verity_device_controller", "switchpoint_stage"},
 			{"as_path_access_list_stage", "verity_as_path_access_list", "device_controller_stage"},
 			{"community_list_stage", "verity_community_list", "as_path_access_list_stage"},
@@ -1681,6 +1709,40 @@ func (i *Importer) importPods() (interface{}, error) {
 	}
 
 	return result.Pod, nil
+}
+
+func (i *Importer) importSpinePlanes() (interface{}, error) {
+	resp, err := i.client.SpinePlanesAPI.SpineplanesGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get spine planes: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		SpinePlane map[string]map[string]interface{} `json:"spine_plane"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode spine planes response: %v", err)
+	}
+
+	return result.SpinePlane, nil
+}
+
+func (i *Importer) importPBRouting() (interface{}, error) {
+	resp, err := i.client.PBRoutingAPI.PolicybasedroutingGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get policy-based routing: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		PbRouting map[string]map[string]interface{} `json:"pb_routing"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode policy-based routing response: %v", err)
+	}
+
+	return result.PbRouting, nil
 }
 
 func (i *Importer) importPortAcls() (interface{}, error) {

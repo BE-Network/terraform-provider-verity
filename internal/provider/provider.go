@@ -435,6 +435,8 @@ func getAllResources() []func() resource.Resource {
 		NewVeritySflowCollectorResource,
 		NewVerityDiagnosticsProfileResource,
 		NewVerityDiagnosticsPortProfileResource,
+		NewVerityPBRoutingResource,
+		NewVeritySpinePlaneResource,
 	}
 }
 

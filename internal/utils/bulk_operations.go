@@ -292,6 +292,16 @@ type BulkOperationManager struct {
 	diagnosticsPortProfilePatch  map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue
 	diagnosticsPortProfileDelete []string
 
+	// PB Routing operations
+	pbRoutingPut    map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue
+	pbRoutingPatch  map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue
+	pbRoutingDelete []string
+
+	// Spine Plane operations
+	spinePlanePut    map[string]openapi.SpineplanesPutRequestSpinePlaneValue
+	spinePlanePatch  map[string]openapi.SpineplanesPutRequestSpinePlaneValue
+	spinePlaneDelete []string
+
 	// Track recent operations to avoid race conditions
 	recentGatewayOps                   bool
 	recentGatewayOpTime                time.Time
@@ -363,6 +373,10 @@ type BulkOperationManager struct {
 	recentDiagnosticsProfileOpTime     time.Time
 	recentDiagnosticsPortProfileOps    bool
 	recentDiagnosticsPortProfileOpTime time.Time
+	recentPbRoutingOps                 bool
+	recentPbRoutingOpTime              time.Time
+	recentSpinePlaneOps                bool
+	recentSpinePlaneOpTime             time.Time
 
 	// For tracking operations
 	pendingOperations     map[string]*Operation
@@ -443,6 +457,10 @@ type BulkOperationManager struct {
 	diagnosticsProfileResponsesMutex     sync.RWMutex
 	diagnosticsPortProfileResponses      map[string]map[string]interface{}
 	diagnosticsPortProfileResponsesMutex sync.RWMutex
+	pbRoutingResponses                   map[string]map[string]interface{}
+	pbRoutingResponsesMutex              sync.RWMutex
+	spinePlaneResponses                  map[string]map[string]interface{}
+	spinePlaneResponsesMutex             sync.RWMutex
 }
 
 // resourceRegistry is a mapping of resource types to their configuration details.
@@ -770,6 +788,24 @@ var resourceRegistry = map[string]ResourceConfig{
 			return &GenericAPIClient{client: c, resourceType: "diagnostics_port_profile"}
 		},
 	},
+	"pb_routing": {
+		ResourceType:     "pb_routing",
+		PutRequestType:   reflect.TypeOf(openapi.PolicybasedroutingPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.PolicybasedroutingPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "pb_routing"}
+		},
+	},
+	"spine_plane": {
+		ResourceType:     "spine_plane",
+		PutRequestType:   reflect.TypeOf(openapi.SpineplanesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.SpineplanesPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "spine_plane"}
+		},
+	},
 }
 
 func (b *BulkOperationManager) FilterPreExistingResources(
@@ -990,6 +1026,12 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		diagnosticsPortProfilePut:    make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue),
 		diagnosticsPortProfilePatch:  make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue),
 		diagnosticsPortProfileDelete: make([]string, 0),
+		pbRoutingPut:                 make(map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue),
+		pbRoutingPatch:               make(map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue),
+		pbRoutingDelete:              make([]string, 0),
+		spinePlanePut:                make(map[string]openapi.SpineplanesPutRequestSpinePlaneValue),
+		spinePlanePatch:              make(map[string]openapi.SpineplanesPutRequestSpinePlaneValue),
+		spinePlaneDelete:             make([]string, 0),
 
 		pendingOperations:     make(map[string]*Operation),
 		operationResults:      make(map[string]bool),
@@ -1033,6 +1075,8 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		recentSflowCollectorOps:         false,
 		recentDiagnosticsProfileOps:     false,
 		recentDiagnosticsPortProfileOps: false,
+		recentPbRoutingOps:              false,
+		recentSpinePlaneOps:             false,
 
 		// Initialize response caches
 		gatewayResponses:                     make(map[string]map[string]interface{}),
@@ -1105,6 +1149,10 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		diagnosticsProfileResponsesMutex:     sync.RWMutex{},
 		diagnosticsPortProfileResponses:      make(map[string]map[string]interface{}),
 		diagnosticsPortProfileResponsesMutex: sync.RWMutex{},
+		pbRoutingResponses:                   make(map[string]map[string]interface{}),
+		pbRoutingResponsesMutex:              sync.RWMutex{},
+		spinePlaneResponses:                  make(map[string]map[string]interface{}),
+		spinePlaneResponsesMutex:             sync.RWMutex{},
 	}
 }
 
@@ -1320,6 +1368,18 @@ func (b *BulkOperationManager) GetResourceResponse(resourceType, resourceName st
 		response, exists := b.diagnosticsPortProfileResponses[resourceName]
 		return response, exists
 
+	case "pb_routing":
+		b.pbRoutingResponsesMutex.RLock()
+		defer b.pbRoutingResponsesMutex.RUnlock()
+		response, exists := b.pbRoutingResponses[resourceName]
+		return response, exists
+
+	case "spine_plane":
+		b.spinePlaneResponsesMutex.RLock()
+		defer b.spinePlaneResponsesMutex.RUnlock()
+		response, exists := b.spinePlaneResponses[resourceName]
+		return response, exists
+
 	default:
 		return nil, false
 	}
@@ -1432,6 +1492,8 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 			b.clearCacheFunc(ctx, b.contextProvider(), "sites")
 			b.clearCacheFunc(ctx, b.contextProvider(), "pods")
 			b.clearCacheFunc(ctx, b.contextProvider(), "port_acls")
+			b.clearCacheFunc(ctx, b.contextProvider(), "pb_routing")
+			b.clearCacheFunc(ctx, b.contextProvider(), "spine_planes")
 		}
 	}
 
@@ -1467,6 +1529,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PUT", len(b.gatewayProfilePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "gateway_profile", "PUT") }, "Gateway Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", len(b.pbRoutingPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pb_routing", "PUT") }, "PB Routing") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PUT", len(b.servicePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "service", "PUT") }, "Service") {
@@ -1528,6 +1593,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", len(b.podPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "PUT") }, "Pod") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", len(b.spinePlanePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "spine_plane", "PUT") }, "Spine Plane") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.switchpointPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "PUT") }, "Switchpoint") {
 		return diagnostics, operationsPerformed
 	}
@@ -1560,6 +1628,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", len(b.gatewayProfilePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "gateway_profile", "PATCH") }, "Gateway Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", len(b.pbRoutingPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pb_routing", "PATCH") }, "PB Routing") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", len(b.servicePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "service", "PATCH") }, "Service") {
@@ -1621,6 +1692,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PATCH", len(b.podPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "PATCH") }, "Pod") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", len(b.spinePlanePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "spine_plane", "PATCH") }, "Spine Plane") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", len(b.switchpointPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "PATCH") }, "Switchpoint") {
 		return diagnostics, operationsPerformed
 	}
@@ -1675,6 +1749,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("DELETE", len(b.switchpointDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "DELETE") }, "Switchpoint") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("DELETE", len(b.spinePlaneDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "spine_plane", "DELETE") }, "Spine Plane") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("DELETE", len(b.podDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "DELETE") }, "Pod") {
 		return diagnostics, operationsPerformed
 	}
@@ -1717,6 +1794,9 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.serviceDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "service", "DELETE") }, "Service") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.pbRoutingDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pb_routing", "DELETE") }, "PB Routing") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.gatewayProfileDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "gateway_profile", "DELETE") }, "Gateway Profile") {
@@ -1769,6 +1849,9 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	}
 
 	// PUT operations - Campus Order
+	if !execute("PUT", len(b.pbRoutingPut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pb_routing", "PUT") }, "PB Routing") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PUT", len(b.servicePut), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "service", "PUT") }, "Service") {
 		return diagnostics, operationsPerformed
 	}
@@ -1836,6 +1919,9 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	}
 
 	// PATCH operations - Campus Order
+	if !execute("PATCH", len(b.pbRoutingPatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pb_routing", "PATCH") }, "PB Routing") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", len(b.servicePatch), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "service", "PATCH") }, "Service") {
 		return diagnostics, operationsPerformed
 	}
@@ -1916,13 +2002,19 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("DELETE", len(b.switchpointDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "switchpoint", "DELETE") }, "Switchpoint") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("DELETE", len(b.podDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pod", "DELETE") }, "Pod") {
+	if !execute("DELETE", len(b.badgeDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "DELETE") }, "Badge") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.portAclDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "DELETE") }, "Port ACL") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("DELETE", len(b.badgeDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "badge", "DELETE") }, "Badge") {
+	if !execute("DELETE", len(b.ipv6ListDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list_filter", "DELETE") }, "IPv6 List Filter") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.ipv4ListDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list_filter", "DELETE") }, "IPv4 List Filter") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", len(b.aclDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "acl", "DELETE") }, "ACL") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", len(b.bundleDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "bundle", "DELETE") }, "Bundle") {
@@ -1972,6 +2064,9 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("DELETE", len(b.serviceDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "service", "DELETE") }, "Service") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("DELETE", len(b.pbRoutingDelete), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pb_routing", "DELETE") }, "PB Routing") {
+		return diagnostics, operationsPerformed
+	}
 
 	return diagnostics, operationsPerformed
 }
@@ -2010,6 +2105,8 @@ func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool
 		len(b.sfpBreakoutPatch) == 0 &&
 		len(b.sitePatch) == 0 &&
 		len(b.podPut) == 0 && len(b.podPatch) == 0 && len(b.podDelete) == 0 &&
+		len(b.pbRoutingPut) == 0 && len(b.pbRoutingPatch) == 0 && len(b.pbRoutingDelete) == 0 &&
+		len(b.spinePlanePut) == 0 && len(b.spinePlanePatch) == 0 && len(b.spinePlaneDelete) == 0 &&
 		len(b.portAclPut) == 0 && len(b.portAclPatch) == 0 && len(b.portAclDelete) == 0 &&
 		len(b.sflowCollectorPut) == 0 && len(b.sflowCollectorPatch) == 0 && len(b.sflowCollectorDelete) == 0 &&
 		len(b.diagnosticsProfilePut) == 0 && len(b.diagnosticsProfilePatch) == 0 && len(b.diagnosticsProfileDelete) == 0 &&
@@ -2160,6 +2257,14 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	podPatchCount := len(b.podPatch)
 	podDeleteCount := len(b.podDelete)
 
+	pbRoutingPutCount := len(b.pbRoutingPut)
+	pbRoutingPatchCount := len(b.pbRoutingPatch)
+	pbRoutingDeleteCount := len(b.pbRoutingDelete)
+
+	spinePlanePutCount := len(b.spinePlanePut)
+	spinePlanePatchCount := len(b.spinePlanePatch)
+	spinePlaneDeleteCount := len(b.spinePlaneDelete)
+
 	portAclPutCount := len(b.portAclPut)
 	portAclPatchCount := len(b.portAclPatch)
 	portAclDeleteCount := len(b.portAclDelete)
@@ -2200,6 +2305,8 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 		routeMapPutCount + routeMapPatchCount + routeMapDeleteCount +
 		sfpBreakoutPatchCount + sitePatchCount +
 		podPutCount + podPatchCount + podDeleteCount +
+		pbRoutingPutCount + pbRoutingPatchCount + pbRoutingDeleteCount +
+		spinePlanePutCount + spinePlanePatchCount + spinePlaneDeleteCount +
 		portAclPutCount + portAclPatchCount + portAclDeleteCount +
 		authenticatedEthPortPutCount + authenticatedEthPortPatchCount + authenticatedEthPortDeleteCount +
 		deviceControllerPutCount + deviceControllerPatchCount + deviceControllerDeleteCount
@@ -2289,6 +2396,12 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 			"pod_put_count":                         podPutCount,
 			"pod_patch_count":                       podPatchCount,
 			"pod_delete_count":                      podDeleteCount,
+			"pb_routing_put_count":                  pbRoutingPutCount,
+			"pb_routing_patch_count":                pbRoutingPatchCount,
+			"pb_routing_delete_count":               pbRoutingDeleteCount,
+			"spine_plane_put_count":                 spinePlanePutCount,
+			"spine_plane_patch_count":               spinePlanePatchCount,
+			"spine_plane_delete_count":              spinePlaneDeleteCount,
 			"port_acl_put_count":                    portAclPutCount,
 			"port_acl_patch_count":                  portAclPatchCount,
 			"port_acl_delete_count":                 portAclDeleteCount,
@@ -2575,6 +2688,22 @@ func (b *BulkOperationManager) GetResourceOperationData(resourceType string) *Re
 			DeleteOperations: &b.podDelete,
 			RecentOps:        &b.recentPodOps,
 			RecentOpTime:     &b.recentPodOpTime,
+		}
+	case "pb_routing":
+		return &ResourceOperationData{
+			PutOperations:    b.pbRoutingPut,
+			PatchOperations:  b.pbRoutingPatch,
+			DeleteOperations: &b.pbRoutingDelete,
+			RecentOps:        &b.recentPbRoutingOps,
+			RecentOpTime:     &b.recentPbRoutingOpTime,
+		}
+	case "spine_plane":
+		return &ResourceOperationData{
+			PutOperations:    b.spinePlanePut,
+			PatchOperations:  b.spinePlanePatch,
+			DeleteOperations: &b.spinePlaneDelete,
+			RecentOps:        &b.recentSpinePlaneOps,
+			RecentOpTime:     &b.recentSpinePlaneOpTime,
 		}
 	case "port_acl":
 		return &ResourceOperationData{
@@ -2895,6 +3024,12 @@ func (g *GenericAPIClient) Put(ctx context.Context, request interface{}) (*http.
 	case "diagnostics_port_profile":
 		req := g.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesPut(ctx).DiagnosticsportprofilesPutRequest(*request.(*openapi.DiagnosticsportprofilesPutRequest))
 		return req.Execute()
+	case "pb_routing":
+		req := g.client.PBRoutingAPI.PolicybasedroutingPut(ctx).PolicybasedroutingPutRequest(*request.(*openapi.PolicybasedroutingPutRequest))
+		return req.Execute()
+	case "spine_plane":
+		req := g.client.SpinePlanesAPI.SpineplanesPut(ctx).SpineplanesPutRequest(*request.(*openapi.SpineplanesPutRequest))
+		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
 	}
@@ -3007,6 +3142,12 @@ func (g *GenericAPIClient) Patch(ctx context.Context, request interface{}) (*htt
 	case "diagnostics_port_profile":
 		req := g.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesPatch(ctx).DiagnosticsportprofilesPutRequest(*request.(*openapi.DiagnosticsportprofilesPutRequest))
 		return req.Execute()
+	case "pb_routing":
+		req := g.client.PBRoutingAPI.PolicybasedroutingPatch(ctx).PolicybasedroutingPutRequest(*request.(*openapi.PolicybasedroutingPutRequest))
+		return req.Execute()
+	case "spine_plane":
+		req := g.client.SpinePlanesAPI.SpineplanesPatch(ctx).SpineplanesPutRequest(*request.(*openapi.SpineplanesPutRequest))
+		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
 	}
@@ -3113,6 +3254,12 @@ func (g *GenericAPIClient) Delete(ctx context.Context, names []string) (*http.Re
 	case "diagnostics_port_profile":
 		req := g.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesDelete(ctx).DiagnosticsPortProfileName(names)
 		return req.Execute()
+	case "pb_routing":
+		req := g.client.PBRoutingAPI.PolicybasedroutingDelete(ctx).PbRoutingName(names)
+		return req.Execute()
+	case "spine_plane":
+		req := g.client.SpinePlanesAPI.SpineplanesDelete(ctx).SpinePlaneName(names)
+		return req.Execute()
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", g.resourceType)
 	}
@@ -3212,6 +3359,12 @@ func (g *GenericAPIClient) Get(ctx context.Context) (*http.Response, error) {
 		return req.Execute()
 	case "pod":
 		req := g.client.PodsAPI.PodsGet(ctx)
+		return req.Execute()
+	case "pb_routing":
+		req := g.client.PBRoutingAPI.PolicybasedroutingGet(ctx)
+		return req.Execute()
+	case "spine_plane":
+		req := g.client.SpinePlanesAPI.SpineplanesGet(ctx)
 		return req.Execute()
 	case "port_acl":
 		req := g.client.PortACLsAPI.PortaclsGet(ctx)
@@ -3904,6 +4057,30 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 			}
 			b.podPatch[resourceName] = props.(openapi.PodsPutRequestPodValue)
 		}
+	case "pb_routing":
+		if operationType == "PUT" {
+			if b.pbRoutingPut == nil {
+				b.pbRoutingPut = make(map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue)
+			}
+			b.pbRoutingPut[resourceName] = props.(openapi.PolicybasedroutingPutRequestPbRoutingValue)
+		} else {
+			if b.pbRoutingPatch == nil {
+				b.pbRoutingPatch = make(map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue)
+			}
+			b.pbRoutingPatch[resourceName] = props.(openapi.PolicybasedroutingPutRequestPbRoutingValue)
+		}
+	case "spine_plane":
+		if operationType == "PUT" {
+			if b.spinePlanePut == nil {
+				b.spinePlanePut = make(map[string]openapi.SpineplanesPutRequestSpinePlaneValue)
+			}
+			b.spinePlanePut[resourceName] = props.(openapi.SpineplanesPutRequestSpinePlaneValue)
+		} else {
+			if b.spinePlanePatch == nil {
+				b.spinePlanePatch = make(map[string]openapi.SpineplanesPutRequestSpinePlaneValue)
+			}
+			b.spinePlanePatch[resourceName] = props.(openapi.SpineplanesPutRequestSpinePlaneValue)
+		}
 	case "port_acl":
 		if operationType == "PUT" {
 			if b.portAclPut == nil {
@@ -4015,6 +4192,10 @@ func (b *BulkOperationManager) getDeleteSlice(resourceType string) *[]string {
 		return &b.deviceControllerDelete
 	case "pod":
 		return &b.podDelete
+	case "pb_routing":
+		return &b.pbRoutingDelete
+	case "spine_plane":
+		return &b.spinePlaneDelete
 	case "port_acl":
 		return &b.portAclDelete
 	case "sflow_collector":
@@ -4579,6 +4760,34 @@ func (b *BulkOperationManager) getOriginalOperationMap(resourceType, operationTy
 			}
 			return result
 		}
+	case "pb_routing":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.pbRoutingPut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.pbRoutingPatch {
+				result[k] = v
+			}
+			return result
+		}
+	case "spine_plane":
+		if operationType == "PUT" {
+			result := make(map[string]interface{})
+			for k, v := range b.spinePlanePut {
+				result[k] = v
+			}
+			return result
+		} else {
+			result := make(map[string]interface{})
+			for k, v := range b.spinePlanePatch {
+				result[k] = v
+			}
+			return result
+		}
 	}
 	return make(map[string]interface{})
 }
@@ -4792,6 +5001,18 @@ func (b *BulkOperationManager) clearOperationMap(resourceType, operationType str
 			b.diagnosticsPortProfilePut = make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
 		} else {
 			b.diagnosticsPortProfilePatch = make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
+		}
+	case "pb_routing":
+		if operationType == "PUT" {
+			b.pbRoutingPut = make(map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue)
+		} else {
+			b.pbRoutingPatch = make(map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue)
+		}
+	case "spine_plane":
+		if operationType == "PUT" {
+			b.spinePlanePut = make(map[string]openapi.SpineplanesPutRequestSpinePlaneValue)
+		} else {
+			b.spinePlanePatch = make(map[string]openapi.SpineplanesPutRequestSpinePlaneValue)
 		}
 	}
 }
@@ -5329,6 +5550,36 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 					}
 					return result.DiagnosticsPortProfile, nil
 
+				case "pb_routing":
+					resp, err := b.client.PBRoutingAPI.PolicybasedroutingGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						PbRouting map[string]interface{} `json:"pb_routing"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.PbRouting, nil
+
+				case "spine_plane":
+					resp, err := b.client.SpinePlanesAPI.SpineplanesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						SpinePlane map[string]interface{} `json:"spine_plane"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.SpinePlane, nil
+
 				default:
 					// For unknown resource types, assume no existing resources to avoid errors
 					return make(map[string]interface{}), nil
@@ -5647,6 +5898,22 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 			}
 			putRequest.SetDiagnosticsPortProfile(diagnosticsPortMap)
 			return putRequest
+		case "pb_routing":
+			putRequest := openapi.NewPolicybasedroutingPutRequest()
+			pbRoutingMap := make(map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue)
+			for name, props := range filteredData {
+				pbRoutingMap[name] = props.(openapi.PolicybasedroutingPutRequestPbRoutingValue)
+			}
+			putRequest.SetPbRouting(pbRoutingMap)
+			return putRequest
+		case "spine_plane":
+			putRequest := openapi.NewSpineplanesPutRequest()
+			spinePlaneMap := make(map[string]openapi.SpineplanesPutRequestSpinePlaneValue)
+			for name, props := range filteredData {
+				spinePlaneMap[name] = props.(openapi.SpineplanesPutRequestSpinePlaneValue)
+			}
+			putRequest.SetSpinePlane(spinePlaneMap)
+			return putRequest
 		}
 		return nil
 	}
@@ -5953,6 +6220,12 @@ func (b *BulkOperationManager) createRecentOpsUpdater(resourceType string) func(
 		case "diagnostics_port_profile":
 			b.recentDiagnosticsPortProfileOps = true
 			b.recentDiagnosticsPortProfileOpTime = now
+		case "pb_routing":
+			b.recentPbRoutingOps = true
+			b.recentPbRoutingOpTime = now
+		case "spine_plane":
+			b.recentSpinePlaneOps = true
+			b.recentSpinePlaneOpTime = now
 		}
 	}
 }

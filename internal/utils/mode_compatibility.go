@@ -45,6 +45,7 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_route_map":               ResourceModeDatacenter,
 	"verity_sfp_breakout":            ResourceModeDatacenter,
 	"verity_pod":                     ResourceModeDatacenter,
+	"verity_spine_plane":             ResourceModeDatacenter,
 
 	// Campus-only resources
 	"verity_authenticated_eth_port": ResourceModeCampus,
@@ -72,6 +73,7 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_sflow_collector":          ResourceModeBoth,
 	"verity_diagnostics_profile":      ResourceModeBoth,
 	"verity_diagnostics_port_profile": ResourceModeBoth,
+	"verity_pb_routing":               ResourceModeBoth,
 }
 
 var ResourceVersionCompatibility = map[string]ApiVersionSupport{
@@ -111,6 +113,8 @@ var ResourceVersionCompatibility = map[string]ApiVersionSupport{
 	"verity_sflow_collector":          {Major: 6, Minor: 5},
 	"verity_diagnostics_profile":      {Major: 6, Minor: 5},
 	"verity_diagnostics_port_profile": {Major: 6, Minor: 5},
+	"verity_pb_routing":               {Major: 6, Minor: 5},
+	"verity_spine_plane":              {Major: 6, Minor: 5},
 }
 
 func FilterResourcesByMode(
