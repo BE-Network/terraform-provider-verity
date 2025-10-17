@@ -6,8 +6,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
-**Vlan** | Pointer to **NullableInt32** | A Value between 1 and 4096 | [optional] 
-**Vni** | Pointer to **NullableInt32** | Indication of the outgoing VLAN layer 2 service | [optional] 
+**Vlan** | Pointer to **NullableInt32** | Layer 2 Virtual Network Identifier. A Value between 1 and 4096. &lt;br&gt; Some switches have reserved values within the range | [optional] 
+**Vni** | Pointer to **NullableInt32** | Identifies the service within the VXLAN fabric | [optional] 
 **VniAutoAssigned** | Pointer to **bool** | Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit. | [optional] 
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 

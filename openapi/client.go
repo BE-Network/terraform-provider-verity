@@ -96,6 +96,8 @@ type APIClient struct {
 
 	PBRoutingAPI *PBRoutingAPIService
 
+	PBRoutingACLAPI *PBRoutingACLAPIService
+
 	PacketBrokerAPI *PacketBrokerAPIService
 
 	PacketQueuesAPI *PacketQueuesAPIService
@@ -169,6 +171,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ImageUpdateSetsAPI = (*ImageUpdateSetsAPIService)(&c.common)
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)
 	c.PBRoutingAPI = (*PBRoutingAPIService)(&c.common)
+	c.PBRoutingACLAPI = (*PBRoutingACLAPIService)(&c.common)
 	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
 	c.PacketQueuesAPI = (*PacketQueuesAPIService)(&c.common)
 	c.PodsAPI = (*PodsAPIService)(&c.common)

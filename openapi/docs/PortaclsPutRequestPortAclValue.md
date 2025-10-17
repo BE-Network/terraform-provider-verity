@@ -6,10 +6,10 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
-**Ipv4Permit** | Pointer to [**[]PortaclsPutRequestPortAclValueIpv4PermitInner**](PortaclsPutRequestPortAclValueIpv4PermitInner.md) |  | [optional] 
-**Ipv4Deny** | Pointer to [**[]PortaclsPutRequestPortAclValueIpv4PermitInner**](PortaclsPutRequestPortAclValueIpv4PermitInner.md) |  | [optional] 
-**Ipv6Permit** | Pointer to [**[]PortaclsPutRequestPortAclValueIpv6PermitInner**](PortaclsPutRequestPortAclValueIpv6PermitInner.md) |  | [optional] 
-**Ipv6Deny** | Pointer to [**[]PortaclsPutRequestPortAclValueIpv6PermitInner**](PortaclsPutRequestPortAclValueIpv6PermitInner.md) |  | [optional] 
+**Ipv4Permit** | Pointer to [**[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner**](PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner.md) |  | [optional] 
+**Ipv4Deny** | Pointer to [**[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner**](PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner.md) |  | [optional] 
+**Ipv6Permit** | Pointer to [**[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner**](PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner.md) |  | [optional] 
+**Ipv6Deny** | Pointer to [**[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner**](PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner.md) |  | [optional] 
 
 ## Methods
 
@@ -82,20 +82,20 @@ HasEnable returns a boolean if a field has been set.
 
 ### GetIpv4Permit
 
-`func (o *PortaclsPutRequestPortAclValue) GetIpv4Permit() []PortaclsPutRequestPortAclValueIpv4PermitInner`
+`func (o *PortaclsPutRequestPortAclValue) GetIpv4Permit() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner`
 
 GetIpv4Permit returns the Ipv4Permit field if non-nil, zero value otherwise.
 
 ### GetIpv4PermitOk
 
-`func (o *PortaclsPutRequestPortAclValue) GetIpv4PermitOk() (*[]PortaclsPutRequestPortAclValueIpv4PermitInner, bool)`
+`func (o *PortaclsPutRequestPortAclValue) GetIpv4PermitOk() (*[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, bool)`
 
 GetIpv4PermitOk returns a tuple with the Ipv4Permit field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpv4Permit
 
-`func (o *PortaclsPutRequestPortAclValue) SetIpv4Permit(v []PortaclsPutRequestPortAclValueIpv4PermitInner)`
+`func (o *PortaclsPutRequestPortAclValue) SetIpv4Permit(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner)`
 
 SetIpv4Permit sets Ipv4Permit field to given value.
 
@@ -107,20 +107,20 @@ HasIpv4Permit returns a boolean if a field has been set.
 
 ### GetIpv4Deny
 
-`func (o *PortaclsPutRequestPortAclValue) GetIpv4Deny() []PortaclsPutRequestPortAclValueIpv4PermitInner`
+`func (o *PortaclsPutRequestPortAclValue) GetIpv4Deny() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner`
 
 GetIpv4Deny returns the Ipv4Deny field if non-nil, zero value otherwise.
 
 ### GetIpv4DenyOk
 
-`func (o *PortaclsPutRequestPortAclValue) GetIpv4DenyOk() (*[]PortaclsPutRequestPortAclValueIpv4PermitInner, bool)`
+`func (o *PortaclsPutRequestPortAclValue) GetIpv4DenyOk() (*[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, bool)`
 
 GetIpv4DenyOk returns a tuple with the Ipv4Deny field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpv4Deny
 
-`func (o *PortaclsPutRequestPortAclValue) SetIpv4Deny(v []PortaclsPutRequestPortAclValueIpv4PermitInner)`
+`func (o *PortaclsPutRequestPortAclValue) SetIpv4Deny(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner)`
 
 SetIpv4Deny sets Ipv4Deny field to given value.
 
@@ -132,20 +132,20 @@ HasIpv4Deny returns a boolean if a field has been set.
 
 ### GetIpv6Permit
 
-`func (o *PortaclsPutRequestPortAclValue) GetIpv6Permit() []PortaclsPutRequestPortAclValueIpv6PermitInner`
+`func (o *PortaclsPutRequestPortAclValue) GetIpv6Permit() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner`
 
 GetIpv6Permit returns the Ipv6Permit field if non-nil, zero value otherwise.
 
 ### GetIpv6PermitOk
 
-`func (o *PortaclsPutRequestPortAclValue) GetIpv6PermitOk() (*[]PortaclsPutRequestPortAclValueIpv6PermitInner, bool)`
+`func (o *PortaclsPutRequestPortAclValue) GetIpv6PermitOk() (*[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, bool)`
 
 GetIpv6PermitOk returns a tuple with the Ipv6Permit field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpv6Permit
 
-`func (o *PortaclsPutRequestPortAclValue) SetIpv6Permit(v []PortaclsPutRequestPortAclValueIpv6PermitInner)`
+`func (o *PortaclsPutRequestPortAclValue) SetIpv6Permit(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner)`
 
 SetIpv6Permit sets Ipv6Permit field to given value.
 
@@ -157,20 +157,20 @@ HasIpv6Permit returns a boolean if a field has been set.
 
 ### GetIpv6Deny
 
-`func (o *PortaclsPutRequestPortAclValue) GetIpv6Deny() []PortaclsPutRequestPortAclValueIpv6PermitInner`
+`func (o *PortaclsPutRequestPortAclValue) GetIpv6Deny() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner`
 
 GetIpv6Deny returns the Ipv6Deny field if non-nil, zero value otherwise.
 
 ### GetIpv6DenyOk
 
-`func (o *PortaclsPutRequestPortAclValue) GetIpv6DenyOk() (*[]PortaclsPutRequestPortAclValueIpv6PermitInner, bool)`
+`func (o *PortaclsPutRequestPortAclValue) GetIpv6DenyOk() (*[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, bool)`
 
 GetIpv6DenyOk returns a tuple with the Ipv6Deny field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpv6Deny
 
-`func (o *PortaclsPutRequestPortAclValue) SetIpv6Deny(v []PortaclsPutRequestPortAclValueIpv6PermitInner)`
+`func (o *PortaclsPutRequestPortAclValue) SetIpv6Deny(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner)`
 
 SetIpv6Deny sets Ipv6Deny field to given value.
 

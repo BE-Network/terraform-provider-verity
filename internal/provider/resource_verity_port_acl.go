@@ -219,9 +219,9 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 
 	// Handle IPv4 Permit
 	if len(plan.Ipv4Permit) > 0 {
-		filters := make([]openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, len(plan.Ipv4Permit))
+		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, len(plan.Ipv4Permit))
 		for i, item := range plan.Ipv4Permit {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 
 			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -246,9 +246,9 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 
 	// Handle IPv4 Deny
 	if len(plan.Ipv4Deny) > 0 {
-		filters := make([]openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, len(plan.Ipv4Deny))
+		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, len(plan.Ipv4Deny))
 		for i, item := range plan.Ipv4Deny {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 
 			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -273,9 +273,9 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 
 	// Handle IPv6 Permit
 	if len(plan.Ipv6Permit) > 0 {
-		filters := make([]openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, len(plan.Ipv6Permit))
+		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, len(plan.Ipv6Permit))
 		for i, item := range plan.Ipv6Permit {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
 			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -300,9 +300,9 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 
 	// Handle IPv6 Deny
 	if len(plan.Ipv6Deny) > 0 {
-		filters := make([]openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, len(plan.Ipv6Deny))
+		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, len(plan.Ipv6Deny))
 		for i, item := range plan.Ipv6Deny {
-			filter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
 			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -571,9 +571,9 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 	// Handle IPv4 Permit
 	changedIpv4Permits, ipv4PermitsChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit,
-		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv4PermitInner]{
-			CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
-				newFilter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner]{
+			CreateNew: func(planItem verityPortAclFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
+				newFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -593,8 +593,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 				return newFilter
 			},
-			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, bool) {
-				updateFilter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, bool) {
+				updateFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -616,8 +616,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 				return updateFilter, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
-				return openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
+			CreateDeleted: func(index int64) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
+				return openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},
@@ -629,9 +629,9 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 	// Handle IPv4 Deny
 	changedIpv4Denies, ipv4DeniesChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny,
-		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv4PermitInner]{
-			CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
-				newFilter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner]{
+			CreateNew: func(planItem verityPortAclFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
+				newFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -651,8 +651,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 				return newFilter
 			},
-			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv4PermitInner, bool) {
-				updateFilter := openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{}
+			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, bool) {
+				updateFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -674,8 +674,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 				return updateFilter, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv4PermitInner {
-				return openapi.PortaclsPutRequestPortAclValueIpv4PermitInner{
+			CreateDeleted: func(index int64) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
+				return openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},
@@ -687,9 +687,9 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 	// Handle IPv6 Permit
 	changedIpv6Permits, ipv6PermitsChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit,
-		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv6PermitInner]{
-			CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
-				newFilter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner]{
+			CreateNew: func(planItem verityPortAclFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
+				newFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -709,8 +709,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 				return newFilter
 			},
-			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, bool) {
-				updateFilter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, bool) {
+				updateFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -732,8 +732,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 				return updateFilter, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
-				return openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
+			CreateDeleted: func(index int64) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
+				return openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},
@@ -745,9 +745,9 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 	// Handle IPv6 Deny
 	changedIpv6Denies, ipv6DeniesChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny,
-		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PortaclsPutRequestPortAclValueIpv6PermitInner]{
-			CreateNew: func(planItem verityPortAclFilterModel) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
-				newFilter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner]{
+			CreateNew: func(planItem verityPortAclFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
+				newFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -767,8 +767,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 				return newFilter
 			},
-			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PortaclsPutRequestPortAclValueIpv6PermitInner, bool) {
-				updateFilter := openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{}
+			UpdateExisting: func(planItem verityPortAclFilterModel, stateItem verityPortAclFilterModel) (openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, bool) {
+				updateFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -790,8 +790,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 				return updateFilter, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.PortaclsPutRequestPortAclValueIpv6PermitInner {
-				return openapi.PortaclsPutRequestPortAclValueIpv6PermitInner{
+			CreateDeleted: func(index int64) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
+				return openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},

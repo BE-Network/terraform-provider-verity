@@ -19,7 +19,7 @@ var _ MappedNullable = &PacketbrokerPutRequest{}
 
 // PacketbrokerPutRequest struct for PacketbrokerPutRequest
 type PacketbrokerPutRequest struct {
-	PbEgressProfile *map[string]PacketbrokerPutRequestPbEgressProfileValue `json:"pb_egress_profile,omitempty"`
+	PortAcl *map[string]PacketbrokerPutRequestPortAclValue `json:"port_acl,omitempty"`
 }
 
 // NewPacketbrokerPutRequest instantiates a new PacketbrokerPutRequest object
@@ -39,36 +39,36 @@ func NewPacketbrokerPutRequestWithDefaults() *PacketbrokerPutRequest {
 	return &this
 }
 
-// GetPbEgressProfile returns the PbEgressProfile field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequest) GetPbEgressProfile() map[string]PacketbrokerPutRequestPbEgressProfileValue {
-	if o == nil || IsNil(o.PbEgressProfile) {
-		var ret map[string]PacketbrokerPutRequestPbEgressProfileValue
+// GetPortAcl returns the PortAcl field value if set, zero value otherwise.
+func (o *PacketbrokerPutRequest) GetPortAcl() map[string]PacketbrokerPutRequestPortAclValue {
+	if o == nil || IsNil(o.PortAcl) {
+		var ret map[string]PacketbrokerPutRequestPortAclValue
 		return ret
 	}
-	return *o.PbEgressProfile
+	return *o.PortAcl
 }
 
-// GetPbEgressProfileOk returns a tuple with the PbEgressProfile field value if set, nil otherwise
+// GetPortAclOk returns a tuple with the PortAcl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequest) GetPbEgressProfileOk() (*map[string]PacketbrokerPutRequestPbEgressProfileValue, bool) {
-	if o == nil || IsNil(o.PbEgressProfile) {
+func (o *PacketbrokerPutRequest) GetPortAclOk() (*map[string]PacketbrokerPutRequestPortAclValue, bool) {
+	if o == nil || IsNil(o.PortAcl) {
 		return nil, false
 	}
-	return o.PbEgressProfile, true
+	return o.PortAcl, true
 }
 
-// HasPbEgressProfile returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequest) HasPbEgressProfile() bool {
-	if o != nil && !IsNil(o.PbEgressProfile) {
+// HasPortAcl returns a boolean if a field has been set.
+func (o *PacketbrokerPutRequest) HasPortAcl() bool {
+	if o != nil && !IsNil(o.PortAcl) {
 		return true
 	}
 
 	return false
 }
 
-// SetPbEgressProfile gets a reference to the given map[string]PacketbrokerPutRequestPbEgressProfileValue and assigns it to the PbEgressProfile field.
-func (o *PacketbrokerPutRequest) SetPbEgressProfile(v map[string]PacketbrokerPutRequestPbEgressProfileValue) {
-	o.PbEgressProfile = &v
+// SetPortAcl gets a reference to the given map[string]PacketbrokerPutRequestPortAclValue and assigns it to the PortAcl field.
+func (o *PacketbrokerPutRequest) SetPortAcl(v map[string]PacketbrokerPutRequestPortAclValue) {
+	o.PortAcl = &v
 }
 
 func (o PacketbrokerPutRequest) MarshalJSON() ([]byte, error) {
@@ -81,8 +81,8 @@ func (o PacketbrokerPutRequest) MarshalJSON() ([]byte, error) {
 
 func (o PacketbrokerPutRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.PbEgressProfile) {
-		toSerialize["pb_egress_profile"] = o.PbEgressProfile
+	if !IsNil(o.PortAcl) {
+		toSerialize["port_acl"] = o.PortAcl
 	}
 	return toSerialize, nil
 }

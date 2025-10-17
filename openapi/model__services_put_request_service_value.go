@@ -23,9 +23,9 @@ type ServicesPutRequestServiceValue struct {
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
-	// A Value between 1 and 4096
+	// Layer 2 Virtual Network Identifier. A Value between 1 and 4096. <br> Some switches have reserved values within the range
 	Vlan NullableInt32 `json:"vlan,omitempty"`
-	// Indication of the outgoing VLAN layer 2 service
+	// Identifies the service within the VXLAN fabric
 	Vni NullableInt32 `json:"vni,omitempty"`
 	// Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit.
 	VniAutoAssigned *bool `json:"vni_auto_assigned_,omitempty"`

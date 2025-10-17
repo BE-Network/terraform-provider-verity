@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
+// checks if the PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
-// PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner struct for PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
-type PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner struct {
+// PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner struct for PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner
+type PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner struct {
 	// Enable
 	Enable *bool `json:"enable,omitempty"`
 	// Filter
@@ -29,12 +29,12 @@ type PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner struct {
 	Index *int32 `json:"index,omitempty"`
 }
 
-// NewPacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner instantiates a new PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner object
+// NewPolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner instantiates a new PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner() *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
-	this := PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
+func NewPolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner() *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
+	this := PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 	var enable bool = false
 	this.Enable = &enable
 	var filter string = ""
@@ -42,11 +42,11 @@ func NewPacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner() *Packetbroke
 	return &this
 }
 
-// NewPacketbrokerPutRequestPbEgressProfileValueIpv6PermitInnerWithDefaults instantiates a new PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner object
+// NewPolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInnerWithDefaults instantiates a new PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewPacketbrokerPutRequestPbEgressProfileValueIpv6PermitInnerWithDefaults() *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
-	this := PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
+func NewPolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInnerWithDefaults() *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
+	this := PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 	var enable bool = false
 	this.Enable = &enable
 	var filter string = ""
@@ -55,7 +55,7 @@ func NewPacketbrokerPutRequestPbEgressProfileValueIpv6PermitInnerWithDefaults() 
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetEnable() bool {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) GetEnable() bool {
 	if o == nil || IsNil(o.Enable) {
 		var ret bool
 		return ret
@@ -65,7 +65,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetEnable() 
 
 // GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetEnableOk() (*bool, bool) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) GetEnableOk() (*bool, bool) {
 	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetEnableOk(
 }
 
 // HasEnable returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) HasEnable() bool {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) HasEnable() bool {
 	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
@@ -82,12 +82,12 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) HasEnable() 
 }
 
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) SetEnable(v bool) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) SetEnable(v bool) {
 	o.Enable = &v
 }
 
 // GetFilter returns the Filter field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetFilter() string {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) GetFilter() string {
 	if o == nil || IsNil(o.Filter) {
 		var ret string
 		return ret
@@ -97,7 +97,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetFilter() 
 
 // GetFilterOk returns a tuple with the Filter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetFilterOk() (*string, bool) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) GetFilterOk() (*string, bool) {
 	if o == nil || IsNil(o.Filter) {
 		return nil, false
 	}
@@ -105,7 +105,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetFilterOk(
 }
 
 // HasFilter returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) HasFilter() bool {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) HasFilter() bool {
 	if o != nil && !IsNil(o.Filter) {
 		return true
 	}
@@ -114,12 +114,12 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) HasFilter() 
 }
 
 // SetFilter gets a reference to the given string and assigns it to the Filter field.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) SetFilter(v string) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) SetFilter(v string) {
 	o.Filter = &v
 }
 
 // GetFilterRefType returns the FilterRefType field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetFilterRefType() string {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) GetFilterRefType() string {
 	if o == nil || IsNil(o.FilterRefType) {
 		var ret string
 		return ret
@@ -129,7 +129,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetFilterRef
 
 // GetFilterRefTypeOk returns a tuple with the FilterRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetFilterRefTypeOk() (*string, bool) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) GetFilterRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.FilterRefType) {
 		return nil, false
 	}
@@ -137,7 +137,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetFilterRef
 }
 
 // HasFilterRefType returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) HasFilterRefType() bool {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) HasFilterRefType() bool {
 	if o != nil && !IsNil(o.FilterRefType) {
 		return true
 	}
@@ -146,12 +146,12 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) HasFilterRef
 }
 
 // SetFilterRefType gets a reference to the given string and assigns it to the FilterRefType field.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) SetFilterRefType(v string) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) SetFilterRefType(v string) {
 	o.FilterRefType = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetIndex() int32 {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) GetIndex() int32 {
 	if o == nil || IsNil(o.Index) {
 		var ret int32
 		return ret
@@ -161,7 +161,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetIndex() i
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetIndexOk() (*int32, bool) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) GetIndexOk() (*int32, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -169,7 +169,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) GetIndexOk()
 }
 
 // HasIndex returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) HasIndex() bool {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) HasIndex() bool {
 	if o != nil && !IsNil(o.Index) {
 		return true
 	}
@@ -178,11 +178,11 @@ func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) HasIndex() b
 }
 
 // SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) SetIndex(v int32) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) SetIndex(v int32) {
 	o.Index = &v
 }
 
-func (o PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) MarshalJSON() ([]byte, error) {
+func (o PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -190,7 +190,7 @@ func (o PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) MarshalJSON()
 	return json.Marshal(toSerialize)
 }
 
-func (o PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) ToMap() (map[string]interface{}, error) {
+func (o PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
@@ -207,38 +207,38 @@ func (o PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) ToMap() (map[
 	return toSerialize, nil
 }
 
-type NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner struct {
-	value *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+type NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner struct {
+	value *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner
 	isSet bool
 }
 
-func (v NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) Get() *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+func (v NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) Get() *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
 	return v.value
 }
 
-func (v *NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) Set(val *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) {
+func (v *NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) Set(val *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) IsSet() bool {
+func (v NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) Unset() {
+func (v *NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner(val *PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) *NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
-	return &NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{value: val, isSet: true}
+func NewNullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner(val *PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) *NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
+	return &NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{value: val, isSet: true}
 }
 
-func (v NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) MarshalJSON() ([]byte, error) {
+func (v NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullablePacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) UnmarshalJSON(src []byte) error {
+func (v *NullablePolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

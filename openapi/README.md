@@ -170,6 +170,10 @@ Class | Method | HTTP request | Description
 *PBRoutingAPI* | [**PolicybasedroutingGet**](docs/PBRoutingAPI.md#policybasedroutingget) | **Get** /policybasedrouting | Get all PB Routing objects
 *PBRoutingAPI* | [**PolicybasedroutingPatch**](docs/PBRoutingAPI.md#policybasedroutingpatch) | **Patch** /policybasedrouting | Update PB Routing object
 *PBRoutingAPI* | [**PolicybasedroutingPut**](docs/PBRoutingAPI.md#policybasedroutingput) | **Put** /policybasedrouting | Create PB Routing object
+*PBRoutingACLAPI* | [**PolicybasedroutingaclDelete**](docs/PBRoutingACLAPI.md#policybasedroutingacldelete) | **Delete** /policybasedroutingacl | Delete PB Routing ACL
+*PBRoutingACLAPI* | [**PolicybasedroutingaclGet**](docs/PBRoutingACLAPI.md#policybasedroutingaclget) | **Get** /policybasedroutingacl | Get all PB Routing ACLs
+*PBRoutingACLAPI* | [**PolicybasedroutingaclPatch**](docs/PBRoutingACLAPI.md#policybasedroutingaclpatch) | **Patch** /policybasedroutingacl | Update PB Routing ACL
+*PBRoutingACLAPI* | [**PolicybasedroutingaclPut**](docs/PBRoutingACLAPI.md#policybasedroutingaclput) | **Put** /policybasedroutingacl | Create PB Routing ACL
 *PacketBrokerAPI* | [**PacketbrokerDelete**](docs/PacketBrokerAPI.md#packetbrokerdelete) | **Delete** /packetbroker | Delete PB Egress Profile
 *PacketBrokerAPI* | [**PacketbrokerGet**](docs/PacketBrokerAPI.md#packetbrokerget) | **Get** /packetbroker | Get all PB Egress Profiles
 *PacketBrokerAPI* | [**PacketbrokerPatch**](docs/PacketBrokerAPI.md#packetbrokerpatch) | **Patch** /packetbroker | Update PB Egress Profile
@@ -305,9 +309,9 @@ Class | Method | HTTP request | Description
  - [LagsPutRequest](docs/LagsPutRequest.md)
  - [LagsPutRequestLagValue](docs/LagsPutRequestLagValue.md)
  - [PacketbrokerPutRequest](docs/PacketbrokerPutRequest.md)
- - [PacketbrokerPutRequestPbEgressProfileValue](docs/PacketbrokerPutRequestPbEgressProfileValue.md)
- - [PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner](docs/PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner.md)
- - [PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner](docs/PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner.md)
+ - [PacketbrokerPutRequestPortAclValue](docs/PacketbrokerPutRequestPortAclValue.md)
+ - [PacketbrokerPutRequestPortAclValueIpv4PermitInner](docs/PacketbrokerPutRequestPortAclValueIpv4PermitInner.md)
+ - [PacketbrokerPutRequestPortAclValueIpv6PermitInner](docs/PacketbrokerPutRequestPortAclValueIpv6PermitInner.md)
  - [PacketqueuesPutRequest](docs/PacketqueuesPutRequest.md)
  - [PacketqueuesPutRequestPacketQueueValue](docs/PacketqueuesPutRequestPacketQueueValue.md)
  - [PacketqueuesPutRequestPacketQueueValuePbitInner](docs/PacketqueuesPutRequestPacketQueueValuePbitInner.md)
@@ -317,10 +321,12 @@ Class | Method | HTTP request | Description
  - [PolicybasedroutingPutRequest](docs/PolicybasedroutingPutRequest.md)
  - [PolicybasedroutingPutRequestPbRoutingValue](docs/PolicybasedroutingPutRequestPbRoutingValue.md)
  - [PolicybasedroutingPutRequestPbRoutingValuePolicyInner](docs/PolicybasedroutingPutRequestPbRoutingValuePolicyInner.md)
+ - [PolicybasedroutingaclPutRequest](docs/PolicybasedroutingaclPutRequest.md)
+ - [PolicybasedroutingaclPutRequestPbRoutingAclValue](docs/PolicybasedroutingaclPutRequestPbRoutingAclValue.md)
+ - [PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner](docs/PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner.md)
+ - [PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner](docs/PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner.md)
  - [PortaclsPutRequest](docs/PortaclsPutRequest.md)
  - [PortaclsPutRequestPortAclValue](docs/PortaclsPutRequestPortAclValue.md)
- - [PortaclsPutRequestPortAclValueIpv4PermitInner](docs/PortaclsPutRequestPortAclValueIpv4PermitInner.md)
- - [PortaclsPutRequestPortAclValueIpv6PermitInner](docs/PortaclsPutRequestPortAclValueIpv6PermitInner.md)
  - [RoutemapclausesPutRequest](docs/RoutemapclausesPutRequest.md)
  - [RoutemapclausesPutRequestRouteMapClauseValue](docs/RoutemapclausesPutRequestRouteMapClauseValue.md)
  - [RoutemapclausesPutRequestRouteMapClauseValueObjectProperties](docs/RoutemapclausesPutRequestRouteMapClauseValueObjectProperties.md)

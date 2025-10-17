@@ -182,8 +182,8 @@ type BulkOperationManager struct {
 	deviceVoiceSettingsDelete []string
 
 	// Packet Broker operations
-	packetBrokerPut    map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue
-	packetBrokerPatch  map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue
+	packetBrokerPut    map[string]openapi.PacketbrokerPutRequestPortAclValue
+	packetBrokerPatch  map[string]openapi.PacketbrokerPutRequestPortAclValue
 	packetBrokerDelete []string
 
 	// Packet Queues operations
@@ -967,8 +967,8 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		servicePortProfilePut:        make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
 		servicePortProfilePatch:      make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue),
 		servicePortProfileDelete:     make([]string, 0),
-		packetBrokerPut:              make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
-		packetBrokerPatch:            make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue),
+		packetBrokerPut:              make(map[string]openapi.PacketbrokerPutRequestPortAclValue),
+		packetBrokerPatch:            make(map[string]openapi.PacketbrokerPutRequestPortAclValue),
 		packetBrokerDelete:           make([]string, 0),
 		packetQueuePut:               make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
 		packetQueuePatch:             make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue),
@@ -3976,14 +3976,14 @@ func (b *BulkOperationManager) storeInTypedMap(resourceType, resourceName, opera
 	case "packet_broker":
 		if operationType == "PUT" {
 			if b.packetBrokerPut == nil {
-				b.packetBrokerPut = make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
+				b.packetBrokerPut = make(map[string]openapi.PacketbrokerPutRequestPortAclValue)
 			}
-			b.packetBrokerPut[resourceName] = props.(openapi.PacketbrokerPutRequestPbEgressProfileValue)
+			b.packetBrokerPut[resourceName] = props.(openapi.PacketbrokerPutRequestPortAclValue)
 		} else {
 			if b.packetBrokerPatch == nil {
-				b.packetBrokerPatch = make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
+				b.packetBrokerPatch = make(map[string]openapi.PacketbrokerPutRequestPortAclValue)
 			}
-			b.packetBrokerPatch[resourceName] = props.(openapi.PacketbrokerPutRequestPbEgressProfileValue)
+			b.packetBrokerPatch[resourceName] = props.(openapi.PacketbrokerPutRequestPortAclValue)
 		}
 	case "packet_queue":
 		if operationType == "PUT" {
@@ -4938,9 +4938,9 @@ func (b *BulkOperationManager) clearOperationMap(resourceType, operationType str
 		}
 	case "packet_broker":
 		if operationType == "PUT" {
-			b.packetBrokerPut = make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
+			b.packetBrokerPut = make(map[string]openapi.PacketbrokerPutRequestPortAclValue)
 		} else {
-			b.packetBrokerPatch = make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
+			b.packetBrokerPatch = make(map[string]openapi.PacketbrokerPutRequestPortAclValue)
 		}
 	case "packet_queue":
 		if operationType == "PUT" {
@@ -5812,11 +5812,11 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 			return patchRequest
 		case "packet_broker":
 			putRequest := openapi.NewPacketbrokerPutRequest()
-			brokerMap := make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
+			brokerMap := make(map[string]openapi.PacketbrokerPutRequestPortAclValue)
 			for name, props := range filteredData {
-				brokerMap[name] = props.(openapi.PacketbrokerPutRequestPbEgressProfileValue)
+				brokerMap[name] = props.(openapi.PacketbrokerPutRequestPortAclValue)
 			}
-			putRequest.SetPbEgressProfile(brokerMap)
+			putRequest.SetPortAcl(brokerMap)
 			return putRequest
 		case "packet_queue":
 			putRequest := openapi.NewPacketqueuesPutRequest()

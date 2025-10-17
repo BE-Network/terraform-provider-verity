@@ -23,9 +23,9 @@ type BadgesPutRequestBadgeValue struct {
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// Badge color
+	// Color of Badge
 	Color *string `json:"color,omitempty"`
-	// Badge number
+	// Number of Badge
 	Number *int32 `json:"number,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
@@ -40,6 +40,8 @@ func NewBadgesPutRequestBadgeValue() *BadgesPutRequestBadgeValue {
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var color string = "next available color"
+	this.Color = &color
 	return &this
 }
 
@@ -52,6 +54,8 @@ func NewBadgesPutRequestBadgeValueWithDefaults() *BadgesPutRequestBadgeValue {
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var color string = "next available color"
+	this.Color = &color
 	return &this
 }
 

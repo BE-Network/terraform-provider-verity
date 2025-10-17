@@ -31,11 +31,15 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	ExternalBatteryPowerAvailable *int32 `json:"external_battery_power_available,omitempty"`
 	// External Power Available
 	ExternalPowerAvailable *int32 `json:"external_power_available,omitempty"`
-	// Required for AVB, PTP and Cobranet Support
+	// Required for AVB, PTP and Cobranet Support for ONT Devices
 	DisableTcpUdpLearnedPacketAcceleration *bool `json:"disable_tcp_udp_learned_packet_acceleration,omitempty"`
+	// Packet Queue for device
+	PacketQueueId *string `json:"packet_queue_id,omitempty"`
+	// Object type for packet_queue_id field
+	PacketQueueIdRefType *string `json:"packet_queue_id_ref_type_,omitempty"`
 	// Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 <br>if the value is blank, audit will use default switch settings.                                                 <br>if the value is 0, audit will be turned off.                                                 
 	SecurityAuditInterval NullableInt32 `json:"security_audit_interval,omitempty"`
-	// Frequency in minutes to write the Switch configuration to flash.                                                 <br>if the value is blank, commit will use default switch settings.                                                 <br>if the value is 0, commit will be turned off.
+	// Time delay in minutes to write the Switch configuration to flash after a change is made.                                                 <br>if the value is blank, commit will use default switch settings of 12 hours.                                                 <br>if the value is 0, commit will be turned off.
 	CommitToFlashInterval NullableInt32 `json:"commit_to_flash_interval,omitempty"`
 	// Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs.
 	Rocev2 *bool `json:"rocev2,omitempty"`
@@ -48,10 +52,6 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	MacAgingTimerOverride NullableInt32 `json:"mac_aging_timer_override,omitempty"`
 	// STP per switch, priority are in 4096 increments, the lower the number, the higher the priority.
 	SpanningTreePriority *string `json:"spanning_tree_priority,omitempty"`
-	// Packet Queue for device
-	PacketQueueId *string `json:"packet_queue_id,omitempty"`
-	// Object type for packet_queue_id field
-	PacketQueueIdRefType *string `json:"packet_queue_id_ref_type_,omitempty"`
 }
 
 // NewDevicesettingsPutRequestEthDeviceProfilesValue instantiates a new DevicesettingsPutRequestEthDeviceProfilesValue object
@@ -72,6 +72,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.ExternalPowerAvailable = &externalPowerAvailable
 	var disableTcpUdpLearnedPacketAcceleration bool = false
 	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
+	var packetQueueId string = "packet_queue|(Packet Queue)|"
+	this.PacketQueueId = &packetQueueId
 	var securityAuditInterval int32 = 60
 	this.SecurityAuditInterval = *NewNullableInt32(&securityAuditInterval)
 	var commitToFlashInterval int32 = 60
@@ -84,8 +86,6 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.HoldTimer = *NewNullableInt32(&holdTimer)
 	var spanningTreePriority string = "byLevel"
 	this.SpanningTreePriority = &spanningTreePriority
-	var packetQueueId string = "packet_queue|(Packet Queue)|"
-	this.PacketQueueId = &packetQueueId
 	return &this
 }
 
@@ -106,6 +106,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.ExternalPowerAvailable = &externalPowerAvailable
 	var disableTcpUdpLearnedPacketAcceleration bool = false
 	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
+	var packetQueueId string = "packet_queue|(Packet Queue)|"
+	this.PacketQueueId = &packetQueueId
 	var securityAuditInterval int32 = 60
 	this.SecurityAuditInterval = *NewNullableInt32(&securityAuditInterval)
 	var commitToFlashInterval int32 = 60
@@ -118,8 +120,6 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.HoldTimer = *NewNullableInt32(&holdTimer)
 	var spanningTreePriority string = "byLevel"
 	this.SpanningTreePriority = &spanningTreePriority
-	var packetQueueId string = "packet_queue|(Packet Queue)|"
-	this.PacketQueueId = &packetQueueId
 	return &this
 }
 
@@ -345,6 +345,70 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDisableTcpUdpLearned
 // SetDisableTcpUdpLearnedPacketAcceleration gets a reference to the given bool and assigns it to the DisableTcpUdpLearnedPacketAcceleration field.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDisableTcpUdpLearnedPacketAcceleration(v bool) {
 	o.DisableTcpUdpLearnedPacketAcceleration = &v
+}
+
+// GetPacketQueueId returns the PacketQueueId field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueId() string {
+	if o == nil || IsNil(o.PacketQueueId) {
+		var ret string
+		return ret
+	}
+	return *o.PacketQueueId
+}
+
+// GetPacketQueueIdOk returns a tuple with the PacketQueueId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueueId) {
+		return nil, false
+	}
+	return o.PacketQueueId, true
+}
+
+// HasPacketQueueId returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueId() bool {
+	if o != nil && !IsNil(o.PacketQueueId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketQueueId gets a reference to the given string and assigns it to the PacketQueueId field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueId(v string) {
+	o.PacketQueueId = &v
+}
+
+// GetPacketQueueIdRefType returns the PacketQueueIdRefType field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdRefType() string {
+	if o == nil || IsNil(o.PacketQueueIdRefType) {
+		var ret string
+		return ret
+	}
+	return *o.PacketQueueIdRefType
+}
+
+// GetPacketQueueIdRefTypeOk returns a tuple with the PacketQueueIdRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueueIdRefType) {
+		return nil, false
+	}
+	return o.PacketQueueIdRefType, true
+}
+
+// HasPacketQueueIdRefType returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueIdRefType() bool {
+	if o != nil && !IsNil(o.PacketQueueIdRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketQueueIdRefType gets a reference to the given string and assigns it to the PacketQueueIdRefType field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueIdRefType(v string) {
+	o.PacketQueueIdRefType = &v
 }
 
 // GetSecurityAuditInterval returns the SecurityAuditInterval field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -643,70 +707,6 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSpanningTreePriority
 	o.SpanningTreePriority = &v
 }
 
-// GetPacketQueueId returns the PacketQueueId field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueId() string {
-	if o == nil || IsNil(o.PacketQueueId) {
-		var ret string
-		return ret
-	}
-	return *o.PacketQueueId
-}
-
-// GetPacketQueueIdOk returns a tuple with the PacketQueueId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdOk() (*string, bool) {
-	if o == nil || IsNil(o.PacketQueueId) {
-		return nil, false
-	}
-	return o.PacketQueueId, true
-}
-
-// HasPacketQueueId returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueId() bool {
-	if o != nil && !IsNil(o.PacketQueueId) {
-		return true
-	}
-
-	return false
-}
-
-// SetPacketQueueId gets a reference to the given string and assigns it to the PacketQueueId field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueId(v string) {
-	o.PacketQueueId = &v
-}
-
-// GetPacketQueueIdRefType returns the PacketQueueIdRefType field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdRefType() string {
-	if o == nil || IsNil(o.PacketQueueIdRefType) {
-		var ret string
-		return ret
-	}
-	return *o.PacketQueueIdRefType
-}
-
-// GetPacketQueueIdRefTypeOk returns a tuple with the PacketQueueIdRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.PacketQueueIdRefType) {
-		return nil, false
-	}
-	return o.PacketQueueIdRefType, true
-}
-
-// HasPacketQueueIdRefType returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueIdRefType() bool {
-	if o != nil && !IsNil(o.PacketQueueIdRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetPacketQueueIdRefType gets a reference to the given string and assigns it to the PacketQueueIdRefType field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueIdRefType(v string) {
-	o.PacketQueueIdRefType = &v
-}
-
 func (o DevicesettingsPutRequestEthDeviceProfilesValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -738,6 +738,12 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	if !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
 		toSerialize["disable_tcp_udp_learned_packet_acceleration"] = o.DisableTcpUdpLearnedPacketAcceleration
 	}
+	if !IsNil(o.PacketQueueId) {
+		toSerialize["packet_queue_id"] = o.PacketQueueId
+	}
+	if !IsNil(o.PacketQueueIdRefType) {
+		toSerialize["packet_queue_id_ref_type_"] = o.PacketQueueIdRefType
+	}
 	if o.SecurityAuditInterval.IsSet() {
 		toSerialize["security_audit_interval"] = o.SecurityAuditInterval.Get()
 	}
@@ -761,12 +767,6 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	}
 	if !IsNil(o.SpanningTreePriority) {
 		toSerialize["spanning_tree_priority"] = o.SpanningTreePriority
-	}
-	if !IsNil(o.PacketQueueId) {
-		toSerialize["packet_queue_id"] = o.PacketQueueId
-	}
-	if !IsNil(o.PacketQueueIdRefType) {
-		toSerialize["packet_queue_id_ref_type_"] = o.PacketQueueIdRefType
 	}
 	return toSerialize, nil
 }

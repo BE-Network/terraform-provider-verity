@@ -47,7 +47,7 @@ type GatewaysPutRequestGatewayValue struct {
 	EgressVlan NullableInt32 `json:"egress_vlan,omitempty"`
 	// Source IP address used to override the default source address calculation for BGP TCP session
 	SourceIpAddress *string `json:"source_ip_address,omitempty"`
-	// The Anycast Address will be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
+	// The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
 	AnycastIpMask *string `json:"anycast_ip_mask,omitempty"`
 	// MD5 password
 	Md5Password *string `json:"md5_password,omitempty"`
@@ -59,9 +59,9 @@ type GatewaysPutRequestGatewayValue struct {
 	ExportRouteMap *string `json:"export_route_map,omitempty"`
 	// Object type for export_route_map field
 	ExportRouteMapRefType *string `json:"export_route_map_ref_type_,omitempty"`
-	// Gateway Mode. Can be BGP, Static, or Default
+	// Gateway Mode is the method used for defining routes for the Tenant
 	GatewayMode *string `json:"gateway_mode,omitempty"`
-	// Local AS Number
+	// Local AS Number to use as an override to the switch AS number
 	LocalAsNumber NullableInt32 `json:"local_as_number,omitempty"`
 	// Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
 	LocalAsNoPrepend *bool `json:"local_as_no_prepend,omitempty"`
@@ -73,7 +73,7 @@ type GatewaysPutRequestGatewayValue struct {
 	DynamicBgpSubnet *string `json:"dynamic_bgp_subnet,omitempty"`
 	// Dynamic BGP Limits
 	DynamicBgpLimits NullableInt32 `json:"dynamic_bgp_limits,omitempty"`
-	// Helper Hop IP Address
+	// Helper Hop IP Address is used as the next hop to reach the BGP peer
 	HelperHopIpAddress *string `json:"helper_hop_ip_address,omitempty"`
 	// Enable BFD(Bi-Directional Forwarding)
 	EnableBfd *bool `json:"enable_bfd,omitempty"`

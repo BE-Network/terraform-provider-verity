@@ -6,8 +6,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
-**Color** | Pointer to **string** | Badge color | [optional] 
-**Number** | Pointer to **int32** | Badge number | [optional] 
+**Color** | Pointer to **string** | Color of Badge | [optional] [default to "next available color"]
+**Number** | Pointer to **int32** | Number of Badge | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
 ## Methods

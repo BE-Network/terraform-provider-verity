@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the PortaclsPutRequestPortAclValueIpv4PermitInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &PortaclsPutRequestPortAclValueIpv4PermitInner{}
+// checks if the PacketbrokerPutRequestPortAclValueIpv6PermitInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
 
-// PortaclsPutRequestPortAclValueIpv4PermitInner struct for PortaclsPutRequestPortAclValueIpv4PermitInner
-type PortaclsPutRequestPortAclValueIpv4PermitInner struct {
+// PacketbrokerPutRequestPortAclValueIpv6PermitInner struct for PacketbrokerPutRequestPortAclValueIpv6PermitInner
+type PacketbrokerPutRequestPortAclValueIpv6PermitInner struct {
 	// Enable
 	Enable *bool `json:"enable,omitempty"`
 	// Filter
@@ -29,12 +29,12 @@ type PortaclsPutRequestPortAclValueIpv4PermitInner struct {
 	Index *int32 `json:"index,omitempty"`
 }
 
-// NewPortaclsPutRequestPortAclValueIpv4PermitInner instantiates a new PortaclsPutRequestPortAclValueIpv4PermitInner object
+// NewPacketbrokerPutRequestPortAclValueIpv6PermitInner instantiates a new PacketbrokerPutRequestPortAclValueIpv6PermitInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPortaclsPutRequestPortAclValueIpv4PermitInner() *PortaclsPutRequestPortAclValueIpv4PermitInner {
-	this := PortaclsPutRequestPortAclValueIpv4PermitInner{}
+func NewPacketbrokerPutRequestPortAclValueIpv6PermitInner() *PacketbrokerPutRequestPortAclValueIpv6PermitInner {
+	this := PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
 	var enable bool = false
 	this.Enable = &enable
 	var filter string = ""
@@ -42,11 +42,11 @@ func NewPortaclsPutRequestPortAclValueIpv4PermitInner() *PortaclsPutRequestPortA
 	return &this
 }
 
-// NewPortaclsPutRequestPortAclValueIpv4PermitInnerWithDefaults instantiates a new PortaclsPutRequestPortAclValueIpv4PermitInner object
+// NewPacketbrokerPutRequestPortAclValueIpv6PermitInnerWithDefaults instantiates a new PacketbrokerPutRequestPortAclValueIpv6PermitInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewPortaclsPutRequestPortAclValueIpv4PermitInnerWithDefaults() *PortaclsPutRequestPortAclValueIpv4PermitInner {
-	this := PortaclsPutRequestPortAclValueIpv4PermitInner{}
+func NewPacketbrokerPutRequestPortAclValueIpv6PermitInnerWithDefaults() *PacketbrokerPutRequestPortAclValueIpv6PermitInner {
+	this := PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
 	var enable bool = false
 	this.Enable = &enable
 	var filter string = ""
@@ -55,7 +55,7 @@ func NewPortaclsPutRequestPortAclValueIpv4PermitInnerWithDefaults() *PortaclsPut
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetEnable() bool {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) GetEnable() bool {
 	if o == nil || IsNil(o.Enable) {
 		var ret bool
 		return ret
@@ -65,7 +65,7 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetEnable() bool {
 
 // GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetEnableOk() (*bool, bool) {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) GetEnableOk() (*bool, bool) {
 	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetEnableOk() (*bool, bo
 }
 
 // HasEnable returns a boolean if a field has been set.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasEnable() bool {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) HasEnable() bool {
 	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
@@ -82,12 +82,12 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasEnable() bool {
 }
 
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetEnable(v bool) {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) SetEnable(v bool) {
 	o.Enable = &v
 }
 
 // GetFilter returns the Filter field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilter() string {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) GetFilter() string {
 	if o == nil || IsNil(o.Filter) {
 		var ret string
 		return ret
@@ -97,7 +97,7 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilter() string {
 
 // GetFilterOk returns a tuple with the Filter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterOk() (*string, bool) {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) GetFilterOk() (*string, bool) {
 	if o == nil || IsNil(o.Filter) {
 		return nil, false
 	}
@@ -105,7 +105,7 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterOk() (*string, 
 }
 
 // HasFilter returns a boolean if a field has been set.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasFilter() bool {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) HasFilter() bool {
 	if o != nil && !IsNil(o.Filter) {
 		return true
 	}
@@ -114,12 +114,12 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasFilter() bool {
 }
 
 // SetFilter gets a reference to the given string and assigns it to the Filter field.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetFilter(v string) {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) SetFilter(v string) {
 	o.Filter = &v
 }
 
 // GetFilterRefType returns the FilterRefType field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterRefType() string {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) GetFilterRefType() string {
 	if o == nil || IsNil(o.FilterRefType) {
 		var ret string
 		return ret
@@ -129,7 +129,7 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterRefType() strin
 
 // GetFilterRefTypeOk returns a tuple with the FilterRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterRefTypeOk() (*string, bool) {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) GetFilterRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.FilterRefType) {
 		return nil, false
 	}
@@ -137,7 +137,7 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetFilterRefTypeOk() (*s
 }
 
 // HasFilterRefType returns a boolean if a field has been set.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasFilterRefType() bool {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) HasFilterRefType() bool {
 	if o != nil && !IsNil(o.FilterRefType) {
 		return true
 	}
@@ -146,12 +146,12 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasFilterRefType() bool 
 }
 
 // SetFilterRefType gets a reference to the given string and assigns it to the FilterRefType field.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetFilterRefType(v string) {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) SetFilterRefType(v string) {
 	o.FilterRefType = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetIndex() int32 {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) GetIndex() int32 {
 	if o == nil || IsNil(o.Index) {
 		var ret int32
 		return ret
@@ -161,7 +161,7 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetIndex() int32 {
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetIndexOk() (*int32, bool) {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) GetIndexOk() (*int32, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -169,7 +169,7 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) GetIndexOk() (*int32, bo
 }
 
 // HasIndex returns a boolean if a field has been set.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasIndex() bool {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) HasIndex() bool {
 	if o != nil && !IsNil(o.Index) {
 		return true
 	}
@@ -178,11 +178,11 @@ func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) HasIndex() bool {
 }
 
 // SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *PortaclsPutRequestPortAclValueIpv4PermitInner) SetIndex(v int32) {
+func (o *PacketbrokerPutRequestPortAclValueIpv6PermitInner) SetIndex(v int32) {
 	o.Index = &v
 }
 
-func (o PortaclsPutRequestPortAclValueIpv4PermitInner) MarshalJSON() ([]byte, error) {
+func (o PacketbrokerPutRequestPortAclValueIpv6PermitInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -190,7 +190,7 @@ func (o PortaclsPutRequestPortAclValueIpv4PermitInner) MarshalJSON() ([]byte, er
 	return json.Marshal(toSerialize)
 }
 
-func (o PortaclsPutRequestPortAclValueIpv4PermitInner) ToMap() (map[string]interface{}, error) {
+func (o PacketbrokerPutRequestPortAclValueIpv6PermitInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
@@ -207,38 +207,38 @@ func (o PortaclsPutRequestPortAclValueIpv4PermitInner) ToMap() (map[string]inter
 	return toSerialize, nil
 }
 
-type NullablePortaclsPutRequestPortAclValueIpv4PermitInner struct {
-	value *PortaclsPutRequestPortAclValueIpv4PermitInner
+type NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner struct {
+	value *PacketbrokerPutRequestPortAclValueIpv6PermitInner
 	isSet bool
 }
 
-func (v NullablePortaclsPutRequestPortAclValueIpv4PermitInner) Get() *PortaclsPutRequestPortAclValueIpv4PermitInner {
+func (v NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner) Get() *PacketbrokerPutRequestPortAclValueIpv6PermitInner {
 	return v.value
 }
 
-func (v *NullablePortaclsPutRequestPortAclValueIpv4PermitInner) Set(val *PortaclsPutRequestPortAclValueIpv4PermitInner) {
+func (v *NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner) Set(val *PacketbrokerPutRequestPortAclValueIpv6PermitInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullablePortaclsPutRequestPortAclValueIpv4PermitInner) IsSet() bool {
+func (v NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullablePortaclsPutRequestPortAclValueIpv4PermitInner) Unset() {
+func (v *NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullablePortaclsPutRequestPortAclValueIpv4PermitInner(val *PortaclsPutRequestPortAclValueIpv4PermitInner) *NullablePortaclsPutRequestPortAclValueIpv4PermitInner {
-	return &NullablePortaclsPutRequestPortAclValueIpv4PermitInner{value: val, isSet: true}
+func NewNullablePacketbrokerPutRequestPortAclValueIpv6PermitInner(val *PacketbrokerPutRequestPortAclValueIpv6PermitInner) *NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner {
+	return &NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner{value: val, isSet: true}
 }
 
-func (v NullablePortaclsPutRequestPortAclValueIpv4PermitInner) MarshalJSON() ([]byte, error) {
+func (v NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullablePortaclsPutRequestPortAclValueIpv4PermitInner) UnmarshalJSON(src []byte) error {
+func (v *NullablePacketbrokerPutRequestPortAclValueIpv6PermitInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
