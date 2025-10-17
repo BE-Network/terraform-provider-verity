@@ -74,6 +74,7 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_diagnostics_profile":      ResourceModeBoth,
 	"verity_diagnostics_port_profile": ResourceModeBoth,
 	"verity_pb_routing":               ResourceModeBoth,
+	"verity_pb_routing_acl":           ResourceModeBoth,
 }
 
 var ResourceVersionCompatibility = map[string]ApiVersionSupport{
@@ -114,6 +115,7 @@ var ResourceVersionCompatibility = map[string]ApiVersionSupport{
 	"verity_diagnostics_profile":      {Major: 6, Minor: 5},
 	"verity_diagnostics_port_profile": {Major: 6, Minor: 5},
 	"verity_pb_routing":               {Major: 6, Minor: 5},
+	"verity_pb_routing_acl":           {Major: 6, Minor: 5},
 	"verity_spine_plane":              {Major: 6, Minor: 5},
 }
 

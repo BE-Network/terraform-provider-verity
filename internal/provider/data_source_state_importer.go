@@ -219,6 +219,7 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 		"verity_route_map_clause",
 		"verity_route_map",
 		"verity_pb_routing",
+		"verity_pb_routing_acl",
 		"verity_spine_plane",
 		"verity_sfp_breakout",
 	}

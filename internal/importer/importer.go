@@ -154,6 +154,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "sflowcollectors", terraformResourceType: "verity_sflow_collector", importer: i.importSflowCollectors, tfGenerator: i.generateSflowCollectorsTF},
 		{name: "diagnosticsprofiles", terraformResourceType: "verity_diagnostics_profile", importer: i.importDiagnosticsProfiles, tfGenerator: i.generateDiagnosticsProfilesTF},
 		{name: "diagnosticsportprofiles", terraformResourceType: "verity_diagnostics_port_profile", importer: i.importDiagnosticsPortProfiles, tfGenerator: i.generateDiagnosticsPortProfilesTF},
+		{name: "policybasedroutingacl", terraformResourceType: "verity_pb_routing_acl", importer: i.importPBRoutingACL, tfGenerator: i.generatePBRoutingACLTF},
 		{name: "policybasedrouting", terraformResourceType: "verity_pb_routing", importer: i.importPBRouting, tfGenerator: i.generatePBRoutingTF},
 		{name: "services", terraformResourceType: "verity_service", importer: i.importServices, tfGenerator: i.generateServicesTF},
 		{name: "ethportsettings", terraformResourceType: "verity_eth_port_settings", importer: i.importEthPortSettings, tfGenerator: i.generateEthPortSettingsTF},
@@ -903,6 +904,18 @@ func (i *Importer) generateSpinePlanesTF(data interface{}) (string, error) {
 	return i.generateResourceTF(data, cfg)
 }
 
+func (i *Importer) generatePBRoutingACLTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "pb_routing_acl",
+		StageName:                 "pb_routing_acl_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
 func (i *Importer) generatePBRoutingTF(data interface{}) (string, error) {
 	cfg := ResourceConfig{
 		ResourceType:              "pb_routing",
@@ -981,13 +994,14 @@ func (i *Importer) generateStagesTF() (string, error) {
 
 	if i.Mode == "campus" {
 		// CAMPUS mode staging order:
-		// 1. PB Routing, 2. Services, 3. Eth Port Profiles, 4. Authenticated Eth-Ports, 5. Device Voice Settings,
-		// 6. Packet Queues, 7. Service Port Profiles, 8. Voice-Port Profiles, 9. Eth Port Settings,
-		// 10. Device Settings, 11. Lags, 12. sflowcollectors, 13. diagnostics profiles,
-		// 14. diagnostics port profiles, 15. Bundles, 16. ACLs, 17. IPv4 Lists, 18. IPv6 Lists,
-		// 19. portacls, 20. Badges, 21. Switchpoints, 22. Device controllers, 23. sites
+		// 1. PB Routing ACL, 2. PB Routing, 3. Services, 4. Eth Port Profiles, 5. Authenticated Eth-Ports, 6. Device Voice Settings,
+		// 7. Packet Queues, 8. Service Port Profiles, 9. Voice-Port Profiles, 10. Eth Port Settings,
+		// 11. Device Settings, 12. Lags, 13. sflowcollectors, 14. diagnostics profiles,
+		// 15. diagnostics port profiles, 16. Bundles, 17. ACLs, 18. IPv4 Lists, 19. IPv6 Lists,
+		// 20. portacls, 21. Badges, 22. Switchpoints, 23. Device controllers, 24. sites
 		stageOrder = []StageDefinition{
-			{"pb_routing_stage", "verity_pb_routing", ""},
+			{"pb_routing_acl_stage", "verity_pb_routing_acl", ""},
+			{"pb_routing_stage", "verity_pb_routing", "pb_routing_acl_stage"},
 			{"service_stage", "verity_service", "pb_routing_stage"},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "service_stage"},
 			{"authenticated_eth_port_stage", "verity_authenticated_eth_port", "eth_port_profile_stage"},
@@ -1014,18 +1028,19 @@ func (i *Importer) generateStagesTF() (string, error) {
 		}
 	} else {
 		// DATACENTER mode staging order:
-		// 1. Tenants, 2. Gateways, 3. Gateway Profiles, 4. PB Routing, 5. Services, 6. Packet Queues,
-		// 7. Eth Port Profiles, 8. Eth Port Settings, 9. Device Settings, 10. Lags,
-		// 11. SFlow Collectors, 12. Diagnostics Profile, 13. Diagnostics Port Profile, 14. Bundles,
-		// 15. ACLs, 16. IPv4 Prefix Lists, 17. IPv6 Prefix Lists, 18. IPv4 Lists, 19. IPv6 Lists,
-		// 20. PacketBroker, 21. portacls, 22. Badges, 23. Pods, 24. Spine Planes, 25. Switchpoints, 26. Device controllers,
-		// 27. AS Path Access Lists, 28. Community Lists, 29. Extended Community Lists,
-		// 30. Route Map Clauses, 31. Route Maps, 32. SFP Breakouts, 33. Sites
+		// 1. Tenants, 2. Gateways, 3. Gateway Profiles, 4. PB Routing ACL, 5. PB Routing, 6. Services, 7. Packet Queues,
+		// 8. Eth Port Profiles, 9. Eth Port Settings, 10. Device Settings, 11. Lags,
+		// 12. SFlow Collectors, 13. Diagnostics Profile, 14. Diagnostics Port Profile, 15. Bundles,
+		// 16. ACLs, 17. IPv4 Prefix Lists, 18. IPv6 Prefix Lists, 19. IPv4 Lists, 20. IPv6 Lists,
+		// 21. PacketBroker, 22. portacls, 23. Badges, 24. Pods, 25. Spine Planes, 26. Switchpoints, 27. Device controllers,
+		// 28. AS Path Access Lists, 29. Community Lists, 30. Extended Community Lists,
+		// 31. Route Map Clauses, 32. Route Maps, 33. SFP Breakouts, 34. Sites
 		stageOrder = []StageDefinition{
 			{"tenant_stage", "verity_tenant", ""},
 			{"gateway_stage", "verity_gateway", "tenant_stage"},
 			{"gateway_profile_stage", "verity_gateway_profile", "gateway_stage"},
-			{"pb_routing_stage", "verity_pb_routing", "gateway_profile_stage"},
+			{"pb_routing_acl_stage", "verity_pb_routing_acl", "gateway_profile_stage"},
+			{"pb_routing_stage", "verity_pb_routing", "pb_routing_acl_stage"},
 			{"service_stage", "verity_service", "pb_routing_stage"},
 			{"packet_queue_stage", "verity_packet_queue", "service_stage"},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "packet_queue_stage"},
@@ -1726,6 +1741,23 @@ func (i *Importer) importSpinePlanes() (interface{}, error) {
 	}
 
 	return result.SpinePlane, nil
+}
+
+func (i *Importer) importPBRoutingACL() (interface{}, error) {
+	resp, err := i.client.PBRoutingACLAPI.PolicybasedroutingaclGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get policy-based routing ACLs: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		PbRoutingAcl map[string]map[string]interface{} `json:"pb_routing_acl"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode policy-based routing ACLs response: %v", err)
+	}
+
+	return result.PbRoutingAcl, nil
 }
 
 func (i *Importer) importPBRouting() (interface{}, error) {
