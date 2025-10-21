@@ -1,0 +1,8 @@
+# Install with: pip install -r requirements.txt
+# Both packages are REQUIRED to run the test script
+
+# Required for running tests
+pytest>=7.0.0
+
+# Required for parsing and merging HCL files
+python-hcl2>=4.3.0
