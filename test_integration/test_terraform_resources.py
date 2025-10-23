@@ -116,6 +116,15 @@ class TerraformTestRunner:
             print(f"    stderr: {stderr}")
             return False
         print(f"  ✓ terraform apply successful")
+        
+        tfplan_path = Path(cwd) / "tfplan"
+        if tfplan_path.exists():
+            try:
+                tfplan_path.unlink()
+                print(f"  ✓ Cleaned up tfplan file")
+            except Exception as e:
+                print(f"  ⚠ Warning: Failed to remove tfplan file: {e}")
+        
         return True
 
     def terraform_show(self, cwd: str) -> Optional[Dict]:
