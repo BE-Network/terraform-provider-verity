@@ -114,7 +114,7 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 		{FieldName: "EnableSflow", TFValue: plan.EnableSflow, APIField: &diagnosticsPortProfileProps.EnableSflow},
 	})
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_port_profile", name, diagnosticsPortProfileProps, &resp.Diagnostics)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_port_profile", name, *diagnosticsPortProfileProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
