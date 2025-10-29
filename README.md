@@ -167,46 +167,24 @@ provider "verity" {
 
 To regenerate the OpenAPI SDK for Go:
 
-1. Get the latest Swagger JSON file(s)
-2. **Remove unnecessary endpoints**: Before processing the Swagger file, use the `remove_endpoints.py` script to remove API endpoints that are not needed for the Terraform provider. This script removes endpoints like `/config`, `/changesets`, `/readmode`, `/request`, `/snmp`, `/syslog`, `/backups`, and `/timetraveler` which are not relevant for Terraform resource management:
-   ```bash
-   python3 tools/remove_endpoints.py swagger.json
-   ```
-   This will create a backup of your original file (as `swagger.json.backup`) and modify the original file to exclude the unnecessary endpoints.
+1. Get the latest Swagger JSON files from CAMPUS and DATACENTER systems.
+2. Use `tools/process_swagger.py` script to remove unnecessary endpoints, merge both swagger files, and transform the result into a file ready for the Go SDK generator.
 
-3. If you have multiple Swagger JSON files that need to be combined (e.g., from different API versions), use the `merge_swagger.py` script to merge them:
-   ```bash
-   python3 tools/merge_swagger.py <file1> [<file2> ...] --output swagger_merged.json
-   ```
-   This will combine multiple Swagger specifications into a unified file, merging paths, components, and other sections. For example:
-   ```bash
-   python3 tools/merge_swagger.py swagger_65_dc.json swagger_65_campus.json --output swagger_merged.json
-   ```
-   **Note**: If you used the merge script, make sure to also run the `remove_endpoints.py` script on the merged file:
-   ```bash
-   python3 tools/remove_endpoints.py swagger_merged.json
-   ```
+    ```bash
+    python3 tools/process_swagger.py datacenter.json campus.json --output swagger_transformed.json
+    ```
 
-4. Transform the Swagger file to be compatible with the Go SDK generator:
-   ```bash
-   python3 tools/transform_swagger.py swagger.json
-   ```
-   Or if you used the merge script:
-   ```bash
-   python3 tools/transform_swagger.py swagger_merged.json
-   ```
+3. Install the OpenAPI Generator CLI (if not already installed):
+  ```bash
+  npm install @openapitools/openapi-generator-cli -g
+  ```
 
-5. Install the OpenAPI Generator CLI (if not already installed):
-   ```bash
-   npm install @openapitools/openapi-generator-cli -g
-   ```
+4. Remove "openapi" folder completely from the project.
 
-6. Generate the Go SDK using openapi-generator-cli:
-   ```bash
-   openapi-generator-cli generate -i swagger_transformed.json -g go -o ./openapi
-   ```
-
-7. Replace the existing openapi folder with the newly generated one
+5. Generate the Go SDK using openapi-generator-cli:
+  ```bash
+  openapi-generator-cli generate -i swagger_transformed.json -g go -o ./openapi
+  ```
 
 
 ### Updating Provider Resource Files
