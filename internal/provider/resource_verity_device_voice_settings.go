@@ -498,11 +498,6 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		{FieldName: "FaxT38", APIField: &dvsProps.FaxT38, TFValue: plan.FaxT38},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
-		{FieldName: "CasEvents", APIField: &dvsProps.CasEvents, TFValue: plan.CasEvents},
-	})
-
 	// Handle nullable int64 fields
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "ProxyServerPort", APIField: &dvsProps.ProxyServerPort, TFValue: plan.ProxyServerPort},
@@ -523,6 +518,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		{FieldName: "LocalPortMin", APIField: &dvsProps.LocalPortMin, TFValue: plan.LocalPortMin},
 		{FieldName: "LocalPortMax", APIField: &dvsProps.LocalPortMax, TFValue: plan.LocalPortMax},
 		{FieldName: "EventPayloadType", APIField: &dvsProps.EventPayloadType, TFValue: plan.EventPayloadType},
+		{FieldName: "CasEvents", APIField: &dvsProps.CasEvents, TFValue: plan.CasEvents},
 		{FieldName: "DscpMark", APIField: &dvsProps.DscpMark, TFValue: plan.DscpMark},
 	})
 
@@ -873,10 +869,8 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	utils.CompareAndSetNullableInt64Field(plan.LocalPortMin, state.LocalPortMin, func(v *openapi.NullableInt32) { dvsProps.LocalPortMin = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.LocalPortMax, state.LocalPortMax, func(v *openapi.NullableInt32) { dvsProps.LocalPortMax = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.EventPayloadType, state.EventPayloadType, func(v *openapi.NullableInt32) { dvsProps.EventPayloadType = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.CasEvents, state.CasEvents, func(v *openapi.NullableInt32) { dvsProps.CasEvents = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.DscpMark, state.DscpMark, func(v *openapi.NullableInt32) { dvsProps.DscpMark = *v }, &hasChanges)
-
-	// Handle non-nullable int64 field
-	utils.CompareAndSetInt64Field(plan.CasEvents, state.CasEvents, func(v *int32) { dvsProps.CasEvents = v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {

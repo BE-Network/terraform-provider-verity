@@ -16,16 +16,16 @@ Name | Type | Description | Notes
 **DscpToPBitMap** | Pointer to **string** | For any Service that is using DSCP to p-bit map packet prioritization. A string of length 64 with a 0-7 in each position | [optional] [default to "0000000011111111222222223333333344444444555555556666666677777777"]
 **AnycastMacAddress** | Pointer to **string** | Site Level MAC Address for Anycast | [optional] [default to "(auto)"]
 **AnycastMacAddressAutoAssigned** | Pointer to **bool** | Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit. | [optional] 
-**MacAddressAgingTime** | Pointer to **int32** | MAC Address Aging Time (between 1-100000) | [optional] [default to 600]
-**MlagDelayRestoreTimer** | Pointer to **int32** | MLAG Delay Restore Timer | [optional] [default to 300]
-**BgpKeepaliveTimer** | Pointer to **int32** | Spine BGP Keepalive Timer | [optional] [default to 60]
-**BgpHoldDownTimer** | Pointer to **int32** | Spine BGP Hold Down Timer | [optional] [default to 180]
-**SpineBgpAdvertisementInterval** | Pointer to **int32** | BGP Advertisement Interval for spines/superspines. Use \&quot;0\&quot; for immediate updates | [optional] [default to 1]
-**SpineBgpConnectTimer** | Pointer to **int32** | BGP Connect Timer | [optional] [default to 120]
-**LeafBgpKeepAliveTimer** | Pointer to **int32** | Leaf BGP Keep Alive Timer | [optional] [default to 60]
-**LeafBgpHoldDownTimer** | Pointer to **int32** | Leaf BGP Hold Down Timer | [optional] [default to 180]
-**LeafBgpAdvertisementInterval** | Pointer to **int32** | BGP Advertisement Interval for leafs. Use \&quot;0\&quot; for immediate updates | [optional] [default to 1]
-**LeafBgpConnectTimer** | Pointer to **int32** | BGP Connect Timer | [optional] [default to 120]
+**MacAddressAgingTime** | Pointer to **NullableInt32** | MAC Address Aging Time (between 1-100000) | [optional] [default to 600]
+**MlagDelayRestoreTimer** | Pointer to **NullableInt32** | MLAG Delay Restore Timer | [optional] [default to 300]
+**BgpKeepaliveTimer** | Pointer to **NullableInt32** | Spine BGP Keepalive Timer | [optional] [default to 60]
+**BgpHoldDownTimer** | Pointer to **NullableInt32** | Spine BGP Hold Down Timer | [optional] [default to 180]
+**SpineBgpAdvertisementInterval** | Pointer to **NullableInt32** | BGP Advertisement Interval for spines/superspines. Use \&quot;0\&quot; for immediate updates | [optional] [default to 1]
+**SpineBgpConnectTimer** | Pointer to **NullableInt32** | BGP Connect Timer | [optional] [default to 120]
+**LeafBgpKeepAliveTimer** | Pointer to **NullableInt32** | Leaf BGP Keep Alive Timer | [optional] [default to 60]
+**LeafBgpHoldDownTimer** | Pointer to **NullableInt32** | Leaf BGP Hold Down Timer | [optional] [default to 180]
+**LeafBgpAdvertisementInterval** | Pointer to **NullableInt32** | BGP Advertisement Interval for leafs. Use \&quot;0\&quot; for immediate updates | [optional] [default to 1]
+**LeafBgpConnectTimer** | Pointer to **NullableInt32** | BGP Connect Timer | [optional] [default to 120]
 **LinkStateTimeoutValue** | Pointer to **NullableInt32** | Link State Timeout Value | [optional] [default to 60]
 **EvpnMultihomingStartupDelay** | Pointer to **NullableInt32** | Startup Delay | [optional] [default to 300]
 **EvpnMacHoldtime** | Pointer to **NullableInt32** | MAC Holdtime | [optional] [default to 1080]
@@ -34,6 +34,8 @@ Name | Type | Description | Notes
 **Islands** | Pointer to [**[]SitesPatchRequestSiteValueIslandsInner**](SitesPatchRequestSiteValueIslandsInner.md) |  | [optional] 
 **Pairs** | Pointer to [**[]SitesPatchRequestSiteValuePairsInner**](SitesPatchRequestSiteValuePairsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SitesPatchRequestSiteValueObjectProperties**](SitesPatchRequestSiteValueObjectProperties.md) |  | [optional] 
+**DuplicateAddressDetectionMaxNumberOfMoves** | Pointer to **NullableInt32** | Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank) | [optional] [default to 5]
+**DuplicateAddressDetectionTime** | Pointer to **NullableInt32** | Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank) | [optional] [default to 180]
 **EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
 **IpSourceGuard** | Pointer to **bool** | On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings | [optional] [default to false]
 
@@ -391,6 +393,16 @@ SetMacAddressAgingTime sets MacAddressAgingTime field to given value.
 
 HasMacAddressAgingTime returns a boolean if a field has been set.
 
+### SetMacAddressAgingTimeNil
+
+`func (o *SitesPatchRequestSiteValue) SetMacAddressAgingTimeNil(b bool)`
+
+ SetMacAddressAgingTimeNil sets the value for MacAddressAgingTime to be an explicit nil
+
+### UnsetMacAddressAgingTime
+`func (o *SitesPatchRequestSiteValue) UnsetMacAddressAgingTime()`
+
+UnsetMacAddressAgingTime ensures that no value is present for MacAddressAgingTime, not even an explicit nil
 ### GetMlagDelayRestoreTimer
 
 `func (o *SitesPatchRequestSiteValue) GetMlagDelayRestoreTimer() int32`
@@ -416,6 +428,16 @@ SetMlagDelayRestoreTimer sets MlagDelayRestoreTimer field to given value.
 
 HasMlagDelayRestoreTimer returns a boolean if a field has been set.
 
+### SetMlagDelayRestoreTimerNil
+
+`func (o *SitesPatchRequestSiteValue) SetMlagDelayRestoreTimerNil(b bool)`
+
+ SetMlagDelayRestoreTimerNil sets the value for MlagDelayRestoreTimer to be an explicit nil
+
+### UnsetMlagDelayRestoreTimer
+`func (o *SitesPatchRequestSiteValue) UnsetMlagDelayRestoreTimer()`
+
+UnsetMlagDelayRestoreTimer ensures that no value is present for MlagDelayRestoreTimer, not even an explicit nil
 ### GetBgpKeepaliveTimer
 
 `func (o *SitesPatchRequestSiteValue) GetBgpKeepaliveTimer() int32`
@@ -441,6 +463,16 @@ SetBgpKeepaliveTimer sets BgpKeepaliveTimer field to given value.
 
 HasBgpKeepaliveTimer returns a boolean if a field has been set.
 
+### SetBgpKeepaliveTimerNil
+
+`func (o *SitesPatchRequestSiteValue) SetBgpKeepaliveTimerNil(b bool)`
+
+ SetBgpKeepaliveTimerNil sets the value for BgpKeepaliveTimer to be an explicit nil
+
+### UnsetBgpKeepaliveTimer
+`func (o *SitesPatchRequestSiteValue) UnsetBgpKeepaliveTimer()`
+
+UnsetBgpKeepaliveTimer ensures that no value is present for BgpKeepaliveTimer, not even an explicit nil
 ### GetBgpHoldDownTimer
 
 `func (o *SitesPatchRequestSiteValue) GetBgpHoldDownTimer() int32`
@@ -466,6 +498,16 @@ SetBgpHoldDownTimer sets BgpHoldDownTimer field to given value.
 
 HasBgpHoldDownTimer returns a boolean if a field has been set.
 
+### SetBgpHoldDownTimerNil
+
+`func (o *SitesPatchRequestSiteValue) SetBgpHoldDownTimerNil(b bool)`
+
+ SetBgpHoldDownTimerNil sets the value for BgpHoldDownTimer to be an explicit nil
+
+### UnsetBgpHoldDownTimer
+`func (o *SitesPatchRequestSiteValue) UnsetBgpHoldDownTimer()`
+
+UnsetBgpHoldDownTimer ensures that no value is present for BgpHoldDownTimer, not even an explicit nil
 ### GetSpineBgpAdvertisementInterval
 
 `func (o *SitesPatchRequestSiteValue) GetSpineBgpAdvertisementInterval() int32`
@@ -491,6 +533,16 @@ SetSpineBgpAdvertisementInterval sets SpineBgpAdvertisementInterval field to giv
 
 HasSpineBgpAdvertisementInterval returns a boolean if a field has been set.
 
+### SetSpineBgpAdvertisementIntervalNil
+
+`func (o *SitesPatchRequestSiteValue) SetSpineBgpAdvertisementIntervalNil(b bool)`
+
+ SetSpineBgpAdvertisementIntervalNil sets the value for SpineBgpAdvertisementInterval to be an explicit nil
+
+### UnsetSpineBgpAdvertisementInterval
+`func (o *SitesPatchRequestSiteValue) UnsetSpineBgpAdvertisementInterval()`
+
+UnsetSpineBgpAdvertisementInterval ensures that no value is present for SpineBgpAdvertisementInterval, not even an explicit nil
 ### GetSpineBgpConnectTimer
 
 `func (o *SitesPatchRequestSiteValue) GetSpineBgpConnectTimer() int32`
@@ -516,6 +568,16 @@ SetSpineBgpConnectTimer sets SpineBgpConnectTimer field to given value.
 
 HasSpineBgpConnectTimer returns a boolean if a field has been set.
 
+### SetSpineBgpConnectTimerNil
+
+`func (o *SitesPatchRequestSiteValue) SetSpineBgpConnectTimerNil(b bool)`
+
+ SetSpineBgpConnectTimerNil sets the value for SpineBgpConnectTimer to be an explicit nil
+
+### UnsetSpineBgpConnectTimer
+`func (o *SitesPatchRequestSiteValue) UnsetSpineBgpConnectTimer()`
+
+UnsetSpineBgpConnectTimer ensures that no value is present for SpineBgpConnectTimer, not even an explicit nil
 ### GetLeafBgpKeepAliveTimer
 
 `func (o *SitesPatchRequestSiteValue) GetLeafBgpKeepAliveTimer() int32`
@@ -541,6 +603,16 @@ SetLeafBgpKeepAliveTimer sets LeafBgpKeepAliveTimer field to given value.
 
 HasLeafBgpKeepAliveTimer returns a boolean if a field has been set.
 
+### SetLeafBgpKeepAliveTimerNil
+
+`func (o *SitesPatchRequestSiteValue) SetLeafBgpKeepAliveTimerNil(b bool)`
+
+ SetLeafBgpKeepAliveTimerNil sets the value for LeafBgpKeepAliveTimer to be an explicit nil
+
+### UnsetLeafBgpKeepAliveTimer
+`func (o *SitesPatchRequestSiteValue) UnsetLeafBgpKeepAliveTimer()`
+
+UnsetLeafBgpKeepAliveTimer ensures that no value is present for LeafBgpKeepAliveTimer, not even an explicit nil
 ### GetLeafBgpHoldDownTimer
 
 `func (o *SitesPatchRequestSiteValue) GetLeafBgpHoldDownTimer() int32`
@@ -566,6 +638,16 @@ SetLeafBgpHoldDownTimer sets LeafBgpHoldDownTimer field to given value.
 
 HasLeafBgpHoldDownTimer returns a boolean if a field has been set.
 
+### SetLeafBgpHoldDownTimerNil
+
+`func (o *SitesPatchRequestSiteValue) SetLeafBgpHoldDownTimerNil(b bool)`
+
+ SetLeafBgpHoldDownTimerNil sets the value for LeafBgpHoldDownTimer to be an explicit nil
+
+### UnsetLeafBgpHoldDownTimer
+`func (o *SitesPatchRequestSiteValue) UnsetLeafBgpHoldDownTimer()`
+
+UnsetLeafBgpHoldDownTimer ensures that no value is present for LeafBgpHoldDownTimer, not even an explicit nil
 ### GetLeafBgpAdvertisementInterval
 
 `func (o *SitesPatchRequestSiteValue) GetLeafBgpAdvertisementInterval() int32`
@@ -591,6 +673,16 @@ SetLeafBgpAdvertisementInterval sets LeafBgpAdvertisementInterval field to given
 
 HasLeafBgpAdvertisementInterval returns a boolean if a field has been set.
 
+### SetLeafBgpAdvertisementIntervalNil
+
+`func (o *SitesPatchRequestSiteValue) SetLeafBgpAdvertisementIntervalNil(b bool)`
+
+ SetLeafBgpAdvertisementIntervalNil sets the value for LeafBgpAdvertisementInterval to be an explicit nil
+
+### UnsetLeafBgpAdvertisementInterval
+`func (o *SitesPatchRequestSiteValue) UnsetLeafBgpAdvertisementInterval()`
+
+UnsetLeafBgpAdvertisementInterval ensures that no value is present for LeafBgpAdvertisementInterval, not even an explicit nil
 ### GetLeafBgpConnectTimer
 
 `func (o *SitesPatchRequestSiteValue) GetLeafBgpConnectTimer() int32`
@@ -616,6 +708,16 @@ SetLeafBgpConnectTimer sets LeafBgpConnectTimer field to given value.
 
 HasLeafBgpConnectTimer returns a boolean if a field has been set.
 
+### SetLeafBgpConnectTimerNil
+
+`func (o *SitesPatchRequestSiteValue) SetLeafBgpConnectTimerNil(b bool)`
+
+ SetLeafBgpConnectTimerNil sets the value for LeafBgpConnectTimer to be an explicit nil
+
+### UnsetLeafBgpConnectTimer
+`func (o *SitesPatchRequestSiteValue) UnsetLeafBgpConnectTimer()`
+
+UnsetLeafBgpConnectTimer ensures that no value is present for LeafBgpConnectTimer, not even an explicit nil
 ### GetLinkStateTimeoutValue
 
 `func (o *SitesPatchRequestSiteValue) GetLinkStateTimeoutValue() int32`
@@ -856,6 +958,76 @@ SetObjectProperties sets ObjectProperties field to given value.
 
 HasObjectProperties returns a boolean if a field has been set.
 
+### GetDuplicateAddressDetectionMaxNumberOfMoves
+
+`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int32`
+
+GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field if non-nil, zero value otherwise.
+
+### GetDuplicateAddressDetectionMaxNumberOfMovesOk
+
+`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int32, bool)`
+
+GetDuplicateAddressDetectionMaxNumberOfMovesOk returns a tuple with the DuplicateAddressDetectionMaxNumberOfMoves field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDuplicateAddressDetectionMaxNumberOfMoves
+
+`func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int32)`
+
+SetDuplicateAddressDetectionMaxNumberOfMoves sets DuplicateAddressDetectionMaxNumberOfMoves field to given value.
+
+### HasDuplicateAddressDetectionMaxNumberOfMoves
+
+`func (o *SitesPatchRequestSiteValue) HasDuplicateAddressDetectionMaxNumberOfMoves() bool`
+
+HasDuplicateAddressDetectionMaxNumberOfMoves returns a boolean if a field has been set.
+
+### SetDuplicateAddressDetectionMaxNumberOfMovesNil
+
+`func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionMaxNumberOfMovesNil(b bool)`
+
+ SetDuplicateAddressDetectionMaxNumberOfMovesNil sets the value for DuplicateAddressDetectionMaxNumberOfMoves to be an explicit nil
+
+### UnsetDuplicateAddressDetectionMaxNumberOfMoves
+`func (o *SitesPatchRequestSiteValue) UnsetDuplicateAddressDetectionMaxNumberOfMoves()`
+
+UnsetDuplicateAddressDetectionMaxNumberOfMoves ensures that no value is present for DuplicateAddressDetectionMaxNumberOfMoves, not even an explicit nil
+### GetDuplicateAddressDetectionTime
+
+`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionTime() int32`
+
+GetDuplicateAddressDetectionTime returns the DuplicateAddressDetectionTime field if non-nil, zero value otherwise.
+
+### GetDuplicateAddressDetectionTimeOk
+
+`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionTimeOk() (*int32, bool)`
+
+GetDuplicateAddressDetectionTimeOk returns a tuple with the DuplicateAddressDetectionTime field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDuplicateAddressDetectionTime
+
+`func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionTime(v int32)`
+
+SetDuplicateAddressDetectionTime sets DuplicateAddressDetectionTime field to given value.
+
+### HasDuplicateAddressDetectionTime
+
+`func (o *SitesPatchRequestSiteValue) HasDuplicateAddressDetectionTime() bool`
+
+HasDuplicateAddressDetectionTime returns a boolean if a field has been set.
+
+### SetDuplicateAddressDetectionTimeNil
+
+`func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionTimeNil(b bool)`
+
+ SetDuplicateAddressDetectionTimeNil sets the value for DuplicateAddressDetectionTime to be an explicit nil
+
+### UnsetDuplicateAddressDetectionTime
+`func (o *SitesPatchRequestSiteValue) UnsetDuplicateAddressDetectionTime()`
+
+UnsetDuplicateAddressDetectionTime ensures that no value is present for DuplicateAddressDetectionTime, not even an explicit nil
 ### GetEnableDhcpSnooping
 
 `func (o *SitesPatchRequestSiteValue) GetEnableDhcpSnooping() bool`

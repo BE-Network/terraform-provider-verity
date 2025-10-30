@@ -416,8 +416,8 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		{FieldName: "LldpMedEnable", APIField: &ethPortSettingsProps.LldpMedEnable, TFValue: plan.LldpMedEnable},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "MaxAllowedValue", APIField: &ethPortSettingsProps.MaxAllowedValue, TFValue: plan.MaxAllowedValue},
 		{FieldName: "MinimumWredThreshold", APIField: &ethPortSettingsProps.MinimumWredThreshold, TFValue: plan.MinimumWredThreshold},
 		{FieldName: "MaximumWredThreshold", APIField: &ethPortSettingsProps.MaximumWredThreshold, TFValue: plan.MaximumWredThreshold},
@@ -454,9 +454,11 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 				{FieldName: "LldpMedRowNumService", APIField: &lldpMedItem.LldpMedRowNumService, TFValue: item.LldpMedRowNumService},
 				{FieldName: "LldpMedRowNumServiceRefType", APIField: &lldpMedItem.LldpMedRowNumServiceRefType, TFValue: item.LldpMedRowNumServiceRefType},
 			})
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: item.LldpMedRowNumDscpMark},
 				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: item.LldpMedRowNumPriority},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
 			})
 
@@ -739,15 +741,15 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetBoolField(plan.LldpEnable, state.LldpEnable, func(v *bool) { ethPortSettingsProps.LldpEnable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.LldpMedEnable, state.LldpMedEnable, func(v *bool) { ethPortSettingsProps.LldpMedEnable = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.MaxAllowedValue, state.MaxAllowedValue, func(v *int32) { ethPortSettingsProps.MaxAllowedValue = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.MinimumWredThreshold, state.MinimumWredThreshold, func(v *int32) { ethPortSettingsProps.MinimumWredThreshold = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.MaximumWredThreshold, state.MaximumWredThreshold, func(v *int32) { ethPortSettingsProps.MaximumWredThreshold = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.WredDropProbability, state.WredDropProbability, func(v *int32) { ethPortSettingsProps.WredDropProbability = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, func(v *int32) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, func(v *int32) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.MacLimit, state.MacLimit, func(v *int32) { ethPortSettingsProps.MacLimit = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.AgingTime, state.AgingTime, func(v *int32) { ethPortSettingsProps.AgingTime = v }, &hasChanges)
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.MaxAllowedValue, state.MaxAllowedValue, func(v *openapi.NullableInt32) { ethPortSettingsProps.MaxAllowedValue = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MinimumWredThreshold, state.MinimumWredThreshold, func(v *openapi.NullableInt32) { ethPortSettingsProps.MinimumWredThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MaximumWredThreshold, state.MaximumWredThreshold, func(v *openapi.NullableInt32) { ethPortSettingsProps.MaximumWredThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.WredDropProbability, state.WredDropProbability, func(v *openapi.NullableInt32) { ethPortSettingsProps.WredDropProbability = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MacLimit, state.MacLimit, func(v *openapi.NullableInt32) { ethPortSettingsProps.MacLimit = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.AgingTime, state.AgingTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.AgingTime = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
@@ -783,6 +785,9 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
+			})
+
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: item.LldpMedRowNumDscpMark},
 				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: item.LldpMedRowNumPriority},
 			})
@@ -814,9 +819,9 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 			// Handle string fields (non-ref-type)
 			utils.CompareAndSetStringField(planItem.LldpMedRowNumAdvertisedApplication, stateItem.LldpMedRowNumAdvertisedApplication, func(v *string) { lldpMedItem.LldpMedRowNumAdvertisedApplicatio = v }, &hasChanges)
 
-			// Handle int64 fields
-			utils.CompareAndSetInt64Field(planItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, func(v *int32) { lldpMedItem.LldpMedRowNumDscpMark = v }, &hasChanges)
-			utils.CompareAndSetInt64Field(planItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, func(v *int32) { lldpMedItem.LldpMedRowNumPriority = v }, &hasChanges)
+			// Handle nullable int64 fields
+			utils.CompareAndSetNullableInt64Field(planItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumDscpMark = *v }, &hasChanges)
+			utils.CompareAndSetNullableInt64Field(planItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumPriority = *v }, &hasChanges) // Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
 
 			// Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(

@@ -208,8 +208,8 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		{FieldName: "TrustedPort", APIField: &aepProps.TrustedPort, TFValue: plan.TrustedPort},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "ReauthorizationPeriodSec", APIField: &aepProps.ReauthorizationPeriodSec, TFValue: plan.ReauthorizationPeriodSec},
 		{FieldName: "MacAuthenticationHoldoffSec", APIField: &aepProps.MacAuthenticationHoldoffSec, TFValue: plan.MacAuthenticationHoldoffSec},
 	})
@@ -461,9 +461,9 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	utils.CompareAndSetBoolField(plan.AllowMacBasedAuthentication, state.AllowMacBasedAuthentication, func(v *bool) { aepProps.AllowMacBasedAuthentication = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { aepProps.TrustedPort = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.ReauthorizationPeriodSec, state.ReauthorizationPeriodSec, func(v *int32) { aepProps.ReauthorizationPeriodSec = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, func(v *int32) { aepProps.MacAuthenticationHoldoffSec = v }, &hasChanges)
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.ReauthorizationPeriodSec, state.ReauthorizationPeriodSec, func(v *openapi.NullableInt32) { aepProps.ReauthorizationPeriodSec = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, func(v *openapi.NullableInt32) { aepProps.MacAuthenticationHoldoffSec = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {

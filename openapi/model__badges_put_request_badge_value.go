@@ -26,7 +26,7 @@ type BadgesPutRequestBadgeValue struct {
 	// Color of Badge
 	Color *string `json:"color,omitempty"`
 	// Number of Badge
-	Number *int32 `json:"number,omitempty"`
+	Number NullableInt32 `json:"number,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -155,36 +155,46 @@ func (o *BadgesPutRequestBadgeValue) SetColor(v string) {
 	o.Color = &v
 }
 
-// GetNumber returns the Number field value if set, zero value otherwise.
+// GetNumber returns the Number field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BadgesPutRequestBadgeValue) GetNumber() int32 {
-	if o == nil || IsNil(o.Number) {
+	if o == nil || IsNil(o.Number.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.Number
+	return *o.Number.Get()
 }
 
 // GetNumberOk returns a tuple with the Number field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BadgesPutRequestBadgeValue) GetNumberOk() (*int32, bool) {
-	if o == nil || IsNil(o.Number) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Number, true
+	return o.Number.Get(), o.Number.IsSet()
 }
 
 // HasNumber returns a boolean if a field has been set.
 func (o *BadgesPutRequestBadgeValue) HasNumber() bool {
-	if o != nil && !IsNil(o.Number) {
+	if o != nil && o.Number.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetNumber gets a reference to the given int32 and assigns it to the Number field.
+// SetNumber gets a reference to the given NullableInt32 and assigns it to the Number field.
 func (o *BadgesPutRequestBadgeValue) SetNumber(v int32) {
-	o.Number = &v
+	o.Number.Set(&v)
+}
+// SetNumberNil sets the value for Number to be an explicit nil
+func (o *BadgesPutRequestBadgeValue) SetNumberNil() {
+	o.Number.Set(nil)
+}
+
+// UnsetNumber ensures that no value is present for Number, not even an explicit nil
+func (o *BadgesPutRequestBadgeValue) UnsetNumber() {
+	o.Number.Unset()
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -238,8 +248,8 @@ func (o BadgesPutRequestBadgeValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Color) {
 		toSerialize["color"] = o.Color
 	}
-	if !IsNil(o.Number) {
-		toSerialize["number"] = o.Number
+	if o.Number.IsSet() {
+		toSerialize["number"] = o.Number.Get()
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

@@ -123,8 +123,8 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 		{FieldName: "Enable", APIField: &sflowCollectorReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "Port", APIField: &sflowCollectorReq.Port, TFValue: plan.Port},
 	})
 
@@ -293,8 +293,8 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sflowCollectorProps.Enable = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.Port, state.Port, func(v *int32) { sflowCollectorProps.Port = v }, &hasChanges)
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.Port, state.Port, func(v *openapi.NullableInt32) { sflowCollectorProps.Port = *v }, &hasChanges)
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)

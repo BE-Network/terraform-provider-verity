@@ -49,9 +49,9 @@ type ServicesPutRequestServiceValue struct {
 	// Object type for policy_based_routing field
 	PolicyBasedRoutingRefType *string `json:"policy_based_routing_ref_type_,omitempty"`
 	// Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)
-	MaxUpstreamRateMbps *int32 `json:"max_upstream_rate_mbps,omitempty"`
+	MaxUpstreamRateMbps NullableInt32 `json:"max_upstream_rate_mbps,omitempty"`
 	// Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)
-	MaxDownstreamRateMbps *int32 `json:"max_downstream_rate_mbps,omitempty"`
+	MaxDownstreamRateMbps NullableInt32 `json:"max_downstream_rate_mbps,omitempty"`
 	// Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped
 	PacketPriority *string `json:"packet_priority,omitempty"`
 	// Determines how undefined handle multicast packet for Service<ul><li>* \"Multicast Flooding (Normal)\" Multicast packets are broadcast</li><li>* \"Multicast Flooding (AVB/PTP/Cobranet)\" Multicast packets are broadcast with special treatment for critical latency packets such as used by AVB, PTP, and Cobranet</li><li>* \"IPTV Filtering (IGMP Snooping)\" Multicast packets are propagated via IGMP Snooping</li><li>* \"IPTV Filtering (IGMP Report/Leave Flooding)\" Multicast packets are propagated via IGMP Snooping. except that IGMP Report/Leave packets are broadcast</li></ul>
@@ -75,7 +75,7 @@ type ServicesPutRequestServiceValue struct {
 	// The Fast Leave feature causes the switch to immediately remove a port from the forwarding list for a IGMP multicast group when the port receives a leave message. Not recommended unless there is only a single receiver present on every point in the VLAN
 	AllowFastLeave *bool `json:"allow_fast_leave,omitempty"`
 	// MST Instance ID (0-4094)
-	MstInstance *int32 `json:"mst_instance,omitempty"`
+	MstInstance NullableInt32 `json:"mst_instance,omitempty"`
 }
 
 // NewServicesPutRequestServiceValue instantiates a new ServicesPutRequestServiceValue object
@@ -125,7 +125,7 @@ func NewServicesPutRequestServiceValue() *ServicesPutRequestServiceValue {
 	var allowFastLeave bool = false
 	this.AllowFastLeave = &allowFastLeave
 	var mstInstance int32 = 0
-	this.MstInstance = &mstInstance
+	this.MstInstance = *NewNullableInt32(&mstInstance)
 	return &this
 }
 
@@ -175,7 +175,7 @@ func NewServicesPutRequestServiceValueWithDefaults() *ServicesPutRequestServiceV
 	var allowFastLeave bool = false
 	this.AllowFastLeave = &allowFastLeave
 	var mstInstance int32 = 0
-	this.MstInstance = &mstInstance
+	this.MstInstance = *NewNullableInt32(&mstInstance)
 	return &this
 }
 
@@ -689,68 +689,88 @@ func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string) 
 	o.PolicyBasedRoutingRefType = &v
 }
 
-// GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field value if set, zero value otherwise.
+// GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbps() int32 {
-	if o == nil || IsNil(o.MaxUpstreamRateMbps) {
+	if o == nil || IsNil(o.MaxUpstreamRateMbps.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MaxUpstreamRateMbps
+	return *o.MaxUpstreamRateMbps.Get()
 }
 
 // GetMaxUpstreamRateMbpsOk returns a tuple with the MaxUpstreamRateMbps field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbpsOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaxUpstreamRateMbps) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MaxUpstreamRateMbps, true
+	return o.MaxUpstreamRateMbps.Get(), o.MaxUpstreamRateMbps.IsSet()
 }
 
 // HasMaxUpstreamRateMbps returns a boolean if a field has been set.
 func (o *ServicesPutRequestServiceValue) HasMaxUpstreamRateMbps() bool {
-	if o != nil && !IsNil(o.MaxUpstreamRateMbps) {
+	if o != nil && o.MaxUpstreamRateMbps.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMaxUpstreamRateMbps gets a reference to the given int32 and assigns it to the MaxUpstreamRateMbps field.
+// SetMaxUpstreamRateMbps gets a reference to the given NullableInt32 and assigns it to the MaxUpstreamRateMbps field.
 func (o *ServicesPutRequestServiceValue) SetMaxUpstreamRateMbps(v int32) {
-	o.MaxUpstreamRateMbps = &v
+	o.MaxUpstreamRateMbps.Set(&v)
+}
+// SetMaxUpstreamRateMbpsNil sets the value for MaxUpstreamRateMbps to be an explicit nil
+func (o *ServicesPutRequestServiceValue) SetMaxUpstreamRateMbpsNil() {
+	o.MaxUpstreamRateMbps.Set(nil)
 }
 
-// GetMaxDownstreamRateMbps returns the MaxDownstreamRateMbps field value if set, zero value otherwise.
+// UnsetMaxUpstreamRateMbps ensures that no value is present for MaxUpstreamRateMbps, not even an explicit nil
+func (o *ServicesPutRequestServiceValue) UnsetMaxUpstreamRateMbps() {
+	o.MaxUpstreamRateMbps.Unset()
+}
+
+// GetMaxDownstreamRateMbps returns the MaxDownstreamRateMbps field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbps() int32 {
-	if o == nil || IsNil(o.MaxDownstreamRateMbps) {
+	if o == nil || IsNil(o.MaxDownstreamRateMbps.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MaxDownstreamRateMbps
+	return *o.MaxDownstreamRateMbps.Get()
 }
 
 // GetMaxDownstreamRateMbpsOk returns a tuple with the MaxDownstreamRateMbps field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbpsOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaxDownstreamRateMbps) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MaxDownstreamRateMbps, true
+	return o.MaxDownstreamRateMbps.Get(), o.MaxDownstreamRateMbps.IsSet()
 }
 
 // HasMaxDownstreamRateMbps returns a boolean if a field has been set.
 func (o *ServicesPutRequestServiceValue) HasMaxDownstreamRateMbps() bool {
-	if o != nil && !IsNil(o.MaxDownstreamRateMbps) {
+	if o != nil && o.MaxDownstreamRateMbps.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMaxDownstreamRateMbps gets a reference to the given int32 and assigns it to the MaxDownstreamRateMbps field.
+// SetMaxDownstreamRateMbps gets a reference to the given NullableInt32 and assigns it to the MaxDownstreamRateMbps field.
 func (o *ServicesPutRequestServiceValue) SetMaxDownstreamRateMbps(v int32) {
-	o.MaxDownstreamRateMbps = &v
+	o.MaxDownstreamRateMbps.Set(&v)
+}
+// SetMaxDownstreamRateMbpsNil sets the value for MaxDownstreamRateMbps to be an explicit nil
+func (o *ServicesPutRequestServiceValue) SetMaxDownstreamRateMbpsNil() {
+	o.MaxDownstreamRateMbps.Set(nil)
+}
+
+// UnsetMaxDownstreamRateMbps ensures that no value is present for MaxDownstreamRateMbps, not even an explicit nil
+func (o *ServicesPutRequestServiceValue) UnsetMaxDownstreamRateMbps() {
+	o.MaxDownstreamRateMbps.Unset()
 }
 
 // GetPacketPriority returns the PacketPriority field value if set, zero value otherwise.
@@ -1105,36 +1125,46 @@ func (o *ServicesPutRequestServiceValue) SetAllowFastLeave(v bool) {
 	o.AllowFastLeave = &v
 }
 
-// GetMstInstance returns the MstInstance field value if set, zero value otherwise.
+// GetMstInstance returns the MstInstance field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ServicesPutRequestServiceValue) GetMstInstance() int32 {
-	if o == nil || IsNil(o.MstInstance) {
+	if o == nil || IsNil(o.MstInstance.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MstInstance
+	return *o.MstInstance.Get()
 }
 
 // GetMstInstanceOk returns a tuple with the MstInstance field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ServicesPutRequestServiceValue) GetMstInstanceOk() (*int32, bool) {
-	if o == nil || IsNil(o.MstInstance) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MstInstance, true
+	return o.MstInstance.Get(), o.MstInstance.IsSet()
 }
 
 // HasMstInstance returns a boolean if a field has been set.
 func (o *ServicesPutRequestServiceValue) HasMstInstance() bool {
-	if o != nil && !IsNil(o.MstInstance) {
+	if o != nil && o.MstInstance.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMstInstance gets a reference to the given int32 and assigns it to the MstInstance field.
+// SetMstInstance gets a reference to the given NullableInt32 and assigns it to the MstInstance field.
 func (o *ServicesPutRequestServiceValue) SetMstInstance(v int32) {
-	o.MstInstance = &v
+	o.MstInstance.Set(&v)
+}
+// SetMstInstanceNil sets the value for MstInstance to be an explicit nil
+func (o *ServicesPutRequestServiceValue) SetMstInstanceNil() {
+	o.MstInstance.Set(nil)
+}
+
+// UnsetMstInstance ensures that no value is present for MstInstance, not even an explicit nil
+func (o *ServicesPutRequestServiceValue) UnsetMstInstance() {
+	o.MstInstance.Unset()
 }
 
 func (o ServicesPutRequestServiceValue) MarshalJSON() ([]byte, error) {
@@ -1192,11 +1222,11 @@ func (o ServicesPutRequestServiceValue) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.PolicyBasedRoutingRefType) {
 		toSerialize["policy_based_routing_ref_type_"] = o.PolicyBasedRoutingRefType
 	}
-	if !IsNil(o.MaxUpstreamRateMbps) {
-		toSerialize["max_upstream_rate_mbps"] = o.MaxUpstreamRateMbps
+	if o.MaxUpstreamRateMbps.IsSet() {
+		toSerialize["max_upstream_rate_mbps"] = o.MaxUpstreamRateMbps.Get()
 	}
-	if !IsNil(o.MaxDownstreamRateMbps) {
-		toSerialize["max_downstream_rate_mbps"] = o.MaxDownstreamRateMbps
+	if o.MaxDownstreamRateMbps.IsSet() {
+		toSerialize["max_downstream_rate_mbps"] = o.MaxDownstreamRateMbps.Get()
 	}
 	if !IsNil(o.PacketPriority) {
 		toSerialize["packet_priority"] = o.PacketPriority
@@ -1231,8 +1261,8 @@ func (o ServicesPutRequestServiceValue) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.AllowFastLeave) {
 		toSerialize["allow_fast_leave"] = o.AllowFastLeave
 	}
-	if !IsNil(o.MstInstance) {
-		toSerialize["mst_instance"] = o.MstInstance
+	if o.MstInstance.IsSet() {
+		toSerialize["mst_instance"] = o.MstInstance.Get()
 	}
 	return toSerialize, nil
 }

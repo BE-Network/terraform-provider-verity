@@ -30,7 +30,7 @@ type DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct {
 	// Object type for flow_collector field
 	FlowCollectorRefType *string `json:"flow_collector_ref_type_,omitempty"`
 	// The sampling rate for sFlow polling (seconds)
-	PollInterval *int32 `json:"poll_interval,omitempty"`
+	PollInterval NullableInt32 `json:"poll_interval,omitempty"`
 	// Management or Underlay
 	VrfType *string `json:"vrf_type,omitempty"`
 }
@@ -50,7 +50,7 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue() *Diagnosticsprofi
 	var flowCollector string = ""
 	this.FlowCollector = &flowCollector
 	var pollInterval int32 = 20
-	this.PollInterval = &pollInterval
+	this.PollInterval = *NewNullableInt32(&pollInterval)
 	var vrfType string = "management"
 	this.VrfType = &vrfType
 	return &this
@@ -70,7 +70,7 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValueWithDefaults() *Diag
 	var flowCollector string = ""
 	this.FlowCollector = &flowCollector
 	var pollInterval int32 = 20
-	this.PollInterval = &pollInterval
+	this.PollInterval = *NewNullableInt32(&pollInterval)
 	var vrfType string = "management"
 	this.VrfType = &vrfType
 	return &this
@@ -236,36 +236,46 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetFlowCollectorR
 	o.FlowCollectorRefType = &v
 }
 
-// GetPollInterval returns the PollInterval field value if set, zero value otherwise.
+// GetPollInterval returns the PollInterval field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollInterval() int32 {
-	if o == nil || IsNil(o.PollInterval) {
+	if o == nil || IsNil(o.PollInterval.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.PollInterval
+	return *o.PollInterval.Get()
 }
 
 // GetPollIntervalOk returns a tuple with the PollInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollIntervalOk() (*int32, bool) {
-	if o == nil || IsNil(o.PollInterval) {
+	if o == nil {
 		return nil, false
 	}
-	return o.PollInterval, true
+	return o.PollInterval.Get(), o.PollInterval.IsSet()
 }
 
 // HasPollInterval returns a boolean if a field has been set.
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasPollInterval() bool {
-	if o != nil && !IsNil(o.PollInterval) {
+	if o != nil && o.PollInterval.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPollInterval gets a reference to the given int32 and assigns it to the PollInterval field.
+// SetPollInterval gets a reference to the given NullableInt32 and assigns it to the PollInterval field.
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollInterval(v int32) {
-	o.PollInterval = &v
+	o.PollInterval.Set(&v)
+}
+// SetPollIntervalNil sets the value for PollInterval to be an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollIntervalNil() {
+	o.PollInterval.Set(nil)
+}
+
+// UnsetPollInterval ensures that no value is present for PollInterval, not even an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetPollInterval() {
+	o.PollInterval.Unset()
 }
 
 // GetVrfType returns the VrfType field value if set, zero value otherwise.
@@ -325,8 +335,8 @@ func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) ToMap() (map[strin
 	if !IsNil(o.FlowCollectorRefType) {
 		toSerialize["flow_collector_ref_type_"] = o.FlowCollectorRefType
 	}
-	if !IsNil(o.PollInterval) {
-		toSerialize["poll_interval"] = o.PollInterval
+	if o.PollInterval.IsSet() {
+		toSerialize["poll_interval"] = o.PollInterval.Get()
 	}
 	if !IsNil(o.VrfType) {
 		toSerialize["vrf_type"] = o.VrfType

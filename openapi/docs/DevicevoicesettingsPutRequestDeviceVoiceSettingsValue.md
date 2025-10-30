@@ -40,7 +40,7 @@ Name | Type | Description | Notes
 **LocalPortMin** | Pointer to **NullableInt32** | Defines the base RTP port that should be used for voice traffic | [optional] [default to 30000]
 **LocalPortMax** | Pointer to **NullableInt32** | Defines the highest RTP port used for voice traffic, must be greater than local Local Port Min | [optional] [default to 30200]
 **EventPayloadType** | Pointer to **NullableInt32** | Telephone Event Payload Type | [optional] [default to 101]
-**CasEvents** | Pointer to **int32** | Enables or disables handling of CAS via RTP CAS events. Valid values are 0 &#x3D; off and 1 &#x3D; on | [optional] [default to 0]
+**CasEvents** | Pointer to **NullableInt32** | Enables or disables handling of CAS via RTP CAS events. Valid values are 0 &#x3D; off and 1 &#x3D; on | [optional] [default to 0]
 **DscpMark** | Pointer to **NullableInt32** | Differentiated Services Code Point (DSCP) to be used for outgoing RTP packets | [optional] [default to 0]
 **Rtcp** | Pointer to **bool** | RTCP Enable | [optional] [default to true]
 **FaxT38** | Pointer to **bool** | Fax T.38 Enable | [optional] [default to false]
@@ -1191,6 +1191,16 @@ SetCasEvents sets CasEvents field to given value.
 
 HasCasEvents returns a boolean if a field has been set.
 
+### SetCasEventsNil
+
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEventsNil(b bool)`
+
+ SetCasEventsNil sets the value for CasEvents to be an explicit nil
+
+### UnsetCasEvents
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCasEvents()`
+
+UnsetCasEvents ensures that no value is present for CasEvents, not even an explicit nil
 ### GetDscpMark
 
 `func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMark() int32`

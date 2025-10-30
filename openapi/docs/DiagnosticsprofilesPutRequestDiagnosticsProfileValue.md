@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **EnableSflow** | Pointer to **bool** | Enable sFlow for this Diagnostics Profile  | [optional] [default to false]
 **FlowCollector** | Pointer to **string** | Flow Collector for this Diagnostics Profile  | [optional] [default to ""]
 **FlowCollectorRefType** | Pointer to **string** | Object type for flow_collector field | [optional] 
-**PollInterval** | Pointer to **int32** | The sampling rate for sFlow polling (seconds) | [optional] [default to 20]
+**PollInterval** | Pointer to **NullableInt32** | The sampling rate for sFlow polling (seconds) | [optional] [default to 20]
 **VrfType** | Pointer to **string** | Management or Underlay | [optional] [default to "management"]
 
 ## Methods
@@ -181,6 +181,16 @@ SetPollInterval sets PollInterval field to given value.
 
 HasPollInterval returns a boolean if a field has been set.
 
+### SetPollIntervalNil
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollIntervalNil(b bool)`
+
+ SetPollIntervalNil sets the value for PollInterval to be an explicit nil
+
+### UnsetPollInterval
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetPollInterval()`
+
+UnsetPollInterval ensures that no value is present for PollInterval, not even an explicit nil
 ### GetVrfType
 
 `func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetVrfType() string`

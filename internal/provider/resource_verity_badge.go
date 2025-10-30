@@ -141,8 +141,8 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		{FieldName: "Enable", APIField: &badgeProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "Number", APIField: &badgeProps.Number, TFValue: plan.Number},
 	})
 
@@ -331,8 +331,8 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { badgeProps.Enable = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.Number, state.Number, func(v *int32) { badgeProps.Number = v }, &hasChanges)
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.Number, state.Number, func(v *openapi.NullableInt32) { badgeProps.Number = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {

@@ -49,8 +49,8 @@ type verityDeviceSettingsResourceModel struct {
 	DisableTcpUdpLearnedPacketAcceleration types.Bool                                  `tfsdk:"disable_tcp_udp_learned_packet_acceleration"`
 	MacAgingTimerOverride                  types.Int64                                 `tfsdk:"mac_aging_timer_override"`
 	SpanningTreePriority                   types.String                                `tfsdk:"spanning_tree_priority"`
-	PacketQueueId                          types.String                                `tfsdk:"packet_queue_id"`
-	PacketQueueIdRefType                   types.String                                `tfsdk:"packet_queue_id_ref_type_"`
+	PacketQueue                          types.String                                `tfsdk:"packet_queue"`
+	PacketQueueRefType                   types.String                                `tfsdk:"packet_queue_ref_type_"`
 	ObjectProperties                       []verityDeviceSettingsObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
@@ -145,12 +145,12 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 				Description: "STP per switch, priority are in 4096 increments, the lower the number, the higher the priority.",
 				Optional:    true,
 			},
-			"packet_queue_id": schema.StringAttribute{
+			"packet_queue": schema.StringAttribute{
 				Description: "Packet Queue for device",
 				Optional:    true,
 			},
-			"packet_queue_id_ref_type_": schema.StringAttribute{
-				Description: "Object type for packet_queue_id field",
+			"packet_queue_ref_type_": schema.StringAttribute{
+				Description: "Object type for packet_queue field",
 				Optional:    true,
 			},
 		},
@@ -195,8 +195,8 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Mode", APIField: &deviceSettingsProps.Mode, TFValue: plan.Mode},
 		{FieldName: "SpanningTreePriority", APIField: &deviceSettingsProps.SpanningTreePriority, TFValue: plan.SpanningTreePriority},
-		{FieldName: "PacketQueueId", APIField: &deviceSettingsProps.PacketQueueId, TFValue: plan.PacketQueueId},
-		{FieldName: "PacketQueueIdRefType", APIField: &deviceSettingsProps.PacketQueueIdRefType, TFValue: plan.PacketQueueIdRefType},
+		{FieldName: "PacketQueue", APIField: &deviceSettingsProps.PacketQueue, TFValue: plan.PacketQueue},
+		{FieldName: "PacketQueueRefType", APIField: &deviceSettingsProps.PacketQueueRefType, TFValue: plan.PacketQueueRefType},
 	})
 
 	// Handle boolean fields
@@ -207,23 +207,19 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		{FieldName: "DisableTcpUdpLearnedPacketAcceleration", APIField: &deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration, TFValue: plan.DisableTcpUdpLearnedPacketAcceleration},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
-		{FieldName: "ExternalBatteryPowerAvailable", APIField: &deviceSettingsProps.ExternalBatteryPowerAvailable, TFValue: plan.ExternalBatteryPowerAvailable},
-		{FieldName: "ExternalPowerAvailable", APIField: &deviceSettingsProps.ExternalPowerAvailable, TFValue: plan.ExternalPowerAvailable},
-	})
-
-	// Handle float64 fields
-	utils.SetFloat64Fields([]utils.Float64FieldMapping{
-		{FieldName: "UsageThreshold", APIField: &deviceSettingsProps.UsageThreshold, TFValue: plan.UsageThreshold},
-	})
-
 	// Handle nullable int64 fields
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "ExternalBatteryPowerAvailable", APIField: &deviceSettingsProps.ExternalBatteryPowerAvailable, TFValue: plan.ExternalBatteryPowerAvailable},
+		{FieldName: "ExternalPowerAvailable", APIField: &deviceSettingsProps.ExternalPowerAvailable, TFValue: plan.ExternalPowerAvailable},
 		{FieldName: "SecurityAuditInterval", APIField: &deviceSettingsProps.SecurityAuditInterval, TFValue: plan.SecurityAuditInterval},
 		{FieldName: "CommitToFlashInterval", APIField: &deviceSettingsProps.CommitToFlashInterval, TFValue: plan.CommitToFlashInterval},
 		{FieldName: "HoldTimer", APIField: &deviceSettingsProps.HoldTimer, TFValue: plan.HoldTimer},
 		{FieldName: "MacAgingTimerOverride", APIField: &deviceSettingsProps.MacAgingTimerOverride, TFValue: plan.MacAgingTimerOverride},
+	})
+
+	// Handle nullable float64 fields
+	utils.SetNullableFloat64Fields([]utils.NullableFloat64FieldMapping{
+		{FieldName: "UsageThreshold", APIField: &deviceSettingsProps.UsageThreshold, TFValue: plan.UsageThreshold},
 	})
 
 	// Handle object properties
@@ -354,8 +350,8 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 	stringFieldMappings := map[string]*types.String{
 		"mode":                      &state.Mode,
 		"spanning_tree_priority":    &state.SpanningTreePriority,
-		"packet_queue_id":           &state.PacketQueueId,
-		"packet_queue_id_ref_type_": &state.PacketQueueIdRefType,
+		"packet_queue":              &state.PacketQueue,
+		"packet_queue_ref_type_":    &state.PacketQueueRefType,
 	}
 
 	for apiKey, stateField := range stringFieldMappings {
@@ -445,18 +441,16 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetBoolField(plan.CutThroughSwitching, state.CutThroughSwitching, func(v *bool) { deviceSettingsProps.CutThroughSwitching = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.DisableTcpUdpLearnedPacketAcceleration, state.DisableTcpUdpLearnedPacketAcceleration, func(v *bool) { deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.ExternalBatteryPowerAvailable, state.ExternalBatteryPowerAvailable, func(v *int32) { deviceSettingsProps.ExternalBatteryPowerAvailable = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.ExternalPowerAvailable, state.ExternalPowerAvailable, func(v *int32) { deviceSettingsProps.ExternalPowerAvailable = v }, &hasChanges)
-
-	// Handle float64 field changes
-	utils.CompareAndSetFloat64Field(plan.UsageThreshold, state.UsageThreshold, func(v *float32) { deviceSettingsProps.UsageThreshold = v }, &hasChanges)
-
 	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.ExternalBatteryPowerAvailable, state.ExternalBatteryPowerAvailable, func(v *openapi.NullableInt32) { deviceSettingsProps.ExternalBatteryPowerAvailable = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.ExternalPowerAvailable, state.ExternalPowerAvailable, func(v *openapi.NullableInt32) { deviceSettingsProps.ExternalPowerAvailable = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.SecurityAuditInterval, state.SecurityAuditInterval, func(v *openapi.NullableInt32) { deviceSettingsProps.SecurityAuditInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.CommitToFlashInterval, state.CommitToFlashInterval, func(v *openapi.NullableInt32) { deviceSettingsProps.CommitToFlashInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.HoldTimer, state.HoldTimer, func(v *openapi.NullableInt32) { deviceSettingsProps.HoldTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.MacAgingTimerOverride, state.MacAgingTimerOverride, func(v *openapi.NullableInt32) { deviceSettingsProps.MacAgingTimerOverride = *v }, &hasChanges)
+
+	// Handle nullable float64 field changes
+	utils.CompareAndSetNullableFloat64Field(plan.UsageThreshold, state.UsageThreshold, func(v *openapi.NullableFloat32) { deviceSettingsProps.UsageThreshold = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
@@ -473,12 +467,12 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// Handle PacketQueueId and PacketQueueIdRefType using "One ref type supported" pattern
+	// Handle PacketQueue and PacketQueueRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
-		plan.PacketQueueId, state.PacketQueueId, plan.PacketQueueIdRefType, state.PacketQueueIdRefType,
-		func(v *string) { deviceSettingsProps.PacketQueueId = v },
-		func(v *string) { deviceSettingsProps.PacketQueueIdRefType = v },
-		"packet_queue_id", "packet_queue_id_ref_type_",
+		plan.PacketQueue, state.PacketQueue, plan.PacketQueueRefType, state.PacketQueueRefType,
+		func(v *string) { deviceSettingsProps.PacketQueue = v },
+		func(v *string) { deviceSettingsProps.PacketQueueRefType = v },
+		"packet_queue", "packet_queue_ref_type_",
 		&hasChanges,
 		&resp.Diagnostics,
 	) {

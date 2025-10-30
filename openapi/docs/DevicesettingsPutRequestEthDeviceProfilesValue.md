@@ -7,12 +7,12 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Mode** | Pointer to **string** | Mode | [optional] [default to "IEEE 802.3af"]
-**UsageThreshold** | Pointer to **float32** | Usage Threshold | [optional] 
-**ExternalBatteryPowerAvailable** | Pointer to **int32** | External Battery Power Available | [optional] [default to 40]
-**ExternalPowerAvailable** | Pointer to **int32** | External Power Available | [optional] [default to 75]
+**UsageThreshold** | Pointer to **NullableFloat32** | Usage Threshold | [optional] 
+**ExternalBatteryPowerAvailable** | Pointer to **NullableInt32** | External Battery Power Available | [optional] [default to 40]
+**ExternalPowerAvailable** | Pointer to **NullableInt32** | External Power Available | [optional] [default to 75]
 **DisableTcpUdpLearnedPacketAcceleration** | Pointer to **bool** | Required for AVB, PTP and Cobranet Support for ONT Devices | [optional] [default to false]
-**PacketQueueId** | Pointer to **string** | Packet Queue for device | [optional] [default to "packet_queue|(Packet Queue)|"]
-**PacketQueueIdRefType** | Pointer to **string** | Object type for packet_queue_id field | [optional] 
+**PacketQueue** | Pointer to **string** | Packet Queue for device | [optional] [default to "packet_queue|(Packet Queue)|"]
+**PacketQueueRefType** | Pointer to **string** | Object type for packet_queue field | [optional] 
 **SecurityAuditInterval** | Pointer to **NullableInt32** | Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 &lt;br&gt;if the value is blank, audit will use default switch settings.                                                 &lt;br&gt;if the value is 0, audit will be turned off.                                                  | [optional] [default to 60]
 **CommitToFlashInterval** | Pointer to **NullableInt32** | Time delay in minutes to write the Switch configuration to flash after a change is made.                                                 &lt;br&gt;if the value is blank, commit will use default switch settings of 12 hours.                                                 &lt;br&gt;if the value is 0, commit will be turned off. | [optional] [default to 60]
 **Rocev2** | Pointer to **bool** | Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs. | [optional] [default to false]
@@ -141,6 +141,16 @@ SetUsageThreshold sets UsageThreshold field to given value.
 
 HasUsageThreshold returns a boolean if a field has been set.
 
+### SetUsageThresholdNil
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThresholdNil(b bool)`
+
+ SetUsageThresholdNil sets the value for UsageThreshold to be an explicit nil
+
+### UnsetUsageThreshold
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetUsageThreshold()`
+
+UnsetUsageThreshold ensures that no value is present for UsageThreshold, not even an explicit nil
 ### GetExternalBatteryPowerAvailable
 
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailable() int32`
@@ -166,6 +176,16 @@ SetExternalBatteryPowerAvailable sets ExternalBatteryPowerAvailable field to giv
 
 HasExternalBatteryPowerAvailable returns a boolean if a field has been set.
 
+### SetExternalBatteryPowerAvailableNil
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailableNil(b bool)`
+
+ SetExternalBatteryPowerAvailableNil sets the value for ExternalBatteryPowerAvailable to be an explicit nil
+
+### UnsetExternalBatteryPowerAvailable
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetExternalBatteryPowerAvailable()`
+
+UnsetExternalBatteryPowerAvailable ensures that no value is present for ExternalBatteryPowerAvailable, not even an explicit nil
 ### GetExternalPowerAvailable
 
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailable() int32`
@@ -191,6 +211,16 @@ SetExternalPowerAvailable sets ExternalPowerAvailable field to given value.
 
 HasExternalPowerAvailable returns a boolean if a field has been set.
 
+### SetExternalPowerAvailableNil
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailableNil(b bool)`
+
+ SetExternalPowerAvailableNil sets the value for ExternalPowerAvailable to be an explicit nil
+
+### UnsetExternalPowerAvailable
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetExternalPowerAvailable()`
+
+UnsetExternalPowerAvailable ensures that no value is present for ExternalPowerAvailable, not even an explicit nil
 ### GetDisableTcpUdpLearnedPacketAcceleration
 
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAcceleration() bool`
@@ -216,55 +246,55 @@ SetDisableTcpUdpLearnedPacketAcceleration sets DisableTcpUdpLearnedPacketAcceler
 
 HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
 
-### GetPacketQueueId
+### GetPacketQueue
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueId() string`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueue() string`
 
-GetPacketQueueId returns the PacketQueueId field if non-nil, zero value otherwise.
+GetPacketQueue returns the PacketQueue field if non-nil, zero value otherwise.
 
-### GetPacketQueueIdOk
+### GetPacketQueueOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdOk() (*string, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueOk() (*string, bool)`
 
-GetPacketQueueIdOk returns a tuple with the PacketQueueId field if it's non-nil, zero value otherwise
+GetPacketQueueOk returns a tuple with the PacketQueue field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetPacketQueueId
+### SetPacketQueue
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueId(v string)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueue(v string)`
 
-SetPacketQueueId sets PacketQueueId field to given value.
+SetPacketQueue sets PacketQueue field to given value.
 
-### HasPacketQueueId
+### HasPacketQueue
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueId() bool`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueue() bool`
 
-HasPacketQueueId returns a boolean if a field has been set.
+HasPacketQueue returns a boolean if a field has been set.
 
-### GetPacketQueueIdRefType
+### GetPacketQueueRefType
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdRefType() string`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueRefType() string`
 
-GetPacketQueueIdRefType returns the PacketQueueIdRefType field if non-nil, zero value otherwise.
+GetPacketQueueRefType returns the PacketQueueRefType field if non-nil, zero value otherwise.
 
-### GetPacketQueueIdRefTypeOk
+### GetPacketQueueRefTypeOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdRefTypeOk() (*string, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueRefTypeOk() (*string, bool)`
 
-GetPacketQueueIdRefTypeOk returns a tuple with the PacketQueueIdRefType field if it's non-nil, zero value otherwise
+GetPacketQueueRefTypeOk returns a tuple with the PacketQueueRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetPacketQueueIdRefType
+### SetPacketQueueRefType
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueIdRefType(v string)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueRefType(v string)`
 
-SetPacketQueueIdRefType sets PacketQueueIdRefType field to given value.
+SetPacketQueueRefType sets PacketQueueRefType field to given value.
 
-### HasPacketQueueIdRefType
+### HasPacketQueueRefType
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueIdRefType() bool`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueRefType() bool`
 
-HasPacketQueueIdRefType returns a boolean if a field has been set.
+HasPacketQueueRefType returns a boolean if a field has been set.
 
 ### GetSecurityAuditInterval
 

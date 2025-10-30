@@ -92,7 +92,7 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
 	// Telephone Event Payload Type
 	EventPayloadType NullableInt32 `json:"event_payload_type,omitempty"`
 	// Enables or disables handling of CAS via RTP CAS events. Valid values are 0 = off and 1 = on
-	CasEvents *int32 `json:"cas_events,omitempty"`
+	CasEvents NullableInt32 `json:"cas_events,omitempty"`
 	// Differentiated Services Code Point (DSCP) to be used for outgoing RTP packets
 	DscpMark NullableInt32 `json:"dscp_mark,omitempty"`
 	// RTCP Enable
@@ -222,7 +222,7 @@ func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValue() *Devicevoicesett
 	var eventPayloadType int32 = 101
 	this.EventPayloadType = *NewNullableInt32(&eventPayloadType)
 	var casEvents int32 = 0
-	this.CasEvents = &casEvents
+	this.CasEvents = *NewNullableInt32(&casEvents)
 	var dscpMark int32 = 0
 	this.DscpMark = *NewNullableInt32(&dscpMark)
 	var rtcp bool = true
@@ -350,7 +350,7 @@ func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValueWithDefaults() *Dev
 	var eventPayloadType int32 = 101
 	this.EventPayloadType = *NewNullableInt32(&eventPayloadType)
 	var casEvents int32 = 0
-	this.CasEvents = &casEvents
+	this.CasEvents = *NewNullableInt32(&casEvents)
 	var dscpMark int32 = 0
 	this.DscpMark = *NewNullableInt32(&dscpMark)
 	var rtcp bool = true
@@ -1732,36 +1732,46 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetEventPayloa
 	o.EventPayloadType.Unset()
 }
 
-// GetCasEvents returns the CasEvents field value if set, zero value otherwise.
+// GetCasEvents returns the CasEvents field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEvents() int32 {
-	if o == nil || IsNil(o.CasEvents) {
+	if o == nil || IsNil(o.CasEvents.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.CasEvents
+	return *o.CasEvents.Get()
 }
 
 // GetCasEventsOk returns a tuple with the CasEvents field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEventsOk() (*int32, bool) {
-	if o == nil || IsNil(o.CasEvents) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CasEvents, true
+	return o.CasEvents.Get(), o.CasEvents.IsSet()
 }
 
 // HasCasEvents returns a boolean if a field has been set.
 func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCasEvents() bool {
-	if o != nil && !IsNil(o.CasEvents) {
+	if o != nil && o.CasEvents.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCasEvents gets a reference to the given int32 and assigns it to the CasEvents field.
+// SetCasEvents gets a reference to the given NullableInt32 and assigns it to the CasEvents field.
 func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEvents(v int32) {
-	o.CasEvents = &v
+	o.CasEvents.Set(&v)
+}
+// SetCasEventsNil sets the value for CasEvents to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEventsNil() {
+	o.CasEvents.Set(nil)
+}
+
+// UnsetCasEvents ensures that no value is present for CasEvents, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCasEvents() {
+	o.CasEvents.Unset()
 }
 
 // GetDscpMark returns the DscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -2692,8 +2702,8 @@ func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) ToMap() (map[stri
 	if o.EventPayloadType.IsSet() {
 		toSerialize["event_payload_type"] = o.EventPayloadType.Get()
 	}
-	if !IsNil(o.CasEvents) {
-		toSerialize["cas_events"] = o.CasEvents
+	if o.CasEvents.IsSet() {
+		toSerialize["cas_events"] = o.CasEvents.Get()
 	}
 	if o.DscpMark.IsSet() {
 		toSerialize["dscp_mark"] = o.DscpMark.Get()

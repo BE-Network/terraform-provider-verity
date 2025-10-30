@@ -26,17 +26,17 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	// Mode
 	Mode *string `json:"mode,omitempty"`
 	// Usage Threshold
-	UsageThreshold *float32 `json:"usage_threshold,omitempty"`
+	UsageThreshold NullableFloat32 `json:"usage_threshold,omitempty"`
 	// External Battery Power Available
-	ExternalBatteryPowerAvailable *int32 `json:"external_battery_power_available,omitempty"`
+	ExternalBatteryPowerAvailable NullableInt32 `json:"external_battery_power_available,omitempty"`
 	// External Power Available
-	ExternalPowerAvailable *int32 `json:"external_power_available,omitempty"`
+	ExternalPowerAvailable NullableInt32 `json:"external_power_available,omitempty"`
 	// Required for AVB, PTP and Cobranet Support for ONT Devices
 	DisableTcpUdpLearnedPacketAcceleration *bool `json:"disable_tcp_udp_learned_packet_acceleration,omitempty"`
 	// Packet Queue for device
-	PacketQueueId *string `json:"packet_queue_id,omitempty"`
-	// Object type for packet_queue_id field
-	PacketQueueIdRefType *string `json:"packet_queue_id_ref_type_,omitempty"`
+	PacketQueue *string `json:"packet_queue,omitempty"`
+	// Object type for packet_queue field
+	PacketQueueRefType *string `json:"packet_queue_ref_type_,omitempty"`
 	// Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 <br>if the value is blank, audit will use default switch settings.                                                 <br>if the value is 0, audit will be turned off.                                                 
 	SecurityAuditInterval NullableInt32 `json:"security_audit_interval,omitempty"`
 	// Time delay in minutes to write the Switch configuration to flash after a change is made.                                                 <br>if the value is blank, commit will use default switch settings of 12 hours.                                                 <br>if the value is 0, commit will be turned off.
@@ -67,13 +67,13 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	var mode string = "IEEE 802.3af"
 	this.Mode = &mode
 	var externalBatteryPowerAvailable int32 = 40
-	this.ExternalBatteryPowerAvailable = &externalBatteryPowerAvailable
+	this.ExternalBatteryPowerAvailable = *NewNullableInt32(&externalBatteryPowerAvailable)
 	var externalPowerAvailable int32 = 75
-	this.ExternalPowerAvailable = &externalPowerAvailable
+	this.ExternalPowerAvailable = *NewNullableInt32(&externalPowerAvailable)
 	var disableTcpUdpLearnedPacketAcceleration bool = false
 	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
-	var packetQueueId string = "packet_queue|(Packet Queue)|"
-	this.PacketQueueId = &packetQueueId
+	var packetQueue string = "packet_queue|(Packet Queue)|"
+	this.PacketQueue = &packetQueue
 	var securityAuditInterval int32 = 60
 	this.SecurityAuditInterval = *NewNullableInt32(&securityAuditInterval)
 	var commitToFlashInterval int32 = 60
@@ -101,13 +101,13 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	var mode string = "IEEE 802.3af"
 	this.Mode = &mode
 	var externalBatteryPowerAvailable int32 = 40
-	this.ExternalBatteryPowerAvailable = &externalBatteryPowerAvailable
+	this.ExternalBatteryPowerAvailable = *NewNullableInt32(&externalBatteryPowerAvailable)
 	var externalPowerAvailable int32 = 75
-	this.ExternalPowerAvailable = &externalPowerAvailable
+	this.ExternalPowerAvailable = *NewNullableInt32(&externalPowerAvailable)
 	var disableTcpUdpLearnedPacketAcceleration bool = false
 	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
-	var packetQueueId string = "packet_queue|(Packet Queue)|"
-	this.PacketQueueId = &packetQueueId
+	var packetQueue string = "packet_queue|(Packet Queue)|"
+	this.PacketQueue = &packetQueue
 	var securityAuditInterval int32 = 60
 	this.SecurityAuditInterval = *NewNullableInt32(&securityAuditInterval)
 	var commitToFlashInterval int32 = 60
@@ -219,100 +219,130 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMode(v string) {
 	o.Mode = &v
 }
 
-// GetUsageThreshold returns the UsageThreshold field value if set, zero value otherwise.
+// GetUsageThreshold returns the UsageThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThreshold() float32 {
-	if o == nil || IsNil(o.UsageThreshold) {
+	if o == nil || IsNil(o.UsageThreshold.Get()) {
 		var ret float32
 		return ret
 	}
-	return *o.UsageThreshold
+	return *o.UsageThreshold.Get()
 }
 
 // GetUsageThresholdOk returns a tuple with the UsageThreshold field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThresholdOk() (*float32, bool) {
-	if o == nil || IsNil(o.UsageThreshold) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UsageThreshold, true
+	return o.UsageThreshold.Get(), o.UsageThreshold.IsSet()
 }
 
 // HasUsageThreshold returns a boolean if a field has been set.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasUsageThreshold() bool {
-	if o != nil && !IsNil(o.UsageThreshold) {
+	if o != nil && o.UsageThreshold.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetUsageThreshold gets a reference to the given float32 and assigns it to the UsageThreshold field.
+// SetUsageThreshold gets a reference to the given NullableFloat32 and assigns it to the UsageThreshold field.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThreshold(v float32) {
-	o.UsageThreshold = &v
+	o.UsageThreshold.Set(&v)
+}
+// SetUsageThresholdNil sets the value for UsageThreshold to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThresholdNil() {
+	o.UsageThreshold.Set(nil)
 }
 
-// GetExternalBatteryPowerAvailable returns the ExternalBatteryPowerAvailable field value if set, zero value otherwise.
+// UnsetUsageThreshold ensures that no value is present for UsageThreshold, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetUsageThreshold() {
+	o.UsageThreshold.Unset()
+}
+
+// GetExternalBatteryPowerAvailable returns the ExternalBatteryPowerAvailable field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailable() int32 {
-	if o == nil || IsNil(o.ExternalBatteryPowerAvailable) {
+	if o == nil || IsNil(o.ExternalBatteryPowerAvailable.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.ExternalBatteryPowerAvailable
+	return *o.ExternalBatteryPowerAvailable.Get()
 }
 
 // GetExternalBatteryPowerAvailableOk returns a tuple with the ExternalBatteryPowerAvailable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailableOk() (*int32, bool) {
-	if o == nil || IsNil(o.ExternalBatteryPowerAvailable) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ExternalBatteryPowerAvailable, true
+	return o.ExternalBatteryPowerAvailable.Get(), o.ExternalBatteryPowerAvailable.IsSet()
 }
 
 // HasExternalBatteryPowerAvailable returns a boolean if a field has been set.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasExternalBatteryPowerAvailable() bool {
-	if o != nil && !IsNil(o.ExternalBatteryPowerAvailable) {
+	if o != nil && o.ExternalBatteryPowerAvailable.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetExternalBatteryPowerAvailable gets a reference to the given int32 and assigns it to the ExternalBatteryPowerAvailable field.
+// SetExternalBatteryPowerAvailable gets a reference to the given NullableInt32 and assigns it to the ExternalBatteryPowerAvailable field.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailable(v int32) {
-	o.ExternalBatteryPowerAvailable = &v
+	o.ExternalBatteryPowerAvailable.Set(&v)
+}
+// SetExternalBatteryPowerAvailableNil sets the value for ExternalBatteryPowerAvailable to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailableNil() {
+	o.ExternalBatteryPowerAvailable.Set(nil)
 }
 
-// GetExternalPowerAvailable returns the ExternalPowerAvailable field value if set, zero value otherwise.
+// UnsetExternalBatteryPowerAvailable ensures that no value is present for ExternalBatteryPowerAvailable, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetExternalBatteryPowerAvailable() {
+	o.ExternalBatteryPowerAvailable.Unset()
+}
+
+// GetExternalPowerAvailable returns the ExternalPowerAvailable field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailable() int32 {
-	if o == nil || IsNil(o.ExternalPowerAvailable) {
+	if o == nil || IsNil(o.ExternalPowerAvailable.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.ExternalPowerAvailable
+	return *o.ExternalPowerAvailable.Get()
 }
 
 // GetExternalPowerAvailableOk returns a tuple with the ExternalPowerAvailable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailableOk() (*int32, bool) {
-	if o == nil || IsNil(o.ExternalPowerAvailable) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ExternalPowerAvailable, true
+	return o.ExternalPowerAvailable.Get(), o.ExternalPowerAvailable.IsSet()
 }
 
 // HasExternalPowerAvailable returns a boolean if a field has been set.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasExternalPowerAvailable() bool {
-	if o != nil && !IsNil(o.ExternalPowerAvailable) {
+	if o != nil && o.ExternalPowerAvailable.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetExternalPowerAvailable gets a reference to the given int32 and assigns it to the ExternalPowerAvailable field.
+// SetExternalPowerAvailable gets a reference to the given NullableInt32 and assigns it to the ExternalPowerAvailable field.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailable(v int32) {
-	o.ExternalPowerAvailable = &v
+	o.ExternalPowerAvailable.Set(&v)
+}
+// SetExternalPowerAvailableNil sets the value for ExternalPowerAvailable to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailableNil() {
+	o.ExternalPowerAvailable.Set(nil)
+}
+
+// UnsetExternalPowerAvailable ensures that no value is present for ExternalPowerAvailable, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetExternalPowerAvailable() {
+	o.ExternalPowerAvailable.Unset()
 }
 
 // GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field value if set, zero value otherwise.
@@ -347,68 +377,68 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDisableTcpUdpLearned
 	o.DisableTcpUdpLearnedPacketAcceleration = &v
 }
 
-// GetPacketQueueId returns the PacketQueueId field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueId() string {
-	if o == nil || IsNil(o.PacketQueueId) {
+// GetPacketQueue returns the PacketQueue field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueue() string {
+	if o == nil || IsNil(o.PacketQueue) {
 		var ret string
 		return ret
 	}
-	return *o.PacketQueueId
+	return *o.PacketQueue
 }
 
-// GetPacketQueueIdOk returns a tuple with the PacketQueueId field value if set, nil otherwise
+// GetPacketQueueOk returns a tuple with the PacketQueue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdOk() (*string, bool) {
-	if o == nil || IsNil(o.PacketQueueId) {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueue) {
 		return nil, false
 	}
-	return o.PacketQueueId, true
+	return o.PacketQueue, true
 }
 
-// HasPacketQueueId returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueId() bool {
-	if o != nil && !IsNil(o.PacketQueueId) {
+// HasPacketQueue returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueue() bool {
+	if o != nil && !IsNil(o.PacketQueue) {
 		return true
 	}
 
 	return false
 }
 
-// SetPacketQueueId gets a reference to the given string and assigns it to the PacketQueueId field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueId(v string) {
-	o.PacketQueueId = &v
+// SetPacketQueue gets a reference to the given string and assigns it to the PacketQueue field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueue(v string) {
+	o.PacketQueue = &v
 }
 
-// GetPacketQueueIdRefType returns the PacketQueueIdRefType field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdRefType() string {
-	if o == nil || IsNil(o.PacketQueueIdRefType) {
+// GetPacketQueueRefType returns the PacketQueueRefType field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueRefType() string {
+	if o == nil || IsNil(o.PacketQueueRefType) {
 		var ret string
 		return ret
 	}
-	return *o.PacketQueueIdRefType
+	return *o.PacketQueueRefType
 }
 
-// GetPacketQueueIdRefTypeOk returns a tuple with the PacketQueueIdRefType field value if set, nil otherwise
+// GetPacketQueueRefTypeOk returns a tuple with the PacketQueueRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueIdRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.PacketQueueIdRefType) {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueueRefType) {
 		return nil, false
 	}
-	return o.PacketQueueIdRefType, true
+	return o.PacketQueueRefType, true
 }
 
-// HasPacketQueueIdRefType returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueIdRefType() bool {
-	if o != nil && !IsNil(o.PacketQueueIdRefType) {
+// HasPacketQueueRefType returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueRefType() bool {
+	if o != nil && !IsNil(o.PacketQueueRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetPacketQueueIdRefType gets a reference to the given string and assigns it to the PacketQueueIdRefType field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueIdRefType(v string) {
-	o.PacketQueueIdRefType = &v
+// SetPacketQueueRefType gets a reference to the given string and assigns it to the PacketQueueRefType field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueRefType(v string) {
+	o.PacketQueueRefType = &v
 }
 
 // GetSecurityAuditInterval returns the SecurityAuditInterval field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -726,23 +756,23 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	if !IsNil(o.Mode) {
 		toSerialize["mode"] = o.Mode
 	}
-	if !IsNil(o.UsageThreshold) {
-		toSerialize["usage_threshold"] = o.UsageThreshold
+	if o.UsageThreshold.IsSet() {
+		toSerialize["usage_threshold"] = o.UsageThreshold.Get()
 	}
-	if !IsNil(o.ExternalBatteryPowerAvailable) {
-		toSerialize["external_battery_power_available"] = o.ExternalBatteryPowerAvailable
+	if o.ExternalBatteryPowerAvailable.IsSet() {
+		toSerialize["external_battery_power_available"] = o.ExternalBatteryPowerAvailable.Get()
 	}
-	if !IsNil(o.ExternalPowerAvailable) {
-		toSerialize["external_power_available"] = o.ExternalPowerAvailable
+	if o.ExternalPowerAvailable.IsSet() {
+		toSerialize["external_power_available"] = o.ExternalPowerAvailable.Get()
 	}
 	if !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
 		toSerialize["disable_tcp_udp_learned_packet_acceleration"] = o.DisableTcpUdpLearnedPacketAcceleration
 	}
-	if !IsNil(o.PacketQueueId) {
-		toSerialize["packet_queue_id"] = o.PacketQueueId
+	if !IsNil(o.PacketQueue) {
+		toSerialize["packet_queue"] = o.PacketQueue
 	}
-	if !IsNil(o.PacketQueueIdRefType) {
-		toSerialize["packet_queue_id_ref_type_"] = o.PacketQueueIdRefType
+	if !IsNil(o.PacketQueueRefType) {
+		toSerialize["packet_queue_ref_type_"] = o.PacketQueueRefType
 	}
 	if o.SecurityAuditInterval.IsSet() {
 		toSerialize["security_audit_interval"] = o.SecurityAuditInterval.Get()

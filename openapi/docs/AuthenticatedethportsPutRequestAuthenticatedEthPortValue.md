@@ -7,9 +7,9 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **ConnectionMode** | Pointer to **string** | Choose connection mode for Authenticated Eth-Port&lt;br&gt;&lt;b&gt;Port Mode&lt;/b&gt;  Standard mode. The last authenticated clients VLAN access is applied.&lt;br&gt;&lt;b&gt;Single Client Mode&lt;/b&gt;  MAC filtered client. Only the authenticated clients traffic can pass. No traffic from a second client may pass. Only when the first client deauthenticates can a new authentication take place.&lt;br&gt;&lt;b&gt;Multiple Client Mode&lt;/b&gt;  MAC filtered clients. Only authenticated client traffic can pass. Multiple clients can authenticate and gain access to individual service offerings. MAC-based authentication is not supported. | [optional] [default to "PortMode"]
-**ReauthorizationPeriodSec** | Pointer to **int32** | Amount of time in seconds before 802.1X requires reauthorization of an active session. \&quot;0\&quot; disables reauthorization (not recommended) | [optional] [default to 3600]
+**ReauthorizationPeriodSec** | Pointer to **NullableInt32** | Amount of time in seconds before 802.1X requires reauthorization of an active session. \&quot;0\&quot; disables reauthorization (not recommended) | [optional] [default to 3600]
 **AllowMacBasedAuthentication** | Pointer to **bool** | Enables 802.1x to capture the connected MAC address and send it tothe Radius Server instead of requesting credentials.  Useful for printers and similar devices | [optional] [default to false]
-**MacAuthenticationHoldoffSec** | Pointer to **int32** | Amount of time in seconds 802.1X authentication is allowed to run before MAC-based authentication has begun | [optional] [default to 60]
+**MacAuthenticationHoldoffSec** | Pointer to **NullableInt32** | Amount of time in seconds 802.1X authentication is allowed to run before MAC-based authentication has begun | [optional] [default to 60]
 **TrustedPort** | Pointer to **bool** | Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks. | [optional] [default to false]
 **EthPorts** | Pointer to [**[]AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner**](AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties**](AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties.md) |  | [optional] 
@@ -133,6 +133,16 @@ SetReauthorizationPeriodSec sets ReauthorizationPeriodSec field to given value.
 
 HasReauthorizationPeriodSec returns a boolean if a field has been set.
 
+### SetReauthorizationPeriodSecNil
+
+`func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) SetReauthorizationPeriodSecNil(b bool)`
+
+ SetReauthorizationPeriodSecNil sets the value for ReauthorizationPeriodSec to be an explicit nil
+
+### UnsetReauthorizationPeriodSec
+`func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) UnsetReauthorizationPeriodSec()`
+
+UnsetReauthorizationPeriodSec ensures that no value is present for ReauthorizationPeriodSec, not even an explicit nil
 ### GetAllowMacBasedAuthentication
 
 `func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetAllowMacBasedAuthentication() bool`
@@ -183,6 +193,16 @@ SetMacAuthenticationHoldoffSec sets MacAuthenticationHoldoffSec field to given v
 
 HasMacAuthenticationHoldoffSec returns a boolean if a field has been set.
 
+### SetMacAuthenticationHoldoffSecNil
+
+`func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) SetMacAuthenticationHoldoffSecNil(b bool)`
+
+ SetMacAuthenticationHoldoffSecNil sets the value for MacAuthenticationHoldoffSec to be an explicit nil
+
+### UnsetMacAuthenticationHoldoffSec
+`func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) UnsetMacAuthenticationHoldoffSec()`
+
+UnsetMacAuthenticationHoldoffSec ensures that no value is present for MacAuthenticationHoldoffSec, not even an explicit nil
 ### GetTrustedPort
 
 `func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetTrustedPort() bool`

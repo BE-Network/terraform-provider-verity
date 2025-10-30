@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
-**ExpectedSpineCount** | Pointer to **int32** | Number of spine switches expected in this pod | [optional] [default to 1]
+**ExpectedSpineCount** | Pointer to **NullableInt32** | Number of spine switches expected in this pod | [optional] [default to 1]
 
 ## Methods
 
@@ -128,6 +128,16 @@ SetExpectedSpineCount sets ExpectedSpineCount field to given value.
 
 HasExpectedSpineCount returns a boolean if a field has been set.
 
+### SetExpectedSpineCountNil
+
+`func (o *PodsPutRequestPodValue) SetExpectedSpineCountNil(b bool)`
+
+ SetExpectedSpineCountNil sets the value for ExpectedSpineCount to be an explicit nil
+
+### UnsetExpectedSpineCount
+`func (o *PodsPutRequestPodValue) UnsetExpectedSpineCount()`
+
+UnsetExpectedSpineCount ensures that no value is present for ExpectedSpineCount, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

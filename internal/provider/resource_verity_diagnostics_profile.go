@@ -141,8 +141,8 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 		{FieldName: "EnableSflow", APIField: &diagnosticsProfileProps.EnableSflow, TFValue: plan.EnableSflow},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "PollInterval", APIField: &diagnosticsProfileProps.PollInterval, TFValue: plan.PollInterval},
 	})
 
@@ -315,8 +315,8 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { diagnosticsProfileProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EnableSflow, state.EnableSflow, func(v *bool) { diagnosticsProfileProps.EnableSflow = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.PollInterval, state.PollInterval, func(v *int32) { diagnosticsProfileProps.PollInterval = v }, &hasChanges)
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.PollInterval, state.PollInterval, func(v *openapi.NullableInt32) { diagnosticsProfileProps.PollInterval = *v }, &hasChanges)
 
 	// Handle FlowCollector and FlowCollectorRefType fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(

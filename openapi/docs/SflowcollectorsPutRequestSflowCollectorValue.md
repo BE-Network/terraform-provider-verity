@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Ip** | Pointer to **string** | IP address of the sFlow Collector  | [optional] [default to ""]
-**Port** | Pointer to **int32** | Port | [optional] [default to 6343]
+**Port** | Pointer to **NullableInt32** | Port | [optional] [default to 6343]
 
 ## Methods
 
@@ -128,6 +128,16 @@ SetPort sets Port field to given value.
 
 HasPort returns a boolean if a field has been set.
 
+### SetPortNil
+
+`func (o *SflowcollectorsPutRequestSflowCollectorValue) SetPortNil(b bool)`
+
+ SetPortNil sets the value for Port to be an explicit nil
+
+### UnsetPort
+`func (o *SflowcollectorsPutRequestSflowCollectorValue) UnsetPort()`
+
+UnsetPort ensures that no value is present for Port, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

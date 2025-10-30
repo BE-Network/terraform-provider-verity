@@ -302,17 +302,13 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "AllowFastLeave", APIField: &serviceReq.AllowFastLeave, TFValue: plan.AllowFastLeave},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
-		{FieldName: "MaxUpstreamRateMbps", APIField: &serviceReq.MaxUpstreamRateMbps, TFValue: plan.MaxUpstreamRateMbps},
-		{FieldName: "MaxDownstreamRateMbps", APIField: &serviceReq.MaxDownstreamRateMbps, TFValue: plan.MaxDownstreamRateMbps},
-		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: plan.MstInstance},
-	})
-
 	// Handle nullable int64 fields
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "Vlan", APIField: &serviceReq.Vlan, TFValue: plan.Vlan},
 		{FieldName: "Mtu", APIField: &serviceReq.Mtu, TFValue: plan.Mtu},
+		{FieldName: "MaxUpstreamRateMbps", APIField: &serviceReq.MaxUpstreamRateMbps, TFValue: plan.MaxUpstreamRateMbps},
+		{FieldName: "MaxDownstreamRateMbps", APIField: &serviceReq.MaxDownstreamRateMbps, TFValue: plan.MaxDownstreamRateMbps},
+		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: plan.MstInstance},
 	})
 
 	// Handle object properties
@@ -557,13 +553,11 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetBoolField(plan.UseDscpToPBitMappingForL3PacketsIfAvailable, state.UseDscpToPBitMappingForL3PacketsIfAvailable, func(v *bool) { serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AllowFastLeave, state.AllowFastLeave, func(v *bool) { serviceReq.AllowFastLeave = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, func(v *int32) { serviceReq.MaxUpstreamRateMbps = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, func(v *int32) { serviceReq.MaxDownstreamRateMbps = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.MstInstance, state.MstInstance, func(v *int32) { serviceReq.MstInstance = v }, &hasChanges)
-
 	// Handle nullable int64 field changes
 	utils.CompareAndSetNullableInt64Field(plan.Mtu, state.Mtu, func(v *openapi.NullableInt32) { serviceReq.Mtu = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, func(v *openapi.NullableInt32) { serviceReq.MaxUpstreamRateMbps = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, func(v *openapi.NullableInt32) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MstInstance, state.MstInstance, func(v *openapi.NullableInt32) { serviceReq.MstInstance = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
@@ -801,18 +795,28 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	}
 
 	if val, ok := serviceData["vlan"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Vlan = types.Int64Value(int64(v))
-		case int:
-			state.Vlan = types.Int64Value(int64(v))
-		default:
-			if plan != nil && !plan.Vlan.IsNull() && !plan.Vlan.IsUnknown() {
-				state.Vlan = plan.Vlan
+		if val == nil {
+			state.Vlan = types.Int64Null()
+		} else {
+			switch v := val.(type) {
+			case float64:
+				state.Vlan = types.Int64Value(int64(v))
+			case int:
+				state.Vlan = types.Int64Value(int64(v))
+			case int32:
+				state.Vlan = types.Int64Value(int64(v))
+			default:
+				if plan != nil && !plan.Vlan.IsNull() && !plan.Vlan.IsUnknown() {
+					state.Vlan = plan.Vlan
+				} else {
+					state.Vlan = types.Int64Null()
+				}
 			}
 		}
 	} else if plan != nil && !plan.Vlan.IsNull() && !plan.Vlan.IsUnknown() {
 		state.Vlan = plan.Vlan
+	} else {
+		state.Vlan = types.Int64Null()
 	}
 
 	if val, ok := serviceData["vni"]; ok {
@@ -829,11 +833,15 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 			default:
 				if plan != nil && !plan.Vni.IsNull() && !plan.Vni.IsUnknown() {
 					state.Vni = plan.Vni
+				} else {
+					state.Vni = types.Int64Null()
 				}
 			}
 		}
 	} else if plan != nil && !plan.Vni.IsNull() && !plan.Vni.IsUnknown() {
 		state.Vni = plan.Vni
+	} else {
+		state.Vni = types.Int64Null()
 	}
 
 	if val, ok := serviceData["vni_auto_assigned_"].(bool); ok {

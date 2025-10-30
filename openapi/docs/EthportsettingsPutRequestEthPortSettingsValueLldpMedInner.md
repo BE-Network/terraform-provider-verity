@@ -6,8 +6,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **LldpMedRowNumEnable** | Pointer to **bool** | Per LLDP Med row enable | [optional] [default to false]
 **LldpMedRowNumAdvertisedApplicatio** | Pointer to **string** | Advertised application | [optional] [default to ""]
-**LldpMedRowNumDscpMark** | Pointer to **int32** | LLDP DSCP Mark | [optional] [default to 0]
-**LldpMedRowNumPriority** | Pointer to **int32** | LLDP Priority | [optional] [default to 0]
+**LldpMedRowNumDscpMark** | Pointer to **NullableInt32** | LLDP DSCP Mark | [optional] [default to 0]
+**LldpMedRowNumPriority** | Pointer to **NullableInt32** | LLDP Priority | [optional] [default to 0]
 **LldpMedRowNumService** | Pointer to **string** | LLDP Service | [optional] [default to ""]
 **LldpMedRowNumServiceRefType** | Pointer to **string** | Object type for lldp_med_row_num_service field | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
@@ -106,6 +106,16 @@ SetLldpMedRowNumDscpMark sets LldpMedRowNumDscpMark field to given value.
 
 HasLldpMedRowNumDscpMark returns a boolean if a field has been set.
 
+### SetLldpMedRowNumDscpMarkNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumDscpMarkNil(b bool)`
+
+ SetLldpMedRowNumDscpMarkNil sets the value for LldpMedRowNumDscpMark to be an explicit nil
+
+### UnsetLldpMedRowNumDscpMark
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) UnsetLldpMedRowNumDscpMark()`
+
+UnsetLldpMedRowNumDscpMark ensures that no value is present for LldpMedRowNumDscpMark, not even an explicit nil
 ### GetLldpMedRowNumPriority
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumPriority() int32`
@@ -131,6 +141,16 @@ SetLldpMedRowNumPriority sets LldpMedRowNumPriority field to given value.
 
 HasLldpMedRowNumPriority returns a boolean if a field has been set.
 
+### SetLldpMedRowNumPriorityNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumPriorityNil(b bool)`
+
+ SetLldpMedRowNumPriorityNil sets the value for LldpMedRowNumPriority to be an explicit nil
+
+### UnsetLldpMedRowNumPriority
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) UnsetLldpMedRowNumPriority()`
+
+UnsetLldpMedRowNumPriority ensures that no value is present for LldpMedRowNumPriority, not even an explicit nil
 ### GetLldpMedRowNumService
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumService() string`

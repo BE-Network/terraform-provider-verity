@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**PacketQueueForPBit** | Pointer to **int32** | Flag indicating this Traffic Class&#39; Queue | [optional] [default to 0]
+**PacketQueueForPBit** | Pointer to **NullableInt32** | Flag indicating this Traffic Class&#39; Queue | [optional] [default to 0]
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
@@ -51,6 +51,16 @@ SetPacketQueueForPBit sets PacketQueueForPBit field to given value.
 
 HasPacketQueueForPBit returns a boolean if a field has been set.
 
+### SetPacketQueueForPBitNil
+
+`func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetPacketQueueForPBitNil(b bool)`
+
+ SetPacketQueueForPBitNil sets the value for PacketQueueForPBit to be an explicit nil
+
+### UnsetPacketQueueForPBit
+`func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) UnsetPacketQueueForPBit()`
+
+UnsetPacketQueueForPBit ensures that no value is present for PacketQueueForPBit, not even an explicit nil
 ### GetIndex
 
 `func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetIndex() int32`

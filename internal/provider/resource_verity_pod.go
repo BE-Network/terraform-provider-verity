@@ -131,8 +131,8 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 		{FieldName: "Enable", APIField: &podReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "ExpectedSpineCount", APIField: &podReq.ExpectedSpineCount, TFValue: plan.ExpectedSpineCount},
 	})
 
@@ -310,8 +310,8 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { podReq.Enable = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.ExpectedSpineCount, state.ExpectedSpineCount, func(v *int32) { podReq.ExpectedSpineCount = v }, &hasChanges)
+	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.ExpectedSpineCount, state.ExpectedSpineCount, func(v *openapi.NullableInt32) { podReq.ExpectedSpineCount = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {

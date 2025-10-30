@@ -207,6 +207,10 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &pbitItem.Index, TFValue: pbit.Index},
+			})
+
+			// Handle nullable int64 fields
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "PacketQueueForPBit", APIField: &pbitItem.PacketQueueForPBit, TFValue: pbit.PacketQueueForPBit},
 			})
 
@@ -463,6 +467,10 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newPbit.Index, TFValue: planItem.Index},
+				})
+
+				// Handle nullable int64 fields
+				utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 					{FieldName: "PacketQueueForPBit", APIField: &newPbit.PacketQueueForPBit, TFValue: planItem.PacketQueueForPBit},
 				})
 
@@ -474,7 +482,9 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 
 				// Handle int64 field changes
 				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updatePbit.Index = v }, &fieldChanged)
-				utils.CompareAndSetInt64Field(planItem.PacketQueueForPBit, stateItem.PacketQueueForPBit, func(v *int32) { updatePbit.PacketQueueForPBit = v }, &fieldChanged)
+
+				// Handle nullable int64 field changes
+				utils.CompareAndSetNullableInt64Field(planItem.PacketQueueForPBit, stateItem.PacketQueueForPBit, func(v *openapi.NullableInt32) { updatePbit.PacketQueueForPBit = *v }, &fieldChanged)
 
 				return updatePbit, fieldChanged
 			},

@@ -5773,27 +5773,30 @@ components:
           type: string
         usage_threshold:
           description: Usage Threshold
+          nullable: true
           type: number
         external_battery_power_available:
           default: 40
           description: External Battery Power Available
           maximum: 2000
+          nullable: true
           type: integer
         external_power_available:
           default: 75
           description: External Power Available
           maximum: 2000
+          nullable: true
           type: integer
         disable_tcp_udp_learned_packet_acceleration:
           default: false
           description: "Required for AVB, PTP and Cobranet Support for ONT Devices"
           type: boolean
-        packet_queue_id:
+        packet_queue:
           default: packet_queue|(Packet Queue)|
           description: Packet Queue for device
           type: string
-        packet_queue_id_ref_type_:
-          description: Object type for packet_queue_id field
+        packet_queue_ref_type_:
+          description: Object type for packet_queue field
           enum:
           - packet_queue
           type: string
@@ -5919,13 +5922,14 @@ components:
           description: The sampling rate for sFlow polling (seconds)
           maximum: 300
           minimum: 5
+          nullable: true
           type: integer
         vrf_type:
           default: management
           description: Management or Underlay
           enum:
-          - underlay
           - management
+          - underlay
           type: string
       type: object
     _switchpoints_put_request_switchpoint_value_badges_inner:
@@ -5974,51 +5978,51 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
-          - pg50G
-          - 1x40G
-          - 2x200G
+          - 1x100G
+          - pg1G
           - 2x400G
+          - 1x1G
+          - 2x10G
+          - 1x40G
+          - pg50G
+          - 4x1G
+          - 8x10G
+          - 8x800G
+          - 2x25G
+          - 8x1G
+          - 4x50G
           - 8x200G
           - 1x25G
-          - 1x1G
+          - 2x200G
+          - 8x100G
+          - pg400G
+          - 4x200G
+          - 4x400G
+          - 8x400G
+          - 1x800G
+          - pg800G
+          - pg10G
+          - 8x50G
+          - 4x40G
+          - 2x40G
+          - 1x400G
+          - 2x1G
+          - 2x50G
+          - 2x800G
+          - 4x100G
+          - 2x100G
           - 8x40G
           - pg40G
-          - 8x50G
-          - 4x400G
-          - 2x1G
-          - 8x400G
-          - 1x100G
-          - 8x25G
-          - 2x50G
-          - 4x25G
-          - pg200G
-          - 4x40G
-          - 1x200G
-          - 2x100G
-          - 4x50G
-          - 8x800G
-          - 2x800G
-          - pg100G
-          - 1x50G
-          - 8x100G
-          - pg25G
-          - 4x200G
-          - 1x800G
-          - 2x40G
-          - 8x10G
-          - 1x400G
-          - 4x100G
-          - pg10G
-          - 2x10G
-          - 2x25G
-          - pg800G
-          - 4x1G
-          - pg400G
-          - 8x1G
-          - 4x10G
-          - pg1G
-          - 4x800G
           - 1x10G
+          - 4x10G
+          - 1x50G
+          - pg100G
+          - 4x800G
+          - 8x25G
+          - pg200G
+          - pg25G
+          - 4x25G
+          - 1x200G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -6099,10 +6103,10 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
-          - greater
-          - equal
-          - less
           - range
+          - less
+          - equal
+          - greater
           type: string
         source_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -6128,10 +6132,10 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
-          - greater
-          - equal
-          - less
           - range
+          - less
+          - equal
+          - greater
           type: string
         destination_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -6170,9 +6174,9 @@ components:
           description: Scheduler Type for Queue
           enum:
           - ""
-          - WRR
-          - SP
           - DWRR
+          - SP
+          - WRR
           type: string
         scheduler_weight:
           default: 0
@@ -6209,28 +6213,29 @@ components:
           default: next available color
           description: Color of Badge
           enum:
-          - orange
-          - green
           - blue
+          - green
           - red
-          - yellow
+          - orange
           - purple
+          - yellow
           minLength: 1
           type: string
         number:
           description: Number of Badge
           enum:
-          - 1
-          - 7
-          - 8
-          - 2
-          - 5
           - 0
-          - 4
-          - 9
-          - 3
           - 6
+          - 3
+          - 9
+          - 2
+          - 1
+          - 5
+          - 4
+          - 8
+          - 7
           maximum: 9
+          nullable: true
           type: integer
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
@@ -6320,8 +6325,8 @@ components:
           default: whitebox
           description: Type of Image Update Sets
           enum:
-          - whitebox
           - blackbox
+          - whitebox
           type: string
         section_pointless:
           items:
@@ -6526,11 +6531,13 @@ components:
           default: 0
           description: LLDP DSCP Mark
           maximum: 63
+          nullable: true
           type: integer
         lldp_med_row_num_priority:
           default: 0
           description: LLDP Priority
           maximum: 7
+          nullable: true
           type: integer
         lldp_med_row_num_service:
           default: ""
@@ -6714,8 +6721,8 @@ components:
           default: route
           description: Mode
           enum:
-          - soo
           - route
+          - soo
           type: string
         route_target_expanded_expression:
           default: ""
@@ -6807,9 +6814,9 @@ components:
             Spanning Tree enabled
           enum:
           - ""
-          - mstp
           - port
           - pvst
+          - mstp
           minLength: 1
           type: string
         region_name:
@@ -6855,60 +6862,70 @@ components:
           description: MAC Address Aging Time (between 1-100000)
           maximum: 100000
           minimum: 1
+          nullable: true
           type: integer
         mlag_delay_restore_timer:
           default: 300
           description: MLAG Delay Restore Timer
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         bgp_keepalive_timer:
           default: 60
           description: Spine BGP Keepalive Timer
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         bgp_hold_down_timer:
           default: 180
           description: Spine BGP Hold Down Timer
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         spine_bgp_advertisement_interval:
           default: 1
           description: BGP Advertisement Interval for spines/superspines. Use "0"
             for immediate updates
           maximum: 3600
+          nullable: true
           type: integer
         spine_bgp_connect_timer:
           default: 120
           description: BGP Connect Timer
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         leaf_bgp_keep_alive_timer:
           default: 60
           description: Leaf BGP Keep Alive Timer
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         leaf_bgp_hold_down_timer:
           default: 180
           description: Leaf BGP Hold Down Timer
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         leaf_bgp_advertisement_interval:
           default: 1
           description: BGP Advertisement Interval for leafs. Use "0" for immediate
             updates
           maximum: 3600
+          nullable: true
           type: integer
         leaf_bgp_connect_timer:
           default: 120
           description: BGP Connect Timer
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         link_state_timeout_value:
           default: 60
@@ -6948,6 +6965,24 @@ components:
           type: array
         object_properties:
           $ref: "#/components/schemas/_sites_patch_request_site_value_object_properties"
+        duplicate_address_detection_max_number_of_moves:
+          default: 5
+          description: Controls duplicate MAC address detection (DAD) Max Number of
+            Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of
+            moves (2 to 1000; default 5 if left blank)
+          maximum: 1000
+          minimum: 2
+          nullable: true
+          type: integer
+        duplicate_address_detection_time:
+          default: 180
+          description: Controls duplicate MAC address detection (DAD) time for EVPN
+            (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800;
+            default 180 if left blank)
+          maximum: 1800
+          minimum: 2
+          nullable: true
+          type: integer
         enable_dhcp_snooping:
           default: false
           description: Enables the switches to monitor DHCP traffic and collect assigned
@@ -7028,12 +7063,15 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.18
-          - 1.8.1.11
+          - 1.8.1.22
+          - 1.8.1.20
+          - 1.8.1.19
+          - 1.8.1.21
           - unmanaged
+          - 1.8.1.11
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17606946571361"
+          default: "17612994399651"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -7053,14 +7091,14 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
-          - badge_color
-          - bundle_id
-          - endpoint_type
-          - badge
-          - endpoint
           - productClass
-          - pod
+          - endpoint
+          - badge_color
           - deviceSerialNumber
+          - bundle_id
+          - pod
+          - badge
+          - endpoint_type
           type: string
         endpoint_set_num_subrule_1_value:
           default: ""
@@ -7082,14 +7120,14 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
-          - badge_color
-          - bundle_id
-          - endpoint_type
-          - badge
-          - endpoint
           - productClass
-          - pod
+          - endpoint
+          - badge_color
           - deviceSerialNumber
+          - bundle_id
+          - pod
+          - badge
+          - endpoint_type
           type: string
         endpoint_set_num_subrule_2_value:
           default: ""
@@ -7111,14 +7149,14 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
-          - badge_color
-          - bundle_id
-          - endpoint_type
-          - badge
-          - endpoint
           - productClass
-          - pod
+          - endpoint
+          - badge_color
           - deviceSerialNumber
+          - bundle_id
+          - pod
+          - badge
+          - endpoint_type
           type: string
         endpoint_set_num_subrule_3_value:
           default: ""
@@ -7188,9 +7226,12 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.18
-          - 1.8.1.11
+          - 1.8.1.22
+          - 1.8.1.20
+          - 1.8.1.19
+          - 1.8.1.21
           - unmanaged
+          - 1.8.1.11
           type: string
         endpoint_set_for_endpointless_unique_identifier:
           default: pointless
@@ -7265,8 +7306,8 @@ components:
           default: snmpv2
           description: Comm Type
           enum:
-          - snmpv2
           - gnmi
+          - snmpv2
           - snmpv3
           minLength: 1
           type: string
@@ -7298,11 +7339,11 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - LAG
           - LLDP
-          - as_site
+          - LAG
           - LAG_IDL
           - Static Port
+          - as_site
           minLength: 1
           type: string
         power_state:
@@ -7313,21 +7354,21 @@ components:
           default: generic_snmp
           description: Communication Mode
           enum:
-          - edgecore_ecs21000
-          - tibit_xgs_olt_sfp
-          - juniper_acx5048
-          - ruckus_icx7150
-          - generic_snmp
-          - eltex_ltp_gpon_olt
-          - arista_7050_series
           - cisco_small_business_sgxxx
           - sonic
           - cisco_catalyst_c3xxx
-          - microtik_routeros_telnet
-          - generic_advanced_snmp
           - adtran_netvanta_series
           - netgear_prosafe_series
+          - microtik_routeros_telnet
+          - generic_advanced_snmp
+          - arista_7050_series
+          - juniper_acx5048
+          - tibit_xgs_olt_sfp
+          - eltex_ltp_gpon_olt
+          - ruckus_icx7150
+          - edgecore_ecs21000
           - cisco_nexus_9xxx
+          - generic_snmp
           - hpe_aruba_2530_series
           minLength: 1
           type: string
@@ -7406,8 +7447,8 @@ components:
           default: DES
           description: Protocol
           enum:
-          - AES
           - DES
+          - AES
           minLength: 1
           type: string
         private_password:
@@ -7540,9 +7581,12 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.18
-          - 1.8.1.11
+          - 1.8.1.22
+          - 1.8.1.20
+          - 1.8.1.19
+          - 1.8.1.21
           - unmanaged
+          - 1.8.1.11
           type: string
         endpoint_set_for_all_others_unique_identifier:
           default: else
@@ -7666,6 +7710,7 @@ components:
           description: 'BGP Autonomous System Number for the site underlay '
           maximum: 4294967295
           minimum: 1
+          nullable: true
           type: integer
         bgp_as_number_auto_assigned_:
           description: Whether or not the value in bgp_as_number field has been automatically
@@ -7736,6 +7781,7 @@ components:
           default: 6343
           description: Port
           maximum: 65535
+          nullable: true
           type: integer
       type: object
     _switchpoints_upgrade_patch_request:
@@ -7762,9 +7808,9 @@ components:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
-          - high
           - ""
           - critical
+          - high
           type: string
         sort_by_name:
           default: false
@@ -7898,6 +7944,7 @@ components:
           description: Amount of time in seconds before 802.1X requires reauthorization
             of an active session. "0" disables reauthorization (not recommended)
           maximum: 3600
+          nullable: true
           type: integer
         allow_mac_based_authentication:
           default: false
@@ -7911,6 +7958,7 @@ components:
             to run before MAC-based authentication has begun
           maximum: 60
           minimum: 10
+          nullable: true
           type: integer
         trusted_port:
           default: false
@@ -7931,6 +7979,7 @@ components:
           default: 0
           description: Flag indicating this Traffic Class' Queue
           maximum: 7
+          nullable: true
           type: integer
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -8077,6 +8126,7 @@ components:
             BGP peer
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         hold_timer:
           default: 180
@@ -8084,6 +8134,7 @@ components:
             \ messages received from remote BGP peer "
           maximum: 3600
           minimum: 1
+          nullable: true
           type: integer
         connect_timer:
           default: 120
@@ -8091,12 +8142,14 @@ components:
             session
           maximum: 65535
           minimum: 1
+          nullable: true
           type: integer
         advertisement_interval:
           default: 30
           description: 'The minimum time in seconds between sending route updates
             to BGP neighbor '
           maximum: 600
+          nullable: true
           type: integer
         ebgp_multihop:
           default: 255
@@ -8104,6 +8157,7 @@ components:
             multiple network hops away. '
           maximum: 255
           minimum: 1
+          nullable: true
           type: integer
         egress_vlan:
           description: VLAN used to carry BGP TCP session
@@ -8126,13 +8180,13 @@ components:
           type: string
         md5_password:
           default: ""
-          description: MD5 password
+          description: MD5 Password used in the BGP session
           format: password
           maxLength: 64
           type: string
         import_route_map:
           default: ""
-          description: A route-map applied to routes imported into the current tenant
+          description: A Route Map applied to routes imported into the current tenant
             from the targeted BGP router with the purpose of filtering or modifying
             the routes
           type: string
@@ -8157,14 +8211,14 @@ components:
           description: Gateway Mode is the method used for defining routes for the
             Tenant
           enum:
-          - Dynamic BGP
-          - Static BGP
-          - Static
           - Default
+          - Dynamic BGP
+          - Static
+          - Static BGP
           minLength: 3
           type: string
         local_as_number:
-          description: Local AS Number to use as an override to the switch AS number
+          description: Local AS Number to use as an override to switch AS number
           maximum: 4294967295
           minimum: 1
           nullable: true
@@ -8200,8 +8254,8 @@ components:
           type: integer
         helper_hop_ip_address:
           default: ""
-          description: Helper Hop IP Address is used as the next hop to reach the
-            BGP peer
+          description: Neighbor Next Hop IP Address is used as the next hop to reach
+            the BGP peer in the case it is not a direct connection
           format: ipv4
           type: string
         enable_bfd:
@@ -8243,6 +8297,15 @@ components:
           type: array
         object_properties:
           $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
+        switch_encrypted_md5_password:
+          default: false
+          description: Indicates the entered password is a switch encrypted password.
+          type: boolean
+        md5_password_encrypted:
+          default: ""
+          description: MD5 Password Encrypted used in the BGP session
+          format: password
+          type: string
         default_originate:
           default: false
           description: Instructs BGP to generate and send a default route 0.0.0.0/0
@@ -8332,12 +8395,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - emerald
-          - anakiwa
-          - starship
           - chardonnay
-          - lavender
+          - starship
           - cornflower
+          - anakiwa
+          - lavender
+          - emerald
           minLength: 1
           type: string
         lacp:
@@ -8351,10 +8414,10 @@ components:
         eth_port_profile_ref_type_:
           description: Object type for eth_port_profile field
           enum:
-          - pb_egress_profile
-          - eth_port_profile_
           - gateway_profile
           - service_port_profile
+          - pb_egress_profile
+          - eth_port_profile_
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
@@ -8412,12 +8475,12 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
-          - type
-          - authenticated_eth_port
-          - service_port_profile
-          - nbi_eth_port
-          - pb_egress_profile
           - lag
+          - pb_egress_profile
+          - nbi_eth_port
+          - type
+          - service_port_profile
+          - authenticated_eth_port
           - eth_port_profile_
           type: string
         eth_port_num_eth_port_settings:
@@ -8636,9 +8699,9 @@ components:
           description: 'Match routes based on the value of the BGP Origin attribute '
           enum:
           - ""
-          - incomplete
-          - igp
           - egp
+          - igp
+          - incomplete
           type: string
         match_peer_ip_address:
           default: ""
@@ -8662,10 +8725,10 @@ components:
           description: 'Match Routing  Protocol the route originated from '
           enum:
           - ""
-          - connected
           - bgp
-          - static
+          - connected
           - ospf
+          - static
           type: string
         match_vrf:
           default: ""
@@ -8691,8 +8754,8 @@ components:
           enum:
           - ""
           - macip
-          - prefix
           - multicast
+          - prefix
           type: string
         match_vni:
           description: 'Match based on the VNI value '
@@ -8737,51 +8800,51 @@ components:
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
           - ""
-          - pg50G
-          - 1x40G
-          - 2x200G
+          - 1x100G
+          - pg1G
           - 2x400G
+          - 1x1G
+          - 2x10G
+          - 1x40G
+          - pg50G
+          - 4x1G
+          - 8x10G
+          - 8x800G
+          - 2x25G
+          - 8x1G
+          - 4x50G
           - 8x200G
           - 1x25G
-          - 1x1G
+          - 2x200G
+          - 8x100G
+          - pg400G
+          - 4x200G
+          - 4x400G
+          - 8x400G
+          - 1x800G
+          - pg800G
+          - pg10G
+          - 8x50G
+          - 4x40G
+          - 2x40G
+          - 1x400G
+          - 2x1G
+          - 2x50G
+          - 2x800G
+          - 4x100G
+          - 2x100G
           - 8x40G
           - pg40G
-          - 8x50G
-          - 4x400G
-          - 2x1G
-          - 8x400G
-          - 1x100G
-          - 8x25G
-          - 2x50G
-          - 4x25G
-          - pg200G
-          - 4x40G
-          - 1x200G
-          - 2x100G
-          - 4x50G
-          - 8x800G
-          - 2x800G
-          - pg100G
-          - 1x50G
-          - 8x100G
-          - pg25G
-          - 4x200G
-          - 1x800G
-          - 2x40G
-          - 8x10G
-          - 1x400G
-          - 4x100G
-          - pg10G
-          - 2x10G
-          - 2x25G
-          - pg800G
-          - 4x1G
-          - pg400G
-          - 8x1G
-          - 4x10G
-          - pg1G
-          - 4x800G
           - 1x10G
+          - 4x10G
+          - 1x50G
+          - pg100G
+          - 4x800G
+          - 8x25G
+          - pg200G
+          - pg25G
+          - 4x25G
+          - 1x200G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -8846,27 +8909,27 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "10000"
-          - "-1"
-          - "2500"
           - "5000"
-          - "1000"
-          - "10"
-          - "25000"
-          - "40000"
-          - "400000"
           - "50000"
           - "100000"
+          - "10000"
+          - "10"
+          - "-1"
           - "100"
+          - "25000"
+          - "40000"
+          - "1000"
+          - "2500"
+          - "400000"
           minLength: 1
           type: string
         duplex_mode:
           default: Auto
           description: Duplex Mode
           enum:
+          - Auto
           - Full
           - Half
-          - Auto
           minLength: 1
           type: string
         stp_enable:
@@ -8898,9 +8961,9 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
-          - Critical
           - High
           - Low
+          - Critical
           minLength: 1
           type: string
         allocated_power:
@@ -8926,6 +8989,7 @@ components:
             traffic before invoking the protective action
           maximum: 9999
           minimum: 1
+          nullable: true
           type: integer
         max_allowed_unit:
           default: pps
@@ -8942,8 +9006,8 @@ components:
             \                                      </div>\n                      \
             \                          "
           enum:
-          - pps
           - Kpps
+          - pps
           - '%'
           minLength: 1
           type: string
@@ -8964,9 +9028,9 @@ components:
             \ <br>\n                                                </div>\n     \
             \                                       "
           enum:
-          - Shutdown
-          - Protect
           - Restrict
+          - Protect
+          - Shutdown
           minLength: 1
           type: string
         fec:
@@ -8984,12 +9048,12 @@ components:
             \ the Switch Value.<br>\n                                            \
             \    </div>\n                                            "
           enum:
-          - unaltered
-          - rs-custom
           - fc
-          - auto
-          - none
           - rs
+          - none
+          - auto
+          - rs-custom
+          - unaltered
           minLength: 1
           type: string
         single_link:
@@ -9002,17 +9066,20 @@ components:
           description: A value between 1 to 12480(in KiloBytes)
           maximum: 12480
           minimum: 1
+          nullable: true
           type: integer
         maximum_wred_threshold:
           default: 1
           description: A value between 1 to 12480(in KiloBytes)
           maximum: 12480
           minimum: 1
+          nullable: true
           type: integer
         wred_drop_probability:
           default: 0
           description: A value between 0 to 100
           maximum: 100
+          nullable: true
           type: integer
         priority_flow_control_watchdog_action:
           default: DROP
@@ -9028,12 +9095,14 @@ components:
           description: A value between 100 to 5000
           maximum: 5000
           minimum: 100
+          nullable: true
           type: integer
         priority_flow_control_watchdog_restore_time:
           default: 100
           description: A value between 100 to 60000
           maximum: 60000
           minimum: 100
+          nullable: true
           type: integer
         object_properties:
           $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
@@ -9099,6 +9168,7 @@ components:
           description: Between 1-1000
           maximum: 1000
           minimum: 1
+          nullable: true
           type: integer
         security_violation_action:
           default: protect
@@ -9135,6 +9205,7 @@ components:
           description: "In minutes, how long the client will stay authenticated. See\
             \ Also Aging Type"
           maximum: 1440
+          nullable: true
           type: integer
         lldp_enable:
           default: true
@@ -9468,6 +9539,7 @@ components:
           description: Enables or disables handling of CAS via RTP CAS events. Valid
             values are 0 = off and 1 = on
           maximum: 1
+          nullable: true
           type: integer
         dscp_mark:
           default: 0
@@ -9730,11 +9802,13 @@ components:
           description: Bandwidth allocated per port in the upstream direction. (Max
             10000 Mbps)
           maximum: 10000
+          nullable: true
           type: integer
         max_downstream_rate_mbps:
           description: Bandwidth allocated per port in the downstream direction. (Max
             10000 Mbps)
           maximum: 10000
+          nullable: true
           type: integer
         packet_priority:
           default: "0"
@@ -9814,6 +9888,7 @@ components:
           default: 0
           description: MST Instance ID (0-4094)
           maximum: 4094
+          nullable: true
           type: integer
       type: object
     _bundles_put_request:
@@ -9964,8 +10039,8 @@ components:
           default: ipv4
           description: IPv4 or IPv6
           enum:
-          - ipv4
           - ipv6
+          - ipv4
           type: string
         next_hop_ips:
           default: ""
@@ -10323,6 +10398,7 @@ components:
           default: 1
           description: Number of spine switches expected in this pod
           minimum: 1
+          nullable: true
           type: integer
       type: object
     _ipv6prefixlists_put_request_ipv6_prefix_list_value:

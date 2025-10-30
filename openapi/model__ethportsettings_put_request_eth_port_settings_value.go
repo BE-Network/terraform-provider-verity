@@ -52,7 +52,7 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	// Multicast
 	Multicast *bool `json:"multicast,omitempty"`
 	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action
-	MaxAllowedValue *int32 `json:"max_allowed_value,omitempty"`
+	MaxAllowedValue NullableInt32 `json:"max_allowed_value,omitempty"`
 	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>                                                 <div class=\"tab\">                                                     %: Percentage.<br>                                                     kbps: kilobits per second <br>                                                     mbps: megabits per second <br>                                                     gbps: gigabits per second <br>                                                     pps: packet per second <br>                                                     kpps: kilopacket per second <br>                                                 </div>                                                 
 	MaxAllowedUnit *string `json:"max_allowed_unit,omitempty"`
 	// Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: <br>                                                 <div class=\"tab\">                                                     Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.<br><br>                                                     Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.                                                     Alarm is raised . Alarm automatically clears when rate is below configured threshold. <br><br>                                                     Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. <br>                                                 </div>                                             
@@ -62,17 +62,17 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	// Ports with this setting will be disabled when link state tracking takes effect
 	SingleLink *bool `json:"single_link,omitempty"`
 	// A value between 1 to 12480(in KiloBytes)
-	MinimumWredThreshold *int32 `json:"minimum_wred_threshold,omitempty"`
+	MinimumWredThreshold NullableInt32 `json:"minimum_wred_threshold,omitempty"`
 	// A value between 1 to 12480(in KiloBytes)
-	MaximumWredThreshold *int32 `json:"maximum_wred_threshold,omitempty"`
+	MaximumWredThreshold NullableInt32 `json:"maximum_wred_threshold,omitempty"`
 	// A value between 0 to 100
-	WredDropProbability *int32 `json:"wred_drop_probability,omitempty"`
+	WredDropProbability NullableInt32 `json:"wred_drop_probability,omitempty"`
 	// Ports with this setting will be disabled when link state tracking takes effect
 	PriorityFlowControlWatchdogAction *string `json:"priority_flow_control_watchdog_action,omitempty"`
 	// A value between 100 to 5000
-	PriorityFlowControlWatchdogDetectTime *int32 `json:"priority_flow_control_watchdog_detect_time,omitempty"`
+	PriorityFlowControlWatchdogDetectTime NullableInt32 `json:"priority_flow_control_watchdog_detect_time,omitempty"`
 	// A value between 100 to 60000
-	PriorityFlowControlWatchdogRestoreTime *int32 `json:"priority_flow_control_watchdog_restore_time,omitempty"`
+	PriorityFlowControlWatchdogRestoreTime NullableInt32 `json:"priority_flow_control_watchdog_restore_time,omitempty"`
 	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
 	// Packet Queue
 	PacketQueue *string `json:"packet_queue,omitempty"`
@@ -93,13 +93,13 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	// Dynamic - MACs are learned and aged normally up to the limit. <br>                                 <div class=\"tab\">                                     Packets will be dropped from clients exceeding the limit. <br>                                     Once a client ages out, a new client can take its slot. <br>                                     When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.<br>                                 </div>                             Sticky - Semi permenant learning. <br>                                 <div class=\"tab\">                                     Packets will be dropped from clients exceeding the limit. <br>                                     Addresses do not age out or move within the same switch. <br>                                     Operationally downing a port (disconnecting) does NOT flush the entries. <br>                                     Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.                                 </div>
 	MacSecurityMode *string `json:"mac_security_mode,omitempty"`
 	// Between 1-1000
-	MacLimit *int32 `json:"mac_limit,omitempty"`
+	MacLimit NullableInt32 `json:"mac_limit,omitempty"`
 	// Protect - All packets are dropped from clients above the MAC Limit. <br>                                 <div class=\"tab\">                                     Exceeding the limit is not alarmed. <br>                                 </div>                             Restrict - All packets are dropped from clients above the MAC Limit. <br>                                 <div class=\"tab\">                                     Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. <br>                                 </div>                             Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. <br>                                 <div class=\"tab\">                                     User must administratively Disable and Enable the port to restore service.                                 </div>
 	SecurityViolationAction *string `json:"security_violation_action,omitempty"`
 	// Limit MAC authentication based on inactivity or on absolute time. See Also Aging Time
 	AgingType *string `json:"aging_type,omitempty"`
 	// In minutes, how long the client will stay authenticated. See Also Aging Type
-	AgingTime *int32 `json:"aging_time,omitempty"`
+	AgingTime NullableInt32 `json:"aging_time,omitempty"`
 	// LLDP enable
 	LldpEnable *bool `json:"lldp_enable,omitempty"`
 	// LLDP mode.  Enables LLDP Rx and/or LLDP Tx
@@ -148,7 +148,7 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	var multicast bool = true
 	this.Multicast = &multicast
 	var maxAllowedValue int32 = 1000
-	this.MaxAllowedValue = &maxAllowedValue
+	this.MaxAllowedValue = *NewNullableInt32(&maxAllowedValue)
 	var maxAllowedUnit string = "pps"
 	this.MaxAllowedUnit = &maxAllowedUnit
 	var action string = "Protect"
@@ -158,17 +158,17 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	var singleLink bool = false
 	this.SingleLink = &singleLink
 	var minimumWredThreshold int32 = 1
-	this.MinimumWredThreshold = &minimumWredThreshold
+	this.MinimumWredThreshold = *NewNullableInt32(&minimumWredThreshold)
 	var maximumWredThreshold int32 = 1
-	this.MaximumWredThreshold = &maximumWredThreshold
+	this.MaximumWredThreshold = *NewNullableInt32(&maximumWredThreshold)
 	var wredDropProbability int32 = 0
-	this.WredDropProbability = &wredDropProbability
+	this.WredDropProbability = *NewNullableInt32(&wredDropProbability)
 	var priorityFlowControlWatchdogAction string = "DROP"
 	this.PriorityFlowControlWatchdogAction = &priorityFlowControlWatchdogAction
 	var priorityFlowControlWatchdogDetectTime int32 = 100
-	this.PriorityFlowControlWatchdogDetectTime = &priorityFlowControlWatchdogDetectTime
+	this.PriorityFlowControlWatchdogDetectTime = *NewNullableInt32(&priorityFlowControlWatchdogDetectTime)
 	var priorityFlowControlWatchdogRestoreTime int32 = 100
-	this.PriorityFlowControlWatchdogRestoreTime = &priorityFlowControlWatchdogRestoreTime
+	this.PriorityFlowControlWatchdogRestoreTime = *NewNullableInt32(&priorityFlowControlWatchdogRestoreTime)
 	var packetQueue string = ""
 	this.PacketQueue = &packetQueue
 	var enableWredTuning bool = false
@@ -186,13 +186,13 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	var macSecurityMode string = "disabled"
 	this.MacSecurityMode = &macSecurityMode
 	var macLimit int32 = 1000
-	this.MacLimit = &macLimit
+	this.MacLimit = *NewNullableInt32(&macLimit)
 	var securityViolationAction string = "protect"
 	this.SecurityViolationAction = &securityViolationAction
 	var agingType string = "absolute"
 	this.AgingType = &agingType
 	var agingTime int32 = 0
-	this.AgingTime = &agingTime
+	this.AgingTime = *NewNullableInt32(&agingTime)
 	var lldpEnable bool = true
 	this.LldpEnable = &lldpEnable
 	var lldpMode string = "RxAndTx"
@@ -240,7 +240,7 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	var multicast bool = true
 	this.Multicast = &multicast
 	var maxAllowedValue int32 = 1000
-	this.MaxAllowedValue = &maxAllowedValue
+	this.MaxAllowedValue = *NewNullableInt32(&maxAllowedValue)
 	var maxAllowedUnit string = "pps"
 	this.MaxAllowedUnit = &maxAllowedUnit
 	var action string = "Protect"
@@ -250,17 +250,17 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	var singleLink bool = false
 	this.SingleLink = &singleLink
 	var minimumWredThreshold int32 = 1
-	this.MinimumWredThreshold = &minimumWredThreshold
+	this.MinimumWredThreshold = *NewNullableInt32(&minimumWredThreshold)
 	var maximumWredThreshold int32 = 1
-	this.MaximumWredThreshold = &maximumWredThreshold
+	this.MaximumWredThreshold = *NewNullableInt32(&maximumWredThreshold)
 	var wredDropProbability int32 = 0
-	this.WredDropProbability = &wredDropProbability
+	this.WredDropProbability = *NewNullableInt32(&wredDropProbability)
 	var priorityFlowControlWatchdogAction string = "DROP"
 	this.PriorityFlowControlWatchdogAction = &priorityFlowControlWatchdogAction
 	var priorityFlowControlWatchdogDetectTime int32 = 100
-	this.PriorityFlowControlWatchdogDetectTime = &priorityFlowControlWatchdogDetectTime
+	this.PriorityFlowControlWatchdogDetectTime = *NewNullableInt32(&priorityFlowControlWatchdogDetectTime)
 	var priorityFlowControlWatchdogRestoreTime int32 = 100
-	this.PriorityFlowControlWatchdogRestoreTime = &priorityFlowControlWatchdogRestoreTime
+	this.PriorityFlowControlWatchdogRestoreTime = *NewNullableInt32(&priorityFlowControlWatchdogRestoreTime)
 	var packetQueue string = ""
 	this.PacketQueue = &packetQueue
 	var enableWredTuning bool = false
@@ -278,13 +278,13 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	var macSecurityMode string = "disabled"
 	this.MacSecurityMode = &macSecurityMode
 	var macLimit int32 = 1000
-	this.MacLimit = &macLimit
+	this.MacLimit = *NewNullableInt32(&macLimit)
 	var securityViolationAction string = "protect"
 	this.SecurityViolationAction = &securityViolationAction
 	var agingType string = "absolute"
 	this.AgingType = &agingType
 	var agingTime int32 = 0
-	this.AgingTime = &agingTime
+	this.AgingTime = *NewNullableInt32(&agingTime)
 	var lldpEnable bool = true
 	this.LldpEnable = &lldpEnable
 	var lldpMode string = "RxAndTx"
@@ -806,36 +806,46 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMulticast(v bool) {
 	o.Multicast = &v
 }
 
-// GetMaxAllowedValue returns the MaxAllowedValue field value if set, zero value otherwise.
+// GetMaxAllowedValue returns the MaxAllowedValue field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedValue() int32 {
-	if o == nil || IsNil(o.MaxAllowedValue) {
+	if o == nil || IsNil(o.MaxAllowedValue.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MaxAllowedValue
+	return *o.MaxAllowedValue.Get()
 }
 
 // GetMaxAllowedValueOk returns a tuple with the MaxAllowedValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedValueOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaxAllowedValue) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MaxAllowedValue, true
+	return o.MaxAllowedValue.Get(), o.MaxAllowedValue.IsSet()
 }
 
 // HasMaxAllowedValue returns a boolean if a field has been set.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaxAllowedValue() bool {
-	if o != nil && !IsNil(o.MaxAllowedValue) {
+	if o != nil && o.MaxAllowedValue.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMaxAllowedValue gets a reference to the given int32 and assigns it to the MaxAllowedValue field.
+// SetMaxAllowedValue gets a reference to the given NullableInt32 and assigns it to the MaxAllowedValue field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedValue(v int32) {
-	o.MaxAllowedValue = &v
+	o.MaxAllowedValue.Set(&v)
+}
+// SetMaxAllowedValueNil sets the value for MaxAllowedValue to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedValueNil() {
+	o.MaxAllowedValue.Set(nil)
+}
+
+// UnsetMaxAllowedValue ensures that no value is present for MaxAllowedValue, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMaxAllowedValue() {
+	o.MaxAllowedValue.Unset()
 }
 
 // GetMaxAllowedUnit returns the MaxAllowedUnit field value if set, zero value otherwise.
@@ -966,100 +976,130 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetSingleLink(v bool) {
 	o.SingleLink = &v
 }
 
-// GetMinimumWredThreshold returns the MinimumWredThreshold field value if set, zero value otherwise.
+// GetMinimumWredThreshold returns the MinimumWredThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMinimumWredThreshold() int32 {
-	if o == nil || IsNil(o.MinimumWredThreshold) {
+	if o == nil || IsNil(o.MinimumWredThreshold.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MinimumWredThreshold
+	return *o.MinimumWredThreshold.Get()
 }
 
 // GetMinimumWredThresholdOk returns a tuple with the MinimumWredThreshold field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMinimumWredThresholdOk() (*int32, bool) {
-	if o == nil || IsNil(o.MinimumWredThreshold) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MinimumWredThreshold, true
+	return o.MinimumWredThreshold.Get(), o.MinimumWredThreshold.IsSet()
 }
 
 // HasMinimumWredThreshold returns a boolean if a field has been set.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMinimumWredThreshold() bool {
-	if o != nil && !IsNil(o.MinimumWredThreshold) {
+	if o != nil && o.MinimumWredThreshold.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMinimumWredThreshold gets a reference to the given int32 and assigns it to the MinimumWredThreshold field.
+// SetMinimumWredThreshold gets a reference to the given NullableInt32 and assigns it to the MinimumWredThreshold field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMinimumWredThreshold(v int32) {
-	o.MinimumWredThreshold = &v
+	o.MinimumWredThreshold.Set(&v)
+}
+// SetMinimumWredThresholdNil sets the value for MinimumWredThreshold to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMinimumWredThresholdNil() {
+	o.MinimumWredThreshold.Set(nil)
 }
 
-// GetMaximumWredThreshold returns the MaximumWredThreshold field value if set, zero value otherwise.
+// UnsetMinimumWredThreshold ensures that no value is present for MinimumWredThreshold, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMinimumWredThreshold() {
+	o.MinimumWredThreshold.Unset()
+}
+
+// GetMaximumWredThreshold returns the MaximumWredThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaximumWredThreshold() int32 {
-	if o == nil || IsNil(o.MaximumWredThreshold) {
+	if o == nil || IsNil(o.MaximumWredThreshold.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MaximumWredThreshold
+	return *o.MaximumWredThreshold.Get()
 }
 
 // GetMaximumWredThresholdOk returns a tuple with the MaximumWredThreshold field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaximumWredThresholdOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaximumWredThreshold) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MaximumWredThreshold, true
+	return o.MaximumWredThreshold.Get(), o.MaximumWredThreshold.IsSet()
 }
 
 // HasMaximumWredThreshold returns a boolean if a field has been set.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaximumWredThreshold() bool {
-	if o != nil && !IsNil(o.MaximumWredThreshold) {
+	if o != nil && o.MaximumWredThreshold.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMaximumWredThreshold gets a reference to the given int32 and assigns it to the MaximumWredThreshold field.
+// SetMaximumWredThreshold gets a reference to the given NullableInt32 and assigns it to the MaximumWredThreshold field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaximumWredThreshold(v int32) {
-	o.MaximumWredThreshold = &v
+	o.MaximumWredThreshold.Set(&v)
+}
+// SetMaximumWredThresholdNil sets the value for MaximumWredThreshold to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaximumWredThresholdNil() {
+	o.MaximumWredThreshold.Set(nil)
 }
 
-// GetWredDropProbability returns the WredDropProbability field value if set, zero value otherwise.
+// UnsetMaximumWredThreshold ensures that no value is present for MaximumWredThreshold, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMaximumWredThreshold() {
+	o.MaximumWredThreshold.Unset()
+}
+
+// GetWredDropProbability returns the WredDropProbability field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetWredDropProbability() int32 {
-	if o == nil || IsNil(o.WredDropProbability) {
+	if o == nil || IsNil(o.WredDropProbability.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.WredDropProbability
+	return *o.WredDropProbability.Get()
 }
 
 // GetWredDropProbabilityOk returns a tuple with the WredDropProbability field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetWredDropProbabilityOk() (*int32, bool) {
-	if o == nil || IsNil(o.WredDropProbability) {
+	if o == nil {
 		return nil, false
 	}
-	return o.WredDropProbability, true
+	return o.WredDropProbability.Get(), o.WredDropProbability.IsSet()
 }
 
 // HasWredDropProbability returns a boolean if a field has been set.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) HasWredDropProbability() bool {
-	if o != nil && !IsNil(o.WredDropProbability) {
+	if o != nil && o.WredDropProbability.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetWredDropProbability gets a reference to the given int32 and assigns it to the WredDropProbability field.
+// SetWredDropProbability gets a reference to the given NullableInt32 and assigns it to the WredDropProbability field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetWredDropProbability(v int32) {
-	o.WredDropProbability = &v
+	o.WredDropProbability.Set(&v)
+}
+// SetWredDropProbabilityNil sets the value for WredDropProbability to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetWredDropProbabilityNil() {
+	o.WredDropProbability.Set(nil)
+}
+
+// UnsetWredDropProbability ensures that no value is present for WredDropProbability, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetWredDropProbability() {
+	o.WredDropProbability.Unset()
 }
 
 // GetPriorityFlowControlWatchdogAction returns the PriorityFlowControlWatchdogAction field value if set, zero value otherwise.
@@ -1094,68 +1134,88 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWa
 	o.PriorityFlowControlWatchdogAction = &v
 }
 
-// GetPriorityFlowControlWatchdogDetectTime returns the PriorityFlowControlWatchdogDetectTime field value if set, zero value otherwise.
+// GetPriorityFlowControlWatchdogDetectTime returns the PriorityFlowControlWatchdogDetectTime field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPriorityFlowControlWatchdogDetectTime() int32 {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogDetectTime) {
+	if o == nil || IsNil(o.PriorityFlowControlWatchdogDetectTime.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.PriorityFlowControlWatchdogDetectTime
+	return *o.PriorityFlowControlWatchdogDetectTime.Get()
 }
 
 // GetPriorityFlowControlWatchdogDetectTimeOk returns a tuple with the PriorityFlowControlWatchdogDetectTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPriorityFlowControlWatchdogDetectTimeOk() (*int32, bool) {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogDetectTime) {
+	if o == nil {
 		return nil, false
 	}
-	return o.PriorityFlowControlWatchdogDetectTime, true
+	return o.PriorityFlowControlWatchdogDetectTime.Get(), o.PriorityFlowControlWatchdogDetectTime.IsSet()
 }
 
 // HasPriorityFlowControlWatchdogDetectTime returns a boolean if a field has been set.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPriorityFlowControlWatchdogDetectTime() bool {
-	if o != nil && !IsNil(o.PriorityFlowControlWatchdogDetectTime) {
+	if o != nil && o.PriorityFlowControlWatchdogDetectTime.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPriorityFlowControlWatchdogDetectTime gets a reference to the given int32 and assigns it to the PriorityFlowControlWatchdogDetectTime field.
+// SetPriorityFlowControlWatchdogDetectTime gets a reference to the given NullableInt32 and assigns it to the PriorityFlowControlWatchdogDetectTime field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogDetectTime(v int32) {
-	o.PriorityFlowControlWatchdogDetectTime = &v
+	o.PriorityFlowControlWatchdogDetectTime.Set(&v)
+}
+// SetPriorityFlowControlWatchdogDetectTimeNil sets the value for PriorityFlowControlWatchdogDetectTime to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogDetectTimeNil() {
+	o.PriorityFlowControlWatchdogDetectTime.Set(nil)
 }
 
-// GetPriorityFlowControlWatchdogRestoreTime returns the PriorityFlowControlWatchdogRestoreTime field value if set, zero value otherwise.
+// UnsetPriorityFlowControlWatchdogDetectTime ensures that no value is present for PriorityFlowControlWatchdogDetectTime, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetPriorityFlowControlWatchdogDetectTime() {
+	o.PriorityFlowControlWatchdogDetectTime.Unset()
+}
+
+// GetPriorityFlowControlWatchdogRestoreTime returns the PriorityFlowControlWatchdogRestoreTime field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPriorityFlowControlWatchdogRestoreTime() int32 {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogRestoreTime) {
+	if o == nil || IsNil(o.PriorityFlowControlWatchdogRestoreTime.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.PriorityFlowControlWatchdogRestoreTime
+	return *o.PriorityFlowControlWatchdogRestoreTime.Get()
 }
 
 // GetPriorityFlowControlWatchdogRestoreTimeOk returns a tuple with the PriorityFlowControlWatchdogRestoreTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPriorityFlowControlWatchdogRestoreTimeOk() (*int32, bool) {
-	if o == nil || IsNil(o.PriorityFlowControlWatchdogRestoreTime) {
+	if o == nil {
 		return nil, false
 	}
-	return o.PriorityFlowControlWatchdogRestoreTime, true
+	return o.PriorityFlowControlWatchdogRestoreTime.Get(), o.PriorityFlowControlWatchdogRestoreTime.IsSet()
 }
 
 // HasPriorityFlowControlWatchdogRestoreTime returns a boolean if a field has been set.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPriorityFlowControlWatchdogRestoreTime() bool {
-	if o != nil && !IsNil(o.PriorityFlowControlWatchdogRestoreTime) {
+	if o != nil && o.PriorityFlowControlWatchdogRestoreTime.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPriorityFlowControlWatchdogRestoreTime gets a reference to the given int32 and assigns it to the PriorityFlowControlWatchdogRestoreTime field.
+// SetPriorityFlowControlWatchdogRestoreTime gets a reference to the given NullableInt32 and assigns it to the PriorityFlowControlWatchdogRestoreTime field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogRestoreTime(v int32) {
-	o.PriorityFlowControlWatchdogRestoreTime = &v
+	o.PriorityFlowControlWatchdogRestoreTime.Set(&v)
+}
+// SetPriorityFlowControlWatchdogRestoreTimeNil sets the value for PriorityFlowControlWatchdogRestoreTime to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogRestoreTimeNil() {
+	o.PriorityFlowControlWatchdogRestoreTime.Set(nil)
+}
+
+// UnsetPriorityFlowControlWatchdogRestoreTime ensures that no value is present for PriorityFlowControlWatchdogRestoreTime, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetPriorityFlowControlWatchdogRestoreTime() {
+	o.PriorityFlowControlWatchdogRestoreTime.Unset()
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -1478,36 +1538,46 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacSecurityMode(v str
 	o.MacSecurityMode = &v
 }
 
-// GetMacLimit returns the MacLimit field value if set, zero value otherwise.
+// GetMacLimit returns the MacLimit field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacLimit() int32 {
-	if o == nil || IsNil(o.MacLimit) {
+	if o == nil || IsNil(o.MacLimit.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MacLimit
+	return *o.MacLimit.Get()
 }
 
 // GetMacLimitOk returns a tuple with the MacLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacLimitOk() (*int32, bool) {
-	if o == nil || IsNil(o.MacLimit) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MacLimit, true
+	return o.MacLimit.Get(), o.MacLimit.IsSet()
 }
 
 // HasMacLimit returns a boolean if a field has been set.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMacLimit() bool {
-	if o != nil && !IsNil(o.MacLimit) {
+	if o != nil && o.MacLimit.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMacLimit gets a reference to the given int32 and assigns it to the MacLimit field.
+// SetMacLimit gets a reference to the given NullableInt32 and assigns it to the MacLimit field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacLimit(v int32) {
-	o.MacLimit = &v
+	o.MacLimit.Set(&v)
+}
+// SetMacLimitNil sets the value for MacLimit to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacLimitNil() {
+	o.MacLimit.Set(nil)
+}
+
+// UnsetMacLimit ensures that no value is present for MacLimit, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMacLimit() {
+	o.MacLimit.Unset()
 }
 
 // GetSecurityViolationAction returns the SecurityViolationAction field value if set, zero value otherwise.
@@ -1574,36 +1644,46 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingType(v string) {
 	o.AgingType = &v
 }
 
-// GetAgingTime returns the AgingTime field value if set, zero value otherwise.
+// GetAgingTime returns the AgingTime field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingTime() int32 {
-	if o == nil || IsNil(o.AgingTime) {
+	if o == nil || IsNil(o.AgingTime.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.AgingTime
+	return *o.AgingTime.Get()
 }
 
 // GetAgingTimeOk returns a tuple with the AgingTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingTimeOk() (*int32, bool) {
-	if o == nil || IsNil(o.AgingTime) {
+	if o == nil {
 		return nil, false
 	}
-	return o.AgingTime, true
+	return o.AgingTime.Get(), o.AgingTime.IsSet()
 }
 
 // HasAgingTime returns a boolean if a field has been set.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAgingTime() bool {
-	if o != nil && !IsNil(o.AgingTime) {
+	if o != nil && o.AgingTime.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAgingTime gets a reference to the given int32 and assigns it to the AgingTime field.
+// SetAgingTime gets a reference to the given NullableInt32 and assigns it to the AgingTime field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingTime(v int32) {
-	o.AgingTime = &v
+	o.AgingTime.Set(&v)
+}
+// SetAgingTimeNil sets the value for AgingTime to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingTimeNil() {
+	o.AgingTime.Set(nil)
+}
+
+// UnsetAgingTime ensures that no value is present for AgingTime, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetAgingTime() {
+	o.AgingTime.Unset()
 }
 
 // GetLldpEnable returns the LldpEnable field value if set, zero value otherwise.
@@ -1792,8 +1872,8 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if !IsNil(o.Multicast) {
 		toSerialize["multicast"] = o.Multicast
 	}
-	if !IsNil(o.MaxAllowedValue) {
-		toSerialize["max_allowed_value"] = o.MaxAllowedValue
+	if o.MaxAllowedValue.IsSet() {
+		toSerialize["max_allowed_value"] = o.MaxAllowedValue.Get()
 	}
 	if !IsNil(o.MaxAllowedUnit) {
 		toSerialize["max_allowed_unit"] = o.MaxAllowedUnit
@@ -1807,23 +1887,23 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if !IsNil(o.SingleLink) {
 		toSerialize["single_link"] = o.SingleLink
 	}
-	if !IsNil(o.MinimumWredThreshold) {
-		toSerialize["minimum_wred_threshold"] = o.MinimumWredThreshold
+	if o.MinimumWredThreshold.IsSet() {
+		toSerialize["minimum_wred_threshold"] = o.MinimumWredThreshold.Get()
 	}
-	if !IsNil(o.MaximumWredThreshold) {
-		toSerialize["maximum_wred_threshold"] = o.MaximumWredThreshold
+	if o.MaximumWredThreshold.IsSet() {
+		toSerialize["maximum_wred_threshold"] = o.MaximumWredThreshold.Get()
 	}
-	if !IsNil(o.WredDropProbability) {
-		toSerialize["wred_drop_probability"] = o.WredDropProbability
+	if o.WredDropProbability.IsSet() {
+		toSerialize["wred_drop_probability"] = o.WredDropProbability.Get()
 	}
 	if !IsNil(o.PriorityFlowControlWatchdogAction) {
 		toSerialize["priority_flow_control_watchdog_action"] = o.PriorityFlowControlWatchdogAction
 	}
-	if !IsNil(o.PriorityFlowControlWatchdogDetectTime) {
-		toSerialize["priority_flow_control_watchdog_detect_time"] = o.PriorityFlowControlWatchdogDetectTime
+	if o.PriorityFlowControlWatchdogDetectTime.IsSet() {
+		toSerialize["priority_flow_control_watchdog_detect_time"] = o.PriorityFlowControlWatchdogDetectTime.Get()
 	}
-	if !IsNil(o.PriorityFlowControlWatchdogRestoreTime) {
-		toSerialize["priority_flow_control_watchdog_restore_time"] = o.PriorityFlowControlWatchdogRestoreTime
+	if o.PriorityFlowControlWatchdogRestoreTime.IsSet() {
+		toSerialize["priority_flow_control_watchdog_restore_time"] = o.PriorityFlowControlWatchdogRestoreTime.Get()
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
@@ -1855,8 +1935,8 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if !IsNil(o.MacSecurityMode) {
 		toSerialize["mac_security_mode"] = o.MacSecurityMode
 	}
-	if !IsNil(o.MacLimit) {
-		toSerialize["mac_limit"] = o.MacLimit
+	if o.MacLimit.IsSet() {
+		toSerialize["mac_limit"] = o.MacLimit.Get()
 	}
 	if !IsNil(o.SecurityViolationAction) {
 		toSerialize["security_violation_action"] = o.SecurityViolationAction
@@ -1864,8 +1944,8 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if !IsNil(o.AgingType) {
 		toSerialize["aging_type"] = o.AgingType
 	}
-	if !IsNil(o.AgingTime) {
-		toSerialize["aging_time"] = o.AgingTime
+	if o.AgingTime.IsSet() {
+		toSerialize["aging_time"] = o.AgingTime.Get()
 	}
 	if !IsNil(o.LldpEnable) {
 		toSerialize["lldp_enable"] = o.LldpEnable

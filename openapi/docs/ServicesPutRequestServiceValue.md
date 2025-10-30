@@ -19,8 +19,8 @@ Name | Type | Description | Notes
 **ObjectProperties** | Pointer to [**ServicesPutRequestServiceValueObjectProperties**](ServicesPutRequestServiceValueObjectProperties.md) |  | [optional] 
 **PolicyBasedRouting** | Pointer to **string** | Policy Based Routing | [optional] [default to ""]
 **PolicyBasedRoutingRefType** | Pointer to **string** | Object type for policy_based_routing field | [optional] 
-**MaxUpstreamRateMbps** | Pointer to **int32** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
-**MaxDownstreamRateMbps** | Pointer to **int32** | Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps) | [optional] 
+**MaxUpstreamRateMbps** | Pointer to **NullableInt32** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
+**MaxDownstreamRateMbps** | Pointer to **NullableInt32** | Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps) | [optional] 
 **PacketPriority** | Pointer to **string** | Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped | [optional] [default to "0"]
 **MulticastManagementMode** | Pointer to **string** | Determines how undefined handle multicast packet for Service&lt;ul&gt;&lt;li&gt;* \&quot;Multicast Flooding (Normal)\&quot; Multicast packets are broadcast&lt;/li&gt;&lt;li&gt;* \&quot;Multicast Flooding (AVB/PTP/Cobranet)\&quot; Multicast packets are broadcast with special treatment for critical latency packets such as used by AVB, PTP, and Cobranet&lt;/li&gt;&lt;li&gt;* \&quot;IPTV Filtering (IGMP Snooping)\&quot; Multicast packets are propagated via IGMP Snooping&lt;/li&gt;&lt;li&gt;* \&quot;IPTV Filtering (IGMP Report/Leave Flooding)\&quot; Multicast packets are propagated via IGMP Snooping. except that IGMP Report/Leave packets are broadcast&lt;/li&gt;&lt;/ul&gt; | [optional] [default to "flooding"]
 **TaggedPackets** | Pointer to **bool** | Overrides priority bits on incoming tagged packets. Always done for untagged packets | [optional] [default to false]
@@ -32,7 +32,7 @@ Name | Type | Description | Notes
 **IsManagementService** | Pointer to **bool** | Denotes a Management Service | [optional] [default to false]
 **UseDscpToPBitMappingForL3PacketsIfAvailable** | Pointer to **bool** | use DSCP to p-bit Mapping for L3 packets if available | [optional] [default to false]
 **AllowFastLeave** | Pointer to **bool** | The Fast Leave feature causes the switch to immediately remove a port from the forwarding list for a IGMP multicast group when the port receives a leave message. Not recommended unless there is only a single receiver present on every point in the VLAN | [optional] [default to false]
-**MstInstance** | Pointer to **int32** | MST Instance ID (0-4094) | [optional] [default to 0]
+**MstInstance** | Pointer to **NullableInt32** | MST Instance ID (0-4094) | [optional] [default to 0]
 
 ## Methods
 
@@ -483,6 +483,16 @@ SetMaxUpstreamRateMbps sets MaxUpstreamRateMbps field to given value.
 
 HasMaxUpstreamRateMbps returns a boolean if a field has been set.
 
+### SetMaxUpstreamRateMbpsNil
+
+`func (o *ServicesPutRequestServiceValue) SetMaxUpstreamRateMbpsNil(b bool)`
+
+ SetMaxUpstreamRateMbpsNil sets the value for MaxUpstreamRateMbps to be an explicit nil
+
+### UnsetMaxUpstreamRateMbps
+`func (o *ServicesPutRequestServiceValue) UnsetMaxUpstreamRateMbps()`
+
+UnsetMaxUpstreamRateMbps ensures that no value is present for MaxUpstreamRateMbps, not even an explicit nil
 ### GetMaxDownstreamRateMbps
 
 `func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbps() int32`
@@ -508,6 +518,16 @@ SetMaxDownstreamRateMbps sets MaxDownstreamRateMbps field to given value.
 
 HasMaxDownstreamRateMbps returns a boolean if a field has been set.
 
+### SetMaxDownstreamRateMbpsNil
+
+`func (o *ServicesPutRequestServiceValue) SetMaxDownstreamRateMbpsNil(b bool)`
+
+ SetMaxDownstreamRateMbpsNil sets the value for MaxDownstreamRateMbps to be an explicit nil
+
+### UnsetMaxDownstreamRateMbps
+`func (o *ServicesPutRequestServiceValue) UnsetMaxDownstreamRateMbps()`
+
+UnsetMaxDownstreamRateMbps ensures that no value is present for MaxDownstreamRateMbps, not even an explicit nil
 ### GetPacketPriority
 
 `func (o *ServicesPutRequestServiceValue) GetPacketPriority() string`
@@ -808,6 +828,16 @@ SetMstInstance sets MstInstance field to given value.
 
 HasMstInstance returns a boolean if a field has been set.
 
+### SetMstInstanceNil
+
+`func (o *ServicesPutRequestServiceValue) SetMstInstanceNil(b bool)`
+
+ SetMstInstanceNil sets the value for MstInstance to be an explicit nil
+
+### UnsetMstInstance
+`func (o *ServicesPutRequestServiceValue) UnsetMstInstance()`
+
+UnsetMstInstance ensures that no value is present for MstInstance, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

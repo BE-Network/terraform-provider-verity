@@ -36,38 +36,40 @@ type veritySiteResource struct {
 }
 
 type veritySiteResourceModel struct {
-	Name                           types.String                      `tfsdk:"name"`
-	Enable                         types.Bool                        `tfsdk:"enable"`
-	ServiceForSite                 types.String                      `tfsdk:"service_for_site"`
-	ServiceForSiteRefType          types.String                      `tfsdk:"service_for_site_ref_type_"`
-	SpanningTreeType               types.String                      `tfsdk:"spanning_tree_type"`
-	RegionName                     types.String                      `tfsdk:"region_name"`
-	Revision                       types.Int64                       `tfsdk:"revision"`
-	ForceSpanningTreeOnFabricPorts types.Bool                        `tfsdk:"force_spanning_tree_on_fabric_ports"`
-	ReadOnlyMode                   types.Bool                        `tfsdk:"read_only_mode"`
-	DscpToPBitMap                  types.String                      `tfsdk:"dscp_to_p_bit_map"`
-	AnycastMacAddress              types.String                      `tfsdk:"anycast_mac_address"`
-	AnycastMacAddressAutoAssigned  types.Bool                        `tfsdk:"anycast_mac_address_auto_assigned_"`
-	MacAddressAgingTime            types.Int64                       `tfsdk:"mac_address_aging_time"`
-	MlagDelayRestoreTimer          types.Int64                       `tfsdk:"mlag_delay_restore_timer"`
-	BgpKeepaliveTimer              types.Int64                       `tfsdk:"bgp_keepalive_timer"`
-	BgpHoldDownTimer               types.Int64                       `tfsdk:"bgp_hold_down_timer"`
-	SpineBgpAdvertisementInterval  types.Int64                       `tfsdk:"spine_bgp_advertisement_interval"`
-	SpineBgpConnectTimer           types.Int64                       `tfsdk:"spine_bgp_connect_timer"`
-	LeafBgpKeepAliveTimer          types.Int64                       `tfsdk:"leaf_bgp_keep_alive_timer"`
-	LeafBgpHoldDownTimer           types.Int64                       `tfsdk:"leaf_bgp_hold_down_timer"`
-	LeafBgpAdvertisementInterval   types.Int64                       `tfsdk:"leaf_bgp_advertisement_interval"`
-	LeafBgpConnectTimer            types.Int64                       `tfsdk:"leaf_bgp_connect_timer"`
-	LinkStateTimeoutValue          types.Int64                       `tfsdk:"link_state_timeout_value"`
-	EvpnMultihomingStartupDelay    types.Int64                       `tfsdk:"evpn_multihoming_startup_delay"`
-	EvpnMacHoldtime                types.Int64                       `tfsdk:"evpn_mac_holdtime"`
-	AggressiveReporting            types.Bool                        `tfsdk:"aggressive_reporting"`
-	CrcFailureThreshold            types.Int64                       `tfsdk:"crc_failure_threshold"`
-	EnableDhcpSnooping             types.Bool                        `tfsdk:"enable_dhcp_snooping"`
-	IpSourceGuard                  types.Bool                        `tfsdk:"ip_source_guard"`
-	Islands                        []veritySiteIslandsModel          `tfsdk:"islands"`
-	Pairs                          []veritySitePairsModel            `tfsdk:"pairs"`
-	ObjectProperties               []veritySiteObjectPropertiesModel `tfsdk:"object_properties"`
+	Name                                      types.String                      `tfsdk:"name"`
+	Enable                                    types.Bool                        `tfsdk:"enable"`
+	ServiceForSite                            types.String                      `tfsdk:"service_for_site"`
+	ServiceForSiteRefType                     types.String                      `tfsdk:"service_for_site_ref_type_"`
+	SpanningTreeType                          types.String                      `tfsdk:"spanning_tree_type"`
+	RegionName                                types.String                      `tfsdk:"region_name"`
+	Revision                                  types.Int64                       `tfsdk:"revision"`
+	ForceSpanningTreeOnFabricPorts            types.Bool                        `tfsdk:"force_spanning_tree_on_fabric_ports"`
+	ReadOnlyMode                              types.Bool                        `tfsdk:"read_only_mode"`
+	DscpToPBitMap                             types.String                      `tfsdk:"dscp_to_p_bit_map"`
+	AnycastMacAddress                         types.String                      `tfsdk:"anycast_mac_address"`
+	AnycastMacAddressAutoAssigned             types.Bool                        `tfsdk:"anycast_mac_address_auto_assigned_"`
+	MacAddressAgingTime                       types.Int64                       `tfsdk:"mac_address_aging_time"`
+	MlagDelayRestoreTimer                     types.Int64                       `tfsdk:"mlag_delay_restore_timer"`
+	BgpKeepaliveTimer                         types.Int64                       `tfsdk:"bgp_keepalive_timer"`
+	BgpHoldDownTimer                          types.Int64                       `tfsdk:"bgp_hold_down_timer"`
+	SpineBgpAdvertisementInterval             types.Int64                       `tfsdk:"spine_bgp_advertisement_interval"`
+	SpineBgpConnectTimer                      types.Int64                       `tfsdk:"spine_bgp_connect_timer"`
+	LeafBgpKeepAliveTimer                     types.Int64                       `tfsdk:"leaf_bgp_keep_alive_timer"`
+	LeafBgpHoldDownTimer                      types.Int64                       `tfsdk:"leaf_bgp_hold_down_timer"`
+	LeafBgpAdvertisementInterval              types.Int64                       `tfsdk:"leaf_bgp_advertisement_interval"`
+	LeafBgpConnectTimer                       types.Int64                       `tfsdk:"leaf_bgp_connect_timer"`
+	LinkStateTimeoutValue                     types.Int64                       `tfsdk:"link_state_timeout_value"`
+	EvpnMultihomingStartupDelay               types.Int64                       `tfsdk:"evpn_multihoming_startup_delay"`
+	EvpnMacHoldtime                           types.Int64                       `tfsdk:"evpn_mac_holdtime"`
+	AggressiveReporting                       types.Bool                        `tfsdk:"aggressive_reporting"`
+	CrcFailureThreshold                       types.Int64                       `tfsdk:"crc_failure_threshold"`
+	EnableDhcpSnooping                        types.Bool                        `tfsdk:"enable_dhcp_snooping"`
+	IpSourceGuard                             types.Bool                        `tfsdk:"ip_source_guard"`
+	DuplicateAddressDetectionMaxNumberOfMoves types.Int64                       `tfsdk:"duplicate_address_detection_max_number_of_moves"`
+	DuplicateAddressDetectionTime             types.Int64                       `tfsdk:"duplicate_address_detection_time"`
+	Islands                                   []veritySiteIslandsModel          `tfsdk:"islands"`
+	Pairs                                     []veritySitePairsModel            `tfsdk:"pairs"`
+	ObjectProperties                          []veritySiteObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
 type veritySiteIslandsModel struct {
@@ -251,6 +253,14 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"ip_source_guard": schema.BoolAttribute{
 				Description: "On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings",
+				Optional:    true,
+			},
+			"duplicate_address_detection_max_number_of_moves": schema.Int64Attribute{
+				Description: "Duplicate Address Detection Max Number of Moves",
+				Optional:    true,
+			},
+			"duplicate_address_detection_time": schema.Int64Attribute{
+				Description: "Duplicate Address Detection Time",
 				Optional:    true,
 			},
 		},
@@ -506,24 +516,24 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	utils.CompareAndSetBoolField(plan.EnableDhcpSnooping, state.EnableDhcpSnooping, func(v *bool) { siteReq.EnableDhcpSnooping = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.IpSourceGuard, state.IpSourceGuard, func(v *bool) { siteReq.IpSourceGuard = v }, &hasChanges)
 
-	// Handle int64 field changes
-	utils.CompareAndSetInt64Field(plan.MacAddressAgingTime, state.MacAddressAgingTime, func(v *int32) { siteReq.MacAddressAgingTime = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.MlagDelayRestoreTimer, state.MlagDelayRestoreTimer, func(v *int32) { siteReq.MlagDelayRestoreTimer = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.BgpKeepaliveTimer, state.BgpKeepaliveTimer, func(v *int32) { siteReq.BgpKeepaliveTimer = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.BgpHoldDownTimer, state.BgpHoldDownTimer, func(v *int32) { siteReq.BgpHoldDownTimer = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.SpineBgpAdvertisementInterval, state.SpineBgpAdvertisementInterval, func(v *int32) { siteReq.SpineBgpAdvertisementInterval = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.SpineBgpConnectTimer, state.SpineBgpConnectTimer, func(v *int32) { siteReq.SpineBgpConnectTimer = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.LeafBgpKeepAliveTimer, state.LeafBgpKeepAliveTimer, func(v *int32) { siteReq.LeafBgpKeepAliveTimer = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.LeafBgpHoldDownTimer, state.LeafBgpHoldDownTimer, func(v *int32) { siteReq.LeafBgpHoldDownTimer = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.LeafBgpAdvertisementInterval, state.LeafBgpAdvertisementInterval, func(v *int32) { siteReq.LeafBgpAdvertisementInterval = v }, &hasChanges)
-	utils.CompareAndSetInt64Field(plan.LeafBgpConnectTimer, state.LeafBgpConnectTimer, func(v *int32) { siteReq.LeafBgpConnectTimer = v }, &hasChanges)
-
 	// Handle nullable int64 field changes
+	utils.CompareAndSetNullableInt64Field(plan.MacAddressAgingTime, state.MacAddressAgingTime, func(v *openapi.NullableInt32) { siteReq.MacAddressAgingTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.MlagDelayRestoreTimer, state.MlagDelayRestoreTimer, func(v *openapi.NullableInt32) { siteReq.MlagDelayRestoreTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.BgpKeepaliveTimer, state.BgpKeepaliveTimer, func(v *openapi.NullableInt32) { siteReq.BgpKeepaliveTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.BgpHoldDownTimer, state.BgpHoldDownTimer, func(v *openapi.NullableInt32) { siteReq.BgpHoldDownTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.SpineBgpAdvertisementInterval, state.SpineBgpAdvertisementInterval, func(v *openapi.NullableInt32) { siteReq.SpineBgpAdvertisementInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.SpineBgpConnectTimer, state.SpineBgpConnectTimer, func(v *openapi.NullableInt32) { siteReq.SpineBgpConnectTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.LeafBgpKeepAliveTimer, state.LeafBgpKeepAliveTimer, func(v *openapi.NullableInt32) { siteReq.LeafBgpKeepAliveTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.LeafBgpHoldDownTimer, state.LeafBgpHoldDownTimer, func(v *openapi.NullableInt32) { siteReq.LeafBgpHoldDownTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.LeafBgpAdvertisementInterval, state.LeafBgpAdvertisementInterval, func(v *openapi.NullableInt32) { siteReq.LeafBgpAdvertisementInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.LeafBgpConnectTimer, state.LeafBgpConnectTimer, func(v *openapi.NullableInt32) { siteReq.LeafBgpConnectTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.Revision, state.Revision, func(v *openapi.NullableInt32) { siteReq.Revision = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.LinkStateTimeoutValue, state.LinkStateTimeoutValue, func(v *openapi.NullableInt32) { siteReq.LinkStateTimeoutValue = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.EvpnMultihomingStartupDelay, state.EvpnMultihomingStartupDelay, func(v *openapi.NullableInt32) { siteReq.EvpnMultihomingStartupDelay = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.EvpnMacHoldtime, state.EvpnMacHoldtime, func(v *openapi.NullableInt32) { siteReq.EvpnMacHoldtime = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.CrcFailureThreshold, state.CrcFailureThreshold, func(v *openapi.NullableInt32) { siteReq.CrcFailureThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.DuplicateAddressDetectionMaxNumberOfMoves, state.DuplicateAddressDetectionMaxNumberOfMoves, func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionMaxNumberOfMoves = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(plan.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
@@ -964,6 +974,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.MacAddressAgingTime = types.Int64Value(int64(v))
 		case int32:
 			state.MacAddressAgingTime = types.Int64Value(int64(v))
+		case nil:
+			state.MacAddressAgingTime = types.Int64Null()
 		default:
 			if plan != nil && !plan.MacAddressAgingTime.IsNull() {
 				state.MacAddressAgingTime = plan.MacAddressAgingTime
@@ -985,6 +997,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.MlagDelayRestoreTimer = types.Int64Value(int64(v))
 		case int32:
 			state.MlagDelayRestoreTimer = types.Int64Value(int64(v))
+		case nil:
+			state.MlagDelayRestoreTimer = types.Int64Null()
 		default:
 			if plan != nil && !plan.MlagDelayRestoreTimer.IsNull() {
 				state.MlagDelayRestoreTimer = plan.MlagDelayRestoreTimer
@@ -1006,6 +1020,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.BgpKeepaliveTimer = types.Int64Value(int64(v))
 		case int32:
 			state.BgpKeepaliveTimer = types.Int64Value(int64(v))
+		case nil:
+			state.BgpKeepaliveTimer = types.Int64Null()
 		default:
 			if plan != nil && !plan.BgpKeepaliveTimer.IsNull() {
 				state.BgpKeepaliveTimer = plan.BgpKeepaliveTimer
@@ -1027,6 +1043,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.BgpHoldDownTimer = types.Int64Value(int64(v))
 		case int32:
 			state.BgpHoldDownTimer = types.Int64Value(int64(v))
+		case nil:
+			state.BgpHoldDownTimer = types.Int64Null()
 		default:
 			if plan != nil && !plan.BgpHoldDownTimer.IsNull() {
 				state.BgpHoldDownTimer = plan.BgpHoldDownTimer
@@ -1048,6 +1066,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.SpineBgpAdvertisementInterval = types.Int64Value(int64(v))
 		case int32:
 			state.SpineBgpAdvertisementInterval = types.Int64Value(int64(v))
+		case nil:
+			state.SpineBgpAdvertisementInterval = types.Int64Null()
 		default:
 			if plan != nil && !plan.SpineBgpAdvertisementInterval.IsNull() {
 				state.SpineBgpAdvertisementInterval = plan.SpineBgpAdvertisementInterval
@@ -1069,6 +1089,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.SpineBgpConnectTimer = types.Int64Value(int64(v))
 		case int32:
 			state.SpineBgpConnectTimer = types.Int64Value(int64(v))
+		case nil:
+			state.SpineBgpConnectTimer = types.Int64Null()
 		default:
 			if plan != nil && !plan.SpineBgpConnectTimer.IsNull() {
 				state.SpineBgpConnectTimer = plan.SpineBgpConnectTimer
@@ -1090,6 +1112,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.LeafBgpKeepAliveTimer = types.Int64Value(int64(v))
 		case int32:
 			state.LeafBgpKeepAliveTimer = types.Int64Value(int64(v))
+		case nil:
+			state.LeafBgpKeepAliveTimer = types.Int64Null()
 		default:
 			if plan != nil && !plan.LeafBgpKeepAliveTimer.IsNull() {
 				state.LeafBgpKeepAliveTimer = plan.LeafBgpKeepAliveTimer
@@ -1111,6 +1135,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.LeafBgpHoldDownTimer = types.Int64Value(int64(v))
 		case int32:
 			state.LeafBgpHoldDownTimer = types.Int64Value(int64(v))
+		case nil:
+			state.LeafBgpHoldDownTimer = types.Int64Null()
 		default:
 			if plan != nil && !plan.LeafBgpHoldDownTimer.IsNull() {
 				state.LeafBgpHoldDownTimer = plan.LeafBgpHoldDownTimer
@@ -1132,6 +1158,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.LeafBgpAdvertisementInterval = types.Int64Value(int64(v))
 		case int32:
 			state.LeafBgpAdvertisementInterval = types.Int64Value(int64(v))
+		case nil:
+			state.LeafBgpAdvertisementInterval = types.Int64Null()
 		default:
 			if plan != nil && !plan.LeafBgpAdvertisementInterval.IsNull() {
 				state.LeafBgpAdvertisementInterval = plan.LeafBgpAdvertisementInterval
@@ -1153,6 +1181,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 			state.LeafBgpConnectTimer = types.Int64Value(int64(v))
 		case int32:
 			state.LeafBgpConnectTimer = types.Int64Value(int64(v))
+		case nil:
+			state.LeafBgpConnectTimer = types.Int64Null()
 		default:
 			if plan != nil && !plan.LeafBgpConnectTimer.IsNull() {
 				state.LeafBgpConnectTimer = plan.LeafBgpConnectTimer
@@ -1264,6 +1294,52 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 		state.CrcFailureThreshold = plan.CrcFailureThreshold
 	} else {
 		state.CrcFailureThreshold = types.Int64Null()
+	}
+
+	if val, ok := siteData["duplicate_address_detection_max_number_of_moves"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Value(int64(v))
+		case int:
+			state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Value(int64(v))
+		case int32:
+			state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Value(int64(v))
+		case nil:
+			state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Null()
+		default:
+			if plan != nil && !plan.DuplicateAddressDetectionMaxNumberOfMoves.IsNull() {
+				state.DuplicateAddressDetectionMaxNumberOfMoves = plan.DuplicateAddressDetectionMaxNumberOfMoves
+			} else {
+				state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.DuplicateAddressDetectionMaxNumberOfMoves.IsNull() {
+		state.DuplicateAddressDetectionMaxNumberOfMoves = plan.DuplicateAddressDetectionMaxNumberOfMoves
+	} else {
+		state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Null()
+	}
+
+	if val, ok := siteData["duplicate_address_detection_time"]; ok {
+		switch v := val.(type) {
+		case float64:
+			state.DuplicateAddressDetectionTime = types.Int64Value(int64(v))
+		case int:
+			state.DuplicateAddressDetectionTime = types.Int64Value(int64(v))
+		case int32:
+			state.DuplicateAddressDetectionTime = types.Int64Value(int64(v))
+		case nil:
+			state.DuplicateAddressDetectionTime = types.Int64Null()
+		default:
+			if plan != nil && !plan.DuplicateAddressDetectionTime.IsNull() {
+				state.DuplicateAddressDetectionTime = plan.DuplicateAddressDetectionTime
+			} else {
+				state.DuplicateAddressDetectionTime = types.Int64Null()
+			}
+		}
+	} else if plan != nil && !plan.DuplicateAddressDetectionTime.IsNull() {
+		state.DuplicateAddressDetectionTime = plan.DuplicateAddressDetectionTime
+	} else {
+		state.DuplicateAddressDetectionTime = types.Int64Null()
 	}
 
 	if val, ok := siteData["enable_dhcp_snooping"].(bool); ok {

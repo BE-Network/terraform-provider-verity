@@ -25,7 +25,7 @@ type PodsPutRequestPodValue struct {
 	Enable *bool `json:"enable,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Number of spine switches expected in this pod
-	ExpectedSpineCount *int32 `json:"expected_spine_count,omitempty"`
+	ExpectedSpineCount NullableInt32 `json:"expected_spine_count,omitempty"`
 }
 
 // NewPodsPutRequestPodValue instantiates a new PodsPutRequestPodValue object
@@ -39,7 +39,7 @@ func NewPodsPutRequestPodValue() *PodsPutRequestPodValue {
 	var enable bool = true
 	this.Enable = &enable
 	var expectedSpineCount int32 = 1
-	this.ExpectedSpineCount = &expectedSpineCount
+	this.ExpectedSpineCount = *NewNullableInt32(&expectedSpineCount)
 	return &this
 }
 
@@ -53,7 +53,7 @@ func NewPodsPutRequestPodValueWithDefaults() *PodsPutRequestPodValue {
 	var enable bool = true
 	this.Enable = &enable
 	var expectedSpineCount int32 = 1
-	this.ExpectedSpineCount = &expectedSpineCount
+	this.ExpectedSpineCount = *NewNullableInt32(&expectedSpineCount)
 	return &this
 }
 
@@ -153,36 +153,46 @@ func (o *PodsPutRequestPodValue) SetObjectProperties(v AclsPutRequestIpFilterVal
 	o.ObjectProperties = &v
 }
 
-// GetExpectedSpineCount returns the ExpectedSpineCount field value if set, zero value otherwise.
+// GetExpectedSpineCount returns the ExpectedSpineCount field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int32 {
-	if o == nil || IsNil(o.ExpectedSpineCount) {
+	if o == nil || IsNil(o.ExpectedSpineCount.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.ExpectedSpineCount
+	return *o.ExpectedSpineCount.Get()
 }
 
 // GetExpectedSpineCountOk returns a tuple with the ExpectedSpineCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PodsPutRequestPodValue) GetExpectedSpineCountOk() (*int32, bool) {
-	if o == nil || IsNil(o.ExpectedSpineCount) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ExpectedSpineCount, true
+	return o.ExpectedSpineCount.Get(), o.ExpectedSpineCount.IsSet()
 }
 
 // HasExpectedSpineCount returns a boolean if a field has been set.
 func (o *PodsPutRequestPodValue) HasExpectedSpineCount() bool {
-	if o != nil && !IsNil(o.ExpectedSpineCount) {
+	if o != nil && o.ExpectedSpineCount.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetExpectedSpineCount gets a reference to the given int32 and assigns it to the ExpectedSpineCount field.
+// SetExpectedSpineCount gets a reference to the given NullableInt32 and assigns it to the ExpectedSpineCount field.
 func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int32) {
-	o.ExpectedSpineCount = &v
+	o.ExpectedSpineCount.Set(&v)
+}
+// SetExpectedSpineCountNil sets the value for ExpectedSpineCount to be an explicit nil
+func (o *PodsPutRequestPodValue) SetExpectedSpineCountNil() {
+	o.ExpectedSpineCount.Set(nil)
+}
+
+// UnsetExpectedSpineCount ensures that no value is present for ExpectedSpineCount, not even an explicit nil
+func (o *PodsPutRequestPodValue) UnsetExpectedSpineCount() {
+	o.ExpectedSpineCount.Unset()
 }
 
 func (o PodsPutRequestPodValue) MarshalJSON() ([]byte, error) {
@@ -204,8 +214,8 @@ func (o PodsPutRequestPodValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
 	}
-	if !IsNil(o.ExpectedSpineCount) {
-		toSerialize["expected_spine_count"] = o.ExpectedSpineCount
+	if o.ExpectedSpineCount.IsSet() {
+		toSerialize["expected_spine_count"] = o.ExpectedSpineCount.Get()
 	}
 	return toSerialize, nil
 }

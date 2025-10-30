@@ -20,17 +20,17 @@ Name | Type | Description | Notes
 **BspEnable** | Pointer to **bool** | Enable Traffic Storm Protection which prevents excessive broadcast/multicast/unknown-unicast traffic from overwhelming the Switch CPU | [optional] [default to false]
 **Broadcast** | Pointer to **bool** | Broadcast | [optional] [default to true]
 **Multicast** | Pointer to **bool** | Multicast | [optional] [default to true]
-**MaxAllowedValue** | Pointer to **int32** | Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action | [optional] [default to 1000]
+**MaxAllowedValue** | Pointer to **NullableInt32** | Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action | [optional] [default to 1000]
 **MaxAllowedUnit** | Pointer to **string** | Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action &lt;br&gt;                                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                                     %: Percentage.&lt;br&gt;                                                     kbps: kilobits per second &lt;br&gt;                                                     mbps: megabits per second &lt;br&gt;                                                     gbps: gigabits per second &lt;br&gt;                                                     pps: packet per second &lt;br&gt;                                                     kpps: kilopacket per second &lt;br&gt;                                                 &lt;/div&gt;                                                  | [optional] [default to "pps"]
 **Action** | Pointer to **string** | Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: &lt;br&gt;                                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                                     Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.&lt;br&gt;&lt;br&gt;                                                     Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.                                                     Alarm is raised . Alarm automatically clears when rate is below configured threshold. &lt;br&gt;&lt;br&gt;                                                     Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. &lt;br&gt;                                                 &lt;/div&gt;                                              | [optional] [default to "Protect"]
 **Fec** | Pointer to **string** | FEC is Forward Error Correction which is error correction on the fiber link.                                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                                     Any: Allows switch Negotiation between FC and RS &lt;br&gt;                                                     None: Disables FEC on an interface.&lt;br&gt;                                                     FC: Enables FEC on supported interfaces. FC stands for fire code.&lt;br&gt;                                                     RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. &lt;br&gt;                                                     None: VnetC doesn&#39;t alter the Switch Value.&lt;br&gt;                                                 &lt;/div&gt;                                              | [optional] [default to "unaltered"]
 **SingleLink** | Pointer to **bool** | Ports with this setting will be disabled when link state tracking takes effect | [optional] [default to false]
-**MinimumWredThreshold** | Pointer to **int32** | A value between 1 to 12480(in KiloBytes) | [optional] [default to 1]
-**MaximumWredThreshold** | Pointer to **int32** | A value between 1 to 12480(in KiloBytes) | [optional] [default to 1]
-**WredDropProbability** | Pointer to **int32** | A value between 0 to 100 | [optional] [default to 0]
+**MinimumWredThreshold** | Pointer to **NullableInt32** | A value between 1 to 12480(in KiloBytes) | [optional] [default to 1]
+**MaximumWredThreshold** | Pointer to **NullableInt32** | A value between 1 to 12480(in KiloBytes) | [optional] [default to 1]
+**WredDropProbability** | Pointer to **NullableInt32** | A value between 0 to 100 | [optional] [default to 0]
 **PriorityFlowControlWatchdogAction** | Pointer to **string** | Ports with this setting will be disabled when link state tracking takes effect | [optional] [default to "DROP"]
-**PriorityFlowControlWatchdogDetectTime** | Pointer to **int32** | A value between 100 to 5000 | [optional] [default to 100]
-**PriorityFlowControlWatchdogRestoreTime** | Pointer to **int32** | A value between 100 to 60000 | [optional] [default to 100]
+**PriorityFlowControlWatchdogDetectTime** | Pointer to **NullableInt32** | A value between 100 to 5000 | [optional] [default to 100]
+**PriorityFlowControlWatchdogRestoreTime** | Pointer to **NullableInt32** | A value between 100 to 60000 | [optional] [default to 100]
 **ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
 **PacketQueue** | Pointer to **string** | Packet Queue | [optional] [default to ""]
 **PacketQueueRefType** | Pointer to **string** | Object type for packet_queue field | [optional] 
@@ -41,10 +41,10 @@ Name | Type | Description | Notes
 **DetectBridgingLoops** | Pointer to **bool** | Enable Detection of Bridging Loops | [optional] [default to false]
 **UnidirectionalLinkDetection** | Pointer to **bool** | Enable Detection of Unidirectional Link | [optional] [default to false]
 **MacSecurityMode** | Pointer to **string** | Dynamic - MACs are learned and aged normally up to the limit. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     Packets will be dropped from clients exceeding the limit. &lt;br&gt;                                     Once a client ages out, a new client can take its slot. &lt;br&gt;                                     When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.&lt;br&gt;                                 &lt;/div&gt;                             Sticky - Semi permenant learning. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     Packets will be dropped from clients exceeding the limit. &lt;br&gt;                                     Addresses do not age out or move within the same switch. &lt;br&gt;                                     Operationally downing a port (disconnecting) does NOT flush the entries. &lt;br&gt;                                     Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.                                 &lt;/div&gt; | [optional] [default to "disabled"]
-**MacLimit** | Pointer to **int32** | Between 1-1000 | [optional] [default to 1000]
+**MacLimit** | Pointer to **NullableInt32** | Between 1-1000 | [optional] [default to 1000]
 **SecurityViolationAction** | Pointer to **string** | Protect - All packets are dropped from clients above the MAC Limit. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     Exceeding the limit is not alarmed. &lt;br&gt;                                 &lt;/div&gt;                             Restrict - All packets are dropped from clients above the MAC Limit. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. &lt;br&gt;                                 &lt;/div&gt;                             Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     User must administratively Disable and Enable the port to restore service.                                 &lt;/div&gt; | [optional] [default to "protect"]
 **AgingType** | Pointer to **string** | Limit MAC authentication based on inactivity or on absolute time. See Also Aging Time | [optional] [default to "absolute"]
-**AgingTime** | Pointer to **int32** | In minutes, how long the client will stay authenticated. See Also Aging Type | [optional] [default to 0]
+**AgingTime** | Pointer to **NullableInt32** | In minutes, how long the client will stay authenticated. See Also Aging Type | [optional] [default to 0]
 **LldpEnable** | Pointer to **bool** | LLDP enable | [optional] [default to true]
 **LldpMode** | Pointer to **string** | LLDP mode.  Enables LLDP Rx and/or LLDP Tx | [optional] [default to "RxAndTx"]
 **LldpMedEnable** | Pointer to **bool** | LLDP med enable | [optional] [default to false]
@@ -494,6 +494,16 @@ SetMaxAllowedValue sets MaxAllowedValue field to given value.
 
 HasMaxAllowedValue returns a boolean if a field has been set.
 
+### SetMaxAllowedValueNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedValueNil(b bool)`
+
+ SetMaxAllowedValueNil sets the value for MaxAllowedValue to be an explicit nil
+
+### UnsetMaxAllowedValue
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMaxAllowedValue()`
+
+UnsetMaxAllowedValue ensures that no value is present for MaxAllowedValue, not even an explicit nil
 ### GetMaxAllowedUnit
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedUnit() string`
@@ -619,6 +629,16 @@ SetMinimumWredThreshold sets MinimumWredThreshold field to given value.
 
 HasMinimumWredThreshold returns a boolean if a field has been set.
 
+### SetMinimumWredThresholdNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMinimumWredThresholdNil(b bool)`
+
+ SetMinimumWredThresholdNil sets the value for MinimumWredThreshold to be an explicit nil
+
+### UnsetMinimumWredThreshold
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMinimumWredThreshold()`
+
+UnsetMinimumWredThreshold ensures that no value is present for MinimumWredThreshold, not even an explicit nil
 ### GetMaximumWredThreshold
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaximumWredThreshold() int32`
@@ -644,6 +664,16 @@ SetMaximumWredThreshold sets MaximumWredThreshold field to given value.
 
 HasMaximumWredThreshold returns a boolean if a field has been set.
 
+### SetMaximumWredThresholdNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaximumWredThresholdNil(b bool)`
+
+ SetMaximumWredThresholdNil sets the value for MaximumWredThreshold to be an explicit nil
+
+### UnsetMaximumWredThreshold
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMaximumWredThreshold()`
+
+UnsetMaximumWredThreshold ensures that no value is present for MaximumWredThreshold, not even an explicit nil
 ### GetWredDropProbability
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetWredDropProbability() int32`
@@ -669,6 +699,16 @@ SetWredDropProbability sets WredDropProbability field to given value.
 
 HasWredDropProbability returns a boolean if a field has been set.
 
+### SetWredDropProbabilityNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetWredDropProbabilityNil(b bool)`
+
+ SetWredDropProbabilityNil sets the value for WredDropProbability to be an explicit nil
+
+### UnsetWredDropProbability
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetWredDropProbability()`
+
+UnsetWredDropProbability ensures that no value is present for WredDropProbability, not even an explicit nil
 ### GetPriorityFlowControlWatchdogAction
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPriorityFlowControlWatchdogAction() string`
@@ -719,6 +759,16 @@ SetPriorityFlowControlWatchdogDetectTime sets PriorityFlowControlWatchdogDetectT
 
 HasPriorityFlowControlWatchdogDetectTime returns a boolean if a field has been set.
 
+### SetPriorityFlowControlWatchdogDetectTimeNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogDetectTimeNil(b bool)`
+
+ SetPriorityFlowControlWatchdogDetectTimeNil sets the value for PriorityFlowControlWatchdogDetectTime to be an explicit nil
+
+### UnsetPriorityFlowControlWatchdogDetectTime
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetPriorityFlowControlWatchdogDetectTime()`
+
+UnsetPriorityFlowControlWatchdogDetectTime ensures that no value is present for PriorityFlowControlWatchdogDetectTime, not even an explicit nil
 ### GetPriorityFlowControlWatchdogRestoreTime
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPriorityFlowControlWatchdogRestoreTime() int32`
@@ -744,6 +794,16 @@ SetPriorityFlowControlWatchdogRestoreTime sets PriorityFlowControlWatchdogRestor
 
 HasPriorityFlowControlWatchdogRestoreTime returns a boolean if a field has been set.
 
+### SetPriorityFlowControlWatchdogRestoreTimeNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogRestoreTimeNil(b bool)`
+
+ SetPriorityFlowControlWatchdogRestoreTimeNil sets the value for PriorityFlowControlWatchdogRestoreTime to be an explicit nil
+
+### UnsetPriorityFlowControlWatchdogRestoreTime
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetPriorityFlowControlWatchdogRestoreTime()`
+
+UnsetPriorityFlowControlWatchdogRestoreTime ensures that no value is present for PriorityFlowControlWatchdogRestoreTime, not even an explicit nil
 ### GetObjectProperties
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
@@ -1019,6 +1079,16 @@ SetMacLimit sets MacLimit field to given value.
 
 HasMacLimit returns a boolean if a field has been set.
 
+### SetMacLimitNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacLimitNil(b bool)`
+
+ SetMacLimitNil sets the value for MacLimit to be an explicit nil
+
+### UnsetMacLimit
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMacLimit()`
+
+UnsetMacLimit ensures that no value is present for MacLimit, not even an explicit nil
 ### GetSecurityViolationAction
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetSecurityViolationAction() string`
@@ -1094,6 +1164,16 @@ SetAgingTime sets AgingTime field to given value.
 
 HasAgingTime returns a boolean if a field has been set.
 
+### SetAgingTimeNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingTimeNil(b bool)`
+
+ SetAgingTimeNil sets the value for AgingTime to be an explicit nil
+
+### UnsetAgingTime
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetAgingTime()`
+
+UnsetAgingTime ensures that no value is present for AgingTime, not even an explicit nil
 ### GetLldpEnable
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpEnable() bool`

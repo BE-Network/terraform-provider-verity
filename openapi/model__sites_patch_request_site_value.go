@@ -44,25 +44,25 @@ type SitesPatchRequestSiteValue struct {
 	// Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit.
 	AnycastMacAddressAutoAssigned *bool `json:"anycast_mac_address_auto_assigned_,omitempty"`
 	// MAC Address Aging Time (between 1-100000)
-	MacAddressAgingTime *int32 `json:"mac_address_aging_time,omitempty"`
+	MacAddressAgingTime NullableInt32 `json:"mac_address_aging_time,omitempty"`
 	// MLAG Delay Restore Timer
-	MlagDelayRestoreTimer *int32 `json:"mlag_delay_restore_timer,omitempty"`
+	MlagDelayRestoreTimer NullableInt32 `json:"mlag_delay_restore_timer,omitempty"`
 	// Spine BGP Keepalive Timer
-	BgpKeepaliveTimer *int32 `json:"bgp_keepalive_timer,omitempty"`
+	BgpKeepaliveTimer NullableInt32 `json:"bgp_keepalive_timer,omitempty"`
 	// Spine BGP Hold Down Timer
-	BgpHoldDownTimer *int32 `json:"bgp_hold_down_timer,omitempty"`
+	BgpHoldDownTimer NullableInt32 `json:"bgp_hold_down_timer,omitempty"`
 	// BGP Advertisement Interval for spines/superspines. Use \"0\" for immediate updates
-	SpineBgpAdvertisementInterval *int32 `json:"spine_bgp_advertisement_interval,omitempty"`
+	SpineBgpAdvertisementInterval NullableInt32 `json:"spine_bgp_advertisement_interval,omitempty"`
 	// BGP Connect Timer
-	SpineBgpConnectTimer *int32 `json:"spine_bgp_connect_timer,omitempty"`
+	SpineBgpConnectTimer NullableInt32 `json:"spine_bgp_connect_timer,omitempty"`
 	// Leaf BGP Keep Alive Timer
-	LeafBgpKeepAliveTimer *int32 `json:"leaf_bgp_keep_alive_timer,omitempty"`
+	LeafBgpKeepAliveTimer NullableInt32 `json:"leaf_bgp_keep_alive_timer,omitempty"`
 	// Leaf BGP Hold Down Timer
-	LeafBgpHoldDownTimer *int32 `json:"leaf_bgp_hold_down_timer,omitempty"`
+	LeafBgpHoldDownTimer NullableInt32 `json:"leaf_bgp_hold_down_timer,omitempty"`
 	// BGP Advertisement Interval for leafs. Use \"0\" for immediate updates
-	LeafBgpAdvertisementInterval *int32 `json:"leaf_bgp_advertisement_interval,omitempty"`
+	LeafBgpAdvertisementInterval NullableInt32 `json:"leaf_bgp_advertisement_interval,omitempty"`
 	// BGP Connect Timer
-	LeafBgpConnectTimer *int32 `json:"leaf_bgp_connect_timer,omitempty"`
+	LeafBgpConnectTimer NullableInt32 `json:"leaf_bgp_connect_timer,omitempty"`
 	// Link State Timeout Value
 	LinkStateTimeoutValue NullableInt32 `json:"link_state_timeout_value,omitempty"`
 	// Startup Delay
@@ -76,6 +76,10 @@ type SitesPatchRequestSiteValue struct {
 	Islands []SitesPatchRequestSiteValueIslandsInner `json:"islands,omitempty"`
 	Pairs []SitesPatchRequestSiteValuePairsInner `json:"pairs,omitempty"`
 	ObjectProperties *SitesPatchRequestSiteValueObjectProperties `json:"object_properties,omitempty"`
+	// Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank)
+	DuplicateAddressDetectionMaxNumberOfMoves NullableInt32 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
+	// Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
+	DuplicateAddressDetectionTime NullableInt32 `json:"duplicate_address_detection_time,omitempty"`
 	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
 	EnableDhcpSnooping *bool `json:"enable_dhcp_snooping,omitempty"`
 	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
@@ -109,25 +113,25 @@ func NewSitesPatchRequestSiteValue() *SitesPatchRequestSiteValue {
 	var anycastMacAddress string = "(auto)"
 	this.AnycastMacAddress = &anycastMacAddress
 	var macAddressAgingTime int32 = 600
-	this.MacAddressAgingTime = &macAddressAgingTime
+	this.MacAddressAgingTime = *NewNullableInt32(&macAddressAgingTime)
 	var mlagDelayRestoreTimer int32 = 300
-	this.MlagDelayRestoreTimer = &mlagDelayRestoreTimer
+	this.MlagDelayRestoreTimer = *NewNullableInt32(&mlagDelayRestoreTimer)
 	var bgpKeepaliveTimer int32 = 60
-	this.BgpKeepaliveTimer = &bgpKeepaliveTimer
+	this.BgpKeepaliveTimer = *NewNullableInt32(&bgpKeepaliveTimer)
 	var bgpHoldDownTimer int32 = 180
-	this.BgpHoldDownTimer = &bgpHoldDownTimer
+	this.BgpHoldDownTimer = *NewNullableInt32(&bgpHoldDownTimer)
 	var spineBgpAdvertisementInterval int32 = 1
-	this.SpineBgpAdvertisementInterval = &spineBgpAdvertisementInterval
+	this.SpineBgpAdvertisementInterval = *NewNullableInt32(&spineBgpAdvertisementInterval)
 	var spineBgpConnectTimer int32 = 120
-	this.SpineBgpConnectTimer = &spineBgpConnectTimer
+	this.SpineBgpConnectTimer = *NewNullableInt32(&spineBgpConnectTimer)
 	var leafBgpKeepAliveTimer int32 = 60
-	this.LeafBgpKeepAliveTimer = &leafBgpKeepAliveTimer
+	this.LeafBgpKeepAliveTimer = *NewNullableInt32(&leafBgpKeepAliveTimer)
 	var leafBgpHoldDownTimer int32 = 180
-	this.LeafBgpHoldDownTimer = &leafBgpHoldDownTimer
+	this.LeafBgpHoldDownTimer = *NewNullableInt32(&leafBgpHoldDownTimer)
 	var leafBgpAdvertisementInterval int32 = 1
-	this.LeafBgpAdvertisementInterval = &leafBgpAdvertisementInterval
+	this.LeafBgpAdvertisementInterval = *NewNullableInt32(&leafBgpAdvertisementInterval)
 	var leafBgpConnectTimer int32 = 120
-	this.LeafBgpConnectTimer = &leafBgpConnectTimer
+	this.LeafBgpConnectTimer = *NewNullableInt32(&leafBgpConnectTimer)
 	var linkStateTimeoutValue int32 = 60
 	this.LinkStateTimeoutValue = *NewNullableInt32(&linkStateTimeoutValue)
 	var evpnMultihomingStartupDelay int32 = 300
@@ -138,6 +142,10 @@ func NewSitesPatchRequestSiteValue() *SitesPatchRequestSiteValue {
 	this.AggressiveReporting = &aggressiveReporting
 	var crcFailureThreshold int32 = 5
 	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
+	var duplicateAddressDetectionMaxNumberOfMoves int32 = 5
+	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt32(&duplicateAddressDetectionMaxNumberOfMoves)
+	var duplicateAddressDetectionTime int32 = 180
+	this.DuplicateAddressDetectionTime = *NewNullableInt32(&duplicateAddressDetectionTime)
 	var enableDhcpSnooping bool = false
 	this.EnableDhcpSnooping = &enableDhcpSnooping
 	var ipSourceGuard bool = false
@@ -171,25 +179,25 @@ func NewSitesPatchRequestSiteValueWithDefaults() *SitesPatchRequestSiteValue {
 	var anycastMacAddress string = "(auto)"
 	this.AnycastMacAddress = &anycastMacAddress
 	var macAddressAgingTime int32 = 600
-	this.MacAddressAgingTime = &macAddressAgingTime
+	this.MacAddressAgingTime = *NewNullableInt32(&macAddressAgingTime)
 	var mlagDelayRestoreTimer int32 = 300
-	this.MlagDelayRestoreTimer = &mlagDelayRestoreTimer
+	this.MlagDelayRestoreTimer = *NewNullableInt32(&mlagDelayRestoreTimer)
 	var bgpKeepaliveTimer int32 = 60
-	this.BgpKeepaliveTimer = &bgpKeepaliveTimer
+	this.BgpKeepaliveTimer = *NewNullableInt32(&bgpKeepaliveTimer)
 	var bgpHoldDownTimer int32 = 180
-	this.BgpHoldDownTimer = &bgpHoldDownTimer
+	this.BgpHoldDownTimer = *NewNullableInt32(&bgpHoldDownTimer)
 	var spineBgpAdvertisementInterval int32 = 1
-	this.SpineBgpAdvertisementInterval = &spineBgpAdvertisementInterval
+	this.SpineBgpAdvertisementInterval = *NewNullableInt32(&spineBgpAdvertisementInterval)
 	var spineBgpConnectTimer int32 = 120
-	this.SpineBgpConnectTimer = &spineBgpConnectTimer
+	this.SpineBgpConnectTimer = *NewNullableInt32(&spineBgpConnectTimer)
 	var leafBgpKeepAliveTimer int32 = 60
-	this.LeafBgpKeepAliveTimer = &leafBgpKeepAliveTimer
+	this.LeafBgpKeepAliveTimer = *NewNullableInt32(&leafBgpKeepAliveTimer)
 	var leafBgpHoldDownTimer int32 = 180
-	this.LeafBgpHoldDownTimer = &leafBgpHoldDownTimer
+	this.LeafBgpHoldDownTimer = *NewNullableInt32(&leafBgpHoldDownTimer)
 	var leafBgpAdvertisementInterval int32 = 1
-	this.LeafBgpAdvertisementInterval = &leafBgpAdvertisementInterval
+	this.LeafBgpAdvertisementInterval = *NewNullableInt32(&leafBgpAdvertisementInterval)
 	var leafBgpConnectTimer int32 = 120
-	this.LeafBgpConnectTimer = &leafBgpConnectTimer
+	this.LeafBgpConnectTimer = *NewNullableInt32(&leafBgpConnectTimer)
 	var linkStateTimeoutValue int32 = 60
 	this.LinkStateTimeoutValue = *NewNullableInt32(&linkStateTimeoutValue)
 	var evpnMultihomingStartupDelay int32 = 300
@@ -200,6 +208,10 @@ func NewSitesPatchRequestSiteValueWithDefaults() *SitesPatchRequestSiteValue {
 	this.AggressiveReporting = &aggressiveReporting
 	var crcFailureThreshold int32 = 5
 	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
+	var duplicateAddressDetectionMaxNumberOfMoves int32 = 5
+	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt32(&duplicateAddressDetectionMaxNumberOfMoves)
+	var duplicateAddressDetectionTime int32 = 180
+	this.DuplicateAddressDetectionTime = *NewNullableInt32(&duplicateAddressDetectionTime)
 	var enableDhcpSnooping bool = false
 	this.EnableDhcpSnooping = &enableDhcpSnooping
 	var ipSourceGuard bool = false
@@ -601,324 +613,424 @@ func (o *SitesPatchRequestSiteValue) SetAnycastMacAddressAutoAssigned(v bool) {
 	o.AnycastMacAddressAutoAssigned = &v
 }
 
-// GetMacAddressAgingTime returns the MacAddressAgingTime field value if set, zero value otherwise.
+// GetMacAddressAgingTime returns the MacAddressAgingTime field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetMacAddressAgingTime() int32 {
-	if o == nil || IsNil(o.MacAddressAgingTime) {
+	if o == nil || IsNil(o.MacAddressAgingTime.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MacAddressAgingTime
+	return *o.MacAddressAgingTime.Get()
 }
 
 // GetMacAddressAgingTimeOk returns a tuple with the MacAddressAgingTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetMacAddressAgingTimeOk() (*int32, bool) {
-	if o == nil || IsNil(o.MacAddressAgingTime) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MacAddressAgingTime, true
+	return o.MacAddressAgingTime.Get(), o.MacAddressAgingTime.IsSet()
 }
 
 // HasMacAddressAgingTime returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasMacAddressAgingTime() bool {
-	if o != nil && !IsNil(o.MacAddressAgingTime) {
+	if o != nil && o.MacAddressAgingTime.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMacAddressAgingTime gets a reference to the given int32 and assigns it to the MacAddressAgingTime field.
+// SetMacAddressAgingTime gets a reference to the given NullableInt32 and assigns it to the MacAddressAgingTime field.
 func (o *SitesPatchRequestSiteValue) SetMacAddressAgingTime(v int32) {
-	o.MacAddressAgingTime = &v
+	o.MacAddressAgingTime.Set(&v)
+}
+// SetMacAddressAgingTimeNil sets the value for MacAddressAgingTime to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetMacAddressAgingTimeNil() {
+	o.MacAddressAgingTime.Set(nil)
 }
 
-// GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field value if set, zero value otherwise.
+// UnsetMacAddressAgingTime ensures that no value is present for MacAddressAgingTime, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetMacAddressAgingTime() {
+	o.MacAddressAgingTime.Unset()
+}
+
+// GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetMlagDelayRestoreTimer() int32 {
-	if o == nil || IsNil(o.MlagDelayRestoreTimer) {
+	if o == nil || IsNil(o.MlagDelayRestoreTimer.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.MlagDelayRestoreTimer
+	return *o.MlagDelayRestoreTimer.Get()
 }
 
 // GetMlagDelayRestoreTimerOk returns a tuple with the MlagDelayRestoreTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetMlagDelayRestoreTimerOk() (*int32, bool) {
-	if o == nil || IsNil(o.MlagDelayRestoreTimer) {
+	if o == nil {
 		return nil, false
 	}
-	return o.MlagDelayRestoreTimer, true
+	return o.MlagDelayRestoreTimer.Get(), o.MlagDelayRestoreTimer.IsSet()
 }
 
 // HasMlagDelayRestoreTimer returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasMlagDelayRestoreTimer() bool {
-	if o != nil && !IsNil(o.MlagDelayRestoreTimer) {
+	if o != nil && o.MlagDelayRestoreTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMlagDelayRestoreTimer gets a reference to the given int32 and assigns it to the MlagDelayRestoreTimer field.
+// SetMlagDelayRestoreTimer gets a reference to the given NullableInt32 and assigns it to the MlagDelayRestoreTimer field.
 func (o *SitesPatchRequestSiteValue) SetMlagDelayRestoreTimer(v int32) {
-	o.MlagDelayRestoreTimer = &v
+	o.MlagDelayRestoreTimer.Set(&v)
+}
+// SetMlagDelayRestoreTimerNil sets the value for MlagDelayRestoreTimer to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetMlagDelayRestoreTimerNil() {
+	o.MlagDelayRestoreTimer.Set(nil)
 }
 
-// GetBgpKeepaliveTimer returns the BgpKeepaliveTimer field value if set, zero value otherwise.
+// UnsetMlagDelayRestoreTimer ensures that no value is present for MlagDelayRestoreTimer, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetMlagDelayRestoreTimer() {
+	o.MlagDelayRestoreTimer.Unset()
+}
+
+// GetBgpKeepaliveTimer returns the BgpKeepaliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetBgpKeepaliveTimer() int32 {
-	if o == nil || IsNil(o.BgpKeepaliveTimer) {
+	if o == nil || IsNil(o.BgpKeepaliveTimer.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.BgpKeepaliveTimer
+	return *o.BgpKeepaliveTimer.Get()
 }
 
 // GetBgpKeepaliveTimerOk returns a tuple with the BgpKeepaliveTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetBgpKeepaliveTimerOk() (*int32, bool) {
-	if o == nil || IsNil(o.BgpKeepaliveTimer) {
+	if o == nil {
 		return nil, false
 	}
-	return o.BgpKeepaliveTimer, true
+	return o.BgpKeepaliveTimer.Get(), o.BgpKeepaliveTimer.IsSet()
 }
 
 // HasBgpKeepaliveTimer returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasBgpKeepaliveTimer() bool {
-	if o != nil && !IsNil(o.BgpKeepaliveTimer) {
+	if o != nil && o.BgpKeepaliveTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetBgpKeepaliveTimer gets a reference to the given int32 and assigns it to the BgpKeepaliveTimer field.
+// SetBgpKeepaliveTimer gets a reference to the given NullableInt32 and assigns it to the BgpKeepaliveTimer field.
 func (o *SitesPatchRequestSiteValue) SetBgpKeepaliveTimer(v int32) {
-	o.BgpKeepaliveTimer = &v
+	o.BgpKeepaliveTimer.Set(&v)
+}
+// SetBgpKeepaliveTimerNil sets the value for BgpKeepaliveTimer to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetBgpKeepaliveTimerNil() {
+	o.BgpKeepaliveTimer.Set(nil)
 }
 
-// GetBgpHoldDownTimer returns the BgpHoldDownTimer field value if set, zero value otherwise.
+// UnsetBgpKeepaliveTimer ensures that no value is present for BgpKeepaliveTimer, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetBgpKeepaliveTimer() {
+	o.BgpKeepaliveTimer.Unset()
+}
+
+// GetBgpHoldDownTimer returns the BgpHoldDownTimer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetBgpHoldDownTimer() int32 {
-	if o == nil || IsNil(o.BgpHoldDownTimer) {
+	if o == nil || IsNil(o.BgpHoldDownTimer.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.BgpHoldDownTimer
+	return *o.BgpHoldDownTimer.Get()
 }
 
 // GetBgpHoldDownTimerOk returns a tuple with the BgpHoldDownTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetBgpHoldDownTimerOk() (*int32, bool) {
-	if o == nil || IsNil(o.BgpHoldDownTimer) {
+	if o == nil {
 		return nil, false
 	}
-	return o.BgpHoldDownTimer, true
+	return o.BgpHoldDownTimer.Get(), o.BgpHoldDownTimer.IsSet()
 }
 
 // HasBgpHoldDownTimer returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasBgpHoldDownTimer() bool {
-	if o != nil && !IsNil(o.BgpHoldDownTimer) {
+	if o != nil && o.BgpHoldDownTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetBgpHoldDownTimer gets a reference to the given int32 and assigns it to the BgpHoldDownTimer field.
+// SetBgpHoldDownTimer gets a reference to the given NullableInt32 and assigns it to the BgpHoldDownTimer field.
 func (o *SitesPatchRequestSiteValue) SetBgpHoldDownTimer(v int32) {
-	o.BgpHoldDownTimer = &v
+	o.BgpHoldDownTimer.Set(&v)
+}
+// SetBgpHoldDownTimerNil sets the value for BgpHoldDownTimer to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetBgpHoldDownTimerNil() {
+	o.BgpHoldDownTimer.Set(nil)
 }
 
-// GetSpineBgpAdvertisementInterval returns the SpineBgpAdvertisementInterval field value if set, zero value otherwise.
+// UnsetBgpHoldDownTimer ensures that no value is present for BgpHoldDownTimer, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetBgpHoldDownTimer() {
+	o.BgpHoldDownTimer.Unset()
+}
+
+// GetSpineBgpAdvertisementInterval returns the SpineBgpAdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetSpineBgpAdvertisementInterval() int32 {
-	if o == nil || IsNil(o.SpineBgpAdvertisementInterval) {
+	if o == nil || IsNil(o.SpineBgpAdvertisementInterval.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.SpineBgpAdvertisementInterval
+	return *o.SpineBgpAdvertisementInterval.Get()
 }
 
 // GetSpineBgpAdvertisementIntervalOk returns a tuple with the SpineBgpAdvertisementInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetSpineBgpAdvertisementIntervalOk() (*int32, bool) {
-	if o == nil || IsNil(o.SpineBgpAdvertisementInterval) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SpineBgpAdvertisementInterval, true
+	return o.SpineBgpAdvertisementInterval.Get(), o.SpineBgpAdvertisementInterval.IsSet()
 }
 
 // HasSpineBgpAdvertisementInterval returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasSpineBgpAdvertisementInterval() bool {
-	if o != nil && !IsNil(o.SpineBgpAdvertisementInterval) {
+	if o != nil && o.SpineBgpAdvertisementInterval.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSpineBgpAdvertisementInterval gets a reference to the given int32 and assigns it to the SpineBgpAdvertisementInterval field.
+// SetSpineBgpAdvertisementInterval gets a reference to the given NullableInt32 and assigns it to the SpineBgpAdvertisementInterval field.
 func (o *SitesPatchRequestSiteValue) SetSpineBgpAdvertisementInterval(v int32) {
-	o.SpineBgpAdvertisementInterval = &v
+	o.SpineBgpAdvertisementInterval.Set(&v)
+}
+// SetSpineBgpAdvertisementIntervalNil sets the value for SpineBgpAdvertisementInterval to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetSpineBgpAdvertisementIntervalNil() {
+	o.SpineBgpAdvertisementInterval.Set(nil)
 }
 
-// GetSpineBgpConnectTimer returns the SpineBgpConnectTimer field value if set, zero value otherwise.
+// UnsetSpineBgpAdvertisementInterval ensures that no value is present for SpineBgpAdvertisementInterval, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetSpineBgpAdvertisementInterval() {
+	o.SpineBgpAdvertisementInterval.Unset()
+}
+
+// GetSpineBgpConnectTimer returns the SpineBgpConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetSpineBgpConnectTimer() int32 {
-	if o == nil || IsNil(o.SpineBgpConnectTimer) {
+	if o == nil || IsNil(o.SpineBgpConnectTimer.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.SpineBgpConnectTimer
+	return *o.SpineBgpConnectTimer.Get()
 }
 
 // GetSpineBgpConnectTimerOk returns a tuple with the SpineBgpConnectTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetSpineBgpConnectTimerOk() (*int32, bool) {
-	if o == nil || IsNil(o.SpineBgpConnectTimer) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SpineBgpConnectTimer, true
+	return o.SpineBgpConnectTimer.Get(), o.SpineBgpConnectTimer.IsSet()
 }
 
 // HasSpineBgpConnectTimer returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasSpineBgpConnectTimer() bool {
-	if o != nil && !IsNil(o.SpineBgpConnectTimer) {
+	if o != nil && o.SpineBgpConnectTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSpineBgpConnectTimer gets a reference to the given int32 and assigns it to the SpineBgpConnectTimer field.
+// SetSpineBgpConnectTimer gets a reference to the given NullableInt32 and assigns it to the SpineBgpConnectTimer field.
 func (o *SitesPatchRequestSiteValue) SetSpineBgpConnectTimer(v int32) {
-	o.SpineBgpConnectTimer = &v
+	o.SpineBgpConnectTimer.Set(&v)
+}
+// SetSpineBgpConnectTimerNil sets the value for SpineBgpConnectTimer to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetSpineBgpConnectTimerNil() {
+	o.SpineBgpConnectTimer.Set(nil)
 }
 
-// GetLeafBgpKeepAliveTimer returns the LeafBgpKeepAliveTimer field value if set, zero value otherwise.
+// UnsetSpineBgpConnectTimer ensures that no value is present for SpineBgpConnectTimer, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetSpineBgpConnectTimer() {
+	o.SpineBgpConnectTimer.Unset()
+}
+
+// GetLeafBgpKeepAliveTimer returns the LeafBgpKeepAliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetLeafBgpKeepAliveTimer() int32 {
-	if o == nil || IsNil(o.LeafBgpKeepAliveTimer) {
+	if o == nil || IsNil(o.LeafBgpKeepAliveTimer.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.LeafBgpKeepAliveTimer
+	return *o.LeafBgpKeepAliveTimer.Get()
 }
 
 // GetLeafBgpKeepAliveTimerOk returns a tuple with the LeafBgpKeepAliveTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetLeafBgpKeepAliveTimerOk() (*int32, bool) {
-	if o == nil || IsNil(o.LeafBgpKeepAliveTimer) {
+	if o == nil {
 		return nil, false
 	}
-	return o.LeafBgpKeepAliveTimer, true
+	return o.LeafBgpKeepAliveTimer.Get(), o.LeafBgpKeepAliveTimer.IsSet()
 }
 
 // HasLeafBgpKeepAliveTimer returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasLeafBgpKeepAliveTimer() bool {
-	if o != nil && !IsNil(o.LeafBgpKeepAliveTimer) {
+	if o != nil && o.LeafBgpKeepAliveTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLeafBgpKeepAliveTimer gets a reference to the given int32 and assigns it to the LeafBgpKeepAliveTimer field.
+// SetLeafBgpKeepAliveTimer gets a reference to the given NullableInt32 and assigns it to the LeafBgpKeepAliveTimer field.
 func (o *SitesPatchRequestSiteValue) SetLeafBgpKeepAliveTimer(v int32) {
-	o.LeafBgpKeepAliveTimer = &v
+	o.LeafBgpKeepAliveTimer.Set(&v)
+}
+// SetLeafBgpKeepAliveTimerNil sets the value for LeafBgpKeepAliveTimer to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetLeafBgpKeepAliveTimerNil() {
+	o.LeafBgpKeepAliveTimer.Set(nil)
 }
 
-// GetLeafBgpHoldDownTimer returns the LeafBgpHoldDownTimer field value if set, zero value otherwise.
+// UnsetLeafBgpKeepAliveTimer ensures that no value is present for LeafBgpKeepAliveTimer, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetLeafBgpKeepAliveTimer() {
+	o.LeafBgpKeepAliveTimer.Unset()
+}
+
+// GetLeafBgpHoldDownTimer returns the LeafBgpHoldDownTimer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetLeafBgpHoldDownTimer() int32 {
-	if o == nil || IsNil(o.LeafBgpHoldDownTimer) {
+	if o == nil || IsNil(o.LeafBgpHoldDownTimer.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.LeafBgpHoldDownTimer
+	return *o.LeafBgpHoldDownTimer.Get()
 }
 
 // GetLeafBgpHoldDownTimerOk returns a tuple with the LeafBgpHoldDownTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetLeafBgpHoldDownTimerOk() (*int32, bool) {
-	if o == nil || IsNil(o.LeafBgpHoldDownTimer) {
+	if o == nil {
 		return nil, false
 	}
-	return o.LeafBgpHoldDownTimer, true
+	return o.LeafBgpHoldDownTimer.Get(), o.LeafBgpHoldDownTimer.IsSet()
 }
 
 // HasLeafBgpHoldDownTimer returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasLeafBgpHoldDownTimer() bool {
-	if o != nil && !IsNil(o.LeafBgpHoldDownTimer) {
+	if o != nil && o.LeafBgpHoldDownTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLeafBgpHoldDownTimer gets a reference to the given int32 and assigns it to the LeafBgpHoldDownTimer field.
+// SetLeafBgpHoldDownTimer gets a reference to the given NullableInt32 and assigns it to the LeafBgpHoldDownTimer field.
 func (o *SitesPatchRequestSiteValue) SetLeafBgpHoldDownTimer(v int32) {
-	o.LeafBgpHoldDownTimer = &v
+	o.LeafBgpHoldDownTimer.Set(&v)
+}
+// SetLeafBgpHoldDownTimerNil sets the value for LeafBgpHoldDownTimer to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetLeafBgpHoldDownTimerNil() {
+	o.LeafBgpHoldDownTimer.Set(nil)
 }
 
-// GetLeafBgpAdvertisementInterval returns the LeafBgpAdvertisementInterval field value if set, zero value otherwise.
+// UnsetLeafBgpHoldDownTimer ensures that no value is present for LeafBgpHoldDownTimer, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetLeafBgpHoldDownTimer() {
+	o.LeafBgpHoldDownTimer.Unset()
+}
+
+// GetLeafBgpAdvertisementInterval returns the LeafBgpAdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetLeafBgpAdvertisementInterval() int32 {
-	if o == nil || IsNil(o.LeafBgpAdvertisementInterval) {
+	if o == nil || IsNil(o.LeafBgpAdvertisementInterval.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.LeafBgpAdvertisementInterval
+	return *o.LeafBgpAdvertisementInterval.Get()
 }
 
 // GetLeafBgpAdvertisementIntervalOk returns a tuple with the LeafBgpAdvertisementInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetLeafBgpAdvertisementIntervalOk() (*int32, bool) {
-	if o == nil || IsNil(o.LeafBgpAdvertisementInterval) {
+	if o == nil {
 		return nil, false
 	}
-	return o.LeafBgpAdvertisementInterval, true
+	return o.LeafBgpAdvertisementInterval.Get(), o.LeafBgpAdvertisementInterval.IsSet()
 }
 
 // HasLeafBgpAdvertisementInterval returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasLeafBgpAdvertisementInterval() bool {
-	if o != nil && !IsNil(o.LeafBgpAdvertisementInterval) {
+	if o != nil && o.LeafBgpAdvertisementInterval.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLeafBgpAdvertisementInterval gets a reference to the given int32 and assigns it to the LeafBgpAdvertisementInterval field.
+// SetLeafBgpAdvertisementInterval gets a reference to the given NullableInt32 and assigns it to the LeafBgpAdvertisementInterval field.
 func (o *SitesPatchRequestSiteValue) SetLeafBgpAdvertisementInterval(v int32) {
-	o.LeafBgpAdvertisementInterval = &v
+	o.LeafBgpAdvertisementInterval.Set(&v)
+}
+// SetLeafBgpAdvertisementIntervalNil sets the value for LeafBgpAdvertisementInterval to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetLeafBgpAdvertisementIntervalNil() {
+	o.LeafBgpAdvertisementInterval.Set(nil)
 }
 
-// GetLeafBgpConnectTimer returns the LeafBgpConnectTimer field value if set, zero value otherwise.
+// UnsetLeafBgpAdvertisementInterval ensures that no value is present for LeafBgpAdvertisementInterval, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetLeafBgpAdvertisementInterval() {
+	o.LeafBgpAdvertisementInterval.Unset()
+}
+
+// GetLeafBgpConnectTimer returns the LeafBgpConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SitesPatchRequestSiteValue) GetLeafBgpConnectTimer() int32 {
-	if o == nil || IsNil(o.LeafBgpConnectTimer) {
+	if o == nil || IsNil(o.LeafBgpConnectTimer.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.LeafBgpConnectTimer
+	return *o.LeafBgpConnectTimer.Get()
 }
 
 // GetLeafBgpConnectTimerOk returns a tuple with the LeafBgpConnectTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SitesPatchRequestSiteValue) GetLeafBgpConnectTimerOk() (*int32, bool) {
-	if o == nil || IsNil(o.LeafBgpConnectTimer) {
+	if o == nil {
 		return nil, false
 	}
-	return o.LeafBgpConnectTimer, true
+	return o.LeafBgpConnectTimer.Get(), o.LeafBgpConnectTimer.IsSet()
 }
 
 // HasLeafBgpConnectTimer returns a boolean if a field has been set.
 func (o *SitesPatchRequestSiteValue) HasLeafBgpConnectTimer() bool {
-	if o != nil && !IsNil(o.LeafBgpConnectTimer) {
+	if o != nil && o.LeafBgpConnectTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLeafBgpConnectTimer gets a reference to the given int32 and assigns it to the LeafBgpConnectTimer field.
+// SetLeafBgpConnectTimer gets a reference to the given NullableInt32 and assigns it to the LeafBgpConnectTimer field.
 func (o *SitesPatchRequestSiteValue) SetLeafBgpConnectTimer(v int32) {
-	o.LeafBgpConnectTimer = &v
+	o.LeafBgpConnectTimer.Set(&v)
+}
+// SetLeafBgpConnectTimerNil sets the value for LeafBgpConnectTimer to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetLeafBgpConnectTimerNil() {
+	o.LeafBgpConnectTimer.Set(nil)
+}
+
+// UnsetLeafBgpConnectTimer ensures that no value is present for LeafBgpConnectTimer, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetLeafBgpConnectTimer() {
+	o.LeafBgpConnectTimer.Unset()
 }
 
 // GetLinkStateTimeoutValue returns the LinkStateTimeoutValue field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1217,6 +1329,90 @@ func (o *SitesPatchRequestSiteValue) SetObjectProperties(v SitesPatchRequestSite
 	o.ObjectProperties = &v
 }
 
+// GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int32 {
+	if o == nil || IsNil(o.DuplicateAddressDetectionMaxNumberOfMoves.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.DuplicateAddressDetectionMaxNumberOfMoves.Get()
+}
+
+// GetDuplicateAddressDetectionMaxNumberOfMovesOk returns a tuple with the DuplicateAddressDetectionMaxNumberOfMoves field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DuplicateAddressDetectionMaxNumberOfMoves.Get(), o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet()
+}
+
+// HasDuplicateAddressDetectionMaxNumberOfMoves returns a boolean if a field has been set.
+func (o *SitesPatchRequestSiteValue) HasDuplicateAddressDetectionMaxNumberOfMoves() bool {
+	if o != nil && o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDuplicateAddressDetectionMaxNumberOfMoves gets a reference to the given NullableInt32 and assigns it to the DuplicateAddressDetectionMaxNumberOfMoves field.
+func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int32) {
+	o.DuplicateAddressDetectionMaxNumberOfMoves.Set(&v)
+}
+// SetDuplicateAddressDetectionMaxNumberOfMovesNil sets the value for DuplicateAddressDetectionMaxNumberOfMoves to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionMaxNumberOfMovesNil() {
+	o.DuplicateAddressDetectionMaxNumberOfMoves.Set(nil)
+}
+
+// UnsetDuplicateAddressDetectionMaxNumberOfMoves ensures that no value is present for DuplicateAddressDetectionMaxNumberOfMoves, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetDuplicateAddressDetectionMaxNumberOfMoves() {
+	o.DuplicateAddressDetectionMaxNumberOfMoves.Unset()
+}
+
+// GetDuplicateAddressDetectionTime returns the DuplicateAddressDetectionTime field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionTime() int32 {
+	if o == nil || IsNil(o.DuplicateAddressDetectionTime.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.DuplicateAddressDetectionTime.Get()
+}
+
+// GetDuplicateAddressDetectionTimeOk returns a tuple with the DuplicateAddressDetectionTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionTimeOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DuplicateAddressDetectionTime.Get(), o.DuplicateAddressDetectionTime.IsSet()
+}
+
+// HasDuplicateAddressDetectionTime returns a boolean if a field has been set.
+func (o *SitesPatchRequestSiteValue) HasDuplicateAddressDetectionTime() bool {
+	if o != nil && o.DuplicateAddressDetectionTime.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDuplicateAddressDetectionTime gets a reference to the given NullableInt32 and assigns it to the DuplicateAddressDetectionTime field.
+func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionTime(v int32) {
+	o.DuplicateAddressDetectionTime.Set(&v)
+}
+// SetDuplicateAddressDetectionTimeNil sets the value for DuplicateAddressDetectionTime to be an explicit nil
+func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionTimeNil() {
+	o.DuplicateAddressDetectionTime.Set(nil)
+}
+
+// UnsetDuplicateAddressDetectionTime ensures that no value is present for DuplicateAddressDetectionTime, not even an explicit nil
+func (o *SitesPatchRequestSiteValue) UnsetDuplicateAddressDetectionTime() {
+	o.DuplicateAddressDetectionTime.Unset()
+}
+
 // GetEnableDhcpSnooping returns the EnableDhcpSnooping field value if set, zero value otherwise.
 func (o *SitesPatchRequestSiteValue) GetEnableDhcpSnooping() bool {
 	if o == nil || IsNil(o.EnableDhcpSnooping) {
@@ -1327,35 +1523,35 @@ func (o SitesPatchRequestSiteValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AnycastMacAddressAutoAssigned) {
 		toSerialize["anycast_mac_address_auto_assigned_"] = o.AnycastMacAddressAutoAssigned
 	}
-	if !IsNil(o.MacAddressAgingTime) {
-		toSerialize["mac_address_aging_time"] = o.MacAddressAgingTime
+	if o.MacAddressAgingTime.IsSet() {
+		toSerialize["mac_address_aging_time"] = o.MacAddressAgingTime.Get()
 	}
-	if !IsNil(o.MlagDelayRestoreTimer) {
-		toSerialize["mlag_delay_restore_timer"] = o.MlagDelayRestoreTimer
+	if o.MlagDelayRestoreTimer.IsSet() {
+		toSerialize["mlag_delay_restore_timer"] = o.MlagDelayRestoreTimer.Get()
 	}
-	if !IsNil(o.BgpKeepaliveTimer) {
-		toSerialize["bgp_keepalive_timer"] = o.BgpKeepaliveTimer
+	if o.BgpKeepaliveTimer.IsSet() {
+		toSerialize["bgp_keepalive_timer"] = o.BgpKeepaliveTimer.Get()
 	}
-	if !IsNil(o.BgpHoldDownTimer) {
-		toSerialize["bgp_hold_down_timer"] = o.BgpHoldDownTimer
+	if o.BgpHoldDownTimer.IsSet() {
+		toSerialize["bgp_hold_down_timer"] = o.BgpHoldDownTimer.Get()
 	}
-	if !IsNil(o.SpineBgpAdvertisementInterval) {
-		toSerialize["spine_bgp_advertisement_interval"] = o.SpineBgpAdvertisementInterval
+	if o.SpineBgpAdvertisementInterval.IsSet() {
+		toSerialize["spine_bgp_advertisement_interval"] = o.SpineBgpAdvertisementInterval.Get()
 	}
-	if !IsNil(o.SpineBgpConnectTimer) {
-		toSerialize["spine_bgp_connect_timer"] = o.SpineBgpConnectTimer
+	if o.SpineBgpConnectTimer.IsSet() {
+		toSerialize["spine_bgp_connect_timer"] = o.SpineBgpConnectTimer.Get()
 	}
-	if !IsNil(o.LeafBgpKeepAliveTimer) {
-		toSerialize["leaf_bgp_keep_alive_timer"] = o.LeafBgpKeepAliveTimer
+	if o.LeafBgpKeepAliveTimer.IsSet() {
+		toSerialize["leaf_bgp_keep_alive_timer"] = o.LeafBgpKeepAliveTimer.Get()
 	}
-	if !IsNil(o.LeafBgpHoldDownTimer) {
-		toSerialize["leaf_bgp_hold_down_timer"] = o.LeafBgpHoldDownTimer
+	if o.LeafBgpHoldDownTimer.IsSet() {
+		toSerialize["leaf_bgp_hold_down_timer"] = o.LeafBgpHoldDownTimer.Get()
 	}
-	if !IsNil(o.LeafBgpAdvertisementInterval) {
-		toSerialize["leaf_bgp_advertisement_interval"] = o.LeafBgpAdvertisementInterval
+	if o.LeafBgpAdvertisementInterval.IsSet() {
+		toSerialize["leaf_bgp_advertisement_interval"] = o.LeafBgpAdvertisementInterval.Get()
 	}
-	if !IsNil(o.LeafBgpConnectTimer) {
-		toSerialize["leaf_bgp_connect_timer"] = o.LeafBgpConnectTimer
+	if o.LeafBgpConnectTimer.IsSet() {
+		toSerialize["leaf_bgp_connect_timer"] = o.LeafBgpConnectTimer.Get()
 	}
 	if o.LinkStateTimeoutValue.IsSet() {
 		toSerialize["link_state_timeout_value"] = o.LinkStateTimeoutValue.Get()
@@ -1380,6 +1576,12 @@ func (o SitesPatchRequestSiteValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet() {
+		toSerialize["duplicate_address_detection_max_number_of_moves"] = o.DuplicateAddressDetectionMaxNumberOfMoves.Get()
+	}
+	if o.DuplicateAddressDetectionTime.IsSet() {
+		toSerialize["duplicate_address_detection_time"] = o.DuplicateAddressDetectionTime.Get()
 	}
 	if !IsNil(o.EnableDhcpSnooping) {
 		toSerialize["enable_dhcp_snooping"] = o.EnableDhcpSnooping

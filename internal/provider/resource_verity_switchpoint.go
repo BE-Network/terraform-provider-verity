@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -487,8 +486,8 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "IsFabric", APIField: &spProps.IsFabric, TFValue: plan.IsFabric},
 	})
 
-	// Handle int64 fields
-	utils.SetInt64Fields([]utils.Int64FieldMapping{
+	// Handle nullable int64 fields
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "BgpAsNumber", APIField: &spProps.BgpAsNumber, TFValue: plan.BgpAsNumber},
 	})
 
@@ -910,9 +909,9 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		if bgpAsNumberChanged {
 			if !plan.BgpAsNumber.IsNull() {
 				val := int32(plan.BgpAsNumber.ValueInt64())
-				spProps.BgpAsNumber = &val
+				spProps.BgpAsNumber = *openapi.NewNullableInt32(&val)
 			} else {
-				spProps.BgpAsNumber = nil
+				spProps.BgpAsNumber = *openapi.NewNullableInt32(nil)
 			}
 		}
 
@@ -938,11 +937,11 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 					// Must include BgpAsNumber value in the request for the change to take effect
 					if !plan.BgpAsNumber.IsNull() {
 						val := int32(plan.BgpAsNumber.ValueInt64())
-						spProps.BgpAsNumber = &val
+						spProps.BgpAsNumber = *openapi.NewNullableInt32(&val)
 					} else if !state.BgpAsNumber.IsNull() {
 						// Use current state BgpAsNumber if plan doesn't specify one
 						val := int32(state.BgpAsNumber.ValueInt64())
-						spProps.BgpAsNumber = &val
+						spProps.BgpAsNumber = *openapi.NewNullableInt32(&val)
 					}
 				}
 			}
@@ -1615,34 +1614,28 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 	}
 
 	if val, ok := switchpointData["bgp_as_number"]; ok {
-		if val == nil {
+		switch v := val.(type) {
+		case float64:
+			state.BgpAsNumber = types.Int64Value(int64(v))
+		case int:
+			state.BgpAsNumber = types.Int64Value(int64(v))
+		case int32:
+			state.BgpAsNumber = types.Int64Value(int64(v))
+		case int64:
+			state.BgpAsNumber = types.Int64Value(v)
+		case nil:
 			state.BgpAsNumber = types.Int64Null()
-		} else {
-			switch v := val.(type) {
-			case int:
-				state.BgpAsNumber = types.Int64Value(int64(v))
-			case int32:
-				state.BgpAsNumber = types.Int64Value(int64(v))
-			case int64:
-				state.BgpAsNumber = types.Int64Value(v)
-			case float64:
-				state.BgpAsNumber = types.Int64Value(int64(v))
-			case string:
-				if intVal, err := strconv.ParseInt(v, 10, 64); err == nil {
-					state.BgpAsNumber = types.Int64Value(intVal)
-				} else {
-					if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
-						state.BgpAsNumber = plan.BgpAsNumber
-					}
-				}
-			default:
-				if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
-					state.BgpAsNumber = plan.BgpAsNumber
-				}
+		default:
+			if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
+				state.BgpAsNumber = plan.BgpAsNumber
+			} else {
+				state.BgpAsNumber = types.Int64Null()
 			}
 		}
 	} else if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
 		state.BgpAsNumber = plan.BgpAsNumber
+	} else {
+		state.BgpAsNumber = types.Int64Null()
 	}
 
 	if val, ok := switchpointData["bgp_as_number_auto_assigned_"].(bool); ok {
