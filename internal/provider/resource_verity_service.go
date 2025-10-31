@@ -369,8 +369,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
-			// Use the cached data with plan values as fallback
-			state := populateServiceState(ctx, minState, serviceData, &plan)
+			state := populateServiceState(ctx, minState, serviceData)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -410,7 +409,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 	if r.bulkOpsMgr != nil {
 		if serviceData, exists := r.bulkOpsMgr.GetResourceResponse("service", serviceName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached service data for %s from recent operation", serviceName))
-			state = populateServiceState(ctx, state, serviceData, nil)
+			state = populateServiceState(ctx, state, serviceData)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -486,7 +485,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Found service '%s' under API key '%s'", serviceName, actualAPIName))
 
-	state = populateServiceState(ctx, state, serviceMap, nil)
+	state = populateServiceState(ctx, state, serviceMap)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -695,8 +694,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
-			// Use the cached data from the API response with plan values as fallback
-			state := populateServiceState(ctx, minState, serviceData, &plan)
+			state := populateServiceState(ctx, minState, serviceData)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -746,344 +744,52 @@ func (r *verityServiceResource) ImportState(ctx context.Context, req resource.Im
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func populateServiceState(ctx context.Context, state verityServiceResourceModel, serviceData map[string]interface{}, plan *verityServiceResourceModel) verityServiceResourceModel {
-	state.Name = types.StringValue(fmt.Sprintf("%v", serviceData["name"]))
+func populateServiceState(ctx context.Context, state verityServiceResourceModel, serviceData map[string]interface{}) verityServiceResourceModel {
+	state.Name = utils.MapStringFromAPI(serviceData["name"])
 
-	// For each field, check if it's in the API response first,
-	// if not: use plan value (if plan provided and not null), otherwise preserve current state value
+	// Int fields
+	state.Vlan = utils.MapInt64FromAPI(serviceData["vlan"])
+	state.Vni = utils.MapInt64FromAPI(serviceData["vni"])
+	state.Mtu = utils.MapInt64FromAPI(serviceData["mtu"])
+	state.MaxUpstreamRateMbps = utils.MapInt64FromAPI(serviceData["max_upstream_rate_mbps"])
+	state.MaxDownstreamRateMbps = utils.MapInt64FromAPI(serviceData["max_downstream_rate_mbps"])
+	state.MstInstance = utils.MapInt64FromAPI(serviceData["mst_instance"])
 
-	if val, ok := serviceData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(val)
-	} else if plan != nil && !plan.Enable.IsNull() {
-		state.Enable = plan.Enable
-	}
+	// Bool fields
+	state.Enable = utils.MapBoolFromAPI(serviceData["enable"])
+	state.VniAutoAssigned = utils.MapBoolFromAPI(serviceData["vni_auto_assigned_"])
+	state.TaggedPackets = utils.MapBoolFromAPI(serviceData["tagged_packets"])
+	state.Tls = utils.MapBoolFromAPI(serviceData["tls"])
+	state.AllowLocalSwitching = utils.MapBoolFromAPI(serviceData["allow_local_switching"])
+	state.ActAsMulticastQuerier = utils.MapBoolFromAPI(serviceData["act_as_multicast_querier"])
+	state.BlockUnknownUnicastFlood = utils.MapBoolFromAPI(serviceData["block_unknown_unicast_flood"])
+	state.BlockDownstreamDhcpServer = utils.MapBoolFromAPI(serviceData["block_downstream_dhcp_server"])
+	state.IsManagementService = utils.MapBoolFromAPI(serviceData["is_management_service"])
+	state.UseDscpToPBitMappingForL3PacketsIfAvailable = utils.MapBoolFromAPI(serviceData["use_dscp_to_p_bit_mapping_for_l3_packets_if_available"])
+	state.AllowFastLeave = utils.MapBoolFromAPI(serviceData["allow_fast_leave"])
 
+	// String fields
+	state.Tenant = utils.MapStringFromAPI(serviceData["tenant"])
+	state.TenantRefType = utils.MapStringFromAPI(serviceData["tenant_ref_type_"])
+	state.DhcpServerIpv4 = utils.MapStringFromAPI(serviceData["dhcp_server_ipv4"])
+	state.DhcpServerIpv6 = utils.MapStringFromAPI(serviceData["dhcp_server_ipv6"])
+	state.AnycastIpv4Mask = utils.MapStringFromAPI(serviceData["anycast_ipv4_mask"])
+	state.AnycastIpv6Mask = utils.MapStringFromAPI(serviceData["anycast_ipv6_mask"])
+	state.PacketPriority = utils.MapStringFromAPI(serviceData["packet_priority"])
+	state.MulticastManagementMode = utils.MapStringFromAPI(serviceData["multicast_management_mode"])
+	state.PolicyBasedRouting = utils.MapStringFromAPI(serviceData["policy_based_routing"])
+	state.PolicyBasedRoutingRefType = utils.MapStringFromAPI(serviceData["policy_based_routing_ref_type_"])
+
+	// Object properties
 	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
-		objProps := verityServiceObjectPropertiesModel{}
-
-		if group, exists := op["group"]; exists && group != nil {
-			objProps.Group = types.StringValue(fmt.Sprintf("%v", group))
-		} else if len(state.ObjectProperties) > 0 {
-			objProps.Group = state.ObjectProperties[0].Group
-		} else {
-			objProps.Group = types.StringNull()
+		objProps := verityServiceObjectPropertiesModel{
+			Group:                  utils.MapStringFromAPI(op["group"]),
+			OnSummary:              utils.MapBoolFromAPI(op["on_summary"]),
+			WarnOnNoExternalSource: utils.MapBoolFromAPI(op["warn_on_no_external_source"]),
 		}
-
-		if onSummary, exists := op["on_summary"].(bool); exists {
-			objProps.OnSummary = types.BoolValue(onSummary)
-		} else if plan != nil && len(plan.ObjectProperties) > 0 && !plan.ObjectProperties[0].OnSummary.IsNull() {
-			objProps.OnSummary = plan.ObjectProperties[0].OnSummary
-		} else if len(state.ObjectProperties) > 0 {
-			objProps.OnSummary = state.ObjectProperties[0].OnSummary
-		} else {
-			objProps.OnSummary = types.BoolNull()
-		}
-
-		if warnOnNoExternal, exists := op["warn_on_no_external_source"].(bool); exists {
-			objProps.WarnOnNoExternalSource = types.BoolValue(warnOnNoExternal)
-		} else if plan != nil && len(plan.ObjectProperties) > 0 && !plan.ObjectProperties[0].WarnOnNoExternalSource.IsNull() {
-			objProps.WarnOnNoExternalSource = plan.ObjectProperties[0].WarnOnNoExternalSource
-		} else if len(state.ObjectProperties) > 0 {
-			objProps.WarnOnNoExternalSource = state.ObjectProperties[0].WarnOnNoExternalSource
-		} else {
-			objProps.WarnOnNoExternalSource = types.BoolNull()
-		}
-
 		state.ObjectProperties = []verityServiceObjectPropertiesModel{objProps}
-	} else if plan != nil && len(plan.ObjectProperties) > 0 {
-		state.ObjectProperties = plan.ObjectProperties
-	}
-
-	if val, ok := serviceData["vlan"]; ok {
-		if val == nil {
-			state.Vlan = types.Int64Null()
-		} else {
-			switch v := val.(type) {
-			case float64:
-				state.Vlan = types.Int64Value(int64(v))
-			case int:
-				state.Vlan = types.Int64Value(int64(v))
-			case int32:
-				state.Vlan = types.Int64Value(int64(v))
-			default:
-				if plan != nil && !plan.Vlan.IsNull() && !plan.Vlan.IsUnknown() {
-					state.Vlan = plan.Vlan
-				} else {
-					state.Vlan = types.Int64Null()
-				}
-			}
-		}
-	} else if plan != nil && !plan.Vlan.IsNull() && !plan.Vlan.IsUnknown() {
-		state.Vlan = plan.Vlan
 	} else {
-		state.Vlan = types.Int64Null()
-	}
-
-	if val, ok := serviceData["vni"]; ok {
-		if val == nil {
-			state.Vni = types.Int64Null()
-		} else {
-			switch v := val.(type) {
-			case float64:
-				state.Vni = types.Int64Value(int64(v))
-			case int:
-				state.Vni = types.Int64Value(int64(v))
-			case int32:
-				state.Vni = types.Int64Value(int64(v))
-			default:
-				if plan != nil && !plan.Vni.IsNull() && !plan.Vni.IsUnknown() {
-					state.Vni = plan.Vni
-				} else {
-					state.Vni = types.Int64Null()
-				}
-			}
-		}
-	} else if plan != nil && !plan.Vni.IsNull() && !plan.Vni.IsUnknown() {
-		state.Vni = plan.Vni
-	} else {
-		state.Vni = types.Int64Null()
-	}
-
-	if val, ok := serviceData["vni_auto_assigned_"].(bool); ok {
-		state.VniAutoAssigned = types.BoolValue(val)
-	} else if plan != nil && !plan.VniAutoAssigned.IsNull() {
-		state.VniAutoAssigned = plan.VniAutoAssigned
-	} else {
-		state.VniAutoAssigned = types.BoolNull()
-	}
-
-	if val, ok := serviceData["tenant"].(string); ok {
-		state.Tenant = types.StringValue(val)
-	} else if plan != nil && !plan.Tenant.IsNull() {
-		state.Tenant = plan.Tenant
-	} else {
-		state.Tenant = types.StringNull()
-	}
-
-	if val, ok := serviceData["tenant_ref_type_"].(string); ok {
-		state.TenantRefType = types.StringValue(val)
-	} else if plan != nil && !plan.TenantRefType.IsNull() {
-		state.TenantRefType = plan.TenantRefType
-	} else {
-		state.TenantRefType = types.StringNull()
-	}
-
-	if val, ok := serviceData["dhcp_server_ipv4"].(string); ok {
-		state.DhcpServerIpv4 = types.StringValue(val)
-	} else if plan != nil && !plan.DhcpServerIpv4.IsNull() {
-		state.DhcpServerIpv4 = plan.DhcpServerIpv4
-	} else {
-		state.DhcpServerIpv4 = types.StringNull()
-	}
-
-	if val, ok := serviceData["dhcp_server_ipv6"].(string); ok {
-		state.DhcpServerIpv6 = types.StringValue(val)
-	} else if plan != nil && !plan.DhcpServerIpv6.IsNull() {
-		state.DhcpServerIpv6 = plan.DhcpServerIpv6
-	} else {
-		state.DhcpServerIpv6 = types.StringNull()
-	}
-
-	if val, ok := serviceData["mtu"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Mtu = types.Int64Value(int64(v))
-		case int:
-			state.Mtu = types.Int64Value(int64(v))
-		default:
-			if plan != nil && !plan.Mtu.IsNull() {
-				state.Mtu = plan.Mtu
-			} else {
-				state.Mtu = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.Mtu.IsNull() {
-		state.Mtu = plan.Mtu
-	} else {
-		state.Mtu = types.Int64Null()
-	}
-
-	if val, ok := serviceData["anycast_ipv4_mask"].(string); ok {
-		state.AnycastIpv4Mask = types.StringValue(val)
-	} else if plan != nil && !plan.AnycastIpv4Mask.IsNull() {
-		state.AnycastIpv4Mask = plan.AnycastIpv4Mask
-	} else {
-		state.AnycastIpv4Mask = types.StringNull()
-	}
-
-	if val, ok := serviceData["anycast_ipv6_mask"].(string); ok {
-		state.AnycastIpv6Mask = types.StringValue(val)
-	} else if plan != nil && !plan.AnycastIpv6Mask.IsNull() {
-		state.AnycastIpv6Mask = plan.AnycastIpv6Mask
-	} else {
-		state.AnycastIpv6Mask = types.StringNull()
-	}
-
-	if val, ok := serviceData["max_upstream_rate_mbps"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MaxUpstreamRateMbps = types.Int64Value(int64(v))
-		case int:
-			state.MaxUpstreamRateMbps = types.Int64Value(int64(v))
-		case int32:
-			state.MaxUpstreamRateMbps = types.Int64Value(int64(v))
-		default:
-			if plan != nil && !plan.MaxUpstreamRateMbps.IsNull() {
-				state.MaxUpstreamRateMbps = plan.MaxUpstreamRateMbps
-			} else {
-				state.MaxUpstreamRateMbps = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.MaxUpstreamRateMbps.IsNull() {
-		state.MaxUpstreamRateMbps = plan.MaxUpstreamRateMbps
-	} else {
-		state.MaxUpstreamRateMbps = types.Int64Null()
-	}
-
-	if val, ok := serviceData["max_downstream_rate_mbps"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MaxDownstreamRateMbps = types.Int64Value(int64(v))
-		case int:
-			state.MaxDownstreamRateMbps = types.Int64Value(int64(v))
-		case int32:
-			state.MaxDownstreamRateMbps = types.Int64Value(int64(v))
-		default:
-			if plan != nil && !plan.MaxDownstreamRateMbps.IsNull() {
-				state.MaxDownstreamRateMbps = plan.MaxDownstreamRateMbps
-			} else {
-				state.MaxDownstreamRateMbps = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.MaxDownstreamRateMbps.IsNull() {
-		state.MaxDownstreamRateMbps = plan.MaxDownstreamRateMbps
-	} else {
-		state.MaxDownstreamRateMbps = types.Int64Null()
-	}
-
-	if val, ok := serviceData["packet_priority"].(string); ok {
-		state.PacketPriority = types.StringValue(val)
-	} else if plan != nil && !plan.PacketPriority.IsNull() {
-		state.PacketPriority = plan.PacketPriority
-	} else {
-		state.PacketPriority = types.StringNull()
-	}
-
-	if val, ok := serviceData["multicast_management_mode"].(string); ok {
-		state.MulticastManagementMode = types.StringValue(val)
-	} else if plan != nil && !plan.MulticastManagementMode.IsNull() {
-		state.MulticastManagementMode = plan.MulticastManagementMode
-	} else {
-		state.MulticastManagementMode = types.StringNull()
-	}
-
-	if val, ok := serviceData["tagged_packets"].(bool); ok {
-		state.TaggedPackets = types.BoolValue(val)
-	} else if plan != nil && !plan.TaggedPackets.IsNull() {
-		state.TaggedPackets = plan.TaggedPackets
-	} else {
-		state.TaggedPackets = types.BoolNull()
-	}
-
-	if val, ok := serviceData["tls"].(bool); ok {
-		state.Tls = types.BoolValue(val)
-	} else if plan != nil && !plan.Tls.IsNull() {
-		state.Tls = plan.Tls
-	} else {
-		state.Tls = types.BoolNull()
-	}
-
-	if val, ok := serviceData["allow_local_switching"].(bool); ok {
-		state.AllowLocalSwitching = types.BoolValue(val)
-	} else if plan != nil && !plan.AllowLocalSwitching.IsNull() {
-		state.AllowLocalSwitching = plan.AllowLocalSwitching
-	} else {
-		state.AllowLocalSwitching = types.BoolNull()
-	}
-
-	if val, ok := serviceData["act_as_multicast_querier"].(bool); ok {
-		state.ActAsMulticastQuerier = types.BoolValue(val)
-	} else if plan != nil && !plan.ActAsMulticastQuerier.IsNull() {
-		state.ActAsMulticastQuerier = plan.ActAsMulticastQuerier
-	} else {
-		state.ActAsMulticastQuerier = types.BoolNull()
-	}
-
-	if val, ok := serviceData["block_unknown_unicast_flood"].(bool); ok {
-		state.BlockUnknownUnicastFlood = types.BoolValue(val)
-	} else if plan != nil && !plan.BlockUnknownUnicastFlood.IsNull() {
-		state.BlockUnknownUnicastFlood = plan.BlockUnknownUnicastFlood
-	} else {
-		state.BlockUnknownUnicastFlood = types.BoolNull()
-	}
-
-	if val, ok := serviceData["block_downstream_dhcp_server"].(bool); ok {
-		state.BlockDownstreamDhcpServer = types.BoolValue(val)
-	} else if plan != nil && !plan.BlockDownstreamDhcpServer.IsNull() {
-		state.BlockDownstreamDhcpServer = plan.BlockDownstreamDhcpServer
-	} else {
-		state.BlockDownstreamDhcpServer = types.BoolNull()
-	}
-
-	if val, ok := serviceData["is_management_service"].(bool); ok {
-		state.IsManagementService = types.BoolValue(val)
-	} else if plan != nil && !plan.IsManagementService.IsNull() {
-		state.IsManagementService = plan.IsManagementService
-	} else {
-		state.IsManagementService = types.BoolNull()
-	}
-
-	if val, ok := serviceData["use_dscp_to_p_bit_mapping_for_l3_packets_if_available"].(bool); ok {
-		state.UseDscpToPBitMappingForL3PacketsIfAvailable = types.BoolValue(val)
-	} else if plan != nil && !plan.UseDscpToPBitMappingForL3PacketsIfAvailable.IsNull() {
-		state.UseDscpToPBitMappingForL3PacketsIfAvailable = plan.UseDscpToPBitMappingForL3PacketsIfAvailable
-	} else {
-		state.UseDscpToPBitMappingForL3PacketsIfAvailable = types.BoolNull()
-	}
-
-	if val, ok := serviceData["allow_fast_leave"].(bool); ok {
-		state.AllowFastLeave = types.BoolValue(val)
-	} else if plan != nil && !plan.AllowFastLeave.IsNull() {
-		state.AllowFastLeave = plan.AllowFastLeave
-	} else {
-		state.AllowFastLeave = types.BoolNull()
-	}
-
-	if val, ok := serviceData["mst_instance"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MstInstance = types.Int64Value(int64(v))
-		case int:
-			state.MstInstance = types.Int64Value(int64(v))
-		case int32:
-			state.MstInstance = types.Int64Value(int64(v))
-		default:
-			if plan != nil && !plan.MstInstance.IsNull() {
-				state.MstInstance = plan.MstInstance
-			} else {
-				state.MstInstance = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.MstInstance.IsNull() {
-		state.MstInstance = plan.MstInstance
-	} else {
-		state.MstInstance = types.Int64Null()
-	}
-
-	if val, ok := serviceData["policy_based_routing"].(string); ok {
-		state.PolicyBasedRouting = types.StringValue(val)
-	} else if plan != nil && !plan.PolicyBasedRouting.IsNull() {
-		state.PolicyBasedRouting = plan.PolicyBasedRouting
-	} else {
-		state.PolicyBasedRouting = types.StringNull()
-	}
-
-	if val, ok := serviceData["policy_based_routing_ref_type_"].(string); ok {
-		state.PolicyBasedRoutingRefType = types.StringValue(val)
-	} else if plan != nil && !plan.PolicyBasedRoutingRefType.IsNull() {
-		state.PolicyBasedRoutingRefType = plan.PolicyBasedRoutingRefType
-	} else {
-		state.PolicyBasedRoutingRefType = types.StringNull()
+		state.ObjectProperties = nil
 	}
 
 	return state

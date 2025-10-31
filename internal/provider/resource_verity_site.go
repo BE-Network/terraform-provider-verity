@@ -382,7 +382,7 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 	if r.bulkOpsMgr != nil {
 		if siteData, exists := r.bulkOpsMgr.GetResourceResponse("site", siteName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached site data for %s from recent operation", siteName))
-			state = populateSiteState(ctx, state, siteData, nil)
+			state = populateSiteState(ctx, state, siteData)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -457,7 +457,7 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Debug(ctx, fmt.Sprintf("Found site '%s' under API key '%s'", siteName, actualAPIName))
 
-	state = populateSiteState(ctx, state, siteMap, nil)
+	state = populateSiteState(ctx, state, siteMap)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -826,8 +826,7 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if siteData, exists := bulkMgr.GetResourceResponse("site", name); exists {
-			// Use the cached data from the API response with plan values as fallback
-			state := populateSiteState(ctx, minState, siteData, &plan)
+			state := populateSiteState(ctx, minState, siteData)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -856,672 +855,117 @@ func (r *veritySiteResource) ImportState(ctx context.Context, req resource.Impor
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteData map[string]interface{}, plan *veritySiteResourceModel) veritySiteResourceModel {
-	state.Name = types.StringValue(fmt.Sprintf("%v", siteData["name"]))
+func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteData map[string]interface{}) veritySiteResourceModel {
+	state.Name = utils.MapStringFromAPI(siteData["name"])
 
-	// For each field, check if it's in the API response first,
-	// if not: use plan value (if plan provided and not null), otherwise preserve current state value
+	// Int fields
+	state.Revision = utils.MapInt64FromAPI(siteData["revision"])
+	state.MacAddressAgingTime = utils.MapInt64FromAPI(siteData["mac_address_aging_time"])
+	state.MlagDelayRestoreTimer = utils.MapInt64FromAPI(siteData["mlag_delay_restore_timer"])
+	state.BgpKeepaliveTimer = utils.MapInt64FromAPI(siteData["bgp_keepalive_timer"])
+	state.BgpHoldDownTimer = utils.MapInt64FromAPI(siteData["bgp_hold_down_timer"])
+	state.SpineBgpAdvertisementInterval = utils.MapInt64FromAPI(siteData["spine_bgp_advertisement_interval"])
+	state.SpineBgpConnectTimer = utils.MapInt64FromAPI(siteData["spine_bgp_connect_timer"])
+	state.LeafBgpKeepAliveTimer = utils.MapInt64FromAPI(siteData["leaf_bgp_keep_alive_timer"])
+	state.LeafBgpHoldDownTimer = utils.MapInt64FromAPI(siteData["leaf_bgp_hold_down_timer"])
+	state.LeafBgpAdvertisementInterval = utils.MapInt64FromAPI(siteData["leaf_bgp_advertisement_interval"])
+	state.LeafBgpConnectTimer = utils.MapInt64FromAPI(siteData["leaf_bgp_connect_timer"])
+	state.LinkStateTimeoutValue = utils.MapInt64FromAPI(siteData["link_state_timeout_value"])
+	state.EvpnMultihomingStartupDelay = utils.MapInt64FromAPI(siteData["evpn_multihoming_startup_delay"])
+	state.EvpnMacHoldtime = utils.MapInt64FromAPI(siteData["evpn_mac_holdtime"])
+	state.CrcFailureThreshold = utils.MapInt64FromAPI(siteData["crc_failure_threshold"])
+	state.DuplicateAddressDetectionMaxNumberOfMoves = utils.MapInt64FromAPI(siteData["duplicate_address_detection_max_number_of_moves"])
+	state.DuplicateAddressDetectionTime = utils.MapInt64FromAPI(siteData["duplicate_address_detection_time"])
 
-	if val, ok := siteData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(val)
-	} else if plan != nil && !plan.Enable.IsNull() {
-		state.Enable = plan.Enable
-	} else {
-		state.Enable = types.BoolNull()
-	}
+	// Bool fields
+	state.Enable = utils.MapBoolFromAPI(siteData["enable"])
+	state.ForceSpanningTreeOnFabricPorts = utils.MapBoolFromAPI(siteData["force_spanning_tree_on_fabric_ports"])
+	state.ReadOnlyMode = utils.MapBoolFromAPI(siteData["read_only_mode"])
+	state.AggressiveReporting = utils.MapBoolFromAPI(siteData["aggressive_reporting"])
+	state.EnableDhcpSnooping = utils.MapBoolFromAPI(siteData["enable_dhcp_snooping"])
+	state.IpSourceGuard = utils.MapBoolFromAPI(siteData["ip_source_guard"])
+	state.AnycastMacAddressAutoAssigned = utils.MapBoolFromAPI(siteData["anycast_mac_address_auto_assigned_"])
 
-	if val, ok := siteData["service_for_site"].(string); ok {
-		state.ServiceForSite = types.StringValue(val)
-	} else if plan != nil && !plan.ServiceForSite.IsNull() {
-		state.ServiceForSite = plan.ServiceForSite
-	} else {
-		state.ServiceForSite = types.StringNull()
-	}
-
-	if val, ok := siteData["service_for_site_ref_type_"].(string); ok {
-		state.ServiceForSiteRefType = types.StringValue(val)
-	} else if plan != nil && !plan.ServiceForSiteRefType.IsNull() {
-		state.ServiceForSiteRefType = plan.ServiceForSiteRefType
-	} else {
-		state.ServiceForSiteRefType = types.StringNull()
-	}
-
-	if val, ok := siteData["spanning_tree_type"].(string); ok {
-		state.SpanningTreeType = types.StringValue(val)
-	} else if plan != nil && !plan.SpanningTreeType.IsNull() {
-		state.SpanningTreeType = plan.SpanningTreeType
-	} else {
-		state.SpanningTreeType = types.StringNull()
-	}
-
-	if val, ok := siteData["region_name"].(string); ok {
-		state.RegionName = types.StringValue(val)
-	} else if plan != nil && !plan.RegionName.IsNull() {
-		state.RegionName = plan.RegionName
-	} else {
-		state.RegionName = types.StringNull()
-	}
-
-	if val, ok := siteData["revision"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.Revision = types.Int64Value(int64(v))
-		case int:
-			state.Revision = types.Int64Value(int64(v))
-		case int32:
-			state.Revision = types.Int64Value(int64(v))
-		case nil:
-			state.Revision = types.Int64Null()
-		default:
-			if plan != nil && !plan.Revision.IsNull() {
-				state.Revision = plan.Revision
-			} else {
-				state.Revision = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.Revision.IsNull() {
-		state.Revision = plan.Revision
-	} else {
-		state.Revision = types.Int64Null()
-	}
-
-	if val, ok := siteData["force_spanning_tree_on_fabric_ports"].(bool); ok {
-		state.ForceSpanningTreeOnFabricPorts = types.BoolValue(val)
-	} else if plan != nil && !plan.ForceSpanningTreeOnFabricPorts.IsNull() {
-		state.ForceSpanningTreeOnFabricPorts = plan.ForceSpanningTreeOnFabricPorts
-	} else {
-		state.ForceSpanningTreeOnFabricPorts = types.BoolNull()
-	}
-
-	if val, ok := siteData["read_only_mode"].(bool); ok {
-		state.ReadOnlyMode = types.BoolValue(val)
-	} else if plan != nil && !plan.ReadOnlyMode.IsNull() {
-		state.ReadOnlyMode = plan.ReadOnlyMode
-	} else {
-		state.ReadOnlyMode = types.BoolNull()
-	}
-
-	if val, ok := siteData["dscp_to_p_bit_map"].(string); ok {
-		state.DscpToPBitMap = types.StringValue(val)
-	} else if plan != nil && !plan.DscpToPBitMap.IsNull() {
-		state.DscpToPBitMap = plan.DscpToPBitMap
-	} else {
-		state.DscpToPBitMap = types.StringNull()
-	}
-
-	if val, ok := siteData["anycast_mac_address"].(string); ok {
-		state.AnycastMacAddress = types.StringValue(val)
-	} else if plan != nil && !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() {
-		state.AnycastMacAddress = plan.AnycastMacAddress
-	} else {
-		state.AnycastMacAddress = types.StringNull()
-	}
-
-	if val, ok := siteData["anycast_mac_address_auto_assigned_"].(bool); ok {
-		state.AnycastMacAddressAutoAssigned = types.BoolValue(val)
-	} else if plan != nil && !plan.AnycastMacAddressAutoAssigned.IsNull() {
-		state.AnycastMacAddressAutoAssigned = plan.AnycastMacAddressAutoAssigned
-	} else {
-		state.AnycastMacAddressAutoAssigned = types.BoolNull()
-	}
-
-	// Handle all the integer fields
-	if val, ok := siteData["mac_address_aging_time"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MacAddressAgingTime = types.Int64Value(int64(v))
-		case int:
-			state.MacAddressAgingTime = types.Int64Value(int64(v))
-		case int32:
-			state.MacAddressAgingTime = types.Int64Value(int64(v))
-		case nil:
-			state.MacAddressAgingTime = types.Int64Null()
-		default:
-			if plan != nil && !plan.MacAddressAgingTime.IsNull() {
-				state.MacAddressAgingTime = plan.MacAddressAgingTime
-			} else {
-				state.MacAddressAgingTime = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.MacAddressAgingTime.IsNull() {
-		state.MacAddressAgingTime = plan.MacAddressAgingTime
-	} else {
-		state.MacAddressAgingTime = types.Int64Null()
-	}
-
-	if val, ok := siteData["mlag_delay_restore_timer"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.MlagDelayRestoreTimer = types.Int64Value(int64(v))
-		case int:
-			state.MlagDelayRestoreTimer = types.Int64Value(int64(v))
-		case int32:
-			state.MlagDelayRestoreTimer = types.Int64Value(int64(v))
-		case nil:
-			state.MlagDelayRestoreTimer = types.Int64Null()
-		default:
-			if plan != nil && !plan.MlagDelayRestoreTimer.IsNull() {
-				state.MlagDelayRestoreTimer = plan.MlagDelayRestoreTimer
-			} else {
-				state.MlagDelayRestoreTimer = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.MlagDelayRestoreTimer.IsNull() {
-		state.MlagDelayRestoreTimer = plan.MlagDelayRestoreTimer
-	} else {
-		state.MlagDelayRestoreTimer = types.Int64Null()
-	}
-
-	if val, ok := siteData["bgp_keepalive_timer"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.BgpKeepaliveTimer = types.Int64Value(int64(v))
-		case int:
-			state.BgpKeepaliveTimer = types.Int64Value(int64(v))
-		case int32:
-			state.BgpKeepaliveTimer = types.Int64Value(int64(v))
-		case nil:
-			state.BgpKeepaliveTimer = types.Int64Null()
-		default:
-			if plan != nil && !plan.BgpKeepaliveTimer.IsNull() {
-				state.BgpKeepaliveTimer = plan.BgpKeepaliveTimer
-			} else {
-				state.BgpKeepaliveTimer = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.BgpKeepaliveTimer.IsNull() {
-		state.BgpKeepaliveTimer = plan.BgpKeepaliveTimer
-	} else {
-		state.BgpKeepaliveTimer = types.Int64Null()
-	}
-
-	if val, ok := siteData["bgp_hold_down_timer"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.BgpHoldDownTimer = types.Int64Value(int64(v))
-		case int:
-			state.BgpHoldDownTimer = types.Int64Value(int64(v))
-		case int32:
-			state.BgpHoldDownTimer = types.Int64Value(int64(v))
-		case nil:
-			state.BgpHoldDownTimer = types.Int64Null()
-		default:
-			if plan != nil && !plan.BgpHoldDownTimer.IsNull() {
-				state.BgpHoldDownTimer = plan.BgpHoldDownTimer
-			} else {
-				state.BgpHoldDownTimer = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.BgpHoldDownTimer.IsNull() {
-		state.BgpHoldDownTimer = plan.BgpHoldDownTimer
-	} else {
-		state.BgpHoldDownTimer = types.Int64Null()
-	}
-
-	if val, ok := siteData["spine_bgp_advertisement_interval"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.SpineBgpAdvertisementInterval = types.Int64Value(int64(v))
-		case int:
-			state.SpineBgpAdvertisementInterval = types.Int64Value(int64(v))
-		case int32:
-			state.SpineBgpAdvertisementInterval = types.Int64Value(int64(v))
-		case nil:
-			state.SpineBgpAdvertisementInterval = types.Int64Null()
-		default:
-			if plan != nil && !plan.SpineBgpAdvertisementInterval.IsNull() {
-				state.SpineBgpAdvertisementInterval = plan.SpineBgpAdvertisementInterval
-			} else {
-				state.SpineBgpAdvertisementInterval = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.SpineBgpAdvertisementInterval.IsNull() {
-		state.SpineBgpAdvertisementInterval = plan.SpineBgpAdvertisementInterval
-	} else {
-		state.SpineBgpAdvertisementInterval = types.Int64Null()
-	}
-
-	if val, ok := siteData["spine_bgp_connect_timer"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.SpineBgpConnectTimer = types.Int64Value(int64(v))
-		case int:
-			state.SpineBgpConnectTimer = types.Int64Value(int64(v))
-		case int32:
-			state.SpineBgpConnectTimer = types.Int64Value(int64(v))
-		case nil:
-			state.SpineBgpConnectTimer = types.Int64Null()
-		default:
-			if plan != nil && !plan.SpineBgpConnectTimer.IsNull() {
-				state.SpineBgpConnectTimer = plan.SpineBgpConnectTimer
-			} else {
-				state.SpineBgpConnectTimer = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.SpineBgpConnectTimer.IsNull() {
-		state.SpineBgpConnectTimer = plan.SpineBgpConnectTimer
-	} else {
-		state.SpineBgpConnectTimer = types.Int64Null()
-	}
-
-	if val, ok := siteData["leaf_bgp_keep_alive_timer"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.LeafBgpKeepAliveTimer = types.Int64Value(int64(v))
-		case int:
-			state.LeafBgpKeepAliveTimer = types.Int64Value(int64(v))
-		case int32:
-			state.LeafBgpKeepAliveTimer = types.Int64Value(int64(v))
-		case nil:
-			state.LeafBgpKeepAliveTimer = types.Int64Null()
-		default:
-			if plan != nil && !plan.LeafBgpKeepAliveTimer.IsNull() {
-				state.LeafBgpKeepAliveTimer = plan.LeafBgpKeepAliveTimer
-			} else {
-				state.LeafBgpKeepAliveTimer = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.LeafBgpKeepAliveTimer.IsNull() {
-		state.LeafBgpKeepAliveTimer = plan.LeafBgpKeepAliveTimer
-	} else {
-		state.LeafBgpKeepAliveTimer = types.Int64Null()
-	}
-
-	if val, ok := siteData["leaf_bgp_hold_down_timer"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.LeafBgpHoldDownTimer = types.Int64Value(int64(v))
-		case int:
-			state.LeafBgpHoldDownTimer = types.Int64Value(int64(v))
-		case int32:
-			state.LeafBgpHoldDownTimer = types.Int64Value(int64(v))
-		case nil:
-			state.LeafBgpHoldDownTimer = types.Int64Null()
-		default:
-			if plan != nil && !plan.LeafBgpHoldDownTimer.IsNull() {
-				state.LeafBgpHoldDownTimer = plan.LeafBgpHoldDownTimer
-			} else {
-				state.LeafBgpHoldDownTimer = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.LeafBgpHoldDownTimer.IsNull() {
-		state.LeafBgpHoldDownTimer = plan.LeafBgpHoldDownTimer
-	} else {
-		state.LeafBgpHoldDownTimer = types.Int64Null()
-	}
-
-	if val, ok := siteData["leaf_bgp_advertisement_interval"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.LeafBgpAdvertisementInterval = types.Int64Value(int64(v))
-		case int:
-			state.LeafBgpAdvertisementInterval = types.Int64Value(int64(v))
-		case int32:
-			state.LeafBgpAdvertisementInterval = types.Int64Value(int64(v))
-		case nil:
-			state.LeafBgpAdvertisementInterval = types.Int64Null()
-		default:
-			if plan != nil && !plan.LeafBgpAdvertisementInterval.IsNull() {
-				state.LeafBgpAdvertisementInterval = plan.LeafBgpAdvertisementInterval
-			} else {
-				state.LeafBgpAdvertisementInterval = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.LeafBgpAdvertisementInterval.IsNull() {
-		state.LeafBgpAdvertisementInterval = plan.LeafBgpAdvertisementInterval
-	} else {
-		state.LeafBgpAdvertisementInterval = types.Int64Null()
-	}
-
-	if val, ok := siteData["leaf_bgp_connect_timer"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.LeafBgpConnectTimer = types.Int64Value(int64(v))
-		case int:
-			state.LeafBgpConnectTimer = types.Int64Value(int64(v))
-		case int32:
-			state.LeafBgpConnectTimer = types.Int64Value(int64(v))
-		case nil:
-			state.LeafBgpConnectTimer = types.Int64Null()
-		default:
-			if plan != nil && !plan.LeafBgpConnectTimer.IsNull() {
-				state.LeafBgpConnectTimer = plan.LeafBgpConnectTimer
-			} else {
-				state.LeafBgpConnectTimer = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.LeafBgpConnectTimer.IsNull() {
-		state.LeafBgpConnectTimer = plan.LeafBgpConnectTimer
-	} else {
-		state.LeafBgpConnectTimer = types.Int64Null()
-	}
-
-	if val, ok := siteData["link_state_timeout_value"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.LinkStateTimeoutValue = types.Int64Value(int64(v))
-		case int:
-			state.LinkStateTimeoutValue = types.Int64Value(int64(v))
-		case int32:
-			state.LinkStateTimeoutValue = types.Int64Value(int64(v))
-		case nil:
-			state.LinkStateTimeoutValue = types.Int64Null()
-		default:
-			if plan != nil && !plan.LinkStateTimeoutValue.IsNull() {
-				state.LinkStateTimeoutValue = plan.LinkStateTimeoutValue
-			} else {
-				state.LinkStateTimeoutValue = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.LinkStateTimeoutValue.IsNull() {
-		state.LinkStateTimeoutValue = plan.LinkStateTimeoutValue
-	} else {
-		state.LinkStateTimeoutValue = types.Int64Null()
-	}
-
-	if val, ok := siteData["evpn_multihoming_startup_delay"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.EvpnMultihomingStartupDelay = types.Int64Value(int64(v))
-		case int:
-			state.EvpnMultihomingStartupDelay = types.Int64Value(int64(v))
-		case int32:
-			state.EvpnMultihomingStartupDelay = types.Int64Value(int64(v))
-		case nil:
-			state.EvpnMultihomingStartupDelay = types.Int64Null()
-		default:
-			if plan != nil && !plan.EvpnMultihomingStartupDelay.IsNull() {
-				state.EvpnMultihomingStartupDelay = plan.EvpnMultihomingStartupDelay
-			} else {
-				state.EvpnMultihomingStartupDelay = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.EvpnMultihomingStartupDelay.IsNull() {
-		state.EvpnMultihomingStartupDelay = plan.EvpnMultihomingStartupDelay
-	} else {
-		state.EvpnMultihomingStartupDelay = types.Int64Null()
-	}
-
-	if val, ok := siteData["evpn_mac_holdtime"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.EvpnMacHoldtime = types.Int64Value(int64(v))
-		case int:
-			state.EvpnMacHoldtime = types.Int64Value(int64(v))
-		case int32:
-			state.EvpnMacHoldtime = types.Int64Value(int64(v))
-		case nil:
-			state.EvpnMacHoldtime = types.Int64Null()
-		default:
-			if plan != nil && !plan.EvpnMacHoldtime.IsNull() {
-				state.EvpnMacHoldtime = plan.EvpnMacHoldtime
-			} else {
-				state.EvpnMacHoldtime = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.EvpnMacHoldtime.IsNull() {
-		state.EvpnMacHoldtime = plan.EvpnMacHoldtime
-	} else {
-		state.EvpnMacHoldtime = types.Int64Null()
-	}
-
-	if val, ok := siteData["aggressive_reporting"].(bool); ok {
-		state.AggressiveReporting = types.BoolValue(val)
-	} else if plan != nil && !plan.AggressiveReporting.IsNull() {
-		state.AggressiveReporting = plan.AggressiveReporting
-	} else {
-		state.AggressiveReporting = types.BoolNull()
-	}
-
-	if val, ok := siteData["crc_failure_threshold"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.CrcFailureThreshold = types.Int64Value(int64(v))
-		case int:
-			state.CrcFailureThreshold = types.Int64Value(int64(v))
-		case int32:
-			state.CrcFailureThreshold = types.Int64Value(int64(v))
-		case nil:
-			state.CrcFailureThreshold = types.Int64Null()
-		default:
-			if plan != nil && !plan.CrcFailureThreshold.IsNull() {
-				state.CrcFailureThreshold = plan.CrcFailureThreshold
-			} else {
-				state.CrcFailureThreshold = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.CrcFailureThreshold.IsNull() {
-		state.CrcFailureThreshold = plan.CrcFailureThreshold
-	} else {
-		state.CrcFailureThreshold = types.Int64Null()
-	}
-
-	if val, ok := siteData["duplicate_address_detection_max_number_of_moves"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Value(int64(v))
-		case int:
-			state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Value(int64(v))
-		case int32:
-			state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Value(int64(v))
-		case nil:
-			state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Null()
-		default:
-			if plan != nil && !plan.DuplicateAddressDetectionMaxNumberOfMoves.IsNull() {
-				state.DuplicateAddressDetectionMaxNumberOfMoves = plan.DuplicateAddressDetectionMaxNumberOfMoves
-			} else {
-				state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.DuplicateAddressDetectionMaxNumberOfMoves.IsNull() {
-		state.DuplicateAddressDetectionMaxNumberOfMoves = plan.DuplicateAddressDetectionMaxNumberOfMoves
-	} else {
-		state.DuplicateAddressDetectionMaxNumberOfMoves = types.Int64Null()
-	}
-
-	if val, ok := siteData["duplicate_address_detection_time"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.DuplicateAddressDetectionTime = types.Int64Value(int64(v))
-		case int:
-			state.DuplicateAddressDetectionTime = types.Int64Value(int64(v))
-		case int32:
-			state.DuplicateAddressDetectionTime = types.Int64Value(int64(v))
-		case nil:
-			state.DuplicateAddressDetectionTime = types.Int64Null()
-		default:
-			if plan != nil && !plan.DuplicateAddressDetectionTime.IsNull() {
-				state.DuplicateAddressDetectionTime = plan.DuplicateAddressDetectionTime
-			} else {
-				state.DuplicateAddressDetectionTime = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.DuplicateAddressDetectionTime.IsNull() {
-		state.DuplicateAddressDetectionTime = plan.DuplicateAddressDetectionTime
-	} else {
-		state.DuplicateAddressDetectionTime = types.Int64Null()
-	}
-
-	if val, ok := siteData["enable_dhcp_snooping"].(bool); ok {
-		state.EnableDhcpSnooping = types.BoolValue(val)
-	} else if plan != nil && !plan.EnableDhcpSnooping.IsNull() {
-		state.EnableDhcpSnooping = plan.EnableDhcpSnooping
-	} else {
-		state.EnableDhcpSnooping = types.BoolNull()
-	}
-
-	if val, ok := siteData["ip_source_guard"].(bool); ok {
-		state.IpSourceGuard = types.BoolValue(val)
-	} else if plan != nil && !plan.IpSourceGuard.IsNull() {
-		state.IpSourceGuard = plan.IpSourceGuard
-	} else {
-		state.IpSourceGuard = types.BoolNull()
-	}
-
-	// Handle islands list
-	if islands, ok := siteData["islands"].([]interface{}); ok {
-		islandsList := make([]veritySiteIslandsModel, len(islands))
-		for i, island := range islands {
-			if islandMap, ok := island.(map[string]interface{}); ok {
-				islandModel := veritySiteIslandsModel{}
-
-				if val, exists := islandMap["toi_switchpoint"].(string); exists {
-					islandModel.ToiSwitchpoint = types.StringValue(val)
-				} else {
-					islandModel.ToiSwitchpoint = types.StringNull()
-				}
-
-				if val, exists := islandMap["toi_switchpoint_ref_type_"].(string); exists {
-					islandModel.ToiSwitchpointRefType = types.StringValue(val)
-				} else {
-					islandModel.ToiSwitchpointRefType = types.StringNull()
-				}
-
-				if val, exists := islandMap["index"]; exists {
-					switch v := val.(type) {
-					case float64:
-						islandModel.Index = types.Int64Value(int64(v))
-					case int:
-						islandModel.Index = types.Int64Value(int64(v))
-					case int32:
-						islandModel.Index = types.Int64Value(int64(v))
-					default:
-						islandModel.Index = types.Int64Null()
-					}
-				} else {
-					islandModel.Index = types.Int64Null()
-				}
-
-				islandsList[i] = islandModel
-			}
-		}
-		state.Islands = islandsList
-	} else if plan != nil {
-		state.Islands = plan.Islands
-	}
-
-	// Handle pairs list
-	if pairs, ok := siteData["pairs"].([]interface{}); ok {
-		pairsList := make([]veritySitePairsModel, len(pairs))
-		for i, pair := range pairs {
-			if pairMap, ok := pair.(map[string]interface{}); ok {
-				pairModel := veritySitePairsModel{}
-
-				if val, exists := pairMap["name"].(string); exists {
-					pairModel.Name = types.StringValue(val)
-				} else {
-					pairModel.Name = types.StringNull()
-				}
-
-				if val, exists := pairMap["switchpoint_1"].(string); exists {
-					pairModel.Switchpoint1 = types.StringValue(val)
-				} else {
-					pairModel.Switchpoint1 = types.StringNull()
-				}
-
-				if val, exists := pairMap["switchpoint_1_ref_type_"].(string); exists {
-					pairModel.Switchpoint1RefType = types.StringValue(val)
-				} else {
-					pairModel.Switchpoint1RefType = types.StringNull()
-				}
-
-				if val, exists := pairMap["switchpoint_2"].(string); exists {
-					pairModel.Switchpoint2 = types.StringValue(val)
-				} else {
-					pairModel.Switchpoint2 = types.StringNull()
-				}
-
-				if val, exists := pairMap["switchpoint_2_ref_type_"].(string); exists {
-					pairModel.Switchpoint2RefType = types.StringValue(val)
-				} else {
-					pairModel.Switchpoint2RefType = types.StringNull()
-				}
-
-				if val, exists := pairMap["lag_group"].(string); exists {
-					pairModel.LagGroup = types.StringValue(val)
-				} else {
-					pairModel.LagGroup = types.StringNull()
-				}
-
-				if val, exists := pairMap["lag_group_ref_type_"].(string); exists {
-					pairModel.LagGroupRefType = types.StringValue(val)
-				} else {
-					pairModel.LagGroupRefType = types.StringNull()
-				}
-
-				if val, exists := pairMap["is_whitebox_pair"].(bool); exists {
-					pairModel.IsWhiteboxPair = types.BoolValue(val)
-				} else {
-					pairModel.IsWhiteboxPair = types.BoolNull()
-				}
-
-				if val, exists := pairMap["index"]; exists {
-					switch v := val.(type) {
-					case float64:
-						pairModel.Index = types.Int64Value(int64(v))
-					case int:
-						pairModel.Index = types.Int64Value(int64(v))
-					case int32:
-						pairModel.Index = types.Int64Value(int64(v))
-					default:
-						pairModel.Index = types.Int64Null()
-					}
-				} else {
-					pairModel.Index = types.Int64Null()
-				}
-
-				pairsList[i] = pairModel
-			}
-		}
-		state.Pairs = pairsList
-	} else if plan != nil {
-		state.Pairs = plan.Pairs
-	}
+	// String fields
+	state.ServiceForSite = utils.MapStringFromAPI(siteData["service_for_site"])
+	state.ServiceForSiteRefType = utils.MapStringFromAPI(siteData["service_for_site_ref_type_"])
+	state.SpanningTreeType = utils.MapStringFromAPI(siteData["spanning_tree_type"])
+	state.RegionName = utils.MapStringFromAPI(siteData["region_name"])
+	state.DscpToPBitMap = utils.MapStringFromAPI(siteData["dscp_to_p_bit_map"])
+	state.AnycastMacAddress = utils.MapStringFromAPI(siteData["anycast_mac_address"])
 
 	// Handle object properties
 	if op, ok := siteData["object_properties"].(map[string]interface{}); ok {
-		objProps := &veritySiteObjectPropertiesModel{}
+		objProps := veritySiteObjectPropertiesModel{}
 
-		if systemGraphs, exists := op["system_graphs"].([]interface{}); exists {
-			graphsList := make([]veritySiteSystemGraphsModel, len(systemGraphs))
-			for i, graph := range systemGraphs {
-				if graphMap, ok := graph.(map[string]interface{}); ok {
-					graphModel := veritySiteSystemGraphsModel{}
-
-					if val, graphExists := graphMap["graph_num_data"].(string); graphExists {
-						graphModel.GraphNumData = types.StringValue(val)
-					} else {
-						graphModel.GraphNumData = types.StringNull()
-					}
-
-					if val, graphExists := graphMap["index"]; graphExists {
-						switch v := val.(type) {
-						case float64:
-							graphModel.Index = types.Int64Value(int64(v))
-						case int:
-							graphModel.Index = types.Int64Value(int64(v))
-						case int32:
-							graphModel.Index = types.Int64Value(int64(v))
-						default:
-							graphModel.Index = types.Int64Null()
-						}
-					} else {
-						graphModel.Index = types.Int64Null()
-					}
-
-					graphsList[i] = graphModel
+		// Handle nested system_graphs array
+		if systemGraphs, exists := op["system_graphs"].([]interface{}); exists && len(systemGraphs) > 0 {
+			var graphsList []veritySiteSystemGraphsModel
+			for _, graph := range systemGraphs {
+				graphMap, ok := graph.(map[string]interface{})
+				if !ok {
+					continue
 				}
+				graphModel := veritySiteSystemGraphsModel{
+					GraphNumData: utils.MapStringFromAPI(graphMap["graph_num_data"]),
+					Index:        utils.MapInt64FromAPI(graphMap["index"]),
+				}
+				graphsList = append(graphsList, graphModel)
 			}
 			objProps.SystemGraphs = graphsList
-		} else if len(state.ObjectProperties) > 0 {
-			objProps.SystemGraphs = state.ObjectProperties[0].SystemGraphs
 		} else {
 			objProps.SystemGraphs = []veritySiteSystemGraphsModel{}
 		}
 
-		state.ObjectProperties = []veritySiteObjectPropertiesModel{*objProps}
-	} else if plan != nil && len(plan.ObjectProperties) > 0 {
-		state.ObjectProperties = plan.ObjectProperties
+		state.ObjectProperties = []veritySiteObjectPropertiesModel{objProps}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle islands
+	if islands, ok := siteData["islands"].([]interface{}); ok && len(islands) > 0 {
+		var islandsList []veritySiteIslandsModel
+		for _, island := range islands {
+			islandMap, ok := island.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			islandModel := veritySiteIslandsModel{
+				ToiSwitchpoint:        utils.MapStringFromAPI(islandMap["toi_switchpoint"]),
+				ToiSwitchpointRefType: utils.MapStringFromAPI(islandMap["toi_switchpoint_ref_type_"]),
+				Index:                 utils.MapInt64FromAPI(islandMap["index"]),
+			}
+			islandsList = append(islandsList, islandModel)
+		}
+		state.Islands = islandsList
+	} else {
+		state.Islands = nil
+	}
+
+	// Handle pairs
+	if pairs, ok := siteData["pairs"].([]interface{}); ok && len(pairs) > 0 {
+		var pairsList []veritySitePairsModel
+		for _, pair := range pairs {
+			pairMap, ok := pair.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			pairModel := veritySitePairsModel{
+				Name:                utils.MapStringFromAPI(pairMap["name"]),
+				Switchpoint1:        utils.MapStringFromAPI(pairMap["switchpoint_1"]),
+				Switchpoint1RefType: utils.MapStringFromAPI(pairMap["switchpoint_1_ref_type_"]),
+				Switchpoint2:        utils.MapStringFromAPI(pairMap["switchpoint_2"]),
+				Switchpoint2RefType: utils.MapStringFromAPI(pairMap["switchpoint_2_ref_type_"]),
+				LagGroup:            utils.MapStringFromAPI(pairMap["lag_group"]),
+				LagGroupRefType:     utils.MapStringFromAPI(pairMap["lag_group_ref_type_"]),
+				IsWhiteboxPair:      utils.MapBoolFromAPI(pairMap["is_whitebox_pair"]),
+				Index:               utils.MapInt64FromAPI(pairMap["index"]),
+			}
+			pairsList = append(pairsList, pairModel)
+		}
+		state.Pairs = pairsList
+	} else {
+		state.Pairs = nil
 	}
 
 	return state

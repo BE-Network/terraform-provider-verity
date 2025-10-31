@@ -667,8 +667,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
-			// Use the cached data with plan values as fallback
-			state := r.populateSwitchpointState(ctx, minState, switchpointData, &plan)
+			state := r.populateSwitchpointState(ctx, minState, switchpointData)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -708,7 +707,7 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 	if r.bulkOpsMgr != nil {
 		if switchpointData, exists := r.bulkOpsMgr.GetResourceResponse("switchpoint", spName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached switchpoint data for %s from recent operation", spName))
-			state = r.populateSwitchpointState(ctx, state, switchpointData, nil)
+			state = r.populateSwitchpointState(ctx, state, switchpointData)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -784,7 +783,7 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Found switchpoint '%s' under API key '%s'", spName, actualAPIName))
 
-	state = r.populateSwitchpointState(ctx, state, switchpointMap, nil)
+	state = r.populateSwitchpointState(ctx, state, switchpointMap)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -1433,8 +1432,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
-			// Use the cached data from the API response with plan values as fallback
-			state := r.populateSwitchpointState(ctx, minState, switchpointData, &plan)
+			state := r.populateSwitchpointState(ctx, minState, switchpointData)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -1484,378 +1482,49 @@ func (r *veritySwitchpointResource) ImportState(ctx context.Context, req resourc
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func (r *veritySwitchpointResource) populateSwitchpointState(
-	ctx context.Context,
-	state veritySwitchpointResourceModel,
-	switchpointData map[string]interface{},
-	plan *veritySwitchpointResourceModel,
-) veritySwitchpointResourceModel {
-	state.Name = types.StringValue(fmt.Sprintf("%v", switchpointData["name"]))
+func (r *veritySwitchpointResource) populateSwitchpointState(ctx context.Context, state veritySwitchpointResourceModel, switchpointData map[string]interface{}) veritySwitchpointResourceModel {
+	state.Name = utils.MapStringFromAPI(switchpointData["name"])
 
-	// For each field, check if it's in the API response first,
-	// if not: use plan value (if plan provided and not null), otherwise preserve current state value
+	// Int fields
+	state.BgpAsNumber = utils.MapInt64FromAPI(switchpointData["bgp_as_number"])
 
-	stringFields := map[string]*types.String{
-		"device_serial_number":       &state.DeviceSerialNumber,
-		"connected_bundle":           &state.ConnectedBundle,
-		"connected_bundle_ref_type_": &state.ConnectedBundleRefType,
-		"disabled_ports":             &state.DisabledPorts,
-		"type":                       &state.Type,
-		"spine_plane":                &state.SpinePlane,
-		"spine_plane_ref_type_":      &state.SpinePlaneRefType,
-		"pod":                        &state.Pod,
-		"pod_ref_type_":              &state.PodRefType,
-		"rack":                       &state.Rack,
-	}
+	// Bool fields
+	state.Enable = utils.MapBoolFromAPI(switchpointData["enable"])
+	state.ReadOnlyMode = utils.MapBoolFromAPI(switchpointData["read_only_mode"])
+	state.Locked = utils.MapBoolFromAPI(switchpointData["locked"])
+	state.OutOfBandManagement = utils.MapBoolFromAPI(switchpointData["out_of_band_management"])
+	state.IsFabric = utils.MapBoolFromAPI(switchpointData["is_fabric"])
+	state.BgpAsNumberAutoAssigned = utils.MapBoolFromAPI(switchpointData["bgp_as_number_auto_assigned_"])
+	state.SwitchVtepIdIpMaskAutoAssigned = utils.MapBoolFromAPI(switchpointData["switch_vtep_id_ip_mask_auto_assigned_"])
+	state.SwitchRouterIdIpMaskAutoAssigned = utils.MapBoolFromAPI(switchpointData["switch_router_id_ip_mask_auto_assigned_"])
 
-	for apiKey, stateField := range stringFields {
-		if val, ok := switchpointData[apiKey].(string); ok {
-			*stateField = types.StringValue(val)
-		} else if plan != nil {
-			switch apiKey {
-			case "device_serial_number":
-				if !plan.DeviceSerialNumber.IsNull() {
-					*stateField = plan.DeviceSerialNumber
-				}
-			case "connected_bundle":
-				if !plan.ConnectedBundle.IsNull() {
-					*stateField = plan.ConnectedBundle
-				}
-			case "connected_bundle_ref_type_":
-				if !plan.ConnectedBundleRefType.IsNull() {
-					*stateField = plan.ConnectedBundleRefType
-				}
-			case "disabled_ports":
-				if !plan.DisabledPorts.IsNull() {
-					*stateField = plan.DisabledPorts
-				}
-			case "type":
-				if !plan.Type.IsNull() {
-					*stateField = plan.Type
-				}
-			case "spine_plane":
-				if !plan.SpinePlane.IsNull() {
-					*stateField = plan.SpinePlane
-				}
-			case "spine_plane_ref_type_":
-				if !plan.SpinePlaneRefType.IsNull() {
-					*stateField = plan.SpinePlaneRefType
-				}
-			case "pod":
-				if !plan.Pod.IsNull() {
-					*stateField = plan.Pod
-				}
-			case "pod_ref_type_":
-				if !plan.PodRefType.IsNull() {
-					*stateField = plan.PodRefType
-				}
-			case "rack":
-				if !plan.Rack.IsNull() {
-					*stateField = plan.Rack
-				}
-			}
-		}
-	}
+	// String fields
+	state.DeviceSerialNumber = utils.MapStringFromAPI(switchpointData["device_serial_number"])
+	state.ConnectedBundle = utils.MapStringFromAPI(switchpointData["connected_bundle"])
+	state.ConnectedBundleRefType = utils.MapStringFromAPI(switchpointData["connected_bundle_ref_type_"])
+	state.DisabledPorts = utils.MapStringFromAPI(switchpointData["disabled_ports"])
+	state.Type = utils.MapStringFromAPI(switchpointData["type"])
+	state.SpinePlane = utils.MapStringFromAPI(switchpointData["spine_plane"])
+	state.SpinePlaneRefType = utils.MapStringFromAPI(switchpointData["spine_plane_ref_type_"])
+	state.Pod = utils.MapStringFromAPI(switchpointData["pod"])
+	state.PodRefType = utils.MapStringFromAPI(switchpointData["pod_ref_type_"])
+	state.Rack = utils.MapStringFromAPI(switchpointData["rack"])
+	state.SwitchRouterIdIpMask = utils.MapStringFromAPI(switchpointData["switch_router_id_ip_mask"])
+	state.SwitchVtepIdIpMask = utils.MapStringFromAPI(switchpointData["switch_vtep_id_ip_mask"])
 
-	// Auto-assigned string fields with special handling
-	// For auto-assigned fields, always use API values when available
-	if val, ok := switchpointData["switch_router_id_ip_mask"].(string); ok {
-		state.SwitchRouterIdIpMask = types.StringValue(val)
-	} else if plan != nil && !plan.SwitchRouterIdIpMask.IsNull() && !plan.SwitchRouterIdIpMask.IsUnknown() {
-		state.SwitchRouterIdIpMask = plan.SwitchRouterIdIpMask
-	}
-
-	if val, ok := switchpointData["switch_router_id_ip_mask_auto_assigned_"].(bool); ok {
-		state.SwitchRouterIdIpMaskAutoAssigned = types.BoolValue(val)
-	} else if plan != nil && !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() {
-		state.SwitchRouterIdIpMaskAutoAssigned = plan.SwitchRouterIdIpMaskAutoAssigned
-	}
-
-	if val, ok := switchpointData["switch_vtep_id_ip_mask"].(string); ok {
-		state.SwitchVtepIdIpMask = types.StringValue(val)
-	} else if plan != nil && !plan.SwitchVtepIdIpMask.IsNull() && !plan.SwitchVtepIdIpMask.IsUnknown() {
-		state.SwitchVtepIdIpMask = plan.SwitchVtepIdIpMask
-	}
-
-	if val, ok := switchpointData["switch_vtep_id_ip_mask_auto_assigned_"].(bool); ok {
-		state.SwitchVtepIdIpMaskAutoAssigned = types.BoolValue(val)
-	} else if plan != nil && !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() {
-		state.SwitchVtepIdIpMaskAutoAssigned = plan.SwitchVtepIdIpMaskAutoAssigned
-	}
-
-	if val, ok := switchpointData["enable"].(bool); ok {
-		state.Enable = types.BoolValue(val)
-	} else if plan != nil && !plan.Enable.IsNull() {
-		state.Enable = plan.Enable
-	}
-
-	if val, ok := switchpointData["read_only_mode"].(bool); ok {
-		state.ReadOnlyMode = types.BoolValue(val)
-	} else if plan != nil && !plan.ReadOnlyMode.IsNull() {
-		state.ReadOnlyMode = plan.ReadOnlyMode
-	}
-
-	if val, ok := switchpointData["locked"].(bool); ok {
-		state.Locked = types.BoolValue(val)
-	} else if plan != nil && !plan.Locked.IsNull() {
-		state.Locked = plan.Locked
-	}
-
-	if val, ok := switchpointData["out_of_band_management"].(bool); ok {
-		state.OutOfBandManagement = types.BoolValue(val)
-	} else if plan != nil && !plan.OutOfBandManagement.IsNull() {
-		state.OutOfBandManagement = plan.OutOfBandManagement
-	}
-
-	if val, ok := switchpointData["is_fabric"].(bool); ok {
-		state.IsFabric = types.BoolValue(val)
-	} else if plan != nil && !plan.IsFabric.IsNull() {
-		state.IsFabric = plan.IsFabric
-	}
-
-	if val, ok := switchpointData["bgp_as_number"]; ok {
-		switch v := val.(type) {
-		case float64:
-			state.BgpAsNumber = types.Int64Value(int64(v))
-		case int:
-			state.BgpAsNumber = types.Int64Value(int64(v))
-		case int32:
-			state.BgpAsNumber = types.Int64Value(int64(v))
-		case int64:
-			state.BgpAsNumber = types.Int64Value(v)
-		case nil:
-			state.BgpAsNumber = types.Int64Null()
-		default:
-			if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
-				state.BgpAsNumber = plan.BgpAsNumber
-			} else {
-				state.BgpAsNumber = types.Int64Null()
-			}
-		}
-	} else if plan != nil && !plan.BgpAsNumber.IsNull() && !plan.BgpAsNumber.IsUnknown() {
-		state.BgpAsNumber = plan.BgpAsNumber
-	} else {
-		state.BgpAsNumber = types.Int64Null()
-	}
-
-	if val, ok := switchpointData["bgp_as_number_auto_assigned_"].(bool); ok {
-		state.BgpAsNumberAutoAssigned = types.BoolValue(val)
-	} else if plan != nil && !plan.BgpAsNumberAutoAssigned.IsNull() {
-		state.BgpAsNumberAutoAssigned = plan.BgpAsNumberAutoAssigned
-	}
-
-	if badgesArray, ok := switchpointData["badges"].([]interface{}); ok && len(badgesArray) > 0 {
-		var badges []veritySwitchpointBadgeModel
-		for _, b := range badgesArray {
-			badge, ok := b.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			badgeModel := veritySwitchpointBadgeModel{}
-			if val, ok := badge["badge"].(string); ok {
-				badgeModel.Badge = types.StringValue(val)
-			} else {
-				badgeModel.Badge = types.StringNull()
-			}
-			if val, ok := badge["badge_ref_type_"].(string); ok {
-				badgeModel.BadgeRefType = types.StringValue(val)
-			} else {
-				badgeModel.BadgeRefType = types.StringNull()
-			}
-			if index, ok := badge["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					badgeModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					badgeModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					badgeModel.Index = types.Int64Null()
-				}
-			} else {
-				badgeModel.Index = types.Int64Null()
-			}
-			badges = append(badges, badgeModel)
-		}
-		state.Badges = badges
-	} else if plan != nil && len(plan.Badges) > 0 {
-		state.Badges = plan.Badges
-	}
-
-	if childrenArray, ok := switchpointData["children"].([]interface{}); ok && len(childrenArray) > 0 {
-		var children []veritySwitchpointChildModel
-		for _, c := range childrenArray {
-			child, ok := c.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			childModel := veritySwitchpointChildModel{}
-			if val, ok := child["child_num_endpoint"].(string); ok {
-				childModel.ChildNumEndpoint = types.StringValue(val)
-			} else {
-				childModel.ChildNumEndpoint = types.StringNull()
-			}
-			if val, ok := child["child_num_endpoint_ref_type_"].(string); ok {
-				childModel.ChildNumEndpointRefType = types.StringValue(val)
-			} else {
-				childModel.ChildNumEndpointRefType = types.StringNull()
-			}
-			if val, ok := child["child_num_device"].(string); ok {
-				childModel.ChildNumDevice = types.StringValue(val)
-			} else {
-				childModel.ChildNumDevice = types.StringNull()
-			}
-			if index, ok := child["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					childModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					childModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					childModel.Index = types.Int64Null()
-				}
-			} else {
-				childModel.Index = types.Int64Null()
-			}
-			children = append(children, childModel)
-		}
-		state.Children = children
-	} else if plan != nil && len(plan.Children) > 0 {
-		state.Children = plan.Children
-	}
-
-	if mirrorsArray, ok := switchpointData["traffic_mirrors"].([]interface{}); ok && len(mirrorsArray) > 0 {
-		var mirrors []veritySwitchpointTrafficMirrorModel
-		for _, m := range mirrorsArray {
-			mirror, ok := m.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			mirrorModel := veritySwitchpointTrafficMirrorModel{}
-			if val, ok := mirror["traffic_mirror_num_enable"].(bool); ok {
-				mirrorModel.TrafficMirrorNumEnable = types.BoolValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumEnable = types.BoolNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_source_port"].(string); ok {
-				mirrorModel.TrafficMirrorNumSourcePort = types.StringValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumSourcePort = types.StringNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_source_lag_indicator"].(bool); ok {
-				mirrorModel.TrafficMirrorNumSourceLagIndicator = types.BoolValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumSourceLagIndicator = types.BoolNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_destination_port"].(string); ok {
-				mirrorModel.TrafficMirrorNumDestinationPort = types.StringValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumDestinationPort = types.StringNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_inbound_traffic"].(bool); ok {
-				mirrorModel.TrafficMirrorNumInboundTraffic = types.BoolValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumInboundTraffic = types.BoolNull()
-			}
-			if val, ok := mirror["traffic_mirror_num_outbound_traffic"].(bool); ok {
-				mirrorModel.TrafficMirrorNumOutboundTraffic = types.BoolValue(val)
-			} else {
-				mirrorModel.TrafficMirrorNumOutboundTraffic = types.BoolNull()
-			}
-			if index, ok := mirror["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					mirrorModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					mirrorModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int32); ok {
-					mirrorModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int64); ok {
-					mirrorModel.Index = types.Int64Value(intVal)
-				} else {
-					mirrorModel.Index = types.Int64Null()
-				}
-			} else {
-				mirrorModel.Index = types.Int64Null()
-			}
-			mirrors = append(mirrors, mirrorModel)
-		}
-		state.TrafficMirrors = mirrors
-	} else if plan != nil && len(plan.TrafficMirrors) > 0 {
-		state.TrafficMirrors = plan.TrafficMirrors
-	}
-
-	if ethsArray, ok := switchpointData["eths"].([]interface{}); ok && len(ethsArray) > 0 {
-		var eths []veritySwitchpointEthModel
-		for _, e := range ethsArray {
-			eth, ok := e.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			ethModel := veritySwitchpointEthModel{}
-			if val, ok := eth["breakout"].(string); ok {
-				ethModel.Breakout = types.StringValue(val)
-			} else {
-				ethModel.Breakout = types.StringNull()
-			}
-			if index, ok := eth["index"]; ok && index != nil {
-				if intVal, ok := index.(float64); ok {
-					ethModel.Index = types.Int64Value(int64(intVal))
-				} else if intVal, ok := index.(int); ok {
-					ethModel.Index = types.Int64Value(int64(intVal))
-				} else {
-					ethModel.Index = types.Int64Null()
-				}
-			} else {
-				ethModel.Index = types.Int64Null()
-			}
-			eths = append(eths, ethModel)
-		}
-		state.Eths = eths
-	} else if plan != nil && len(plan.Eths) > 0 {
-		state.Eths = plan.Eths
-	}
-
+	// Handle object properties
 	if objProps, ok := switchpointData["object_properties"].(map[string]interface{}); ok {
-		op := veritySwitchpointObjectPropertiesModel{}
-		if val, ok := objProps["user_notes"].(string); ok {
-			op.UserNotes = types.StringValue(val)
-		} else {
-			op.UserNotes = types.StringNull()
-		}
-		if val, ok := objProps["expected_parent_endpoint"].(string); ok {
-			op.ExpectedParentEndpoint = types.StringValue(val)
-		} else {
-			op.ExpectedParentEndpoint = types.StringNull()
-		}
-		if val, ok := objProps["expected_parent_endpoint_ref_type_"].(string); ok {
-			op.ExpectedParentEndpointRefType = types.StringValue(val)
-		} else {
-			op.ExpectedParentEndpointRefType = types.StringNull()
-		}
-		if val, ok := objProps["number_of_multipoints"]; ok && val != nil {
-			if intVal, ok := val.(float64); ok {
-				op.NumberOfMultipoints = types.Int64Value(int64(intVal))
-			} else if intVal, ok := val.(int); ok {
-				op.NumberOfMultipoints = types.Int64Value(int64(intVal))
-			} else {
-				op.NumberOfMultipoints = types.Int64Null()
-			}
-		} else {
-			op.NumberOfMultipoints = types.Int64Null()
-		}
-		if val, ok := objProps["aggregate"].(bool); ok {
-			op.Aggregate = types.BoolValue(val)
-		} else {
-			op.Aggregate = types.BoolNull()
-		}
-		if val, ok := objProps["is_host"].(bool); ok {
-			op.IsHost = types.BoolValue(val)
-		} else {
-			op.IsHost = types.BoolNull()
-		}
-		if val, ok := objProps["draw_as_edge_device"].(bool); ok {
-			op.DrawAsEdgeDevice = types.BoolValue(val)
-		} else {
-			op.DrawAsEdgeDevice = types.BoolNull()
+		op := veritySwitchpointObjectPropertiesModel{
+			UserNotes:                     utils.MapStringFromAPI(objProps["user_notes"]),
+			ExpectedParentEndpoint:        utils.MapStringFromAPI(objProps["expected_parent_endpoint"]),
+			ExpectedParentEndpointRefType: utils.MapStringFromAPI(objProps["expected_parent_endpoint_ref_type_"]),
+			NumberOfMultipoints:           utils.MapInt64FromAPI(objProps["number_of_multipoints"]),
+			Aggregate:                     utils.MapBoolFromAPI(objProps["aggregate"]),
+			IsHost:                        utils.MapBoolFromAPI(objProps["is_host"]),
+			DrawAsEdgeDevice:              utils.MapBoolFromAPI(objProps["draw_as_edge_device"]),
 		}
 
+		// Handle nested eths array
 		if ethsArray, ok := objProps["eths"].([]interface{}); ok && len(ethsArray) > 0 {
 			var eths []veritySwitchpointObjectPropertiesEthModel
 			for _, e := range ethsArray {
@@ -1863,27 +1532,10 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 				if !ok {
 					continue
 				}
-				ethModel := veritySwitchpointObjectPropertiesEthModel{}
-				if val, ok := eth["eth_num_icon"].(string); ok {
-					ethModel.EthNumIcon = types.StringValue(val)
-				} else {
-					ethModel.EthNumIcon = types.StringNull()
-				}
-				if val, ok := eth["eth_num_label"].(string); ok {
-					ethModel.EthNumLabel = types.StringValue(val)
-				} else {
-					ethModel.EthNumLabel = types.StringNull()
-				}
-				if index, ok := eth["index"]; ok && index != nil {
-					if intVal, ok := index.(float64); ok {
-						ethModel.Index = types.Int64Value(int64(intVal))
-					} else if intVal, ok := index.(int); ok {
-						ethModel.Index = types.Int64Value(int64(intVal))
-					} else {
-						ethModel.Index = types.Int64Null()
-					}
-				} else {
-					ethModel.Index = types.Int64Null()
+				ethModel := veritySwitchpointObjectPropertiesEthModel{
+					EthNumIcon:  utils.MapStringFromAPI(eth["eth_num_icon"]),
+					EthNumLabel: utils.MapStringFromAPI(eth["eth_num_label"]),
+					Index:       utils.MapInt64FromAPI(eth["index"]),
 				}
 				eths = append(eths, ethModel)
 			}
@@ -1893,8 +1545,92 @@ func (r *veritySwitchpointResource) populateSwitchpointState(
 		}
 
 		state.ObjectProperties = []veritySwitchpointObjectPropertiesModel{op}
-	} else if plan != nil && len(plan.ObjectProperties) > 0 {
-		state.ObjectProperties = plan.ObjectProperties
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle badges
+	if badgesArray, ok := switchpointData["badges"].([]interface{}); ok && len(badgesArray) > 0 {
+		var badges []veritySwitchpointBadgeModel
+		for _, b := range badgesArray {
+			badge, ok := b.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			badgeModel := veritySwitchpointBadgeModel{
+				Badge:        utils.MapStringFromAPI(badge["badge"]),
+				BadgeRefType: utils.MapStringFromAPI(badge["badge_ref_type_"]),
+				Index:        utils.MapInt64FromAPI(badge["index"]),
+			}
+			badges = append(badges, badgeModel)
+		}
+		state.Badges = badges
+	} else {
+		state.Badges = nil
+	}
+
+	// Handle children
+	if childrenArray, ok := switchpointData["children"].([]interface{}); ok && len(childrenArray) > 0 {
+		var children []veritySwitchpointChildModel
+		for _, c := range childrenArray {
+			child, ok := c.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			childModel := veritySwitchpointChildModel{
+				ChildNumEndpoint:        utils.MapStringFromAPI(child["child_num_endpoint"]),
+				ChildNumEndpointRefType: utils.MapStringFromAPI(child["child_num_endpoint_ref_type_"]),
+				ChildNumDevice:          utils.MapStringFromAPI(child["child_num_device"]),
+				Index:                   utils.MapInt64FromAPI(child["index"]),
+			}
+			children = append(children, childModel)
+		}
+		state.Children = children
+	} else {
+		state.Children = nil
+	}
+
+	// Handle traffic mirrors
+	if mirrorsArray, ok := switchpointData["traffic_mirrors"].([]interface{}); ok && len(mirrorsArray) > 0 {
+		var mirrors []veritySwitchpointTrafficMirrorModel
+		for _, m := range mirrorsArray {
+			mirror, ok := m.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			mirrorModel := veritySwitchpointTrafficMirrorModel{
+				TrafficMirrorNumEnable:             utils.MapBoolFromAPI(mirror["traffic_mirror_num_enable"]),
+				TrafficMirrorNumSourcePort:         utils.MapStringFromAPI(mirror["traffic_mirror_num_source_port"]),
+				TrafficMirrorNumSourceLagIndicator: utils.MapBoolFromAPI(mirror["traffic_mirror_num_source_lag_indicator"]),
+				TrafficMirrorNumDestinationPort:    utils.MapStringFromAPI(mirror["traffic_mirror_num_destination_port"]),
+				TrafficMirrorNumInboundTraffic:     utils.MapBoolFromAPI(mirror["traffic_mirror_num_inbound_traffic"]),
+				TrafficMirrorNumOutboundTraffic:    utils.MapBoolFromAPI(mirror["traffic_mirror_num_outbound_traffic"]),
+				Index:                              utils.MapInt64FromAPI(mirror["index"]),
+			}
+			mirrors = append(mirrors, mirrorModel)
+		}
+		state.TrafficMirrors = mirrors
+	} else {
+		state.TrafficMirrors = nil
+	}
+
+	// Handle eths
+	if ethsArray, ok := switchpointData["eths"].([]interface{}); ok && len(ethsArray) > 0 {
+		var eths []veritySwitchpointEthModel
+		for _, e := range ethsArray {
+			eth, ok := e.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			ethModel := veritySwitchpointEthModel{
+				Breakout: utils.MapStringFromAPI(eth["breakout"]),
+				Index:    utils.MapInt64FromAPI(eth["index"]),
+			}
+			eths = append(eths, ethModel)
+		}
+		state.Eths = eths
+	} else {
+		state.Eths = nil
 	}
 
 	return state
