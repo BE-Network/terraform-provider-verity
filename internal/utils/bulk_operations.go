@@ -1332,10 +1332,10 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", b.getOperationCount("ipv6_prefix_list", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_prefix_list", "PUT") }, "IPv6 Prefix List") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PUT", b.getOperationCount("ipv4_list_filter", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PUT") }, "IPv4 List") {
+	if !execute("PUT", b.getOperationCount("ipv4_list", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PUT") }, "IPv4 List") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PUT", b.getOperationCount("ipv6_list_filter", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PUT") }, "IPv6 List") {
+	if !execute("PUT", b.getOperationCount("ipv6_list", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PUT") }, "IPv6 List") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PUT", b.getOperationCount("packet_broker", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "packet_broker", "PUT") }, "Packet Broker") {
@@ -1434,10 +1434,10 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PATCH", b.getOperationCount("ipv6_prefix_list", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_prefix_list", "PATCH") }, "IPv6 Prefix List") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PATCH", b.getOperationCount("ipv4_list_filter", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PATCH") }, "IPv4 List") {
+	if !execute("PATCH", b.getOperationCount("ipv4_list", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PATCH") }, "IPv4 List") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PATCH", b.getOperationCount("ipv6_list_filter", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PATCH") }, "IPv6 List") {
+	if !execute("PATCH", b.getOperationCount("ipv6_list", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PATCH") }, "IPv6 List") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", b.getOperationCount("packet_broker", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "packet_broker", "PATCH") }, "Packet Broker") {
@@ -1571,13 +1571,13 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("DELETE", b.getOperationCount("ipv6_prefix_list", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_prefix_list", "DELETE") }, "IPv6 Prefix List") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("DELETE", b.getOperationCount("ipv6_list_filter", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list_filter", "DELETE") }, "IPv6 List Filter") {
+	if !execute("DELETE", b.getOperationCount("ipv6_list", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "DELETE") }, "IPv6 List Filter") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", b.getOperationCount("ipv4_prefix_list", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_prefix_list", "DELETE") }, "IPv4 Prefix List") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("DELETE", b.getOperationCount("ipv4_list_filter", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list_filter", "DELETE") }, "IPv4 List Filter") {
+	if !execute("DELETE", b.getOperationCount("ipv4_list", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "DELETE") }, "IPv4 List Filter") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", b.getOperationCount("device_settings", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_settings", "DELETE") }, "Device Settings") {
@@ -1665,10 +1665,10 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PUT", b.getOperationCount("acl", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "acl", "PUT") }, "ACL") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PUT", b.getOperationCount("ipv4_list_filter", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PUT") }, "IPv4 List") {
+	if !execute("PUT", b.getOperationCount("ipv4_list", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PUT") }, "IPv4 List") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PUT", b.getOperationCount("ipv6_list_filter", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PUT") }, "IPv6 List") {
+	if !execute("PUT", b.getOperationCount("ipv6_list", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PUT") }, "IPv6 List") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PUT", b.getOperationCount("port_acl", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PUT") }, "Port ACL") {
@@ -1742,10 +1742,10 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PATCH", b.getOperationCount("acl", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "acl", "PATCH") }, "ACL") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PATCH", b.getOperationCount("ipv4_list_filter", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PATCH") }, "IPv4 List") {
+	if !execute("PATCH", b.getOperationCount("ipv4_list", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "PATCH") }, "IPv4 List") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("PATCH", b.getOperationCount("ipv6_list_filter", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PATCH") }, "IPv6 List") {
+	if !execute("PATCH", b.getOperationCount("ipv6_list", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "PATCH") }, "IPv6 List") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("PATCH", b.getOperationCount("port_acl", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "PATCH") }, "Port ACL") {
@@ -1777,10 +1777,10 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("DELETE", b.getOperationCount("port_acl", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "port_acl", "DELETE") }, "Port ACL") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("DELETE", b.getOperationCount("ipv6_list_filter", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list_filter", "DELETE") }, "IPv6 List Filter") {
+	if !execute("DELETE", b.getOperationCount("ipv6_list", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv6_list", "DELETE") }, "IPv6 List Filter") {
 		return diagnostics, operationsPerformed
 	}
-	if !execute("DELETE", b.getOperationCount("ipv4_list_filter", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list_filter", "DELETE") }, "IPv4 List Filter") {
+	if !execute("DELETE", b.getOperationCount("ipv4_list", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "ipv4_list", "DELETE") }, "IPv4 List Filter") {
 		return diagnostics, operationsPerformed
 	}
 	if !execute("DELETE", b.getOperationCount("acl", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "acl", "DELETE") }, "ACL") {
@@ -1858,9 +1858,9 @@ func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool
 		b.getOperationCount("device_settings", "PUT") == 0 && b.getOperationCount("device_settings", "PATCH") == 0 && b.getOperationCount("device_settings", "DELETE") == 0 &&
 		b.getOperationCount("bundle", "PUT") == 0 && b.getOperationCount("bundle", "PATCH") == 0 && b.getOperationCount("bundle", "DELETE") == 0 && b.getOperationCount("authenticated_eth_port", "PUT") == 0 && b.getOperationCount("authenticated_eth_port", "PATCH") == 0 &&
 		b.getOperationCount("authenticated_eth_port", "DELETE") == 0 && b.getOperationCount("acl", "PUT") == 0 && b.getOperationCount("acl", "PATCH") == 0 && b.getOperationCount("acl", "DELETE") == 0 &&
-		b.getOperationCount("ipv4_list_filter", "PUT") == 0 && b.getOperationCount("ipv4_list_filter", "PATCH") == 0 && b.getOperationCount("ipv4_list_filter", "DELETE") == 0 &&
+		b.getOperationCount("ipv4_list", "PUT") == 0 && b.getOperationCount("ipv4_list", "PATCH") == 0 && b.getOperationCount("ipv4_list", "DELETE") == 0 &&
 		b.getOperationCount("ipv4_prefix_list", "PUT") == 0 && b.getOperationCount("ipv4_prefix_list", "PATCH") == 0 && b.getOperationCount("ipv4_prefix_list", "DELETE") == 0 &&
-		b.getOperationCount("ipv6_list_filter", "PUT") == 0 && b.getOperationCount("ipv6_list_filter", "PATCH") == 0 && b.getOperationCount("ipv6_list_filter", "DELETE") == 0 &&
+		b.getOperationCount("ipv6_list", "PUT") == 0 && b.getOperationCount("ipv6_list", "PATCH") == 0 && b.getOperationCount("ipv6_list", "DELETE") == 0 &&
 		b.getOperationCount("ipv6_prefix_list", "PUT") == 0 && b.getOperationCount("ipv6_prefix_list", "PATCH") == 0 && b.getOperationCount("ipv6_prefix_list", "DELETE") == 0 &&
 		b.getOperationCount("badge", "PUT") == 0 && b.getOperationCount("badge", "PATCH") == 0 && b.getOperationCount("badge", "DELETE") == 0 &&
 		b.getOperationCount("voice_port_profile", "PUT") == 0 && b.getOperationCount("voice_port_profile", "PATCH") == 0 && b.getOperationCount("voice_port_profile", "DELETE") == 0 &&
@@ -1954,17 +1954,17 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	aclPatchCount := b.getOperationCount("acl", "PATCH")
 	aclDeleteCount := b.getOperationCount("acl", "DELETE")
 
-	ipv4ListPutCount := b.getOperationCount("ipv4_list_filter", "PUT")
-	ipv4ListPatchCount := b.getOperationCount("ipv4_list_filter", "PATCH")
-	ipv4ListDeleteCount := b.getOperationCount("ipv4_list_filter", "DELETE")
+	ipv4ListPutCount := b.getOperationCount("ipv4_list", "PUT")
+	ipv4ListPatchCount := b.getOperationCount("ipv4_list", "PATCH")
+	ipv4ListDeleteCount := b.getOperationCount("ipv4_list", "DELETE")
 
 	ipv4PrefixListPutCount := b.getOperationCount("ipv4_prefix_list", "PUT")
 	ipv4PrefixListPatchCount := b.getOperationCount("ipv4_prefix_list", "PATCH")
 	ipv4PrefixListDeleteCount := b.getOperationCount("ipv4_prefix_list", "DELETE")
 
-	ipv6ListPutCount := b.getOperationCount("ipv6_list_filter", "PUT")
-	ipv6ListPatchCount := b.getOperationCount("ipv6_list_filter", "PATCH")
-	ipv6ListDeleteCount := b.getOperationCount("ipv6_list_filter", "DELETE")
+	ipv6ListPutCount := b.getOperationCount("ipv6_list", "PUT")
+	ipv6ListPatchCount := b.getOperationCount("ipv6_list", "PATCH")
+	ipv6ListDeleteCount := b.getOperationCount("ipv6_list", "DELETE")
 
 	ipv6PrefixListPutCount := b.getOperationCount("ipv6_prefix_list", "PUT")
 	ipv6PrefixListPatchCount := b.getOperationCount("ipv6_prefix_list", "PATCH")
@@ -2225,10 +2225,6 @@ func (b *BulkOperationManager) GetResourceOperationData(resourceType string) *Re
 	switch resourceType {
 	case "acl_v4", "acl_v6":
 		resourceType = "acl"
-	case "ipv4_list_filter":
-		resourceType = "ipv4_list"
-	case "ipv6_list_filter":
-		resourceType = "ipv6_list"
 	}
 
 	// Get the resource operations from the unified map
@@ -3084,7 +3080,7 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 
 					return existingResources, nil
 
-				case "ipv4_list_filter":
+				case "ipv4_list":
 					resp, err := b.client.IPv4ListFiltersAPI.Ipv4listsGet(apiCtx).Execute()
 					if err != nil {
 						return nil, err
@@ -3114,7 +3110,7 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 					}
 					return result.Ipv4PrefixList, nil
 
-				case "ipv6_list_filter":
+				case "ipv6_list":
 					resp, err := b.client.IPv6ListFiltersAPI.Ipv6listsGet(apiCtx).Execute()
 					if err != nil {
 						return nil, err
@@ -3590,7 +3586,7 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 			}
 			putRequest.SetIpFilter(aclMap)
 			return putRequest
-		case "ipv4_list_filter":
+		case "ipv4_list":
 			putRequest := openapi.NewIpv4listsPutRequest()
 			ipv4Map := make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue)
 			for name, props := range filteredData {
@@ -3606,7 +3602,7 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 			}
 			putRequest.SetIpv4PrefixList(ipv4PrefixMap)
 			return putRequest
-		case "ipv6_list_filter":
+		case "ipv6_list":
 			putRequest := openapi.NewIpv6listsPutRequest()
 			ipv6Map := make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue)
 			for name, props := range filteredData {

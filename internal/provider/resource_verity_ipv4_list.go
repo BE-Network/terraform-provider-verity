@@ -118,7 +118,7 @@ func (r *verityIpv4ListResource) Create(ctx context.Context, req resource.Create
 		{FieldName: "Enable", APIField: &ipv4ListProps.Enable, TFValue: plan.Enable},
 	})
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv4_list_filter", name, *ipv4ListProps, &resp.Diagnostics)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv4_list", name, *ipv4ListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -148,7 +148,7 @@ func (r *verityIpv4ListResource) Read(ctx context.Context, req resource.ReadRequ
 
 	name := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv4_list_filter") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv4_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping IPv4 List %s verification – trusting recent successful API operation", name))
 		return
 	}
@@ -279,7 +279,7 @@ func (r *verityIpv4ListResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv4_list_filter", name, ipv4ListProps, &resp.Diagnostics)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv4_list", name, ipv4ListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -307,7 +307,7 @@ func (r *verityIpv4ListResource) Delete(ctx context.Context, req resource.Delete
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv4_list_filter", name, nil, &resp.Diagnostics)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv4_list", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

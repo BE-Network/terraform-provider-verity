@@ -118,7 +118,7 @@ func (r *verityIpv6ListResource) Create(ctx context.Context, req resource.Create
 		{FieldName: "Enable", APIField: &ipv6ListProps.Enable, TFValue: plan.Enable},
 	})
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv6_list_filter", name, *ipv6ListProps, &resp.Diagnostics)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv6_list", name, *ipv6ListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -148,7 +148,7 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 
 	ipv6ListName := state.Name.ValueString()
 
-	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv6_list_filter") {
+	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv6_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping IPv6 List %s verification – trusting recent successful API operation", ipv6ListName))
 		return
 	}
@@ -279,7 +279,7 @@ func (r *verityIpv6ListResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv6_list_filter", name, ipv6ListProps, &resp.Diagnostics)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv6_list", name, ipv6ListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -307,7 +307,7 @@ func (r *verityIpv6ListResource) Delete(ctx context.Context, req resource.Delete
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv6_list_filter", name, nil, &resp.Diagnostics)
+	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv6_list", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}
