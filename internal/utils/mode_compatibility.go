@@ -75,6 +75,9 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_diagnostics_port_profile": ResourceModeBoth,
 	"verity_pb_routing":               ResourceModeBoth,
 	"verity_pb_routing_acl":           ResourceModeBoth,
+	"verity_grouping_rule":            ResourceModeBoth,
+	"verity_threshold_group":          ResourceModeBoth,
+	"verity_threshold":                ResourceModeBoth,
 }
 
 var ResourceVersionCompatibility = map[string]ApiVersionSupport{
@@ -117,6 +120,9 @@ var ResourceVersionCompatibility = map[string]ApiVersionSupport{
 	"verity_pb_routing":               {Major: 6, Minor: 5},
 	"verity_pb_routing_acl":           {Major: 6, Minor: 5},
 	"verity_spine_plane":              {Major: 6, Minor: 5},
+	"verity_grouping_rule":            {Major: 6, Minor: 5},
+	"verity_threshold_group":          {Major: 6, Minor: 5},
+	"verity_threshold":                {Major: 6, Minor: 5},
 }
 
 func FilterResourcesByMode(

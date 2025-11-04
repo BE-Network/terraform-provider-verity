@@ -438,6 +438,9 @@ func getAllResources() []func() resource.Resource {
 		NewVerityPBRoutingResource,
 		NewVerityPBRoutingACLResource,
 		NewVeritySpinePlaneResource,
+		NewVerityGroupingRuleResource,
+		NewVerityThresholdGroupResource,
+		NewVerityThresholdResource,
 	}
 }
 

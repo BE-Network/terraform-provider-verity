@@ -222,6 +222,9 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 		"verity_pb_routing_acl",
 		"verity_spine_plane",
 		"verity_sfp_breakout",
+		"verity_grouping_rule",
+		"verity_threshold_group",
+		"verity_threshold",
 	}
 
 	importBlocks := make(map[string]string)

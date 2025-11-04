@@ -185,6 +185,9 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "sites", terraformResourceType: "verity_site", importer: i.importSites, tfGenerator: i.generateSitesTF},
 		{name: "pods", terraformResourceType: "verity_pod", importer: i.importPods, tfGenerator: i.generatePodsTF},
 		{name: "portacls", terraformResourceType: "verity_port_acl", importer: i.importPortAcls, tfGenerator: i.generatePortAclsTF},
+		{name: "groupingrules", terraformResourceType: "verity_grouping_rule", importer: i.importGroupingRules, tfGenerator: i.generateGroupingRulesTF},
+		{name: "thresholdgroups", terraformResourceType: "verity_threshold_group", importer: i.importThresholdGroups, tfGenerator: i.generateThresholdGroupsTF},
+		{name: "thresholds", terraformResourceType: "verity_threshold", importer: i.importThresholds, tfGenerator: i.generateThresholdsTF},
 	}
 
 	// Filter tasks based on mode and API version compatibility
@@ -940,6 +943,42 @@ func (i *Importer) generatePortAclsTF(data interface{}) (string, error) {
 	return i.generateResourceTF(data, cfg)
 }
 
+func (i *Importer) generateGroupingRulesTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "grouping_rule",
+		StageName:                 "grouping_rule_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"rules": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateThresholdGroupsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "threshold_group",
+		StageName:                 "threshold_group_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"targets": true, "thresholds": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
+func (i *Importer) generateThresholdsTF(data interface{}) (string, error) {
+	cfg := ResourceConfig{
+		ResourceType:              "threshold",
+		StageName:                 "threshold_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"rules": true},
+	}
+	return i.generateResourceTF(data, cfg)
+}
+
 func (i *Importer) generateStagesTF() (string, error) {
 	var tfConfig strings.Builder
 
@@ -998,7 +1037,8 @@ func (i *Importer) generateStagesTF() (string, error) {
 		// 7. Packet Queues, 8. Service Port Profiles, 9. Voice-Port Profiles, 10. Eth Port Settings,
 		// 11. Device Settings, 12. Lags, 13. sflowcollectors, 14. diagnostics profiles,
 		// 15. diagnostics port profiles, 16. Bundles, 17. ACLs, 18. IPv4 Lists, 19. IPv6 Lists,
-		// 20. portacls, 21. Badges, 22. Switchpoints, 23. Device controllers, 24. sites
+		// 20. portacls, 21. Badges, 22. Switchpoints, 23. Device controllers, 24. thresholds,
+		// 25. grouping rules, 26. threshold groups, 27. sites
 		stageOrder = []StageDefinition{
 			{"pb_routing_acl_stage", "verity_pb_routing_acl", ""},
 			{"pb_routing_stage", "verity_pb_routing", "pb_routing_acl_stage"},
@@ -1024,7 +1064,10 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"badge_stage", "verity_badge", "port_acl_stage"},
 			{"switchpoint_stage", "verity_switchpoint", "badge_stage"},
 			{"device_controller_stage", "verity_device_controller", "switchpoint_stage"},
-			{"site_stage", "verity_site", "device_controller_stage"},
+			{"threshold_stage", "verity_threshold", "device_controller_stage"},
+			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
+			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
+			{"site_stage", "verity_site", "threshold_group_stage"},
 		}
 	} else {
 		// DATACENTER mode staging order:
@@ -1034,7 +1077,8 @@ func (i *Importer) generateStagesTF() (string, error) {
 		// 16. ACLs, 17. IPv4 Prefix Lists, 18. IPv6 Prefix Lists, 19. IPv4 Lists, 20. IPv6 Lists,
 		// 21. PacketBroker, 22. portacls, 23. Badges, 24. Pods, 25. Spine Planes, 26. Switchpoints, 27. Device controllers,
 		// 28. AS Path Access Lists, 29. Community Lists, 30. Extended Community Lists,
-		// 31. Route Map Clauses, 32. Route Maps, 33. SFP Breakouts, 34. Sites
+		// 31. Route Map Clauses, 32. Route Maps, 33. SFP Breakouts, 34. Thresholds, 35. Grouping Rules,
+		// 36. Threshold Groups, 37. Sites
 		stageOrder = []StageDefinition{
 			{"tenant_stage", "verity_tenant", ""},
 			{"gateway_stage", "verity_gateway", "tenant_stage"},
@@ -1070,7 +1114,10 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"route_map_clause_stage", "verity_route_map_clause", "extended_community_list_stage"},
 			{"route_map_stage", "verity_route_map", "route_map_clause_stage"},
 			{"sfp_breakout_stage", "verity_sfp_breakout", "route_map_stage"},
-			{"site_stage", "verity_site", "sfp_breakout_stage"},
+			{"threshold_stage", "verity_threshold", "sfp_breakout_stage"},
+			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
+			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
+			{"site_stage", "verity_site", "threshold_group_stage"},
 		}
 	}
 
@@ -1792,6 +1839,57 @@ func (i *Importer) importPortAcls() (interface{}, error) {
 	}
 
 	return result.PortAcl, nil
+}
+
+func (i *Importer) importGroupingRules() (interface{}, error) {
+	resp, err := i.client.GroupingRulesAPI.GroupingrulesGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get grouping rules: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		GroupingRule map[string]map[string]interface{} `json:"grouping_rule"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode grouping rules response: %v", err)
+	}
+
+	return result.GroupingRule, nil
+}
+
+func (i *Importer) importThresholdGroups() (interface{}, error) {
+	resp, err := i.client.ThresholdGroupsAPI.ThresholdgroupsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get threshold groups: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		ThresholdGroup map[string]map[string]interface{} `json:"threshold_group"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode threshold groups response: %v", err)
+	}
+
+	return result.ThresholdGroup, nil
+}
+
+func (i *Importer) importThresholds() (interface{}, error) {
+	resp, err := i.client.ThresholdsAPI.ThresholdsGet(i.ctx).Execute()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get thresholds: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Threshold map[string]map[string]interface{} `json:"threshold"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode thresholds response: %v", err)
+	}
+
+	return result.Threshold, nil
 }
 
 // universalObjectPropsHandler dynamically processes all fields present in the object_properties

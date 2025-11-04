@@ -273,6 +273,69 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.GatewayProfilesAPI.GatewayprofilesGet(ctx).Execute()
 		},
 	},
+	"grouping_rule": {
+		ResourceType:     "grouping_rule",
+		PutRequestType:   reflect.TypeOf(openapi.GroupingrulesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.GroupingrulesPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "grouping_rule"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.GroupingRulesAPI.GroupingrulesPut(ctx).GroupingrulesPutRequest(*req.(*openapi.GroupingrulesPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.GroupingRulesAPI.GroupingrulesPatch(ctx).GroupingrulesPutRequest(*req.(*openapi.GroupingrulesPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.GroupingRulesAPI.GroupingrulesDelete(ctx).GroupingRulesName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.GroupingRulesAPI.GroupingrulesGet(ctx).Execute()
+		},
+	},
+	"threshold_group": {
+		ResourceType:     "threshold_group",
+		PutRequestType:   reflect.TypeOf(openapi.ThresholdgroupsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.ThresholdgroupsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "threshold_group"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.ThresholdGroupsAPI.ThresholdgroupsPut(ctx).ThresholdgroupsPutRequest(*req.(*openapi.ThresholdgroupsPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.ThresholdGroupsAPI.ThresholdgroupsPatch(ctx).ThresholdgroupsPutRequest(*req.(*openapi.ThresholdgroupsPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.ThresholdGroupsAPI.ThresholdgroupsDelete(ctx).ThresholdGroupName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.ThresholdGroupsAPI.ThresholdgroupsGet(ctx).Execute()
+		},
+	},
+	"threshold": {
+		ResourceType:     "threshold",
+		PutRequestType:   reflect.TypeOf(openapi.ThresholdsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.ThresholdsPutRequest{}),
+		HasAutoGen:       false,
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "threshold"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.ThresholdsAPI.ThresholdsPut(ctx).ThresholdsPutRequest(*req.(*openapi.ThresholdsPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.ThresholdsAPI.ThresholdsPatch(ctx).ThresholdsPutRequest(*req.(*openapi.ThresholdsPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.ThresholdsAPI.ThresholdsDelete(ctx).ThresholdName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.ThresholdsAPI.ThresholdsGet(ctx).Execute()
+		},
+	},
 	"packet_queue": {
 		ResourceType:     "packet_queue",
 		PutRequestType:   reflect.TypeOf(openapi.PacketqueuesPutRequest{}),
@@ -1225,6 +1288,9 @@ func (b *BulkOperationManager) ExecuteAllPendingOperations(ctx context.Context) 
 			b.clearCacheFunc(ctx, b.contextProvider(), "pb_routing")
 			b.clearCacheFunc(ctx, b.contextProvider(), "pb_routing_acl")
 			b.clearCacheFunc(ctx, b.contextProvider(), "spine_planes")
+			b.clearCacheFunc(ctx, b.contextProvider(), "grouping_rules")
+			b.clearCacheFunc(ctx, b.contextProvider(), "threshold_groups")
+			b.clearCacheFunc(ctx, b.contextProvider(), "thresholds")
 		}
 	}
 
@@ -1376,6 +1442,15 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", b.getOperationCount("route_map", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map", "PUT") }, "Route Map") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", b.getOperationCount("threshold", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold", "PUT") }, "Threshold") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", b.getOperationCount("grouping_rule", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "grouping_rule", "PUT") }, "Grouping Rule") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", b.getOperationCount("threshold_group", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold_group", "PUT") }, "Threshold Group") {
+		return diagnostics, operationsPerformed
+	}
 
 	// PATCH operations - DC Order
 	if !execute("PATCH", b.getOperationCount("tenant", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "tenant", "PATCH") }, "Tenant") {
@@ -1481,11 +1556,29 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PATCH", b.getOperationCount("sfp_breakout", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "sfp_breakout", "PATCH") }, "SFP Breakout") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", b.getOperationCount("threshold", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold", "PATCH") }, "Threshold") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", b.getOperationCount("grouping_rule", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "grouping_rule", "PATCH") }, "Grouping Rule") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", b.getOperationCount("threshold_group", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold_group", "PATCH") }, "Threshold Group") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", b.getOperationCount("site", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "site", "PATCH") }, "Site") {
 		return diagnostics, operationsPerformed
 	}
 
 	// DELETE operations - Reverse DC Order
+	if !execute("DELETE", b.getOperationCount("threshold_group", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold_group", "DELETE") }, "Threshold Group") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", b.getOperationCount("grouping_rule", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "grouping_rule", "DELETE") }, "Grouping Rule") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", b.getOperationCount("threshold", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold", "DELETE") }, "Threshold") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("DELETE", b.getOperationCount("route_map", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map", "DELETE") }, "Route Map") {
 		return diagnostics, operationsPerformed
 	}
@@ -1683,6 +1776,15 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PUT", b.getOperationCount("device_controller", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_controller", "PUT") }, "Device Controller") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", b.getOperationCount("threshold", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold", "PUT") }, "Threshold") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", b.getOperationCount("grouping_rule", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "grouping_rule", "PUT") }, "Grouping Rule") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", b.getOperationCount("threshold_group", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold_group", "PUT") }, "Threshold Group") {
+		return diagnostics, operationsPerformed
+	}
 
 	// PATCH operations - Campus Order
 	if !execute("PATCH", b.getOperationCount("pb_routing_acl", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pb_routing_acl", "PATCH") }, "PB Routing ACL") {
@@ -1760,11 +1862,29 @@ func (b *BulkOperationManager) ExecuteCampusOperations(ctx context.Context) (dia
 	if !execute("PATCH", b.getOperationCount("device_controller", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_controller", "PATCH") }, "Device Controller") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PATCH", b.getOperationCount("threshold", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold", "PATCH") }, "Threshold") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", b.getOperationCount("grouping_rule", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "grouping_rule", "PATCH") }, "Grouping Rule") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", b.getOperationCount("threshold_group", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold_group", "PATCH") }, "Threshold Group") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("PATCH", b.getOperationCount("site", "PATCH"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "site", "PATCH") }, "Site") {
 		return diagnostics, operationsPerformed
 	}
 
 	// DELETE operations - Reverse Campus Order
+	if !execute("DELETE", b.getOperationCount("threshold_group", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold_group", "DELETE") }, "Threshold Group") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", b.getOperationCount("grouping_rule", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "grouping_rule", "DELETE") }, "Grouping Rule") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("DELETE", b.getOperationCount("threshold", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "threshold", "DELETE") }, "Threshold") {
+		return diagnostics, operationsPerformed
+	}
 	if !execute("DELETE", b.getOperationCount("device_controller", "DELETE"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "device_controller", "DELETE") }, "Device Controller") {
 		return diagnostics, operationsPerformed
 	}
@@ -1884,7 +2004,10 @@ func (b *BulkOperationManager) ShouldExecuteOperations(ctx context.Context) bool
 		b.getOperationCount("sflow_collector", "PUT") == 0 && b.getOperationCount("sflow_collector", "PATCH") == 0 && b.getOperationCount("sflow_collector", "DELETE") == 0 &&
 		b.getOperationCount("diagnostics_profile", "PUT") == 0 && b.getOperationCount("diagnostics_profile", "PATCH") == 0 && b.getOperationCount("diagnostics_profile", "DELETE") == 0 &&
 		b.getOperationCount("diagnostics_port_profile", "PUT") == 0 && b.getOperationCount("diagnostics_port_profile", "PATCH") == 0 && b.getOperationCount("diagnostics_port_profile", "DELETE") == 0 &&
-		b.getOperationCount("device_controller", "PUT") == 0 && b.getOperationCount("device_controller", "PATCH") == 0 && b.getOperationCount("device_controller", "DELETE") == 0 {
+		b.getOperationCount("device_controller", "PUT") == 0 && b.getOperationCount("device_controller", "PATCH") == 0 && b.getOperationCount("device_controller", "DELETE") == 0 &&
+		b.getOperationCount("grouping_rule", "PUT") == 0 && b.getOperationCount("grouping_rule", "PATCH") == 0 && b.getOperationCount("grouping_rule", "DELETE") == 0 &&
+		b.getOperationCount("threshold_group", "PUT") == 0 && b.getOperationCount("threshold_group", "PATCH") == 0 && b.getOperationCount("threshold_group", "DELETE") == 0 &&
+		b.getOperationCount("threshold", "PUT") == 0 && b.getOperationCount("threshold", "PATCH") == 0 && b.getOperationCount("threshold", "DELETE") == 0 {
 		return false
 	}
 
@@ -2050,6 +2173,18 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 	deviceControllerPatchCount := b.getOperationCount("device_controller", "PATCH")
 	deviceControllerDeleteCount := b.getOperationCount("device_controller", "DELETE")
 
+	groupingRulePutCount := b.getOperationCount("grouping_rule", "PUT")
+	groupingRulePatchCount := b.getOperationCount("grouping_rule", "PATCH")
+	groupingRuleDeleteCount := b.getOperationCount("grouping_rule", "DELETE")
+
+	thresholdGroupPutCount := b.getOperationCount("threshold_group", "PUT")
+	thresholdGroupPatchCount := b.getOperationCount("threshold_group", "PATCH")
+	thresholdGroupDeleteCount := b.getOperationCount("threshold_group", "DELETE")
+
+	thresholdPutCount := b.getOperationCount("threshold", "PUT")
+	thresholdPatchCount := b.getOperationCount("threshold", "PATCH")
+	thresholdDeleteCount := b.getOperationCount("threshold", "DELETE")
+
 	b.mutex.Unlock()
 
 	totalCount := gatewayPutCount + gatewayPatchCount + gatewayDeleteCount +
@@ -2087,7 +2222,10 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 		spinePlanePutCount + spinePlanePatchCount + spinePlaneDeleteCount +
 		portAclPutCount + portAclPatchCount + portAclDeleteCount +
 		authenticatedEthPortPutCount + authenticatedEthPortPatchCount + authenticatedEthPortDeleteCount +
-		deviceControllerPutCount + deviceControllerPatchCount + deviceControllerDeleteCount
+		deviceControllerPutCount + deviceControllerPatchCount + deviceControllerDeleteCount +
+		groupingRulePutCount + groupingRulePatchCount + groupingRuleDeleteCount +
+		thresholdGroupPutCount + thresholdGroupPatchCount + thresholdGroupDeleteCount +
+		thresholdPutCount + thresholdPatchCount + thresholdDeleteCount
 
 	if totalCount > 0 {
 		tflog.Debug(ctx, "Multiple operations detected, executing in sequence", map[string]interface{}{
@@ -2201,6 +2339,15 @@ func (b *BulkOperationManager) ExecuteIfMultipleOperations(ctx context.Context) 
 			"diagnostics_port_profile_put_count":    diagnosticsPortProfilePutCount,
 			"diagnostics_port_profile_patch_count":  diagnosticsPortProfilePatchCount,
 			"diagnostics_port_profile_delete_count": diagnosticsPortProfileDeleteCount,
+			"grouping_rule_put_count":               groupingRulePutCount,
+			"grouping_rule_patch_count":             groupingRulePatchCount,
+			"grouping_rule_delete_count":            groupingRuleDeleteCount,
+			"threshold_group_put_count":             thresholdGroupPutCount,
+			"threshold_group_patch_count":           thresholdGroupPatchCount,
+			"threshold_group_delete_count":          thresholdGroupDeleteCount,
+			"threshold_put_count":                   thresholdPutCount,
+			"threshold_patch_count":                 thresholdPatchCount,
+			"threshold_delete_count":                thresholdDeleteCount,
 			"total_count":                           totalCount,
 		})
 
@@ -3470,6 +3617,51 @@ func (b *BulkOperationManager) createPreExistenceChecker(config ResourceConfig, 
 					}
 					return result.SpinePlane, nil
 
+				case "grouping_rule":
+					resp, err := b.client.GroupingRulesAPI.GroupingrulesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						GroupingRule map[string]interface{} `json:"grouping_rule"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.GroupingRule, nil
+
+				case "threshold_group":
+					resp, err := b.client.ThresholdGroupsAPI.ThresholdgroupsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						ThresholdGroup map[string]interface{} `json:"threshold_group"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.ThresholdGroup, nil
+
+				case "threshold":
+					resp, err := b.client.ThresholdsAPI.ThresholdsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Threshold map[string]interface{} `json:"threshold"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Threshold, nil
+
 				default:
 					// For unknown resource types, assume no existing resources to avoid errors
 					return make(map[string]interface{}), nil
@@ -3811,6 +4003,30 @@ func (b *BulkOperationManager) createRequestPreparer(config ResourceConfig, oper
 				spinePlaneMap[name] = props.(openapi.SpineplanesPutRequestSpinePlaneValue)
 			}
 			putRequest.SetSpinePlane(spinePlaneMap)
+			return putRequest
+		case "grouping_rule":
+			putRequest := openapi.NewGroupingrulesPutRequest()
+			groupingRuleMap := make(map[string]openapi.GroupingrulesPutRequestGroupingRulesValue)
+			for name, props := range filteredData {
+				groupingRuleMap[name] = props.(openapi.GroupingrulesPutRequestGroupingRulesValue)
+			}
+			putRequest.SetGroupingRules(groupingRuleMap)
+			return putRequest
+		case "threshold_group":
+			putRequest := openapi.NewThresholdgroupsPutRequest()
+			thresholdGroupMap := make(map[string]openapi.ThresholdgroupsPutRequestThresholdGroupValue)
+			for name, props := range filteredData {
+				thresholdGroupMap[name] = props.(openapi.ThresholdgroupsPutRequestThresholdGroupValue)
+			}
+			putRequest.SetThresholdGroup(thresholdGroupMap)
+			return putRequest
+		case "threshold":
+			putRequest := openapi.NewThresholdsPutRequest()
+			thresholdMap := make(map[string]openapi.ThresholdsPutRequestThresholdValue)
+			for name, props := range filteredData {
+				thresholdMap[name] = props.(openapi.ThresholdsPutRequestThresholdValue)
+			}
+			putRequest.SetThreshold(thresholdMap)
 			return putRequest
 		}
 		return nil
