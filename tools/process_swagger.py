@@ -170,6 +170,9 @@ def merge_paths(base_paths, overlay_paths):
         if path in result:
             # Path exists in both, merge methods
             for method, details in methods.items():
+                # Skip non-dictionary values (like 'type' strings that shouldn't be at this level)
+                if not isinstance(details, dict):
+                    continue
                 if method in result[path]:
                     # Method exists in both, merge details
                     merged_details = deepcopy(result[path][method])
@@ -207,11 +210,13 @@ def merge_paths(base_paths, overlay_paths):
                     
                     result[path][method] = merged_details
                 else:
-                    # Method only in overlay, add it
-                    result[path][method] = deepcopy(details)
+                    # Method only in overlay, add it (skip if not a dict)
+                    if isinstance(details, dict):
+                        result[path][method] = deepcopy(details)
         else:
-            # Path only in overlay, add it
-            result[path] = deepcopy(methods)
+            # Path only in overlay, add it (filter out non-dict items)
+            filtered_methods = {k: deepcopy(v) for k, v in methods.items() if isinstance(v, dict)}
+            result[path] = filtered_methods
     
     return result
 
