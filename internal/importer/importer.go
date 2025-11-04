@@ -1849,7 +1849,7 @@ func (i *Importer) importGroupingRules() (interface{}, error) {
 	defer resp.Body.Close()
 
 	var result struct {
-		GroupingRule map[string]map[string]interface{} `json:"grouping_rule"`
+		GroupingRule map[string]map[string]interface{} `json:"grouping_rules"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("failed to decode grouping rules response: %v", err)
