@@ -1,21 +1,21 @@
-# \PortACLsAPI
+# \ThresholdGroupsAPI
 
 All URIs are relative to *http://localhost/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**PortaclsDelete**](PortACLsAPI.md#PortaclsDelete) | **Delete** /portacls | Delete Port ACL
-[**PortaclsGet**](PortACLsAPI.md#PortaclsGet) | **Get** /portacls | Get all Port ACLs
-[**PortaclsPatch**](PortACLsAPI.md#PortaclsPatch) | **Patch** /portacls | Update Port ACL
-[**PortaclsPut**](PortACLsAPI.md#PortaclsPut) | **Put** /portacls | Create Port ACL
+[**ThresholdgroupsDelete**](ThresholdGroupsAPI.md#ThresholdgroupsDelete) | **Delete** /thresholdgroups | Delete Threshold Group
+[**ThresholdgroupsGet**](ThresholdGroupsAPI.md#ThresholdgroupsGet) | **Get** /thresholdgroups | Get all Threshold Groups
+[**ThresholdgroupsPatch**](ThresholdGroupsAPI.md#ThresholdgroupsPatch) | **Patch** /thresholdgroups | Update Threshold Group
+[**ThresholdgroupsPut**](ThresholdGroupsAPI.md#ThresholdgroupsPut) | **Put** /thresholdgroups | Create Threshold Group
 
 
 
-## PortaclsDelete
+## ThresholdgroupsDelete
 
-> PortaclsDelete(ctx).PortAclName(portAclName).ChangesetName(changesetName).Execute()
+> ThresholdgroupsDelete(ctx).ThresholdGroupName(thresholdGroupName).ChangesetName(changesetName).Execute()
 
-Delete Port ACL
+Delete Threshold Group
 
 
 
@@ -32,14 +32,14 @@ import (
 )
 
 func main() {
-	portAclName := []string{"Inner_example"} // []string | 
+	thresholdGroupName := []string{"Inner_example"} // []string | 
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PortACLsAPI.PortaclsDelete(context.Background()).PortAclName(portAclName).ChangesetName(changesetName).Execute()
+	r, err := apiClient.ThresholdGroupsAPI.ThresholdgroupsDelete(context.Background()).ThresholdGroupName(thresholdGroupName).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortACLsAPI.PortaclsDelete``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `ThresholdGroupsAPI.ThresholdgroupsDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -51,12 +51,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPortaclsDeleteRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiThresholdgroupsDeleteRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **portAclName** | **[]string** |  | 
+ **thresholdGroupName** | **[]string** |  | 
  **changesetName** | **string** |  | 
 
 ### Return type
@@ -77,11 +77,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## PortaclsGet
+## ThresholdgroupsGet
 
-> PortaclsGet(ctx).PortAclName(portAclName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+> ThresholdgroupsGet(ctx).ThresholdGroupName(thresholdGroupName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
-Get all Port ACLs
+Get all Threshold Groups
 
 
 
@@ -98,15 +98,15 @@ import (
 )
 
 func main() {
-	portAclName := "portAclName_example" // string |  (optional)
+	thresholdGroupName := "thresholdGroupName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PortACLsAPI.PortaclsGet(context.Background()).PortAclName(portAclName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+	r, err := apiClient.ThresholdGroupsAPI.ThresholdgroupsGet(context.Background()).ThresholdGroupName(thresholdGroupName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortACLsAPI.PortaclsGet``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `ThresholdGroupsAPI.ThresholdgroupsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -118,12 +118,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPortaclsGetRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiThresholdgroupsGetRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **portAclName** | **string** |  | 
+ **thresholdGroupName** | **string** |  | 
  **includeData** | **bool** |  | 
  **changesetName** | **string** |  | 
 
@@ -145,11 +145,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## PortaclsPatch
+## ThresholdgroupsPatch
 
-> PortaclsPatch(ctx).ChangesetName(changesetName).PortaclsPutRequest(portaclsPutRequest).Execute()
+> ThresholdgroupsPatch(ctx).ChangesetName(changesetName).ThresholdgroupsPutRequest(thresholdgroupsPutRequest).Execute()
 
-Update Port ACL
+Update Threshold Group
 
 
 
@@ -167,13 +167,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	portaclsPutRequest := *openapiclient.NewPortaclsPutRequest() // PortaclsPutRequest |  (optional)
+	thresholdgroupsPutRequest := *openapiclient.NewThresholdgroupsPutRequest() // ThresholdgroupsPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PortACLsAPI.PortaclsPatch(context.Background()).ChangesetName(changesetName).PortaclsPutRequest(portaclsPutRequest).Execute()
+	r, err := apiClient.ThresholdGroupsAPI.ThresholdgroupsPatch(context.Background()).ChangesetName(changesetName).ThresholdgroupsPutRequest(thresholdgroupsPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortACLsAPI.PortaclsPatch``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `ThresholdGroupsAPI.ThresholdgroupsPatch``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -185,13 +185,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPortaclsPatchRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiThresholdgroupsPatchRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **portaclsPutRequest** | [**PortaclsPutRequest**](PortaclsPutRequest.md) |  | 
+ **thresholdgroupsPutRequest** | [**ThresholdgroupsPutRequest**](ThresholdgroupsPutRequest.md) |  | 
 
 ### Return type
 
@@ -211,11 +211,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## PortaclsPut
+## ThresholdgroupsPut
 
-> PortaclsPut(ctx).ChangesetName(changesetName).PortaclsPutRequest(portaclsPutRequest).Execute()
+> ThresholdgroupsPut(ctx).ChangesetName(changesetName).ThresholdgroupsPutRequest(thresholdgroupsPutRequest).Execute()
 
-Create Port ACL
+Create Threshold Group
 
 
 
@@ -233,13 +233,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	portaclsPutRequest := *openapiclient.NewPortaclsPutRequest() // PortaclsPutRequest |  (optional)
+	thresholdgroupsPutRequest := *openapiclient.NewThresholdgroupsPutRequest() // ThresholdgroupsPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PortACLsAPI.PortaclsPut(context.Background()).ChangesetName(changesetName).PortaclsPutRequest(portaclsPutRequest).Execute()
+	r, err := apiClient.ThresholdGroupsAPI.ThresholdgroupsPut(context.Background()).ChangesetName(changesetName).ThresholdgroupsPutRequest(thresholdgroupsPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortACLsAPI.PortaclsPut``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `ThresholdGroupsAPI.ThresholdgroupsPut``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -251,13 +251,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPortaclsPutRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiThresholdgroupsPutRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **portaclsPutRequest** | [**PortaclsPutRequest**](PortaclsPutRequest.md) |  | 
+ **thresholdgroupsPutRequest** | [**ThresholdgroupsPutRequest**](ThresholdgroupsPutRequest.md) |  | 
 
 ### Return type
 

@@ -20,6 +20,7 @@ api_eth_port_settings.go
 api_extended_community_lists.go
 api_gateway_profiles.go
 api_gateways.go
+api_grouping_rules.go
 api_image_update_sets.go
 api_ipv4_list_filters.go
 api_ipv4_prefix_lists.go
@@ -42,6 +43,8 @@ api_sites.go
 api_spine_planes.go
 api_switchpoints.go
 api_tenants.go
+api_threshold_groups.go
+api_thresholds.go
 api_version.go
 api_voice_port_profiles.go
 client.go
@@ -114,6 +117,10 @@ docs/GatewaysAPI.md
 docs/GatewaysPutRequest.md
 docs/GatewaysPutRequestGatewayValue.md
 docs/GatewaysPutRequestGatewayValueStaticRoutesInner.md
+docs/GroupingRulesAPI.md
+docs/GroupingrulesPutRequest.md
+docs/GroupingrulesPutRequestGroupingRulesValue.md
+docs/GroupingrulesPutRequestGroupingRulesValueRulesInner.md
 docs/IPv4ListFiltersAPI.md
 docs/IPv4PrefixListsAPI.md
 docs/IPv6ListFiltersAPI.md
@@ -212,6 +219,15 @@ docs/TenantsAPI.md
 docs/TenantsPutRequest.md
 docs/TenantsPutRequestTenantValue.md
 docs/TenantsPutRequestTenantValueRouteTenantsInner.md
+docs/ThresholdGroupsAPI.md
+docs/ThresholdgroupsPutRequest.md
+docs/ThresholdgroupsPutRequestThresholdGroupValue.md
+docs/ThresholdgroupsPutRequestThresholdGroupValueTargetsInner.md
+docs/ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner.md
+docs/ThresholdsAPI.md
+docs/ThresholdsPutRequest.md
+docs/ThresholdsPutRequestThresholdValue.md
+docs/ThresholdsPutRequestThresholdValueRulesInner.md
 docs/VersionAPI.md
 docs/VoicePortProfilesAPI.md
 docs/VoiceportprofilesPutRequest.md
@@ -271,6 +287,9 @@ model__gatewayprofiles_put_request_gateway_profile_value_external_gateways_inner
 model__gateways_put_request.go
 model__gateways_put_request_gateway_value.go
 model__gateways_put_request_gateway_value_static_routes_inner.go
+model__groupingrules_put_request.go
+model__groupingrules_put_request_grouping_rules_value.go
+model__groupingrules_put_request_grouping_rules_value_rules_inner.go
 model__imageupdatesets_patch_request.go
 model__imageupdatesets_patch_request_image_update_sets_value.go
 model__imageupdatesets_patch_request_image_update_sets_value_object_properties.go
@@ -347,6 +366,13 @@ model__switchpoints_upgrade_patch_request.go
 model__tenants_put_request.go
 model__tenants_put_request_tenant_value.go
 model__tenants_put_request_tenant_value_route_tenants_inner.go
+model__thresholdgroups_put_request.go
+model__thresholdgroups_put_request_threshold_group_value.go
+model__thresholdgroups_put_request_threshold_group_value_targets_inner.go
+model__thresholdgroups_put_request_threshold_group_value_thresholds_inner.go
+model__thresholds_put_request.go
+model__thresholds_put_request_threshold_value.go
+model__thresholds_put_request_threshold_value_rules_inner.go
 model__voiceportprofiles_put_request.go
 model__voiceportprofiles_put_request_voice_port_profiles_value.go
 model__voiceportprofiles_put_request_voice_port_profiles_value_object_properties.go
@@ -368,6 +394,7 @@ test/api_eth_port_settings_test.go
 test/api_extended_community_lists_test.go
 test/api_gateway_profiles_test.go
 test/api_gateways_test.go
+test/api_grouping_rules_test.go
 test/api_image_update_sets_test.go
 test/api_ipv4_list_filters_test.go
 test/api_ipv4_prefix_lists_test.go
@@ -390,6 +417,8 @@ test/api_sites_test.go
 test/api_spine_planes_test.go
 test/api_switchpoints_test.go
 test/api_tenants_test.go
+test/api_threshold_groups_test.go
+test/api_thresholds_test.go
 test/api_version_test.go
 test/api_voice_port_profiles_test.go
 utils.go

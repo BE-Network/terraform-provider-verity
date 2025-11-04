@@ -1,21 +1,21 @@
-# \PortACLsAPI
+# \GroupingRulesAPI
 
 All URIs are relative to *http://localhost/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**PortaclsDelete**](PortACLsAPI.md#PortaclsDelete) | **Delete** /portacls | Delete Port ACL
-[**PortaclsGet**](PortACLsAPI.md#PortaclsGet) | **Get** /portacls | Get all Port ACLs
-[**PortaclsPatch**](PortACLsAPI.md#PortaclsPatch) | **Patch** /portacls | Update Port ACL
-[**PortaclsPut**](PortACLsAPI.md#PortaclsPut) | **Put** /portacls | Create Port ACL
+[**GroupingrulesDelete**](GroupingRulesAPI.md#GroupingrulesDelete) | **Delete** /groupingrules | Delete Grouping Rule
+[**GroupingrulesGet**](GroupingRulesAPI.md#GroupingrulesGet) | **Get** /groupingrules | Get all Grouping Rules
+[**GroupingrulesPatch**](GroupingRulesAPI.md#GroupingrulesPatch) | **Patch** /groupingrules | Update Grouping Rule
+[**GroupingrulesPut**](GroupingRulesAPI.md#GroupingrulesPut) | **Put** /groupingrules | Create Grouping Rule
 
 
 
-## PortaclsDelete
+## GroupingrulesDelete
 
-> PortaclsDelete(ctx).PortAclName(portAclName).ChangesetName(changesetName).Execute()
+> GroupingrulesDelete(ctx).GroupingRulesName(groupingRulesName).ChangesetName(changesetName).Execute()
 
-Delete Port ACL
+Delete Grouping Rule
 
 
 
@@ -32,14 +32,14 @@ import (
 )
 
 func main() {
-	portAclName := []string{"Inner_example"} // []string | 
+	groupingRulesName := []string{"Inner_example"} // []string | 
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PortACLsAPI.PortaclsDelete(context.Background()).PortAclName(portAclName).ChangesetName(changesetName).Execute()
+	r, err := apiClient.GroupingRulesAPI.GroupingrulesDelete(context.Background()).GroupingRulesName(groupingRulesName).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortACLsAPI.PortaclsDelete``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `GroupingRulesAPI.GroupingrulesDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -51,12 +51,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPortaclsDeleteRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiGroupingrulesDeleteRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **portAclName** | **[]string** |  | 
+ **groupingRulesName** | **[]string** |  | 
  **changesetName** | **string** |  | 
 
 ### Return type
@@ -77,11 +77,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## PortaclsGet
+## GroupingrulesGet
 
-> PortaclsGet(ctx).PortAclName(portAclName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+> GroupingrulesGet(ctx).GroupingRulesName(groupingRulesName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
-Get all Port ACLs
+Get all Grouping Rules
 
 
 
@@ -98,15 +98,15 @@ import (
 )
 
 func main() {
-	portAclName := "portAclName_example" // string |  (optional)
+	groupingRulesName := "groupingRulesName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PortACLsAPI.PortaclsGet(context.Background()).PortAclName(portAclName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+	r, err := apiClient.GroupingRulesAPI.GroupingrulesGet(context.Background()).GroupingRulesName(groupingRulesName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortACLsAPI.PortaclsGet``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `GroupingRulesAPI.GroupingrulesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -118,12 +118,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPortaclsGetRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiGroupingrulesGetRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **portAclName** | **string** |  | 
+ **groupingRulesName** | **string** |  | 
  **includeData** | **bool** |  | 
  **changesetName** | **string** |  | 
 
@@ -145,11 +145,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## PortaclsPatch
+## GroupingrulesPatch
 
-> PortaclsPatch(ctx).ChangesetName(changesetName).PortaclsPutRequest(portaclsPutRequest).Execute()
+> GroupingrulesPatch(ctx).ChangesetName(changesetName).GroupingrulesPutRequest(groupingrulesPutRequest).Execute()
 
-Update Port ACL
+Update Grouping Rule
 
 
 
@@ -167,13 +167,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	portaclsPutRequest := *openapiclient.NewPortaclsPutRequest() // PortaclsPutRequest |  (optional)
+	groupingrulesPutRequest := *openapiclient.NewGroupingrulesPutRequest() // GroupingrulesPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PortACLsAPI.PortaclsPatch(context.Background()).ChangesetName(changesetName).PortaclsPutRequest(portaclsPutRequest).Execute()
+	r, err := apiClient.GroupingRulesAPI.GroupingrulesPatch(context.Background()).ChangesetName(changesetName).GroupingrulesPutRequest(groupingrulesPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortACLsAPI.PortaclsPatch``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `GroupingRulesAPI.GroupingrulesPatch``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -185,13 +185,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPortaclsPatchRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiGroupingrulesPatchRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **portaclsPutRequest** | [**PortaclsPutRequest**](PortaclsPutRequest.md) |  | 
+ **groupingrulesPutRequest** | [**GroupingrulesPutRequest**](GroupingrulesPutRequest.md) |  | 
 
 ### Return type
 
@@ -211,11 +211,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## PortaclsPut
+## GroupingrulesPut
 
-> PortaclsPut(ctx).ChangesetName(changesetName).PortaclsPutRequest(portaclsPutRequest).Execute()
+> GroupingrulesPut(ctx).ChangesetName(changesetName).GroupingrulesPutRequest(groupingrulesPutRequest).Execute()
 
-Create Port ACL
+Create Grouping Rule
 
 
 
@@ -233,13 +233,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	portaclsPutRequest := *openapiclient.NewPortaclsPutRequest() // PortaclsPutRequest |  (optional)
+	groupingrulesPutRequest := *openapiclient.NewGroupingrulesPutRequest() // GroupingrulesPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.PortACLsAPI.PortaclsPut(context.Background()).ChangesetName(changesetName).PortaclsPutRequest(portaclsPutRequest).Execute()
+	r, err := apiClient.GroupingRulesAPI.GroupingrulesPut(context.Background()).ChangesetName(changesetName).GroupingrulesPutRequest(groupingrulesPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `PortACLsAPI.PortaclsPut``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `GroupingRulesAPI.GroupingrulesPut``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -251,13 +251,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiPortaclsPutRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiGroupingrulesPutRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **portaclsPutRequest** | [**PortaclsPutRequest**](PortaclsPutRequest.md) |  | 
+ **groupingrulesPutRequest** | [**GroupingrulesPutRequest**](GroupingrulesPutRequest.md) |  | 
 
 ### Return type
 

@@ -144,6 +144,10 @@ Class | Method | HTTP request | Description
 *GatewaysAPI* | [**GatewaysGet**](docs/GatewaysAPI.md#gatewaysget) | **Get** /gateways | Get all gateways
 *GatewaysAPI* | [**GatewaysPatch**](docs/GatewaysAPI.md#gatewayspatch) | **Patch** /gateways | Update gateway
 *GatewaysAPI* | [**GatewaysPut**](docs/GatewaysAPI.md#gatewaysput) | **Put** /gateways | Create gateway
+*GroupingRulesAPI* | [**GroupingrulesDelete**](docs/GroupingRulesAPI.md#groupingrulesdelete) | **Delete** /groupingrules | Delete Grouping Rule
+*GroupingRulesAPI* | [**GroupingrulesGet**](docs/GroupingRulesAPI.md#groupingrulesget) | **Get** /groupingrules | Get all Grouping Rules
+*GroupingRulesAPI* | [**GroupingrulesPatch**](docs/GroupingRulesAPI.md#groupingrulespatch) | **Patch** /groupingrules | Update Grouping Rule
+*GroupingRulesAPI* | [**GroupingrulesPut**](docs/GroupingRulesAPI.md#groupingrulesput) | **Put** /groupingrules | Create Grouping Rule
 *IPv4ListFiltersAPI* | [**Ipv4listsDelete**](docs/IPv4ListFiltersAPI.md#ipv4listsdelete) | **Delete** /ipv4lists | Delete IPv4 List Filter
 *IPv4ListFiltersAPI* | [**Ipv4listsGet**](docs/IPv4ListFiltersAPI.md#ipv4listsget) | **Get** /ipv4lists | Get all IPv4 List Filters
 *IPv4ListFiltersAPI* | [**Ipv4listsPatch**](docs/IPv4ListFiltersAPI.md#ipv4listspatch) | **Patch** /ipv4lists | Update IPv4 List Filter
@@ -186,7 +190,7 @@ Class | Method | HTTP request | Description
 *PodsAPI* | [**PodsGet**](docs/PodsAPI.md#podsget) | **Get** /pods | Get all Pods
 *PodsAPI* | [**PodsPatch**](docs/PodsAPI.md#podspatch) | **Patch** /pods | Update Pod
 *PodsAPI* | [**PodsPut**](docs/PodsAPI.md#podsput) | **Put** /pods | Create Pod
-*PortACLsAPI* | [**PortaclsDelete**](docs/PortACLsAPI.md#portaclsdelete) | **Delete** /portacls | Delete Pod
+*PortACLsAPI* | [**PortaclsDelete**](docs/PortACLsAPI.md#portaclsdelete) | **Delete** /portacls | Delete Port ACL
 *PortACLsAPI* | [**PortaclsGet**](docs/PortACLsAPI.md#portaclsget) | **Get** /portacls | Get all Port ACLs
 *PortACLsAPI* | [**PortaclsPatch**](docs/PortACLsAPI.md#portaclspatch) | **Patch** /portacls | Update Port ACL
 *PortACLsAPI* | [**PortaclsPut**](docs/PortACLsAPI.md#portaclsput) | **Put** /portacls | Create Port ACL
@@ -230,6 +234,14 @@ Class | Method | HTTP request | Description
 *TenantsAPI* | [**TenantsGet**](docs/TenantsAPI.md#tenantsget) | **Get** /tenants | Get all tenants
 *TenantsAPI* | [**TenantsPatch**](docs/TenantsAPI.md#tenantspatch) | **Patch** /tenants | Update tenant
 *TenantsAPI* | [**TenantsPut**](docs/TenantsAPI.md#tenantsput) | **Put** /tenants | Create tenant
+*ThresholdGroupsAPI* | [**ThresholdgroupsDelete**](docs/ThresholdGroupsAPI.md#thresholdgroupsdelete) | **Delete** /thresholdgroups | Delete Threshold Group
+*ThresholdGroupsAPI* | [**ThresholdgroupsGet**](docs/ThresholdGroupsAPI.md#thresholdgroupsget) | **Get** /thresholdgroups | Get all Threshold Groups
+*ThresholdGroupsAPI* | [**ThresholdgroupsPatch**](docs/ThresholdGroupsAPI.md#thresholdgroupspatch) | **Patch** /thresholdgroups | Update Threshold Group
+*ThresholdGroupsAPI* | [**ThresholdgroupsPut**](docs/ThresholdGroupsAPI.md#thresholdgroupsput) | **Put** /thresholdgroups | Create Threshold Group
+*ThresholdsAPI* | [**ThresholdsDelete**](docs/ThresholdsAPI.md#thresholdsdelete) | **Delete** /thresholds | Delete Threshold
+*ThresholdsAPI* | [**ThresholdsGet**](docs/ThresholdsAPI.md#thresholdsget) | **Get** /thresholds | Get all Thresholds
+*ThresholdsAPI* | [**ThresholdsPatch**](docs/ThresholdsAPI.md#thresholdspatch) | **Patch** /thresholds | Update Threshold
+*ThresholdsAPI* | [**ThresholdsPut**](docs/ThresholdsAPI.md#thresholdsput) | **Put** /thresholds | Create Threshold
 *VersionAPI* | [**VersionGet**](docs/VersionAPI.md#versionget) | **Get** /version | Get vNetC version
 *VoicePortProfilesAPI* | [**VoiceportprofilesDelete**](docs/VoicePortProfilesAPI.md#voiceportprofilesdelete) | **Delete** /voiceportprofiles | Delete Voice-Port Profile
 *VoicePortProfilesAPI* | [**VoiceportprofilesGet**](docs/VoicePortProfilesAPI.md#voiceportprofilesget) | **Get** /voiceportprofiles | Get all Voice-Port Profiles
@@ -290,6 +302,9 @@ Class | Method | HTTP request | Description
  - [GatewaysPutRequest](docs/GatewaysPutRequest.md)
  - [GatewaysPutRequestGatewayValue](docs/GatewaysPutRequestGatewayValue.md)
  - [GatewaysPutRequestGatewayValueStaticRoutesInner](docs/GatewaysPutRequestGatewayValueStaticRoutesInner.md)
+ - [GroupingrulesPutRequest](docs/GroupingrulesPutRequest.md)
+ - [GroupingrulesPutRequestGroupingRulesValue](docs/GroupingrulesPutRequestGroupingRulesValue.md)
+ - [GroupingrulesPutRequestGroupingRulesValueRulesInner](docs/GroupingrulesPutRequestGroupingRulesValueRulesInner.md)
  - [ImageupdatesetsPatchRequest](docs/ImageupdatesetsPatchRequest.md)
  - [ImageupdatesetsPatchRequestImageUpdateSetsValue](docs/ImageupdatesetsPatchRequestImageUpdateSetsValue.md)
  - [ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties](docs/ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties.md)
@@ -366,6 +381,13 @@ Class | Method | HTTP request | Description
  - [TenantsPutRequest](docs/TenantsPutRequest.md)
  - [TenantsPutRequestTenantValue](docs/TenantsPutRequestTenantValue.md)
  - [TenantsPutRequestTenantValueRouteTenantsInner](docs/TenantsPutRequestTenantValueRouteTenantsInner.md)
+ - [ThresholdgroupsPutRequest](docs/ThresholdgroupsPutRequest.md)
+ - [ThresholdgroupsPutRequestThresholdGroupValue](docs/ThresholdgroupsPutRequestThresholdGroupValue.md)
+ - [ThresholdgroupsPutRequestThresholdGroupValueTargetsInner](docs/ThresholdgroupsPutRequestThresholdGroupValueTargetsInner.md)
+ - [ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner](docs/ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner.md)
+ - [ThresholdsPutRequest](docs/ThresholdsPutRequest.md)
+ - [ThresholdsPutRequestThresholdValue](docs/ThresholdsPutRequestThresholdValue.md)
+ - [ThresholdsPutRequestThresholdValueRulesInner](docs/ThresholdsPutRequestThresholdValueRulesInner.md)
  - [VoiceportprofilesPutRequest](docs/VoiceportprofilesPutRequest.md)
  - [VoiceportprofilesPutRequestVoicePortProfilesValue](docs/VoiceportprofilesPutRequestVoicePortProfilesValue.md)
  - [VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties](docs/VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties.md)

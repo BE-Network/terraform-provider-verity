@@ -82,6 +82,8 @@ type APIClient struct {
 
 	GatewaysAPI *GatewaysAPIService
 
+	GroupingRulesAPI *GroupingRulesAPIService
+
 	IPv4ListFiltersAPI *IPv4ListFiltersAPIService
 
 	IPv4PrefixListsAPI *IPv4PrefixListsAPIService
@@ -126,6 +128,10 @@ type APIClient struct {
 
 	TenantsAPI *TenantsAPIService
 
+	ThresholdGroupsAPI *ThresholdGroupsAPIService
+
+	ThresholdsAPI *ThresholdsAPIService
+
 	VersionAPI *VersionAPIService
 
 	VoicePortProfilesAPI *VoicePortProfilesAPIService
@@ -164,6 +170,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ExtendedCommunityListsAPI = (*ExtendedCommunityListsAPIService)(&c.common)
 	c.GatewayProfilesAPI = (*GatewayProfilesAPIService)(&c.common)
 	c.GatewaysAPI = (*GatewaysAPIService)(&c.common)
+	c.GroupingRulesAPI = (*GroupingRulesAPIService)(&c.common)
 	c.IPv4ListFiltersAPI = (*IPv4ListFiltersAPIService)(&c.common)
 	c.IPv4PrefixListsAPI = (*IPv4PrefixListsAPIService)(&c.common)
 	c.IPv6ListFiltersAPI = (*IPv6ListFiltersAPIService)(&c.common)
@@ -186,6 +193,8 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.SpinePlanesAPI = (*SpinePlanesAPIService)(&c.common)
 	c.SwitchpointsAPI = (*SwitchpointsAPIService)(&c.common)
 	c.TenantsAPI = (*TenantsAPIService)(&c.common)
+	c.ThresholdGroupsAPI = (*ThresholdGroupsAPIService)(&c.common)
+	c.ThresholdsAPI = (*ThresholdsAPIService)(&c.common)
 	c.VersionAPI = (*VersionAPIService)(&c.common)
 	c.VoicePortProfilesAPI = (*VoicePortProfilesAPIService)(&c.common)
 

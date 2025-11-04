@@ -2125,6 +2125,153 @@ paths:
       summary: Create gateway
       tags:
       - Gateways
+  /groupingrules:
+    delete:
+      description: |
+        Deletes an existing Grouping Rule from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: grouping_rules_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Grouping Rule
+      tags:
+      - Grouping Rules
+    get:
+      description: |
+        Downloads all Grouping Rules from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: grouping_rules_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Grouping Rules
+      tags:
+      - Grouping Rules
+    patch:
+      description: |
+        Update Grouping Rule into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_groupingrules_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Grouping Rule
+      tags:
+      - Grouping Rules
+    put:
+      description: |
+        Create Grouping Rule into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_groupingrules_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Grouping Rule
+      tags:
+      - Grouping Rules
   /imageupdatesets:
     get:
       description: |
@@ -3673,7 +3820,7 @@ paths:
   /portacls:
     delete:
       description: |
-        Deletes an existing Pod from the system if changeset_name is empty, from a changeset if its name is provided.
+        Deletes an existing Port ACL from the system if changeset_name is empty, from a changeset if its name is provided.
       parameters:
       - explode: true
         in: query
@@ -3707,7 +3854,7 @@ paths:
           description: Server error
       security:
       - TokenAuth: []
-      summary: Delete Pod
+      summary: Delete Port ACL
       tags:
       - Port ACLs
     get:
@@ -5126,6 +5273,300 @@ paths:
       summary: Create tenant
       tags:
       - Tenants
+  /thresholdgroups:
+    delete:
+      description: |
+        Deletes an existing Threshold Group from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: threshold_group_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Threshold Group
+      tags:
+      - Threshold Groups
+    get:
+      description: |
+        Downloads all Threshold Groups from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: threshold_group_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Threshold Groups
+      tags:
+      - Threshold Groups
+    patch:
+      description: |
+        Update Threshold Group into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_thresholdgroups_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Threshold Group
+      tags:
+      - Threshold Groups
+    put:
+      description: |
+        Create Threshold Group into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_thresholdgroups_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Threshold Group
+      tags:
+      - Threshold Groups
+  /thresholds:
+    delete:
+      description: |
+        Deletes an existing Threshold from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: threshold_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Threshold
+      tags:
+      - Thresholds
+    get:
+      description: |
+        Downloads all Thresholds from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: threshold_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Thresholds
+      tags:
+      - Thresholds
+    patch:
+      description: |
+        Update Threshold into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_thresholds_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Threshold
+      tags:
+      - Thresholds
+    put:
+      description: |
+        Create Threshold into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_thresholds_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Threshold
+      tags:
+      - Thresholds
   /version:
     get:
       description: |
@@ -5978,51 +6419,51 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
-          - 1x100G
-          - pg1G
-          - 2x400G
-          - 1x1G
-          - 2x10G
-          - 1x40G
-          - pg50G
-          - 4x1G
-          - 8x10G
-          - 8x800G
-          - 2x25G
-          - 8x1G
-          - 4x50G
           - 8x200G
-          - 1x25G
-          - 2x200G
           - 8x100G
-          - pg400G
-          - 4x200G
-          - 4x400G
-          - 8x400G
-          - 1x800G
-          - pg800G
-          - pg10G
-          - 8x50G
-          - 4x40G
-          - 2x40G
-          - 1x400G
-          - 2x1G
-          - 2x50G
-          - 2x800G
-          - 4x100G
-          - 2x100G
-          - 8x40G
-          - pg40G
-          - 1x10G
-          - 4x10G
-          - 1x50G
-          - pg100G
-          - 4x800G
-          - 8x25G
-          - pg200G
           - pg25G
+          - 2x400G
+          - 2x10G
+          - 1x400G
+          - pg1G
+          - 4x100G
+          - pg10G
+          - 4x200G
+          - 2x1G
+          - 2x200G
+          - pg50G
+          - 1x100G
+          - pg400G
+          - 8x50G
+          - 1x50G
+          - 2x100G
+          - 4x1G
+          - 4x800G
+          - pg100G
+          - 1x800G
+          - 8x25G
+          - 4x10G
+          - 4x40G
+          - 1x25G
+          - 8x1G
+          - 4x400G
+          - 1x1G
+          - 4x50G
+          - 2x25G
+          - 8x40G
+          - 8x800G
+          - 2x40G
+          - 8x10G
+          - pg800G
+          - 1x10G
+          - 8x400G
           - 4x25G
+          - 1x40G
+          - 2x800G
           - 1x200G
+          - 2x50G
+          - pg40G
+          - pg200G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -6104,9 +6545,9 @@ components:
           enum:
           - ""
           - range
-          - less
           - equal
           - greater
+          - less
           type: string
         source_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -6133,9 +6574,9 @@ components:
           enum:
           - ""
           - range
-          - less
           - equal
           - greater
+          - less
           type: string
         destination_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -6174,8 +6615,8 @@ components:
           description: Scheduler Type for Queue
           enum:
           - ""
-          - DWRR
           - SP
+          - DWRR
           - WRR
           type: string
         scheduler_weight:
@@ -6213,27 +6654,27 @@ components:
           default: next available color
           description: Color of Badge
           enum:
+          - purple
           - blue
           - green
-          - red
-          - orange
-          - purple
           - yellow
+          - orange
+          - red
           minLength: 1
           type: string
         number:
           description: Number of Badge
           enum:
-          - 0
-          - 6
-          - 3
           - 9
+          - 0
           - 2
           - 1
-          - 5
+          - 6
+          - 7
           - 4
           - 8
-          - 7
+          - 5
+          - 3
           maximum: 9
           nullable: true
           type: integer
@@ -6325,8 +6766,8 @@ components:
           default: whitebox
           description: Type of Image Update Sets
           enum:
-          - blackbox
           - whitebox
+          - blackbox
           type: string
         section_pointless:
           items:
@@ -6721,8 +7162,8 @@ components:
           default: route
           description: Mode
           enum:
-          - route
           - soo
+          - route
           type: string
         route_target_expanded_expression:
           default: ""
@@ -6757,16 +7198,16 @@ components:
           description: BGP does not advertise any or all routes that do not match
             the Community String
           enum:
-          - any
           - all
+          - any
           minLength: 1
           type: string
         standard_expanded:
           default: standard
           description: Used Community String or Expanded Expression
           enum:
-          - expanded
           - standard
+          - expanded
           minLength: 1
           type: string
         lists:
@@ -6814,9 +7255,9 @@ components:
             Spanning Tree enabled
           enum:
           - ""
+          - mstp
           - port
           - pvst
-          - mstp
           minLength: 1
           type: string
         region_name:
@@ -7063,15 +7504,14 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.22
-          - 1.8.1.20
-          - 1.8.1.19
-          - 1.8.1.21
+          - 1.8.1.23
+          - 1.8.1.25
           - unmanaged
           - 1.8.1.11
+          - 1.8.1.26
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17612994399651"
+          default: "17622551558131"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -7091,14 +7531,14 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
-          - productClass
-          - endpoint
-          - badge_color
-          - deviceSerialNumber
-          - bundle_id
-          - pod
           - badge
+          - badge_color
+          - bundle_id
+          - deviceSerialNumber
           - endpoint_type
+          - endpoint
+          - pod
+          - productClass
           type: string
         endpoint_set_num_subrule_1_value:
           default: ""
@@ -7120,14 +7560,14 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
-          - productClass
-          - endpoint
-          - badge_color
-          - deviceSerialNumber
-          - bundle_id
-          - pod
           - badge
+          - badge_color
+          - bundle_id
+          - deviceSerialNumber
           - endpoint_type
+          - endpoint
+          - pod
+          - productClass
           type: string
         endpoint_set_num_subrule_2_value:
           default: ""
@@ -7149,14 +7589,14 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
-          - productClass
-          - endpoint
-          - badge_color
-          - deviceSerialNumber
-          - bundle_id
-          - pod
           - badge
+          - badge_color
+          - bundle_id
+          - deviceSerialNumber
           - endpoint_type
+          - endpoint
+          - pod
+          - productClass
           type: string
         endpoint_set_num_subrule_3_value:
           default: ""
@@ -7226,12 +7666,11 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.22
-          - 1.8.1.20
-          - 1.8.1.19
-          - 1.8.1.21
+          - 1.8.1.23
+          - 1.8.1.25
           - unmanaged
           - 1.8.1.11
+          - 1.8.1.26
           type: string
         endpoint_set_for_endpointless_unique_identifier:
           default: pointless
@@ -7245,6 +7684,43 @@ components:
           default: ""
           description: The time to update to the target SW version
           type: string
+      type: object
+    _thresholdgroups_put_request_threshold_group_value_targets_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable
+          type: boolean
+        type:
+          default: grouping_rules
+          description: Specific element or Grouping Rules to apply thresholds to
+          type: string
+        grouping_rules:
+          default: ""
+          description: Elements to apply thresholds to
+          type: string
+        grouping_rules_ref_type_:
+          description: Object type for grouping_rules field
+          enum:
+          - grouping_rules
+          type: string
+        switchpoint:
+          default: ""
+          description: Switchpoint to apply thresholds to
+          type: string
+        switchpoint_ref_type_:
+          description: Object type for switchpoint field
+          enum:
+          - switchpoint
+          type: string
+        port:
+          default: ""
+          description: Port to apply thresholds to
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _authenticatedethports_put_request:
       properties:
@@ -7278,8 +7754,8 @@ components:
           default: dhcp
           description: IP Source
           enum:
-          - dhcp
           - static
+          - dhcp
           minLength: 1
           type: string
         controller_ip_and_mask:
@@ -7306,8 +7782,8 @@ components:
           default: snmpv2
           description: Comm Type
           enum:
-          - gnmi
           - snmpv2
+          - gnmi
           - snmpv3
           minLength: 1
           type: string
@@ -7339,9 +7815,9 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - LLDP
-          - LAG
           - LAG_IDL
+          - LAG
+          - LLDP
           - Static Port
           - as_site
           minLength: 1
@@ -7354,30 +7830,30 @@ components:
           default: generic_snmp
           description: Communication Mode
           enum:
-          - cisco_small_business_sgxxx
-          - sonic
-          - cisco_catalyst_c3xxx
-          - adtran_netvanta_series
-          - netgear_prosafe_series
+          - eltex_ltp_gpon_olt
           - microtik_routeros_telnet
-          - generic_advanced_snmp
-          - arista_7050_series
+          - edgecore_ecs21000
+          - ruckus_icx7150
+          - adtran_netvanta_series
+          - generic_snmp
+          - cisco_nexus_9xxx
           - juniper_acx5048
           - tibit_xgs_olt_sfp
-          - eltex_ltp_gpon_olt
-          - ruckus_icx7150
-          - edgecore_ecs21000
-          - cisco_nexus_9xxx
-          - generic_snmp
+          - generic_advanced_snmp
+          - sonic
+          - netgear_prosafe_series
+          - cisco_catalyst_c3xxx
+          - cisco_small_business_sgxxx
           - hpe_aruba_2530_series
+          - arista_7050_series
           minLength: 1
           type: string
         cli_access_mode:
           default: SSH
           description: CLI Access Mode
           enum:
-          - SSH
           - Telnet
+          - SSH
           minLength: 1
           type: string
         username:
@@ -7421,9 +7897,9 @@ components:
           default: noAuthNoPriv
           description: Security level
           enum:
-          - authNoPriv
-          - noAuthNoPriv
           - authPriv
+          - noAuthNoPriv
+          - authNoPriv
           type: string
         snmpv3_username:
           default: ""
@@ -7581,12 +8057,11 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.22
-          - 1.8.1.20
-          - 1.8.1.19
-          - 1.8.1.21
+          - 1.8.1.23
+          - 1.8.1.25
           - unmanaged
           - 1.8.1.11
+          - 1.8.1.26
           type: string
         endpoint_set_for_all_others_unique_identifier:
           default: else
@@ -7808,9 +8283,9 @@ components:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
+          - high
           - ""
           - critical
-          - high
           type: string
         sort_by_name:
           default: false
@@ -7896,6 +8371,45 @@ components:
             \ without any checks."
           type: boolean
       type: object
+    _thresholds_put_request_threshold_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        type:
+          default: device
+          description: Type of elements threshold applies to
+          type: string
+        operation:
+          default: and
+          description: How to combine rules
+          type: string
+        severity:
+          default: notice
+          description: Severity of the alarm when the threshold is met
+          type: string
+        for:
+          default: "5"
+          description: Duration in minutes the threshold must be met before firing
+            the alarm
+          type: string
+        keep_firing_for:
+          default: "5"
+          description: Duration in minutes to keep firing the alarm after the threshold
+            is no longer met
+          type: string
+        rules:
+          items:
+            $ref: "#/components/schemas/_thresholds_put_request_threshold_value_rules_inner"
+          type: array
+      type: object
     _ipv6prefixlists_put_request:
       properties:
         ipv6_prefix_list:
@@ -7973,6 +8487,37 @@ components:
         object_properties:
           $ref: "#/components/schemas/_authenticatedethports_put_request_authenticated_eth_port_value_object_properties"
       type: object
+    _thresholdgroups_put_request_threshold_group_value_thresholds_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable
+          type: boolean
+        severity_override:
+          default: ""
+          description: Override the severity defined in the thereshold for this group
+            only
+          enum:
+          - ""
+          - warning
+          - notice
+          - error
+          - critical
+          type: string
+        threshold:
+          default: ""
+          description: Threshold to apply to this group
+          type: string
+        threshold_ref_type_:
+          description: Object type for threshold field
+          enum:
+          - threshold
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
     _packetqueues_put_request_packet_queue_value_pbit_inner:
       properties:
         packet_queue_for_p_bit:
@@ -8018,6 +8563,44 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+      type: object
+    _groupingrules_put_request_grouping_rules_value_rules_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable
+          type: boolean
+        rule_invert:
+          default: false
+          description: Invert the rule
+          type: boolean
+        rule_type:
+          default: ""
+          description: Which type of rule to apply
+          type: string
+        rule_value:
+          default: ""
+          description: Value to compare
+          type: string
+        rule_value_path:
+          default: ""
+          description: Object to compare
+          type: string
+        rule_value_path_ref_type_:
+          description: Object type for rule_value_path field
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _thresholds_put_request:
+      properties:
+        threshold:
+          additionalProperties:
+            $ref: "#/components/schemas/_thresholds_put_request_threshold_value"
+          properties: {}
+          type: object
       type: object
     _ipv6prefixlists_put_request_ipv6_prefix_list_value_lists_inner:
       properties:
@@ -8395,12 +8978,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - chardonnay
-          - starship
           - cornflower
+          - starship
+          - emerald
+          - chardonnay
           - anakiwa
           - lavender
-          - emerald
           minLength: 1
           type: string
         lacp:
@@ -8415,9 +8998,9 @@ components:
           description: Object type for eth_port_profile field
           enum:
           - gateway_profile
-          - service_port_profile
           - pb_egress_profile
           - eth_port_profile_
+          - service_port_profile
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
@@ -8475,13 +9058,13 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
-          - lag
-          - pb_egress_profile
-          - nbi_eth_port
-          - type
-          - service_port_profile
           - authenticated_eth_port
+          - type
+          - pb_egress_profile
           - eth_port_profile_
+          - service_port_profile
+          - nbi_eth_port
+          - lag
           type: string
         eth_port_num_eth_port_settings:
           default: ""
@@ -8605,6 +9188,37 @@ components:
           default: ""
           description: Denotes a LAN or IPTV service
           type: string
+      type: object
+    _groupingrules_put_request_grouping_rules_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        type:
+          default: device
+          description: Type of elements to group
+          enum:
+          - interface
+          - device
+          type: string
+        operation:
+          default: and
+          description: How to combine rules
+          enum:
+          - and
+          - or
+          type: string
+        rules:
+          items:
+            $ref: "#/components/schemas/_groupingrules_put_request_grouping_rules_value_rules_inner"
+          type: array
       type: object
     _routemapclauses_put_request_route_map_clause_value:
       properties:
@@ -8800,51 +9414,51 @@ components:
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
           - ""
-          - 1x100G
-          - pg1G
-          - 2x400G
-          - 1x1G
-          - 2x10G
-          - 1x40G
-          - pg50G
-          - 4x1G
-          - 8x10G
-          - 8x800G
-          - 2x25G
-          - 8x1G
-          - 4x50G
           - 8x200G
-          - 1x25G
-          - 2x200G
           - 8x100G
-          - pg400G
-          - 4x200G
-          - 4x400G
-          - 8x400G
-          - 1x800G
-          - pg800G
-          - pg10G
-          - 8x50G
-          - 4x40G
-          - 2x40G
-          - 1x400G
-          - 2x1G
-          - 2x50G
-          - 2x800G
-          - 4x100G
-          - 2x100G
-          - 8x40G
-          - pg40G
-          - 1x10G
-          - 4x10G
-          - 1x50G
-          - pg100G
-          - 4x800G
-          - 8x25G
-          - pg200G
           - pg25G
+          - 2x400G
+          - 2x10G
+          - 1x400G
+          - pg1G
+          - 4x100G
+          - pg10G
+          - 4x200G
+          - 2x1G
+          - 2x200G
+          - pg50G
+          - 1x100G
+          - pg400G
+          - 8x50G
+          - 1x50G
+          - 2x100G
+          - 4x1G
+          - 4x800G
+          - pg100G
+          - 1x800G
+          - 8x25G
+          - 4x10G
+          - 4x40G
+          - 1x25G
+          - 8x1G
+          - 4x400G
+          - 1x1G
+          - 4x50G
+          - 2x25G
+          - 8x40G
+          - 8x800G
+          - 2x40G
+          - 8x10G
+          - pg800G
+          - 1x10G
+          - 8x400G
           - 4x25G
+          - 1x40G
+          - 2x800G
           - 1x200G
+          - 2x50G
+          - pg40G
+          - pg200G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -8879,6 +9493,34 @@ components:
           properties: {}
           type: object
       type: object
+    _thresholdgroups_put_request_threshold_group_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        type:
+          default: device
+          description: Type of elements to apply thresholds to
+          enum:
+          - interface
+          - device
+          type: string
+        targets:
+          items:
+            $ref: "#/components/schemas/_thresholdgroups_put_request_threshold_group_value_targets_inner"
+          type: array
+        thresholds:
+          items:
+            $ref: "#/components/schemas/_thresholdgroups_put_request_threshold_group_value_thresholds_inner"
+          type: array
+      type: object
     _routemapclauses_put_request:
       properties:
         route_map_clause:
@@ -8909,27 +9551,27 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "5000"
-          - "50000"
-          - "100000"
-          - "10000"
           - "10"
-          - "-1"
-          - "100"
-          - "25000"
           - "40000"
-          - "1000"
-          - "2500"
+          - "100"
           - "400000"
+          - "100000"
+          - "2500"
+          - "1000"
+          - "5000"
+          - "10000"
+          - "25000"
+          - "-1"
+          - "50000"
           minLength: 1
           type: string
         duplex_mode:
           default: Auto
           description: Duplex Mode
           enum:
-          - Auto
           - Full
           - Half
+          - Auto
           minLength: 1
           type: string
         stp_enable:
@@ -8961,9 +9603,9 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
+          - Critical
           - High
           - Low
-          - Critical
           minLength: 1
           type: string
         allocated_power:
@@ -9007,8 +9649,8 @@ components:
             \                          "
           enum:
           - Kpps
-          - pps
           - '%'
+          - pps
           minLength: 1
           type: string
         action:
@@ -9029,8 +9671,8 @@ components:
             \                                       "
           enum:
           - Restrict
-          - Protect
           - Shutdown
+          - Protect
           minLength: 1
           type: string
         fec:
@@ -9049,11 +9691,11 @@ components:
             \    </div>\n                                            "
           enum:
           - fc
-          - rs
           - none
           - auto
           - rs-custom
           - unaltered
+          - rs
           minLength: 1
           type: string
         single_link:
@@ -9251,6 +9893,14 @@ components:
         spine_plane:
           additionalProperties:
             $ref: "#/components/schemas/_spineplanes_put_request_spine_plane_value"
+          properties: {}
+          type: object
+      type: object
+    _groupingrules_put_request:
+      properties:
+        grouping_rules:
+          additionalProperties:
+            $ref: "#/components/schemas/_groupingrules_put_request_grouping_rules_value"
           properties: {}
           type: object
       type: object
@@ -9670,6 +10320,14 @@ components:
             $ref: "#/components/schemas/_policybasedrouting_put_request_pb_routing_value_policy_inner"
           type: array
       type: object
+    _thresholdgroups_put_request:
+      properties:
+        threshold_group:
+          additionalProperties:
+            $ref: "#/components/schemas/_thresholdgroups_put_request_threshold_group_value"
+          properties: {}
+          type: object
+      type: object
     _portacls_put_request_port_acl_value:
       properties:
         name:
@@ -9698,6 +10356,42 @@ components:
           items:
             $ref: "#/components/schemas/_policybasedroutingacl_put_request_pb_routing_acl_value_ipv6_permit_inner"
           type: array
+      type: object
+    _thresholds_put_request_threshold_value_rules_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable
+          type: boolean
+        type:
+          default: metric
+          description: Use a metric or a nested threshold
+          type: string
+        metric:
+          default: ""
+          description: Metric threshold is on
+          type: string
+        operation:
+          default: ==
+          description: How to compare the metric to the value
+          type: string
+        value:
+          default: ""
+          description: Value to compare the metric to
+          type: string
+        threshold:
+          default: ""
+          description: How to compare the metric to the value
+          type: string
+        threshold_ref_type_:
+          description: Object type for threshold field
+          enum:
+          - threshold
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _devicecontrollers_put_request:
       properties:
@@ -10468,16 +11162,16 @@ components:
           description: BGP does not advertise any or all routes that do not match
             the Community String
           enum:
-          - any
           - all
+          - any
           minLength: 1
           type: string
         standard_expanded:
           default: standard
           description: Used Community String or Expanded Expression
           enum:
-          - expanded
           - standard
+          - expanded
           minLength: 1
           type: string
         lists:

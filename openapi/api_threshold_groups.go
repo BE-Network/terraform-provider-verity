@@ -20,77 +20,77 @@ import (
 )
 
 
-// PortACLsAPIService PortACLsAPI service
-type PortACLsAPIService service
+// ThresholdGroupsAPIService ThresholdGroupsAPI service
+type ThresholdGroupsAPIService service
 
-type ApiPortaclsDeleteRequest struct {
+type ApiThresholdgroupsDeleteRequest struct {
 	ctx context.Context
-	ApiService *PortACLsAPIService
-	portAclName *[]string
+	ApiService *ThresholdGroupsAPIService
+	thresholdGroupName *[]string
 	changesetName *string
 }
 
-func (r ApiPortaclsDeleteRequest) PortAclName(portAclName []string) ApiPortaclsDeleteRequest {
-	r.portAclName = &portAclName
+func (r ApiThresholdgroupsDeleteRequest) ThresholdGroupName(thresholdGroupName []string) ApiThresholdgroupsDeleteRequest {
+	r.thresholdGroupName = &thresholdGroupName
 	return r
 }
 
-func (r ApiPortaclsDeleteRequest) ChangesetName(changesetName string) ApiPortaclsDeleteRequest {
+func (r ApiThresholdgroupsDeleteRequest) ChangesetName(changesetName string) ApiThresholdgroupsDeleteRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiPortaclsDeleteRequest) Execute() (*http.Response, error) {
-	return r.ApiService.PortaclsDeleteExecute(r)
+func (r ApiThresholdgroupsDeleteRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ThresholdgroupsDeleteExecute(r)
 }
 
 /*
-PortaclsDelete Delete Port ACL
+ThresholdgroupsDelete Delete Threshold Group
 
-Deletes an existing Port ACL from the system if changeset_name is empty, from a changeset if its name is provided.
+Deletes an existing Threshold Group from the system if changeset_name is empty, from a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsDeleteRequest
+ @return ApiThresholdgroupsDeleteRequest
 */
-func (a *PortACLsAPIService) PortaclsDelete(ctx context.Context) ApiPortaclsDeleteRequest {
-	return ApiPortaclsDeleteRequest{
+func (a *ThresholdGroupsAPIService) ThresholdgroupsDelete(ctx context.Context) ApiThresholdgroupsDeleteRequest {
+	return ApiThresholdgroupsDeleteRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *PortACLsAPIService) PortaclsDeleteExecute(r ApiPortaclsDeleteRequest) (*http.Response, error) {
+func (a *ThresholdGroupsAPIService) ThresholdgroupsDeleteExecute(r ApiThresholdgroupsDeleteRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsDelete")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdGroupsAPIService.ThresholdgroupsDelete")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/portacls"
+	localVarPath := localBasePath + "/thresholdgroups"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.portAclName == nil {
-		return nil, reportError("portAclName is required and must be specified")
+	if r.thresholdGroupName == nil {
+		return nil, reportError("thresholdGroupName is required and must be specified")
 	}
 
 	{
-		t := *r.portAclName
+		t := *r.thresholdGroupName
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "port_acl_name", s.Index(i).Interface(), "form", "multi")
+				parameterAddToHeaderOrQuery(localVarQueryParams, "threshold_group_name", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "port_acl_name", t, "form", "multi")
+			parameterAddToHeaderOrQuery(localVarQueryParams, "threshold_group_name", t, "form", "multi")
 		}
 	}
 	if r.changesetName != nil {
@@ -141,70 +141,70 @@ func (a *PortACLsAPIService) PortaclsDeleteExecute(r ApiPortaclsDeleteRequest) (
 	return localVarHTTPResponse, nil
 }
 
-type ApiPortaclsGetRequest struct {
+type ApiThresholdgroupsGetRequest struct {
 	ctx context.Context
-	ApiService *PortACLsAPIService
-	portAclName *string
+	ApiService *ThresholdGroupsAPIService
+	thresholdGroupName *string
 	includeData *bool
 	changesetName *string
 }
 
-func (r ApiPortaclsGetRequest) PortAclName(portAclName string) ApiPortaclsGetRequest {
-	r.portAclName = &portAclName
+func (r ApiThresholdgroupsGetRequest) ThresholdGroupName(thresholdGroupName string) ApiThresholdgroupsGetRequest {
+	r.thresholdGroupName = &thresholdGroupName
 	return r
 }
 
-func (r ApiPortaclsGetRequest) IncludeData(includeData bool) ApiPortaclsGetRequest {
+func (r ApiThresholdgroupsGetRequest) IncludeData(includeData bool) ApiThresholdgroupsGetRequest {
 	r.includeData = &includeData
 	return r
 }
 
-func (r ApiPortaclsGetRequest) ChangesetName(changesetName string) ApiPortaclsGetRequest {
+func (r ApiThresholdgroupsGetRequest) ChangesetName(changesetName string) ApiThresholdgroupsGetRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiPortaclsGetRequest) Execute() (*http.Response, error) {
-	return r.ApiService.PortaclsGetExecute(r)
+func (r ApiThresholdgroupsGetRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ThresholdgroupsGetExecute(r)
 }
 
 /*
-PortaclsGet Get all Port ACLs
+ThresholdgroupsGet Get all Threshold Groups
 
-Downloads all Port ACLs from the system.
+Downloads all Threshold Groups from the system.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsGetRequest
+ @return ApiThresholdgroupsGetRequest
 */
-func (a *PortACLsAPIService) PortaclsGet(ctx context.Context) ApiPortaclsGetRequest {
-	return ApiPortaclsGetRequest{
+func (a *ThresholdGroupsAPIService) ThresholdgroupsGet(ctx context.Context) ApiThresholdgroupsGetRequest {
+	return ApiThresholdgroupsGetRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *PortACLsAPIService) PortaclsGetExecute(r ApiPortaclsGetRequest) (*http.Response, error) {
+func (a *ThresholdGroupsAPIService) ThresholdgroupsGetExecute(r ApiThresholdgroupsGetRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsGet")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdGroupsAPIService.ThresholdgroupsGet")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/portacls"
+	localVarPath := localBasePath + "/thresholdgroups"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.portAclName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "port_acl_name", r.portAclName, "form", "")
+	if r.thresholdGroupName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "threshold_group_name", r.thresholdGroupName, "form", "")
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
@@ -257,57 +257,57 @@ func (a *PortACLsAPIService) PortaclsGetExecute(r ApiPortaclsGetRequest) (*http.
 	return localVarHTTPResponse, nil
 }
 
-type ApiPortaclsPatchRequest struct {
+type ApiThresholdgroupsPatchRequest struct {
 	ctx context.Context
-	ApiService *PortACLsAPIService
+	ApiService *ThresholdGroupsAPIService
 	changesetName *string
-	portaclsPutRequest *PortaclsPutRequest
+	thresholdgroupsPutRequest *ThresholdgroupsPutRequest
 }
 
-func (r ApiPortaclsPatchRequest) ChangesetName(changesetName string) ApiPortaclsPatchRequest {
+func (r ApiThresholdgroupsPatchRequest) ChangesetName(changesetName string) ApiThresholdgroupsPatchRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiPortaclsPatchRequest) PortaclsPutRequest(portaclsPutRequest PortaclsPutRequest) ApiPortaclsPatchRequest {
-	r.portaclsPutRequest = &portaclsPutRequest
+func (r ApiThresholdgroupsPatchRequest) ThresholdgroupsPutRequest(thresholdgroupsPutRequest ThresholdgroupsPutRequest) ApiThresholdgroupsPatchRequest {
+	r.thresholdgroupsPutRequest = &thresholdgroupsPutRequest
 	return r
 }
 
-func (r ApiPortaclsPatchRequest) Execute() (*http.Response, error) {
-	return r.ApiService.PortaclsPatchExecute(r)
+func (r ApiThresholdgroupsPatchRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ThresholdgroupsPatchExecute(r)
 }
 
 /*
-PortaclsPatch Update Port ACL
+ThresholdgroupsPatch Update Threshold Group
 
-Update Port ACL into the system if changeset_name is empty, into a changeset if its name is provided.
+Update Threshold Group into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsPatchRequest
+ @return ApiThresholdgroupsPatchRequest
 */
-func (a *PortACLsAPIService) PortaclsPatch(ctx context.Context) ApiPortaclsPatchRequest {
-	return ApiPortaclsPatchRequest{
+func (a *ThresholdGroupsAPIService) ThresholdgroupsPatch(ctx context.Context) ApiThresholdgroupsPatchRequest {
+	return ApiThresholdgroupsPatchRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *PortACLsAPIService) PortaclsPatchExecute(r ApiPortaclsPatchRequest) (*http.Response, error) {
+func (a *ThresholdGroupsAPIService) ThresholdgroupsPatchExecute(r ApiThresholdgroupsPatchRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPatch
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsPatch")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdGroupsAPIService.ThresholdgroupsPatch")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/portacls"
+	localVarPath := localBasePath + "/thresholdgroups"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -334,7 +334,7 @@ func (a *PortACLsAPIService) PortaclsPatchExecute(r ApiPortaclsPatchRequest) (*h
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.portaclsPutRequest
+	localVarPostBody = r.thresholdgroupsPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -363,57 +363,57 @@ func (a *PortACLsAPIService) PortaclsPatchExecute(r ApiPortaclsPatchRequest) (*h
 	return localVarHTTPResponse, nil
 }
 
-type ApiPortaclsPutRequest struct {
+type ApiThresholdgroupsPutRequest struct {
 	ctx context.Context
-	ApiService *PortACLsAPIService
+	ApiService *ThresholdGroupsAPIService
 	changesetName *string
-	portaclsPutRequest *PortaclsPutRequest
+	thresholdgroupsPutRequest *ThresholdgroupsPutRequest
 }
 
-func (r ApiPortaclsPutRequest) ChangesetName(changesetName string) ApiPortaclsPutRequest {
+func (r ApiThresholdgroupsPutRequest) ChangesetName(changesetName string) ApiThresholdgroupsPutRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiPortaclsPutRequest) PortaclsPutRequest(portaclsPutRequest PortaclsPutRequest) ApiPortaclsPutRequest {
-	r.portaclsPutRequest = &portaclsPutRequest
+func (r ApiThresholdgroupsPutRequest) ThresholdgroupsPutRequest(thresholdgroupsPutRequest ThresholdgroupsPutRequest) ApiThresholdgroupsPutRequest {
+	r.thresholdgroupsPutRequest = &thresholdgroupsPutRequest
 	return r
 }
 
-func (r ApiPortaclsPutRequest) Execute() (*http.Response, error) {
-	return r.ApiService.PortaclsPutExecute(r)
+func (r ApiThresholdgroupsPutRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ThresholdgroupsPutExecute(r)
 }
 
 /*
-PortaclsPut Create Port ACL
+ThresholdgroupsPut Create Threshold Group
 
-Create Port ACL into the system if changeset_name is empty, into a changeset if its name is provided.
+Create Threshold Group into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsPutRequest
+ @return ApiThresholdgroupsPutRequest
 */
-func (a *PortACLsAPIService) PortaclsPut(ctx context.Context) ApiPortaclsPutRequest {
-	return ApiPortaclsPutRequest{
+func (a *ThresholdGroupsAPIService) ThresholdgroupsPut(ctx context.Context) ApiThresholdgroupsPutRequest {
+	return ApiThresholdgroupsPutRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *PortACLsAPIService) PortaclsPutExecute(r ApiPortaclsPutRequest) (*http.Response, error) {
+func (a *ThresholdGroupsAPIService) ThresholdgroupsPutExecute(r ApiThresholdgroupsPutRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsPut")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdGroupsAPIService.ThresholdgroupsPut")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/portacls"
+	localVarPath := localBasePath + "/thresholdgroups"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -440,7 +440,7 @@ func (a *PortACLsAPIService) PortaclsPutExecute(r ApiPortaclsPutRequest) (*http.
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.portaclsPutRequest
+	localVarPostBody = r.thresholdgroupsPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

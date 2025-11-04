@@ -20,77 +20,77 @@ import (
 )
 
 
-// PortACLsAPIService PortACLsAPI service
-type PortACLsAPIService service
+// GroupingRulesAPIService GroupingRulesAPI service
+type GroupingRulesAPIService service
 
-type ApiPortaclsDeleteRequest struct {
+type ApiGroupingrulesDeleteRequest struct {
 	ctx context.Context
-	ApiService *PortACLsAPIService
-	portAclName *[]string
+	ApiService *GroupingRulesAPIService
+	groupingRulesName *[]string
 	changesetName *string
 }
 
-func (r ApiPortaclsDeleteRequest) PortAclName(portAclName []string) ApiPortaclsDeleteRequest {
-	r.portAclName = &portAclName
+func (r ApiGroupingrulesDeleteRequest) GroupingRulesName(groupingRulesName []string) ApiGroupingrulesDeleteRequest {
+	r.groupingRulesName = &groupingRulesName
 	return r
 }
 
-func (r ApiPortaclsDeleteRequest) ChangesetName(changesetName string) ApiPortaclsDeleteRequest {
+func (r ApiGroupingrulesDeleteRequest) ChangesetName(changesetName string) ApiGroupingrulesDeleteRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiPortaclsDeleteRequest) Execute() (*http.Response, error) {
-	return r.ApiService.PortaclsDeleteExecute(r)
+func (r ApiGroupingrulesDeleteRequest) Execute() (*http.Response, error) {
+	return r.ApiService.GroupingrulesDeleteExecute(r)
 }
 
 /*
-PortaclsDelete Delete Port ACL
+GroupingrulesDelete Delete Grouping Rule
 
-Deletes an existing Port ACL from the system if changeset_name is empty, from a changeset if its name is provided.
+Deletes an existing Grouping Rule from the system if changeset_name is empty, from a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsDeleteRequest
+ @return ApiGroupingrulesDeleteRequest
 */
-func (a *PortACLsAPIService) PortaclsDelete(ctx context.Context) ApiPortaclsDeleteRequest {
-	return ApiPortaclsDeleteRequest{
+func (a *GroupingRulesAPIService) GroupingrulesDelete(ctx context.Context) ApiGroupingrulesDeleteRequest {
+	return ApiGroupingrulesDeleteRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *PortACLsAPIService) PortaclsDeleteExecute(r ApiPortaclsDeleteRequest) (*http.Response, error) {
+func (a *GroupingRulesAPIService) GroupingrulesDeleteExecute(r ApiGroupingrulesDeleteRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsDelete")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GroupingRulesAPIService.GroupingrulesDelete")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/portacls"
+	localVarPath := localBasePath + "/groupingrules"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.portAclName == nil {
-		return nil, reportError("portAclName is required and must be specified")
+	if r.groupingRulesName == nil {
+		return nil, reportError("groupingRulesName is required and must be specified")
 	}
 
 	{
-		t := *r.portAclName
+		t := *r.groupingRulesName
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "port_acl_name", s.Index(i).Interface(), "form", "multi")
+				parameterAddToHeaderOrQuery(localVarQueryParams, "grouping_rules_name", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "port_acl_name", t, "form", "multi")
+			parameterAddToHeaderOrQuery(localVarQueryParams, "grouping_rules_name", t, "form", "multi")
 		}
 	}
 	if r.changesetName != nil {
@@ -141,70 +141,70 @@ func (a *PortACLsAPIService) PortaclsDeleteExecute(r ApiPortaclsDeleteRequest) (
 	return localVarHTTPResponse, nil
 }
 
-type ApiPortaclsGetRequest struct {
+type ApiGroupingrulesGetRequest struct {
 	ctx context.Context
-	ApiService *PortACLsAPIService
-	portAclName *string
+	ApiService *GroupingRulesAPIService
+	groupingRulesName *string
 	includeData *bool
 	changesetName *string
 }
 
-func (r ApiPortaclsGetRequest) PortAclName(portAclName string) ApiPortaclsGetRequest {
-	r.portAclName = &portAclName
+func (r ApiGroupingrulesGetRequest) GroupingRulesName(groupingRulesName string) ApiGroupingrulesGetRequest {
+	r.groupingRulesName = &groupingRulesName
 	return r
 }
 
-func (r ApiPortaclsGetRequest) IncludeData(includeData bool) ApiPortaclsGetRequest {
+func (r ApiGroupingrulesGetRequest) IncludeData(includeData bool) ApiGroupingrulesGetRequest {
 	r.includeData = &includeData
 	return r
 }
 
-func (r ApiPortaclsGetRequest) ChangesetName(changesetName string) ApiPortaclsGetRequest {
+func (r ApiGroupingrulesGetRequest) ChangesetName(changesetName string) ApiGroupingrulesGetRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiPortaclsGetRequest) Execute() (*http.Response, error) {
-	return r.ApiService.PortaclsGetExecute(r)
+func (r ApiGroupingrulesGetRequest) Execute() (*http.Response, error) {
+	return r.ApiService.GroupingrulesGetExecute(r)
 }
 
 /*
-PortaclsGet Get all Port ACLs
+GroupingrulesGet Get all Grouping Rules
 
-Downloads all Port ACLs from the system.
+Downloads all Grouping Rules from the system.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsGetRequest
+ @return ApiGroupingrulesGetRequest
 */
-func (a *PortACLsAPIService) PortaclsGet(ctx context.Context) ApiPortaclsGetRequest {
-	return ApiPortaclsGetRequest{
+func (a *GroupingRulesAPIService) GroupingrulesGet(ctx context.Context) ApiGroupingrulesGetRequest {
+	return ApiGroupingrulesGetRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *PortACLsAPIService) PortaclsGetExecute(r ApiPortaclsGetRequest) (*http.Response, error) {
+func (a *GroupingRulesAPIService) GroupingrulesGetExecute(r ApiGroupingrulesGetRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsGet")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GroupingRulesAPIService.GroupingrulesGet")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/portacls"
+	localVarPath := localBasePath + "/groupingrules"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.portAclName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "port_acl_name", r.portAclName, "form", "")
+	if r.groupingRulesName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "grouping_rules_name", r.groupingRulesName, "form", "")
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
@@ -257,57 +257,57 @@ func (a *PortACLsAPIService) PortaclsGetExecute(r ApiPortaclsGetRequest) (*http.
 	return localVarHTTPResponse, nil
 }
 
-type ApiPortaclsPatchRequest struct {
+type ApiGroupingrulesPatchRequest struct {
 	ctx context.Context
-	ApiService *PortACLsAPIService
+	ApiService *GroupingRulesAPIService
 	changesetName *string
-	portaclsPutRequest *PortaclsPutRequest
+	groupingrulesPutRequest *GroupingrulesPutRequest
 }
 
-func (r ApiPortaclsPatchRequest) ChangesetName(changesetName string) ApiPortaclsPatchRequest {
+func (r ApiGroupingrulesPatchRequest) ChangesetName(changesetName string) ApiGroupingrulesPatchRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiPortaclsPatchRequest) PortaclsPutRequest(portaclsPutRequest PortaclsPutRequest) ApiPortaclsPatchRequest {
-	r.portaclsPutRequest = &portaclsPutRequest
+func (r ApiGroupingrulesPatchRequest) GroupingrulesPutRequest(groupingrulesPutRequest GroupingrulesPutRequest) ApiGroupingrulesPatchRequest {
+	r.groupingrulesPutRequest = &groupingrulesPutRequest
 	return r
 }
 
-func (r ApiPortaclsPatchRequest) Execute() (*http.Response, error) {
-	return r.ApiService.PortaclsPatchExecute(r)
+func (r ApiGroupingrulesPatchRequest) Execute() (*http.Response, error) {
+	return r.ApiService.GroupingrulesPatchExecute(r)
 }
 
 /*
-PortaclsPatch Update Port ACL
+GroupingrulesPatch Update Grouping Rule
 
-Update Port ACL into the system if changeset_name is empty, into a changeset if its name is provided.
+Update Grouping Rule into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsPatchRequest
+ @return ApiGroupingrulesPatchRequest
 */
-func (a *PortACLsAPIService) PortaclsPatch(ctx context.Context) ApiPortaclsPatchRequest {
-	return ApiPortaclsPatchRequest{
+func (a *GroupingRulesAPIService) GroupingrulesPatch(ctx context.Context) ApiGroupingrulesPatchRequest {
+	return ApiGroupingrulesPatchRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *PortACLsAPIService) PortaclsPatchExecute(r ApiPortaclsPatchRequest) (*http.Response, error) {
+func (a *GroupingRulesAPIService) GroupingrulesPatchExecute(r ApiGroupingrulesPatchRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPatch
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsPatch")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GroupingRulesAPIService.GroupingrulesPatch")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/portacls"
+	localVarPath := localBasePath + "/groupingrules"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -334,7 +334,7 @@ func (a *PortACLsAPIService) PortaclsPatchExecute(r ApiPortaclsPatchRequest) (*h
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.portaclsPutRequest
+	localVarPostBody = r.groupingrulesPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -363,57 +363,57 @@ func (a *PortACLsAPIService) PortaclsPatchExecute(r ApiPortaclsPatchRequest) (*h
 	return localVarHTTPResponse, nil
 }
 
-type ApiPortaclsPutRequest struct {
+type ApiGroupingrulesPutRequest struct {
 	ctx context.Context
-	ApiService *PortACLsAPIService
+	ApiService *GroupingRulesAPIService
 	changesetName *string
-	portaclsPutRequest *PortaclsPutRequest
+	groupingrulesPutRequest *GroupingrulesPutRequest
 }
 
-func (r ApiPortaclsPutRequest) ChangesetName(changesetName string) ApiPortaclsPutRequest {
+func (r ApiGroupingrulesPutRequest) ChangesetName(changesetName string) ApiGroupingrulesPutRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiPortaclsPutRequest) PortaclsPutRequest(portaclsPutRequest PortaclsPutRequest) ApiPortaclsPutRequest {
-	r.portaclsPutRequest = &portaclsPutRequest
+func (r ApiGroupingrulesPutRequest) GroupingrulesPutRequest(groupingrulesPutRequest GroupingrulesPutRequest) ApiGroupingrulesPutRequest {
+	r.groupingrulesPutRequest = &groupingrulesPutRequest
 	return r
 }
 
-func (r ApiPortaclsPutRequest) Execute() (*http.Response, error) {
-	return r.ApiService.PortaclsPutExecute(r)
+func (r ApiGroupingrulesPutRequest) Execute() (*http.Response, error) {
+	return r.ApiService.GroupingrulesPutExecute(r)
 }
 
 /*
-PortaclsPut Create Port ACL
+GroupingrulesPut Create Grouping Rule
 
-Create Port ACL into the system if changeset_name is empty, into a changeset if its name is provided.
+Create Grouping Rule into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsPutRequest
+ @return ApiGroupingrulesPutRequest
 */
-func (a *PortACLsAPIService) PortaclsPut(ctx context.Context) ApiPortaclsPutRequest {
-	return ApiPortaclsPutRequest{
+func (a *GroupingRulesAPIService) GroupingrulesPut(ctx context.Context) ApiGroupingrulesPutRequest {
+	return ApiGroupingrulesPutRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *PortACLsAPIService) PortaclsPutExecute(r ApiPortaclsPutRequest) (*http.Response, error) {
+func (a *GroupingRulesAPIService) GroupingrulesPutExecute(r ApiGroupingrulesPutRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsPut")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GroupingRulesAPIService.GroupingrulesPut")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/portacls"
+	localVarPath := localBasePath + "/groupingrules"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -440,7 +440,7 @@ func (a *PortACLsAPIService) PortaclsPutExecute(r ApiPortaclsPutRequest) (*http.
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.portaclsPutRequest
+	localVarPostBody = r.groupingrulesPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
