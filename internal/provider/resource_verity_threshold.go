@@ -50,14 +50,20 @@ func (r verityThresholdRulesModel) GetIndex() types.Int64 {
 }
 
 type verityThresholdResourceModel struct {
-	Name          types.String                `tfsdk:"name"`
-	Enable        types.Bool                  `tfsdk:"enable"`
-	Type          types.String                `tfsdk:"type"`
-	Operation     types.String                `tfsdk:"operation"`
-	Severity      types.String                `tfsdk:"severity"`
-	For           types.String                `tfsdk:"for"`
-	KeepFiringFor types.String                `tfsdk:"keep_firing_for"`
-	Rules         []verityThresholdRulesModel `tfsdk:"rules"`
+	Name                    types.String                `tfsdk:"name"`
+	Enable                  types.Bool                  `tfsdk:"enable"`
+	Type                    types.String                `tfsdk:"type"`
+	Operation               types.String                `tfsdk:"operation"`
+	Severity                types.String                `tfsdk:"severity"`
+	For                     types.String                `tfsdk:"for"`
+	KeepFiringFor           types.String                `tfsdk:"keep_firing_for"`
+	EscalationMetric        types.String                `tfsdk:"escalation_metric"`
+	EscalationOperation     types.String                `tfsdk:"escalation_operation"`
+	CriticalEscalationValue types.String                `tfsdk:"critical_escalation_value"`
+	ErrorEscalationValue    types.String                `tfsdk:"error_escalation_value"`
+	WarningEscalationValue  types.String                `tfsdk:"warning_escalation_value"`
+	NoticeEscalationValue   types.String                `tfsdk:"notice_escalation_value"`
+	Rules                   []verityThresholdRulesModel `tfsdk:"rules"`
 }
 
 func (r *verityThresholdResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -117,6 +123,30 @@ func (r *verityThresholdResource) Schema(_ context.Context, _ resource.SchemaReq
 			},
 			"keep_firing_for": schema.StringAttribute{
 				Description: "Duration in minutes to keep firing the alarm after the threshold is no longer met.",
+				Optional:    true,
+			},
+			"escalation_metric": schema.StringAttribute{
+				Description: "Metric threshold is on.",
+				Optional:    true,
+			},
+			"escalation_operation": schema.StringAttribute{
+				Description: "How to compare the metric to the value. Valid values: 'gt', 'le', 'ge', 'eq', 'lt'.",
+				Optional:    true,
+			},
+			"critical_escalation_value": schema.StringAttribute{
+				Description: "Value to compare the metric to for critical escalation.",
+				Optional:    true,
+			},
+			"error_escalation_value": schema.StringAttribute{
+				Description: "Value to compare the metric to for error escalation.",
+				Optional:    true,
+			},
+			"warning_escalation_value": schema.StringAttribute{
+				Description: "Value to compare the metric to for warning escalation.",
+				Optional:    true,
+			},
+			"notice_escalation_value": schema.StringAttribute{
+				Description: "Value to compare the metric to for notice escalation.",
 				Optional:    true,
 			},
 		},
@@ -192,6 +222,12 @@ func (r *verityThresholdResource) Create(ctx context.Context, req resource.Creat
 		{FieldName: "Severity", APIField: &thresholdProps.Severity, TFValue: plan.Severity},
 		{FieldName: "For", APIField: &thresholdProps.For, TFValue: plan.For},
 		{FieldName: "KeepFiringFor", APIField: &thresholdProps.KeepFiringFor, TFValue: plan.KeepFiringFor},
+		{FieldName: "EscalationMetric", APIField: &thresholdProps.EscalationMetric, TFValue: plan.EscalationMetric},
+		{FieldName: "EscalationOperation", APIField: &thresholdProps.EscalationOperation, TFValue: plan.EscalationOperation},
+		{FieldName: "CriticalEscalationValue", APIField: &thresholdProps.CriticalEscalationValue, TFValue: plan.CriticalEscalationValue},
+		{FieldName: "ErrorEscalationValue", APIField: &thresholdProps.ErrorEscalationValue, TFValue: plan.ErrorEscalationValue},
+		{FieldName: "WarningEscalationValue", APIField: &thresholdProps.WarningEscalationValue, TFValue: plan.WarningEscalationValue},
+		{FieldName: "NoticeEscalationValue", APIField: &thresholdProps.NoticeEscalationValue, TFValue: plan.NoticeEscalationValue},
 	})
 
 	// Set boolean fields
@@ -331,11 +367,17 @@ func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadReq
 
 	// Map string fields
 	stringFieldMappings := map[string]*types.String{
-		"type":            &state.Type,
-		"operation":       &state.Operation,
-		"severity":        &state.Severity,
-		"for":             &state.For,
-		"keep_firing_for": &state.KeepFiringFor,
+		"type":                      &state.Type,
+		"operation":                 &state.Operation,
+		"severity":                  &state.Severity,
+		"for":                       &state.For,
+		"keep_firing_for":           &state.KeepFiringFor,
+		"escalation_metric":         &state.EscalationMetric,
+		"escalation_operation":      &state.EscalationOperation,
+		"critical_escalation_value": &state.CriticalEscalationValue,
+		"error_escalation_value":    &state.ErrorEscalationValue,
+		"warning_escalation_value":  &state.WarningEscalationValue,
+		"notice_escalation_value":   &state.NoticeEscalationValue,
 	}
 
 	for apiKey, stateField := range stringFieldMappings {
@@ -416,6 +458,12 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 	utils.CompareAndSetStringField(plan.Severity, state.Severity, func(v *string) { thresholdProps.Severity = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.For, state.For, func(v *string) { thresholdProps.For = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.KeepFiringFor, state.KeepFiringFor, func(v *string) { thresholdProps.KeepFiringFor = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.EscalationMetric, state.EscalationMetric, func(v *string) { thresholdProps.EscalationMetric = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.EscalationOperation, state.EscalationOperation, func(v *string) { thresholdProps.EscalationOperation = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CriticalEscalationValue, state.CriticalEscalationValue, func(v *string) { thresholdProps.CriticalEscalationValue = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ErrorEscalationValue, state.ErrorEscalationValue, func(v *string) { thresholdProps.ErrorEscalationValue = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.WarningEscalationValue, state.WarningEscalationValue, func(v *string) { thresholdProps.WarningEscalationValue = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.NoticeEscalationValue, state.NoticeEscalationValue, func(v *string) { thresholdProps.NoticeEscalationValue = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { thresholdProps.Enable = v }, &hasChanges)

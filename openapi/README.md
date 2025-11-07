@@ -375,7 +375,6 @@ Class | Method | HTTP request | Description
  - [SwitchpointsPutRequestSwitchpointValueChildrenInner](docs/SwitchpointsPutRequestSwitchpointValueChildrenInner.md)
  - [SwitchpointsPutRequestSwitchpointValueEthsInner](docs/SwitchpointsPutRequestSwitchpointValueEthsInner.md)
  - [SwitchpointsPutRequestSwitchpointValueObjectProperties](docs/SwitchpointsPutRequestSwitchpointValueObjectProperties.md)
- - [SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner](docs/SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner.md)
  - [SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner](docs/SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner.md)
  - [SwitchpointsUpgradePatchRequest](docs/SwitchpointsUpgradePatchRequest.md)
  - [TenantsPutRequest](docs/TenantsPutRequest.md)

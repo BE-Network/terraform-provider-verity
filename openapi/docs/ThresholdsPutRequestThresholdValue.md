@@ -11,6 +11,12 @@ Name | Type | Description | Notes
 **Severity** | Pointer to **string** | Severity of the alarm when the threshold is met | [optional] [default to "notice"]
 **For** | Pointer to **string** | Duration in minutes the threshold must be met before firing the alarm | [optional] [default to "5"]
 **KeepFiringFor** | Pointer to **string** | Duration in minutes to keep firing the alarm after the threshold is no longer met | [optional] [default to "5"]
+**EscalationMetric** | Pointer to **string** | Metric threshold is on | [optional] [default to ""]
+**EscalationOperation** | Pointer to **string** | How to compare the metric to the value | [optional] [default to "eq"]
+**CriticalEscalationValue** | Pointer to **string** | Value to compare the metric to | [optional] [default to ""]
+**ErrorEscalationValue** | Pointer to **string** | Value to compare the metric to | [optional] [default to ""]
+**WarningEscalationValue** | Pointer to **string** | Value to compare the metric to | [optional] [default to ""]
+**NoticeEscalationValue** | Pointer to **string** | Value to compare the metric to | [optional] [default to ""]
 **Rules** | Pointer to [**[]ThresholdsPutRequestThresholdValueRulesInner**](ThresholdsPutRequestThresholdValueRulesInner.md) |  | [optional] 
 
 ## Methods
@@ -206,6 +212,156 @@ SetKeepFiringFor sets KeepFiringFor field to given value.
 `func (o *ThresholdsPutRequestThresholdValue) HasKeepFiringFor() bool`
 
 HasKeepFiringFor returns a boolean if a field has been set.
+
+### GetEscalationMetric
+
+`func (o *ThresholdsPutRequestThresholdValue) GetEscalationMetric() string`
+
+GetEscalationMetric returns the EscalationMetric field if non-nil, zero value otherwise.
+
+### GetEscalationMetricOk
+
+`func (o *ThresholdsPutRequestThresholdValue) GetEscalationMetricOk() (*string, bool)`
+
+GetEscalationMetricOk returns a tuple with the EscalationMetric field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEscalationMetric
+
+`func (o *ThresholdsPutRequestThresholdValue) SetEscalationMetric(v string)`
+
+SetEscalationMetric sets EscalationMetric field to given value.
+
+### HasEscalationMetric
+
+`func (o *ThresholdsPutRequestThresholdValue) HasEscalationMetric() bool`
+
+HasEscalationMetric returns a boolean if a field has been set.
+
+### GetEscalationOperation
+
+`func (o *ThresholdsPutRequestThresholdValue) GetEscalationOperation() string`
+
+GetEscalationOperation returns the EscalationOperation field if non-nil, zero value otherwise.
+
+### GetEscalationOperationOk
+
+`func (o *ThresholdsPutRequestThresholdValue) GetEscalationOperationOk() (*string, bool)`
+
+GetEscalationOperationOk returns a tuple with the EscalationOperation field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEscalationOperation
+
+`func (o *ThresholdsPutRequestThresholdValue) SetEscalationOperation(v string)`
+
+SetEscalationOperation sets EscalationOperation field to given value.
+
+### HasEscalationOperation
+
+`func (o *ThresholdsPutRequestThresholdValue) HasEscalationOperation() bool`
+
+HasEscalationOperation returns a boolean if a field has been set.
+
+### GetCriticalEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) GetCriticalEscalationValue() string`
+
+GetCriticalEscalationValue returns the CriticalEscalationValue field if non-nil, zero value otherwise.
+
+### GetCriticalEscalationValueOk
+
+`func (o *ThresholdsPutRequestThresholdValue) GetCriticalEscalationValueOk() (*string, bool)`
+
+GetCriticalEscalationValueOk returns a tuple with the CriticalEscalationValue field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCriticalEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) SetCriticalEscalationValue(v string)`
+
+SetCriticalEscalationValue sets CriticalEscalationValue field to given value.
+
+### HasCriticalEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) HasCriticalEscalationValue() bool`
+
+HasCriticalEscalationValue returns a boolean if a field has been set.
+
+### GetErrorEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) GetErrorEscalationValue() string`
+
+GetErrorEscalationValue returns the ErrorEscalationValue field if non-nil, zero value otherwise.
+
+### GetErrorEscalationValueOk
+
+`func (o *ThresholdsPutRequestThresholdValue) GetErrorEscalationValueOk() (*string, bool)`
+
+GetErrorEscalationValueOk returns a tuple with the ErrorEscalationValue field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetErrorEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) SetErrorEscalationValue(v string)`
+
+SetErrorEscalationValue sets ErrorEscalationValue field to given value.
+
+### HasErrorEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) HasErrorEscalationValue() bool`
+
+HasErrorEscalationValue returns a boolean if a field has been set.
+
+### GetWarningEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) GetWarningEscalationValue() string`
+
+GetWarningEscalationValue returns the WarningEscalationValue field if non-nil, zero value otherwise.
+
+### GetWarningEscalationValueOk
+
+`func (o *ThresholdsPutRequestThresholdValue) GetWarningEscalationValueOk() (*string, bool)`
+
+GetWarningEscalationValueOk returns a tuple with the WarningEscalationValue field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetWarningEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) SetWarningEscalationValue(v string)`
+
+SetWarningEscalationValue sets WarningEscalationValue field to given value.
+
+### HasWarningEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) HasWarningEscalationValue() bool`
+
+HasWarningEscalationValue returns a boolean if a field has been set.
+
+### GetNoticeEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) GetNoticeEscalationValue() string`
+
+GetNoticeEscalationValue returns the NoticeEscalationValue field if non-nil, zero value otherwise.
+
+### GetNoticeEscalationValueOk
+
+`func (o *ThresholdsPutRequestThresholdValue) GetNoticeEscalationValueOk() (*string, bool)`
+
+GetNoticeEscalationValueOk returns a tuple with the NoticeEscalationValue field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNoticeEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) SetNoticeEscalationValue(v string)`
+
+SetNoticeEscalationValue sets NoticeEscalationValue field to given value.
+
+### HasNoticeEscalationValue
+
+`func (o *ThresholdsPutRequestThresholdValue) HasNoticeEscalationValue() bool`
+
+HasNoticeEscalationValue returns a boolean if a field has been set.
 
 ### GetRules
 

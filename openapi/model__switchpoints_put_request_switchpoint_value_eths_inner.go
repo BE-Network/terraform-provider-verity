@@ -23,6 +23,12 @@ type SwitchpointsPutRequestSwitchpointValueEthsInner struct {
 	Breakout *string `json:"breakout,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int32 `json:"index,omitempty"`
+	// Icon of this Eth Port
+	EthNumIcon *string `json:"eth_num_icon,omitempty"`
+	// Label of this Eth Port
+	EthNumLabel *string `json:"eth_num_label,omitempty"`
+	// Enable port. 
+	Enable *bool `json:"enable,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValueEthsInner instantiates a new SwitchpointsPutRequestSwitchpointValueEthsInner object
@@ -33,6 +39,12 @@ func NewSwitchpointsPutRequestSwitchpointValueEthsInner() *SwitchpointsPutReques
 	this := SwitchpointsPutRequestSwitchpointValueEthsInner{}
 	var breakout string = ""
 	this.Breakout = &breakout
+	var ethNumIcon string = "empty"
+	this.EthNumIcon = &ethNumIcon
+	var ethNumLabel string = ""
+	this.EthNumLabel = &ethNumLabel
+	var enable bool = true
+	this.Enable = &enable
 	return &this
 }
 
@@ -43,6 +55,12 @@ func NewSwitchpointsPutRequestSwitchpointValueEthsInnerWithDefaults() *Switchpoi
 	this := SwitchpointsPutRequestSwitchpointValueEthsInner{}
 	var breakout string = ""
 	this.Breakout = &breakout
+	var ethNumIcon string = "empty"
+	this.EthNumIcon = &ethNumIcon
+	var ethNumLabel string = ""
+	this.EthNumLabel = &ethNumLabel
+	var enable bool = true
+	this.Enable = &enable
 	return &this
 }
 
@@ -110,6 +128,102 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int32) {
 	o.Index = &v
 }
 
+// GetEthNumIcon returns the EthNumIcon field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumIcon() string {
+	if o == nil || IsNil(o.EthNumIcon) {
+		var ret string
+		return ret
+	}
+	return *o.EthNumIcon
+}
+
+// GetEthNumIconOk returns a tuple with the EthNumIcon field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumIconOk() (*string, bool) {
+	if o == nil || IsNil(o.EthNumIcon) {
+		return nil, false
+	}
+	return o.EthNumIcon, true
+}
+
+// HasEthNumIcon returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEthNumIcon() bool {
+	if o != nil && !IsNil(o.EthNumIcon) {
+		return true
+	}
+
+	return false
+}
+
+// SetEthNumIcon gets a reference to the given string and assigns it to the EthNumIcon field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEthNumIcon(v string) {
+	o.EthNumIcon = &v
+}
+
+// GetEthNumLabel returns the EthNumLabel field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumLabel() string {
+	if o == nil || IsNil(o.EthNumLabel) {
+		var ret string
+		return ret
+	}
+	return *o.EthNumLabel
+}
+
+// GetEthNumLabelOk returns a tuple with the EthNumLabel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumLabelOk() (*string, bool) {
+	if o == nil || IsNil(o.EthNumLabel) {
+		return nil, false
+	}
+	return o.EthNumLabel, true
+}
+
+// HasEthNumLabel returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEthNumLabel() bool {
+	if o != nil && !IsNil(o.EthNumLabel) {
+		return true
+	}
+
+	return false
+}
+
+// SetEthNumLabel gets a reference to the given string and assigns it to the EthNumLabel field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEthNumLabel(v string) {
+	o.EthNumLabel = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEnable(v bool) {
+	o.Enable = &v
+}
+
 func (o SwitchpointsPutRequestSwitchpointValueEthsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -125,6 +239,15 @@ func (o SwitchpointsPutRequestSwitchpointValueEthsInner) ToMap() (map[string]int
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.EthNumIcon) {
+		toSerialize["eth_num_icon"] = o.EthNumIcon
+	}
+	if !IsNil(o.EthNumLabel) {
+		toSerialize["eth_num_label"] = o.EthNumLabel
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
 	}
 	return toSerialize, nil
 }

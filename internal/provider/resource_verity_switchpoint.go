@@ -43,7 +43,6 @@ type veritySwitchpointResourceModel struct {
 	ConnectedBundleRefType           types.String                             `tfsdk:"connected_bundle_ref_type_"`
 	ReadOnlyMode                     types.Bool                               `tfsdk:"read_only_mode"`
 	Locked                           types.Bool                               `tfsdk:"locked"`
-	DisabledPorts                    types.String                             `tfsdk:"disabled_ports"`
 	OutOfBandManagement              types.Bool                               `tfsdk:"out_of_band_management"`
 	Type                             types.String                             `tfsdk:"type"`
 	SpinePlane                       types.String                             `tfsdk:"spine_plane"`
@@ -101,33 +100,25 @@ func (tm veritySwitchpointTrafficMirrorModel) GetIndex() types.Int64 {
 }
 
 type veritySwitchpointEthModel struct {
-	Breakout types.String `tfsdk:"breakout"`
-	Index    types.Int64  `tfsdk:"index"`
+	Breakout    types.String `tfsdk:"breakout"`
+	Index       types.Int64  `tfsdk:"index"`
+	EthNumIcon  types.String `tfsdk:"eth_num_icon"`
+	EthNumLabel types.String `tfsdk:"eth_num_label"`
+	Enable      types.Bool   `tfsdk:"enable"`
 }
 
 func (e veritySwitchpointEthModel) GetIndex() types.Int64 {
 	return e.Index
 }
 
-type veritySwitchpointObjectPropertiesEthModel struct {
-	EthNumIcon  types.String `tfsdk:"eth_num_icon"`
-	EthNumLabel types.String `tfsdk:"eth_num_label"`
-	Index       types.Int64  `tfsdk:"index"`
-}
-
-func (ope veritySwitchpointObjectPropertiesEthModel) GetIndex() types.Int64 {
-	return ope.Index
-}
-
 type veritySwitchpointObjectPropertiesModel struct {
-	UserNotes                     types.String                                `tfsdk:"user_notes"`
-	ExpectedParentEndpoint        types.String                                `tfsdk:"expected_parent_endpoint"`
-	ExpectedParentEndpointRefType types.String                                `tfsdk:"expected_parent_endpoint_ref_type_"`
-	NumberOfMultipoints           types.Int64                                 `tfsdk:"number_of_multipoints"`
-	Aggregate                     types.Bool                                  `tfsdk:"aggregate"`
-	IsHost                        types.Bool                                  `tfsdk:"is_host"`
-	DrawAsEdgeDevice              types.Bool                                  `tfsdk:"draw_as_edge_device"`
-	Eths                          []veritySwitchpointObjectPropertiesEthModel `tfsdk:"eths"`
+	UserNotes                     types.String `tfsdk:"user_notes"`
+	ExpectedParentEndpoint        types.String `tfsdk:"expected_parent_endpoint"`
+	ExpectedParentEndpointRefType types.String `tfsdk:"expected_parent_endpoint_ref_type_"`
+	NumberOfMultipoints           types.Int64  `tfsdk:"number_of_multipoints"`
+	Aggregate                     types.Bool   `tfsdk:"aggregate"`
+	IsHost                        types.Bool   `tfsdk:"is_host"`
+	DrawAsEdgeDevice              types.Bool   `tfsdk:"draw_as_edge_device"`
 }
 
 func (r *veritySwitchpointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -187,10 +178,6 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"locked": schema.BoolAttribute{
 				Description: "Permission lock",
-				Optional:    true,
-			},
-			"disabled_ports": schema.StringAttribute{
-				Description: "Disabled Ports - comma separated list of ports to disable",
 				Optional:    true,
 			},
 			"out_of_band_management": schema.BoolAttribute{
@@ -343,6 +330,18 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 							Description: "The index identifying the object",
 							Optional:    true,
 						},
+						"eth_num_icon": schema.StringAttribute{
+							Description: "Icon of this Eth Port",
+							Optional:    true,
+						},
+						"eth_num_label": schema.StringAttribute{
+							Description: "Label of this Eth Port",
+							Optional:    true,
+						},
+						"enable": schema.BoolAttribute{
+							Description: "Enable port",
+							Optional:    true,
+						},
 					},
 				},
 			},
@@ -377,27 +376,6 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						"draw_as_edge_device": schema.BoolAttribute{
 							Description: "Turn on to display the switch as an edge device instead of as a switch",
 							Optional:    true,
-						},
-					},
-					Blocks: map[string]schema.Block{
-						"eths": schema.ListNestedBlock{
-							Description: "Ethernet port properties within object_properties",
-							NestedObject: schema.NestedBlockObject{
-								Attributes: map[string]schema.Attribute{
-									"eth_num_icon": schema.StringAttribute{
-										Description: "Icon of this Eth Port",
-										Optional:    true,
-									},
-									"eth_num_label": schema.StringAttribute{
-										Description: "Label of this Eth Port",
-										Optional:    true,
-									},
-									"index": schema.Int64Attribute{
-										Description: "The index identifying the object",
-										Optional:    true,
-									},
-								},
-							},
 						},
 					},
 				},
@@ -463,7 +441,6 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "DeviceSerialNumber", APIField: &spProps.DeviceSerialNumber, TFValue: plan.DeviceSerialNumber},
 		{FieldName: "ConnectedBundle", APIField: &spProps.ConnectedBundle, TFValue: plan.ConnectedBundle},
 		{FieldName: "ConnectedBundleRefType", APIField: &spProps.ConnectedBundleRefType, TFValue: plan.ConnectedBundleRefType},
-		{FieldName: "DisabledPorts", APIField: &spProps.DisabledPorts, TFValue: plan.DisabledPorts},
 		{FieldName: "Type", APIField: &spProps.Type, TFValue: plan.Type},
 		{FieldName: "SpinePlane", APIField: &spProps.SpinePlane, TFValue: plan.SpinePlane},
 		{FieldName: "SpinePlaneRefType", APIField: &spProps.SpinePlaneRefType, TFValue: plan.SpinePlaneRefType},
@@ -530,24 +507,6 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 			objProps.DrawAsEdgeDevice = openapi.PtrBool(op.DrawAsEdgeDevice.ValueBool())
 		} else {
 			objProps.DrawAsEdgeDevice = nil
-		}
-
-		if len(op.Eths) > 0 {
-			ethsSlice := make([]openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner, len(op.Eths))
-			for i, eth := range op.Eths {
-				ethItem := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{}
-				if !eth.Index.IsNull() {
-					ethItem.Index = openapi.PtrInt32(int32(eth.Index.ValueInt64()))
-				}
-				if !eth.EthNumIcon.IsNull() {
-					ethItem.EthNumIcon = openapi.PtrString(eth.EthNumIcon.ValueString())
-				}
-				if !eth.EthNumLabel.IsNull() {
-					ethItem.EthNumLabel = openapi.PtrString(eth.EthNumLabel.ValueString())
-				}
-				ethsSlice[i] = ethItem
-			}
-			objProps.Eths = ethsSlice
 		}
 
 		spProps.ObjectProperties = &objProps
@@ -637,6 +596,13 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Breakout", APIField: &ethItem.Breakout, TFValue: eth.Breakout},
+				{FieldName: "EthNumIcon", APIField: &ethItem.EthNumIcon, TFValue: eth.EthNumIcon},
+				{FieldName: "EthNumLabel", APIField: &ethItem.EthNumLabel, TFValue: eth.EthNumLabel},
+			})
+
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enable", APIField: &ethItem.Enable, TFValue: eth.Enable},
 			})
 
 			// Handle int64 fields
@@ -853,7 +819,6 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { spProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DeviceSerialNumber, state.DeviceSerialNumber, func(v *string) { spProps.DeviceSerialNumber = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.DisabledPorts, state.DisabledPorts, func(v *string) { spProps.DisabledPorts = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { spProps.Type = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Rack, state.Rack, func(v *string) { spProps.Rack = v }, &hasChanges)
 
@@ -1237,6 +1202,13 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Breakout", APIField: &eth.Breakout, TFValue: planItem.Breakout},
+					{FieldName: "EthNumIcon", APIField: &eth.EthNumIcon, TFValue: planItem.EthNumIcon},
+					{FieldName: "EthNumLabel", APIField: &eth.EthNumLabel, TFValue: planItem.EthNumLabel},
+				})
+
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enable", APIField: &eth.Enable, TFValue: planItem.Enable},
 				})
 
 				// Handle int64 fields
@@ -1252,6 +1224,11 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.Breakout, stateItem.Breakout, func(v *string) { eth.Breakout = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.EthNumIcon, stateItem.EthNumIcon, func(v *string) { eth.EthNumIcon = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.EthNumLabel, stateItem.EthNumLabel, func(v *string) { eth.EthNumLabel = v }, &fieldChanged)
+
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { eth.Enable = v }, &fieldChanged)
 
 				// Handle index field change
 				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { eth.Index = v }, &fieldChanged)
@@ -1351,55 +1328,6 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			if !planOP.DrawAsEdgeDevice.IsNull() {
 				objProps.DrawAsEdgeDevice = openapi.PtrBool(planOP.DrawAsEdgeDevice.ValueBool())
 			}
-			objectPropertiesChanged = true
-		}
-
-		// Handle object_properties.eths
-		var stateEths []veritySwitchpointObjectPropertiesEthModel
-		if stateOP != nil {
-			stateEths = stateOP.Eths
-		}
-
-		changedEths, ethsChanged := utils.ProcessIndexedArrayUpdates(planOP.Eths, stateEths,
-			utils.IndexedItemHandler[veritySwitchpointObjectPropertiesEthModel, openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner]{
-				CreateNew: func(planItem veritySwitchpointObjectPropertiesEthModel) openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner {
-					eth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{}
-
-					// Handle string fields
-					utils.SetStringFields([]utils.StringFieldMapping{
-						{FieldName: "EthNumIcon", APIField: &eth.EthNumIcon, TFValue: planItem.EthNumIcon},
-						{FieldName: "EthNumLabel", APIField: &eth.EthNumLabel, TFValue: planItem.EthNumLabel},
-					})
-
-					// Handle int64 fields
-					utils.SetInt64Fields([]utils.Int64FieldMapping{
-						{FieldName: "Index", APIField: &eth.Index, TFValue: planItem.Index},
-					})
-
-					return eth
-				},
-				UpdateExisting: func(planItem veritySwitchpointObjectPropertiesEthModel, stateItem veritySwitchpointObjectPropertiesEthModel) (openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner, bool) {
-					eth := openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{}
-					fieldChanged := false
-
-					// Handle string field changes
-					utils.CompareAndSetStringField(planItem.EthNumIcon, stateItem.EthNumIcon, func(v *string) { eth.EthNumIcon = v }, &fieldChanged)
-					utils.CompareAndSetStringField(planItem.EthNumLabel, stateItem.EthNumLabel, func(v *string) { eth.EthNumLabel = v }, &fieldChanged)
-
-					// Handle index field change
-					utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { eth.Index = v }, &fieldChanged)
-
-					return eth, fieldChanged
-				},
-				CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner {
-					return openapi.SwitchpointsPutRequestSwitchpointValueObjectPropertiesEthsInner{
-						Index: openapi.PtrInt32(int32(index)),
-					}
-				},
-			})
-
-		if ethsChanged {
-			objProps.Eths = changedEths
 			objectPropertiesChanged = true
 		}
 	}
@@ -1502,7 +1430,6 @@ func (r *veritySwitchpointResource) populateSwitchpointState(ctx context.Context
 	state.DeviceSerialNumber = utils.MapStringFromAPI(switchpointData["device_serial_number"])
 	state.ConnectedBundle = utils.MapStringFromAPI(switchpointData["connected_bundle"])
 	state.ConnectedBundleRefType = utils.MapStringFromAPI(switchpointData["connected_bundle_ref_type_"])
-	state.DisabledPorts = utils.MapStringFromAPI(switchpointData["disabled_ports"])
 	state.Type = utils.MapStringFromAPI(switchpointData["type"])
 	state.SpinePlane = utils.MapStringFromAPI(switchpointData["spine_plane"])
 	state.SpinePlaneRefType = utils.MapStringFromAPI(switchpointData["spine_plane_ref_type_"])
@@ -1522,26 +1449,6 @@ func (r *veritySwitchpointResource) populateSwitchpointState(ctx context.Context
 			Aggregate:                     utils.MapBoolFromAPI(objProps["aggregate"]),
 			IsHost:                        utils.MapBoolFromAPI(objProps["is_host"]),
 			DrawAsEdgeDevice:              utils.MapBoolFromAPI(objProps["draw_as_edge_device"]),
-		}
-
-		// Handle nested eths array
-		if ethsArray, ok := objProps["eths"].([]interface{}); ok && len(ethsArray) > 0 {
-			var eths []veritySwitchpointObjectPropertiesEthModel
-			for _, e := range ethsArray {
-				eth, ok := e.(map[string]interface{})
-				if !ok {
-					continue
-				}
-				ethModel := veritySwitchpointObjectPropertiesEthModel{
-					EthNumIcon:  utils.MapStringFromAPI(eth["eth_num_icon"]),
-					EthNumLabel: utils.MapStringFromAPI(eth["eth_num_label"]),
-					Index:       utils.MapInt64FromAPI(eth["index"]),
-				}
-				eths = append(eths, ethModel)
-			}
-			op.Eths = eths
-		} else {
-			op.Eths = nil
 		}
 
 		state.ObjectProperties = []veritySwitchpointObjectPropertiesModel{op}
@@ -1623,8 +1530,11 @@ func (r *veritySwitchpointResource) populateSwitchpointState(ctx context.Context
 				continue
 			}
 			ethModel := veritySwitchpointEthModel{
-				Breakout: utils.MapStringFromAPI(eth["breakout"]),
-				Index:    utils.MapInt64FromAPI(eth["index"]),
+				Breakout:    utils.MapStringFromAPI(eth["breakout"]),
+				Index:       utils.MapInt64FromAPI(eth["index"]),
+				EthNumIcon:  utils.MapStringFromAPI(eth["eth_num_icon"]),
+				EthNumLabel: utils.MapStringFromAPI(eth["eth_num_label"]),
+				Enable:      utils.MapBoolFromAPI(eth["enable"]),
 			}
 			eths = append(eths, ethModel)
 		}

@@ -33,8 +33,6 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	ReadOnlyMode *bool `json:"read_only_mode,omitempty"`
 	// Permission lock
 	Locked *bool `json:"locked,omitempty"`
-	// Disabled Ports It's a comma separated list of ports to disable.
-	DisabledPorts *string `json:"disabled_ports,omitempty"`
 	// For Switch Endpoints. Denotes a Switch is managed out of band via the management port
 	OutOfBandManagement *bool `json:"out_of_band_management,omitempty"`
 	// Type of Switchpoint
@@ -88,8 +86,6 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.ReadOnlyMode = &readOnlyMode
 	var locked bool = false
 	this.Locked = &locked
-	var disabledPorts string = ""
-	this.DisabledPorts = &disabledPorts
 	var outOfBandManagement bool = false
 	this.OutOfBandManagement = &outOfBandManagement
 	var type_ string = "leaf"
@@ -126,8 +122,6 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.ReadOnlyMode = &readOnlyMode
 	var locked bool = false
 	this.Locked = &locked
-	var disabledPorts string = ""
-	this.DisabledPorts = &disabledPorts
 	var outOfBandManagement bool = false
 	this.OutOfBandManagement = &outOfBandManagement
 	var type_ string = "leaf"
@@ -369,38 +363,6 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasLocked() bool {
 // SetLocked gets a reference to the given bool and assigns it to the Locked field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetLocked(v bool) {
 	o.Locked = &v
-}
-
-// GetDisabledPorts returns the DisabledPorts field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetDisabledPorts() string {
-	if o == nil || IsNil(o.DisabledPorts) {
-		var ret string
-		return ret
-	}
-	return *o.DisabledPorts
-}
-
-// GetDisabledPortsOk returns a tuple with the DisabledPorts field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) GetDisabledPortsOk() (*string, bool) {
-	if o == nil || IsNil(o.DisabledPorts) {
-		return nil, false
-	}
-	return o.DisabledPorts, true
-}
-
-// HasDisabledPorts returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValue) HasDisabledPorts() bool {
-	if o != nil && !IsNil(o.DisabledPorts) {
-		return true
-	}
-
-	return false
-}
-
-// SetDisabledPorts gets a reference to the given string and assigns it to the DisabledPorts field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetDisabledPorts(v string) {
-	o.DisabledPorts = &v
 }
 
 // GetOutOfBandManagement returns the OutOfBandManagement field value if set, zero value otherwise.
@@ -1051,9 +1013,6 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Locked) {
 		toSerialize["locked"] = o.Locked
-	}
-	if !IsNil(o.DisabledPorts) {
-		toSerialize["disabled_ports"] = o.DisabledPorts
 	}
 	if !IsNil(o.OutOfBandManagement) {
 		toSerialize["out_of_band_management"] = o.OutOfBandManagement

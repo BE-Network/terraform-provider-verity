@@ -6209,8 +6209,8 @@ components:
           default: IEEE 802.3af
           description: Mode
           enum:
-          - Manual
           - IEEE 802.3af
+          - Manual
           type: string
         usage_threshold:
           description: Usage Threshold
@@ -6419,51 +6419,51 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
-          - 8x200G
-          - 8x100G
-          - pg25G
-          - 2x400G
-          - 2x10G
-          - 1x400G
-          - pg1G
-          - 4x100G
-          - pg10G
-          - 4x200G
-          - 2x1G
-          - 2x200G
-          - pg50G
-          - 1x100G
-          - pg400G
-          - 8x50G
-          - 1x50G
-          - 2x100G
-          - 4x1G
-          - 4x800G
-          - pg100G
-          - 1x800G
-          - 8x25G
-          - 4x10G
-          - 4x40G
-          - 1x25G
-          - 8x1G
-          - 4x400G
-          - 1x1G
-          - 4x50G
-          - 2x25G
-          - 8x40G
-          - 8x800G
-          - 2x40G
-          - 8x10G
-          - pg800G
-          - 1x10G
-          - 8x400G
-          - 4x25G
-          - 1x40G
-          - 2x800G
-          - 1x200G
-          - 2x50G
-          - pg40G
           - pg200G
+          - 1x40G
+          - 2x200G
+          - 8x10G
+          - 4x25G
+          - 4x100G
+          - 2x25G
+          - 4x200G
+          - 2x50G
+          - 4x50G
+          - 2x400G
+          - pg25G
+          - 4x800G
+          - 2x800G
+          - pg100G
+          - 4x40G
+          - pg10G
+          - 1x400G
+          - pg50G
+          - pg1G
+          - 2x10G
+          - 4x1G
+          - pg400G
+          - 1x200G
+          - pg40G
+          - 1x25G
+          - 4x400G
+          - 1x800G
+          - 2x1G
+          - 1x100G
+          - 8x200G
+          - 2x100G
+          - 8x1G
+          - 8x25G
+          - 8x800G
+          - pg800G
+          - 1x50G
+          - 8x400G
+          - 1x10G
+          - 8x100G
+          - 1x1G
+          - 4x10G
+          - 8x50G
+          - 2x40G
+          - 8x40G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -6544,10 +6544,10 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
+          - less
+          - greater
           - range
           - equal
-          - greater
-          - less
           type: string
         source_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -6573,10 +6573,10 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
+          - less
+          - greater
           - range
           - equal
-          - greater
-          - less
           type: string
         destination_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -6615,9 +6615,9 @@ components:
           description: Scheduler Type for Queue
           enum:
           - ""
-          - SP
           - DWRR
           - WRR
+          - SP
           type: string
         scheduler_weight:
           default: 0
@@ -6654,26 +6654,26 @@ components:
           default: next available color
           description: Color of Badge
           enum:
-          - purple
           - blue
-          - green
           - yellow
-          - orange
           - red
+          - green
+          - orange
+          - purple
           minLength: 1
           type: string
         number:
           description: Number of Badge
           enum:
-          - 9
           - 0
-          - 2
           - 1
+          - 5
+          - 9
           - 6
-          - 7
           - 4
           - 8
-          - 5
+          - 2
+          - 7
           - 3
           maximum: 9
           nullable: true
@@ -6696,8 +6696,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         lists:
@@ -6791,21 +6791,6 @@ components:
             $ref: "#/components/schemas/_imageupdatesets_patch_request_image_update_sets_value"
           properties: {}
           type: object
-      type: object
-    _switchpoints_put_request_switchpoint_value_object_properties_eths_inner:
-      properties:
-        eth_num_icon:
-          default: empty
-          description: Icon of this Eth Port
-          type: string
-        eth_num_label:
-          default: ""
-          description: Label of this Eth Port
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
       type: object
     _sites_patch_request_site_value_pairs_inner:
       properties:
@@ -7162,8 +7147,8 @@ components:
           default: route
           description: Mode
           enum:
-          - soo
           - route
+          - soo
           type: string
         route_target_expanded_expression:
           default: ""
@@ -7189,8 +7174,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         any_all:
@@ -7198,8 +7183,8 @@ components:
           description: BGP does not advertise any or all routes that do not match
             the Community String
           enum:
-          - all
           - any
+          - all
           minLength: 1
           type: string
         standard_expanded:
@@ -7256,8 +7241,8 @@ components:
           enum:
           - ""
           - mstp
-          - port
           - pvst
+          - port
           minLength: 1
           type: string
         region_name:
@@ -7467,8 +7452,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         ipv4_prefix:
@@ -7504,14 +7489,14 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.23
-          - 1.8.1.25
+          - 1.8.1.28
+          - 1.8.1.27
           - unmanaged
           - 1.8.1.11
           - 1.8.1.26
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17622551558131"
+          default: "17624324301201"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -7531,14 +7516,14 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
+          - endpoint_type
           - badge
-          - badge_color
           - bundle_id
           - deviceSerialNumber
-          - endpoint_type
+          - badge_color
           - endpoint
-          - pod
           - productClass
+          - pod
           type: string
         endpoint_set_num_subrule_1_value:
           default: ""
@@ -7560,14 +7545,14 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
+          - endpoint_type
           - badge
-          - badge_color
           - bundle_id
           - deviceSerialNumber
-          - endpoint_type
+          - badge_color
           - endpoint
-          - pod
           - productClass
+          - pod
           type: string
         endpoint_set_num_subrule_2_value:
           default: ""
@@ -7589,14 +7574,14 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
+          - endpoint_type
           - badge
-          - badge_color
           - bundle_id
           - deviceSerialNumber
-          - endpoint_type
+          - badge_color
           - endpoint
-          - pod
           - productClass
+          - pod
           type: string
         endpoint_set_num_subrule_3_value:
           default: ""
@@ -7666,8 +7651,8 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.23
-          - 1.8.1.25
+          - 1.8.1.28
+          - 1.8.1.27
           - unmanaged
           - 1.8.1.11
           - 1.8.1.26
@@ -7782,9 +7767,9 @@ components:
           default: snmpv2
           description: Comm Type
           enum:
-          - snmpv2
           - gnmi
           - snmpv3
+          - snmpv2
           minLength: 1
           type: string
         snmp_community_string:
@@ -7815,11 +7800,11 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - LAG_IDL
           - LAG
           - LLDP
-          - Static Port
           - as_site
+          - LAG_IDL
+          - Static Port
           minLength: 1
           type: string
         power_state:
@@ -7830,22 +7815,22 @@ components:
           default: generic_snmp
           description: Communication Mode
           enum:
-          - eltex_ltp_gpon_olt
-          - microtik_routeros_telnet
           - edgecore_ecs21000
-          - ruckus_icx7150
-          - adtran_netvanta_series
-          - generic_snmp
-          - cisco_nexus_9xxx
-          - juniper_acx5048
-          - tibit_xgs_olt_sfp
-          - generic_advanced_snmp
-          - sonic
-          - netgear_prosafe_series
           - cisco_catalyst_c3xxx
+          - microtik_routeros_telnet
+          - cisco_nexus_9xxx
+          - tibit_xgs_olt_sfp
           - cisco_small_business_sgxxx
+          - netgear_prosafe_series
+          - generic_snmp
+          - eltex_ltp_gpon_olt
+          - juniper_acx5048
+          - adtran_netvanta_series
           - hpe_aruba_2530_series
           - arista_7050_series
+          - ruckus_icx7150
+          - generic_advanced_snmp
+          - sonic
           minLength: 1
           type: string
         cli_access_mode:
@@ -7898,8 +7883,8 @@ components:
           description: Security level
           enum:
           - authPriv
-          - noAuthNoPriv
           - authNoPriv
+          - noAuthNoPriv
           type: string
         snmpv3_username:
           default: ""
@@ -7910,8 +7895,8 @@ components:
           default: MD5
           description: Protocol
           enum:
-          - MD5
           - SHA
+          - MD5
           minLength: 1
           type: string
         passphrase:
@@ -7923,8 +7908,8 @@ components:
           default: DES
           description: Protocol
           enum:
-          - DES
           - AES
+          - DES
           minLength: 1
           type: string
         private_password:
@@ -8057,8 +8042,8 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.8.1.23
-          - 1.8.1.25
+          - 1.8.1.28
+          - 1.8.1.27
           - unmanaged
           - 1.8.1.11
           - 1.8.1.26
@@ -8112,12 +8097,6 @@ components:
           default: false
           description: Permission lock
           type: boolean
-        disabled_ports:
-          default: ""
-          description: |-
-            Disabled Ports
-            It's a comma separated list of ports to disable.
-          type: string
         out_of_band_management:
           default: false
           description: For Switch Endpoints. Denotes a Switch is managed out of band
@@ -8283,8 +8262,8 @@ components:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
-          - high
           - ""
+          - high
           - critical
           type: string
         sort_by_name:
@@ -8405,6 +8384,36 @@ components:
           description: Duration in minutes to keep firing the alarm after the threshold
             is no longer met
           type: string
+        escalation_metric:
+          default: ""
+          description: Metric threshold is on
+          type: string
+        escalation_operation:
+          default: eq
+          description: How to compare the metric to the value
+          enum:
+          - gt
+          - le
+          - ge
+          - eq
+          - lt
+          type: string
+        critical_escalation_value:
+          default: ""
+          description: Value to compare the metric to
+          type: string
+        error_escalation_value:
+          default: ""
+          description: Value to compare the metric to
+          type: string
+        warning_escalation_value:
+          default: ""
+          description: Value to compare the metric to
+          type: string
+        notice_escalation_value:
+          default: ""
+          description: Value to compare the metric to
+          type: string
         rules:
           items:
             $ref: "#/components/schemas/_thresholds_put_request_threshold_value_rules_inner"
@@ -8499,10 +8508,10 @@ components:
             only
           enum:
           - ""
-          - warning
           - notice
-          - error
           - critical
+          - warning
+          - error
           type: string
         threshold:
           default: ""
@@ -8612,8 +8621,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         ipv6_prefix:
@@ -8978,12 +8987,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - cornflower
-          - starship
-          - emerald
-          - chardonnay
           - anakiwa
+          - emerald
+          - cornflower
           - lavender
+          - chardonnay
+          - starship
           minLength: 1
           type: string
         lacp:
@@ -8997,10 +9006,10 @@ components:
         eth_port_profile_ref_type_:
           description: Object type for eth_port_profile field
           enum:
-          - gateway_profile
-          - pb_egress_profile
-          - eth_port_profile_
           - service_port_profile
+          - pb_egress_profile
+          - gateway_profile
+          - eth_port_profile_
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
@@ -9058,12 +9067,12 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
+          - service_port_profile
           - authenticated_eth_port
           - type
-          - pb_egress_profile
-          - eth_port_profile_
-          - service_port_profile
           - nbi_eth_port
+          - eth_port_profile_
+          - pb_egress_profile
           - lag
           type: string
         eth_port_num_eth_port_settings:
@@ -9212,8 +9221,8 @@ components:
           default: and
           description: How to combine rules
           enum:
-          - and
           - or
+          - and
           type: string
         rules:
           items:
@@ -9413,57 +9422,70 @@ components:
           description: "Breakout Port Override. Available options determined by Switch\
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
-          - ""
-          - 8x200G
-          - 8x100G
-          - pg25G
-          - 2x400G
-          - 2x10G
-          - 1x400G
-          - pg1G
-          - 4x100G
-          - pg10G
-          - 4x200G
-          - 2x1G
-          - 2x200G
-          - pg50G
-          - 1x100G
-          - pg400G
-          - 8x50G
-          - 1x50G
-          - 2x100G
-          - 4x1G
-          - 4x800G
-          - pg100G
-          - 1x800G
-          - 8x25G
-          - 4x10G
-          - 4x40G
-          - 1x25G
-          - 8x1G
-          - 4x400G
-          - 1x1G
-          - 4x50G
-          - 2x25G
-          - 8x40G
-          - 8x800G
-          - 2x40G
-          - 8x10G
-          - pg800G
-          - 1x10G
-          - 8x400G
-          - 4x25G
-          - 1x40G
-          - 2x800G
-          - 1x200G
-          - 2x50G
-          - pg40G
           - pg200G
+          - ""
+          - 1x40G
+          - 2x200G
+          - 8x10G
+          - 4x25G
+          - 4x100G
+          - 2x25G
+          - 4x200G
+          - 2x50G
+          - 4x50G
+          - 2x400G
+          - pg25G
+          - 4x800G
+          - 2x800G
+          - pg100G
+          - 4x40G
+          - pg10G
+          - 1x400G
+          - pg50G
+          - pg1G
+          - 2x10G
+          - 4x1G
+          - pg400G
+          - 1x200G
+          - pg40G
+          - 1x25G
+          - 4x400G
+          - 1x800G
+          - 2x1G
+          - 1x100G
+          - 8x200G
+          - 2x100G
+          - 8x1G
+          - 8x25G
+          - 8x800G
+          - pg800G
+          - 1x50G
+          - 8x400G
+          - 1x10G
+          - 8x100G
+          - 1x1G
+          - 4x10G
+          - 8x50G
+          - 2x40G
+          - 8x40G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+        eth_num_icon:
+          default: empty
+          description: Icon of this Eth Port
+          type: string
+        eth_num_label:
+          default: ""
+          description: Label of this Eth Port
+          type: string
+        enable:
+          default: true
+          description: |
+            Enable port.
+          type: boolean
       type: object
     _policybasedroutingacl_put_request_pb_routing_acl_value_ipv4_permit_inner:
       properties:
@@ -9551,18 +9573,18 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "10"
-          - "40000"
-          - "100"
-          - "400000"
-          - "100000"
-          - "2500"
           - "1000"
-          - "5000"
+          - "100"
+          - "100000"
           - "10000"
-          - "25000"
-          - "-1"
           - "50000"
+          - "-1"
+          - "400000"
+          - "40000"
+          - "25000"
+          - "5000"
+          - "10"
+          - "2500"
           minLength: 1
           type: string
         duplex_mode:
@@ -9603,8 +9625,8 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
-          - Critical
           - High
+          - Critical
           - Low
           minLength: 1
           type: string
@@ -9691,10 +9713,10 @@ components:
             \    </div>\n                                            "
           enum:
           - fc
-          - none
+          - unaltered
           - auto
           - rs-custom
-          - unaltered
+          - none
           - rs
           minLength: 1
           type: string
@@ -9933,10 +9955,6 @@ components:
           default: false
           description: For Switch Endpoints. Denotes the Host Switch
           type: boolean
-        eths:
-          items:
-            $ref: "#/components/schemas/_switchpoints_put_request_switchpoint_value_object_properties_eths_inner"
-          type: array
         draw_as_edge_device:
           default: false
           description: Turn on to display the switch as an edge device instead of
@@ -10733,8 +10751,8 @@ components:
           default: ipv4
           description: IPv4 or IPv6
           enum:
-          - ipv6
           - ipv4
+          - ipv6
           type: string
         next_hop_ips:
           default: ""
@@ -11153,8 +11171,8 @@ components:
           default: permit
           description: Action upon match of Community Strings.
           enum:
-          - permit
           - deny
+          - permit
           minLength: 1
           type: string
         any_all:
@@ -11162,8 +11180,8 @@ components:
           description: BGP does not advertise any or all routes that do not match
             the Community String
           enum:
-          - all
           - any
+          - all
           minLength: 1
           type: string
         standard_expanded:

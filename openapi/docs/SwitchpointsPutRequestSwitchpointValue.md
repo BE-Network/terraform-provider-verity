@@ -11,7 +11,6 @@ Name | Type | Description | Notes
 **ConnectedBundleRefType** | Pointer to **string** | Object type for connected_bundle field | [optional] 
 **ReadOnlyMode** | Pointer to **bool** | When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware | [optional] [default to false]
 **Locked** | Pointer to **bool** | Permission lock | [optional] [default to false]
-**DisabledPorts** | Pointer to **string** | Disabled Ports It&#39;s a comma separated list of ports to disable. | [optional] [default to ""]
 **OutOfBandManagement** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch is managed out of band via the management port | [optional] [default to false]
 **Type** | Pointer to **string** | Type of Switchpoint | [optional] [default to "leaf"]
 **SpinePlane** | Pointer to **string** | Spine Plane - subgrouping of super spine and spine | [optional] [default to ""]
@@ -225,31 +224,6 @@ SetLocked sets Locked field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasLocked() bool`
 
 HasLocked returns a boolean if a field has been set.
-
-### GetDisabledPorts
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetDisabledPorts() string`
-
-GetDisabledPorts returns the DisabledPorts field if non-nil, zero value otherwise.
-
-### GetDisabledPortsOk
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetDisabledPortsOk() (*string, bool)`
-
-GetDisabledPortsOk returns a tuple with the DisabledPorts field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDisabledPorts
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetDisabledPorts(v string)`
-
-SetDisabledPorts sets DisabledPorts field to given value.
-
-### HasDisabledPorts
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasDisabledPorts() bool`
-
-HasDisabledPorts returns a boolean if a field has been set.
 
 ### GetOutOfBandManagement
 

@@ -6,6 +6,9 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Breakout** | Pointer to **string** | Breakout Port Override. Available options determined by Switch capability, Installed SFP and the capacity of the pipeline. | [optional] [default to ""]
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**EthNumIcon** | Pointer to **string** | Icon of this Eth Port | [optional] [default to "empty"]
+**EthNumLabel** | Pointer to **string** | Label of this Eth Port | [optional] [default to ""]
+**Enable** | Pointer to **bool** | Enable port.  | [optional] [default to true]
 
 ## Methods
 
@@ -75,6 +78,81 @@ SetIndex sets Index field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasIndex() bool`
 
 HasIndex returns a boolean if a field has been set.
+
+### GetEthNumIcon
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumIcon() string`
+
+GetEthNumIcon returns the EthNumIcon field if non-nil, zero value otherwise.
+
+### GetEthNumIconOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumIconOk() (*string, bool)`
+
+GetEthNumIconOk returns a tuple with the EthNumIcon field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEthNumIcon
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEthNumIcon(v string)`
+
+SetEthNumIcon sets EthNumIcon field to given value.
+
+### HasEthNumIcon
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEthNumIcon() bool`
+
+HasEthNumIcon returns a boolean if a field has been set.
+
+### GetEthNumLabel
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumLabel() string`
+
+GetEthNumLabel returns the EthNumLabel field if non-nil, zero value otherwise.
+
+### GetEthNumLabelOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumLabelOk() (*string, bool)`
+
+GetEthNumLabelOk returns a tuple with the EthNumLabel field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEthNumLabel
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEthNumLabel(v string)`
+
+SetEthNumLabel sets EthNumLabel field to given value.
+
+### HasEthNumLabel
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEthNumLabel() bool`
+
+HasEthNumLabel returns a boolean if a field has been set.
+
+### GetEnable
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEnable() bool`
+
+GetEnable returns the Enable field if non-nil, zero value otherwise.
+
+### GetEnableOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEnableOk() (*bool, bool)`
+
+GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnable
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEnable(v bool)`
+
+SetEnable sets Enable field to given value.
+
+### HasEnable
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEnable() bool`
+
+HasEnable returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
