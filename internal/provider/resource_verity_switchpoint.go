@@ -105,6 +105,7 @@ type veritySwitchpointEthModel struct {
 	EthNumIcon  types.String `tfsdk:"eth_num_icon"`
 	EthNumLabel types.String `tfsdk:"eth_num_label"`
 	Enable      types.Bool   `tfsdk:"enable"`
+	PortName    types.String `tfsdk:"port_name"`
 }
 
 func (e veritySwitchpointEthModel) GetIndex() types.Int64 {
@@ -340,6 +341,10 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						},
 						"enable": schema.BoolAttribute{
 							Description: "Enable port",
+							Optional:    true,
+						},
+						"port_name": schema.StringAttribute{
+							Description: "The name identifying the port. Used for reference only, it won't actually change the port name.",
 							Optional:    true,
 						},
 					},
@@ -598,6 +603,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 				{FieldName: "Breakout", APIField: &ethItem.Breakout, TFValue: eth.Breakout},
 				{FieldName: "EthNumIcon", APIField: &ethItem.EthNumIcon, TFValue: eth.EthNumIcon},
 				{FieldName: "EthNumLabel", APIField: &ethItem.EthNumLabel, TFValue: eth.EthNumLabel},
+				{FieldName: "PortName", APIField: &ethItem.PortName, TFValue: eth.PortName},
 			})
 
 			// Handle boolean fields
@@ -1204,6 +1210,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 					{FieldName: "Breakout", APIField: &eth.Breakout, TFValue: planItem.Breakout},
 					{FieldName: "EthNumIcon", APIField: &eth.EthNumIcon, TFValue: planItem.EthNumIcon},
 					{FieldName: "EthNumLabel", APIField: &eth.EthNumLabel, TFValue: planItem.EthNumLabel},
+					{FieldName: "PortName", APIField: &eth.PortName, TFValue: planItem.PortName},
 				})
 
 				// Handle boolean fields
@@ -1226,6 +1233,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				utils.CompareAndSetStringField(planItem.Breakout, stateItem.Breakout, func(v *string) { eth.Breakout = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.EthNumIcon, stateItem.EthNumIcon, func(v *string) { eth.EthNumIcon = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.EthNumLabel, stateItem.EthNumLabel, func(v *string) { eth.EthNumLabel = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.PortName, stateItem.PortName, func(v *string) { eth.PortName = v }, &fieldChanged)
 
 				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { eth.Enable = v }, &fieldChanged)
@@ -1535,6 +1543,7 @@ func (r *veritySwitchpointResource) populateSwitchpointState(ctx context.Context
 				EthNumIcon:  utils.MapStringFromAPI(eth["eth_num_icon"]),
 				EthNumLabel: utils.MapStringFromAPI(eth["eth_num_label"]),
 				Enable:      utils.MapBoolFromAPI(eth["enable"]),
+				PortName:    utils.MapStringFromAPI(eth["port_name"]),
 			}
 			eths = append(eths, ethModel)
 		}

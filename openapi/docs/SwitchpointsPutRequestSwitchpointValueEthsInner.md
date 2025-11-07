@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **EthNumIcon** | Pointer to **string** | Icon of this Eth Port | [optional] [default to "empty"]
 **EthNumLabel** | Pointer to **string** | Label of this Eth Port | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable port.  | [optional] [default to true]
+**PortName** | Pointer to **string** | The name identifying the port. Used for reference only, it won&#39;t actually change the port name. | [optional] 
 
 ## Methods
 
@@ -153,6 +154,31 @@ SetEnable sets Enable field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
+
+### GetPortName
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetPortName() string`
+
+GetPortName returns the PortName field if non-nil, zero value otherwise.
+
+### GetPortNameOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetPortNameOk() (*string, bool)`
+
+GetPortNameOk returns a tuple with the PortName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPortName
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetPortName(v string)`
+
+SetPortName sets PortName field to given value.
+
+### HasPortName
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasPortName() bool`
+
+HasPortName returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

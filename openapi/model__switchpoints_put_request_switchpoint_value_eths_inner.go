@@ -29,6 +29,8 @@ type SwitchpointsPutRequestSwitchpointValueEthsInner struct {
 	EthNumLabel *string `json:"eth_num_label,omitempty"`
 	// Enable port. 
 	Enable *bool `json:"enable,omitempty"`
+	// The name identifying the port. Used for reference only, it won't actually change the port name.
+	PortName *string `json:"port_name,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValueEthsInner instantiates a new SwitchpointsPutRequestSwitchpointValueEthsInner object
@@ -224,6 +226,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEnable(v bool) {
 	o.Enable = &v
 }
 
+// GetPortName returns the PortName field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetPortName() string {
+	if o == nil || IsNil(o.PortName) {
+		var ret string
+		return ret
+	}
+	return *o.PortName
+}
+
+// GetPortNameOk returns a tuple with the PortName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetPortNameOk() (*string, bool) {
+	if o == nil || IsNil(o.PortName) {
+		return nil, false
+	}
+	return o.PortName, true
+}
+
+// HasPortName returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasPortName() bool {
+	if o != nil && !IsNil(o.PortName) {
+		return true
+	}
+
+	return false
+}
+
+// SetPortName gets a reference to the given string and assigns it to the PortName field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetPortName(v string) {
+	o.PortName = &v
+}
+
 func (o SwitchpointsPutRequestSwitchpointValueEthsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -248,6 +282,9 @@ func (o SwitchpointsPutRequestSwitchpointValueEthsInner) ToMap() (map[string]int
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.PortName) {
+		toSerialize["port_name"] = o.PortName
 	}
 	return toSerialize, nil
 }
