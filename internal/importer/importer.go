@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -45,7 +44,526 @@ type ResourceConfig struct {
 	NestedBlockStyles            map[string]NestedBlockIterationStyle
 }
 
+type ImporterFunc func(context.Context, *openapi.APIClient) (*http.Response, error)
+
 var nameSplitRE = regexp.MustCompile(`(\d+|\D+)`)
+
+// importerRegistry maps resource names to their API caller function and JSON key
+var importerRegistry = map[string]struct {
+	apiCaller ImporterFunc
+	jsonKey   string
+}{
+	"tenants": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.TenantsAPI.TenantsGet(ctx).Execute()
+	}, jsonKey: "tenant"},
+	"gateways": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.GatewaysAPI.GatewaysGet(ctx).Execute()
+	}, jsonKey: "gateway"},
+	"gatewayprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.GatewayProfilesAPI.GatewayprofilesGet(ctx).Execute()
+	}, jsonKey: "gateway_profile"},
+	"ethportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
+	}, jsonKey: "eth_port_profile_"},
+	"lags": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.LAGsAPI.LagsGet(ctx).Execute()
+	}, jsonKey: "lag"},
+	"sflowcollectors": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.SFlowCollectorsAPI.SflowcollectorsGet(ctx).Execute()
+	}, jsonKey: "sflow_collector"},
+	"diagnosticsprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(ctx).Execute()
+	}, jsonKey: "diagnostics_profile"},
+	"diagnosticsportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(ctx).Execute()
+	}, jsonKey: "diagnostics_port_profile"},
+	"services": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.ServicesAPI.ServicesGet(ctx).Execute()
+	}, jsonKey: "service"},
+	"ethportsettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.EthPortSettingsAPI.EthportsettingsGet(ctx).Execute()
+	}, jsonKey: "eth_port_settings"},
+	"bundles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.BundlesAPI.BundlesGet(ctx).Execute()
+	}, jsonKey: "endpoint_bundle"},
+	"badges": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.BadgesAPI.BadgesGet(ctx).Execute()
+	}, jsonKey: "badge"},
+	"authenticatedethports": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(ctx).Execute()
+	}, jsonKey: "authenticated_eth_port"},
+	"devicevoicesettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(ctx).Execute()
+	}, jsonKey: "device_voice_settings"},
+	"packetbroker": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.PacketBrokerAPI.PacketbrokerGet(ctx).Execute()
+	}, jsonKey: "pb_egress_profile"},
+	"packetqueues": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.PacketQueuesAPI.PacketqueuesGet(ctx).Execute()
+	}, jsonKey: "packet_queue"},
+	"serviceportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.ServicePortProfilesAPI.ServiceportprofilesGet(ctx).Execute()
+	}, jsonKey: "service_port_profile"},
+	"voiceportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.VoicePortProfilesAPI.VoiceportprofilesGet(ctx).Execute()
+	}, jsonKey: "voice_port_profiles"},
+	"switchpoints": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.SwitchpointsAPI.SwitchpointsGet(ctx).Execute()
+	}, jsonKey: "switchpoint"},
+	"devicecontrollers": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.DeviceControllersAPI.DevicecontrollersGet(ctx).Execute()
+	}, jsonKey: "device_controller"},
+	"aspathaccesslists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.ASPathAccessListsAPI.AspathaccesslistsGet(ctx).Execute()
+	}, jsonKey: "as_path_access_list"},
+	"communitylists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.CommunityListsAPI.CommunitylistsGet(ctx).Execute()
+	}, jsonKey: "community_list"},
+	"devicesettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.DeviceSettingsAPI.DevicesettingsGet(ctx).Execute()
+	}, jsonKey: "eth_device_profiles"},
+	"extendedcommunitylists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(ctx).Execute()
+	}, jsonKey: "extended_community_list"},
+	"ipv4lists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.IPv4ListFiltersAPI.Ipv4listsGet(ctx).Execute()
+	}, jsonKey: "ipv4_list_filter"},
+	"ipv4prefixlists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(ctx).Execute()
+	}, jsonKey: "ipv4_prefix_list"},
+	"ipv6lists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.IPv6ListFiltersAPI.Ipv6listsGet(ctx).Execute()
+	}, jsonKey: "ipv6_list_filter"},
+	"ipv6prefixlists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.IPv6PrefixListsAPI.Ipv6prefixlistsGet(ctx).Execute()
+	}, jsonKey: "ipv6_prefix_list"},
+	"routemapclauses": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.RouteMapClausesAPI.RoutemapclausesGet(ctx).Execute()
+	}, jsonKey: "route_map_clause"},
+	"routemaps": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.RouteMapsAPI.RoutemapsGet(ctx).Execute()
+	}, jsonKey: "route_map"},
+	"sfpbreakouts": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.SFPBreakoutsAPI.SfpbreakoutsGet(ctx).Execute()
+	}, jsonKey: "sfp_breakouts"},
+	"sites": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.SitesAPI.SitesGet(ctx).Execute()
+	}, jsonKey: "site"},
+	"pods": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.PodsAPI.PodsGet(ctx).Execute()
+	}, jsonKey: "pod"},
+	"spineplanes": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.SpinePlanesAPI.SpineplanesGet(ctx).Execute()
+	}, jsonKey: "spine_plane"},
+	"policybasedroutingacl": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.PBRoutingACLAPI.PolicybasedroutingaclGet(ctx).Execute()
+	}, jsonKey: "pb_routing_acl"},
+	"policybasedrouting": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.PBRoutingAPI.PolicybasedroutingGet(ctx).Execute()
+	}, jsonKey: "pb_routing"},
+	"portacls": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.PortACLsAPI.PortaclsGet(ctx).Execute()
+	}, jsonKey: "port_acl"},
+	"groupingrules": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.GroupingRulesAPI.GroupingrulesGet(ctx).Execute()
+	}, jsonKey: "grouping_rules"},
+	"thresholdgroups": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.ThresholdGroupsAPI.ThresholdgroupsGet(ctx).Execute()
+	}, jsonKey: "threshold_group"},
+	"thresholds": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.ThresholdsAPI.ThresholdsGet(ctx).Execute()
+	}, jsonKey: "threshold"},
+}
+
+// terraformTypeToResourceKey maps Terraform resource types to resourceConfigs keys
+var terraformTypeToResourceKey = map[string]string{
+	"verity_tenant":                   "tenant",
+	"verity_gateway":                  "gateway",
+	"verity_gateway_profile":          "gateway_profile",
+	"verity_eth_port_profile":         "eth_port_profile",
+	"verity_lag":                      "lag",
+	"verity_sflow_collector":          "sflow_collector",
+	"verity_diagnostics_profile":      "diagnostics_profile",
+	"verity_diagnostics_port_profile": "diagnostics_port_profile",
+	"verity_pb_routing_acl":           "pb_routing_acl",
+	"verity_pb_routing":               "pb_routing",
+	"verity_service":                  "service",
+	"verity_eth_port_settings":        "eth_port_settings",
+	"verity_bundle":                   "bundle",
+	"verity_acl_v4":                   "acl_v4",
+	"verity_acl_v6":                   "acl_v6",
+	"verity_badge":                    "badge",
+	"verity_authenticated_eth_port":   "authenticated_eth_port",
+	"verity_device_controller":        "device_controller",
+	"verity_device_voice_settings":    "device_voice_settings",
+	"verity_packet_broker":            "packet_broker",
+	"verity_packet_queue":             "packet_queue",
+	"verity_service_port_profile":     "service_port_profile",
+	"verity_voice_port_profile":       "voice_port_profile",
+	"verity_spine_plane":              "spine_plane",
+	"verity_switchpoint":              "switchpoint",
+	"verity_as_path_access_list":      "as_path_access_list",
+	"verity_community_list":           "community_list",
+	"verity_device_settings":          "device_settings",
+	"verity_extended_community_list":  "extended_community_list",
+	"verity_ipv4_list":                "ipv4_list",
+	"verity_ipv4_prefix_list":         "ipv4_prefix_list",
+	"verity_ipv6_list":                "ipv6_list",
+	"verity_ipv6_prefix_list":         "ipv6_prefix_list",
+	"verity_route_map_clause":         "route_map_clause",
+	"verity_route_map":                "route_map",
+	"verity_sfp_breakout":             "sfp_breakout",
+	"verity_site":                     "site",
+	"verity_pod":                      "pod",
+	"verity_port_acl":                 "port_acl",
+	"verity_grouping_rule":            "grouping_rule",
+	"verity_threshold_group":          "threshold_group",
+	"verity_threshold":                "threshold",
+}
+
+// resourceConfigs is a registry of all resource configurations for generating Terraform code
+var resourceConfigs = map[string]ResourceConfig{
+	"tenant": {
+		ResourceType:              "tenant",
+		StageName:                 "tenant_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"route_tenants": true},
+	},
+	"gateway": {
+		ResourceType:              "gateway",
+		StageName:                 "gateway_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"static_routes": true},
+	},
+	"gateway_profile": {
+		ResourceType:               "gateway_profile",
+		StageName:                  "gateway_profile_stage",
+		HeaderNameLineFormat:       "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:         universalObjectPropsHandler,
+		NestedBlockFields:          map[string]bool{"external_gateways": true},
+		AdditionalTopLevelSkipKeys: []string{"index"},
+	},
+	"eth_port_profile": {
+		ResourceType:               "eth_port_profile",
+		StageName:                  "eth_port_profile_stage",
+		HeaderNameLineFormat:       "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:         universalObjectPropsHandler,
+		NestedBlockFields:          map[string]bool{"services": true},
+		AdditionalTopLevelSkipKeys: []string{"index"},
+	},
+	"lag": {
+		ResourceType:                 "lag",
+		StageName:                    "lag_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+	},
+	"sflow_collector": {
+		ResourceType:                 "sflow_collector",
+		StageName:                    "sflow_collector_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+	},
+	"diagnostics_profile": {
+		ResourceType:                 "diagnostics_profile",
+		StageName:                    "diagnostics_profile_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+	},
+	"diagnostics_port_profile": {
+		ResourceType:                 "diagnostics_port_profile",
+		StageName:                    "diagnostics_port_profile_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+	},
+	"pb_routing_acl": {
+		ResourceType:              "pb_routing_acl",
+		StageName:                 "pb_routing_acl_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
+	},
+	"pb_routing": {
+		ResourceType:              "pb_routing",
+		StageName:                 "pb_routing_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"policy": true},
+	},
+	"service": {
+		ResourceType:              "service",
+		StageName:                 "service_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"eth_port_settings": {
+		ResourceType:              "eth_port_settings",
+		StageName:                 "eth_port_settings_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lldp_med": true},
+	},
+	"bundle": {
+		ResourceType:               "bundle",
+		StageName:                  "bundle_stage",
+		HeaderNameLineFormat:       "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:         universalObjectPropsHandler,
+		NestedBlockFields:          map[string]bool{"eth_port_paths": true, "user_services": true, "rg_services": true, "voice_port_profile_paths": true},
+		AdditionalTopLevelSkipKeys: []string{"index"},
+		NestedBlockStyles: map[string]NestedBlockIterationStyle{
+			"eth_port_paths":           {IterateAllAsMap: true},
+			"user_services":            {IterateAllAsMap: true},
+			"rg_services":              {IterateAllAsMap: true},
+			"voice_port_profile_paths": {IterateAllAsMap: true},
+		},
+	},
+	"acl_v4": {
+		ResourceType:              "acl_v4",
+		StageName:                 "acl_v4_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"acl_v6": {
+		ResourceType:              "acl_v6",
+		StageName:                 "acl_v6_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"badge": {
+		ResourceType:               "badge",
+		StageName:                  "badge_stage",
+		HeaderNameLineFormat:       "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:         universalObjectPropsHandler,
+		AdditionalTopLevelSkipKeys: []string{},
+	},
+	"authenticated_eth_port": {
+		ResourceType:              "authenticated_eth_port",
+		StageName:                 "authenticated_eth_port_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"eth_ports": true, "object_properties": true},
+	},
+	"device_controller": {
+		ResourceType:                 "device_controller",
+		StageName:                    "device_controller_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+	},
+	"device_voice_settings": {
+		ResourceType:                 "device_voice_settings",
+		StageName:                    "device_voice_setting_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: true,
+		NestedBlockFields:            map[string]bool{"codecs": true},
+		FieldMappings:                map[string]string{"Codecs": "codecs"},
+	},
+	"packet_broker": {
+		ResourceType:              "packet_broker",
+		StageName:                 "packet_broker_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
+	},
+	"packet_queue": {
+		ResourceType:              "packet_queue",
+		StageName:                 "packet_queue_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"pbit": true, "queue": true},
+	},
+	"service_port_profile": {
+		ResourceType:              "service_port_profile",
+		StageName:                 "service_port_profile_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"services": true},
+	},
+	"voice_port_profile": {
+		ResourceType:                 "voice_port_profile",
+		StageName:                    "voice_port_profile_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		EmptyObjectPropsAsSingleLine: false,
+	},
+	"spine_plane": {
+		ResourceType:              "spine_plane",
+		StageName:                 "spine_plane_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"switchpoint": {
+		ResourceType:                 "switchpoint",
+		StageName:                    "switchpoint_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		NestedBlockFields:            map[string]bool{"badges": true, "children": true, "traffic_mirrors": true, "eths": true},
+		ObjectPropsNestedBlockFields: map[string]bool{"eths": true},
+	},
+	"as_path_access_list": {
+		ResourceType:              "as_path_access_list",
+		StageName:                 "as_path_access_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	},
+	"community_list": {
+		ResourceType:              "community_list",
+		StageName:                 "community_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	},
+	"device_settings": {
+		ResourceType:              "device_settings",
+		StageName:                 "device_settings_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"extended_community_list": {
+		ResourceType:              "extended_community_list",
+		StageName:                 "extended_community_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	},
+	"ipv4_list": {
+		ResourceType:              "ipv4_list",
+		StageName:                 "ipv4_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"ipv4_prefix_list": {
+		ResourceType:              "ipv4_prefix_list",
+		StageName:                 "ipv4_prefix_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	},
+	"ipv6_list": {
+		ResourceType:              "ipv6_list",
+		StageName:                 "ipv6_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"ipv6_prefix_list": {
+		ResourceType:              "ipv6_prefix_list",
+		StageName:                 "ipv6_prefix_list_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"lists": true},
+	},
+	"route_map_clause": {
+		ResourceType:              "route_map_clause",
+		StageName:                 "route_map_clause_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"route_map": {
+		ResourceType:              "route_map",
+		StageName:                 "route_map_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"route_map_clauses": true},
+	},
+	"sfp_breakout": {
+		ResourceType:              "sfp_breakout",
+		StageName:                 "sfp_breakout_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"breakout": true},
+	},
+	"site": {
+		ResourceType:                 "site",
+		StageName:                    "site_stage",
+		HeaderNameLineFormat:         "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:           universalObjectPropsHandler,
+		NestedBlockFields:            map[string]bool{"islands": true, "pairs": true, "system_graphs": true},
+		ObjectPropsNestedBlockFields: map[string]bool{"system_graphs": true},
+	},
+	"pod": {
+		ResourceType:              "pod",
+		StageName:                 "pod_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"port_acl": {
+		ResourceType:              "port_acl",
+		StageName:                 "port_acl_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
+	},
+	"grouping_rule": {
+		ResourceType:              "grouping_rule",
+		StageName:                 "grouping_rule_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"rules": true},
+	},
+	"threshold_group": {
+		ResourceType:              "threshold_group",
+		StageName:                 "threshold_group_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"targets": true, "thresholds": true},
+	},
+	"threshold": {
+		ResourceType:              "threshold",
+		StageName:                 "threshold_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"rules": true},
+	},
+}
 
 func getNaturalSortParts(s string) []interface{} {
 	matches := nameSplitRE.FindAllString(s, -1)
@@ -68,6 +586,29 @@ func NewImporter(client *openapi.APIClient, mode string) *Importer {
 	}
 }
 
+func (i *Importer) getAPIVersion() string {
+	defaultVersion := "6.4"
+
+	versionResp, err := i.client.VersionAPI.VersionGet(i.ctx).Execute()
+	if err != nil {
+		// API 6.4 doesn't support /version endpoint (returns 404)
+		tflog.Info(i.ctx, "Version endpoint not available, using default version", map[string]interface{}{"default_version": defaultVersion})
+		return defaultVersion
+	}
+	defer versionResp.Body.Close()
+
+	// API 6.5+ should return a valid version response
+	var versionData struct {
+		Version string `json:"version"`
+	}
+	if err := json.NewDecoder(versionResp.Body).Decode(&versionData); err != nil || versionData.Version == "" {
+		tflog.Warn(i.ctx, "Failed to parse version response, using default", map[string]interface{}{"error": err, "default_version": defaultVersion})
+		return defaultVersion
+	}
+
+	return versionData.Version
+}
+
 // ImportAll fetches all resources and saves them as Terraform configuration files
 func (i *Importer) ImportAll(outputDir string) error {
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
@@ -78,54 +619,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 		"mode": i.Mode,
 	})
 
-	var apiVersionString string
-	defaultVersion := "6.4"
-
-	versionResp, err := i.client.VersionAPI.VersionGet(i.ctx).Execute()
-	if err != nil {
-		tflog.Error(i.ctx, "Failed to execute API version GET request, defaulting version", map[string]interface{}{"error": err, "default_version": defaultVersion})
-		apiVersionString = defaultVersion
-	} else {
-		defer versionResp.Body.Close()
-		versionBodyBytes, err := io.ReadAll(versionResp.Body)
-		if err != nil {
-			tflog.Error(i.ctx, "Failed to read API version response body, defaulting version", map[string]interface{}{"error": err, "default_version": defaultVersion})
-			apiVersionString = defaultVersion
-		} else if versionResp.StatusCode != http.StatusOK {
-			tflog.Error(i.ctx, "API version GET request failed with non-OK status, defaulting version", map[string]interface{}{
-				"status_code":     versionResp.StatusCode,
-				"body":            string(versionBodyBytes),
-				"default_version": defaultVersion,
-			})
-			apiVersionString = defaultVersion
-		} else {
-			var directVersion string
-			if err := json.Unmarshal(versionBodyBytes, &directVersion); err == nil && directVersion != "" {
-				tflog.Info(i.ctx, "Successfully parsed API version as direct string", map[string]interface{}{
-					"version": directVersion,
-				})
-				apiVersionString = directVersion
-			} else {
-				var versionData struct {
-					Version string `json:"version"`
-				}
-				if err := json.Unmarshal(versionBodyBytes, &versionData); err != nil {
-					tflog.Error(i.ctx, "Failed to decode API version JSON response, defaulting version", map[string]interface{}{
-						"error":           err,
-						"body":            string(versionBodyBytes),
-						"default_version": defaultVersion,
-					})
-					apiVersionString = defaultVersion
-				} else if versionData.Version == "" {
-					tflog.Warn(i.ctx, "API version string is empty in response, defaulting version", map[string]interface{}{"body": string(versionBodyBytes), "default_version": defaultVersion})
-					apiVersionString = defaultVersion
-				} else {
-					apiVersionString = versionData.Version
-				}
-			}
-		}
-	}
-
+	apiVersionString := i.getAPIVersion()
 	tflog.Info(i.ctx, "Using API Version for import", map[string]interface{}{"version": apiVersionString})
 
 	stagesTF, err := i.generateStagesTF()
@@ -144,50 +638,49 @@ func (i *Importer) ImportAll(outputDir string) error {
 		name                  string
 		terraformResourceType string
 		importer              func() (interface{}, error)
-		tfGenerator           func(interface{}) (string, error)
 	}{
-		{name: "tenants", terraformResourceType: "verity_tenant", importer: i.importTenants, tfGenerator: i.generateTenantsTF},
-		{name: "gateways", terraformResourceType: "verity_gateway", importer: i.importGateways, tfGenerator: i.generateGatewaysTF},
-		{name: "gatewayprofiles", terraformResourceType: "verity_gateway_profile", importer: i.importGatewayProfiles, tfGenerator: i.generateGatewayProfilesTF},
-		{name: "ethportprofiles", terraformResourceType: "verity_eth_port_profile", importer: i.importEthPortProfiles, tfGenerator: i.generateEthPortProfilesTF},
-		{name: "lags", terraformResourceType: "verity_lag", importer: i.importLags, tfGenerator: i.generateLagsTF},
-		{name: "sflowcollectors", terraformResourceType: "verity_sflow_collector", importer: i.importSflowCollectors, tfGenerator: i.generateSflowCollectorsTF},
-		{name: "diagnosticsprofiles", terraformResourceType: "verity_diagnostics_profile", importer: i.importDiagnosticsProfiles, tfGenerator: i.generateDiagnosticsProfilesTF},
-		{name: "diagnosticsportprofiles", terraformResourceType: "verity_diagnostics_port_profile", importer: i.importDiagnosticsPortProfiles, tfGenerator: i.generateDiagnosticsPortProfilesTF},
-		{name: "policybasedroutingacl", terraformResourceType: "verity_pb_routing_acl", importer: i.importPBRoutingACL, tfGenerator: i.generatePBRoutingACLTF},
-		{name: "policybasedrouting", terraformResourceType: "verity_pb_routing", importer: i.importPBRouting, tfGenerator: i.generatePBRoutingTF},
-		{name: "services", terraformResourceType: "verity_service", importer: i.importServices, tfGenerator: i.generateServicesTF},
-		{name: "ethportsettings", terraformResourceType: "verity_eth_port_settings", importer: i.importEthPortSettings, tfGenerator: i.generateEthPortSettingsTF},
-		{name: "bundles", terraformResourceType: "verity_bundle", importer: i.importBundles, tfGenerator: i.generateBundlesTF},
-		{name: "acls_ipv4", terraformResourceType: "verity_acl_v4", importer: i.importACLsIPv4, tfGenerator: i.generateACLsIPv4TF},
-		{name: "acls_ipv6", terraformResourceType: "verity_acl_v6", importer: i.importACLsIPv6, tfGenerator: i.generateACLsIPv6TF},
-		{name: "badges", terraformResourceType: "verity_badge", importer: i.importBadges, tfGenerator: i.generateBadgesTF},
-		{name: "authenticatedethports", terraformResourceType: "verity_authenticated_eth_port", importer: i.importAuthenticatedEthPorts, tfGenerator: i.generateAuthenticatedEthPortsTF},
-		{name: "devicecontrollers", terraformResourceType: "verity_device_controller", importer: i.importDeviceControllers, tfGenerator: i.generateDeviceControllersTF},
-		{name: "devicevoicesettings", terraformResourceType: "verity_device_voice_settings", importer: i.importDeviceVoiceSettings, tfGenerator: i.generateDeviceVoiceSettingsTF},
-		{name: "packetbroker", terraformResourceType: "verity_packet_broker", importer: i.importPacketBroker, tfGenerator: i.generatePacketBrokerTF},
-		{name: "packetqueues", terraformResourceType: "verity_packet_queue", importer: i.importPacketQueues, tfGenerator: i.generatePacketQueuesTF},
-		{name: "serviceportprofiles", terraformResourceType: "verity_service_port_profile", importer: i.importServicePortProfiles, tfGenerator: i.generateServicePortProfilesTF},
-		{name: "voiceportprofiles", terraformResourceType: "verity_voice_port_profile", importer: i.importVoicePortProfiles, tfGenerator: i.generateVoicePortProfilesTF},
-		{name: "spineplanes", terraformResourceType: "verity_spine_plane", importer: i.importSpinePlanes, tfGenerator: i.generateSpinePlanesTF},
-		{name: "switchpoints", terraformResourceType: "verity_switchpoint", importer: i.importSwitchpoints, tfGenerator: i.generateSwitchpointsTF},
-		{name: "aspathaccesslists", terraformResourceType: "verity_as_path_access_list", importer: i.importAsPathAccessLists, tfGenerator: i.generateAsPathAccessListsTF},
-		{name: "communitylists", terraformResourceType: "verity_community_list", importer: i.importCommunityLists, tfGenerator: i.generateCommunityListsTF},
-		{name: "devicesettings", terraformResourceType: "verity_device_settings", importer: i.importDeviceSettings, tfGenerator: i.generateDeviceSettingsTF},
-		{name: "extendedcommunitylists", terraformResourceType: "verity_extended_community_list", importer: i.importExtendedCommunityLists, tfGenerator: i.generateExtendedCommunityListsTF},
-		{name: "ipv4lists", terraformResourceType: "verity_ipv4_list", importer: i.importIpv4Lists, tfGenerator: i.generateIpv4ListsTF},
-		{name: "ipv4prefixlists", terraformResourceType: "verity_ipv4_prefix_list", importer: i.importIpv4PrefixLists, tfGenerator: i.generateIpv4PrefixListsTF},
-		{name: "ipv6lists", terraformResourceType: "verity_ipv6_list", importer: i.importIpv6Lists, tfGenerator: i.generateIpv6ListsTF},
-		{name: "ipv6prefixlists", terraformResourceType: "verity_ipv6_prefix_list", importer: i.importIpv6PrefixLists, tfGenerator: i.generateIpv6PrefixListsTF},
-		{name: "routemapclauses", terraformResourceType: "verity_route_map_clause", importer: i.importRouteMapClauses, tfGenerator: i.generateRouteMapClausesTF},
-		{name: "routemaps", terraformResourceType: "verity_route_map", importer: i.importRouteMaps, tfGenerator: i.generateRouteMapsTF},
-		{name: "sfpbreakouts", terraformResourceType: "verity_sfp_breakout", importer: i.importSfpBreakouts, tfGenerator: i.generateSfpBreakoutsTF},
-		{name: "sites", terraformResourceType: "verity_site", importer: i.importSites, tfGenerator: i.generateSitesTF},
-		{name: "pods", terraformResourceType: "verity_pod", importer: i.importPods, tfGenerator: i.generatePodsTF},
-		{name: "portacls", terraformResourceType: "verity_port_acl", importer: i.importPortAcls, tfGenerator: i.generatePortAclsTF},
-		{name: "groupingrules", terraformResourceType: "verity_grouping_rule", importer: i.importGroupingRules, tfGenerator: i.generateGroupingRulesTF},
-		{name: "thresholdgroups", terraformResourceType: "verity_threshold_group", importer: i.importThresholdGroups, tfGenerator: i.generateThresholdGroupsTF},
-		{name: "thresholds", terraformResourceType: "verity_threshold", importer: i.importThresholds, tfGenerator: i.generateThresholdsTF},
+		{name: "tenants", terraformResourceType: "verity_tenant", importer: func() (interface{}, error) { return i.importResource("tenants") }},
+		{name: "gateways", terraformResourceType: "verity_gateway", importer: func() (interface{}, error) { return i.importResource("gateways") }},
+		{name: "gatewayprofiles", terraformResourceType: "verity_gateway_profile", importer: func() (interface{}, error) { return i.importResource("gatewayprofiles") }},
+		{name: "ethportprofiles", terraformResourceType: "verity_eth_port_profile", importer: func() (interface{}, error) { return i.importResource("ethportprofiles") }},
+		{name: "lags", terraformResourceType: "verity_lag", importer: func() (interface{}, error) { return i.importResource("lags") }},
+		{name: "sflowcollectors", terraformResourceType: "verity_sflow_collector", importer: func() (interface{}, error) { return i.importResource("sflowcollectors") }},
+		{name: "diagnosticsprofiles", terraformResourceType: "verity_diagnostics_profile", importer: func() (interface{}, error) { return i.importResource("diagnosticsprofiles") }},
+		{name: "diagnosticsportprofiles", terraformResourceType: "verity_diagnostics_port_profile", importer: func() (interface{}, error) { return i.importResource("diagnosticsportprofiles") }},
+		{name: "policybasedroutingacl", terraformResourceType: "verity_pb_routing_acl", importer: func() (interface{}, error) { return i.importResource("policybasedroutingacl") }},
+		{name: "policybasedrouting", terraformResourceType: "verity_pb_routing", importer: func() (interface{}, error) { return i.importResource("policybasedrouting") }},
+		{name: "services", terraformResourceType: "verity_service", importer: func() (interface{}, error) { return i.importResource("services") }},
+		{name: "ethportsettings", terraformResourceType: "verity_eth_port_settings", importer: func() (interface{}, error) { return i.importResource("ethportsettings") }},
+		{name: "bundles", terraformResourceType: "verity_bundle", importer: func() (interface{}, error) { return i.importResource("bundles") }},
+		{name: "acls_ipv4", terraformResourceType: "verity_acl_v4", importer: i.importACLsIPv4},
+		{name: "acls_ipv6", terraformResourceType: "verity_acl_v6", importer: i.importACLsIPv6},
+		{name: "badges", terraformResourceType: "verity_badge", importer: func() (interface{}, error) { return i.importResource("badges") }},
+		{name: "authenticatedethports", terraformResourceType: "verity_authenticated_eth_port", importer: func() (interface{}, error) { return i.importResource("authenticatedethports") }},
+		{name: "devicecontrollers", terraformResourceType: "verity_device_controller", importer: func() (interface{}, error) { return i.importResource("devicecontrollers") }},
+		{name: "devicevoicesettings", terraformResourceType: "verity_device_voice_settings", importer: func() (interface{}, error) { return i.importResource("devicevoicesettings") }},
+		{name: "packetbroker", terraformResourceType: "verity_packet_broker", importer: func() (interface{}, error) { return i.importResource("packetbroker") }},
+		{name: "packetqueues", terraformResourceType: "verity_packet_queue", importer: func() (interface{}, error) { return i.importResource("packetqueues") }},
+		{name: "serviceportprofiles", terraformResourceType: "verity_service_port_profile", importer: func() (interface{}, error) { return i.importResource("serviceportprofiles") }},
+		{name: "voiceportprofiles", terraformResourceType: "verity_voice_port_profile", importer: func() (interface{}, error) { return i.importResource("voiceportprofiles") }},
+		{name: "spineplanes", terraformResourceType: "verity_spine_plane", importer: func() (interface{}, error) { return i.importResource("spineplanes") }},
+		{name: "switchpoints", terraformResourceType: "verity_switchpoint", importer: func() (interface{}, error) { return i.importResource("switchpoints") }},
+		{name: "aspathaccesslists", terraformResourceType: "verity_as_path_access_list", importer: func() (interface{}, error) { return i.importResource("aspathaccesslists") }},
+		{name: "communitylists", terraformResourceType: "verity_community_list", importer: func() (interface{}, error) { return i.importResource("communitylists") }},
+		{name: "devicesettings", terraformResourceType: "verity_device_settings", importer: func() (interface{}, error) { return i.importResource("devicesettings") }},
+		{name: "extendedcommunitylists", terraformResourceType: "verity_extended_community_list", importer: func() (interface{}, error) { return i.importResource("extendedcommunitylists") }},
+		{name: "ipv4lists", terraformResourceType: "verity_ipv4_list", importer: func() (interface{}, error) { return i.importResource("ipv4lists") }},
+		{name: "ipv4prefixlists", terraformResourceType: "verity_ipv4_prefix_list", importer: func() (interface{}, error) { return i.importResource("ipv4prefixlists") }},
+		{name: "ipv6lists", terraformResourceType: "verity_ipv6_list", importer: func() (interface{}, error) { return i.importResource("ipv6lists") }},
+		{name: "ipv6prefixlists", terraformResourceType: "verity_ipv6_prefix_list", importer: func() (interface{}, error) { return i.importResource("ipv6prefixlists") }},
+		{name: "routemapclauses", terraformResourceType: "verity_route_map_clause", importer: func() (interface{}, error) { return i.importResource("routemapclauses") }},
+		{name: "routemaps", terraformResourceType: "verity_route_map", importer: func() (interface{}, error) { return i.importResource("routemaps") }},
+		{name: "sfpbreakouts", terraformResourceType: "verity_sfp_breakout", importer: func() (interface{}, error) { return i.importResource("sfpbreakouts") }},
+		{name: "sites", terraformResourceType: "verity_site", importer: func() (interface{}, error) { return i.importResource("sites") }},
+		{name: "pods", terraformResourceType: "verity_pod", importer: func() (interface{}, error) { return i.importResource("pods") }},
+		{name: "portacls", terraformResourceType: "verity_port_acl", importer: func() (interface{}, error) { return i.importResource("portacls") }},
+		{name: "groupingrules", terraformResourceType: "verity_grouping_rule", importer: func() (interface{}, error) { return i.importResource("groupingrules") }},
+		{name: "thresholdgroups", terraformResourceType: "verity_threshold_group", importer: func() (interface{}, error) { return i.importResource("thresholdgroups") }},
+		{name: "thresholds", terraformResourceType: "verity_threshold", importer: func() (interface{}, error) { return i.importResource("thresholds") }},
 	}
 
 	// Filter tasks based on mode and API version compatibility
@@ -195,7 +688,6 @@ func (i *Importer) ImportAll(outputDir string) error {
 		name                  string
 		terraformResourceType string
 		importer              func() (interface{}, error)
-		tfGenerator           func(interface{}) (string, error)
 	}
 
 	for _, task := range allResourceTasks {
@@ -241,7 +733,17 @@ func (i *Importer) ImportAll(outputDir string) error {
 			continue
 		}
 
-		tfConfig, err := task.tfGenerator(data)
+		// Get the resource config key from the terraform type
+		resourceKey, ok := terraformTypeToResourceKey[task.terraformResourceType]
+		if !ok {
+			tflog.Error(i.ctx, "No resource config found for terraform type", map[string]interface{}{
+				"resource_name":  task.name,
+				"terraform_type": task.terraformResourceType,
+			})
+			return fmt.Errorf("no resource config found for %s", task.terraformResourceType)
+		}
+
+		tfConfig, err := i.generateResourceTFByName(resourceKey, data)
 		if err != nil {
 			tflog.Error(i.ctx, "Failed to generate Terraform config", map[string]interface{}{"resource_name": task.name, "error": err})
 			return fmt.Errorf("failed to generate terraform config for %s: %w", task.name, err)
@@ -261,6 +763,40 @@ func (i *Importer) ImportAll(outputDir string) error {
 	}
 
 	return nil
+}
+
+func (i *Importer) importResource(resourceName string) (interface{}, error) {
+	config, ok := importerRegistry[resourceName]
+	if !ok {
+		return nil, fmt.Errorf("no importer configuration found for %s", resourceName)
+	}
+
+	resp, err := config.apiCaller(i.ctx, i.client)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get %s: %v", resourceName, err)
+	}
+	defer resp.Body.Close()
+
+	result := make(map[string]map[string]map[string]interface{})
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode %s response: %v", resourceName, err)
+	}
+
+	data, ok := result[config.jsonKey]
+	if !ok {
+		// Return empty map if the key doesn't exist
+		return make(map[string]map[string]interface{}), nil
+	}
+
+	return data, nil
+}
+
+func (i *Importer) generateResourceTFByName(resourceKey string, data interface{}) (string, error) {
+	cfg, ok := resourceConfigs[resourceKey]
+	if !ok {
+		return "", fmt.Errorf("unknown resource type: %s", resourceKey)
+	}
+	return i.generateResourceTF(data, cfg)
 }
 
 func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (string, error) {
@@ -471,552 +1007,10 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 	return tfConfig.String(), nil
 }
 
-func (i *Importer) generateGatewayProfilesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:               "gateway_profile",
-		StageName:                  "gateway_profile_stage",
-		HeaderNameLineFormat:       "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:         universalObjectPropsHandler,
-		NestedBlockFields:          map[string]bool{"external_gateways": true},
-		AdditionalTopLevelSkipKeys: []string{"index"},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateEthPortProfilesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:               "eth_port_profile",
-		StageName:                  "eth_port_profile_stage",
-		HeaderNameLineFormat:       "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:         universalObjectPropsHandler,
-		NestedBlockFields:          map[string]bool{"services": true},
-		AdditionalTopLevelSkipKeys: []string{"index"},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateBundlesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:               "bundle",
-		StageName:                  "bundle_stage",
-		HeaderNameLineFormat:       "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:         universalObjectPropsHandler,
-		NestedBlockFields:          map[string]bool{"eth_port_paths": true, "user_services": true, "rg_services": true, "voice_port_profile_paths": true},
-		AdditionalTopLevelSkipKeys: []string{"index"},
-		NestedBlockStyles: map[string]NestedBlockIterationStyle{
-			"eth_port_paths":           {IterateAllAsMap: true},
-			"user_services":            {IterateAllAsMap: true},
-			"rg_services":              {IterateAllAsMap: true},
-			"voice_port_profile_paths": {IterateAllAsMap: true},
-		},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateTenantsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "tenant",
-		StageName:                 "tenant_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"route_tenants": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateLagsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "lag",
-		StageName:                    "lag_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateSflowCollectorsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "sflow_collector",
-		StageName:                    "sflow_collector_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateDiagnosticsProfilesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "diagnostics_profile",
-		StageName:                    "diagnostics_profile_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateDiagnosticsPortProfilesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "diagnostics_port_profile",
-		StageName:                    "diagnostics_port_profile_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateServicesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "service",
-		StageName:                 "service_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateEthPortSettingsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "eth_port_settings",
-		StageName:                 "eth_port_settings_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lldp_med": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateGatewaysTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "gateway",
-		StageName:                 "gateway_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"static_routes": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateBadgesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:               "badge",
-		StageName:                  "badge_stage",
-		HeaderNameLineFormat:       "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:         universalObjectPropsHandler,
-		AdditionalTopLevelSkipKeys: []string{},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateAuthenticatedEthPortsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "authenticated_eth_port",
-		StageName:                 "authenticated_eth_port_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"eth_ports": true, "object_properties": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateDeviceVoiceSettingsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "device_voice_settings",
-		StageName:                    "device_voice_setting_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-		NestedBlockFields:            map[string]bool{"codecs": true},
-		FieldMappings:                map[string]string{"Codecs": "codecs"},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generatePacketBrokerTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "packet_broker",
-		StageName:                 "packet_broker_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generatePacketQueuesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "packet_queue",
-		StageName:                 "packet_queue_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"pbit": true, "queue": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateServicePortProfilesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "service_port_profile",
-		StageName:                 "service_port_profile_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"services": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateVoicePortProfilesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "voice_port_profile",
-		StageName:                    "voice_port_profile_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: false,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateSwitchpointsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "switchpoint",
-		StageName:                    "switchpoint_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		NestedBlockFields:            map[string]bool{"badges": true, "children": true, "traffic_mirrors": true, "eths": true},
-		ObjectPropsNestedBlockFields: map[string]bool{"eths": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateDeviceControllersTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "device_controller",
-		StageName:                    "device_controller_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateACLsIPv4TF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "acl_v4",
-		StageName:                 "acl_v4_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateACLsIPv6TF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "acl_v6",
-		StageName:                 "acl_v6_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateAsPathAccessListsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "as_path_access_list",
-		StageName:                 "as_path_access_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateCommunityListsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "community_list",
-		StageName:                 "community_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateDeviceSettingsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "device_settings",
-		StageName:                 "device_settings_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateExtendedCommunityListsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "extended_community_list",
-		StageName:                 "extended_community_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateIpv4ListsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "ipv4_list",
-		StageName:                 "ipv4_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateIpv4PrefixListsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "ipv4_prefix_list",
-		StageName:                 "ipv4_prefix_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateIpv6ListsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "ipv6_list",
-		StageName:                 "ipv6_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateIpv6PrefixListsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "ipv6_prefix_list",
-		StageName:                 "ipv6_prefix_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateRouteMapClausesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "route_map_clause",
-		StageName:                 "route_map_clause_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateRouteMapsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "route_map",
-		StageName:                 "route_map_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"route_map_clauses": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateSfpBreakoutsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "sfp_breakout",
-		StageName:                 "sfp_breakout_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"breakout": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateSitesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:                 "site",
-		StageName:                    "site_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		NestedBlockFields:            map[string]bool{"islands": true, "pairs": true, "system_graphs": true},
-		ObjectPropsNestedBlockFields: map[string]bool{"system_graphs": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generatePodsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "pod",
-		StageName:                 "pod_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateSpinePlanesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "spine_plane",
-		StageName:                 "spine_plane_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generatePBRoutingACLTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "pb_routing_acl",
-		StageName:                 "pb_routing_acl_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generatePBRoutingTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "pb_routing",
-		StageName:                 "pb_routing_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"policy": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generatePortAclsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "port_acl",
-		StageName:                 "port_acl_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateGroupingRulesTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "grouping_rule",
-		StageName:                 "grouping_rule_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"rules": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateThresholdGroupsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "threshold_group",
-		StageName:                 "threshold_group_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"targets": true, "thresholds": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
-func (i *Importer) generateThresholdsTF(data interface{}) (string, error) {
-	cfg := ResourceConfig{
-		ResourceType:              "threshold",
-		StageName:                 "threshold_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"rules": true},
-	}
-	return i.generateResourceTF(data, cfg)
-}
-
 func (i *Importer) generateStagesTF() (string, error) {
 	var tfConfig strings.Builder
 
-	var apiVersionString string
-	defaultVersion := "6.4" // Default to 6.4
-
-	versionResp, err := i.client.VersionAPI.VersionGet(i.ctx).Execute()
-	if err != nil {
-		tflog.Warn(i.ctx, "Failed to get API version for stages, using default", map[string]interface{}{
-			"error":   err,
-			"default": defaultVersion,
-		})
-		apiVersionString = defaultVersion
-	} else {
-		defer versionResp.Body.Close()
-		versionBodyBytes, err := io.ReadAll(versionResp.Body)
-		if err != nil {
-			apiVersionString = defaultVersion
-		} else {
-
-			var directVersion string
-			if err := json.Unmarshal(versionBodyBytes, &directVersion); err == nil && directVersion != "" {
-				apiVersionString = directVersion
-			} else {
-				var versionData struct {
-					Version string `json:"version"`
-				}
-				if err := json.Unmarshal(versionBodyBytes, &versionData); err != nil {
-					apiVersionString = defaultVersion
-				} else if versionData.Version == "" {
-					apiVersionString = defaultVersion
-				} else {
-					apiVersionString = versionData.Version
-				}
-			}
-		}
-	}
-
+	apiVersionString := i.getAPIVersion()
 	tflog.Info(i.ctx, "Generating stages for mode and version", map[string]interface{}{
 		"mode":    i.Mode,
 		"version": apiVersionString,
@@ -1168,346 +1162,6 @@ func (i *Importer) generateStagesTF() (string, error) {
 	return tfConfig.String(), nil
 }
 
-func (i *Importer) importEthPortProfiles() (interface{}, error) {
-	resp, err := i.client.EthPortProfilesAPI.EthportprofilesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get ethport profiles: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		EthPort map[string]map[string]interface{} `json:"eth_port_profile_"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode ethport profiles response: %v", err)
-	}
-
-	return result.EthPort, nil
-}
-
-func (i *Importer) importTenants() (interface{}, error) {
-	resp, err := i.client.TenantsAPI.TenantsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get tenants: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Tenant map[string]map[string]interface{} `json:"tenant"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode tenants response: %v", err)
-	}
-
-	return result.Tenant, nil
-}
-
-func (i *Importer) importGatewayProfiles() (interface{}, error) {
-	resp, err := i.client.GatewayProfilesAPI.GatewayprofilesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get gateway profiles: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		GatewayProfile map[string]map[string]interface{} `json:"gateway_profile"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode gateway profiles response: %v", err)
-	}
-
-	return result.GatewayProfile, nil
-}
-
-func (i *Importer) importLags() (interface{}, error) {
-	resp, err := i.client.LAGsAPI.LagsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get lags: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		LaggGroup map[string]map[string]interface{} `json:"lag"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode lags response: %v", err)
-	}
-
-	return result.LaggGroup, nil
-}
-
-func (i *Importer) importSflowCollectors() (interface{}, error) {
-	resp, err := i.client.SFlowCollectorsAPI.SflowcollectorsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get sflow collectors: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		SflowCollector map[string]map[string]interface{} `json:"sflow_collector"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode sflow collectors response: %v", err)
-	}
-
-	return result.SflowCollector, nil
-}
-
-func (i *Importer) importDiagnosticsProfiles() (interface{}, error) {
-	resp, err := i.client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get diagnostics profiles: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		DiagnosticsProfile map[string]map[string]interface{} `json:"diagnostics_profile"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode diagnostics profiles response: %v", err)
-	}
-
-	return result.DiagnosticsProfile, nil
-}
-
-func (i *Importer) importDiagnosticsPortProfiles() (interface{}, error) {
-	resp, err := i.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get diagnostics port profiles: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		DiagnosticsPortProfile map[string]map[string]interface{} `json:"diagnostics_port_profile"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode diagnostics port profiles response: %v", err)
-	}
-
-	return result.DiagnosticsPortProfile, nil
-}
-
-func (i *Importer) importServices() (interface{}, error) {
-	resp, err := i.client.ServicesAPI.ServicesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get services: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Service map[string]map[string]interface{} `json:"service"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode services response: %v", err)
-	}
-
-	return result.Service, nil
-}
-
-func (i *Importer) importEthPortSettings() (interface{}, error) {
-	resp, err := i.client.EthPortSettingsAPI.EthportsettingsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get ethport settings: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		EthPortSetting map[string]map[string]interface{} `json:"eth_port_settings"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode eth port settings response: %v", err)
-	}
-
-	return result.EthPortSetting, nil
-}
-
-func (i *Importer) importBundles() (interface{}, error) {
-	resp, err := i.client.BundlesAPI.BundlesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get bundles: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Bundle map[string]map[string]interface{} `json:"endpoint_bundle"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode bundles response: %v", err)
-	}
-
-	return result.Bundle, nil
-}
-
-func (i *Importer) importGateways() (interface{}, error) {
-	resp, err := i.client.GatewaysAPI.GatewaysGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get gateways: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Gateway map[string]map[string]interface{} `json:"gateway"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode gateways response: %v", err)
-	}
-
-	return result.Gateway, nil
-}
-
-func (i *Importer) importBadges() (interface{}, error) {
-	resp, err := i.client.BadgesAPI.BadgesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get badges: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Badge map[string]map[string]interface{} `json:"badge"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode badges response: %v", err)
-	}
-
-	return result.Badge, nil
-}
-
-func (i *Importer) importAuthenticatedEthPorts() (interface{}, error) {
-	resp, err := i.client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get authenticated eth ports: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		AuthenticatedEthPort map[string]map[string]interface{} `json:"authenticated_eth_port"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode authenticated eth ports response: %v", err)
-	}
-
-	return result.AuthenticatedEthPort, nil
-}
-
-func (i *Importer) importDeviceVoiceSettings() (interface{}, error) {
-	resp, err := i.client.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get device voice settings: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		DeviceVoiceSettings map[string]map[string]interface{} `json:"device_voice_settings"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode device voice settings response: %v", err)
-	}
-
-	return result.DeviceVoiceSettings, nil
-}
-
-func (i *Importer) importPacketBroker() (interface{}, error) {
-	resp, err := i.client.PacketBrokerAPI.PacketbrokerGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get packet broker: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		PacketBroker map[string]map[string]interface{} `json:"pb_egress_profile"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode packet broker response: %v", err)
-	}
-
-	return result.PacketBroker, nil
-}
-
-func (i *Importer) importPacketQueues() (interface{}, error) {
-	resp, err := i.client.PacketQueuesAPI.PacketqueuesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get packet queues: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		PacketQueue map[string]map[string]interface{} `json:"packet_queue"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode packet queues response: %v", err)
-	}
-
-	return result.PacketQueue, nil
-}
-
-func (i *Importer) importServicePortProfiles() (interface{}, error) {
-	resp, err := i.client.ServicePortProfilesAPI.ServiceportprofilesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get service port profiles: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		ServicePortProfile map[string]map[string]interface{} `json:"service_port_profile"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode service port profiles response: %v", err)
-	}
-
-	return result.ServicePortProfile, nil
-}
-
-func (i *Importer) importVoicePortProfiles() (interface{}, error) {
-	resp, err := i.client.VoicePortProfilesAPI.VoiceportprofilesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get voice port profiles: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		VoicePortProfile map[string]map[string]interface{} `json:"voice_port_profiles"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode voice port profiles response: %v", err)
-	}
-
-	return result.VoicePortProfile, nil
-}
-
-func (i *Importer) importSwitchpoints() (interface{}, error) {
-	resp, err := i.client.SwitchpointsAPI.SwitchpointsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get switchpoints: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Switchpoint map[string]map[string]interface{} `json:"switchpoint"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode switchpoints response: %v", err)
-	}
-
-	return result.Switchpoint, nil
-}
-
-func (i *Importer) importDeviceControllers() (interface{}, error) {
-	resp, err := i.client.DeviceControllersAPI.DevicecontrollersGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get device controllers: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		DeviceController map[string]map[string]interface{} `json:"device_controller"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode device controllers response: %v", err)
-	}
-
-	return result.DeviceController, nil
-}
-
 func (i *Importer) importACLsIPv4() (interface{}, error) {
 	return i.importACLs("4")
 }
@@ -1550,346 +1204,6 @@ func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface
 
 		return result.IpFilter, nil
 	}
-}
-
-func (i *Importer) importAsPathAccessLists() (interface{}, error) {
-	resp, err := i.client.ASPathAccessListsAPI.AspathaccesslistsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get as path access lists: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		AsPathAccessList map[string]map[string]interface{} `json:"as_path_access_list"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode as path access lists response: %v", err)
-	}
-
-	return result.AsPathAccessList, nil
-}
-
-func (i *Importer) importCommunityLists() (interface{}, error) {
-	resp, err := i.client.CommunityListsAPI.CommunitylistsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get community lists: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		CommunityList map[string]map[string]interface{} `json:"community_list"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode community lists response: %v", err)
-	}
-
-	return result.CommunityList, nil
-}
-
-func (i *Importer) importDeviceSettings() (interface{}, error) {
-	resp, err := i.client.DeviceSettingsAPI.DevicesettingsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get device settings: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		DeviceSettings map[string]map[string]interface{} `json:"eth_device_profiles"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode device settings response: %v", err)
-	}
-
-	return result.DeviceSettings, nil
-}
-
-func (i *Importer) importExtendedCommunityLists() (interface{}, error) {
-	resp, err := i.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get extended community lists: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		ExtendedCommunityList map[string]map[string]interface{} `json:"extended_community_list"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode extended community lists response: %v", err)
-	}
-
-	return result.ExtendedCommunityList, nil
-}
-
-func (i *Importer) importIpv4Lists() (interface{}, error) {
-	resp, err := i.client.IPv4ListFiltersAPI.Ipv4listsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get ipv4 list filters: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Ipv4ListFilter map[string]map[string]interface{} `json:"ipv4_list_filter"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode ipv4 list filters response: %v", err)
-	}
-
-	return result.Ipv4ListFilter, nil
-}
-
-func (i *Importer) importIpv4PrefixLists() (interface{}, error) {
-	resp, err := i.client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get ipv4 prefix lists: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Ipv4PrefixList map[string]map[string]interface{} `json:"ipv4_prefix_list"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode ipv4 prefix lists response: %v", err)
-	}
-
-	return result.Ipv4PrefixList, nil
-}
-
-func (i *Importer) importIpv6Lists() (interface{}, error) {
-	resp, err := i.client.IPv6ListFiltersAPI.Ipv6listsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get ipv6 list filters: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Ipv6ListFilter map[string]map[string]interface{} `json:"ipv6_list_filter"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode ipv6 list filters response: %v", err)
-	}
-
-	return result.Ipv6ListFilter, nil
-}
-
-func (i *Importer) importIpv6PrefixLists() (interface{}, error) {
-	resp, err := i.client.IPv6PrefixListsAPI.Ipv6prefixlistsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get ipv6 prefix lists: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Ipv6PrefixList map[string]map[string]interface{} `json:"ipv6_prefix_list"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode ipv6 prefix lists response: %v", err)
-	}
-
-	return result.Ipv6PrefixList, nil
-}
-
-func (i *Importer) importRouteMapClauses() (interface{}, error) {
-	resp, err := i.client.RouteMapClausesAPI.RoutemapclausesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get route map clauses: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		RouteMapClause map[string]map[string]interface{} `json:"route_map_clause"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode route map clauses response: %v", err)
-	}
-
-	return result.RouteMapClause, nil
-}
-
-func (i *Importer) importRouteMaps() (interface{}, error) {
-	resp, err := i.client.RouteMapsAPI.RoutemapsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get route maps: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		RouteMap map[string]map[string]interface{} `json:"route_map"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode route maps response: %v", err)
-	}
-
-	return result.RouteMap, nil
-}
-
-func (i *Importer) importSfpBreakouts() (interface{}, error) {
-	resp, err := i.client.SFPBreakoutsAPI.SfpbreakoutsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get sfp breakouts: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		SfpBreakouts map[string]map[string]interface{} `json:"sfp_breakouts"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode sfp breakouts response: %v", err)
-	}
-
-	return result.SfpBreakouts, nil
-}
-
-func (i *Importer) importSites() (interface{}, error) {
-	resp, err := i.client.SitesAPI.SitesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get sites: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Site map[string]map[string]interface{} `json:"site"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode sites response: %v", err)
-	}
-
-	return result.Site, nil
-}
-
-func (i *Importer) importPods() (interface{}, error) {
-	resp, err := i.client.PodsAPI.PodsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get pods: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Pod map[string]map[string]interface{} `json:"pod"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode pods response: %v", err)
-	}
-
-	return result.Pod, nil
-}
-
-func (i *Importer) importSpinePlanes() (interface{}, error) {
-	resp, err := i.client.SpinePlanesAPI.SpineplanesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get spine planes: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		SpinePlane map[string]map[string]interface{} `json:"spine_plane"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode spine planes response: %v", err)
-	}
-
-	return result.SpinePlane, nil
-}
-
-func (i *Importer) importPBRoutingACL() (interface{}, error) {
-	resp, err := i.client.PBRoutingACLAPI.PolicybasedroutingaclGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get policy-based routing ACLs: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		PbRoutingAcl map[string]map[string]interface{} `json:"pb_routing_acl"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode policy-based routing ACLs response: %v", err)
-	}
-
-	return result.PbRoutingAcl, nil
-}
-
-func (i *Importer) importPBRouting() (interface{}, error) {
-	resp, err := i.client.PBRoutingAPI.PolicybasedroutingGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get policy-based routing: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		PbRouting map[string]map[string]interface{} `json:"pb_routing"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode policy-based routing response: %v", err)
-	}
-
-	return result.PbRouting, nil
-}
-
-func (i *Importer) importPortAcls() (interface{}, error) {
-	resp, err := i.client.PortACLsAPI.PortaclsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get port ACLs: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		PortAcl map[string]map[string]interface{} `json:"port_acl"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode port ACLs response: %v", err)
-	}
-
-	return result.PortAcl, nil
-}
-
-func (i *Importer) importGroupingRules() (interface{}, error) {
-	resp, err := i.client.GroupingRulesAPI.GroupingrulesGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get grouping rules: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		GroupingRule map[string]map[string]interface{} `json:"grouping_rules"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode grouping rules response: %v", err)
-	}
-
-	return result.GroupingRule, nil
-}
-
-func (i *Importer) importThresholdGroups() (interface{}, error) {
-	resp, err := i.client.ThresholdGroupsAPI.ThresholdgroupsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get threshold groups: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		ThresholdGroup map[string]map[string]interface{} `json:"threshold_group"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode threshold groups response: %v", err)
-	}
-
-	return result.ThresholdGroup, nil
-}
-
-func (i *Importer) importThresholds() (interface{}, error) {
-	resp, err := i.client.ThresholdsAPI.ThresholdsGet(i.ctx).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get thresholds: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var result struct {
-		Threshold map[string]map[string]interface{} `json:"threshold"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode thresholds response: %v", err)
-	}
-
-	return result.Threshold, nil
 }
 
 // universalObjectPropsHandler dynamically processes all fields present in the object_properties
