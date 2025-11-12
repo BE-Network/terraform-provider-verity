@@ -89,7 +89,7 @@ func (p *verityProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Sensitive:   true,
 			},
 			"mode": schema.StringAttribute{
-				Description: "Mode to operate in: 'datacenter' (default) or 'campus'",
+				Description: "Mode to operate in: 'datacenter' or 'campus'",
 				Optional:    true,
 			},
 		},
@@ -128,11 +128,16 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		tflog.Debug(ctx, "Mode not provided in configuration, checking environment variable")
 	}
 
-	// Default to 'datacenter' mode if not specified
 	if mode == "" {
-		mode = "datacenter"
-		tflog.Debug(ctx, "Mode not provided in configuration or environment, defaulting to 'datacenter'")
-	} else if mode != "datacenter" && mode != "campus" {
+		resp.Diagnostics.AddError(
+			"Missing Mode Configuration",
+			"The 'mode' parameter is required and must be set to either 'datacenter' or 'campus'. "+
+				"Please specify the mode in your provider configuration block or set the TF_VAR_mode environment variable.",
+		)
+		return
+	}
+
+	if mode != "datacenter" && mode != "campus" {
 		resp.Diagnostics.AddError(
 			"Invalid Mode",
 			"The mode must be either 'datacenter' or 'campus'. "+
