@@ -162,14 +162,6 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 }
 
 func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
-	skipFiles := map[string]bool{
-		"provider.tf":      true,
-		"versions.tf":      true,
-		"variables.tf":     true,
-		"terraform.tfvars": true,
-		"import_blocks.tf": true,
-	}
-
 	outputFile := filepath.Join(dirPath, "import_blocks.tf")
 
 	file, err := os.Create(outputFile)
@@ -182,55 +174,52 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 		return "", fmt.Errorf("error writing to output file: %w", err)
 	}
 
-	resourceOrder := []string{
-		"verity_service",
-		"verity_eth_port_profile",
-		"verity_authenticated_eth_port",
-		"verity_device_voice_settings",
-		"verity_packet_queue",
-		"verity_service_port_profile",
-		"verity_voice_port_profile",
-		"verity_eth_port_settings",
-		"verity_device_settings",
-		"verity_lag",
-		"verity_sflow_collector",
-		"verity_diagnostics_profile",
-		"verity_diagnostics_port_profile",
-		"verity_bundle",
-		"verity_acl_v4",
-		"verity_acl_v6",
-		"verity_ipv4_list",
-		"verity_ipv6_list",
-		"verity_port_acl",
-		"verity_badge",
-		"verity_switchpoint",
-		"verity_device_controller",
-		"verity_site",
-		"verity_tenant",
-		"verity_gateway_profile",
-		"verity_gateway",
-		"verity_ipv4_prefix_list",
-		"verity_ipv6_prefix_list",
-		"verity_packet_broker",
-		"verity_pod",
-		"verity_as_path_access_list",
-		"verity_community_list",
-		"verity_extended_community_list",
-		"verity_route_map_clause",
-		"verity_route_map",
-		"verity_pb_routing",
-		"verity_pb_routing_acl",
-		"verity_spine_plane",
-		"verity_sfp_breakout",
-		"verity_grouping_rule",
-		"verity_threshold_group",
-		"verity_threshold",
+	supportedResources := map[string]struct{}{
+		"verity_service":                  {},
+		"verity_eth_port_profile":         {},
+		"verity_authenticated_eth_port":   {},
+		"verity_device_voice_settings":    {},
+		"verity_packet_queue":             {},
+		"verity_service_port_profile":     {},
+		"verity_voice_port_profile":       {},
+		"verity_eth_port_settings":        {},
+		"verity_device_settings":          {},
+		"verity_lag":                      {},
+		"verity_sflow_collector":          {},
+		"verity_diagnostics_profile":      {},
+		"verity_diagnostics_port_profile": {},
+		"verity_bundle":                   {},
+		"verity_acl_v4":                   {},
+		"verity_acl_v6":                   {},
+		"verity_ipv4_list":                {},
+		"verity_ipv6_list":                {},
+		"verity_port_acl":                 {},
+		"verity_badge":                    {},
+		"verity_switchpoint":              {},
+		"verity_device_controller":        {},
+		"verity_site":                     {},
+		"verity_tenant":                   {},
+		"verity_gateway_profile":          {},
+		"verity_gateway":                  {},
+		"verity_ipv4_prefix_list":         {},
+		"verity_ipv6_prefix_list":         {},
+		"verity_packet_broker":            {},
+		"verity_pod":                      {},
+		"verity_as_path_access_list":      {},
+		"verity_community_list":           {},
+		"verity_extended_community_list":  {},
+		"verity_route_map_clause":         {},
+		"verity_route_map":                {},
+		"verity_pb_routing":               {},
+		"verity_pb_routing_acl":           {},
+		"verity_spine_plane":              {},
+		"verity_sfp_breakout":             {},
+		"verity_grouping_rule":            {},
+		"verity_threshold_group":          {},
+		"verity_threshold":                {},
 	}
 
-	importBlocks := make(map[string]string)
-	for _, res := range resourceOrder {
-		importBlocks[res] = ""
-	}
+	importBlocks := make(map[string][]string)
 
 	entries, err := os.ReadDir(dirPath)
 	if err != nil {
@@ -247,13 +236,23 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 			continue
 		}
 
-		if skipFiles[entry.Name()] {
-			tflog.Info(ctx, "Skipping file", map[string]any{"file": entry.Name()})
+		if entry.Name() == "import_blocks.tf" {
+			continue
+		}
+
+		filePath := filepath.Join(dirPath, entry.Name())
+
+		hasVerityResources, err := containsVerityResources(filePath)
+		if err != nil {
+			return "", fmt.Errorf("error checking file %s: %w", entry.Name(), err)
+		}
+
+		if !hasVerityResources {
+			tflog.Info(ctx, "Skipping file (no Verity resources)", map[string]any{"file": entry.Name()})
 			continue
 		}
 
 		tflog.Info(ctx, "Processing file", map[string]any{"file": entry.Name()})
-		filePath := filepath.Join(dirPath, entry.Name())
 
 		resourceBlocks, err := findResourceBlocks(filePath)
 		if err != nil {
@@ -267,6 +266,16 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 			}
 
 			resourceType := resourceMatches[1]
+
+			// Only process supported Verity resources
+			if _, isSupported := supportedResources[resourceType]; !isSupported {
+				tflog.Debug(ctx, "Skipping unsupported resource type", map[string]any{
+					"resource_type": resourceType,
+					"file":          entry.Name(),
+				})
+				continue
+			}
+
 			hclName := resourceMatches[2]
 
 			nameValue := hclName
@@ -275,34 +284,52 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 				nameValue = nameMatches[1]
 			}
 
-			importBlock := fmt.Sprintf("import {\n  to = %s.%s\n  id = \"%s\"\n}\n\n",
+			importBlock := fmt.Sprintf("import {\n  to = %s.%s\n  id = \"%s\"\n}\n",
 				resourceType, hclName, nameValue)
 
-			if _, exists := importBlocks[resourceType]; exists {
-				importBlocks[resourceType] += importBlock
-			}
+			importBlocks[resourceType] = append(importBlocks[resourceType], importBlock)
 		}
 	}
 
-	for _, resourceType := range resourceOrder {
-		blocks := importBlocks[resourceType]
-		if blocks != "" {
-			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n%s", resourceType, blocks)); err != nil {
-				return "", fmt.Errorf("error writing to output file: %w", err)
-			}
-			delete(importBlocks, resourceType)
-		}
-	}
-
+	// Write all collected import blocks grouped by resource type
 	for resourceType, blocks := range importBlocks {
-		if blocks != "" {
-			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n%s", resourceType, blocks)); err != nil {
+		if len(blocks) > 0 {
+			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n", resourceType)); err != nil {
 				return "", fmt.Errorf("error writing to output file: %w", err)
+			}
+			for _, block := range blocks {
+				if _, err := file.WriteString(block + "\n"); err != nil {
+					return "", fmt.Errorf("error writing to output file: %w", err)
+				}
 			}
 		}
 	}
 
 	return outputFile, nil
+}
+
+func containsVerityResources(filePath string) (bool, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return false, fmt.Errorf("error opening file: %w", err)
+	}
+	defer file.Close()
+
+	verityResourcePattern := regexp.MustCompile(`resource\s+"verity_`)
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if verityResourcePattern.MatchString(line) {
+			return true, nil
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return false, fmt.Errorf("error reading file: %w", err)
+	}
+
+	return false, nil
 }
 
 func findResourceBlocks(filePath string) ([]string, error) {
