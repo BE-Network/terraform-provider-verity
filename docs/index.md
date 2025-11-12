@@ -113,7 +113,7 @@ You don't have to invoke this data source manually; you can instead run the `imp
 
 ```hcl
 data "verity_state_importer" "import" {
-  output_dir = var.config_dir  # defaults to current working directory if not specified
+  output_dir = "/path/to/directory"  # defaults to current working directory if not specified
 }
 ```
 

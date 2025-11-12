@@ -6,8 +6,7 @@ The `verity_state_importer` data source provides functionality to import existin
 
 ```hcl
 data "verity_state_importer" "import" {
-  # If omitted or empty, the current working directory is used.
-  output_dir = "/path/to/dir"
+  output_dir = "/path/to/dir" # defaults to current working directory if not specified
 }
 ```
 
