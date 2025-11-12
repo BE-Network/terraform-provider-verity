@@ -1,9 +1,5 @@
 #Requires -Version 5.0
 
-param(
-    [switch]$Local
-)
-
 function Log {
     param ([string]$message, [string]$color = "White")
     Write-Host "[$([DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss'))] $message" -ForegroundColor $color
@@ -12,23 +8,9 @@ function Log {
 Log "Verity State Importer Script" -color Cyan
 Log "============================" -color Cyan
 
-if ($Local) {
-    Log "[INFO] Running in local provider mode - will skip terraform init" -color Yellow
-}
-
 if (-not (Get-Command terraform -ErrorAction SilentlyContinue)) {
     Log "[ERROR] Terraform command not found. Please install Terraform." -color Red
     exit 1
-}
-
-# Only run terraform init if not in local mode
-if (-not $Local) {
-    Log "[INFO] Running terraform init..." -color Cyan
-    terraform init
-    if ($LASTEXITCODE -ne 0) {
-        Log "[ERROR] Terraform init failed. Exiting." -color Red
-        exit 1
-    }
 }
 
 # Find the main terraform file with the Verity provider

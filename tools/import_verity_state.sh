@@ -7,14 +7,6 @@ function log() {
 log "Verity State Importer Script"
 log "============================"
 
-LOCAL_MODE=false
-for arg in "$@"; do
-  if [ "$arg" == "--local" ]; then
-    LOCAL_MODE=true
-    log "[INFO] Running in local provider mode - will skip terraform init"
-  fi
-done
-
 if ! command -v terraform &> /dev/null; then
   log "[ERROR] Terraform command not found. Please install Terraform."
   exit 1
@@ -23,16 +15,6 @@ fi
 if ! command -v awk &> /dev/null; then
   log "[ERROR] awk command not found. This script requires awk to run properly."
   exit 1
-fi
-
-# Only run terraform init if not in local mode
-if [ "$LOCAL_MODE" = false ]; then
-  log "[INFO] Running terraform init..."
-  terraform init
-  if [ $? -ne 0 ]; then
-    log "[ERROR] Terraform init failed. Exiting."
-    exit 1
-  fi
 fi
 
 # Find the main terraform file with the Verity provider

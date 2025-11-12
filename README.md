@@ -311,8 +311,8 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 # Production
 .terraform/providers/registry.terraform.io/be-network/verity/<VERSION>/<OS>_<ARCH>/tools/import_verity_state.sh
 
-# Local (skip terraform init)
-../tools/import_verity_state.sh --local
+# Local development
+../tools/import_verity_state.sh
 ```
 
 > **Tip:** For production, you can always locate the `tools` folder inside the provider directory (where the provider binary is installed). Use your file browser or terminal to navigate to the correct folder, then right-click the script and choose "Copy Path" to avoid manually typing the full path.
@@ -323,8 +323,8 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 # Production
 .terraform\providers\registry.terraform.io\be-network\verity\<VERSION>\<OS>_<ARCH>\tools\import_verity_state.ps1
 
-# Local (skip terraform init)
-..\tools\import_verity_state.ps1 -Local
+# Local development
+..\tools\import_verity_state.ps1
 ```
 
 > **Tip:** On Windows, you can use File Explorer to navigate to the provider's `tools` folder, then right-click the script and select "Copy as path" to get the exact path for your command.
