@@ -20,7 +20,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/BE-Network/verity",
+		Address: "registry.terraform.io/providers/BE-Network/verity",
 		Debug:   debug,
 	}
 	err := providerserver.Serve(context.Background(), provider.New(version), opts)
