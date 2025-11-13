@@ -29,6 +29,7 @@ The importer writes multiple `.tf` files into the output directory. The importer
 - sflowcollectors.tf
 - diagnosticsprofiles.tf
 - diagnosticsportprofiles.tf
+- policybasedroutingacl.tf
 - policybasedrouting.tf
 - services.tf
 - ethportsettings.tf
@@ -59,6 +60,9 @@ The importer writes multiple `.tf` files into the output directory. The importer
 - sites.tf
 - pods.tf
 - portacls.tf
+- groupingrules.tf
+- thresholdgroups.tf
+- thresholds.tf
 
 Note: Not all files will be created. Tasks are filtered by provider mode and API version compatibility, and the importer skips writing a file if the generated Terraform configuration is empty.
 

@@ -211,66 +211,74 @@ Each imported resource is configured with the appropriate `depends_on` attribute
 Since API version 6.5, the provider supports two modes: **campus** and **datacenter**. Each mode has its own resource dependency ordering for creation and update operations:
 
 **Order for CAMPUS:**
-1. PB Routing ACL
-2. PB Routing
-3. Services
-4. Eth Port Profiles
-5. Authenticated Eth-Ports
-6. Device Voice Settings
-7. Packet Queues
-8. Service Port Profiles
-9. Voice-Port Profiles
-10. Eth Port Settings
-11. Device Settings
-12. Lags
-13. SFlow Collectors
-14. Diagnostics Profiles
-15. Diagnostics Port Profiles
-16. Bundles
-17. ACLs
-18. IPv4 Lists
-19. IPv6 Lists
-20. Port ACLs
-21. Badges
-22. Switchpoints
-23. Device Controllers
-24. Sites
+1. IPv4 Lists
+2. IPv6 Lists
+3. ACLs (IPv4)
+4. ACLs (IPv6)
+5. PB Routing ACL
+6. PB Routing
+7. Port ACLs
+8. Services
+9. Eth Port Profiles
+10. SFlow Collectors
+11. Packet Queues
+12. Service Port Profiles
+13. Diagnostics Port Profiles
+14. Device Voice Settings
+15. Authenticated Eth-Ports
+16. Diagnostics Profiles
+17. Eth Port Settings
+18. Voice-Port Profiles
+19. Device Settings
+20. Lags
+21. Bundles
+22. Badges
+23. Switchpoints
+24. Thresholds
+25. Grouping Rules
+26. Threshold Groups
+27. Sites
+28. Device Controllers
 
 **Order for DATACENTER:**
-1. Tenants
-2. Gateways
-3. Gateway Profiles
-4. PB Routing ACL
-5. PB Routing
-6. Services
-7. Packet Queues
-8. Eth Port Profiles
-9. Eth Port Settings
-10. Device Settings
-11. Lags
-12. SFlow Collectors
-13. Diagnostics Profiles
-14. Diagnostics Port Profiles
-15. Bundles
-16. ACLs
-17. IPv4 Prefix Lists
-18. IPv6 Prefix Lists
-19. IPv4 Lists
-20. IPv6 Lists
-21. PacketBroker
-22. Port ACLs
-23. Badges
-24. Pods
-25. Spine Planes
-26. Switchpoints
-27. Device Controllers
-28. AS Path Access Lists
-29. Community Lists
-30. Extended Community Lists
-31. Route Map Clauses
-32. Route Maps
-33. SFP Breakouts
-34. Sites
+1. SFP Breakouts
+2. IPv6 Prefix Lists
+3. Community Lists
+4. IPv4 Prefix Lists
+5. Extended Community Lists
+6. AS Path Access Lists
+7. Route Map Clauses
+8. ACLs (IPv6)
+9. ACLs (IPv4)
+10. Route Maps
+11. PB Routing ACL
+12. Tenants
+13. PB Routing
+14. IPv4 Lists
+15. IPv6 Lists
+16. Services
+17. Port ACLs
+18. Packet Broker
+19. Eth Port Profiles
+20. Packet Queues
+21. SFlow Collectors
+22. Gateways
+23. Lags
+24. Eth Port Settings
+25. Diagnostics Profiles
+26. Gateway Profiles
+27. Diagnostics Port Profiles
+28. Bundles
+29. Pods
+30. Badges
+31. Spine Planes
+32. Switchpoints
+33. Device Settings
+34. Thresholds
+35. Grouping Rules
+36. Threshold Groups
+37. Sites
+38. Device Controllers
 
 For delete operations, the order is automatically reversed to ensure proper dependency handling when removing resources.
 
