@@ -1320,6 +1320,138 @@ func (b *BulkOperationManager) getOperationCount(resourceType, operationType str
 	return 0
 }
 
+// checks if we need to apply the circular reference fix for route_map_clause and tenant resources
+func (b *BulkOperationManager) detectCircularReferenceScenario(ctx context.Context) (bool, map[string]interface{}) {
+	b.mutex.Lock()
+	defer b.mutex.Unlock()
+
+	// Check if both route_map_clause and tenant have PUT operations
+	routeMapClauseOps := b.resources["route_map_clause"]
+	tenantOps := b.resources["tenant"]
+
+	if routeMapClauseOps == nil || tenantOps == nil {
+		return false, nil
+	}
+
+	if len(routeMapClauseOps.Put) == 0 || len(tenantOps.Put) == 0 {
+		return false, nil
+	}
+
+	// Check if any route_map_clause has non-empty match_vrf
+	affectedClauses := make(map[string]interface{})
+
+	// Check PUT operations
+	for name, clauseData := range routeMapClauseOps.Put {
+		if b.hasNonEmptyMatchVrf(clauseData) {
+			affectedClauses[name] = clauseData
+		}
+	}
+
+	// Also check PATCH operations for match_vrf changes
+	if len(routeMapClauseOps.Patch) > 0 && len(tenantOps.Put) > 0 {
+		for name, patchData := range routeMapClauseOps.Patch {
+			if b.hasNonEmptyMatchVrf(patchData) {
+				affectedClauses[name] = patchData
+			}
+		}
+	}
+
+	needsFix := len(affectedClauses) > 0
+
+	if needsFix {
+		tflog.Info(ctx, fmt.Sprintf("Detected circular reference scenario: %d route_map_clause(s) with non-empty match_vrf", len(affectedClauses)))
+		tflog.Debug(ctx, "Circular reference detection details", map[string]interface{}{
+			"route_map_clause_put_count":   len(routeMapClauseOps.Put),
+			"route_map_clause_patch_count": len(routeMapClauseOps.Patch),
+			"tenant_put_count":             len(tenantOps.Put),
+			"affected_clauses_count":       len(affectedClauses),
+		})
+	}
+
+	return needsFix, affectedClauses
+}
+
+func (b *BulkOperationManager) hasNonEmptyMatchVrf(data interface{}) bool {
+	clauseMap, ok := data.(map[string]interface{})
+	if !ok {
+		jsonData, err := json.Marshal(data)
+		if err != nil {
+			return false
+		}
+		var tempMap map[string]interface{}
+		if err := json.Unmarshal(jsonData, &tempMap); err != nil {
+			return false
+		}
+		clauseMap = tempMap
+	}
+
+	// Check match_vrf field
+	if matchVrf, exists := clauseMap["match_vrf"]; exists {
+		if matchVrfStr, ok := matchVrf.(string); ok && matchVrfStr != "" {
+			return true
+		} else if matchVrfPtr, ok := matchVrf.(*string); ok && matchVrfPtr != nil && *matchVrfPtr != "" {
+			return true
+		}
+	}
+
+	return false
+}
+
+// creates a copy of route_map_clause data with match_vrf set to empty
+func (b *BulkOperationManager) createRouteMapClauseWithEmptyMatchVrf(originalData interface{}) interface{} {
+	jsonData, err := json.Marshal(originalData)
+	if err != nil {
+		return originalData
+	}
+
+	var result openapi.RoutemapclausesPutRequestRouteMapClauseValue
+	if err := json.Unmarshal(jsonData, &result); err != nil {
+		return originalData
+	}
+
+	// Set match_vrf to empty string
+	result.MatchVrf = openapi.PtrString("")
+
+	return result
+}
+
+// creates PATCH data with only match_vrf and match_vrf_ref_type_ fields
+func (b *BulkOperationManager) createMatchVrfPatchData(originalData interface{}) interface{} {
+	jsonData, err := json.Marshal(originalData)
+	if err != nil {
+		return nil
+	}
+
+	var dataMap map[string]interface{}
+	if err := json.Unmarshal(jsonData, &dataMap); err != nil {
+		return nil
+	}
+
+	patchData := openapi.RoutemapclausesPutRequestRouteMapClauseValue{}
+
+	if name, exists := dataMap["name"]; exists {
+		if nameStr, ok := name.(string); ok {
+			patchData.Name = openapi.PtrString(nameStr)
+		}
+	}
+
+	// Include match_vrf if it exists
+	if matchVrf, exists := dataMap["match_vrf"]; exists {
+		if matchVrfStr, ok := matchVrf.(string); ok {
+			patchData.MatchVrf = openapi.PtrString(matchVrfStr)
+		}
+	}
+
+	// Include match_vrf_ref_type_ if it exists
+	if matchVrfRefType, exists := dataMap["match_vrf_ref_type_"]; exists {
+		if matchVrfRefTypeStr, ok := matchVrfRefType.(string); ok {
+			patchData.MatchVrfRefType = openapi.PtrString(matchVrfRefTypeStr)
+		}
+	}
+
+	return patchData
+}
+
 func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnostics, bool) {
 	var diagnostics diag.Diagnostics
 	operationsPerformed := false
@@ -1364,7 +1496,32 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", b.getOperationCount("as_path_access_list", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "as_path_access_list", "PUT") }, "AS Path Access List") {
 		return diagnostics, operationsPerformed
 	}
-	// 7. route_map_clause
+
+	// BEFORE executing route_map_clause PUT, check for circular reference scenario
+	needsCircularRefFix, affectedClauses := b.detectCircularReferenceScenario(ctx)
+	var originalRouteMapClauseData map[string]interface{}
+
+	if needsCircularRefFix {
+		tflog.Info(ctx, "Applying circular reference fix for route_map_clause and tenant")
+
+		// Save original route_map_clause PUT data
+		b.mutex.Lock()
+		originalRouteMapClauseData = make(map[string]interface{})
+		for name, data := range affectedClauses {
+			originalRouteMapClauseData[name] = data
+		}
+
+		// Temporarily replace affected route_map_clause PUT data with versions having empty match_vrf
+		routeMapClauseOps := b.resources["route_map_clause"]
+		for name, data := range affectedClauses {
+			modifiedData := b.createRouteMapClauseWithEmptyMatchVrf(data)
+			routeMapClauseOps.Put[name] = modifiedData
+			tflog.Debug(ctx, fmt.Sprintf("Temporarily setting match_vrf to empty for route_map_clause: %s", name))
+		}
+		b.mutex.Unlock()
+	}
+
+	// 7. route_map_clause (PUT with empty match_vrf if circular ref detected)
 	if !execute("PUT", b.getOperationCount("route_map_clause", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "route_map_clause", "PUT") }, "Route Map Clause") {
 		return diagnostics, operationsPerformed
 	}
@@ -1384,6 +1541,53 @@ func (b *BulkOperationManager) ExecuteDatacenterOperations(ctx context.Context) 
 	if !execute("PUT", b.getOperationCount("tenant", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "tenant", "PUT") }, "Tenant") {
 		return diagnostics, operationsPerformed
 	}
+
+	// If circular reference fix was applied, now PATCH route_map_clause with match_vrf
+	if needsCircularRefFix && len(originalRouteMapClauseData) > 0 {
+		tflog.Info(ctx, "Applying PATCH to restore match_vrf fields in route_map_clause")
+
+		b.mutex.Lock()
+		// Add PATCH operations for the affected route_map_clauses
+		routeMapClauseOps := b.resources["route_map_clause"]
+		if routeMapClauseOps.Patch == nil {
+			routeMapClauseOps.Patch = make(map[string]interface{})
+		}
+
+		affectedNames := make([]string, 0, len(originalRouteMapClauseData))
+		for name, originalData := range originalRouteMapClauseData {
+			// Create PATCH data with only match_vrf and match_vrf_ref_type_
+			patchData := b.createMatchVrfPatchData(originalData)
+			if patchData != nil {
+				routeMapClauseOps.Patch[name] = patchData
+				affectedNames = append(affectedNames, name)
+				tflog.Debug(ctx, fmt.Sprintf("Prepared PATCH for route_map_clause: %s", name))
+			}
+
+			// Restore original PUT data for future reference
+			routeMapClauseOps.Put[name] = originalData
+		}
+		b.mutex.Unlock()
+
+		// Execute the PATCH immediately
+		tflog.Info(ctx, "Executing PATCH to restore match_vrf", map[string]interface{}{
+			"affected_resources": affectedNames,
+		})
+		if !execute("PATCH", b.getOperationCount("route_map_clause", "PATCH"), func(ctx context.Context) diag.Diagnostics {
+			return b.ExecuteBulk(ctx, "route_map_clause", "PATCH")
+		}, "Route Map Clause (match_vrf restore)") {
+			return diagnostics, operationsPerformed
+		}
+
+		// Clean up the PATCH operations
+		b.mutex.Lock()
+		for name := range originalRouteMapClauseData {
+			delete(routeMapClauseOps.Patch, name)
+		}
+		b.mutex.Unlock()
+
+		tflog.Info(ctx, "Successfully restored match_vrf fields via PATCH")
+	}
+
 	// 13. pb_routing
 	if !execute("PUT", b.getOperationCount("pb_routing", "PUT"), func(ctx context.Context) diag.Diagnostics { return b.ExecuteBulk(ctx, "pb_routing", "PUT") }, "PB Routing") {
 		return diagnostics, operationsPerformed
