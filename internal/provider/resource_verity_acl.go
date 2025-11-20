@@ -93,68 +93,68 @@ func (r *verityACLUnifiedResource) Schema(ctx context.Context, _ resource.Schema
 	}
 
 	resp.Schema = schema.Schema{
-		MarkdownDescription: fmt.Sprintf("Manages a Verity %s IP Filter (ACL)", ipVersionName),
+		Description: fmt.Sprintf("Manages a Verity %s IP Filter (ACL)", ipVersionName),
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				MarkdownDescription: "Object Name. Must be unique.",
-				Required:            true,
+				Description: "Object Name. Must be unique.",
+				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				MarkdownDescription: "Enable object.",
-				Optional:            true,
+				Description: "Enable object.",
+				Optional:    true,
 			},
 			"protocol": schema.StringAttribute{
-				MarkdownDescription: "Value must be ip/tcp/udp/icmp or a number between 0 and 255 to match packets.  Value IP will match all IP protocols.",
-				Optional:            true,
+				Description: "Value must be ip/tcp/udp/icmp or a number between 0 and 255 to match packets.  Value IP will match all IP protocols.",
+				Optional:    true,
 			},
 			"bidirectional": schema.BoolAttribute{
-				MarkdownDescription: "If bidirectional is selected, packets will be selected that match the source filters in either the source or destination fields of the packet.",
-				Optional:            true,
+				Description: "If bidirectional is selected, packets will be selected that match the source filters in either the source or destination fields of the packet.",
+				Optional:    true,
 			},
 			"source_ip": schema.StringAttribute{
-				MarkdownDescription: fmt.Sprintf("This field matches the source IP address of an %s packet", ipVersionDesc),
-				Optional:            true,
+				Description: fmt.Sprintf("This field matches the source IP address of an %s packet", ipVersionDesc),
+				Optional:    true,
 			},
 			"source_port_operator": schema.StringAttribute{
-				MarkdownDescription: "This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range.",
-				Optional:            true,
+				Description: "This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range.",
+				Optional:    true,
 			},
 			"source_port_1": schema.Int64Attribute{
-				MarkdownDescription: "This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.",
-				Optional:            true,
+				Description: "This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.",
+				Optional:    true,
 			},
 			"source_port_2": schema.Int64Attribute{
-				MarkdownDescription: "This field will only be used in the range TCP/UDP port value match operation to define the top value in the range.",
-				Optional:            true,
+				Description: "This field will only be used in the range TCP/UDP port value match operation to define the top value in the range.",
+				Optional:    true,
 			},
 			"destination_ip": schema.StringAttribute{
-				MarkdownDescription: fmt.Sprintf("This field matches the destination IP address of an %s packet.", ipVersionDesc),
-				Optional:            true,
+				Description: fmt.Sprintf("This field matches the destination IP address of an %s packet.", ipVersionDesc),
+				Optional:    true,
 			},
 			"destination_port_operator": schema.StringAttribute{
-				MarkdownDescription: "This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range.",
-				Optional:            true,
+				Description: "This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range.",
+				Optional:    true,
 			},
 			"destination_port_1": schema.Int64Attribute{
-				MarkdownDescription: "This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.",
-				Optional:            true,
+				Description: "This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.",
+				Optional:    true,
 			},
 			"destination_port_2": schema.Int64Attribute{
-				MarkdownDescription: "This field will only be used in the range TCP/UDP port value match operation to define the top value in the range.",
-				Optional:            true,
+				Description: "This field will only be used in the range TCP/UDP port value match operation to define the top value in the range.",
+				Optional:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
-				MarkdownDescription: "Additional properties for this object",
+				Description: "Additional properties for this object",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"notes": schema.StringAttribute{
-							MarkdownDescription: "User notes",
-							Optional:            true,
+							Description: "User notes",
+							Optional:    true,
 						},
 					},
 				},
