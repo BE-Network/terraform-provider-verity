@@ -5,19 +5,24 @@ Provides a Verity Pod resource. Pods are logical groupings used for network segm
 ## Example Usage
 
 ```hcl
-resource "verity_pod" "Pod_1" {
-  name         = "Pod 1"
-  depends_on   = [verity_operation_stage.pod_stage]
-  enable       = true
+resource "verity_pod" "example" {
+  name = "example"
+  enable = true
+  expected_spine_count = 2
+
+  object_properties = {
+    notes = ""
+  }
 }
 ```
 
 ## Argument Reference
 
-The following arguments are supported:
-
-- `name` (String, Required) — Object Name. Must be unique.
-- `enable` (Boolean, Optional) — Enable object. Default: `true`.
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `object_properties` (Object) - 
+  * `notes` (String) - User Notes.
+* `expected_spine_count` (Integer) - Number of spine switches expected in this pod.
 
 ## Import
 

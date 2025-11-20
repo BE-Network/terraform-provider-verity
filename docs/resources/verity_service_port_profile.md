@@ -2,15 +2,11 @@
 
 `verity_service_port_profile` manages service port profile resources in Verity, which define port configurations and associated services.
 
-## Version Compatibility
-
-**This resource requires Verity API version 6.5 or higher.**
-
 ## Example Usage
 
 ```hcl
 resource "verity_service_port_profile" "example" {
-  name = "example_service_port_profile"
+  name = "example"
   enable = true
   port_type = "access"
   tls_limit_in = 1000
@@ -18,16 +14,6 @@ resource "verity_service_port_profile" "example" {
   tls_service_ref_type_ = "service"
   trusted_port = true
   ip_mask = "255.255.255.0"
-  
-  services {
-    row_num_enable = true
-    row_num_service = "service1"
-    row_num_service_ref_type_ = "service"
-    row_num_external_vlan = 100
-    row_num_limit_in = 2000
-    row_num_limit_out = 2000
-    index = 0
-  }
   
   services {
     row_num_enable = true
@@ -49,26 +35,26 @@ resource "verity_service_port_profile" "example" {
 
 ## Argument Reference
 
-* `name` - (Required) Unique identifier for the service port profile.
-* `enable` - (Optional) Enable this service port profile. Default is `false`.
-* `port_type` - (Optional) Type of port (e.g., `access`, `trunk`).
-* `tls_limit_in` - (Optional) Inbound bandwidth limit for TLS in Kbps.
-* `tls_service` - (Optional) TLS service reference.
-* `tls_service_ref_type_` - (Optional) Reference type for TLS service.
-* `trusted_port` - (Optional) Whether this is a trusted port. Default is `false`.
-* `ip_mask` - (Optional) IP mask.
-* `services` - (Optional) List of service configurations:
-  * `row_num_enable` - (Optional) Enable this service. Default is `false`.
-  * `row_num_service` - (Optional) Service name or identifier.
-  * `row_num_service_ref_type_` - (Optional) Reference type for service.
-  * `row_num_external_vlan` - (Optional) External VLAN ID.
-  * `row_num_limit_in` - (Optional) Inbound bandwidth limit in Kbps.
-  * `row_num_limit_out` - (Optional) Outbound bandwidth limit in Kbps.
-  * `index` - (Optional) Index identifying this service configuration.
-* `object_properties` - (Optional) Object properties configuration:
-  * `on_summary` - (Optional) Whether this profile appears on summary. Default is `false`.
-  * `port_monitoring` - (Optional) Port monitoring status.
-  * `group` - (Optional) Group name.
+* `name` (String) - Object Name. Must be unique
+* `enable` (Boolean) - Enable object
+* `port_type` (String) - Determines what Service are provisioned on the port and if those Services are propagated upstream
+* `tls_limit_in` (Integer) - Speed of ingress (Mbps) for TLS (Transparent LAN Service)
+* `tls_service` (String) - Service used for TLS (Transparent LAN Service)
+* `tls_service_ref_type_` (String) - Object type for tls_service field
+* `trusted_port` (Boolean) - Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks
+* `ip_mask` (String) - IP/Mask
+* `services` (Array) - List of service configurations
+  * `row_num_enable` (Boolean) - Enable row
+  * `row_num_service` (String) - Connect a Service
+  * `row_num_service_ref_type_` (String) - Object type for row_num_service field
+  * `row_num_external_vlan` (Integer) - Choose an external vlan
+  * `row_num_limit_in` (Integer) - Speed of ingress (Mbps)
+  * `row_num_limit_out` (Integer) - Speed of egress (Mbps)
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list
+* `object_properties` (Object) - Additional object properties
+  * `on_summary` (Boolean) - Show on the summary view
+  * `port_monitoring` (String) - Defines importance of Link Down on this port
+  * `group` (String) - Group
 
 ## Import
 

@@ -5,47 +5,50 @@
 ## Example Usage
 
 ```hcl
-resource "verity_device_settings" "test1" {
-  name = "test1"
-  depends_on = [verity_operation_stage.device_settings_stage]
-  object_properties {
-    group = ""
-    isdefault = false
-  }
-  commit_to_flash_interval = 60
-  cut_through_switching = false
-  disable_tcp_udp_learned_packet_acceleration = false
+resource "verity_device_settings" "example" {
+  name = "example"
   enable = false
+  mode = "IEEE 802.3af"
+  usage_threshold = 0.99
   external_battery_power_available = 40
   external_power_available = 75
-  mode = "IEEE 802.3af"
-  rocev2 = false
+  disable_tcp_udp_learned_packet_acceleration = false
+  packet_queue = "packet_queue|(Packet Queue)|"
+  packet_queue_ref_type_ = "packet_queue"
   security_audit_interval = 60
-  usage_threshold = 0.99
+  commit_to_flash_interval = 60
+  rocev2 = false
+  cut_through_switching = false
+  hold_timer = 0
+  mac_aging_timer_override = null
+  spanning_tree_priority = "byLevel"
+
+  object_properties {
+    group = ""
+  }
 }
 ```
 
 ## Argument Reference
 
-* `name` - (Required) Unique identifier for the Device Settings profile.
-* `enable` - (Optional) Enable this Device Settings profile. Default is `false`.
-* `mode` - (Optional) Mode. Allowed values: `Manual`, `IEEE 802.3af`. Default is `IEEE 802.3af`.
-* `usage_threshold` - (Optional) Usage Threshold. Default is `0.99`.
-* `external_battery_power_available` - (Optional) External Battery Power Available. Default is `40`. Maximum is `2000`.
-* `external_power_available` - (Optional) External Power Available. Default is `75`. Maximum is `2000`.
-* `disable_tcp_udp_learned_packet_acceleration` - (Optional) Required for AVB, PTP and Cobranet Support. Default is `false`.
-* `security_audit_interval` - (Optional) Frequency in minutes of rereading this Switch running configuration and comparing it to expected values. Default is `60`. Maximum is `1440`.
-* `commit_to_flash_interval` - (Optional) Frequency in minutes to write the Switch configuration to flash. Default is `60`. Maximum is `1440`.
-* `rocev2` - (Optional) Enable RDMA over Converged Ethernet version 2 network protocol. Default is `false`.
-* `cut_through_switching` - (Optional) Enable Cut-through Switching on all Switches. Default is `false`.
-* `object_properties` - (Optional) Object properties configuration:
-  * `group` - (Optional) Group name. Default is `""`.
-  * `isdefault` - (Optional) Default object. Default is `false`.
-* `hold_timer` - (Optional) Hold Timer. Default is `0`. Maximum is `86400`.
-* `mac_aging_timer_override` - (Optional) Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds.
-* `spanning_tree_priority` - (Optional) STP per switch, priority are in 4096 increments, the lower the number, the higher the priority. Allowed values: `8192`, `32768`, `36864`, `20480`, `4096`, `57344`, `45056`, `61440`, `byLevel`, `16384`, `40960`, `24576`, `49152`, `0`, `12288`, `28672`, `53248`. Default is `byLevel`.
-* `packet_queue_id` - (Optional) Packet Queue for device. Default is `packet_queue|(Packet Queue)|`.
-* `packet_queue_id_ref_type_` - (Optional) Object type for packet_queue_id field. Allowed value: `packet_queue`.
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `mode` (String) - Mode.
+* `usage_threshold` (Number) - Usage Threshold.
+* `external_battery_power_available` (Integer) - External Battery Power Available.
+* `external_power_available` (Integer) - External Power Available.
+* `disable_tcp_udp_learned_packet_acceleration` (Boolean) - Required for AVB, PTP and Cobranet Support for ONT Devices.
+* `packet_queue` (String) - Packet Queue for device.
+* `packet_queue_ref_type_` (String) - Object type for packet_queue field.
+* `security_audit_interval` (Integer) - Frequency in minutes of rereading this Switch running configuration and comparing it to expected values. If the value is blank, audit will use default switch settings. If the value is 0, audit will be turned off.
+* `commit_to_flash_interval` (Integer) - Time delay in minutes to write the Switch configuration to flash after a change is made. If the value is blank, commit will use default switch settings of 12 hours. If the value is 0, commit will be turned off.
+* `rocev2` (Boolean) - Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs.
+* `cut_through_switching` (Boolean) - Enable Cut-through Switching on all Switches.
+* `object_properties` (Object) - 
+  * `group` (String) - Group.
+* `hold_timer` (Integer) - Hold Timer.
+* `mac_aging_timer_override` (Integer) - Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds.
+* `spanning_tree_priority` (String) - STP per switch, priority are in 4096 increments, the lower the number, the higher the priority.
 
 ## Import
 

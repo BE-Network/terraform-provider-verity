@@ -6,7 +6,7 @@ Manages a Spine Plane configuration in Verity. This resource allows you to defin
 
 ```hcl
 resource "verity_spine_plane" "example" {
-  name   = "spine_plane_test1"
+  name   = "example"
   enable = true
 
   object_properties = {
@@ -17,10 +17,10 @@ resource "verity_spine_plane" "example" {
 
 ## Argument Reference
 
-- `name` (String, Required): The unique name of the spine plane object.
-- `enable` (Boolean, Required): Whether this spine plane is enabled.
-- `object_properties` (Map(String), Optional): Additional properties for the spine plane. Common fields include:
-  - `notes` (String, Optional): Free-form notes or description for the spine plane.
+* `name` (String) - Object Name. Must be unique
+* `enable` (Boolean) - Enable object
+* `object_properties` (Object) - Additional properties for the spine plane
+  * `notes` (String) - User Notes
 
 
 ## Import

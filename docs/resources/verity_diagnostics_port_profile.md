@@ -5,9 +5,8 @@
 ## Example Usage
 
 ```hcl
-resource "verity_diagnostics_port_profile" "diagnostics_port_profile1" {
-  name = "diagnostics_port_profile1"
-  depends_on = [verity_operation_stage.diagnostics_port_profile_stage]
+resource "verity_diagnostics_port_profile" "example" {
+  name = "example"
   enable = false
   enable_sflow = true
 }
@@ -15,9 +14,9 @@ resource "verity_diagnostics_port_profile" "diagnostics_port_profile1" {
 
 ## Argument Reference
 
-* `name` - (Required) Unique identifier for the Diagnostics Port Profile.
-* `enable` - (Optional) Enable this Diagnostics Port Profile. Default is `false`.
-* `enable_sflow` - (Optional) Enable sFlow for this Diagnostics Profile. Default is `true`.
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `enable_sflow` (Boolean) - Enable sFlow for this Diagnostics Profile.
 
 ## Import
 

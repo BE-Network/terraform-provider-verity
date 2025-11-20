@@ -2,71 +2,67 @@
 
 `verity_packet_broker` manages packet broker (PB Egress Profile) resources in Verity, which define how packets are filtered and processed.
 
-## Version Compatibility
-
-**This resource requires Verity API version 6.5 or higher.**
-
 ## Example Usage
 
 ```hcl
 resource "verity_packet_broker" "example" {
-  name = "example_packet_broker"
+  name = "example"
   enable = true
   
   ipv4_permit {
     enable = true
     filter = "permit_filter_1"
-    filter_ref_type_ = "ipv4_prefix_list"
+    filter_ref_type_ = "ipv4_filter"
     index = 1
   }
   
   ipv4_deny {
     enable = true
     filter = "deny_filter_1"
-    filter_ref_type_ = "ipv4_prefix_list"
-    index = 2
+    filter_ref_type_ = "ipv4_filter"
+    index = 1
   }
   
   ipv6_permit {
     enable = true
     filter = "permit_filter_v6"
-    filter_ref_type_ = "ipv6_prefix_list"
-    index = 3
+    filter_ref_type_ = "ipv6_filter"
+    index = 1
   }
   
   ipv6_deny {
     enable = true
     filter = "deny_filter_v6"
-    filter_ref_type_ = "ipv6_prefix_list"
-    index = 4
+    filter_ref_type_ = "ipv6_filter"
+    index = 1
   }
 }
 ```
 
 ## Argument Reference
 
-* `name` - (Required) Unique identifier for the packet broker.
-* `enable` - (Optional) Enable this packet broker. Default is `false`.
-* `ipv4_permit` - (Optional) List of IPv4 permit filter configurations:
-  * `enable` - (Optional) Enable this filter. Default is `false`.
-  * `filter` - (Optional) Reference to a filter resource.
-  * `filter_ref_type_` - (Optional) Object type for filter reference.
-  * `index` - (Optional) Index identifying this filter configuration.
-* `ipv4_deny` - (Optional) List of IPv4 deny filter configurations:
-  * `enable` - (Optional) Enable this filter. Default is `false`.
-  * `filter` - (Optional) Reference to a filter resource.
-  * `filter_ref_type_` - (Optional) Object type for filter reference.
-  * `index` - (Optional) Index identifying this filter configuration.
-* `ipv6_permit` - (Optional) List of IPv6 permit filter configurations:
-  * `enable` - (Optional) Enable this filter. Default is `false`.
-  * `filter` - (Optional) Reference to a filter resource.
-  * `filter_ref_type_` - (Optional) Object type for filter reference.
-  * `index` - (Optional) Index identifying this filter configuration.
-* `ipv6_deny` - (Optional) List of IPv6 deny filter configurations:
-  * `enable` - (Optional) Enable this filter. Default is `false`.
-  * `filter` - (Optional) Reference to a filter resource.
-  * `filter_ref_type_` - (Optional) Object type for filter reference.
-  * `index` - (Optional) Index identifying this filter configuration.
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `ipv4_permit` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv4_deny` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv6_permit` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv6_deny` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
 
 ## Import
 

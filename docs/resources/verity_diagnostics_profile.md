@@ -5,29 +5,26 @@ Provides a Verity Diagnostics Profile resource. Diagnostics Profiles are used to
 ## Example Usage
 
 ```hcl
-resource "verity_diagnostics_profile" "diagnostics_profile1" {
-  name                      = "diagnostics_profile1"
-  depends_on                = [verity_operation_stage.diagnostics_profile_stage]
-  enable                    = false
-  enable_sflow              = true
-  flow_collector            = ""
-  flow_collector_ref_type_  = "sflow_collector"
-  poll_interval             = 20
-  vrf_type                  = "management"
+resource "verity_diagnostics_profile" "example" {
+  name = "example"
+  enable = false
+  enable_sflow = true
+  flow_collector = ""
+  flow_collector_ref_type_ = "sflow_collector"
+  poll_interval = 20
+  vrf_type = "management"
 }
 ```
 
 ## Argument Reference
 
-The following arguments are supported:
-
-- `name` (String, Required) — Object Name. Must be unique.
-- `enable` (Boolean, Optional) — Enable object. Default: `false`.
-- `enable_sflow` (Boolean, Optional) — Enable sFlow for this Diagnostics Profile. Default: `false`.
-- `flow_collector` (String, Optional) — Flow Collector for this Diagnostics Profile. Default: `""`.
-- `flow_collector_ref_type_` (String, Optional) — Object type for flow_collector field. Allowed value: `"sflow_collector"`.
-- `poll_interval` (Integer, Optional) — The sampling rate for sFlow polling (seconds). Default: `20`. Minimum: `5`. Maximum: `300`.
-- `vrf_type` (String, Optional) — Management or Underlay. Allowed values: `"management"`, `"underlay"`. Default: `"management"`.
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `enable_sflow` (Boolean) - Enable sFlow for this Diagnostics Profile.
+* `flow_collector` (String) - Flow Collector for this Diagnostics Profile.
+* `flow_collector_ref_type_` (String) - Object type for flow_collector field.
+* `poll_interval` (Integer) - The sampling rate for sFlow polling (seconds).
+* `vrf_type` (String) - Management or Underlay.
 
 ## Import
 

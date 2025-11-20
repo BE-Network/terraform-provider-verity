@@ -6,34 +6,27 @@ Manages a Policy-Based Routing (PBR) configuration in Verity. This resource allo
 
 ```hcl
 resource "verity_pb_routing" "example" {
-  name   = "pbr1"
+  name = "example"
   enable = true
 
   policy {
-    enable                  = true
-    pb_routing_acl          = "ipv4_1"
+    enable = true
+    pb_routing_acl = "ipv4_1"
     pb_routing_acl_ref_type = "pb_routing_acl"
-    index                   = 1
-  }
-
-  policy {
-    enable                  = true
-    pb_routing_acl          = "pbr_acl_ipv6_1"
-    pb_routing_acl_ref_type = "pb_routing_acl"
-    index                   = 2
+    index = 1
   }
 }
 ```
 
 ## Argument Reference
 
-- `name` (String, Required): The unique name of the policy-based routing object.
-- `enable` (Boolean, Required): Whether this PBR object is enabled.
-- `policy` (Block, Optional, Repeatable): Defines a routing policy entry. Each block supports:
-  - `enable` (Boolean, Required): Whether this policy entry is enabled.
-  - `pb_routing_acl` (String, Required): The name of the referenced ACL to match for this policy.
-  - `pb_routing_acl_ref_type` (String, Required): The reference type for the ACL (typically `pb_routing_acl`).
-  - `index` (Number, Required): The order of this policy entry within the PBR object.
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `policy` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `pb_routing_acl` (String) - Path to the PB Routing ACL.
+  * `pb_routing_acl_ref_type` (String) - Object type for pb_routing_acl field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
 
 ## Import
 

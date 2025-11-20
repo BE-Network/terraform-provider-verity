@@ -6,17 +6,18 @@
 
 ```hcl
 resource "verity_grouping_rule" "example" {
-  name      = "example"
-  enable    = true
-  type      = "interface"
+  name = "example"
+  enable = true
+  type = "interface"
   operation = "and"
+
   rules {
-    index                     = 1
-    enable                    = true
-    rule_invert               = false
-    rule_type                 = "endpoint_type"
-    rule_value                = "leaf"
-    rule_value_path           = ""
+    index = 1
+    enable = true
+    rule_invert = false
+    rule_type = "endpoint_type"
+    rule_value = "leaf"
+    rule_value_path = ""
     rule_value_path_ref_type_ = ""
   }
 }
@@ -24,18 +25,18 @@ resource "verity_grouping_rule" "example" {
 
 ## Argument Reference
 
-* `name` - Object Name. Must be unique
-* `enable` - Enable object
-* `type` - Type of elements to group. Can be `interface` or `device`
-* `operation` - How to combine rules. Can be `and` or `or`
-* `rules` - List of rule blocks
-  * `enable` - Enable
-  * `rule_invert` - Invert the rule
-  * `rule_type` - Which type of rule to apply
-  * `rule_value` - Value to compare
-  * `rule_value_path` - Object to compare
-  * `rule_value_path_ref_type_` - Object type for rule_value_path field
-  * `index` - The index identifying the object. Zero if you want to add an object to the list
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `type` (String) - Type of elements to group.
+* `operation` (String) - How to combine rules.
+* `rules` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `rule_invert` (Boolean) - Invert the rule.
+  * `rule_type` (String) - Which type of rule to apply.
+  * `rule_value` (String) - Value to compare.
+  * `rule_value_path` (String) - Object to compare.
+  * `rule_value_path_ref_type_` (String) - Object type for rule_value_path field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
 
 ## Import
 

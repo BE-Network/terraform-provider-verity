@@ -7,9 +7,6 @@
 ```hcl
 resource "verity_gateway" "example" {
   name = "example"
-  object_properties {
-    group = ""
-  }
   tenant = ""
   md5_password = ""
   local_as_no_prepend = false
@@ -18,13 +15,6 @@ resource "verity_gateway" "example" {
   connect_timer = 120
   anycast_ip_mask = ""
   helper_hop_ip_address = ""
-  static_routes {
-    index = 1
-    ad_value = 2
-    enable = false
-    ipv4_route_prefix = ""
-    next_hop_ip_address = ""
-  }
   export_route_map_ref_type_ = ""
   neighbor_as_number = 515
   bfd_transmission_interval = 366
@@ -50,54 +40,68 @@ resource "verity_gateway" "example" {
   export_route_map = ""
   replace_as = false
   neighbor_ip_address = ""
+
+  static_routes {
+    index = 1
+    ad_value = 2
+    enable = false
+    ipv4_route_prefix = ""
+    next_hop_ip_address = ""
+  }
+
+  object_properties {
+    group = ""
+  }
 }
 ```
 
 ## Argument Reference
 
-* `name` - Unique identifier for the gateway
-* `enable` - Enable this gateway. Default is `false`
-* `object_properties` - Object properties block
-  * `group` - Group name
-* `tenant` - Reference to a tenant resource
-* `tenant_ref_type_` - Object type for tenant reference
-* `neighbor_ip_address` - IP address of remote BGP peer
-* `neighbor_as_number` - AS number of remote BGP peer
-* `fabric_interconnect` - Whether this is a fabric interconnect
-* `keepalive_timer` - BGP keepalive timer in seconds
-* `hold_timer` - BGP hold timer in seconds
-* `connect_timer` - BGP connect timer in seconds
-* `advertisement_interval` - BGP advertisement interval in seconds
-* `ebgp_multihop` - EBGP multihop count
-* `static_routes` - List of static route blocks
-  * `enable` - Enable this static route
-  * `ipv4_route_prefix` - IPv4 route prefix in CIDR notation
-  * `next_hop_ip_address` - Next hop IP address
-  * `ad_value` - Administrative distance value (0-255)
-  * `index` - Index identifying the object
-* `egress_vlan` - BGP egress VLAN
-* `source_ip_address` - Source IP address (available as of API version 6.5)
-* `anycast_ip_mask` - Anycast IP mask (available as of API version 6.5)
-* `md5_password` - MD5 password for BGP authentication (available as of API version 6.5)
-* `import_route_map` - Import route map reference (available as of API version 6.5)
-* `import_route_map_ref_type_` - Object type for import route map reference (available as of API version 6.5)
-* `export_route_map` - Export route map reference (available as of API version 6.5)
-* `export_route_map_ref_type_` - Object type for export route map reference (available as of API version 6.5)
-* `gateway_mode` - Gateway mode (e.g., "Dynamic BGP") (available as of API version 6.5)
-* `local_as_number` - Local AS number (available as of API version 6.5)
-* `local_as_no_prepend` - Whether to not prepend local AS number (available as of API version 6.5)
-* `replace_as` - Whether to replace AS (available as of API version 6.5)
-* `max_local_as_occurrences` - Maximum local AS occurrences (available as of API version 6.5)
-* `dynamic_bgp_subnet` - Dynamic BGP subnet (available as of API version 6.5)
-* `dynamic_bgp_limits` - Dynamic BGP limits (available as of API version 6.5)
-* `helper_hop_ip_address` - Helper hop IP address (available as of API version 6.5)
-* `enable_bfd` - Enable BFD (Bidirectional Forwarding Detection) (available as of API version 6.5)
-* `bfd_receive_interval` - BFD receive interval (available as of API version 6.5)
-* `bfd_transmission_interval` - BFD transmission interval (available as of API version 6.5)
-* `bfd_detect_multiplier` - BFD detect multiplier (available as of API version 6.5)
-* `bfd_multihop` - BFD multihop (available as of API version 6.5)
-* `next_hop_self` - Use next hop self (available as of API version 6.5)
-* `default_originate` - Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor (available as of API version 6.5)
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+* `tenant` (String) - Tenant.
+* `tenant_ref_type_` (String) - Object type for tenant field.
+* `neighbor_ip_address` (String) - IP address of remote BGP peer.
+* `neighbor_as_number` (Integer) - Autonomous System Number of remote BGP peer.
+* `fabric_interconnect` (Boolean) - .
+* `keepalive_timer` (Integer) - Interval in seconds between Keepalive messages sent to remote BGP peer.
+* `hold_timer` (Integer) - Time, in seconds, used to determine failure of session Keepalive messages received from remote BGP peer.
+* `connect_timer` (Integer) - Time in seconds between sucessive attempts to Establish BGP session.
+* `advertisement_interval` (Integer) - The minimum time in seconds between sending route updates to BGP neighbor.
+* `ebgp_multihop` (Integer) - Allows external BGP neighbors to establish peering session multiple network hops away.
+* `egress_vlan` (Integer) - VLAN used to carry BGP TCP session.
+* `source_ip_address` (String) - Source IP address used to override the default source address calculation for BGP TCP session.
+* `anycast_ip_mask` (String) - The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
+* `md5_password` (String) - MD5 Password used in the BGP session.
+* `import_route_map` (String) - A Route Map applied to routes imported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes.
+* `import_route_map_ref_type_` (String) - Object type for import_route_map field.
+* `export_route_map` (String) - A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes.
+* `export_route_map_ref_type_` (String) - Object type for export_route_map field.
+* `gateway_mode` (String) - Gateway Mode is the method used for defining routes for the Tenant.
+* `local_as_number` (Integer) - Local AS Number to use as an override to switch AS number.
+* `local_as_no_prepend` (Boolean) - Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
+* `replace_as` (Boolean) - Prepend only Local AS in updates to EBGP peers.
+* `max_local_as_occurrences` (Integer) - Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or '0' to disable.
+* `dynamic_bgp_subnet` (String) - Dynamic BGP Subnet.
+* `dynamic_bgp_limits` (Integer) - Dynamic BGP Limits.
+* `helper_hop_ip_address` (String) - Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection.
+* `enable_bfd` (Boolean) - Enable BFD(Bi-Directional Forwarding).
+* `bfd_receive_interval` (Integer) - Configure the minimum interval during which the system can receive BFD control packets.
+* `bfd_transmission_interval` (Integer) - Configure the minimum transmission interval during which the system can send BFD control packets.
+* `bfd_detect_multiplier` (Integer) - Configure the detection multiplier to determine packet loss.
+* `bfd_multihop` (Boolean) - Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers.
+* `next_hop_self` (Boolean) - Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself.
+* `static_routes` (Array) - 
+  * `enable` (Boolean) - Enable of this static route.
+  * `ipv4_route_prefix` (String) - IPv4 unicast IP address followed by a subnet mask length.
+  * `next_hop_ip_address` (String) - Next Hop IP Address. Must be a unicast IP address.
+  * `ad_value` (Integer) - Administrative distancing value, also known as route preference - values from 0-255.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `object_properties` (Object) - 
+  * `group` (String) - Group.
+* `switch_encrypted_md5_password` (Boolean) - Indicates the entered password is a switch encrypted password.
+* `md5_password_encrypted` (String) - MD5 Password Encrypted used in the BGP session.
+* `default_originate` (Boolean) - Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.
 
 ## Import
 

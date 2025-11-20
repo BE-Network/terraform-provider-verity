@@ -6,67 +6,63 @@ Manages a Policy-Based Routing ACL configuration in Verity. This resource allows
 
 ```hcl
 resource "verity_pb_routing_acl" "example" {
-  name         = "pbr_acl_ipv4_1"
-  enable       = true
-  ipv_protocol = "ipv4"
-  next_hop_ips = "192.168.1.1"
+  name   = "example"
+  enable = true
 
   ipv4_permit {
-    enable             = true
-    filter             = "acl_v4_permit"
-    filter_ref_type_   = "ipv4_list"
-    index              = 1
+    enable = true
+    filter = "acl_v4_permit"
+    filter_ref_type_ = "ipv4_filter"
+    index = 1
   }
 
   ipv4_deny {
-    enable             = true
-    filter             = "acl_v4_deny"
-    filter_ref_type_   = "ipv4_list"
-    index              = 2
+    enable = true
+    filter = "acl_v4_deny"
+    filter_ref_type_ = "ipv4_filter"
+    index = 1
   }
 
   ipv6_permit {
-    enable             = true
-    filter             = "acl_v6_permit"
-    filter_ref_type_   = "ipv6_list"
-    index              = 1
+    enable = true
+    filter = "acl_v6_permit"
+    filter_ref_type_ = "ipv6_filter"
+    index = 1
   }
 
   ipv6_deny {
-    enable             = true
-    filter             = "acl_v6_deny"
-    filter_ref_type_   = "ipv6_list"
-    index              = 2
+    enable = true
+    filter = "acl_v6_deny"
+    filter_ref_type_ = "ipv6_filter"
+    index = 1
   }
 }
 ```
 
 ## Argument Reference
 
-- `name` (String, Required): The unique name of the policy-based routing ACL object.
-- `enable` (Boolean, Optional): Whether this PB Routing ACL object is enabled.
-- `ipv_protocol` (String, Optional): IP protocol version - either "ipv4" or "ipv6".
-- `next_hop_ips` (String, Optional): Next hop IP addresses for routing decisions.
-- `ipv4_permit` (Block, Optional, Repeatable): Defines an IPv4 permit filter entry. Each block supports:
-  - `enable` (Boolean, Optional): Whether this filter entry is enabled.
-  - `filter` (String, Optional): The name of the referenced filter list to match.
-  - `filter_ref_type_` (String, Optional): The reference type for the filter (e.g., `ipv4_list`).
-  - `index` (Number, Optional): The order of this filter entry within the ACL.
-- `ipv4_deny` (Block, Optional, Repeatable): Defines an IPv4 deny filter entry. Each block supports:
-  - `enable` (Boolean, Optional): Whether this filter entry is enabled.
-  - `filter` (String, Optional): The name of the referenced filter list to match.
-  - `filter_ref_type_` (String, Optional): The reference type for the filter (e.g., `ipv4_list`).
-  - `index` (Number, Optional): The order of this filter entry within the ACL.
-- `ipv6_permit` (Block, Optional, Repeatable): Defines an IPv6 permit filter entry. Each block supports:
-  - `enable` (Boolean, Optional): Whether this filter entry is enabled.
-  - `filter` (String, Optional): The name of the referenced filter list to match.
-  - `filter_ref_type_` (String, Optional): The reference type for the filter (e.g., `ipv6_list`).
-  - `index` (Number, Optional): The order of this filter entry within the ACL.
-- `ipv6_deny` (Block, Optional, Repeatable): Defines an IPv6 deny filter entry. Each block supports:
-  - `enable` (Boolean, Optional): Whether this filter entry is enabled.
-  - `filter` (String, Optional): The name of the referenced filter list to match.
-  - `filter_ref_type_` (String, Optional): The reference type for the filter (e.g., `ipv6_list`).
-  - `index` (Number, Optional): The order of this filter entry within the ACL.
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `ipv4_permit` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv4_deny` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv6_permit` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv6_deny` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
 
 ## Import
 

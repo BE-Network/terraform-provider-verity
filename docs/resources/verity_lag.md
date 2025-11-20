@@ -7,7 +7,6 @@
 ```hcl
 resource "verity_lag" "example" {
   name = "example"
-  object_properties {}
   is_peer_link = false
   peer_link_vlan = null
   fallback = true
@@ -23,18 +22,17 @@ resource "verity_lag" "example" {
 
 ## Argument Reference
 
-* `name` - Unique identifier for the LAG
-* `enable` - Enable this LAG. Default is `false`
-* `object_properties` - Object properties block
-* `is_peer_link` - Whether this LAG is a peer link
-* `color` - Color identifier for visual representation
-* `lacp` - Enable LACP (Link Aggregation Control Protocol)
-* `eth_port_profile` - Reference to an Ethernet port profile
-* `eth_port_profile_ref_type_` - Object type for Ethernet port profile reference
-* `peer_link_vlan` - VLAN ID used for peer link
-* `fallback` - Enable fallback mode
-* `fast_rate` - Enable fast rate transmission
-* `uplink` - Whether this LAG is an uplink
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+* `is_peer_link` (Boolean) - Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link.
+* `color` (String) - Choose the color to display the connectors on the network view.
+* `lacp` (Boolean) - LACP.
+* `eth_port_profile` (String) - Choose an Eth Port Profile.
+* `eth_port_profile_ref_type_` (String) - Object type for eth_port_profile field.
+* `peer_link_vlan` (Integer) - For peer-peer LAGs. The VLAN used for control.
+* `fallback` (Boolean) - Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer.
+* `fast_rate` (Boolean) - Send LACP packets every second (if disabled, packets are sent every 30 seconds).
+* `uplink` (Boolean) - Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN.
 
 ## Import
 
