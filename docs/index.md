@@ -64,7 +64,8 @@ Make sure to set these environment variables before running any Terraform comman
 
 The provider supports the following resource types:
 
-- `verity_acl`
+- `verity_acl_v4`
+- `verity_acl_v6`
 - `verity_as_path_access_list`
 - `verity_authenticated_eth_port`
 - `verity_badge`
