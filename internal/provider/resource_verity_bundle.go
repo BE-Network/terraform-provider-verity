@@ -298,17 +298,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	// API version check: Only allow on 6.5+
-	apiVersion, err := getApiVersion(ctx, r.provCtx)
-	if err != nil {
-		resp.Diagnostics.AddError("API Version Error", fmt.Sprintf("Unable to determine API version: %s", err))
-		return
-	}
-	if apiVersion < "6.5" {
-		resp.Diagnostics.AddError("Unsupported API Version", "Bundle resource creation is only supported on API version 6.5 and above.")
-		return
-	}
-
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -980,17 +969,6 @@ func (r *verityBundleResource) Delete(ctx context.Context, req resource.DeleteRe
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// API version check: Only allow on 6.5+
-	apiVersion, err := getApiVersion(ctx, r.provCtx)
-	if err != nil {
-		resp.Diagnostics.AddError("API Version Error", fmt.Sprintf("Unable to determine API version: %s", err))
-		return
-	}
-	if apiVersion < "6.5" {
-		resp.Diagnostics.AddError("Unsupported API Version", "Bundle resource deletion is only supported on API version 6.5 and above.")
 		return
 	}
 
