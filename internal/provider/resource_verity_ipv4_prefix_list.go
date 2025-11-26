@@ -175,11 +175,9 @@ func (r *verityIpv4PrefixListResource) Create(ctx context.Context, req resource.
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			objectProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			objectProps.Notes = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Notes", TFValue: op.Notes, APIValue: &objectProps.Notes},
+		})
 		ipv4PrefixListProps.ObjectProperties = &objectProps
 	}
 
@@ -387,14 +385,17 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ipv4PrefixListProps.Enable = v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
-			objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-			if !plan.ObjectProperties[0].Notes.IsNull() {
-				objectProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
-			} else {
-				objectProps.Notes = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Notes", PlanValue: op.Notes, StateValue: st.Notes, APIValue: &objectProps.Notes},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			ipv4PrefixListProps.ObjectProperties = &objectProps
 			hasChanges = true
 		}

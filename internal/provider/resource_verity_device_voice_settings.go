@@ -526,11 +526,9 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+		})
 		dvsProps.ObjectProperties = &objProps
 	}
 
@@ -873,14 +871,17 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	utils.CompareAndSetNullableInt64Field(plan.DscpMark, state.DscpMark, func(v *openapi.NullableInt32) { dvsProps.DscpMark = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			op := plan.ObjectProperties[0]
-			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-			if !op.Group.IsNull() {
-				objProps.Group = openapi.PtrString(op.Group.ValueString())
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			dvsProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

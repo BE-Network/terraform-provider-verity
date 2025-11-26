@@ -150,11 +150,9 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			objProps.Notes = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Notes", TFValue: op.Notes, APIValue: &objProps.Notes},
+		})
 		badgeProps.ObjectProperties = &objProps
 	}
 
@@ -335,14 +333,17 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	utils.CompareAndSetNullableInt64Field(plan.Number, state.Number, func(v *openapi.NullableInt32) { badgeProps.Number = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
-			objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-			if !plan.ObjectProperties[0].Notes.IsNull() {
-				objProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
-			} else {
-				objProps.Notes = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Notes", PlanValue: op.Notes, StateValue: st.Notes, APIValue: &objProps.Notes},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			badgeProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

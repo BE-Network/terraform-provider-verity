@@ -322,18 +322,12 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objectProps := openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			objectProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			objectProps.Notes = nil
-		}
-		if !op.MatchFieldsShown.IsNull() {
-			objectProps.MatchFieldsShown = openapi.PtrString(op.MatchFieldsShown.ValueString())
-		} else {
-			objectProps.MatchFieldsShown = nil
-		}
-		routeMapClauseProps.ObjectProperties = &objectProps
+		objProps := openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Notes", TFValue: op.Notes, APIValue: &objProps.Notes},
+			{Name: "MatchFieldsShown", TFValue: op.MatchFieldsShown, APIValue: &objProps.MatchFieldsShown},
+		})
+		routeMapClauseProps.ObjectProperties = &objProps
 	}
 
 	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "route_map_clause", name, *routeMapClauseProps, &resp.Diagnostics)
@@ -555,25 +549,19 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetNullableInt64Field(plan.MatchVni, state.MatchVni, func(v *openapi.NullableInt32) { routeMapClauseProps.MatchVni = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) ||
-			!plan.ObjectProperties[0].MatchFieldsShown.Equal(state.ObjectProperties[0].MatchFieldsShown) {
-			routeMapClauseObjProps := openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
 
-			if !plan.ObjectProperties[0].Notes.IsNull() {
-				routeMapClauseObjProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
-			} else {
-				routeMapClauseObjProps.Notes = nil
-			}
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Notes", PlanValue: op.Notes, StateValue: st.Notes, APIValue: &objProps.Notes},
+			{Name: "MatchFieldsShown", PlanValue: op.MatchFieldsShown, StateValue: st.MatchFieldsShown, APIValue: &objProps.MatchFieldsShown},
+		}, &objPropsChanged)
 
-			if !plan.ObjectProperties[0].MatchFieldsShown.IsNull() {
-				routeMapClauseObjProps.MatchFieldsShown = openapi.PtrString(plan.ObjectProperties[0].MatchFieldsShown.ValueString())
-			} else {
-				routeMapClauseObjProps.MatchFieldsShown = nil
-			}
-
-			routeMapClauseProps.ObjectProperties = &routeMapClauseObjProps
+		if objPropsChanged {
+			routeMapClauseProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
 	}

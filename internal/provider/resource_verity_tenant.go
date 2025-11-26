@@ -287,11 +287,9 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+		})
 		tenantReq.ObjectProperties = &objProps
 	}
 
@@ -582,14 +580,17 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetBoolField(plan.DefaultOriginate, state.DefaultOriginate, func(v *bool) { tenantReq.DefaultOriginate = v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-			if !plan.ObjectProperties[0].Group.IsNull() {
-				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
-			} else {
-				objProps.Group = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			tenantReq.ObjectProperties = &objProps
 			hasChanges = true
 		}

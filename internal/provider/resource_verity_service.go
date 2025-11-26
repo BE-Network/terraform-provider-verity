@@ -315,21 +315,11 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
-		if !op.OnSummary.IsNull() {
-			objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
-		} else {
-			objProps.OnSummary = nil
-		}
-		if !op.WarnOnNoExternalSource.IsNull() {
-			objProps.WarnOnNoExternalSource = openapi.PtrBool(op.WarnOnNoExternalSource.ValueBool())
-		} else {
-			objProps.WarnOnNoExternalSource = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+			{Name: "OnSummary", TFValue: op.OnSummary, APIValue: &objProps.OnSummary},
+			{Name: "WarnOnNoExternalSource", TFValue: op.WarnOnNoExternalSource, APIValue: &objProps.WarnOnNoExternalSource},
+		})
 		serviceReq.ObjectProperties = &objProps
 	}
 
@@ -559,27 +549,19 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetNullableInt64Field(plan.MstInstance, state.MstInstance, func(v *openapi.NullableInt32) { serviceReq.MstInstance = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-			!plan.ObjectProperties[0].OnSummary.Equal(state.ObjectProperties[0].OnSummary) ||
-			!plan.ObjectProperties[0].WarnOnNoExternalSource.Equal(state.ObjectProperties[0].WarnOnNoExternalSource) {
-			objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
-			if !plan.ObjectProperties[0].Group.IsNull() {
-				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
-			} else {
-				objProps.Group = nil
-			}
-			if !plan.ObjectProperties[0].OnSummary.IsNull() {
-				objProps.OnSummary = openapi.PtrBool(plan.ObjectProperties[0].OnSummary.ValueBool())
-			} else {
-				objProps.OnSummary = nil
-			}
-			if !plan.ObjectProperties[0].WarnOnNoExternalSource.IsNull() {
-				objProps.WarnOnNoExternalSource = openapi.PtrBool(plan.ObjectProperties[0].WarnOnNoExternalSource.ValueBool())
-			} else {
-				objProps.WarnOnNoExternalSource = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+			{Name: "OnSummary", PlanValue: op.OnSummary, StateValue: st.OnSummary, APIValue: &objProps.OnSummary},
+			{Name: "WarnOnNoExternalSource", PlanValue: op.WarnOnNoExternalSource, StateValue: st.WarnOnNoExternalSource, APIValue: &objProps.WarnOnNoExternalSource},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			serviceReq.ObjectProperties = &objProps
 			hasChanges = true
 		}

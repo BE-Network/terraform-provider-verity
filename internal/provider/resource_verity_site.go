@@ -107,6 +107,10 @@ type veritySiteSystemGraphsModel struct {
 	Index        types.Int64  `tfsdk:"index"`
 }
 
+func (m veritySiteSystemGraphsModel) GetIndex() types.Int64 {
+	return m.Index
+}
+
 func (r *veritySiteResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_site"
 }
@@ -535,65 +539,43 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	utils.CompareAndSetNullableInt64Field(plan.DuplicateAddressDetectionMaxNumberOfMoves, state.DuplicateAddressDetectionMaxNumberOfMoves, func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionMaxNumberOfMoves = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
 
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			len(plan.ObjectProperties[0].SystemGraphs) != len(state.ObjectProperties[0].SystemGraphs) {
-			siteObjProps := openapi.SitesPatchRequestSiteValueObjectProperties{}
-			if len(plan.ObjectProperties[0].SystemGraphs) > 0 {
-				systemGraphsList := make([]openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner, len(plan.ObjectProperties[0].SystemGraphs))
-				for i, graph := range plan.ObjectProperties[0].SystemGraphs {
+	// Handle object properties with nested system_graphs
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+
+		changedSystemGraphs, systemGraphsChanged := utils.ProcessIndexedArrayUpdates(op.SystemGraphs, st.SystemGraphs,
+			utils.IndexedItemHandler[veritySiteSystemGraphsModel, openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner]{
+				CreateNew: func(planItem veritySiteSystemGraphsModel) openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner {
 					graphProps := openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{}
-					if !graph.GraphNumData.IsNull() {
-						graphProps.GraphNumData = openapi.PtrString(graph.GraphNumData.ValueString())
-					} else {
-						graphProps.GraphNumData = nil
+					utils.SetStringFields([]utils.StringFieldMapping{
+						{FieldName: "GraphNumData", APIField: &graphProps.GraphNumData, TFValue: planItem.GraphNumData},
+					})
+					utils.SetInt64Fields([]utils.Int64FieldMapping{
+						{FieldName: "Index", APIField: &graphProps.Index, TFValue: planItem.Index},
+					})
+					return graphProps
+				},
+				UpdateExisting: func(planItem veritySiteSystemGraphsModel, stateItem veritySiteSystemGraphsModel) (openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner, bool) {
+					graphProps := openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{}
+					fieldChanged := false
+					utils.CompareAndSetStringField(planItem.GraphNumData, stateItem.GraphNumData, func(v *string) { graphProps.GraphNumData = v }, &fieldChanged)
+					utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { graphProps.Index = v }, &fieldChanged)
+					return graphProps, fieldChanged
+				},
+				CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner {
+					return openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{
+						Index: openapi.PtrInt32(int32(index)),
 					}
-					if !graph.Index.IsNull() {
-						graphProps.Index = openapi.PtrInt32(int32(graph.Index.ValueInt64()))
-					} else {
-						graphProps.Index = nil
-					}
-					systemGraphsList[i] = graphProps
-				}
-				siteObjProps.SystemGraphs = systemGraphsList
+				},
+			})
+
+		if systemGraphsChanged {
+			siteObjProps := openapi.SitesPatchRequestSiteValueObjectProperties{
+				SystemGraphs: changedSystemGraphs,
 			}
 			siteReq.ObjectProperties = &siteObjProps
 			hasChanges = true
-		} else {
-			// Check if any individual graph changed
-			graphsChanged := false
-			for i, planGraph := range plan.ObjectProperties[0].SystemGraphs {
-				if i >= len(state.ObjectProperties[0].SystemGraphs) ||
-					!planGraph.GraphNumData.Equal(state.ObjectProperties[0].SystemGraphs[i].GraphNumData) ||
-					!planGraph.Index.Equal(state.ObjectProperties[0].SystemGraphs[i].Index) {
-					graphsChanged = true
-					break
-				}
-			}
-			if graphsChanged {
-				siteObjProps := openapi.SitesPatchRequestSiteValueObjectProperties{}
-				if len(plan.ObjectProperties[0].SystemGraphs) > 0 {
-					systemGraphsList := make([]openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner, len(plan.ObjectProperties[0].SystemGraphs))
-					for i, graph := range plan.ObjectProperties[0].SystemGraphs {
-						graphProps := openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{}
-						if !graph.GraphNumData.IsNull() {
-							graphProps.GraphNumData = openapi.PtrString(graph.GraphNumData.ValueString())
-						} else {
-							graphProps.GraphNumData = nil
-						}
-						if !graph.Index.IsNull() {
-							graphProps.Index = openapi.PtrInt32(int32(graph.Index.ValueInt64()))
-						} else {
-							graphProps.Index = nil
-						}
-						systemGraphsList[i] = graphProps
-					}
-					siteObjProps.SystemGraphs = systemGraphsList
-				}
-				siteReq.ObjectProperties = &siteObjProps
-				hasChanges = true
-			}
 		}
 	}
 

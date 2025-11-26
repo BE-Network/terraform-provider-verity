@@ -165,11 +165,9 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			objProps.Notes = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Notes", TFValue: op.Notes, APIValue: &objProps.Notes},
+		})
 		routeMapReq.ObjectProperties = &objProps
 	}
 
@@ -381,15 +379,18 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { routeMapProps.Enable = v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
-			routeMapObjProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-			if !plan.ObjectProperties[0].Notes.IsNull() {
-				routeMapObjProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
-			} else {
-				routeMapObjProps.Notes = nil
-			}
-			routeMapProps.ObjectProperties = &routeMapObjProps
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Notes", PlanValue: op.Notes, StateValue: st.Notes, APIValue: &objProps.Notes},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
+			routeMapProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
 	}

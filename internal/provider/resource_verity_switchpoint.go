@@ -477,43 +477,15 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
-		if !op.UserNotes.IsNull() {
-			objProps.UserNotes = openapi.PtrString(op.UserNotes.ValueString())
-		} else {
-			objProps.UserNotes = nil
-		}
-		if !op.ExpectedParentEndpoint.IsNull() {
-			objProps.ExpectedParentEndpoint = openapi.PtrString(op.ExpectedParentEndpoint.ValueString())
-		} else {
-			objProps.ExpectedParentEndpoint = nil
-		}
-		if !op.ExpectedParentEndpointRefType.IsNull() {
-			objProps.ExpectedParentEndpointRefType = openapi.PtrString(op.ExpectedParentEndpointRefType.ValueString())
-		} else {
-			objProps.ExpectedParentEndpointRefType = nil
-		}
-		if !op.NumberOfMultipoints.IsNull() {
-			val := int32(op.NumberOfMultipoints.ValueInt64())
-			objProps.NumberOfMultipoints = *openapi.NewNullableInt32(&val)
-		} else {
-			objProps.NumberOfMultipoints = *openapi.NewNullableInt32(nil)
-		}
-		if !op.Aggregate.IsNull() {
-			objProps.Aggregate = openapi.PtrBool(op.Aggregate.ValueBool())
-		} else {
-			objProps.Aggregate = nil
-		}
-		if !op.IsHost.IsNull() {
-			objProps.IsHost = openapi.PtrBool(op.IsHost.ValueBool())
-		} else {
-			objProps.IsHost = nil
-		}
-		if !op.DrawAsEdgeDevice.IsNull() {
-			objProps.DrawAsEdgeDevice = openapi.PtrBool(op.DrawAsEdgeDevice.ValueBool())
-		} else {
-			objProps.DrawAsEdgeDevice = nil
-		}
-
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "UserNotes", TFValue: op.UserNotes, APIValue: &objProps.UserNotes},
+			{Name: "ExpectedParentEndpoint", TFValue: op.ExpectedParentEndpoint, APIValue: &objProps.ExpectedParentEndpoint},
+			{Name: "ExpectedParentEndpointRefType", TFValue: op.ExpectedParentEndpointRefType, APIValue: &objProps.ExpectedParentEndpointRefType},
+			{Name: "NumberOfMultipoints", TFValue: op.NumberOfMultipoints, APIValue: &objProps.NumberOfMultipoints},
+			{Name: "Aggregate", TFValue: op.Aggregate, APIValue: &objProps.Aggregate},
+			{Name: "IsHost", TFValue: op.IsHost, APIValue: &objProps.IsHost},
+			{Name: "DrawAsEdgeDevice", TFValue: op.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
+		})
 		spProps.ObjectProperties = &objProps
 	}
 
@@ -1255,55 +1227,23 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	// Handle object_properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].UserNotes.Equal(state.ObjectProperties[0].UserNotes) ||
-			!plan.ObjectProperties[0].ExpectedParentEndpoint.Equal(state.ObjectProperties[0].ExpectedParentEndpoint) ||
-			!plan.ObjectProperties[0].ExpectedParentEndpointRefType.Equal(state.ObjectProperties[0].ExpectedParentEndpointRefType) ||
-			!plan.ObjectProperties[0].NumberOfMultipoints.Equal(state.ObjectProperties[0].NumberOfMultipoints) ||
-			!plan.ObjectProperties[0].Aggregate.Equal(state.ObjectProperties[0].Aggregate) ||
-			!plan.ObjectProperties[0].IsHost.Equal(state.ObjectProperties[0].IsHost) ||
-			!plan.ObjectProperties[0].DrawAsEdgeDevice.Equal(state.ObjectProperties[0].DrawAsEdgeDevice) {
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
 
-			objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
-			op := plan.ObjectProperties[0]
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "UserNotes", PlanValue: op.UserNotes, StateValue: st.UserNotes, APIValue: &objProps.UserNotes},
+			{Name: "ExpectedParentEndpoint", PlanValue: op.ExpectedParentEndpoint, StateValue: st.ExpectedParentEndpoint, APIValue: &objProps.ExpectedParentEndpoint},
+			{Name: "ExpectedParentEndpointRefType", PlanValue: op.ExpectedParentEndpointRefType, StateValue: st.ExpectedParentEndpointRefType, APIValue: &objProps.ExpectedParentEndpointRefType},
+			{Name: "NumberOfMultipoints", PlanValue: op.NumberOfMultipoints, StateValue: st.NumberOfMultipoints, APIValue: &objProps.NumberOfMultipoints},
+			{Name: "Aggregate", PlanValue: op.Aggregate, StateValue: st.Aggregate, APIValue: &objProps.Aggregate},
+			{Name: "IsHost", PlanValue: op.IsHost, StateValue: st.IsHost, APIValue: &objProps.IsHost},
+			{Name: "DrawAsEdgeDevice", PlanValue: op.DrawAsEdgeDevice, StateValue: st.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
+		}, &objPropsChanged)
 
-			if !op.UserNotes.IsNull() {
-				objProps.UserNotes = openapi.PtrString(op.UserNotes.ValueString())
-			} else {
-				objProps.UserNotes = nil
-			}
-			if !op.ExpectedParentEndpoint.IsNull() {
-				objProps.ExpectedParentEndpoint = openapi.PtrString(op.ExpectedParentEndpoint.ValueString())
-			} else {
-				objProps.ExpectedParentEndpoint = nil
-			}
-			if !op.ExpectedParentEndpointRefType.IsNull() {
-				objProps.ExpectedParentEndpointRefType = openapi.PtrString(op.ExpectedParentEndpointRefType.ValueString())
-			} else {
-				objProps.ExpectedParentEndpointRefType = nil
-			}
-			if !op.NumberOfMultipoints.IsNull() {
-				val := int32(op.NumberOfMultipoints.ValueInt64())
-				objProps.NumberOfMultipoints = *openapi.NewNullableInt32(&val)
-			} else {
-				objProps.NumberOfMultipoints = *openapi.NewNullableInt32(nil)
-			}
-			if !op.Aggregate.IsNull() {
-				objProps.Aggregate = openapi.PtrBool(op.Aggregate.ValueBool())
-			} else {
-				objProps.Aggregate = nil
-			}
-			if !op.IsHost.IsNull() {
-				objProps.IsHost = openapi.PtrBool(op.IsHost.ValueBool())
-			} else {
-				objProps.IsHost = nil
-			}
-			if !op.DrawAsEdgeDevice.IsNull() {
-				objProps.DrawAsEdgeDevice = openapi.PtrBool(op.DrawAsEdgeDevice.ValueBool())
-			} else {
-				objProps.DrawAsEdgeDevice = nil
-			}
+		if objPropsChanged {
 			spProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

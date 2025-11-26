@@ -340,21 +340,11 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
-		if !op.PortMonitoring.IsNull() {
-			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-		} else {
-			objProps.PortMonitoring = nil
-		}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
-		if !op.FormatDialPlan.IsNull() {
-			objProps.FormatDialPlan = openapi.PtrBool(op.FormatDialPlan.ValueBool())
-		} else {
-			objProps.FormatDialPlan = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+			{Name: "FormatDialPlan", TFValue: op.FormatDialPlan, APIValue: &objProps.FormatDialPlan},
+		})
 		vppProps.ObjectProperties = &objProps
 	}
 
@@ -599,22 +589,19 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	utils.CompareAndSetNullableInt64Field(plan.RohTimer, state.RohTimer, func(val *openapi.NullableInt32) { vppProps.RohTimer = *val }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-			!plan.ObjectProperties[0].FormatDialPlan.Equal(state.ObjectProperties[0].FormatDialPlan) {
-			op := plan.ObjectProperties[0]
-			objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
-			if !op.PortMonitoring.IsNull() {
-				objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-			}
-			if !op.Group.IsNull() {
-				objProps.Group = openapi.PtrString(op.Group.ValueString())
-			}
-			if !op.FormatDialPlan.IsNull() {
-				objProps.FormatDialPlan = openapi.PtrBool(op.FormatDialPlan.ValueBool())
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+			{Name: "FormatDialPlan", PlanValue: op.FormatDialPlan, StateValue: st.FormatDialPlan, APIValue: &objProps.FormatDialPlan},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			vppProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

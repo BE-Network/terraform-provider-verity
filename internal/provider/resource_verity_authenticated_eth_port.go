@@ -218,16 +218,10 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
-		if !op.PortMonitoring.IsNull() {
-			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-		} else {
-			objProps.PortMonitoring = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
+		})
 		aepProps.ObjectProperties = &objProps
 	}
 
@@ -466,22 +460,18 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	utils.CompareAndSetNullableInt64Field(plan.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, func(v *openapi.NullableInt32) { aepProps.MacAuthenticationHoldoffSec = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) {
-			op := plan.ObjectProperties[0]
-			objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
-			if !op.Group.IsNull() {
-				objProps.Group = openapi.PtrString(op.Group.ValueString())
-			} else {
-				objProps.Group = nil
-			}
-			if !op.PortMonitoring.IsNull() {
-				objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-			} else {
-				objProps.PortMonitoring = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			aepProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

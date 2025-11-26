@@ -125,10 +125,12 @@ func (r *veritySfpBreakoutResource) Schema(ctx context.Context, req resource.Sch
 					},
 				},
 			},
-			"object_properties": schema.SingleNestedBlock{
-				Description: "Object properties for the SFP Breakout",
-				Attributes:  map[string]schema.Attribute{
-					// Empty object properties according to schema
+			"object_properties": schema.ListNestedBlock{
+				Description: "Object properties.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						// No attributes defined - object_properties is an empty object in the schema
+					},
 				},
 			},
 		},

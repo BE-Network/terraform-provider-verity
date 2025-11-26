@@ -359,11 +359,9 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+		})
 		gatewayProps.ObjectProperties = &objProps
 	}
 
@@ -654,14 +652,17 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetNullableInt64Field(plan.BfdDetectMultiplier, state.BfdDetectMultiplier, func(v *openapi.NullableInt32) { gatewayProps.BfdDetectMultiplier = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-			if !plan.ObjectProperties[0].Group.IsNull() {
-				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
-			} else {
-				objProps.Group = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			gatewayProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

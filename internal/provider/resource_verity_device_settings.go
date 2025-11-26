@@ -49,8 +49,8 @@ type verityDeviceSettingsResourceModel struct {
 	DisableTcpUdpLearnedPacketAcceleration types.Bool                                  `tfsdk:"disable_tcp_udp_learned_packet_acceleration"`
 	MacAgingTimerOverride                  types.Int64                                 `tfsdk:"mac_aging_timer_override"`
 	SpanningTreePriority                   types.String                                `tfsdk:"spanning_tree_priority"`
-	PacketQueue                          types.String                                `tfsdk:"packet_queue"`
-	PacketQueueRefType                   types.String                                `tfsdk:"packet_queue_ref_type_"`
+	PacketQueue                            types.String                                `tfsdk:"packet_queue"`
+	PacketQueueRefType                     types.String                                `tfsdk:"packet_queue_ref_type_"`
 	ObjectProperties                       []verityDeviceSettingsObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
@@ -226,11 +226,9 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+		})
 		deviceSettingsProps.ObjectProperties = &objProps
 	}
 
@@ -348,10 +346,10 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 
 	// Map string fields
 	stringFieldMappings := map[string]*types.String{
-		"mode":                      &state.Mode,
-		"spanning_tree_priority":    &state.SpanningTreePriority,
-		"packet_queue":              &state.PacketQueue,
-		"packet_queue_ref_type_":    &state.PacketQueueRefType,
+		"mode":                   &state.Mode,
+		"spanning_tree_priority": &state.SpanningTreePriority,
+		"packet_queue":           &state.PacketQueue,
+		"packet_queue_ref_type_": &state.PacketQueueRefType,
 	}
 
 	for apiKey, stateField := range stringFieldMappings {
@@ -453,15 +451,17 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetNullableFloat64Field(plan.UsageThreshold, state.UsageThreshold, func(v *openapi.NullableFloat32) { deviceSettingsProps.UsageThreshold = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-			if !plan.ObjectProperties[0].Group.IsNull() {
-				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
-			} else {
-				objProps.Group = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			deviceSettingsProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

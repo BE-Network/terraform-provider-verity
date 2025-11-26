@@ -234,21 +234,11 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
-		if !op.OnSummary.IsNull() {
-			objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
-		} else {
-			objProps.OnSummary = nil
-		}
-		if !op.PortMonitoring.IsNull() {
-			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-		} else {
-			objProps.PortMonitoring = nil
-		}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "OnSummary", TFValue: op.OnSummary, APIValue: &objProps.OnSummary},
+			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+		})
 		sppProps.ObjectProperties = &objProps
 	}
 
@@ -502,28 +492,19 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	utils.CompareAndSetNullableInt64Field(plan.TlsLimitIn, state.TlsLimitIn, func(v *openapi.NullableInt32) { sppProps.TlsLimitIn = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].OnSummary.Equal(state.ObjectProperties[0].OnSummary) ||
-			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) {
-			op := plan.ObjectProperties[0]
-			objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
-			if !op.OnSummary.IsNull() {
-				objProps.OnSummary = openapi.PtrBool(op.OnSummary.ValueBool())
-			} else {
-				objProps.OnSummary = nil
-			}
-			if !op.PortMonitoring.IsNull() {
-				objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-			} else {
-				objProps.PortMonitoring = nil
-			}
-			if !op.Group.IsNull() {
-				objProps.Group = openapi.PtrString(op.Group.ValueString())
-			} else {
-				objProps.Group = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "OnSummary", PlanValue: op.OnSummary, StateValue: st.OnSummary, APIValue: &objProps.OnSummary},
+			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			sppProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

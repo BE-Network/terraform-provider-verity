@@ -277,25 +277,13 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
-		if !op.PortMonitoring.IsNull() {
-			objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-		} else {
-			objProps.PortMonitoring = nil
-		}
-		if !op.SortByName.IsNull() {
-			objProps.SortByName = openapi.PtrBool(op.SortByName.ValueBool())
-		}
-		if !op.Label.IsNull() {
-			objProps.Label = openapi.PtrString(op.Label.ValueString())
-		}
-		if !op.Icon.IsNull() {
-			objProps.Icon = openapi.PtrString(op.Icon.ValueString())
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
+			{Name: "SortByName", TFValue: op.SortByName, APIValue: &objProps.SortByName},
+			{Name: "Label", TFValue: op.Label, APIValue: &objProps.Label},
+			{Name: "Icon", TFValue: op.Icon, APIValue: &objProps.Icon},
+		})
 		ethPortProfileProps.ObjectProperties = &objProps
 	}
 
@@ -543,42 +531,21 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { ethPortProfileProps.TrustedPort = v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-			!plan.ObjectProperties[0].PortMonitoring.Equal(state.ObjectProperties[0].PortMonitoring) ||
-			!plan.ObjectProperties[0].SortByName.Equal(state.ObjectProperties[0].SortByName) ||
-			!plan.ObjectProperties[0].Label.Equal(state.ObjectProperties[0].Label) ||
-			!plan.ObjectProperties[0].Icon.Equal(state.ObjectProperties[0].Icon) {
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
 
-			objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
-			op := plan.ObjectProperties[0]
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
+			{Name: "SortByName", PlanValue: op.SortByName, StateValue: st.SortByName, APIValue: &objProps.SortByName},
+			{Name: "Label", PlanValue: op.Label, StateValue: st.Label, APIValue: &objProps.Label},
+			{Name: "Icon", PlanValue: op.Icon, StateValue: st.Icon, APIValue: &objProps.Icon},
+		}, &objPropsChanged)
 
-			if !op.Group.IsNull() {
-				objProps.Group = openapi.PtrString(op.Group.ValueString())
-			} else {
-				objProps.Group = nil
-			}
-			if !op.PortMonitoring.IsNull() {
-				objProps.PortMonitoring = openapi.PtrString(op.PortMonitoring.ValueString())
-			} else {
-				objProps.PortMonitoring = nil
-			}
-			if !op.SortByName.IsNull() {
-				objProps.SortByName = openapi.PtrBool(op.SortByName.ValueBool())
-			} else {
-				objProps.SortByName = nil
-			}
-			if !op.Label.IsNull() {
-				objProps.Label = openapi.PtrString(op.Label.ValueString())
-			} else {
-				objProps.Label = nil
-			}
-			if !op.Icon.IsNull() {
-				objProps.Icon = openapi.PtrString(op.Icon.ValueString())
-			} else {
-				objProps.Icon = nil
-			}
+		if objPropsChanged {
 			ethPortProfileProps.ObjectProperties = &objProps
 			hasChanges = true
 		}

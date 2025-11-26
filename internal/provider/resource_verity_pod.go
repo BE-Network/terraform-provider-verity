@@ -140,11 +140,9 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-		if !op.Notes.IsNull() {
-			objProps.Notes = openapi.PtrString(op.Notes.ValueString())
-		} else {
-			objProps.Notes = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Notes", TFValue: op.Notes, APIValue: &objProps.Notes},
+		})
 		podReq.ObjectProperties = &objProps
 	}
 
@@ -314,14 +312,17 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	utils.CompareAndSetNullableInt64Field(plan.ExpectedSpineCount, state.ExpectedSpineCount, func(v *openapi.NullableInt32) { podReq.ExpectedSpineCount = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 || !plan.ObjectProperties[0].Notes.Equal(state.ObjectProperties[0].Notes) {
-			objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
-			if !plan.ObjectProperties[0].Notes.IsNull() {
-				objProps.Notes = openapi.PtrString(plan.ObjectProperties[0].Notes.ValueString())
-			} else {
-				objProps.Notes = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Notes", PlanValue: op.Notes, StateValue: st.Notes, APIValue: &objProps.Notes},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			podReq.ObjectProperties = &objProps
 			hasChanges = true
 		}

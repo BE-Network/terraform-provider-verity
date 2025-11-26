@@ -332,21 +332,11 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
-		if !op.IsForSwitch.IsNull() {
-			objProps.IsForSwitch = openapi.PtrBool(op.IsForSwitch.ValueBool())
-		} else {
-			objProps.IsForSwitch = nil
-		}
-		if !op.Group.IsNull() {
-			objProps.Group = openapi.PtrString(op.Group.ValueString())
-		} else {
-			objProps.Group = nil
-		}
-		if !op.IsPublic.IsNull() {
-			objProps.IsPublic = openapi.PtrBool(op.IsPublic.ValueBool())
-		} else {
-			objProps.IsPublic = nil
-		}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "IsForSwitch", TFValue: op.IsForSwitch, APIValue: &objProps.IsForSwitch},
+			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
+			{Name: "IsPublic", TFValue: op.IsPublic, APIValue: &objProps.IsPublic},
+		})
 		bundleProps.ObjectProperties = &objProps
 	}
 
@@ -666,27 +656,19 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { bundleProps.Enable = v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		if len(state.ObjectProperties) == 0 ||
-			!plan.ObjectProperties[0].IsForSwitch.Equal(state.ObjectProperties[0].IsForSwitch) ||
-			!plan.ObjectProperties[0].Group.Equal(state.ObjectProperties[0].Group) ||
-			!plan.ObjectProperties[0].IsPublic.Equal(state.ObjectProperties[0].IsPublic) {
-			objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
-			if !plan.ObjectProperties[0].IsForSwitch.IsNull() {
-				objProps.IsForSwitch = openapi.PtrBool(plan.ObjectProperties[0].IsForSwitch.ValueBool())
-			} else {
-				objProps.IsForSwitch = nil
-			}
-			if !plan.ObjectProperties[0].Group.IsNull() {
-				objProps.Group = openapi.PtrString(plan.ObjectProperties[0].Group.ValueString())
-			} else {
-				objProps.Group = nil
-			}
-			if !plan.ObjectProperties[0].IsPublic.IsNull() {
-				objProps.IsPublic = openapi.PtrBool(plan.ObjectProperties[0].IsPublic.ValueBool())
-			} else {
-				objProps.IsPublic = nil
-			}
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "IsForSwitch", PlanValue: op.IsForSwitch, StateValue: st.IsForSwitch, APIValue: &objProps.IsForSwitch},
+			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
+			{Name: "IsPublic", PlanValue: op.IsPublic, StateValue: st.IsPublic, APIValue: &objProps.IsPublic},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
 			bundleProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
