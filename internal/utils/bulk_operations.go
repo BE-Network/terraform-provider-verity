@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
-	"strings"
 	"sync"
 	"terraform-provider-verity/openapi"
 	"time"
@@ -90,6 +89,20 @@ type ResourceConfig struct {
 	PatchFunc        func(*openapi.APIClient, context.Context, interface{}) (*http.Response, error) // Direct PATCH API call
 	DeleteFunc       func(*openapi.APIClient, context.Context, []string) (*http.Response, error)    // Direct DELETE API call
 	GetFunc          func(*openapi.APIClient, context.Context) (*http.Response, error)              // Direct GET API call
+
+	// HeaderSplitKey specifies which header param to use for splitting operations into separate batches
+	// Example: "ip_version" for ACLs (splits into IPv4/IPv6 batches)
+	HeaderSplitKey string
+
+	// HeaderAwareFuncs provide header-aware API call functions that accept header params
+	HeaderPutFunc    func(*openapi.APIClient, context.Context, interface{}, map[string]string) (*http.Response, error)
+	HeaderPatchFunc  func(*openapi.APIClient, context.Context, interface{}, map[string]string) (*http.Response, error)
+	HeaderDeleteFunc func(*openapi.APIClient, context.Context, []string, map[string]string) (*http.Response, error)
+	HeaderGetFunc    func(*openapi.APIClient, context.Context, map[string]string) (*http.Response, error)
+
+	// HeaderResponseExtractor extracts resource data from GET response based on header values
+	// Used when response format differs based on headers (e.g., ACL returns ipv4_filter or ipv6_filter)
+	HeaderResponseExtractor func(rawResponse map[string]interface{}, headers map[string]string) (map[string]interface{}, error)
 }
 
 // GenericAPIClient implements ResourceAPIClient for all resource types using reflection.
@@ -147,7 +160,15 @@ type BulkOperationManager struct {
 	batchStartTime    time.Time
 	resources         map[string]*ResourceOperations
 
-	aclIpVersion map[string]string // Track which IP version each ACL operation uses
+	// resourceHeaderParams tracks header parameters for operations that need them
+	// Key format: "resourceType:compositeKey" -> map of header params
+	// Example: "acl:my_filter_ip_version4" -> {"ip_version": "4"}
+	resourceHeaderParams map[string]map[string]string
+
+	// resourceOriginalNames tracks the original resource names for composite keys
+	// Key format: "resourceType:compositeKey" -> original resource name
+	// Example: "acl:my_filter_ip_version4" -> "my_filter"
+	resourceOriginalNames map[string]string
 
 	// For tracking operations
 	pendingOperations     map[string]*Operation
@@ -425,20 +446,50 @@ var resourceRegistry = map[string]ResourceConfig{
 		PutRequestType:   reflect.TypeOf(openapi.AclsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.AclsPutRequest{}),
 		HasAutoGen:       false,
+		HeaderSplitKey:   "ip_version",
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "acl"}
 		},
-		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
-			return c.ACLsAPI.AclsPut(ctx).AclsPutRequest(*req.(*openapi.AclsPutRequest)).Execute()
+		HeaderPutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}, headers map[string]string) (*http.Response, error) {
+			request := c.ACLsAPI.AclsPut(ctx).AclsPutRequest(*req.(*openapi.AclsPutRequest))
+			if ipVersion, ok := headers["ip_version"]; ok {
+				request = request.IpVersion(ipVersion)
+			}
+			return request.Execute()
 		},
-		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
-			return c.ACLsAPI.AclsPatch(ctx).AclsPutRequest(*req.(*openapi.AclsPutRequest)).Execute()
+		HeaderPatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}, headers map[string]string) (*http.Response, error) {
+			request := c.ACLsAPI.AclsPatch(ctx).AclsPutRequest(*req.(*openapi.AclsPutRequest))
+			if ipVersion, ok := headers["ip_version"]; ok {
+				request = request.IpVersion(ipVersion)
+			}
+			return request.Execute()
 		},
-		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
-			return c.ACLsAPI.AclsDelete(ctx).IpFilterName(names).Execute()
+		HeaderDeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string, headers map[string]string) (*http.Response, error) {
+			request := c.ACLsAPI.AclsDelete(ctx).IpFilterName(names)
+			if ipVersion, ok := headers["ip_version"]; ok {
+				request = request.IpVersion(ipVersion)
+			}
+			return request.Execute()
 		},
-		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
-			return c.ACLsAPI.AclsGet(ctx).Execute()
+		HeaderGetFunc: func(c *openapi.APIClient, ctx context.Context, headers map[string]string) (*http.Response, error) {
+			request := c.ACLsAPI.AclsGet(ctx)
+			if ipVersion, ok := headers["ip_version"]; ok {
+				request = request.IpVersion(ipVersion)
+			}
+			return request.Execute()
+		},
+		HeaderResponseExtractor: func(rawResponse map[string]interface{}, headers map[string]string) (map[string]interface{}, error) {
+			// ACL response has different field names based on IP version
+			var filterKey string
+			if headers["ip_version"] == "6" {
+				filterKey = "ipv6_filter"
+			} else {
+				filterKey = "ipv4_filter"
+			}
+			if ipFilter, ok := rawResponse[filterKey].(map[string]interface{}); ok {
+				return ipFilter, nil
+			}
+			return make(map[string]interface{}), nil
 		},
 	},
 	"packet_broker": {
@@ -1151,7 +1202,7 @@ func NewBulkOperationManager(client *openapi.APIClient, contextProvider ContextP
 		mode:                  mode,
 		lastOperationTime:     time.Now(),
 		resources:             initializeResourceOperations(),
-		aclIpVersion:          make(map[string]string),
+		resourceHeaderParams:  make(map[string]map[string]string),
 		pendingOperations:     make(map[string]*Operation),
 		operationResults:      make(map[string]bool),
 		operationErrors:       make(map[string]error),
@@ -3013,46 +3064,55 @@ func (g *GenericAPIClient) Get(ctx context.Context) (*http.Response, error) {
 // ================================================================================================
 // GENERIC OPERATIONS
 // ================================================================================================
-func (b *BulkOperationManager) AddPut(ctx context.Context, resourceType, resourceName string, props interface{}) string {
-	return b.addGenericOperation(ctx, resourceType, resourceName, "PUT", props, "")
+func (b *BulkOperationManager) AddPut(ctx context.Context, resourceType, resourceName string, props interface{}, headerParams ...map[string]string) string {
+	var params map[string]string
+	if len(headerParams) > 0 {
+		params = headerParams[0]
+	}
+	return b.addGenericOperation(ctx, resourceType, resourceName, "PUT", props, params)
 }
 
-func (b *BulkOperationManager) AddPatch(ctx context.Context, resourceType, resourceName string, props interface{}) string {
-	return b.addGenericOperation(ctx, resourceType, resourceName, "PATCH", props, "")
+func (b *BulkOperationManager) AddPatch(ctx context.Context, resourceType, resourceName string, props interface{}, headerParams ...map[string]string) string {
+	var params map[string]string
+	if len(headerParams) > 0 {
+		params = headerParams[0]
+	}
+	return b.addGenericOperation(ctx, resourceType, resourceName, "PATCH", props, params)
 }
 
-func (b *BulkOperationManager) AddDelete(ctx context.Context, resourceType, resourceName string) string {
-	return b.addGenericOperation(ctx, resourceType, resourceName, "DELETE", nil, "")
+func (b *BulkOperationManager) AddDelete(ctx context.Context, resourceType, resourceName string, headerParams ...map[string]string) string {
+	var params map[string]string
+	if len(headerParams) > 0 {
+		params = headerParams[0]
+	}
+	return b.addGenericOperation(ctx, resourceType, resourceName, "DELETE", nil, params)
 }
 
-// Special ACL methods that handle IP version tracking
-func (b *BulkOperationManager) AddAclPut(ctx context.Context, aclName string, props openapi.AclsPutRequestIpFilterValue, ipVersion string) string {
-	return b.addGenericOperation(ctx, "acl", aclName, "PUT", props, ipVersion)
-}
-
-func (b *BulkOperationManager) AddAclPatch(ctx context.Context, aclName string, props openapi.AclsPutRequestIpFilterValue, ipVersion string) string {
-	return b.addGenericOperation(ctx, "acl", aclName, "PATCH", props, ipVersion)
-}
-
-func (b *BulkOperationManager) AddAclDelete(ctx context.Context, aclName string, ipVersion string) string {
-	return b.addGenericOperation(ctx, "acl", aclName, "DELETE", nil, ipVersion)
-}
-
-// Internal method that handles both generic operations and ACL-specific IP version tracking
-func (b *BulkOperationManager) addGenericOperation(ctx context.Context, resourceType, resourceName, operationType string, props interface{}, ipVersion string) string {
-	// For ACL operations, create a composite key that includes the IP version to prevent overwrites
+func (b *BulkOperationManager) addGenericOperation(ctx context.Context, resourceType, resourceName, operationType string, props interface{}, headerParams map[string]string) string {
+	// For resources with HeaderSplitKey, create a composite key to prevent overwrites
 	storeKey := resourceName
-	if resourceType == "acl" && ipVersion != "" {
-		storeKey = fmt.Sprintf("%s_v%s", resourceName, ipVersion)
+	if config, exists := resourceRegistry[resourceType]; exists && config.HeaderSplitKey != "" && headerParams != nil {
+		if headerValue, exists := headerParams[config.HeaderSplitKey]; exists && headerValue != "" {
+			storeKey = fmt.Sprintf("%s_%s%s", resourceName, config.HeaderSplitKey, headerValue)
+		}
 	}
 
 	storeFunc := func() {
 		b.storeOperation(resourceType, storeKey, operationType, props)
-		if resourceType == "acl" && ipVersion != "" {
-			if b.aclIpVersion == nil {
-				b.aclIpVersion = make(map[string]string)
+		// Store header params and original name for resources that need them
+		if len(headerParams) > 0 {
+			if b.resourceHeaderParams == nil {
+				b.resourceHeaderParams = make(map[string]map[string]string)
 			}
-			b.aclIpVersion[storeKey] = ipVersion
+			if b.resourceOriginalNames == nil {
+				b.resourceOriginalNames = make(map[string]string)
+			}
+			paramKey := fmt.Sprintf("%s:%s", resourceType, storeKey)
+			b.resourceHeaderParams[paramKey] = headerParams
+			// Store original name if composite key was created
+			if storeKey != resourceName {
+				b.resourceOriginalNames[paramKey] = resourceName
+			}
 		}
 	}
 
@@ -3061,24 +3121,24 @@ func (b *BulkOperationManager) addGenericOperation(ctx context.Context, resource
 		"batch_size":                         b.getBatchSize(resourceType, operationType) + 1,
 	}
 
-	if resourceType == "acl" && ipVersion != "" {
-		logDetails["ip_version"] = ipVersion
+	for key, value := range headerParams {
+		logDetails[key] = value
 	}
 
 	return b.addOperation(ctx, resourceType, resourceName, operationType, storeFunc, logDetails)
 }
 
 func (b *BulkOperationManager) ExecuteBulk(ctx context.Context, resourceType, operationType string) diag.Diagnostics {
-	// Special handling for ACLs which need IP version separation
-	if resourceType == "acl" {
-		return b.executeBulkAcl(ctx, operationType)
-	}
-
 	config, exists := resourceRegistry[resourceType]
 	if !exists {
 		var diags diag.Diagnostics
 		diags.AddError("Unknown resource type", fmt.Sprintf("Resource type %s is not registered", resourceType))
 		return diags
+	}
+
+	// Check if this resource type needs header-based operation splitting
+	if config.HeaderSplitKey != "" {
+		return b.executeBulkWithHeaderSplit(ctx, resourceType, operationType, config)
 	}
 
 	return b.executeBulkOperation(ctx, BulkOperationConfig{
@@ -3093,20 +3153,21 @@ func (b *BulkOperationManager) ExecuteBulk(ctx context.Context, resourceType, op
 	})
 }
 
-// Special handling for ACL operations that need to be executed separately
-func (b *BulkOperationManager) executeBulkAcl(ctx context.Context, operationType string) diag.Diagnostics {
+// executeBulkWithHeaderSplit handles operations for resources that need header-based batch splitting
+// Resources with HeaderSplitKey will have their operations grouped by that header parameter value
+// Example: ACLs split by "ip_version" into separate IPv4 and IPv6 batches
+func (b *BulkOperationManager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, operationType string, config ResourceConfig) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
 	b.mutex.Lock()
 
-	res, exists := b.resources["acl"]
+	res, exists := b.resources[resourceType]
 	if !exists {
 		b.mutex.Unlock()
 		return diagnostics
 	}
 
+	// Extract operations based on type
 	var originalOperations map[string]interface{}
-	var originalIpVersions map[string]string
-
 	switch operationType {
 	case "PUT":
 		if res.Put == nil {
@@ -3135,20 +3196,32 @@ func (b *BulkOperationManager) executeBulkAcl(ctx context.Context, operationType
 		}
 		originalOperations = make(map[string]interface{})
 		for _, name := range res.Delete {
-			originalOperations[name] = openapi.AclsPutRequestIpFilterValue{}
+			// Use empty struct as placeholder for DELETE operations
+			originalOperations[name] = struct{}{}
 		}
 		res.Delete = res.Delete[:0]
 	}
 
-	originalIpVersions = make(map[string]string)
-	for k, v := range b.aclIpVersion {
-		if _, exists := originalOperations[k]; exists {
-			originalIpVersions[k] = v
-		}
-	}
-
+	// Extract header values and original names for all operations
+	headerValues := make(map[string]string)
+	originalNames := make(map[string]string)
 	for k := range originalOperations {
-		delete(b.aclIpVersion, k)
+		paramKey := fmt.Sprintf("%s:%s", resourceType, k)
+		if params, exists := b.resourceHeaderParams[paramKey]; exists {
+			if headerValue, ok := params[config.HeaderSplitKey]; ok {
+				headerValues[k] = headerValue
+			}
+		}
+		// Get original name if it was stored
+		if origName, exists := b.resourceOriginalNames[paramKey]; exists {
+			originalNames[k] = origName
+		} else {
+			// Composite key not used, k is the original name
+			originalNames[k] = k
+		}
+		// Clean up header params and original names
+		delete(b.resourceHeaderParams, paramKey)
+		delete(b.resourceOriginalNames, paramKey)
 	}
 	b.mutex.Unlock()
 
@@ -3156,41 +3229,23 @@ func (b *BulkOperationManager) executeBulkAcl(ctx context.Context, operationType
 		return diagnostics
 	}
 
-	ipv4Data := make(map[string]openapi.AclsPutRequestIpFilterValue)
-	ipv6Data := make(map[string]openapi.AclsPutRequestIpFilterValue)
-
-	// Process operations and extract original resource names from composite keys
+	// Group operations by header value using original resource names
+	groupedOps := make(map[string]map[string]interface{})
 	for compositeKey, props := range originalOperations {
-		ipVersion := originalIpVersions[compositeKey]
+		headerValue := headerValues[compositeKey]
+		originalName := originalNames[compositeKey]
 
-		// Extract original resource name by removing the _v4 or _v6 suffix
-		var originalName string
-		if ipVersion == "4" && strings.HasSuffix(compositeKey, "_v4") {
-			originalName = strings.TrimSuffix(compositeKey, "_v4")
-		} else if ipVersion == "6" && strings.HasSuffix(compositeKey, "_v6") {
-			originalName = strings.TrimSuffix(compositeKey, "_v6")
-		} else {
-			// Fallback for operations without composite keys
-			originalName = compositeKey
+		if groupedOps[headerValue] == nil {
+			groupedOps[headerValue] = make(map[string]interface{})
 		}
-
-		if ipVersion == "6" {
-			ipv6Data[originalName] = props.(openapi.AclsPutRequestIpFilterValue)
-		} else {
-			ipv4Data[originalName] = props.(openapi.AclsPutRequestIpFilterValue)
-		}
+		groupedOps[headerValue][originalName] = props
 	}
 
-	// Process IPv4 ACLs
-	if len(ipv4Data) > 0 {
-		ipv4Diagnostics := b.executeAclForIpVersion(ctx, ipv4Data, operationType, "4")
-		diagnostics = append(diagnostics, ipv4Diagnostics...)
-	}
-
-	// Process IPv6 ACLs
-	if len(ipv6Data) > 0 {
-		ipv6Diagnostics := b.executeAclForIpVersion(ctx, ipv6Data, operationType, "6")
-		diagnostics = append(diagnostics, ipv6Diagnostics...)
+	// Execute operations for each header value group
+	for headerValue, ops := range groupedOps {
+		headers := map[string]string{config.HeaderSplitKey: headerValue}
+		groupDiags := b.executeOperationsWithHeaders(ctx, resourceType, operationType, ops, headers, config)
+		diagnostics = append(diagnostics, groupDiags...)
 	}
 
 	// Update recent operations
@@ -3200,34 +3255,33 @@ func (b *BulkOperationManager) executeBulkAcl(ctx context.Context, operationType
 	return diagnostics
 }
 
-func (b *BulkOperationManager) executeAclForIpVersion(ctx context.Context, aclData map[string]openapi.AclsPutRequestIpFilterValue, operationType, ipVersion string) diag.Diagnostics {
+// executeOperationsWithHeaders executes a batch of operations with specific header parameters
+func (b *BulkOperationManager) executeOperationsWithHeaders(ctx context.Context, resourceType, operationType string, operations map[string]interface{}, headers map[string]string, config ResourceConfig) diag.Diagnostics {
 	return b.executeBulkOperation(ctx, BulkOperationConfig{
-		ResourceType:  fmt.Sprintf("acl_v%s", ipVersion),
+		ResourceType:  resourceType,
 		OperationType: operationType,
 
 		ExtractOperations: func() (map[string]interface{}, []string) {
-			result := make(map[string]interface{})
-			names := make([]string, 0, len(aclData))
-			for k, v := range aclData {
-				result[k] = v
+			names := make([]string, 0, len(operations))
+			for k := range operations {
 				names = append(names, k)
 			}
-			return result, names
+			return operations, names
 		},
 
 		CheckPreExistence: func(ctx context.Context, resourceNames []string, originalOperations map[string]interface{}) ([]string, map[string]interface{}, error) {
-			if operationType != "PUT" {
+			if operationType != "PUT" || config.HeaderGetFunc == nil {
 				return nil, nil, nil
 			}
 
 			checker := ResourceExistenceCheck{
-				ResourceType:  "acl",
+				ResourceType:  resourceType,
 				OperationType: "PUT",
 				FetchResources: func(ctx context.Context) (map[string]interface{}, error) {
 					apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
 					defer cancel()
 
-					resp, err := b.client.ACLsAPI.AclsGet(apiCtx).IpVersion(ipVersion).Execute()
+					resp, err := config.HeaderGetFunc(b.client, apiCtx, headers)
 					if err != nil {
 						return nil, err
 					}
@@ -3238,19 +3292,12 @@ func (b *BulkOperationManager) executeAclForIpVersion(ctx context.Context, aclDa
 						return nil, err
 					}
 
-					// Extract the correct field based on IP version
-					var filterKey string
-					if ipVersion == "6" {
-						filterKey = "ipv6_filter"
-					} else {
-						filterKey = "ipv4_filter"
+					// Use custom response extractor if configured
+					if config.HeaderResponseExtractor != nil {
+						return config.HeaderResponseExtractor(result, headers)
 					}
 
-					if ipFilter, ok := result[filterKey].(map[string]interface{}); ok {
-						return ipFilter, nil
-					}
-
-					return make(map[string]interface{}), nil
+					return result, nil
 				},
 			}
 
@@ -3276,31 +3323,26 @@ func (b *BulkOperationManager) executeAclForIpVersion(ctx context.Context, aclDa
 					names = append(names, name)
 				}
 				return names
-			} else {
-				request := openapi.NewAclsPutRequest()
-				aclMap := make(map[string]openapi.AclsPutRequestIpFilterValue)
-				for name, props := range filteredData {
-					aclMap[name] = props.(openapi.AclsPutRequestIpFilterValue)
-				}
-				request.SetIpFilter(aclMap)
-				return request
 			}
+			return b.createRequestPreparer(config, operationType)(filteredData)
 		},
 
 		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
 			switch operationType {
 			case "PUT":
-				req := b.client.ACLsAPI.AclsPut(ctx).IpVersion(ipVersion).AclsPutRequest(*request.(*openapi.AclsPutRequest))
-				return req.Execute()
+				if config.HeaderPutFunc != nil {
+					return config.HeaderPutFunc(b.client, ctx, request, headers)
+				}
 			case "PATCH":
-				req := b.client.ACLsAPI.AclsPatch(ctx).IpVersion(ipVersion).AclsPutRequest(*request.(*openapi.AclsPutRequest))
-				return req.Execute()
+				if config.HeaderPatchFunc != nil {
+					return config.HeaderPatchFunc(b.client, ctx, request, headers)
+				}
 			case "DELETE":
-				req := b.client.ACLsAPI.AclsDelete(ctx).IpFilterName(request.([]string)).IpVersion(ipVersion)
-				return req.Execute()
-			default:
-				return nil, fmt.Errorf("unsupported ACL operation type: %s", operationType)
+				if config.HeaderDeleteFunc != nil {
+					return config.HeaderDeleteFunc(b.client, ctx, request.([]string), headers)
+				}
 			}
+			return nil, fmt.Errorf("unsupported operation type for header-aware resource: %s", operationType)
 		},
 
 		ProcessResponse: nil,

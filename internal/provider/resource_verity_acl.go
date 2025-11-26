@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -217,16 +216,11 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 		aclProps.ObjectProperties = &objProps
 	}
 
-	// Special handling for dual resource types
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddAclPut(ctx, name, *aclProps, r.ipVersion)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv%s ACL creation operation %s to complete", r.ipVersion, operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to create IPv%s ACL %s", r.ipVersion, name))...,
-		)
+	options := &utils.ResourceOperationOptions{
+		HeaderParams: map[string]string{"ip_version": r.ipVersion},
+	}
+	success := utils.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "acl", name, *aclProps, &resp.Diagnostics, options)
+	if !success {
 		return
 	}
 
@@ -262,25 +256,24 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 
 	tflog.Debug(ctx, fmt.Sprintf("Fetching IPv%s ACLs for verification of %s", r.ipVersion, aclName))
 
-	var err error
-	maxRetries := 3
-	var aclsMap map[string]interface{}
+	type ACLsResponse struct {
+		ACLs map[string]interface{}
+	}
 
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		aclsData, fetchErr := getCachedResponse(ctx, r.provCtx, r.getCacheKey(), func() (interface{}, error) {
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, r.getCacheKey(), fmt.Sprintf("IPv%s ACLs", r.ipVersion),
+		func() (ACLsResponse, error) {
 			tflog.Debug(ctx, fmt.Sprintf("Making API call to fetch IPv%s ACLs", r.ipVersion))
 
 			req := r.client.ACLsAPI.AclsGet(ctx).IpVersion(r.ipVersion)
 			apiResp, err := req.Execute()
-
 			if err != nil {
-				return nil, fmt.Errorf("error reading IPv%s ACL: %v", r.ipVersion, err)
+				return ACLsResponse{}, fmt.Errorf("error reading IPv%s ACL: %v", r.ipVersion, err)
 			}
 			defer apiResp.Body.Close()
 
 			var rawResponse map[string]interface{}
 			if err := json.NewDecoder(apiResp.Body).Decode(&rawResponse); err != nil {
-				return nil, fmt.Errorf("failed to decode IPv%s ACLs response: %v", r.ipVersion, err)
+				return ACLsResponse{}, fmt.Errorf("failed to decode IPv%s ACLs response: %v", r.ipVersion, err)
 			}
 
 			// Extract the correct field based on IP version
@@ -292,23 +285,14 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 			}
 
 			if ipFilter, ok := rawResponse[filterKey].(map[string]interface{}); ok {
-				tflog.Debug(ctx, fmt.Sprintf("Successfully fetched IPv%s ACLs from API", r.ipVersion))
-				return ipFilter, nil
+				tflog.Debug(ctx, fmt.Sprintf("Successfully fetched %d IPv%s ACLs", len(ipFilter), r.ipVersion))
+				return ACLsResponse{ACLs: ipFilter}, nil
 			}
 
-			return make(map[string]interface{}), nil
-		})
-		if fetchErr != nil {
-			err = fetchErr
-			sleepTime := time.Duration(100*(attempt+1)) * time.Millisecond
-			tflog.Debug(ctx, fmt.Sprintf("Failed to fetch IPv%s ACLs on attempt %d, retrying in %v", r.ipVersion, attempt+1, sleepTime))
-			time.Sleep(sleepTime)
-			continue
-		}
-		aclsMap = aclsData.(map[string]interface{})
-		break
-	}
-
+			return ACLsResponse{ACLs: make(map[string]interface{})}, nil
+		},
+		getCachedResponse,
+	)
 	if err != nil {
 		resp.Diagnostics.Append(
 			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Read IPv%s ACL %s", r.ipVersion, aclName))...,
@@ -319,7 +303,7 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv%s ACL with name: %s", r.ipVersion, aclName))
 
 	// ACLs use the map key as the name
-	aclData, exists := aclsMap[aclName]
+	aclData, exists := utils.FindResourceByKey(result.ACLs, aclName)
 	if !exists {
 		tflog.Debug(ctx, fmt.Sprintf("IPv%s ACL with name '%s' not found in API response", r.ipVersion, aclName))
 		resp.State.RemoveResource(ctx)
@@ -450,16 +434,11 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	// Special handling for dual resource types
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddAclPatch(ctx, name, aclProps, r.ipVersion)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv%s ACL update operation %s to complete", r.ipVersion, operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Update IPv%s ACL %s", r.ipVersion, name))...,
-		)
+	options := &utils.ResourceOperationOptions{
+		HeaderParams: map[string]string{"ip_version": r.ipVersion},
+	}
+	success := utils.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "acl", name, aclProps, &resp.Diagnostics, options)
+	if !success {
 		return
 	}
 
@@ -486,16 +465,11 @@ func (r *verityACLUnifiedResource) Delete(ctx context.Context, req resource.Dele
 
 	name := state.Name.ValueString()
 
-	// Special handling for dual resource types
-	bulkOpsMgr := r.provCtx.bulkOpsMgr
-	operationID := bulkOpsMgr.AddAclDelete(ctx, name, r.ipVersion)
-	r.notifyOperationAdded()
-
-	tflog.Debug(ctx, fmt.Sprintf("Waiting for IPv%s ACL deletion operation %s to complete", r.ipVersion, operationID))
-	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, utils.OperationTimeout); err != nil {
-		resp.Diagnostics.Append(
-			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to Delete IPv%s ACL %s", r.ipVersion, name))...,
-		)
+	options := &utils.ResourceOperationOptions{
+		HeaderParams: map[string]string{"ip_version": r.ipVersion},
+	}
+	success := utils.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "acl", name, nil, &resp.Diagnostics, options)
+	if !success {
 		return
 	}
 

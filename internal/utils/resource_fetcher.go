@@ -59,3 +59,13 @@ func FindResourceByAPIName[T any](
 	}
 	return resource, "", false
 }
+
+// FindResourceByKey searches for a resource where the map key is the resource name
+// This is used by resources like ACL where the map key directly represents the resource name
+func FindResourceByKey[T any](
+	resources map[string]T,
+	targetName string,
+) (resource T, exists bool) {
+	res, exists := resources[targetName]
+	return res, exists
+}
