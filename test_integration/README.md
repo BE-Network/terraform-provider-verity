@@ -179,7 +179,13 @@ The script only tests resources defined in `internal/importer/importer.go`:
 - sfpbreakouts
 - sites
 - pods
+- spineplanes
+- policybasedroutingacl
+- policybasedrouting
 - portacls
+- groupingrules
+- thresholdgroups
+- thresholds
 
 If a `.tf` file doesn't match these names, it will be skipped.
 
