@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityDeviceControllerResource() resource.Resource {
 type verityDeviceControllerResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -358,7 +359,7 @@ func (r *verityDeviceControllerResource) Create(ctx context.Context, req resourc
 		{FieldName: "UsesTaggedPackets", APIField: &deviceControllerProps.UsesTaggedPackets, TFValue: plan.UsesTaggedPackets},
 	})
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_controller", name, *deviceControllerProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_controller", name, *deviceControllerProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -629,7 +630,7 @@ func (r *verityDeviceControllerResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_controller", name, deviceControllerProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_controller", name, deviceControllerProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -657,7 +658,7 @@ func (r *verityDeviceControllerResource) Delete(ctx context.Context, req resourc
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_controller", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_controller", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

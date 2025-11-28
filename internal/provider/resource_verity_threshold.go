@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityThresholdResource() resource.Resource {
 type verityThresholdResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -263,7 +264,7 @@ func (r *verityThresholdResource) Create(ctx context.Context, req resource.Creat
 		thresholdProps.Rules = rules
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "threshold", name, *thresholdProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "threshold", name, *thresholdProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -543,7 +544,7 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "threshold", name, thresholdProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "threshold", name, thresholdProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -571,7 +572,7 @@ func (r *verityThresholdResource) Delete(ctx context.Context, req resource.Delet
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "threshold", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "threshold", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

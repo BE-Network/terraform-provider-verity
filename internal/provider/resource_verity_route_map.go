@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityRouteMapResource() resource.Resource {
 type verityRouteMapResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -198,7 +199,7 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 		routeMapReq.RouteMapClauses = routeMapClausesList
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "route_map", name, *routeMapReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "route_map", name, *routeMapReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -458,7 +459,7 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "route_map", name, routeMapProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "route_map", name, routeMapProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -486,7 +487,7 @@ func (r *verityRouteMapResource) Delete(ctx context.Context, req resource.Delete
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "route_map", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "route_map", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

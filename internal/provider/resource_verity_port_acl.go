@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityPortAclResource() resource.Resource {
 type verityPortAclResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -325,7 +326,7 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		portAclProps.Ipv6Deny = filters
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "port_acl", name, *portAclProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "port_acl", name, *portAclProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -806,7 +807,7 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "port_acl", name, portAclProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "port_acl", name, portAclProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -834,7 +835,7 @@ func (r *verityPortAclResource) Delete(ctx context.Context, req resource.DeleteR
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "port_acl", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "port_acl", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

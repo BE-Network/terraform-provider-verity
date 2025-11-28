@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -31,7 +32,7 @@ func NewVeritySwitchpointResource() resource.Resource {
 type veritySwitchpointResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -593,7 +594,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		spProps.Eths = eths
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "switchpoint", name, *spProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "switchpoint", name, *spProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -1254,7 +1255,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "switchpoint", name, spProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "switchpoint", name, spProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -1308,7 +1309,7 @@ func (r *veritySwitchpointResource) Delete(ctx context.Context, req resource.Del
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "switchpoint", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "switchpoint", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

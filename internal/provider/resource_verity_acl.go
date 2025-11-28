@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -34,7 +35,7 @@ func NewVerityACLV6Resource() resource.Resource {
 type verityACLUnifiedResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 	ipVersion            string // "4" for IPv4, "6" for IPv6
 }
@@ -216,10 +217,10 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 		aclProps.ObjectProperties = &objProps
 	}
 
-	options := &utils.ResourceOperationOptions{
+	options := &bulkops.ResourceOperationOptions{
 		HeaderParams: map[string]string{"ip_version": r.ipVersion},
 	}
-	success := utils.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "acl", name, *aclProps, &resp.Diagnostics, options)
+	success := bulkops.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "acl", name, *aclProps, &resp.Diagnostics, options)
 	if !success {
 		return
 	}
@@ -434,10 +435,10 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	options := &utils.ResourceOperationOptions{
+	options := &bulkops.ResourceOperationOptions{
 		HeaderParams: map[string]string{"ip_version": r.ipVersion},
 	}
-	success := utils.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "acl", name, aclProps, &resp.Diagnostics, options)
+	success := bulkops.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "acl", name, aclProps, &resp.Diagnostics, options)
 	if !success {
 		return
 	}
@@ -465,10 +466,10 @@ func (r *verityACLUnifiedResource) Delete(ctx context.Context, req resource.Dele
 
 	name := state.Name.ValueString()
 
-	options := &utils.ResourceOperationOptions{
+	options := &bulkops.ResourceOperationOptions{
 		HeaderParams: map[string]string{"ip_version": r.ipVersion},
 	}
-	success := utils.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "acl", name, nil, &resp.Diagnostics, options)
+	success := bulkops.ExecuteResourceOperationWithOptions(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "acl", name, nil, &resp.Diagnostics, options)
 	if !success {
 		return
 	}

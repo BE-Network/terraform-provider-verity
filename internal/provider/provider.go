@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"terraform-provider-verity/internal/auth"
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 
@@ -43,7 +44,7 @@ type providerContext struct {
 	apiVersion     string
 	responseCache  map[string]interface{}
 	cacheMutex     sync.Mutex
-	bulkOpsMgr     *utils.BulkOperationManager
+	bulkOpsMgr     *bulkops.Manager
 	tickChannel    chan struct{}
 	debounceTimer  *time.Timer
 	debounceActive bool
@@ -252,7 +253,7 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	tflog.Info(ctx, "Configuring provider with mode: "+mode)
 
-	bulkManager := utils.GetBulkOperationManager(client, clearCache, provCtx, mode)
+	bulkManager := bulkops.GetManager(client, clearCache, provCtx, mode)
 	tflog.Info(ctx, "Initialized bulk operation manager with manual batching mode")
 
 	provCtx.bulkOpsMgr = bulkManager

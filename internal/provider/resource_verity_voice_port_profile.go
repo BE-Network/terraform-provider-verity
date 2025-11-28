@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityVoicePortProfileResource() resource.Resource {
 type verityVoicePortProfileResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -348,7 +349,7 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		vppProps.ObjectProperties = &objProps
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "voice_port_profile", name, *vppProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "voice_port_profile", name, *vppProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -612,7 +613,7 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "voice_port_profile", name, vppProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "voice_port_profile", name, vppProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -640,7 +641,7 @@ func (r *verityVoicePortProfileResource) Delete(ctx context.Context, req resourc
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "voice_port_profile", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "voice_port_profile", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

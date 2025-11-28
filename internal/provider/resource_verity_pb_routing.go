@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityPBRoutingResource() resource.Resource {
 type verityPBRoutingResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -165,7 +166,7 @@ func (r *verityPBRoutingResource) Create(ctx context.Context, req resource.Creat
 		pbRoutingProps.Policy = policies
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "pb_routing", name, *pbRoutingProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "pb_routing", name, *pbRoutingProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -402,7 +403,7 @@ func (r *verityPBRoutingResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "pb_routing", name, pbRoutingProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "pb_routing", name, pbRoutingProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -430,7 +431,7 @@ func (r *verityPBRoutingResource) Delete(ctx context.Context, req resource.Delet
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "pb_routing", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "pb_routing", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

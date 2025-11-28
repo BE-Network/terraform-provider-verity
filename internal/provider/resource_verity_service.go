@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -31,7 +32,7 @@ func NewVerityServiceResource() resource.Resource {
 type verityServiceResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -341,7 +342,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		}
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "service", name, *serviceReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "service", name, *serviceReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -658,7 +659,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "service", name, serviceReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "service", name, serviceReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -712,7 +713,7 @@ func (r *verityServiceResource) Delete(ctx context.Context, req resource.DeleteR
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "service", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "service", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityServicePortProfileResource() resource.Resource {
 type verityServicePortProfileResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -276,7 +277,7 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		sppProps.Services = services
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "service_port_profile", name, *sppProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "service_port_profile", name, *sppProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -597,7 +598,7 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "service_port_profile", name, sppProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "service_port_profile", name, sppProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -625,7 +626,7 @@ func (r *verityServicePortProfileResource) Delete(ctx context.Context, req resou
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "service_port_profile", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "service_port_profile", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityGatewayResource() resource.Resource {
 type verityGatewayResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -388,7 +389,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		gatewayProps.StaticRoutes = routes
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "gateway", name, *gatewayProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "gateway", name, *gatewayProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -769,7 +770,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "gateway", name, gatewayProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "gateway", name, gatewayProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -797,7 +798,7 @@ func (r *verityGatewayResource) Delete(ctx context.Context, req resource.DeleteR
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "gateway", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "gateway", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

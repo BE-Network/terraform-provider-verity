@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityAuthenticatedEthPortResource() resource.Resource {
 type verityAuthenticatedEthPortResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -247,7 +248,7 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		aepProps.EthPorts = ethPorts
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "authenticated_eth_port", name, *aepProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "authenticated_eth_port", name, *aepProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -548,7 +549,7 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "authenticated_eth_port", name, aepProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "authenticated_eth_port", name, aepProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -576,7 +577,7 @@ func (r *verityAuthenticatedEthPortResource) Delete(ctx context.Context, req res
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "authenticated_eth_port", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "authenticated_eth_port", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

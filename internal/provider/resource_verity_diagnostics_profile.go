@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityDiagnosticsProfileResource() resource.Resource {
 type verityDiagnosticsProfileResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -146,7 +147,7 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 		{FieldName: "PollInterval", APIField: &diagnosticsProfileProps.PollInterval, TFValue: plan.PollInterval},
 	})
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_profile", name, *diagnosticsProfileProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_profile", name, *diagnosticsProfileProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -335,7 +336,7 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "diagnostics_profile", name, diagnosticsProfileProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "diagnostics_profile", name, diagnosticsProfileProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -363,7 +364,7 @@ func (r *verityDiagnosticsProfileResource) Delete(ctx context.Context, req resou
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "diagnostics_profile", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "diagnostics_profile", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

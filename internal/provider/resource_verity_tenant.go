@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -31,7 +32,7 @@ func NewVerityTenantResource() resource.Resource {
 type verityTenantResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -366,7 +367,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		tenantReq.RouteTenants = routeTenants
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "tenant", name, *tenantReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "tenant", name, *tenantReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -848,7 +849,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "tenant", name, tenantReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "tenant", name, tenantReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -902,7 +903,7 @@ func (r *verityTenantResource) Delete(ctx context.Context, req resource.DeleteRe
 
 	tenantName := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "tenant", tenantName, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "tenant", tenantName, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

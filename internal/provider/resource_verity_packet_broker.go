@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityPacketBrokerResource() resource.Resource {
 type verityPacketBrokerResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -301,7 +302,7 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		pbProps.Ipv6Deny = ipv6Deny
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "packet_broker", name, *pbProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "packet_broker", name, *pbProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -727,7 +728,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "packet_broker", name, pbProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "packet_broker", name, pbProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -755,7 +756,7 @@ func (r *verityPacketBrokerResource) Delete(ctx context.Context, req resource.De
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "packet_broker", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "packet_broker", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

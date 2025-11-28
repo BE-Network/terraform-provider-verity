@@ -1,8 +1,9 @@
-package utils
+package bulkops
 
 import (
 	"context"
 	"fmt"
+	"terraform-provider-verity/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
@@ -18,7 +19,7 @@ type ResourceOperationOptions struct {
 // and waiting for completion with proper error handling
 func ExecuteResourceOperation(
 	ctx context.Context,
-	bulkOpsMgr *BulkOperationManager,
+	bulkOpsMgr *Manager,
 	notifyFunc func(),
 	operationType, resourceType, resourceName string,
 	resourceData interface{},
@@ -31,7 +32,7 @@ func ExecuteResourceOperation(
 // such as IP version for ACL resources
 func ExecuteResourceOperationWithOptions(
 	ctx context.Context,
-	bulkOpsMgr *BulkOperationManager,
+	bulkOpsMgr *Manager,
 	notifyFunc func(),
 	operationType, resourceType, resourceName string,
 	resourceData interface{},
@@ -62,7 +63,7 @@ func ExecuteResourceOperationWithOptions(
 
 	if err := bulkOpsMgr.WaitForOperation(ctx, operationID, OperationTimeout); err != nil {
 		diagnostics.Append(
-			FormatOpenAPIError(err, fmt.Sprintf("Failed to %s %s %s", operationType, resourceType, resourceName))...,
+			utils.FormatOpenAPIError(err, fmt.Sprintf("Failed to %s %s %s", operationType, resourceType, resourceName))...,
 		)
 		return false
 	}

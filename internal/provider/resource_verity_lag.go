@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityLagResource() resource.Resource {
 type verityLagResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -192,7 +193,7 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		lagReq.ObjectProperties = nil
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "lag", name, *lagReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "lag", name, *lagReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -400,7 +401,7 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "lag", name, lagReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "lag", name, lagReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -428,7 +429,7 @@ func (r *verityLagResource) Delete(ctx context.Context, req resource.DeleteReque
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "lag", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "lag", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityGroupingRuleResource() resource.Resource {
 type verityGroupingRuleResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -203,7 +204,7 @@ func (r *verityGroupingRuleResource) Create(ctx context.Context, req resource.Cr
 		groupingRuleProps.Rules = rules
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "grouping_rule", name, *groupingRuleProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "grouping_rule", name, *groupingRuleProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -462,7 +463,7 @@ func (r *verityGroupingRuleResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "grouping_rule", name, groupingRuleProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "grouping_rule", name, groupingRuleProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -490,7 +491,7 @@ func (r *verityGroupingRuleResource) Delete(ctx context.Context, req resource.De
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "grouping_rule", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "grouping_rule", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

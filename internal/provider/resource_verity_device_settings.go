@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityDeviceSettingsResource() resource.Resource {
 type verityDeviceSettingsResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -232,7 +233,7 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		deviceSettingsProps.ObjectProperties = &objProps
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_settings", name, *deviceSettingsProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_settings", name, *deviceSettingsProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -484,7 +485,7 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_settings", name, deviceSettingsProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_settings", name, deviceSettingsProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -512,7 +513,7 @@ func (r *verityDeviceSettingsResource) Delete(ctx context.Context, req resource.
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_settings", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_settings", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

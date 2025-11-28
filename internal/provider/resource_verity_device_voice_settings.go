@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityDeviceVoiceSettingsResource() resource.Resource {
 type verityDeviceVoiceSettingsResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -553,7 +554,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		dvsProps.Codecs = codecs
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_voice_settings", name, *dvsProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_voice_settings", name, *dvsProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -947,7 +948,7 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_voice_settings", name, dvsProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "device_voice_settings", name, dvsProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -975,7 +976,7 @@ func (r *verityDeviceVoiceSettingsResource) Delete(ctx context.Context, req reso
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_voice_settings", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "device_voice_settings", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

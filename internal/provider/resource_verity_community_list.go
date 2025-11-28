@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityCommunityListResource() resource.Resource {
 type verityCommunityListResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -213,7 +214,7 @@ func (r *verityCommunityListResource) Create(ctx context.Context, req resource.C
 		communityListProps.Lists = lists
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "community_list", name, *communityListProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "community_list", name, *communityListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -482,7 +483,7 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "community_list", name, communityListProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "community_list", name, communityListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -510,7 +511,7 @@ func (r *verityCommunityListResource) Delete(ctx context.Context, req resource.D
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "community_list", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "community_list", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

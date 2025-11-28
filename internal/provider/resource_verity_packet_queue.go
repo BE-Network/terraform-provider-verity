@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityPacketQueueResource() resource.Resource {
 type verityPacketQueueResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -244,7 +245,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		pqProps.Queue = queueArray
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "packet_queue", name, *pqProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "packet_queue", name, *pqProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -555,7 +556,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "packet_queue", name, pqProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "packet_queue", name, pqProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -583,7 +584,7 @@ func (r *verityPacketQueueResource) Delete(ctx context.Context, req resource.Del
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "packet_queue", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "packet_queue", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

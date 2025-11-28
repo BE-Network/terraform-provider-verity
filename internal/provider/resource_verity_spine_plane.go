@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVeritySpinePlaneResource() resource.Resource {
 type veritySpinePlaneResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -136,7 +137,7 @@ func (r *veritySpinePlaneResource) Create(ctx context.Context, req resource.Crea
 		spinePlaneReq.ObjectProperties = &objProps
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "spine_plane", name, *spinePlaneReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "spine_plane", name, *spinePlaneReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -311,7 +312,7 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "spine_plane", name, spinePlaneReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "spine_plane", name, spinePlaneReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -339,7 +340,7 @@ func (r *veritySpinePlaneResource) Delete(ctx context.Context, req resource.Dele
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "spine_plane", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "spine_plane", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

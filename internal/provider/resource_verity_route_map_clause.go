@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityRouteMapClauseResource() resource.Resource {
 type verityRouteMapClauseResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -330,7 +331,7 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		routeMapClauseProps.ObjectProperties = &objProps
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "route_map_clause", name, *routeMapClauseProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "route_map_clause", name, *routeMapClauseProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -667,7 +668,7 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "route_map_clause", name, routeMapClauseProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "route_map_clause", name, routeMapClauseProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -695,7 +696,7 @@ func (r *verityRouteMapClauseResource) Delete(ctx context.Context, req resource.
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "route_map_clause", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "route_map_clause", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

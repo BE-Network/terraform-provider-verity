@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityIpv6ListResource() resource.Resource {
 type verityIpv6ListResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -118,7 +119,7 @@ func (r *verityIpv6ListResource) Create(ctx context.Context, req resource.Create
 		{FieldName: "Enable", APIField: &ipv6ListProps.Enable, TFValue: plan.Enable},
 	})
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv6_list", name, *ipv6ListProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "ipv6_list", name, *ipv6ListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -279,7 +280,7 @@ func (r *verityIpv6ListResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv6_list", name, ipv6ListProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "ipv6_list", name, ipv6ListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -307,7 +308,7 @@ func (r *verityIpv6ListResource) Delete(ctx context.Context, req resource.Delete
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv6_list", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "ipv6_list", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

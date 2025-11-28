@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityBadgeResource() resource.Resource {
 type verityBadgeResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -156,7 +157,7 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		badgeProps.ObjectProperties = &objProps
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "badge", name, *badgeProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "badge", name, *badgeProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -354,7 +355,7 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "badge", name, badgeProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "badge", name, badgeProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -382,7 +383,7 @@ func (r *verityBadgeResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "badge", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "badge", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

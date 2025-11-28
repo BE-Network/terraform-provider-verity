@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityGatewayProfileResource() resource.Resource {
 type verityGatewayProfileResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -203,7 +204,7 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 		profileProps.ExternalGateways = gateways
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "gateway_profile", name, *profileProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "gateway_profile", name, *profileProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -475,7 +476,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "gateway_profile", name, profileProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "gateway_profile", name, profileProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -503,7 +504,7 @@ func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "gateway_profile", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "gateway_profile", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

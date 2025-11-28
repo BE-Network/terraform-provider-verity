@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityThresholdGroupResource() resource.Resource {
 type verityThresholdGroupResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -268,7 +269,7 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 		thresholdGroupProps.Thresholds = thresholds
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "threshold_group", name, *thresholdGroupProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "threshold_group", name, *thresholdGroupProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -627,7 +628,7 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "threshold_group", name, thresholdGroupProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "threshold_group", name, thresholdGroupProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -655,7 +656,7 @@ func (r *verityThresholdGroupResource) Delete(ctx context.Context, req resource.
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "threshold_group", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "threshold_group", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

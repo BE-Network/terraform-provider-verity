@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVeritySflowCollectorResource() resource.Resource {
 type veritySflowCollectorResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -128,7 +129,7 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 		{FieldName: "Port", APIField: &sflowCollectorReq.Port, TFValue: plan.Port},
 	})
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "sflow_collector", name, *sflowCollectorReq, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "sflow_collector", name, *sflowCollectorReq, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -301,7 +302,7 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "sflow_collector", name, sflowCollectorProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "sflow_collector", name, sflowCollectorProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -329,7 +330,7 @@ func (r *veritySflowCollectorResource) Delete(ctx context.Context, req resource.
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "sflow_collector", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "sflow_collector", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

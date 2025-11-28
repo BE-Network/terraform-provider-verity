@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityExtendedCommunityListResource() resource.Resource {
 type verityExtendedCommunityListResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -215,7 +216,7 @@ func (r *verityExtendedCommunityListResource) Create(ctx context.Context, req re
 		extCommListProps.Lists = lists
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "extended_community_list", name, *extCommListProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "extended_community_list", name, *extCommListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -482,7 +483,7 @@ func (r *verityExtendedCommunityListResource) Update(ctx context.Context, req re
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "extended_community_list", name, extCommListProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "extended_community_list", name, extCommListProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -510,7 +511,7 @@ func (r *verityExtendedCommunityListResource) Delete(ctx context.Context, req re
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "extended_community_list", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "extended_community_list", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}

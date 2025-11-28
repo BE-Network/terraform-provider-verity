@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
@@ -30,7 +31,7 @@ func NewVerityDiagnosticsPortProfileResource() resource.Resource {
 type verityDiagnosticsPortProfileResource struct {
 	provCtx              *providerContext
 	client               *openapi.APIClient
-	bulkOpsMgr           *utils.BulkOperationManager
+	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
 }
 
@@ -114,7 +115,7 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 		{FieldName: "EnableSflow", TFValue: plan.EnableSflow, APIField: &diagnosticsPortProfileProps.EnableSflow},
 	})
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_port_profile", name, *diagnosticsPortProfileProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_port_profile", name, *diagnosticsPortProfileProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -267,7 +268,7 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 		return
 	}
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "diagnostics_port_profile", name, diagnosticsPortProfileProps, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "update", "diagnostics_port_profile", name, diagnosticsPortProfileProps, &resp.Diagnostics)
 	if !success {
 		return
 	}
@@ -295,7 +296,7 @@ func (r *verityDiagnosticsPortProfileResource) Delete(ctx context.Context, req r
 
 	name := state.Name.ValueString()
 
-	success := utils.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "diagnostics_port_profile", name, nil, &resp.Diagnostics)
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "diagnostics_port_profile", name, nil, &resp.Diagnostics)
 	if !success {
 		return
 	}
