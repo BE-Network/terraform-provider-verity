@@ -6,4 +6,6 @@ terraform {
   }
 }
 
-provider "verity" {}
+provider "verity" {
+  mode = "datacenter"
+}
