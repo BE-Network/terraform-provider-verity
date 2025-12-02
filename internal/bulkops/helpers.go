@@ -1415,21 +1415,46 @@ func (m *Manager) detectCircularReferenceScenario(ctx context.Context) (bool, ma
 		return false, nil
 	}
 
-	// Check if any route_map_clause has non-empty match_vrf
+	tenantsBeingCreated := make(map[string]bool)
+	for tenantName := range tenantOps.Put {
+		tenantsBeingCreated[tenantName] = true
+	}
+
+	// When tenants are being created, we need to apply the fix to all route_map_clauses
+	// with match_vrf (not just those referencing tenants being created) because:
+	// 1. Clauses referencing tenants being created need the fix (circular dependency)
+	// 2. Clauses referencing other tenants need the fix too (execution order - they come before tenant)
+	// This ensures all match_vrf references are set after all tenants exist
 	affectedClauses := make(map[string]interface{})
+	circularRefClauses := make([]string, 0)
+	otherRefClauses := make([]string, 0)
 
 	// Check PUT operations
 	for name, clauseData := range routeMapClauseOps.Put {
-		if m.hasNonEmptyMatchVrf(clauseData) {
+		if matchVrfValue := m.getMatchVrfValue(clauseData); matchVrfValue != "" {
 			affectedClauses[name] = clauseData
+			if tenantsBeingCreated[matchVrfValue] {
+				circularRefClauses = append(circularRefClauses, name)
+				tflog.Debug(ctx, fmt.Sprintf("Circular ref: route_map_clause '%s' references tenant '%s' being created", name, matchVrfValue))
+			} else {
+				otherRefClauses = append(otherRefClauses, name)
+				tflog.Debug(ctx, fmt.Sprintf("Other ref: route_map_clause '%s' references tenant '%s' (execution order fix)", name, matchVrfValue))
+			}
 		}
 	}
 
 	// Also check PATCH operations for match_vrf changes
-	if len(routeMapClauseOps.Patch) > 0 && len(tenantOps.Put) > 0 {
+	if len(routeMapClauseOps.Patch) > 0 {
 		for name, patchData := range routeMapClauseOps.Patch {
-			if m.hasNonEmptyMatchVrf(patchData) {
+			if matchVrfValue := m.getMatchVrfValue(patchData); matchVrfValue != "" {
 				affectedClauses[name] = patchData
+				if tenantsBeingCreated[matchVrfValue] {
+					circularRefClauses = append(circularRefClauses, name)
+					tflog.Debug(ctx, fmt.Sprintf("Circular ref in PATCH: route_map_clause '%s' references tenant '%s' being created", name, matchVrfValue))
+				} else {
+					otherRefClauses = append(otherRefClauses, name)
+					tflog.Debug(ctx, fmt.Sprintf("Other ref in PATCH: route_map_clause '%s' references tenant '%s' (execution order fix)", name, matchVrfValue))
+				}
 			}
 		}
 	}
@@ -1437,42 +1462,52 @@ func (m *Manager) detectCircularReferenceScenario(ctx context.Context) (bool, ma
 	needsFix := len(affectedClauses) > 0
 
 	if needsFix {
-		tflog.Info(ctx, fmt.Sprintf("Detected circular reference scenario: %d route_map_clause(s) with non-empty match_vrf", len(affectedClauses)))
-		tflog.Debug(ctx, "Circular reference detection details", map[string]interface{}{
+		tflog.Info(ctx, fmt.Sprintf("Applying match_vrf fix: %d circular refs, %d execution order refs", len(circularRefClauses), len(otherRefClauses)))
+		tflog.Debug(ctx, "Match VRF fix details", map[string]interface{}{
 			"route_map_clause_put_count":   len(routeMapClauseOps.Put),
 			"route_map_clause_patch_count": len(routeMapClauseOps.Patch),
 			"tenant_put_count":             len(tenantOps.Put),
-			"affected_clauses_count":       len(affectedClauses),
+			"tenants_being_created":        getMapKeys(tenantsBeingCreated),
+			"circular_ref_clauses":         circularRefClauses,
+			"other_ref_clauses":            otherRefClauses,
+			"total_affected_clauses":       len(affectedClauses),
 		})
 	}
 
 	return needsFix, affectedClauses
 }
 
-func (m *Manager) hasNonEmptyMatchVrf(data interface{}) bool {
+func (m *Manager) getMatchVrfValue(data interface{}) string {
 	clauseMap, ok := data.(map[string]interface{})
 	if !ok {
 		jsonData, err := json.Marshal(data)
 		if err != nil {
-			return false
+			return ""
 		}
 		var tempMap map[string]interface{}
 		if err := json.Unmarshal(jsonData, &tempMap); err != nil {
-			return false
+			return ""
 		}
 		clauseMap = tempMap
 	}
 
-	// Check match_vrf field
 	if matchVrf, exists := clauseMap["match_vrf"]; exists {
-		if matchVrfStr, ok := matchVrf.(string); ok && matchVrfStr != "" {
-			return true
-		} else if matchVrfPtr, ok := matchVrf.(*string); ok && matchVrfPtr != nil && *matchVrfPtr != "" {
-			return true
+		if matchVrfStr, ok := matchVrf.(string); ok {
+			return matchVrfStr
+		} else if matchVrfPtr, ok := matchVrf.(*string); ok && matchVrfPtr != nil {
+			return *matchVrfPtr
 		}
 	}
 
-	return false
+	return ""
+}
+
+func getMapKeys(m map[string]bool) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
 }
 
 // creates a copy of route_map_clause data with match_vrf set to empty
