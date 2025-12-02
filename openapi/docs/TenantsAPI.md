@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## TenantsGet
 
-> TenantsGet(ctx).TenantName(tenantName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+> TenantsGet(ctx).TenantName(tenantName).IncludeData(includeData).Execute()
 
 Get all tenants
 
@@ -100,11 +100,10 @@ import (
 func main() {
 	tenantName := "tenantName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
-	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.TenantsAPI.TenantsGet(context.Background()).TenantName(tenantName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+	r, err := apiClient.TenantsAPI.TenantsGet(context.Background()).TenantName(tenantName).IncludeData(includeData).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `TenantsAPI.TenantsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -125,7 +124,6 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **tenantName** | **string** |  | 
  **includeData** | **bool** |  | 
- **changesetName** | **string** |  | 
 
 ### Return type
 

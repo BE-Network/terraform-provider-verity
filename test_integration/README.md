@@ -34,13 +34,13 @@ test_integration/
 │   ├── gateways/                   # Test cases for gateways.tf
 │   │   ├── add.tf                  # Resources to add
 │   │   └── modify.tf               # Modified versions of resources
-│   ├── bundles/                    # Test cases for bundles.tf
+│   ├── gatewayprofiles/            # Test cases for gatewayprofiles.tf
 │   │   ├── add.tf
 │   │   └── modify.tf
-│   ├── switchpoints/               # Test cases for switchpoints.tf
+│   ├── ethportprofiles/            # Test cases for ethportprofiles.tf
 │   │   ├── add.tf
 │   │   └── modify.tf
-│   └── ethportprofiles/            # Test cases for ethportprofiles.tf
+│   └── ethportsettings/            # Test cases for ethportsettings.tf
 │       ├── add.tf
 │       └── modify.tf
 └── README.md                       # Documentation for the script
@@ -147,45 +147,11 @@ The script only tests resources defined in `internal/importer/importer.go`:
 - tenants
 - gateways
 - gatewayprofiles
-- ethportprofiles
-- lags
-- sflowcollectors
-- diagnosticsprofiles
-- diagnosticsportprofiles
 - services
+- ethportprofiles
 - ethportsettings
+- lags
 - bundles
-- acls_ipv4
-- acls_ipv6
-- badges
-- authenticatedethports
-- devicecontrollers
-- devicevoicesettings
-- packetbroker
-- packetqueues
-- serviceportprofiles
-- voiceportprofiles
-- switchpoints
-- aspathaccesslists
-- communitylists
-- devicesettings
-- extendedcommunitylists
-- ipv4lists
-- ipv4prefixlists
-- ipv6lists
-- ipv6prefixlists
-- routemapclauses
-- routemaps
-- sfpbreakouts
-- sites
-- pods
-- spineplanes
-- policybasedroutingacl
-- policybasedrouting
-- portacls
-- groupingrules
-- thresholdgroups
-- thresholds
 
 If a `.tf` file doesn't match these names, it will be skipped.
 

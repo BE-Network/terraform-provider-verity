@@ -37,41 +37,21 @@ type verityServiceResource struct {
 }
 
 type verityServiceResourceModel struct {
-	Name                                        types.String                         `tfsdk:"name"`
-	Enable                                      types.Bool                           `tfsdk:"enable"`
-	ObjectProperties                            []verityServiceObjectPropertiesModel `tfsdk:"object_properties"`
-	Vlan                                        types.Int64                          `tfsdk:"vlan"`
-	Vni                                         types.Int64                          `tfsdk:"vni"`
-	VniAutoAssigned                             types.Bool                           `tfsdk:"vni_auto_assigned_"`
-	Tenant                                      types.String                         `tfsdk:"tenant"`
-	TenantRefType                               types.String                         `tfsdk:"tenant_ref_type_"`
-	DhcpServerIpv4                              types.String                         `tfsdk:"dhcp_server_ipv4"`
-	DhcpServerIpv6                              types.String                         `tfsdk:"dhcp_server_ipv6"`
-	Mtu                                         types.Int64                          `tfsdk:"mtu"`
-	AnycastIpv4Mask                             types.String                         `tfsdk:"anycast_ipv4_mask"`
-	AnycastIpv6Mask                             types.String                         `tfsdk:"anycast_ipv6_mask"`
-	MaxUpstreamRateMbps                         types.Int64                          `tfsdk:"max_upstream_rate_mbps"`
-	MaxDownstreamRateMbps                       types.Int64                          `tfsdk:"max_downstream_rate_mbps"`
-	PacketPriority                              types.String                         `tfsdk:"packet_priority"`
-	MulticastManagementMode                     types.String                         `tfsdk:"multicast_management_mode"`
-	TaggedPackets                               types.Bool                           `tfsdk:"tagged_packets"`
-	Tls                                         types.Bool                           `tfsdk:"tls"`
-	AllowLocalSwitching                         types.Bool                           `tfsdk:"allow_local_switching"`
-	ActAsMulticastQuerier                       types.Bool                           `tfsdk:"act_as_multicast_querier"`
-	BlockUnknownUnicastFlood                    types.Bool                           `tfsdk:"block_unknown_unicast_flood"`
-	BlockDownstreamDhcpServer                   types.Bool                           `tfsdk:"block_downstream_dhcp_server"`
-	IsManagementService                         types.Bool                           `tfsdk:"is_management_service"`
-	UseDscpToPBitMappingForL3PacketsIfAvailable types.Bool                           `tfsdk:"use_dscp_to_p_bit_mapping_for_l3_packets_if_available"`
-	AllowFastLeave                              types.Bool                           `tfsdk:"allow_fast_leave"`
-	MstInstance                                 types.Int64                          `tfsdk:"mst_instance"`
-	PolicyBasedRouting                          types.String                         `tfsdk:"policy_based_routing"`
-	PolicyBasedRoutingRefType                   types.String                         `tfsdk:"policy_based_routing_ref_type_"`
+	Name             types.String                         `tfsdk:"name"`
+	Enable           types.Bool                           `tfsdk:"enable"`
+	Vlan             types.Int64                          `tfsdk:"vlan"`
+	Vni              types.Int64                          `tfsdk:"vni"`
+	VniAutoAssigned  types.Bool                           `tfsdk:"vni_auto_assigned_"`
+	Tenant           types.String                         `tfsdk:"tenant"`
+	TenantRefType    types.String                         `tfsdk:"tenant_ref_type_"`
+	AnycastIpMask    types.String                         `tfsdk:"anycast_ip_mask"`
+	DhcpServerIp     types.String                         `tfsdk:"dhcp_server_ip"`
+	Mtu              types.Int64                          `tfsdk:"mtu"`
+	ObjectProperties []verityServiceObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
 type verityServiceObjectPropertiesModel struct {
-	Group                  types.String `tfsdk:"group"`
-	OnSummary              types.Bool   `tfsdk:"on_summary"`
-	WarnOnNoExternalSource types.Bool   `tfsdk:"warn_on_no_external_source"`
+	Group types.String `tfsdk:"group"`
 }
 
 func (r *verityServiceResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -134,88 +114,16 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 				Description: "Object type for tenant field",
 				Optional:    true,
 			},
-			"dhcp_server_ipv4": schema.StringAttribute{
-				Description: "IPv4 address(s) of the DHCP server for service. May have up to four separated by commas.",
+			"anycast_ip_mask": schema.StringAttribute{
+				Description: "Static anycast gateway address for service",
 				Optional:    true,
 			},
-			"dhcp_server_ipv6": schema.StringAttribute{
-				Description: "IPv6 address(s) of the DHCP server for service. May have up to four separated by commas.",
+			"dhcp_server_ip": schema.StringAttribute{
+				Description: "IP address(s) of the DHCP server for service. May have up to four separated by commas.",
 				Optional:    true,
 			},
 			"mtu": schema.Int64Attribute{
 				Description: "MTU (Maximum Transmission Unit) - the size used by a switch to determine when large packets must be broken up for delivery.",
-				Optional:    true,
-			},
-			"anycast_ipv4_mask": schema.StringAttribute{
-				Description: "Static anycast gateway addresses(IPv4) for service",
-				Optional:    true,
-			},
-			"anycast_ipv6_mask": schema.StringAttribute{
-				Description: "Static anycast gateway addresses(IPv6) for service",
-				Optional:    true,
-			},
-			"max_upstream_rate_mbps": schema.Int64Attribute{
-				Description: "Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)",
-				Optional:    true,
-			},
-			"max_downstream_rate_mbps": schema.Int64Attribute{
-				Description: "Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)",
-				Optional:    true,
-			},
-			"packet_priority": schema.StringAttribute{
-				Description: "Priority untagged packets will be tagged with on ingress to the network.",
-				Optional:    true,
-			},
-			"multicast_management_mode": schema.StringAttribute{
-				Description: "Determines how to handle multicast packets for Service",
-				Optional:    true,
-			},
-			"tagged_packets": schema.BoolAttribute{
-				Description: "Overrides priority bits on incoming tagged packets.",
-				Optional:    true,
-			},
-			"tls": schema.BoolAttribute{
-				Description: "Is a Transparent LAN Service?",
-				Optional:    true,
-			},
-			"allow_local_switching": schema.BoolAttribute{
-				Description: "Allow Edge Devices to communicate with each other.",
-				Optional:    true,
-			},
-			"act_as_multicast_querier": schema.BoolAttribute{
-				Description: "Multicast management through IGMP requires a multicast querier.",
-				Optional:    true,
-			},
-			"block_unknown_unicast_flood": schema.BoolAttribute{
-				Description: "Block unknown unicast traffic flooding.",
-				Optional:    true,
-			},
-			"block_downstream_dhcp_server": schema.BoolAttribute{
-				Description: "Block inbound packets sent by Downstream DHCP servers",
-				Optional:    true,
-			},
-			"is_management_service": schema.BoolAttribute{
-				Description: "Denotes a Management Service",
-				Optional:    true,
-			},
-			"use_dscp_to_p_bit_mapping_for_l3_packets_if_available": schema.BoolAttribute{
-				Description: "use DSCP to p-bit Mapping for L3 packets if available",
-				Optional:    true,
-			},
-			"allow_fast_leave": schema.BoolAttribute{
-				Description: "The Fast Leave feature causes the switch to immediately remove a port from the forwarding list.",
-				Optional:    true,
-			},
-			"mst_instance": schema.Int64Attribute{
-				Description: "MST Instance ID (0-4094)",
-				Optional:    true,
-			},
-			"policy_based_routing": schema.StringAttribute{
-				Description: "Policy Based Routing",
-				Optional:    true,
-			},
-			"policy_based_routing_ref_type_": schema.StringAttribute{
-				Description: "Object type for policy_based_routing field",
 				Optional:    true,
 			},
 		},
@@ -226,14 +134,6 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 					Attributes: map[string]schema.Attribute{
 						"group": schema.StringAttribute{
 							Description: "Group",
-							Optional:    true,
-						},
-						"on_summary": schema.BoolAttribute{
-							Description: "Show on the summary view",
-							Optional:    true,
-						},
-						"warn_on_no_external_source": schema.BoolAttribute{
-							Description: "Warn if there is not outbound path for service in SD-Router or a Service Port Profile",
 							Optional:    true,
 						},
 					},
@@ -279,47 +179,27 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Tenant", APIField: &serviceReq.Tenant, TFValue: plan.Tenant},
 		{FieldName: "TenantRefType", APIField: &serviceReq.TenantRefType, TFValue: plan.TenantRefType},
-		{FieldName: "DhcpServerIpv4", APIField: &serviceReq.DhcpServerIpv4, TFValue: plan.DhcpServerIpv4},
-		{FieldName: "DhcpServerIpv6", APIField: &serviceReq.DhcpServerIpv6, TFValue: plan.DhcpServerIpv6},
-		{FieldName: "AnycastIpv4Mask", APIField: &serviceReq.AnycastIpv4Mask, TFValue: plan.AnycastIpv4Mask},
-		{FieldName: "AnycastIpv6Mask", APIField: &serviceReq.AnycastIpv6Mask, TFValue: plan.AnycastIpv6Mask},
-		{FieldName: "PacketPriority", APIField: &serviceReq.PacketPriority, TFValue: plan.PacketPriority},
-		{FieldName: "MulticastManagementMode", APIField: &serviceReq.MulticastManagementMode, TFValue: plan.MulticastManagementMode},
-		{FieldName: "PolicyBasedRouting", APIField: &serviceReq.PolicyBasedRouting, TFValue: plan.PolicyBasedRouting},
-		{FieldName: "PolicyBasedRoutingRefType", APIField: &serviceReq.PolicyBasedRoutingRefType, TFValue: plan.PolicyBasedRoutingRefType},
+		{FieldName: "AnycastIpMask", APIField: &serviceReq.AnycastIpMask, TFValue: plan.AnycastIpMask},
+		{FieldName: "DhcpServerIp", APIField: &serviceReq.DhcpServerIp, TFValue: plan.DhcpServerIp},
 	})
 
 	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &serviceReq.Enable, TFValue: plan.Enable},
-		{FieldName: "TaggedPackets", APIField: &serviceReq.TaggedPackets, TFValue: plan.TaggedPackets},
-		{FieldName: "Tls", APIField: &serviceReq.Tls, TFValue: plan.Tls},
-		{FieldName: "AllowLocalSwitching", APIField: &serviceReq.AllowLocalSwitching, TFValue: plan.AllowLocalSwitching},
-		{FieldName: "ActAsMulticastQuerier", APIField: &serviceReq.ActAsMulticastQuerier, TFValue: plan.ActAsMulticastQuerier},
-		{FieldName: "BlockUnknownUnicastFlood", APIField: &serviceReq.BlockUnknownUnicastFlood, TFValue: plan.BlockUnknownUnicastFlood},
-		{FieldName: "BlockDownstreamDhcpServer", APIField: &serviceReq.BlockDownstreamDhcpServer, TFValue: plan.BlockDownstreamDhcpServer},
-		{FieldName: "IsManagementService", APIField: &serviceReq.IsManagementService, TFValue: plan.IsManagementService},
-		{FieldName: "UseDscpToPBitMappingForL3PacketsIfAvailable", APIField: &serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable, TFValue: plan.UseDscpToPBitMappingForL3PacketsIfAvailable},
-		{FieldName: "AllowFastLeave", APIField: &serviceReq.AllowFastLeave, TFValue: plan.AllowFastLeave},
 	})
 
 	// Handle nullable int64 fields
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "Vlan", APIField: &serviceReq.Vlan, TFValue: plan.Vlan},
 		{FieldName: "Mtu", APIField: &serviceReq.Mtu, TFValue: plan.Mtu},
-		{FieldName: "MaxUpstreamRateMbps", APIField: &serviceReq.MaxUpstreamRateMbps, TFValue: plan.MaxUpstreamRateMbps},
-		{FieldName: "MaxDownstreamRateMbps", APIField: &serviceReq.MaxDownstreamRateMbps, TFValue: plan.MaxDownstreamRateMbps},
-		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: plan.MstInstance},
 	})
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-			{Name: "OnSummary", TFValue: op.OnSummary, APIValue: &objProps.OnSummary},
-			{Name: "WarnOnNoExternalSource", TFValue: op.WarnOnNoExternalSource, APIValue: &objProps.WarnOnNoExternalSource},
 		})
 		serviceReq.ObjectProperties = &objProps
 	}
@@ -524,42 +404,24 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { serviceReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Tenant, state.Tenant, func(v *string) { serviceReq.Tenant = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.DhcpServerIpv4, state.DhcpServerIpv4, func(v *string) { serviceReq.DhcpServerIpv4 = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.DhcpServerIpv6, state.DhcpServerIpv6, func(v *string) { serviceReq.DhcpServerIpv6 = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.AnycastIpv4Mask, state.AnycastIpv4Mask, func(v *string) { serviceReq.AnycastIpv4Mask = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.AnycastIpv6Mask, state.AnycastIpv6Mask, func(v *string) { serviceReq.AnycastIpv6Mask = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.PacketPriority, state.PacketPriority, func(v *string) { serviceReq.PacketPriority = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.MulticastManagementMode, state.MulticastManagementMode, func(v *string) { serviceReq.MulticastManagementMode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AnycastIpMask, state.AnycastIpMask, func(v *string) { serviceReq.AnycastIpMask = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DhcpServerIp, state.DhcpServerIp, func(v *string) { serviceReq.DhcpServerIp = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { serviceReq.Enable = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.TaggedPackets, state.TaggedPackets, func(v *bool) { serviceReq.TaggedPackets = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.Tls, state.Tls, func(v *bool) { serviceReq.Tls = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.AllowLocalSwitching, state.AllowLocalSwitching, func(v *bool) { serviceReq.AllowLocalSwitching = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.ActAsMulticastQuerier, state.ActAsMulticastQuerier, func(v *bool) { serviceReq.ActAsMulticastQuerier = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.BlockUnknownUnicastFlood, state.BlockUnknownUnicastFlood, func(v *bool) { serviceReq.BlockUnknownUnicastFlood = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.BlockDownstreamDhcpServer, state.BlockDownstreamDhcpServer, func(v *bool) { serviceReq.BlockDownstreamDhcpServer = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.IsManagementService, state.IsManagementService, func(v *bool) { serviceReq.IsManagementService = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.UseDscpToPBitMappingForL3PacketsIfAvailable, state.UseDscpToPBitMappingForL3PacketsIfAvailable, func(v *bool) { serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.AllowFastLeave, state.AllowFastLeave, func(v *bool) { serviceReq.AllowFastLeave = v }, &hasChanges)
 
 	// Handle nullable int64 field changes
 	utils.CompareAndSetNullableInt64Field(plan.Mtu, state.Mtu, func(v *openapi.NullableInt32) { serviceReq.Mtu = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, func(v *openapi.NullableInt32) { serviceReq.MaxUpstreamRateMbps = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, func(v *openapi.NullableInt32) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MstInstance, state.MstInstance, func(v *openapi.NullableInt32) { serviceReq.MstInstance = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		op := plan.ObjectProperties[0]
 		st := state.ObjectProperties[0]
 		objPropsChanged := false
 
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
 			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-			{Name: "OnSummary", PlanValue: op.OnSummary, StateValue: st.OnSummary, APIValue: &objProps.OnSummary},
-			{Name: "WarnOnNoExternalSource", PlanValue: op.WarnOnNoExternalSource, StateValue: st.WarnOnNoExternalSource, APIValue: &objProps.WarnOnNoExternalSource},
 		}, &objPropsChanged)
 
 		if objPropsChanged {
@@ -644,16 +506,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	if !utils.HandleOneRefTypeSupported(
-		plan.PolicyBasedRouting, state.PolicyBasedRouting, plan.PolicyBasedRoutingRefType, state.PolicyBasedRoutingRefType,
-		func(val *string) { serviceReq.PolicyBasedRouting = val },
-		func(val *string) { serviceReq.PolicyBasedRoutingRefType = val },
-		"policy_based_routing", "policy_based_routing_ref_type_",
-		&hasChanges, &resp.Diagnostics,
-	) {
-		return
-	}
-
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
@@ -734,41 +586,21 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	state.Vlan = utils.MapInt64FromAPI(serviceData["vlan"])
 	state.Vni = utils.MapInt64FromAPI(serviceData["vni"])
 	state.Mtu = utils.MapInt64FromAPI(serviceData["mtu"])
-	state.MaxUpstreamRateMbps = utils.MapInt64FromAPI(serviceData["max_upstream_rate_mbps"])
-	state.MaxDownstreamRateMbps = utils.MapInt64FromAPI(serviceData["max_downstream_rate_mbps"])
-	state.MstInstance = utils.MapInt64FromAPI(serviceData["mst_instance"])
 
 	// Bool fields
 	state.Enable = utils.MapBoolFromAPI(serviceData["enable"])
 	state.VniAutoAssigned = utils.MapBoolFromAPI(serviceData["vni_auto_assigned_"])
-	state.TaggedPackets = utils.MapBoolFromAPI(serviceData["tagged_packets"])
-	state.Tls = utils.MapBoolFromAPI(serviceData["tls"])
-	state.AllowLocalSwitching = utils.MapBoolFromAPI(serviceData["allow_local_switching"])
-	state.ActAsMulticastQuerier = utils.MapBoolFromAPI(serviceData["act_as_multicast_querier"])
-	state.BlockUnknownUnicastFlood = utils.MapBoolFromAPI(serviceData["block_unknown_unicast_flood"])
-	state.BlockDownstreamDhcpServer = utils.MapBoolFromAPI(serviceData["block_downstream_dhcp_server"])
-	state.IsManagementService = utils.MapBoolFromAPI(serviceData["is_management_service"])
-	state.UseDscpToPBitMappingForL3PacketsIfAvailable = utils.MapBoolFromAPI(serviceData["use_dscp_to_p_bit_mapping_for_l3_packets_if_available"])
-	state.AllowFastLeave = utils.MapBoolFromAPI(serviceData["allow_fast_leave"])
 
 	// String fields
 	state.Tenant = utils.MapStringFromAPI(serviceData["tenant"])
 	state.TenantRefType = utils.MapStringFromAPI(serviceData["tenant_ref_type_"])
-	state.DhcpServerIpv4 = utils.MapStringFromAPI(serviceData["dhcp_server_ipv4"])
-	state.DhcpServerIpv6 = utils.MapStringFromAPI(serviceData["dhcp_server_ipv6"])
-	state.AnycastIpv4Mask = utils.MapStringFromAPI(serviceData["anycast_ipv4_mask"])
-	state.AnycastIpv6Mask = utils.MapStringFromAPI(serviceData["anycast_ipv6_mask"])
-	state.PacketPriority = utils.MapStringFromAPI(serviceData["packet_priority"])
-	state.MulticastManagementMode = utils.MapStringFromAPI(serviceData["multicast_management_mode"])
-	state.PolicyBasedRouting = utils.MapStringFromAPI(serviceData["policy_based_routing"])
-	state.PolicyBasedRoutingRefType = utils.MapStringFromAPI(serviceData["policy_based_routing_ref_type_"])
+	state.AnycastIpMask = utils.MapStringFromAPI(serviceData["anycast_ip_mask"])
+	state.DhcpServerIp = utils.MapStringFromAPI(serviceData["dhcp_server_ip"])
 
 	// Object properties
 	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
 		objProps := verityServiceObjectPropertiesModel{
-			Group:                  utils.MapStringFromAPI(op["group"]),
-			OnSummary:              utils.MapBoolFromAPI(op["on_summary"]),
-			WarnOnNoExternalSource: utils.MapBoolFromAPI(op["warn_on_no_external_source"]),
+			Group: utils.MapStringFromAPI(op["group"]),
 		}
 		state.ObjectProperties = []verityServiceObjectPropertiesModel{objProps}
 	} else {

@@ -23,24 +23,10 @@ type EthportprofilesPutRequestEthPortProfileValue struct {
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
-	// Choose an ingress access control list
-	IngressAcl *string `json:"ingress_acl,omitempty"`
-	// Object type for ingress_acl field
-	IngressAclRefType *string `json:"ingress_acl_ref_type_,omitempty"`
-	// Choose an egress access control list
-	EgressAcl *string `json:"egress_acl,omitempty"`
-	// Object type for egress_acl field
-	EgressAclRefType *string `json:"egress_acl_ref_type_,omitempty"`
+	// Profiles that Tenant Slice creates and manages
+	TenantSliceManaged *bool `json:"tenant_slice_managed,omitempty"`
 	Services []EthportprofilesPutRequestEthPortProfileValueServicesInner `json:"services,omitempty"`
 	ObjectProperties *EthportprofilesPutRequestEthPortProfileValueObjectProperties `json:"object_properties,omitempty"`
-	// Transparent LAN Service Trunk
-	Tls *bool `json:"tls,omitempty"`
-	// Choose a Service supporting Transparent LAN Service
-	TlsService *string `json:"tls_service,omitempty"`
-	// Object type for tls_service field
-	TlsServiceRefType *string `json:"tls_service_ref_type_,omitempty"`
-	// Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.
-	TrustedPort *bool `json:"trusted_port,omitempty"`
 }
 
 // NewEthportprofilesPutRequestEthPortProfileValue instantiates a new EthportprofilesPutRequestEthPortProfileValue object
@@ -53,16 +39,8 @@ func NewEthportprofilesPutRequestEthPortProfileValue() *EthportprofilesPutReques
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
-	var ingressAcl string = ""
-	this.IngressAcl = &ingressAcl
-	var egressAcl string = ""
-	this.EgressAcl = &egressAcl
-	var tls bool = false
-	this.Tls = &tls
-	var tlsService string = ""
-	this.TlsService = &tlsService
-	var trustedPort bool = false
-	this.TrustedPort = &trustedPort
+	var tenantSliceManaged bool = false
+	this.TenantSliceManaged = &tenantSliceManaged
 	return &this
 }
 
@@ -75,16 +53,8 @@ func NewEthportprofilesPutRequestEthPortProfileValueWithDefaults() *Ethportprofi
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
-	var ingressAcl string = ""
-	this.IngressAcl = &ingressAcl
-	var egressAcl string = ""
-	this.EgressAcl = &egressAcl
-	var tls bool = false
-	this.Tls = &tls
-	var tlsService string = ""
-	this.TlsService = &tlsService
-	var trustedPort bool = false
-	this.TrustedPort = &trustedPort
+	var tenantSliceManaged bool = false
+	this.TenantSliceManaged = &tenantSliceManaged
 	return &this
 }
 
@@ -152,132 +122,36 @@ func (o *EthportprofilesPutRequestEthPortProfileValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetIngressAcl returns the IngressAcl field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetIngressAcl() string {
-	if o == nil || IsNil(o.IngressAcl) {
-		var ret string
+// GetTenantSliceManaged returns the TenantSliceManaged field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetTenantSliceManaged() bool {
+	if o == nil || IsNil(o.TenantSliceManaged) {
+		var ret bool
 		return ret
 	}
-	return *o.IngressAcl
+	return *o.TenantSliceManaged
 }
 
-// GetIngressAclOk returns a tuple with the IngressAcl field value if set, nil otherwise
+// GetTenantSliceManagedOk returns a tuple with the TenantSliceManaged field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetIngressAclOk() (*string, bool) {
-	if o == nil || IsNil(o.IngressAcl) {
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetTenantSliceManagedOk() (*bool, bool) {
+	if o == nil || IsNil(o.TenantSliceManaged) {
 		return nil, false
 	}
-	return o.IngressAcl, true
+	return o.TenantSliceManaged, true
 }
 
-// HasIngressAcl returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasIngressAcl() bool {
-	if o != nil && !IsNil(o.IngressAcl) {
+// HasTenantSliceManaged returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValue) HasTenantSliceManaged() bool {
+	if o != nil && !IsNil(o.TenantSliceManaged) {
 		return true
 	}
 
 	return false
 }
 
-// SetIngressAcl gets a reference to the given string and assigns it to the IngressAcl field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetIngressAcl(v string) {
-	o.IngressAcl = &v
-}
-
-// GetIngressAclRefType returns the IngressAclRefType field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetIngressAclRefType() string {
-	if o == nil || IsNil(o.IngressAclRefType) {
-		var ret string
-		return ret
-	}
-	return *o.IngressAclRefType
-}
-
-// GetIngressAclRefTypeOk returns a tuple with the IngressAclRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetIngressAclRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.IngressAclRefType) {
-		return nil, false
-	}
-	return o.IngressAclRefType, true
-}
-
-// HasIngressAclRefType returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasIngressAclRefType() bool {
-	if o != nil && !IsNil(o.IngressAclRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetIngressAclRefType gets a reference to the given string and assigns it to the IngressAclRefType field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetIngressAclRefType(v string) {
-	o.IngressAclRefType = &v
-}
-
-// GetEgressAcl returns the EgressAcl field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAcl() string {
-	if o == nil || IsNil(o.EgressAcl) {
-		var ret string
-		return ret
-	}
-	return *o.EgressAcl
-}
-
-// GetEgressAclOk returns a tuple with the EgressAcl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclOk() (*string, bool) {
-	if o == nil || IsNil(o.EgressAcl) {
-		return nil, false
-	}
-	return o.EgressAcl, true
-}
-
-// HasEgressAcl returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasEgressAcl() bool {
-	if o != nil && !IsNil(o.EgressAcl) {
-		return true
-	}
-
-	return false
-}
-
-// SetEgressAcl gets a reference to the given string and assigns it to the EgressAcl field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetEgressAcl(v string) {
-	o.EgressAcl = &v
-}
-
-// GetEgressAclRefType returns the EgressAclRefType field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclRefType() string {
-	if o == nil || IsNil(o.EgressAclRefType) {
-		var ret string
-		return ret
-	}
-	return *o.EgressAclRefType
-}
-
-// GetEgressAclRefTypeOk returns a tuple with the EgressAclRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.EgressAclRefType) {
-		return nil, false
-	}
-	return o.EgressAclRefType, true
-}
-
-// HasEgressAclRefType returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasEgressAclRefType() bool {
-	if o != nil && !IsNil(o.EgressAclRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetEgressAclRefType gets a reference to the given string and assigns it to the EgressAclRefType field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetEgressAclRefType(v string) {
-	o.EgressAclRefType = &v
+// SetTenantSliceManaged gets a reference to the given bool and assigns it to the TenantSliceManaged field.
+func (o *EthportprofilesPutRequestEthPortProfileValue) SetTenantSliceManaged(v bool) {
+	o.TenantSliceManaged = &v
 }
 
 // GetServices returns the Services field value if set, zero value otherwise.
@@ -344,134 +218,6 @@ func (o *EthportprofilesPutRequestEthPortProfileValue) SetObjectProperties(v Eth
 	o.ObjectProperties = &v
 }
 
-// GetTls returns the Tls field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetTls() bool {
-	if o == nil || IsNil(o.Tls) {
-		var ret bool
-		return ret
-	}
-	return *o.Tls
-}
-
-// GetTlsOk returns a tuple with the Tls field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetTlsOk() (*bool, bool) {
-	if o == nil || IsNil(o.Tls) {
-		return nil, false
-	}
-	return o.Tls, true
-}
-
-// HasTls returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasTls() bool {
-	if o != nil && !IsNil(o.Tls) {
-		return true
-	}
-
-	return false
-}
-
-// SetTls gets a reference to the given bool and assigns it to the Tls field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetTls(v bool) {
-	o.Tls = &v
-}
-
-// GetTlsService returns the TlsService field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetTlsService() string {
-	if o == nil || IsNil(o.TlsService) {
-		var ret string
-		return ret
-	}
-	return *o.TlsService
-}
-
-// GetTlsServiceOk returns a tuple with the TlsService field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetTlsServiceOk() (*string, bool) {
-	if o == nil || IsNil(o.TlsService) {
-		return nil, false
-	}
-	return o.TlsService, true
-}
-
-// HasTlsService returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasTlsService() bool {
-	if o != nil && !IsNil(o.TlsService) {
-		return true
-	}
-
-	return false
-}
-
-// SetTlsService gets a reference to the given string and assigns it to the TlsService field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetTlsService(v string) {
-	o.TlsService = &v
-}
-
-// GetTlsServiceRefType returns the TlsServiceRefType field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetTlsServiceRefType() string {
-	if o == nil || IsNil(o.TlsServiceRefType) {
-		var ret string
-		return ret
-	}
-	return *o.TlsServiceRefType
-}
-
-// GetTlsServiceRefTypeOk returns a tuple with the TlsServiceRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetTlsServiceRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.TlsServiceRefType) {
-		return nil, false
-	}
-	return o.TlsServiceRefType, true
-}
-
-// HasTlsServiceRefType returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasTlsServiceRefType() bool {
-	if o != nil && !IsNil(o.TlsServiceRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetTlsServiceRefType gets a reference to the given string and assigns it to the TlsServiceRefType field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetTlsServiceRefType(v string) {
-	o.TlsServiceRefType = &v
-}
-
-// GetTrustedPort returns the TrustedPort field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetTrustedPort() bool {
-	if o == nil || IsNil(o.TrustedPort) {
-		var ret bool
-		return ret
-	}
-	return *o.TrustedPort
-}
-
-// GetTrustedPortOk returns a tuple with the TrustedPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetTrustedPortOk() (*bool, bool) {
-	if o == nil || IsNil(o.TrustedPort) {
-		return nil, false
-	}
-	return o.TrustedPort, true
-}
-
-// HasTrustedPort returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasTrustedPort() bool {
-	if o != nil && !IsNil(o.TrustedPort) {
-		return true
-	}
-
-	return false
-}
-
-// SetTrustedPort gets a reference to the given bool and assigns it to the TrustedPort field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetTrustedPort(v bool) {
-	o.TrustedPort = &v
-}
-
 func (o EthportprofilesPutRequestEthPortProfileValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -488,35 +234,14 @@ func (o EthportprofilesPutRequestEthPortProfileValue) ToMap() (map[string]interf
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.IngressAcl) {
-		toSerialize["ingress_acl"] = o.IngressAcl
-	}
-	if !IsNil(o.IngressAclRefType) {
-		toSerialize["ingress_acl_ref_type_"] = o.IngressAclRefType
-	}
-	if !IsNil(o.EgressAcl) {
-		toSerialize["egress_acl"] = o.EgressAcl
-	}
-	if !IsNil(o.EgressAclRefType) {
-		toSerialize["egress_acl_ref_type_"] = o.EgressAclRefType
+	if !IsNil(o.TenantSliceManaged) {
+		toSerialize["tenant_slice_managed"] = o.TenantSliceManaged
 	}
 	if !IsNil(o.Services) {
 		toSerialize["services"] = o.Services
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.Tls) {
-		toSerialize["tls"] = o.Tls
-	}
-	if !IsNil(o.TlsService) {
-		toSerialize["tls_service"] = o.TlsService
-	}
-	if !IsNil(o.TlsServiceRefType) {
-		toSerialize["tls_service_ref_type_"] = o.TlsServiceRefType
-	}
-	if !IsNil(o.TrustedPort) {
-		toSerialize["trusted_port"] = o.TrustedPort
 	}
 	return toSerialize, nil
 }

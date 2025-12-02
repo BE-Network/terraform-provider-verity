@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## LagsGet
 
-> LagsGet(ctx).LagName(lagName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+> LagsGet(ctx).LagName(lagName).IncludeData(includeData).Execute()
 
 Get all LAGs
 
@@ -100,11 +100,10 @@ import (
 func main() {
 	lagName := "lagName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
-	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.LAGsAPI.LagsGet(context.Background()).LagName(lagName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+	r, err := apiClient.LAGsAPI.LagsGet(context.Background()).LagName(lagName).IncludeData(includeData).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `LAGsAPI.LagsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -125,7 +124,6 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **lagName** | **string** |  | 
  **includeData** | **bool** |  | 
- **changesetName** | **string** |  | 
 
 ### Return type
 

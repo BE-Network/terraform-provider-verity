@@ -31,10 +31,8 @@ type TenantsPutRequestTenantValue struct {
 	Layer3Vlan NullableInt32 `json:"layer_3_vlan,omitempty"`
 	// Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit.
 	Layer3VlanAutoAssigned *bool `json:"layer_3_vlan_auto_assigned_,omitempty"`
-	// Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
-	DhcpRelaySourceIpv4sSubnet *string `json:"dhcp_relay_source_ipv4s_subnet,omitempty"`
-	// Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
-	DhcpRelaySourceIpv6sSubnet *string `json:"dhcp_relay_source_ipv6s_subnet,omitempty"`
+	// Range of IP addresses (represented in IP subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
+	DhcpRelaySourceIpsSubnet *string `json:"dhcp_relay_source_ips_subnet,omitempty"`
 	// Route Distinguishers are used to maintain uniqueness among identical routes from different routers.  If set, then routes from this Tenant will be identified with this Route Distinguisher (BGP Community).  It should be two numbers separated by a colon.
 	RouteDistinguisher *string `json:"route_distinguisher,omitempty"`
 	// A route-target (BGP Community) to attach while importing routes into the current tenant. It should be a comma-separated list of BGP Communities: each Community being two numbers separated by a colon.
@@ -54,7 +52,7 @@ type TenantsPutRequestTenantValue struct {
 	// Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit.
 	VrfNameAutoAssigned *bool `json:"vrf_name_auto_assigned_,omitempty"`
 	RouteTenants []TenantsPutRequestTenantValueRouteTenantsInner `json:"route_tenants,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *EthportsettingsPutRequestEthPortSettingsValueObjectProperties `json:"object_properties,omitempty"`
 	// Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.
 	DefaultOriginate *bool `json:"default_originate,omitempty"`
 }
@@ -69,10 +67,8 @@ func NewTenantsPutRequestTenantValue() *TenantsPutRequestTenantValue {
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var dhcpRelaySourceIpv4sSubnet string = ""
-	this.DhcpRelaySourceIpv4sSubnet = &dhcpRelaySourceIpv4sSubnet
-	var dhcpRelaySourceIpv6sSubnet string = ""
-	this.DhcpRelaySourceIpv6sSubnet = &dhcpRelaySourceIpv6sSubnet
+	var dhcpRelaySourceIpsSubnet string = ""
+	this.DhcpRelaySourceIpsSubnet = &dhcpRelaySourceIpsSubnet
 	var routeDistinguisher string = ""
 	this.RouteDistinguisher = &routeDistinguisher
 	var routeTargetImport string = ""
@@ -99,10 +95,8 @@ func NewTenantsPutRequestTenantValueWithDefaults() *TenantsPutRequestTenantValue
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var dhcpRelaySourceIpv4sSubnet string = ""
-	this.DhcpRelaySourceIpv4sSubnet = &dhcpRelaySourceIpv4sSubnet
-	var dhcpRelaySourceIpv6sSubnet string = ""
-	this.DhcpRelaySourceIpv6sSubnet = &dhcpRelaySourceIpv6sSubnet
+	var dhcpRelaySourceIpsSubnet string = ""
+	this.DhcpRelaySourceIpsSubnet = &dhcpRelaySourceIpsSubnet
 	var routeDistinguisher string = ""
 	this.RouteDistinguisher = &routeDistinguisher
 	var routeTargetImport string = ""
@@ -332,68 +326,36 @@ func (o *TenantsPutRequestTenantValue) SetLayer3VlanAutoAssigned(v bool) {
 	o.Layer3VlanAutoAssigned = &v
 }
 
-// GetDhcpRelaySourceIpv4sSubnet returns the DhcpRelaySourceIpv4sSubnet field value if set, zero value otherwise.
-func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpv4sSubnet() string {
-	if o == nil || IsNil(o.DhcpRelaySourceIpv4sSubnet) {
+// GetDhcpRelaySourceIpsSubnet returns the DhcpRelaySourceIpsSubnet field value if set, zero value otherwise.
+func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpsSubnet() string {
+	if o == nil || IsNil(o.DhcpRelaySourceIpsSubnet) {
 		var ret string
 		return ret
 	}
-	return *o.DhcpRelaySourceIpv4sSubnet
+	return *o.DhcpRelaySourceIpsSubnet
 }
 
-// GetDhcpRelaySourceIpv4sSubnetOk returns a tuple with the DhcpRelaySourceIpv4sSubnet field value if set, nil otherwise
+// GetDhcpRelaySourceIpsSubnetOk returns a tuple with the DhcpRelaySourceIpsSubnet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpv4sSubnetOk() (*string, bool) {
-	if o == nil || IsNil(o.DhcpRelaySourceIpv4sSubnet) {
+func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpsSubnetOk() (*string, bool) {
+	if o == nil || IsNil(o.DhcpRelaySourceIpsSubnet) {
 		return nil, false
 	}
-	return o.DhcpRelaySourceIpv4sSubnet, true
+	return o.DhcpRelaySourceIpsSubnet, true
 }
 
-// HasDhcpRelaySourceIpv4sSubnet returns a boolean if a field has been set.
-func (o *TenantsPutRequestTenantValue) HasDhcpRelaySourceIpv4sSubnet() bool {
-	if o != nil && !IsNil(o.DhcpRelaySourceIpv4sSubnet) {
+// HasDhcpRelaySourceIpsSubnet returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValue) HasDhcpRelaySourceIpsSubnet() bool {
+	if o != nil && !IsNil(o.DhcpRelaySourceIpsSubnet) {
 		return true
 	}
 
 	return false
 }
 
-// SetDhcpRelaySourceIpv4sSubnet gets a reference to the given string and assigns it to the DhcpRelaySourceIpv4sSubnet field.
-func (o *TenantsPutRequestTenantValue) SetDhcpRelaySourceIpv4sSubnet(v string) {
-	o.DhcpRelaySourceIpv4sSubnet = &v
-}
-
-// GetDhcpRelaySourceIpv6sSubnet returns the DhcpRelaySourceIpv6sSubnet field value if set, zero value otherwise.
-func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpv6sSubnet() string {
-	if o == nil || IsNil(o.DhcpRelaySourceIpv6sSubnet) {
-		var ret string
-		return ret
-	}
-	return *o.DhcpRelaySourceIpv6sSubnet
-}
-
-// GetDhcpRelaySourceIpv6sSubnetOk returns a tuple with the DhcpRelaySourceIpv6sSubnet field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpv6sSubnetOk() (*string, bool) {
-	if o == nil || IsNil(o.DhcpRelaySourceIpv6sSubnet) {
-		return nil, false
-	}
-	return o.DhcpRelaySourceIpv6sSubnet, true
-}
-
-// HasDhcpRelaySourceIpv6sSubnet returns a boolean if a field has been set.
-func (o *TenantsPutRequestTenantValue) HasDhcpRelaySourceIpv6sSubnet() bool {
-	if o != nil && !IsNil(o.DhcpRelaySourceIpv6sSubnet) {
-		return true
-	}
-
-	return false
-}
-
-// SetDhcpRelaySourceIpv6sSubnet gets a reference to the given string and assigns it to the DhcpRelaySourceIpv6sSubnet field.
-func (o *TenantsPutRequestTenantValue) SetDhcpRelaySourceIpv6sSubnet(v string) {
-	o.DhcpRelaySourceIpv6sSubnet = &v
+// SetDhcpRelaySourceIpsSubnet gets a reference to the given string and assigns it to the DhcpRelaySourceIpsSubnet field.
+func (o *TenantsPutRequestTenantValue) SetDhcpRelaySourceIpsSubnet(v string) {
+	o.DhcpRelaySourceIpsSubnet = &v
 }
 
 // GetRouteDistinguisher returns the RouteDistinguisher field value if set, zero value otherwise.
@@ -717,9 +679,9 @@ func (o *TenantsPutRequestTenantValue) SetRouteTenants(v []TenantsPutRequestTena
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *TenantsPutRequestTenantValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
+func (o *TenantsPutRequestTenantValue) GetObjectProperties() EthportsettingsPutRequestEthPortSettingsValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
+		var ret EthportsettingsPutRequestEthPortSettingsValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -727,7 +689,7 @@ func (o *TenantsPutRequestTenantValue) GetObjectProperties() DevicesettingsPutRe
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
+func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*EthportsettingsPutRequestEthPortSettingsValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -743,8 +705,8 @@ func (o *TenantsPutRequestTenantValue) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *TenantsPutRequestTenantValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
+// SetObjectProperties gets a reference to the given EthportsettingsPutRequestEthPortSettingsValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *TenantsPutRequestTenantValue) SetObjectProperties(v EthportsettingsPutRequestEthPortSettingsValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 
@@ -808,11 +770,8 @@ func (o TenantsPutRequestTenantValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Layer3VlanAutoAssigned) {
 		toSerialize["layer_3_vlan_auto_assigned_"] = o.Layer3VlanAutoAssigned
 	}
-	if !IsNil(o.DhcpRelaySourceIpv4sSubnet) {
-		toSerialize["dhcp_relay_source_ipv4s_subnet"] = o.DhcpRelaySourceIpv4sSubnet
-	}
-	if !IsNil(o.DhcpRelaySourceIpv6sSubnet) {
-		toSerialize["dhcp_relay_source_ipv6s_subnet"] = o.DhcpRelaySourceIpv6sSubnet
+	if !IsNil(o.DhcpRelaySourceIpsSubnet) {
+		toSerialize["dhcp_relay_source_ips_subnet"] = o.DhcpRelaySourceIpsSubnet
 	}
 	if !IsNil(o.RouteDistinguisher) {
 		toSerialize["route_distinguisher"] = o.RouteDistinguisher

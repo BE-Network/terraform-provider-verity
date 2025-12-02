@@ -36,69 +36,32 @@ type verityEthPortSettingsResource struct {
 }
 
 type verityEthPortSettingsResourceModel struct {
-	Name                                   types.String                                 `tfsdk:"name"`
-	Enable                                 types.Bool                                   `tfsdk:"enable"`
-	ObjectProperties                       []verityEthPortSettingsObjectPropertiesModel `tfsdk:"object_properties"`
-	AutoNegotiation                        types.Bool                                   `tfsdk:"auto_negotiation"`
-	MaxBitRate                             types.String                                 `tfsdk:"max_bit_rate"`
-	DuplexMode                             types.String                                 `tfsdk:"duplex_mode"`
-	StpEnable                              types.Bool                                   `tfsdk:"stp_enable"`
-	FastLearningMode                       types.Bool                                   `tfsdk:"fast_learning_mode"`
-	BpduGuard                              types.Bool                                   `tfsdk:"bpdu_guard"`
-	BpduFilter                             types.Bool                                   `tfsdk:"bpdu_filter"`
-	GuardLoop                              types.Bool                                   `tfsdk:"guard_loop"`
-	PoeEnable                              types.Bool                                   `tfsdk:"poe_enable"`
-	Priority                               types.String                                 `tfsdk:"priority"`
-	AllocatedPower                         types.String                                 `tfsdk:"allocated_power"`
-	BspEnable                              types.Bool                                   `tfsdk:"bsp_enable"`
-	Broadcast                              types.Bool                                   `tfsdk:"broadcast"`
-	Multicast                              types.Bool                                   `tfsdk:"multicast"`
-	MaxAllowedValue                        types.Int64                                  `tfsdk:"max_allowed_value"`
-	MaxAllowedUnit                         types.String                                 `tfsdk:"max_allowed_unit"`
-	Action                                 types.String                                 `tfsdk:"action"`
-	Fec                                    types.String                                 `tfsdk:"fec"`
-	SingleLink                             types.Bool                                   `tfsdk:"single_link"`
-	MinimumWredThreshold                   types.Int64                                  `tfsdk:"minimum_wred_threshold"`
-	MaximumWredThreshold                   types.Int64                                  `tfsdk:"maximum_wred_threshold"`
-	WredDropProbability                    types.Int64                                  `tfsdk:"wred_drop_probability"`
-	PriorityFlowControlWatchdogAction      types.String                                 `tfsdk:"priority_flow_control_watchdog_action"`
-	PriorityFlowControlWatchdogDetectTime  types.Int64                                  `tfsdk:"priority_flow_control_watchdog_detect_time"`
-	PriorityFlowControlWatchdogRestoreTime types.Int64                                  `tfsdk:"priority_flow_control_watchdog_restore_time"`
-	PacketQueue                            types.String                                 `tfsdk:"packet_queue"`
-	PacketQueueRefType                     types.String                                 `tfsdk:"packet_queue_ref_type_"`
-	EnableWredTuning                       types.Bool                                   `tfsdk:"enable_wred_tuning"`
-	EnableEcn                              types.Bool                                   `tfsdk:"enable_ecn"`
-	EnableWatchdogTuning                   types.Bool                                   `tfsdk:"enable_watchdog_tuning"`
-	CliCommands                            types.String                                 `tfsdk:"cli_commands"`
-	DetectBridgingLoops                    types.Bool                                   `tfsdk:"detect_bridging_loops"`
-	UnidirectionalLinkDetection            types.Bool                                   `tfsdk:"unidirectional_link_detection"`
-	MacSecurityMode                        types.String                                 `tfsdk:"mac_security_mode"`
-	MacLimit                               types.Int64                                  `tfsdk:"mac_limit"`
-	SecurityViolationAction                types.String                                 `tfsdk:"security_violation_action"`
-	AgingType                              types.String                                 `tfsdk:"aging_type"`
-	AgingTime                              types.Int64                                  `tfsdk:"aging_time"`
-	LldpEnable                             types.Bool                                   `tfsdk:"lldp_enable"`
-	LldpMode                               types.String                                 `tfsdk:"lldp_mode"`
-	LldpMedEnable                          types.Bool                                   `tfsdk:"lldp_med_enable"`
-	LldpMed                                []verityEthPortSettingsLldpMedModel          `tfsdk:"lldp_med"`
+	Name             types.String                                 `tfsdk:"name"`
+	Enable           types.Bool                                   `tfsdk:"enable"`
+	ObjectProperties []verityEthPortSettingsObjectPropertiesModel `tfsdk:"object_properties"`
+	AutoNegotiation  types.Bool                                   `tfsdk:"auto_negotiation"`
+	MaxBitRate       types.String                                 `tfsdk:"max_bit_rate"`
+	DuplexMode       types.String                                 `tfsdk:"duplex_mode"`
+	StpEnable        types.Bool                                   `tfsdk:"stp_enable"`
+	FastLearningMode types.Bool                                   `tfsdk:"fast_learning_mode"`
+	BpduGuard        types.Bool                                   `tfsdk:"bpdu_guard"`
+	BpduFilter       types.Bool                                   `tfsdk:"bpdu_filter"`
+	GuardLoop        types.Bool                                   `tfsdk:"guard_loop"`
+	PoeEnable        types.Bool                                   `tfsdk:"poe_enable"`
+	Priority         types.String                                 `tfsdk:"priority"`
+	AllocatedPower   types.String                                 `tfsdk:"allocated_power"`
+	BspEnable        types.Bool                                   `tfsdk:"bsp_enable"`
+	Broadcast        types.Bool                                   `tfsdk:"broadcast"`
+	Multicast        types.Bool                                   `tfsdk:"multicast"`
+	MaxAllowedValue  types.Int64                                  `tfsdk:"max_allowed_value"`
+	MaxAllowedUnit   types.String                                 `tfsdk:"max_allowed_unit"`
+	Action           types.String                                 `tfsdk:"action"`
+	Fec              types.String                                 `tfsdk:"fec"`
+	SingleLink       types.Bool                                   `tfsdk:"single_link"`
 }
 
 type verityEthPortSettingsObjectPropertiesModel struct {
 	Group types.String `tfsdk:"group"`
-}
-
-type verityEthPortSettingsLldpMedModel struct {
-	LldpMedRowNumEnable                types.Bool   `tfsdk:"lldp_med_row_num_enable"`
-	LldpMedRowNumAdvertisedApplication types.String `tfsdk:"lldp_med_row_num_advertised_applicatio"`
-	LldpMedRowNumDscpMark              types.Int64  `tfsdk:"lldp_med_row_num_dscp_mark"`
-	LldpMedRowNumPriority              types.Int64  `tfsdk:"lldp_med_row_num_priority"`
-	LldpMedRowNumService               types.String `tfsdk:"lldp_med_row_num_service"`
-	LldpMedRowNumServiceRefType        types.String `tfsdk:"lldp_med_row_num_service_ref_type_"`
-	Index                              types.Int64  `tfsdk:"index"`
-}
-
-func (lm verityEthPortSettingsLldpMedModel) GetIndex() types.Int64 {
-	return lm.Index
 }
 
 func (r *verityEthPortSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -214,94 +177,6 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Description: "Ports with this setting will be disabled when link state tracking takes effect",
 				Optional:    true,
 			},
-			"minimum_wred_threshold": schema.Int64Attribute{
-				Description: "A value between 1 to 12480(in KiloBytes)",
-				Optional:    true,
-			},
-			"maximum_wred_threshold": schema.Int64Attribute{
-				Description: "A value between 1 to 12480(in KiloBytes)",
-				Optional:    true,
-			},
-			"wred_drop_probability": schema.Int64Attribute{
-				Description: "A value between 0 to 100",
-				Optional:    true,
-			},
-			"priority_flow_control_watchdog_action": schema.StringAttribute{
-				Description: "Ports with this setting will be disabled when link state tracking takes effect",
-				Optional:    true,
-			},
-			"priority_flow_control_watchdog_detect_time": schema.Int64Attribute{
-				Description: "A value between 100 to 5000",
-				Optional:    true,
-			},
-			"priority_flow_control_watchdog_restore_time": schema.Int64Attribute{
-				Description: "A value between 100 to 60000",
-				Optional:    true,
-			},
-			"packet_queue": schema.StringAttribute{
-				Description: "Packet Queue",
-				Optional:    true,
-			},
-			"packet_queue_ref_type_": schema.StringAttribute{
-				Description: "Object type for packet_queue field",
-				Optional:    true,
-			},
-			"enable_wred_tuning": schema.BoolAttribute{
-				Description: "Enables custom tuning of WRED values. Uncheck to use Switch default values.",
-				Optional:    true,
-			},
-			"enable_ecn": schema.BoolAttribute{
-				Description: "Enables Explicit Congestion Notification for WRED.",
-				Optional:    true,
-			},
-			"enable_watchdog_tuning": schema.BoolAttribute{
-				Description: "Enables custom tuning of Watchdog values. Uncheck to use Switch default values.",
-				Optional:    true,
-			},
-			"cli_commands": schema.StringAttribute{
-				Description: "CLI Commands",
-				Optional:    true,
-			},
-			"detect_bridging_loops": schema.BoolAttribute{
-				Description: "Enable Detection of Bridging Loops",
-				Optional:    true,
-			},
-			"unidirectional_link_detection": schema.BoolAttribute{
-				Description: "Enable Detection of Unidirectional Link",
-				Optional:    true,
-			},
-			"mac_security_mode": schema.StringAttribute{
-				Description: "MAC security mode",
-				Optional:    true,
-			},
-			"mac_limit": schema.Int64Attribute{
-				Description: "Between 1-1000",
-				Optional:    true,
-			},
-			"security_violation_action": schema.StringAttribute{
-				Description: "Security violation action",
-				Optional:    true,
-			},
-			"aging_type": schema.StringAttribute{
-				Description: "Limit MAC authentication based on inactivity or on absolute time. See Also Aging Time",
-				Optional:    true,
-			},
-			"aging_time": schema.Int64Attribute{
-				Description: "In minutes, how long the client will stay authenticated. See Also Aging Type",
-				Optional:    true,
-			},
-			"lldp_enable": schema.BoolAttribute{
-				Description: "LLDP enable",
-				Optional:    true,
-			},
-			"lldp_mode": schema.StringAttribute{
-				Description: "LLDP mode. Enables LLDP Rx and/or LLDP Tx",
-				Optional:    true,
-			},
-			"lldp_med_enable": schema.BoolAttribute{
-				Description: "LLDP med enable",
-				Optional:    true,
-			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
@@ -310,41 +185,6 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 					Attributes: map[string]schema.Attribute{
 						"group": schema.StringAttribute{
 							Description: "Group",
-							Optional:    true,
-						},
-					},
-				},
-			},
-			"lldp_med": schema.ListNestedBlock{
-				Description: "LLDP MED configurations",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"lldp_med_row_num_enable": schema.BoolAttribute{
-							Description: "Per LLDP Med row enable",
-							Optional:    true,
-						},
-						"lldp_med_row_num_advertised_applicatio": schema.StringAttribute{
-							Description: "Advertised application",
-							Optional:    true,
-						},
-						"lldp_med_row_num_dscp_mark": schema.Int64Attribute{
-							Description: "LLDP DSCP Mark",
-							Optional:    true,
-						},
-						"lldp_med_row_num_priority": schema.Int64Attribute{
-							Description: "LLDP Priority",
-							Optional:    true,
-						},
-						"lldp_med_row_num_service": schema.StringAttribute{
-							Description: "LLDP Service",
-							Optional:    true,
-						},
-						"lldp_med_row_num_service_ref_type_": schema.StringAttribute{
-							Description: "Object type for lldp_med_row_num_service field",
-							Optional:    true,
-						},
-						"index": schema.Int64Attribute{
-							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 						},
 					},
@@ -384,14 +224,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		{FieldName: "MaxAllowedUnit", APIField: &ethPortSettingsProps.MaxAllowedUnit, TFValue: plan.MaxAllowedUnit},
 		{FieldName: "Action", APIField: &ethPortSettingsProps.Action, TFValue: plan.Action},
 		{FieldName: "Fec", APIField: &ethPortSettingsProps.Fec, TFValue: plan.Fec},
-		{FieldName: "PriorityFlowControlWatchdogAction", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogAction, TFValue: plan.PriorityFlowControlWatchdogAction},
-		{FieldName: "PacketQueue", APIField: &ethPortSettingsProps.PacketQueue, TFValue: plan.PacketQueue},
-		{FieldName: "PacketQueueRefType", APIField: &ethPortSettingsProps.PacketQueueRefType, TFValue: plan.PacketQueueRefType},
-		{FieldName: "CliCommands", APIField: &ethPortSettingsProps.CliCommands, TFValue: plan.CliCommands},
-		{FieldName: "MacSecurityMode", APIField: &ethPortSettingsProps.MacSecurityMode, TFValue: plan.MacSecurityMode},
-		{FieldName: "SecurityViolationAction", APIField: &ethPortSettingsProps.SecurityViolationAction, TFValue: plan.SecurityViolationAction},
-		{FieldName: "AgingType", APIField: &ethPortSettingsProps.AgingType, TFValue: plan.AgingType},
-		{FieldName: "LldpMode", APIField: &ethPortSettingsProps.LldpMode, TFValue: plan.LldpMode},
 	})
 
 	// Handle boolean fields
@@ -408,62 +240,21 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		{FieldName: "Broadcast", APIField: &ethPortSettingsProps.Broadcast, TFValue: plan.Broadcast},
 		{FieldName: "Multicast", APIField: &ethPortSettingsProps.Multicast, TFValue: plan.Multicast},
 		{FieldName: "SingleLink", APIField: &ethPortSettingsProps.SingleLink, TFValue: plan.SingleLink},
-		{FieldName: "EnableWredTuning", APIField: &ethPortSettingsProps.EnableWredTuning, TFValue: plan.EnableWredTuning},
-		{FieldName: "EnableEcn", APIField: &ethPortSettingsProps.EnableEcn, TFValue: plan.EnableEcn},
-		{FieldName: "EnableWatchdogTuning", APIField: &ethPortSettingsProps.EnableWatchdogTuning, TFValue: plan.EnableWatchdogTuning},
-		{FieldName: "DetectBridgingLoops", APIField: &ethPortSettingsProps.DetectBridgingLoops, TFValue: plan.DetectBridgingLoops},
-		{FieldName: "UnidirectionalLinkDetection", APIField: &ethPortSettingsProps.UnidirectionalLinkDetection, TFValue: plan.UnidirectionalLinkDetection},
-		{FieldName: "LldpEnable", APIField: &ethPortSettingsProps.LldpEnable, TFValue: plan.LldpEnable},
-		{FieldName: "LldpMedEnable", APIField: &ethPortSettingsProps.LldpMedEnable, TFValue: plan.LldpMedEnable},
 	})
 
 	// Handle nullable int64 fields
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "MaxAllowedValue", APIField: &ethPortSettingsProps.MaxAllowedValue, TFValue: plan.MaxAllowedValue},
-		{FieldName: "MinimumWredThreshold", APIField: &ethPortSettingsProps.MinimumWredThreshold, TFValue: plan.MinimumWredThreshold},
-		{FieldName: "MaximumWredThreshold", APIField: &ethPortSettingsProps.MaximumWredThreshold, TFValue: plan.MaximumWredThreshold},
-		{FieldName: "WredDropProbability", APIField: &ethPortSettingsProps.WredDropProbability, TFValue: plan.WredDropProbability},
-		{FieldName: "PriorityFlowControlWatchdogDetectTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime, TFValue: plan.PriorityFlowControlWatchdogDetectTime},
-		{FieldName: "PriorityFlowControlWatchdogRestoreTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime, TFValue: plan.PriorityFlowControlWatchdogRestoreTime},
-		{FieldName: "MacLimit", APIField: &ethPortSettingsProps.MacLimit, TFValue: plan.MacLimit},
-		{FieldName: "AgingTime", APIField: &ethPortSettingsProps.AgingTime, TFValue: plan.AgingTime},
 	})
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 		})
 		ethPortSettingsProps.ObjectProperties = &objProps
-	}
-
-	// Handle LLDP Med
-	if len(plan.LldpMed) > 0 {
-		lldpMedItems := make([]openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, len(plan.LldpMed))
-		for i, item := range plan.LldpMed {
-			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
-
-			utils.SetBoolFields([]utils.BoolFieldMapping{
-				{FieldName: "LldpMedRowNumEnable", APIField: &lldpMedItem.LldpMedRowNumEnable, TFValue: item.LldpMedRowNumEnable},
-			})
-			utils.SetStringFields([]utils.StringFieldMapping{
-				{FieldName: "LldpMedRowNumAdvertisedApplication", APIField: &lldpMedItem.LldpMedRowNumAdvertisedApplicatio, TFValue: item.LldpMedRowNumAdvertisedApplication},
-				{FieldName: "LldpMedRowNumService", APIField: &lldpMedItem.LldpMedRowNumService, TFValue: item.LldpMedRowNumService},
-				{FieldName: "LldpMedRowNumServiceRefType", APIField: &lldpMedItem.LldpMedRowNumServiceRefType, TFValue: item.LldpMedRowNumServiceRefType},
-			})
-			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: item.LldpMedRowNumDscpMark},
-				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: item.LldpMedRowNumPriority},
-			})
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
-			})
-
-			lldpMedItems[i] = lldpMedItem
-		}
-		ethPortSettingsProps.LldpMed = lldpMedItems
 	}
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "eth_port_settings", name, *ethPortSettingsProps, &resp.Diagnostics)
@@ -581,21 +372,13 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 
 	// Map string fields
 	stringFieldMappings := map[string]*types.String{
-		"max_bit_rate":                          &state.MaxBitRate,
-		"duplex_mode":                           &state.DuplexMode,
-		"priority":                              &state.Priority,
-		"allocated_power":                       &state.AllocatedPower,
-		"max_allowed_unit":                      &state.MaxAllowedUnit,
-		"action":                                &state.Action,
-		"fec":                                   &state.Fec,
-		"priority_flow_control_watchdog_action": &state.PriorityFlowControlWatchdogAction,
-		"packet_queue":                          &state.PacketQueue,
-		"packet_queue_ref_type_":                &state.PacketQueueRefType,
-		"cli_commands":                          &state.CliCommands,
-		"mac_security_mode":                     &state.MacSecurityMode,
-		"security_violation_action":             &state.SecurityViolationAction,
-		"aging_type":                            &state.AgingType,
-		"lldp_mode":                             &state.LldpMode,
+		"max_bit_rate":     &state.MaxBitRate,
+		"duplex_mode":      &state.DuplexMode,
+		"priority":         &state.Priority,
+		"allocated_power":  &state.AllocatedPower,
+		"max_allowed_unit": &state.MaxAllowedUnit,
+		"action":           &state.Action,
+		"fec":              &state.Fec,
 	}
 
 	for apiKey, stateField := range stringFieldMappings {
@@ -604,25 +387,18 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 
 	// Map boolean fields
 	boolFieldMappings := map[string]*types.Bool{
-		"enable":                        &state.Enable,
-		"auto_negotiation":              &state.AutoNegotiation,
-		"stp_enable":                    &state.StpEnable,
-		"fast_learning_mode":            &state.FastLearningMode,
-		"bpdu_guard":                    &state.BpduGuard,
-		"bpdu_filter":                   &state.BpduFilter,
-		"guard_loop":                    &state.GuardLoop,
-		"poe_enable":                    &state.PoeEnable,
-		"bsp_enable":                    &state.BspEnable,
-		"broadcast":                     &state.Broadcast,
-		"multicast":                     &state.Multicast,
-		"single_link":                   &state.SingleLink,
-		"enable_wred_tuning":            &state.EnableWredTuning,
-		"enable_ecn":                    &state.EnableEcn,
-		"enable_watchdog_tuning":        &state.EnableWatchdogTuning,
-		"detect_bridging_loops":         &state.DetectBridgingLoops,
-		"unidirectional_link_detection": &state.UnidirectionalLinkDetection,
-		"lldp_enable":                   &state.LldpEnable,
-		"lldp_med_enable":               &state.LldpMedEnable,
+		"enable":             &state.Enable,
+		"auto_negotiation":   &state.AutoNegotiation,
+		"stp_enable":         &state.StpEnable,
+		"fast_learning_mode": &state.FastLearningMode,
+		"bpdu_guard":         &state.BpduGuard,
+		"bpdu_filter":        &state.BpduFilter,
+		"guard_loop":         &state.GuardLoop,
+		"poe_enable":         &state.PoeEnable,
+		"bsp_enable":         &state.BspEnable,
+		"broadcast":          &state.Broadcast,
+		"multicast":          &state.Multicast,
+		"single_link":        &state.SingleLink,
 	}
 
 	for apiKey, stateField := range boolFieldMappings {
@@ -631,46 +407,11 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 
 	// Map int64 fields
 	int64FieldMappings := map[string]*types.Int64{
-		"max_allowed_value":                           &state.MaxAllowedValue,
-		"minimum_wred_threshold":                      &state.MinimumWredThreshold,
-		"maximum_wred_threshold":                      &state.MaximumWredThreshold,
-		"wred_drop_probability":                       &state.WredDropProbability,
-		"priority_flow_control_watchdog_detect_time":  &state.PriorityFlowControlWatchdogDetectTime,
-		"priority_flow_control_watchdog_restore_time": &state.PriorityFlowControlWatchdogRestoreTime,
-		"mac_limit":  &state.MacLimit,
-		"aging_time": &state.AgingTime,
+		"max_allowed_value": &state.MaxAllowedValue,
 	}
 
 	for apiKey, stateField := range int64FieldMappings {
 		*stateField = utils.MapInt64FromAPI(ethPortSettingsMap[apiKey])
-	}
-
-	// Handle LLDP Med
-	if lldpMedData, ok := ethPortSettingsMap["lldp_med"].([]interface{}); ok && len(lldpMedData) > 0 {
-		var lldpMedList []verityEthPortSettingsLldpMedModel
-
-		for _, item := range lldpMedData {
-			itemMap, ok := item.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			lldpMedItem := verityEthPortSettingsLldpMedModel{
-				LldpMedRowNumEnable:                utils.MapBoolFromAPI(itemMap["lldp_med_row_num_enable"]),
-				LldpMedRowNumAdvertisedApplication: utils.MapStringFromAPI(itemMap["lldp_med_row_num_advertised_applicatio"]),
-				LldpMedRowNumDscpMark:              utils.MapInt64FromAPI(itemMap["lldp_med_row_num_dscp_mark"]),
-				LldpMedRowNumPriority:              utils.MapInt64FromAPI(itemMap["lldp_med_row_num_priority"]),
-				LldpMedRowNumService:               utils.MapStringFromAPI(itemMap["lldp_med_row_num_service"]),
-				LldpMedRowNumServiceRefType:        utils.MapStringFromAPI(itemMap["lldp_med_row_num_service_ref_type_"]),
-				Index:                              utils.MapInt64FromAPI(itemMap["index"]),
-			}
-
-			lldpMedList = append(lldpMedList, lldpMedItem)
-		}
-
-		state.LldpMed = lldpMedList
-	} else {
-		state.LldpMed = nil
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -712,12 +453,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetStringField(plan.MaxAllowedUnit, state.MaxAllowedUnit, func(v *string) { ethPortSettingsProps.MaxAllowedUnit = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Action, state.Action, func(v *string) { ethPortSettingsProps.Action = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Fec, state.Fec, func(v *string) { ethPortSettingsProps.Fec = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.PriorityFlowControlWatchdogAction, state.PriorityFlowControlWatchdogAction, func(v *string) { ethPortSettingsProps.PriorityFlowControlWatchdogAction = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.CliCommands, state.CliCommands, func(v *string) { ethPortSettingsProps.CliCommands = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.MacSecurityMode, state.MacSecurityMode, func(v *string) { ethPortSettingsProps.MacSecurityMode = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.SecurityViolationAction, state.SecurityViolationAction, func(v *string) { ethPortSettingsProps.SecurityViolationAction = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.AgingType, state.AgingType, func(v *string) { ethPortSettingsProps.AgingType = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.LldpMode, state.LldpMode, func(v *string) { ethPortSettingsProps.LldpMode = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ethPortSettingsProps.Enable = v }, &hasChanges)
@@ -732,27 +467,13 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetBoolField(plan.Broadcast, state.Broadcast, func(v *bool) { ethPortSettingsProps.Broadcast = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Multicast, state.Multicast, func(v *bool) { ethPortSettingsProps.Multicast = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.SingleLink, state.SingleLink, func(v *bool) { ethPortSettingsProps.SingleLink = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.EnableWredTuning, state.EnableWredTuning, func(v *bool) { ethPortSettingsProps.EnableWredTuning = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.EnableEcn, state.EnableEcn, func(v *bool) { ethPortSettingsProps.EnableEcn = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.EnableWatchdogTuning, state.EnableWatchdogTuning, func(v *bool) { ethPortSettingsProps.EnableWatchdogTuning = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.DetectBridgingLoops, state.DetectBridgingLoops, func(v *bool) { ethPortSettingsProps.DetectBridgingLoops = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.UnidirectionalLinkDetection, state.UnidirectionalLinkDetection, func(v *bool) { ethPortSettingsProps.UnidirectionalLinkDetection = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.LldpEnable, state.LldpEnable, func(v *bool) { ethPortSettingsProps.LldpEnable = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.LldpMedEnable, state.LldpMedEnable, func(v *bool) { ethPortSettingsProps.LldpMedEnable = v }, &hasChanges)
 
 	// Handle nullable int64 field changes
 	utils.CompareAndSetNullableInt64Field(plan.MaxAllowedValue, state.MaxAllowedValue, func(v *openapi.NullableInt32) { ethPortSettingsProps.MaxAllowedValue = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MinimumWredThreshold, state.MinimumWredThreshold, func(v *openapi.NullableInt32) { ethPortSettingsProps.MinimumWredThreshold = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MaximumWredThreshold, state.MaximumWredThreshold, func(v *openapi.NullableInt32) { ethPortSettingsProps.MaximumWredThreshold = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.WredDropProbability, state.WredDropProbability, func(v *openapi.NullableInt32) { ethPortSettingsProps.WredDropProbability = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MacLimit, state.MacLimit, func(v *openapi.NullableInt32) { ethPortSettingsProps.MacLimit = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.AgingTime, state.AgingTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.AgingTime = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		op := plan.ObjectProperties[0]
 		st := state.ObjectProperties[0]
 		objPropsChanged := false
@@ -765,93 +486,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 			ethPortSettingsProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
-	}
-
-	// Handle packet_queue and packet_queue_ref_type_ using "One ref type supported" pattern
-	if !utils.HandleOneRefTypeSupported(
-		plan.PacketQueue, state.PacketQueue, plan.PacketQueueRefType, state.PacketQueueRefType,
-		func(v *string) { ethPortSettingsProps.PacketQueue = v },
-		func(v *string) { ethPortSettingsProps.PacketQueueRefType = v },
-		"packet_queue", "packet_queue_ref_type_",
-		&hasChanges,
-		&resp.Diagnostics,
-	) {
-		return
-	}
-
-	// Handle LLDP Med
-	lldpMedHandler := utils.IndexedItemHandler[verityEthPortSettingsLldpMedModel, openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner]{
-		CreateNew: func(item verityEthPortSettingsLldpMedModel) openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
-			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
-
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
-			})
-
-			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: item.LldpMedRowNumDscpMark},
-				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: item.LldpMedRowNumPriority},
-			})
-
-			utils.SetBoolFields([]utils.BoolFieldMapping{
-				{FieldName: "LldpMedRowNumEnable", APIField: &lldpMedItem.LldpMedRowNumEnable, TFValue: item.LldpMedRowNumEnable},
-			})
-
-			utils.SetStringFields([]utils.StringFieldMapping{
-				{FieldName: "LldpMedRowNumAdvertisedApplication", APIField: &lldpMedItem.LldpMedRowNumAdvertisedApplicatio, TFValue: item.LldpMedRowNumAdvertisedApplication},
-				{FieldName: "LldpMedRowNumService", APIField: &lldpMedItem.LldpMedRowNumService, TFValue: item.LldpMedRowNumService},
-				{FieldName: "LldpMedRowNumServiceRefType", APIField: &lldpMedItem.LldpMedRowNumServiceRefType, TFValue: item.LldpMedRowNumServiceRefType},
-			})
-
-			return lldpMedItem
-		},
-		UpdateExisting: func(planItem, stateItem verityEthPortSettingsLldpMedModel) (openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, bool) {
-			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
-
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: planItem.Index},
-			})
-
-			hasChanges := false
-
-			// Handle boolean fields
-			utils.CompareAndSetBoolField(planItem.LldpMedRowNumEnable, stateItem.LldpMedRowNumEnable, func(v *bool) { lldpMedItem.LldpMedRowNumEnable = v }, &hasChanges)
-
-			// Handle string fields (non-ref-type)
-			utils.CompareAndSetStringField(planItem.LldpMedRowNumAdvertisedApplication, stateItem.LldpMedRowNumAdvertisedApplication, func(v *string) { lldpMedItem.LldpMedRowNumAdvertisedApplicatio = v }, &hasChanges)
-
-			// Handle nullable int64 fields
-			utils.CompareAndSetNullableInt64Field(planItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumDscpMark = *v }, &hasChanges)
-			utils.CompareAndSetNullableInt64Field(planItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumPriority = *v }, &hasChanges) // Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
-
-			// Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
-			if !utils.HandleOneRefTypeSupported(
-				planItem.LldpMedRowNumService, stateItem.LldpMedRowNumService, planItem.LldpMedRowNumServiceRefType, stateItem.LldpMedRowNumServiceRefType,
-				func(v *string) { lldpMedItem.LldpMedRowNumService = v },
-				func(v *string) { lldpMedItem.LldpMedRowNumServiceRefType = v },
-				"lldp_med_row_num_service", "lldp_med_row_num_service_ref_type_",
-				&hasChanges,
-				&resp.Diagnostics,
-			) {
-				return lldpMedItem, false
-			}
-
-			return lldpMedItem, hasChanges
-		},
-		CreateDeleted: func(index int64) openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
-			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: types.Int64Value(index)},
-			})
-			return lldpMedItem
-		},
-	}
-
-	changedLldpMed, lldpMedChanged := utils.ProcessIndexedArrayUpdates(plan.LldpMed, state.LldpMed, lldpMedHandler)
-
-	if lldpMedChanged {
-		ethPortSettingsProps.LldpMed = changedLldpMed
-		hasChanges = true
 	}
 
 	if !hasChanges {

@@ -79,7 +79,7 @@ Name | Type | Description  | Notes
 
 ## GatewayprofilesGet
 
-> GatewayprofilesGet(ctx).ProfileName(profileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+> GatewayprofilesGet(ctx).ProfileName(profileName).IncludeData(includeData).Execute()
 
 Get all Gateway Profiles
 
@@ -100,11 +100,10 @@ import (
 func main() {
 	profileName := "profileName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
-	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.GatewayProfilesAPI.GatewayprofilesGet(context.Background()).ProfileName(profileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+	r, err := apiClient.GatewayProfilesAPI.GatewayprofilesGet(context.Background()).ProfileName(profileName).IncludeData(includeData).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `GatewayProfilesAPI.GatewayprofilesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -125,7 +124,6 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **profileName** | **string** |  | 
  **includeData** | **bool** |  | 
- **changesetName** | **string** |  | 
 
 ### Return type
 

@@ -37,26 +37,25 @@ type verityTenantResource struct {
 }
 
 type verityTenantResourceModel struct {
-	Name                       types.String                        `tfsdk:"name"`
-	Enable                     types.Bool                          `tfsdk:"enable"`
-	ObjectProperties           []verityTenantObjectPropertiesModel `tfsdk:"object_properties"`
-	Layer3Vni                  types.Int64                         `tfsdk:"layer_3_vni"`
-	Layer3VniAutoAssigned      types.Bool                          `tfsdk:"layer_3_vni_auto_assigned_"`
-	Layer3Vlan                 types.Int64                         `tfsdk:"layer_3_vlan"`
-	Layer3VlanAutoAssigned     types.Bool                          `tfsdk:"layer_3_vlan_auto_assigned_"`
-	DhcpRelaySourceIpv4sSubnet types.String                        `tfsdk:"dhcp_relay_source_ipv4s_subnet"`
-	DhcpRelaySourceIpv6sSubnet types.String                        `tfsdk:"dhcp_relay_source_ipv6s_subnet"`
-	RouteDistinguisher         types.String                        `tfsdk:"route_distinguisher"`
-	RouteTargetImport          types.String                        `tfsdk:"route_target_import"`
-	RouteTargetExport          types.String                        `tfsdk:"route_target_export"`
-	ImportRouteMap             types.String                        `tfsdk:"import_route_map"`
-	ImportRouteMapRefType      types.String                        `tfsdk:"import_route_map_ref_type_"`
-	ExportRouteMap             types.String                        `tfsdk:"export_route_map"`
-	ExportRouteMapRefType      types.String                        `tfsdk:"export_route_map_ref_type_"`
-	VrfName                    types.String                        `tfsdk:"vrf_name"`
-	VrfNameAutoAssigned        types.Bool                          `tfsdk:"vrf_name_auto_assigned_"`
-	RouteTenants               []verityTenantRouteTenantModel      `tfsdk:"route_tenants"`
-	DefaultOriginate           types.Bool                          `tfsdk:"default_originate"`
+	Name                     types.String                        `tfsdk:"name"`
+	Enable                   types.Bool                          `tfsdk:"enable"`
+	ObjectProperties         []verityTenantObjectPropertiesModel `tfsdk:"object_properties"`
+	Layer3Vni                types.Int64                         `tfsdk:"layer_3_vni"`
+	Layer3VniAutoAssigned    types.Bool                          `tfsdk:"layer_3_vni_auto_assigned_"`
+	Layer3Vlan               types.Int64                         `tfsdk:"layer_3_vlan"`
+	Layer3VlanAutoAssigned   types.Bool                          `tfsdk:"layer_3_vlan_auto_assigned_"`
+	DhcpRelaySourceIpsSubnet types.String                        `tfsdk:"dhcp_relay_source_ips_subnet"`
+	RouteDistinguisher       types.String                        `tfsdk:"route_distinguisher"`
+	RouteTargetImport        types.String                        `tfsdk:"route_target_import"`
+	RouteTargetExport        types.String                        `tfsdk:"route_target_export"`
+	ImportRouteMap           types.String                        `tfsdk:"import_route_map"`
+	ImportRouteMapRefType    types.String                        `tfsdk:"import_route_map_ref_type_"`
+	ExportRouteMap           types.String                        `tfsdk:"export_route_map"`
+	ExportRouteMapRefType    types.String                        `tfsdk:"export_route_map_ref_type_"`
+	VrfName                  types.String                        `tfsdk:"vrf_name"`
+	VrfNameAutoAssigned      types.Bool                          `tfsdk:"vrf_name_auto_assigned_"`
+	RouteTenants             []verityTenantRouteTenantModel      `tfsdk:"route_tenants"`
+	DefaultOriginate         types.Bool                          `tfsdk:"default_originate"`
 }
 
 type verityTenantObjectPropertiesModel struct {
@@ -128,12 +127,8 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Description: "Whether the Layer 3 VLAN value should be automatically assigned by the API. When set to true, do not specify the 'layer_3_vlan' field in your configuration.",
 				Optional:    true,
 			},
-			"dhcp_relay_source_ipv4s_subnet": schema.StringAttribute{
-				Description: "Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.",
-				Optional:    true,
-			},
-			"dhcp_relay_source_ipv6s_subnet": schema.StringAttribute{
-				Description: "Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.",
+			"dhcp_relay_source_ips_subnet": schema.StringAttribute{
+				Description: "Range of IP addresses (represented in IP subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.",
 				Optional:    true,
 			},
 			"route_distinguisher": schema.StringAttribute{
@@ -267,8 +262,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
-		{FieldName: "DhcpRelaySourceIpv4sSubnet", APIField: &tenantReq.DhcpRelaySourceIpv4sSubnet, TFValue: plan.DhcpRelaySourceIpv4sSubnet},
-		{FieldName: "DhcpRelaySourceIpv6sSubnet", APIField: &tenantReq.DhcpRelaySourceIpv6sSubnet, TFValue: plan.DhcpRelaySourceIpv6sSubnet},
+		{FieldName: "DhcpRelaySourceIpsSubnet", APIField: &tenantReq.DhcpRelaySourceIpsSubnet, TFValue: plan.DhcpRelaySourceIpsSubnet},
 		{FieldName: "RouteDistinguisher", APIField: &tenantReq.RouteDistinguisher, TFValue: plan.RouteDistinguisher},
 		{FieldName: "RouteTargetImport", APIField: &tenantReq.RouteTargetImport, TFValue: plan.RouteTargetImport},
 		{FieldName: "RouteTargetExport", APIField: &tenantReq.RouteTargetExport, TFValue: plan.RouteTargetExport},
@@ -287,7 +281,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 		})
@@ -570,8 +564,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { tenantReq.Name = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.DhcpRelaySourceIpv4sSubnet, state.DhcpRelaySourceIpv4sSubnet, func(v *string) { tenantReq.DhcpRelaySourceIpv4sSubnet = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.DhcpRelaySourceIpv6sSubnet, state.DhcpRelaySourceIpv6sSubnet, func(v *string) { tenantReq.DhcpRelaySourceIpv6sSubnet = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DhcpRelaySourceIpsSubnet, state.DhcpRelaySourceIpsSubnet, func(v *string) { tenantReq.DhcpRelaySourceIpsSubnet = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouteDistinguisher, state.RouteDistinguisher, func(v *string) { tenantReq.RouteDistinguisher = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouteTargetImport, state.RouteTargetImport, func(v *string) { tenantReq.RouteTargetImport = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouteTargetExport, state.RouteTargetExport, func(v *string) { tenantReq.RouteTargetExport = v }, &hasChanges)
@@ -582,7 +575,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		op := plan.ObjectProperties[0]
 		st := state.ObjectProperties[0]
 		objPropsChanged := false
@@ -932,8 +925,7 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	state.VrfNameAutoAssigned = utils.MapBoolFromAPI(tenantData["vrf_name_auto_assigned_"])
 
 	// String fields
-	state.DhcpRelaySourceIpv4sSubnet = utils.MapStringFromAPI(tenantData["dhcp_relay_source_ipv4s_subnet"])
-	state.DhcpRelaySourceIpv6sSubnet = utils.MapStringFromAPI(tenantData["dhcp_relay_source_ipv6s_subnet"])
+	state.DhcpRelaySourceIpsSubnet = utils.MapStringFromAPI(tenantData["dhcp_relay_source_ips_subnet"])
 	state.RouteDistinguisher = utils.MapStringFromAPI(tenantData["route_distinguisher"])
 	state.RouteTargetImport = utils.MapStringFromAPI(tenantData["route_target_import"])
 	state.RouteTargetExport = utils.MapStringFromAPI(tenantData["route_target_export"])

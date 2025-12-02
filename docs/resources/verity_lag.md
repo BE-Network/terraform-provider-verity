@@ -32,6 +32,7 @@ resource "verity_lag" "example" {
 * `peer_link_vlan` (Integer) - For peer-peer LAGs. The VLAN used for control.
 * `fallback` (Boolean) - Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer.
 * `fast_rate` (Boolean) - Send LACP packets every second (if disabled, packets are sent every 30 seconds).
+* `object_properties` (Object) - Additional object properties.
 * `uplink` (Boolean) - Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN.
 
 ## Import

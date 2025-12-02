@@ -146,7 +146,6 @@ type ApiGatewaysGetRequest struct {
 	ApiService *GatewaysAPIService
 	gatewayName *string
 	includeData *bool
-	changesetName *string
 }
 
 func (r ApiGatewaysGetRequest) GatewayName(gatewayName string) ApiGatewaysGetRequest {
@@ -156,11 +155,6 @@ func (r ApiGatewaysGetRequest) GatewayName(gatewayName string) ApiGatewaysGetReq
 
 func (r ApiGatewaysGetRequest) IncludeData(includeData bool) ApiGatewaysGetRequest {
 	r.includeData = &includeData
-	return r
-}
-
-func (r ApiGatewaysGetRequest) ChangesetName(changesetName string) ApiGatewaysGetRequest {
-	r.changesetName = &changesetName
 	return r
 }
 
@@ -208,9 +202,6 @@ func (a *GatewaysAPIService) GatewaysGetExecute(r ApiGatewaysGetRequest) (*http.
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
-	}
-	if r.changesetName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

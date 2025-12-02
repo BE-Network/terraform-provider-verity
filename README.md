@@ -55,7 +55,7 @@ terraform {
 }
 
 provider "verity" {
-  mode = "datacenter" # Valid values: "datacenter" or "campus"
+  mode = "datacenter" # API 6.4 supports datacenter mode only
 }
 ```
 
@@ -149,19 +149,15 @@ terraform {
   required_providers {
     verity = {
       source  = "BE-Network/verity"
-      version = "6.4.0" # Replace with the desired release version
+      version = "6.4.0"
     }
   }
 }
 
 provider "verity" {
-  mode = "datacenter" # Valid values: "datacenter" or "campus"
+  mode = "datacenter" # API 6.4 supports datacenter mode only
 }
 ```
-
-> Replace `6.4.0` with the desired release version. Set `mode` to match your Verity deployment type.
-
-
 
 ## Regenerating the OpenAPI Go SDK
 
@@ -208,77 +204,17 @@ The import process creates a special `stages.tf` file that defines explicit depe
 
 Each imported resource is configured with the appropriate `depends_on` attribute referring to its corresponding stage. This prevents Terraform from attempting to create resources before their dependencies are ready, which is particularly important when working with the Verity API's interdependent resources.
 
-Since API version 6.5, the provider supports two modes: **campus** and **datacenter**. Each mode has its own resource dependency ordering for creation and update operations:
+API version 6.4 supports **datacenter mode only**. The resource dependency ordering for creation and update operations is as follows:
 
-**Order for CAMPUS:**
-1. IPv4 Lists
-2. IPv6 Lists
-3. ACLs (IPv4)
-4. ACLs (IPv6)
-5. PB Routing ACL
-6. PB Routing
-7. Port ACLs
-8. Services
-9. Eth Port Profiles
-10. SFlow Collectors
-11. Packet Queues
-12. Service Port Profiles
-13. Diagnostics Port Profiles
-14. Device Voice Settings
-15. Authenticated Eth-Ports
-16. Diagnostics Profiles
-17. Eth Port Settings
-18. Voice-Port Profiles
-19. Device Settings
-20. Lags
-21. Bundles
-22. Badges
-23. Switchpoints
-24. Thresholds
-25. Grouping Rules
-26. Threshold Groups
-27. Sites
-28. Device Controllers
-
-**Order for DATACENTER:**
-1. SFP Breakouts
-2. IPv6 Prefix Lists
-3. Community Lists
-4. IPv4 Prefix Lists
-5. Extended Community Lists
-6. AS Path Access Lists
-7. Route Map Clauses
-8. ACLs (IPv6)
-9. ACLs (IPv4)
-10. Route Maps
-11. PB Routing ACL
-12. Tenants
-13. PB Routing
-14. IPv4 Lists
-15. IPv6 Lists
-16. Services
-17. Port ACLs
-18. Packet Broker
-19. Eth Port Profiles
-20. Packet Queues
-21. SFlow Collectors
-22. Gateways
-23. Lags
-24. Eth Port Settings
-25. Diagnostics Profiles
-26. Gateway Profiles
-27. Diagnostics Port Profiles
-28. Bundles
-29. Pods
-30. Badges
-31. Spine Planes
-32. Switchpoints
-33. Device Settings
-34. Thresholds
-35. Grouping Rules
-36. Threshold Groups
-37. Sites
-38. Device Controllers
+**Order for DATACENTER (API 6.4):**
+1. Tenants
+2. Gateways
+3. Gateway Profiles
+4. Services
+5. Eth Port Profiles
+6. Eth Port Settings
+7. Lags
+8. Bundles
 
 For delete operations, the order is automatically reversed to ensure proper dependency handling when removing resources.
 

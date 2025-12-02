@@ -146,7 +146,6 @@ type ApiLagsGetRequest struct {
 	ApiService *LAGsAPIService
 	lagName *string
 	includeData *bool
-	changesetName *string
 }
 
 func (r ApiLagsGetRequest) LagName(lagName string) ApiLagsGetRequest {
@@ -156,11 +155,6 @@ func (r ApiLagsGetRequest) LagName(lagName string) ApiLagsGetRequest {
 
 func (r ApiLagsGetRequest) IncludeData(includeData bool) ApiLagsGetRequest {
 	r.includeData = &includeData
-	return r
-}
-
-func (r ApiLagsGetRequest) ChangesetName(changesetName string) ApiLagsGetRequest {
-	r.changesetName = &changesetName
 	return r
 }
 
@@ -208,9 +202,6 @@ func (a *LAGsAPIService) LagsGetExecute(r ApiLagsGetRequest) (*http.Response, er
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
-	}
-	if r.changesetName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

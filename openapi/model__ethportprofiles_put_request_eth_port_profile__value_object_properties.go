@@ -23,12 +23,6 @@ type EthportprofilesPutRequestEthPortProfileValueObjectProperties struct {
 	Group *string `json:"group,omitempty"`
 	// Defines importance of Link Down on this port
 	PortMonitoring *string `json:"port_monitoring,omitempty"`
-	// Choose to sort by service name or by order of creation
-	SortByName *bool `json:"sort_by_name,omitempty"`
-	// Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint
-	Label *string `json:"label,omitempty"`
-	// Port Icon displayed ports provisioned with this Eth Port Profile but with no Port Icon defined in the endpoint
-	Icon *string `json:"icon,omitempty"`
 }
 
 // NewEthportprofilesPutRequestEthPortProfileValueObjectProperties instantiates a new EthportprofilesPutRequestEthPortProfileValueObjectProperties object
@@ -39,14 +33,8 @@ func NewEthportprofilesPutRequestEthPortProfileValueObjectProperties() *Ethportp
 	this := EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
 	var group string = ""
 	this.Group = &group
-	var portMonitoring string = ""
+	var portMonitoring string = "high"
 	this.PortMonitoring = &portMonitoring
-	var sortByName bool = false
-	this.SortByName = &sortByName
-	var label string = ""
-	this.Label = &label
-	var icon string = "empty"
-	this.Icon = &icon
 	return &this
 }
 
@@ -57,14 +45,8 @@ func NewEthportprofilesPutRequestEthPortProfileValueObjectPropertiesWithDefaults
 	this := EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
 	var group string = ""
 	this.Group = &group
-	var portMonitoring string = ""
+	var portMonitoring string = "high"
 	this.PortMonitoring = &portMonitoring
-	var sortByName bool = false
-	this.SortByName = &sortByName
-	var label string = ""
-	this.Label = &label
-	var icon string = "empty"
-	this.Icon = &icon
 	return &this
 }
 
@@ -132,102 +114,6 @@ func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetPortMo
 	o.PortMonitoring = &v
 }
 
-// GetSortByName returns the SortByName field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetSortByName() bool {
-	if o == nil || IsNil(o.SortByName) {
-		var ret bool
-		return ret
-	}
-	return *o.SortByName
-}
-
-// GetSortByNameOk returns a tuple with the SortByName field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetSortByNameOk() (*bool, bool) {
-	if o == nil || IsNil(o.SortByName) {
-		return nil, false
-	}
-	return o.SortByName, true
-}
-
-// HasSortByName returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasSortByName() bool {
-	if o != nil && !IsNil(o.SortByName) {
-		return true
-	}
-
-	return false
-}
-
-// SetSortByName gets a reference to the given bool and assigns it to the SortByName field.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetSortByName(v bool) {
-	o.SortByName = &v
-}
-
-// GetLabel returns the Label field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetLabel() string {
-	if o == nil || IsNil(o.Label) {
-		var ret string
-		return ret
-	}
-	return *o.Label
-}
-
-// GetLabelOk returns a tuple with the Label field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetLabelOk() (*string, bool) {
-	if o == nil || IsNil(o.Label) {
-		return nil, false
-	}
-	return o.Label, true
-}
-
-// HasLabel returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasLabel() bool {
-	if o != nil && !IsNil(o.Label) {
-		return true
-	}
-
-	return false
-}
-
-// SetLabel gets a reference to the given string and assigns it to the Label field.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetLabel(v string) {
-	o.Label = &v
-}
-
-// GetIcon returns the Icon field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetIcon() string {
-	if o == nil || IsNil(o.Icon) {
-		var ret string
-		return ret
-	}
-	return *o.Icon
-}
-
-// GetIconOk returns a tuple with the Icon field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetIconOk() (*string, bool) {
-	if o == nil || IsNil(o.Icon) {
-		return nil, false
-	}
-	return o.Icon, true
-}
-
-// HasIcon returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasIcon() bool {
-	if o != nil && !IsNil(o.Icon) {
-		return true
-	}
-
-	return false
-}
-
-// SetIcon gets a reference to the given string and assigns it to the Icon field.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetIcon(v string) {
-	o.Icon = &v
-}
-
 func (o EthportprofilesPutRequestEthPortProfileValueObjectProperties) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -243,15 +129,6 @@ func (o EthportprofilesPutRequestEthPortProfileValueObjectProperties) ToMap() (m
 	}
 	if !IsNil(o.PortMonitoring) {
 		toSerialize["port_monitoring"] = o.PortMonitoring
-	}
-	if !IsNil(o.SortByName) {
-		toSerialize["sort_by_name"] = o.SortByName
-	}
-	if !IsNil(o.Label) {
-		toSerialize["label"] = o.Label
-	}
-	if !IsNil(o.Icon) {
-		toSerialize["icon"] = o.Icon
 	}
 	return toSerialize, nil
 }

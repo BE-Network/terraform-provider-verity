@@ -36,10 +36,11 @@ type verityGatewayProfileResource struct {
 }
 
 type verityGatewayProfileResourceModel struct {
-	Name             types.String                                `tfsdk:"name"`
-	Enable           types.Bool                                  `tfsdk:"enable"`
-	ObjectProperties []verityGatewayProfileObjectPropertiesModel `tfsdk:"object_properties"`
-	ExternalGateways []verityGatewayProfileExternalGatewaysModel `tfsdk:"external_gateways"`
+	Name               types.String                                `tfsdk:"name"`
+	Enable             types.Bool                                  `tfsdk:"enable"`
+	TenantSliceManaged types.Bool                                  `tfsdk:"tenant_slice_managed"`
+	ObjectProperties   []verityGatewayProfileObjectPropertiesModel `tfsdk:"object_properties"`
+	ExternalGateways   []verityGatewayProfileExternalGatewaysModel `tfsdk:"external_gateways"`
 }
 
 type verityGatewayProfileObjectPropertiesModel struct {
@@ -96,6 +97,10 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 			},
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
+				Optional:    true,
+			},
+			"tenant_slice_managed": schema.BoolAttribute{
+				Description: "Profiles that Tenant Slice creates and manages",
 				Optional:    true,
 			},
 		},
@@ -170,12 +175,13 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &profileProps.Enable, TFValue: plan.Enable},
+		{FieldName: "TenantSliceManaged", APIField: &profileProps.TenantSliceManaged, TFValue: plan.TenantSliceManaged},
 	})
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 		})
@@ -317,7 +323,8 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 
 	// Map boolean fields
 	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
+		"enable":               &state.Enable,
+		"tenant_slice_managed": &state.TenantSliceManaged,
 	}
 
 	for apiKey, stateField := range boolFieldMappings {
@@ -385,10 +392,11 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { profileProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.TenantSliceManaged, state.TenantSliceManaged, func(v *bool) { profileProps.TenantSliceManaged = v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
+		objProps := openapi.EthportsettingsPutRequestEthPortSettingsValueObjectProperties{}
 		op := plan.ObjectProperties[0]
 		st := state.ObjectProperties[0]
 		objPropsChanged := false

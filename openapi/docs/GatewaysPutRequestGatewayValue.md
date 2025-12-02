@@ -18,29 +18,27 @@ Name | Type | Description | Notes
 **EbgpMultihop** | Pointer to **NullableInt32** | Allows external BGP neighbors to establish peering session multiple network hops away.  | [optional] [default to 255]
 **EgressVlan** | Pointer to **NullableInt32** | VLAN used to carry BGP TCP session | [optional] 
 **SourceIpAddress** | Pointer to **string** | Source IP address used to override the default source address calculation for BGP TCP session | [optional] [default to ""]
-**AnycastIpMask** | Pointer to **string** | The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router. | [optional] [default to ""]
-**Md5Password** | Pointer to **string** | MD5 Password used in the BGP session | [optional] [default to ""]
-**ImportRouteMap** | Pointer to **string** | A Route Map applied to routes imported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
+**AnycastIpMask** | Pointer to **string** | The Anycast Address will be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router. | [optional] [default to ""]
+**Md5Password** | Pointer to **string** | MD5 password | [optional] [default to ""]
+**ImportRouteMap** | Pointer to **string** | A route-map applied to routes imported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ImportRouteMapRefType** | Pointer to **string** | Object type for import_route_map field | [optional] 
 **ExportRouteMap** | Pointer to **string** | A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ExportRouteMapRefType** | Pointer to **string** | Object type for export_route_map field | [optional] 
-**GatewayMode** | Pointer to **string** | Gateway Mode is the method used for defining routes for the Tenant | [optional] [default to "Static BGP"]
-**LocalAsNumber** | Pointer to **NullableInt32** | Local AS Number to use as an override to switch AS number | [optional] 
+**GatewayMode** | Pointer to **string** | Gateway Mode. Can be BGP, Static, or Default | [optional] [default to "Static BGP"]
+**LocalAsNumber** | Pointer to **NullableInt32** | Local AS Number | [optional] 
 **LocalAsNoPrepend** | Pointer to **bool** | Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set. | [optional] [default to false]
 **ReplaceAs** | Pointer to **bool** | Prepend only Local AS in updates to EBGP peers. | [optional] [default to false]
 **MaxLocalAsOccurrences** | Pointer to **NullableInt32** | Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or &#39;0&#39; to disable. | [optional] [default to 0]
 **DynamicBgpSubnet** | Pointer to **string** | Dynamic BGP Subnet | [optional] [default to ""]
 **DynamicBgpLimits** | Pointer to **NullableInt32** | Dynamic BGP Limits | [optional] [default to 0]
-**HelperHopIpAddress** | Pointer to **string** | Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection | [optional] [default to ""]
+**HelperHopIpAddress** | Pointer to **string** | Helper Hop IP Address | [optional] [default to ""]
 **EnableBfd** | Pointer to **bool** | Enable BFD(Bi-Directional Forwarding) | [optional] [default to false]
 **BfdReceiveInterval** | Pointer to **NullableInt32** | Configure the minimum interval during which the system can receive BFD control packets | [optional] [default to 300]
 **BfdTransmissionInterval** | Pointer to **NullableInt32** | Configure the minimum transmission interval during which the system can send BFD control packets | [optional] [default to 300]
 **BfdDetectMultiplier** | Pointer to **NullableInt32** | Configure the detection multiplier to determine packet loss | [optional] [default to 3]
 **NextHopSelf** | Pointer to **bool** | Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself. | [optional] [default to false]
 **StaticRoutes** | Pointer to [**[]GatewaysPutRequestGatewayValueStaticRoutesInner**](GatewaysPutRequestGatewayValueStaticRoutesInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
-**SwitchEncryptedMd5Password** | Pointer to **bool** | Indicates the entered password is a switch encrypted password. | [optional] [default to false]
-**Md5PasswordEncrypted** | Pointer to **string** | MD5 Password Encrypted used in the BGP session | [optional] [default to ""]
+**ObjectProperties** | Pointer to [**EthportsettingsPutRequestEthPortSettingsValueObjectProperties**](EthportsettingsPutRequestEthPortSettingsValueObjectProperties.md) |  | [optional] 
 **DefaultOriginate** | Pointer to **bool** | Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor. | [optional] [default to false]
 **BfdMultihop** | Pointer to **bool** | Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers. | [optional] [default to false]
 
@@ -1045,20 +1043,20 @@ HasStaticRoutes returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
+`func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() EthportsettingsPutRequestEthPortSettingsValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*EthportsettingsPutRequestEthPortSettingsValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
+`func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v EthportsettingsPutRequestEthPortSettingsValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 
@@ -1067,56 +1065,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *GatewaysPutRequestGatewayValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetSwitchEncryptedMd5Password
-
-`func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5Password() bool`
-
-GetSwitchEncryptedMd5Password returns the SwitchEncryptedMd5Password field if non-nil, zero value otherwise.
-
-### GetSwitchEncryptedMd5PasswordOk
-
-`func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5PasswordOk() (*bool, bool)`
-
-GetSwitchEncryptedMd5PasswordOk returns a tuple with the SwitchEncryptedMd5Password field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSwitchEncryptedMd5Password
-
-`func (o *GatewaysPutRequestGatewayValue) SetSwitchEncryptedMd5Password(v bool)`
-
-SetSwitchEncryptedMd5Password sets SwitchEncryptedMd5Password field to given value.
-
-### HasSwitchEncryptedMd5Password
-
-`func (o *GatewaysPutRequestGatewayValue) HasSwitchEncryptedMd5Password() bool`
-
-HasSwitchEncryptedMd5Password returns a boolean if a field has been set.
-
-### GetMd5PasswordEncrypted
-
-`func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncrypted() string`
-
-GetMd5PasswordEncrypted returns the Md5PasswordEncrypted field if non-nil, zero value otherwise.
-
-### GetMd5PasswordEncryptedOk
-
-`func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncryptedOk() (*string, bool)`
-
-GetMd5PasswordEncryptedOk returns a tuple with the Md5PasswordEncrypted field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMd5PasswordEncrypted
-
-`func (o *GatewaysPutRequestGatewayValue) SetMd5PasswordEncrypted(v string)`
-
-SetMd5PasswordEncrypted sets Md5PasswordEncrypted field to given value.
-
-### HasMd5PasswordEncrypted
-
-`func (o *GatewaysPutRequestGatewayValue) HasMd5PasswordEncrypted() bool`
-
-HasMd5PasswordEncrypted returns a boolean if a field has been set.
 
 ### GetDefaultOriginate
 

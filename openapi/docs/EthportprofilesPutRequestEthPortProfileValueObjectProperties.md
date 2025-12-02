@@ -5,10 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Group** | Pointer to **string** | Group | [optional] [default to ""]
-**PortMonitoring** | Pointer to **string** | Defines importance of Link Down on this port | [optional] [default to ""]
-**SortByName** | Pointer to **bool** | Choose to sort by service name or by order of creation | [optional] [default to false]
-**Label** | Pointer to **string** | Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint | [optional] [default to ""]
-**Icon** | Pointer to **string** | Port Icon displayed ports provisioned with this Eth Port Profile but with no Port Icon defined in the endpoint | [optional] [default to "empty"]
+**PortMonitoring** | Pointer to **string** | Defines importance of Link Down on this port | [optional] [default to "high"]
 
 ## Methods
 
@@ -78,81 +75,6 @@ SetPortMonitoring sets PortMonitoring field to given value.
 `func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasPortMonitoring() bool`
 
 HasPortMonitoring returns a boolean if a field has been set.
-
-### GetSortByName
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetSortByName() bool`
-
-GetSortByName returns the SortByName field if non-nil, zero value otherwise.
-
-### GetSortByNameOk
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetSortByNameOk() (*bool, bool)`
-
-GetSortByNameOk returns a tuple with the SortByName field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSortByName
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetSortByName(v bool)`
-
-SetSortByName sets SortByName field to given value.
-
-### HasSortByName
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasSortByName() bool`
-
-HasSortByName returns a boolean if a field has been set.
-
-### GetLabel
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetLabel() string`
-
-GetLabel returns the Label field if non-nil, zero value otherwise.
-
-### GetLabelOk
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetLabelOk() (*string, bool)`
-
-GetLabelOk returns a tuple with the Label field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetLabel
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetLabel(v string)`
-
-SetLabel sets Label field to given value.
-
-### HasLabel
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasLabel() bool`
-
-HasLabel returns a boolean if a field has been set.
-
-### GetIcon
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetIcon() string`
-
-GetIcon returns the Icon field if non-nil, zero value otherwise.
-
-### GetIconOk
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetIconOk() (*string, bool)`
-
-GetIconOk returns a tuple with the Icon field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetIcon
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetIcon(v string)`
-
-SetIcon sets Icon field to given value.
-
-### HasIcon
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasIcon() bool`
-
-HasIcon returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

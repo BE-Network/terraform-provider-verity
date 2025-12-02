@@ -7,25 +7,26 @@
 ```hcl
 resource "verity_tenant" "example" {
   name = "example"
-  dhcp_relay_source_ipv4s_subnet = ""
-  dhcp_relay_source_ipv6s_subnet = ""
-  route_distinguisher = ""
-  import_route_map = ""
-  vrf_name = "Vrf_9"
-  layer_3_vni = 102009
-  route_target_import = ""
-  layer_3_vni_auto_assigned_ = true
   enable = true
+  layer_3_vni = null
+  layer_3_vni_auto_assigned_ = false
+  layer_3_vlan = null
+  layer_3_vlan_auto_assigned_ = false
+  dhcp_relay_source_ips_subnet = ""
+  route_distinguisher = ""
+  route_target_import = ""
   route_target_export = ""
-  layer_3_vlan_auto_assigned_ = true
-  vrf_name_auto_assigned_ = true
-  layer_3_vlan = 2009
+  import_route_map = ""
+  import_route_map_ref_type_ = ""
   export_route_map = ""
+  export_route_map_ref_type_ = ""
+  vrf_name = "(auto)"
+  vrf_name_auto_assigned_ = false
   default_originate = false
 
   route_tenants {
     index = 1
-    enable = true
+    enable = false
     tenant = ""
   }
 
@@ -37,30 +38,29 @@ resource "verity_tenant" "example" {
 
 ## Argument Reference
 
-* `name` (String) - Unique identifier for the tenant
-* `enable` (Boolean) - Enable this tenant. Default is `false`
-* `layer_3_vni` (Integer) - Layer 3 VNI value
-* `layer_3_vni_auto_assigned_` (Boolean) - Whether Layer 3 VNI is auto-assigned
-* `layer_3_vlan` (Integer) - Layer 3 VLAN ID
-* `layer_3_vlan_auto_assigned_` (Boolean) - Whether Layer 3 VLAN ID is auto-assigned
-* `dhcp_relay_source_ipv4s_subnet` (String) - Range of IPv4 addresses used for DHCP relay source IPs
-* `dhcp_relay_source_ipv6s_subnet` (String) - Range of IPv6 addresses used for DHCP relay source IPs
-* `route_distinguisher` (String) - Route distinguisher for BGP
-* `route_target_import` (String) - Route target import value for BGP
-* `route_target_export` (String) - Route target export value for BGP
-* `import_route_map` (String) - Import route map
-* `import_route_map_ref_type_` (String) - Object type for import route map
-* `export_route_map` (String) - Export route map
-* `export_route_map_ref_type_` (String) - Object type for export route map
-* `vrf_name` (String) - VRF name
-* `vrf_name_auto_assigned_` (Boolean) - Whether VRF name is auto-assigned
-* `route_tenants` (Array) - List of route tenant blocks
-  * `enable` (Boolean) - Enable this route tenant
-  * `tenant` (String) - Reference to another tenant
-  * `index` (Integer) - Index value for ordering
-* `object_properties` (Object) - Object properties block
-  * `group` (String) - Group name
-* `default_originate` (Boolean) - Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+* `layer_3_vni` (Integer) - VNI value used to transport traffic between services of a Tenant.
+* `layer_3_vni_auto_assigned_` (Boolean) - Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit.
+* `layer_3_vlan` (Integer) - VLAN value used to transport traffic between services of a Tenant.
+* `layer_3_vlan_auto_assigned_` (Boolean) - Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit.
+* `dhcp_relay_source_ips_subnet` (String) - Range of IP addresses (represented in IP subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
+* `route_distinguisher` (String) - Route Distinguishers are used to maintain uniqueness among identical routes from different routers. If set, then routes from this Tenant will be identified with this Route Distinguisher (BGP Community). It should be two numbers separated by a colon.
+* `route_target_import` (String) - A route-target (BGP Community) to attach while importing routes into the current tenant. It should be a comma-separated list of BGP Communities: each Community being two numbers separated by a colon.
+* `route_target_export` (String) - A route-target (BGP Community) to attach while exporting routes from the current tenant. It should be a comma-separated list of BGP Communities: each Community being two numbers separated by a colon.
+* `import_route_map` (String) - A route-map applied to routes imported into the current tenant from other tenants with the purpose of filtering or modifying the routes.
+* `import_route_map_ref_type_` (String) - Object type for import_route_map field.
+* `export_route_map` (String) - A route-map applied to routes exported into the current tenant from other tenants with the purpose of filtering or modifying the routes.
+* `export_route_map_ref_type_` (String) - Object type for export_route_map field.
+* `vrf_name` (String) - Virtual Routing and Forwarding instance name associated to tenants.
+* `vrf_name_auto_assigned_` (Boolean) - Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit.
+* `route_tenants` (Array) - 
+  * `enable` (Boolean) - Enable.
+  * `tenant` (String) - Tenant.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `object_properties` (Object) - 
+  * `group` (String) - Group.
+* `default_originate` (Boolean) - Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.
 
 ## Import
 

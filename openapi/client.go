@@ -48,93 +48,27 @@ type APIClient struct {
 
 	// API Services
 
-	ACLsAPI *ACLsAPIService
-
-	ASPathAccessListsAPI *ASPathAccessListsAPIService
-
-	AuthenticatedEthPortsAPI *AuthenticatedEthPortsAPIService
-
 	AuthorizationAPI *AuthorizationAPIService
 
-	BadgesAPI *BadgesAPIService
-
 	BundlesAPI *BundlesAPIService
-
-	CommunityListsAPI *CommunityListsAPIService
-
-	DeviceControllersAPI *DeviceControllersAPIService
-
-	DeviceSettingsAPI *DeviceSettingsAPIService
-
-	DeviceVoiceSettingsAPI *DeviceVoiceSettingsAPIService
-
-	DiagnosticsPortProfilesAPI *DiagnosticsPortProfilesAPIService
-
-	DiagnosticsProfilesAPI *DiagnosticsProfilesAPIService
 
 	EthPortProfilesAPI *EthPortProfilesAPIService
 
 	EthPortSettingsAPI *EthPortSettingsAPIService
 
-	ExtendedCommunityListsAPI *ExtendedCommunityListsAPIService
-
 	GatewayProfilesAPI *GatewayProfilesAPIService
 
 	GatewaysAPI *GatewaysAPIService
 
-	GroupingRulesAPI *GroupingRulesAPIService
-
-	IPv4ListFiltersAPI *IPv4ListFiltersAPIService
-
-	IPv4PrefixListsAPI *IPv4PrefixListsAPIService
-
-	IPv6ListFiltersAPI *IPv6ListFiltersAPIService
-
-	IPv6PrefixListsAPI *IPv6PrefixListsAPIService
-
-	ImageUpdateSetsAPI *ImageUpdateSetsAPIService
-
 	LAGsAPI *LAGsAPIService
 
-	PBRoutingAPI *PBRoutingAPIService
-
-	PBRoutingACLAPI *PBRoutingACLAPIService
-
-	PacketBrokerAPI *PacketBrokerAPIService
-
-	PacketQueuesAPI *PacketQueuesAPIService
-
-	PodsAPI *PodsAPIService
-
-	PortACLsAPI *PortACLsAPIService
-
-	RouteMapClausesAPI *RouteMapClausesAPIService
-
-	RouteMapsAPI *RouteMapsAPIService
-
-	SFPBreakoutsAPI *SFPBreakoutsAPIService
-
-	SFlowCollectorsAPI *SFlowCollectorsAPIService
-
-	ServicePortProfilesAPI *ServicePortProfilesAPIService
-
 	ServicesAPI *ServicesAPIService
-
-	SitesAPI *SitesAPIService
-
-	SpinePlanesAPI *SpinePlanesAPIService
 
 	SwitchpointsAPI *SwitchpointsAPIService
 
 	TenantsAPI *TenantsAPIService
 
-	ThresholdGroupsAPI *ThresholdGroupsAPIService
-
-	ThresholdsAPI *ThresholdsAPIService
-
 	VersionAPI *VersionAPIService
-
-	VoicePortProfilesAPI *VoicePortProfilesAPIService
 }
 
 type service struct {
@@ -153,50 +87,17 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.common.client = c
 
 	// API Services
-	c.ACLsAPI = (*ACLsAPIService)(&c.common)
-	c.ASPathAccessListsAPI = (*ASPathAccessListsAPIService)(&c.common)
-	c.AuthenticatedEthPortsAPI = (*AuthenticatedEthPortsAPIService)(&c.common)
 	c.AuthorizationAPI = (*AuthorizationAPIService)(&c.common)
-	c.BadgesAPI = (*BadgesAPIService)(&c.common)
 	c.BundlesAPI = (*BundlesAPIService)(&c.common)
-	c.CommunityListsAPI = (*CommunityListsAPIService)(&c.common)
-	c.DeviceControllersAPI = (*DeviceControllersAPIService)(&c.common)
-	c.DeviceSettingsAPI = (*DeviceSettingsAPIService)(&c.common)
-	c.DeviceVoiceSettingsAPI = (*DeviceVoiceSettingsAPIService)(&c.common)
-	c.DiagnosticsPortProfilesAPI = (*DiagnosticsPortProfilesAPIService)(&c.common)
-	c.DiagnosticsProfilesAPI = (*DiagnosticsProfilesAPIService)(&c.common)
 	c.EthPortProfilesAPI = (*EthPortProfilesAPIService)(&c.common)
 	c.EthPortSettingsAPI = (*EthPortSettingsAPIService)(&c.common)
-	c.ExtendedCommunityListsAPI = (*ExtendedCommunityListsAPIService)(&c.common)
 	c.GatewayProfilesAPI = (*GatewayProfilesAPIService)(&c.common)
 	c.GatewaysAPI = (*GatewaysAPIService)(&c.common)
-	c.GroupingRulesAPI = (*GroupingRulesAPIService)(&c.common)
-	c.IPv4ListFiltersAPI = (*IPv4ListFiltersAPIService)(&c.common)
-	c.IPv4PrefixListsAPI = (*IPv4PrefixListsAPIService)(&c.common)
-	c.IPv6ListFiltersAPI = (*IPv6ListFiltersAPIService)(&c.common)
-	c.IPv6PrefixListsAPI = (*IPv6PrefixListsAPIService)(&c.common)
-	c.ImageUpdateSetsAPI = (*ImageUpdateSetsAPIService)(&c.common)
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)
-	c.PBRoutingAPI = (*PBRoutingAPIService)(&c.common)
-	c.PBRoutingACLAPI = (*PBRoutingACLAPIService)(&c.common)
-	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
-	c.PacketQueuesAPI = (*PacketQueuesAPIService)(&c.common)
-	c.PodsAPI = (*PodsAPIService)(&c.common)
-	c.PortACLsAPI = (*PortACLsAPIService)(&c.common)
-	c.RouteMapClausesAPI = (*RouteMapClausesAPIService)(&c.common)
-	c.RouteMapsAPI = (*RouteMapsAPIService)(&c.common)
-	c.SFPBreakoutsAPI = (*SFPBreakoutsAPIService)(&c.common)
-	c.SFlowCollectorsAPI = (*SFlowCollectorsAPIService)(&c.common)
-	c.ServicePortProfilesAPI = (*ServicePortProfilesAPIService)(&c.common)
 	c.ServicesAPI = (*ServicesAPIService)(&c.common)
-	c.SitesAPI = (*SitesAPIService)(&c.common)
-	c.SpinePlanesAPI = (*SpinePlanesAPIService)(&c.common)
 	c.SwitchpointsAPI = (*SwitchpointsAPIService)(&c.common)
 	c.TenantsAPI = (*TenantsAPIService)(&c.common)
-	c.ThresholdGroupsAPI = (*ThresholdGroupsAPIService)(&c.common)
-	c.ThresholdsAPI = (*ThresholdsAPIService)(&c.common)
 	c.VersionAPI = (*VersionAPIService)(&c.common)
-	c.VoicePortProfilesAPI = (*VoicePortProfilesAPIService)(&c.common)
 
 	return c
 }

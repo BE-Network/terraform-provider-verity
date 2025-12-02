@@ -36,53 +36,32 @@ type verityBundleResource struct {
 }
 
 type verityBundleResourceModel struct {
-	Name                       types.String                        `tfsdk:"name"`
-	Enable                     types.Bool                          `tfsdk:"enable"`
-	DeviceSettings             types.String                        `tfsdk:"device_settings"`
-	DeviceSettingsRefType      types.String                        `tfsdk:"device_settings_ref_type_"`
-	CliCommands                types.String                        `tfsdk:"cli_commands"`
-	Protocol                   types.String                        `tfsdk:"protocol"`
-	DiagnosticsProfile         types.String                        `tfsdk:"diagnostics_profile"`
-	DiagnosticsProfileRefType  types.String                        `tfsdk:"diagnostics_profile_ref_type_"`
-	DeviceVoiceSettings        types.String                        `tfsdk:"device_voice_settings"`
-	DeviceVoiceSettingsRefType types.String                        `tfsdk:"device_voice_settings_ref_type_"`
-	ObjectProperties           []verityBundleObjectPropertiesModel `tfsdk:"object_properties"`
-	EthPortPaths               []ethPortPathsModel                 `tfsdk:"eth_port_paths"`
-	UserServices               []userServicesModel                 `tfsdk:"user_services"`
-	VoicePortProfilePaths      []voicePortProfilePathsModel        `tfsdk:"voice_port_profile_paths"`
+	Name                  types.String                        `tfsdk:"name"`
+	DeviceSettings        types.String                        `tfsdk:"device_settings"`
+	DeviceSettingsRefType types.String                        `tfsdk:"device_settings_ref_type_"`
+	CliCommands           types.String                        `tfsdk:"cli_commands"`
+	ObjectProperties      []verityBundleObjectPropertiesModel `tfsdk:"object_properties"`
+	EthPortPaths          []ethPortPathsModel                 `tfsdk:"eth_port_paths"`
+	UserServices          []userServicesModel                 `tfsdk:"user_services"`
 }
 
 type verityBundleObjectPropertiesModel struct {
-	IsForSwitch types.Bool   `tfsdk:"is_for_switch"`
-	Group       types.String `tfsdk:"group"`
-	IsPublic    types.Bool   `tfsdk:"is_public"`
+	IsForSwitch types.Bool `tfsdk:"is_for_switch"`
 }
 
 type ethPortPathsModel struct {
-	EthPortNumEthPortProfile                               types.String `tfsdk:"eth_port_num_eth_port_profile"`
-	EthPortNumEthPortProfileRefType                        types.String `tfsdk:"eth_port_num_eth_port_profile_ref_type_"`
-	EthPortNumEthPortSettings                              types.String `tfsdk:"eth_port_num_eth_port_settings"`
-	EthPortNumEthPortSettingsRefType                       types.String `tfsdk:"eth_port_num_eth_port_settings_ref_type_"`
-	EthPortNumGatewayProfile                               types.String `tfsdk:"eth_port_num_gateway_profile"`
-	EthPortNumGatewayProfileRefType                        types.String `tfsdk:"eth_port_num_gateway_profile_ref_type_"`
-	DiagnosticsPortProfileNumDiagnosticsPortProfile        types.String `tfsdk:"diagnostics_port_profile_num_diagnostics_port_profile"`
-	DiagnosticsPortProfileNumDiagnosticsPortProfileRefType types.String `tfsdk:"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_"`
-	PortName                                               types.String `tfsdk:"port_name"`
-	Index                                                  types.Int64  `tfsdk:"index"`
+	EthPortNumEthPortProfile         types.String `tfsdk:"eth_port_num_eth_port_profile"`
+	EthPortNumEthPortProfileRefType  types.String `tfsdk:"eth_port_num_eth_port_profile_ref_type_"`
+	EthPortNumEthPortSettings        types.String `tfsdk:"eth_port_num_eth_port_settings"`
+	EthPortNumEthPortSettingsRefType types.String `tfsdk:"eth_port_num_eth_port_settings_ref_type_"`
+	EthPortNumGatewayProfile         types.String `tfsdk:"eth_port_num_gateway_profile"`
+	EthPortNumGatewayProfileRefType  types.String `tfsdk:"eth_port_num_gateway_profile_ref_type_"`
+	PortName                         types.String `tfsdk:"port_name"`
+	Index                            types.Int64  `tfsdk:"index"`
 }
 
 func (epp ethPortPathsModel) GetIndex() types.Int64 {
 	return epp.Index
-}
-
-type voicePortProfilePathsModel struct {
-	VoicePortNumVoicePortProfiles        types.String `tfsdk:"voice_port_num_voice_port_profiles"`
-	VoicePortNumVoicePortProfilesRefType types.String `tfsdk:"voice_port_num_voice_port_profiles_ref_type_"`
-	Index                                types.Int64  `tfsdk:"index"`
-}
-
-func (vppp voicePortProfilePathsModel) GetIndex() types.Int64 {
-	return vppp.Index
 }
 
 type userServicesModel struct {
@@ -133,10 +112,6 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"enable": schema.BoolAttribute{
-				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
-				Optional:    true,
-			},
 			"device_settings": schema.StringAttribute{
 				Description: "Device Settings for device",
 				Optional:    true,
@@ -149,26 +124,6 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 				Description: "CLI Commands",
 				Optional:    true,
 			},
-			"protocol": schema.StringAttribute{
-				Description: "Voice Protocol: MGCP or SIP",
-				Optional:    true,
-			},
-			"diagnostics_profile": schema.StringAttribute{
-				Description: "Diagnostics Profile for device",
-				Optional:    true,
-			},
-			"diagnostics_profile_ref_type_": schema.StringAttribute{
-				Description: "Object type for diagnostics_profile field",
-				Optional:    true,
-			},
-			"device_voice_settings": schema.StringAttribute{
-				Description: "Device Voice Settings for device",
-				Optional:    true,
-			},
-			"device_voice_settings_ref_type_": schema.StringAttribute{
-				Description: "Object type for device_voice_settings field",
-				Optional:    true,
-			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
@@ -177,14 +132,6 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 					Attributes: map[string]schema.Attribute{
 						"is_for_switch": schema.BoolAttribute{
 							Description: "Denotes a Switch Bundle",
-							Optional:    true,
-						},
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-						},
-						"is_public": schema.BoolAttribute{
-							Description: "Denotes a shared Switch Bundle",
 							Optional:    true,
 						},
 					},
@@ -216,14 +163,6 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 						},
 						"eth_port_num_gateway_profile_ref_type_": schema.StringAttribute{
 							Description: "Object type for eth_port_num_gateway_profile field",
-							Optional:    true,
-						},
-						"diagnostics_port_profile_num_diagnostics_port_profile": schema.StringAttribute{
-							Description: "Diagnostics Port Profile for port",
-							Optional:    true,
-						},
-						"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": schema.StringAttribute{
-							Description: "Object type for diagnostics_port_profile_num_diagnostics_port_profile field",
 							Optional:    true,
 						},
 						"port_name": schema.StringAttribute{
@@ -268,152 +207,15 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 					},
 				},
 			},
-			"voice_port_profile_paths": schema.ListNestedBlock{
-				Description: "List of voice port profile configurations",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"voice_port_num_voice_port_profiles": schema.StringAttribute{
-							Description: "Voice Port Profile for Voice Port",
-							Optional:    true,
-						},
-						"voice_port_num_voice_port_profiles_ref_type_": schema.StringAttribute{
-							Description: "Object type for voice_port_num_voice_port_profiles field",
-							Optional:    true,
-						},
-						"index": schema.Int64Attribute{
-							Description: "The index identifying the object. Zero if you want to add an object to the list.",
-							Optional:    true,
-						},
-					},
-				},
-			},
 		},
 	}
 }
 
 func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan verityBundleResourceModel
-	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %s", err),
-		)
-		return
-	}
-
-	name := plan.Name.ValueString()
-	bundleProps := &openapi.BundlesPutRequestEndpointBundleValue{
-		Name: openapi.PtrString(name),
-	}
-
-	// Handle string fields
-	utils.SetStringFields([]utils.StringFieldMapping{
-		{FieldName: "DeviceSettings", APIField: &bundleProps.DeviceSettings, TFValue: plan.DeviceSettings},
-		{FieldName: "DeviceSettingsRefType", APIField: &bundleProps.DeviceSettingsRefType, TFValue: plan.DeviceSettingsRefType},
-		{FieldName: "CliCommands", APIField: &bundleProps.CliCommands, TFValue: plan.CliCommands},
-		{FieldName: "Protocol", APIField: &bundleProps.Protocol, TFValue: plan.Protocol},
-		{FieldName: "DiagnosticsProfile", APIField: &bundleProps.DiagnosticsProfile, TFValue: plan.DiagnosticsProfile},
-		{FieldName: "DiagnosticsProfileRefType", APIField: &bundleProps.DiagnosticsProfileRefType, TFValue: plan.DiagnosticsProfileRefType},
-		{FieldName: "DeviceVoiceSettings", APIField: &bundleProps.DeviceVoiceSettings, TFValue: plan.DeviceVoiceSettings},
-		{FieldName: "DeviceVoiceSettingsRefType", APIField: &bundleProps.DeviceVoiceSettingsRefType, TFValue: plan.DeviceVoiceSettingsRefType},
-	})
-
-	// Handle boolean fields
-	utils.SetBoolFields([]utils.BoolFieldMapping{
-		{FieldName: "Enable", APIField: &bundleProps.Enable, TFValue: plan.Enable},
-	})
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "IsForSwitch", TFValue: op.IsForSwitch, APIValue: &objProps.IsForSwitch},
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-			{Name: "IsPublic", TFValue: op.IsPublic, APIValue: &objProps.IsPublic},
-		})
-		bundleProps.ObjectProperties = &objProps
-	}
-
-	// Handle eth port paths
-	if len(plan.EthPortPaths) > 0 {
-		ethPortPaths := make([]openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner, len(plan.EthPortPaths))
-		for i, item := range plan.EthPortPaths {
-			pathItem := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
-			utils.SetStringFields([]utils.StringFieldMapping{
-				{FieldName: "EthPortNumEthPortProfile", APIField: &pathItem.EthPortNumEthPortProfile, TFValue: item.EthPortNumEthPortProfile},
-				{FieldName: "EthPortNumEthPortProfileRefType", APIField: &pathItem.EthPortNumEthPortProfileRefType, TFValue: item.EthPortNumEthPortProfileRefType},
-				{FieldName: "EthPortNumEthPortSettings", APIField: &pathItem.EthPortNumEthPortSettings, TFValue: item.EthPortNumEthPortSettings},
-				{FieldName: "EthPortNumEthPortSettingsRefType", APIField: &pathItem.EthPortNumEthPortSettingsRefType, TFValue: item.EthPortNumEthPortSettingsRefType},
-				{FieldName: "EthPortNumGatewayProfile", APIField: &pathItem.EthPortNumGatewayProfile, TFValue: item.EthPortNumGatewayProfile},
-				{FieldName: "EthPortNumGatewayProfileRefType", APIField: &pathItem.EthPortNumGatewayProfileRefType, TFValue: item.EthPortNumGatewayProfileRefType},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfile", APIField: &pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, TFValue: item.DiagnosticsPortProfileNumDiagnosticsPortProfile},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfileRefType", APIField: &pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, TFValue: item.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType},
-				{FieldName: "PortName", APIField: &pathItem.PortName, TFValue: item.PortName},
-			})
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &pathItem.Index, TFValue: item.Index},
-			})
-			ethPortPaths[i] = pathItem
-		}
-		bundleProps.EthPortPaths = ethPortPaths
-	}
-
-	// Handle user services
-	if len(plan.UserServices) > 0 {
-		userServices := make([]openapi.BundlesPutRequestEndpointBundleValueUserServicesInner, len(plan.UserServices))
-		for i, item := range plan.UserServices {
-			serviceItem := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
-			utils.SetBoolFields([]utils.BoolFieldMapping{
-				{FieldName: "RowAppEnable", APIField: &serviceItem.RowAppEnable, TFValue: item.RowAppEnable},
-			})
-			utils.SetStringFields([]utils.StringFieldMapping{
-				{FieldName: "RowAppConnectedService", APIField: &serviceItem.RowAppConnectedService, TFValue: item.RowAppConnectedService},
-				{FieldName: "RowAppConnectedServiceRefType", APIField: &serviceItem.RowAppConnectedServiceRefType, TFValue: item.RowAppConnectedServiceRefType},
-				{FieldName: "RowAppCliCommands", APIField: &serviceItem.RowAppCliCommands, TFValue: item.RowAppCliCommands},
-				{FieldName: "RowIpMask", APIField: &serviceItem.RowIpMask, TFValue: item.RowIpMask},
-			})
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: item.Index},
-			})
-			userServices[i] = serviceItem
-		}
-		bundleProps.UserServices = userServices
-	}
-
-	// Handle voice port profile paths
-	if len(plan.VoicePortProfilePaths) > 0 {
-		voicePortProfilePaths := make([]openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner, len(plan.VoicePortProfilePaths))
-		for i, item := range plan.VoicePortProfilePaths {
-			pathItem := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
-			utils.SetStringFields([]utils.StringFieldMapping{
-				{FieldName: "VoicePortNumVoicePortProfiles", APIField: &pathItem.VoicePortNumVoicePortProfiles, TFValue: item.VoicePortNumVoicePortProfiles},
-				{FieldName: "VoicePortNumVoicePortProfilesRefType", APIField: &pathItem.VoicePortNumVoicePortProfilesRefType, TFValue: item.VoicePortNumVoicePortProfilesRefType},
-			})
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &pathItem.Index, TFValue: item.Index},
-			})
-			voicePortProfilePaths[i] = pathItem
-		}
-		bundleProps.VoicePortProfilePaths = voicePortProfilePaths
-	}
-
-	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "bundle", name, *bundleProps, &resp.Diagnostics)
-	if !success {
-		return
-	}
-
-	tflog.Info(ctx, fmt.Sprintf("Bundle %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "bundles")
-
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	resp.Diagnostics.AddError(
+		"Create Not Supported",
+		"Bundle resources cannot be created. They represent existing bundle configurations that can only be read and updated.",
+	)
 }
 
 func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -510,8 +312,6 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 		state.ObjectProperties = []verityBundleObjectPropertiesModel{
 			{
 				IsForSwitch: utils.MapBoolFromAPI(objProps["is_for_switch"]),
-				Group:       utils.MapStringFromAPI(objProps["group"]),
-				IsPublic:    utils.MapBoolFromAPI(objProps["is_public"]),
 			},
 		}
 	} else {
@@ -520,27 +320,13 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 
 	// Map string fields
 	stringFieldMappings := map[string]*types.String{
-		"device_settings":                 &state.DeviceSettings,
-		"device_settings_ref_type_":       &state.DeviceSettingsRefType,
-		"cli_commands":                    &state.CliCommands,
-		"protocol":                        &state.Protocol,
-		"diagnostics_profile":             &state.DiagnosticsProfile,
-		"diagnostics_profile_ref_type_":   &state.DiagnosticsProfileRefType,
-		"device_voice_settings":           &state.DeviceVoiceSettings,
-		"device_voice_settings_ref_type_": &state.DeviceVoiceSettingsRefType,
+		"device_settings":           &state.DeviceSettings,
+		"device_settings_ref_type_": &state.DeviceSettingsRefType,
+		"cli_commands":              &state.CliCommands,
 	}
 
 	for apiKey, stateField := range stringFieldMappings {
 		*stateField = utils.MapStringFromAPI(bundleMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(bundleMap[apiKey])
 	}
 
 	// Handle eth port paths
@@ -553,16 +339,14 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 			}
 
 			ethPortPath := ethPortPathsModel{
-				EthPortNumEthPortProfile:                               utils.MapStringFromAPI(path["eth_port_num_eth_port_profile"]),
-				EthPortNumEthPortSettings:                              utils.MapStringFromAPI(path["eth_port_num_eth_port_settings"]),
-				EthPortNumEthPortSettingsRefType:                       utils.MapStringFromAPI(path["eth_port_num_eth_port_settings_ref_type_"]),
-				EthPortNumEthPortProfileRefType:                        utils.MapStringFromAPI(path["eth_port_num_eth_port_profile_ref_type_"]),
-				DiagnosticsPortProfileNumDiagnosticsPortProfile:        utils.MapStringFromAPI(path["diagnostics_port_profile_num_diagnostics_port_profile"]),
-				DiagnosticsPortProfileNumDiagnosticsPortProfileRefType: utils.MapStringFromAPI(path["diagnostics_port_profile_num_diagnostics_port_profile_ref_type_"]),
-				PortName:                        utils.MapStringFromAPI(path["port_name"]),
-				EthPortNumGatewayProfile:        utils.MapStringFromAPI(path["eth_port_num_gateway_profile"]),
-				EthPortNumGatewayProfileRefType: utils.MapStringFromAPI(path["eth_port_num_gateway_profile_ref_type_"]),
-				Index:                           utils.MapInt64FromAPI(path["index"]),
+				EthPortNumEthPortProfile:         utils.MapStringFromAPI(path["eth_port_num_eth_port_profile"]),
+				EthPortNumEthPortSettings:        utils.MapStringFromAPI(path["eth_port_num_eth_port_settings"]),
+				EthPortNumEthPortSettingsRefType: utils.MapStringFromAPI(path["eth_port_num_eth_port_settings_ref_type_"]),
+				EthPortNumEthPortProfileRefType:  utils.MapStringFromAPI(path["eth_port_num_eth_port_profile_ref_type_"]),
+				PortName:                         utils.MapStringFromAPI(path["port_name"]),
+				EthPortNumGatewayProfile:         utils.MapStringFromAPI(path["eth_port_num_gateway_profile"]),
+				EthPortNumGatewayProfileRefType:  utils.MapStringFromAPI(path["eth_port_num_gateway_profile_ref_type_"]),
+				Index:                            utils.MapInt64FromAPI(path["index"]),
 			}
 
 			ethPortPaths = append(ethPortPaths, ethPortPath)
@@ -597,28 +381,6 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 		state.UserServices = nil
 	}
 
-	// Handle voice port profile paths
-	var voicePortProfilePaths []voicePortProfilePathsModel
-	if paths, ok := bundleMap["voice_port_profile_paths"].([]interface{}); ok && len(paths) > 0 {
-		for _, p := range paths {
-			path, ok := p.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			voicePortPath := voicePortProfilePathsModel{
-				VoicePortNumVoicePortProfiles:        utils.MapStringFromAPI(path["voice_port_num_voice_port_profiles"]),
-				VoicePortNumVoicePortProfilesRefType: utils.MapStringFromAPI(path["voice_port_num_voice_port_profiles_ref_type_"]),
-				Index:                                utils.MapInt64FromAPI(path["index"]),
-			}
-
-			voicePortProfilePaths = append(voicePortProfilePaths, voicePortPath)
-		}
-		state.VoicePortProfilePaths = voicePortProfilePaths
-	} else {
-		state.VoicePortProfilePaths = nil
-	}
-
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -645,28 +407,22 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	name := plan.Name.ValueString()
-	bundleProps := openapi.BundlesPutRequestEndpointBundleValue{}
+	bundleProps := openapi.BundlesPatchRequestEndpointBundleValue{}
 	hasChanges := false
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { bundleProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.CliCommands, state.CliCommands, func(v *string) { bundleProps.CliCommands = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.Protocol, state.Protocol, func(v *string) { bundleProps.Protocol = v }, &hasChanges)
-
-	// Handle boolean field changes
-	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { bundleProps.Enable = v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
+		objProps := openapi.BundlesPatchRequestEndpointBundleValueObjectProperties{}
 		op := plan.ObjectProperties[0]
 		st := state.ObjectProperties[0]
 		objPropsChanged := false
 
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
 			{Name: "IsForSwitch", PlanValue: op.IsForSwitch, StateValue: st.IsForSwitch, APIValue: &objProps.IsForSwitch},
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-			{Name: "IsPublic", PlanValue: op.IsPublic, StateValue: st.IsPublic, APIValue: &objProps.IsPublic},
 		}, &objPropsChanged)
 
 		if objPropsChanged {
@@ -687,34 +443,10 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Handle diagnostics profile reference type using "One ref type supported" pattern
-	if !utils.HandleOneRefTypeSupported(
-		plan.DiagnosticsProfile, state.DiagnosticsProfile, plan.DiagnosticsProfileRefType, state.DiagnosticsProfileRefType,
-		func(v *string) { bundleProps.DiagnosticsProfile = v },
-		func(v *string) { bundleProps.DiagnosticsProfileRefType = v },
-		"diagnostics_profile", "diagnostics_profile_ref_type_",
-		&hasChanges,
-		&resp.Diagnostics,
-	) {
-		return
-	}
-
-	// Handle device voice settings reference type using "One ref type supported" pattern
-	if !utils.HandleOneRefTypeSupported(
-		plan.DeviceVoiceSettings, state.DeviceVoiceSettings, plan.DeviceVoiceSettingsRefType, state.DeviceVoiceSettingsRefType,
-		func(v *string) { bundleProps.DeviceVoiceSettings = v },
-		func(v *string) { bundleProps.DeviceVoiceSettingsRefType = v },
-		"device_voice_settings", "device_voice_settings_ref_type_",
-		&hasChanges,
-		&resp.Diagnostics,
-	) {
-		return
-	}
-
 	// Handle eth port paths
-	ethPortPathsHandler := utils.IndexedItemHandler[ethPortPathsModel, openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner]{
-		CreateNew: func(planItem ethPortPathsModel) openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner {
-			ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
+	ethPortPathsHandler := utils.IndexedItemHandler[ethPortPathsModel, openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner]{
+		CreateNew: func(planItem ethPortPathsModel) openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner {
+			ethPortPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{}
 
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &ethPortPath.Index, TFValue: planItem.Index},
@@ -728,14 +460,12 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				{FieldName: "EthPortNumEthPortProfileRefType", APIField: &ethPortPath.EthPortNumEthPortProfileRefType, TFValue: planItem.EthPortNumEthPortProfileRefType},
 				{FieldName: "EthPortNumGatewayProfile", APIField: &ethPortPath.EthPortNumGatewayProfile, TFValue: planItem.EthPortNumGatewayProfile},
 				{FieldName: "EthPortNumGatewayProfileRefType", APIField: &ethPortPath.EthPortNumGatewayProfileRefType, TFValue: planItem.EthPortNumGatewayProfileRefType},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfile", APIField: &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile, TFValue: planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfileRefType", APIField: &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, TFValue: planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType},
 			})
 
 			return ethPortPath
 		},
-		UpdateExisting: func(planItem ethPortPathsModel, stateItem ethPortPathsModel) (openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner, bool) {
-			ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
+		UpdateExisting: func(planItem ethPortPathsModel, stateItem ethPortPathsModel) (openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner, bool) {
+			ethPortPath := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{}
 
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &ethPortPath.Index, TFValue: planItem.Index},
@@ -782,22 +512,10 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				return ethPortPath, false
 			}
 
-			// Handle diagnostics_port_profile_num_diagnostics_port_profile and diagnostics_port_profile_num_diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
-			if !utils.HandleOneRefTypeSupported(
-				planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
-				func(v *string) { ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = v },
-				func(v *string) { ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = v },
-				"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
-				&fieldChanged,
-				&resp.Diagnostics,
-			) {
-				return ethPortPath, false
-			}
-
 			return ethPortPath, fieldChanged
 		},
-		CreateDeleted: func(index int64) openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner {
-			item := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
+		CreateDeleted: func(index int64) openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner {
+			item := openapi.BundlesPatchRequestEndpointBundleValueEthPortPathsInner{}
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
 			})
@@ -812,9 +530,9 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	// Handle user services
-	userServicesHandler := utils.IndexedItemHandler[userServicesModel, openapi.BundlesPutRequestEndpointBundleValueUserServicesInner]{
-		CreateNew: func(planItem userServicesModel) openapi.BundlesPutRequestEndpointBundleValueUserServicesInner {
-			userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
+	userServicesHandler := utils.IndexedItemHandler[userServicesModel, openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner]{
+		CreateNew: func(planItem userServicesModel) openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner {
+			userService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{}
 
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &userService.Index, TFValue: planItem.Index},
@@ -833,8 +551,8 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 			return userService
 		},
-		UpdateExisting: func(planItem userServicesModel, stateItem userServicesModel) (openapi.BundlesPutRequestEndpointBundleValueUserServicesInner, bool) {
-			userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
+		UpdateExisting: func(planItem userServicesModel, stateItem userServicesModel) (openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner, bool) {
+			userService := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{}
 
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &userService.Index, TFValue: planItem.Index},
@@ -863,8 +581,8 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 			return userService, fieldChanged
 		},
-		CreateDeleted: func(index int64) openapi.BundlesPutRequestEndpointBundleValueUserServicesInner {
-			item := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
+		CreateDeleted: func(index int64) openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner {
+			item := openapi.BundlesPatchRequestEndpointBundleValueUserServicesInner{}
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
 			})
@@ -875,60 +593,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	changedUserServices, userServicesChanged := utils.ProcessIndexedArrayUpdates(plan.UserServices, state.UserServices, userServicesHandler)
 	if userServicesChanged {
 		bundleProps.UserServices = changedUserServices
-		hasChanges = true
-	}
-
-	// Handle voice port profile paths
-	voicePortProfilePathsHandler := utils.IndexedItemHandler[voicePortProfilePathsModel, openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner]{
-		CreateNew: func(planItem voicePortProfilePathsModel) openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
-			voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
-
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &voicePortPath.Index, TFValue: planItem.Index},
-			})
-
-			utils.SetStringFields([]utils.StringFieldMapping{
-				{FieldName: "VoicePortNumVoicePortProfiles", APIField: &voicePortPath.VoicePortNumVoicePortProfiles, TFValue: planItem.VoicePortNumVoicePortProfiles},
-				{FieldName: "VoicePortNumVoicePortProfilesRefType", APIField: &voicePortPath.VoicePortNumVoicePortProfilesRefType, TFValue: planItem.VoicePortNumVoicePortProfilesRefType},
-			})
-
-			return voicePortPath
-		},
-		UpdateExisting: func(planItem voicePortProfilePathsModel, stateItem voicePortProfilePathsModel) (openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner, bool) {
-			voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
-
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &voicePortPath.Index, TFValue: planItem.Index},
-			})
-
-			fieldChanged := false
-
-			// Handle voice_port_num_voice_port_profiles and voice_port_num_voice_port_profiles_ref_type_ using "One ref type supported" pattern
-			if !utils.HandleOneRefTypeSupported(
-				planItem.VoicePortNumVoicePortProfiles, stateItem.VoicePortNumVoicePortProfiles, planItem.VoicePortNumVoicePortProfilesRefType, stateItem.VoicePortNumVoicePortProfilesRefType,
-				func(v *string) { voicePortPath.VoicePortNumVoicePortProfiles = v },
-				func(v *string) { voicePortPath.VoicePortNumVoicePortProfilesRefType = v },
-				"voice_port_num_voice_port_profiles", "voice_port_num_voice_port_profiles_ref_type_",
-				&fieldChanged,
-				&resp.Diagnostics,
-			) {
-				return voicePortPath, false
-			}
-
-			return voicePortPath, fieldChanged
-		},
-		CreateDeleted: func(index int64) openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
-			item := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
-			utils.SetInt64Fields([]utils.Int64FieldMapping{
-				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
-			})
-			return item
-		},
-	}
-
-	changedVoicePortProfilePaths, voicePortProfilePathsChanged := utils.ProcessIndexedArrayUpdates(plan.VoicePortProfilePaths, state.VoicePortProfilePaths, voicePortProfilePathsHandler)
-	if voicePortProfilePathsChanged {
-		bundleProps.VoicePortProfilePaths = changedVoicePortProfilePaths
 		hasChanges = true
 	}
 
@@ -948,31 +612,10 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 }
 
 func (r *verityBundleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state verityBundleResourceModel
-	diags := req.State.Get(ctx, &state)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
-		resp.Diagnostics.AddError(
-			"Failed to Authenticate",
-			fmt.Sprintf("Error authenticating with API: %s", err),
-		)
-		return
-	}
-
-	name := state.Name.ValueString()
-
-	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "bundle", name, nil, &resp.Diagnostics)
-	if !success {
-		return
-	}
-
-	tflog.Info(ctx, fmt.Sprintf("Bundle %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "bundles")
-	resp.State.RemoveResource(ctx)
+	resp.Diagnostics.AddError(
+		"Delete Not Supported",
+		"Bundle resources cannot be deleted. They represent existing bundle configurations that can only be read and updated.",
+	)
 }
 
 func (r *verityBundleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

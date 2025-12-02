@@ -20,49 +20,15 @@ data "verity_state_importer" "import" {
 
 The importer writes multiple `.tf` files into the output directory. The importer always writes `stages.tf` and then may write any of the following files:
 
-- stages.tf
-- tenants.tf
-- gateways.tf
-- gatewayprofiles.tf
-- ethportprofiles.tf
-- lags.tf
-- sflowcollectors.tf
-- diagnosticsprofiles.tf
-- diagnosticsportprofiles.tf
-- policybasedroutingacl.tf
-- policybasedrouting.tf
-- services.tf
-- ethportsettings.tf
 - bundles.tf
-- acls_ipv4.tf
-- acls_ipv6.tf
-- badges.tf
-- authenticatedethports.tf
-- devicecontrollers.tf
-- devicevoicesettings.tf
-- packetbroker.tf
-- packetqueues.tf
-- serviceportprofiles.tf
-- voiceportprofiles.tf
-- spineplanes.tf
-- switchpoints.tf
-- aspathaccesslists.tf
-- communitylists.tf
-- devicesettings.tf
-- extendedcommunitylists.tf
-- ipv4lists.tf
-- ipv4prefixlists.tf
-- ipv6lists.tf
-- ipv6prefixlists.tf
-- routemapclauses.tf
-- routemaps.tf
-- sfpbreakouts.tf
-- sites.tf
-- pods.tf
-- portacls.tf
-- groupingrules.tf
-- thresholdgroups.tf
-- thresholds.tf
+- ethportprofiles.tf
+- ethportsettings.tf
+- gatewayprofiles.tf
+- gateways.tf
+- lags.tf
+- services.tf
+- tenants.tf
+- stages.tf
 
 Note: Not all files will be created. Tasks are filtered by provider mode and API version compatibility, and the importer skips writing a file if the generated Terraform configuration is empty.
 

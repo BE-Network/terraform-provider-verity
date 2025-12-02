@@ -23,8 +23,10 @@ type GatewayprofilesPutRequestGatewayProfileValue struct {
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
+	// Profiles that Tenant Slice creates and manages
+	TenantSliceManaged *bool `json:"tenant_slice_managed,omitempty"`
 	ExternalGateways []GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner `json:"external_gateways,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties *EthportsettingsPutRequestEthPortSettingsValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewGatewayprofilesPutRequestGatewayProfileValue instantiates a new GatewayprofilesPutRequestGatewayProfileValue object
@@ -37,6 +39,8 @@ func NewGatewayprofilesPutRequestGatewayProfileValue() *GatewayprofilesPutReques
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var tenantSliceManaged bool = false
+	this.TenantSliceManaged = &tenantSliceManaged
 	return &this
 }
 
@@ -49,6 +53,8 @@ func NewGatewayprofilesPutRequestGatewayProfileValueWithDefaults() *Gatewayprofi
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var tenantSliceManaged bool = false
+	this.TenantSliceManaged = &tenantSliceManaged
 	return &this
 }
 
@@ -116,6 +122,38 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
+// GetTenantSliceManaged returns the TenantSliceManaged field value if set, zero value otherwise.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) GetTenantSliceManaged() bool {
+	if o == nil || IsNil(o.TenantSliceManaged) {
+		var ret bool
+		return ret
+	}
+	return *o.TenantSliceManaged
+}
+
+// GetTenantSliceManagedOk returns a tuple with the TenantSliceManaged field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) GetTenantSliceManagedOk() (*bool, bool) {
+	if o == nil || IsNil(o.TenantSliceManaged) {
+		return nil, false
+	}
+	return o.TenantSliceManaged, true
+}
+
+// HasTenantSliceManaged returns a boolean if a field has been set.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) HasTenantSliceManaged() bool {
+	if o != nil && !IsNil(o.TenantSliceManaged) {
+		return true
+	}
+
+	return false
+}
+
+// SetTenantSliceManaged gets a reference to the given bool and assigns it to the TenantSliceManaged field.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) SetTenantSliceManaged(v bool) {
+	o.TenantSliceManaged = &v
+}
+
 // GetExternalGateways returns the ExternalGateways field value if set, zero value otherwise.
 func (o *GatewayprofilesPutRequestGatewayProfileValue) GetExternalGateways() []GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner {
 	if o == nil || IsNil(o.ExternalGateways) {
@@ -149,9 +187,9 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) SetExternalGateways(v []G
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
+func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() EthportsettingsPutRequestEthPortSettingsValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
+		var ret EthportsettingsPutRequestEthPortSettingsValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -159,7 +197,7 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() Dev
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
+func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*EthportsettingsPutRequestEthPortSettingsValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -175,8 +213,8 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) HasObjectProperties() boo
 	return false
 }
 
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
+// SetObjectProperties gets a reference to the given EthportsettingsPutRequestEthPortSettingsValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v EthportsettingsPutRequestEthPortSettingsValueObjectProperties) {
 	o.ObjectProperties = &v
 }
 
@@ -195,6 +233,9 @@ func (o GatewayprofilesPutRequestGatewayProfileValue) ToMap() (map[string]interf
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.TenantSliceManaged) {
+		toSerialize["tenant_slice_managed"] = o.TenantSliceManaged
 	}
 	if !IsNil(o.ExternalGateways) {
 		toSerialize["external_gateways"] = o.ExternalGateways

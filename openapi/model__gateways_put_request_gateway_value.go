@@ -47,11 +47,11 @@ type GatewaysPutRequestGatewayValue struct {
 	EgressVlan NullableInt32 `json:"egress_vlan,omitempty"`
 	// Source IP address used to override the default source address calculation for BGP TCP session
 	SourceIpAddress *string `json:"source_ip_address,omitempty"`
-	// The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
+	// The Anycast Address will be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
 	AnycastIpMask *string `json:"anycast_ip_mask,omitempty"`
-	// MD5 Password used in the BGP session
+	// MD5 password
 	Md5Password *string `json:"md5_password,omitempty"`
-	// A Route Map applied to routes imported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes
+	// A route-map applied to routes imported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes
 	ImportRouteMap *string `json:"import_route_map,omitempty"`
 	// Object type for import_route_map field
 	ImportRouteMapRefType *string `json:"import_route_map_ref_type_,omitempty"`
@@ -59,9 +59,9 @@ type GatewaysPutRequestGatewayValue struct {
 	ExportRouteMap *string `json:"export_route_map,omitempty"`
 	// Object type for export_route_map field
 	ExportRouteMapRefType *string `json:"export_route_map_ref_type_,omitempty"`
-	// Gateway Mode is the method used for defining routes for the Tenant
+	// Gateway Mode. Can be BGP, Static, or Default
 	GatewayMode *string `json:"gateway_mode,omitempty"`
-	// Local AS Number to use as an override to switch AS number
+	// Local AS Number
 	LocalAsNumber NullableInt32 `json:"local_as_number,omitempty"`
 	// Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
 	LocalAsNoPrepend *bool `json:"local_as_no_prepend,omitempty"`
@@ -73,7 +73,7 @@ type GatewaysPutRequestGatewayValue struct {
 	DynamicBgpSubnet *string `json:"dynamic_bgp_subnet,omitempty"`
 	// Dynamic BGP Limits
 	DynamicBgpLimits NullableInt32 `json:"dynamic_bgp_limits,omitempty"`
-	// Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection
+	// Helper Hop IP Address
 	HelperHopIpAddress *string `json:"helper_hop_ip_address,omitempty"`
 	// Enable BFD(Bi-Directional Forwarding)
 	EnableBfd *bool `json:"enable_bfd,omitempty"`
@@ -86,11 +86,7 @@ type GatewaysPutRequestGatewayValue struct {
 	// Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself.
 	NextHopSelf *bool `json:"next_hop_self,omitempty"`
 	StaticRoutes []GatewaysPutRequestGatewayValueStaticRoutesInner `json:"static_routes,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
-	// Indicates the entered password is a switch encrypted password.
-	SwitchEncryptedMd5Password *bool `json:"switch_encrypted_md5_password,omitempty"`
-	// MD5 Password Encrypted used in the BGP session
-	Md5PasswordEncrypted *string `json:"md5_password_encrypted,omitempty"`
+	ObjectProperties *EthportsettingsPutRequestEthPortSettingsValueObjectProperties `json:"object_properties,omitempty"`
 	// Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.
 	DefaultOriginate *bool `json:"default_originate,omitempty"`
 	// Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers.
@@ -157,10 +153,6 @@ func NewGatewaysPutRequestGatewayValue() *GatewaysPutRequestGatewayValue {
 	this.BfdDetectMultiplier = *NewNullableInt32(&bfdDetectMultiplier)
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
-	var switchEncryptedMd5Password bool = false
-	this.SwitchEncryptedMd5Password = &switchEncryptedMd5Password
-	var md5PasswordEncrypted string = ""
-	this.Md5PasswordEncrypted = &md5PasswordEncrypted
 	var defaultOriginate bool = false
 	this.DefaultOriginate = &defaultOriginate
 	var bfdMultihop bool = false
@@ -227,10 +219,6 @@ func NewGatewaysPutRequestGatewayValueWithDefaults() *GatewaysPutRequestGatewayV
 	this.BfdDetectMultiplier = *NewNullableInt32(&bfdDetectMultiplier)
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
-	var switchEncryptedMd5Password bool = false
-	this.SwitchEncryptedMd5Password = &switchEncryptedMd5Password
-	var md5PasswordEncrypted string = ""
-	this.Md5PasswordEncrypted = &md5PasswordEncrypted
 	var defaultOriginate bool = false
 	this.DefaultOriginate = &defaultOriginate
 	var bfdMultihop bool = false
@@ -1457,9 +1445,9 @@ func (o *GatewaysPutRequestGatewayValue) SetStaticRoutes(v []GatewaysPutRequestG
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
+func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() EthportsettingsPutRequestEthPortSettingsValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
+		var ret EthportsettingsPutRequestEthPortSettingsValueObjectProperties
 		return ret
 	}
 	return *o.ObjectProperties
@@ -1467,7 +1455,7 @@ func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() DevicesettingsPut
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*EthportsettingsPutRequestEthPortSettingsValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
@@ -1483,73 +1471,9 @@ func (o *GatewaysPutRequestGatewayValue) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
+// SetObjectProperties gets a reference to the given EthportsettingsPutRequestEthPortSettingsValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v EthportsettingsPutRequestEthPortSettingsValueObjectProperties) {
 	o.ObjectProperties = &v
-}
-
-// GetSwitchEncryptedMd5Password returns the SwitchEncryptedMd5Password field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5Password() bool {
-	if o == nil || IsNil(o.SwitchEncryptedMd5Password) {
-		var ret bool
-		return ret
-	}
-	return *o.SwitchEncryptedMd5Password
-}
-
-// GetSwitchEncryptedMd5PasswordOk returns a tuple with the SwitchEncryptedMd5Password field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5PasswordOk() (*bool, bool) {
-	if o == nil || IsNil(o.SwitchEncryptedMd5Password) {
-		return nil, false
-	}
-	return o.SwitchEncryptedMd5Password, true
-}
-
-// HasSwitchEncryptedMd5Password returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasSwitchEncryptedMd5Password() bool {
-	if o != nil && !IsNil(o.SwitchEncryptedMd5Password) {
-		return true
-	}
-
-	return false
-}
-
-// SetSwitchEncryptedMd5Password gets a reference to the given bool and assigns it to the SwitchEncryptedMd5Password field.
-func (o *GatewaysPutRequestGatewayValue) SetSwitchEncryptedMd5Password(v bool) {
-	o.SwitchEncryptedMd5Password = &v
-}
-
-// GetMd5PasswordEncrypted returns the Md5PasswordEncrypted field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncrypted() string {
-	if o == nil || IsNil(o.Md5PasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.Md5PasswordEncrypted
-}
-
-// GetMd5PasswordEncryptedOk returns a tuple with the Md5PasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.Md5PasswordEncrypted) {
-		return nil, false
-	}
-	return o.Md5PasswordEncrypted, true
-}
-
-// HasMd5PasswordEncrypted returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasMd5PasswordEncrypted() bool {
-	if o != nil && !IsNil(o.Md5PasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetMd5PasswordEncrypted gets a reference to the given string and assigns it to the Md5PasswordEncrypted field.
-func (o *GatewaysPutRequestGatewayValue) SetMd5PasswordEncrypted(v string) {
-	o.Md5PasswordEncrypted = &v
 }
 
 // GetDefaultOriginate returns the DefaultOriginate field value if set, zero value otherwise.
@@ -1730,12 +1654,6 @@ func (o GatewaysPutRequestGatewayValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.SwitchEncryptedMd5Password) {
-		toSerialize["switch_encrypted_md5_password"] = o.SwitchEncryptedMd5Password
-	}
-	if !IsNil(o.Md5PasswordEncrypted) {
-		toSerialize["md5_password_encrypted"] = o.Md5PasswordEncrypted
 	}
 	if !IsNil(o.DefaultOriginate) {
 		toSerialize["default_originate"] = o.DefaultOriginate

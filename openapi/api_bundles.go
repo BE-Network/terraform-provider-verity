@@ -16,137 +16,17 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"reflect"
 )
 
 
 // BundlesAPIService BundlesAPI service
 type BundlesAPIService service
 
-type ApiBundlesDeleteRequest struct {
-	ctx context.Context
-	ApiService *BundlesAPIService
-	bundleName *[]string
-	changesetName *string
-}
-
-func (r ApiBundlesDeleteRequest) BundleName(bundleName []string) ApiBundlesDeleteRequest {
-	r.bundleName = &bundleName
-	return r
-}
-
-func (r ApiBundlesDeleteRequest) ChangesetName(changesetName string) ApiBundlesDeleteRequest {
-	r.changesetName = &changesetName
-	return r
-}
-
-func (r ApiBundlesDeleteRequest) Execute() (*http.Response, error) {
-	return r.ApiService.BundlesDeleteExecute(r)
-}
-
-/*
-BundlesDelete Delete bundle
-
-Deletes an existing bundle from the system if changeset_name is empty, from a changeset if its name is provided.
-
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesDeleteRequest
-*/
-func (a *BundlesAPIService) BundlesDelete(ctx context.Context) ApiBundlesDeleteRequest {
-	return ApiBundlesDeleteRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-func (a *BundlesAPIService) BundlesDeleteExecute(r ApiBundlesDeleteRequest) (*http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesDelete")
-	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/bundles"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.bundleName == nil {
-		return nil, reportError("bundleName is required and must be specified")
-	}
-
-	{
-		t := *r.bundleName
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "bundle_name", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "bundle_name", t, "form", "multi")
-		}
-	}
-	if r.changesetName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
-	}
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		return localVarHTTPResponse, newErr
-	}
-
-	return localVarHTTPResponse, nil
-}
-
 type ApiBundlesGetRequest struct {
 	ctx context.Context
 	ApiService *BundlesAPIService
 	bundleName *string
 	includeData *bool
-	changesetName *string
 }
 
 func (r ApiBundlesGetRequest) BundleName(bundleName string) ApiBundlesGetRequest {
@@ -156,11 +36,6 @@ func (r ApiBundlesGetRequest) BundleName(bundleName string) ApiBundlesGetRequest
 
 func (r ApiBundlesGetRequest) IncludeData(includeData bool) ApiBundlesGetRequest {
 	r.includeData = &includeData
-	return r
-}
-
-func (r ApiBundlesGetRequest) ChangesetName(changesetName string) ApiBundlesGetRequest {
-	r.changesetName = &changesetName
 	return r
 }
 
@@ -208,9 +83,6 @@ func (a *BundlesAPIService) BundlesGetExecute(r ApiBundlesGetRequest) (*http.Res
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
-	}
-	if r.changesetName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -261,7 +133,7 @@ type ApiBundlesPatchRequest struct {
 	ctx context.Context
 	ApiService *BundlesAPIService
 	changesetName *string
-	bundlesPutRequest *BundlesPutRequest
+	bundlesPatchRequest *BundlesPatchRequest
 }
 
 func (r ApiBundlesPatchRequest) ChangesetName(changesetName string) ApiBundlesPatchRequest {
@@ -269,8 +141,8 @@ func (r ApiBundlesPatchRequest) ChangesetName(changesetName string) ApiBundlesPa
 	return r
 }
 
-func (r ApiBundlesPatchRequest) BundlesPutRequest(bundlesPutRequest BundlesPutRequest) ApiBundlesPatchRequest {
-	r.bundlesPutRequest = &bundlesPutRequest
+func (r ApiBundlesPatchRequest) BundlesPatchRequest(bundlesPatchRequest BundlesPatchRequest) ApiBundlesPatchRequest {
+	r.bundlesPatchRequest = &bundlesPatchRequest
 	return r
 }
 
@@ -334,113 +206,7 @@ func (a *BundlesAPIService) BundlesPatchExecute(r ApiBundlesPatchRequest) (*http
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.bundlesPutRequest
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		return localVarHTTPResponse, newErr
-	}
-
-	return localVarHTTPResponse, nil
-}
-
-type ApiBundlesPutRequest struct {
-	ctx context.Context
-	ApiService *BundlesAPIService
-	changesetName *string
-	bundlesPutRequest *BundlesPutRequest
-}
-
-func (r ApiBundlesPutRequest) ChangesetName(changesetName string) ApiBundlesPutRequest {
-	r.changesetName = &changesetName
-	return r
-}
-
-func (r ApiBundlesPutRequest) BundlesPutRequest(bundlesPutRequest BundlesPutRequest) ApiBundlesPutRequest {
-	r.bundlesPutRequest = &bundlesPutRequest
-	return r
-}
-
-func (r ApiBundlesPutRequest) Execute() (*http.Response, error) {
-	return r.ApiService.BundlesPutExecute(r)
-}
-
-/*
-BundlesPut Create bundle
-
-Create bundle into the system if changeset_name is empty, into a changeset if its name is provided.
-
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesPutRequest
-*/
-func (a *BundlesAPIService) BundlesPut(ctx context.Context) ApiBundlesPutRequest {
-	return ApiBundlesPutRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-func (a *BundlesAPIService) BundlesPutExecute(r ApiBundlesPutRequest) (*http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesPut")
-	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/bundles"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	if r.changesetName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
-	}
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.bundlesPutRequest
+	localVarPostBody = r.bundlesPatchRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

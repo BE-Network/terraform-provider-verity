@@ -36,41 +36,24 @@ type verityEthPortProfileResource struct {
 }
 
 type verityEthPortProfileResourceModel struct {
-	Name              types.String                                `tfsdk:"name"`
-	Enable            types.Bool                                  `tfsdk:"enable"`
-	IngressAcl        types.String                                `tfsdk:"ingress_acl"`
-	IngressAclRefType types.String                                `tfsdk:"ingress_acl_ref_type_"`
-	EgressAcl         types.String                                `tfsdk:"egress_acl"`
-	EgressAclRefType  types.String                                `tfsdk:"egress_acl_ref_type_"`
-	ObjectProperties  []verityEthPortProfileObjectPropertiesModel `tfsdk:"object_properties"`
-	Services          []servicesModel                             `tfsdk:"services"`
-	Tls               types.Bool                                  `tfsdk:"tls"`
-	TlsService        types.String                                `tfsdk:"tls_service"`
-	TlsServiceRefType types.String                                `tfsdk:"tls_service_ref_type_"`
-	TrustedPort       types.Bool                                  `tfsdk:"trusted_port"`
+	Name               types.String                                `tfsdk:"name"`
+	Enable             types.Bool                                  `tfsdk:"enable"`
+	TenantSliceManaged types.Bool                                  `tfsdk:"tenant_slice_managed"`
+	ObjectProperties   []verityEthPortProfileObjectPropertiesModel `tfsdk:"object_properties"`
+	Services           []servicesModel                             `tfsdk:"services"`
 }
 
 type verityEthPortProfileObjectPropertiesModel struct {
 	Group          types.String `tfsdk:"group"`
 	PortMonitoring types.String `tfsdk:"port_monitoring"`
-	SortByName     types.Bool   `tfsdk:"sort_by_name"`
-	Label          types.String `tfsdk:"label"`
-	Icon           types.String `tfsdk:"icon"`
 }
 
 type servicesModel struct {
-	RowNumEnable            types.Bool   `tfsdk:"row_num_enable"`
-	RowNumService           types.String `tfsdk:"row_num_service"`
-	RowNumServiceRefType    types.String `tfsdk:"row_num_service_ref_type_"`
-	RowNumExternalVlan      types.Int64  `tfsdk:"row_num_external_vlan"`
-	RowNumIngressAcl        types.String `tfsdk:"row_num_ingress_acl"`
-	RowNumIngressAclRefType types.String `tfsdk:"row_num_ingress_acl_ref_type_"`
-	RowNumEgressAcl         types.String `tfsdk:"row_num_egress_acl"`
-	RowNumEgressAclRefType  types.String `tfsdk:"row_num_egress_acl_ref_type_"`
-	Index                   types.Int64  `tfsdk:"index"`
-	RowNumMacFilter         types.String `tfsdk:"row_num_mac_filter"`
-	RowNumMacFilterRefType  types.String `tfsdk:"row_num_mac_filter_ref_type_"`
-	RowNumLanIptv           types.String `tfsdk:"row_num_lan_iptv"`
+	RowNumEnable         types.Bool   `tfsdk:"row_num_enable"`
+	RowNumService        types.String `tfsdk:"row_num_service"`
+	RowNumServiceRefType types.String `tfsdk:"row_num_service_ref_type_"`
+	RowNumExternalVlan   types.Int64  `tfsdk:"row_num_external_vlan"`
+	Index                types.Int64  `tfsdk:"index"`
 }
 
 func (s servicesModel) GetIndex() types.Int64 {
@@ -113,39 +96,11 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object.",
+				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 			},
-			"ingress_acl": schema.StringAttribute{
-				Description: "Choose an ingress access control list",
-				Optional:    true,
-			},
-			"ingress_acl_ref_type_": schema.StringAttribute{
-				Description: "Object type for ingress_acl field",
-				Optional:    true,
-			},
-			"egress_acl": schema.StringAttribute{
-				Description: "Choose an egress access control list",
-				Optional:    true,
-			},
-			"egress_acl_ref_type_": schema.StringAttribute{
-				Description: "Object type for egress_acl field",
-				Optional:    true,
-			},
-			"tls": schema.BoolAttribute{
-				Description: "Transparent LAN Service Trunk",
-				Optional:    true,
-			},
-			"tls_service": schema.StringAttribute{
-				Description: "Choose a Service supporting Transparent LAN Service",
-				Optional:    true,
-			},
-			"tls_service_ref_type_": schema.StringAttribute{
-				Description: "Object type for tls_service field",
-				Optional:    true,
-			},
-			"trusted_port": schema.BoolAttribute{
-				Description: "Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.",
+			"tenant_slice_managed": schema.BoolAttribute{
+				Description: "Profiles that Tenant Slice creates and manages",
 				Optional:    true,
 			},
 		},
@@ -160,18 +115,6 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 						},
 						"port_monitoring": schema.StringAttribute{
 							Description: "Defines importance of Link Down on this port",
-							Optional:    true,
-						},
-						"sort_by_name": schema.BoolAttribute{
-							Description: "Choose to sort by service name or by order of creation",
-							Optional:    true,
-						},
-						"label": schema.StringAttribute{
-							Description: "Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint",
-							Optional:    true,
-						},
-						"icon": schema.StringAttribute{
-							Description: "Port Icon displayed ports provisioned with this Eth Port Profile but with no Port Icon defined in the endpoint",
 							Optional:    true,
 						},
 					},
@@ -194,39 +137,11 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 							Optional:    true,
 						},
 						"row_num_external_vlan": schema.Int64Attribute{
-							Description: "Choose an external vlan. A value of 0 will make the VLAN untagged, while null will use service VLAN.",
-							Optional:    true,
-						},
-						"row_num_ingress_acl": schema.StringAttribute{
-							Description: "Choose an ingress access control list",
-							Optional:    true,
-						},
-						"row_num_ingress_acl_ref_type_": schema.StringAttribute{
-							Description: "Object type for row_num_ingress_acl field",
-							Optional:    true,
-						},
-						"row_num_egress_acl": schema.StringAttribute{
-							Description: "Choose an egress access control list",
-							Optional:    true,
-						},
-						"row_num_egress_acl_ref_type_": schema.StringAttribute{
-							Description: "Object type for row_num_egress_acl field",
+							Description: "Choose an external vlan. A value of 0 will make the VLAN untagged, while in case null is provided, the VLAN will be the one associated with the service.",
 							Optional:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
-							Optional:    true,
-						},
-						"row_num_mac_filter": schema.StringAttribute{
-							Description: "Choose an access control list",
-							Optional:    true,
-						},
-						"row_num_mac_filter_ref_type_": schema.StringAttribute{
-							Description: "Object type for row_num_mac_filter field",
-							Optional:    true,
-						},
-						"row_num_lan_iptv": schema.StringAttribute{
-							Description: "Denotes a LAN or IPTV service",
 							Optional:    true,
 						},
 					},
@@ -257,21 +172,10 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
-	utils.SetStringFields([]utils.StringFieldMapping{
-		{FieldName: "IngressAcl", APIField: &ethPortProfileProps.IngressAcl, TFValue: plan.IngressAcl},
-		{FieldName: "IngressAclRefType", APIField: &ethPortProfileProps.IngressAclRefType, TFValue: plan.IngressAclRefType},
-		{FieldName: "EgressAcl", APIField: &ethPortProfileProps.EgressAcl, TFValue: plan.EgressAcl},
-		{FieldName: "EgressAclRefType", APIField: &ethPortProfileProps.EgressAclRefType, TFValue: plan.EgressAclRefType},
-		{FieldName: "TlsService", APIField: &ethPortProfileProps.TlsService, TFValue: plan.TlsService},
-		{FieldName: "TlsServiceRefType", APIField: &ethPortProfileProps.TlsServiceRefType, TFValue: plan.TlsServiceRefType},
-	})
-
 	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &ethPortProfileProps.Enable, TFValue: plan.Enable},
-		{FieldName: "Tls", APIField: &ethPortProfileProps.Tls, TFValue: plan.Tls},
-		{FieldName: "TrustedPort", APIField: &ethPortProfileProps.TrustedPort, TFValue: plan.TrustedPort},
+		{FieldName: "TenantSliceManaged", APIField: &ethPortProfileProps.TenantSliceManaged, TFValue: plan.TenantSliceManaged},
 	})
 
 	// Handle object properties
@@ -281,9 +185,6 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
-			{Name: "SortByName", TFValue: op.SortByName, APIValue: &objProps.SortByName},
-			{Name: "Label", TFValue: op.Label, APIValue: &objProps.Label},
-			{Name: "Icon", TFValue: op.Icon, APIValue: &objProps.Icon},
 		})
 		ethPortProfileProps.ObjectProperties = &objProps
 	}
@@ -300,13 +201,6 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "RowNumService", APIField: &serviceItem.RowNumService, TFValue: item.RowNumService},
 				{FieldName: "RowNumServiceRefType", APIField: &serviceItem.RowNumServiceRefType, TFValue: item.RowNumServiceRefType},
-				{FieldName: "RowNumIngressAcl", APIField: &serviceItem.RowNumIngressAcl, TFValue: item.RowNumIngressAcl},
-				{FieldName: "RowNumIngressAclRefType", APIField: &serviceItem.RowNumIngressAclRefType, TFValue: item.RowNumIngressAclRefType},
-				{FieldName: "RowNumEgressAcl", APIField: &serviceItem.RowNumEgressAcl, TFValue: item.RowNumEgressAcl},
-				{FieldName: "RowNumEgressAclRefType", APIField: &serviceItem.RowNumEgressAclRefType, TFValue: item.RowNumEgressAclRefType},
-				{FieldName: "RowNumMacFilter", APIField: &serviceItem.RowNumMacFilter, TFValue: item.RowNumMacFilter},
-				{FieldName: "RowNumMacFilterRefType", APIField: &serviceItem.RowNumMacFilterRefType, TFValue: item.RowNumMacFilterRefType},
-				{FieldName: "RowNumLanIptv", APIField: &serviceItem.RowNumLanIptv, TFValue: item.RowNumLanIptv},
 			})
 			utils.SetNullableInt64Field(&serviceItem.RowNumExternalVlan, item.RowNumExternalVlan)
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
@@ -426,34 +320,16 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 			{
 				Group:          utils.MapStringFromAPI(objProps["group"]),
 				PortMonitoring: utils.MapStringFromAPI(objProps["port_monitoring"]),
-				SortByName:     utils.MapBoolFromAPI(objProps["sort_by_name"]),
-				Label:          utils.MapStringFromAPI(objProps["label"]),
-				Icon:           utils.MapStringFromAPI(objProps["icon"]),
 			},
 		}
 	} else {
 		state.ObjectProperties = nil
 	}
 
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"ingress_acl":           &state.IngressAcl,
-		"ingress_acl_ref_type_": &state.IngressAclRefType,
-		"egress_acl":            &state.EgressAcl,
-		"egress_acl_ref_type_":  &state.EgressAclRefType,
-		"tls_service":           &state.TlsService,
-		"tls_service_ref_type_": &state.TlsServiceRefType,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(ethPortProfileMap[apiKey])
-	}
-
 	// Map boolean fields
 	boolFieldMappings := map[string]*types.Bool{
-		"enable":       &state.Enable,
-		"tls":          &state.Tls,
-		"trusted_port": &state.TrustedPort,
+		"enable":               &state.Enable,
+		"tenant_slice_managed": &state.TenantSliceManaged,
 	}
 
 	for apiKey, stateField := range boolFieldMappings {
@@ -471,18 +347,11 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 			}
 
 			serviceModel := servicesModel{
-				RowNumEnable:            utils.MapBoolFromAPI(service["row_num_enable"]),
-				RowNumService:           utils.MapStringFromAPI(service["row_num_service"]),
-				RowNumServiceRefType:    utils.MapStringFromAPI(service["row_num_service_ref_type_"]),
-				RowNumExternalVlan:      utils.MapInt64FromAPI(service["row_num_external_vlan"]),
-				RowNumIngressAcl:        utils.MapStringFromAPI(service["row_num_ingress_acl"]),
-				RowNumIngressAclRefType: utils.MapStringFromAPI(service["row_num_ingress_acl_ref_type_"]),
-				RowNumEgressAcl:         utils.MapStringFromAPI(service["row_num_egress_acl"]),
-				RowNumEgressAclRefType:  utils.MapStringFromAPI(service["row_num_egress_acl_ref_type_"]),
-				Index:                   utils.MapInt64FromAPI(service["index"]),
-				RowNumMacFilter:         utils.MapStringFromAPI(service["row_num_mac_filter"]),
-				RowNumMacFilterRefType:  utils.MapStringFromAPI(service["row_num_mac_filter_ref_type_"]),
-				RowNumLanIptv:           utils.MapStringFromAPI(service["row_num_lan_iptv"]),
+				RowNumEnable:         utils.MapBoolFromAPI(service["row_num_enable"]),
+				RowNumService:        utils.MapStringFromAPI(service["row_num_service"]),
+				RowNumServiceRefType: utils.MapStringFromAPI(service["row_num_service_ref_type_"]),
+				RowNumExternalVlan:   utils.MapInt64FromAPI(service["row_num_external_vlan"]),
+				Index:                utils.MapInt64FromAPI(service["index"]),
 			}
 
 			servicesList = append(servicesList, serviceModel)
@@ -528,8 +397,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ethPortProfileProps.Enable = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.Tls, state.Tls, func(v *bool) { ethPortProfileProps.Tls = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { ethPortProfileProps.TrustedPort = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.TenantSliceManaged, state.TenantSliceManaged, func(v *bool) { ethPortProfileProps.TenantSliceManaged = v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
@@ -541,51 +409,12 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
 			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
 			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
-			{Name: "SortByName", PlanValue: op.SortByName, StateValue: st.SortByName, APIValue: &objProps.SortByName},
-			{Name: "Label", PlanValue: op.Label, StateValue: st.Label, APIValue: &objProps.Label},
-			{Name: "Icon", PlanValue: op.Icon, StateValue: st.Icon, APIValue: &objProps.Icon},
 		}, &objPropsChanged)
 
 		if objPropsChanged {
 			ethPortProfileProps.ObjectProperties = &objProps
 			hasChanges = true
 		}
-	}
-
-	// Handle ingress_acl and ingress_acl_ref_type_ using "One ref type supported" pattern
-	if !utils.HandleOneRefTypeSupported(
-		plan.IngressAcl, state.IngressAcl, plan.IngressAclRefType, state.IngressAclRefType,
-		func(v *string) { ethPortProfileProps.IngressAcl = v },
-		func(v *string) { ethPortProfileProps.IngressAclRefType = v },
-		"ingress_acl", "ingress_acl_ref_type_",
-		&hasChanges,
-		&resp.Diagnostics,
-	) {
-		return
-	}
-
-	// Handle egress_acl and egress_acl_ref_type_ using "One ref type supported" pattern
-	if !utils.HandleOneRefTypeSupported(
-		plan.EgressAcl, state.EgressAcl, plan.EgressAclRefType, state.EgressAclRefType,
-		func(v *string) { ethPortProfileProps.EgressAcl = v },
-		func(v *string) { ethPortProfileProps.EgressAclRefType = v },
-		"egress_acl", "egress_acl_ref_type_",
-		&hasChanges,
-		&resp.Diagnostics,
-	) {
-		return
-	}
-
-	// Handle tls_service and tls_service_ref_type_ using "One ref type supported" pattern
-	if !utils.HandleOneRefTypeSupported(
-		plan.TlsService, state.TlsService, plan.TlsServiceRefType, state.TlsServiceRefType,
-		func(v *string) { ethPortProfileProps.TlsService = v },
-		func(v *string) { ethPortProfileProps.TlsServiceRefType = v },
-		"tls_service", "tls_service_ref_type_",
-		&hasChanges,
-		&resp.Diagnostics,
-	) {
-		return
 	}
 
 	// Handle services
@@ -604,13 +433,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "RowNumService", APIField: &service.RowNumService, TFValue: planItem.RowNumService},
 				{FieldName: "RowNumServiceRefType", APIField: &service.RowNumServiceRefType, TFValue: planItem.RowNumServiceRefType},
-				{FieldName: "RowNumIngressAcl", APIField: &service.RowNumIngressAcl, TFValue: planItem.RowNumIngressAcl},
-				{FieldName: "RowNumIngressAclRefType", APIField: &service.RowNumIngressAclRefType, TFValue: planItem.RowNumIngressAclRefType},
-				{FieldName: "RowNumEgressAcl", APIField: &service.RowNumEgressAcl, TFValue: planItem.RowNumEgressAcl},
-				{FieldName: "RowNumEgressAclRefType", APIField: &service.RowNumEgressAclRefType, TFValue: planItem.RowNumEgressAclRefType},
-				{FieldName: "RowNumMacFilter", APIField: &service.RowNumMacFilter, TFValue: planItem.RowNumMacFilter},
-				{FieldName: "RowNumMacFilterRefType", APIField: &service.RowNumMacFilterRefType, TFValue: planItem.RowNumMacFilterRefType},
-				{FieldName: "RowNumLanIptv", APIField: &service.RowNumLanIptv, TFValue: planItem.RowNumLanIptv},
 			})
 
 			utils.SetNullableInt64Field(&service.RowNumExternalVlan, planItem.RowNumExternalVlan)
@@ -641,45 +463,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				func(v *string) { service.RowNumService = v },
 				func(v *string) { service.RowNumServiceRefType = v },
 				"row_num_service", "row_num_service_ref_type_",
-				&fieldChanged,
-				&resp.Diagnostics,
-			) {
-				return service, false
-			}
-
-			// Handle non-ref-type string fields
-			utils.CompareAndSetStringField(planItem.RowNumLanIptv, stateItem.RowNumLanIptv, func(v *string) { service.RowNumLanIptv = v }, &fieldChanged)
-
-			// Handle row_num_ingress_acl and row_num_ingress_acl_ref_type_ using "One ref type supported" pattern
-			if !utils.HandleOneRefTypeSupported(
-				planItem.RowNumIngressAcl, stateItem.RowNumIngressAcl, planItem.RowNumIngressAclRefType, stateItem.RowNumIngressAclRefType,
-				func(v *string) { service.RowNumIngressAcl = v },
-				func(v *string) { service.RowNumIngressAclRefType = v },
-				"row_num_ingress_acl", "row_num_ingress_acl_ref_type_",
-				&fieldChanged,
-				&resp.Diagnostics,
-			) {
-				return service, false
-			}
-
-			// Handle row_num_egress_acl and row_num_egress_acl_ref_type_ using "One ref type supported" pattern
-			if !utils.HandleOneRefTypeSupported(
-				planItem.RowNumEgressAcl, stateItem.RowNumEgressAcl, planItem.RowNumEgressAclRefType, stateItem.RowNumEgressAclRefType,
-				func(v *string) { service.RowNumEgressAcl = v },
-				func(v *string) { service.RowNumEgressAclRefType = v },
-				"row_num_egress_acl", "row_num_egress_acl_ref_type_",
-				&fieldChanged,
-				&resp.Diagnostics,
-			) {
-				return service, false
-			}
-
-			// Handle row_num_mac_filter and row_num_mac_filter_ref_type_ using "One ref type supported" pattern
-			if !utils.HandleOneRefTypeSupported(
-				planItem.RowNumMacFilter, stateItem.RowNumMacFilter, planItem.RowNumMacFilterRefType, stateItem.RowNumMacFilterRefType,
-				func(v *string) { service.RowNumMacFilter = v },
-				func(v *string) { service.RowNumMacFilterRefType = v },
-				"row_num_mac_filter", "row_num_mac_filter_ref_type_",
 				&fieldChanged,
 				&resp.Diagnostics,
 			) {

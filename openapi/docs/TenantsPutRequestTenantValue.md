@@ -10,8 +10,7 @@ Name | Type | Description | Notes
 **Layer3VniAutoAssigned** | Pointer to **bool** | Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit. | [optional] 
 **Layer3Vlan** | Pointer to **NullableInt32** | VLAN value used to transport traffic between services of a Tenant  | [optional] 
 **Layer3VlanAutoAssigned** | Pointer to **bool** | Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit. | [optional] 
-**DhcpRelaySourceIpv4sSubnet** | Pointer to **string** | Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on. | [optional] [default to ""]
-**DhcpRelaySourceIpv6sSubnet** | Pointer to **string** | Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on. | [optional] [default to ""]
+**DhcpRelaySourceIpsSubnet** | Pointer to **string** | Range of IP addresses (represented in IP subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on. | [optional] [default to ""]
 **RouteDistinguisher** | Pointer to **string** | Route Distinguishers are used to maintain uniqueness among identical routes from different routers.  If set, then routes from this Tenant will be identified with this Route Distinguisher (BGP Community).  It should be two numbers separated by a colon. | [optional] [default to ""]
 **RouteTargetImport** | Pointer to **string** | A route-target (BGP Community) to attach while importing routes into the current tenant. It should be a comma-separated list of BGP Communities: each Community being two numbers separated by a colon. | [optional] [default to ""]
 **RouteTargetExport** | Pointer to **string** | A route-target (BGP Community) to attach while exporting routes from the current tenant. It should be a comma-separated list of BGP Communities: each Community being two numbers separated by a colon. | [optional] [default to ""]
@@ -22,7 +21,7 @@ Name | Type | Description | Notes
 **VrfName** | Pointer to **string** | Virtual Routing and Forwarding instance name associated to tenants  | [optional] [default to "(auto)"]
 **VrfNameAutoAssigned** | Pointer to **bool** | Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit. | [optional] 
 **RouteTenants** | Pointer to [**[]TenantsPutRequestTenantValueRouteTenantsInner**](TenantsPutRequestTenantValueRouteTenantsInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to [**EthportsettingsPutRequestEthPortSettingsValueObjectProperties**](EthportsettingsPutRequestEthPortSettingsValueObjectProperties.md) |  | [optional] 
 **DefaultOriginate** | Pointer to **bool** | Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric. | [optional] [default to false]
 
 ## Methods
@@ -214,55 +213,30 @@ SetLayer3VlanAutoAssigned sets Layer3VlanAutoAssigned field to given value.
 
 HasLayer3VlanAutoAssigned returns a boolean if a field has been set.
 
-### GetDhcpRelaySourceIpv4sSubnet
+### GetDhcpRelaySourceIpsSubnet
 
-`func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpv4sSubnet() string`
+`func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpsSubnet() string`
 
-GetDhcpRelaySourceIpv4sSubnet returns the DhcpRelaySourceIpv4sSubnet field if non-nil, zero value otherwise.
+GetDhcpRelaySourceIpsSubnet returns the DhcpRelaySourceIpsSubnet field if non-nil, zero value otherwise.
 
-### GetDhcpRelaySourceIpv4sSubnetOk
+### GetDhcpRelaySourceIpsSubnetOk
 
-`func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpv4sSubnetOk() (*string, bool)`
+`func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpsSubnetOk() (*string, bool)`
 
-GetDhcpRelaySourceIpv4sSubnetOk returns a tuple with the DhcpRelaySourceIpv4sSubnet field if it's non-nil, zero value otherwise
+GetDhcpRelaySourceIpsSubnetOk returns a tuple with the DhcpRelaySourceIpsSubnet field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetDhcpRelaySourceIpv4sSubnet
+### SetDhcpRelaySourceIpsSubnet
 
-`func (o *TenantsPutRequestTenantValue) SetDhcpRelaySourceIpv4sSubnet(v string)`
+`func (o *TenantsPutRequestTenantValue) SetDhcpRelaySourceIpsSubnet(v string)`
 
-SetDhcpRelaySourceIpv4sSubnet sets DhcpRelaySourceIpv4sSubnet field to given value.
+SetDhcpRelaySourceIpsSubnet sets DhcpRelaySourceIpsSubnet field to given value.
 
-### HasDhcpRelaySourceIpv4sSubnet
+### HasDhcpRelaySourceIpsSubnet
 
-`func (o *TenantsPutRequestTenantValue) HasDhcpRelaySourceIpv4sSubnet() bool`
+`func (o *TenantsPutRequestTenantValue) HasDhcpRelaySourceIpsSubnet() bool`
 
-HasDhcpRelaySourceIpv4sSubnet returns a boolean if a field has been set.
-
-### GetDhcpRelaySourceIpv6sSubnet
-
-`func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpv6sSubnet() string`
-
-GetDhcpRelaySourceIpv6sSubnet returns the DhcpRelaySourceIpv6sSubnet field if non-nil, zero value otherwise.
-
-### GetDhcpRelaySourceIpv6sSubnetOk
-
-`func (o *TenantsPutRequestTenantValue) GetDhcpRelaySourceIpv6sSubnetOk() (*string, bool)`
-
-GetDhcpRelaySourceIpv6sSubnetOk returns a tuple with the DhcpRelaySourceIpv6sSubnet field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDhcpRelaySourceIpv6sSubnet
-
-`func (o *TenantsPutRequestTenantValue) SetDhcpRelaySourceIpv6sSubnet(v string)`
-
-SetDhcpRelaySourceIpv6sSubnet sets DhcpRelaySourceIpv6sSubnet field to given value.
-
-### HasDhcpRelaySourceIpv6sSubnet
-
-`func (o *TenantsPutRequestTenantValue) HasDhcpRelaySourceIpv6sSubnet() bool`
-
-HasDhcpRelaySourceIpv6sSubnet returns a boolean if a field has been set.
+HasDhcpRelaySourceIpsSubnet returns a boolean if a field has been set.
 
 ### GetRouteDistinguisher
 
@@ -516,20 +490,20 @@ HasRouteTenants returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *TenantsPutRequestTenantValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
+`func (o *TenantsPutRequestTenantValue) GetObjectProperties() EthportsettingsPutRequestEthPortSettingsValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
+`func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*EthportsettingsPutRequestEthPortSettingsValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *TenantsPutRequestTenantValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
+`func (o *TenantsPutRequestTenantValue) SetObjectProperties(v EthportsettingsPutRequestEthPortSettingsValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 
