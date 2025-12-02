@@ -3,10 +3,8 @@
 
 resource "verity_service" "service_test_script1" {
 	object_properties {
-		group = "test"
-		on_summary = false
+		group = "test123"
 	}
 	enable = false
 	mtu = 1501
-	vlan = 105
 }

@@ -8,8 +8,7 @@ resource "verity_tenant" "tenant_test_script1" {
 		group = ""
 	}
 	default_originate = false
-	dhcp_relay_source_ipv4s_subnet = ""
-	dhcp_relay_source_ipv6s_subnet = ""
+	dhcp_relay_source_ips_subnet = ""
 	enable = true
 	export_route_map = ""
 	export_route_map_ref_type_ = ""
@@ -22,7 +21,17 @@ resource "verity_tenant" "tenant_test_script1" {
 	route_target_import = ""
 	route_tenants {
 		index = 1
-		enable = false
+		enable = true
+		tenant = ""
+	}
+	route_tenants {
+		index = 2
+		enable = true
+		tenant = ""
+	}
+	route_tenants {
+		index = 3
+		enable = true
 		tenant = ""
 	}
 	vrf_name_auto_assigned_ = true

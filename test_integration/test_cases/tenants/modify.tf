@@ -6,10 +6,9 @@ resource "verity_tenant" "tenant_test_script1" {
 		group = "test"
 	}
 	default_originate = true
-	enable = false
 	route_tenants {
-		index = 2
-		enable = false
+		index = 4
+		enable = true
 		tenant = ""
 	}
 }

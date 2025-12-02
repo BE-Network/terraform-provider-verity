@@ -17,35 +17,35 @@ resource "verity_gateway" "gateway_test_script1" {
 	default_originate = false
 	dynamic_bgp_limits = 0
 	dynamic_bgp_subnet = ""
-	ebgp_multihop = 255
+	ebgp_multihop = 260
 	egress_vlan = null
-	enable = true
+	enable = false
 	enable_bfd = false
 	export_route_map = ""
 	export_route_map_ref_type_ = ""
 	fabric_interconnect = false
-	gateway_mode = "Static BGP"
+	gateway_mode = "Dynamic BGP"
 	helper_hop_ip_address = ""
-	hold_timer = 180
+	hold_timer = 182
 	import_route_map = ""
 	import_route_map_ref_type_ = ""
 	keepalive_timer = 60
-	local_as_no_prepend = true
+	local_as_no_prepend = false
 	local_as_number = null
 	max_local_as_occurrences = 0
 	md5_password = ""
 	neighbor_as_number = null
-	neighbor_ip_address = "8.8.8.8"
+	neighbor_ip_address = ""
 	next_hop_self = false
 	replace_as = false
 	source_ip_address = ""
 	static_routes {
 		index = 1
 		ad_value = 1
-		enable = false
+		enable = true
 		ipv4_route_prefix = ""
 		next_hop_ip_address = ""
 	}
-	tenant = "Visualizator"
-	tenant_ref_type_ = "tenant"
+	tenant = "TOR Complex"
+	tenant_ref_type_ = "site"
 }
