@@ -442,22 +442,18 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	}
 
 	// BEFORE executing route_map_clause PUT, check for circular reference scenario
-	needsCircularRefFix, affectedClauses := m.detectCircularReferenceScenario(ctx)
-	var originalRouteMapClauseData map[string]interface{}
+	circularPutInfo := m.detectCircularReferenceScenario(ctx)
 
-	if needsCircularRefFix {
-		tflog.Info(ctx, "Applying circular reference fix for route_map_clause and tenant")
-
-		// Save original route_map_clause PUT data
-		m.mutex.Lock()
-		originalRouteMapClauseData = make(map[string]interface{})
-		for name, data := range affectedClauses {
-			originalRouteMapClauseData[name] = data
-		}
+	if circularPutInfo.NeedsFix {
+		tflog.Info(ctx, "Applying circular reference fix for route_map_clause and tenant", map[string]interface{}{
+			"affected_clauses":   circularPutInfo.ClauseNames,
+			"referenced_tenants": circularPutInfo.TenantNames,
+		})
 
 		// Temporarily replace affected route_map_clause PUT data with versions having empty match_vrf
+		m.mutex.Lock()
 		routeMapClauseOps := m.resources["route_map_clause"]
-		for name, data := range affectedClauses {
+		for name, data := range circularPutInfo.AffectedClauses {
 			modifiedData := m.createRouteMapClauseWithEmptyMatchVrf(data)
 			routeMapClauseOps.Put[name] = modifiedData
 			tflog.Debug(ctx, fmt.Sprintf("Temporarily setting match_vrf to empty for route_map_clause: %s", name))
@@ -487,7 +483,7 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	}
 
 	// If circular reference fix was applied, now PATCH route_map_clause with match_vrf
-	if needsCircularRefFix && len(originalRouteMapClauseData) > 0 {
+	if circularPutInfo.NeedsFix && len(circularPutInfo.AffectedClauses) > 0 {
 		tflog.Info(ctx, "Applying PATCH to restore match_vrf fields in route_map_clause")
 
 		m.mutex.Lock()
@@ -497,10 +493,13 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 			routeMapClauseOps.Patch = make(map[string]interface{})
 		}
 
-		affectedNames := make([]string, 0, len(originalRouteMapClauseData))
-		for name, originalData := range originalRouteMapClauseData {
-			// Create PATCH data with only match_vrf and match_vrf_ref_type_
-			patchData := m.createMatchVrfPatchData(originalData)
+		affectedNames := make([]string, 0, len(circularPutInfo.AffectedClauses))
+		for name, originalData := range circularPutInfo.AffectedClauses {
+			// Extract the original match_vrf value to restore
+			matchVrfValue := m.getMatchVrfValue(originalData)
+
+			// Create PATCH data to restore the match_vrf
+			patchData := m.createMatchVrfPatchData(originalData, matchVrfValue)
 			if patchData != nil {
 				routeMapClauseOps.Patch[name] = patchData
 				affectedNames = append(affectedNames, name)
@@ -512,7 +511,6 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 		}
 		m.mutex.Unlock()
 
-		// Execute the PATCH immediately
 		tflog.Info(ctx, "Executing PATCH to restore match_vrf", map[string]interface{}{
 			"affected_resources": affectedNames,
 		})
@@ -524,7 +522,7 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 
 		// Clean up the PATCH operations
 		m.mutex.Lock()
-		for name := range originalRouteMapClauseData {
+		for name := range circularPutInfo.AffectedClauses {
 			delete(routeMapClauseOps.Patch, name)
 		}
 		m.mutex.Unlock()
@@ -790,6 +788,61 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	}
 
 	// DELETE operations - Reverse DC Order (note: sfp_breakout and site are skipped - they only support GET and PATCH)
+
+	// CIRCULAR REFERENCE FIX FOR DELETE OPERATIONS
+	// Before starting DELETE operations, check if we need to handle circular references
+	// between route_map_clause (match_vrf) and tenant (export/import_route_map)
+	circularInfo := m.detectCompleteCircularDeleteSet(ctx)
+
+	if circularInfo.IsCompleteSet {
+		tflog.Info(ctx, "Complete circular reference set detected in DELETE operations - applying fix")
+		tflog.Info(ctx, "Clearing match_vrf references before deletion", map[string]interface{}{
+			"affected_clauses": circularInfo.ClauseNames,
+			"affected_tenants": circularInfo.TenantNames,
+		})
+
+		m.mutex.Lock()
+		// Add PATCH operations to clear match_vrf from route_map_clauses being deleted
+		routeMapClauseOps := m.resources["route_map_clause"]
+		if routeMapClauseOps.Patch == nil {
+			routeMapClauseOps.Patch = make(map[string]interface{})
+		}
+
+		// For each clause in the circular set, create PATCH to clear match_vrf
+		for _, clauseName := range circularInfo.ClauseNames {
+			// Get the clause data from circularInfo.AffectedClauses (fetched from API)
+			var originalData interface{}
+			if clauseData, exists := circularInfo.AffectedClauses[clauseName]; exists {
+				originalData = clauseData
+			} else if putData, exists := routeMapClauseOps.Put[clauseName]; exists {
+				originalData = putData
+			}
+
+			// Create PATCH data with empty match_vrf
+			patchData := m.createMatchVrfPatchData(originalData, "")
+			routeMapClauseOps.Patch[clauseName] = patchData
+			tflog.Debug(ctx, fmt.Sprintf("Clearing match_vrf for route_map_clause: %s before deletion", clauseName))
+		}
+		m.mutex.Unlock()
+
+		tflog.Info(ctx, "Executing PATCH to clear match_vrf references")
+		if !execute("PATCH", m.getOperationCount("route_map_clause", "PATCH"),
+			func(ctx context.Context) diag.Diagnostics {
+				return m.ExecuteBulk(ctx, "route_map_clause", "PATCH")
+			}, "Route Map Clause (clear match_vrf before deletion)") {
+			return diagnostics, operationsPerformed
+		}
+
+		// Clean up PATCH operations
+		m.mutex.Lock()
+		for _, clauseName := range circularInfo.ClauseNames {
+			delete(routeMapClauseOps.Patch, clauseName)
+		}
+		m.mutex.Unlock()
+
+		tflog.Info(ctx, "Successfully cleared match_vrf references, proceeding with deletions")
+	}
+
 	// 38. device_controller
 	if !execute("DELETE", m.getOperationCount("device_controller", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_controller", "DELETE") }, "Device Controller") {
 		return diagnostics, operationsPerformed

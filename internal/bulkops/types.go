@@ -137,3 +137,22 @@ type ResourceOperationData struct {
 	RecentOps        *bool
 	RecentOpTime     *time.Time
 }
+
+// CircularPutInfo contains information about circular references in PUT operations.
+// Used to track when route_map_clauses reference tenants being created.
+type CircularPutInfo struct {
+	NeedsFix        bool
+	AffectedClauses map[string]interface{}
+	ClauseNames     []string
+	TenantNames     []string
+}
+
+// CircularDeleteInfo contains information about circular references in DELETE operations.
+// Used to track when all resources in a circular dependency chain are being deleted together.
+type CircularDeleteInfo struct {
+	IsCompleteSet   bool
+	ClauseNames     []string
+	TenantNames     []string
+	RouteMapNames   []string
+	AffectedClauses map[string]interface{}
+}
