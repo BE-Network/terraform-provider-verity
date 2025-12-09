@@ -125,6 +125,12 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 		return diagnostics
 	}
 
+	// For DELETE operations with many resources, batch them to avoid URL length limits
+	// DELETE operations use query parameters which can exceed server URL limits (~8KB for Apache)
+	if config.OperationType == "DELETE" && len(resourceNames) > MaxDeleteBatchSize {
+		return m.executeBatchedDeleteOperation(ctx, config, operations, resourceNames)
+	}
+
 	// For PUT operations, filter out resources that already exist
 	var filteredOperations map[string]interface{}
 	var filteredResourceNames []string
@@ -223,6 +229,142 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 	return diagnostics
 }
 
+// executeBatchedDeleteOperation handles DELETE operations that exceed MaxDeleteBatchSize
+// by splitting them into smaller batches to avoid URL length limits.
+func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config BulkOperationConfig, operations map[string]interface{}, resourceNames []string) diag.Diagnostics {
+	var diagnostics diag.Diagnostics
+
+	totalResources := len(resourceNames)
+	batchCount := (totalResources + MaxDeleteBatchSize - 1) / MaxDeleteBatchSize
+
+	tflog.Info(ctx, fmt.Sprintf("Splitting bulk %s DELETE into %d batches of max %d resources each (total: %d)",
+		config.ResourceType, batchCount, MaxDeleteBatchSize, totalResources))
+
+	// Process each batch
+	for batchNum := 0; batchNum < batchCount; batchNum++ {
+		start := batchNum * MaxDeleteBatchSize
+		end := start + MaxDeleteBatchSize
+		if end > totalResources {
+			end = totalResources
+		}
+
+		batchNames := resourceNames[start:end]
+		batchOperations := make(map[string]interface{})
+		for _, name := range batchNames {
+			if val, exists := operations[name]; exists {
+				batchOperations[name] = val
+			}
+		}
+
+		tflog.Debug(ctx, fmt.Sprintf("Executing DELETE batch %d/%d for %s", batchNum+1, batchCount, config.ResourceType),
+			map[string]interface{}{
+				"batch_size":     len(batchNames),
+				"resource_names": batchNames,
+			})
+
+		// Create a batch-specific config that returns only this batch's operations
+		batchConfig := BulkOperationConfig{
+			ResourceType:  config.ResourceType,
+			OperationType: config.OperationType,
+			ExtractOperations: func() (map[string]interface{}, []string) {
+				return batchOperations, batchNames
+			},
+			CheckPreExistence: config.CheckPreExistence,
+			PrepareRequest:    config.PrepareRequest,
+			ExecuteRequest:    config.ExecuteRequest,
+			ProcessResponse:   config.ProcessResponse,
+			UpdateRecentOps:   func() {}, // Don't update until all batches complete
+		}
+
+		// Execute this batch using the standard execution path (won't recurse since batch size <= MaxDeleteBatchSize)
+		batchDiags := m.executeSingleDeleteBatch(ctx, batchConfig, batchOperations, batchNames)
+		diagnostics.Append(batchDiags...)
+
+		if batchDiags.HasError() {
+			tflog.Error(ctx, fmt.Sprintf("DELETE batch %d/%d failed for %s, stopping further batches",
+				batchNum+1, batchCount, config.ResourceType))
+			return diagnostics
+		}
+
+		// Small delay between batches to avoid overwhelming the server
+		if batchNum < batchCount-1 {
+			time.Sleep(100 * time.Millisecond)
+		}
+	}
+
+	// Update recent ops after all batches complete successfully
+	config.UpdateRecentOps()
+
+	tflog.Info(ctx, fmt.Sprintf("Successfully completed all %d DELETE batches for %s", batchCount, config.ResourceType))
+	return diagnostics
+}
+
+// executeSingleDeleteBatch executes a single batch of DELETE operations
+func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOperationConfig, operations map[string]interface{}, resourceNames []string) diag.Diagnostics {
+	var diagnostics diag.Diagnostics
+
+	tflog.Debug(ctx, fmt.Sprintf("Executing bulk %s %s operation", config.ResourceType, config.OperationType),
+		map[string]interface{}{
+			fmt.Sprintf("%s_count", config.ResourceType): len(operations),
+			fmt.Sprintf("%s_names", config.ResourceType): resourceNames,
+		})
+
+	request := config.PrepareRequest(operations)
+
+	retryConfig := utils.DefaultRetryConfig()
+	var opErr error
+	var apiResp *http.Response
+
+	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
+		if retry > 0 {
+			delayTime := utils.CalculateBackoff(retry, retryConfig)
+			tflog.Debug(ctx, fmt.Sprintf("Retrying bulk %s %s operation after %v",
+				config.ResourceType, config.OperationType, delayTime))
+			time.Sleep(delayTime)
+		}
+
+		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+		apiResp, opErr = config.ExecuteRequest(apiCtx, request)
+		cancel()
+
+		if opErr == nil {
+			break
+		}
+
+		if !utils.IsRetriableError(opErr) {
+			break
+		}
+
+		delayTime := utils.CalculateBackoff(retry, retryConfig)
+		tflog.Debug(ctx, fmt.Sprintf("Bulk %s %s operation failed with retriable error, retrying",
+			config.ResourceType, config.OperationType),
+			map[string]interface{}{
+				"attempt":     retry + 1,
+				"error":       opErr.Error(),
+				"delay_ms":    delayTime.Milliseconds(),
+				"max_retries": retryConfig.MaxRetries,
+			})
+	}
+
+	if opErr == nil && apiResp != nil && config.ProcessResponse != nil {
+		if processErr := config.ProcessResponse(ctx, apiResp); processErr != nil {
+			tflog.Warn(ctx, fmt.Sprintf("Post-processing failed for bulk %s %s operation: %v",
+				config.ResourceType, config.OperationType, processErr))
+		}
+	}
+
+	m.updateOperationStatuses(ctx, config.ResourceType, config.OperationType, resourceNames, opErr)
+
+	if opErr != nil {
+		diagnostics.AddError(
+			fmt.Sprintf("Failed to execute bulk %s %s operation", config.ResourceType, config.OperationType),
+			fmt.Sprintf("Error: %s", opErr),
+		)
+	}
+
+	return diagnostics
+}
+
 func generateOperationID(resourceType, resourceName, operationType string) string {
 	return fmt.Sprintf("%s-%s-%s-%s", resourceType, resourceName, operationType, uuid.New().String())
 }
@@ -316,6 +458,11 @@ func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, ope
 // ================================================================================================
 
 func (m *Manager) ExecuteAllPendingOperations(ctx context.Context) diag.Diagnostics {
+	// Ensure only one execution runs at a time - prevents race conditions when multiple
+	// timer callbacks fire due to low parallelism causing resource waves
+	m.executionMutex.Lock()
+	defer m.executionMutex.Unlock()
+
 	var diagnostics diag.Diagnostics
 
 	if time.Since(m.lastOperationTime) < BatchCollectionWindow {
