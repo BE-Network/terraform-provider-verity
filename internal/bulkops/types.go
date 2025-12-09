@@ -123,6 +123,7 @@ const (
 // Configuration constants for bulk operation timing and limits.
 const (
 	MaxBatchSize          = 1000                    // Maximum number of resources per batch
+	MaxDeleteBatchSize    = 100                     // Maximum resources per DELETE batch to avoid URL length limits
 	DefaultBatchDelay     = 2 * time.Second         // Default delay between operations
 	BatchCollectionWindow = 2000 * time.Millisecond // Time to collect operations into batches
 	MaxBatchDelay         = 5 * time.Second         // Maximum time to wait before forcing execution

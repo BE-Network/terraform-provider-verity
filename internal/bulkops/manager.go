@@ -30,6 +30,7 @@ type Manager struct {
 	clearCacheFunc    ClearCacheFunc
 	mode              string
 	mutex             sync.Mutex
+	executionMutex    sync.Mutex
 	lastOperationTime time.Time
 	batchStartTime    time.Time
 	resources         map[string]*ResourceOperations
