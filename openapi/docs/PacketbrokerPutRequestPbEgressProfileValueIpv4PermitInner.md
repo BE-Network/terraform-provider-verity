@@ -1,4 +1,4 @@
-# PacketbrokerPutRequestPortAclValueIpv4PermitInner
+# PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
 
 ## Properties
 
@@ -11,120 +11,120 @@ Name | Type | Description | Notes
 
 ## Methods
 
-### NewPacketbrokerPutRequestPortAclValueIpv4PermitInner
+### NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
 
-`func NewPacketbrokerPutRequestPortAclValueIpv4PermitInner() *PacketbrokerPutRequestPortAclValueIpv4PermitInner`
+`func NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner() *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner`
 
-NewPacketbrokerPutRequestPortAclValueIpv4PermitInner instantiates a new PacketbrokerPutRequestPortAclValueIpv4PermitInner object
+NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner instantiates a new PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewPacketbrokerPutRequestPortAclValueIpv4PermitInnerWithDefaults
+### NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInnerWithDefaults
 
-`func NewPacketbrokerPutRequestPortAclValueIpv4PermitInnerWithDefaults() *PacketbrokerPutRequestPortAclValueIpv4PermitInner`
+`func NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInnerWithDefaults() *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner`
 
-NewPacketbrokerPutRequestPortAclValueIpv4PermitInnerWithDefaults instantiates a new PacketbrokerPutRequestPortAclValueIpv4PermitInner object
+NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInnerWithDefaults instantiates a new PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetEnable
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetEnable() bool`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetEnable() bool`
 
 GetEnable returns the Enable field if non-nil, zero value otherwise.
 
 ### GetEnableOk
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetEnableOk() (*bool, bool)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetEnableOk() (*bool, bool)`
 
 GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEnable
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) SetEnable(v bool)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetEnable(v bool)`
 
 SetEnable sets Enable field to given value.
 
 ### HasEnable
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasEnable() bool`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
 
 ### GetFilter
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilter() string`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetFilter() string`
 
 GetFilter returns the Filter field if non-nil, zero value otherwise.
 
 ### GetFilterOk
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterOk() (*string, bool)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetFilterOk() (*string, bool)`
 
 GetFilterOk returns a tuple with the Filter field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetFilter
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) SetFilter(v string)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetFilter(v string)`
 
 SetFilter sets Filter field to given value.
 
 ### HasFilter
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasFilter() bool`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) HasFilter() bool`
 
 HasFilter returns a boolean if a field has been set.
 
 ### GetFilterRefType
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterRefType() string`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetFilterRefType() string`
 
 GetFilterRefType returns the FilterRefType field if non-nil, zero value otherwise.
 
 ### GetFilterRefTypeOk
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterRefTypeOk() (*string, bool)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetFilterRefTypeOk() (*string, bool)`
 
 GetFilterRefTypeOk returns a tuple with the FilterRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetFilterRefType
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) SetFilterRefType(v string)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetFilterRefType(v string)`
 
 SetFilterRefType sets FilterRefType field to given value.
 
 ### HasFilterRefType
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasFilterRefType() bool`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) HasFilterRefType() bool`
 
 HasFilterRefType returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetIndex() int32`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetIndex() int32`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetIndexOk() (*int32, bool)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetIndexOk() (*int32, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) SetIndex(v int32)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetIndex(v int32)`
 
 SetIndex sets Index field to given value.
 
 ### HasIndex
 
-`func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasIndex() bool`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) HasIndex() bool`
 
 HasIndex returns a boolean if a field has been set.
 

@@ -209,7 +209,7 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	name := plan.Name.ValueString()
-	pbProps := &openapi.PacketbrokerPutRequestPortAclValue{
+	pbProps := &openapi.PacketbrokerPutRequestPbEgressProfileValue{
 		Name: openapi.PtrString(name),
 	}
 
@@ -219,9 +219,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	})
 
 	if len(plan.Ipv4Permit) > 0 {
-		ipv4Permit := make([]openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner, len(plan.Ipv4Permit))
+		ipv4Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Permit))
 		for i, filter := range plan.Ipv4Permit {
-			filterItem := openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filterItem.Enable, TFValue: filter.Enable},
@@ -240,9 +240,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	if len(plan.Ipv4Deny) > 0 {
-		ipv4Deny := make([]openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner, len(plan.Ipv4Deny))
+		ipv4Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, len(plan.Ipv4Deny))
 		for i, filter := range plan.Ipv4Deny {
-			filterItem := openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filterItem.Enable, TFValue: filter.Enable},
@@ -261,9 +261,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	if len(plan.Ipv6Permit) > 0 {
-		ipv6Permit := make([]openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner, len(plan.Ipv6Permit))
+		ipv6Permit := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Permit))
 		for i, filter := range plan.Ipv6Permit {
-			filterItem := openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filterItem.Enable, TFValue: filter.Enable},
@@ -282,9 +282,9 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	if len(plan.Ipv6Deny) > 0 {
-		ipv6Deny := make([]openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner, len(plan.Ipv6Deny))
+		ipv6Deny := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, len(plan.Ipv6Deny))
 		for i, filter := range plan.Ipv6Deny {
-			filterItem := openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
+			filterItem := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filterItem.Enable, TFValue: filter.Enable},
@@ -483,7 +483,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	}
 
 	name := plan.Name.ValueString()
-	pbProps := openapi.PacketbrokerPutRequestPortAclValue{}
+	pbProps := openapi.PacketbrokerPutRequestPbEgressProfileValue{}
 	hasChanges := false
 
 	// Handle string field changes
@@ -494,9 +494,9 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 	// Handle IPv4 Permit using consolidated handler
 	changedIpv4Permit, ipv4PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit,
-		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner]{
-			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner {
-				newFilter := openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner]{
+			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -516,8 +516,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 				return newFilter
 			},
-			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner, bool) {
-				updateFilter := openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, bool) {
+				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -539,8 +539,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 				return updateFilter, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner {
-				return openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner{
+			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},
@@ -552,9 +552,9 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 	// Handle IPv4 Deny
 	changedIpv4Deny, ipv4DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny,
-		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner]{
-			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner {
-				newFilter := openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner]{
+			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -574,8 +574,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 				return newFilter
 			},
-			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner, bool) {
-				updateFilter := openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, bool) {
+				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -597,8 +597,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 				return updateFilter, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner {
-				return openapi.PacketbrokerPutRequestPortAclValueIpv4PermitInner{
+			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},
@@ -610,9 +610,9 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 	// Handle IPv6 Permit
 	changedIpv6Permit, ipv6PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit,
-		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner]{
-			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner {
-				newFilter := openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
+		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner]{
+			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -632,8 +632,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 				return newFilter
 			},
-			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner, bool) {
-				updateFilter := openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
+			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
+				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -654,8 +654,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 				return updateFilter, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner {
-				return openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner{
+			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},
@@ -667,9 +667,9 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 	// Handle IPv6 Deny
 	changedIpv6Deny, ipv6DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny,
-		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner]{
-			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner {
-				newFilter := openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
+		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner]{
+			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -689,8 +689,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 				return newFilter
 			},
-			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner, bool) {
-				updateFilter := openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner{}
+			UpdateExisting: func(planItem verityPacketBrokerFilterModel, stateItem verityPacketBrokerFilterModel) (openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
+				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -712,8 +712,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 				return updateFilter, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner {
-				return openapi.PacketbrokerPutRequestPortAclValueIpv6PermitInner{
+			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},

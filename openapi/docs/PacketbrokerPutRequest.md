@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**PortAcl** | Pointer to [**map[string]PacketbrokerPutRequestPortAclValue**](PacketbrokerPutRequestPortAclValue.md) |  | [optional] 
+**PbEgressProfile** | Pointer to [**map[string]PacketbrokerPutRequestPbEgressProfileValue**](PacketbrokerPutRequestPbEgressProfileValue.md) |  | [optional] 
 
 ## Methods
 
@@ -25,30 +25,30 @@ NewPacketbrokerPutRequestWithDefaults instantiates a new PacketbrokerPutRequest 
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
-### GetPortAcl
+### GetPbEgressProfile
 
-`func (o *PacketbrokerPutRequest) GetPortAcl() map[string]PacketbrokerPutRequestPortAclValue`
+`func (o *PacketbrokerPutRequest) GetPbEgressProfile() map[string]PacketbrokerPutRequestPbEgressProfileValue`
 
-GetPortAcl returns the PortAcl field if non-nil, zero value otherwise.
+GetPbEgressProfile returns the PbEgressProfile field if non-nil, zero value otherwise.
 
-### GetPortAclOk
+### GetPbEgressProfileOk
 
-`func (o *PacketbrokerPutRequest) GetPortAclOk() (*map[string]PacketbrokerPutRequestPortAclValue, bool)`
+`func (o *PacketbrokerPutRequest) GetPbEgressProfileOk() (*map[string]PacketbrokerPutRequestPbEgressProfileValue, bool)`
 
-GetPortAclOk returns a tuple with the PortAcl field if it's non-nil, zero value otherwise
+GetPbEgressProfileOk returns a tuple with the PbEgressProfile field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetPortAcl
+### SetPbEgressProfile
 
-`func (o *PacketbrokerPutRequest) SetPortAcl(v map[string]PacketbrokerPutRequestPortAclValue)`
+`func (o *PacketbrokerPutRequest) SetPbEgressProfile(v map[string]PacketbrokerPutRequestPbEgressProfileValue)`
 
-SetPortAcl sets PortAcl field to given value.
+SetPbEgressProfile sets PbEgressProfile field to given value.
 
-### HasPortAcl
+### HasPbEgressProfile
 
-`func (o *PacketbrokerPutRequest) HasPortAcl() bool`
+`func (o *PacketbrokerPutRequest) HasPbEgressProfile() bool`
 
-HasPortAcl returns a boolean if a field has been set.
+HasPbEgressProfile returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

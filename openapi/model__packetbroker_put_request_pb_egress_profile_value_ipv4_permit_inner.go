@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the PacketbrokerPutRequestPortAclValueIpv4PermitInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+// checks if the PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
-// PacketbrokerPutRequestPortAclValueIpv4PermitInner struct for PacketbrokerPutRequestPortAclValueIpv4PermitInner
-type PacketbrokerPutRequestPortAclValueIpv4PermitInner struct {
+// PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner struct for PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
+type PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner struct {
 	// Enable
 	Enable *bool `json:"enable,omitempty"`
 	// Filter
@@ -29,12 +29,12 @@ type PacketbrokerPutRequestPortAclValueIpv4PermitInner struct {
 	Index *int32 `json:"index,omitempty"`
 }
 
-// NewPacketbrokerPutRequestPortAclValueIpv4PermitInner instantiates a new PacketbrokerPutRequestPortAclValueIpv4PermitInner object
+// NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner instantiates a new PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPacketbrokerPutRequestPortAclValueIpv4PermitInner() *PacketbrokerPutRequestPortAclValueIpv4PermitInner {
-	this := PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+func NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner() *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+	this := PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 	var enable bool = false
 	this.Enable = &enable
 	var filter string = ""
@@ -42,11 +42,11 @@ func NewPacketbrokerPutRequestPortAclValueIpv4PermitInner() *PacketbrokerPutRequ
 	return &this
 }
 
-// NewPacketbrokerPutRequestPortAclValueIpv4PermitInnerWithDefaults instantiates a new PacketbrokerPutRequestPortAclValueIpv4PermitInner object
+// NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInnerWithDefaults instantiates a new PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewPacketbrokerPutRequestPortAclValueIpv4PermitInnerWithDefaults() *PacketbrokerPutRequestPortAclValueIpv4PermitInner {
-	this := PacketbrokerPutRequestPortAclValueIpv4PermitInner{}
+func NewPacketbrokerPutRequestPbEgressProfileValueIpv4PermitInnerWithDefaults() *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+	this := PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 	var enable bool = false
 	this.Enable = &enable
 	var filter string = ""
@@ -55,7 +55,7 @@ func NewPacketbrokerPutRequestPortAclValueIpv4PermitInnerWithDefaults() *Packetb
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetEnable() bool {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetEnable() bool {
 	if o == nil || IsNil(o.Enable) {
 		var ret bool
 		return ret
@@ -65,7 +65,7 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetEnable() bool {
 
 // GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetEnableOk() (*bool, bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetEnableOk() (*bool, bool) {
 	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetEnableOk() (*bool
 }
 
 // HasEnable returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasEnable() bool {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) HasEnable() bool {
 	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
@@ -82,12 +82,12 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasEnable() bool {
 }
 
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) SetEnable(v bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetEnable(v bool) {
 	o.Enable = &v
 }
 
 // GetFilter returns the Filter field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilter() string {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetFilter() string {
 	if o == nil || IsNil(o.Filter) {
 		var ret string
 		return ret
@@ -97,7 +97,7 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilter() string {
 
 // GetFilterOk returns a tuple with the Filter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterOk() (*string, bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetFilterOk() (*string, bool) {
 	if o == nil || IsNil(o.Filter) {
 		return nil, false
 	}
@@ -105,7 +105,7 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterOk() (*stri
 }
 
 // HasFilter returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasFilter() bool {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) HasFilter() bool {
 	if o != nil && !IsNil(o.Filter) {
 		return true
 	}
@@ -114,12 +114,12 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasFilter() bool {
 }
 
 // SetFilter gets a reference to the given string and assigns it to the Filter field.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) SetFilter(v string) {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetFilter(v string) {
 	o.Filter = &v
 }
 
 // GetFilterRefType returns the FilterRefType field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterRefType() string {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetFilterRefType() string {
 	if o == nil || IsNil(o.FilterRefType) {
 		var ret string
 		return ret
@@ -129,7 +129,7 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterRefType() s
 
 // GetFilterRefTypeOk returns a tuple with the FilterRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterRefTypeOk() (*string, bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetFilterRefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.FilterRefType) {
 		return nil, false
 	}
@@ -137,7 +137,7 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetFilterRefTypeOk()
 }
 
 // HasFilterRefType returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasFilterRefType() bool {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) HasFilterRefType() bool {
 	if o != nil && !IsNil(o.FilterRefType) {
 		return true
 	}
@@ -146,12 +146,12 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasFilterRefType() b
 }
 
 // SetFilterRefType gets a reference to the given string and assigns it to the FilterRefType field.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) SetFilterRefType(v string) {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetFilterRefType(v string) {
 	o.FilterRefType = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetIndex() int32 {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetIndex() int32 {
 	if o == nil || IsNil(o.Index) {
 		var ret int32
 		return ret
@@ -161,7 +161,7 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetIndex() int32 {
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetIndexOk() (*int32, bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetIndexOk() (*int32, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -169,7 +169,7 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) GetIndexOk() (*int32
 }
 
 // HasIndex returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasIndex() bool {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) HasIndex() bool {
 	if o != nil && !IsNil(o.Index) {
 		return true
 	}
@@ -178,11 +178,11 @@ func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) HasIndex() bool {
 }
 
 // SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *PacketbrokerPutRequestPortAclValueIpv4PermitInner) SetIndex(v int32) {
+func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetIndex(v int32) {
 	o.Index = &v
 }
 
-func (o PacketbrokerPutRequestPortAclValueIpv4PermitInner) MarshalJSON() ([]byte, error) {
+func (o PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -190,7 +190,7 @@ func (o PacketbrokerPutRequestPortAclValueIpv4PermitInner) MarshalJSON() ([]byte
 	return json.Marshal(toSerialize)
 }
 
-func (o PacketbrokerPutRequestPortAclValueIpv4PermitInner) ToMap() (map[string]interface{}, error) {
+func (o PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
@@ -207,38 +207,38 @@ func (o PacketbrokerPutRequestPortAclValueIpv4PermitInner) ToMap() (map[string]i
 	return toSerialize, nil
 }
 
-type NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner struct {
-	value *PacketbrokerPutRequestPortAclValueIpv4PermitInner
+type NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner struct {
+	value *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
 	isSet bool
 }
 
-func (v NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner) Get() *PacketbrokerPutRequestPortAclValueIpv4PermitInner {
+func (v NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) Get() *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
 	return v.value
 }
 
-func (v *NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner) Set(val *PacketbrokerPutRequestPortAclValueIpv4PermitInner) {
+func (v *NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) Set(val *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner) IsSet() bool {
+func (v NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner) Unset() {
+func (v *NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullablePacketbrokerPutRequestPortAclValueIpv4PermitInner(val *PacketbrokerPutRequestPortAclValueIpv4PermitInner) *NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner {
-	return &NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner{value: val, isSet: true}
+func NewNullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner(val *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) *NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+	return &NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{value: val, isSet: true}
 }
 
-func (v NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner) MarshalJSON() ([]byte, error) {
+func (v NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullablePacketbrokerPutRequestPortAclValueIpv4PermitInner) UnmarshalJSON(src []byte) error {
+func (v *NullablePacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

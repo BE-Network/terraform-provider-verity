@@ -6933,6 +6933,27 @@ components:
             object to the list.
           type: integer
       type: object
+    _packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable
+          type: boolean
+        filter:
+          default: ""
+          description: Filter
+          type: string
+        filter_ref_type_:
+          description: Object type for filter field
+          enum:
+          - ipv6_filter
+          - ipv6_list_filter
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
     _ethportsettings_put_request_eth_port_settings_value_lldp_med_inner:
       properties:
         lldp_med_row_num_enable:
@@ -6981,9 +7002,9 @@ components:
       type: object
     _packetbroker_put_request:
       properties:
-        port_acl:
+        pb_egress_profile:
           additionalProperties:
-            $ref: "#/components/schemas/_packetbroker_put_request_port_acl_value"
+            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value"
           properties: {}
           type: object
       type: object
@@ -9957,6 +9978,27 @@ components:
             $ref: "#/components/schemas/_ethportsettings_put_request_eth_port_settings_value_lldp_med_inner"
           type: array
       type: object
+    _packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner:
+      properties:
+        enable:
+          default: false
+          description: Enable
+          type: boolean
+        filter:
+          default: ""
+          description: Filter
+          type: string
+        filter_ref_type_:
+          description: Object type for filter field
+          enum:
+          - ipv4_filter
+          - ipv4_list_filter
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
     _packetqueues_put_request:
       properties:
         packet_queue:
@@ -11057,27 +11099,6 @@ components:
         object_properties:
           $ref: "#/components/schemas/_voiceportprofiles_put_request_voice_port_profiles_value_object_properties"
       type: object
-    _packetbroker_put_request_port_acl_value_ipv6_permit_inner:
-      properties:
-        enable:
-          default: false
-          description: Enable
-          type: boolean
-        filter:
-          default: ""
-          description: Filter
-          type: string
-        filter_ref_type_:
-          description: Object type for filter field
-          enum:
-          - ipv6_filter
-          - ipv6_list_filter
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
-      type: object
     _packetqueues_put_request_packet_queue_value:
       properties:
         name:
@@ -11118,27 +11139,6 @@ components:
           description: Comma separated list of IPv4 addresses
           minLength: 1
           type: string
-      type: object
-    _packetbroker_put_request_port_acl_value_ipv4_permit_inner:
-      properties:
-        enable:
-          default: false
-          description: Enable
-          type: boolean
-        filter:
-          default: ""
-          description: Filter
-          type: string
-        filter_ref_type_:
-          description: Object type for filter field
-          enum:
-          - ipv4_filter
-          - ipv4_list_filter
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
       type: object
     _routemaps_put_request_route_map_value_route_map_clauses_inner:
       properties:
@@ -11196,6 +11196,35 @@ components:
           default: ""
           description: User Notes.
           type: string
+      type: object
+    _packetbroker_put_request_pb_egress_profile_value:
+      properties:
+        name:
+          default: ""
+          description: Object Name. Must be unique.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        ipv4_permit:
+          items:
+            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner"
+          type: array
+        ipv4_deny:
+          items:
+            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner"
+          type: array
+        ipv6_permit:
+          items:
+            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner"
+          type: array
+        ipv6_deny:
+          items:
+            $ref: "#/components/schemas/_packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner"
+          type: array
       type: object
     _pods_put_request_pod_value:
       properties:
@@ -11303,35 +11332,6 @@ components:
           type: array
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
-      type: object
-    _packetbroker_put_request_port_acl_value:
-      properties:
-        name:
-          default: ""
-          description: Object Name. Must be unique.
-          format: name
-          minLength: 1
-          type: string
-        enable:
-          default: false
-          description: Enable object.
-          type: boolean
-        ipv4_permit:
-          items:
-            $ref: "#/components/schemas/_packetbroker_put_request_port_acl_value_ipv4_permit_inner"
-          type: array
-        ipv4_deny:
-          items:
-            $ref: "#/components/schemas/_packetbroker_put_request_port_acl_value_ipv4_permit_inner"
-          type: array
-        ipv6_permit:
-          items:
-            $ref: "#/components/schemas/_packetbroker_put_request_port_acl_value_ipv6_permit_inner"
-          type: array
-        ipv6_deny:
-          items:
-            $ref: "#/components/schemas/_packetbroker_put_request_port_acl_value_ipv6_permit_inner"
-          type: array
       type: object
     _diagnosticsprofiles_put_request:
       properties:

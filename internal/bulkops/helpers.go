@@ -978,11 +978,11 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 			return patchRequest
 		case "packet_broker":
 			putRequest := openapi.NewPacketbrokerPutRequest()
-			brokerMap := make(map[string]openapi.PacketbrokerPutRequestPortAclValue)
+			brokerMap := make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
 			for name, props := range filteredData {
-				brokerMap[name] = props.(openapi.PacketbrokerPutRequestPortAclValue)
+				brokerMap[name] = props.(openapi.PacketbrokerPutRequestPbEgressProfileValue)
 			}
-			putRequest.SetPortAcl(brokerMap)
+			putRequest.SetPbEgressProfile(brokerMap)
 			return putRequest
 		case "packet_queue":
 			putRequest := openapi.NewPacketqueuesPutRequest()
