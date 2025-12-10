@@ -173,6 +173,10 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 
 	request := config.PrepareRequest(filteredOperations)
 
+	// Mark all operations as executing - this sets the ExecutionStartTime so that
+	// WaitForOperation can track timeout from when the API call actually starts
+	m.markOperationsAsExecuting(config.ResourceType, config.OperationType, filteredResourceNames)
+
 	retryConfig := utils.DefaultRetryConfig()
 	var opErr error
 	var apiResp *http.Response
@@ -311,6 +315,10 @@ func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOpera
 
 	request := config.PrepareRequest(operations)
 
+	// Mark all operations as executing - this sets the ExecutionStartTime so that
+	// WaitForOperation can track timeout from when the API call actually starts
+	m.markOperationsAsExecuting(config.ResourceType, config.OperationType, resourceNames)
+
 	retryConfig := utils.DefaultRetryConfig()
 	var opErr error
 	var apiResp *http.Response
@@ -387,22 +395,38 @@ func (m *Manager) WaitForOperation(ctx context.Context, operationID string, time
 	}
 	m.operationMutex.Unlock()
 
-	select {
-	case <-waitCh:
-		// Operation completed
-		m.operationMutex.Lock()
-		defer m.operationMutex.Unlock()
+	ticker := time.NewTicker(100 * time.Millisecond)
+	defer ticker.Stop()
 
-		if err, hasError := m.operationErrors[operationID]; hasError {
-			return err
+	for {
+		select {
+		case <-waitCh:
+			// Operation completed
+			m.operationMutex.Lock()
+			defer m.operationMutex.Unlock()
+
+			if err, hasError := m.operationErrors[operationID]; hasError {
+				return err
+			}
+			return nil
+
+		case <-ticker.C:
+			// Check if operation has started executing and if timeout has elapsed
+			m.operationMutex.Lock()
+			op, opExists := m.pendingOperations[operationID]
+			if opExists && op != nil && !op.ExecutionStartTime.IsZero() {
+				// Operation has started executing - check if timeout elapsed from start time
+				elapsed := time.Since(op.ExecutionStartTime)
+				if elapsed >= timeout {
+					m.operationMutex.Unlock()
+					return fmt.Errorf("timeout waiting for operation %s (elapsed %v since execution started)", operationID, elapsed)
+				}
+			}
+			m.operationMutex.Unlock()
+
+		case <-ctx.Done():
+			return ctx.Err()
 		}
-		return nil
-
-	case <-time.After(timeout):
-		return fmt.Errorf("timeout waiting for operation %s", operationID)
-
-	case <-ctx.Done():
-		return ctx.Err()
 	}
 }
 
@@ -426,8 +450,8 @@ func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, ope
 		}
 
 		if matchesResourceType && op.OperationType == operationType {
-			// For PUT, we need to check pending status
-			if operationType == "PUT" && op.Status != OperationPending {
+			// For PUT, we need to check that operation is pending or executing
+			if operationType == "PUT" && op.Status != OperationPending && op.Status != OperationExecuting {
 				continue
 			}
 
@@ -448,6 +472,37 @@ func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, ope
 					m.operationResults[opID] = false
 				}
 				m.safeCloseChannel(opID, true)
+			}
+		}
+	}
+}
+
+// markOperationsAsExecuting sets the ExecutionStartTime for all operations in the batch.
+// This allows WaitForOperation to track timeout from when the API call actually begins,
+// not from when the operation was queued.
+func (m *Manager) markOperationsAsExecuting(resourceType, operationType string, resourceNames []string) {
+	m.operationMutex.Lock()
+	defer m.operationMutex.Unlock()
+
+	startTime := time.Now()
+	resourceMap := make(map[string]bool)
+	for _, name := range resourceNames {
+		resourceMap[name] = true
+	}
+
+	for opID, op := range m.pendingOperations {
+		matchesResourceType := false
+		if resourceType == "acl_v4" || resourceType == "acl_v6" {
+			matchesResourceType = op.ResourceType == "acl"
+		} else {
+			matchesResourceType = op.ResourceType == resourceType
+		}
+
+		if matchesResourceType && op.OperationType == operationType && op.Status == OperationPending {
+			if resourceMap[op.ResourceName] {
+				op.Status = OperationExecuting
+				op.ExecutionStartTime = startTime
+				m.pendingOperations[opID] = op
 			}
 		}
 	}

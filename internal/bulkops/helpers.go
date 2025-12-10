@@ -1139,7 +1139,7 @@ func (m *Manager) createResponseProcessor(config ResourceConfig, operationType s
 	}
 
 	return func(ctx context.Context, resp *http.Response) error {
-		delayTime := 2 * time.Second
+		delayTime := 5 * time.Second
 		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching %s", delayTime, config.ResourceType))
 		time.Sleep(delayTime)
 
