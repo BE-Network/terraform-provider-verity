@@ -1072,9 +1072,10 @@ func (i *Importer) generateStagesTF() (string, error) {
 		// 13. PB Routing, 14. IPv4 Lists, 15. IPv6 Lists, 16. Services, 17. Port ACLs,
 		// 18. Packet Broker, 19. Eth Port Profiles, 20. Packet Queues, 21. SFlow Collectors,
 		// 22. Gateways, 23. Lags, 24. Eth Port Settings, 25. Diagnostics Profiles,
-		// 26. Gateway Profiles, 27. Diagnostics Port Profiles, 28. Bundles, 29. Pods,
-		// 30. Badges, 31. Spine Planes, 32. Switchpoints, 33. Device Settings,
-		// 34. Thresholds, 35. Grouping Rules, 36. Threshold Groups, 37. Sites, 38. Device Controllers
+		// 26. Gateway Profiles,  27. Device Settings, 28. Diagnostics Port Profiles, 29. Bundles, 30. Pods,
+		// 31. Badges, 32. Spine Planes, 33. Switchpoints, 34. Thresholds, 35. Grouping Rules,
+		// 36. Threshold Groups, 37. Sites, 38. Device Controllers
+
 		stageOrder = []StageDefinition{
 			{"sfp_breakout_stage", "verity_sfp_breakout", ""},
 			{"ipv6_prefix_list_stage", "verity_ipv6_prefix_list", "sfp_breakout_stage"},
@@ -1102,14 +1103,14 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"eth_port_settings_stage", "verity_eth_port_settings", "lag_stage"},
 			{"diagnostics_profile_stage", "verity_diagnostics_profile", "eth_port_settings_stage"},
 			{"gateway_profile_stage", "verity_gateway_profile", "diagnostics_profile_stage"},
-			{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "gateway_profile_stage"},
+			{"device_settings_stage", "verity_device_settings", "gateway_profile_stage"},
+			{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "device_settings_stage"},
 			{"bundle_stage", "verity_bundle", "diagnostics_port_profile_stage"},
 			{"pod_stage", "verity_pod", "bundle_stage"},
 			{"badge_stage", "verity_badge", "pod_stage"},
 			{"spine_plane_stage", "verity_spine_plane", "badge_stage"},
 			{"switchpoint_stage", "verity_switchpoint", "spine_plane_stage"},
-			{"device_settings_stage", "verity_device_settings", "switchpoint_stage"},
-			{"threshold_stage", "verity_threshold", "device_settings_stage"},
+			{"threshold_stage", "verity_threshold", "switchpoint_stage"},
 			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
 			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
 			{"site_stage", "verity_site", "threshold_group_stage"},

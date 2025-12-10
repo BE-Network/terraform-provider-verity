@@ -788,34 +788,34 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("PUT", m.getOperationCount("gateway_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "gateway_profile", "PUT") }, "Gateway Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 27. diagnostics_port_profile
+	// 27. device_settings
+	if !execute("PUT", m.getOperationCount("device_settings", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_settings", "PUT") }, "Device Settings") {
+		return diagnostics, operationsPerformed
+	}
+	// 28. diagnostics_port_profile
 	if !execute("PUT", m.getOperationCount("diagnostics_port_profile", "PUT"), func(ctx context.Context) diag.Diagnostics {
 		return m.ExecuteBulk(ctx, "diagnostics_port_profile", "PUT")
 	}, "Diagnostics Port Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 28. bundle
+	// 29. bundle
 	if !execute("PUT", m.getOperationCount("bundle", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "bundle", "PUT") }, "Bundle") {
 		return diagnostics, operationsPerformed
 	}
-	// 29. pod
+	// 30. pod
 	if !execute("PUT", m.getOperationCount("pod", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "pod", "PUT") }, "Pod") {
 		return diagnostics, operationsPerformed
 	}
-	// 30. badge
+	// 31. badge
 	if !execute("PUT", m.getOperationCount("badge", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "badge", "PUT") }, "Badge") {
 		return diagnostics, operationsPerformed
 	}
-	// 31. spine_plane
+	// 32. spine_plane
 	if !execute("PUT", m.getOperationCount("spine_plane", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "spine_plane", "PUT") }, "Spine Plane") {
 		return diagnostics, operationsPerformed
 	}
-	// 32. switchpoint
+	// 33. switchpoint
 	if !execute("PUT", m.getOperationCount("switchpoint", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "switchpoint", "PUT") }, "Switchpoint") {
-		return diagnostics, operationsPerformed
-	}
-	// 33. device_settings
-	if !execute("PUT", m.getOperationCount("device_settings", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_settings", "PUT") }, "Device Settings") {
 		return diagnostics, operationsPerformed
 	}
 	// 34. threshold
@@ -938,34 +938,34 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("PATCH", m.getOperationCount("gateway_profile", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "gateway_profile", "PATCH") }, "Gateway Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 27. diagnostics_port_profile
+	// 27. device_settings
+	if !execute("PATCH", m.getOperationCount("device_settings", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_settings", "PATCH") }, "Device Settings") {
+		return diagnostics, operationsPerformed
+	}
+	// 28. diagnostics_port_profile
 	if !execute("PATCH", m.getOperationCount("diagnostics_port_profile", "PATCH"), func(ctx context.Context) diag.Diagnostics {
 		return m.ExecuteBulk(ctx, "diagnostics_port_profile", "PATCH")
 	}, "Diagnostics Port Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 28. bundle
+	// 29. bundle
 	if !execute("PATCH", m.getOperationCount("bundle", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "bundle", "PATCH") }, "Bundle") {
 		return diagnostics, operationsPerformed
 	}
-	// 29. pod
+	// 30. pod
 	if !execute("PATCH", m.getOperationCount("pod", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "pod", "PATCH") }, "Pod") {
 		return diagnostics, operationsPerformed
 	}
-	// 30. badge
+	// 31. badge
 	if !execute("PATCH", m.getOperationCount("badge", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "badge", "PATCH") }, "Badge") {
 		return diagnostics, operationsPerformed
 	}
-	// 31. spine_plane
+	// 32. spine_plane
 	if !execute("PATCH", m.getOperationCount("spine_plane", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "spine_plane", "PATCH") }, "Spine Plane") {
 		return diagnostics, operationsPerformed
 	}
-	// 32. switchpoint
+	// 33. switchpoint
 	if !execute("PATCH", m.getOperationCount("switchpoint", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "switchpoint", "PATCH") }, "Switchpoint") {
-		return diagnostics, operationsPerformed
-	}
-	// 33. device_settings
-	if !execute("PATCH", m.getOperationCount("device_settings", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_settings", "PATCH") }, "Device Settings") {
 		return diagnostics, operationsPerformed
 	}
 	// 34. threshold
@@ -1061,34 +1061,34 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("DELETE", m.getOperationCount("threshold", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "threshold", "DELETE") }, "Threshold") {
 		return diagnostics, operationsPerformed
 	}
-	// 33. device_settings
-	if !execute("DELETE", m.getOperationCount("device_settings", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_settings", "DELETE") }, "Device Settings") {
-		return diagnostics, operationsPerformed
-	}
-	// 32. switchpoint
+	// 33. switchpoint
 	if !execute("DELETE", m.getOperationCount("switchpoint", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "switchpoint", "DELETE") }, "Switchpoint") {
 		return diagnostics, operationsPerformed
 	}
-	// 31. spine_plane
+	// 32. spine_plane
 	if !execute("DELETE", m.getOperationCount("spine_plane", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "spine_plane", "DELETE") }, "Spine Plane") {
 		return diagnostics, operationsPerformed
 	}
-	// 30. badge
+	// 31. badge
 	if !execute("DELETE", m.getOperationCount("badge", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "badge", "DELETE") }, "Badge") {
 		return diagnostics, operationsPerformed
 	}
-	// 29. pod
+	// 30. pod
 	if !execute("DELETE", m.getOperationCount("pod", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "pod", "DELETE") }, "Pod") {
 		return diagnostics, operationsPerformed
 	}
-	// 28. bundle
+	// 29. bundle
 	if !execute("DELETE", m.getOperationCount("bundle", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "bundle", "DELETE") }, "Bundle") {
 		return diagnostics, operationsPerformed
 	}
-	// 27. diagnostics_port_profile
+	// 28. diagnostics_port_profile
 	if !execute("DELETE", m.getOperationCount("diagnostics_port_profile", "DELETE"), func(ctx context.Context) diag.Diagnostics {
 		return m.ExecuteBulk(ctx, "diagnostics_port_profile", "DELETE")
 	}, "Diagnostics Port Profile") {
+		return diagnostics, operationsPerformed
+	}
+	// 27. device_settings
+	if !execute("DELETE", m.getOperationCount("device_settings", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_settings", "DELETE") }, "Device Settings") {
 		return diagnostics, operationsPerformed
 	}
 	// 26. gateway_profile
