@@ -24,11 +24,12 @@ type OperationStatus int
 
 // Operation represents a single pending bulk operation.
 type Operation struct {
-	ResourceType  string          // The type of resource (e.g., "gateway", "tenant")
-	ResourceName  string          // The name/identifier of the specific resource
-	OperationType string          // The operation type ("PUT", "PATCH", "DELETE")
-	Status        OperationStatus // Current status of the operation
-	Error         error           // Error if operation failed
+	ResourceType       string          // The type of resource (e.g., "gateway", "tenant")
+	ResourceName       string          // The name/identifier of the specific resource
+	OperationType      string          // The operation type ("PUT", "PATCH", "DELETE")
+	Status             OperationStatus // Current status of the operation
+	Error              error           // Error if operation failed
+	ExecutionStartTime time.Time       // When the API call actually started executing
 }
 
 // ResourceExistenceCheck provides configuration for checking if resources already exist.
@@ -116,6 +117,7 @@ type ResourceAPIClient interface {
 // Operation status constants.
 const (
 	OperationPending OperationStatus = iota
+	OperationExecuting
 	OperationSucceeded
 	OperationFailed
 )
