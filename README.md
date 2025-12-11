@@ -267,13 +267,13 @@ Since API version 6.5, the provider supports two modes: **campus** and **datacen
 24. Eth Port Settings
 25. Diagnostics Profiles
 26. Gateway Profiles
-27. Diagnostics Port Profiles
-28. Bundles
-29. Pods
-30. Badges
-31. Spine Planes
-32. Switchpoints
-33. Device Settings
+27. Device Settings
+28. Diagnostics Port Profiles
+29. Bundles
+30. Pods
+31. Badges
+32. Spine Planes
+33. Switchpoints
 34. Thresholds
 35. Grouping Rules
 36. Threshold Groups
