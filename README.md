@@ -125,12 +125,12 @@ Additionally, the Verity provider requires the following environment variable to
 
 #### Unix-based Systems
 ```bash
-export TF_CLI_ARGS_apply="-parallelism=250"
+export TF_CLI_ARGS_apply="-parallelism=500"
 ```
 
 #### Windows
 ```powershell
-$env:TF_CLI_ARGS_apply="-parallelism=250"
+$env:TF_CLI_ARGS_apply="-parallelism=500"
 ```
 
 
