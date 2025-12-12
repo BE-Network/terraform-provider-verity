@@ -723,7 +723,7 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "site",
 		PutRequestType:   reflect.TypeOf(openapi.SitesPatchRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SitesPatchRequest{}),
-		HasAutoGen:       false,
+		HasAutoGen:       true,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "site"}
 		},
