@@ -308,7 +308,9 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 				{FieldName: "RowNumMacFilterRefType", APIField: &serviceItem.RowNumMacFilterRefType, TFValue: item.RowNumMacFilterRefType},
 				{FieldName: "RowNumLanIptv", APIField: &serviceItem.RowNumLanIptv, TFValue: item.RowNumLanIptv},
 			})
-			utils.SetNullableInt64Field(&serviceItem.RowNumExternalVlan, item.RowNumExternalVlan)
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: item.RowNumExternalVlan},
+			})
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: item.Index},
 			})
@@ -613,7 +615,9 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				{FieldName: "RowNumLanIptv", APIField: &service.RowNumLanIptv, TFValue: planItem.RowNumLanIptv},
 			})
 
-			utils.SetNullableInt64Field(&service.RowNumExternalVlan, planItem.RowNumExternalVlan)
+			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+				{FieldName: "RowNumExternalVlan", APIField: &service.RowNumExternalVlan, TFValue: planItem.RowNumExternalVlan},
+			})
 
 			return service
 		},
@@ -630,10 +634,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 			utils.CompareAndSetBoolField(planItem.RowNumEnable, stateItem.RowNumEnable, func(v *bool) { service.RowNumEnable = v }, &fieldChanged)
 
 			// Handle nullable int64 fields
-			if !planItem.RowNumExternalVlan.Equal(stateItem.RowNumExternalVlan) {
-				utils.SetNullableInt64Field(&service.RowNumExternalVlan, planItem.RowNumExternalVlan)
-				fieldChanged = true
-			}
+			utils.CompareAndSetNullableInt64Field(planItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, func(v *openapi.NullableInt32) { service.RowNumExternalVlan = *v }, &fieldChanged)
 
 			// Handle row_num_service and row_num_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
