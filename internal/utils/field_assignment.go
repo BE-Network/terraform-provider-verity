@@ -109,13 +109,3 @@ func SetNullableFloat64Fields(fields []NullableFloat64FieldMapping) {
 		}
 	}
 }
-
-// SetNullableInt64Field sets a nullable int64 field
-func SetNullableInt64Field(apiField *openapi.NullableInt32, tfValue types.Int64) {
-	if !tfValue.IsNull() {
-		val := int32(tfValue.ValueInt64())
-		*apiField = *openapi.NewNullableInt32(&val)
-	} else {
-		*apiField = *openapi.NewNullableInt32(nil)
-	}
-}
