@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &veritySfpBreakoutResource{}
 	_ resource.ResourceWithConfigure   = &veritySfpBreakoutResource{}
 	_ resource.ResourceWithImportState = &veritySfpBreakoutResource{}
+	_ resource.ResourceWithModifyPlan  = &veritySfpBreakoutResource{}
 )
+
+const sfpBreakoutResourceType = "sfpbreakouts"
 
 func NewVeritySfpBreakoutResource() resource.Resource {
 	return &veritySfpBreakoutResource{}
@@ -96,6 +99,7 @@ func (r *veritySfpBreakoutResource) Schema(ctx context.Context, req resource.Sch
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -106,22 +110,27 @@ func (r *veritySfpBreakoutResource) Schema(ctx context.Context, req resource.Sch
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"vendor": schema.StringAttribute{
 							Description: "Vendor",
 							Optional:    true,
+							Computed:    true,
 						},
 						"part_number": schema.StringAttribute{
 							Description: "Part Number",
 							Optional:    true,
+							Computed:    true,
 						},
 						"breakout": schema.StringAttribute{
 							Description: "Breakout definition; defines number of ports of what speed this port is brokenout to.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -162,6 +171,16 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 	}
 
 	sfpBreakoutName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if sfpBreakoutData, exists := r.bulkOpsMgr.GetResourceResponse("sfp_breakout", sfpBreakoutName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached sfp_breakout data for %s from recent operation", sfpBreakoutName))
+			state = populateSfpBreakoutState(ctx, state, sfpBreakoutData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("sfp_breakout") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping SFP Breakout %s verification – trusting recent successful API operation", sfpBreakoutName))
@@ -233,43 +252,7 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Found SFP Breakout '%s' under API key '%s'", sfpBreakoutName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(sfpBreakoutMap["name"])
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(sfpBreakoutMap[apiKey])
-	}
-
-	// Handle breakout list
-	if breakoutData, ok := sfpBreakoutMap["breakout"].([]interface{}); ok && len(breakoutData) > 0 {
-		var breakouts []veritySfpBreakoutBreakoutModel
-
-		for _, b := range breakoutData {
-			breakout, ok := b.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			breakoutModel := veritySfpBreakoutBreakoutModel{
-				Enable:     utils.MapBoolFromAPI(breakout["enable"]),
-				Vendor:     utils.MapStringFromAPI(breakout["vendor"]),
-				PartNumber: utils.MapStringFromAPI(breakout["part_number"]),
-				Breakout:   utils.MapStringFromAPI(breakout["breakout"]),
-				Index:      utils.MapInt64FromAPI(breakout["index"]),
-			}
-
-			breakouts = append(breakouts, breakoutModel)
-		}
-
-		state.Breakout = breakouts
-	} else {
-		state.Breakout = nil
-	}
-
+	state = populateSfpBreakoutState(ctx, state, sfpBreakoutMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -380,7 +363,34 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 
 	tflog.Info(ctx, fmt.Sprintf("SFP Breakout %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "sfp_breakouts")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState veritySfpBreakoutResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if sfpBreakoutData, exists := bulkMgr.GetResourceResponse("sfp_breakout", name); exists {
+			newState := populateSfpBreakoutState(ctx, minState, sfpBreakoutData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *veritySfpBreakoutResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -392,4 +402,79 @@ func (r *veritySfpBreakoutResource) Delete(ctx context.Context, req resource.Del
 
 func (r *veritySfpBreakoutResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateSfpBreakoutState(ctx context.Context, state veritySfpBreakoutResourceModel, data map[string]interface{}, mode string) veritySfpBreakoutResourceModel {
+	const resourceType = sfpBreakoutResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle breakout block
+	if utils.FieldAppliesToMode(resourceType, "breakout", mode) {
+		if breakoutData, ok := data["breakout"].([]interface{}); ok && len(breakoutData) > 0 {
+			var breakouts []veritySfpBreakoutBreakoutModel
+
+			for _, b := range breakoutData {
+				breakout, ok := b.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				breakoutModel := veritySfpBreakoutBreakoutModel{
+					Enable:     utils.MapBoolWithModeNested(breakout, "enable", resourceType, "breakout.enable", mode),
+					Vendor:     utils.MapStringWithModeNested(breakout, "vendor", resourceType, "breakout.vendor", mode),
+					PartNumber: utils.MapStringWithModeNested(breakout, "part_number", resourceType, "breakout.part_number", mode),
+					Breakout:   utils.MapStringWithModeNested(breakout, "breakout", resourceType, "breakout.breakout", mode),
+					Index:      utils.MapInt64WithModeNested(breakout, "index", resourceType, "breakout.index", mode),
+				}
+
+				breakouts = append(breakouts, breakoutModel)
+			}
+
+			state.Breakout = breakouts
+		} else {
+			state.Breakout = nil
+		}
+	} else {
+		state.Breakout = nil
+	}
+
+	return state
+}
+
+func (r *veritySfpBreakoutResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan veritySfpBreakoutResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = sfpBreakoutResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

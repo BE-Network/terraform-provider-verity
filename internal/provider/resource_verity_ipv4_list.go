@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityIpv4ListResource{}
 	_ resource.ResourceWithConfigure   = &verityIpv4ListResource{}
 	_ resource.ResourceWithImportState = &verityIpv4ListResource{}
+	_ resource.ResourceWithModifyPlan  = &verityIpv4ListResource{}
 )
+
+const ipv4ListResourceType = "ipv4lists"
 
 func NewVerityIpv4ListResource() resource.Resource {
 	return &verityIpv4ListResource{}
@@ -79,10 +82,12 @@ func (r *verityIpv4ListResource) Schema(ctx context.Context, req resource.Schema
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ipv4_list": schema.StringAttribute{
 				Description: "Comma separated list of IPv4 addresses",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 	}
@@ -127,8 +132,32 @@ func (r *verityIpv4ListResource) Create(ctx context.Context, req resource.Create
 	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv4_lists")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityIpv4ListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ipv4ListData, exists := bulkMgr.GetResourceResponse("ipv4_list", name); exists {
+			state := populateIpv4ListState(ctx, minState, ipv4ListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityIpv4ListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -148,6 +177,16 @@ func (r *verityIpv4ListResource) Read(ctx context.Context, req resource.ReadRequ
 	}
 
 	name := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if ipv4ListData, exists := r.bulkOpsMgr.GetResourceResponse("ipv4_list", name); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached IPv4 List data for %s from recent operation", name))
+			state = populateIpv4ListState(ctx, state, ipv4ListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv4_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping IPv4 List %s verification – trusting recent successful API operation", name))
@@ -219,26 +258,7 @@ func (r *verityIpv4ListResource) Read(ctx context.Context, req resource.ReadRequ
 
 	tflog.Debug(ctx, fmt.Sprintf("Found IPv4 List '%s' under API key '%s'", name, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(ipv4ListMap["name"])
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(ipv4ListMap[apiKey])
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"ipv4_list": &state.Ipv4List,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(ipv4ListMap[apiKey])
-	}
-
+	state = populateIpv4ListState(ctx, state, ipv4ListMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -287,7 +307,34 @@ func (r *verityIpv4ListResource) Update(ctx context.Context, req resource.Update
 
 	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv4_lists")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityIpv4ListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ipv4ListData, exists := bulkMgr.GetResourceResponse("ipv4_list", name); exists {
+			newState := populateIpv4ListState(ctx, minState, ipv4ListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityIpv4ListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -320,4 +367,56 @@ func (r *verityIpv4ListResource) Delete(ctx context.Context, req resource.Delete
 
 func (r *verityIpv4ListResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateIpv4ListState(ctx context.Context, state verityIpv4ListResourceModel, data map[string]interface{}, mode string) verityIpv4ListResourceModel {
+	const resourceType = ipv4ListResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// String fields
+	state.Ipv4List = utils.MapStringWithMode(data, "ipv4_list", resourceType, mode)
+
+	return state
+}
+
+func (r *verityIpv4ListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityIpv4ListResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = ipv4ListResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"ipv4_list",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

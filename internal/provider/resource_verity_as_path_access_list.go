@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityAsPathAccessListResource{}
 	_ resource.ResourceWithConfigure   = &verityAsPathAccessListResource{}
 	_ resource.ResourceWithImportState = &verityAsPathAccessListResource{}
+	_ resource.ResourceWithModifyPlan  = &verityAsPathAccessListResource{}
 )
+
+const asPathAccessListResourceType = "aspathaccesslists"
 
 func NewVerityAsPathAccessListResource() resource.Resource {
 	return &verityAsPathAccessListResource{}
@@ -95,10 +98,12 @@ func (r *verityAsPathAccessListResource) Schema(ctx context.Context, req resourc
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"permit_deny": schema.StringAttribute{
 				Description: "Action upon match of Community Strings.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -109,14 +114,17 @@ func (r *verityAsPathAccessListResource) Schema(ctx context.Context, req resourc
 						"enable": schema.BoolAttribute{
 							Description: "Enable this AS Path Access List",
 							Optional:    true,
+							Computed:    true,
 						},
 						"regular_expression": schema.StringAttribute{
 							Description: "Regular Expression to match BGP Community Strings",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -128,6 +136,7 @@ func (r *verityAsPathAccessListResource) Schema(ctx context.Context, req resourc
 						"notes": schema.StringAttribute{
 							Description: "User Notes.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -204,8 +213,32 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 	tflog.Info(ctx, fmt.Sprintf("AS Path Access List %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "as_path_access_lists")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityAsPathAccessListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if asPathAccessListData, exists := bulkMgr.GetResourceResponse("as_path_access_list", name); exists {
+			state := populateAsPathAccessListState(ctx, minState, asPathAccessListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -225,6 +258,16 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 	}
 
 	asPathAccessListName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if asPathAccessListData, exists := r.bulkOpsMgr.GetResourceResponse("as_path_access_list", asPathAccessListName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached as path access list data for %s from recent operation", asPathAccessListName))
+			state = populateAsPathAccessListState(ctx, state, asPathAccessListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("as_path_access_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping AS Path Access List %s verification – trusting recent successful API operation", asPathAccessListName))
@@ -296,59 +339,7 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 
 	tflog.Debug(ctx, fmt.Sprintf("Found AS Path Access List '%s' under API key '%s'", asPathAccessListName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(asPathAccessListMap["name"])
-
-	// Handle object properties
-	if objProps, ok := asPathAccessListMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityAsPathAccessListObjectPropertiesModel{
-			{Notes: utils.MapStringFromAPI(objProps["notes"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"permit_deny": &state.PermitDeny,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(asPathAccessListMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(asPathAccessListMap[apiKey])
-	}
-
-	// Handle lists
-	if listsData, ok := asPathAccessListMap["lists"].([]interface{}); ok && len(listsData) > 0 {
-		var lists []verityAsPathAccessListListsModel
-
-		for _, l := range listsData {
-			listItem, ok := l.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			listModel := verityAsPathAccessListListsModel{
-				Enable:            utils.MapBoolFromAPI(listItem["enable"]),
-				RegularExpression: utils.MapStringFromAPI(listItem["regular_expression"]),
-				Index:             utils.MapInt64FromAPI(listItem["index"]),
-			}
-
-			lists = append(lists, listModel)
-		}
-
-		state.Lists = lists
-	} else {
-		state.Lists = nil
-	}
-
+	state = populateAsPathAccessListState(ctx, state, asPathAccessListMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -471,7 +462,34 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 
 	tflog.Info(ctx, fmt.Sprintf("AS Path Access List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "as_path_access_lists")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityAsPathAccessListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if asPathAccessListData, exists := bulkMgr.GetResourceResponse("as_path_access_list", name); exists {
+			newState := populateAsPathAccessListState(ctx, minState, asPathAccessListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityAsPathAccessListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -504,4 +522,94 @@ func (r *verityAsPathAccessListResource) Delete(ctx context.Context, req resourc
 
 func (r *verityAsPathAccessListResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateAsPathAccessListState(ctx context.Context, state verityAsPathAccessListResourceModel, data map[string]interface{}, mode string) verityAsPathAccessListResourceModel {
+	const resourceType = asPathAccessListResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// String fields
+	state.PermitDeny = utils.MapStringWithMode(data, "permit_deny", resourceType, mode)
+
+	// Handle lists array
+	if utils.FieldAppliesToMode(resourceType, "lists", mode) {
+		if listsData, ok := data["lists"].([]interface{}); ok && len(listsData) > 0 {
+			var lists []verityAsPathAccessListListsModel
+			for _, l := range listsData {
+				listItem, ok := l.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				listModel := verityAsPathAccessListListsModel{
+					Enable:            utils.MapBoolWithModeNested(listItem, "enable", resourceType, "lists.enable", mode),
+					RegularExpression: utils.MapStringWithModeNested(listItem, "regular_expression", resourceType, "lists.regular_expression", mode),
+					Index:             utils.MapInt64WithModeNested(listItem, "index", resourceType, "lists.index", mode),
+				}
+				lists = append(lists, listModel)
+			}
+			state.Lists = lists
+		} else {
+			state.Lists = nil
+		}
+	} else {
+		state.Lists = nil
+	}
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityAsPathAccessListObjectPropertiesModel{
+				Notes: utils.MapStringWithModeNested(objProps, "notes", resourceType, "object_properties.notes", mode),
+			}
+			state.ObjectProperties = []verityAsPathAccessListObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *verityAsPathAccessListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityAsPathAccessListResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = asPathAccessListResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"permit_deny",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

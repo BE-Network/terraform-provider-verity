@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 	"time"
 
@@ -1134,180 +1135,80 @@ func (m *Manager) createRequestExecutor(config ResourceConfig, operationType str
 }
 
 func (m *Manager) createResponseProcessor(config ResourceConfig, operationType string) func(context.Context, *http.Response) error {
-	if !config.HasAutoGen {
-		return nil // No post-processing needed for resources without auto-generated fields
-	}
-
 	return func(ctx context.Context, resp *http.Response) error {
 		delayTime := 5 * time.Second
-		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for auto-generated values to be assigned before fetching %s", delayTime, config.ResourceType))
+		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for server values to be assigned before fetching %s", delayTime, config.ResourceType))
 		time.Sleep(delayTime)
 
 		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
 		defer fetchCancel()
 
-		tflog.Debug(ctx, fmt.Sprintf("Fetching %s after successful PUT operation to retrieve auto-generated values", config.ResourceType))
+		tflog.Debug(ctx, fmt.Sprintf("Fetching %s after successful operation to retrieve server values", config.ResourceType))
 
 		res, exists := m.resources[config.ResourceType]
 		if !exists {
 			return fmt.Errorf("resource type %s not found in unified structure", config.ResourceType)
 		}
 
-		switch config.ResourceType {
-		case "tenant":
-			tenantsReq := m.client.TenantsAPI.TenantsGet(fetchCtx)
-			tenantsResp, fetchErr := tenantsReq.Execute()
+		return m.fetchAndCacheResourceResponse(fetchCtx, ctx, config, res)
+	}
+}
 
-			if fetchErr != nil {
-				tflog.Error(ctx, "Failed to fetch tenants after PUT for auto-generated fields", map[string]interface{}{
-					"error": fetchErr.Error(),
-				})
-				return fetchErr
-			}
-
-			defer tenantsResp.Body.Close()
-
-			var tenantsData struct {
-				Tenant map[string]map[string]interface{} `json:"tenant"`
-			}
-
-			if respErr := json.NewDecoder(tenantsResp.Body).Decode(&tenantsData); respErr != nil {
-				tflog.Error(ctx, "Failed to decode tenants response for auto-generated fields", map[string]interface{}{
-					"error": respErr.Error(),
-				})
-				return respErr
-			}
-
-			res.ResponsesMutex.Lock()
-			for tenantName, tenantData := range tenantsData.Tenant {
-				res.Responses[tenantName] = tenantData
-				if name, ok := tenantData["name"].(string); ok && name != tenantName {
-					res.Responses[name] = tenantData
-				}
-			}
-			res.ResponsesMutex.Unlock()
-
-			tflog.Debug(ctx, "Successfully stored tenant data for auto-generated fields", map[string]interface{}{
-				"tenant_count": len(tenantsData.Tenant),
-			})
-
-		case "service":
-			servicesReq := m.client.ServicesAPI.ServicesGet(fetchCtx)
-			servicesResp, fetchErr := servicesReq.Execute()
-
-			if fetchErr != nil {
-				tflog.Error(ctx, "Failed to fetch services after PUT for auto-generated fields", map[string]interface{}{
-					"error": fetchErr.Error(),
-				})
-				return fetchErr
-			}
-
-			defer servicesResp.Body.Close()
-
-			var servicesData struct {
-				Service map[string]map[string]interface{} `json:"service"`
-			}
-
-			if respErr := json.NewDecoder(servicesResp.Body).Decode(&servicesData); respErr != nil {
-				tflog.Error(ctx, "Failed to decode services response for auto-generated fields", map[string]interface{}{
-					"error": respErr.Error(),
-				})
-				return respErr
-			}
-
-			res.ResponsesMutex.Lock()
-			for serviceName, serviceData := range servicesData.Service {
-				res.Responses[serviceName] = serviceData
-				if name, ok := serviceData["name"].(string); ok && name != serviceName {
-					res.Responses[name] = serviceData
-				}
-			}
-			res.ResponsesMutex.Unlock()
-
-			tflog.Debug(ctx, "Successfully stored service data for auto-generated fields", map[string]interface{}{
-				"service_count": len(servicesData.Service),
-			})
-
-		case "switchpoint":
-			switchpointsReq := m.client.SwitchpointsAPI.SwitchpointsGet(fetchCtx)
-			switchpointsResp, fetchErr := switchpointsReq.Execute()
-
-			if fetchErr != nil {
-				tflog.Error(ctx, "Failed to fetch switchpoints after PUT for auto-generated fields", map[string]interface{}{
-					"error": fetchErr.Error(),
-				})
-				return fetchErr
-			}
-
-			defer switchpointsResp.Body.Close()
-
-			var switchpointsData struct {
-				Switchpoint map[string]map[string]interface{} `json:"switchpoint"`
-			}
-
-			if respErr := json.NewDecoder(switchpointsResp.Body).Decode(&switchpointsData); respErr != nil {
-				tflog.Error(ctx, "Failed to decode switchpoints response for auto-generated fields", map[string]interface{}{
-					"error": respErr.Error(),
-				})
-				return respErr
-			}
-
-			res.ResponsesMutex.Lock()
-			for switchpointName, switchpointData := range switchpointsData.Switchpoint {
-				res.Responses[switchpointName] = switchpointData
-				if name, ok := switchpointData["name"].(string); ok && name != switchpointName {
-					res.Responses[name] = switchpointData
-				}
-			}
-			res.ResponsesMutex.Unlock()
-
-			tflog.Debug(ctx, "Successfully stored switchpoint data for auto-generated fields", map[string]interface{}{
-				"switchpoint_count": len(switchpointsData.Switchpoint),
-			})
-
-		case "site":
-			sitesReq := m.client.SitesAPI.SitesGet(fetchCtx)
-			sitesResp, fetchErr := sitesReq.Execute()
-
-			if fetchErr != nil {
-				tflog.Error(ctx, "Failed to fetch sites after PATCH for auto-generated fields", map[string]interface{}{
-					"error": fetchErr.Error(),
-				})
-				return fetchErr
-			}
-
-			defer sitesResp.Body.Close()
-
-			var sitesData struct {
-				Site map[string]map[string]interface{} `json:"site"`
-			}
-
-			if respErr := json.NewDecoder(sitesResp.Body).Decode(&sitesData); respErr != nil {
-				tflog.Error(ctx, "Failed to decode sites response for auto-generated fields", map[string]interface{}{
-					"error": respErr.Error(),
-				})
-				return respErr
-			}
-
-			res.ResponsesMutex.Lock()
-			for siteName, siteData := range sitesData.Site {
-				res.Responses[siteName] = siteData
-				if name, ok := siteData["name"].(string); ok && name != siteName {
-					res.Responses[name] = siteData
-				}
-			}
-			res.ResponsesMutex.Unlock()
-
-			tflog.Debug(ctx, "Successfully stored site data for auto-generated fields", map[string]interface{}{
-				"site_count": len(sitesData.Site),
-			})
-
-		default:
-			tflog.Warn(ctx, fmt.Sprintf("Unknown resource type with auto-generated fields: %s", config.ResourceType))
-		}
-
+func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, res *ResourceOperations) error {
+	if config.GetFunc == nil {
+		tflog.Debug(logCtx, fmt.Sprintf("No GetFunc defined for %s, skipping response caching", config.ResourceType))
 		return nil
 	}
+
+	getResp, fetchErr := config.GetFunc(m.client, fetchCtx)
+	if fetchErr != nil {
+		tflog.Error(logCtx, fmt.Sprintf("Failed to fetch %s after operation", config.ResourceType), map[string]interface{}{
+			"error": fetchErr.Error(),
+		})
+		return fetchErr
+	}
+	defer getResp.Body.Close()
+
+	// Decode the response as raw JSON
+	var rawResponse map[string]interface{}
+	if respErr := json.NewDecoder(getResp.Body).Decode(&rawResponse); respErr != nil {
+		tflog.Error(logCtx, fmt.Sprintf("Failed to decode %s response", config.ResourceType), map[string]interface{}{
+			"error": respErr.Error(),
+		})
+		return respErr
+	}
+
+	jsonKey := utils.GetResourceJSONKey(config.ResourceType)
+	if jsonKey == "" {
+		tflog.Warn(logCtx, fmt.Sprintf("No JSON key mapping found for resource type: %s", config.ResourceType))
+		return nil
+	}
+
+	// Extract resource data using the JSON key
+	resourceData, ok := rawResponse[jsonKey].(map[string]interface{})
+	if !ok {
+		tflog.Debug(logCtx, fmt.Sprintf("No %s data found in response or unexpected format", jsonKey))
+		return nil
+	}
+
+	// Cache the response data
+	res.ResponsesMutex.Lock()
+	for resourceName, data := range resourceData {
+		if resourceMap, ok := data.(map[string]interface{}); ok {
+			res.Responses[resourceName] = resourceMap
+			// Also cache by name field if different from key
+			if name, nameOk := resourceMap["name"].(string); nameOk && name != resourceName {
+				res.Responses[name] = resourceMap
+			}
+		}
+	}
+	res.ResponsesMutex.Unlock()
+
+	tflog.Debug(logCtx, fmt.Sprintf("Successfully cached %s data", config.ResourceType), map[string]interface{}{
+		"count": len(resourceData),
+	})
+
+	return nil
 }
 
 func (m *Manager) createRecentOpsUpdater(resourceType string) func() {

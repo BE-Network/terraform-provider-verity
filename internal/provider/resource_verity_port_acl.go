@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityPortAclResource{}
 	_ resource.ResourceWithConfigure   = &verityPortAclResource{}
 	_ resource.ResourceWithImportState = &verityPortAclResource{}
+	_ resource.ResourceWithModifyPlan  = &verityPortAclResource{}
 )
+
+const portAclResourceType = "portacls"
 
 func NewVerityPortAclResource() resource.Resource {
 	return &verityPortAclResource{}
@@ -93,6 +96,7 @@ func (r *verityPortAclResource) Schema(ctx context.Context, req resource.SchemaR
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -103,18 +107,22 @@ func (r *verityPortAclResource) Schema(ctx context.Context, req resource.SchemaR
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -126,18 +134,22 @@ func (r *verityPortAclResource) Schema(ctx context.Context, req resource.SchemaR
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -149,18 +161,22 @@ func (r *verityPortAclResource) Schema(ctx context.Context, req resource.SchemaR
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -172,18 +188,22 @@ func (r *verityPortAclResource) Schema(ctx context.Context, req resource.SchemaR
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -334,8 +354,32 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 	tflog.Info(ctx, fmt.Sprintf("Port ACL %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "port_acls")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityPortAclResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if portAclData, exists := bulkMgr.GetResourceResponse("port_acl", name); exists {
+			state := populatePortAclState(ctx, minState, portAclData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPortAclResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -356,12 +400,22 @@ func (r *verityPortAclResource) Read(ctx context.Context, req resource.ReadReque
 
 	name := state.Name.ValueString()
 
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if portAclData, exists := r.bulkOpsMgr.GetResourceResponse("port_acl", name); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached port_acl data for %s from recent operation", name))
+			state = populatePortAclState(ctx, state, portAclData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("port_acl") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping Port ACL %s verification - trusting recent successful API operation", name))
+		tflog.Info(ctx, fmt.Sprintf("Skipping Port ACL %s verification – trusting recent successful API operation", name))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent Port ACL operations found, performing normal verification for %s", name))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching Port ACL for verification of %s", name))
 
 	type PortAclsResponse struct {
 		PortAcl map[string]map[string]interface{} `json:"port_acl"`
@@ -424,117 +478,7 @@ func (r *verityPortAclResource) Read(ctx context.Context, req resource.ReadReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Port ACL '%s' under API key '%s'", name, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(portAclMap["name"])
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(portAclMap[apiKey])
-	}
-
-	// Handle IPv4 Permit
-	if ipv4PermitData, ok := portAclData["ipv4_permit"].([]interface{}); ok && len(ipv4PermitData) > 0 {
-		var ipv4Permits []verityPortAclFilterModel
-
-		for _, item := range ipv4PermitData {
-			permit, ok := item.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			permitModel := verityPortAclFilterModel{
-				Enable:        utils.MapBoolFromAPI(permit["enable"]),
-				Filter:        utils.MapStringFromAPI(permit["filter"]),
-				FilterRefType: utils.MapStringFromAPI(permit["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(permit["index"]),
-			}
-
-			ipv4Permits = append(ipv4Permits, permitModel)
-		}
-
-		state.Ipv4Permit = ipv4Permits
-	} else {
-		state.Ipv4Permit = nil
-	}
-
-	// Handle IPv4 Deny
-	if ipv4DenyData, ok := portAclData["ipv4_deny"].([]interface{}); ok && len(ipv4DenyData) > 0 {
-		var ipv4Denies []verityPortAclFilterModel
-
-		for _, item := range ipv4DenyData {
-			deny, ok := item.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			denyModel := verityPortAclFilterModel{
-				Enable:        utils.MapBoolFromAPI(deny["enable"]),
-				Filter:        utils.MapStringFromAPI(deny["filter"]),
-				FilterRefType: utils.MapStringFromAPI(deny["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(deny["index"]),
-			}
-
-			ipv4Denies = append(ipv4Denies, denyModel)
-		}
-
-		state.Ipv4Deny = ipv4Denies
-	} else {
-		state.Ipv4Deny = nil
-	}
-
-	// Handle IPv6 Permit
-	if ipv6PermitData, ok := portAclData["ipv6_permit"].([]interface{}); ok && len(ipv6PermitData) > 0 {
-		var ipv6Permits []verityPortAclFilterModel
-
-		for _, item := range ipv6PermitData {
-			permit, ok := item.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			permitModel := verityPortAclFilterModel{
-				Enable:        utils.MapBoolFromAPI(permit["enable"]),
-				Filter:        utils.MapStringFromAPI(permit["filter"]),
-				FilterRefType: utils.MapStringFromAPI(permit["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(permit["index"]),
-			}
-
-			ipv6Permits = append(ipv6Permits, permitModel)
-		}
-
-		state.Ipv6Permit = ipv6Permits
-	} else {
-		state.Ipv6Permit = nil
-	}
-
-	// Handle IPv6 Deny
-	if ipv6DenyData, ok := portAclData["ipv6_deny"].([]interface{}); ok && len(ipv6DenyData) > 0 {
-		var ipv6Denies []verityPortAclFilterModel
-
-		for _, item := range ipv6DenyData {
-			deny, ok := item.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			denyModel := verityPortAclFilterModel{
-				Enable:        utils.MapBoolFromAPI(deny["enable"]),
-				Filter:        utils.MapStringFromAPI(deny["filter"]),
-				FilterRefType: utils.MapStringFromAPI(deny["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(deny["index"]),
-			}
-
-			ipv6Denies = append(ipv6Denies, denyModel)
-		}
-
-		state.Ipv6Deny = ipv6Denies
-	} else {
-		state.Ipv6Deny = nil
-	}
-
+	state = populatePortAclState(ctx, state, portAclMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -814,7 +758,34 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 
 	tflog.Info(ctx, fmt.Sprintf("Port ACL %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "port_acls")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityPortAclResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if portAclData, exists := bulkMgr.GetResourceResponse("port_acl", name); exists {
+			newState := populatePortAclState(ctx, minState, portAclData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPortAclResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -847,4 +818,109 @@ func (r *verityPortAclResource) Delete(ctx context.Context, req resource.DeleteR
 
 func (r *verityPortAclResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populatePortAclState(ctx context.Context, state verityPortAclResourceModel, data map[string]interface{}, mode string) verityPortAclResourceModel {
+	const resourceType = portAclResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Helper function to parse filter arrays with mode awareness
+	parseFilters := func(apiFilters []interface{}, blockName string) []verityPortAclFilterModel {
+		var filters []verityPortAclFilterModel
+		for _, f := range apiFilters {
+			filter, ok := f.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			filterModel := verityPortAclFilterModel{
+				Enable:        utils.MapBoolWithModeNested(filter, "enable", resourceType, blockName+".enable", mode),
+				Filter:        utils.MapStringWithModeNested(filter, "filter", resourceType, blockName+".filter", mode),
+				FilterRefType: utils.MapStringWithModeNested(filter, "filter_ref_type_", resourceType, blockName+".filter_ref_type_", mode),
+				Index:         utils.MapInt64WithModeNested(filter, "index", resourceType, blockName+".index", mode),
+			}
+			filters = append(filters, filterModel)
+		}
+		return filters
+	}
+
+	// Handle filter arrays with mode awareness
+	if utils.FieldAppliesToMode(resourceType, "ipv4_permit", mode) {
+		if ipv4Permit, ok := data["ipv4_permit"].([]interface{}); ok && len(ipv4Permit) > 0 {
+			state.Ipv4Permit = parseFilters(ipv4Permit, "ipv4_permit")
+		} else {
+			state.Ipv4Permit = nil
+		}
+	} else {
+		state.Ipv4Permit = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv4_deny", mode) {
+		if ipv4Deny, ok := data["ipv4_deny"].([]interface{}); ok && len(ipv4Deny) > 0 {
+			state.Ipv4Deny = parseFilters(ipv4Deny, "ipv4_deny")
+		} else {
+			state.Ipv4Deny = nil
+		}
+	} else {
+		state.Ipv4Deny = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv6_permit", mode) {
+		if ipv6Permit, ok := data["ipv6_permit"].([]interface{}); ok && len(ipv6Permit) > 0 {
+			state.Ipv6Permit = parseFilters(ipv6Permit, "ipv6_permit")
+		} else {
+			state.Ipv6Permit = nil
+		}
+	} else {
+		state.Ipv6Permit = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv6_deny", mode) {
+		if ipv6Deny, ok := data["ipv6_deny"].([]interface{}); ok && len(ipv6Deny) > 0 {
+			state.Ipv6Deny = parseFilters(ipv6Deny, "ipv6_deny")
+		} else {
+			state.Ipv6Deny = nil
+		}
+	} else {
+		state.Ipv6Deny = nil
+	}
+
+	return state
+}
+
+func (r *verityPortAclResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityPortAclResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = portAclResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

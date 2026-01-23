@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityIpv6ListResource{}
 	_ resource.ResourceWithConfigure   = &verityIpv6ListResource{}
 	_ resource.ResourceWithImportState = &verityIpv6ListResource{}
+	_ resource.ResourceWithModifyPlan  = &verityIpv6ListResource{}
 )
+
+const ipv6ListResourceType = "ipv6lists"
 
 func NewVerityIpv6ListResource() resource.Resource {
 	return &verityIpv6ListResource{}
@@ -79,10 +82,12 @@ func (r *verityIpv6ListResource) Schema(ctx context.Context, req resource.Schema
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ipv6_list": schema.StringAttribute{
 				Description: "Comma separated list of IPv6 addresses",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 	}
@@ -127,8 +132,32 @@ func (r *verityIpv6ListResource) Create(ctx context.Context, req resource.Create
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv6_lists")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityIpv6ListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ipv6ListData, exists := bulkMgr.GetResourceResponse("ipv6_list", name); exists {
+			state := populateIpv6ListState(ctx, minState, ipv6ListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -148,6 +177,16 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 	}
 
 	ipv6ListName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if ipv6ListData, exists := r.bulkOpsMgr.GetResourceResponse("ipv6_list", ipv6ListName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached IPv6 List data for %s from recent operation", ipv6ListName))
+			state = populateIpv6ListState(ctx, state, ipv6ListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv6_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping IPv6 List %s verification – trusting recent successful API operation", ipv6ListName))
@@ -219,26 +258,7 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 
 	tflog.Debug(ctx, fmt.Sprintf("Found IPv6 List '%s' under API key '%s'", ipv6ListName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(ipv6ListMap["name"])
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(ipv6ListMap[apiKey])
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"ipv6_list": &state.Ipv6List,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(ipv6ListMap[apiKey])
-	}
-
+	state = populateIpv6ListState(ctx, state, ipv6ListMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -287,7 +307,34 @@ func (r *verityIpv6ListResource) Update(ctx context.Context, req resource.Update
 
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv6_lists")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityIpv6ListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ipv6ListData, exists := bulkMgr.GetResourceResponse("ipv6_list", name); exists {
+			newState := populateIpv6ListState(ctx, minState, ipv6ListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityIpv6ListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -320,4 +367,56 @@ func (r *verityIpv6ListResource) Delete(ctx context.Context, req resource.Delete
 
 func (r *verityIpv6ListResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateIpv6ListState(ctx context.Context, state verityIpv6ListResourceModel, data map[string]interface{}, mode string) verityIpv6ListResourceModel {
+	const resourceType = ipv6ListResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// String fields
+	state.Ipv6List = utils.MapStringWithMode(data, "ipv6_list", resourceType, mode)
+
+	return state
+}
+
+func (r *verityIpv6ListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityIpv6ListResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = ipv6ListResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"ipv6_list",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

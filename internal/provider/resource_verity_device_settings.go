@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityDeviceSettingsResource{}
 	_ resource.ResourceWithConfigure   = &verityDeviceSettingsResource{}
 	_ resource.ResourceWithImportState = &verityDeviceSettingsResource{}
+	_ resource.ResourceWithModifyPlan  = &verityDeviceSettingsResource{}
 )
+
+const deviceSettingsResourceType = "devicesettings"
 
 func NewVerityDeviceSettingsResource() resource.Resource {
 	return &verityDeviceSettingsResource{}
@@ -39,7 +42,7 @@ type verityDeviceSettingsResourceModel struct {
 	Name                                   types.String                                `tfsdk:"name"`
 	Enable                                 types.Bool                                  `tfsdk:"enable"`
 	Mode                                   types.String                                `tfsdk:"mode"`
-	UsageThreshold                         types.Float64                               `tfsdk:"usage_threshold"`
+	UsageThreshold                         types.Number                                `tfsdk:"usage_threshold"`
 	ExternalBatteryPowerAvailable          types.Int64                                 `tfsdk:"external_battery_power_available"`
 	ExternalPowerAvailable                 types.Int64                                 `tfsdk:"external_power_available"`
 	SecurityAuditInterval                  types.Int64                                 `tfsdk:"security_audit_interval"`
@@ -97,62 +100,77 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mode": schema.StringAttribute{
 				Description: "Mode",
 				Optional:    true,
+				Computed:    true,
 			},
-			"usage_threshold": schema.Float64Attribute{
+			"usage_threshold": schema.NumberAttribute{
 				Description: "Usage Threshold",
 				Optional:    true,
+				Computed:    true,
 			},
 			"external_battery_power_available": schema.Int64Attribute{
 				Description: "External Battery Power Available (maximum: 2000)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"external_power_available": schema.Int64Attribute{
 				Description: "External Power Available (maximum: 2000)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"security_audit_interval": schema.Int64Attribute{
 				Description: "Frequency in minutes of rereading this Switch running configuration and comparing it to expected values. If the value is blank, audit will use default switch settings. If the value is 0, audit will be turned off. (maximum: 1440)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"commit_to_flash_interval": schema.Int64Attribute{
 				Description: "Frequency in minutes to write the Switch configuration to flash. If the value is blank, commit will use default switch settings. If the value is 0, commit will be turned off. (maximum: 1440)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"rocev2": schema.BoolAttribute{
 				Description: "Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cut_through_switching": schema.BoolAttribute{
 				Description: "Enable Cut-through Switching on all Switches",
 				Optional:    true,
+				Computed:    true,
 			},
 			"hold_timer": schema.Int64Attribute{
 				Description: "Hold Timer (maximum: 86400)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"disable_tcp_udp_learned_packet_acceleration": schema.BoolAttribute{
 				Description: "Required for AVB, PTP and Cobranet Support",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mac_aging_timer_override": schema.Int64Attribute{
 				Description: "Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds (minimum: 1, maximum: 1000000)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"spanning_tree_priority": schema.StringAttribute{
 				Description: "STP per switch, priority are in 4096 increments, the lower the number, the higher the priority.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"packet_queue": schema.StringAttribute{
 				Description: "Packet Queue for device",
 				Optional:    true,
+				Computed:    true,
 			},
 			"packet_queue_ref_type_": schema.StringAttribute{
 				Description: "Object type for packet_queue field",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -163,6 +181,7 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -174,6 +193,13 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityDeviceSettingsResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityDeviceSettingsResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -208,19 +234,22 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		{FieldName: "DisableTcpUdpLearnedPacketAcceleration", APIField: &deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration, TFValue: plan.DisableTcpUdpLearnedPacketAcceleration},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_settings", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "ExternalBatteryPowerAvailable", APIField: &deviceSettingsProps.ExternalBatteryPowerAvailable, TFValue: plan.ExternalBatteryPowerAvailable},
-		{FieldName: "ExternalPowerAvailable", APIField: &deviceSettingsProps.ExternalPowerAvailable, TFValue: plan.ExternalPowerAvailable},
-		{FieldName: "SecurityAuditInterval", APIField: &deviceSettingsProps.SecurityAuditInterval, TFValue: plan.SecurityAuditInterval},
-		{FieldName: "CommitToFlashInterval", APIField: &deviceSettingsProps.CommitToFlashInterval, TFValue: plan.CommitToFlashInterval},
-		{FieldName: "HoldTimer", APIField: &deviceSettingsProps.HoldTimer, TFValue: plan.HoldTimer},
-		{FieldName: "MacAgingTimerOverride", APIField: &deviceSettingsProps.MacAgingTimerOverride, TFValue: plan.MacAgingTimerOverride},
+		{FieldName: "ExternalBatteryPowerAvailable", APIField: &deviceSettingsProps.ExternalBatteryPowerAvailable, TFValue: config.ExternalBatteryPowerAvailable, IsConfigured: configuredAttrs.IsConfigured("external_battery_power_available")},
+		{FieldName: "ExternalPowerAvailable", APIField: &deviceSettingsProps.ExternalPowerAvailable, TFValue: config.ExternalPowerAvailable, IsConfigured: configuredAttrs.IsConfigured("external_power_available")},
+		{FieldName: "SecurityAuditInterval", APIField: &deviceSettingsProps.SecurityAuditInterval, TFValue: config.SecurityAuditInterval, IsConfigured: configuredAttrs.IsConfigured("security_audit_interval")},
+		{FieldName: "CommitToFlashInterval", APIField: &deviceSettingsProps.CommitToFlashInterval, TFValue: config.CommitToFlashInterval, IsConfigured: configuredAttrs.IsConfigured("commit_to_flash_interval")},
+		{FieldName: "HoldTimer", APIField: &deviceSettingsProps.HoldTimer, TFValue: config.HoldTimer, IsConfigured: configuredAttrs.IsConfigured("hold_timer")},
+		{FieldName: "MacAgingTimerOverride", APIField: &deviceSettingsProps.MacAgingTimerOverride, TFValue: config.MacAgingTimerOverride, IsConfigured: configuredAttrs.IsConfigured("mac_aging_timer_override")},
 	})
 
-	// Handle nullable float64 fields
-	utils.SetNullableFloat64Fields([]utils.NullableFloat64FieldMapping{
-		{FieldName: "UsageThreshold", APIField: &deviceSettingsProps.UsageThreshold, TFValue: plan.UsageThreshold},
+	// Handle nullable float fields - parse HCL to detect explicit config
+	utils.SetNullableNumberFields([]utils.NullableNumberFieldMapping{
+		{FieldName: "UsageThreshold", APIField: &deviceSettingsProps.UsageThreshold, TFValue: config.UsageThreshold, IsConfigured: configuredAttrs.IsConfigured("usage_threshold")},
 	})
 
 	// Handle object properties
@@ -241,8 +270,32 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 	tflog.Info(ctx, fmt.Sprintf("Device Settings %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "device_settings")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityDeviceSettingsResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if deviceSettingsData, exists := bulkMgr.GetResourceResponse("device_settings", name); exists {
+			state := populateDeviceSettingsState(ctx, minState, deviceSettingsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -262,6 +315,16 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 	}
 
 	deviceSettingsName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if deviceSettingsData, exists := r.bulkOpsMgr.GetResourceResponse("device_settings", deviceSettingsName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached device settings data for %s from recent operation", deviceSettingsName))
+			state = populateDeviceSettingsState(ctx, state, deviceSettingsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("device_settings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Device Settings %s verification – trusting recent successful API operation", deviceSettingsName))
@@ -332,74 +395,7 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found device settings '%s' under API key '%s'", deviceSettingsName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(deviceMap["name"])
-
-	// Handle object properties
-	if objProps, ok := deviceMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{
-			{
-				Group: utils.MapStringFromAPI(objProps["group"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"mode":                   &state.Mode,
-		"spanning_tree_priority": &state.SpanningTreePriority,
-		"packet_queue":           &state.PacketQueue,
-		"packet_queue_ref_type_": &state.PacketQueueRefType,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(deviceMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":                &state.Enable,
-		"rocev2":                &state.Rocev2,
-		"cut_through_switching": &state.CutThroughSwitching,
-		"disable_tcp_udp_learned_packet_acceleration": &state.DisableTcpUdpLearnedPacketAcceleration,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(deviceMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"external_battery_power_available": &state.ExternalBatteryPowerAvailable,
-		"external_power_available":         &state.ExternalPowerAvailable,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(deviceMap[apiKey])
-	}
-
-	// Map nullable int64 fields
-	nullableInt64FieldMappings := map[string]*types.Int64{
-		"security_audit_interval":  &state.SecurityAuditInterval,
-		"commit_to_flash_interval": &state.CommitToFlashInterval,
-		"hold_timer":               &state.HoldTimer,
-		"mac_aging_timer_override": &state.MacAgingTimerOverride,
-	}
-
-	for apiKey, stateField := range nullableInt64FieldMappings {
-		*stateField = utils.MapNullableInt64FromAPI(deviceMap[apiKey])
-	}
-
-	// Map float64 fields
-	float64FieldMappings := map[string]*types.Float64{
-		"usage_threshold": &state.UsageThreshold,
-	}
-
-	for apiKey, stateField := range float64FieldMappings {
-		*stateField = utils.MapFloat64FromAPI(deviceMap[apiKey])
-	}
-
+	state = populateDeviceSettingsState(ctx, state, deviceMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -448,8 +444,8 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetNullableInt64Field(plan.HoldTimer, state.HoldTimer, func(v *openapi.NullableInt32) { deviceSettingsProps.HoldTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(plan.MacAgingTimerOverride, state.MacAgingTimerOverride, func(v *openapi.NullableInt32) { deviceSettingsProps.MacAgingTimerOverride = *v }, &hasChanges)
 
-	// Handle nullable float64 field changes
-	utils.CompareAndSetNullableFloat64Field(plan.UsageThreshold, state.UsageThreshold, func(v *openapi.NullableFloat32) { deviceSettingsProps.UsageThreshold = *v }, &hasChanges)
+	// Handle nullable float field changes
+	utils.CompareAndSetNullableNumberField(plan.UsageThreshold, state.UsageThreshold, func(v *openapi.NullableFloat32) { deviceSettingsProps.UsageThreshold = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
@@ -492,7 +488,34 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 
 	tflog.Info(ctx, fmt.Sprintf("Device Settings %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "device_settings")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityDeviceSettingsResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if deviceSettingsData, exists := bulkMgr.GetResourceResponse("device_settings", name); exists {
+			newState := populateDeviceSettingsState(ctx, minState, deviceSettingsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDeviceSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -525,4 +548,146 @@ func (r *verityDeviceSettingsResource) Delete(ctx context.Context, req resource.
 
 func (r *verityDeviceSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettingsResourceModel, data map[string]interface{}, mode string) verityDeviceSettingsResourceModel {
+	const resourceType = deviceSettingsResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.Rocev2 = utils.MapBoolWithMode(data, "rocev2", resourceType, mode)
+	state.CutThroughSwitching = utils.MapBoolWithMode(data, "cut_through_switching", resourceType, mode)
+	state.DisableTcpUdpLearnedPacketAcceleration = utils.MapBoolWithMode(data, "disable_tcp_udp_learned_packet_acceleration", resourceType, mode)
+
+	// String fields
+	state.Mode = utils.MapStringWithMode(data, "mode", resourceType, mode)
+	state.SpanningTreePriority = utils.MapStringWithMode(data, "spanning_tree_priority", resourceType, mode)
+	state.PacketQueue = utils.MapStringWithMode(data, "packet_queue", resourceType, mode)
+	state.PacketQueueRefType = utils.MapStringWithMode(data, "packet_queue_ref_type_", resourceType, mode)
+
+	// Int64 fields
+	state.ExternalBatteryPowerAvailable = utils.MapInt64WithMode(data, "external_battery_power_available", resourceType, mode)
+	state.ExternalPowerAvailable = utils.MapInt64WithMode(data, "external_power_available", resourceType, mode)
+	state.SecurityAuditInterval = utils.MapInt64WithMode(data, "security_audit_interval", resourceType, mode)
+	state.CommitToFlashInterval = utils.MapInt64WithMode(data, "commit_to_flash_interval", resourceType, mode)
+	state.HoldTimer = utils.MapInt64WithMode(data, "hold_timer", resourceType, mode)
+	state.MacAgingTimerOverride = utils.MapInt64WithMode(data, "mac_aging_timer_override", resourceType, mode)
+
+	// Float fields
+	state.UsageThreshold = utils.MapNumberWithMode(data, "usage_threshold", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityDeviceSettingsObjectPropertiesModel{
+				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+			}
+			state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityDeviceSettingsResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = deviceSettingsResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"mode", "spanning_tree_priority", "packet_queue", "packet_queue_ref_type_",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "rocev2", "cut_through_switching", "disable_tcp_udp_learned_packet_acceleration",
+	)
+
+	nullifier.NullifyInt64s(
+		"external_battery_power_available", "external_power_available",
+		"security_audit_interval", "commit_to_flash_interval",
+		"hold_timer", "mac_aging_timer_override",
+	)
+
+	// Float fields
+	nullifier.NullifyNumbers(
+		"usage_threshold",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityDeviceSettingsResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityDeviceSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_settings", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "external_battery_power_available", ConfigVal: config.ExternalBatteryPowerAvailable, StateVal: state.ExternalBatteryPowerAvailable},
+			{AttrName: "external_power_available", ConfigVal: config.ExternalPowerAvailable, StateVal: state.ExternalPowerAvailable},
+			{AttrName: "security_audit_interval", ConfigVal: config.SecurityAuditInterval, StateVal: state.SecurityAuditInterval},
+			{AttrName: "commit_to_flash_interval", ConfigVal: config.CommitToFlashInterval, StateVal: state.CommitToFlashInterval},
+			{AttrName: "hold_timer", ConfigVal: config.HoldTimer, StateVal: state.HoldTimer},
+			{AttrName: "mac_aging_timer_override", ConfigVal: config.MacAgingTimerOverride, StateVal: state.MacAgingTimerOverride},
+		},
+		NumberFields: []utils.NullableNumberField{
+			{AttrName: "usage_threshold", ConfigVal: config.UsageThreshold, StateVal: state.UsageThreshold},
+		},
+	})
 }

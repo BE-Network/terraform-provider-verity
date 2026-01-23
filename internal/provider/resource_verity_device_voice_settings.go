@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityDeviceVoiceSettingsResource{}
 	_ resource.ResourceWithConfigure   = &verityDeviceVoiceSettingsResource{}
 	_ resource.ResourceWithImportState = &verityDeviceVoiceSettingsResource{}
+	_ resource.ResourceWithModifyPlan  = &verityDeviceVoiceSettingsResource{}
 )
+
+const deviceVoiceSettingsResourceType = "devicevoicesettings"
 
 func NewVerityDeviceVoiceSettingsResource() resource.Resource {
 	return &verityDeviceVoiceSettingsResource{}
@@ -154,238 +157,297 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"dtmf_method": schema.StringAttribute{
 				Description: "Specifies how DTMF signals are carried",
 				Optional:    true,
+				Computed:    true,
 			},
 			"region": schema.StringAttribute{
 				Description: "Region",
 				Optional:    true,
+				Computed:    true,
 			},
 			"protocol": schema.StringAttribute{
 				Description: "Voice Protocol: MGCP or SIP",
 				Optional:    true,
+				Computed:    true,
 			},
 			"proxy_server": schema.StringAttribute{
 				Description: "IP address or URI of the SIP proxy server for SIP signalling messages",
 				Optional:    true,
+				Computed:    true,
 			},
 			"proxy_server_port": schema.Int64Attribute{
 				Description: "Proxy Server Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"proxy_server_secondary": schema.StringAttribute{
 				Description: "IP address or URI of the secondary SIP proxy server for SIP signalling messages",
 				Optional:    true,
+				Computed:    true,
 			},
 			"proxy_server_secondary_port": schema.Int64Attribute{
 				Description: "Secondary Proxy Server Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"registrar_server": schema.StringAttribute{
 				Description: "Name or IP address or resolved name of the registrar server for SIP signalling messages",
 				Optional:    true,
+				Computed:    true,
 			},
 			"registrar_server_port": schema.Int64Attribute{
 				Description: "Registrar Server Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"registrar_server_secondary": schema.StringAttribute{
 				Description: "Name or IP address or resolved name of the secondary registrar server for SIP signalling messages",
 				Optional:    true,
+				Computed:    true,
 			},
 			"registrar_server_secondary_port": schema.Int64Attribute{
 				Description: "Secondary Registrar Server Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"user_agent_domain": schema.StringAttribute{
 				Description: "User Agent Domain",
 				Optional:    true,
+				Computed:    true,
 			},
 			"user_agent_transport": schema.StringAttribute{
 				Description: "User Agent Transport",
 				Optional:    true,
+				Computed:    true,
 			},
 			"user_agent_port": schema.Int64Attribute{
 				Description: "User Agent Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"outbound_proxy": schema.StringAttribute{
 				Description: "IP address or URI of the outbound proxy server for SIP signalling messages",
 				Optional:    true,
+				Computed:    true,
 			},
 			"outbound_proxy_port": schema.Int64Attribute{
 				Description: "Outbound Proxy Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"outbound_proxy_secondary": schema.StringAttribute{
 				Description: "IP address or URI of the secondary outbound proxy server for SIP signalling messages",
 				Optional:    true,
+				Computed:    true,
 			},
 			"outbound_proxy_secondary_port": schema.Int64Attribute{
 				Description: "Secondary Outbound Proxy Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"registration_period": schema.Int64Attribute{
 				Description: "Specifies the time in seconds to start the re-registration process. The default value is 3240 seconds",
 				Optional:    true,
+				Computed:    true,
 			},
 			"register_expires": schema.Int64Attribute{
 				Description: "SIP registration expiration time in seconds. If value is 0, the SIP agent does not add an expiration time to the registration requests and does not perform re-registration. The default value is 3600 seconds",
 				Optional:    true,
+				Computed:    true,
 			},
 			"voicemail_server": schema.StringAttribute{
 				Description: "Name or IP address or resolved name of the external voicemail server if not provided by SIP server for MWI control",
 				Optional:    true,
+				Computed:    true,
 			},
 			"voicemail_server_port": schema.Int64Attribute{
 				Description: "Voicemail Server Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"voicemail_server_expires": schema.Int64Attribute{
 				Description: "Voicemail server expiration time in seconds. If value is 0, the Register Expires time is used instead. The default value is 3600 seconds",
 				Optional:    true,
+				Computed:    true,
 			},
 			"sip_dscp_mark": schema.Int64Attribute{
 				Description: "SIP Differentiated Services Code point (DSCP)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_agent_1": schema.StringAttribute{
 				Description: "Call Agent 1",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_agent_port_1": schema.Int64Attribute{
 				Description: "Call Agent Port 1",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_agent_2": schema.StringAttribute{
 				Description: "Call Agent 2",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_agent_port_2": schema.Int64Attribute{
 				Description: "Call Agent Port 2",
 				Optional:    true,
+				Computed:    true,
 			},
 			"domain": schema.StringAttribute{
 				Description: "Domain",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mgcp_dscp_mark": schema.Int64Attribute{
 				Description: "MGCP Differentiated Services Code point (DSCP)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"termination_base": schema.StringAttribute{
 				Description: "Base string for the MGCP physical termination id(s)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"local_port_min": schema.Int64Attribute{
 				Description: "Defines the base RTP port that should be used for voice traffic",
 				Optional:    true,
+				Computed:    true,
 			},
 			"local_port_max": schema.Int64Attribute{
 				Description: "Defines the highest RTP port used for voice traffic, must be greater than local Local Port Min",
 				Optional:    true,
+				Computed:    true,
 			},
 			"event_payload_type": schema.Int64Attribute{
 				Description: "Telephone Event Payload Type",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cas_events": schema.Int64Attribute{
 				Description: "Enables or disables handling of CAS via RTP CAS events. Valid values are 0 = off and 1 = on",
 				Optional:    true,
+				Computed:    true,
 			},
 			"dscp_mark": schema.Int64Attribute{
 				Description: "Differentiated Services Code Point (DSCP) to be used for outgoing RTP packets",
 				Optional:    true,
+				Computed:    true,
 			},
 			"rtcp": schema.BoolAttribute{
 				Description: "RTCP Enable",
 				Optional:    true,
+				Computed:    true,
 			},
 			"fax_t38": schema.BoolAttribute{
 				Description: "Fax T.38 Enable",
 				Optional:    true,
+				Computed:    true,
 			},
 			"bit_rate": schema.StringAttribute{
 				Description: "T.38 Bit Rate in bps. Most available fax machines support up to 14,400bps",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cancel_call_waiting": schema.StringAttribute{
 				Description: "Cancel Call waiting",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_hold": schema.StringAttribute{
 				Description: "Call hold",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cids_activate": schema.StringAttribute{
 				Description: "Caller ID Delivery Blocking (single call) Activate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cids_deactivate": schema.StringAttribute{
 				Description: "Caller ID Delivery Blocking (single call) Deactivate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"do_not_disturb_activate": schema.StringAttribute{
 				Description: "Do not Disturb Activate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"do_not_disturb_deactivate": schema.StringAttribute{
 				Description: "Do not Disturb Deactivate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"do_not_disturb_pin_change": schema.StringAttribute{
 				Description: "Do not Disturb PIN Change",
 				Optional:    true,
+				Computed:    true,
 			},
 			"emergency_service_number": schema.StringAttribute{
 				Description: "Emergency Service Number",
 				Optional:    true,
+				Computed:    true,
 			},
 			"anon_cid_block_activate": schema.StringAttribute{
 				Description: "Anonymous Caller ID Block Activate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"anon_cid_block_deactivate": schema.StringAttribute{
 				Description: "Anonymous Caller ID Block Deactivate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_unconditional_activate": schema.StringAttribute{
 				Description: "Call Forward Unconditional Activate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_unconditional_deactivate": schema.StringAttribute{
 				Description: "Call Forward Unconditional Deactivate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_on_busy_activate": schema.StringAttribute{
 				Description: "Call Forward On Busy Activate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_on_busy_deactivate": schema.StringAttribute{
 				Description: "Call Forward On Busy Deactivate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_on_no_answer_activate": schema.StringAttribute{
 				Description: "Call Forward On No Answer Activate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_on_no_answer_deactivate": schema.StringAttribute{
 				Description: "Call Forward On No Answer Deactivate",
 				Optional:    true,
+				Computed:    true,
 			},
 			"intercom_1": schema.StringAttribute{
 				Description: "Intercom 1",
 				Optional:    true,
+				Computed:    true,
 			},
 			"intercom_2": schema.StringAttribute{
 				Description: "Intercom 2",
 				Optional:    true,
+				Computed:    true,
 			},
 			"intercom_3": schema.StringAttribute{
 				Description: "Intercom 3",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -396,22 +458,27 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 						"codec_num_name": schema.StringAttribute{
 							Description: "Name of this Codec",
 							Optional:    true,
+							Computed:    true,
 						},
 						"codec_num_enable": schema.BoolAttribute{
 							Description: "Enable Codec",
 							Optional:    true,
+							Computed:    true,
 						},
 						"codec_num_packetization_period": schema.StringAttribute{
 							Description: "Packet period selection interval in milliseconds",
 							Optional:    true,
+							Computed:    true,
 						},
 						"codec_num_silence_suppression": schema.BoolAttribute{
 							Description: "Specifies whether silence suppression is on or off. Valid values are 0 = off and 1 = on",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -423,6 +490,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -434,6 +502,13 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityDeviceVoiceSettingsResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityDeviceVoiceSettingsResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -499,28 +574,31 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		{FieldName: "FaxT38", APIField: &dvsProps.FaxT38, TFValue: plan.FaxT38},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_voice_settings", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "ProxyServerPort", APIField: &dvsProps.ProxyServerPort, TFValue: plan.ProxyServerPort},
-		{FieldName: "ProxyServerSecondaryPort", APIField: &dvsProps.ProxyServerSecondaryPort, TFValue: plan.ProxyServerSecondaryPort},
-		{FieldName: "RegistrarServerPort", APIField: &dvsProps.RegistrarServerPort, TFValue: plan.RegistrarServerPort},
-		{FieldName: "RegistrarServerSecondaryPort", APIField: &dvsProps.RegistrarServerSecondaryPort, TFValue: plan.RegistrarServerSecondaryPort},
-		{FieldName: "UserAgentPort", APIField: &dvsProps.UserAgentPort, TFValue: plan.UserAgentPort},
-		{FieldName: "OutboundProxyPort", APIField: &dvsProps.OutboundProxyPort, TFValue: plan.OutboundProxyPort},
-		{FieldName: "OutboundProxySecondaryPort", APIField: &dvsProps.OutboundProxySecondaryPort, TFValue: plan.OutboundProxySecondaryPort},
-		{FieldName: "RegistrationPeriod", APIField: &dvsProps.RegistrationPeriod, TFValue: plan.RegistrationPeriod},
-		{FieldName: "RegisterExpires", APIField: &dvsProps.RegisterExpires, TFValue: plan.RegisterExpires},
-		{FieldName: "VoicemailServerPort", APIField: &dvsProps.VoicemailServerPort, TFValue: plan.VoicemailServerPort},
-		{FieldName: "VoicemailServerExpires", APIField: &dvsProps.VoicemailServerExpires, TFValue: plan.VoicemailServerExpires},
-		{FieldName: "SipDscpMark", APIField: &dvsProps.SipDscpMark, TFValue: plan.SipDscpMark},
-		{FieldName: "CallAgentPort1", APIField: &dvsProps.CallAgentPort1, TFValue: plan.CallAgentPort1},
-		{FieldName: "CallAgentPort2", APIField: &dvsProps.CallAgentPort2, TFValue: plan.CallAgentPort2},
-		{FieldName: "MgcpDscpMark", APIField: &dvsProps.MgcpDscpMark, TFValue: plan.MgcpDscpMark},
-		{FieldName: "LocalPortMin", APIField: &dvsProps.LocalPortMin, TFValue: plan.LocalPortMin},
-		{FieldName: "LocalPortMax", APIField: &dvsProps.LocalPortMax, TFValue: plan.LocalPortMax},
-		{FieldName: "EventPayloadType", APIField: &dvsProps.EventPayloadType, TFValue: plan.EventPayloadType},
-		{FieldName: "CasEvents", APIField: &dvsProps.CasEvents, TFValue: plan.CasEvents},
-		{FieldName: "DscpMark", APIField: &dvsProps.DscpMark, TFValue: plan.DscpMark},
+		{FieldName: "ProxyServerPort", APIField: &dvsProps.ProxyServerPort, TFValue: config.ProxyServerPort, IsConfigured: configuredAttrs.IsConfigured("proxy_server_port")},
+		{FieldName: "ProxyServerSecondaryPort", APIField: &dvsProps.ProxyServerSecondaryPort, TFValue: config.ProxyServerSecondaryPort, IsConfigured: configuredAttrs.IsConfigured("proxy_server_secondary_port")},
+		{FieldName: "RegistrarServerPort", APIField: &dvsProps.RegistrarServerPort, TFValue: config.RegistrarServerPort, IsConfigured: configuredAttrs.IsConfigured("registrar_server_port")},
+		{FieldName: "RegistrarServerSecondaryPort", APIField: &dvsProps.RegistrarServerSecondaryPort, TFValue: config.RegistrarServerSecondaryPort, IsConfigured: configuredAttrs.IsConfigured("registrar_server_secondary_port")},
+		{FieldName: "UserAgentPort", APIField: &dvsProps.UserAgentPort, TFValue: config.UserAgentPort, IsConfigured: configuredAttrs.IsConfigured("user_agent_port")},
+		{FieldName: "OutboundProxyPort", APIField: &dvsProps.OutboundProxyPort, TFValue: config.OutboundProxyPort, IsConfigured: configuredAttrs.IsConfigured("outbound_proxy_port")},
+		{FieldName: "OutboundProxySecondaryPort", APIField: &dvsProps.OutboundProxySecondaryPort, TFValue: config.OutboundProxySecondaryPort, IsConfigured: configuredAttrs.IsConfigured("outbound_proxy_secondary_port")},
+		{FieldName: "RegistrationPeriod", APIField: &dvsProps.RegistrationPeriod, TFValue: config.RegistrationPeriod, IsConfigured: configuredAttrs.IsConfigured("registration_period")},
+		{FieldName: "RegisterExpires", APIField: &dvsProps.RegisterExpires, TFValue: config.RegisterExpires, IsConfigured: configuredAttrs.IsConfigured("register_expires")},
+		{FieldName: "VoicemailServerPort", APIField: &dvsProps.VoicemailServerPort, TFValue: config.VoicemailServerPort, IsConfigured: configuredAttrs.IsConfigured("voicemail_server_port")},
+		{FieldName: "VoicemailServerExpires", APIField: &dvsProps.VoicemailServerExpires, TFValue: config.VoicemailServerExpires, IsConfigured: configuredAttrs.IsConfigured("voicemail_server_expires")},
+		{FieldName: "SipDscpMark", APIField: &dvsProps.SipDscpMark, TFValue: config.SipDscpMark, IsConfigured: configuredAttrs.IsConfigured("sip_dscp_mark")},
+		{FieldName: "CallAgentPort1", APIField: &dvsProps.CallAgentPort1, TFValue: config.CallAgentPort1, IsConfigured: configuredAttrs.IsConfigured("call_agent_port_1")},
+		{FieldName: "CallAgentPort2", APIField: &dvsProps.CallAgentPort2, TFValue: config.CallAgentPort2, IsConfigured: configuredAttrs.IsConfigured("call_agent_port_2")},
+		{FieldName: "MgcpDscpMark", APIField: &dvsProps.MgcpDscpMark, TFValue: config.MgcpDscpMark, IsConfigured: configuredAttrs.IsConfigured("mgcp_dscp_mark")},
+		{FieldName: "LocalPortMin", APIField: &dvsProps.LocalPortMin, TFValue: config.LocalPortMin, IsConfigured: configuredAttrs.IsConfigured("local_port_min")},
+		{FieldName: "LocalPortMax", APIField: &dvsProps.LocalPortMax, TFValue: config.LocalPortMax, IsConfigured: configuredAttrs.IsConfigured("local_port_max")},
+		{FieldName: "EventPayloadType", APIField: &dvsProps.EventPayloadType, TFValue: config.EventPayloadType, IsConfigured: configuredAttrs.IsConfigured("event_payload_type")},
+		{FieldName: "CasEvents", APIField: &dvsProps.CasEvents, TFValue: config.CasEvents, IsConfigured: configuredAttrs.IsConfigured("cas_events")},
+		{FieldName: "DscpMark", APIField: &dvsProps.DscpMark, TFValue: config.DscpMark, IsConfigured: configuredAttrs.IsConfigured("dscp_mark")},
 	})
 
 	// Handle object properties
@@ -562,8 +640,32 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 	tflog.Info(ctx, fmt.Sprintf("Device Voice Settings %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "device_voice_settings")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityDeviceVoiceSettingsResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if dvsData, exists := bulkMgr.GetResourceResponse("device_voice_settings", name); exists {
+			state := populateDeviceVoiceSettingsState(ctx, minState, dvsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -583,6 +685,16 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 	}
 
 	dvsName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if dvsData, exists := r.bulkOpsMgr.GetResourceResponse("device_voice_settings", dvsName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached device voice settings data for %s from recent operation", dvsName))
+			state = populateDeviceVoiceSettingsState(ctx, state, dvsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("device_voice_settings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Device Voice Settings %s verification – trusting recent successful API operation", dvsName))
@@ -654,129 +766,8 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Device Voice Settings '%s' under API key '%s'", dvsName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(dvsMap["name"])
-
-	// Handle object properties
-	if objProps, ok := dvsMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityDeviceVoiceSettingsObjectPropertiesModel{
-			{
-				Group: utils.MapStringFromAPI(objProps["group"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"dtmf_method":                           &state.DtmfMethod,
-		"region":                                &state.Region,
-		"protocol":                              &state.Protocol,
-		"proxy_server":                          &state.ProxyServer,
-		"proxy_server_secondary":                &state.ProxyServerSecondary,
-		"registrar_server":                      &state.RegistrarServer,
-		"registrar_server_secondary":            &state.RegistrarServerSecondary,
-		"user_agent_domain":                     &state.UserAgentDomain,
-		"user_agent_transport":                  &state.UserAgentTransport,
-		"outbound_proxy":                        &state.OutboundProxy,
-		"outbound_proxy_secondary":              &state.OutboundProxySecondary,
-		"voicemail_server":                      &state.VoicemailServer,
-		"call_agent_1":                          &state.CallAgent1,
-		"call_agent_2":                          &state.CallAgent2,
-		"domain":                                &state.Domain,
-		"termination_base":                      &state.TerminationBase,
-		"bit_rate":                              &state.BitRate,
-		"cancel_call_waiting":                   &state.CancelCallWaiting,
-		"call_hold":                             &state.CallHold,
-		"cids_activate":                         &state.CidsActivate,
-		"cids_deactivate":                       &state.CidsDeactivate,
-		"do_not_disturb_activate":               &state.DoNotDisturbActivate,
-		"do_not_disturb_deactivate":             &state.DoNotDisturbDeactivate,
-		"do_not_disturb_pin_change":             &state.DoNotDisturbPinChange,
-		"emergency_service_number":              &state.EmergencyServiceNumber,
-		"anon_cid_block_activate":               &state.AnonCidBlockActivate,
-		"anon_cid_block_deactivate":             &state.AnonCidBlockDeactivate,
-		"call_forward_unconditional_activate":   &state.CallForwardUnconditionalActivate,
-		"call_forward_unconditional_deactivate": &state.CallForwardUnconditionalDeactivate,
-		"call_forward_on_busy_activate":         &state.CallForwardOnBusyActivate,
-		"call_forward_on_busy_deactivate":       &state.CallForwardOnBusyDeactivate,
-		"call_forward_on_no_answer_activate":    &state.CallForwardOnNoAnswerActivate,
-		"call_forward_on_no_answer_deactivate":  &state.CallForwardOnNoAnswerDeactivate,
-		"intercom_1":                            &state.Intercom1,
-		"intercom_2":                            &state.Intercom2,
-		"intercom_3":                            &state.Intercom3,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(dvsMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":  &state.Enable,
-		"rtcp":    &state.Rtcp,
-		"fax_t38": &state.FaxT38,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(dvsMap[apiKey])
-	}
-
-	// Map nullable int64 fields
-	nullableInt64FieldMappings := map[string]*types.Int64{
-		"proxy_server_port":               &state.ProxyServerPort,
-		"proxy_server_secondary_port":     &state.ProxyServerSecondaryPort,
-		"registrar_server_port":           &state.RegistrarServerPort,
-		"registrar_server_secondary_port": &state.RegistrarServerSecondaryPort,
-		"user_agent_port":                 &state.UserAgentPort,
-		"outbound_proxy_port":             &state.OutboundProxyPort,
-		"outbound_proxy_secondary_port":   &state.OutboundProxySecondaryPort,
-		"registration_period":             &state.RegistrationPeriod,
-		"register_expires":                &state.RegisterExpires,
-		"voicemail_server_port":           &state.VoicemailServerPort,
-		"voicemail_server_expires":        &state.VoicemailServerExpires,
-		"sip_dscp_mark":                   &state.SipDscpMark,
-		"call_agent_port_1":               &state.CallAgentPort1,
-		"call_agent_port_2":               &state.CallAgentPort2,
-		"mgcp_dscp_mark":                  &state.MgcpDscpMark,
-		"local_port_min":                  &state.LocalPortMin,
-		"local_port_max":                  &state.LocalPortMax,
-		"event_payload_type":              &state.EventPayloadType,
-		"dscp_mark":                       &state.DscpMark,
-		"cas_events":                      &state.CasEvents,
-	}
-
-	for apiKey, stateField := range nullableInt64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(dvsMap[apiKey])
-	}
-
-	// Handle codecs
-	if codecsArray, ok := dvsMap["codecs"].([]interface{}); ok && len(codecsArray) > 0 {
-		var codecs []verityDeviceVoiceSettingsCodecModel
-
-		for _, c := range codecsArray {
-			codec, ok := c.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			codecModel := verityDeviceVoiceSettingsCodecModel{
-				CodecNumName:                utils.MapStringFromAPI(codec["codec_num_name"]),
-				CodecNumEnable:              utils.MapBoolFromAPI(codec["codec_num_enable"]),
-				CodecNumPacketizationPeriod: utils.MapStringFromAPI(codec["codec_num_packetization_period"]),
-				CodecNumSilenceSuppression:  utils.MapBoolFromAPI(codec["codec_num_silence_suppression"]),
-				Index:                       utils.MapInt64FromAPI(codec["index"]),
-			}
-
-			codecs = append(codecs, codecModel)
-		}
-
-		state.Codecs = codecs
-	} else {
-		state.Codecs = nil
-	}
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, state)...)
+	state = populateDeviceVoiceSettingsState(ctx, state, dvsMap, r.provCtx.mode)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -955,7 +946,34 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 
 	tflog.Info(ctx, fmt.Sprintf("Device Voice Settings %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "device_voice_settings")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityDeviceVoiceSettingsResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if dvsData, exists := bulkMgr.GetResourceResponse("device_voice_settings", name); exists {
+			newState := populateDeviceVoiceSettingsState(ctx, minState, dvsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDeviceVoiceSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -988,4 +1006,234 @@ func (r *verityDeviceVoiceSettingsResource) Delete(ctx context.Context, req reso
 
 func (r *verityDeviceVoiceSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateDeviceVoiceSettingsState(ctx context.Context, state verityDeviceVoiceSettingsResourceModel, data map[string]interface{}, mode string) verityDeviceVoiceSettingsResourceModel {
+	const resourceType = deviceVoiceSettingsResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.Rtcp = utils.MapBoolWithMode(data, "rtcp", resourceType, mode)
+	state.FaxT38 = utils.MapBoolWithMode(data, "fax_t38", resourceType, mode)
+
+	// String fields
+	state.DtmfMethod = utils.MapStringWithMode(data, "dtmf_method", resourceType, mode)
+	state.Region = utils.MapStringWithMode(data, "region", resourceType, mode)
+	state.Protocol = utils.MapStringWithMode(data, "protocol", resourceType, mode)
+	state.ProxyServer = utils.MapStringWithMode(data, "proxy_server", resourceType, mode)
+	state.ProxyServerSecondary = utils.MapStringWithMode(data, "proxy_server_secondary", resourceType, mode)
+	state.RegistrarServer = utils.MapStringWithMode(data, "registrar_server", resourceType, mode)
+	state.RegistrarServerSecondary = utils.MapStringWithMode(data, "registrar_server_secondary", resourceType, mode)
+	state.UserAgentDomain = utils.MapStringWithMode(data, "user_agent_domain", resourceType, mode)
+	state.UserAgentTransport = utils.MapStringWithMode(data, "user_agent_transport", resourceType, mode)
+	state.OutboundProxy = utils.MapStringWithMode(data, "outbound_proxy", resourceType, mode)
+	state.OutboundProxySecondary = utils.MapStringWithMode(data, "outbound_proxy_secondary", resourceType, mode)
+	state.VoicemailServer = utils.MapStringWithMode(data, "voicemail_server", resourceType, mode)
+	state.CallAgent1 = utils.MapStringWithMode(data, "call_agent_1", resourceType, mode)
+	state.CallAgent2 = utils.MapStringWithMode(data, "call_agent_2", resourceType, mode)
+	state.Domain = utils.MapStringWithMode(data, "domain", resourceType, mode)
+	state.TerminationBase = utils.MapStringWithMode(data, "termination_base", resourceType, mode)
+	state.BitRate = utils.MapStringWithMode(data, "bit_rate", resourceType, mode)
+	state.CancelCallWaiting = utils.MapStringWithMode(data, "cancel_call_waiting", resourceType, mode)
+	state.CallHold = utils.MapStringWithMode(data, "call_hold", resourceType, mode)
+	state.CidsActivate = utils.MapStringWithMode(data, "cids_activate", resourceType, mode)
+	state.CidsDeactivate = utils.MapStringWithMode(data, "cids_deactivate", resourceType, mode)
+	state.DoNotDisturbActivate = utils.MapStringWithMode(data, "do_not_disturb_activate", resourceType, mode)
+	state.DoNotDisturbDeactivate = utils.MapStringWithMode(data, "do_not_disturb_deactivate", resourceType, mode)
+	state.DoNotDisturbPinChange = utils.MapStringWithMode(data, "do_not_disturb_pin_change", resourceType, mode)
+	state.EmergencyServiceNumber = utils.MapStringWithMode(data, "emergency_service_number", resourceType, mode)
+	state.AnonCidBlockActivate = utils.MapStringWithMode(data, "anon_cid_block_activate", resourceType, mode)
+	state.AnonCidBlockDeactivate = utils.MapStringWithMode(data, "anon_cid_block_deactivate", resourceType, mode)
+	state.CallForwardUnconditionalActivate = utils.MapStringWithMode(data, "call_forward_unconditional_activate", resourceType, mode)
+	state.CallForwardUnconditionalDeactivate = utils.MapStringWithMode(data, "call_forward_unconditional_deactivate", resourceType, mode)
+	state.CallForwardOnBusyActivate = utils.MapStringWithMode(data, "call_forward_on_busy_activate", resourceType, mode)
+	state.CallForwardOnBusyDeactivate = utils.MapStringWithMode(data, "call_forward_on_busy_deactivate", resourceType, mode)
+	state.CallForwardOnNoAnswerActivate = utils.MapStringWithMode(data, "call_forward_on_no_answer_activate", resourceType, mode)
+	state.CallForwardOnNoAnswerDeactivate = utils.MapStringWithMode(data, "call_forward_on_no_answer_deactivate", resourceType, mode)
+	state.Intercom1 = utils.MapStringWithMode(data, "intercom_1", resourceType, mode)
+	state.Intercom2 = utils.MapStringWithMode(data, "intercom_2", resourceType, mode)
+	state.Intercom3 = utils.MapStringWithMode(data, "intercom_3", resourceType, mode)
+
+	// Int64 fields
+	state.ProxyServerPort = utils.MapInt64WithMode(data, "proxy_server_port", resourceType, mode)
+	state.ProxyServerSecondaryPort = utils.MapInt64WithMode(data, "proxy_server_secondary_port", resourceType, mode)
+	state.RegistrarServerPort = utils.MapInt64WithMode(data, "registrar_server_port", resourceType, mode)
+	state.RegistrarServerSecondaryPort = utils.MapInt64WithMode(data, "registrar_server_secondary_port", resourceType, mode)
+	state.UserAgentPort = utils.MapInt64WithMode(data, "user_agent_port", resourceType, mode)
+	state.OutboundProxyPort = utils.MapInt64WithMode(data, "outbound_proxy_port", resourceType, mode)
+	state.OutboundProxySecondaryPort = utils.MapInt64WithMode(data, "outbound_proxy_secondary_port", resourceType, mode)
+	state.RegistrationPeriod = utils.MapInt64WithMode(data, "registration_period", resourceType, mode)
+	state.RegisterExpires = utils.MapInt64WithMode(data, "register_expires", resourceType, mode)
+	state.VoicemailServerPort = utils.MapInt64WithMode(data, "voicemail_server_port", resourceType, mode)
+	state.VoicemailServerExpires = utils.MapInt64WithMode(data, "voicemail_server_expires", resourceType, mode)
+	state.SipDscpMark = utils.MapInt64WithMode(data, "sip_dscp_mark", resourceType, mode)
+	state.CallAgentPort1 = utils.MapInt64WithMode(data, "call_agent_port_1", resourceType, mode)
+	state.CallAgentPort2 = utils.MapInt64WithMode(data, "call_agent_port_2", resourceType, mode)
+	state.MgcpDscpMark = utils.MapInt64WithMode(data, "mgcp_dscp_mark", resourceType, mode)
+	state.LocalPortMin = utils.MapInt64WithMode(data, "local_port_min", resourceType, mode)
+	state.LocalPortMax = utils.MapInt64WithMode(data, "local_port_max", resourceType, mode)
+	state.EventPayloadType = utils.MapInt64WithMode(data, "event_payload_type", resourceType, mode)
+	state.CasEvents = utils.MapInt64WithMode(data, "cas_events", resourceType, mode)
+	state.DscpMark = utils.MapInt64WithMode(data, "dscp_mark", resourceType, mode)
+
+	// Handle codecs array
+	if utils.FieldAppliesToMode(resourceType, "codecs", mode) {
+		if codecsArray, ok := data["codecs"].([]interface{}); ok && len(codecsArray) > 0 {
+			var codecs []verityDeviceVoiceSettingsCodecModel
+			for _, c := range codecsArray {
+				codec, ok := c.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				codecModel := verityDeviceVoiceSettingsCodecModel{
+					CodecNumName:                utils.MapStringWithModeNested(codec, "codec_num_name", resourceType, "codecs.codec_num_name", mode),
+					CodecNumEnable:              utils.MapBoolWithModeNested(codec, "codec_num_enable", resourceType, "codecs.codec_num_enable", mode),
+					CodecNumPacketizationPeriod: utils.MapStringWithModeNested(codec, "codec_num_packetization_period", resourceType, "codecs.codec_num_packetization_period", mode),
+					CodecNumSilenceSuppression:  utils.MapBoolWithModeNested(codec, "codec_num_silence_suppression", resourceType, "codecs.codec_num_silence_suppression", mode),
+					Index:                       utils.MapInt64WithModeNested(codec, "index", resourceType, "codecs.index", mode),
+				}
+				codecs = append(codecs, codecModel)
+			}
+			state.Codecs = codecs
+		} else {
+			state.Codecs = nil
+		}
+	} else {
+		state.Codecs = nil
+	}
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityDeviceVoiceSettingsObjectPropertiesModel{
+				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+			}
+			state.ObjectProperties = []verityDeviceVoiceSettingsObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityDeviceVoiceSettingsResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = deviceVoiceSettingsResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"dtmf_method", "region", "protocol", "proxy_server", "proxy_server_secondary",
+		"registrar_server", "registrar_server_secondary", "user_agent_domain", "user_agent_transport",
+		"outbound_proxy", "outbound_proxy_secondary", "voicemail_server",
+		"call_agent_1", "call_agent_2", "domain", "termination_base", "bit_rate",
+		"cancel_call_waiting", "call_hold", "cids_activate", "cids_deactivate",
+		"do_not_disturb_activate", "do_not_disturb_deactivate", "do_not_disturb_pin_change",
+		"emergency_service_number", "anon_cid_block_activate", "anon_cid_block_deactivate",
+		"call_forward_unconditional_activate", "call_forward_unconditional_deactivate",
+		"call_forward_on_busy_activate", "call_forward_on_busy_deactivate",
+		"call_forward_on_no_answer_activate", "call_forward_on_no_answer_deactivate",
+		"intercom_1", "intercom_2", "intercom_3",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "rtcp", "fax_t38",
+	)
+
+	nullifier.NullifyInt64s(
+		"proxy_server_port", "proxy_server_secondary_port",
+		"registrar_server_port", "registrar_server_secondary_port",
+		"user_agent_port", "outbound_proxy_port", "outbound_proxy_secondary_port",
+		"registration_period", "register_expires",
+		"voicemail_server_port", "voicemail_server_expires", "sip_dscp_mark",
+		"call_agent_port_1", "call_agent_port_2", "mgcp_dscp_mark",
+		"local_port_min", "local_port_max", "event_payload_type", "cas_events", "dscp_mark",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityDeviceVoiceSettingsResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityDeviceVoiceSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_voice_settings", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "proxy_server_port", ConfigVal: config.ProxyServerPort, StateVal: state.ProxyServerPort},
+			{AttrName: "proxy_server_secondary_port", ConfigVal: config.ProxyServerSecondaryPort, StateVal: state.ProxyServerSecondaryPort},
+			{AttrName: "registrar_server_port", ConfigVal: config.RegistrarServerPort, StateVal: state.RegistrarServerPort},
+			{AttrName: "registrar_server_secondary_port", ConfigVal: config.RegistrarServerSecondaryPort, StateVal: state.RegistrarServerSecondaryPort},
+			{AttrName: "user_agent_port", ConfigVal: config.UserAgentPort, StateVal: state.UserAgentPort},
+			{AttrName: "outbound_proxy_port", ConfigVal: config.OutboundProxyPort, StateVal: state.OutboundProxyPort},
+			{AttrName: "outbound_proxy_secondary_port", ConfigVal: config.OutboundProxySecondaryPort, StateVal: state.OutboundProxySecondaryPort},
+			{AttrName: "registration_period", ConfigVal: config.RegistrationPeriod, StateVal: state.RegistrationPeriod},
+			{AttrName: "register_expires", ConfigVal: config.RegisterExpires, StateVal: state.RegisterExpires},
+			{AttrName: "voicemail_server_port", ConfigVal: config.VoicemailServerPort, StateVal: state.VoicemailServerPort},
+			{AttrName: "voicemail_server_expires", ConfigVal: config.VoicemailServerExpires, StateVal: state.VoicemailServerExpires},
+			{AttrName: "sip_dscp_mark", ConfigVal: config.SipDscpMark, StateVal: state.SipDscpMark},
+			{AttrName: "call_agent_port_1", ConfigVal: config.CallAgentPort1, StateVal: state.CallAgentPort1},
+			{AttrName: "call_agent_port_2", ConfigVal: config.CallAgentPort2, StateVal: state.CallAgentPort2},
+			{AttrName: "mgcp_dscp_mark", ConfigVal: config.MgcpDscpMark, StateVal: state.MgcpDscpMark},
+			{AttrName: "local_port_min", ConfigVal: config.LocalPortMin, StateVal: state.LocalPortMin},
+			{AttrName: "local_port_max", ConfigVal: config.LocalPortMax, StateVal: state.LocalPortMax},
+			{AttrName: "event_payload_type", ConfigVal: config.EventPayloadType, StateVal: state.EventPayloadType},
+			{AttrName: "cas_events", ConfigVal: config.CasEvents, StateVal: state.CasEvents},
+			{AttrName: "dscp_mark", ConfigVal: config.DscpMark, StateVal: state.DscpMark},
+		},
+	})
 }

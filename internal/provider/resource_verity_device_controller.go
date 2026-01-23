@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityDeviceControllerResource{}
 	_ resource.ResourceWithConfigure   = &verityDeviceControllerResource{}
 	_ resource.ResourceWithImportState = &verityDeviceControllerResource{}
+	_ resource.ResourceWithModifyPlan  = &verityDeviceControllerResource{}
 )
+
+const deviceControllerResourceType = "devicecontrollers"
 
 func NewVerityDeviceControllerResource() resource.Resource {
 	return &verityDeviceControllerResource{}
@@ -119,170 +122,212 @@ func (r *verityDeviceControllerResource) Schema(_ context.Context, _ resource.Sc
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ip_source": schema.StringAttribute{
 				Description: "IP Source",
 				Optional:    true,
+				Computed:    true,
 			},
 			"controller_ip_and_mask": schema.StringAttribute{
 				Description: "Controller IP and Mask",
 				Optional:    true,
+				Computed:    true,
 			},
 			"gateway": schema.StringAttribute{
 				Description: "Gateway",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switch_ip_and_mask": schema.StringAttribute{
 				Description: "Switch IP and Mask",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switch_gateway": schema.StringAttribute{
 				Description: "Gateway of Managed Device",
 				Optional:    true,
+				Computed:    true,
 			},
 			"comm_type": schema.StringAttribute{
 				Description: "Comm Type",
 				Optional:    true,
+				Computed:    true,
 			},
 			"snmp_community_string": schema.StringAttribute{
 				Description: "Comm Credentials",
 				Optional:    true,
+				Computed:    true,
 			},
 			"uplink_port": schema.StringAttribute{
 				Description: "Uplink Port of Managed Device",
 				Optional:    true,
+				Computed:    true,
 			},
 			"lldp_search_string": schema.StringAttribute{
 				Description: "Optional unless Located By is \"LLDP\" or Device managed as \"Active SFP\". Must be either the chassis-id or the hostname of the LLDP from the managed device. Used to detect connections between managed devices. If blank, the chassis-id detected by the Device Controller via SNMP/CLI is used",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ztp_identification": schema.StringAttribute{
 				Description: "Service Tag or Serial Number to identify device for Zero Touch Provisioning",
 				Optional:    true,
+				Computed:    true,
 			},
 			"located_by": schema.StringAttribute{
 				Description: "Controls how the system locates this Device within its LAN",
 				Optional:    true,
+				Computed:    true,
 			},
 			"power_state": schema.StringAttribute{
 				Description: "Power state of Switch Controller",
 				Optional:    true,
+				Computed:    true,
 			},
 			"communication_mode": schema.StringAttribute{
 				Description: "Communication Mode",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cli_access_mode": schema.StringAttribute{
 				Description: "CLI Access Mode",
 				Optional:    true,
+				Computed:    true,
 			},
 			"username": schema.StringAttribute{
 				Description: "Username",
 				Optional:    true,
+				Computed:    true,
 			},
 			"password": schema.StringAttribute{
 				Description: "Password",
 				Optional:    true,
+				Computed:    true,
 			},
 			"enable_password": schema.StringAttribute{
 				Description: "Enable Password - to enable privileged CLI operations",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ssh_key_or_password": schema.StringAttribute{
 				Description: "SSH Key or Password",
 				Optional:    true,
+				Computed:    true,
 			},
 			"managed_on_native_vlan": schema.BoolAttribute{
 				Description: "Managed on native VLAN",
 				Optional:    true,
+				Computed:    true,
 			},
 			"sdlc": schema.StringAttribute{
 				Description: "SDLC that Device Controller belongs to",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switchpoint": schema.StringAttribute{
 				Description: "Endpoint reference",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switchpoint_ref_type_": schema.StringAttribute{
 				Description: "Object type for switchpoint field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"security_type": schema.StringAttribute{
 				Description: "Security level",
 				Optional:    true,
+				Computed:    true,
 			},
 			"snmpv3_username": schema.StringAttribute{
 				Description: "SNMPv3 Username",
 				Optional:    true,
+				Computed:    true,
 			},
 			"authentication_protocol": schema.StringAttribute{
 				Description: "Authentication Protocol",
 				Optional:    true,
+				Computed:    true,
 			},
 			"passphrase": schema.StringAttribute{
 				Description: "Passphrase",
 				Optional:    true,
+				Computed:    true,
 			},
 			"private_protocol": schema.StringAttribute{
 				Description: "Private Protocol",
 				Optional:    true,
+				Computed:    true,
 			},
 			"private_password": schema.StringAttribute{
 				Description: "Private Password",
 				Optional:    true,
+				Computed:    true,
 			},
 			"password_encrypted": schema.StringAttribute{
 				Description: "Encrypted Password",
 				Optional:    true,
+				Computed:    true,
 			},
 			"enable_password_encrypted": schema.StringAttribute{
 				Description: "Encrypted Enable Password - to enable privileged CLI operations",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ssh_key_or_password_encrypted": schema.StringAttribute{
 				Description: "Encrypted SSH Key or Password",
 				Optional:    true,
+				Computed:    true,
 			},
 			"passphrase_encrypted": schema.StringAttribute{
 				Description: "Encrypted Passphrase",
 				Optional:    true,
+				Computed:    true,
 			},
 			"private_password_encrypted": schema.StringAttribute{
 				Description: "Encrypted Private Password",
 				Optional:    true,
+				Computed:    true,
 			},
 			"device_managed_as": schema.StringAttribute{
 				Description: "Device managed as",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switch": schema.StringAttribute{
 				Description: "Endpoint locating the Switch to be controlled",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switch_ref_type_": schema.StringAttribute{
 				Description: "Object type for switch field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"connection_service": schema.StringAttribute{
 				Description: "Connect a Service",
 				Optional:    true,
+				Computed:    true,
 			},
 			"connection_service_ref_type_": schema.StringAttribute{
 				Description: "Object type for connection_service field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"port": schema.StringAttribute{
 				Description: "Port locating the Switch to be controlled",
 				Optional:    true,
+				Computed:    true,
 			},
 			"sfp_mac_address_or_sn": schema.StringAttribute{
 				Description: "SFP MAC Address or SN",
 				Optional:    true,
+				Computed:    true,
 			},
 			"uses_tagged_packets": schema.BoolAttribute{
 				Description: "Indicates if the direct interface expects tagged or untagged packets",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 	}
@@ -367,8 +412,32 @@ func (r *verityDeviceControllerResource) Create(ctx context.Context, req resourc
 	tflog.Info(ctx, fmt.Sprintf("Device Controller %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "device_controllers")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityDeviceControllerResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if deviceControllerData, exists := bulkMgr.GetResourceResponse("device_controller", name); exists {
+			state := populateDeviceControllerState(ctx, minState, deviceControllerData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDeviceControllerResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -388,6 +457,16 @@ func (r *verityDeviceControllerResource) Read(ctx context.Context, req resource.
 	}
 
 	deviceControllerName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if deviceControllerData, exists := r.bulkOpsMgr.GetResourceResponse("device_controller", deviceControllerName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached device controller data for %s from recent operation", deviceControllerName))
+			state = populateDeviceControllerState(ctx, state, deviceControllerData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("device_controller") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping device controller %s verification – trusting recent successful API operation", deviceControllerName))
@@ -459,66 +538,7 @@ func (r *verityDeviceControllerResource) Read(ctx context.Context, req resource.
 
 	tflog.Debug(ctx, fmt.Sprintf("Found device controller '%s' under API key '%s'", deviceControllerName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(deviceControllerMap["name"])
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"ip_source":                     &state.IpSource,
-		"controller_ip_and_mask":        &state.ControllerIpAndMask,
-		"gateway":                       &state.Gateway,
-		"switch_ip_and_mask":            &state.SwitchIpAndMask,
-		"switch_gateway":                &state.SwitchGateway,
-		"comm_type":                     &state.CommType,
-		"snmp_community_string":         &state.SnmpCommunityString,
-		"uplink_port":                   &state.UplinkPort,
-		"lldp_search_string":            &state.LldpSearchString,
-		"ztp_identification":            &state.ZtpIdentification,
-		"located_by":                    &state.LocatedBy,
-		"power_state":                   &state.PowerState,
-		"communication_mode":            &state.CommunicationMode,
-		"cli_access_mode":               &state.CliAccessMode,
-		"username":                      &state.Username,
-		"password":                      &state.Password,
-		"enable_password":               &state.EnablePassword,
-		"ssh_key_or_password":           &state.SshKeyOrPassword,
-		"sdlc":                          &state.Sdlc,
-		"switchpoint":                   &state.Switchpoint,
-		"switchpoint_ref_type_":         &state.SwitchpointRefType,
-		"security_type":                 &state.SecurityType,
-		"snmpv3_username":               &state.Snmpv3Username,
-		"authentication_protocol":       &state.AuthenticationProtocol,
-		"passphrase":                    &state.Passphrase,
-		"private_protocol":              &state.PrivateProtocol,
-		"private_password":              &state.PrivatePassword,
-		"password_encrypted":            &state.PasswordEncrypted,
-		"enable_password_encrypted":     &state.EnablePasswordEncrypted,
-		"ssh_key_or_password_encrypted": &state.SshKeyOrPasswordEncrypted,
-		"passphrase_encrypted":          &state.PassphraseEncrypted,
-		"private_password_encrypted":    &state.PrivatePasswordEncrypted,
-		"device_managed_as":             &state.DeviceManagedAs,
-		"switch":                        &state.Switch,
-		"switch_ref_type_":              &state.SwitchRefType,
-		"connection_service":            &state.ConnectionService,
-		"connection_service_ref_type_":  &state.ConnectionServiceRefType,
-		"port":                          &state.Port,
-		"sfp_mac_address_or_sn":         &state.SfpMacAddressOrSn,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(deviceControllerMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":                 &state.Enable,
-		"managed_on_native_vlan": &state.ManagedOnNativeVlan,
-		"uses_tagged_packets":    &state.UsesTaggedPackets,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(deviceControllerMap[apiKey])
-	}
-
+	state = populateDeviceControllerState(ctx, state, deviceControllerMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -637,7 +657,34 @@ func (r *verityDeviceControllerResource) Update(ctx context.Context, req resourc
 
 	tflog.Info(ctx, fmt.Sprintf("Device Controller %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "device_controllers")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityDeviceControllerResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if deviceControllerData, exists := bulkMgr.GetResourceResponse("device_controller", name); exists {
+			newState := populateDeviceControllerState(ctx, minState, deviceControllerData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDeviceControllerResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -670,4 +717,105 @@ func (r *verityDeviceControllerResource) Delete(ctx context.Context, req resourc
 
 func (r *verityDeviceControllerResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateDeviceControllerState(ctx context.Context, state verityDeviceControllerResourceModel, data map[string]interface{}, mode string) verityDeviceControllerResourceModel {
+	const resourceType = deviceControllerResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.ManagedOnNativeVlan = utils.MapBoolWithMode(data, "managed_on_native_vlan", resourceType, mode)
+	state.UsesTaggedPackets = utils.MapBoolWithMode(data, "uses_tagged_packets", resourceType, mode)
+
+	// String fields
+	state.IpSource = utils.MapStringWithMode(data, "ip_source", resourceType, mode)
+	state.ControllerIpAndMask = utils.MapStringWithMode(data, "controller_ip_and_mask", resourceType, mode)
+	state.Gateway = utils.MapStringWithMode(data, "gateway", resourceType, mode)
+	state.SwitchIpAndMask = utils.MapStringWithMode(data, "switch_ip_and_mask", resourceType, mode)
+	state.SwitchGateway = utils.MapStringWithMode(data, "switch_gateway", resourceType, mode)
+	state.CommType = utils.MapStringWithMode(data, "comm_type", resourceType, mode)
+	state.SnmpCommunityString = utils.MapStringWithMode(data, "snmp_community_string", resourceType, mode)
+	state.UplinkPort = utils.MapStringWithMode(data, "uplink_port", resourceType, mode)
+	state.LldpSearchString = utils.MapStringWithMode(data, "lldp_search_string", resourceType, mode)
+	state.ZtpIdentification = utils.MapStringWithMode(data, "ztp_identification", resourceType, mode)
+	state.LocatedBy = utils.MapStringWithMode(data, "located_by", resourceType, mode)
+	state.PowerState = utils.MapStringWithMode(data, "power_state", resourceType, mode)
+	state.CommunicationMode = utils.MapStringWithMode(data, "communication_mode", resourceType, mode)
+	state.CliAccessMode = utils.MapStringWithMode(data, "cli_access_mode", resourceType, mode)
+	state.Username = utils.MapStringWithMode(data, "username", resourceType, mode)
+	state.Password = utils.MapStringWithMode(data, "password", resourceType, mode)
+	state.EnablePassword = utils.MapStringWithMode(data, "enable_password", resourceType, mode)
+	state.SshKeyOrPassword = utils.MapStringWithMode(data, "ssh_key_or_password", resourceType, mode)
+	state.Sdlc = utils.MapStringWithMode(data, "sdlc", resourceType, mode)
+	state.Switchpoint = utils.MapStringWithMode(data, "switchpoint", resourceType, mode)
+	state.SwitchpointRefType = utils.MapStringWithMode(data, "switchpoint_ref_type_", resourceType, mode)
+	state.SecurityType = utils.MapStringWithMode(data, "security_type", resourceType, mode)
+	state.Snmpv3Username = utils.MapStringWithMode(data, "snmpv3_username", resourceType, mode)
+	state.AuthenticationProtocol = utils.MapStringWithMode(data, "authentication_protocol", resourceType, mode)
+	state.Passphrase = utils.MapStringWithMode(data, "passphrase", resourceType, mode)
+	state.PrivateProtocol = utils.MapStringWithMode(data, "private_protocol", resourceType, mode)
+	state.PrivatePassword = utils.MapStringWithMode(data, "private_password", resourceType, mode)
+	state.PasswordEncrypted = utils.MapStringWithMode(data, "password_encrypted", resourceType, mode)
+	state.EnablePasswordEncrypted = utils.MapStringWithMode(data, "enable_password_encrypted", resourceType, mode)
+	state.SshKeyOrPasswordEncrypted = utils.MapStringWithMode(data, "ssh_key_or_password_encrypted", resourceType, mode)
+	state.PassphraseEncrypted = utils.MapStringWithMode(data, "passphrase_encrypted", resourceType, mode)
+	state.PrivatePasswordEncrypted = utils.MapStringWithMode(data, "private_password_encrypted", resourceType, mode)
+	state.DeviceManagedAs = utils.MapStringWithMode(data, "device_managed_as", resourceType, mode)
+	state.Switch = utils.MapStringWithMode(data, "switch", resourceType, mode)
+	state.SwitchRefType = utils.MapStringWithMode(data, "switch_ref_type_", resourceType, mode)
+	state.ConnectionService = utils.MapStringWithMode(data, "connection_service", resourceType, mode)
+	state.ConnectionServiceRefType = utils.MapStringWithMode(data, "connection_service_ref_type_", resourceType, mode)
+	state.Port = utils.MapStringWithMode(data, "port", resourceType, mode)
+	state.SfpMacAddressOrSn = utils.MapStringWithMode(data, "sfp_mac_address_or_sn", resourceType, mode)
+
+	return state
+}
+
+func (r *verityDeviceControllerResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityDeviceControllerResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = deviceControllerResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"ip_source", "controller_ip_and_mask", "gateway", "switch_ip_and_mask", "switch_gateway",
+		"comm_type", "snmp_community_string", "uplink_port", "lldp_search_string", "ztp_identification",
+		"located_by", "power_state", "communication_mode", "cli_access_mode",
+		"username", "password", "enable_password", "ssh_key_or_password",
+		"sdlc", "switchpoint", "switchpoint_ref_type_", "security_type",
+		"snmpv3_username", "authentication_protocol", "passphrase", "private_protocol", "private_password",
+		"password_encrypted", "enable_password_encrypted", "ssh_key_or_password_encrypted",
+		"passphrase_encrypted", "private_password_encrypted",
+		"device_managed_as", "switch", "switch_ref_type_",
+		"connection_service", "connection_service_ref_type_", "port", "sfp_mac_address_or_sn",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "managed_on_native_vlan", "uses_tagged_packets",
+	)
 }

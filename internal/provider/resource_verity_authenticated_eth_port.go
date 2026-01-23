@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityAuthenticatedEthPortResource{}
 	_ resource.ResourceWithConfigure   = &verityAuthenticatedEthPortResource{}
 	_ resource.ResourceWithImportState = &verityAuthenticatedEthPortResource{}
+	_ resource.ResourceWithModifyPlan  = &verityAuthenticatedEthPortResource{}
 )
+
+const authenticatedEthPortResourceType = "authenticatedethports"
 
 func NewVerityAuthenticatedEthPortResource() resource.Resource {
 	return &verityAuthenticatedEthPortResource{}
@@ -103,26 +106,32 @@ func (r *verityAuthenticatedEthPortResource) Schema(ctx context.Context, req res
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"connection_mode": schema.StringAttribute{
 				Description: "Choose connection mode for Authenticated Eth-Port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"reauthorization_period_sec": schema.Int64Attribute{
 				Description: "Amount of time in seconds before 802.1X requires reauthorization of an active session. \"0\" disables reauthorization (not recommended)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"allow_mac_based_authentication": schema.BoolAttribute{
 				Description: "Enables 802.1x to capture the connected MAC address and send it to the Radius Server instead of requesting credentials. Useful for printers and similar devices",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mac_authentication_holdoff_sec": schema.Int64Attribute{
 				Description: "Amount of time in seconds 802.1X authentication is allowed to run before MAC-based authentication has begun",
 				Optional:    true,
+				Computed:    true,
 			},
 			"trusted_port": schema.BoolAttribute{
 				Description: "Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -133,26 +142,32 @@ func (r *verityAuthenticatedEthPortResource) Schema(ctx context.Context, req res
 						"eth_port_profile_num_enable": schema.BoolAttribute{
 							Description: "Enable row",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_profile_num_eth_port": schema.StringAttribute{
 							Description: "Choose an Eth Port Profile",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_profile_num_eth_port_ref_type_": schema.StringAttribute{
 							Description: "Object type for eth_port_profile_num_eth_port field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_profile_num_walled_garden_set": schema.BoolAttribute{
 							Description: "Flag indicating this Eth Port Profile is the Walled Garden",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_profile_num_radius_filter_id": schema.StringAttribute{
 							Description: "The value of filter-id in the RADIUS response which will evoke this Eth Port Profile",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -164,10 +179,12 @@ func (r *verityAuthenticatedEthPortResource) Schema(ctx context.Context, req res
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 						"port_monitoring": schema.StringAttribute{
 							Description: "Defines importance of Link Down on this port",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -179,6 +196,13 @@ func (r *verityAuthenticatedEthPortResource) Schema(ctx context.Context, req res
 func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityAuthenticatedEthPortResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityAuthenticatedEthPortResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -209,10 +233,13 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		{FieldName: "TrustedPort", APIField: &aepProps.TrustedPort, TFValue: plan.TrustedPort},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_authenticated_eth_port", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "ReauthorizationPeriodSec", APIField: &aepProps.ReauthorizationPeriodSec, TFValue: plan.ReauthorizationPeriodSec},
-		{FieldName: "MacAuthenticationHoldoffSec", APIField: &aepProps.MacAuthenticationHoldoffSec, TFValue: plan.MacAuthenticationHoldoffSec},
+		{FieldName: "ReauthorizationPeriodSec", APIField: &aepProps.ReauthorizationPeriodSec, TFValue: config.ReauthorizationPeriodSec, IsConfigured: configuredAttrs.IsConfigured("reauthorization_period_sec")},
+		{FieldName: "MacAuthenticationHoldoffSec", APIField: &aepProps.MacAuthenticationHoldoffSec, TFValue: config.MacAuthenticationHoldoffSec, IsConfigured: configuredAttrs.IsConfigured("mac_authentication_holdoff_sec")},
 	})
 
 	// Handle object properties
@@ -256,8 +283,32 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 	tflog.Info(ctx, fmt.Sprintf("Authenticated Eth-Port %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "authenticated_eth_ports")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityAuthenticatedEthPortResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if aepData, exists := bulkMgr.GetResourceResponse("authenticated_eth_port", name); exists {
+			state := populateAuthenticatedEthPortState(ctx, minState, aepData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -277,6 +328,16 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 	}
 
 	aepName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if authenticatedEthPortData, exists := r.bulkOpsMgr.GetResourceResponse("authenticated_eth_port", aepName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached authenticated eth port data for %s from recent operation", aepName))
+			state = populateAuthenticatedEthPortState(ctx, state, authenticatedEthPortData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("authenticated_eth_port") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Authenticated Eth-Port %s verification – trusting recent successful API operation", aepName))
@@ -347,77 +408,7 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Authenticated Eth-Port '%s' under API key '%s'", aepName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(aepMap["name"])
-
-	// Handle object properties
-	if objProps, ok := aepMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityAuthenticatedEthPortObjectPropertiesModel{
-			{
-				Group:          utils.MapStringFromAPI(objProps["group"]),
-				PortMonitoring: utils.MapStringFromAPI(objProps["port_monitoring"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"connection_mode": &state.ConnectionMode,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(aepMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":                         &state.Enable,
-		"allow_mac_based_authentication": &state.AllowMacBasedAuthentication,
-		"trusted_port":                   &state.TrustedPort,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(aepMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"reauthorization_period_sec":     &state.ReauthorizationPeriodSec,
-		"mac_authentication_holdoff_sec": &state.MacAuthenticationHoldoffSec,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(aepMap[apiKey])
-	}
-
-	// Handle eth ports
-	if ethPortsArray, ok := aepMap["eth_ports"].([]interface{}); ok && len(ethPortsArray) > 0 {
-		var ethPorts []verityAuthenticatedEthPortEthPortModel
-
-		for _, e := range ethPortsArray {
-			ethPort, ok := e.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			ethPortModel := verityAuthenticatedEthPortEthPortModel{
-				EthPortProfileNumEnable:          utils.MapBoolFromAPI(ethPort["eth_port_profile_num_enable"]),
-				EthPortProfileNumEthPort:         utils.MapStringFromAPI(ethPort["eth_port_profile_num_eth_port"]),
-				EthPortProfileNumEthPortRefType:  utils.MapStringFromAPI(ethPort["eth_port_profile_num_eth_port_ref_type_"]),
-				EthPortProfileNumWalledGardenSet: utils.MapBoolFromAPI(ethPort["eth_port_profile_num_walled_garden_set"]),
-				EthPortProfileNumRadiusFilterId:  utils.MapStringFromAPI(ethPort["eth_port_profile_num_radius_filter_id"]),
-				Index:                            utils.MapInt64FromAPI(ethPort["index"]),
-			}
-
-			ethPorts = append(ethPorts, ethPortModel)
-		}
-
-		state.EthPorts = ethPorts
-	} else {
-		state.EthPorts = nil
-	}
-
+	state = populateAuthenticatedEthPortState(ctx, state, aepMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -556,7 +547,34 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 
 	tflog.Info(ctx, fmt.Sprintf("Authenticated Eth-Port %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "authenticated_eth_ports")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityAuthenticatedEthPortResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if aepData, exists := bulkMgr.GetResourceResponse("authenticated_eth_port", name); exists {
+			newState := populateAuthenticatedEthPortState(ctx, minState, aepData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityAuthenticatedEthPortResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -589,4 +607,149 @@ func (r *verityAuthenticatedEthPortResource) Delete(ctx context.Context, req res
 
 func (r *verityAuthenticatedEthPortResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateAuthenticatedEthPortState(ctx context.Context, state verityAuthenticatedEthPortResourceModel, data map[string]interface{}, mode string) verityAuthenticatedEthPortResourceModel {
+	const resourceType = authenticatedEthPortResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.AllowMacBasedAuthentication = utils.MapBoolWithMode(data, "allow_mac_based_authentication", resourceType, mode)
+	state.TrustedPort = utils.MapBoolWithMode(data, "trusted_port", resourceType, mode)
+
+	// String fields
+	state.ConnectionMode = utils.MapStringWithMode(data, "connection_mode", resourceType, mode)
+
+	// Int64 fields
+	state.ReauthorizationPeriodSec = utils.MapInt64WithMode(data, "reauthorization_period_sec", resourceType, mode)
+	state.MacAuthenticationHoldoffSec = utils.MapInt64WithMode(data, "mac_authentication_holdoff_sec", resourceType, mode)
+
+	// Handle eth_ports array
+	if utils.FieldAppliesToMode(resourceType, "eth_ports", mode) {
+		if ethPortsData, ok := data["eth_ports"].([]interface{}); ok && len(ethPortsData) > 0 {
+			var ethPorts []verityAuthenticatedEthPortEthPortModel
+			for _, e := range ethPortsData {
+				ethPort, ok := e.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				ethPortModel := verityAuthenticatedEthPortEthPortModel{
+					EthPortProfileNumEnable:          utils.MapBoolWithModeNested(ethPort, "eth_port_profile_num_enable", resourceType, "eth_ports.eth_port_profile_num_enable", mode),
+					EthPortProfileNumEthPort:         utils.MapStringWithModeNested(ethPort, "eth_port_profile_num_eth_port", resourceType, "eth_ports.eth_port_profile_num_eth_port", mode),
+					EthPortProfileNumEthPortRefType:  utils.MapStringWithModeNested(ethPort, "eth_port_profile_num_eth_port_ref_type_", resourceType, "eth_ports.eth_port_profile_num_eth_port_ref_type_", mode),
+					EthPortProfileNumWalledGardenSet: utils.MapBoolWithModeNested(ethPort, "eth_port_profile_num_walled_garden_set", resourceType, "eth_ports.eth_port_profile_num_walled_garden_set", mode),
+					EthPortProfileNumRadiusFilterId:  utils.MapStringWithModeNested(ethPort, "eth_port_profile_num_radius_filter_id", resourceType, "eth_ports.eth_port_profile_num_radius_filter_id", mode),
+					Index:                            utils.MapInt64WithModeNested(ethPort, "index", resourceType, "eth_ports.index", mode),
+				}
+				ethPorts = append(ethPorts, ethPortModel)
+			}
+			state.EthPorts = ethPorts
+		} else {
+			state.EthPorts = nil
+		}
+	} else {
+		state.EthPorts = nil
+	}
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityAuthenticatedEthPortObjectPropertiesModel{
+				Group:          utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+				PortMonitoring: utils.MapStringWithModeNested(objProps, "port_monitoring", resourceType, "object_properties.port_monitoring", mode),
+			}
+			state.ObjectProperties = []verityAuthenticatedEthPortObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityAuthenticatedEthPortResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = authenticatedEthPortResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"connection_mode",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "allow_mac_based_authentication", "trusted_port",
+	)
+
+	nullifier.NullifyInt64s(
+		"reauthorization_period_sec", "mac_authentication_holdoff_sec",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityAuthenticatedEthPortResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityAuthenticatedEthPortResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_authenticated_eth_port", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "reauthorization_period_sec", ConfigVal: config.ReauthorizationPeriodSec, StateVal: state.ReauthorizationPeriodSec},
+			{AttrName: "mac_authentication_holdoff_sec", ConfigVal: config.MacAuthenticationHoldoffSec, StateVal: state.MacAuthenticationHoldoffSec},
+		},
+	})
 }

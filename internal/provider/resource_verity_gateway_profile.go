@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityGatewayProfileResource{}
 	_ resource.ResourceWithConfigure   = &verityGatewayProfileResource{}
 	_ resource.ResourceWithImportState = &verityGatewayProfileResource{}
+	_ resource.ResourceWithModifyPlan  = &verityGatewayProfileResource{}
 )
+
+const gatewayProfileResourceType = "gatewayprofiles"
 
 func NewVerityGatewayProfileResource() resource.Resource {
 	return &verityGatewayProfileResource{}
@@ -97,6 +100,7 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -107,6 +111,7 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -118,26 +123,32 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 						"enable": schema.BoolAttribute{
 							Description: "Enable row",
 							Optional:    true,
+							Computed:    true,
 						},
 						"gateway": schema.StringAttribute{
 							Description: "BGP Gateway referenced for port profile",
 							Optional:    true,
+							Computed:    true,
 						},
 						"gateway_ref_type_": schema.StringAttribute{
 							Description: "Object type for gateway field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"source_ip_mask": schema.StringAttribute{
 							Description: "Source address on the port if untagged or on the VLAN if tagged used for the outgoing BGP session",
 							Optional:    true,
+							Computed:    true,
 						},
 						"peer_gw": schema.BoolAttribute{
 							Description: "Setting for paired switches only. Flag indicating that this gateway is a peer gateway.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -212,8 +223,32 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	tflog.Info(ctx, fmt.Sprintf("Gateway Profile %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateway_profiles")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityGatewayProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if gatewayProfileData, exists := bulkMgr.GetResourceResponse("gateway_profile", name); exists {
+			state := populateGatewayProfileState(ctx, minState, gatewayProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -233,6 +268,16 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 	}
 
 	profileName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if gatewayProfileData, exists := r.bulkOpsMgr.GetResourceResponse("gateway_profile", profileName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached gateway profile data for %s from recent operation", profileName))
+			state = populateGatewayProfileState(ctx, state, gatewayProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gateway_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping gateway profile %s verification – trusting recent successful API operation", profileName))
@@ -304,53 +349,7 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found gateway profile '%s' under API key '%s'", profileName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(profileMap["name"])
-
-	// Handle object properties
-	if objProps, ok := profileMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityGatewayProfileObjectPropertiesModel{
-			{Group: utils.MapStringFromAPI(objProps["group"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(profileMap[apiKey])
-	}
-
-	// Handle external gateways
-	if ext, ok := profileMap["external_gateways"].([]interface{}); ok && len(ext) > 0 {
-		var egList []verityGatewayProfileExternalGatewaysModel
-
-		for _, item := range ext {
-			gateway, ok := item.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			egModel := verityGatewayProfileExternalGatewaysModel{
-				Enable:         utils.MapBoolFromAPI(gateway["enable"]),
-				Gateway:        utils.MapStringFromAPI(gateway["gateway"]),
-				GatewayRefType: utils.MapStringFromAPI(gateway["gateway_ref_type_"]),
-				SourceIpMask:   utils.MapStringFromAPI(gateway["source_ip_mask"]),
-				PeerGw:         utils.MapBoolFromAPI(gateway["peer_gw"]),
-				Index:          utils.MapInt64FromAPI(gateway["index"]),
-			}
-
-			egList = append(egList, egModel)
-		}
-
-		state.ExternalGateways = egList
-	} else {
-		state.ExternalGateways = nil
-	}
-
+	state = populateGatewayProfileState(ctx, state, profileMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -483,7 +482,34 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 
 	tflog.Info(ctx, fmt.Sprintf("Gateway Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateway_profiles")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityGatewayProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if gatewayProfileData, exists := bulkMgr.GetResourceResponse("gateway_profile", name); exists {
+			newState := populateGatewayProfileState(ctx, minState, gatewayProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -516,4 +542,95 @@ func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.
 
 func (r *verityGatewayProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+// populateGatewayProfileState populates the state from API response data with mode-aware field mapping
+func populateGatewayProfileState(ctx context.Context, state verityGatewayProfileResourceModel, data map[string]interface{}, mode string) verityGatewayProfileResourceModel {
+	const resourceType = gatewayProfileResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle object properties
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			state.ObjectProperties = []verityGatewayProfileObjectPropertiesModel{
+				{Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode)},
+			}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle external gateways
+	if utils.FieldAppliesToMode(resourceType, "external_gateways", mode) {
+		if ext, ok := data["external_gateways"].([]interface{}); ok && len(ext) > 0 {
+			var egList []verityGatewayProfileExternalGatewaysModel
+
+			for _, item := range ext {
+				gateway, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				egModel := verityGatewayProfileExternalGatewaysModel{
+					Enable:         utils.MapBoolWithModeNested(gateway, "enable", resourceType, "external_gateways.enable", mode),
+					Gateway:        utils.MapStringWithModeNested(gateway, "gateway", resourceType, "external_gateways.gateway", mode),
+					GatewayRefType: utils.MapStringWithModeNested(gateway, "gateway_ref_type_", resourceType, "external_gateways.gateway_ref_type_", mode),
+					SourceIpMask:   utils.MapStringWithModeNested(gateway, "source_ip_mask", resourceType, "external_gateways.source_ip_mask", mode),
+					PeerGw:         utils.MapBoolWithModeNested(gateway, "peer_gw", resourceType, "external_gateways.peer_gw", mode),
+					Index:          utils.MapInt64WithModeNested(gateway, "index", resourceType, "external_gateways.index", mode),
+				}
+
+				egList = append(egList, egModel)
+			}
+
+			state.ExternalGateways = egList
+		} else {
+			state.ExternalGateways = nil
+		}
+	} else {
+		state.ExternalGateways = nil
+	}
+
+	return state
+}
+
+func (r *verityGatewayProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityGatewayProfileResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = gatewayProfileResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

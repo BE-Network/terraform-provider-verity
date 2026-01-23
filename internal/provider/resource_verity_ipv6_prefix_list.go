@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityIpv6PrefixListResource{}
 	_ resource.ResourceWithConfigure   = &verityIpv6PrefixListResource{}
 	_ resource.ResourceWithImportState = &verityIpv6PrefixListResource{}
+	_ resource.ResourceWithModifyPlan  = &verityIpv6PrefixListResource{}
 )
+
+const ipv6PrefixListResourceType = "ipv6prefixlists"
 
 func NewVerityIpv6PrefixListResource() resource.Resource {
 	return &verityIpv6PrefixListResource{}
@@ -97,6 +100,7 @@ func (r *verityIpv6PrefixListResource) Schema(ctx context.Context, req resource.
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -107,26 +111,32 @@ func (r *verityIpv6PrefixListResource) Schema(ctx context.Context, req resource.
 						"enable": schema.BoolAttribute{
 							Description: "Enable of this IPv6 Prefix List",
 							Optional:    true,
+							Computed:    true,
 						},
 						"permit_deny": schema.StringAttribute{
 							Description: "Action upon match of Community Strings.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"ipv6_prefix": schema.StringAttribute{
 							Description: "IPv6 address and subnet to match against",
 							Optional:    true,
+							Computed:    true,
 						},
 						"greater_than_equal_value": schema.Int64Attribute{
 							Description: "Match IP routes with a subnet mask greater than or equal to the value indicated (minimum: 1, maximum: 128)",
 							Optional:    true,
+							Computed:    true,
 						},
 						"less_than_equal_value": schema.Int64Attribute{
 							Description: "Match IP routes with a subnet mask less than or equal to the value indicated (minimum: 1, maximum: 128)",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -138,6 +148,7 @@ func (r *verityIpv6PrefixListResource) Schema(ctx context.Context, req resource.
 						"notes": schema.StringAttribute{
 							Description: "User Notes.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -215,8 +226,32 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 	tflog.Info(ctx, fmt.Sprintf("IPv6 Prefix List %s create operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv6_prefix_lists")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityIpv6PrefixListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ipv6PrefixListData, exists := bulkMgr.GetResourceResponse("ipv6_prefix_list", name); exists {
+			state := populateIpv6PrefixListState(ctx, minState, ipv6PrefixListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityIpv6PrefixListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -236,6 +271,16 @@ func (r *verityIpv6PrefixListResource) Read(ctx context.Context, req resource.Re
 	}
 
 	name := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if ipv6PrefixListData, exists := r.bulkOpsMgr.GetResourceResponse("ipv6_prefix_list", name); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached IPv6 Prefix List data for %s from recent operation", name))
+			state = populateIpv6PrefixListState(ctx, state, ipv6PrefixListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv6_prefix_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping IPv6 prefix list %s verification – trusting recent successful API operation", name))
@@ -305,53 +350,8 @@ func (r *verityIpv6PrefixListResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found IPv6 prefix list '%s' under API key '%s'", name, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(ipv6PrefixListMap["name"])
-
-	// Handle object properties
-	if objectPropsData, ok := ipv6PrefixListMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityIpv6PrefixListObjectPropertiesModel{
-			{Notes: utils.MapStringFromAPI(objectPropsData["notes"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(ipv6PrefixListMap[apiKey])
-	}
-
-	// Handle lists
-	if listsData, ok := ipv6PrefixListMap["lists"].([]interface{}); ok && len(listsData) > 0 {
-		var lists []verityIpv6PrefixListListsModel
-
-		for _, item := range listsData {
-			listItem, ok := item.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			listModel := verityIpv6PrefixListListsModel{
-				Enable:                utils.MapBoolFromAPI(listItem["enable"]),
-				PermitDeny:            utils.MapStringFromAPI(listItem["permit_deny"]),
-				Ipv6Prefix:            utils.MapStringFromAPI(listItem["ipv6_prefix"]),
-				GreaterThanEqualValue: utils.MapInt64FromAPI(listItem["greater_than_equal_value"]),
-				LessThanEqualValue:    utils.MapInt64FromAPI(listItem["less_than_equal_value"]),
-				Index:                 utils.MapInt64FromAPI(listItem["index"]),
-			}
-
-			lists = append(lists, listModel)
-		}
-		state.Lists = lists
-	} else {
-		state.Lists = nil
-	}
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, state)...)
+	state = populateIpv6PrefixListState(ctx, state, ipv6PrefixListMap, r.provCtx.mode)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -477,7 +477,34 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 
 	tflog.Info(ctx, fmt.Sprintf("IPv6 Prefix List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "ipv6_prefix_lists")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityIpv6PrefixListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ipv6PrefixListData, exists := bulkMgr.GetResourceResponse("ipv6_prefix_list", name); exists {
+			newState := populateIpv6PrefixListState(ctx, minState, ipv6PrefixListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityIpv6PrefixListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -510,4 +537,94 @@ func (r *verityIpv6PrefixListResource) Delete(ctx context.Context, req resource.
 
 func (r *verityIpv6PrefixListResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateIpv6PrefixListState(ctx context.Context, state verityIpv6PrefixListResourceModel, data map[string]interface{}, mode string) verityIpv6PrefixListResourceModel {
+	const resourceType = ipv6PrefixListResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityIpv6PrefixListObjectPropertiesModel{
+				Notes: utils.MapStringWithModeNested(objProps, "notes", resourceType, "object_properties.notes", mode),
+			}
+			state.ObjectProperties = []verityIpv6PrefixListObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle lists block
+	if utils.FieldAppliesToMode(resourceType, "lists", mode) {
+		if listsData, ok := data["lists"].([]interface{}); ok && len(listsData) > 0 {
+			var listsList []verityIpv6PrefixListListsModel
+
+			for _, item := range listsData {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				listItem := verityIpv6PrefixListListsModel{
+					Enable:                utils.MapBoolWithModeNested(itemMap, "enable", resourceType, "lists.enable", mode),
+					PermitDeny:            utils.MapStringWithModeNested(itemMap, "permit_deny", resourceType, "lists.permit_deny", mode),
+					Ipv6Prefix:            utils.MapStringWithModeNested(itemMap, "ipv6_prefix", resourceType, "lists.ipv6_prefix", mode),
+					GreaterThanEqualValue: utils.MapInt64WithModeNested(itemMap, "greater_than_equal_value", resourceType, "lists.greater_than_equal_value", mode),
+					LessThanEqualValue:    utils.MapInt64WithModeNested(itemMap, "less_than_equal_value", resourceType, "lists.less_than_equal_value", mode),
+					Index:                 utils.MapInt64WithModeNested(itemMap, "index", resourceType, "lists.index", mode),
+				}
+
+				listsList = append(listsList, listItem)
+			}
+
+			state.Lists = listsList
+		} else {
+			state.Lists = nil
+		}
+	} else {
+		state.Lists = nil
+	}
+
+	return state
+}
+
+func (r *verityIpv6PrefixListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityIpv6PrefixListResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = ipv6PrefixListResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

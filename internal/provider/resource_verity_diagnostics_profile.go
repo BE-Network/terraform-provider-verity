@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityDiagnosticsProfileResource{}
 	_ resource.ResourceWithConfigure   = &verityDiagnosticsProfileResource{}
 	_ resource.ResourceWithImportState = &verityDiagnosticsProfileResource{}
+	_ resource.ResourceWithModifyPlan  = &verityDiagnosticsProfileResource{}
 )
+
+const diagnosticsProfileResourceType = "diagnosticsprofiles"
 
 func NewVerityDiagnosticsProfileResource() resource.Resource {
 	return &verityDiagnosticsProfileResource{}
@@ -83,26 +86,32 @@ func (r *verityDiagnosticsProfileResource) Schema(ctx context.Context, req resou
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"enable_sflow": schema.BoolAttribute{
 				Description: "Enable sFlow for this Diagnostics Profile",
 				Optional:    true,
+				Computed:    true,
 			},
 			"flow_collector": schema.StringAttribute{
 				Description: "Flow Collector for this Diagnostics Profile",
 				Optional:    true,
+				Computed:    true,
 			},
 			"flow_collector_ref_type_": schema.StringAttribute{
 				Description: "Object type for flow_collector field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"poll_interval": schema.Int64Attribute{
 				Description: "The sampling rate for sFlow polling (seconds)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"vrf_type": schema.StringAttribute{
 				Description: "Management or Underlay",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 	}
@@ -111,6 +120,13 @@ func (r *verityDiagnosticsProfileResource) Schema(ctx context.Context, req resou
 func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityDiagnosticsProfileResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityDiagnosticsProfileResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -142,9 +158,12 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 		{FieldName: "EnableSflow", APIField: &diagnosticsProfileProps.EnableSflow, TFValue: plan.EnableSflow},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_diagnostics_profile", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "PollInterval", APIField: &diagnosticsProfileProps.PollInterval, TFValue: plan.PollInterval},
+		{FieldName: "PollInterval", APIField: &diagnosticsProfileProps.PollInterval, TFValue: config.PollInterval, IsConfigured: configuredAttrs.IsConfigured("poll_interval")},
 	})
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_profile", name, *diagnosticsProfileProps, &resp.Diagnostics)
@@ -155,8 +174,32 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Profile %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_profiles")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityDiagnosticsProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if diagnosticsProfileData, exists := bulkMgr.GetResourceResponse("diagnostics_profile", name); exists {
+			state := populateDiagnosticsProfileState(ctx, minState, diagnosticsProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDiagnosticsProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -176,6 +219,16 @@ func (r *verityDiagnosticsProfileResource) Read(ctx context.Context, req resourc
 	}
 
 	diagnosticsProfileName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if diagnosticsProfileData, exists := r.bulkOpsMgr.GetResourceResponse("diagnostics_profile", diagnosticsProfileName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached diagnostics profile data for %s from recent operation", diagnosticsProfileName))
+			state = populateDiagnosticsProfileState(ctx, state, diagnosticsProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("diagnostics_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping diagnostics profile %s verification – trusting recent successful API operation", diagnosticsProfileName))
@@ -247,38 +300,7 @@ func (r *verityDiagnosticsProfileResource) Read(ctx context.Context, req resourc
 
 	tflog.Debug(ctx, fmt.Sprintf("Found diagnostics profile '%s' under API key '%s'", diagnosticsProfileName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(diagnosticsProfileMap["name"])
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"flow_collector":           &state.FlowCollector,
-		"flow_collector_ref_type_": &state.FlowCollectorRefType,
-		"vrf_type":                 &state.VrfType,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(diagnosticsProfileMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":       &state.Enable,
-		"enable_sflow": &state.EnableSflow,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(diagnosticsProfileMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"poll_interval": &state.PollInterval,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(diagnosticsProfileMap[apiKey])
-	}
-
+	state = populateDiagnosticsProfileState(ctx, state, diagnosticsProfileMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -343,7 +365,34 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_profiles")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityDiagnosticsProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if diagnosticsProfileData, exists := bulkMgr.GetResourceResponse("diagnostics_profile", name); exists {
+			newState := populateDiagnosticsProfileState(ctx, minState, diagnosticsProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDiagnosticsProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -376,4 +425,106 @@ func (r *verityDiagnosticsProfileResource) Delete(ctx context.Context, req resou
 
 func (r *verityDiagnosticsProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateDiagnosticsProfileState(ctx context.Context, state verityDiagnosticsProfileResourceModel, data map[string]interface{}, mode string) verityDiagnosticsProfileResourceModel {
+	const resourceType = diagnosticsProfileResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.EnableSflow = utils.MapBoolWithMode(data, "enable_sflow", resourceType, mode)
+
+	// String fields
+	state.FlowCollector = utils.MapStringWithMode(data, "flow_collector", resourceType, mode)
+	state.FlowCollectorRefType = utils.MapStringWithMode(data, "flow_collector_ref_type_", resourceType, mode)
+	state.VrfType = utils.MapStringWithMode(data, "vrf_type", resourceType, mode)
+
+	// Int64 fields
+	state.PollInterval = utils.MapInt64WithMode(data, "poll_interval", resourceType, mode)
+
+	return state
+}
+
+func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityDiagnosticsProfileResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = diagnosticsProfileResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"flow_collector", "flow_collector_ref_type_", "vrf_type",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "enable_sflow",
+	)
+
+	nullifier.NullifyInt64s(
+		"poll_interval",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityDiagnosticsProfileResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityDiagnosticsProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_diagnostics_profile", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "poll_interval", ConfigVal: config.PollInterval, StateVal: state.PollInterval},
+		},
+	})
 }

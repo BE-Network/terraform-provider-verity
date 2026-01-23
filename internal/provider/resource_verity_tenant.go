@@ -25,6 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityTenantResource{}
 )
 
+const tenantResourceType = "tenants"
+
 func NewVerityTenantResource() resource.Resource {
 	return &verityTenantResource{}
 }
@@ -109,6 +111,7 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"layer_3_vni": schema.Int64Attribute{
 				Description: "VNI value used to transport traffic between services of a Tenant. This field should not be specified when 'layer_3_vni_auto_assigned_' is set to true, as the API will assign this value automatically.",
@@ -118,6 +121,7 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			"layer_3_vni_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether the Layer 3 VNI value should be automatically assigned by the API. When set to true, do not specify the 'layer_3_vni' field in your configuration.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"layer_3_vlan": schema.Int64Attribute{
 				Description: "VLAN value used to transport traffic between services of a Tenant. This field should not be specified when 'layer_3_vlan_auto_assigned_' is set to true, as the API will assign this value automatically.",
@@ -127,42 +131,52 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			"layer_3_vlan_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether the Layer 3 VLAN value should be automatically assigned by the API. When set to true, do not specify the 'layer_3_vlan' field in your configuration.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"dhcp_relay_source_ipv4s_subnet": schema.StringAttribute{
 				Description: "Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"dhcp_relay_source_ipv6s_subnet": schema.StringAttribute{
 				Description: "Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"route_distinguisher": schema.StringAttribute{
 				Description: "Route Distinguisher (BGP Community) for uniqueness among identical routes",
 				Optional:    true,
+				Computed:    true,
 			},
 			"route_target_import": schema.StringAttribute{
 				Description: "Route-target to attach while importing routes into the tenant",
 				Optional:    true,
+				Computed:    true,
 			},
 			"route_target_export": schema.StringAttribute{
 				Description: "Route-target to attach while exporting routes from the tenant",
 				Optional:    true,
+				Computed:    true,
 			},
 			"import_route_map": schema.StringAttribute{
 				Description: "Route-map applied to routes imported into the tenant",
 				Optional:    true,
+				Computed:    true,
 			},
 			"import_route_map_ref_type_": schema.StringAttribute{
 				Description: "Object type for import_route_map field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"export_route_map": schema.StringAttribute{
 				Description: "Route-map applied to routes exported from the tenant",
 				Optional:    true,
+				Computed:    true,
 			},
 			"export_route_map_ref_type_": schema.StringAttribute{
 				Description: "Object type for export_route_map field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"vrf_name": schema.StringAttribute{
 				Description: "Virtual Routing and Forwarding instance name. This field should not be specified when 'vrf_name_auto_assigned_' is set to true, as the API will assign this value automatically.",
@@ -172,10 +186,12 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 			"vrf_name_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether the VRF name should be automatically assigned by the API. When set to true, do not specify the 'vrf_name' field in your configuration.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"default_originate": schema.BoolAttribute{
 				Description: "Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -186,6 +202,7 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -197,14 +214,17 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"tenant": schema.StringAttribute{
 							Description: "Tenant",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -385,7 +405,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", name); exists {
-			state := populateTenantState(ctx, minState, tenantData)
+			state := populateTenantState(ctx, minState, tenantData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -425,7 +445,7 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 	if r.bulkOpsMgr != nil {
 		if tenantData, exists := r.bulkOpsMgr.GetResourceResponse("tenant", tenantName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached tenant data for %s from recent operation", tenantName))
-			state = populateTenantState(ctx, state, tenantData)
+			state = populateTenantState(ctx, state, tenantData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -501,7 +521,7 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 
 	tflog.Debug(ctx, fmt.Sprintf("Found tenant '%s' under API key '%s'", tenantName, actualAPIName))
 
-	state = populateTenantState(ctx, state, tenantMap)
+	state = populateTenantState(ctx, state, tenantMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -867,7 +887,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", name); exists {
-			state := populateTenantState(ctx, minState, tenantData)
+			state := populateTenantState(ctx, minState, tenantData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -917,58 +937,68 @@ func (r *verityTenantResource) ImportState(ctx context.Context, req resource.Imp
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func populateTenantState(ctx context.Context, state verityTenantResourceModel, tenantData map[string]interface{}) verityTenantResourceModel {
+func populateTenantState(ctx context.Context, state verityTenantResourceModel, tenantData map[string]interface{}, mode string) verityTenantResourceModel {
+	const resourceType = tenantResourceType
+
 	state.Name = utils.MapStringFromAPI(tenantData["name"])
 
 	// Int fields
-	state.Layer3Vni = utils.MapInt64FromAPI(tenantData["layer_3_vni"])
-	state.Layer3Vlan = utils.MapInt64FromAPI(tenantData["layer_3_vlan"])
+	state.Layer3Vni = utils.MapInt64WithMode(tenantData, "layer_3_vni", resourceType, mode)
+	state.Layer3Vlan = utils.MapInt64WithMode(tenantData, "layer_3_vlan", resourceType, mode)
 
 	// Bool fields
-	state.Enable = utils.MapBoolFromAPI(tenantData["enable"])
-	state.DefaultOriginate = utils.MapBoolFromAPI(tenantData["default_originate"])
-	state.Layer3VniAutoAssigned = utils.MapBoolFromAPI(tenantData["layer_3_vni_auto_assigned_"])
-	state.Layer3VlanAutoAssigned = utils.MapBoolFromAPI(tenantData["layer_3_vlan_auto_assigned_"])
-	state.VrfNameAutoAssigned = utils.MapBoolFromAPI(tenantData["vrf_name_auto_assigned_"])
+	state.Enable = utils.MapBoolWithMode(tenantData, "enable", resourceType, mode)
+	state.DefaultOriginate = utils.MapBoolWithMode(tenantData, "default_originate", resourceType, mode)
+	state.Layer3VniAutoAssigned = utils.MapBoolWithMode(tenantData, "layer_3_vni_auto_assigned_", resourceType, mode)
+	state.Layer3VlanAutoAssigned = utils.MapBoolWithMode(tenantData, "layer_3_vlan_auto_assigned_", resourceType, mode)
+	state.VrfNameAutoAssigned = utils.MapBoolWithMode(tenantData, "vrf_name_auto_assigned_", resourceType, mode)
 
 	// String fields
-	state.DhcpRelaySourceIpv4sSubnet = utils.MapStringFromAPI(tenantData["dhcp_relay_source_ipv4s_subnet"])
-	state.DhcpRelaySourceIpv6sSubnet = utils.MapStringFromAPI(tenantData["dhcp_relay_source_ipv6s_subnet"])
-	state.RouteDistinguisher = utils.MapStringFromAPI(tenantData["route_distinguisher"])
-	state.RouteTargetImport = utils.MapStringFromAPI(tenantData["route_target_import"])
-	state.RouteTargetExport = utils.MapStringFromAPI(tenantData["route_target_export"])
-	state.ImportRouteMap = utils.MapStringFromAPI(tenantData["import_route_map"])
-	state.ImportRouteMapRefType = utils.MapStringFromAPI(tenantData["import_route_map_ref_type_"])
-	state.ExportRouteMap = utils.MapStringFromAPI(tenantData["export_route_map"])
-	state.ExportRouteMapRefType = utils.MapStringFromAPI(tenantData["export_route_map_ref_type_"])
-	state.VrfName = utils.MapStringFromAPI(tenantData["vrf_name"])
+	state.DhcpRelaySourceIpv4sSubnet = utils.MapStringWithMode(tenantData, "dhcp_relay_source_ipv4s_subnet", resourceType, mode)
+	state.DhcpRelaySourceIpv6sSubnet = utils.MapStringWithMode(tenantData, "dhcp_relay_source_ipv6s_subnet", resourceType, mode)
+	state.RouteDistinguisher = utils.MapStringWithMode(tenantData, "route_distinguisher", resourceType, mode)
+	state.RouteTargetImport = utils.MapStringWithMode(tenantData, "route_target_import", resourceType, mode)
+	state.RouteTargetExport = utils.MapStringWithMode(tenantData, "route_target_export", resourceType, mode)
+	state.ImportRouteMap = utils.MapStringWithMode(tenantData, "import_route_map", resourceType, mode)
+	state.ImportRouteMapRefType = utils.MapStringWithMode(tenantData, "import_route_map_ref_type_", resourceType, mode)
+	state.ExportRouteMap = utils.MapStringWithMode(tenantData, "export_route_map", resourceType, mode)
+	state.ExportRouteMapRefType = utils.MapStringWithMode(tenantData, "export_route_map_ref_type_", resourceType, mode)
+	state.VrfName = utils.MapStringWithMode(tenantData, "vrf_name", resourceType, mode)
 
-	// Object properties
-	if op, ok := tenantData["object_properties"].(map[string]interface{}); ok {
-		objProps := verityTenantObjectPropertiesModel{
-			Group: utils.MapStringFromAPI(op["group"]),
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if op, ok := tenantData["object_properties"].(map[string]interface{}); ok {
+			objProps := verityTenantObjectPropertiesModel{
+				Group: utils.MapStringWithModeNested(op, "group", resourceType, "object_properties.group", mode),
+			}
+			state.ObjectProperties = []verityTenantObjectPropertiesModel{objProps}
+		} else {
+			state.ObjectProperties = nil
 		}
-		state.ObjectProperties = []verityTenantObjectPropertiesModel{objProps}
 	} else {
 		state.ObjectProperties = nil
 	}
 
-	// Handle route tenants
-	if rtVal, ok := tenantData["route_tenants"].([]interface{}); ok {
-		var routeTenants []verityTenantRouteTenantModel
-		for _, rt := range rtVal {
-			rtMap, ok := rt.(map[string]interface{})
-			if !ok {
-				continue
+	// Handle route_tenants block
+	if utils.FieldAppliesToMode(resourceType, "route_tenants", mode) {
+		if rtVal, ok := tenantData["route_tenants"].([]interface{}); ok {
+			var routeTenants []verityTenantRouteTenantModel
+			for _, rt := range rtVal {
+				rtMap, ok := rt.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				routeTenant := verityTenantRouteTenantModel{
+					Enable: utils.MapBoolWithModeNested(rtMap, "enable", resourceType, "route_tenants.enable", mode),
+					Tenant: utils.MapStringWithModeNested(rtMap, "tenant", resourceType, "route_tenants.tenant", mode),
+					Index:  utils.MapInt64WithModeNested(rtMap, "index", resourceType, "route_tenants.index", mode),
+				}
+				routeTenants = append(routeTenants, routeTenant)
 			}
-			routeTenant := verityTenantRouteTenantModel{
-				Enable: utils.MapBoolFromAPI(rtMap["enable"]),
-				Tenant: utils.MapStringFromAPI(rtMap["tenant"]),
-				Index:  utils.MapInt64FromAPI(rtMap["index"]),
-			}
-			routeTenants = append(routeTenants, routeTenant)
+			state.RouteTenants = routeTenants
+		} else {
+			state.RouteTenants = nil
 		}
-		state.RouteTenants = routeTenants
 	} else {
 		state.RouteTenants = nil
 	}
@@ -977,7 +1007,9 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 }
 
 func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// Skip modification if we're deleting the resource
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -988,48 +1020,44 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
-	// Validate auto-assigned field specifications in configuration
-	// Check the actual configuration, not the plan
-	var config verityTenantResourceModel
-	if !req.Config.Raw.IsNull() {
-		resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = tenantResourceType
+	mode := r.provCtx.mode
 
-		if !config.Layer3VniAutoAssigned.IsNull() && config.Layer3VniAutoAssigned.ValueBool() {
-			if !config.Layer3Vni.IsNull() && !config.Layer3Vni.IsUnknown() {
-				resp.Diagnostics.AddError(
-					"Layer 3 VNI cannot be specified when auto-assigned",
-					"The 'layer_3_vni' field cannot be specified in the configuration when 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
-				)
-				return
-			}
-		}
-
-		if !config.Layer3VlanAutoAssigned.IsNull() && config.Layer3VlanAutoAssigned.ValueBool() {
-			if !config.Layer3Vlan.IsNull() && !config.Layer3Vlan.IsUnknown() {
-				resp.Diagnostics.AddError(
-					"Layer 3 VLAN cannot be specified when auto-assigned",
-					"The 'layer_3_vlan' field cannot be specified in the configuration when 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
-				)
-				return
-			}
-		}
-
-		if !config.VrfNameAutoAssigned.IsNull() && config.VrfNameAutoAssigned.ValueBool() {
-			if !config.VrfName.IsNull() && !config.VrfName.IsUnknown() && config.VrfName.ValueString() != "" {
-				resp.Diagnostics.AddError(
-					"VRF name cannot be specified when auto-assigned",
-					"The 'vrf_name' field cannot be specified in the configuration when 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
-				)
-				return
-			}
-		}
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
 	}
 
-	// For new resources (where state is null)
+	nullifier.NullifyStrings(
+		"dhcp_relay_source_ipv4s_subnet", "dhcp_relay_source_ipv6s_subnet",
+		"route_distinguisher", "route_target_import", "route_target_export",
+		"import_route_map", "import_route_map_ref_type_",
+		"export_route_map", "export_route_map_ref_type_",
+		"vrf_name",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "default_originate",
+		"layer_3_vni_auto_assigned_", "layer_3_vlan_auto_assigned_",
+		"vrf_name_auto_assigned_",
+	)
+
+	nullifier.NullifyInt64s(
+		"layer_3_vni", "layer_3_vlan",
+	)
+
+	// =========================================================================
+	// CREATE operation - handle auto-assigned fields
+	// =========================================================================
 	if req.State.Raw.IsNull() {
+		// Tenant-specific: auto-assignment on create
 		if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), types.Int64Unknown())
 		}
@@ -1044,70 +1072,136 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
 	var state verityTenantResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Handle auto-assigned field behavior for existing resources
+	var config verityTenantResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_tenant", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "layer_3_vni", ConfigVal: config.Layer3Vni, StateVal: state.Layer3Vni},
+			{AttrName: "layer_3_vlan", ConfigVal: config.Layer3Vlan, StateVal: state.Layer3Vlan},
+		},
+	})
+
+	// =========================================================================
+	// Validate auto-assigned field specifications
+	// =========================================================================
+	if !config.Layer3VniAutoAssigned.IsNull() && config.Layer3VniAutoAssigned.ValueBool() {
+		if !config.Layer3Vni.IsNull() && !config.Layer3Vni.IsUnknown() {
+			resp.Diagnostics.AddError(
+				"Layer 3 VNI cannot be specified when auto-assigned",
+				"The 'layer_3_vni' field cannot be specified in the configuration when 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !config.Layer3VlanAutoAssigned.IsNull() && config.Layer3VlanAutoAssigned.ValueBool() {
+		if !config.Layer3Vlan.IsNull() && !config.Layer3Vlan.IsUnknown() {
+			resp.Diagnostics.AddError(
+				"Layer 3 VLAN cannot be specified when auto-assigned",
+				"The 'layer_3_vlan' field cannot be specified in the configuration when 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !config.VrfNameAutoAssigned.IsNull() && config.VrfNameAutoAssigned.ValueBool() {
+		if !config.VrfName.IsNull() && !config.VrfName.IsUnknown() && config.VrfName.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"VRF name cannot be specified when auto-assigned",
+				"The 'vrf_name' field cannot be specified in the configuration when 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (Layer3Vni)
+	// =========================================================================
 	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
 		if !plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned) {
-			// layer_3_vni_auto_assigned_ is changing to true, API will assign value
+			// layer_3_vni_auto_assigned_ is changing to true - API will assign value
 			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"Layer 3 VNI will be assigned by the API",
 				"The 'layer_3_vni' field will be automatically assigned by the API because 'layer_3_vni_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.Layer3Vni.Equal(state.Layer3Vni) {
-			// User tried to change Layer3Vni but it's auto-assigned
+			// User tried to change Layer3Vni but it's auto-assigned - suppress diff
 			resp.Diagnostics.AddWarning(
 				"Ignoring layer_3_vni changes with auto-assignment enabled",
-				"The 'layer_3_vni' field changes will be ignored because 'layer_3_vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+				"The 'layer_3_vni' field changes will be ignored because 'layer_3_vni_auto_assigned_' is set to true.",
 			)
-			// Keep the current state value to suppress the diff
 			if !state.Layer3Vni.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), state.Layer3Vni)
 			}
 		}
 	}
 
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (Layer3Vlan)
+	// =========================================================================
 	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
 		if !plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned) {
-			// layer_3_vlan_auto_assigned_ is changing to true, API will assign value
+			// layer_3_vlan_auto_assigned_ is changing to true - API will assign value
 			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vlan"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"Layer 3 VLAN will be assigned by the API",
 				"The 'layer_3_vlan' field will be automatically assigned by the API because 'layer_3_vlan_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.Layer3Vlan.Equal(state.Layer3Vlan) {
-			// User tried to change Layer3Vlan but it's auto-assigned
+			// User tried to change Layer3Vlan but it's auto-assigned - suppress diff
 			resp.Diagnostics.AddWarning(
 				"Ignoring layer_3_vlan changes with auto-assignment enabled",
-				"The 'layer_3_vlan' field changes will be ignored because 'layer_3_vlan_auto_assigned_' is set to true. The API will assign this value automatically.",
+				"The 'layer_3_vlan' field changes will be ignored because 'layer_3_vlan_auto_assigned_' is set to true.",
 			)
-			// Keep the current state value to suppress the diff
 			if !state.Layer3Vlan.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("layer_3_vlan"), state.Layer3Vlan)
 			}
 		}
 	}
 
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (VrfName)
+	// =========================================================================
 	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
 		if !plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned) {
-			// vrf_name_auto_assigned_ is changing to true, API will assign value
+			// vrf_name_auto_assigned_ is changing to true - API will assign value
 			resp.Plan.SetAttribute(ctx, path.Root("vrf_name"), types.StringUnknown())
 			resp.Diagnostics.AddWarning(
 				"VRF name will be assigned by the API",
 				"The 'vrf_name' field will be automatically assigned by the API because 'vrf_name_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.VrfName.Equal(state.VrfName) {
-			// User tried to change VrfName but it's auto-assigned
+			// User tried to change VrfName but it's auto-assigned - suppress diff
 			resp.Diagnostics.AddWarning(
 				"Ignoring vrf_name changes with auto-assignment enabled",
-				"The 'vrf_name' field changes will be ignored because 'vrf_name_auto_assigned_' is set to true. The API will assign this value automatically.",
+				"The 'vrf_name' field changes will be ignored because 'vrf_name_auto_assigned_' is set to true.",
 			)
-			// Keep the current state value to suppress the diff
 			if !state.VrfName.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("vrf_name"), state.VrfName)
 			}

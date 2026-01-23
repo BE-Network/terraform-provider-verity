@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityExtendedCommunityListResource{}
 	_ resource.ResourceWithConfigure   = &verityExtendedCommunityListResource{}
 	_ resource.ResourceWithImportState = &verityExtendedCommunityListResource{}
+	_ resource.ResourceWithModifyPlan  = &verityExtendedCommunityListResource{}
 )
+
+const extendedCommunityListResourceType = "extendedcommunitylists"
 
 func NewVerityExtendedCommunityListResource() resource.Resource {
 	return &verityExtendedCommunityListResource{}
@@ -98,18 +101,22 @@ func (r *verityExtendedCommunityListResource) Schema(ctx context.Context, req re
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"permit_deny": schema.StringAttribute{
 				Description: "Action upon match of Community Strings.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"any_all": schema.StringAttribute{
 				Description: "BGP does not advertise any or all routes that do not match the Community String",
 				Optional:    true,
+				Computed:    true,
 			},
 			"standard_expanded": schema.StringAttribute{
 				Description: "Used Community String or Expanded Expression",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -120,18 +127,22 @@ func (r *verityExtendedCommunityListResource) Schema(ctx context.Context, req re
 						"enable": schema.BoolAttribute{
 							Description: "Enable of this Extended Community List",
 							Optional:    true,
+							Computed:    true,
 						},
 						"mode": schema.StringAttribute{
 							Description: "Mode",
 							Optional:    true,
+							Computed:    true,
 						},
 						"route_target_expanded_expression": schema.StringAttribute{
 							Description: "Match against a BGP extended community of type Route Target",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -143,6 +154,7 @@ func (r *verityExtendedCommunityListResource) Schema(ctx context.Context, req re
 						"notes": schema.StringAttribute{
 							Description: "User Notes.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -224,8 +236,32 @@ func (r *verityExtendedCommunityListResource) Create(ctx context.Context, req re
 	tflog.Info(ctx, fmt.Sprintf("Extended Community List %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "extended_community_lists")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityExtendedCommunityListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if extCommListData, exists := bulkMgr.GetResourceResponse("extended_community_list", name); exists {
+			state := populateExtendedCommunityListState(ctx, minState, extCommListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -245,6 +281,16 @@ func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req reso
 	}
 
 	extCommListName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if extCommListData, exists := r.bulkOpsMgr.GetResourceResponse("extended_community_list", extCommListName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached extended community list data for %s from recent operation", extCommListName))
+			state = populateExtendedCommunityListState(ctx, state, extCommListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("extended_community_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Extended Community List %s verification – trusting recent successful API operation", extCommListName))
@@ -316,60 +362,7 @@ func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req reso
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Extended Community List '%s' under API key '%s'", extCommListName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(extCommListMap["name"])
-
-	// Handle object properties
-	if objectProps, ok := extCommListMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityExtendedCommunityListObjectPropertiesModel{
-			{Notes: utils.MapStringFromAPI(objectProps["notes"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"permit_deny":       &state.PermitDeny,
-		"any_all":           &state.AnyAll,
-		"standard_expanded": &state.StandardExpanded,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(extCommListMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(extCommListMap[apiKey])
-	}
-
-	// Handle lists
-	if lists, ok := extCommListMap["lists"].([]interface{}); ok && len(lists) > 0 {
-		var listItems []verityExtendedCommunityListListsModel
-		for _, l := range lists {
-			listItem, ok := l.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			listModel := verityExtendedCommunityListListsModel{
-				Enable:                        utils.MapBoolFromAPI(listItem["enable"]),
-				Mode:                          utils.MapStringFromAPI(listItem["mode"]),
-				RouteTargetExpandedExpression: utils.MapStringFromAPI(listItem["route_target_expanded_expression"]),
-				Index:                         utils.MapInt64FromAPI(listItem["index"]),
-			}
-
-			listItems = append(listItems, listModel)
-		}
-		state.Lists = listItems
-	} else {
-		state.Lists = nil
-	}
-
+	state = populateExtendedCommunityListState(ctx, state, extCommListMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -490,7 +483,34 @@ func (r *verityExtendedCommunityListResource) Update(ctx context.Context, req re
 
 	tflog.Info(ctx, fmt.Sprintf("Extended Community List %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "extended_community_lists")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityExtendedCommunityListResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if extCommListData, exists := bulkMgr.GetResourceResponse("extended_community_list", name); exists {
+			newState := populateExtendedCommunityListState(ctx, minState, extCommListData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityExtendedCommunityListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -523,4 +543,99 @@ func (r *verityExtendedCommunityListResource) Delete(ctx context.Context, req re
 
 func (r *verityExtendedCommunityListResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+// populateExtendedCommunityListState populates the state from API response data with mode-aware field mapping
+func populateExtendedCommunityListState(ctx context.Context, state verityExtendedCommunityListResourceModel, data map[string]interface{}, mode string) verityExtendedCommunityListResourceModel {
+	const resourceType = extendedCommunityListResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// String fields
+	state.PermitDeny = utils.MapStringWithMode(data, "permit_deny", resourceType, mode)
+	state.AnyAll = utils.MapStringWithMode(data, "any_all", resourceType, mode)
+	state.StandardExpanded = utils.MapStringWithMode(data, "standard_expanded", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle object properties
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objectProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			state.ObjectProperties = []verityExtendedCommunityListObjectPropertiesModel{
+				{Notes: utils.MapStringWithModeNested(objectProps, "notes", resourceType, "object_properties.notes", mode)},
+			}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle lists
+	if utils.FieldAppliesToMode(resourceType, "lists", mode) {
+		if lists, ok := data["lists"].([]interface{}); ok && len(lists) > 0 {
+			var listItems []verityExtendedCommunityListListsModel
+			for _, l := range lists {
+				listItem, ok := l.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				listModel := verityExtendedCommunityListListsModel{
+					Enable:                        utils.MapBoolWithModeNested(listItem, "enable", resourceType, "lists.enable", mode),
+					Mode:                          utils.MapStringWithModeNested(listItem, "mode", resourceType, "lists.mode", mode),
+					RouteTargetExpandedExpression: utils.MapStringWithModeNested(listItem, "route_target_expanded_expression", resourceType, "lists.route_target_expanded_expression", mode),
+					Index:                         utils.MapInt64WithModeNested(listItem, "index", resourceType, "lists.index", mode),
+				}
+
+				listItems = append(listItems, listModel)
+			}
+			state.Lists = listItems
+		} else {
+			state.Lists = nil
+		}
+	} else {
+		state.Lists = nil
+	}
+
+	return state
+}
+
+func (r *verityExtendedCommunityListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityExtendedCommunityListResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = extendedCommunityListResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"permit_deny", "any_all", "standard_expanded",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

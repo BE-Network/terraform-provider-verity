@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityPacketQueueResource{}
 	_ resource.ResourceWithConfigure   = &verityPacketQueueResource{}
 	_ resource.ResourceWithImportState = &verityPacketQueueResource{}
+	_ resource.ResourceWithModifyPlan  = &verityPacketQueueResource{}
 )
+
+const packetQueueResourceType = "packetqueues"
 
 func NewVerityPacketQueueResource() resource.Resource {
 	return &verityPacketQueueResource{}
@@ -105,6 +108,7 @@ func (r *verityPacketQueueResource) Schema(ctx context.Context, req resource.Sch
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -115,10 +119,12 @@ func (r *verityPacketQueueResource) Schema(ctx context.Context, req resource.Sch
 						"packet_queue_for_p_bit": schema.Int64Attribute{
 							Description: "Flag indicating this p-bit's Queue",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -130,18 +136,22 @@ func (r *verityPacketQueueResource) Schema(ctx context.Context, req resource.Sch
 						"bandwidth_for_queue": schema.Int64Attribute{
 							Description: "Percentage bandwidth allocated to Queue. 0 is no limit",
 							Optional:    true,
+							Computed:    true,
 						},
 						"scheduler_type": schema.StringAttribute{
 							Description: "Scheduler Type for Queue",
 							Optional:    true,
+							Computed:    true,
 						},
 						"scheduler_weight": schema.Int64Attribute{
 							Description: "Weight associated with WRR or DWRR scheduler",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -153,6 +163,7 @@ func (r *verityPacketQueueResource) Schema(ctx context.Context, req resource.Sch
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -253,8 +264,32 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 	tflog.Info(ctx, fmt.Sprintf("Packet Queue %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "packet_queues")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityPacketQueueResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if pqData, exists := bulkMgr.GetResourceResponse("packet_queue", name); exists {
+			state := populatePacketQueueState(ctx, minState, pqData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -274,6 +309,16 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 	}
 
 	pqName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if pqData, exists := r.bulkOpsMgr.GetResourceResponse("packet_queue", pqName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached packet queue data for %s from recent operation", pqName))
+			state = populatePacketQueueState(ctx, state, pqData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packet_queue") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Packet Queue %s verification – trusting recent successful API operation", pqName))
@@ -345,68 +390,7 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Packet Queue '%s' under API key '%s'", pqName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(pqMap["name"])
-
-	// Handle object properties
-	if objProps, ok := pqMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityPacketQueueObjectPropertiesModel{
-			{
-				Group: utils.MapStringFromAPI(objProps["group"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(pqMap[apiKey])
-	}
-
-	// Handle pbit array
-	if pbitArray, ok := pqMap["pbit"].([]interface{}); ok && len(pbitArray) > 0 {
-		var pbits []verityPacketQueuePbitModel
-		for _, p := range pbitArray {
-			pbit, ok := p.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			pbitModel := verityPacketQueuePbitModel{
-				PacketQueueForPBit: utils.MapInt64FromAPI(pbit["packet_queue_for_p_bit"]),
-				Index:              utils.MapInt64FromAPI(pbit["index"]),
-			}
-			pbits = append(pbits, pbitModel)
-		}
-		state.Pbit = pbits
-	} else {
-		state.Pbit = nil
-	}
-
-	// Handle queue array
-	if queueArray, ok := pqMap["queue"].([]interface{}); ok && len(queueArray) > 0 {
-		var queues []verityPacketQueueQueueModel
-		for _, q := range queueArray {
-			queue, ok := q.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			queueModel := verityPacketQueueQueueModel{
-				BandwidthForQueue: utils.MapInt64FromAPI(queue["bandwidth_for_queue"]),
-				SchedulerType:     utils.MapStringFromAPI(queue["scheduler_type"]),
-				SchedulerWeight:   utils.MapInt64FromAPI(queue["scheduler_weight"]),
-				Index:             utils.MapInt64FromAPI(queue["index"]),
-			}
-			queues = append(queues, queueModel)
-		}
-		state.Queue = queues
-	} else {
-		state.Queue = nil
-	}
-
+	state = populatePacketQueueState(ctx, state, pqMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -563,7 +547,34 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 
 	tflog.Info(ctx, fmt.Sprintf("Packet Queue %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "packet_queues")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityPacketQueueResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if pqData, exists := bulkMgr.GetResourceResponse("packet_queue", name); exists {
+			newState := populatePacketQueueState(ctx, minState, pqData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPacketQueueResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -596,4 +607,111 @@ func (r *verityPacketQueueResource) Delete(ctx context.Context, req resource.Del
 
 func (r *verityPacketQueueResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populatePacketQueueState(ctx context.Context, state verityPacketQueueResourceModel, data map[string]interface{}, mode string) verityPacketQueueResourceModel {
+	const resourceType = packetQueueResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityPacketQueueObjectPropertiesModel{
+				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+			}
+			state.ObjectProperties = []verityPacketQueueObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle pbit array with mode awareness
+	if utils.FieldAppliesToMode(resourceType, "pbit", mode) {
+		if pbitArray, ok := data["pbit"].([]interface{}); ok && len(pbitArray) > 0 {
+			var pbits []verityPacketQueuePbitModel
+			for _, p := range pbitArray {
+				pbit, ok := p.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				pbitModel := verityPacketQueuePbitModel{
+					PacketQueueForPBit: utils.MapInt64WithModeNested(pbit, "packet_queue_for_p_bit", resourceType, "pbit.packet_queue_for_p_bit", mode),
+					Index:              utils.MapInt64WithModeNested(pbit, "index", resourceType, "pbit.index", mode),
+				}
+				pbits = append(pbits, pbitModel)
+			}
+			state.Pbit = pbits
+		} else {
+			state.Pbit = nil
+		}
+	} else {
+		state.Pbit = nil
+	}
+
+	// Handle queue array with mode awareness
+	if utils.FieldAppliesToMode(resourceType, "queue", mode) {
+		if queueArray, ok := data["queue"].([]interface{}); ok && len(queueArray) > 0 {
+			var queues []verityPacketQueueQueueModel
+			for _, q := range queueArray {
+				queue, ok := q.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				queueModel := verityPacketQueueQueueModel{
+					BandwidthForQueue: utils.MapInt64WithModeNested(queue, "bandwidth_for_queue", resourceType, "queue.bandwidth_for_queue", mode),
+					SchedulerType:     utils.MapStringWithModeNested(queue, "scheduler_type", resourceType, "queue.scheduler_type", mode),
+					SchedulerWeight:   utils.MapInt64WithModeNested(queue, "scheduler_weight", resourceType, "queue.scheduler_weight", mode),
+					Index:             utils.MapInt64WithModeNested(queue, "index", resourceType, "queue.index", mode),
+				}
+				queues = append(queues, queueModel)
+			}
+			state.Queue = queues
+		} else {
+			state.Queue = nil
+		}
+	} else {
+		state.Queue = nil
+	}
+
+	return state
+}
+
+func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityPacketQueueResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = packetQueueResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

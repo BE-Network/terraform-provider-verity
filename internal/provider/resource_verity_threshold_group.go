@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityThresholdGroupResource{}
 	_ resource.ResourceWithConfigure   = &verityThresholdGroupResource{}
 	_ resource.ResourceWithImportState = &verityThresholdGroupResource{}
+	_ resource.ResourceWithModifyPlan  = &verityThresholdGroupResource{}
 )
+
+const thresholdGroupResourceType = "thresholdgroups"
 
 func NewVerityThresholdGroupResource() resource.Resource {
 	return &verityThresholdGroupResource{}
@@ -108,10 +111,12 @@ func (r *verityThresholdGroupResource) Schema(_ context.Context, _ resource.Sche
 			"enable": schema.BoolAttribute{
 				Description: "Enable or disable the threshold group.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"type": schema.StringAttribute{
 				Description: "Type of elements to apply thresholds to. Valid values: 'interface', 'device'.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -122,34 +127,42 @@ func (r *verityThresholdGroupResource) Schema(_ context.Context, _ resource.Sche
 						"enable": schema.BoolAttribute{
 							Description: "Enable the target.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"type": schema.StringAttribute{
 							Description: "Specific element or Grouping Rules to apply thresholds to.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"grouping_rules": schema.StringAttribute{
 							Description: "Elements to apply thresholds to.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"grouping_rules_ref_type_": schema.StringAttribute{
 							Description: "Object type for grouping_rules field. Valid values: 'grouping_rules'.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"switchpoint": schema.StringAttribute{
 							Description: "Switchpoint to apply thresholds to.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"switchpoint_ref_type_": schema.StringAttribute{
 							Description: "Object type for switchpoint field. Valid values: 'switchpoint'.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"port": schema.StringAttribute{
 							Description: "Port to apply thresholds to.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index of the target within the targets list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -161,22 +174,27 @@ func (r *verityThresholdGroupResource) Schema(_ context.Context, _ resource.Sche
 						"enable": schema.BoolAttribute{
 							Description: "Enable the threshold.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"severity_override": schema.StringAttribute{
 							Description: "Override the severity defined in the threshold for this group only. Valid values: '', 'warning', 'notice', 'error', 'critical'.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"threshold": schema.StringAttribute{
 							Description: "Threshold to apply to this group.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"threshold_ref_type_": schema.StringAttribute{
 							Description: "Object type for threshold field. Valid values: 'threshold'.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index of the threshold within the thresholds list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -277,8 +295,34 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 	tflog.Info(ctx, fmt.Sprintf("Threshold group %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "threshold_groups")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	// Set minimal state first (just the identifier)
+	var minState verityThresholdGroupResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if thresholdGroupData, exists := bulkMgr.GetResourceResponse("threshold_group", name); exists {
+			newState := populateThresholdGroupState(ctx, minState, thresholdGroupData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityThresholdGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -298,6 +342,16 @@ func (r *verityThresholdGroupResource) Read(ctx context.Context, req resource.Re
 	}
 
 	thresholdGroupName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if thresholdGroupData, exists := r.bulkOpsMgr.GetResourceResponse("threshold_group", thresholdGroupName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached threshold_group data for %s from recent operation", thresholdGroupName))
+			state = populateThresholdGroupState(ctx, state, thresholdGroupData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("threshold_group") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping threshold group %s verification – trusting recent successful API operation", thresholdGroupName))
@@ -369,81 +423,7 @@ func (r *verityThresholdGroupResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found threshold group '%s' under API key '%s'", thresholdGroupName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(thresholdGroupMap["name"])
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"type": &state.Type,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(thresholdGroupMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(thresholdGroupMap[apiKey])
-	}
-
-	// Handle targets
-	if targets, ok := thresholdGroupMap["targets"].([]interface{}); ok && len(targets) > 0 {
-		var targetsList []verityThresholdGroupTargetsModel
-
-		for _, t := range targets {
-			target, ok := t.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			tModel := verityThresholdGroupTargetsModel{
-				Enable:               utils.MapBoolFromAPI(target["enable"]),
-				Type:                 utils.MapStringFromAPI(target["type"]),
-				GroupingRules:        utils.MapStringFromAPI(target["grouping_rules"]),
-				GroupingRulesRefType: utils.MapStringFromAPI(target["grouping_rules_ref_type_"]),
-				Switchpoint:          utils.MapStringFromAPI(target["switchpoint"]),
-				SwitchpointRefType:   utils.MapStringFromAPI(target["switchpoint_ref_type_"]),
-				Port:                 utils.MapStringFromAPI(target["port"]),
-				Index:                utils.MapInt64FromAPI(target["index"]),
-			}
-
-			targetsList = append(targetsList, tModel)
-		}
-
-		state.Targets = targetsList
-	} else {
-		state.Targets = nil
-	}
-
-	// Handle thresholds
-	if thresholds, ok := thresholdGroupMap["thresholds"].([]interface{}); ok && len(thresholds) > 0 {
-		var thresholdsList []verityThresholdGroupThresholdsModel
-
-		for _, th := range thresholds {
-			threshold, ok := th.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			thModel := verityThresholdGroupThresholdsModel{
-				Enable:           utils.MapBoolFromAPI(threshold["enable"]),
-				SeverityOverride: utils.MapStringFromAPI(threshold["severity_override"]),
-				Threshold:        utils.MapStringFromAPI(threshold["threshold"]),
-				ThresholdRefType: utils.MapStringFromAPI(threshold["threshold_ref_type_"]),
-				Index:            utils.MapInt64FromAPI(threshold["index"]),
-			}
-
-			thresholdsList = append(thresholdsList, thModel)
-		}
-
-		state.Thresholds = thresholdsList
-	} else {
-		state.Thresholds = nil
-	}
-
+	state = populateThresholdGroupState(ctx, state, thresholdGroupMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -635,7 +615,34 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 
 	tflog.Info(ctx, fmt.Sprintf("Threshold group %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "threshold_groups")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityThresholdGroupResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if thresholdGroupData, exists := bulkMgr.GetResourceResponse("threshold_group", name); exists {
+			newState := populateThresholdGroupState(ctx, minState, thresholdGroupData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityThresholdGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -668,4 +675,119 @@ func (r *verityThresholdGroupResource) Delete(ctx context.Context, req resource.
 
 func (r *verityThresholdGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateThresholdGroupState(ctx context.Context, state verityThresholdGroupResourceModel, data map[string]interface{}, mode string) verityThresholdGroupResourceModel {
+	const resourceType = thresholdGroupResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// String fields
+	state.Type = utils.MapStringWithMode(data, "type", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle targets block
+	if utils.FieldAppliesToMode(resourceType, "targets", mode) {
+		if targets, ok := data["targets"].([]interface{}); ok && len(targets) > 0 {
+			var targetsList []verityThresholdGroupTargetsModel
+
+			for _, t := range targets {
+				target, ok := t.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				tModel := verityThresholdGroupTargetsModel{
+					Enable:               utils.MapBoolWithModeNested(target, "enable", resourceType, "targets.enable", mode),
+					Type:                 utils.MapStringWithModeNested(target, "type", resourceType, "targets.type", mode),
+					GroupingRules:        utils.MapStringWithModeNested(target, "grouping_rules", resourceType, "targets.grouping_rules", mode),
+					GroupingRulesRefType: utils.MapStringWithModeNested(target, "grouping_rules_ref_type_", resourceType, "targets.grouping_rules_ref_type_", mode),
+					Switchpoint:          utils.MapStringWithModeNested(target, "switchpoint", resourceType, "targets.switchpoint", mode),
+					SwitchpointRefType:   utils.MapStringWithModeNested(target, "switchpoint_ref_type_", resourceType, "targets.switchpoint_ref_type_", mode),
+					Port:                 utils.MapStringWithModeNested(target, "port", resourceType, "targets.port", mode),
+					Index:                utils.MapInt64WithModeNested(target, "index", resourceType, "targets.index", mode),
+				}
+
+				targetsList = append(targetsList, tModel)
+			}
+
+			state.Targets = targetsList
+		} else {
+			state.Targets = nil
+		}
+	} else {
+		state.Targets = nil
+	}
+
+	// Handle thresholds block
+	if utils.FieldAppliesToMode(resourceType, "thresholds", mode) {
+		if thresholds, ok := data["thresholds"].([]interface{}); ok && len(thresholds) > 0 {
+			var thresholdsList []verityThresholdGroupThresholdsModel
+
+			for _, th := range thresholds {
+				threshold, ok := th.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				thModel := verityThresholdGroupThresholdsModel{
+					Enable:           utils.MapBoolWithModeNested(threshold, "enable", resourceType, "thresholds.enable", mode),
+					SeverityOverride: utils.MapStringWithModeNested(threshold, "severity_override", resourceType, "thresholds.severity_override", mode),
+					Threshold:        utils.MapStringWithModeNested(threshold, "threshold", resourceType, "thresholds.threshold", mode),
+					ThresholdRefType: utils.MapStringWithModeNested(threshold, "threshold_ref_type_", resourceType, "thresholds.threshold_ref_type_", mode),
+					Index:            utils.MapInt64WithModeNested(threshold, "index", resourceType, "thresholds.index", mode),
+				}
+
+				thresholdsList = append(thresholdsList, thModel)
+			}
+
+			state.Thresholds = thresholdsList
+		} else {
+			state.Thresholds = nil
+		}
+	} else {
+		state.Thresholds = nil
+	}
+
+	return state
+}
+
+func (r *verityThresholdGroupResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityThresholdGroupResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = thresholdGroupResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"type",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

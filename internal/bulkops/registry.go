@@ -18,14 +18,12 @@ import (
 //   - ResourceType: String identifier for the resource type
 //   - PutRequestType: The reflect.Type for PUT API requests for this resource
 //   - PatchRequestType: The reflect.Type for PATCH API requests for this resource
-//   - HasAutoGen: Boolean indicating whether the resource supports automatic generation
 //   - APIClientGetter: Function that returns a ResourceAPIClient for the resource type
 var resourceRegistry = map[string]ResourceConfig{
 	"gateway": {
 		ResourceType:     "gateway",
 		PutRequestType:   reflect.TypeOf(openapi.GatewaysPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.GatewaysPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "gateway"}
 		},
@@ -46,7 +44,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "lag",
 		PutRequestType:   reflect.TypeOf(openapi.LagsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.LagsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "lag"}
 		},
@@ -67,7 +64,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "tenant",
 		PutRequestType:   reflect.TypeOf(openapi.TenantsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.TenantsPutRequest{}),
-		HasAutoGen:       true,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "tenant"}
 		},
@@ -88,7 +84,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "service",
 		PutRequestType:   reflect.TypeOf(openapi.ServicesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ServicesPutRequest{}),
-		HasAutoGen:       true,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "service"}
 		},
@@ -109,7 +104,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "gateway_profile",
 		PutRequestType:   reflect.TypeOf(openapi.GatewayprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.GatewayprofilesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "gateway_profile"}
 		},
@@ -130,7 +124,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "grouping_rule",
 		PutRequestType:   reflect.TypeOf(openapi.GroupingrulesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.GroupingrulesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "grouping_rule"}
 		},
@@ -151,7 +144,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "threshold_group",
 		PutRequestType:   reflect.TypeOf(openapi.ThresholdgroupsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ThresholdgroupsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "threshold_group"}
 		},
@@ -172,7 +164,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "threshold",
 		PutRequestType:   reflect.TypeOf(openapi.ThresholdsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ThresholdsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "threshold"}
 		},
@@ -193,7 +184,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "packet_queue",
 		PutRequestType:   reflect.TypeOf(openapi.PacketqueuesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PacketqueuesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "packet_queue"}
 		},
@@ -214,7 +204,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "eth_port_profile",
 		PutRequestType:   reflect.TypeOf(openapi.EthportprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.EthportprofilesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "eth_port_profile"}
 		},
@@ -235,7 +224,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "eth_port_settings",
 		PutRequestType:   reflect.TypeOf(openapi.EthportsettingsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.EthportsettingsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "eth_port_settings"}
 		},
@@ -256,7 +244,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "bundle",
 		PutRequestType:   reflect.TypeOf(openapi.BundlesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.BundlesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "bundle"}
 		},
@@ -277,7 +264,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "acl",
 		PutRequestType:   reflect.TypeOf(openapi.AclsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.AclsPutRequest{}),
-		HasAutoGen:       false,
 		HeaderSplitKey:   "ip_version",
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "acl"}
@@ -328,7 +314,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "packet_broker",
 		PutRequestType:   reflect.TypeOf(openapi.PacketbrokerPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PacketbrokerPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "packet_broker"}
 		},
@@ -349,7 +334,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "badge",
 		PutRequestType:   reflect.TypeOf(openapi.BadgesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.BadgesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "badge"}
 		},
@@ -370,7 +354,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "switchpoint",
 		PutRequestType:   reflect.TypeOf(openapi.SwitchpointsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SwitchpointsPutRequest{}),
-		HasAutoGen:       true,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "switchpoint"}
 		},
@@ -391,7 +374,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "device_controller",
 		PutRequestType:   reflect.TypeOf(openapi.DevicecontrollersPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DevicecontrollersPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "device_controller"}
 		},
@@ -412,7 +394,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "authenticated_eth_port",
 		PutRequestType:   reflect.TypeOf(openapi.AuthenticatedethportsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.AuthenticatedethportsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "authenticated_eth_port"}
 		},
@@ -433,7 +414,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "device_voice_settings",
 		PutRequestType:   reflect.TypeOf(openapi.DevicevoicesettingsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DevicevoicesettingsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "device_voice_settings"}
 		},
@@ -454,7 +434,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "voice_port_profile",
 		PutRequestType:   reflect.TypeOf(openapi.VoiceportprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.VoiceportprofilesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "voice_port_profile"}
 		},
@@ -475,7 +454,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "service_port_profile",
 		PutRequestType:   reflect.TypeOf(openapi.ServiceportprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ServiceportprofilesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "service_port_profile"}
 		},
@@ -496,7 +474,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "as_path_access_list",
 		PutRequestType:   reflect.TypeOf(openapi.AspathaccesslistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.AspathaccesslistsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "as_path_access_list"}
 		},
@@ -517,7 +494,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "community_list",
 		PutRequestType:   reflect.TypeOf(openapi.CommunitylistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.CommunitylistsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "community_list"}
 		},
@@ -538,7 +514,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "device_settings",
 		PutRequestType:   reflect.TypeOf(openapi.DevicesettingsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DevicesettingsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "device_settings"}
 		},
@@ -559,7 +534,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "extended_community_list",
 		PutRequestType:   reflect.TypeOf(openapi.ExtendedcommunitylistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ExtendedcommunitylistsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "extended_community_list"}
 		},
@@ -580,7 +554,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "ipv4_list",
 		PutRequestType:   reflect.TypeOf(openapi.Ipv4listsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.Ipv4listsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "ipv4_list"}
 		},
@@ -601,7 +574,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "ipv4_prefix_list",
 		PutRequestType:   reflect.TypeOf(openapi.Ipv4prefixlistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.Ipv4prefixlistsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "ipv4_prefix_list"}
 		},
@@ -622,7 +594,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "ipv6_list",
 		PutRequestType:   reflect.TypeOf(openapi.Ipv6listsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.Ipv6listsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "ipv6_list"}
 		},
@@ -643,7 +614,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "ipv6_prefix_list",
 		PutRequestType:   reflect.TypeOf(openapi.Ipv6prefixlistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.Ipv6prefixlistsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "ipv6_prefix_list"}
 		},
@@ -664,7 +634,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "route_map_clause",
 		PutRequestType:   reflect.TypeOf(openapi.RoutemapclausesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.RoutemapclausesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "route_map_clause"}
 		},
@@ -685,7 +654,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "route_map",
 		PutRequestType:   reflect.TypeOf(openapi.RoutemapsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.RoutemapsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "route_map"}
 		},
@@ -706,7 +674,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "sfp_breakout",
 		PutRequestType:   reflect.TypeOf(openapi.SfpbreakoutsPatchRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SfpbreakoutsPatchRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "sfp_breakout"}
 		},
@@ -723,7 +690,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "site",
 		PutRequestType:   reflect.TypeOf(openapi.SitesPatchRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SitesPatchRequest{}),
-		HasAutoGen:       true,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "site"}
 		},
@@ -740,7 +706,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "pod",
 		PutRequestType:   reflect.TypeOf(openapi.PodsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PodsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "pod"}
 		},
@@ -761,7 +726,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "port_acl",
 		PutRequestType:   reflect.TypeOf(openapi.PortaclsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PortaclsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "port_acl"}
 		},
@@ -782,7 +746,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "sflow_collector",
 		PutRequestType:   reflect.TypeOf(openapi.SflowcollectorsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SflowcollectorsPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "sflow_collector"}
 		},
@@ -803,7 +766,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "diagnostics_profile",
 		PutRequestType:   reflect.TypeOf(openapi.DiagnosticsprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DiagnosticsprofilesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "diagnostics_profile"}
 		},
@@ -824,7 +786,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "diagnostics_port_profile",
 		PutRequestType:   reflect.TypeOf(openapi.DiagnosticsportprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DiagnosticsportprofilesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "diagnostics_port_profile"}
 		},
@@ -845,7 +806,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "pb_routing",
 		PutRequestType:   reflect.TypeOf(openapi.PolicybasedroutingPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PolicybasedroutingPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "pb_routing"}
 		},
@@ -866,7 +826,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "pb_routing_acl",
 		PutRequestType:   reflect.TypeOf(openapi.PolicybasedroutingaclPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PolicybasedroutingaclPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "pb_routing_acl"}
 		},
@@ -887,7 +846,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		ResourceType:     "spine_plane",
 		PutRequestType:   reflect.TypeOf(openapi.SpineplanesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SpineplanesPutRequest{}),
-		HasAutoGen:       false,
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "spine_plane"}
 		},

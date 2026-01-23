@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &veritySpinePlaneResource{}
 	_ resource.ResourceWithConfigure   = &veritySpinePlaneResource{}
 	_ resource.ResourceWithImportState = &veritySpinePlaneResource{}
+	_ resource.ResourceWithModifyPlan  = &veritySpinePlaneResource{}
 )
+
+const spinePlaneResourceType = "spineplanes"
 
 func NewVeritySpinePlaneResource() resource.Resource {
 	return &veritySpinePlaneResource{}
@@ -83,6 +86,7 @@ func (r *veritySpinePlaneResource) Schema(ctx context.Context, req resource.Sche
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -93,6 +97,7 @@ func (r *veritySpinePlaneResource) Schema(ctx context.Context, req resource.Sche
 						"notes": schema.StringAttribute{
 							Description: "User Notes.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -145,8 +150,32 @@ func (r *veritySpinePlaneResource) Create(ctx context.Context, req resource.Crea
 	tflog.Info(ctx, fmt.Sprintf("Spine Plane %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "spine_planes")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState veritySpinePlaneResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if spinePlaneData, exists := bulkMgr.GetResourceResponse("spine_plane", name); exists {
+			newState := populateSpinePlaneState(ctx, minState, spinePlaneData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *veritySpinePlaneResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -166,6 +195,16 @@ func (r *veritySpinePlaneResource) Read(ctx context.Context, req resource.ReadRe
 	}
 
 	spinePlaneName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if spinePlaneData, exists := r.bulkOpsMgr.GetResourceResponse("spine_plane", spinePlaneName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached spine_plane data for %s from recent operation", spinePlaneName))
+			state = populateSpinePlaneState(ctx, state, spinePlaneData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("spine_plane") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Spine Plane %s verification - trusting recent successful API operation", spinePlaneName))
@@ -235,26 +274,7 @@ func (r *veritySpinePlaneResource) Read(ctx context.Context, req resource.ReadRe
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Spine Plane '%s' under API key '%s'", spinePlaneName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(spinePlaneMap["name"])
-
-	// Handle object properties
-	if objProps, ok := spinePlaneMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []veritySpinePlaneObjectPropertiesModel{
-			{Notes: utils.MapStringFromAPI(objProps["notes"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(spinePlaneMap[apiKey])
-	}
-
+	state = populateSpinePlaneState(ctx, state, spinePlaneMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -319,7 +339,34 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 
 	tflog.Info(ctx, fmt.Sprintf("Spine Plane %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "spine_planes")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState veritySpinePlaneResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if spinePlaneData, exists := bulkMgr.GetResourceResponse("spine_plane", name); exists {
+			newState := populateSpinePlaneState(ctx, minState, spinePlaneData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *veritySpinePlaneResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -352,4 +399,64 @@ func (r *veritySpinePlaneResource) Delete(ctx context.Context, req resource.Dele
 
 func (r *veritySpinePlaneResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateSpinePlaneState(ctx context.Context, state veritySpinePlaneResourceModel, data map[string]interface{}, mode string) veritySpinePlaneResourceModel {
+	const resourceType = spinePlaneResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			state.ObjectProperties = []veritySpinePlaneObjectPropertiesModel{
+				{
+					Notes: utils.MapStringWithModeNested(objProps, "notes", resourceType, "object_properties.notes", mode),
+				},
+			}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *veritySpinePlaneResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan veritySpinePlaneResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = spinePlaneResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

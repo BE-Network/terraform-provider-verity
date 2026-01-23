@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityGroupingRuleResource{}
 	_ resource.ResourceWithConfigure   = &verityGroupingRuleResource{}
 	_ resource.ResourceWithImportState = &verityGroupingRuleResource{}
+	_ resource.ResourceWithModifyPlan  = &verityGroupingRuleResource{}
 )
+
+const groupingRuleResourceType = "groupingrules"
 
 func NewVerityGroupingRuleResource() resource.Resource {
 	return &verityGroupingRuleResource{}
@@ -95,14 +98,17 @@ func (r *verityGroupingRuleResource) Schema(_ context.Context, _ resource.Schema
 			"enable": schema.BoolAttribute{
 				Description: "Enable or disable the grouping rule.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"type": schema.StringAttribute{
 				Description: "The type of the grouping rule. Valid values: 'and', 'or'.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"operation": schema.StringAttribute{
 				Description: "The operation of the grouping rule. Valid values: 'permit', 'deny'.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -113,30 +119,37 @@ func (r *verityGroupingRuleResource) Schema(_ context.Context, _ resource.Schema
 						"enable": schema.BoolAttribute{
 							Description: "Enable or disable the rule.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"rule_invert": schema.BoolAttribute{
 							Description: "Invert the rule logic.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"rule_type": schema.StringAttribute{
 							Description: "The type of the rule. Valid values: 'device_controller', 'device', 'eth_port', 'lag', 'vlan', 'tenant', 'site', 'pod', 'spineps', 'grouping_rule'.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"rule_value": schema.StringAttribute{
 							Description: "The value for the rule.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"rule_value_path": schema.StringAttribute{
 							Description: "The path reference for the rule value.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"rule_value_path_ref_type_": schema.StringAttribute{
 							Description: "The reference type for rule_value_path. Valid values: 'device_controller', 'device', 'eth_port', 'lag', 'vlan', 'tenant', 'site', 'pod', 'spineps', 'grouping_rule'.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index of the rule within the rules list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -212,8 +225,32 @@ func (r *verityGroupingRuleResource) Create(ctx context.Context, req resource.Cr
 	tflog.Info(ctx, fmt.Sprintf("Grouping rule %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "grouping_rules")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityGroupingRuleResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if groupingRuleData, exists := bulkMgr.GetResourceResponse("grouping_rule", name); exists {
+			state := populateGroupingRuleState(ctx, minState, groupingRuleData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityGroupingRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -233,6 +270,16 @@ func (r *verityGroupingRuleResource) Read(ctx context.Context, req resource.Read
 	}
 
 	groupingRuleName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if groupingRuleData, exists := r.bulkOpsMgr.GetResourceResponse("grouping_rule", groupingRuleName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached grouping rule data for %s from recent operation", groupingRuleName))
+			state = populateGroupingRuleState(ctx, state, groupingRuleData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("grouping_rule") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping grouping rule %s verification – trusting recent successful API operation", groupingRuleName))
@@ -304,55 +351,7 @@ func (r *verityGroupingRuleResource) Read(ctx context.Context, req resource.Read
 
 	tflog.Debug(ctx, fmt.Sprintf("Found grouping rule '%s' under API key '%s'", groupingRuleName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(groupingRuleMap["name"])
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"type":      &state.Type,
-		"operation": &state.Operation,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(groupingRuleMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(groupingRuleMap[apiKey])
-	}
-
-	// Handle rules
-	if rules, ok := groupingRuleMap["rules"].([]interface{}); ok && len(rules) > 0 {
-		var rulesList []verityGroupingRuleRulesModel
-
-		for _, r := range rules {
-			rule, ok := r.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			rModel := verityGroupingRuleRulesModel{
-				Enable:               utils.MapBoolFromAPI(rule["enable"]),
-				RuleInvert:           utils.MapBoolFromAPI(rule["rule_invert"]),
-				RuleType:             utils.MapStringFromAPI(rule["rule_type"]),
-				RuleValue:            utils.MapStringFromAPI(rule["rule_value"]),
-				RuleValuePath:        utils.MapStringFromAPI(rule["rule_value_path"]),
-				RuleValuePathRefType: utils.MapStringFromAPI(rule["rule_value_path_ref_type_"]),
-				Index:                utils.MapInt64FromAPI(rule["index"]),
-			}
-
-			rulesList = append(rulesList, rModel)
-		}
-
-		state.Rules = rulesList
-	} else {
-		state.Rules = nil
-	}
-
+	state = populateGroupingRuleState(ctx, state, groupingRuleMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -470,7 +469,34 @@ func (r *verityGroupingRuleResource) Update(ctx context.Context, req resource.Up
 
 	tflog.Info(ctx, fmt.Sprintf("Grouping rule %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "grouping_rules")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityGroupingRuleResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if groupingRuleData, exists := bulkMgr.GetResourceResponse("grouping_rule", name); exists {
+			newState := populateGroupingRuleState(ctx, minState, groupingRuleData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityGroupingRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -503,4 +529,89 @@ func (r *verityGroupingRuleResource) Delete(ctx context.Context, req resource.De
 
 func (r *verityGroupingRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateGroupingRuleState(ctx context.Context, state verityGroupingRuleResourceModel, data map[string]interface{}, mode string) verityGroupingRuleResourceModel {
+	const resourceType = groupingRuleResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// String fields
+	state.Type = utils.MapStringWithMode(data, "type", resourceType, mode)
+	state.Operation = utils.MapStringWithMode(data, "operation", resourceType, mode)
+
+	// Handle rules list block
+	if utils.FieldAppliesToMode(resourceType, "rules", mode) {
+		if rulesData, ok := data["rules"].([]interface{}); ok && len(rulesData) > 0 {
+			var rulesList []verityGroupingRuleRulesModel
+
+			for _, item := range rulesData {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				ruleItem := verityGroupingRuleRulesModel{
+					Enable:               utils.MapBoolWithModeNested(itemMap, "enable", resourceType, "rules.enable", mode),
+					RuleInvert:           utils.MapBoolWithModeNested(itemMap, "rule_invert", resourceType, "rules.rule_invert", mode),
+					RuleType:             utils.MapStringWithModeNested(itemMap, "rule_type", resourceType, "rules.rule_type", mode),
+					RuleValue:            utils.MapStringWithModeNested(itemMap, "rule_value", resourceType, "rules.rule_value", mode),
+					RuleValuePath:        utils.MapStringWithModeNested(itemMap, "rule_value_path", resourceType, "rules.rule_value_path", mode),
+					RuleValuePathRefType: utils.MapStringWithModeNested(itemMap, "rule_value_path_ref_type_", resourceType, "rules.rule_value_path_ref_type_", mode),
+					Index:                utils.MapInt64WithModeNested(itemMap, "index", resourceType, "rules.index", mode),
+				}
+
+				rulesList = append(rulesList, ruleItem)
+			}
+
+			state.Rules = rulesList
+		} else {
+			state.Rules = nil
+		}
+	} else {
+		state.Rules = nil
+	}
+
+	return state
+}
+
+func (r *verityGroupingRuleResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityGroupingRuleResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = groupingRuleResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"type", "operation",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

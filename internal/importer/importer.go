@@ -48,131 +48,130 @@ type ImporterFunc func(context.Context, *openapi.APIClient) (*http.Response, err
 
 var nameSplitRE = regexp.MustCompile(`(\d+|\D+)`)
 
-// importerRegistry maps resource names to their API caller function and JSON key
+// importerRegistry maps resource names to their API caller function
 var importerRegistry = map[string]struct {
 	apiCaller ImporterFunc
-	jsonKey   string
 }{
 	"tenants": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.TenantsAPI.TenantsGet(ctx).Execute()
-	}, jsonKey: "tenant"},
+	}},
 	"gateways": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.GatewaysAPI.GatewaysGet(ctx).Execute()
-	}, jsonKey: "gateway"},
+	}},
 	"gatewayprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.GatewayProfilesAPI.GatewayprofilesGet(ctx).Execute()
-	}, jsonKey: "gateway_profile"},
+	}},
 	"ethportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
-	}, jsonKey: "eth_port_profile_"},
+	}},
 	"lags": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.LAGsAPI.LagsGet(ctx).Execute()
-	}, jsonKey: "lag"},
+	}},
 	"sflowcollectors": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SFlowCollectorsAPI.SflowcollectorsGet(ctx).Execute()
-	}, jsonKey: "sflow_collector"},
+	}},
 	"diagnosticsprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(ctx).Execute()
-	}, jsonKey: "diagnostics_profile"},
+	}},
 	"diagnosticsportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(ctx).Execute()
-	}, jsonKey: "diagnostics_port_profile"},
+	}},
 	"services": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.ServicesAPI.ServicesGet(ctx).Execute()
-	}, jsonKey: "service"},
+	}},
 	"ethportsettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.EthPortSettingsAPI.EthportsettingsGet(ctx).Execute()
-	}, jsonKey: "eth_port_settings"},
+	}},
 	"bundles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.BundlesAPI.BundlesGet(ctx).Execute()
-	}, jsonKey: "endpoint_bundle"},
+	}},
 	"badges": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.BadgesAPI.BadgesGet(ctx).Execute()
-	}, jsonKey: "badge"},
+	}},
 	"authenticatedethports": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(ctx).Execute()
-	}, jsonKey: "authenticated_eth_port"},
+	}},
 	"devicevoicesettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(ctx).Execute()
-	}, jsonKey: "device_voice_settings"},
+	}},
 	"packetbroker": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PacketBrokerAPI.PacketbrokerGet(ctx).Execute()
-	}, jsonKey: "pb_egress_profile"},
+	}},
 	"packetqueues": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PacketQueuesAPI.PacketqueuesGet(ctx).Execute()
-	}, jsonKey: "packet_queue"},
+	}},
 	"serviceportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.ServicePortProfilesAPI.ServiceportprofilesGet(ctx).Execute()
-	}, jsonKey: "service_port_profile"},
+	}},
 	"voiceportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.VoicePortProfilesAPI.VoiceportprofilesGet(ctx).Execute()
-	}, jsonKey: "voice_port_profiles"},
+	}},
 	"switchpoints": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SwitchpointsAPI.SwitchpointsGet(ctx).Execute()
-	}, jsonKey: "switchpoint"},
+	}},
 	"devicecontrollers": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.DeviceControllersAPI.DevicecontrollersGet(ctx).Execute()
-	}, jsonKey: "device_controller"},
+	}},
 	"aspathaccesslists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.ASPathAccessListsAPI.AspathaccesslistsGet(ctx).Execute()
-	}, jsonKey: "as_path_access_list"},
+	}},
 	"communitylists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.CommunityListsAPI.CommunitylistsGet(ctx).Execute()
-	}, jsonKey: "community_list"},
+	}},
 	"devicesettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.DeviceSettingsAPI.DevicesettingsGet(ctx).Execute()
-	}, jsonKey: "eth_device_profiles"},
+	}},
 	"extendedcommunitylists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(ctx).Execute()
-	}, jsonKey: "extended_community_list"},
+	}},
 	"ipv4lists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.IPv4ListFiltersAPI.Ipv4listsGet(ctx).Execute()
-	}, jsonKey: "ipv4_list_filter"},
+	}},
 	"ipv4prefixlists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(ctx).Execute()
-	}, jsonKey: "ipv4_prefix_list"},
+	}},
 	"ipv6lists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.IPv6ListFiltersAPI.Ipv6listsGet(ctx).Execute()
-	}, jsonKey: "ipv6_list_filter"},
+	}},
 	"ipv6prefixlists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.IPv6PrefixListsAPI.Ipv6prefixlistsGet(ctx).Execute()
-	}, jsonKey: "ipv6_prefix_list"},
+	}},
 	"routemapclauses": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.RouteMapClausesAPI.RoutemapclausesGet(ctx).Execute()
-	}, jsonKey: "route_map_clause"},
+	}},
 	"routemaps": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.RouteMapsAPI.RoutemapsGet(ctx).Execute()
-	}, jsonKey: "route_map"},
+	}},
 	"sfpbreakouts": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SFPBreakoutsAPI.SfpbreakoutsGet(ctx).Execute()
-	}, jsonKey: "sfp_breakouts"},
+	}},
 	"sites": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SitesAPI.SitesGet(ctx).Execute()
-	}, jsonKey: "site"},
+	}},
 	"pods": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PodsAPI.PodsGet(ctx).Execute()
-	}, jsonKey: "pod"},
+	}},
 	"spineplanes": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SpinePlanesAPI.SpineplanesGet(ctx).Execute()
-	}, jsonKey: "spine_plane"},
+	}},
 	"policybasedroutingacl": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PBRoutingACLAPI.PolicybasedroutingaclGet(ctx).Execute()
-	}, jsonKey: "pb_routing_acl"},
+	}},
 	"policybasedrouting": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PBRoutingAPI.PolicybasedroutingGet(ctx).Execute()
-	}, jsonKey: "pb_routing"},
+	}},
 	"portacls": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PortACLsAPI.PortaclsGet(ctx).Execute()
-	}, jsonKey: "port_acl"},
+	}},
 	"groupingrules": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.GroupingRulesAPI.GroupingrulesGet(ctx).Execute()
-	}, jsonKey: "grouping_rules"},
+	}},
 	"thresholdgroups": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.ThresholdGroupsAPI.ThresholdgroupsGet(ctx).Execute()
-	}, jsonKey: "threshold_group"},
+	}},
 	"thresholds": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.ThresholdsAPI.ThresholdsGet(ctx).Execute()
-	}, jsonKey: "threshold"},
+	}},
 }
 
 // terraformTypeToResourceKey maps Terraform resource types to resourceConfigs keys
@@ -782,7 +781,13 @@ func (i *Importer) importResource(resourceName string) (interface{}, error) {
 		return nil, fmt.Errorf("failed to decode %s response: %v", resourceName, err)
 	}
 
-	data, ok := result[config.jsonKey]
+	// Look up JSON key mapping
+	jsonKey := utils.GetImporterJSONKey(resourceName)
+	if jsonKey == "" {
+		return nil, fmt.Errorf("no JSON key mapping found for %s", resourceName)
+	}
+
+	data, ok := result[jsonKey]
 	if !ok {
 		// Return empty map if the key doesn't exist
 		return make(map[string]map[string]interface{}), nil
@@ -1180,33 +1185,19 @@ func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface
 	}
 	defer resp.Body.Close()
 
-	if ipVersion == "4" {
-		var result struct {
-			IpFilter map[string]map[string]interface{} `json:"ipv4_filter"`
-		}
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			return nil, fmt.Errorf("failed to decode IPv4 ACLs response: %v", err)
-		}
+	// Use dynamic JSON key lookup from utils
+	jsonKey := utils.GetACLJSONKey(ipVersion)
 
-		if result.IpFilter == nil {
-			return make(map[string]map[string]interface{}), nil
-		}
-
-		return result.IpFilter, nil
-	} else {
-		var result struct {
-			IpFilter map[string]map[string]interface{} `json:"ipv6_filter"`
-		}
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			return nil, fmt.Errorf("failed to decode IPv6 ACLs response: %v", err)
-		}
-
-		if result.IpFilter == nil {
-			return make(map[string]map[string]interface{}), nil
-		}
-
-		return result.IpFilter, nil
+	var result map[string]map[string]map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode IPv%s ACLs response: %v", ipVersion, err)
 	}
+
+	if data, ok := result[jsonKey]; ok {
+		return data, nil
+	}
+
+	return make(map[string]map[string]interface{}), nil
 }
 
 // universalObjectPropsHandler dynamically processes all fields present in the object_properties

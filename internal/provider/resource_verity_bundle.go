@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityBundleResource{}
 	_ resource.ResourceWithConfigure   = &verityBundleResource{}
 	_ resource.ResourceWithImportState = &verityBundleResource{}
+	_ resource.ResourceWithModifyPlan  = &verityBundleResource{}
 )
+
+const bundleResourceType = "bundles"
 
 func NewVerityBundleResource() resource.Resource {
 	return &verityBundleResource{}
@@ -136,38 +139,47 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 			"enable": schema.BoolAttribute{
 				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"device_settings": schema.StringAttribute{
 				Description: "Device Settings for device",
 				Optional:    true,
+				Computed:    true,
 			},
 			"device_settings_ref_type_": schema.StringAttribute{
 				Description: "Object type for device_settings field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cli_commands": schema.StringAttribute{
 				Description: "CLI Commands",
 				Optional:    true,
+				Computed:    true,
 			},
 			"protocol": schema.StringAttribute{
 				Description: "Voice Protocol: MGCP or SIP",
 				Optional:    true,
+				Computed:    true,
 			},
 			"diagnostics_profile": schema.StringAttribute{
 				Description: "Diagnostics Profile for device",
 				Optional:    true,
+				Computed:    true,
 			},
 			"diagnostics_profile_ref_type_": schema.StringAttribute{
 				Description: "Object type for diagnostics_profile field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"device_voice_settings": schema.StringAttribute{
 				Description: "Device Voice Settings for device",
 				Optional:    true,
+				Computed:    true,
 			},
 			"device_voice_settings_ref_type_": schema.StringAttribute{
 				Description: "Object type for device_voice_settings field",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -178,14 +190,17 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 						"is_for_switch": schema.BoolAttribute{
 							Description: "Denotes a Switch Bundle",
 							Optional:    true,
+							Computed:    true,
 						},
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 						"is_public": schema.BoolAttribute{
 							Description: "Denotes a shared Switch Bundle",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -197,42 +212,52 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 						"eth_port_num_eth_port_profile": schema.StringAttribute{
 							Description: "Eth Port Profile or LAG for Eth Port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_num_eth_port_profile_ref_type_": schema.StringAttribute{
 							Description: "Object type for eth_port_num_eth_port_profile field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_num_eth_port_settings": schema.StringAttribute{
 							Description: "Choose an Eth Port Settings",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_num_eth_port_settings_ref_type_": schema.StringAttribute{
 							Description: "Object type for eth_port_num_eth_port_settings field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_num_gateway_profile": schema.StringAttribute{
 							Description: "Gateway Profile or LAG for Eth Port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_port_num_gateway_profile_ref_type_": schema.StringAttribute{
 							Description: "Object type for eth_port_num_gateway_profile field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"diagnostics_port_profile_num_diagnostics_port_profile": schema.StringAttribute{
 							Description: "Diagnostics Port Profile for port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": schema.StringAttribute{
 							Description: "Object type for diagnostics_port_profile_num_diagnostics_port_profile field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"port_name": schema.StringAttribute{
 							Description: "The name identifying the port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -244,26 +269,32 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 						"row_app_enable": schema.BoolAttribute{
 							Description: "Enable of this User application",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_app_connected_service": schema.StringAttribute{
 							Description: "Service connected to this User application",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_app_connected_service_ref_type_": schema.StringAttribute{
 							Description: "Object type for row_app_connected_service field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_app_cli_commands": schema.StringAttribute{
 							Description: "CLI Commands of this User application",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_ip_mask": schema.StringAttribute{
 							Description: "IP/Mask in IPv4 format",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -275,14 +306,17 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 						"voice_port_num_voice_port_profiles": schema.StringAttribute{
 							Description: "Voice Port Profile for Voice Port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"voice_port_num_voice_port_profiles_ref_type_": schema.StringAttribute{
 							Description: "Object type for voice_port_num_voice_port_profiles field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -412,8 +446,32 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	tflog.Info(ctx, fmt.Sprintf("Bundle %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "bundles")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityBundleResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if bundleData, exists := bulkMgr.GetResourceResponse("bundle", name); exists {
+			state := populateBundleState(ctx, minState, bundleData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -433,6 +491,16 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 	}
 
 	bundleName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if bundleData, exists := r.bulkOpsMgr.GetResourceResponse("bundle", bundleName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached bundle data for %s from recent operation", bundleName))
+			state = populateBundleState(ctx, state, bundleData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("bundle") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping bundle %s verification – trusting recent successful API operation", bundleName))
@@ -503,122 +571,7 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 
 	tflog.Debug(ctx, fmt.Sprintf("Found bundle '%s' under API key '%s'", bundleName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(bundleMap["name"])
-
-	// Handle object properties
-	if objProps, ok := bundleMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityBundleObjectPropertiesModel{
-			{
-				IsForSwitch: utils.MapBoolFromAPI(objProps["is_for_switch"]),
-				Group:       utils.MapStringFromAPI(objProps["group"]),
-				IsPublic:    utils.MapBoolFromAPI(objProps["is_public"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"device_settings":                 &state.DeviceSettings,
-		"device_settings_ref_type_":       &state.DeviceSettingsRefType,
-		"cli_commands":                    &state.CliCommands,
-		"protocol":                        &state.Protocol,
-		"diagnostics_profile":             &state.DiagnosticsProfile,
-		"diagnostics_profile_ref_type_":   &state.DiagnosticsProfileRefType,
-		"device_voice_settings":           &state.DeviceVoiceSettings,
-		"device_voice_settings_ref_type_": &state.DeviceVoiceSettingsRefType,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(bundleMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(bundleMap[apiKey])
-	}
-
-	// Handle eth port paths
-	var ethPortPaths []ethPortPathsModel
-	if paths, ok := bundleMap["eth_port_paths"].([]interface{}); ok && len(paths) > 0 {
-		for _, p := range paths {
-			path, ok := p.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			ethPortPath := ethPortPathsModel{
-				EthPortNumEthPortProfile:                               utils.MapStringFromAPI(path["eth_port_num_eth_port_profile"]),
-				EthPortNumEthPortSettings:                              utils.MapStringFromAPI(path["eth_port_num_eth_port_settings"]),
-				EthPortNumEthPortSettingsRefType:                       utils.MapStringFromAPI(path["eth_port_num_eth_port_settings_ref_type_"]),
-				EthPortNumEthPortProfileRefType:                        utils.MapStringFromAPI(path["eth_port_num_eth_port_profile_ref_type_"]),
-				DiagnosticsPortProfileNumDiagnosticsPortProfile:        utils.MapStringFromAPI(path["diagnostics_port_profile_num_diagnostics_port_profile"]),
-				DiagnosticsPortProfileNumDiagnosticsPortProfileRefType: utils.MapStringFromAPI(path["diagnostics_port_profile_num_diagnostics_port_profile_ref_type_"]),
-				PortName:                        utils.MapStringFromAPI(path["port_name"]),
-				EthPortNumGatewayProfile:        utils.MapStringFromAPI(path["eth_port_num_gateway_profile"]),
-				EthPortNumGatewayProfileRefType: utils.MapStringFromAPI(path["eth_port_num_gateway_profile_ref_type_"]),
-				Index:                           utils.MapInt64FromAPI(path["index"]),
-			}
-
-			ethPortPaths = append(ethPortPaths, ethPortPath)
-		}
-		state.EthPortPaths = ethPortPaths
-	} else {
-		state.EthPortPaths = nil
-	}
-
-	// Handle user services
-	var userServices []userServicesModel
-	if services, ok := bundleMap["user_services"].([]interface{}); ok && len(services) > 0 {
-		for _, s := range services {
-			service, ok := s.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			userService := userServicesModel{
-				RowAppEnable:                  utils.MapBoolFromAPI(service["row_app_enable"]),
-				RowAppConnectedService:        utils.MapStringFromAPI(service["row_app_connected_service"]),
-				RowAppCliCommands:             utils.MapStringFromAPI(service["row_app_cli_commands"]),
-				RowIpMask:                     utils.MapStringFromAPI(service["row_ip_mask"]),
-				RowAppConnectedServiceRefType: utils.MapStringFromAPI(service["row_app_connected_service_ref_type_"]),
-				Index:                         utils.MapInt64FromAPI(service["index"]),
-			}
-
-			userServices = append(userServices, userService)
-		}
-		state.UserServices = userServices
-	} else {
-		state.UserServices = nil
-	}
-
-	// Handle voice port profile paths
-	var voicePortProfilePaths []voicePortProfilePathsModel
-	if paths, ok := bundleMap["voice_port_profile_paths"].([]interface{}); ok && len(paths) > 0 {
-		for _, p := range paths {
-			path, ok := p.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			voicePortPath := voicePortProfilePathsModel{
-				VoicePortNumVoicePortProfiles:        utils.MapStringFromAPI(path["voice_port_num_voice_port_profiles"]),
-				VoicePortNumVoicePortProfilesRefType: utils.MapStringFromAPI(path["voice_port_num_voice_port_profiles_ref_type_"]),
-				Index:                                utils.MapInt64FromAPI(path["index"]),
-			}
-
-			voicePortProfilePaths = append(voicePortProfilePaths, voicePortPath)
-		}
-		state.VoicePortProfilePaths = voicePortProfilePaths
-	} else {
-		state.VoicePortProfilePaths = nil
-	}
-
+	state = populateBundleState(ctx, state, bundleMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -944,7 +897,34 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 	tflog.Info(ctx, fmt.Sprintf("Bundle %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "bundles")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityBundleResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if bundleData, exists := bulkMgr.GetResourceResponse("bundle", name); exists {
+			newState := populateBundleState(ctx, minState, bundleData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityBundleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -977,4 +957,164 @@ func (r *verityBundleResource) Delete(ctx context.Context, req resource.DeleteRe
 
 func (r *verityBundleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateBundleState(ctx context.Context, state verityBundleResourceModel, data map[string]interface{}, mode string) verityBundleResourceModel {
+	const resourceType = bundleResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// String fields
+	state.DeviceSettings = utils.MapStringWithMode(data, "device_settings", resourceType, mode)
+	state.DeviceSettingsRefType = utils.MapStringWithMode(data, "device_settings_ref_type_", resourceType, mode)
+	state.CliCommands = utils.MapStringWithMode(data, "cli_commands", resourceType, mode)
+	state.Protocol = utils.MapStringWithMode(data, "protocol", resourceType, mode)
+	state.DiagnosticsProfile = utils.MapStringWithMode(data, "diagnostics_profile", resourceType, mode)
+	state.DiagnosticsProfileRefType = utils.MapStringWithMode(data, "diagnostics_profile_ref_type_", resourceType, mode)
+	state.DeviceVoiceSettings = utils.MapStringWithMode(data, "device_voice_settings", resourceType, mode)
+	state.DeviceVoiceSettingsRefType = utils.MapStringWithMode(data, "device_voice_settings_ref_type_", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityBundleObjectPropertiesModel{
+				IsForSwitch: utils.MapBoolWithModeNested(objProps, "is_for_switch", resourceType, "object_properties.is_for_switch", mode),
+				Group:       utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+				IsPublic:    utils.MapBoolWithModeNested(objProps, "is_public", resourceType, "object_properties.is_public", mode),
+			}
+			state.ObjectProperties = []verityBundleObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle eth_port_paths array
+	if utils.FieldAppliesToMode(resourceType, "eth_port_paths", mode) {
+		if pathsData, ok := data["eth_port_paths"].([]interface{}); ok && len(pathsData) > 0 {
+			var ethPortPaths []ethPortPathsModel
+			for _, p := range pathsData {
+				pathItem, ok := p.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				pathModel := ethPortPathsModel{
+					EthPortNumEthPortProfile:                               utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile", resourceType, "eth_port_paths.eth_port_num_eth_port_profile", mode),
+					EthPortNumEthPortProfileRefType:                        utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_profile_ref_type_", mode),
+					EthPortNumEthPortSettings:                              utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings", resourceType, "eth_port_paths.eth_port_num_eth_port_settings", mode),
+					EthPortNumEthPortSettingsRefType:                       utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_settings_ref_type_", mode),
+					EthPortNumGatewayProfile:                               utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile", resourceType, "eth_port_paths.eth_port_num_gateway_profile", mode),
+					EthPortNumGatewayProfileRefType:                        utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_gateway_profile_ref_type_", mode),
+					DiagnosticsPortProfileNumDiagnosticsPortProfile:        utils.MapStringWithModeNested(pathItem, "diagnostics_port_profile_num_diagnostics_port_profile", resourceType, "eth_port_paths.diagnostics_port_profile_num_diagnostics_port_profile", mode),
+					DiagnosticsPortProfileNumDiagnosticsPortProfileRefType: utils.MapStringWithModeNested(pathItem, "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_", resourceType, "eth_port_paths.diagnostics_port_profile_num_diagnostics_port_profile_ref_type_", mode),
+					PortName: utils.MapStringWithModeNested(pathItem, "port_name", resourceType, "eth_port_paths.port_name", mode),
+					Index:    utils.MapInt64WithModeNested(pathItem, "index", resourceType, "eth_port_paths.index", mode),
+				}
+				ethPortPaths = append(ethPortPaths, pathModel)
+			}
+			state.EthPortPaths = ethPortPaths
+		} else {
+			state.EthPortPaths = nil
+		}
+	} else {
+		state.EthPortPaths = nil
+	}
+
+	// Handle user_services array
+	if utils.FieldAppliesToMode(resourceType, "user_services", mode) {
+		if servicesData, ok := data["user_services"].([]interface{}); ok && len(servicesData) > 0 {
+			var userServices []userServicesModel
+			for _, s := range servicesData {
+				serviceItem, ok := s.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				serviceModel := userServicesModel{
+					RowAppEnable:                  utils.MapBoolWithModeNested(serviceItem, "row_app_enable", resourceType, "user_services.row_app_enable", mode),
+					RowAppConnectedService:        utils.MapStringWithModeNested(serviceItem, "row_app_connected_service", resourceType, "user_services.row_app_connected_service", mode),
+					RowAppConnectedServiceRefType: utils.MapStringWithModeNested(serviceItem, "row_app_connected_service_ref_type_", resourceType, "user_services.row_app_connected_service_ref_type_", mode),
+					RowAppCliCommands:             utils.MapStringWithModeNested(serviceItem, "row_app_cli_commands", resourceType, "user_services.row_app_cli_commands", mode),
+					RowIpMask:                     utils.MapStringWithModeNested(serviceItem, "row_ip_mask", resourceType, "user_services.row_ip_mask", mode),
+					Index:                         utils.MapInt64WithModeNested(serviceItem, "index", resourceType, "user_services.index", mode),
+				}
+				userServices = append(userServices, serviceModel)
+			}
+			state.UserServices = userServices
+		} else {
+			state.UserServices = nil
+		}
+	} else {
+		state.UserServices = nil
+	}
+
+	// Handle voice_port_profile_paths array
+	if utils.FieldAppliesToMode(resourceType, "voice_port_profile_paths", mode) {
+		if pathsData, ok := data["voice_port_profile_paths"].([]interface{}); ok && len(pathsData) > 0 {
+			var voicePortProfilePaths []voicePortProfilePathsModel
+			for _, p := range pathsData {
+				pathItem, ok := p.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				pathModel := voicePortProfilePathsModel{
+					VoicePortNumVoicePortProfiles:        utils.MapStringWithModeNested(pathItem, "voice_port_num_voice_port_profiles", resourceType, "voice_port_profile_paths.voice_port_num_voice_port_profiles", mode),
+					VoicePortNumVoicePortProfilesRefType: utils.MapStringWithModeNested(pathItem, "voice_port_num_voice_port_profiles_ref_type_", resourceType, "voice_port_profile_paths.voice_port_num_voice_port_profiles_ref_type_", mode),
+					Index:                                utils.MapInt64WithModeNested(pathItem, "index", resourceType, "voice_port_profile_paths.index", mode),
+				}
+				voicePortProfilePaths = append(voicePortProfilePaths, pathModel)
+			}
+			state.VoicePortProfilePaths = voicePortProfilePaths
+		} else {
+			state.VoicePortProfilePaths = nil
+		}
+	} else {
+		state.VoicePortProfilePaths = nil
+	}
+
+	return state
+}
+
+func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityBundleResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = bundleResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"device_settings", "device_settings_ref_type_",
+		"cli_commands", "protocol",
+		"diagnostics_profile", "diagnostics_profile_ref_type_",
+		"device_voice_settings", "device_voice_settings_ref_type_",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

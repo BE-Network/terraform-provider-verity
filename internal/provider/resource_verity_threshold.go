@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityThresholdResource{}
 	_ resource.ResourceWithConfigure   = &verityThresholdResource{}
 	_ resource.ResourceWithImportState = &verityThresholdResource{}
+	_ resource.ResourceWithModifyPlan  = &verityThresholdResource{}
 )
+
+const thresholdResourceType = "thresholds"
 
 func NewVerityThresholdResource() resource.Resource {
 	return &verityThresholdResource{}
@@ -105,50 +108,62 @@ func (r *verityThresholdResource) Schema(_ context.Context, _ resource.SchemaReq
 			"enable": schema.BoolAttribute{
 				Description: "Enable or disable the threshold.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"type": schema.StringAttribute{
 				Description: "Type of elements threshold applies to.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"operation": schema.StringAttribute{
 				Description: "How to combine rules.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"severity": schema.StringAttribute{
 				Description: "Severity of the alarm when the threshold is met.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"for": schema.StringAttribute{
 				Description: "Duration in minutes the threshold must be met before firing the alarm.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"keep_firing_for": schema.StringAttribute{
 				Description: "Duration in minutes to keep firing the alarm after the threshold is no longer met.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"escalation_metric": schema.StringAttribute{
 				Description: "Metric threshold is on.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"escalation_operation": schema.StringAttribute{
 				Description: "How to compare the metric to the value. Valid values: 'gt', 'le', 'ge', 'eq', 'lt'.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"critical_escalation_value": schema.StringAttribute{
 				Description: "Value to compare the metric to for critical escalation.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"error_escalation_value": schema.StringAttribute{
 				Description: "Value to compare the metric to for error escalation.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"warning_escalation_value": schema.StringAttribute{
 				Description: "Value to compare the metric to for warning escalation.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"notice_escalation_value": schema.StringAttribute{
 				Description: "Value to compare the metric to for notice escalation.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -159,34 +174,42 @@ func (r *verityThresholdResource) Schema(_ context.Context, _ resource.SchemaReq
 						"enable": schema.BoolAttribute{
 							Description: "Enable the rule.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"type": schema.StringAttribute{
 							Description: "Use a metric or a nested threshold.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"metric": schema.StringAttribute{
 							Description: "Metric threshold is on.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"operation": schema.StringAttribute{
 							Description: "How to compare the metric to the value.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"value": schema.StringAttribute{
 							Description: "Value to compare the metric to.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"threshold": schema.StringAttribute{
 							Description: "Nested threshold reference.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"threshold_ref_type_": schema.StringAttribute{
 							Description: "Object type for threshold field. Valid values: 'threshold'.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index of the rule within the rules list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -272,8 +295,32 @@ func (r *verityThresholdResource) Create(ctx context.Context, req resource.Creat
 	tflog.Info(ctx, fmt.Sprintf("Threshold %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "thresholds")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityThresholdResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if thresholdData, exists := bulkMgr.GetResourceResponse("threshold", name); exists {
+			newState := populateThresholdState(ctx, minState, thresholdData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -293,6 +340,16 @@ func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadReq
 	}
 
 	thresholdName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if thresholdData, exists := r.bulkOpsMgr.GetResourceResponse("threshold", thresholdName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached threshold data for %s from recent operation", thresholdName))
+			state = populateThresholdState(ctx, state, thresholdData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("threshold") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping threshold %s verification – trusting recent successful API operation", thresholdName))
@@ -364,65 +421,7 @@ func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadReq
 
 	tflog.Debug(ctx, fmt.Sprintf("Found threshold '%s' under API key '%s'", thresholdName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(thresholdMap["name"])
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"type":                      &state.Type,
-		"operation":                 &state.Operation,
-		"severity":                  &state.Severity,
-		"for":                       &state.For,
-		"keep_firing_for":           &state.KeepFiringFor,
-		"escalation_metric":         &state.EscalationMetric,
-		"escalation_operation":      &state.EscalationOperation,
-		"critical_escalation_value": &state.CriticalEscalationValue,
-		"error_escalation_value":    &state.ErrorEscalationValue,
-		"warning_escalation_value":  &state.WarningEscalationValue,
-		"notice_escalation_value":   &state.NoticeEscalationValue,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(thresholdMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(thresholdMap[apiKey])
-	}
-
-	// Handle rules
-	if rules, ok := thresholdMap["rules"].([]interface{}); ok && len(rules) > 0 {
-		var rulesList []verityThresholdRulesModel
-
-		for _, r := range rules {
-			rule, ok := r.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			rModel := verityThresholdRulesModel{
-				Enable:           utils.MapBoolFromAPI(rule["enable"]),
-				Type:             utils.MapStringFromAPI(rule["type"]),
-				Metric:           utils.MapStringFromAPI(rule["metric"]),
-				Operation:        utils.MapStringFromAPI(rule["operation"]),
-				Value:            utils.MapStringFromAPI(rule["value"]),
-				Threshold:        utils.MapStringFromAPI(rule["threshold"]),
-				ThresholdRefType: utils.MapStringFromAPI(rule["threshold_ref_type_"]),
-				Index:            utils.MapInt64FromAPI(rule["index"]),
-			}
-
-			rulesList = append(rulesList, rModel)
-		}
-
-		state.Rules = rulesList
-	} else {
-		state.Rules = nil
-	}
-
+	state = populateThresholdState(ctx, state, thresholdMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -551,7 +550,34 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 
 	tflog.Info(ctx, fmt.Sprintf("Threshold %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "thresholds")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityThresholdResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if thresholdData, exists := bulkMgr.GetResourceResponse("threshold", name); exists {
+			newState := populateThresholdState(ctx, minState, thresholdData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityThresholdResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -584,4 +610,109 @@ func (r *verityThresholdResource) Delete(ctx context.Context, req resource.Delet
 
 func (r *verityThresholdResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateThresholdState(ctx context.Context, state verityThresholdResourceModel, data map[string]interface{}, mode string) verityThresholdResourceModel {
+	const resourceType = thresholdResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// String fields
+	state.Type = utils.MapStringWithMode(data, "type", resourceType, mode)
+	state.Operation = utils.MapStringWithMode(data, "operation", resourceType, mode)
+	state.Severity = utils.MapStringWithMode(data, "severity", resourceType, mode)
+	state.For = utils.MapStringWithMode(data, "for", resourceType, mode)
+	state.KeepFiringFor = utils.MapStringWithMode(data, "keep_firing_for", resourceType, mode)
+	state.EscalationMetric = utils.MapStringWithMode(data, "escalation_metric", resourceType, mode)
+	state.EscalationOperation = utils.MapStringWithMode(data, "escalation_operation", resourceType, mode)
+	state.CriticalEscalationValue = utils.MapStringWithMode(data, "critical_escalation_value", resourceType, mode)
+	state.ErrorEscalationValue = utils.MapStringWithMode(data, "error_escalation_value", resourceType, mode)
+	state.WarningEscalationValue = utils.MapStringWithMode(data, "warning_escalation_value", resourceType, mode)
+	state.NoticeEscalationValue = utils.MapStringWithMode(data, "notice_escalation_value", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle rules block
+	if utils.FieldAppliesToMode(resourceType, "rules", mode) {
+		if rules, ok := data["rules"].([]interface{}); ok && len(rules) > 0 {
+			var rulesList []verityThresholdRulesModel
+
+			for _, r := range rules {
+				rule, ok := r.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				rModel := verityThresholdRulesModel{
+					Enable:           utils.MapBoolWithModeNested(rule, "enable", resourceType, "rules.enable", mode),
+					Type:             utils.MapStringWithModeNested(rule, "type", resourceType, "rules.type", mode),
+					Metric:           utils.MapStringWithModeNested(rule, "metric", resourceType, "rules.metric", mode),
+					Operation:        utils.MapStringWithModeNested(rule, "operation", resourceType, "rules.operation", mode),
+					Value:            utils.MapStringWithModeNested(rule, "value", resourceType, "rules.value", mode),
+					Threshold:        utils.MapStringWithModeNested(rule, "threshold", resourceType, "rules.threshold", mode),
+					ThresholdRefType: utils.MapStringWithModeNested(rule, "threshold_ref_type_", resourceType, "rules.threshold_ref_type_", mode),
+					Index:            utils.MapInt64WithModeNested(rule, "index", resourceType, "rules.index", mode),
+				}
+
+				rulesList = append(rulesList, rModel)
+			}
+
+			state.Rules = rulesList
+		} else {
+			state.Rules = nil
+		}
+	} else {
+		state.Rules = nil
+	}
+
+	return state
+}
+
+func (r *verityThresholdResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityThresholdResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = thresholdResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"type",
+		"operation",
+		"severity",
+		"for",
+		"keep_firing_for",
+		"escalation_metric",
+		"escalation_operation",
+		"critical_escalation_value",
+		"error_escalation_value",
+		"warning_escalation_value",
+		"notice_escalation_value",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

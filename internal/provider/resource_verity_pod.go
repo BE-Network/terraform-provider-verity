@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityPodResource{}
 	_ resource.ResourceWithConfigure   = &verityPodResource{}
 	_ resource.ResourceWithImportState = &verityPodResource{}
+	_ resource.ResourceWithModifyPlan  = &verityPodResource{}
 )
+
+const podResourceType = "pods"
 
 func NewVerityPodResource() resource.Resource {
 	return &verityPodResource{}
@@ -84,10 +87,12 @@ func (r *verityPodResource) Schema(ctx context.Context, req resource.SchemaReque
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"expected_spine_count": schema.Int64Attribute{
 				Description: "Number of spine switches expected in this pod",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -98,6 +103,7 @@ func (r *verityPodResource) Schema(ctx context.Context, req resource.SchemaReque
 						"notes": schema.StringAttribute{
 							Description: "User Notes.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -109,6 +115,13 @@ func (r *verityPodResource) Schema(ctx context.Context, req resource.SchemaReque
 func (r *verityPodResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityPodResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityPodResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -132,9 +145,12 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 		{FieldName: "Enable", APIField: &podReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_pod", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "ExpectedSpineCount", APIField: &podReq.ExpectedSpineCount, TFValue: plan.ExpectedSpineCount},
+		{FieldName: "ExpectedSpineCount", APIField: &podReq.ExpectedSpineCount, TFValue: config.ExpectedSpineCount, IsConfigured: configuredAttrs.IsConfigured("expected_spine_count")},
 	})
 
 	// Handle object properties
@@ -155,8 +171,32 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 	tflog.Info(ctx, fmt.Sprintf("Pod %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "pods")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityPodResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if podData, exists := bulkMgr.GetResourceResponse("pod", name); exists {
+			state := populatePodState(ctx, minState, podData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPodResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -177,12 +217,22 @@ func (r *verityPodResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	podName := state.Name.ValueString()
 
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if podData, exists := r.bulkOpsMgr.GetResourceResponse("pod", podName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached pod data for %s from recent operation", podName))
+			state = populatePodState(ctx, state, podData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("pod") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping Pod %s verification - trusting recent successful API operation", podName))
+		tflog.Info(ctx, fmt.Sprintf("Skipping Pod %s verification – trusting recent successful API operation", podName))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent Pod operations found, performing normal verification for %s", podName))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching Pod for verification of %s", podName))
 
 	type PodsResponse struct {
 		Pod map[string]map[string]interface{} `json:"pod"`
@@ -245,35 +295,7 @@ func (r *verityPodResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Pod '%s' under API key '%s'", podName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(podMap["name"])
-
-	// Handle object properties
-	if objProps, ok := podMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityPodObjectPropertiesModel{
-			{Notes: utils.MapStringFromAPI(objProps["notes"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(podMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"expected_spine_count": &state.ExpectedSpineCount,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(podMap[apiKey])
-	}
-
+	state = populatePodState(ctx, state, podMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -341,7 +363,34 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 
 	tflog.Info(ctx, fmt.Sprintf("Pod %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "pods")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityPodResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if podData, exists := bulkMgr.GetResourceResponse("pod", name); exists {
+			newState := populatePodState(ctx, minState, podData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPodResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -374,4 +423,110 @@ func (r *verityPodResource) Delete(ctx context.Context, req resource.DeleteReque
 
 func (r *verityPodResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populatePodState(ctx context.Context, state verityPodResourceModel, data map[string]interface{}, mode string) verityPodResourceModel {
+	const resourceType = podResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Int fields
+	state.ExpectedSpineCount = utils.MapInt64WithMode(data, "expected_spine_count", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityPodObjectPropertiesModel{
+				Notes: utils.MapStringWithModeNested(objProps, "notes", resourceType, "object_properties.notes", mode),
+			}
+			state.ObjectProperties = []verityPodObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityPodResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = podResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
+
+	nullifier.NullifyInt64s(
+		"expected_spine_count",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityPodResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityPodResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_pod", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "expected_spine_count", ConfigVal: config.ExpectedSpineCount, StateVal: state.ExpectedSpineCount},
+		},
+	})
 }

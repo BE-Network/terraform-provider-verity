@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityBadgeResource{}
 	_ resource.ResourceWithConfigure   = &verityBadgeResource{}
 	_ resource.ResourceWithImportState = &verityBadgeResource{}
+	_ resource.ResourceWithModifyPlan  = &verityBadgeResource{}
 )
+
+const badgeResourceType = "badges"
 
 func NewVerityBadgeResource() resource.Resource {
 	return &verityBadgeResource{}
@@ -85,14 +88,17 @@ func (r *verityBadgeResource) Schema(ctx context.Context, req resource.SchemaReq
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"color": schema.StringAttribute{
 				Description: "Badge color.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"number": schema.Int64Attribute{
 				Description: "Badge number.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -103,6 +109,7 @@ func (r *verityBadgeResource) Schema(ctx context.Context, req resource.SchemaReq
 						"notes": schema.StringAttribute{
 							Description: "User Notes.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -114,6 +121,13 @@ func (r *verityBadgeResource) Schema(ctx context.Context, req resource.SchemaReq
 func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityBadgeResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityBadgeResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -142,9 +156,12 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		{FieldName: "Enable", APIField: &badgeProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_badge", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "Number", APIField: &badgeProps.Number, TFValue: plan.Number},
+		{FieldName: "Number", APIField: &badgeProps.Number, TFValue: config.Number, IsConfigured: configuredAttrs.IsConfigured("number")},
 	})
 
 	// Handle object properties
@@ -165,8 +182,32 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 	tflog.Info(ctx, fmt.Sprintf("Badge %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "badges")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityBadgeResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if badgeData, exists := bulkMgr.GetResourceResponse("badge", name); exists {
+			state := populateBadgeState(ctx, minState, badgeData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -186,6 +227,16 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 	}
 
 	badgeName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if badgeData, exists := r.bulkOpsMgr.GetResourceResponse("badge", badgeName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached badge data for %s from recent operation", badgeName))
+			state = populateBadgeState(ctx, state, badgeData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("badge") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping badge %s verification – trusting recent successful API operation", badgeName))
@@ -256,44 +307,7 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 
 	tflog.Debug(ctx, fmt.Sprintf("Found badge '%s' under API key '%s'", badgeName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(badgeMap["name"])
-
-	// Handle object properties
-	if objProps, ok := badgeMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityBadgeObjectPropertiesModel{
-			{Notes: utils.MapStringFromAPI(objProps["notes"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"color": &state.Color,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(badgeMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(badgeMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"number": &state.Number,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(badgeMap[apiKey])
-	}
-
+	state = populateBadgeState(ctx, state, badgeMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -362,7 +376,34 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 
 	tflog.Info(ctx, fmt.Sprintf("Badge %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "badges")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityBadgeResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if badgeData, exists := bulkMgr.GetResourceResponse("badge", name); exists {
+			newState := populateBadgeState(ctx, minState, badgeData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityBadgeResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -395,4 +436,117 @@ func (r *verityBadgeResource) Delete(ctx context.Context, req resource.DeleteReq
 
 func (r *verityBadgeResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateBadgeState(ctx context.Context, state verityBadgeResourceModel, data map[string]interface{}, mode string) verityBadgeResourceModel {
+	const resourceType = badgeResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// String fields
+	state.Color = utils.MapStringWithMode(data, "color", resourceType, mode)
+
+	// Int64 fields
+	state.Number = utils.MapInt64WithMode(data, "number", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityBadgeObjectPropertiesModel{
+				Notes: utils.MapStringWithModeNested(objProps, "notes", resourceType, "object_properties.notes", mode),
+			}
+			state.ObjectProperties = []verityBadgeObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *verityBadgeResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityBadgeResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = badgeResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"color",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
+
+	nullifier.NullifyInt64s(
+		"number",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityBadgeResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityBadgeResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_badge", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "number", ConfigVal: config.Number, StateVal: state.Number},
+		},
+	})
 }

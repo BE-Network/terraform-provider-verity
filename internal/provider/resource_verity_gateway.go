@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityGatewayResource{}
 	_ resource.ResourceWithConfigure   = &verityGatewayResource{}
 	_ resource.ResourceWithImportState = &verityGatewayResource{}
+	_ resource.ResourceWithModifyPlan  = &verityGatewayResource{}
 )
+
+const gatewayResourceType = "gateways"
 
 func NewVerityGatewayResource() resource.Resource {
 	return &verityGatewayResource{}
@@ -131,117 +134,153 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tenant": schema.StringAttribute{
 				Description: "Tenant",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tenant_ref_type_": schema.StringAttribute{
 				Description: "Object type for tenant field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"neighbor_ip_address": schema.StringAttribute{
 				Description: "IP address of remote BGP peer",
 				Optional:    true,
+				Computed:    true,
 			},
 			"neighbor_as_number": schema.Int64Attribute{
 				Description: "Autonomous System Number of remote BGP peer",
 				Optional:    true,
+				Computed:    true,
 			},
 			"fabric_interconnect": schema.BoolAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"keepalive_timer": schema.Int64Attribute{
 				Description: "Interval in seconds between Keepalive messages",
 				Optional:    true,
+				Computed:    true,
 			},
 			"hold_timer": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"connect_timer": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"advertisement_interval": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"ebgp_multihop": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"egress_vlan": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"source_ip_address": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"anycast_ip_mask": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"md5_password": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"md5_password_encrypted": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"switch_encrypted_md5_password": schema.BoolAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"import_route_map": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"export_route_map": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"gateway_mode": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"local_as_number": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"local_as_no_prepend": schema.BoolAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"replace_as": schema.BoolAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"max_local_as_occurrences": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"dynamic_bgp_subnet": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"dynamic_bgp_limits": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"helper_hop_ip_address": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"enable_bfd": schema.BoolAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"bfd_receive_interval": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"bfd_transmission_interval": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"bfd_detect_multiplier": schema.Int64Attribute{
 				Optional: true,
+				Computed: true,
 			},
 			"bfd_multihop": schema.BoolAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"next_hop_self": schema.BoolAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"default_originate": schema.BoolAttribute{
 				Description: "Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"export_route_map_ref_type_": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 			"import_route_map_ref_type_": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -252,6 +291,7 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -263,22 +303,27 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 						"enable": schema.BoolAttribute{
 							Description: "Enable of this static route",
 							Optional:    true,
+							Computed:    true,
 						},
 						"ipv4_route_prefix": schema.StringAttribute{
 							Description: "IPv4 unicast IP address with subnet mask",
 							Optional:    true,
+							Computed:    true,
 						},
 						"next_hop_ip_address": schema.StringAttribute{
 							Description: "Next Hop IP Address",
 							Optional:    true,
+							Computed:    true,
 						},
 						"ad_value": schema.Int64Attribute{
 							Description: "Administrative distance value (0-255)",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "Index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -290,6 +335,13 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityGatewayResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityGatewayResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -339,21 +391,24 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "SwitchEncryptedMd5Password", APIField: &gatewayProps.SwitchEncryptedMd5Password, TFValue: plan.SwitchEncryptedMd5Password},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_gateway", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "NeighborAsNumber", APIField: &gatewayProps.NeighborAsNumber, TFValue: plan.NeighborAsNumber},
-		{FieldName: "KeepaliveTimer", APIField: &gatewayProps.KeepaliveTimer, TFValue: plan.KeepaliveTimer},
-		{FieldName: "HoldTimer", APIField: &gatewayProps.HoldTimer, TFValue: plan.HoldTimer},
-		{FieldName: "ConnectTimer", APIField: &gatewayProps.ConnectTimer, TFValue: plan.ConnectTimer},
-		{FieldName: "AdvertisementInterval", APIField: &gatewayProps.AdvertisementInterval, TFValue: plan.AdvertisementInterval},
-		{FieldName: "EbgpMultihop", APIField: &gatewayProps.EbgpMultihop, TFValue: plan.EbgpMultihop},
-		{FieldName: "EgressVlan", APIField: &gatewayProps.EgressVlan, TFValue: plan.EgressVlan},
-		{FieldName: "LocalAsNumber", APIField: &gatewayProps.LocalAsNumber, TFValue: plan.LocalAsNumber},
-		{FieldName: "MaxLocalAsOccurrences", APIField: &gatewayProps.MaxLocalAsOccurrences, TFValue: plan.MaxLocalAsOccurrences},
-		{FieldName: "DynamicBgpLimits", APIField: &gatewayProps.DynamicBgpLimits, TFValue: plan.DynamicBgpLimits},
-		{FieldName: "BfdReceiveInterval", APIField: &gatewayProps.BfdReceiveInterval, TFValue: plan.BfdReceiveInterval},
-		{FieldName: "BfdTransmissionInterval", APIField: &gatewayProps.BfdTransmissionInterval, TFValue: plan.BfdTransmissionInterval},
-		{FieldName: "BfdDetectMultiplier", APIField: &gatewayProps.BfdDetectMultiplier, TFValue: plan.BfdDetectMultiplier},
+		{FieldName: "NeighborAsNumber", APIField: &gatewayProps.NeighborAsNumber, TFValue: config.NeighborAsNumber, IsConfigured: configuredAttrs.IsConfigured("neighbor_as_number")},
+		{FieldName: "KeepaliveTimer", APIField: &gatewayProps.KeepaliveTimer, TFValue: config.KeepaliveTimer, IsConfigured: configuredAttrs.IsConfigured("keepalive_timer")},
+		{FieldName: "HoldTimer", APIField: &gatewayProps.HoldTimer, TFValue: config.HoldTimer, IsConfigured: configuredAttrs.IsConfigured("hold_timer")},
+		{FieldName: "ConnectTimer", APIField: &gatewayProps.ConnectTimer, TFValue: config.ConnectTimer, IsConfigured: configuredAttrs.IsConfigured("connect_timer")},
+		{FieldName: "AdvertisementInterval", APIField: &gatewayProps.AdvertisementInterval, TFValue: config.AdvertisementInterval, IsConfigured: configuredAttrs.IsConfigured("advertisement_interval")},
+		{FieldName: "EbgpMultihop", APIField: &gatewayProps.EbgpMultihop, TFValue: config.EbgpMultihop, IsConfigured: configuredAttrs.IsConfigured("ebgp_multihop")},
+		{FieldName: "EgressVlan", APIField: &gatewayProps.EgressVlan, TFValue: config.EgressVlan, IsConfigured: configuredAttrs.IsConfigured("egress_vlan")},
+		{FieldName: "LocalAsNumber", APIField: &gatewayProps.LocalAsNumber, TFValue: config.LocalAsNumber, IsConfigured: configuredAttrs.IsConfigured("local_as_number")},
+		{FieldName: "MaxLocalAsOccurrences", APIField: &gatewayProps.MaxLocalAsOccurrences, TFValue: config.MaxLocalAsOccurrences, IsConfigured: configuredAttrs.IsConfigured("max_local_as_occurrences")},
+		{FieldName: "DynamicBgpLimits", APIField: &gatewayProps.DynamicBgpLimits, TFValue: config.DynamicBgpLimits, IsConfigured: configuredAttrs.IsConfigured("dynamic_bgp_limits")},
+		{FieldName: "BfdReceiveInterval", APIField: &gatewayProps.BfdReceiveInterval, TFValue: config.BfdReceiveInterval, IsConfigured: configuredAttrs.IsConfigured("bfd_receive_interval")},
+		{FieldName: "BfdTransmissionInterval", APIField: &gatewayProps.BfdTransmissionInterval, TFValue: config.BfdTransmissionInterval, IsConfigured: configuredAttrs.IsConfigured("bfd_transmission_interval")},
+		{FieldName: "BfdDetectMultiplier", APIField: &gatewayProps.BfdDetectMultiplier, TFValue: config.BfdDetectMultiplier, IsConfigured: configuredAttrs.IsConfigured("bfd_detect_multiplier")},
 	})
 
 	// Handle object properties
@@ -397,8 +452,32 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	tflog.Info(ctx, fmt.Sprintf("Gateway %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateways")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityGatewayResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if gatewayData, exists := bulkMgr.GetResourceResponse("gateway", name); exists {
+			state := populateGatewayState(ctx, minState, gatewayData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -418,6 +497,16 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 	}
 
 	gatewayName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if gatewayData, exists := r.bulkOpsMgr.GetResourceResponse("gateway", gatewayName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached gateway data for %s from recent operation", gatewayName))
+			state = populateGatewayState(ctx, state, gatewayData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gateway") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping gateway %s verification – trusting recent successful API operation", gatewayName))
@@ -489,103 +578,7 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Found gateway '%s' under API key '%s'", gatewayName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(gatewayMap["name"])
-
-	// Handle object properties
-	if objProps, ok := gatewayMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityGatewayObjectPropertiesModel{
-			{Group: utils.MapStringFromAPI(objProps["group"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"tenant":                     &state.Tenant,
-		"tenant_ref_type_":           &state.TenantRefType,
-		"neighbor_ip_address":        &state.NeighborIpAddress,
-		"source_ip_address":          &state.SourceIpAddress,
-		"anycast_ip_mask":            &state.AnycastIpMask,
-		"md5_password":               &state.Md5Password,
-		"md5_password_encrypted":     &state.Md5PasswordEncrypted,
-		"import_route_map":           &state.ImportRouteMap,
-		"export_route_map":           &state.ExportRouteMap,
-		"gateway_mode":               &state.GatewayMode,
-		"dynamic_bgp_subnet":         &state.DynamicBgpSubnet,
-		"helper_hop_ip_address":      &state.HelperHopIpAddress,
-		"export_route_map_ref_type_": &state.ExportRouteMapRefType,
-		"import_route_map_ref_type_": &state.ImportRouteMapRefType,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(gatewayMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":                        &state.Enable,
-		"fabric_interconnect":           &state.FabricInterconnect,
-		"local_as_no_prepend":           &state.LocalAsNoPrepend,
-		"replace_as":                    &state.ReplaceAs,
-		"enable_bfd":                    &state.EnableBfd,
-		"bfd_multihop":                  &state.BfdMultihop,
-		"next_hop_self":                 &state.NextHopSelf,
-		"default_originate":             &state.DefaultOriginate,
-		"switch_encrypted_md5_password": &state.SwitchEncryptedMd5Password,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(gatewayMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"neighbor_as_number":        &state.NeighborAsNumber,
-		"keepalive_timer":           &state.KeepaliveTimer,
-		"hold_timer":                &state.HoldTimer,
-		"connect_timer":             &state.ConnectTimer,
-		"advertisement_interval":    &state.AdvertisementInterval,
-		"ebgp_multihop":             &state.EbgpMultihop,
-		"egress_vlan":               &state.EgressVlan,
-		"local_as_number":           &state.LocalAsNumber,
-		"max_local_as_occurrences":  &state.MaxLocalAsOccurrences,
-		"dynamic_bgp_limits":        &state.DynamicBgpLimits,
-		"bfd_receive_interval":      &state.BfdReceiveInterval,
-		"bfd_transmission_interval": &state.BfdTransmissionInterval,
-		"bfd_detect_multiplier":     &state.BfdDetectMultiplier,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(gatewayMap[apiKey])
-	}
-
-	// Handle static routes
-	if routes, ok := gatewayMap["static_routes"].([]interface{}); ok && len(routes) > 0 {
-		var staticRoutes []verityGatewayStaticRoutesModel
-
-		for _, r := range routes {
-			route, ok := r.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			srModel := verityGatewayStaticRoutesModel{
-				Enable:           utils.MapBoolFromAPI(route["enable"]),
-				Ipv4RoutePrefix:  utils.MapStringFromAPI(route["ipv4_route_prefix"]),
-				NextHopIpAddress: utils.MapStringFromAPI(route["next_hop_ip_address"]),
-				AdValue:          utils.MapInt64FromAPI(route["ad_value"]),
-				Index:            utils.MapInt64FromAPI(route["index"]),
-			}
-
-			staticRoutes = append(staticRoutes, srModel)
-		}
-
-		state.StaticRoutes = staticRoutes
-	} else {
-		state.StaticRoutes = nil
-	}
-
+	state = populateGatewayState(ctx, state, gatewayMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -777,7 +770,34 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 	tflog.Info(ctx, fmt.Sprintf("Gateway %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "gateways")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityGatewayResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if gatewayData, exists := bulkMgr.GetResourceResponse("gateway", name); exists {
+			newState := populateGatewayState(ctx, minState, gatewayData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityGatewayResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -810,4 +830,201 @@ func (r *verityGatewayResource) Delete(ctx context.Context, req resource.DeleteR
 
 func (r *verityGatewayResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateGatewayState(ctx context.Context, state verityGatewayResourceModel, data map[string]interface{}, mode string) verityGatewayResourceModel {
+	const resourceType = gatewayResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Int fields
+	state.NeighborAsNumber = utils.MapInt64WithMode(data, "neighbor_as_number", resourceType, mode)
+	state.KeepaliveTimer = utils.MapInt64WithMode(data, "keepalive_timer", resourceType, mode)
+	state.HoldTimer = utils.MapInt64WithMode(data, "hold_timer", resourceType, mode)
+	state.ConnectTimer = utils.MapInt64WithMode(data, "connect_timer", resourceType, mode)
+	state.AdvertisementInterval = utils.MapInt64WithMode(data, "advertisement_interval", resourceType, mode)
+	state.EbgpMultihop = utils.MapInt64WithMode(data, "ebgp_multihop", resourceType, mode)
+	state.EgressVlan = utils.MapInt64WithMode(data, "egress_vlan", resourceType, mode)
+	state.LocalAsNumber = utils.MapInt64WithMode(data, "local_as_number", resourceType, mode)
+	state.MaxLocalAsOccurrences = utils.MapInt64WithMode(data, "max_local_as_occurrences", resourceType, mode)
+	state.DynamicBgpLimits = utils.MapInt64WithMode(data, "dynamic_bgp_limits", resourceType, mode)
+	state.BfdReceiveInterval = utils.MapInt64WithMode(data, "bfd_receive_interval", resourceType, mode)
+	state.BfdTransmissionInterval = utils.MapInt64WithMode(data, "bfd_transmission_interval", resourceType, mode)
+	state.BfdDetectMultiplier = utils.MapInt64WithMode(data, "bfd_detect_multiplier", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.FabricInterconnect = utils.MapBoolWithMode(data, "fabric_interconnect", resourceType, mode)
+	state.LocalAsNoPrepend = utils.MapBoolWithMode(data, "local_as_no_prepend", resourceType, mode)
+	state.ReplaceAs = utils.MapBoolWithMode(data, "replace_as", resourceType, mode)
+	state.EnableBfd = utils.MapBoolWithMode(data, "enable_bfd", resourceType, mode)
+	state.BfdMultihop = utils.MapBoolWithMode(data, "bfd_multihop", resourceType, mode)
+	state.NextHopSelf = utils.MapBoolWithMode(data, "next_hop_self", resourceType, mode)
+	state.DefaultOriginate = utils.MapBoolWithMode(data, "default_originate", resourceType, mode)
+	state.SwitchEncryptedMd5Password = utils.MapBoolWithMode(data, "switch_encrypted_md5_password", resourceType, mode)
+
+	// String fields
+	state.Tenant = utils.MapStringWithMode(data, "tenant", resourceType, mode)
+	state.TenantRefType = utils.MapStringWithMode(data, "tenant_ref_type_", resourceType, mode)
+	state.NeighborIpAddress = utils.MapStringWithMode(data, "neighbor_ip_address", resourceType, mode)
+	state.SourceIpAddress = utils.MapStringWithMode(data, "source_ip_address", resourceType, mode)
+	state.AnycastIpMask = utils.MapStringWithMode(data, "anycast_ip_mask", resourceType, mode)
+	state.Md5Password = utils.MapStringWithMode(data, "md5_password", resourceType, mode)
+	state.Md5PasswordEncrypted = utils.MapStringWithMode(data, "md5_password_encrypted", resourceType, mode)
+	state.ImportRouteMap = utils.MapStringWithMode(data, "import_route_map", resourceType, mode)
+	state.ExportRouteMap = utils.MapStringWithMode(data, "export_route_map", resourceType, mode)
+	state.GatewayMode = utils.MapStringWithMode(data, "gateway_mode", resourceType, mode)
+	state.DynamicBgpSubnet = utils.MapStringWithMode(data, "dynamic_bgp_subnet", resourceType, mode)
+	state.HelperHopIpAddress = utils.MapStringWithMode(data, "helper_hop_ip_address", resourceType, mode)
+	state.ExportRouteMapRefType = utils.MapStringWithMode(data, "export_route_map_ref_type_", resourceType, mode)
+	state.ImportRouteMapRefType = utils.MapStringWithMode(data, "import_route_map_ref_type_", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityGatewayObjectPropertiesModel{
+				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+			}
+			state.ObjectProperties = []verityGatewayObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle static_routes list block
+	if utils.FieldAppliesToMode(resourceType, "static_routes", mode) {
+		if routesData, ok := data["static_routes"].([]interface{}); ok && len(routesData) > 0 {
+			var routesList []verityGatewayStaticRoutesModel
+
+			for _, item := range routesData {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				routeItem := verityGatewayStaticRoutesModel{
+					Enable:           utils.MapBoolWithModeNested(itemMap, "enable", resourceType, "static_routes.enable", mode),
+					Ipv4RoutePrefix:  utils.MapStringWithModeNested(itemMap, "ipv4_route_prefix", resourceType, "static_routes.ipv4_route_prefix", mode),
+					NextHopIpAddress: utils.MapStringWithModeNested(itemMap, "next_hop_ip_address", resourceType, "static_routes.next_hop_ip_address", mode),
+					AdValue:          utils.MapInt64WithModeNested(itemMap, "ad_value", resourceType, "static_routes.ad_value", mode),
+					Index:            utils.MapInt64WithModeNested(itemMap, "index", resourceType, "static_routes.index", mode),
+				}
+
+				routesList = append(routesList, routeItem)
+			}
+
+			state.StaticRoutes = routesList
+		} else {
+			state.StaticRoutes = nil
+		}
+	} else {
+		state.StaticRoutes = nil
+	}
+
+	return state
+}
+
+func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityGatewayResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = gatewayResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"tenant", "tenant_ref_type_", "neighbor_ip_address", "source_ip_address",
+		"anycast_ip_mask", "md5_password", "md5_password_encrypted",
+		"import_route_map", "export_route_map", "gateway_mode",
+		"dynamic_bgp_subnet", "helper_hop_ip_address",
+		"export_route_map_ref_type_", "import_route_map_ref_type_",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "fabric_interconnect", "local_as_no_prepend", "replace_as",
+		"enable_bfd", "bfd_multihop", "next_hop_self", "default_originate",
+		"switch_encrypted_md5_password",
+	)
+
+	nullifier.NullifyInt64s(
+		"neighbor_as_number", "keepalive_timer", "hold_timer", "connect_timer",
+		"advertisement_interval", "ebgp_multihop", "egress_vlan",
+		"local_as_number", "max_local_as_occurrences", "dynamic_bgp_limits",
+		"bfd_receive_interval", "bfd_transmission_interval", "bfd_detect_multiplier",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityGatewayResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityGatewayResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_gateway", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "neighbor_as_number", ConfigVal: config.NeighborAsNumber, StateVal: state.NeighborAsNumber},
+			{AttrName: "keepalive_timer", ConfigVal: config.KeepaliveTimer, StateVal: state.KeepaliveTimer},
+			{AttrName: "hold_timer", ConfigVal: config.HoldTimer, StateVal: state.HoldTimer},
+			{AttrName: "connect_timer", ConfigVal: config.ConnectTimer, StateVal: state.ConnectTimer},
+			{AttrName: "advertisement_interval", ConfigVal: config.AdvertisementInterval, StateVal: state.AdvertisementInterval},
+			{AttrName: "ebgp_multihop", ConfigVal: config.EbgpMultihop, StateVal: state.EbgpMultihop},
+			{AttrName: "egress_vlan", ConfigVal: config.EgressVlan, StateVal: state.EgressVlan},
+			{AttrName: "local_as_number", ConfigVal: config.LocalAsNumber, StateVal: state.LocalAsNumber},
+			{AttrName: "max_local_as_occurrences", ConfigVal: config.MaxLocalAsOccurrences, StateVal: state.MaxLocalAsOccurrences},
+			{AttrName: "dynamic_bgp_limits", ConfigVal: config.DynamicBgpLimits, StateVal: state.DynamicBgpLimits},
+			{AttrName: "bfd_receive_interval", ConfigVal: config.BfdReceiveInterval, StateVal: state.BfdReceiveInterval},
+			{AttrName: "bfd_transmission_interval", ConfigVal: config.BfdTransmissionInterval, StateVal: state.BfdTransmissionInterval},
+			{AttrName: "bfd_detect_multiplier", ConfigVal: config.BfdDetectMultiplier, StateVal: state.BfdDetectMultiplier},
+		},
+	})
 }

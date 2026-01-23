@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityDiagnosticsPortProfileResource{}
 	_ resource.ResourceWithConfigure   = &verityDiagnosticsPortProfileResource{}
 	_ resource.ResourceWithImportState = &verityDiagnosticsPortProfileResource{}
+	_ resource.ResourceWithModifyPlan  = &verityDiagnosticsPortProfileResource{}
 )
+
+const diagnosticsPortProfileResourceType = "diagnosticsportprofiles"
 
 func NewVerityDiagnosticsPortProfileResource() resource.Resource {
 	return &verityDiagnosticsPortProfileResource{}
@@ -79,10 +82,12 @@ func (r *verityDiagnosticsPortProfileResource) Schema(ctx context.Context, req r
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"enable_sflow": schema.BoolAttribute{
 				Description: "Enable sFlow for this Diagnostics Profile",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 	}
@@ -123,8 +128,32 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Port Profile %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_port_profiles")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityDiagnosticsPortProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if diagnosticsPortProfileData, exists := bulkMgr.GetResourceResponse("diagnostics_port_profile", name); exists {
+			state := populateDiagnosticsPortProfileState(ctx, minState, diagnosticsPortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -144,6 +173,16 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 	}
 
 	diagnosticsPortProfileName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if diagnosticsPortProfileData, exists := r.bulkOpsMgr.GetResourceResponse("diagnostics_port_profile", diagnosticsPortProfileName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached diagnostics port profile data for %s from recent operation", diagnosticsPortProfileName))
+			state = populateDiagnosticsPortProfileState(ctx, state, diagnosticsPortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("diagnostics_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping diagnostics port profile %s verification – trusting recent successful API operation", diagnosticsPortProfileName))
@@ -215,18 +254,7 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 
 	tflog.Debug(ctx, fmt.Sprintf("Found diagnostics port profile '%s' under API key '%s'", diagnosticsPortProfileName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(diagnosticsPortProfileMap["name"])
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":       &state.Enable,
-		"enable_sflow": &state.EnableSflow,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(diagnosticsPortProfileMap[apiKey])
-	}
-
+	state = populateDiagnosticsPortProfileState(ctx, state, diagnosticsPortProfileMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -275,7 +303,34 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 
 	tflog.Info(ctx, fmt.Sprintf("Diagnostics Port Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "diagnostics_port_profiles")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityDiagnosticsPortProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if diagnosticsPortProfileData, exists := bulkMgr.GetResourceResponse("diagnostics_port_profile", name); exists {
+			newState := populateDiagnosticsPortProfileState(ctx, minState, diagnosticsPortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityDiagnosticsPortProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -308,4 +363,50 @@ func (r *verityDiagnosticsPortProfileResource) Delete(ctx context.Context, req r
 
 func (r *verityDiagnosticsPortProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateDiagnosticsPortProfileState(ctx context.Context, state verityDiagnosticsPortProfileResourceModel, data map[string]interface{}, mode string) verityDiagnosticsPortProfileResourceModel {
+	const resourceType = diagnosticsPortProfileResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.EnableSflow = utils.MapBoolWithMode(data, "enable_sflow", resourceType, mode)
+
+	return state
+}
+
+func (r *verityDiagnosticsPortProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityDiagnosticsPortProfileResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = diagnosticsPortProfileResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable", "enable_sflow",
+	)
 }

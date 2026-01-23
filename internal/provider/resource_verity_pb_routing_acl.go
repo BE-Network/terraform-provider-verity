@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityPBRoutingACLResource{}
 	_ resource.ResourceWithConfigure   = &verityPBRoutingACLResource{}
 	_ resource.ResourceWithImportState = &verityPBRoutingACLResource{}
+	_ resource.ResourceWithModifyPlan  = &verityPBRoutingACLResource{}
 )
+
+const pbRoutingAclResourceType = "policybasedroutingacl"
 
 func NewVerityPBRoutingACLResource() resource.Resource {
 	return &verityPBRoutingACLResource{}
@@ -95,14 +98,17 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ipv_protocol": schema.StringAttribute{
 				Description: "IPv4 or IPv6",
 				Optional:    true,
+				Computed:    true,
 			},
 			"next_hop_ips": schema.StringAttribute{
 				Description: "Next hop IP addresses",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -113,18 +119,22 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -136,18 +146,22 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -159,18 +173,22 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -182,18 +200,22 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -322,8 +344,32 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 	tflog.Info(ctx, fmt.Sprintf("PB Routing ACL %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "pb_routing_acl")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityPBRoutingACLResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if pbRoutingACLData, exists := bulkMgr.GetResourceResponse("pb_routing_acl", name); exists {
+			state := populatePBRoutingACLState(ctx, minState, pbRoutingACLData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPBRoutingACLResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -343,6 +389,16 @@ func (r *verityPBRoutingACLResource) Read(ctx context.Context, req resource.Read
 	}
 
 	pbRoutingACLName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if pbRoutingACLData, exists := r.bulkOpsMgr.GetResourceResponse("pb_routing_acl", pbRoutingACLName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached pb routing acl data for %s from recent operation", pbRoutingACLName))
+			state = populatePBRoutingACLState(ctx, state, pbRoutingACLData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("pb_routing_acl") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping PB Routing ACL %s verification – trusting recent successful API operation", pbRoutingACLName))
@@ -414,127 +470,7 @@ func (r *verityPBRoutingACLResource) Read(ctx context.Context, req resource.Read
 
 	tflog.Debug(ctx, fmt.Sprintf("Found PB Routing ACL '%s' under API key '%s'", pbRoutingACLName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(pbRoutingACLMap["name"])
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"ipv_protocol": &state.IpvProtocol,
-		"next_hop_ips": &state.NextHopIps,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(pbRoutingACLMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(pbRoutingACLMap[apiKey])
-	}
-
-	// Handle ipv4_permit
-	if ipv4Permit, ok := pbRoutingACLMap["ipv4_permit"].([]interface{}); ok && len(ipv4Permit) > 0 {
-		var filterList []verityPBRoutingACLFilterModel
-
-		for _, f := range ipv4Permit {
-			filterMap, ok := f.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			filterModel := verityPBRoutingACLFilterModel{
-				Enable:        utils.MapBoolFromAPI(filterMap["enable"]),
-				Filter:        utils.MapStringFromAPI(filterMap["filter"]),
-				FilterRefType: utils.MapStringFromAPI(filterMap["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(filterMap["index"]),
-			}
-
-			filterList = append(filterList, filterModel)
-		}
-
-		state.Ipv4Permit = filterList
-	} else {
-		state.Ipv4Permit = nil
-	}
-
-	// Handle ipv4_deny
-	if ipv4Deny, ok := pbRoutingACLMap["ipv4_deny"].([]interface{}); ok && len(ipv4Deny) > 0 {
-		var filterList []verityPBRoutingACLFilterModel
-
-		for _, f := range ipv4Deny {
-			filterMap, ok := f.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			filterModel := verityPBRoutingACLFilterModel{
-				Enable:        utils.MapBoolFromAPI(filterMap["enable"]),
-				Filter:        utils.MapStringFromAPI(filterMap["filter"]),
-				FilterRefType: utils.MapStringFromAPI(filterMap["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(filterMap["index"]),
-			}
-
-			filterList = append(filterList, filterModel)
-		}
-
-		state.Ipv4Deny = filterList
-	} else {
-		state.Ipv4Deny = nil
-	}
-
-	// Handle ipv6_permit
-	if ipv6Permit, ok := pbRoutingACLMap["ipv6_permit"].([]interface{}); ok && len(ipv6Permit) > 0 {
-		var filterList []verityPBRoutingACLFilterModel
-
-		for _, f := range ipv6Permit {
-			filterMap, ok := f.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			filterModel := verityPBRoutingACLFilterModel{
-				Enable:        utils.MapBoolFromAPI(filterMap["enable"]),
-				Filter:        utils.MapStringFromAPI(filterMap["filter"]),
-				FilterRefType: utils.MapStringFromAPI(filterMap["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(filterMap["index"]),
-			}
-
-			filterList = append(filterList, filterModel)
-		}
-
-		state.Ipv6Permit = filterList
-	} else {
-		state.Ipv6Permit = nil
-	}
-
-	// Handle ipv6_deny
-	if ipv6Deny, ok := pbRoutingACLMap["ipv6_deny"].([]interface{}); ok && len(ipv6Deny) > 0 {
-		var filterList []verityPBRoutingACLFilterModel
-
-		for _, f := range ipv6Deny {
-			filterMap, ok := f.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			filterModel := verityPBRoutingACLFilterModel{
-				Enable:        utils.MapBoolFromAPI(filterMap["enable"]),
-				Filter:        utils.MapStringFromAPI(filterMap["filter"]),
-				FilterRefType: utils.MapStringFromAPI(filterMap["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(filterMap["index"]),
-			}
-
-			filterList = append(filterList, filterModel)
-		}
-
-		state.Ipv6Deny = filterList
-	} else {
-		state.Ipv6Deny = nil
-	}
-
+	state = populatePBRoutingACLState(ctx, state, pbRoutingACLMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -828,7 +764,34 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 
 	tflog.Info(ctx, fmt.Sprintf("PB Routing ACL %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "pb_routing_acl")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityPBRoutingACLResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if pbRoutingACLData, exists := bulkMgr.GetResourceResponse("pb_routing_acl", name); exists {
+			newState := populatePBRoutingACLState(ctx, minState, pbRoutingACLData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPBRoutingACLResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -861,4 +824,117 @@ func (r *verityPBRoutingACLResource) Delete(ctx context.Context, req resource.De
 
 func (r *verityPBRoutingACLResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populatePBRoutingACLState(ctx context.Context, state verityPBRoutingACLResourceModel, data map[string]interface{}, mode string) verityPBRoutingACLResourceModel {
+	const resourceType = pbRoutingAclResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// String fields
+	state.IpvProtocol = utils.MapStringWithMode(data, "ipv_protocol", resourceType, mode)
+	state.NextHopIps = utils.MapStringWithMode(data, "next_hop_ips", resourceType, mode)
+
+	// Helper function to parse filter arrays with mode awareness
+	parseFilters := func(apiFilters []interface{}, blockName string) []verityPBRoutingACLFilterModel {
+		var filters []verityPBRoutingACLFilterModel
+		for _, f := range apiFilters {
+			filterMap, ok := f.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			filterModel := verityPBRoutingACLFilterModel{
+				Enable:        utils.MapBoolWithModeNested(filterMap, "enable", resourceType, blockName+".enable", mode),
+				Filter:        utils.MapStringWithModeNested(filterMap, "filter", resourceType, blockName+".filter", mode),
+				FilterRefType: utils.MapStringWithModeNested(filterMap, "filter_ref_type_", resourceType, blockName+".filter_ref_type_", mode),
+				Index:         utils.MapInt64WithModeNested(filterMap, "index", resourceType, blockName+".index", mode),
+			}
+			filters = append(filters, filterModel)
+		}
+		return filters
+	}
+
+	// Handle filter arrays with mode awareness
+	if utils.FieldAppliesToMode(resourceType, "ipv4_permit", mode) {
+		if ipv4Permit, ok := data["ipv4_permit"].([]interface{}); ok && len(ipv4Permit) > 0 {
+			state.Ipv4Permit = parseFilters(ipv4Permit, "ipv4_permit")
+		} else {
+			state.Ipv4Permit = nil
+		}
+	} else {
+		state.Ipv4Permit = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv4_deny", mode) {
+		if ipv4Deny, ok := data["ipv4_deny"].([]interface{}); ok && len(ipv4Deny) > 0 {
+			state.Ipv4Deny = parseFilters(ipv4Deny, "ipv4_deny")
+		} else {
+			state.Ipv4Deny = nil
+		}
+	} else {
+		state.Ipv4Deny = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv6_permit", mode) {
+		if ipv6Permit, ok := data["ipv6_permit"].([]interface{}); ok && len(ipv6Permit) > 0 {
+			state.Ipv6Permit = parseFilters(ipv6Permit, "ipv6_permit")
+		} else {
+			state.Ipv6Permit = nil
+		}
+	} else {
+		state.Ipv6Permit = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv6_deny", mode) {
+		if ipv6Deny, ok := data["ipv6_deny"].([]interface{}); ok && len(ipv6Deny) > 0 {
+			state.Ipv6Deny = parseFilters(ipv6Deny, "ipv6_deny")
+		} else {
+			state.Ipv6Deny = nil
+		}
+	} else {
+		state.Ipv6Deny = nil
+	}
+
+	return state
+}
+
+func (r *verityPBRoutingACLResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityPBRoutingACLResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = pbRoutingAclResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"ipv_protocol", "next_hop_ips",
+	)
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

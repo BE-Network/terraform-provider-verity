@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityPBRoutingResource{}
 	_ resource.ResourceWithConfigure   = &verityPBRoutingResource{}
 	_ resource.ResourceWithImportState = &verityPBRoutingResource{}
+	_ resource.ResourceWithModifyPlan  = &verityPBRoutingResource{}
 )
+
+const pbRoutingResourceType = "policybasedrouting"
 
 func NewVerityPBRoutingResource() resource.Resource {
 	return &verityPBRoutingResource{}
@@ -90,6 +93,7 @@ func (r *verityPBRoutingResource) Schema(ctx context.Context, req resource.Schem
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -100,18 +104,22 @@ func (r *verityPBRoutingResource) Schema(ctx context.Context, req resource.Schem
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"pb_routing_acl": schema.StringAttribute{
 							Description: "Path to the PB Routing ACL",
 							Optional:    true,
+							Computed:    true,
 						},
 						"pb_routing_acl_ref_type_": schema.StringAttribute{
 							Description: "Object type for pb_routing_acl field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -174,8 +182,32 @@ func (r *verityPBRoutingResource) Create(ctx context.Context, req resource.Creat
 	tflog.Info(ctx, fmt.Sprintf("PB Routing %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "pb_routing")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityPBRoutingResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if pbRoutingData, exists := bulkMgr.GetResourceResponse("pb_routing", name); exists {
+			state := populatePBRoutingState(ctx, minState, pbRoutingData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPBRoutingResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -195,6 +227,16 @@ func (r *verityPBRoutingResource) Read(ctx context.Context, req resource.ReadReq
 	}
 
 	pbRoutingName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if pbRoutingData, exists := r.bulkOpsMgr.GetResourceResponse("pb_routing", pbRoutingName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached pb routing data for %s from recent operation", pbRoutingName))
+			state = populatePBRoutingState(ctx, state, pbRoutingData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("pb_routing") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping PB Routing %s verification – trusting recent successful API operation", pbRoutingName))
@@ -266,42 +308,7 @@ func (r *verityPBRoutingResource) Read(ctx context.Context, req resource.ReadReq
 
 	tflog.Debug(ctx, fmt.Sprintf("Found PB Routing '%s' under API key '%s'", pbRoutingName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(pbRoutingMap["name"])
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(pbRoutingMap[apiKey])
-	}
-
-	// Handle policy
-	if policies, ok := pbRoutingMap["policy"].([]interface{}); ok && len(policies) > 0 {
-		var policyList []verityPBRoutingPolicyModel
-
-		for _, p := range policies {
-			policyMap, ok := p.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			policyModel := verityPBRoutingPolicyModel{
-				Enable:              utils.MapBoolFromAPI(policyMap["enable"]),
-				PbRoutingAcl:        utils.MapStringFromAPI(policyMap["pb_routing_acl"]),
-				PbRoutingAclRefType: utils.MapStringFromAPI(policyMap["pb_routing_acl_ref_type_"]),
-				Index:               utils.MapInt64FromAPI(policyMap["index"]),
-			}
-
-			policyList = append(policyList, policyModel)
-		}
-
-		state.Policy = policyList
-	} else {
-		state.Policy = nil
-	}
-
+	state = populatePBRoutingState(ctx, state, pbRoutingMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -410,7 +417,34 @@ func (r *verityPBRoutingResource) Update(ctx context.Context, req resource.Updat
 
 	tflog.Info(ctx, fmt.Sprintf("PB Routing %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "pb_routing")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityPBRoutingResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if pbRoutingData, exists := bulkMgr.GetResourceResponse("pb_routing", name); exists {
+			newState := populatePBRoutingState(ctx, minState, pbRoutingData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPBRoutingResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -443,4 +477,78 @@ func (r *verityPBRoutingResource) Delete(ctx context.Context, req resource.Delet
 
 func (r *verityPBRoutingResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populatePBRoutingState(ctx context.Context, state verityPBRoutingResourceModel, data map[string]interface{}, mode string) verityPBRoutingResourceModel {
+	const resourceType = pbRoutingResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle policy array with mode awareness
+	if utils.FieldAppliesToMode(resourceType, "policy", mode) {
+		if policies, ok := data["policy"].([]interface{}); ok && len(policies) > 0 {
+			var policyList []verityPBRoutingPolicyModel
+
+			for _, p := range policies {
+				policyMap, ok := p.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				policyModel := verityPBRoutingPolicyModel{
+					Enable:              utils.MapBoolWithModeNested(policyMap, "enable", resourceType, "policy.enable", mode),
+					PbRoutingAcl:        utils.MapStringWithModeNested(policyMap, "pb_routing_acl", resourceType, "policy.pb_routing_acl", mode),
+					PbRoutingAclRefType: utils.MapStringWithModeNested(policyMap, "pb_routing_acl_ref_type_", resourceType, "policy.pb_routing_acl_ref_type_", mode),
+					Index:               utils.MapInt64WithModeNested(policyMap, "index", resourceType, "policy.index", mode),
+				}
+
+				policyList = append(policyList, policyModel)
+			}
+
+			state.Policy = policyList
+		} else {
+			state.Policy = nil
+		}
+	} else {
+		state.Policy = nil
+	}
+
+	return state
+}
+
+func (r *verityPBRoutingResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityPBRoutingResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = pbRoutingResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

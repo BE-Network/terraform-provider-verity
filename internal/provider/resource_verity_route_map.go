@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityRouteMapResource{}
 	_ resource.ResourceWithConfigure   = &verityRouteMapResource{}
 	_ resource.ResourceWithImportState = &verityRouteMapResource{}
+	_ resource.ResourceWithModifyPlan  = &verityRouteMapResource{}
 )
+
+const routeMapResourceType = "routemaps"
 
 func NewVerityRouteMapResource() resource.Resource {
 	return &verityRouteMapResource{}
@@ -95,6 +98,7 @@ func (r *verityRouteMapResource) Schema(ctx context.Context, req resource.Schema
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -105,18 +109,22 @@ func (r *verityRouteMapResource) Schema(ctx context.Context, req resource.Schema
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"route_map_clause": schema.StringAttribute{
 							Description: "Route Map Clause is a collection match and set rules",
 							Optional:    true,
+							Computed:    true,
 						},
 						"route_map_clause_ref_type_": schema.StringAttribute{
 							Description: "Object type for route_map_clause field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -128,6 +136,7 @@ func (r *verityRouteMapResource) Schema(ctx context.Context, req resource.Schema
 						"notes": schema.StringAttribute{
 							Description: "User Notes.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -207,8 +216,32 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 	tflog.Info(ctx, fmt.Sprintf("Route Map %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_maps")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityRouteMapResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if routeMapData, exists := bulkMgr.GetResourceResponse("route_map", name); exists {
+			state := populateRouteMapState(ctx, minState, routeMapData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -229,12 +262,22 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 
 	name := state.Name.ValueString()
 
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if routeMapData, exists := r.bulkOpsMgr.GetResourceResponse("route_map", name); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached route_map data for %s from recent operation", name))
+			state = populateRouteMapState(ctx, state, routeMapData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("route_map") {
-		tflog.Info(ctx, fmt.Sprintf("Skipping Route Map %s verification - trusting recent successful API operation", name))
+		tflog.Info(ctx, fmt.Sprintf("Skipping Route Map %s verification – trusting recent successful API operation", name))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent Route Map operations found, performing normal verification for %s", name))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching Route Map for verification of %s", name))
 
 	type RouteMapResponse struct {
 		RouteMap map[string]interface{} `json:"route_map"`
@@ -299,52 +342,8 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Route Map '%s' under API key '%s'", name, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(routeMapMap["name"])
-
-	// Handle object properties
-	if objProps, ok := routeMapMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityRouteMapObjectPropertiesModel{
-			{Notes: utils.MapStringFromAPI(objProps["notes"])},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(routeMapMap[apiKey])
-	}
-
-	// Handle route_map_clauses
-	if routeMapClausesData, ok := routeMapMap["route_map_clauses"].([]interface{}); ok && len(routeMapClausesData) > 0 {
-		var routeMapClauses []verityRouteMapClausesModel
-
-		for _, clauseInterface := range routeMapClausesData {
-			clause, ok := clauseInterface.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			clauseModel := verityRouteMapClausesModel{
-				Enable:                utils.MapBoolFromAPI(clause["enable"]),
-				RouteMapClause:        utils.MapStringFromAPI(clause["route_map_clause"]),
-				RouteMapClauseRefType: utils.MapStringFromAPI(clause["route_map_clause_ref_type_"]),
-				Index:                 utils.MapInt64FromAPI(clause["index"]),
-			}
-
-			routeMapClauses = append(routeMapClauses, clauseModel)
-		}
-
-		state.RouteMapClauses = routeMapClauses
-	} else {
-		state.RouteMapClauses = nil
-	}
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, state)...)
+	state = populateRouteMapState(ctx, state, routeMapMap, r.provCtx.mode)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *verityRouteMapResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -466,7 +465,34 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 
 	tflog.Info(ctx, fmt.Sprintf("Route Map %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_maps")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityRouteMapResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if routeMapData, exists := bulkMgr.GetResourceResponse("route_map", name); exists {
+			newState := populateRouteMapState(ctx, minState, routeMapData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityRouteMapResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -499,4 +525,92 @@ func (r *verityRouteMapResource) Delete(ctx context.Context, req resource.Delete
 
 func (r *verityRouteMapResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateRouteMapState(ctx context.Context, state verityRouteMapResourceModel, data map[string]interface{}, mode string) verityRouteMapResourceModel {
+	const resourceType = routeMapResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityRouteMapObjectPropertiesModel{
+				Notes: utils.MapStringWithModeNested(objProps, "notes", resourceType, "object_properties.notes", mode),
+			}
+			state.ObjectProperties = []verityRouteMapObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle route_map_clauses block
+	if utils.FieldAppliesToMode(resourceType, "route_map_clauses", mode) {
+		if routeMapClausesData, ok := data["route_map_clauses"].([]interface{}); ok && len(routeMapClausesData) > 0 {
+			var routeMapClauses []verityRouteMapClausesModel
+
+			for _, clauseInterface := range routeMapClausesData {
+				clause, ok := clauseInterface.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				clauseModel := verityRouteMapClausesModel{
+					Enable:                utils.MapBoolWithModeNested(clause, "enable", resourceType, "route_map_clauses.enable", mode),
+					RouteMapClause:        utils.MapStringWithModeNested(clause, "route_map_clause", resourceType, "route_map_clauses.route_map_clause", mode),
+					RouteMapClauseRefType: utils.MapStringWithModeNested(clause, "route_map_clause_ref_type_", resourceType, "route_map_clauses.route_map_clause_ref_type_", mode),
+					Index:                 utils.MapInt64WithModeNested(clause, "index", resourceType, "route_map_clauses.index", mode),
+				}
+
+				routeMapClauses = append(routeMapClauses, clauseModel)
+			}
+
+			state.RouteMapClauses = routeMapClauses
+		} else {
+			state.RouteMapClauses = nil
+		}
+	} else {
+		state.RouteMapClauses = nil
+	}
+
+	return state
+}
+
+func (r *verityRouteMapResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityRouteMapResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = routeMapResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

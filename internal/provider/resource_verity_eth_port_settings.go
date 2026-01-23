@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityEthPortSettingsResource{}
 	_ resource.ResourceWithConfigure   = &verityEthPortSettingsResource{}
 	_ resource.ResourceWithImportState = &verityEthPortSettingsResource{}
+	_ resource.ResourceWithModifyPlan  = &verityEthPortSettingsResource{}
 )
+
+const ethPortSettingsResourceType = "ethportsettings"
 
 func NewVerityEthPortSettingsResource() resource.Resource {
 	return &verityEthPortSettingsResource{}
@@ -137,170 +140,212 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"auto_negotiation": schema.BoolAttribute{
 				Description: "Indicates if port speed and duplex mode should be auto negotiated",
 				Optional:    true,
+				Computed:    true,
 			},
 			"max_bit_rate": schema.StringAttribute{
 				Description: "Maximum Bit Rate allowed",
 				Optional:    true,
+				Computed:    true,
 			},
 			"duplex_mode": schema.StringAttribute{
 				Description: "Duplex Mode",
 				Optional:    true,
+				Computed:    true,
 			},
 			"stp_enable": schema.BoolAttribute{
 				Description: "Enable Spanning Tree on the port. Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Site Settings",
 				Optional:    true,
+				Computed:    true,
 			},
 			"fast_learning_mode": schema.BoolAttribute{
 				Description: "Enable Immediate Transition to Forwarding",
 				Optional:    true,
+				Computed:    true,
 			},
 			"bpdu_guard": schema.BoolAttribute{
 				Description: "Block port on BPDU Receive",
 				Optional:    true,
+				Computed:    true,
 			},
 			"bpdu_filter": schema.BoolAttribute{
 				Description: "Drop all Rx and Tx BPDUs",
 				Optional:    true,
+				Computed:    true,
 			},
 			"guard_loop": schema.BoolAttribute{
 				Description: "Enable Cisco Guard Loop",
 				Optional:    true,
+				Computed:    true,
 			},
 			"poe_enable": schema.BoolAttribute{
 				Description: "PoE Enable",
 				Optional:    true,
+				Computed:    true,
 			},
 			"priority": schema.StringAttribute{
 				Description: "Priority given when assigning power in a limited power situation",
 				Optional:    true,
+				Computed:    true,
 			},
 			"allocated_power": schema.StringAttribute{
 				Description: "Power the PoE system will attempt to allocate on this port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"bsp_enable": schema.BoolAttribute{
 				Description: "Enable Traffic Storm Protection which prevents excessive broadcast/multicast/unknown-unicast traffic from overwhelming the Switch CPU",
 				Optional:    true,
+				Computed:    true,
 			},
 			"broadcast": schema.BoolAttribute{
 				Description: "Broadcast",
 				Optional:    true,
+				Computed:    true,
 			},
 			"multicast": schema.BoolAttribute{
 				Description: "Multicast",
 				Optional:    true,
+				Computed:    true,
 			},
 			"max_allowed_value": schema.Int64Attribute{
 				Description: "Max Percentage of the port's bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action",
 				Optional:    true,
+				Computed:    true,
 			},
 			"max_allowed_unit": schema.StringAttribute{
 				Description: "Max Percentage unit for broadcast/multicast/unknown-unicast traffic",
 				Optional:    true,
+				Computed:    true,
 			},
 			"action": schema.StringAttribute{
 				Description: "Action taken if broadcast/multicast/unknown-unicast traffic exceeds the Max",
 				Optional:    true,
+				Computed:    true,
 			},
 			"fec": schema.StringAttribute{
 				Description: "FEC is Forward Error Correction which is error correction on the fiber link",
 				Optional:    true,
+				Computed:    true,
 			},
 			"single_link": schema.BoolAttribute{
 				Description: "Ports with this setting will be disabled when link state tracking takes effect",
 				Optional:    true,
+				Computed:    true,
 			},
 			"minimum_wred_threshold": schema.Int64Attribute{
 				Description: "A value between 1 to 12480(in KiloBytes)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"maximum_wred_threshold": schema.Int64Attribute{
 				Description: "A value between 1 to 12480(in KiloBytes)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"wred_drop_probability": schema.Int64Attribute{
 				Description: "A value between 0 to 100",
 				Optional:    true,
+				Computed:    true,
 			},
 			"priority_flow_control_watchdog_action": schema.StringAttribute{
 				Description: "Ports with this setting will be disabled when link state tracking takes effect",
 				Optional:    true,
+				Computed:    true,
 			},
 			"priority_flow_control_watchdog_detect_time": schema.Int64Attribute{
 				Description: "A value between 100 to 5000",
 				Optional:    true,
+				Computed:    true,
 			},
 			"priority_flow_control_watchdog_restore_time": schema.Int64Attribute{
 				Description: "A value between 100 to 60000",
 				Optional:    true,
+				Computed:    true,
 			},
 			"packet_queue": schema.StringAttribute{
 				Description: "Packet Queue",
 				Optional:    true,
+				Computed:    true,
 			},
 			"packet_queue_ref_type_": schema.StringAttribute{
 				Description: "Object type for packet_queue field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"enable_wred_tuning": schema.BoolAttribute{
 				Description: "Enables custom tuning of WRED values. Uncheck to use Switch default values.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"enable_ecn": schema.BoolAttribute{
 				Description: "Enables Explicit Congestion Notification for WRED.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"enable_watchdog_tuning": schema.BoolAttribute{
 				Description: "Enables custom tuning of Watchdog values. Uncheck to use Switch default values.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cli_commands": schema.StringAttribute{
 				Description: "CLI Commands",
 				Optional:    true,
+				Computed:    true,
 			},
 			"detect_bridging_loops": schema.BoolAttribute{
 				Description: "Enable Detection of Bridging Loops",
 				Optional:    true,
+				Computed:    true,
 			},
 			"unidirectional_link_detection": schema.BoolAttribute{
 				Description: "Enable Detection of Unidirectional Link",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mac_security_mode": schema.StringAttribute{
 				Description: "MAC security mode",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mac_limit": schema.Int64Attribute{
 				Description: "Between 1-1000",
 				Optional:    true,
+				Computed:    true,
 			},
 			"security_violation_action": schema.StringAttribute{
 				Description: "Security violation action",
 				Optional:    true,
+				Computed:    true,
 			},
 			"aging_type": schema.StringAttribute{
 				Description: "Limit MAC authentication based on inactivity or on absolute time. See Also Aging Time",
 				Optional:    true,
+				Computed:    true,
 			},
 			"aging_time": schema.Int64Attribute{
 				Description: "In minutes, how long the client will stay authenticated. See Also Aging Type",
 				Optional:    true,
+				Computed:    true,
 			},
 			"lldp_enable": schema.BoolAttribute{
 				Description: "LLDP enable",
 				Optional:    true,
+				Computed:    true,
 			},
 			"lldp_mode": schema.StringAttribute{
 				Description: "LLDP mode. Enables LLDP Rx and/or LLDP Tx",
 				Optional:    true,
+				Computed:    true,
 			},
 			"lldp_med_enable": schema.BoolAttribute{
 				Description: "LLDP med enable",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -311,6 +356,7 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -322,30 +368,37 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 						"lldp_med_row_num_enable": schema.BoolAttribute{
 							Description: "Per LLDP Med row enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"lldp_med_row_num_advertised_applicatio": schema.StringAttribute{
 							Description: "Advertised application",
 							Optional:    true,
+							Computed:    true,
 						},
 						"lldp_med_row_num_dscp_mark": schema.Int64Attribute{
 							Description: "LLDP DSCP Mark",
 							Optional:    true,
+							Computed:    true,
 						},
 						"lldp_med_row_num_priority": schema.Int64Attribute{
 							Description: "LLDP Priority",
 							Optional:    true,
+							Computed:    true,
 						},
 						"lldp_med_row_num_service": schema.StringAttribute{
 							Description: "LLDP Service",
 							Optional:    true,
+							Computed:    true,
 						},
 						"lldp_med_row_num_service_ref_type_": schema.StringAttribute{
 							Description: "Object type for lldp_med_row_num_service field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -357,6 +410,13 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityEthPortSettingsResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityEthPortSettingsResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -417,16 +477,19 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		{FieldName: "LldpMedEnable", APIField: &ethPortSettingsProps.LldpMedEnable, TFValue: plan.LldpMedEnable},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_settings", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "MaxAllowedValue", APIField: &ethPortSettingsProps.MaxAllowedValue, TFValue: plan.MaxAllowedValue},
-		{FieldName: "MinimumWredThreshold", APIField: &ethPortSettingsProps.MinimumWredThreshold, TFValue: plan.MinimumWredThreshold},
-		{FieldName: "MaximumWredThreshold", APIField: &ethPortSettingsProps.MaximumWredThreshold, TFValue: plan.MaximumWredThreshold},
-		{FieldName: "WredDropProbability", APIField: &ethPortSettingsProps.WredDropProbability, TFValue: plan.WredDropProbability},
-		{FieldName: "PriorityFlowControlWatchdogDetectTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime, TFValue: plan.PriorityFlowControlWatchdogDetectTime},
-		{FieldName: "PriorityFlowControlWatchdogRestoreTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime, TFValue: plan.PriorityFlowControlWatchdogRestoreTime},
-		{FieldName: "MacLimit", APIField: &ethPortSettingsProps.MacLimit, TFValue: plan.MacLimit},
-		{FieldName: "AgingTime", APIField: &ethPortSettingsProps.AgingTime, TFValue: plan.AgingTime},
+		{FieldName: "MaxAllowedValue", APIField: &ethPortSettingsProps.MaxAllowedValue, TFValue: config.MaxAllowedValue, IsConfigured: configuredAttrs.IsConfigured("max_allowed_value")},
+		{FieldName: "MinimumWredThreshold", APIField: &ethPortSettingsProps.MinimumWredThreshold, TFValue: config.MinimumWredThreshold, IsConfigured: configuredAttrs.IsConfigured("minimum_wred_threshold")},
+		{FieldName: "MaximumWredThreshold", APIField: &ethPortSettingsProps.MaximumWredThreshold, TFValue: config.MaximumWredThreshold, IsConfigured: configuredAttrs.IsConfigured("maximum_wred_threshold")},
+		{FieldName: "WredDropProbability", APIField: &ethPortSettingsProps.WredDropProbability, TFValue: config.WredDropProbability, IsConfigured: configuredAttrs.IsConfigured("wred_drop_probability")},
+		{FieldName: "PriorityFlowControlWatchdogDetectTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime, TFValue: config.PriorityFlowControlWatchdogDetectTime, IsConfigured: configuredAttrs.IsConfigured("priority_flow_control_watchdog_detect_time")},
+		{FieldName: "PriorityFlowControlWatchdogRestoreTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime, TFValue: config.PriorityFlowControlWatchdogRestoreTime, IsConfigured: configuredAttrs.IsConfigured("priority_flow_control_watchdog_restore_time")},
+		{FieldName: "MacLimit", APIField: &ethPortSettingsProps.MacLimit, TFValue: config.MacLimit, IsConfigured: configuredAttrs.IsConfigured("mac_limit")},
+		{FieldName: "AgingTime", APIField: &ethPortSettingsProps.AgingTime, TFValue: config.AgingTime, IsConfigured: configuredAttrs.IsConfigured("aging_time")},
 	})
 
 	// Handle object properties
@@ -474,8 +537,32 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	tflog.Info(ctx, fmt.Sprintf("Ethernet port settings %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_settings")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityEthPortSettingsResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ethPortSettingsData, exists := bulkMgr.GetResourceResponse("eth_port_settings", name); exists {
+			state := populateEthPortSettingsState(ctx, minState, ethPortSettingsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -495,6 +582,16 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 	}
 
 	ethPortSettingsName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if ethPortSettingsData, exists := r.bulkOpsMgr.GetResourceResponse("eth_port_settings", ethPortSettingsName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached eth port settings data for %s from recent operation", ethPortSettingsName))
+			state = populateEthPortSettingsState(ctx, state, ethPortSettingsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("eth_port_settings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping eth port settings %s verification – trusting recent successful API operation", ethPortSettingsName))
@@ -566,119 +663,12 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 
 	tflog.Debug(ctx, fmt.Sprintf("Found eth port settings '%s' under API key '%s'", ethPortSettingsName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(ethPortSettingsMap["name"])
-
-	// Handle object properties
-	if objProps, ok := ethPortSettingsMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityEthPortSettingsObjectPropertiesModel{
-			{
-				Group: utils.MapStringFromAPI(objProps["group"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"max_bit_rate":                          &state.MaxBitRate,
-		"duplex_mode":                           &state.DuplexMode,
-		"priority":                              &state.Priority,
-		"allocated_power":                       &state.AllocatedPower,
-		"max_allowed_unit":                      &state.MaxAllowedUnit,
-		"action":                                &state.Action,
-		"fec":                                   &state.Fec,
-		"priority_flow_control_watchdog_action": &state.PriorityFlowControlWatchdogAction,
-		"packet_queue":                          &state.PacketQueue,
-		"packet_queue_ref_type_":                &state.PacketQueueRefType,
-		"cli_commands":                          &state.CliCommands,
-		"mac_security_mode":                     &state.MacSecurityMode,
-		"security_violation_action":             &state.SecurityViolationAction,
-		"aging_type":                            &state.AgingType,
-		"lldp_mode":                             &state.LldpMode,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(ethPortSettingsMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":                        &state.Enable,
-		"auto_negotiation":              &state.AutoNegotiation,
-		"stp_enable":                    &state.StpEnable,
-		"fast_learning_mode":            &state.FastLearningMode,
-		"bpdu_guard":                    &state.BpduGuard,
-		"bpdu_filter":                   &state.BpduFilter,
-		"guard_loop":                    &state.GuardLoop,
-		"poe_enable":                    &state.PoeEnable,
-		"bsp_enable":                    &state.BspEnable,
-		"broadcast":                     &state.Broadcast,
-		"multicast":                     &state.Multicast,
-		"single_link":                   &state.SingleLink,
-		"enable_wred_tuning":            &state.EnableWredTuning,
-		"enable_ecn":                    &state.EnableEcn,
-		"enable_watchdog_tuning":        &state.EnableWatchdogTuning,
-		"detect_bridging_loops":         &state.DetectBridgingLoops,
-		"unidirectional_link_detection": &state.UnidirectionalLinkDetection,
-		"lldp_enable":                   &state.LldpEnable,
-		"lldp_med_enable":               &state.LldpMedEnable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(ethPortSettingsMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"max_allowed_value":                           &state.MaxAllowedValue,
-		"minimum_wred_threshold":                      &state.MinimumWredThreshold,
-		"maximum_wred_threshold":                      &state.MaximumWredThreshold,
-		"wred_drop_probability":                       &state.WredDropProbability,
-		"priority_flow_control_watchdog_detect_time":  &state.PriorityFlowControlWatchdogDetectTime,
-		"priority_flow_control_watchdog_restore_time": &state.PriorityFlowControlWatchdogRestoreTime,
-		"mac_limit":  &state.MacLimit,
-		"aging_time": &state.AgingTime,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(ethPortSettingsMap[apiKey])
-	}
-
-	// Handle LLDP Med
-	if lldpMedData, ok := ethPortSettingsMap["lldp_med"].([]interface{}); ok && len(lldpMedData) > 0 {
-		var lldpMedList []verityEthPortSettingsLldpMedModel
-
-		for _, item := range lldpMedData {
-			itemMap, ok := item.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			lldpMedItem := verityEthPortSettingsLldpMedModel{
-				LldpMedRowNumEnable:                utils.MapBoolFromAPI(itemMap["lldp_med_row_num_enable"]),
-				LldpMedRowNumAdvertisedApplication: utils.MapStringFromAPI(itemMap["lldp_med_row_num_advertised_applicatio"]),
-				LldpMedRowNumDscpMark:              utils.MapInt64FromAPI(itemMap["lldp_med_row_num_dscp_mark"]),
-				LldpMedRowNumPriority:              utils.MapInt64FromAPI(itemMap["lldp_med_row_num_priority"]),
-				LldpMedRowNumService:               utils.MapStringFromAPI(itemMap["lldp_med_row_num_service"]),
-				LldpMedRowNumServiceRefType:        utils.MapStringFromAPI(itemMap["lldp_med_row_num_service_ref_type_"]),
-				Index:                              utils.MapInt64FromAPI(itemMap["index"]),
-			}
-
-			lldpMedList = append(lldpMedList, lldpMedItem)
-		}
-
-		state.LldpMed = lldpMedList
-	} else {
-		state.LldpMed = nil
-	}
-
+	state = populateEthPortSettingsState(ctx, state, ethPortSettingsMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan verityEthPortSettingsResourceModel
-	var state verityEthPortSettingsResourceModel
+	var plan, state verityEthPortSettingsResourceModel
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -866,7 +856,34 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 
 	tflog.Info(ctx, fmt.Sprintf("Eth Port Settings %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_settings")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityEthPortSettingsResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ethPortSettingsData, exists := bulkMgr.GetResourceResponse("eth_port_settings", name); exists {
+			newState := populateEthPortSettingsState(ctx, minState, ethPortSettingsData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityEthPortSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -899,4 +916,208 @@ func (r *verityEthPortSettingsResource) Delete(ctx context.Context, req resource
 
 func (r *verityEthPortSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettingsResourceModel, data map[string]interface{}, mode string) verityEthPortSettingsResourceModel {
+	const resourceType = ethPortSettingsResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Int fields
+	state.MaxAllowedValue = utils.MapInt64WithMode(data, "max_allowed_value", resourceType, mode)
+	state.MinimumWredThreshold = utils.MapInt64WithMode(data, "minimum_wred_threshold", resourceType, mode)
+	state.MaximumWredThreshold = utils.MapInt64WithMode(data, "maximum_wred_threshold", resourceType, mode)
+	state.WredDropProbability = utils.MapInt64WithMode(data, "wred_drop_probability", resourceType, mode)
+	state.PriorityFlowControlWatchdogDetectTime = utils.MapInt64WithMode(data, "priority_flow_control_watchdog_detect_time", resourceType, mode)
+	state.PriorityFlowControlWatchdogRestoreTime = utils.MapInt64WithMode(data, "priority_flow_control_watchdog_restore_time", resourceType, mode)
+	state.MacLimit = utils.MapInt64WithMode(data, "mac_limit", resourceType, mode)
+	state.AgingTime = utils.MapInt64WithMode(data, "aging_time", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.AutoNegotiation = utils.MapBoolWithMode(data, "auto_negotiation", resourceType, mode)
+	state.StpEnable = utils.MapBoolWithMode(data, "stp_enable", resourceType, mode)
+	state.FastLearningMode = utils.MapBoolWithMode(data, "fast_learning_mode", resourceType, mode)
+	state.BpduGuard = utils.MapBoolWithMode(data, "bpdu_guard", resourceType, mode)
+	state.BpduFilter = utils.MapBoolWithMode(data, "bpdu_filter", resourceType, mode)
+	state.GuardLoop = utils.MapBoolWithMode(data, "guard_loop", resourceType, mode)
+	state.PoeEnable = utils.MapBoolWithMode(data, "poe_enable", resourceType, mode)
+	state.BspEnable = utils.MapBoolWithMode(data, "bsp_enable", resourceType, mode)
+	state.Broadcast = utils.MapBoolWithMode(data, "broadcast", resourceType, mode)
+	state.Multicast = utils.MapBoolWithMode(data, "multicast", resourceType, mode)
+	state.SingleLink = utils.MapBoolWithMode(data, "single_link", resourceType, mode)
+	state.EnableWredTuning = utils.MapBoolWithMode(data, "enable_wred_tuning", resourceType, mode)
+	state.EnableEcn = utils.MapBoolWithMode(data, "enable_ecn", resourceType, mode)
+	state.EnableWatchdogTuning = utils.MapBoolWithMode(data, "enable_watchdog_tuning", resourceType, mode)
+	state.DetectBridgingLoops = utils.MapBoolWithMode(data, "detect_bridging_loops", resourceType, mode)
+	state.UnidirectionalLinkDetection = utils.MapBoolWithMode(data, "unidirectional_link_detection", resourceType, mode)
+	state.LldpEnable = utils.MapBoolWithMode(data, "lldp_enable", resourceType, mode)
+	state.LldpMedEnable = utils.MapBoolWithMode(data, "lldp_med_enable", resourceType, mode)
+
+	// String fields
+	state.MaxBitRate = utils.MapStringWithMode(data, "max_bit_rate", resourceType, mode)
+	state.DuplexMode = utils.MapStringWithMode(data, "duplex_mode", resourceType, mode)
+	state.Priority = utils.MapStringWithMode(data, "priority", resourceType, mode)
+	state.AllocatedPower = utils.MapStringWithMode(data, "allocated_power", resourceType, mode)
+	state.MaxAllowedUnit = utils.MapStringWithMode(data, "max_allowed_unit", resourceType, mode)
+	state.Action = utils.MapStringWithMode(data, "action", resourceType, mode)
+	state.Fec = utils.MapStringWithMode(data, "fec", resourceType, mode)
+	state.PriorityFlowControlWatchdogAction = utils.MapStringWithMode(data, "priority_flow_control_watchdog_action", resourceType, mode)
+	state.PacketQueue = utils.MapStringWithMode(data, "packet_queue", resourceType, mode)
+	state.PacketQueueRefType = utils.MapStringWithMode(data, "packet_queue_ref_type_", resourceType, mode)
+	state.CliCommands = utils.MapStringWithMode(data, "cli_commands", resourceType, mode)
+	state.MacSecurityMode = utils.MapStringWithMode(data, "mac_security_mode", resourceType, mode)
+	state.SecurityViolationAction = utils.MapStringWithMode(data, "security_violation_action", resourceType, mode)
+	state.AgingType = utils.MapStringWithMode(data, "aging_type", resourceType, mode)
+	state.LldpMode = utils.MapStringWithMode(data, "lldp_mode", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityEthPortSettingsObjectPropertiesModel{
+				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+			}
+			state.ObjectProperties = []verityEthPortSettingsObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle lldp_med list block
+	if utils.FieldAppliesToMode(resourceType, "lldp_med", mode) {
+		if lldpMedData, ok := data["lldp_med"].([]interface{}); ok && len(lldpMedData) > 0 {
+			var lldpMedList []verityEthPortSettingsLldpMedModel
+
+			for _, item := range lldpMedData {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				lldpMedItem := verityEthPortSettingsLldpMedModel{
+					LldpMedRowNumEnable:                utils.MapBoolWithModeNested(itemMap, "lldp_med_row_num_enable", resourceType, "lldp_med.lldp_med_row_num_enable", mode),
+					LldpMedRowNumAdvertisedApplication: utils.MapStringWithModeNested(itemMap, "lldp_med_row_num_advertised_applicatio", resourceType, "lldp_med.lldp_med_row_num_advertised_applicatio", mode),
+					LldpMedRowNumDscpMark:              utils.MapInt64WithModeNested(itemMap, "lldp_med_row_num_dscp_mark", resourceType, "lldp_med.lldp_med_row_num_dscp_mark", mode),
+					LldpMedRowNumPriority:              utils.MapInt64WithModeNested(itemMap, "lldp_med_row_num_priority", resourceType, "lldp_med.lldp_med_row_num_priority", mode),
+					LldpMedRowNumService:               utils.MapStringWithModeNested(itemMap, "lldp_med_row_num_service", resourceType, "lldp_med.lldp_med_row_num_service", mode),
+					LldpMedRowNumServiceRefType:        utils.MapStringWithModeNested(itemMap, "lldp_med_row_num_service_ref_type_", resourceType, "lldp_med.lldp_med_row_num_service_ref_type_", mode),
+					Index:                              utils.MapInt64WithModeNested(itemMap, "index", resourceType, "lldp_med.index", mode),
+				}
+
+				lldpMedList = append(lldpMedList, lldpMedItem)
+			}
+
+			state.LldpMed = lldpMedList
+		} else {
+			state.LldpMed = nil
+		}
+	} else {
+		state.LldpMed = nil
+	}
+
+	return state
+}
+
+func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityEthPortSettingsResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = ethPortSettingsResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"max_bit_rate", "duplex_mode", "priority", "allocated_power",
+		"max_allowed_unit", "action", "fec",
+		"priority_flow_control_watchdog_action",
+		"packet_queue", "packet_queue_ref_type_",
+		"cli_commands", "mac_security_mode", "security_violation_action",
+		"aging_type", "lldp_mode",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "auto_negotiation", "stp_enable", "fast_learning_mode",
+		"bpdu_guard", "bpdu_filter", "guard_loop", "poe_enable",
+		"bsp_enable", "broadcast", "multicast", "single_link",
+		"enable_wred_tuning", "enable_ecn", "enable_watchdog_tuning",
+		"detect_bridging_loops", "unidirectional_link_detection",
+		"lldp_enable", "lldp_med_enable",
+	)
+
+	nullifier.NullifyInt64s(
+		"max_allowed_value",
+		"minimum_wred_threshold", "maximum_wred_threshold", "wred_drop_probability",
+		"priority_flow_control_watchdog_detect_time", "priority_flow_control_watchdog_restore_time",
+		"mac_limit", "aging_time",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityEthPortSettingsResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityEthPortSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_settings", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "max_allowed_value", ConfigVal: config.MaxAllowedValue, StateVal: state.MaxAllowedValue},
+			{AttrName: "minimum_wred_threshold", ConfigVal: config.MinimumWredThreshold, StateVal: state.MinimumWredThreshold},
+			{AttrName: "maximum_wred_threshold", ConfigVal: config.MaximumWredThreshold, StateVal: state.MaximumWredThreshold},
+			{AttrName: "wred_drop_probability", ConfigVal: config.WredDropProbability, StateVal: state.WredDropProbability},
+			{AttrName: "priority_flow_control_watchdog_detect_time", ConfigVal: config.PriorityFlowControlWatchdogDetectTime, StateVal: state.PriorityFlowControlWatchdogDetectTime},
+			{AttrName: "priority_flow_control_watchdog_restore_time", ConfigVal: config.PriorityFlowControlWatchdogRestoreTime, StateVal: state.PriorityFlowControlWatchdogRestoreTime},
+			{AttrName: "mac_limit", ConfigVal: config.MacLimit, StateVal: state.MacLimit},
+			{AttrName: "aging_time", ConfigVal: config.AgingTime, StateVal: state.AgingTime},
+		},
+	})
 }

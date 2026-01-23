@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityEthPortProfileResource{}
 	_ resource.ResourceWithConfigure   = &verityEthPortProfileResource{}
 	_ resource.ResourceWithImportState = &verityEthPortProfileResource{}
+	_ resource.ResourceWithModifyPlan  = &verityEthPortProfileResource{}
 )
+
+const ethPortProfileResourceType = "ethportprofiles"
 
 func NewVerityEthPortProfileResource() resource.Resource {
 	return &verityEthPortProfileResource{}
@@ -115,38 +118,47 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ingress_acl": schema.StringAttribute{
 				Description: "Choose an ingress access control list",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ingress_acl_ref_type_": schema.StringAttribute{
 				Description: "Object type for ingress_acl field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"egress_acl": schema.StringAttribute{
 				Description: "Choose an egress access control list",
 				Optional:    true,
+				Computed:    true,
 			},
 			"egress_acl_ref_type_": schema.StringAttribute{
 				Description: "Object type for egress_acl field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tls": schema.BoolAttribute{
 				Description: "Transparent LAN Service Trunk",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tls_service": schema.StringAttribute{
 				Description: "Choose a Service supporting Transparent LAN Service",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tls_service_ref_type_": schema.StringAttribute{
 				Description: "Object type for tls_service field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"trusted_port": schema.BoolAttribute{
 				Description: "Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -157,22 +169,27 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 						"port_monitoring": schema.StringAttribute{
 							Description: "Defines importance of Link Down on this port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"sort_by_name": schema.BoolAttribute{
 							Description: "Choose to sort by service name or by order of creation",
 							Optional:    true,
+							Computed:    true,
 						},
 						"label": schema.StringAttribute{
 							Description: "Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint",
 							Optional:    true,
+							Computed:    true,
 						},
 						"icon": schema.StringAttribute{
 							Description: "Port Icon displayed ports provisioned with this Eth Port Profile but with no Port Icon defined in the endpoint",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -184,50 +201,62 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 						"row_num_enable": schema.BoolAttribute{
 							Description: "Enable row",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_service": schema.StringAttribute{
 							Description: "Choose a Service to connect",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_service_ref_type_": schema.StringAttribute{
 							Description: "Object type for row_num_service field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_external_vlan": schema.Int64Attribute{
 							Description: "Choose an external vlan. A value of 0 will make the VLAN untagged, while null will use service VLAN.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_ingress_acl": schema.StringAttribute{
 							Description: "Choose an ingress access control list",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_ingress_acl_ref_type_": schema.StringAttribute{
 							Description: "Object type for row_num_ingress_acl field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_egress_acl": schema.StringAttribute{
 							Description: "Choose an egress access control list",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_egress_acl_ref_type_": schema.StringAttribute{
 							Description: "Object type for row_num_egress_acl field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_mac_filter": schema.StringAttribute{
 							Description: "Choose an access control list",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_mac_filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for row_num_mac_filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"row_num_lan_iptv": schema.StringAttribute{
 							Description: "Denotes a LAN or IPTV service",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -328,8 +357,32 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	tflog.Info(ctx, fmt.Sprintf("Eth Port Profile %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_profiles")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityEthPortProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ethPortProfileData, exists := bulkMgr.GetResourceResponse("eth_port_profile", name); exists {
+			state := populateEthPortProfileState(ctx, minState, ethPortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -349,6 +402,16 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 	}
 
 	ethPortProfileName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if ethPortProfileData, exists := r.bulkOpsMgr.GetResourceResponse("eth_port_profile", ethPortProfileName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached eth port profile data for %s from recent operation", ethPortProfileName))
+			state = populateEthPortProfileState(ctx, state, ethPortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("eth_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping eth port profile %s verification – trusting recent successful API operation", ethPortProfileName))
@@ -420,81 +483,7 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found eth port profile '%s' under API key '%s'", ethPortProfileName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(ethPortProfileMap["name"])
-
-	// Handle object properties
-	if objProps, ok := ethPortProfileMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityEthPortProfileObjectPropertiesModel{
-			{
-				Group:          utils.MapStringFromAPI(objProps["group"]),
-				PortMonitoring: utils.MapStringFromAPI(objProps["port_monitoring"]),
-				SortByName:     utils.MapBoolFromAPI(objProps["sort_by_name"]),
-				Label:          utils.MapStringFromAPI(objProps["label"]),
-				Icon:           utils.MapStringFromAPI(objProps["icon"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"ingress_acl":           &state.IngressAcl,
-		"ingress_acl_ref_type_": &state.IngressAclRefType,
-		"egress_acl":            &state.EgressAcl,
-		"egress_acl_ref_type_":  &state.EgressAclRefType,
-		"tls_service":           &state.TlsService,
-		"tls_service_ref_type_": &state.TlsServiceRefType,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(ethPortProfileMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":       &state.Enable,
-		"tls":          &state.Tls,
-		"trusted_port": &state.TrustedPort,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(ethPortProfileMap[apiKey])
-	}
-
-	// Handle services
-	if services, ok := ethPortProfileMap["services"].([]interface{}); ok && len(services) > 0 {
-		var servicesList []servicesModel
-
-		for _, s := range services {
-			service, ok := s.(map[string]interface{})
-			if !ok {
-				continue
-			}
-
-			serviceModel := servicesModel{
-				RowNumEnable:            utils.MapBoolFromAPI(service["row_num_enable"]),
-				RowNumService:           utils.MapStringFromAPI(service["row_num_service"]),
-				RowNumServiceRefType:    utils.MapStringFromAPI(service["row_num_service_ref_type_"]),
-				RowNumExternalVlan:      utils.MapInt64FromAPI(service["row_num_external_vlan"]),
-				RowNumIngressAcl:        utils.MapStringFromAPI(service["row_num_ingress_acl"]),
-				RowNumIngressAclRefType: utils.MapStringFromAPI(service["row_num_ingress_acl_ref_type_"]),
-				RowNumEgressAcl:         utils.MapStringFromAPI(service["row_num_egress_acl"]),
-				RowNumEgressAclRefType:  utils.MapStringFromAPI(service["row_num_egress_acl_ref_type_"]),
-				Index:                   utils.MapInt64FromAPI(service["index"]),
-				RowNumMacFilter:         utils.MapStringFromAPI(service["row_num_mac_filter"]),
-				RowNumMacFilterRefType:  utils.MapStringFromAPI(service["row_num_mac_filter_ref_type_"]),
-				RowNumLanIptv:           utils.MapStringFromAPI(service["row_num_lan_iptv"]),
-			}
-
-			servicesList = append(servicesList, serviceModel)
-		}
-
-		state.Services = servicesList
-	} else {
-		state.Services = nil
-	}
-
+	state = populateEthPortProfileState(ctx, state, ethPortProfileMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -506,7 +495,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
 	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -716,7 +704,34 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 	tflog.Info(ctx, fmt.Sprintf("Eth Port Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "eth_port_profiles")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityEthPortProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if ethPortProfileData, exists := bulkMgr.GetResourceResponse("eth_port_profile", name); exists {
+			newState := populateEthPortProfileState(ctx, minState, ethPortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityEthPortProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -749,4 +764,120 @@ func (r *verityEthPortProfileResource) Delete(ctx context.Context, req resource.
 
 func (r *verityEthPortProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateEthPortProfileState(ctx context.Context, state verityEthPortProfileResourceModel, data map[string]interface{}, mode string) verityEthPortProfileResourceModel {
+	const resourceType = ethPortProfileResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.Tls = utils.MapBoolWithMode(data, "tls", resourceType, mode)
+	state.TrustedPort = utils.MapBoolWithMode(data, "trusted_port", resourceType, mode)
+
+	// String fields
+	state.IngressAcl = utils.MapStringWithMode(data, "ingress_acl", resourceType, mode)
+	state.IngressAclRefType = utils.MapStringWithMode(data, "ingress_acl_ref_type_", resourceType, mode)
+	state.EgressAcl = utils.MapStringWithMode(data, "egress_acl", resourceType, mode)
+	state.EgressAclRefType = utils.MapStringWithMode(data, "egress_acl_ref_type_", resourceType, mode)
+	state.TlsService = utils.MapStringWithMode(data, "tls_service", resourceType, mode)
+	state.TlsServiceRefType = utils.MapStringWithMode(data, "tls_service_ref_type_", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityEthPortProfileObjectPropertiesModel{
+				Group:          utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+				PortMonitoring: utils.MapStringWithModeNested(objProps, "port_monitoring", resourceType, "object_properties.port_monitoring", mode),
+				SortByName:     utils.MapBoolWithModeNested(objProps, "sort_by_name", resourceType, "object_properties.sort_by_name", mode),
+				Label:          utils.MapStringWithModeNested(objProps, "label", resourceType, "object_properties.label", mode),
+				Icon:           utils.MapStringWithModeNested(objProps, "icon", resourceType, "object_properties.icon", mode),
+			}
+			state.ObjectProperties = []verityEthPortProfileObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	// Handle services list block
+	if utils.FieldAppliesToMode(resourceType, "services", mode) {
+		if servicesData, ok := data["services"].([]interface{}); ok && len(servicesData) > 0 {
+			var servicesList []servicesModel
+
+			for _, item := range servicesData {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+
+				serviceItem := servicesModel{
+					RowNumEnable:            utils.MapBoolWithModeNested(itemMap, "row_num_enable", resourceType, "services.row_num_enable", mode),
+					RowNumService:           utils.MapStringWithModeNested(itemMap, "row_num_service", resourceType, "services.row_num_service", mode),
+					RowNumServiceRefType:    utils.MapStringWithModeNested(itemMap, "row_num_service_ref_type_", resourceType, "services.row_num_service_ref_type_", mode),
+					RowNumExternalVlan:      utils.MapInt64WithModeNested(itemMap, "row_num_external_vlan", resourceType, "services.row_num_external_vlan", mode),
+					RowNumIngressAcl:        utils.MapStringWithModeNested(itemMap, "row_num_ingress_acl", resourceType, "services.row_num_ingress_acl", mode),
+					RowNumIngressAclRefType: utils.MapStringWithModeNested(itemMap, "row_num_ingress_acl_ref_type_", resourceType, "services.row_num_ingress_acl_ref_type_", mode),
+					RowNumEgressAcl:         utils.MapStringWithModeNested(itemMap, "row_num_egress_acl", resourceType, "services.row_num_egress_acl", mode),
+					RowNumEgressAclRefType:  utils.MapStringWithModeNested(itemMap, "row_num_egress_acl_ref_type_", resourceType, "services.row_num_egress_acl_ref_type_", mode),
+					Index:                   utils.MapInt64WithModeNested(itemMap, "index", resourceType, "services.index", mode),
+					RowNumMacFilter:         utils.MapStringWithModeNested(itemMap, "row_num_mac_filter", resourceType, "services.row_num_mac_filter", mode),
+					RowNumMacFilterRefType:  utils.MapStringWithModeNested(itemMap, "row_num_mac_filter_ref_type_", resourceType, "services.row_num_mac_filter_ref_type_", mode),
+					RowNumLanIptv:           utils.MapStringWithModeNested(itemMap, "row_num_lan_iptv", resourceType, "services.row_num_lan_iptv", mode),
+				}
+
+				servicesList = append(servicesList, serviceItem)
+			}
+
+			state.Services = servicesList
+		} else {
+			state.Services = nil
+		}
+	} else {
+		state.Services = nil
+	}
+
+	return state
+}
+
+func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityEthPortProfileResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = ethPortProfileResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"ingress_acl", "ingress_acl_ref_type_",
+		"egress_acl", "egress_acl_ref_type_",
+		"tls_service", "tls_service_ref_type_",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "tls", "trusted_port",
+	)
 }

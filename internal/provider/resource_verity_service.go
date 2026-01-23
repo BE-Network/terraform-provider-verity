@@ -25,6 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityServiceResource{}
 )
 
+const serviceResourceType = "services"
+
 func NewVerityServiceResource() resource.Resource {
 	return &verityServiceResource{}
 }
@@ -112,10 +114,12 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"vlan": schema.Int64Attribute{
 				Description: "A Value between 1 and 4096",
 				Optional:    true,
+				Computed:    true,
 			},
 			"vni": schema.Int64Attribute{
 				Description: "Indication of the outgoing VLAN layer 2 service. This field should not be specified when 'vni_auto_assigned_' is set to true, as the API will assign this value automatically. When specified, it represents an explicit VNI value.",
@@ -125,98 +129,122 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 			"vni_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether the VNI value should be automatically assigned by the API. When set to true, do not specify the 'vni' field in your configuration. The API will assign the VNI value, typically as VLAN + 100000.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tenant": schema.StringAttribute{
 				Description: "Tenant",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tenant_ref_type_": schema.StringAttribute{
 				Description: "Object type for tenant field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"dhcp_server_ipv4": schema.StringAttribute{
 				Description: "IPv4 address(s) of the DHCP server for service. May have up to four separated by commas.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"dhcp_server_ipv6": schema.StringAttribute{
 				Description: "IPv6 address(s) of the DHCP server for service. May have up to four separated by commas.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mtu": schema.Int64Attribute{
 				Description: "MTU (Maximum Transmission Unit) - the size used by a switch to determine when large packets must be broken up for delivery.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"anycast_ipv4_mask": schema.StringAttribute{
 				Description: "Static anycast gateway addresses(IPv4) for service",
 				Optional:    true,
+				Computed:    true,
 			},
 			"anycast_ipv6_mask": schema.StringAttribute{
 				Description: "Static anycast gateway addresses(IPv6) for service",
 				Optional:    true,
+				Computed:    true,
 			},
 			"max_upstream_rate_mbps": schema.Int64Attribute{
 				Description: "Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"max_downstream_rate_mbps": schema.Int64Attribute{
 				Description: "Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"packet_priority": schema.StringAttribute{
 				Description: "Priority untagged packets will be tagged with on ingress to the network.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"multicast_management_mode": schema.StringAttribute{
 				Description: "Determines how to handle multicast packets for Service",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tagged_packets": schema.BoolAttribute{
 				Description: "Overrides priority bits on incoming tagged packets.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"tls": schema.BoolAttribute{
 				Description: "Is a Transparent LAN Service?",
 				Optional:    true,
+				Computed:    true,
 			},
 			"allow_local_switching": schema.BoolAttribute{
 				Description: "Allow Edge Devices to communicate with each other.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"act_as_multicast_querier": schema.BoolAttribute{
 				Description: "Multicast management through IGMP requires a multicast querier.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"block_unknown_unicast_flood": schema.BoolAttribute{
 				Description: "Block unknown unicast traffic flooding.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"block_downstream_dhcp_server": schema.BoolAttribute{
 				Description: "Block inbound packets sent by Downstream DHCP servers",
 				Optional:    true,
+				Computed:    true,
 			},
 			"is_management_service": schema.BoolAttribute{
 				Description: "Denotes a Management Service",
 				Optional:    true,
+				Computed:    true,
 			},
 			"use_dscp_to_p_bit_mapping_for_l3_packets_if_available": schema.BoolAttribute{
 				Description: "use DSCP to p-bit Mapping for L3 packets if available",
 				Optional:    true,
+				Computed:    true,
 			},
 			"allow_fast_leave": schema.BoolAttribute{
 				Description: "The Fast Leave feature causes the switch to immediately remove a port from the forwarding list.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mst_instance": schema.Int64Attribute{
 				Description: "MST Instance ID (0-4094)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"policy_based_routing": schema.StringAttribute{
 				Description: "Policy Based Routing",
 				Optional:    true,
+				Computed:    true,
 			},
 			"policy_based_routing_ref_type_": schema.StringAttribute{
 				Description: "Object type for policy_based_routing field",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -227,14 +255,17 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 						"on_summary": schema.BoolAttribute{
 							Description: "Show on the summary view",
 							Optional:    true,
+							Computed:    true,
 						},
 						"warn_on_no_external_source": schema.BoolAttribute{
 							Description: "Warn if there is not outbound path for service in SD-Router or a Service Port Profile",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -246,6 +277,13 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityServiceResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityServiceResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -303,13 +341,16 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "AllowFastLeave", APIField: &serviceReq.AllowFastLeave, TFValue: plan.AllowFastLeave},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_service", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "Vlan", APIField: &serviceReq.Vlan, TFValue: plan.Vlan},
-		{FieldName: "Mtu", APIField: &serviceReq.Mtu, TFValue: plan.Mtu},
-		{FieldName: "MaxUpstreamRateMbps", APIField: &serviceReq.MaxUpstreamRateMbps, TFValue: plan.MaxUpstreamRateMbps},
-		{FieldName: "MaxDownstreamRateMbps", APIField: &serviceReq.MaxDownstreamRateMbps, TFValue: plan.MaxDownstreamRateMbps},
-		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: plan.MstInstance},
+		{FieldName: "Vlan", APIField: &serviceReq.Vlan, TFValue: config.Vlan, IsConfigured: configuredAttrs.IsConfigured("vlan")},
+		{FieldName: "Mtu", APIField: &serviceReq.Mtu, TFValue: config.Mtu, IsConfigured: configuredAttrs.IsConfigured("mtu")},
+		{FieldName: "MaxUpstreamRateMbps", APIField: &serviceReq.MaxUpstreamRateMbps, TFValue: config.MaxUpstreamRateMbps, IsConfigured: configuredAttrs.IsConfigured("max_upstream_rate_mbps")},
+		{FieldName: "MaxDownstreamRateMbps", APIField: &serviceReq.MaxDownstreamRateMbps, TFValue: config.MaxDownstreamRateMbps, IsConfigured: configuredAttrs.IsConfigured("max_downstream_rate_mbps")},
+		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: config.MstInstance, IsConfigured: configuredAttrs.IsConfigured("mst_instance")},
 	})
 
 	// Handle object properties
@@ -360,7 +401,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
-			state := populateServiceState(ctx, minState, serviceData)
+			state := populateServiceState(ctx, minState, serviceData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -400,7 +441,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 	if r.bulkOpsMgr != nil {
 		if serviceData, exists := r.bulkOpsMgr.GetResourceResponse("service", serviceName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached service data for %s from recent operation", serviceName))
-			state = populateServiceState(ctx, state, serviceData)
+			state = populateServiceState(ctx, state, serviceData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -476,7 +517,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Found service '%s' under API key '%s'", serviceName, actualAPIName))
 
-	state = populateServiceState(ctx, state, serviceMap)
+	state = populateServiceState(ctx, state, serviceMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -677,7 +718,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
-			state := populateServiceState(ctx, minState, serviceData)
+			state := populateServiceState(ctx, minState, serviceData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -727,50 +768,56 @@ func (r *verityServiceResource) ImportState(ctx context.Context, req resource.Im
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func populateServiceState(ctx context.Context, state verityServiceResourceModel, serviceData map[string]interface{}) verityServiceResourceModel {
+func populateServiceState(ctx context.Context, state verityServiceResourceModel, serviceData map[string]interface{}, mode string) verityServiceResourceModel {
+	const resourceType = serviceResourceType
+
 	state.Name = utils.MapStringFromAPI(serviceData["name"])
 
 	// Int fields
-	state.Vlan = utils.MapInt64FromAPI(serviceData["vlan"])
-	state.Vni = utils.MapInt64FromAPI(serviceData["vni"])
-	state.Mtu = utils.MapInt64FromAPI(serviceData["mtu"])
-	state.MaxUpstreamRateMbps = utils.MapInt64FromAPI(serviceData["max_upstream_rate_mbps"])
-	state.MaxDownstreamRateMbps = utils.MapInt64FromAPI(serviceData["max_downstream_rate_mbps"])
-	state.MstInstance = utils.MapInt64FromAPI(serviceData["mst_instance"])
+	state.Vlan = utils.MapInt64WithMode(serviceData, "vlan", resourceType, mode)
+	state.Vni = utils.MapInt64WithMode(serviceData, "vni", resourceType, mode)
+	state.Mtu = utils.MapInt64WithMode(serviceData, "mtu", resourceType, mode)
+	state.MaxUpstreamRateMbps = utils.MapInt64WithMode(serviceData, "max_upstream_rate_mbps", resourceType, mode)
+	state.MaxDownstreamRateMbps = utils.MapInt64WithMode(serviceData, "max_downstream_rate_mbps", resourceType, mode)
+	state.MstInstance = utils.MapInt64WithMode(serviceData, "mst_instance", resourceType, mode)
 
-	// Bool fields
-	state.Enable = utils.MapBoolFromAPI(serviceData["enable"])
-	state.VniAutoAssigned = utils.MapBoolFromAPI(serviceData["vni_auto_assigned_"])
-	state.TaggedPackets = utils.MapBoolFromAPI(serviceData["tagged_packets"])
-	state.Tls = utils.MapBoolFromAPI(serviceData["tls"])
-	state.AllowLocalSwitching = utils.MapBoolFromAPI(serviceData["allow_local_switching"])
-	state.ActAsMulticastQuerier = utils.MapBoolFromAPI(serviceData["act_as_multicast_querier"])
-	state.BlockUnknownUnicastFlood = utils.MapBoolFromAPI(serviceData["block_unknown_unicast_flood"])
-	state.BlockDownstreamDhcpServer = utils.MapBoolFromAPI(serviceData["block_downstream_dhcp_server"])
-	state.IsManagementService = utils.MapBoolFromAPI(serviceData["is_management_service"])
-	state.UseDscpToPBitMappingForL3PacketsIfAvailable = utils.MapBoolFromAPI(serviceData["use_dscp_to_p_bit_mapping_for_l3_packets_if_available"])
-	state.AllowFastLeave = utils.MapBoolFromAPI(serviceData["allow_fast_leave"])
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(serviceData, "enable", resourceType, mode)
+	state.VniAutoAssigned = utils.MapBoolWithMode(serviceData, "vni_auto_assigned_", resourceType, mode)
+	state.TaggedPackets = utils.MapBoolWithMode(serviceData, "tagged_packets", resourceType, mode)
+	state.Tls = utils.MapBoolWithMode(serviceData, "tls", resourceType, mode)
+	state.AllowLocalSwitching = utils.MapBoolWithMode(serviceData, "allow_local_switching", resourceType, mode)
+	state.ActAsMulticastQuerier = utils.MapBoolWithMode(serviceData, "act_as_multicast_querier", resourceType, mode)
+	state.BlockUnknownUnicastFlood = utils.MapBoolWithMode(serviceData, "block_unknown_unicast_flood", resourceType, mode)
+	state.BlockDownstreamDhcpServer = utils.MapBoolWithMode(serviceData, "block_downstream_dhcp_server", resourceType, mode)
+	state.IsManagementService = utils.MapBoolWithMode(serviceData, "is_management_service", resourceType, mode)
+	state.UseDscpToPBitMappingForL3PacketsIfAvailable = utils.MapBoolWithMode(serviceData, "use_dscp_to_p_bit_mapping_for_l3_packets_if_available", resourceType, mode)
+	state.AllowFastLeave = utils.MapBoolWithMode(serviceData, "allow_fast_leave", resourceType, mode)
 
 	// String fields
-	state.Tenant = utils.MapStringFromAPI(serviceData["tenant"])
-	state.TenantRefType = utils.MapStringFromAPI(serviceData["tenant_ref_type_"])
-	state.DhcpServerIpv4 = utils.MapStringFromAPI(serviceData["dhcp_server_ipv4"])
-	state.DhcpServerIpv6 = utils.MapStringFromAPI(serviceData["dhcp_server_ipv6"])
-	state.AnycastIpv4Mask = utils.MapStringFromAPI(serviceData["anycast_ipv4_mask"])
-	state.AnycastIpv6Mask = utils.MapStringFromAPI(serviceData["anycast_ipv6_mask"])
-	state.PacketPriority = utils.MapStringFromAPI(serviceData["packet_priority"])
-	state.MulticastManagementMode = utils.MapStringFromAPI(serviceData["multicast_management_mode"])
-	state.PolicyBasedRouting = utils.MapStringFromAPI(serviceData["policy_based_routing"])
-	state.PolicyBasedRoutingRefType = utils.MapStringFromAPI(serviceData["policy_based_routing_ref_type_"])
+	state.Tenant = utils.MapStringWithMode(serviceData, "tenant", resourceType, mode)
+	state.TenantRefType = utils.MapStringWithMode(serviceData, "tenant_ref_type_", resourceType, mode)
+	state.DhcpServerIpv4 = utils.MapStringWithMode(serviceData, "dhcp_server_ipv4", resourceType, mode)
+	state.DhcpServerIpv6 = utils.MapStringWithMode(serviceData, "dhcp_server_ipv6", resourceType, mode)
+	state.AnycastIpv4Mask = utils.MapStringWithMode(serviceData, "anycast_ipv4_mask", resourceType, mode)
+	state.AnycastIpv6Mask = utils.MapStringWithMode(serviceData, "anycast_ipv6_mask", resourceType, mode)
+	state.PacketPriority = utils.MapStringWithMode(serviceData, "packet_priority", resourceType, mode)
+	state.MulticastManagementMode = utils.MapStringWithMode(serviceData, "multicast_management_mode", resourceType, mode)
+	state.PolicyBasedRouting = utils.MapStringWithMode(serviceData, "policy_based_routing", resourceType, mode)
+	state.PolicyBasedRoutingRefType = utils.MapStringWithMode(serviceData, "policy_based_routing_ref_type_", resourceType, mode)
 
-	// Object properties
-	if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
-		objProps := verityServiceObjectPropertiesModel{
-			Group:                  utils.MapStringFromAPI(op["group"]),
-			OnSummary:              utils.MapBoolFromAPI(op["on_summary"]),
-			WarnOnNoExternalSource: utils.MapBoolFromAPI(op["warn_on_no_external_source"]),
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
+			objProps := verityServiceObjectPropertiesModel{
+				Group:                  utils.MapStringWithModeNested(op, "group", resourceType, "object_properties.group", mode),
+				OnSummary:              utils.MapBoolWithModeNested(op, "on_summary", resourceType, "object_properties.on_summary", mode),
+				WarnOnNoExternalSource: utils.MapBoolWithModeNested(op, "warn_on_no_external_source", resourceType, "object_properties.warn_on_no_external_source", mode),
+			}
+			state.ObjectProperties = []verityServiceObjectPropertiesModel{objProps}
+		} else {
+			state.ObjectProperties = nil
 		}
-		state.ObjectProperties = []verityServiceObjectPropertiesModel{objProps}
 	} else {
 		state.ObjectProperties = nil
 	}
@@ -779,7 +826,9 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 }
 
 func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// Skip modification if we're deleting the resource
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -790,83 +839,136 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// Validate VNI specification in configuration when auto-assigned
-	// Check the actual configuration, not the plan
-	var config verityServiceResourceModel
-	if !req.Config.Raw.IsNull() {
-		resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = serviceResourceType
+	mode := r.provCtx.mode
 
-		if !config.VniAutoAssigned.IsNull() && config.VniAutoAssigned.ValueBool() {
-			if !config.Vni.IsNull() && !config.Vni.IsUnknown() {
-				resp.Diagnostics.AddError(
-					"VNI cannot be specified when auto-assigned",
-					"The 'vni' field cannot be specified in the configuration when 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
-				)
-				return
-			}
-		}
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
 	}
 
-	// For new resources (where state is null)
+	nullifier.NullifyStrings(
+		"tenant", "tenant_ref_type_",
+		"dhcp_server_ipv4", "dhcp_server_ipv6",
+		"anycast_ipv4_mask", "anycast_ipv6_mask",
+		"packet_priority", "multicast_management_mode",
+		"policy_based_routing", "policy_based_routing_ref_type_",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "vni_auto_assigned_",
+		"tagged_packets", "tls",
+		"allow_local_switching", "act_as_multicast_querier",
+		"block_unknown_unicast_flood", "block_downstream_dhcp_server",
+		"is_management_service", "use_dscp_to_p_bit_mapping_for_l3_packets_if_available",
+		"allow_fast_leave",
+	)
+
+	nullifier.NullifyInt64s(
+		"vlan", "vni", "mtu",
+		"max_upstream_rate_mbps", "max_downstream_rate_mbps",
+		"mst_instance",
+	)
+
+	// =========================================================================
+	// CREATE operation - handle auto-assigned fields
+	// =========================================================================
 	if req.State.Raw.IsNull() {
+		// Service-specific: VNI auto-assignment on create
 		if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
 		}
 		return
 	}
 
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
 	var state verityServiceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
+	var config verityServiceResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_service", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "vlan", ConfigVal: config.Vlan, StateVal: state.Vlan},
+			{AttrName: "mtu", ConfigVal: config.Mtu, StateVal: state.Mtu},
+			{AttrName: "max_upstream_rate_mbps", ConfigVal: config.MaxUpstreamRateMbps, StateVal: state.MaxUpstreamRateMbps},
+			{AttrName: "max_downstream_rate_mbps", ConfigVal: config.MaxDownstreamRateMbps, StateVal: state.MaxDownstreamRateMbps},
+			{AttrName: "mst_instance", ConfigVal: config.MstInstance, StateVal: state.MstInstance},
+		},
+	})
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (VNI)
+	// =========================================================================
+
+	// Validate: VNI cannot be specified when auto-assigned
+	if !config.VniAutoAssigned.IsNull() && config.VniAutoAssigned.ValueBool() {
+		if !config.Vni.IsNull() && !config.Vni.IsUnknown() {
+			resp.Diagnostics.AddError(
+				"VNI cannot be specified when auto-assigned",
+				"The 'vni' field cannot be specified in the configuration when 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
 	// Handle VNI behavior based on auto-assignment and VLAN changes
 	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		if !plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {
-			// vni_auto_assigned_ is changing to true, API will assign VNI based on VLAN
-			// Only mark VNI as unknown, VLAN stays as configured
+			// vni_auto_assigned_ is changing to true - API will assign VNI
 			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"VNI will be assigned by the API",
-				"The 'vni' field will be automatically assigned by the API because 'vni_auto_assigned_' is being set to true. The API will assign VNI based on the VLAN value.",
+				"The 'vni' field will be automatically assigned by the API because 'vni_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.Vlan.Equal(state.Vlan) {
-			// VLAN is changing, so VNI will be auto-updated by API
+			// VLAN is changing with auto-assignment enabled - VNI will be updated
 			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"VNI will be updated by the API",
 				"The 'vni' field will be automatically updated by the API because 'vni_auto_assigned_' is set to true and VLAN is changing.",
 			)
 		} else if !plan.Vni.Equal(state.Vni) {
-			// User tried to change VNI but it's auto-assigned
+			// User tried to change VNI but it's auto-assigned - suppress diff
 			resp.Diagnostics.AddWarning(
 				"Ignoring vni changes with auto-assignment enabled",
-				"The 'vni' field changes will be ignored because 'vni_auto_assigned_' is set to true. The API will assign this value automatically.",
+				"The 'vni' field changes will be ignored because 'vni_auto_assigned_' is set to true.",
 			)
-			// Keep the current state value to suppress the diff
 			if !state.Vni.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("vni"), state.Vni)
 			}
 		}
-	} else if !plan.Vlan.Equal(state.Vlan) && plan.Vni.Equal(state.Vni) && (plan.VniAutoAssigned.IsNull() || !plan.VniAutoAssigned.ValueBool()) {
-		// VLAN is changing and VNI hasn't been explicitly changed by the user
-		// Only mark VNI as unknown when vni_auto_assigned_ is false
-		// AND the user hasn't explicitly specified VNI in their configuration
-
-		// Check if user explicitly specified VNI in config
-		var config verityServiceResourceModel
-		hasExplicitVni := false
-		if !req.Config.Raw.IsNull() {
-			if err := req.Config.Get(ctx, &config); err == nil {
-				hasExplicitVni = !config.Vni.IsNull() && !config.Vni.IsUnknown()
-			}
-		}
-
-		// Only mark VNI as unknown if user hasn't explicitly specified it
+	} else if !plan.Vlan.Equal(state.Vlan) && plan.Vni.Equal(state.Vni) {
+		// VLAN changing without auto-assignment - VNI may be affected if not explicitly set
+		hasExplicitVni := !config.Vni.IsNull() && !config.Vni.IsUnknown()
 		if !hasExplicitVni {
 			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
 			tflog.Info(ctx, "Marking VNI as unknown due to VLAN change - API will determine the actual value")

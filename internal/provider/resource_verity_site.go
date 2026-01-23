@@ -25,6 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &veritySiteResource{}
 )
 
+const siteResourceType = "sites"
+
 func NewVeritySiteResource() resource.Resource {
 	return &veritySiteResource{}
 }
@@ -150,38 +152,47 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"service_for_site": schema.StringAttribute{
 				Description: "Service for Site",
 				Optional:    true,
+				Computed:    true,
 			},
 			"service_for_site_ref_type_": schema.StringAttribute{
 				Description: "Object type for service_for_site field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"spanning_tree_type": schema.StringAttribute{
 				Description: "Sets the spanning tree type for all Ports in this Site with Spanning Tree enabled",
 				Optional:    true,
+				Computed:    true,
 			},
 			"region_name": schema.StringAttribute{
 				Description: "Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name",
 				Optional:    true,
+				Computed:    true,
 			},
 			"revision": schema.Int64Attribute{
 				Description: "A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number (maximum: 65535)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"force_spanning_tree_on_fabric_ports": schema.BoolAttribute{
 				Description: "Enable spanning tree on all fabric connections. This overrides the Eth Port Settings for Fabric ports",
 				Optional:    true,
+				Computed:    true,
 			},
 			"read_only_mode": schema.BoolAttribute{
 				Description: "When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware",
 				Optional:    true,
+				Computed:    true,
 			},
 			"dscp_to_p_bit_map": schema.StringAttribute{
 				Description: "For any Service that is using DSCP to TC map packet prioritization. A string of length 64 with a 0-7 in each position (maxLength: 64)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"anycast_mac_address": schema.StringAttribute{
 				Description: "Anycast MAC address to use. This field should not be specified when 'anycast_mac_address_auto_assigned_' is set to true, as the API will assign this value automatically. Used for MAC VRRP.",
@@ -191,82 +202,102 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 			"anycast_mac_address_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether the anycast MAC address should be automatically assigned by the API. When set to true, do not specify the 'anycast_mac_address' field in your configuration.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mac_address_aging_time": schema.Int64Attribute{
 				Description: "MAC Address Aging Time (minimum: 1, maximum: 100000)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mlag_delay_restore_timer": schema.Int64Attribute{
 				Description: "MLAG Delay Restore Timer (minimum: 1, maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"bgp_keepalive_timer": schema.Int64Attribute{
 				Description: "Spine BGP Keepalive Timer (minimum: 1, maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"bgp_hold_down_timer": schema.Int64Attribute{
 				Description: "Spine BGP Hold Down Timer (minimum: 1, maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"spine_bgp_advertisement_interval": schema.Int64Attribute{
 				Description: "BGP Advertisement Interval for spines/superspines. Use \"0\" for immediate updates (maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"spine_bgp_connect_timer": schema.Int64Attribute{
 				Description: "BGP Connect Timer (minimum: 1, maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"leaf_bgp_keep_alive_timer": schema.Int64Attribute{
 				Description: "Leaf BGP Keep Alive Timer (minimum: 1, maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"leaf_bgp_hold_down_timer": schema.Int64Attribute{
 				Description: "Leaf BGP Hold Down Timer (minimum: 1, maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"leaf_bgp_advertisement_interval": schema.Int64Attribute{
 				Description: "BGP Advertisement Interval for leafs. Use \"0\" for immediate updates (maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"leaf_bgp_connect_timer": schema.Int64Attribute{
 				Description: "BGP Connect Timer (minimum: 1, maximum: 3600)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"link_state_timeout_value": schema.Int64Attribute{
 				Description: "Link State Timeout Value",
 				Optional:    true,
+				Computed:    true,
 			},
 			"evpn_multihoming_startup_delay": schema.Int64Attribute{
 				Description: "Startup Delay",
 				Optional:    true,
+				Computed:    true,
 			},
 			"evpn_mac_holdtime": schema.Int64Attribute{
 				Description: "MAC Holdtime",
 				Optional:    true,
+				Computed:    true,
 			},
 			"aggressive_reporting": schema.BoolAttribute{
 				Description: "Fast Reporting of Switch Communications, Link Up/Down, and BGP Status",
 				Optional:    true,
+				Computed:    true,
 			},
 			"crc_failure_threshold": schema.Int64Attribute{
 				Description: "Threshold in Errors per second that when met will disable the links as part of LAGs (minimum: 1, maximum: 4294967296)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"enable_dhcp_snooping": schema.BoolAttribute{
 				Description: "Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ip_source_guard": schema.BoolAttribute{
 				Description: "On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings",
 				Optional:    true,
+				Computed:    true,
 			},
 			"duplicate_address_detection_max_number_of_moves": schema.Int64Attribute{
 				Description: "Duplicate Address Detection Max Number of Moves",
 				Optional:    true,
+				Computed:    true,
 			},
 			"duplicate_address_detection_time": schema.Int64Attribute{
 				Description: "Duplicate Address Detection Time",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -277,14 +308,17 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 						"toi_switchpoint": schema.StringAttribute{
 							Description: "TOI Switchpoint",
 							Optional:    true,
+							Computed:    true,
 						},
 						"toi_switchpoint_ref_type_": schema.StringAttribute{
 							Description: "Object type for toi_switchpoint field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -296,38 +330,47 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 						"name": schema.StringAttribute{
 							Description: "Object Name. Must be unique.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"switchpoint_1": schema.StringAttribute{
 							Description: "Switchpoint",
 							Optional:    true,
+							Computed:    true,
 						},
 						"switchpoint_1_ref_type_": schema.StringAttribute{
 							Description: "Object type for switchpoint_1 field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"switchpoint_2": schema.StringAttribute{
 							Description: "Switchpoint",
 							Optional:    true,
+							Computed:    true,
 						},
 						"switchpoint_2_ref_type_": schema.StringAttribute{
 							Description: "Object type for switchpoint_2 field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"lag_group": schema.StringAttribute{
 							Description: "LAG Group",
 							Optional:    true,
+							Computed:    true,
 						},
 						"lag_group_ref_type_": schema.StringAttribute{
 							Description: "Object type for lag_group field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"is_whitebox_pair": schema.BoolAttribute{
 							Description: "LAG Pair",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -343,10 +386,12 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 									"graph_num_data": schema.StringAttribute{
 										Description: "The graph data detailing this graph choice",
 										Optional:    true,
+										Computed:    true,
 									},
 									"index": schema.Int64Attribute{
 										Description: "The index identifying the object. Zero if you want to add an object to the list.",
 										Optional:    true,
+										Computed:    true,
 									},
 								},
 							},
@@ -387,7 +432,7 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 	if r.bulkOpsMgr != nil {
 		if siteData, exists := r.bulkOpsMgr.GetResourceResponse("site", siteName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached site data for %s from recent operation", siteName))
-			state = populateSiteState(ctx, state, siteData)
+			state = populateSiteState(ctx, state, siteData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -462,7 +507,7 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Debug(ctx, fmt.Sprintf("Found site '%s' under API key '%s'", siteName, actualAPIName))
 
-	state = populateSiteState(ctx, state, siteMap)
+	state = populateSiteState(ctx, state, siteMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -809,7 +854,7 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if siteData, exists := bulkMgr.GetResourceResponse("site", name); exists {
-			state := populateSiteState(ctx, minState, siteData)
+			state := populateSiteState(ctx, minState, siteData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -838,115 +883,129 @@ func (r *veritySiteResource) ImportState(ctx context.Context, req resource.Impor
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteData map[string]interface{}) veritySiteResourceModel {
+func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteData map[string]interface{}, mode string) veritySiteResourceModel {
+	const resourceType = siteResourceType
+
 	state.Name = utils.MapStringFromAPI(siteData["name"])
 
 	// Int fields
-	state.Revision = utils.MapInt64FromAPI(siteData["revision"])
-	state.MacAddressAgingTime = utils.MapInt64FromAPI(siteData["mac_address_aging_time"])
-	state.MlagDelayRestoreTimer = utils.MapInt64FromAPI(siteData["mlag_delay_restore_timer"])
-	state.BgpKeepaliveTimer = utils.MapInt64FromAPI(siteData["bgp_keepalive_timer"])
-	state.BgpHoldDownTimer = utils.MapInt64FromAPI(siteData["bgp_hold_down_timer"])
-	state.SpineBgpAdvertisementInterval = utils.MapInt64FromAPI(siteData["spine_bgp_advertisement_interval"])
-	state.SpineBgpConnectTimer = utils.MapInt64FromAPI(siteData["spine_bgp_connect_timer"])
-	state.LeafBgpKeepAliveTimer = utils.MapInt64FromAPI(siteData["leaf_bgp_keep_alive_timer"])
-	state.LeafBgpHoldDownTimer = utils.MapInt64FromAPI(siteData["leaf_bgp_hold_down_timer"])
-	state.LeafBgpAdvertisementInterval = utils.MapInt64FromAPI(siteData["leaf_bgp_advertisement_interval"])
-	state.LeafBgpConnectTimer = utils.MapInt64FromAPI(siteData["leaf_bgp_connect_timer"])
-	state.LinkStateTimeoutValue = utils.MapInt64FromAPI(siteData["link_state_timeout_value"])
-	state.EvpnMultihomingStartupDelay = utils.MapInt64FromAPI(siteData["evpn_multihoming_startup_delay"])
-	state.EvpnMacHoldtime = utils.MapInt64FromAPI(siteData["evpn_mac_holdtime"])
-	state.CrcFailureThreshold = utils.MapInt64FromAPI(siteData["crc_failure_threshold"])
-	state.DuplicateAddressDetectionMaxNumberOfMoves = utils.MapInt64FromAPI(siteData["duplicate_address_detection_max_number_of_moves"])
-	state.DuplicateAddressDetectionTime = utils.MapInt64FromAPI(siteData["duplicate_address_detection_time"])
+	state.Revision = utils.MapInt64WithMode(siteData, "revision", resourceType, mode)
+	state.MacAddressAgingTime = utils.MapInt64WithMode(siteData, "mac_address_aging_time", resourceType, mode)
+	state.MlagDelayRestoreTimer = utils.MapInt64WithMode(siteData, "mlag_delay_restore_timer", resourceType, mode)
+	state.BgpKeepaliveTimer = utils.MapInt64WithMode(siteData, "bgp_keepalive_timer", resourceType, mode)
+	state.BgpHoldDownTimer = utils.MapInt64WithMode(siteData, "bgp_hold_down_timer", resourceType, mode)
+	state.SpineBgpAdvertisementInterval = utils.MapInt64WithMode(siteData, "spine_bgp_advertisement_interval", resourceType, mode)
+	state.SpineBgpConnectTimer = utils.MapInt64WithMode(siteData, "spine_bgp_connect_timer", resourceType, mode)
+	state.LeafBgpKeepAliveTimer = utils.MapInt64WithMode(siteData, "leaf_bgp_keep_alive_timer", resourceType, mode)
+	state.LeafBgpHoldDownTimer = utils.MapInt64WithMode(siteData, "leaf_bgp_hold_down_timer", resourceType, mode)
+	state.LeafBgpAdvertisementInterval = utils.MapInt64WithMode(siteData, "leaf_bgp_advertisement_interval", resourceType, mode)
+	state.LeafBgpConnectTimer = utils.MapInt64WithMode(siteData, "leaf_bgp_connect_timer", resourceType, mode)
+	state.LinkStateTimeoutValue = utils.MapInt64WithMode(siteData, "link_state_timeout_value", resourceType, mode)
+	state.EvpnMultihomingStartupDelay = utils.MapInt64WithMode(siteData, "evpn_multihoming_startup_delay", resourceType, mode)
+	state.EvpnMacHoldtime = utils.MapInt64WithMode(siteData, "evpn_mac_holdtime", resourceType, mode)
+	state.CrcFailureThreshold = utils.MapInt64WithMode(siteData, "crc_failure_threshold", resourceType, mode)
+	state.DuplicateAddressDetectionMaxNumberOfMoves = utils.MapInt64WithMode(siteData, "duplicate_address_detection_max_number_of_moves", resourceType, mode)
+	state.DuplicateAddressDetectionTime = utils.MapInt64WithMode(siteData, "duplicate_address_detection_time", resourceType, mode)
 
 	// Bool fields
-	state.Enable = utils.MapBoolFromAPI(siteData["enable"])
-	state.ForceSpanningTreeOnFabricPorts = utils.MapBoolFromAPI(siteData["force_spanning_tree_on_fabric_ports"])
-	state.ReadOnlyMode = utils.MapBoolFromAPI(siteData["read_only_mode"])
-	state.AggressiveReporting = utils.MapBoolFromAPI(siteData["aggressive_reporting"])
-	state.EnableDhcpSnooping = utils.MapBoolFromAPI(siteData["enable_dhcp_snooping"])
-	state.IpSourceGuard = utils.MapBoolFromAPI(siteData["ip_source_guard"])
-	state.AnycastMacAddressAutoAssigned = utils.MapBoolFromAPI(siteData["anycast_mac_address_auto_assigned_"])
+	state.Enable = utils.MapBoolWithMode(siteData, "enable", resourceType, mode)
+	state.ForceSpanningTreeOnFabricPorts = utils.MapBoolWithMode(siteData, "force_spanning_tree_on_fabric_ports", resourceType, mode)
+	state.ReadOnlyMode = utils.MapBoolWithMode(siteData, "read_only_mode", resourceType, mode)
+	state.AggressiveReporting = utils.MapBoolWithMode(siteData, "aggressive_reporting", resourceType, mode)
+	state.EnableDhcpSnooping = utils.MapBoolWithMode(siteData, "enable_dhcp_snooping", resourceType, mode)
+	state.IpSourceGuard = utils.MapBoolWithMode(siteData, "ip_source_guard", resourceType, mode)
+	state.AnycastMacAddressAutoAssigned = utils.MapBoolWithMode(siteData, "anycast_mac_address_auto_assigned_", resourceType, mode)
 
 	// String fields
-	state.ServiceForSite = utils.MapStringFromAPI(siteData["service_for_site"])
-	state.ServiceForSiteRefType = utils.MapStringFromAPI(siteData["service_for_site_ref_type_"])
-	state.SpanningTreeType = utils.MapStringFromAPI(siteData["spanning_tree_type"])
-	state.RegionName = utils.MapStringFromAPI(siteData["region_name"])
-	state.DscpToPBitMap = utils.MapStringFromAPI(siteData["dscp_to_p_bit_map"])
-	state.AnycastMacAddress = utils.MapStringFromAPI(siteData["anycast_mac_address"])
+	state.ServiceForSite = utils.MapStringWithMode(siteData, "service_for_site", resourceType, mode)
+	state.ServiceForSiteRefType = utils.MapStringWithMode(siteData, "service_for_site_ref_type_", resourceType, mode)
+	state.SpanningTreeType = utils.MapStringWithMode(siteData, "spanning_tree_type", resourceType, mode)
+	state.RegionName = utils.MapStringWithMode(siteData, "region_name", resourceType, mode)
+	state.DscpToPBitMap = utils.MapStringWithMode(siteData, "dscp_to_p_bit_map", resourceType, mode)
+	state.AnycastMacAddress = utils.MapStringWithMode(siteData, "anycast_mac_address", resourceType, mode)
 
-	// Handle object properties
-	if op, ok := siteData["object_properties"].(map[string]interface{}); ok {
-		objProps := veritySiteObjectPropertiesModel{}
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if op, ok := siteData["object_properties"].(map[string]interface{}); ok {
+			objProps := veritySiteObjectPropertiesModel{}
 
-		// Handle nested system_graphs array
-		if systemGraphs, exists := op["system_graphs"].([]interface{}); exists && len(systemGraphs) > 0 {
-			var graphsList []veritySiteSystemGraphsModel
-			for _, graph := range systemGraphs {
-				graphMap, ok := graph.(map[string]interface{})
-				if !ok {
-					continue
+			// Handle nested system_graphs array
+			if systemGraphs, exists := op["system_graphs"].([]interface{}); exists && len(systemGraphs) > 0 {
+				var graphsList []veritySiteSystemGraphsModel
+				for _, graph := range systemGraphs {
+					graphMap, ok := graph.(map[string]interface{})
+					if !ok {
+						continue
+					}
+					graphModel := veritySiteSystemGraphsModel{
+						GraphNumData: utils.MapStringWithModeNested(graphMap, "graph_num_data", resourceType, "object_properties.system_graphs.graph_num_data", mode),
+						Index:        utils.MapInt64WithModeNested(graphMap, "index", resourceType, "object_properties.system_graphs.index", mode),
+					}
+					graphsList = append(graphsList, graphModel)
 				}
-				graphModel := veritySiteSystemGraphsModel{
-					GraphNumData: utils.MapStringFromAPI(graphMap["graph_num_data"]),
-					Index:        utils.MapInt64FromAPI(graphMap["index"]),
-				}
-				graphsList = append(graphsList, graphModel)
+				objProps.SystemGraphs = graphsList
+			} else {
+				objProps.SystemGraphs = []veritySiteSystemGraphsModel{}
 			}
-			objProps.SystemGraphs = graphsList
-		} else {
-			objProps.SystemGraphs = []veritySiteSystemGraphsModel{}
-		}
 
-		state.ObjectProperties = []veritySiteObjectPropertiesModel{objProps}
+			state.ObjectProperties = []veritySiteObjectPropertiesModel{objProps}
+		} else {
+			state.ObjectProperties = nil
+		}
 	} else {
 		state.ObjectProperties = nil
 	}
 
-	// Handle islands
-	if islands, ok := siteData["islands"].([]interface{}); ok && len(islands) > 0 {
-		var islandsList []veritySiteIslandsModel
-		for _, island := range islands {
-			islandMap, ok := island.(map[string]interface{})
-			if !ok {
-				continue
+	// Handle islands block
+	if utils.FieldAppliesToMode(resourceType, "islands", mode) {
+		if islands, ok := siteData["islands"].([]interface{}); ok && len(islands) > 0 {
+			var islandsList []veritySiteIslandsModel
+			for _, island := range islands {
+				islandMap, ok := island.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				islandModel := veritySiteIslandsModel{
+					ToiSwitchpoint:        utils.MapStringWithModeNested(islandMap, "toi_switchpoint", resourceType, "islands.toi_switchpoint", mode),
+					ToiSwitchpointRefType: utils.MapStringWithModeNested(islandMap, "toi_switchpoint_ref_type_", resourceType, "islands.toi_switchpoint_ref_type_", mode),
+					Index:                 utils.MapInt64WithModeNested(islandMap, "index", resourceType, "islands.index", mode),
+				}
+				islandsList = append(islandsList, islandModel)
 			}
-			islandModel := veritySiteIslandsModel{
-				ToiSwitchpoint:        utils.MapStringFromAPI(islandMap["toi_switchpoint"]),
-				ToiSwitchpointRefType: utils.MapStringFromAPI(islandMap["toi_switchpoint_ref_type_"]),
-				Index:                 utils.MapInt64FromAPI(islandMap["index"]),
-			}
-			islandsList = append(islandsList, islandModel)
+			state.Islands = islandsList
+		} else {
+			state.Islands = nil
 		}
-		state.Islands = islandsList
 	} else {
 		state.Islands = nil
 	}
 
-	// Handle pairs
-	if pairs, ok := siteData["pairs"].([]interface{}); ok && len(pairs) > 0 {
-		var pairsList []veritySitePairsModel
-		for _, pair := range pairs {
-			pairMap, ok := pair.(map[string]interface{})
-			if !ok {
-				continue
+	// Handle pairs block
+	if utils.FieldAppliesToMode(resourceType, "pairs", mode) {
+		if pairs, ok := siteData["pairs"].([]interface{}); ok && len(pairs) > 0 {
+			var pairsList []veritySitePairsModel
+			for _, pair := range pairs {
+				pairMap, ok := pair.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				pairModel := veritySitePairsModel{
+					Name:                utils.MapStringWithModeNested(pairMap, "name", resourceType, "pairs.name", mode),
+					Switchpoint1:        utils.MapStringWithModeNested(pairMap, "switchpoint_1", resourceType, "pairs.switchpoint_1", mode),
+					Switchpoint1RefType: utils.MapStringWithModeNested(pairMap, "switchpoint_1_ref_type_", resourceType, "pairs.switchpoint_1_ref_type_", mode),
+					Switchpoint2:        utils.MapStringWithModeNested(pairMap, "switchpoint_2", resourceType, "pairs.switchpoint_2", mode),
+					Switchpoint2RefType: utils.MapStringWithModeNested(pairMap, "switchpoint_2_ref_type_", resourceType, "pairs.switchpoint_2_ref_type_", mode),
+					LagGroup:            utils.MapStringWithModeNested(pairMap, "lag_group", resourceType, "pairs.lag_group", mode),
+					LagGroupRefType:     utils.MapStringWithModeNested(pairMap, "lag_group_ref_type_", resourceType, "pairs.lag_group_ref_type_", mode),
+					IsWhiteboxPair:      utils.MapBoolWithModeNested(pairMap, "is_whitebox_pair", resourceType, "pairs.is_whitebox_pair", mode),
+					Index:               utils.MapInt64WithModeNested(pairMap, "index", resourceType, "pairs.index", mode),
+				}
+				pairsList = append(pairsList, pairModel)
 			}
-			pairModel := veritySitePairsModel{
-				Name:                utils.MapStringFromAPI(pairMap["name"]),
-				Switchpoint1:        utils.MapStringFromAPI(pairMap["switchpoint_1"]),
-				Switchpoint1RefType: utils.MapStringFromAPI(pairMap["switchpoint_1_ref_type_"]),
-				Switchpoint2:        utils.MapStringFromAPI(pairMap["switchpoint_2"]),
-				Switchpoint2RefType: utils.MapStringFromAPI(pairMap["switchpoint_2_ref_type_"]),
-				LagGroup:            utils.MapStringFromAPI(pairMap["lag_group"]),
-				LagGroupRefType:     utils.MapStringFromAPI(pairMap["lag_group_ref_type_"]),
-				IsWhiteboxPair:      utils.MapBoolFromAPI(pairMap["is_whitebox_pair"]),
-				Index:               utils.MapInt64FromAPI(pairMap["index"]),
-			}
-			pairsList = append(pairsList, pairModel)
+			state.Pairs = pairsList
+		} else {
+			state.Pairs = nil
 		}
-		state.Pairs = pairsList
 	} else {
 		state.Pairs = nil
 	}
@@ -955,7 +1014,9 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 }
 
 func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// Skip modification if we're deleting the resource
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -966,56 +1027,136 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 		return
 	}
 
-	// Validate auto-assigned field specifications in configuration when auto-assigned
-	// Check the actual configuration, not the plan
-	var config veritySiteResourceModel
-	if !req.Config.Raw.IsNull() {
-		resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = siteResourceType
+	mode := r.provCtx.mode
 
-		if !config.AnycastMacAddressAutoAssigned.IsNull() && config.AnycastMacAddressAutoAssigned.ValueBool() {
-			if !config.AnycastMacAddress.IsNull() && !config.AnycastMacAddress.IsUnknown() && config.AnycastMacAddress.ValueString() != "" {
-				resp.Diagnostics.AddError(
-					"Anycast MAC Address cannot be specified when auto-assigned",
-					"The 'anycast_mac_address' field cannot be specified in the configuration when 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
-				)
-				return
-			}
-		}
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
 	}
 
-	// For new resources (where state is null), mark auto-assigned fields as Unknown
+	nullifier.NullifyStrings(
+		"service_for_site", "service_for_site_ref_type_",
+		"spanning_tree_type", "region_name",
+		"dscp_to_p_bit_map", "anycast_mac_address",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "force_spanning_tree_on_fabric_ports",
+		"read_only_mode", "aggressive_reporting",
+		"enable_dhcp_snooping", "ip_source_guard",
+		"anycast_mac_address_auto_assigned_",
+	)
+
+	nullifier.NullifyInt64s(
+		"revision", "mac_address_aging_time",
+		"mlag_delay_restore_timer", "bgp_keepalive_timer",
+		"bgp_hold_down_timer", "spine_bgp_advertisement_interval",
+		"spine_bgp_connect_timer", "leaf_bgp_keep_alive_timer",
+		"leaf_bgp_hold_down_timer", "leaf_bgp_advertisement_interval",
+		"leaf_bgp_connect_timer", "link_state_timeout_value",
+		"evpn_multihoming_startup_delay", "evpn_mac_holdtime",
+		"crc_failure_threshold", "duplicate_address_detection_max_number_of_moves",
+		"duplicate_address_detection_time",
+	)
+
+	// =========================================================================
+	// CREATE operation - handle auto-assigned fields
+	// =========================================================================
 	if req.State.Raw.IsNull() {
+		// Site-specific: AnycastMacAddress auto-assignment on create
 		if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), types.StringUnknown())
 		}
 		return
 	}
 
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
 	var state veritySiteResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Handle auto-assigned field behavior
+	var config veritySiteResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_site", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "revision", ConfigVal: config.Revision, StateVal: state.Revision},
+			{AttrName: "mac_address_aging_time", ConfigVal: config.MacAddressAgingTime, StateVal: state.MacAddressAgingTime},
+			{AttrName: "mlag_delay_restore_timer", ConfigVal: config.MlagDelayRestoreTimer, StateVal: state.MlagDelayRestoreTimer},
+			{AttrName: "bgp_keepalive_timer", ConfigVal: config.BgpKeepaliveTimer, StateVal: state.BgpKeepaliveTimer},
+			{AttrName: "bgp_hold_down_timer", ConfigVal: config.BgpHoldDownTimer, StateVal: state.BgpHoldDownTimer},
+			{AttrName: "spine_bgp_advertisement_interval", ConfigVal: config.SpineBgpAdvertisementInterval, StateVal: state.SpineBgpAdvertisementInterval},
+			{AttrName: "spine_bgp_connect_timer", ConfigVal: config.SpineBgpConnectTimer, StateVal: state.SpineBgpConnectTimer},
+			{AttrName: "leaf_bgp_keep_alive_timer", ConfigVal: config.LeafBgpKeepAliveTimer, StateVal: state.LeafBgpKeepAliveTimer},
+			{AttrName: "leaf_bgp_hold_down_timer", ConfigVal: config.LeafBgpHoldDownTimer, StateVal: state.LeafBgpHoldDownTimer},
+			{AttrName: "leaf_bgp_advertisement_interval", ConfigVal: config.LeafBgpAdvertisementInterval, StateVal: state.LeafBgpAdvertisementInterval},
+			{AttrName: "leaf_bgp_connect_timer", ConfigVal: config.LeafBgpConnectTimer, StateVal: state.LeafBgpConnectTimer},
+			{AttrName: "link_state_timeout_value", ConfigVal: config.LinkStateTimeoutValue, StateVal: state.LinkStateTimeoutValue},
+			{AttrName: "evpn_multihoming_startup_delay", ConfigVal: config.EvpnMultihomingStartupDelay, StateVal: state.EvpnMultihomingStartupDelay},
+			{AttrName: "evpn_mac_holdtime", ConfigVal: config.EvpnMacHoldtime, StateVal: state.EvpnMacHoldtime},
+			{AttrName: "crc_failure_threshold", ConfigVal: config.CrcFailureThreshold, StateVal: state.CrcFailureThreshold},
+			{AttrName: "duplicate_address_detection_max_number_of_moves", ConfigVal: config.DuplicateAddressDetectionMaxNumberOfMoves, StateVal: state.DuplicateAddressDetectionMaxNumberOfMoves},
+			{AttrName: "duplicate_address_detection_time", ConfigVal: config.DuplicateAddressDetectionTime, StateVal: state.DuplicateAddressDetectionTime},
+		},
+	})
+
+	// =========================================================================
+	// Validate auto-assigned field specifications
+	// =========================================================================
+	if !config.AnycastMacAddressAutoAssigned.IsNull() && config.AnycastMacAddressAutoAssigned.ValueBool() {
+		if !config.AnycastMacAddress.IsNull() && !config.AnycastMacAddress.IsUnknown() && config.AnycastMacAddress.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Anycast MAC Address cannot be specified when auto-assigned",
+				"The 'anycast_mac_address' field cannot be specified in the configuration when 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (AnycastMacAddress)
+	// =========================================================================
 	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
 		if !plan.AnycastMacAddressAutoAssigned.Equal(state.AnycastMacAddressAutoAssigned) {
-			// anycast_mac_address_auto_assigned_ is changing to true, API will assign the value
+			// anycast_mac_address_auto_assigned_ is changing to true - API will assign value
 			resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), types.StringUnknown())
 			resp.Diagnostics.AddWarning(
 				"Anycast MAC Address will be assigned by the API",
 				"The 'anycast_mac_address' field will be automatically assigned by the API because 'anycast_mac_address_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.AnycastMacAddress.Equal(state.AnycastMacAddress) {
-			// User tried to change AnycastMacAddress but it's auto-assigned
+			// User tried to change AnycastMacAddress but it's auto-assigned - suppress diff
 			resp.Diagnostics.AddWarning(
 				"Ignoring anycast_mac_address changes with auto-assignment enabled",
-				"The 'anycast_mac_address' field changes will be ignored because 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
+				"The 'anycast_mac_address' field changes will be ignored because 'anycast_mac_address_auto_assigned_' is set to true.",
 			)
-			// Keep the current state value to suppress the diff
 			if !state.AnycastMacAddress.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), state.AnycastMacAddress)
 			}

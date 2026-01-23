@@ -78,7 +78,6 @@ type ResourceConfig struct {
 	ResourceType     string                                                                         // String identifier for the resource
 	PutRequestType   reflect.Type                                                                   // Type for PUT requests
 	PatchRequestType reflect.Type                                                                   // Type for PATCH requests
-	HasAutoGen       bool                                                                           // Whether resource has auto-generated fields
 	APIClientGetter  func(*openapi.APIClient) ResourceAPIClient                                     // Function to get API client
 	PutFunc          func(*openapi.APIClient, context.Context, interface{}) (*http.Response, error) // Direct PUT API call
 	PatchFunc        func(*openapi.APIClient, context.Context, interface{}) (*http.Response, error) // Direct PATCH API call

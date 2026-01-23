@@ -52,20 +52,14 @@ func CompareAndSetNullableInt64Field(plan, state types.Int64, setter func(*opena
 	}
 }
 
-// CompareAndSetFloat64Field compares plan vs state and sets API field if changed (converts to float32)
-func CompareAndSetFloat64Field(plan, state types.Float64, setter func(*float32), hasChanges *bool) {
-	if !plan.Equal(state) {
-		val := float32(plan.ValueFloat64())
-		setter(openapi.PtrFloat32(val))
-		*hasChanges = true
-	}
-}
-
-// CompareAndSetNullableFloat64Field compares plan vs state and sets API nullable field if changed
-func CompareAndSetNullableFloat64Field(plan, state types.Float64, setter func(*openapi.NullableFloat32), hasChanges *bool) {
+// CompareAndSetNullableNumberField compares plan vs state and sets API nullable field if changed
+// Uses types.Number (backed by big.Float) to avoid float precision issues
+func CompareAndSetNullableNumberField(plan, state types.Number, setter func(*openapi.NullableFloat32), hasChanges *bool) {
 	if !plan.Equal(state) {
 		if !plan.IsNull() {
-			val := float32(plan.ValueFloat64())
+			bigVal := plan.ValueBigFloat()
+			float64Val, _ := bigVal.Float64()
+			val := float32(float64Val)
 			nullableVal := *openapi.NewNullableFloat32(&val)
 			setter(&nullableVal)
 		} else {

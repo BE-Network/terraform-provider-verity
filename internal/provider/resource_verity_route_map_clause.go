@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityRouteMapClauseResource{}
 	_ resource.ResourceWithConfigure   = &verityRouteMapClauseResource{}
 	_ resource.ResourceWithImportState = &verityRouteMapClauseResource{}
+	_ resource.ResourceWithModifyPlan  = &verityRouteMapClauseResource{}
 )
+
+const routeMapClauseResourceType = "routemapclauses"
 
 func NewVerityRouteMapClauseResource() resource.Resource {
 	return &verityRouteMapClauseResource{}
@@ -114,126 +117,157 @@ func (r *verityRouteMapClauseResource) Schema(ctx context.Context, req resource.
 			"enable": schema.BoolAttribute{
 				Description: "Enable flag of this provisioning object",
 				Optional:    true,
+				Computed:    true,
 			},
 			"permit_deny": schema.StringAttribute{
 				Description: "Action upon match of Community Strings.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_as_path_access_list": schema.StringAttribute{
 				Description: "Match AS Path Access List",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_as_path_access_list_ref_type_": schema.StringAttribute{
 				Description: "Object type for match_as_path_access_list field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_community_list": schema.StringAttribute{
 				Description: "Match Community List",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_community_list_ref_type_": schema.StringAttribute{
 				Description: "Object type for match_community_list field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_extended_community_list": schema.StringAttribute{
 				Description: "Match Extended Community List",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_extended_community_list_ref_type_": schema.StringAttribute{
 				Description: "Object type for match_extended_community_list field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_interface_number": schema.Int64Attribute{
 				Description: "Match Interface Number (minimum: 1, maximum: 256)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_interface_vlan": schema.Int64Attribute{
 				Description: "Match Interface VLAN (minimum: 1, maximum: 4094)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_ipv4_address_ip_prefix_list": schema.StringAttribute{
 				Description: "Match IPv4 Address IPv4 Prefix List",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_ipv4_address_ip_prefix_list_ref_type_": schema.StringAttribute{
 				Description: "Object type for match_ipv4_address_ip_prefix_list field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_ipv4_next_hop_ip_prefix_list": schema.StringAttribute{
 				Description: "Match IPv4 Next Hop IPv4 Prefix List",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_ipv4_next_hop_ip_prefix_list_ref_type_": schema.StringAttribute{
 				Description: "Object type for match_ipv4_next_hop_ip_prefix_list field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_local_preference": schema.Int64Attribute{
 				Description: "Match BGP Local Preference value on the route (maximum: 4294967295)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_metric": schema.Int64Attribute{
 				Description: "Match Metric of the IP route entry (minimum: 1, maximum: 4294967295)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_origin": schema.StringAttribute{
 				Description: "Match routes based on the value of the BGP Origin attribute",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_peer_ip_address": schema.StringAttribute{
 				Description: "Match BGP Peer IP Address the route was learned from",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_peer_interface": schema.Int64Attribute{
 				Description: "Match BGP Peer port the route was learned from (minimum: 1, maximum: 256)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_peer_vlan": schema.Int64Attribute{
 				Description: "Match BGP Peer VLAN over which the route was learned (minimum: 1, maximum: 4094)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_source_protocol": schema.StringAttribute{
 				Description: "Match Routing Protocol the route originated from",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_vrf": schema.StringAttribute{
 				Description: "Match VRF the route is associated with",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_vrf_ref_type_": schema.StringAttribute{
 				Description: "Object type for match_vrf field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_tag": schema.Int64Attribute{
 				Description: "Match routes that have this value for a Tag attribute (minimum: 1, maximum: 4294967295)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_evpn_route_type_default": schema.BoolAttribute{
 				Description: "Match based on the type of EVPN Route Type being Default",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_evpn_route_type": schema.StringAttribute{
 				Description: "Match based on the indicated EVPN Route Type",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_vni": schema.Int64Attribute{
 				Description: "Match based on the VNI value (minimum: 1, maximum: 16777215)",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_ipv6_address_ipv6_prefix_list": schema.StringAttribute{
 				Description: "Match IPv4 Address IPv6 Prefix List",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_ipv6_address_ipv6_prefix_list_ref_type_": schema.StringAttribute{
 				Description: "Object type for match_ipv6_address_ipv6_prefix_list field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_ipv6_next_hop_ipv6_prefix_list": schema.StringAttribute{
 				Description: "Match IPv6 Next Hop IPv6 Prefix List",
 				Optional:    true,
+				Computed:    true,
 			},
 			"match_ipv6_next_hop_ipv6_prefix_list_ref_type_": schema.StringAttribute{
 				Description: "Object type for match_ipv6_next_hop_ipv6_prefix_list field",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -244,10 +278,12 @@ func (r *verityRouteMapClauseResource) Schema(ctx context.Context, req resource.
 						"notes": schema.StringAttribute{
 							Description: "User Notes.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"match_fields_shown": schema.StringAttribute{
 							Description: "Match fields shown",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -259,6 +295,13 @@ func (r *verityRouteMapClauseResource) Schema(ctx context.Context, req resource.
 func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityRouteMapClauseResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityRouteMapClauseResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -308,16 +351,19 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		{FieldName: "MatchEvpnRouteTypeDefault", APIField: &routeMapClauseProps.MatchEvpnRouteTypeDefault, TFValue: plan.MatchEvpnRouteTypeDefault},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_route_map_clause", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "MatchInterfaceNumber", APIField: &routeMapClauseProps.MatchInterfaceNumber, TFValue: plan.MatchInterfaceNumber},
-		{FieldName: "MatchInterfaceVlan", APIField: &routeMapClauseProps.MatchInterfaceVlan, TFValue: plan.MatchInterfaceVlan},
-		{FieldName: "MatchLocalPreference", APIField: &routeMapClauseProps.MatchLocalPreference, TFValue: plan.MatchLocalPreference},
-		{FieldName: "MatchMetric", APIField: &routeMapClauseProps.MatchMetric, TFValue: plan.MatchMetric},
-		{FieldName: "MatchPeerInterface", APIField: &routeMapClauseProps.MatchPeerInterface, TFValue: plan.MatchPeerInterface},
-		{FieldName: "MatchPeerVlan", APIField: &routeMapClauseProps.MatchPeerVlan, TFValue: plan.MatchPeerVlan},
-		{FieldName: "MatchTag", APIField: &routeMapClauseProps.MatchTag, TFValue: plan.MatchTag},
-		{FieldName: "MatchVni", APIField: &routeMapClauseProps.MatchVni, TFValue: plan.MatchVni},
+		{FieldName: "MatchInterfaceNumber", APIField: &routeMapClauseProps.MatchInterfaceNumber, TFValue: config.MatchInterfaceNumber, IsConfigured: configuredAttrs.IsConfigured("match_interface_number")},
+		{FieldName: "MatchInterfaceVlan", APIField: &routeMapClauseProps.MatchInterfaceVlan, TFValue: config.MatchInterfaceVlan, IsConfigured: configuredAttrs.IsConfigured("match_interface_vlan")},
+		{FieldName: "MatchLocalPreference", APIField: &routeMapClauseProps.MatchLocalPreference, TFValue: config.MatchLocalPreference, IsConfigured: configuredAttrs.IsConfigured("match_local_preference")},
+		{FieldName: "MatchMetric", APIField: &routeMapClauseProps.MatchMetric, TFValue: config.MatchMetric, IsConfigured: configuredAttrs.IsConfigured("match_metric")},
+		{FieldName: "MatchPeerInterface", APIField: &routeMapClauseProps.MatchPeerInterface, TFValue: config.MatchPeerInterface, IsConfigured: configuredAttrs.IsConfigured("match_peer_interface")},
+		{FieldName: "MatchPeerVlan", APIField: &routeMapClauseProps.MatchPeerVlan, TFValue: config.MatchPeerVlan, IsConfigured: configuredAttrs.IsConfigured("match_peer_vlan")},
+		{FieldName: "MatchTag", APIField: &routeMapClauseProps.MatchTag, TFValue: config.MatchTag, IsConfigured: configuredAttrs.IsConfigured("match_tag")},
+		{FieldName: "MatchVni", APIField: &routeMapClauseProps.MatchVni, TFValue: config.MatchVni, IsConfigured: configuredAttrs.IsConfigured("match_vni")},
 	})
 
 	// Handle object properties
@@ -339,8 +385,32 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 	tflog.Info(ctx, fmt.Sprintf("Route Map Clause %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_map_clauses")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityRouteMapClauseResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if routeMapClauseData, exists := bulkMgr.GetResourceResponse("route_map_clause", name); exists {
+			state := populateRouteMapClauseState(ctx, minState, routeMapClauseData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -361,12 +431,22 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 
 	name := state.Name.ValueString()
 
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if routeMapClauseData, exists := r.bulkOpsMgr.GetResourceResponse("route_map_clause", name); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached route_map_clause data for %s from recent operation", name))
+			state = populateRouteMapClauseState(ctx, state, routeMapClauseData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("route_map_clause") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Route Map Clause %s verification – trusting recent successful API operation", name))
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("No recent Route Map Clause operations found, performing normal verification for %s", name))
+	tflog.Debug(ctx, fmt.Sprintf("Fetching Route Map Clause for verification of %s", name))
 
 	type RouteMapClauseResponse struct {
 		RouteMapClause map[string]map[string]interface{} `json:"route_map_clause"`
@@ -429,75 +509,7 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Route Map Clause '%s' under API key '%s'", name, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(routeMapClauseMap["name"])
-
-	// Handle object properties
-	if objProps, ok := routeMapClauseMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityRouteMapClauseObjectPropertiesModel{
-			{
-				Notes:            utils.MapStringFromAPI(objProps["notes"]),
-				MatchFieldsShown: utils.MapStringFromAPI(objProps["match_fields_shown"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"permit_deny":                                    &state.PermitDeny,
-		"match_as_path_access_list":                      &state.MatchAsPathAccessList,
-		"match_as_path_access_list_ref_type_":            &state.MatchAsPathAccessListRefType,
-		"match_community_list":                           &state.MatchCommunityList,
-		"match_community_list_ref_type_":                 &state.MatchCommunityListRefType,
-		"match_extended_community_list":                  &state.MatchExtendedCommunityList,
-		"match_extended_community_list_ref_type_":        &state.MatchExtendedCommunityListRefType,
-		"match_ipv4_address_ip_prefix_list":              &state.MatchIpv4AddressIpPrefixList,
-		"match_ipv4_address_ip_prefix_list_ref_type_":    &state.MatchIpv4AddressIpPrefixListRefType,
-		"match_ipv4_next_hop_ip_prefix_list":             &state.MatchIpv4NextHopIpPrefixList,
-		"match_ipv4_next_hop_ip_prefix_list_ref_type_":   &state.MatchIpv4NextHopIpPrefixListRefType,
-		"match_origin":                                   &state.MatchOrigin,
-		"match_peer_ip_address":                          &state.MatchPeerIpAddress,
-		"match_source_protocol":                          &state.MatchSourceProtocol,
-		"match_vrf":                                      &state.MatchVrf,
-		"match_vrf_ref_type_":                            &state.MatchVrfRefType,
-		"match_evpn_route_type":                          &state.MatchEvpnRouteType,
-		"match_ipv6_address_ipv6_prefix_list":            &state.MatchIpv6AddressIpv6PrefixList,
-		"match_ipv6_address_ipv6_prefix_list_ref_type_":  &state.MatchIpv6AddressIpv6PrefixListRefType,
-		"match_ipv6_next_hop_ipv6_prefix_list":           &state.MatchIpv6NextHopIpv6PrefixList,
-		"match_ipv6_next_hop_ipv6_prefix_list_ref_type_": &state.MatchIpv6NextHopIpv6PrefixListRefType,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(routeMapClauseMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":                        &state.Enable,
-		"match_evpn_route_type_default": &state.MatchEvpnRouteTypeDefault,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(routeMapClauseMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"match_interface_number": &state.MatchInterfaceNumber,
-		"match_interface_vlan":   &state.MatchInterfaceVlan,
-		"match_local_preference": &state.MatchLocalPreference,
-		"match_metric":           &state.MatchMetric,
-		"match_peer_interface":   &state.MatchPeerInterface,
-		"match_peer_vlan":        &state.MatchPeerVlan,
-		"match_tag":              &state.MatchTag,
-		"match_vni":              &state.MatchVni,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(routeMapClauseMap[apiKey])
-	}
-
+	state = populateRouteMapClauseState(ctx, state, routeMapClauseMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -675,7 +687,34 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 
 	tflog.Info(ctx, fmt.Sprintf("Route Map Clause %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "route_map_clauses")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityRouteMapClauseResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if routeMapClauseData, exists := bulkMgr.GetResourceResponse("route_map_clause", name); exists {
+			newState := populateRouteMapClauseState(ctx, minState, routeMapClauseData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityRouteMapClauseResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -708,4 +747,181 @@ func (r *verityRouteMapClauseResource) Delete(ctx context.Context, req resource.
 
 func (r *verityRouteMapClauseResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateRouteMapClauseState(ctx context.Context, state verityRouteMapClauseResourceModel, data map[string]interface{}, mode string) verityRouteMapClauseResourceModel {
+	const resourceType = routeMapClauseResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// String fields
+	state.PermitDeny = utils.MapStringWithMode(data, "permit_deny", resourceType, mode)
+	state.MatchAsPathAccessList = utils.MapStringWithMode(data, "match_as_path_access_list", resourceType, mode)
+	state.MatchAsPathAccessListRefType = utils.MapStringWithMode(data, "match_as_path_access_list_ref_type_", resourceType, mode)
+	state.MatchCommunityList = utils.MapStringWithMode(data, "match_community_list", resourceType, mode)
+	state.MatchCommunityListRefType = utils.MapStringWithMode(data, "match_community_list_ref_type_", resourceType, mode)
+	state.MatchExtendedCommunityList = utils.MapStringWithMode(data, "match_extended_community_list", resourceType, mode)
+	state.MatchExtendedCommunityListRefType = utils.MapStringWithMode(data, "match_extended_community_list_ref_type_", resourceType, mode)
+	state.MatchIpv4AddressIpPrefixList = utils.MapStringWithMode(data, "match_ipv4_address_ip_prefix_list", resourceType, mode)
+	state.MatchIpv4AddressIpPrefixListRefType = utils.MapStringWithMode(data, "match_ipv4_address_ip_prefix_list_ref_type_", resourceType, mode)
+	state.MatchIpv4NextHopIpPrefixList = utils.MapStringWithMode(data, "match_ipv4_next_hop_ip_prefix_list", resourceType, mode)
+	state.MatchIpv4NextHopIpPrefixListRefType = utils.MapStringWithMode(data, "match_ipv4_next_hop_ip_prefix_list_ref_type_", resourceType, mode)
+	state.MatchOrigin = utils.MapStringWithMode(data, "match_origin", resourceType, mode)
+	state.MatchPeerIpAddress = utils.MapStringWithMode(data, "match_peer_ip_address", resourceType, mode)
+	state.MatchSourceProtocol = utils.MapStringWithMode(data, "match_source_protocol", resourceType, mode)
+	state.MatchVrf = utils.MapStringWithMode(data, "match_vrf", resourceType, mode)
+	state.MatchVrfRefType = utils.MapStringWithMode(data, "match_vrf_ref_type_", resourceType, mode)
+	state.MatchEvpnRouteType = utils.MapStringWithMode(data, "match_evpn_route_type", resourceType, mode)
+	state.MatchIpv6AddressIpv6PrefixList = utils.MapStringWithMode(data, "match_ipv6_address_ipv6_prefix_list", resourceType, mode)
+	state.MatchIpv6AddressIpv6PrefixListRefType = utils.MapStringWithMode(data, "match_ipv6_address_ipv6_prefix_list_ref_type_", resourceType, mode)
+	state.MatchIpv6NextHopIpv6PrefixList = utils.MapStringWithMode(data, "match_ipv6_next_hop_ipv6_prefix_list", resourceType, mode)
+	state.MatchIpv6NextHopIpv6PrefixListRefType = utils.MapStringWithMode(data, "match_ipv6_next_hop_ipv6_prefix_list_ref_type_", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.MatchEvpnRouteTypeDefault = utils.MapBoolWithMode(data, "match_evpn_route_type_default", resourceType, mode)
+
+	// Int64 fields
+	state.MatchInterfaceNumber = utils.MapInt64WithMode(data, "match_interface_number", resourceType, mode)
+	state.MatchInterfaceVlan = utils.MapInt64WithMode(data, "match_interface_vlan", resourceType, mode)
+	state.MatchLocalPreference = utils.MapInt64WithMode(data, "match_local_preference", resourceType, mode)
+	state.MatchMetric = utils.MapInt64WithMode(data, "match_metric", resourceType, mode)
+	state.MatchPeerInterface = utils.MapInt64WithMode(data, "match_peer_interface", resourceType, mode)
+	state.MatchPeerVlan = utils.MapInt64WithMode(data, "match_peer_vlan", resourceType, mode)
+	state.MatchTag = utils.MapInt64WithMode(data, "match_tag", resourceType, mode)
+	state.MatchVni = utils.MapInt64WithMode(data, "match_vni", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityRouteMapClauseObjectPropertiesModel{
+				Notes:            utils.MapStringWithModeNested(objProps, "notes", resourceType, "object_properties.notes", mode),
+				MatchFieldsShown: utils.MapStringWithModeNested(objProps, "match_fields_shown", resourceType, "object_properties.match_fields_shown", mode),
+			}
+			state.ObjectProperties = []verityRouteMapClauseObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityRouteMapClauseResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = routeMapClauseResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+		"match_evpn_route_type_default",
+	)
+
+	nullifier.NullifyStrings(
+		"permit_deny",
+		"match_as_path_access_list",
+		"match_as_path_access_list_ref_type_",
+		"match_community_list",
+		"match_community_list_ref_type_",
+		"match_extended_community_list",
+		"match_extended_community_list_ref_type_",
+		"match_ipv4_address_ip_prefix_list",
+		"match_ipv4_address_ip_prefix_list_ref_type_",
+		"match_ipv4_next_hop_ip_prefix_list",
+		"match_ipv4_next_hop_ip_prefix_list_ref_type_",
+		"match_origin",
+		"match_peer_ip_address",
+		"match_source_protocol",
+		"match_vrf",
+		"match_vrf_ref_type_",
+		"match_evpn_route_type",
+		"match_ipv6_address_ipv6_prefix_list",
+		"match_ipv6_address_ipv6_prefix_list_ref_type_",
+		"match_ipv6_next_hop_ipv6_prefix_list",
+		"match_ipv6_next_hop_ipv6_prefix_list_ref_type_",
+	)
+
+	nullifier.NullifyInt64s(
+		"match_interface_number",
+		"match_interface_vlan",
+		"match_local_preference",
+		"match_metric",
+		"match_peer_interface",
+		"match_peer_vlan",
+		"match_tag",
+		"match_vni",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityRouteMapClauseResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityRouteMapClauseResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_route_map_clause", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "match_interface_number", ConfigVal: config.MatchInterfaceNumber, StateVal: state.MatchInterfaceNumber},
+			{AttrName: "match_interface_vlan", ConfigVal: config.MatchInterfaceVlan, StateVal: state.MatchInterfaceVlan},
+			{AttrName: "match_local_preference", ConfigVal: config.MatchLocalPreference, StateVal: state.MatchLocalPreference},
+			{AttrName: "match_metric", ConfigVal: config.MatchMetric, StateVal: state.MatchMetric},
+			{AttrName: "match_peer_interface", ConfigVal: config.MatchPeerInterface, StateVal: state.MatchPeerInterface},
+			{AttrName: "match_peer_vlan", ConfigVal: config.MatchPeerVlan, StateVal: state.MatchPeerVlan},
+			{AttrName: "match_tag", ConfigVal: config.MatchTag, StateVal: state.MatchTag},
+			{AttrName: "match_vni", ConfigVal: config.MatchVni, StateVal: state.MatchVni},
+		},
+	})
 }

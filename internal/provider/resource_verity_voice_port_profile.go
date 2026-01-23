@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityVoicePortProfileResource{}
 	_ resource.ResourceWithConfigure   = &verityVoicePortProfileResource{}
 	_ resource.ResourceWithImportState = &verityVoicePortProfileResource{}
+	_ resource.ResourceWithModifyPlan  = &verityVoicePortProfileResource{}
 )
+
+const voicePortProfileResourceType = "voiceportprofiles"
 
 func NewVerityVoicePortProfileResource() resource.Resource {
 	return &verityVoicePortProfileResource{}
@@ -117,134 +120,167 @@ func (r *verityVoicePortProfileResource) Schema(ctx context.Context, req resourc
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"protocol": schema.StringAttribute{
 				Description: "Voice Protocol: MGCP or SIP",
 				Optional:    true,
+				Computed:    true,
 			},
 			"digit_map": schema.StringAttribute{
 				Description: "Dial Plan",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_three_way_enable": schema.BoolAttribute{
 				Description: "Enable three way calling",
 				Optional:    true,
+				Computed:    true,
 			},
 			"caller_id_enable": schema.BoolAttribute{
 				Description: "Caller ID",
 				Optional:    true,
+				Computed:    true,
 			},
 			"caller_id_name_enable": schema.BoolAttribute{
 				Description: "Caller ID Name",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_waiting_enable": schema.BoolAttribute{
 				Description: "Call Waiting",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_unconditional_enable": schema.BoolAttribute{
 				Description: "Call Forward Unconditional",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_on_busy_enable": schema.BoolAttribute{
 				Description: "Call Forward On Busy",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_forward_on_no_answer_ring_count": schema.Int64Attribute{
 				Description: "Call Forward on number of rings",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_transfer_enable": schema.BoolAttribute{
 				Description: "Call Transfer",
 				Optional:    true,
+				Computed:    true,
 			},
 			"audio_mwi_enable": schema.BoolAttribute{
 				Description: "Audio Message Waiting Indicator",
 				Optional:    true,
+				Computed:    true,
 			},
 			"anonymous_call_block_enable": schema.BoolAttribute{
 				Description: "Block all anonymous calls",
 				Optional:    true,
+				Computed:    true,
 			},
 			"do_not_disturb_enable": schema.BoolAttribute{
 				Description: "Do not disturb",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cid_blocking_enable": schema.BoolAttribute{
 				Description: "CID Blocking",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cid_num_presentation_status": schema.StringAttribute{
 				Description: "CID Number Presentation",
 				Optional:    true,
+				Computed:    true,
 			},
 			"cid_name_presentation_status": schema.StringAttribute{
 				Description: "CID Name Presentation",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_waiting_caller_id_enable": schema.BoolAttribute{
 				Description: "Call Waiting Caller ID",
 				Optional:    true,
+				Computed:    true,
 			},
 			"call_hold_enable": schema.BoolAttribute{
 				Description: "Call Hold",
 				Optional:    true,
+				Computed:    true,
 			},
 			"visual_mwi_enable": schema.BoolAttribute{
 				Description: "Visual Message Waiting Indicator",
 				Optional:    true,
+				Computed:    true,
 			},
 			"mwi_refresh_timer": schema.Int64Attribute{
 				Description: "Message Waiting Indicator Refresh",
 				Optional:    true,
+				Computed:    true,
 			},
 			"hotline_enable": schema.BoolAttribute{
 				Description: "Direct Connect",
 				Optional:    true,
+				Computed:    true,
 			},
 			"dial_tone_feature_delay": schema.Int64Attribute{
 				Description: "Dial Tone Feature Delay",
 				Optional:    true,
+				Computed:    true,
 			},
 			"intercom_enable": schema.BoolAttribute{
 				Description: "Intercom",
 				Optional:    true,
+				Computed:    true,
 			},
 			"intercom_transfer_enable": schema.BoolAttribute{
 				Description: "Intercom Transfer",
 				Optional:    true,
+				Computed:    true,
 			},
 			"transmit_gain": schema.Int64Attribute{
 				Description: "Transmit Gain in tenths of a dB. Example -30 would equal -3.0db",
 				Optional:    true,
+				Computed:    true,
 			},
 			"receive_gain": schema.Int64Attribute{
 				Description: "Receive Gain in tenths of a dB. Example -30 would equal -3.0db",
 				Optional:    true,
+				Computed:    true,
 			},
 			"echo_cancellation_enable": schema.BoolAttribute{
 				Description: "Echo Cancellation Enable",
 				Optional:    true,
+				Computed:    true,
 			},
 			"jitter_target": schema.Int64Attribute{
 				Description: "The target value of the jitter buffer in milliseconds",
 				Optional:    true,
+				Computed:    true,
 			},
 			"jitter_buffer_max": schema.Int64Attribute{
 				Description: "The maximum depth of the jitter buffer in milliseconds",
 				Optional:    true,
+				Computed:    true,
 			},
 			"signaling_code": schema.StringAttribute{
 				Description: "Signaling Code",
 				Optional:    true,
+				Computed:    true,
 			},
 			"release_timer": schema.Int64Attribute{
 				Description: "Release timer defined in seconds. The default value of this attribute is 10 seconds",
 				Optional:    true,
+				Computed:    true,
 			},
 			"roh_timer": schema.Int64Attribute{
 				Description: "Time in seconds for the receiver is off-hook before ROH tone is applied. The value 0 disables ROH timing. The default value is 15 seconds",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -255,14 +291,17 @@ func (r *verityVoicePortProfileResource) Schema(ctx context.Context, req resourc
 						"port_monitoring": schema.StringAttribute{
 							Description: "Defines importance of Link Down on this port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"group": schema.StringAttribute{
 							Description: "Group",
 							Optional:    true,
+							Computed:    true,
 						},
 						"format_dial_plan": schema.BoolAttribute{
 							Description: "Format dial plan for easier viewing",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -274,6 +313,13 @@ func (r *verityVoicePortProfileResource) Schema(ctx context.Context, req resourc
 func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan verityVoicePortProfileResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityVoicePortProfileResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -324,17 +370,20 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		{FieldName: "EchoCancellationEnable", APIField: &vppProps.EchoCancellationEnable, TFValue: plan.EchoCancellationEnable},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_voice_port_profile", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "CallForwardOnNoAnswerRingCount", APIField: &vppProps.CallForwardOnNoAnswerRingCount, TFValue: plan.CallForwardOnNoAnswerRingCount},
-		{FieldName: "MwiRefreshTimer", APIField: &vppProps.MwiRefreshTimer, TFValue: plan.MwiRefreshTimer},
-		{FieldName: "DialToneFeatureDelay", APIField: &vppProps.DialToneFeatureDelay, TFValue: plan.DialToneFeatureDelay},
-		{FieldName: "TransmitGain", APIField: &vppProps.TransmitGain, TFValue: plan.TransmitGain},
-		{FieldName: "ReceiveGain", APIField: &vppProps.ReceiveGain, TFValue: plan.ReceiveGain},
-		{FieldName: "JitterTarget", APIField: &vppProps.JitterTarget, TFValue: plan.JitterTarget},
-		{FieldName: "JitterBufferMax", APIField: &vppProps.JitterBufferMax, TFValue: plan.JitterBufferMax},
-		{FieldName: "ReleaseTimer", APIField: &vppProps.ReleaseTimer, TFValue: plan.ReleaseTimer},
-		{FieldName: "RohTimer", APIField: &vppProps.RohTimer, TFValue: plan.RohTimer},
+		{FieldName: "CallForwardOnNoAnswerRingCount", APIField: &vppProps.CallForwardOnNoAnswerRingCount, TFValue: config.CallForwardOnNoAnswerRingCount, IsConfigured: configuredAttrs.IsConfigured("call_forward_on_no_answer_ring_count")},
+		{FieldName: "MwiRefreshTimer", APIField: &vppProps.MwiRefreshTimer, TFValue: config.MwiRefreshTimer, IsConfigured: configuredAttrs.IsConfigured("mwi_refresh_timer")},
+		{FieldName: "DialToneFeatureDelay", APIField: &vppProps.DialToneFeatureDelay, TFValue: config.DialToneFeatureDelay, IsConfigured: configuredAttrs.IsConfigured("dial_tone_feature_delay")},
+		{FieldName: "TransmitGain", APIField: &vppProps.TransmitGain, TFValue: config.TransmitGain, IsConfigured: configuredAttrs.IsConfigured("transmit_gain")},
+		{FieldName: "ReceiveGain", APIField: &vppProps.ReceiveGain, TFValue: config.ReceiveGain, IsConfigured: configuredAttrs.IsConfigured("receive_gain")},
+		{FieldName: "JitterTarget", APIField: &vppProps.JitterTarget, TFValue: config.JitterTarget, IsConfigured: configuredAttrs.IsConfigured("jitter_target")},
+		{FieldName: "JitterBufferMax", APIField: &vppProps.JitterBufferMax, TFValue: config.JitterBufferMax, IsConfigured: configuredAttrs.IsConfigured("jitter_buffer_max")},
+		{FieldName: "ReleaseTimer", APIField: &vppProps.ReleaseTimer, TFValue: config.ReleaseTimer, IsConfigured: configuredAttrs.IsConfigured("release_timer")},
+		{FieldName: "RohTimer", APIField: &vppProps.RohTimer, TFValue: config.RohTimer, IsConfigured: configuredAttrs.IsConfigured("roh_timer")},
 	})
 
 	// Handle object properties
@@ -357,8 +406,32 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 	tflog.Info(ctx, fmt.Sprintf("Voice Port Profile %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "voice_port_profiles")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityVoicePortProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if voicePortProfileData, exists := bulkMgr.GetResourceResponse("voice_port_profile", name); exists {
+			state := populateVoicePortProfileState(ctx, minState, voicePortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -378,6 +451,16 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 	}
 
 	vppName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if voicePortProfileData, exists := r.bulkOpsMgr.GetResourceResponse("voice_port_profile", vppName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached voice port profile data for %s from recent operation", vppName))
+			state = populateVoicePortProfileState(ctx, state, voicePortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("voice_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Voice Port Profile %s verification – trusting recent successful API operation", vppName))
@@ -448,78 +531,7 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Voice Port Profile '%s' under API key '%s'", vppName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(vppMap["name"])
-
-	// Handle object properties
-	if objProps, ok := vppMap["object_properties"].(map[string]interface{}); ok {
-		state.ObjectProperties = []verityVoicePortProfileObjectPropertiesModel{
-			{
-				PortMonitoring: utils.MapStringFromAPI(objProps["port_monitoring"]),
-				Group:          utils.MapStringFromAPI(objProps["group"]),
-				FormatDialPlan: utils.MapBoolFromAPI(objProps["format_dial_plan"]),
-			},
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"protocol":                     &state.Protocol,
-		"digit_map":                    &state.DigitMap,
-		"signaling_code":               &state.SignalingCode,
-		"cid_num_presentation_status":  &state.CidNumPresentationStatus,
-		"cid_name_presentation_status": &state.CidNamePresentationStatus,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(vppMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable":                            &state.Enable,
-		"call_three_way_enable":             &state.CallThreeWayEnable,
-		"caller_id_enable":                  &state.CallerIdEnable,
-		"caller_id_name_enable":             &state.CallerIdNameEnable,
-		"call_waiting_enable":               &state.CallWaitingEnable,
-		"call_forward_unconditional_enable": &state.CallForwardUnconditionalEnable,
-		"call_forward_on_busy_enable":       &state.CallForwardOnBusyEnable,
-		"call_transfer_enable":              &state.CallTransferEnable,
-		"audio_mwi_enable":                  &state.AudioMwiEnable,
-		"anonymous_call_block_enable":       &state.AnonymousCallBlockEnable,
-		"do_not_disturb_enable":             &state.DoNotDisturbEnable,
-		"cid_blocking_enable":               &state.CidBlockingEnable,
-		"call_waiting_caller_id_enable":     &state.CallWaitingCallerIdEnable,
-		"call_hold_enable":                  &state.CallHoldEnable,
-		"visual_mwi_enable":                 &state.VisualMwiEnable,
-		"hotline_enable":                    &state.HotlineEnable,
-		"intercom_enable":                   &state.IntercomEnable,
-		"intercom_transfer_enable":          &state.IntercomTransferEnable,
-		"echo_cancellation_enable":          &state.EchoCancellationEnable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(vppMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"call_forward_on_no_answer_ring_count": &state.CallForwardOnNoAnswerRingCount,
-		"mwi_refresh_timer":                    &state.MwiRefreshTimer,
-		"dial_tone_feature_delay":              &state.DialToneFeatureDelay,
-		"transmit_gain":                        &state.TransmitGain,
-		"receive_gain":                         &state.ReceiveGain,
-		"jitter_target":                        &state.JitterTarget,
-		"jitter_buffer_max":                    &state.JitterBufferMax,
-		"release_timer":                        &state.ReleaseTimer,
-		"roh_timer":                            &state.RohTimer,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapNullableInt64FromAPI(vppMap[apiKey])
-	}
-
+	state = populateVoicePortProfileState(ctx, state, vppMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -620,7 +632,34 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 
 	tflog.Info(ctx, fmt.Sprintf("Voice Port Profile %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "voice_port_profiles")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityVoicePortProfileResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if voicePortProfileData, exists := bulkMgr.GetResourceResponse("voice_port_profile", name); exists {
+			updatedState := populateVoicePortProfileState(ctx, minState, voicePortProfileData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &updatedState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityVoicePortProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -653,4 +692,165 @@ func (r *verityVoicePortProfileResource) Delete(ctx context.Context, req resourc
 
 func (r *verityVoicePortProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateVoicePortProfileState(ctx context.Context, state verityVoicePortProfileResourceModel, data map[string]interface{}, mode string) verityVoicePortProfileResourceModel {
+	const resourceType = voicePortProfileResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// String fields
+	state.Protocol = utils.MapStringWithMode(data, "protocol", resourceType, mode)
+	state.DigitMap = utils.MapStringWithMode(data, "digit_map", resourceType, mode)
+	state.SignalingCode = utils.MapStringWithMode(data, "signaling_code", resourceType, mode)
+	state.CidNumPresentationStatus = utils.MapStringWithMode(data, "cid_num_presentation_status", resourceType, mode)
+	state.CidNamePresentationStatus = utils.MapStringWithMode(data, "cid_name_presentation_status", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+	state.CallThreeWayEnable = utils.MapBoolWithMode(data, "call_three_way_enable", resourceType, mode)
+	state.CallerIdEnable = utils.MapBoolWithMode(data, "caller_id_enable", resourceType, mode)
+	state.CallerIdNameEnable = utils.MapBoolWithMode(data, "caller_id_name_enable", resourceType, mode)
+	state.CallWaitingEnable = utils.MapBoolWithMode(data, "call_waiting_enable", resourceType, mode)
+	state.CallForwardUnconditionalEnable = utils.MapBoolWithMode(data, "call_forward_unconditional_enable", resourceType, mode)
+	state.CallForwardOnBusyEnable = utils.MapBoolWithMode(data, "call_forward_on_busy_enable", resourceType, mode)
+	state.CallTransferEnable = utils.MapBoolWithMode(data, "call_transfer_enable", resourceType, mode)
+	state.AudioMwiEnable = utils.MapBoolWithMode(data, "audio_mwi_enable", resourceType, mode)
+	state.AnonymousCallBlockEnable = utils.MapBoolWithMode(data, "anonymous_call_block_enable", resourceType, mode)
+	state.DoNotDisturbEnable = utils.MapBoolWithMode(data, "do_not_disturb_enable", resourceType, mode)
+	state.CidBlockingEnable = utils.MapBoolWithMode(data, "cid_blocking_enable", resourceType, mode)
+	state.CallWaitingCallerIdEnable = utils.MapBoolWithMode(data, "call_waiting_caller_id_enable", resourceType, mode)
+	state.CallHoldEnable = utils.MapBoolWithMode(data, "call_hold_enable", resourceType, mode)
+	state.VisualMwiEnable = utils.MapBoolWithMode(data, "visual_mwi_enable", resourceType, mode)
+	state.HotlineEnable = utils.MapBoolWithMode(data, "hotline_enable", resourceType, mode)
+	state.IntercomEnable = utils.MapBoolWithMode(data, "intercom_enable", resourceType, mode)
+	state.IntercomTransferEnable = utils.MapBoolWithMode(data, "intercom_transfer_enable", resourceType, mode)
+	state.EchoCancellationEnable = utils.MapBoolWithMode(data, "echo_cancellation_enable", resourceType, mode)
+
+	// Int fields
+	state.CallForwardOnNoAnswerRingCount = utils.MapInt64WithMode(data, "call_forward_on_no_answer_ring_count", resourceType, mode)
+	state.MwiRefreshTimer = utils.MapInt64WithMode(data, "mwi_refresh_timer", resourceType, mode)
+	state.DialToneFeatureDelay = utils.MapInt64WithMode(data, "dial_tone_feature_delay", resourceType, mode)
+	state.TransmitGain = utils.MapInt64WithMode(data, "transmit_gain", resourceType, mode)
+	state.ReceiveGain = utils.MapInt64WithMode(data, "receive_gain", resourceType, mode)
+	state.JitterTarget = utils.MapInt64WithMode(data, "jitter_target", resourceType, mode)
+	state.JitterBufferMax = utils.MapInt64WithMode(data, "jitter_buffer_max", resourceType, mode)
+	state.ReleaseTimer = utils.MapInt64WithMode(data, "release_timer", resourceType, mode)
+	state.RohTimer = utils.MapInt64WithMode(data, "roh_timer", resourceType, mode)
+
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityVoicePortProfileObjectPropertiesModel{
+				PortMonitoring: utils.MapStringWithModeNested(objProps, "port_monitoring", resourceType, "object_properties.port_monitoring", mode),
+				Group:          utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
+				FormatDialPlan: utils.MapBoolWithModeNested(objProps, "format_dial_plan", resourceType, "object_properties.format_dial_plan", mode),
+			}
+			state.ObjectProperties = []verityVoicePortProfileObjectPropertiesModel{objPropsModel}
+		} else {
+			state.ObjectProperties = nil
+		}
+	} else {
+		state.ObjectProperties = nil
+	}
+
+	return state
+}
+
+func (r *verityVoicePortProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityVoicePortProfileResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = voicePortProfileResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyStrings(
+		"protocol", "digit_map", "signaling_code",
+		"cid_num_presentation_status", "cid_name_presentation_status",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "call_three_way_enable", "caller_id_enable", "caller_id_name_enable",
+		"call_waiting_enable", "call_forward_unconditional_enable", "call_forward_on_busy_enable",
+		"call_transfer_enable", "audio_mwi_enable", "anonymous_call_block_enable",
+		"do_not_disturb_enable", "cid_blocking_enable", "call_waiting_caller_id_enable",
+		"call_hold_enable", "visual_mwi_enable", "hotline_enable",
+		"intercom_enable", "intercom_transfer_enable", "echo_cancellation_enable",
+	)
+
+	nullifier.NullifyInt64s(
+		"call_forward_on_no_answer_ring_count", "mwi_refresh_timer", "dial_tone_feature_delay",
+		"transmit_gain", "receive_gain", "jitter_target",
+		"jitter_buffer_max", "release_timer", "roh_timer",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityVoicePortProfileResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityVoicePortProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_voice_port_profile", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "call_forward_on_no_answer_ring_count", ConfigVal: config.CallForwardOnNoAnswerRingCount, StateVal: state.CallForwardOnNoAnswerRingCount},
+			{AttrName: "mwi_refresh_timer", ConfigVal: config.MwiRefreshTimer, StateVal: state.MwiRefreshTimer},
+			{AttrName: "dial_tone_feature_delay", ConfigVal: config.DialToneFeatureDelay, StateVal: state.DialToneFeatureDelay},
+			{AttrName: "transmit_gain", ConfigVal: config.TransmitGain, StateVal: state.TransmitGain},
+			{AttrName: "receive_gain", ConfigVal: config.ReceiveGain, StateVal: state.ReceiveGain},
+			{AttrName: "jitter_target", ConfigVal: config.JitterTarget, StateVal: state.JitterTarget},
+			{AttrName: "jitter_buffer_max", ConfigVal: config.JitterBufferMax, StateVal: state.JitterBufferMax},
+			{AttrName: "release_timer", ConfigVal: config.ReleaseTimer, StateVal: state.ReleaseTimer},
+			{AttrName: "roh_timer", ConfigVal: config.RohTimer, StateVal: state.RohTimer},
+		},
+	})
 }

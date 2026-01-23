@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &veritySflowCollectorResource{}
 	_ resource.ResourceWithConfigure   = &veritySflowCollectorResource{}
 	_ resource.ResourceWithImportState = &veritySflowCollectorResource{}
+	_ resource.ResourceWithModifyPlan  = &veritySflowCollectorResource{}
 )
+
+const sflowCollectorResourceType = "sflowcollectors"
 
 func NewVeritySflowCollectorResource() resource.Resource {
 	return &veritySflowCollectorResource{}
@@ -80,14 +83,17 @@ func (r *veritySflowCollectorResource) Schema(ctx context.Context, req resource.
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"ip": schema.StringAttribute{
 				Description: "IP address of the sFlow Collector",
 				Optional:    true,
+				Computed:    true,
 			},
 			"port": schema.Int64Attribute{
 				Description: "Port (maximum 65535)",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 	}
@@ -96,6 +102,13 @@ func (r *veritySflowCollectorResource) Schema(ctx context.Context, req resource.
 func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan veritySflowCollectorResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config veritySflowCollectorResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -124,9 +137,12 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 		{FieldName: "Enable", APIField: &sflowCollectorReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_sflow_collector", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "Port", APIField: &sflowCollectorReq.Port, TFValue: plan.Port},
+		{FieldName: "Port", APIField: &sflowCollectorReq.Port, TFValue: config.Port, IsConfigured: configuredAttrs.IsConfigured("port")},
 	})
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "sflow_collector", name, *sflowCollectorReq, &resp.Diagnostics)
@@ -137,8 +153,32 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "sflow_collectors")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState veritySflowCollectorResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if sflowCollectorData, exists := bulkMgr.GetResourceResponse("sflow_collector", name); exists {
+			state := populateSflowCollectorState(ctx, minState, sflowCollectorData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -158,6 +198,16 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 	}
 
 	sflowCollectorName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if sflowCollectorData, exists := r.bulkOpsMgr.GetResourceResponse("sflow_collector", sflowCollectorName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached sflow_collector data for %s from recent operation", sflowCollectorName))
+			state = populateSflowCollectorState(ctx, state, sflowCollectorData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("sflow_collector") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping sflow collector %s verification – trusting recent successful API operation", sflowCollectorName))
@@ -229,35 +279,7 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found sflow collector '%s' under API key '%s'", sflowCollectorName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(sflowCollectorMap["name"])
-
-	// Map string fields
-	stringFieldMappings := map[string]*types.String{
-		"ip": &state.Ip,
-	}
-
-	for apiKey, stateField := range stringFieldMappings {
-		*stateField = utils.MapStringFromAPI(sflowCollectorMap[apiKey])
-	}
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(sflowCollectorMap[apiKey])
-	}
-
-	// Map int64 fields
-	int64FieldMappings := map[string]*types.Int64{
-		"port": &state.Port,
-	}
-
-	for apiKey, stateField := range int64FieldMappings {
-		*stateField = utils.MapInt64FromAPI(sflowCollectorMap[apiKey])
-	}
-
+	state = populateSflowCollectorState(ctx, state, sflowCollectorMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -309,7 +331,34 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "sflow_collectors")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState veritySflowCollectorResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if sflowCollectorData, exists := bulkMgr.GetResourceResponse("sflow_collector", name); exists {
+			newState := populateSflowCollectorState(ctx, minState, sflowCollectorData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *veritySflowCollectorResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -342,4 +391,103 @@ func (r *veritySflowCollectorResource) Delete(ctx context.Context, req resource.
 
 func (r *veritySflowCollectorResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populateSflowCollectorState(ctx context.Context, state veritySflowCollectorResourceModel, data map[string]interface{}, mode string) veritySflowCollectorResourceModel {
+	const resourceType = sflowCollectorResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// String fields
+	state.Ip = utils.MapStringWithMode(data, "ip", resourceType, mode)
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Int64 fields
+	state.Port = utils.MapInt64WithMode(data, "port", resourceType, mode)
+
+	return state
+}
+
+func (r *veritySflowCollectorResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan veritySflowCollectorResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = sflowCollectorResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
+
+	nullifier.NullifyStrings(
+		"ip",
+	)
+
+	nullifier.NullifyInt64s(
+		"port",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state veritySflowCollectorResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config veritySflowCollectorResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_sflow_collector", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "port", ConfigVal: config.Port, StateVal: state.Port},
+		},
+	})
 }

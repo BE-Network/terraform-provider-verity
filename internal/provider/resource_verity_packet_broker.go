@@ -22,7 +22,10 @@ var (
 	_ resource.Resource                = &verityPacketBrokerResource{}
 	_ resource.ResourceWithConfigure   = &verityPacketBrokerResource{}
 	_ resource.ResourceWithImportState = &verityPacketBrokerResource{}
+	_ resource.ResourceWithModifyPlan  = &verityPacketBrokerResource{}
 )
+
+const packetBrokerResourceType = "packetbroker"
 
 func NewVerityPacketBrokerResource() resource.Resource {
 	return &verityPacketBrokerResource{}
@@ -93,6 +96,7 @@ func (r *verityPacketBrokerResource) Schema(ctx context.Context, req resource.Sc
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -103,18 +107,22 @@ func (r *verityPacketBrokerResource) Schema(ctx context.Context, req resource.Sc
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -126,18 +134,22 @@ func (r *verityPacketBrokerResource) Schema(ctx context.Context, req resource.Sc
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -149,18 +161,22 @@ func (r *verityPacketBrokerResource) Schema(ctx context.Context, req resource.Sc
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -172,18 +188,22 @@ func (r *verityPacketBrokerResource) Schema(ctx context.Context, req resource.Sc
 						"enable": schema.BoolAttribute{
 							Description: "Enable",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter": schema.StringAttribute{
 							Description: "Filter",
 							Optional:    true,
+							Computed:    true,
 						},
 						"filter_ref_type_": schema.StringAttribute{
 							Description: "Object type for filter field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -310,8 +330,32 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 	tflog.Info(ctx, fmt.Sprintf("Packet Broker %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "packet_brokers")
 
-	plan.Name = types.StringValue(name)
-	resp.State.Set(ctx, plan)
+	var minState verityPacketBrokerResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if pbData, exists := bulkMgr.GetResourceResponse("packet_broker", name); exists {
+			state := populatePacketBrokerState(ctx, minState, pbData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -331,6 +375,16 @@ func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.Read
 	}
 
 	pbName := state.Name.ValueString()
+
+	// Check for cached data from recent operations first
+	if r.bulkOpsMgr != nil {
+		if pbData, exists := r.bulkOpsMgr.GetResourceResponse("packet_broker", pbName); exists {
+			tflog.Info(ctx, fmt.Sprintf("Using cached packet broker data for %s from recent operation", pbName))
+			state = populatePacketBrokerState(ctx, state, pbData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packet_broker") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Packet Broker %s verification – trusting recent successful API operation", pbName))
@@ -402,61 +456,7 @@ func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.Read
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Packet Broker '%s' under API key '%s'", pbName, actualAPIName))
 
-	state.Name = utils.MapStringFromAPI(pbMap["name"])
-
-	// Map boolean fields
-	boolFieldMappings := map[string]*types.Bool{
-		"enable": &state.Enable,
-	}
-
-	for apiKey, stateField := range boolFieldMappings {
-		*stateField = utils.MapBoolFromAPI(pbMap[apiKey])
-	}
-
-	// Helper function to parse filter arrays
-	parseFilters := func(apiFilters []interface{}) []verityPacketBrokerFilterModel {
-		var filters []verityPacketBrokerFilterModel
-		for _, f := range apiFilters {
-			filter, ok := f.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			filterModel := verityPacketBrokerFilterModel{
-				Enable:        utils.MapBoolFromAPI(filter["enable"]),
-				Filter:        utils.MapStringFromAPI(filter["filter"]),
-				FilterRefType: utils.MapStringFromAPI(filter["filter_ref_type_"]),
-				Index:         utils.MapInt64FromAPI(filter["index"]),
-			}
-			filters = append(filters, filterModel)
-		}
-		return filters
-	}
-
-	// Handle filter arrays
-	if ipv4Permit, ok := pbMap["ipv4_permit"].([]interface{}); ok && len(ipv4Permit) > 0 {
-		state.Ipv4Permit = parseFilters(ipv4Permit)
-	} else {
-		state.Ipv4Permit = nil
-	}
-
-	if ipv4Deny, ok := pbMap["ipv4_deny"].([]interface{}); ok && len(ipv4Deny) > 0 {
-		state.Ipv4Deny = parseFilters(ipv4Deny)
-	} else {
-		state.Ipv4Deny = nil
-	}
-
-	if ipv6Permit, ok := pbMap["ipv6_permit"].([]interface{}); ok && len(ipv6Permit) > 0 {
-		state.Ipv6Permit = parseFilters(ipv6Permit)
-	} else {
-		state.Ipv6Permit = nil
-	}
-
-	if ipv6Deny, ok := pbMap["ipv6_deny"].([]interface{}); ok && len(ipv6Deny) > 0 {
-		state.Ipv6Deny = parseFilters(ipv6Deny)
-	} else {
-		state.Ipv6Deny = nil
-	}
-
+	state = populatePacketBrokerState(ctx, state, pbMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -735,7 +735,34 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 
 	tflog.Info(ctx, fmt.Sprintf("Packet Broker %s update operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "packet_brokers")
-	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
+
+	var minState verityPacketBrokerResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Try to use cached response from bulk operation to populate state with API values
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if pbData, exists := bulkMgr.GetResourceResponse("packet_broker", name); exists {
+			newState := populatePacketBrokerState(ctx, minState, pbData, r.provCtx.mode)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
+			return
+		}
+	}
+
+	// If no cached data, fall back to normal Read
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *verityPacketBrokerResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -768,4 +795,109 @@ func (r *verityPacketBrokerResource) Delete(ctx context.Context, req resource.De
 
 func (r *verityPacketBrokerResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+}
+
+func populatePacketBrokerState(ctx context.Context, state verityPacketBrokerResourceModel, data map[string]interface{}, mode string) verityPacketBrokerResourceModel {
+	const resourceType = packetBrokerResourceType
+
+	state.Name = utils.MapStringFromAPI(data["name"])
+
+	// Boolean fields
+	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// Helper function to parse filter arrays with mode awareness
+	parseFilters := func(apiFilters []interface{}, blockName string) []verityPacketBrokerFilterModel {
+		var filters []verityPacketBrokerFilterModel
+		for _, f := range apiFilters {
+			filter, ok := f.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			filterModel := verityPacketBrokerFilterModel{
+				Enable:        utils.MapBoolWithModeNested(filter, "enable", resourceType, blockName+".enable", mode),
+				Filter:        utils.MapStringWithModeNested(filter, "filter", resourceType, blockName+".filter", mode),
+				FilterRefType: utils.MapStringWithModeNested(filter, "filter_ref_type_", resourceType, blockName+".filter_ref_type_", mode),
+				Index:         utils.MapInt64WithModeNested(filter, "index", resourceType, blockName+".index", mode),
+			}
+			filters = append(filters, filterModel)
+		}
+		return filters
+	}
+
+	// Handle filter arrays with mode awareness
+	if utils.FieldAppliesToMode(resourceType, "ipv4_permit", mode) {
+		if ipv4Permit, ok := data["ipv4_permit"].([]interface{}); ok && len(ipv4Permit) > 0 {
+			state.Ipv4Permit = parseFilters(ipv4Permit, "ipv4_permit")
+		} else {
+			state.Ipv4Permit = nil
+		}
+	} else {
+		state.Ipv4Permit = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv4_deny", mode) {
+		if ipv4Deny, ok := data["ipv4_deny"].([]interface{}); ok && len(ipv4Deny) > 0 {
+			state.Ipv4Deny = parseFilters(ipv4Deny, "ipv4_deny")
+		} else {
+			state.Ipv4Deny = nil
+		}
+	} else {
+		state.Ipv4Deny = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv6_permit", mode) {
+		if ipv6Permit, ok := data["ipv6_permit"].([]interface{}); ok && len(ipv6Permit) > 0 {
+			state.Ipv6Permit = parseFilters(ipv6Permit, "ipv6_permit")
+		} else {
+			state.Ipv6Permit = nil
+		}
+	} else {
+		state.Ipv6Permit = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "ipv6_deny", mode) {
+		if ipv6Deny, ok := data["ipv6_deny"].([]interface{}); ok && len(ipv6Deny) > 0 {
+			state.Ipv6Deny = parseFilters(ipv6Deny, "ipv6_deny")
+		} else {
+			state.Ipv6Deny = nil
+		}
+	} else {
+		state.Ipv6Deny = nil
+	}
+
+	return state
+}
+
+func (r *verityPacketBrokerResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan verityPacketBrokerResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = packetBrokerResourceType
+	mode := r.provCtx.mode
+
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
+	}
+
+	nullifier.NullifyBools(
+		"enable",
+	)
 }

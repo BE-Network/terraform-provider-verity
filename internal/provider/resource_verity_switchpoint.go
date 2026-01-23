@@ -25,6 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &veritySwitchpointResource{}
 )
 
+const switchpointResourceType = "switchpoints"
+
 func NewVeritySwitchpointResource() resource.Resource {
 	return &veritySwitchpointResource{}
 }
@@ -161,54 +163,67 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			"enable": schema.BoolAttribute{
 				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"device_serial_number": schema.StringAttribute{
 				Description: "Device Serial Number",
 				Optional:    true,
+				Computed:    true,
 			},
 			"connected_bundle": schema.StringAttribute{
 				Description: "Connected Bundle",
 				Optional:    true,
+				Computed:    true,
 			},
 			"connected_bundle_ref_type_": schema.StringAttribute{
 				Description: "Object type for connected_bundle field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"read_only_mode": schema.BoolAttribute{
 				Description: "When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware",
 				Optional:    true,
+				Computed:    true,
 			},
 			"locked": schema.BoolAttribute{
 				Description: "Permission lock",
 				Optional:    true,
+				Computed:    true,
 			},
 			"out_of_band_management": schema.BoolAttribute{
 				Description: "For Switch Endpoints. Denotes a Switch is managed out of band via the management port",
 				Optional:    true,
+				Computed:    true,
 			},
 			"type": schema.StringAttribute{
 				Description: "Type of Switchpoint",
 				Optional:    true,
+				Computed:    true,
 			},
 			"spine_plane": schema.StringAttribute{
 				Description: "Spine Plane - subgrouping of super spine and spine",
 				Optional:    true,
+				Computed:    true,
 			},
 			"spine_plane_ref_type_": schema.StringAttribute{
 				Description: "Object type for spine_plane field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"pod": schema.StringAttribute{
 				Description: "Pod - subgrouping of spine and leaf switches",
 				Optional:    true,
+				Computed:    true,
 			},
 			"pod_ref_type_": schema.StringAttribute{
 				Description: "Object type for pod field",
 				Optional:    true,
+				Computed:    true,
 			},
 			"rack": schema.StringAttribute{
 				Description: "Physical Rack location of the Switch",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switch_router_id_ip_mask": schema.StringAttribute{
 				Description: "Switch BGP Router Identifier. This field should not be specified when 'switch_router_id_ip_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
@@ -218,6 +233,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			"switch_router_id_ip_mask_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether the Switch BGP Router Identifier should be automatically assigned by the API. When set to true, do not specify the 'switch_router_id_ip_mask' field in your configuration.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"switch_vtep_id_ip_mask": schema.StringAttribute{
 				Description: "Switch VTEP Identifier. This field should not be specified when 'switch_vtep_id_ip_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
@@ -227,6 +243,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			"switch_vtep_id_ip_mask_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether the Switch VTEP Identifier should be automatically assigned by the API. When set to true, do not specify the 'switch_vtep_id_ip_mask' field in your configuration.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"bgp_as_number": schema.Int64Attribute{
 				Description: "BGP Autonomous System Number for the site underlay. This field should not be specified when 'bgp_as_number_auto_assigned_' is set to true, as the API will assign this value automatically.",
@@ -236,10 +253,12 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			"bgp_as_number_auto_assigned_": schema.BoolAttribute{
 				Description: "Whether the BGP AS Number should be automatically assigned by the API. When set to true, do not specify the 'bgp_as_number' field in your configuration.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"is_fabric": schema.BoolAttribute{
 				Description: "For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device",
 				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -250,14 +269,17 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						"badge": schema.StringAttribute{
 							Description: "Badge name",
 							Optional:    true,
+							Computed:    true,
 						},
 						"badge_ref_type_": schema.StringAttribute{
 							Description: "Object type for badge field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -269,18 +291,22 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						"child_num_endpoint": schema.StringAttribute{
 							Description: "Switchpoint associated with the Child",
 							Optional:    true,
+							Computed:    true,
 						},
 						"child_num_endpoint_ref_type_": schema.StringAttribute{
 							Description: "Object type for child_num_endpoint field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"child_num_device": schema.StringAttribute{
 							Description: "Device associated with the Child",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -292,30 +318,37 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						"traffic_mirror_num_enable": schema.BoolAttribute{
 							Description: "Enable Traffic Mirror",
 							Optional:    true,
+							Computed:    true,
 						},
 						"traffic_mirror_num_source_port": schema.StringAttribute{
 							Description: "Source Port for Traffic Mirror",
 							Optional:    true,
+							Computed:    true,
 						},
 						"traffic_mirror_num_source_lag_indicator": schema.BoolAttribute{
 							Description: "Source LAG Indicator for Traffic Mirror",
 							Optional:    true,
+							Computed:    true,
 						},
 						"traffic_mirror_num_destination_port": schema.StringAttribute{
 							Description: "Destination Port for Traffic Mirror",
 							Optional:    true,
+							Computed:    true,
 						},
 						"traffic_mirror_num_inbound_traffic": schema.BoolAttribute{
 							Description: "Boolean value indicating if the mirror is for inbound traffic",
 							Optional:    true,
+							Computed:    true,
 						},
 						"traffic_mirror_num_outbound_traffic": schema.BoolAttribute{
 							Description: "Boolean value indicating if the mirror is for outbound traffic",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -327,26 +360,32 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						"breakout": schema.StringAttribute{
 							Description: "Breakout Port Override",
 							Optional:    true,
+							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_num_icon": schema.StringAttribute{
 							Description: "Icon of this Eth Port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"eth_num_label": schema.StringAttribute{
 							Description: "Label of this Eth Port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"enable": schema.BoolAttribute{
 							Description: "Enable port",
 							Optional:    true,
+							Computed:    true,
 						},
 						"port_name": schema.StringAttribute{
 							Description: "The name identifying the port. Used for reference only, it won't actually change the port name.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -358,30 +397,37 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						"user_notes": schema.StringAttribute{
 							Description: "Notes written by User about the site",
 							Optional:    true,
+							Computed:    true,
 						},
 						"expected_parent_endpoint": schema.StringAttribute{
 							Description: "Expected Parent Endpoint",
 							Optional:    true,
+							Computed:    true,
 						},
 						"expected_parent_endpoint_ref_type_": schema.StringAttribute{
 							Description: "Object type for expected_parent_endpoint field",
 							Optional:    true,
+							Computed:    true,
 						},
 						"number_of_multipoints": schema.Int64Attribute{
 							Description: "Number of Multipoints",
 							Optional:    true,
+							Computed:    true,
 						},
 						"aggregate": schema.BoolAttribute{
 							Description: "For Switch Endpoints. Denotes switch aggregated with all of its sub switches",
 							Optional:    true,
+							Computed:    true,
 						},
 						"is_host": schema.BoolAttribute{
 							Description: "For Switch Endpoints. Denotes the Host Switch",
 							Optional:    true,
+							Computed:    true,
 						},
 						"draw_as_edge_device": schema.BoolAttribute{
 							Description: "Turn on to display the switch as an edge device instead of as a switch",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
@@ -393,6 +439,13 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan veritySwitchpointResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config veritySwitchpointResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -469,9 +522,12 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "IsFabric", APIField: &spProps.IsFabric, TFValue: plan.IsFabric},
 	})
 
-	// Handle nullable int64 fields
+	// Handle nullable int64 fields - parse HCL to detect explicit config
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_switchpoint", name)
+
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-		{FieldName: "BgpAsNumber", APIField: &spProps.BgpAsNumber, TFValue: plan.BgpAsNumber},
+		{FieldName: "BgpAsNumber", APIField: &spProps.BgpAsNumber, TFValue: config.BgpAsNumber, IsConfigured: configuredAttrs.IsConfigured("bgp_as_number")},
 	})
 
 	// Handle object properties
@@ -612,7 +668,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
-			state := r.populateSwitchpointState(ctx, minState, switchpointData)
+			state := populateSwitchpointState(ctx, minState, switchpointData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -652,7 +708,7 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 	if r.bulkOpsMgr != nil {
 		if switchpointData, exists := r.bulkOpsMgr.GetResourceResponse("switchpoint", spName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached switchpoint data for %s from recent operation", spName))
-			state = r.populateSwitchpointState(ctx, state, switchpointData)
+			state = populateSwitchpointState(ctx, state, switchpointData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -728,7 +784,7 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Found switchpoint '%s' under API key '%s'", spName, actualAPIName))
 
-	state = r.populateSwitchpointState(ctx, state, switchpointMap)
+	state = populateSwitchpointState(ctx, state, switchpointMap, r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -1273,7 +1329,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
-			state := r.populateSwitchpointState(ctx, minState, switchpointData)
+			state := populateSwitchpointState(ctx, minState, switchpointData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -1323,136 +1379,157 @@ func (r *veritySwitchpointResource) ImportState(ctx context.Context, req resourc
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func (r *veritySwitchpointResource) populateSwitchpointState(ctx context.Context, state veritySwitchpointResourceModel, switchpointData map[string]interface{}) veritySwitchpointResourceModel {
+func populateSwitchpointState(ctx context.Context, state veritySwitchpointResourceModel, switchpointData map[string]interface{}, mode string) veritySwitchpointResourceModel {
+	const resourceType = switchpointResourceType
+
 	state.Name = utils.MapStringFromAPI(switchpointData["name"])
 
 	// Int fields
-	state.BgpAsNumber = utils.MapInt64FromAPI(switchpointData["bgp_as_number"])
+	state.BgpAsNumber = utils.MapInt64WithMode(switchpointData, "bgp_as_number", resourceType, mode)
 
 	// Bool fields
-	state.Enable = utils.MapBoolFromAPI(switchpointData["enable"])
-	state.ReadOnlyMode = utils.MapBoolFromAPI(switchpointData["read_only_mode"])
-	state.Locked = utils.MapBoolFromAPI(switchpointData["locked"])
-	state.OutOfBandManagement = utils.MapBoolFromAPI(switchpointData["out_of_band_management"])
-	state.IsFabric = utils.MapBoolFromAPI(switchpointData["is_fabric"])
-	state.BgpAsNumberAutoAssigned = utils.MapBoolFromAPI(switchpointData["bgp_as_number_auto_assigned_"])
-	state.SwitchVtepIdIpMaskAutoAssigned = utils.MapBoolFromAPI(switchpointData["switch_vtep_id_ip_mask_auto_assigned_"])
-	state.SwitchRouterIdIpMaskAutoAssigned = utils.MapBoolFromAPI(switchpointData["switch_router_id_ip_mask_auto_assigned_"])
+	state.Enable = utils.MapBoolWithMode(switchpointData, "enable", resourceType, mode)
+	state.ReadOnlyMode = utils.MapBoolWithMode(switchpointData, "read_only_mode", resourceType, mode)
+	state.Locked = utils.MapBoolWithMode(switchpointData, "locked", resourceType, mode)
+	state.OutOfBandManagement = utils.MapBoolWithMode(switchpointData, "out_of_band_management", resourceType, mode)
+	state.IsFabric = utils.MapBoolWithMode(switchpointData, "is_fabric", resourceType, mode)
+	state.BgpAsNumberAutoAssigned = utils.MapBoolWithMode(switchpointData, "bgp_as_number_auto_assigned_", resourceType, mode)
+	state.SwitchVtepIdIpMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_vtep_id_ip_mask_auto_assigned_", resourceType, mode)
+	state.SwitchRouterIdIpMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_router_id_ip_mask_auto_assigned_", resourceType, mode)
 
 	// String fields
-	state.DeviceSerialNumber = utils.MapStringFromAPI(switchpointData["device_serial_number"])
-	state.ConnectedBundle = utils.MapStringFromAPI(switchpointData["connected_bundle"])
-	state.ConnectedBundleRefType = utils.MapStringFromAPI(switchpointData["connected_bundle_ref_type_"])
-	state.Type = utils.MapStringFromAPI(switchpointData["type"])
-	state.SpinePlane = utils.MapStringFromAPI(switchpointData["spine_plane"])
-	state.SpinePlaneRefType = utils.MapStringFromAPI(switchpointData["spine_plane_ref_type_"])
-	state.Pod = utils.MapStringFromAPI(switchpointData["pod"])
-	state.PodRefType = utils.MapStringFromAPI(switchpointData["pod_ref_type_"])
-	state.Rack = utils.MapStringFromAPI(switchpointData["rack"])
-	state.SwitchRouterIdIpMask = utils.MapStringFromAPI(switchpointData["switch_router_id_ip_mask"])
-	state.SwitchVtepIdIpMask = utils.MapStringFromAPI(switchpointData["switch_vtep_id_ip_mask"])
+	state.DeviceSerialNumber = utils.MapStringWithMode(switchpointData, "device_serial_number", resourceType, mode)
+	state.ConnectedBundle = utils.MapStringWithMode(switchpointData, "connected_bundle", resourceType, mode)
+	state.ConnectedBundleRefType = utils.MapStringWithMode(switchpointData, "connected_bundle_ref_type_", resourceType, mode)
+	state.Type = utils.MapStringWithMode(switchpointData, "type", resourceType, mode)
+	state.SpinePlane = utils.MapStringWithMode(switchpointData, "spine_plane", resourceType, mode)
+	state.SpinePlaneRefType = utils.MapStringWithMode(switchpointData, "spine_plane_ref_type_", resourceType, mode)
+	state.Pod = utils.MapStringWithMode(switchpointData, "pod", resourceType, mode)
+	state.PodRefType = utils.MapStringWithMode(switchpointData, "pod_ref_type_", resourceType, mode)
+	state.Rack = utils.MapStringWithMode(switchpointData, "rack", resourceType, mode)
+	state.SwitchRouterIdIpMask = utils.MapStringWithMode(switchpointData, "switch_router_id_ip_mask", resourceType, mode)
+	state.SwitchVtepIdIpMask = utils.MapStringWithMode(switchpointData, "switch_vtep_id_ip_mask", resourceType, mode)
 
-	// Handle object properties
-	if objProps, ok := switchpointData["object_properties"].(map[string]interface{}); ok {
-		op := veritySwitchpointObjectPropertiesModel{
-			UserNotes:                     utils.MapStringFromAPI(objProps["user_notes"]),
-			ExpectedParentEndpoint:        utils.MapStringFromAPI(objProps["expected_parent_endpoint"]),
-			ExpectedParentEndpointRefType: utils.MapStringFromAPI(objProps["expected_parent_endpoint_ref_type_"]),
-			NumberOfMultipoints:           utils.MapInt64FromAPI(objProps["number_of_multipoints"]),
-			Aggregate:                     utils.MapBoolFromAPI(objProps["aggregate"]),
-			IsHost:                        utils.MapBoolFromAPI(objProps["is_host"]),
-			DrawAsEdgeDevice:              utils.MapBoolFromAPI(objProps["draw_as_edge_device"]),
+	// Handle object_properties block
+	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
+		if objProps, ok := switchpointData["object_properties"].(map[string]interface{}); ok {
+			op := veritySwitchpointObjectPropertiesModel{
+				UserNotes:                     utils.MapStringWithModeNested(objProps, "user_notes", resourceType, "object_properties.user_notes", mode),
+				ExpectedParentEndpoint:        utils.MapStringWithModeNested(objProps, "expected_parent_endpoint", resourceType, "object_properties.expected_parent_endpoint", mode),
+				ExpectedParentEndpointRefType: utils.MapStringWithModeNested(objProps, "expected_parent_endpoint_ref_type_", resourceType, "object_properties.expected_parent_endpoint_ref_type_", mode),
+				NumberOfMultipoints:           utils.MapInt64WithModeNested(objProps, "number_of_multipoints", resourceType, "object_properties.number_of_multipoints", mode),
+				Aggregate:                     utils.MapBoolWithModeNested(objProps, "aggregate", resourceType, "object_properties.aggregate", mode),
+				IsHost:                        utils.MapBoolWithModeNested(objProps, "is_host", resourceType, "object_properties.is_host", mode),
+				DrawAsEdgeDevice:              utils.MapBoolWithModeNested(objProps, "draw_as_edge_device", resourceType, "object_properties.draw_as_edge_device", mode),
+			}
+			state.ObjectProperties = []veritySwitchpointObjectPropertiesModel{op}
+		} else {
+			state.ObjectProperties = nil
 		}
-
-		state.ObjectProperties = []veritySwitchpointObjectPropertiesModel{op}
 	} else {
 		state.ObjectProperties = nil
 	}
 
-	// Handle badges
-	if badgesArray, ok := switchpointData["badges"].([]interface{}); ok && len(badgesArray) > 0 {
-		var badges []veritySwitchpointBadgeModel
-		for _, b := range badgesArray {
-			badge, ok := b.(map[string]interface{})
-			if !ok {
-				continue
+	// Handle badges block
+	if utils.FieldAppliesToMode(resourceType, "badges", mode) {
+		if badgesArray, ok := switchpointData["badges"].([]interface{}); ok && len(badgesArray) > 0 {
+			var badges []veritySwitchpointBadgeModel
+			for _, b := range badgesArray {
+				badge, ok := b.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				badgeModel := veritySwitchpointBadgeModel{
+					Badge:        utils.MapStringWithModeNested(badge, "badge", resourceType, "badges.badge", mode),
+					BadgeRefType: utils.MapStringWithModeNested(badge, "badge_ref_type_", resourceType, "badges.badge_ref_type_", mode),
+					Index:        utils.MapInt64WithModeNested(badge, "index", resourceType, "badges.index", mode),
+				}
+				badges = append(badges, badgeModel)
 			}
-			badgeModel := veritySwitchpointBadgeModel{
-				Badge:        utils.MapStringFromAPI(badge["badge"]),
-				BadgeRefType: utils.MapStringFromAPI(badge["badge_ref_type_"]),
-				Index:        utils.MapInt64FromAPI(badge["index"]),
-			}
-			badges = append(badges, badgeModel)
+			state.Badges = badges
+		} else {
+			state.Badges = nil
 		}
-		state.Badges = badges
 	} else {
 		state.Badges = nil
 	}
 
-	// Handle children
-	if childrenArray, ok := switchpointData["children"].([]interface{}); ok && len(childrenArray) > 0 {
-		var children []veritySwitchpointChildModel
-		for _, c := range childrenArray {
-			child, ok := c.(map[string]interface{})
-			if !ok {
-				continue
+	// Handle children block
+	if utils.FieldAppliesToMode(resourceType, "children", mode) {
+		if childrenArray, ok := switchpointData["children"].([]interface{}); ok && len(childrenArray) > 0 {
+			var children []veritySwitchpointChildModel
+			for _, c := range childrenArray {
+				child, ok := c.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				childModel := veritySwitchpointChildModel{
+					ChildNumEndpoint:        utils.MapStringWithModeNested(child, "child_num_endpoint", resourceType, "children.child_num_endpoint", mode),
+					ChildNumEndpointRefType: utils.MapStringWithModeNested(child, "child_num_endpoint_ref_type_", resourceType, "children.child_num_endpoint_ref_type_", mode),
+					ChildNumDevice:          utils.MapStringWithModeNested(child, "child_num_device", resourceType, "children.child_num_device", mode),
+					Index:                   utils.MapInt64WithModeNested(child, "index", resourceType, "children.index", mode),
+				}
+				children = append(children, childModel)
 			}
-			childModel := veritySwitchpointChildModel{
-				ChildNumEndpoint:        utils.MapStringFromAPI(child["child_num_endpoint"]),
-				ChildNumEndpointRefType: utils.MapStringFromAPI(child["child_num_endpoint_ref_type_"]),
-				ChildNumDevice:          utils.MapStringFromAPI(child["child_num_device"]),
-				Index:                   utils.MapInt64FromAPI(child["index"]),
-			}
-			children = append(children, childModel)
+			state.Children = children
+		} else {
+			state.Children = nil
 		}
-		state.Children = children
 	} else {
 		state.Children = nil
 	}
 
-	// Handle traffic mirrors
-	if mirrorsArray, ok := switchpointData["traffic_mirrors"].([]interface{}); ok && len(mirrorsArray) > 0 {
-		var mirrors []veritySwitchpointTrafficMirrorModel
-		for _, m := range mirrorsArray {
-			mirror, ok := m.(map[string]interface{})
-			if !ok {
-				continue
+	// Handle traffic_mirrors block
+	if utils.FieldAppliesToMode(resourceType, "traffic_mirrors", mode) {
+		if mirrorsArray, ok := switchpointData["traffic_mirrors"].([]interface{}); ok && len(mirrorsArray) > 0 {
+			var mirrors []veritySwitchpointTrafficMirrorModel
+			for _, m := range mirrorsArray {
+				mirror, ok := m.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				mirrorModel := veritySwitchpointTrafficMirrorModel{
+					TrafficMirrorNumEnable:             utils.MapBoolWithModeNested(mirror, "traffic_mirror_num_enable", resourceType, "traffic_mirrors.traffic_mirror_num_enable", mode),
+					TrafficMirrorNumSourcePort:         utils.MapStringWithModeNested(mirror, "traffic_mirror_num_source_port", resourceType, "traffic_mirrors.traffic_mirror_num_source_port", mode),
+					TrafficMirrorNumSourceLagIndicator: utils.MapBoolWithModeNested(mirror, "traffic_mirror_num_source_lag_indicator", resourceType, "traffic_mirrors.traffic_mirror_num_source_lag_indicator", mode),
+					TrafficMirrorNumDestinationPort:    utils.MapStringWithModeNested(mirror, "traffic_mirror_num_destination_port", resourceType, "traffic_mirrors.traffic_mirror_num_destination_port", mode),
+					TrafficMirrorNumInboundTraffic:     utils.MapBoolWithModeNested(mirror, "traffic_mirror_num_inbound_traffic", resourceType, "traffic_mirrors.traffic_mirror_num_inbound_traffic", mode),
+					TrafficMirrorNumOutboundTraffic:    utils.MapBoolWithModeNested(mirror, "traffic_mirror_num_outbound_traffic", resourceType, "traffic_mirrors.traffic_mirror_num_outbound_traffic", mode),
+					Index:                              utils.MapInt64WithModeNested(mirror, "index", resourceType, "traffic_mirrors.index", mode),
+				}
+				mirrors = append(mirrors, mirrorModel)
 			}
-			mirrorModel := veritySwitchpointTrafficMirrorModel{
-				TrafficMirrorNumEnable:             utils.MapBoolFromAPI(mirror["traffic_mirror_num_enable"]),
-				TrafficMirrorNumSourcePort:         utils.MapStringFromAPI(mirror["traffic_mirror_num_source_port"]),
-				TrafficMirrorNumSourceLagIndicator: utils.MapBoolFromAPI(mirror["traffic_mirror_num_source_lag_indicator"]),
-				TrafficMirrorNumDestinationPort:    utils.MapStringFromAPI(mirror["traffic_mirror_num_destination_port"]),
-				TrafficMirrorNumInboundTraffic:     utils.MapBoolFromAPI(mirror["traffic_mirror_num_inbound_traffic"]),
-				TrafficMirrorNumOutboundTraffic:    utils.MapBoolFromAPI(mirror["traffic_mirror_num_outbound_traffic"]),
-				Index:                              utils.MapInt64FromAPI(mirror["index"]),
-			}
-			mirrors = append(mirrors, mirrorModel)
+			state.TrafficMirrors = mirrors
+		} else {
+			state.TrafficMirrors = nil
 		}
-		state.TrafficMirrors = mirrors
 	} else {
 		state.TrafficMirrors = nil
 	}
 
-	// Handle eths
-	if ethsArray, ok := switchpointData["eths"].([]interface{}); ok && len(ethsArray) > 0 {
-		var eths []veritySwitchpointEthModel
-		for _, e := range ethsArray {
-			eth, ok := e.(map[string]interface{})
-			if !ok {
-				continue
+	// Handle eths block
+	if utils.FieldAppliesToMode(resourceType, "eths", mode) {
+		if ethsArray, ok := switchpointData["eths"].([]interface{}); ok && len(ethsArray) > 0 {
+			var eths []veritySwitchpointEthModel
+			for _, e := range ethsArray {
+				eth, ok := e.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				ethModel := veritySwitchpointEthModel{
+					Breakout:    utils.MapStringWithModeNested(eth, "breakout", resourceType, "eths.breakout", mode),
+					Index:       utils.MapInt64WithModeNested(eth, "index", resourceType, "eths.index", mode),
+					EthNumIcon:  utils.MapStringWithModeNested(eth, "eth_num_icon", resourceType, "eths.eth_num_icon", mode),
+					EthNumLabel: utils.MapStringWithModeNested(eth, "eth_num_label", resourceType, "eths.eth_num_label", mode),
+					Enable:      utils.MapBoolWithModeNested(eth, "enable", resourceType, "eths.enable", mode),
+					PortName:    utils.MapStringWithModeNested(eth, "port_name", resourceType, "eths.port_name", mode),
+				}
+				eths = append(eths, ethModel)
 			}
-			ethModel := veritySwitchpointEthModel{
-				Breakout:    utils.MapStringFromAPI(eth["breakout"]),
-				Index:       utils.MapInt64FromAPI(eth["index"]),
-				EthNumIcon:  utils.MapStringFromAPI(eth["eth_num_icon"]),
-				EthNumLabel: utils.MapStringFromAPI(eth["eth_num_label"]),
-				Enable:      utils.MapBoolFromAPI(eth["enable"]),
-				PortName:    utils.MapStringFromAPI(eth["port_name"]),
-			}
-			eths = append(eths, ethModel)
+			state.Eths = eths
+		} else {
+			state.Eths = nil
 		}
-		state.Eths = eths
 	} else {
 		state.Eths = nil
 	}
@@ -1461,7 +1538,9 @@ func (r *veritySwitchpointResource) populateSwitchpointState(ctx context.Context
 }
 
 func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// Skip modification if we're deleting the resource
+	// =========================================================================
+	// Skip if deleting
+	// =========================================================================
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1472,48 +1551,45 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	// Validate auto-assigned field specifications in configuration when auto-assigned
-	// Check the actual configuration, not the plan
-	var config veritySwitchpointResourceModel
-	if !req.Config.Raw.IsNull() {
-		resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
+	// =========================================================================
+	// Mode-aware field nullification
+	// Set fields that don't apply to current mode to null to prevent
+	// "known after apply" messages for irrelevant fields.
+	// =========================================================================
+	const resourceType = switchpointResourceType
+	mode := r.provCtx.mode
 
-		if !config.BgpAsNumberAutoAssigned.IsNull() && config.BgpAsNumberAutoAssigned.ValueBool() {
-			if !config.BgpAsNumber.IsNull() && !config.BgpAsNumber.IsUnknown() {
-				resp.Diagnostics.AddError(
-					"BGP AS Number cannot be specified when auto-assigned",
-					"The 'bgp_as_number' field cannot be specified in the configuration when 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
-				)
-				return
-			}
-		}
-
-		if !config.SwitchRouterIdIpMaskAutoAssigned.IsNull() && config.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
-			if !config.SwitchRouterIdIpMask.IsNull() && !config.SwitchRouterIdIpMask.IsUnknown() && config.SwitchRouterIdIpMask.ValueString() != "" {
-				resp.Diagnostics.AddError(
-					"Switch Router ID IP Mask cannot be specified when auto-assigned",
-					"The 'switch_router_id_ip_mask' field cannot be specified in the configuration when 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-				)
-				return
-			}
-		}
-
-		if !config.SwitchVtepIdIpMaskAutoAssigned.IsNull() && config.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
-			if !config.SwitchVtepIdIpMask.IsNull() && !config.SwitchVtepIdIpMask.IsUnknown() && config.SwitchVtepIdIpMask.ValueString() != "" {
-				resp.Diagnostics.AddError(
-					"Switch VTEP ID IP Mask cannot be specified when auto-assigned",
-					"The 'switch_vtep_id_ip_mask' field cannot be specified in the configuration when 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-				)
-				return
-			}
-		}
+	nullifier := &utils.ModeFieldNullifier{
+		Ctx:          ctx,
+		ResourceType: resourceType,
+		Mode:         mode,
+		Plan:         &resp.Plan,
 	}
 
-	// For new resources (where state is null), mark auto-assigned fields as Unknown
+	nullifier.NullifyStrings(
+		"device_serial_number", "connected_bundle", "connected_bundle_ref_type_",
+		"type", "spine_plane", "spine_plane_ref_type_",
+		"pod", "pod_ref_type_", "rack",
+		"switch_router_id_ip_mask", "switch_vtep_id_ip_mask",
+	)
+
+	nullifier.NullifyBools(
+		"enable", "read_only_mode", "locked",
+		"out_of_band_management", "is_fabric",
+		"switch_router_id_ip_mask_auto_assigned_",
+		"switch_vtep_id_ip_mask_auto_assigned_",
+		"bgp_as_number_auto_assigned_",
+	)
+
+	nullifier.NullifyInt64s(
+		"bgp_as_number",
+	)
+
+	// =========================================================================
+	// CREATE operation - handle auto-assigned fields
+	// =========================================================================
 	if req.State.Raw.IsNull() {
+		// Switchpoint-specific: auto-assignment on create
 		if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("bgp_as_number"), types.Int64Unknown())
 		}
@@ -1526,70 +1602,135 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
 	var state veritySwitchpointResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Handle auto-assigned field behavior
+	var config veritySwitchpointResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable Int64 fields (explicit null detection)
+	// For Optional+Computed fields, Terraform copies state to plan when config
+	// is null. We detect explicit null in HCL and force plan to null.
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_switchpoint", name)
+
+	utils.HandleNullableFields(utils.NullableFieldsConfig{
+		Ctx:             ctx,
+		Plan:            &resp.Plan,
+		ConfiguredAttrs: configuredAttrs,
+		Int64Fields: []utils.NullableInt64Field{
+			{AttrName: "bgp_as_number", ConfigVal: config.BgpAsNumber, StateVal: state.BgpAsNumber},
+		},
+	})
+
+	// =========================================================================
+	// Validate auto-assigned field specifications
+	// =========================================================================
+	if !config.BgpAsNumberAutoAssigned.IsNull() && config.BgpAsNumberAutoAssigned.ValueBool() {
+		if !config.BgpAsNumber.IsNull() && !config.BgpAsNumber.IsUnknown() {
+			resp.Diagnostics.AddError(
+				"BGP AS Number cannot be specified when auto-assigned",
+				"The 'bgp_as_number' field cannot be specified in the configuration when 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !config.SwitchRouterIdIpMaskAutoAssigned.IsNull() && config.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
+		if !config.SwitchRouterIdIpMask.IsNull() && !config.SwitchRouterIdIpMask.IsUnknown() && config.SwitchRouterIdIpMask.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Switch Router ID IP Mask cannot be specified when auto-assigned",
+				"The 'switch_router_id_ip_mask' field cannot be specified in the configuration when 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !config.SwitchVtepIdIpMaskAutoAssigned.IsNull() && config.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
+		if !config.SwitchVtepIdIpMask.IsNull() && !config.SwitchVtepIdIpMask.IsUnknown() && config.SwitchVtepIdIpMask.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Switch VTEP ID IP Mask cannot be specified when auto-assigned",
+				"The 'switch_vtep_id_ip_mask' field cannot be specified in the configuration when 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (BgpAsNumber)
+	// =========================================================================
 	if !plan.BgpAsNumberAutoAssigned.IsNull() && plan.BgpAsNumberAutoAssigned.ValueBool() {
 		if !plan.BgpAsNumberAutoAssigned.Equal(state.BgpAsNumberAutoAssigned) {
-			// bgp_as_number_auto_assigned_ is changing to true, API will assign the value
+			// bgp_as_number_auto_assigned_ is changing to true - API will assign value
 			resp.Plan.SetAttribute(ctx, path.Root("bgp_as_number"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"BGP AS Number will be assigned by the API",
 				"The 'bgp_as_number' field will be automatically assigned by the API because 'bgp_as_number_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.BgpAsNumber.Equal(state.BgpAsNumber) {
-			// User tried to change BgpAsNumber but it's auto-assigned
+			// User tried to change BgpAsNumber but it's auto-assigned - suppress diff
 			resp.Diagnostics.AddWarning(
 				"Ignoring bgp_as_number changes with auto-assignment enabled",
-				"The 'bgp_as_number' field changes will be ignored because 'bgp_as_number_auto_assigned_' is set to true. The API will assign this value automatically.",
+				"The 'bgp_as_number' field changes will be ignored because 'bgp_as_number_auto_assigned_' is set to true.",
 			)
-			// Keep the current state value to suppress the diff
 			if !state.BgpAsNumber.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("bgp_as_number"), state.BgpAsNumber)
 			}
 		}
 	}
 
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (SwitchRouterIdIpMask)
+	// =========================================================================
 	if !plan.SwitchRouterIdIpMaskAutoAssigned.IsNull() && plan.SwitchRouterIdIpMaskAutoAssigned.ValueBool() {
 		if !plan.SwitchRouterIdIpMaskAutoAssigned.Equal(state.SwitchRouterIdIpMaskAutoAssigned) {
-			// switch_router_id_ip_mask_auto_assigned_ is changing to true, API will assign the value
+			// switch_router_id_ip_mask_auto_assigned_ is changing to true - API will assign value
 			resp.Plan.SetAttribute(ctx, path.Root("switch_router_id_ip_mask"), types.StringUnknown())
 			resp.Diagnostics.AddWarning(
 				"Switch Router ID IP Mask will be assigned by the API",
 				"The 'switch_router_id_ip_mask' field will be automatically assigned by the API because 'switch_router_id_ip_mask_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.SwitchRouterIdIpMask.Equal(state.SwitchRouterIdIpMask) {
-			// User tried to change SwitchRouterIdIpMask but it's auto-assigned
+			// User tried to change SwitchRouterIdIpMask but it's auto-assigned - suppress diff
 			resp.Diagnostics.AddWarning(
 				"Ignoring switch_router_id_ip_mask changes with auto-assignment enabled",
-				"The 'switch_router_id_ip_mask' field changes will be ignored because 'switch_router_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+				"The 'switch_router_id_ip_mask' field changes will be ignored because 'switch_router_id_ip_mask_auto_assigned_' is set to true.",
 			)
-			// Keep the current state value to suppress the diff
 			if !state.SwitchRouterIdIpMask.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("switch_router_id_ip_mask"), state.SwitchRouterIdIpMask)
 			}
 		}
 	}
 
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (SwitchVtepIdIpMask)
+	// =========================================================================
 	if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
 		if !plan.SwitchVtepIdIpMaskAutoAssigned.Equal(state.SwitchVtepIdIpMaskAutoAssigned) {
-			// switch_vtep_id_ip_mask_auto_assigned_ is changing to true, API will assign the value
+			// switch_vtep_id_ip_mask_auto_assigned_ is changing to true - API will assign value
 			resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), types.StringUnknown())
 			resp.Diagnostics.AddWarning(
 				"Switch VTEP ID IP Mask will be assigned by the API",
 				"The 'switch_vtep_id_ip_mask' field will be automatically assigned by the API because 'switch_vtep_id_ip_mask_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.SwitchVtepIdIpMask.Equal(state.SwitchVtepIdIpMask) {
-			// User tried to change SwitchVtepIdIpMask but it's auto-assigned
+			// User tried to change SwitchVtepIdIpMask but it's auto-assigned - suppress diff
 			resp.Diagnostics.AddWarning(
 				"Ignoring switch_vtep_id_ip_mask changes with auto-assignment enabled",
-				"The 'switch_vtep_id_ip_mask' field changes will be ignored because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
+				"The 'switch_vtep_id_ip_mask' field changes will be ignored because 'switch_vtep_id_ip_mask_auto_assigned_' is set to true.",
 			)
-			// Keep the current state value to suppress the diff
 			if !state.SwitchVtepIdIpMask.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), state.SwitchVtepIdIpMask)
 			}
