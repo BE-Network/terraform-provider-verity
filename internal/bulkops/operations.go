@@ -291,7 +291,7 @@ func (m *Manager) executeOperationsWithHeaders(ctx context.Context, resourceType
 			return nil, fmt.Errorf("unsupported operation type for header-aware resource: %s", operationType)
 		},
 
-		ProcessResponse: nil,
+		ProcessResponse: m.createHeaderAwareResponseProcessor(config, operationType, headers),
 
 		UpdateRecentOps: func() {
 			// Already handled in parent function

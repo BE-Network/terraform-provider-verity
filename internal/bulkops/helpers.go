@@ -1135,6 +1135,20 @@ func (m *Manager) createRequestExecutor(config ResourceConfig, operationType str
 }
 
 func (m *Manager) createResponseProcessor(config ResourceConfig, operationType string) func(context.Context, *http.Response) error {
+	// Unified processor with nil headers for standard resources
+	return m.createResponseProcessorWithHeaders(config, operationType, nil)
+}
+
+// createHeaderAwareResponseProcessor creates a response processor for header-split resources
+// (ACLs with ip_version header)
+func (m *Manager) createHeaderAwareResponseProcessor(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response) error {
+	return m.createResponseProcessorWithHeaders(config, operationType, headers)
+}
+
+// createResponseProcessorWithHeaders is a unified response processor that handles both
+// standard resources and header-split resources (like ACLs with ip_version).
+// When headers is nil, it uses GetFunc; when headers is provided, it uses HeaderGetFunc.
+func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response) error {
 	return func(ctx context.Context, resp *http.Response) error {
 		delayTime := 5 * time.Second
 		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for server values to be assigned before fetching %s", delayTime, config.ResourceType))
@@ -1143,28 +1157,48 @@ func (m *Manager) createResponseProcessor(config ResourceConfig, operationType s
 		fetchCtx, fetchCancel := context.WithTimeout(context.Background(), OperationTimeout)
 		defer fetchCancel()
 
-		tflog.Debug(ctx, fmt.Sprintf("Fetching %s after successful operation to retrieve server values", config.ResourceType))
+		if headers != nil {
+			tflog.Debug(ctx, fmt.Sprintf("Fetching %s after successful operation to retrieve server values (headers: %v)", config.ResourceType, headers))
+		} else {
+			tflog.Debug(ctx, fmt.Sprintf("Fetching %s after successful operation to retrieve server values", config.ResourceType))
+		}
 
 		res, exists := m.resources[config.ResourceType]
 		if !exists {
 			return fmt.Errorf("resource type %s not found in unified structure", config.ResourceType)
 		}
 
-		return m.fetchAndCacheResourceResponse(fetchCtx, ctx, config, res)
+		return m.fetchAndCacheResourceResponse(fetchCtx, ctx, config, res, headers)
 	}
 }
 
-func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, res *ResourceOperations) error {
-	if config.GetFunc == nil {
-		tflog.Debug(logCtx, fmt.Sprintf("No GetFunc defined for %s, skipping response caching", config.ResourceType))
-		return nil
+// fetchAndCacheResourceResponse fetches resource data and caches it.
+func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string) error {
+	var getResp *http.Response
+	var fetchErr error
+
+	if headers != nil {
+		// Header-aware fetch for resources like ACLs with ip_version
+		if config.HeaderGetFunc == nil {
+			tflog.Debug(logCtx, fmt.Sprintf("No HeaderGetFunc defined for %s, skipping response caching", config.ResourceType))
+			return nil
+		}
+		getResp, fetchErr = config.HeaderGetFunc(m.client, fetchCtx, headers)
+	} else {
+		// Standard fetch for regular resources
+		if config.GetFunc == nil {
+			tflog.Debug(logCtx, fmt.Sprintf("No GetFunc defined for %s, skipping response caching", config.ResourceType))
+			return nil
+		}
+		getResp, fetchErr = config.GetFunc(m.client, fetchCtx)
 	}
 
-	getResp, fetchErr := config.GetFunc(m.client, fetchCtx)
 	if fetchErr != nil {
-		tflog.Error(logCtx, fmt.Sprintf("Failed to fetch %s after operation", config.ResourceType), map[string]interface{}{
-			"error": fetchErr.Error(),
-		})
+		logFields := map[string]interface{}{"error": fetchErr.Error()}
+		if headers != nil {
+			logFields["headers"] = headers
+		}
+		tflog.Error(logCtx, fmt.Sprintf("Failed to fetch %s after operation", config.ResourceType), logFields)
 		return fetchErr
 	}
 	defer getResp.Body.Close()
@@ -1178,17 +1212,30 @@ func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx
 		return respErr
 	}
 
-	jsonKey := utils.GetResourceJSONKey(config.ResourceType)
-	if jsonKey == "" {
-		tflog.Warn(logCtx, fmt.Sprintf("No JSON key mapping found for resource type: %s", config.ResourceType))
-		return nil
-	}
-
-	// Extract resource data using the JSON key
-	resourceData, ok := rawResponse[jsonKey].(map[string]interface{})
-	if !ok {
-		tflog.Debug(logCtx, fmt.Sprintf("No %s data found in response or unexpected format", jsonKey))
-		return nil
+	// Extract resource data - use HeaderResponseExtractor if available and headers provided
+	var resourceData map[string]interface{}
+	if headers != nil && config.HeaderResponseExtractor != nil {
+		var err error
+		resourceData, err = config.HeaderResponseExtractor(rawResponse, headers)
+		if err != nil {
+			tflog.Error(logCtx, fmt.Sprintf("Failed to extract %s response data", config.ResourceType), map[string]interface{}{
+				"error": err.Error(),
+			})
+			return err
+		}
+	} else {
+		// Standard JSON key lookup
+		jsonKey := utils.GetResourceJSONKey(config.ResourceType)
+		if jsonKey == "" {
+			tflog.Warn(logCtx, fmt.Sprintf("No JSON key mapping found for resource type: %s", config.ResourceType))
+			return nil
+		}
+		var ok bool
+		resourceData, ok = rawResponse[jsonKey].(map[string]interface{})
+		if !ok {
+			tflog.Debug(logCtx, fmt.Sprintf("No %s data found in response or unexpected format", jsonKey))
+			return nil
+		}
 	}
 
 	// Cache the response data
@@ -1204,9 +1251,15 @@ func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx
 	}
 	res.ResponsesMutex.Unlock()
 
-	tflog.Debug(logCtx, fmt.Sprintf("Successfully cached %s data", config.ResourceType), map[string]interface{}{
-		"count": len(resourceData),
-	})
+	if headers != nil {
+		tflog.Debug(logCtx, fmt.Sprintf("Successfully cached %s data (headers: %v)", config.ResourceType, headers), map[string]interface{}{
+			"count": len(resourceData),
+		})
+	} else {
+		tflog.Debug(logCtx, fmt.Sprintf("Successfully cached %s data", config.ResourceType), map[string]interface{}{
+			"count": len(resourceData),
+		})
+	}
 
 	return nil
 }

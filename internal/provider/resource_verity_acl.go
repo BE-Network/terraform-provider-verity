@@ -263,7 +263,7 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
-		if aclData, exists := bulkMgr.GetResourceResponse("acls_ipv"+r.ipVersion, name); exists {
+		if aclData, exists := bulkMgr.GetResourceResponse("acl_v"+r.ipVersion, name); exists {
 			state := populateACLState(ctx, minState, aclData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -302,7 +302,7 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 
 	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
-		if aclData, exists := r.bulkOpsMgr.GetResourceResponse("acls_ipv"+r.ipVersion, aclName); exists {
+		if aclData, exists := r.bulkOpsMgr.GetResourceResponse("acl_v"+r.ipVersion, aclName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached IPv%s ACL data for %s from recent operation", r.ipVersion, aclName))
 			state = populateACLState(ctx, state, aclData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -473,7 +473,7 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
-		if aclData, exists := bulkMgr.GetResourceResponse("acls_ipv"+r.ipVersion, name); exists {
+		if aclData, exists := bulkMgr.GetResourceResponse("acl_v"+r.ipVersion, name); exists {
 			newState := populateACLState(ctx, minState, aclData, r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
