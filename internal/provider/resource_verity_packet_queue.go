@@ -180,6 +180,13 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		return
 	}
 
+	var config verityPacketQueueResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -208,8 +215,14 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		pqProps.ObjectProperties = &objProps
 	}
 
+	// Parse HCL to detect explicitly configured attributes
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_packet_queue", name)
+
 	// Handle Pbit
 	if len(plan.Pbit) > 0 {
+		pbitConfigMap := utils.BuildIndexedConfigMap(config.Pbit)
+
 		pbitArray := make([]openapi.PacketqueuesPutRequestPacketQueueValuePbitInner, len(plan.Pbit))
 		for i, pbit := range plan.Pbit {
 			pbitItem := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{}
@@ -219,9 +232,19 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 				{FieldName: "Index", APIField: &pbitItem.Index, TFValue: pbit.Index},
 			})
 
-			// Handle nullable int64 fields
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := pbit.Index.ValueInt64()
+			configItem := pbit // fallback to plan item
+			if cfgItem, ok := pbitConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "pbit",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "PacketQueueForPBit", APIField: &pbitItem.PacketQueueForPBit, TFValue: pbit.PacketQueueForPBit},
+				{FieldName: "PacketQueueForPBit", APIField: &pbitItem.PacketQueueForPBit, TFValue: configItem.PacketQueueForPBit, IsConfigured: cfg.IsFieldConfigured("packet_queue_for_p_bit")},
 			})
 
 			pbitArray[i] = pbitItem
@@ -231,6 +254,8 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 
 	// Handle Queue
 	if len(plan.Queue) > 0 {
+		queueConfigMap := utils.BuildIndexedConfigMap(config.Queue)
+
 		queueArray := make([]openapi.PacketqueuesPutRequestPacketQueueValueQueueInner, len(plan.Queue))
 		for i, queue := range plan.Queue {
 			queueItem := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{}
@@ -240,10 +265,20 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 				{FieldName: "Index", APIField: &queueItem.Index, TFValue: queue.Index},
 			})
 
-			// Handle nullable int64 fields
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := queue.Index.ValueInt64()
+			configItem := queue // fallback to plan item
+			if cfgItem, ok := queueConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "queue",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "BandwidthForQueue", APIField: &queueItem.BandwidthForQueue, TFValue: queue.BandwidthForQueue},
-				{FieldName: "SchedulerWeight", APIField: &queueItem.SchedulerWeight, TFValue: queue.SchedulerWeight},
+				{FieldName: "BandwidthForQueue", APIField: &queueItem.BandwidthForQueue, TFValue: configItem.BandwidthForQueue, IsConfigured: cfg.IsFieldConfigured("bandwidth_for_queue")},
+				{FieldName: "SchedulerWeight", APIField: &queueItem.SchedulerWeight, TFValue: configItem.SchedulerWeight, IsConfigured: cfg.IsFieldConfigured("scheduler_weight")},
 			})
 
 			// Handle string fields
@@ -443,6 +478,13 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		}
 	}
 
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_packet_queue", name)
+	var config verityPacketQueueResourceModel
+	req.Config.Get(ctx, &config)
+	pbitConfigMap := utils.BuildIndexedConfigMap(config.Pbit)
+	queueConfigMap := utils.BuildIndexedConfigMap(config.Queue)
+
 	// Handle Pbit
 	changedPbits, pbitsChanged := utils.ProcessIndexedArrayUpdates(plan.Pbit, state.Pbit,
 		utils.IndexedItemHandler[verityPacketQueuePbitModel, openapi.PacketqueuesPutRequestPacketQueueValuePbitInner]{
@@ -454,9 +496,19 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 					{FieldName: "Index", APIField: &newPbit.Index, TFValue: planItem.Index},
 				})
 
-				// Handle nullable int64 fields
+				// Get per-block configured info for nullable Int64 fields
+				itemIndex := planItem.Index.ValueInt64()
+				configItem := planItem // fallback to plan item
+				if cfgItem, ok := pbitConfigMap[itemIndex]; ok {
+					configItem = cfgItem
+				}
+				cfg := &utils.IndexedBlockNullableFieldConfig{
+					BlockType:       "pbit",
+					BlockIndex:      itemIndex,
+					ConfiguredAttrs: configuredAttrs,
+				}
 				utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-					{FieldName: "PacketQueueForPBit", APIField: &newPbit.PacketQueueForPBit, TFValue: planItem.PacketQueueForPBit},
+					{FieldName: "PacketQueueForPBit", APIField: &newPbit.PacketQueueForPBit, TFValue: configItem.PacketQueueForPBit, IsConfigured: cfg.IsFieldConfigured("packet_queue_for_p_bit")},
 				})
 
 				return newPbit
@@ -495,10 +547,20 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 					{FieldName: "Index", APIField: &newQueue.Index, TFValue: planItem.Index},
 				})
 
-				// Handle nullable int64 fields
+				// Get per-block configured info for nullable Int64 fields
+				itemIndex := planItem.Index.ValueInt64()
+				configItem := planItem // fallback to plan item
+				if cfgItem, ok := queueConfigMap[itemIndex]; ok {
+					configItem = cfgItem
+				}
+				cfg := &utils.IndexedBlockNullableFieldConfig{
+					BlockType:       "queue",
+					BlockIndex:      itemIndex,
+					ConfiguredAttrs: configuredAttrs,
+				}
 				utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-					{FieldName: "BandwidthForQueue", APIField: &newQueue.BandwidthForQueue, TFValue: planItem.BandwidthForQueue},
-					{FieldName: "SchedulerWeight", APIField: &newQueue.SchedulerWeight, TFValue: planItem.SchedulerWeight},
+					{FieldName: "BandwidthForQueue", APIField: &newQueue.BandwidthForQueue, TFValue: configItem.BandwidthForQueue, IsConfigured: cfg.IsFieldConfigured("bandwidth_for_queue")},
+					{FieldName: "SchedulerWeight", APIField: &newQueue.SchedulerWeight, TFValue: configItem.SchedulerWeight, IsConfigured: cfg.IsFieldConfigured("scheduler_weight")},
 				})
 
 				// Handle string fields
@@ -714,4 +776,90 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlocks(
+		"pbit", "queue", "object_properties",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityPacketQueueResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityPacketQueueResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable fields in nested blocks
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_packet_queue", name)
+
+	// Handle pbit block nullable fields
+	for i, configItem := range config.Pbit {
+		itemIndex := configItem.Index.ValueInt64()
+		var stateItem *verityPacketQueuePbitModel
+		for j := range state.Pbit {
+			if state.Pbit[j].Index.ValueInt64() == itemIndex {
+				stateItem = &state.Pbit[j]
+				break
+			}
+		}
+
+		if stateItem != nil {
+			utils.HandleNullableNestedFields(utils.NullableNestedFieldsConfig{
+				Ctx:             ctx,
+				Plan:            &resp.Plan,
+				ConfiguredAttrs: configuredAttrs,
+				BlockType:       "pbit",
+				BlockListPath:   "pbit",
+				BlockListIndex:  i,
+				Int64Fields: []utils.NullableNestedInt64Field{
+					{BlockIndex: itemIndex, AttrName: "packet_queue_for_p_bit", ConfigVal: configItem.PacketQueueForPBit, StateVal: stateItem.PacketQueueForPBit},
+				},
+			})
+		}
+	}
+
+	// Handle queue block nullable fields
+	for i, configItem := range config.Queue {
+		itemIndex := configItem.Index.ValueInt64()
+		var stateItem *verityPacketQueueQueueModel
+		for j := range state.Queue {
+			if state.Queue[j].Index.ValueInt64() == itemIndex {
+				stateItem = &state.Queue[j]
+				break
+			}
+		}
+
+		if stateItem != nil {
+			utils.HandleNullableNestedFields(utils.NullableNestedFieldsConfig{
+				Ctx:             ctx,
+				Plan:            &resp.Plan,
+				ConfiguredAttrs: configuredAttrs,
+				BlockType:       "queue",
+				BlockListPath:   "queue",
+				BlockListIndex:  i,
+				Int64Fields: []utils.NullableNestedInt64Field{
+					{BlockIndex: itemIndex, AttrName: "bandwidth_for_queue", ConfigVal: configItem.BandwidthForQueue, StateVal: stateItem.BandwidthForQueue},
+					{BlockIndex: itemIndex, AttrName: "scheduler_weight", ConfigVal: configItem.SchedulerWeight, StateVal: stateItem.SchedulerWeight},
+				},
+			})
+		}
+	}
 }

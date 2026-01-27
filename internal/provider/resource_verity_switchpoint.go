@@ -533,15 +533,18 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
+		configOp := config.ObjectProperties[0] // use config for nullable field detection
 		objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "UserNotes", TFValue: op.UserNotes, APIValue: &objProps.UserNotes},
 			{Name: "ExpectedParentEndpoint", TFValue: op.ExpectedParentEndpoint, APIValue: &objProps.ExpectedParentEndpoint},
 			{Name: "ExpectedParentEndpointRefType", TFValue: op.ExpectedParentEndpointRefType, APIValue: &objProps.ExpectedParentEndpointRefType},
-			{Name: "NumberOfMultipoints", TFValue: op.NumberOfMultipoints, APIValue: &objProps.NumberOfMultipoints},
 			{Name: "Aggregate", TFValue: op.Aggregate, APIValue: &objProps.Aggregate},
 			{Name: "IsHost", TFValue: op.IsHost, APIValue: &objProps.IsHost},
 			{Name: "DrawAsEdgeDevice", TFValue: op.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
+		})
+		utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+			{FieldName: "NumberOfMultipoints", APIField: &objProps.NumberOfMultipoints, TFValue: configOp.NumberOfMultipoints, IsConfigured: configuredAttrs.IsBlockAttributeConfigured("object_properties.number_of_multipoints")},
 		})
 		spProps.ObjectProperties = &objProps
 	}
@@ -1294,11 +1297,12 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			{Name: "UserNotes", PlanValue: op.UserNotes, StateValue: st.UserNotes, APIValue: &objProps.UserNotes},
 			{Name: "ExpectedParentEndpoint", PlanValue: op.ExpectedParentEndpoint, StateValue: st.ExpectedParentEndpoint, APIValue: &objProps.ExpectedParentEndpoint},
 			{Name: "ExpectedParentEndpointRefType", PlanValue: op.ExpectedParentEndpointRefType, StateValue: st.ExpectedParentEndpointRefType, APIValue: &objProps.ExpectedParentEndpointRefType},
-			{Name: "NumberOfMultipoints", PlanValue: op.NumberOfMultipoints, StateValue: st.NumberOfMultipoints, APIValue: &objProps.NumberOfMultipoints},
 			{Name: "Aggregate", PlanValue: op.Aggregate, StateValue: st.Aggregate, APIValue: &objProps.Aggregate},
 			{Name: "IsHost", PlanValue: op.IsHost, StateValue: st.IsHost, APIValue: &objProps.IsHost},
 			{Name: "DrawAsEdgeDevice", PlanValue: op.DrawAsEdgeDevice, StateValue: st.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
 		}, &objPropsChanged)
+
+		utils.CompareAndSetNullableInt64Field(op.NumberOfMultipoints, st.NumberOfMultipoints, func(v *openapi.NullableInt32) { objProps.NumberOfMultipoints = *v }, &objPropsChanged)
 
 		if objPropsChanged {
 			spProps.ObjectProperties = &objProps
@@ -1585,6 +1589,10 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		"bgp_as_number",
 	)
 
+	nullifier.NullifyNestedBlocks(
+		"badges", "children", "traffic_mirrors", "eths", "object_properties",
+	)
+
 	// =========================================================================
 	// CREATE operation - handle auto-assigned fields
 	// =========================================================================
@@ -1634,6 +1642,19 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 			{AttrName: "bgp_as_number", ConfigVal: config.BgpAsNumber, StateVal: state.BgpAsNumber},
 		},
 	})
+
+	// =========================================================================
+	// Handle nullable fields in nested blocks
+	// =========================================================================
+	if len(config.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		configOp := config.ObjectProperties[0]
+		stateOp := state.ObjectProperties[0]
+
+		if configuredAttrs.IsBlockAttributeConfigured("object_properties.number_of_multipoints") &&
+			configOp.NumberOfMultipoints.IsNull() && !stateOp.NumberOfMultipoints.IsNull() {
+			resp.Plan.SetAttribute(ctx, path.Root("object_properties").AtListIndex(0).AtName("number_of_multipoints"), types.Int64Null())
+		}
+	}
 
 	// =========================================================================
 	// Validate auto-assigned field specifications

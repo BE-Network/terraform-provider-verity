@@ -273,6 +273,13 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		return
 	}
 
+	var config verityEthPortProfileResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -317,9 +324,14 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		ethPortProfileProps.ObjectProperties = &objProps
 	}
 
+	// Parse HCL to detect explicitly configured attributes
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_profile", name)
+
 	// Handle Services
 	if len(plan.Services) > 0 {
 		servicesItems := make([]openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner, len(plan.Services))
+		servicesConfigMap := utils.BuildIndexedConfigMap(config.Services)
 		for i, item := range plan.Services {
 			serviceItem := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
 
@@ -337,8 +349,20 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 				{FieldName: "RowNumMacFilterRefType", APIField: &serviceItem.RowNumMacFilterRefType, TFValue: item.RowNumMacFilterRefType},
 				{FieldName: "RowNumLanIptv", APIField: &serviceItem.RowNumLanIptv, TFValue: item.RowNumLanIptv},
 			})
+
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := item.Index.ValueInt64()
+			configItem := item // fallback to plan item
+			if cfgItem, ok := servicesConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "services",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: item.RowNumExternalVlan},
+				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
 			})
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: item.Index},
@@ -579,6 +603,12 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	}
 
 	// Handle services
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_profile", name)
+	var config verityEthPortProfileResourceModel
+	req.Config.Get(ctx, &config)
+	servicesConfigMap := utils.BuildIndexedConfigMap(config.Services)
+
 	servicesHandler := utils.IndexedItemHandler[servicesModel, openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner]{
 		CreateNew: func(planItem servicesModel) openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner {
 			service := openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner{}
@@ -603,8 +633,19 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				{FieldName: "RowNumLanIptv", APIField: &service.RowNumLanIptv, TFValue: planItem.RowNumLanIptv},
 			})
 
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := planItem.Index.ValueInt64()
+			configItem := planItem // fallback to plan item
+			if cfgItem, ok := servicesConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "services",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "RowNumExternalVlan", APIField: &service.RowNumExternalVlan, TFValue: planItem.RowNumExternalVlan},
+				{FieldName: "RowNumExternalVlan", APIField: &service.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
 			})
 
 			return service
@@ -880,4 +921,62 @@ func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resou
 	nullifier.NullifyBools(
 		"enable", "tls", "trusted_port",
 	)
+
+	nullifier.NullifyNestedBlocks(
+		"services", "object_properties",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityEthPortProfileResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityEthPortProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable fields in services nested blocks
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_profile", name)
+
+	for i, configItem := range config.Services {
+		itemIndex := configItem.Index.ValueInt64()
+		var stateItem *servicesModel
+		for j := range state.Services {
+			if state.Services[j].Index.ValueInt64() == itemIndex {
+				stateItem = &state.Services[j]
+				break
+			}
+		}
+
+		if stateItem != nil {
+			utils.HandleNullableNestedFields(utils.NullableNestedFieldsConfig{
+				Ctx:             ctx,
+				Plan:            &resp.Plan,
+				ConfiguredAttrs: configuredAttrs,
+				BlockType:       "services",
+				BlockListPath:   "services",
+				BlockListIndex:  i,
+				Int64Fields: []utils.NullableNestedInt64Field{
+					{BlockIndex: itemIndex, AttrName: "row_num_external_vlan", ConfigVal: configItem.RowNumExternalVlan, StateVal: stateItem.RowNumExternalVlan},
+				},
+			})
+		}
+	}
 }

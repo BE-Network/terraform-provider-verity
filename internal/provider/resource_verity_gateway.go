@@ -423,6 +423,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 
 	// Handle static routes
 	if len(plan.StaticRoutes) > 0 {
+		staticRoutesConfigMap := utils.BuildIndexedConfigMap(config.StaticRoutes)
 		routes := make([]openapi.GatewaysPutRequestGatewayValueStaticRoutesInner, len(plan.StaticRoutes))
 		for i, item := range plan.StaticRoutes {
 			rItem := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{}
@@ -433,8 +434,20 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 				{FieldName: "Ipv4RoutePrefix", APIField: &rItem.Ipv4RoutePrefix, TFValue: item.Ipv4RoutePrefix},
 				{FieldName: "NextHopIpAddress", APIField: &rItem.NextHopIpAddress, TFValue: item.NextHopIpAddress},
 			})
+
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := item.Index.ValueInt64()
+			configItem := item // fallback to plan item
+			if cfgItem, ok := staticRoutesConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "static_routes",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "AdValue", APIField: &rItem.AdValue, TFValue: item.AdValue},
+				{FieldName: "AdValue", APIField: &rItem.AdValue, TFValue: configItem.AdValue, IsConfigured: cfg.IsFieldConfigured("ad_value")},
 			})
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &rItem.Index, TFValue: item.Index},
@@ -699,6 +712,12 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	// Handle static routes
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_gateway", name)
+	var config verityGatewayResourceModel
+	req.Config.Get(ctx, &config)
+	staticRoutesConfigMap := utils.BuildIndexedConfigMap(config.StaticRoutes)
+
 	staticRoutesHandler := utils.IndexedItemHandler[verityGatewayStaticRoutesModel, openapi.GatewaysPutRequestGatewayValueStaticRoutesInner]{
 		CreateNew: func(planItem verityGatewayStaticRoutesModel) openapi.GatewaysPutRequestGatewayValueStaticRoutesInner {
 			route := openapi.GatewaysPutRequestGatewayValueStaticRoutesInner{}
@@ -716,8 +735,19 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 				{FieldName: "NextHopIpAddress", APIField: &route.NextHopIpAddress, TFValue: planItem.NextHopIpAddress},
 			})
 
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := planItem.Index.ValueInt64()
+			configItem := planItem // fallback to plan item
+			if cfgItem, ok := staticRoutesConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "static_routes",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "AdValue", APIField: &route.AdValue, TFValue: planItem.AdValue},
+				{FieldName: "AdValue", APIField: &route.AdValue, TFValue: configItem.AdValue, IsConfigured: cfg.IsFieldConfigured("ad_value")},
 			})
 
 			return route
@@ -976,6 +1006,10 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 		"bfd_receive_interval", "bfd_transmission_interval", "bfd_detect_multiplier",
 	)
 
+	nullifier.NullifyNestedBlocks(
+		"static_routes", "object_properties",
+	)
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================
@@ -1027,4 +1061,32 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 			{AttrName: "bfd_detect_multiplier", ConfigVal: config.BfdDetectMultiplier, StateVal: state.BfdDetectMultiplier},
 		},
 	})
+
+	// =========================================================================
+	// Handle nullable fields in nested blocks
+	// =========================================================================
+	for i, configRoute := range config.StaticRoutes {
+		routeIndex := configRoute.Index.ValueInt64()
+		var stateRoute *verityGatewayStaticRoutesModel
+		for j := range state.StaticRoutes {
+			if state.StaticRoutes[j].Index.ValueInt64() == routeIndex {
+				stateRoute = &state.StaticRoutes[j]
+				break
+			}
+		}
+
+		if stateRoute != nil {
+			utils.HandleNullableNestedFields(utils.NullableNestedFieldsConfig{
+				Ctx:             ctx,
+				Plan:            &resp.Plan,
+				ConfiguredAttrs: configuredAttrs,
+				BlockType:       "static_routes",
+				BlockListPath:   "static_routes",
+				BlockListIndex:  i,
+				Int64Fields: []utils.NullableNestedInt64Field{
+					{BlockIndex: routeIndex, AttrName: "ad_value", ConfigVal: configRoute.AdValue, StateVal: stateRoute.AdValue},
+				},
+			})
+		}
+	}
 }

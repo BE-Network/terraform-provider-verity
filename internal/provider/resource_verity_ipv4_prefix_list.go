@@ -165,6 +165,13 @@ func (r *verityIpv4PrefixListResource) Create(ctx context.Context, req resource.
 		return
 	}
 
+	var config verityIpv4PrefixListResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -193,8 +200,14 @@ func (r *verityIpv4PrefixListResource) Create(ctx context.Context, req resource.
 		ipv4PrefixListProps.ObjectProperties = &objectProps
 	}
 
+	// Parse HCL to detect explicitly configured attributes
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv4_prefix_list", name)
+
 	// Handle lists
 	if len(plan.Lists) > 0 {
+		listsConfigMap := utils.BuildIndexedConfigMap(config.Lists)
+
 		var lists []openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner
 		for _, listItem := range plan.Lists {
 			item := openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{}
@@ -205,9 +218,21 @@ func (r *verityIpv4PrefixListResource) Create(ctx context.Context, req resource.
 				{FieldName: "PermitDeny", APIField: &item.PermitDeny, TFValue: listItem.PermitDeny},
 				{FieldName: "Ipv4Prefix", APIField: &item.Ipv4Prefix, TFValue: listItem.Ipv4Prefix},
 			})
+
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := listItem.Index.ValueInt64()
+			configItem := listItem // fallback to plan item
+			if cfgItem, ok := listsConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "lists",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "GreaterThanEqualValue", APIField: &item.GreaterThanEqualValue, TFValue: listItem.GreaterThanEqualValue},
-				{FieldName: "LessThanEqualValue", APIField: &item.LessThanEqualValue, TFValue: listItem.LessThanEqualValue},
+				{FieldName: "GreaterThanEqualValue", APIField: &item.GreaterThanEqualValue, TFValue: configItem.GreaterThanEqualValue, IsConfigured: cfg.IsFieldConfigured("greater_than_equal_value")},
+				{FieldName: "LessThanEqualValue", APIField: &item.LessThanEqualValue, TFValue: configItem.LessThanEqualValue, IsConfigured: cfg.IsFieldConfigured("less_than_equal_value")},
 			})
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &item.Index, TFValue: listItem.Index},
@@ -403,6 +428,12 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 	}
 
 	// Handle lists
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv4_prefix_list", name)
+	var config verityIpv4PrefixListResourceModel
+	req.Config.Get(ctx, &config)
+	listsConfigMap := utils.BuildIndexedConfigMap(config.Lists)
+
 	listsHandler := utils.IndexedItemHandler[verityIpv4PrefixListListsModel, openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner]{
 		CreateNew: func(planItem verityIpv4PrefixListListsModel) openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner {
 			newItem := openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{}
@@ -418,10 +449,20 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 				{FieldName: "Ipv4Prefix", APIField: &newItem.Ipv4Prefix, TFValue: planItem.Ipv4Prefix},
 			})
 
-			// Handle nullable int64 fields
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := planItem.Index.ValueInt64()
+			configItem := planItem // fallback to plan item
+			if cfgItem, ok := listsConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "lists",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "GreaterThanEqualValue", APIField: &newItem.GreaterThanEqualValue, TFValue: planItem.GreaterThanEqualValue},
-				{FieldName: "LessThanEqualValue", APIField: &newItem.LessThanEqualValue, TFValue: planItem.LessThanEqualValue},
+				{FieldName: "GreaterThanEqualValue", APIField: &newItem.GreaterThanEqualValue, TFValue: configItem.GreaterThanEqualValue, IsConfigured: cfg.IsFieldConfigured("greater_than_equal_value")},
+				{FieldName: "LessThanEqualValue", APIField: &newItem.LessThanEqualValue, TFValue: configItem.LessThanEqualValue, IsConfigured: cfg.IsFieldConfigured("less_than_equal_value")},
 			})
 
 			// Handle int64 fields
@@ -626,4 +667,63 @@ func (r *verityIpv4PrefixListResource) ModifyPlan(ctx context.Context, req resou
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlocks(
+		"lists", "object_properties",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityIpv4PrefixListResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityIpv4PrefixListResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable fields in nested blocks
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv4_prefix_list", name)
+
+	for i, configItem := range config.Lists {
+		itemIndex := configItem.Index.ValueInt64()
+		var stateItem *verityIpv4PrefixListListsModel
+		for j := range state.Lists {
+			if state.Lists[j].Index.ValueInt64() == itemIndex {
+				stateItem = &state.Lists[j]
+				break
+			}
+		}
+
+		if stateItem != nil {
+			utils.HandleNullableNestedFields(utils.NullableNestedFieldsConfig{
+				Ctx:             ctx,
+				Plan:            &resp.Plan,
+				ConfiguredAttrs: configuredAttrs,
+				BlockType:       "lists",
+				BlockListPath:   "lists",
+				BlockListIndex:  i,
+				Int64Fields: []utils.NullableNestedInt64Field{
+					{BlockIndex: itemIndex, AttrName: "greater_than_equal_value", ConfigVal: configItem.GreaterThanEqualValue, StateVal: stateItem.GreaterThanEqualValue},
+					{BlockIndex: itemIndex, AttrName: "less_than_equal_value", ConfigVal: configItem.LessThanEqualValue, StateVal: stateItem.LessThanEqualValue},
+				},
+			})
+		}
+	}
 }

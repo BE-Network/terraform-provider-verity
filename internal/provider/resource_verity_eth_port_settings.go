@@ -505,6 +505,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	// Handle LLDP Med
 	if len(plan.LldpMed) > 0 {
 		lldpMedItems := make([]openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, len(plan.LldpMed))
+		lldpMedConfigMap := utils.BuildIndexedConfigMap(config.LldpMed)
 		for i, item := range plan.LldpMed {
 			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
 
@@ -516,9 +517,21 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 				{FieldName: "LldpMedRowNumService", APIField: &lldpMedItem.LldpMedRowNumService, TFValue: item.LldpMedRowNumService},
 				{FieldName: "LldpMedRowNumServiceRefType", APIField: &lldpMedItem.LldpMedRowNumServiceRefType, TFValue: item.LldpMedRowNumServiceRefType},
 			})
+
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := item.Index.ValueInt64()
+			configItem := item // fallback to plan item
+			if cfgItem, ok := lldpMedConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "lldp_med",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: item.LldpMedRowNumDscpMark},
-				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: item.LldpMedRowNumPriority},
+				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: configItem.LldpMedRowNumDscpMark, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark")},
+				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: configItem.LldpMedRowNumPriority, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_priority")},
 			})
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
@@ -770,6 +783,12 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	}
 
 	// Handle LLDP Med
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_settings", name)
+	var config verityEthPortSettingsResourceModel
+	req.Config.Get(ctx, &config)
+	lldpMedConfigMap := utils.BuildIndexedConfigMap(config.LldpMed)
+
 	lldpMedHandler := utils.IndexedItemHandler[verityEthPortSettingsLldpMedModel, openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner]{
 		CreateNew: func(item verityEthPortSettingsLldpMedModel) openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
 			lldpMedItem := openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
@@ -778,9 +797,20 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
 			})
 
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := item.Index.ValueInt64()
+			configItem := item // fallback to plan item
+			if cfgItem, ok := lldpMedConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "lldp_med",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: item.LldpMedRowNumDscpMark},
-				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: item.LldpMedRowNumPriority},
+				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: configItem.LldpMedRowNumDscpMark, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark")},
+				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: configItem.LldpMedRowNumPriority, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_priority")},
 			})
 
 			utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -1074,6 +1104,10 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 		"mac_limit", "aging_time",
 	)
 
+	nullifier.NullifyNestedBlocks(
+		"object_properties", "lldp_med",
+	)
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================
@@ -1120,4 +1154,33 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 			{AttrName: "aging_time", ConfigVal: config.AgingTime, StateVal: state.AgingTime},
 		},
 	})
+
+	// =========================================================================
+	// Handle nullable fields in nested blocks
+	// =========================================================================
+	for i, configItem := range config.LldpMed {
+		itemIndex := configItem.Index.ValueInt64()
+		var stateItem *verityEthPortSettingsLldpMedModel
+		for j := range state.LldpMed {
+			if state.LldpMed[j].Index.ValueInt64() == itemIndex {
+				stateItem = &state.LldpMed[j]
+				break
+			}
+		}
+
+		if stateItem != nil {
+			utils.HandleNullableNestedFields(utils.NullableNestedFieldsConfig{
+				Ctx:             ctx,
+				Plan:            &resp.Plan,
+				ConfiguredAttrs: configuredAttrs,
+				BlockType:       "lldp_med",
+				BlockListPath:   "lldp_med",
+				BlockListIndex:  i,
+				Int64Fields: []utils.NullableNestedInt64Field{
+					{BlockIndex: itemIndex, AttrName: "lldp_med_row_num_dscp_mark", ConfigVal: configItem.LldpMedRowNumDscpMark, StateVal: stateItem.LldpMedRowNumDscpMark},
+					{BlockIndex: itemIndex, AttrName: "lldp_med_row_num_priority", ConfigVal: configItem.LldpMedRowNumPriority, StateVal: stateItem.LldpMedRowNumPriority},
+				},
+			})
+		}
+	}
 }

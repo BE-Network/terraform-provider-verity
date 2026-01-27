@@ -165,6 +165,13 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 		return
 	}
 
+	var config verityIpv6PrefixListResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -193,8 +200,14 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 		ipv6PrefixListProps.ObjectProperties = &objectProps
 	}
 
+	// Parse HCL to detect explicitly configured attributes
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv6_prefix_list", name)
+
 	// Handle lists
 	if len(plan.Lists) > 0 {
+		listsConfigMap := utils.BuildIndexedConfigMap(config.Lists)
+
 		var lists []openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner
 		for _, listItem := range plan.Lists {
 			item := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner{}
@@ -205,9 +218,21 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 				{FieldName: "PermitDeny", APIField: &item.PermitDeny, TFValue: listItem.PermitDeny},
 				{FieldName: "Ipv6Prefix", APIField: &item.Ipv6Prefix, TFValue: listItem.Ipv6Prefix},
 			})
+
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := listItem.Index.ValueInt64()
+			configItem := listItem // fallback to plan item
+			if cfgItem, ok := listsConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "lists",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "GreaterThanEqualValue", APIField: &item.GreaterThanEqualValue, TFValue: listItem.GreaterThanEqualValue},
-				{FieldName: "LessThanEqualValue", APIField: &item.LessThanEqualValue, TFValue: listItem.LessThanEqualValue},
+				{FieldName: "GreaterThanEqualValue", APIField: &item.GreaterThanEqualValue, TFValue: configItem.GreaterThanEqualValue, IsConfigured: cfg.IsFieldConfigured("greater_than_equal_value")},
+				{FieldName: "LessThanEqualValue", APIField: &item.LessThanEqualValue, TFValue: configItem.LessThanEqualValue, IsConfigured: cfg.IsFieldConfigured("less_than_equal_value")},
 			})
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &item.Index, TFValue: listItem.Index},
@@ -403,6 +428,12 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 		}
 	}
 
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv6_prefix_list", name)
+	var config verityIpv6PrefixListResourceModel
+	req.Config.Get(ctx, &config)
+	listsConfigMap := utils.BuildIndexedConfigMap(config.Lists)
+
 	// Handle lists
 	listsHandler := utils.IndexedItemHandler[verityIpv6PrefixListListsModel, openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner]{
 		CreateNew: func(planItem verityIpv6PrefixListListsModel) openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner {
@@ -419,10 +450,20 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 				{FieldName: "Ipv6Prefix", APIField: &newItem.Ipv6Prefix, TFValue: planItem.Ipv6Prefix},
 			})
 
-			// Handle nullable int64 fields
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := planItem.Index.ValueInt64()
+			configItem := planItem // fallback to plan item
+			if cfgItem, ok := listsConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "lists",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "GreaterThanEqualValue", APIField: &newItem.GreaterThanEqualValue, TFValue: planItem.GreaterThanEqualValue},
-				{FieldName: "LessThanEqualValue", APIField: &newItem.LessThanEqualValue, TFValue: planItem.LessThanEqualValue},
+				{FieldName: "GreaterThanEqualValue", APIField: &newItem.GreaterThanEqualValue, TFValue: configItem.GreaterThanEqualValue, IsConfigured: cfg.IsFieldConfigured("greater_than_equal_value")},
+				{FieldName: "LessThanEqualValue", APIField: &newItem.LessThanEqualValue, TFValue: configItem.LessThanEqualValue, IsConfigured: cfg.IsFieldConfigured("less_than_equal_value")},
 			})
 
 			// Handle int64 fields
@@ -627,4 +668,63 @@ func (r *verityIpv6PrefixListResource) ModifyPlan(ctx context.Context, req resou
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlocks(
+		"lists", "object_properties",
+	)
+
+	// =========================================================================
+	// Skip UPDATE-specific logic during CREATE
+	// =========================================================================
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	// =========================================================================
+	// UPDATE operation - get state and config
+	// =========================================================================
+	var state verityIpv6PrefixListResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config verityIpv6PrefixListResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// =========================================================================
+	// Handle nullable fields in nested blocks
+	// =========================================================================
+	name := plan.Name.ValueString()
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv6_prefix_list", name)
+
+	for i, configItem := range config.Lists {
+		itemIndex := configItem.Index.ValueInt64()
+		var stateItem *verityIpv6PrefixListListsModel
+		for j := range state.Lists {
+			if state.Lists[j].Index.ValueInt64() == itemIndex {
+				stateItem = &state.Lists[j]
+				break
+			}
+		}
+
+		if stateItem != nil {
+			utils.HandleNullableNestedFields(utils.NullableNestedFieldsConfig{
+				Ctx:             ctx,
+				Plan:            &resp.Plan,
+				ConfiguredAttrs: configuredAttrs,
+				BlockType:       "lists",
+				BlockListPath:   "lists",
+				BlockListIndex:  i,
+				Int64Fields: []utils.NullableNestedInt64Field{
+					{BlockIndex: itemIndex, AttrName: "greater_than_equal_value", ConfigVal: configItem.GreaterThanEqualValue, StateVal: stateItem.GreaterThanEqualValue},
+					{BlockIndex: itemIndex, AttrName: "less_than_equal_value", ConfigVal: configItem.LessThanEqualValue, StateVal: stateItem.LessThanEqualValue},
+				},
+			})
+		}
+	}
 }

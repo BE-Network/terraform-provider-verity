@@ -58,6 +58,16 @@ func (n *ModeFieldNullifier) NullifyNumbers(fields ...string) {
 	}
 }
 
+// NullifyNestedBlocks sets nested block fields to null if the block doesn't apply to the current mode.
+func (n *ModeFieldNullifier) NullifyNestedBlocks(blocks ...string) {
+	for _, block := range blocks {
+		if !FieldAppliesToMode(n.ResourceType, block, n.Mode) {
+			// Set the nested block to an empty list when mode doesn't apply
+			n.Plan.SetAttribute(n.Ctx, path.Root(block), types.ListNull(types.ObjectType{}))
+		}
+	}
+}
+
 // ============================================================================
 // Nullable Field Handling for ModifyPlan
 // ============================================================================
@@ -106,4 +116,96 @@ func HandleNullableFields(cfg NullableFieldsConfig) {
 			cfg.Plan.SetAttribute(cfg.Ctx, path.Root(field.AttrName), types.NumberNull())
 		}
 	}
+}
+
+// ============================================================================
+// Nullable Nested Field Handling for ModifyPlan
+// ============================================================================
+
+// NullableNestedInt64Field represents a nullable Int64 field within an indexed nested block
+type NullableNestedInt64Field struct {
+	BlockIndex int64
+	AttrName   string
+	ConfigVal  types.Int64
+	StateVal   types.Int64
+}
+
+// NullableNestedNumberField represents a nullable Number field within an indexed nested block
+type NullableNestedNumberField struct {
+	BlockIndex int64
+	AttrName   string
+	ConfigVal  types.Number
+	StateVal   types.Number
+}
+
+// NullableNestedFieldsConfig holds the configuration for handling nullable nested fields in ModifyPlan
+type NullableNestedFieldsConfig struct {
+	Ctx  context.Context
+	Plan interface {
+		SetAttribute(context.Context, path.Path, interface{}) diag.Diagnostics
+	}
+	ConfiguredAttrs *ConfiguredAttributes
+	BlockType       string
+	BlockListPath   string
+	BlockListIndex  int
+	Int64Fields     []NullableNestedInt64Field
+	NumberFields    []NullableNestedNumberField
+}
+
+// HandleNullableNestedFields processes nullable fields within indexed nested blocks.
+// For Optional+Computed fields in nested blocks, Terraform copies state to plan when config is null.
+// This function detects explicit null in HCL and forces plan to null.
+func HandleNullableNestedFields(cfg NullableNestedFieldsConfig) {
+	// Handle nullable Int64 fields in nested blocks
+	for _, field := range cfg.Int64Fields {
+		// If explicitly configured as null in .tf AND state has a value -> force null
+		if cfg.ConfiguredAttrs.IsIndexedBlockAttributeConfigured(cfg.BlockType, field.BlockIndex, field.AttrName) &&
+			field.ConfigVal.IsNull() && !field.StateVal.IsNull() {
+			attrPath := path.Root(cfg.BlockListPath).AtListIndex(cfg.BlockListIndex).AtName(field.AttrName)
+			cfg.Plan.SetAttribute(cfg.Ctx, attrPath, types.Int64Null())
+		}
+	}
+
+	// Handle nullable Number fields in nested blocks
+	for _, field := range cfg.NumberFields {
+		// If explicitly configured as null in .tf AND state has a value -> force null
+		if cfg.ConfiguredAttrs.IsIndexedBlockAttributeConfigured(cfg.BlockType, field.BlockIndex, field.AttrName) &&
+			field.ConfigVal.IsNull() && !field.StateVal.IsNull() {
+			attrPath := path.Root(cfg.BlockListPath).AtListIndex(cfg.BlockListIndex).AtName(field.AttrName)
+			cfg.Plan.SetAttribute(cfg.Ctx, attrPath, types.NumberNull())
+		}
+	}
+}
+
+// ============================================================================
+// Indexed Block Item Helpers for Create/Update
+// ============================================================================
+
+// IndexedBlockItem is an interface for nested block items that have an Index field
+type IndexedBlockItem interface {
+	GetIndex() types.Int64
+}
+
+// BuildIndexedConfigMap builds a map from index value to config item for quick lookup.
+func BuildIndexedConfigMap[T IndexedBlockItem](configItems []T) map[int64]T {
+	result := make(map[int64]T)
+	for _, item := range configItems {
+		idx := item.GetIndex()
+		if !idx.IsNull() && !idx.IsUnknown() {
+			result[idx.ValueInt64()] = item
+		}
+	}
+	return result
+}
+
+// IndexedBlockNullableFieldConfig provides config for setting nullable fields in indexed blocks
+type IndexedBlockNullableFieldConfig struct {
+	BlockType       string
+	BlockIndex      int64
+	ConfiguredAttrs *ConfiguredAttributes
+}
+
+// IsFieldConfigured checks if a field is configured in this indexed block
+func (c *IndexedBlockNullableFieldConfig) IsFieldConfigured(attrName string) bool {
+	return c.ConfiguredAttrs.IsIndexedBlockAttributeConfigured(c.BlockType, c.BlockIndex, attrName)
 }

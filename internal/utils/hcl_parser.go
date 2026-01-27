@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // ConfiguredAttributes holds the set of attributes that were explicitly written
@@ -22,6 +24,9 @@ type ConfiguredAttributes struct {
 	BlockAttributes map[string]bool
 	// Blocks contains the names of blocks that are present
 	Blocks map[string]bool
+	// IndexedBlockAttributes maps: blockType -> indexValue -> attrName -> true
+	// Used to track which attributes are configured for each indexed block instance
+	IndexedBlockAttributes map[string]map[int64]map[string]bool
 }
 
 // IsConfigured returns true if the attribute was explicitly written in the .tf file.
@@ -48,6 +53,20 @@ func (c *ConfiguredAttributes) IsBlockAttributeConfigured(path string) bool {
 	return c.BlockAttributes[path]
 }
 
+// IsIndexedBlockAttributeConfigured returns true if an attribute within a specific
+// indexed block instance was configured. Used for blocks with an "index" field.
+func (c *ConfiguredAttributes) IsIndexedBlockAttributeConfigured(blockType string, indexValue int64, attrName string) bool {
+	if c == nil || c.IndexedBlockAttributes == nil {
+		return false
+	}
+	if indexMap, ok := c.IndexedBlockAttributes[blockType]; ok {
+		if attrMap, ok := indexMap[indexValue]; ok {
+			return attrMap[attrName]
+		}
+	}
+	return false
+}
+
 // ParseResourceConfiguredAttributes parses all .tf files in the given directory
 // and returns the set of attributes that were explicitly configured for the
 // specified resource type and name.
@@ -61,9 +80,10 @@ func (c *ConfiguredAttributes) IsBlockAttributeConfigured(path string) bool {
 // all schema attributes with null for unspecified fields.
 func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, resourceType string, resourceName string) *ConfiguredAttributes {
 	result := &ConfiguredAttributes{
-		Attributes:      make(map[string]bool),
-		BlockAttributes: make(map[string]bool),
-		Blocks:          make(map[string]bool),
+		Attributes:             make(map[string]bool),
+		BlockAttributes:        make(map[string]bool),
+		Blocks:                 make(map[string]bool),
+		IndexedBlockAttributes: make(map[string]map[int64]map[string]bool),
 	}
 
 	// Find all .tf files in the working directory
@@ -110,6 +130,20 @@ func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, reso
 			for block := range found.Blocks {
 				result.Blocks[block] = true
 			}
+			// Merge IndexedBlockAttributes
+			for blockType, indexMap := range found.IndexedBlockAttributes {
+				if _, exists := result.IndexedBlockAttributes[blockType]; !exists {
+					result.IndexedBlockAttributes[blockType] = make(map[int64]map[string]bool)
+				}
+				for idx, attrMap := range indexMap {
+					if _, exists := result.IndexedBlockAttributes[blockType][idx]; !exists {
+						result.IndexedBlockAttributes[blockType][idx] = make(map[string]bool)
+					}
+					for attrName := range attrMap {
+						result.IndexedBlockAttributes[blockType][idx][attrName] = true
+					}
+				}
+			}
 		}
 	}
 
@@ -139,9 +173,10 @@ func findResourceAttributes(ctx context.Context, body hcl.Body, resourceType str
 			// Match either the exact name or the sanitized version
 			if blockType == resourceType && (blockName == resourceName || blockName == sanitizedName) {
 				result := &ConfiguredAttributes{
-					Attributes:      make(map[string]bool),
-					BlockAttributes: make(map[string]bool),
-					Blocks:          make(map[string]bool),
+					Attributes:             make(map[string]bool),
+					BlockAttributes:        make(map[string]bool),
+					Blocks:                 make(map[string]bool),
+					IndexedBlockAttributes: make(map[string]map[int64]map[string]bool),
 				}
 
 				// Extract top-level attributes
@@ -152,12 +187,25 @@ func findResourceAttributes(ctx context.Context, body hcl.Body, resourceType str
 				// Extract nested blocks and their attributes
 				extractNestedBlocks(block.Body.Blocks, result, "")
 
+				// Build a string representation of IndexedBlockAttributes for debugging
+				indexedAttrsStr := ""
+				for blockType, indexMap := range result.IndexedBlockAttributes {
+					for idx, attrMap := range indexMap {
+						attrs := make([]string, 0, len(attrMap))
+						for attr := range attrMap {
+							attrs = append(attrs, attr)
+						}
+						indexedAttrsStr += fmt.Sprintf("%s[%d]:{%s} ", blockType, idx, strings.Join(attrs, ","))
+					}
+				}
+
 				tflog.Debug(ctx, "HCL parser found resource", map[string]interface{}{
-					"resource":       resourceType + "." + resourceName,
-					"matched_label":  blockName,
-					"sanitized_name": sanitizedName,
-					"attributes":     mapKeysToString(result.Attributes),
-					"blocks":         mapKeysToString(result.Blocks),
+					"resource":            resourceType + "." + resourceName,
+					"matched_label":       blockName,
+					"sanitized_name":      sanitizedName,
+					"attributes":          mapKeysToString(result.Attributes),
+					"blocks":              mapKeysToString(result.Blocks),
+					"indexed_block_attrs": indexedAttrsStr,
 				})
 				return result
 			}
@@ -168,6 +216,8 @@ func findResourceAttributes(ctx context.Context, body hcl.Body, resourceType str
 }
 
 // extractNestedBlocks recursively extracts block names and their attributes.
+// For blocks with an "index" attribute, it also populates IndexedBlockAttributes
+// to track which attributes are configured per-block-index.
 func extractNestedBlocks(blocks []*hclsyntax.Block, result *ConfiguredAttributes, prefix string) {
 	for _, block := range blocks {
 		fullBlockPath := block.Type
@@ -179,7 +229,41 @@ func extractNestedBlocks(blocks []*hclsyntax.Block, result *ConfiguredAttributes
 		result.Blocks[block.Type] = true
 		result.Blocks[fullBlockPath] = true
 
-		// Extract attributes from this block
+		// Try to extract the "index" attribute value for indexed blocks
+		var blockIndex int64 = -1
+		if indexAttr, hasIndex := block.Body.Attributes["index"]; hasIndex {
+			val, diags := indexAttr.Expr.Value(nil)
+			if diags.HasErrors() {
+				// Log the error but continue
+				for _, d := range diags {
+					_ = d // can't log without context
+				}
+			} else if val.Type() == cty.Number && !val.IsNull() && val.IsKnown() {
+				bf := val.AsBigFloat()
+				if bf.IsInt() {
+					blockIndex, _ = bf.Int64()
+				}
+			}
+		}
+
+		// If we have a valid index, populate IndexedBlockAttributes
+		if blockIndex >= 0 {
+			blockType := block.Type
+			if prefix != "" {
+				blockType = fullBlockPath
+			}
+			if _, exists := result.IndexedBlockAttributes[blockType]; !exists {
+				result.IndexedBlockAttributes[blockType] = make(map[int64]map[string]bool)
+			}
+			if _, exists := result.IndexedBlockAttributes[blockType][blockIndex]; !exists {
+				result.IndexedBlockAttributes[blockType][blockIndex] = make(map[string]bool)
+			}
+			for attrName := range block.Body.Attributes {
+				result.IndexedBlockAttributes[blockType][blockIndex][attrName] = true
+			}
+		}
+
+		// Extract attributes from this block (existing behavior)
 		for attrName := range block.Body.Attributes {
 			simplePath := block.Type + "." + attrName
 			result.BlockAttributes[simplePath] = true

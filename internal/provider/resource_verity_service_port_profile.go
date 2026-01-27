@@ -276,6 +276,7 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 	// Handle services
 	if len(plan.Services) > 0 {
 		services := make([]openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner, len(plan.Services))
+		servicesConfigMap := utils.BuildIndexedConfigMap(config.Services)
 		for i, service := range plan.Services {
 			serviceItem := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 
@@ -295,11 +296,21 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: service.Index},
 			})
 
-			// Handle nullable int64 fields
+			// Get per-block configured info for nullable Int64 fields
+			itemIndex := service.Index.ValueInt64()
+			configItem := service // fallback to plan item
+			if cfgItem, ok := servicesConfigMap[itemIndex]; ok {
+				configItem = cfgItem
+			}
+			cfg := &utils.IndexedBlockNullableFieldConfig{
+				BlockType:       "services",
+				BlockIndex:      itemIndex,
+				ConfiguredAttrs: configuredAttrs,
+			}
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: service.RowNumExternalVlan},
-				{FieldName: "RowNumLimitIn", APIField: &serviceItem.RowNumLimitIn, TFValue: service.RowNumLimitIn},
-				{FieldName: "RowNumLimitOut", APIField: &serviceItem.RowNumLimitOut, TFValue: service.RowNumLimitOut},
+				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
+				{FieldName: "RowNumLimitIn", APIField: &serviceItem.RowNumLimitIn, TFValue: configItem.RowNumLimitIn, IsConfigured: cfg.IsFieldConfigured("row_num_limit_in")},
+				{FieldName: "RowNumLimitOut", APIField: &serviceItem.RowNumLimitOut, TFValue: configItem.RowNumLimitOut, IsConfigured: cfg.IsFieldConfigured("row_num_limit_out")},
 			})
 
 			services[i] = serviceItem
@@ -517,6 +528,12 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	}
 
 	// Handle services
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_service_port_profile", name)
+	var config verityServicePortProfileResourceModel
+	req.Config.Get(ctx, &config)
+	servicesConfigMap := utils.BuildIndexedConfigMap(config.Services)
+
 	changedServices, servicesChanged := utils.ProcessIndexedArrayUpdates(plan.Services, state.Services,
 		utils.IndexedItemHandler[verityServicePortProfileServiceModel, openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner]{
 			CreateNew: func(planItem verityServicePortProfileServiceModel) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
@@ -538,11 +555,21 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 					{FieldName: "Index", APIField: &newService.Index, TFValue: planItem.Index},
 				})
 
-				// Handle nullable int64 fields
+				// Get per-block configured info for nullable Int64 fields
+				itemIndex := planItem.Index.ValueInt64()
+				configItem := planItem // fallback to plan item
+				if cfgItem, ok := servicesConfigMap[itemIndex]; ok {
+					configItem = cfgItem
+				}
+				cfg := &utils.IndexedBlockNullableFieldConfig{
+					BlockType:       "services",
+					BlockIndex:      itemIndex,
+					ConfiguredAttrs: configuredAttrs,
+				}
 				utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-					{FieldName: "RowNumExternalVlan", APIField: &newService.RowNumExternalVlan, TFValue: planItem.RowNumExternalVlan},
-					{FieldName: "RowNumLimitIn", APIField: &newService.RowNumLimitIn, TFValue: planItem.RowNumLimitIn},
-					{FieldName: "RowNumLimitOut", APIField: &newService.RowNumLimitOut, TFValue: planItem.RowNumLimitOut},
+					{FieldName: "RowNumExternalVlan", APIField: &newService.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
+					{FieldName: "RowNumLimitIn", APIField: &newService.RowNumLimitIn, TFValue: configItem.RowNumLimitIn, IsConfigured: cfg.IsFieldConfigured("row_num_limit_in")},
+					{FieldName: "RowNumLimitOut", APIField: &newService.RowNumLimitOut, TFValue: configItem.RowNumLimitOut, IsConfigured: cfg.IsFieldConfigured("row_num_limit_out")},
 				})
 
 				return newService
@@ -772,6 +799,10 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 		"tls_limit_in",
 	)
 
+	nullifier.NullifyNestedBlocks(
+		"services", "object_properties",
+	)
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================
@@ -811,4 +842,34 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 			{AttrName: "tls_limit_in", ConfigVal: config.TlsLimitIn, StateVal: state.TlsLimitIn},
 		},
 	})
+
+	// =========================================================================
+	// Handle nullable fields in nested blocks
+	// =========================================================================
+	for i, configItem := range config.Services {
+		itemIndex := configItem.Index.ValueInt64()
+		var stateItem *verityServicePortProfileServiceModel
+		for j := range state.Services {
+			if state.Services[j].Index.ValueInt64() == itemIndex {
+				stateItem = &state.Services[j]
+				break
+			}
+		}
+
+		if stateItem != nil {
+			utils.HandleNullableNestedFields(utils.NullableNestedFieldsConfig{
+				Ctx:             ctx,
+				Plan:            &resp.Plan,
+				ConfiguredAttrs: configuredAttrs,
+				BlockType:       "services",
+				BlockListPath:   "services",
+				BlockListIndex:  i,
+				Int64Fields: []utils.NullableNestedInt64Field{
+					{BlockIndex: itemIndex, AttrName: "row_num_external_vlan", ConfigVal: configItem.RowNumExternalVlan, StateVal: stateItem.RowNumExternalVlan},
+					{BlockIndex: itemIndex, AttrName: "row_num_limit_in", ConfigVal: configItem.RowNumLimitIn, StateVal: stateItem.RowNumLimitIn},
+					{BlockIndex: itemIndex, AttrName: "row_num_limit_out", ConfigVal: configItem.RowNumLimitOut, StateVal: stateItem.RowNumLimitOut},
+				},
+			})
+		}
+	}
 }
