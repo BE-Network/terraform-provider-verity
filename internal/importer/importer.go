@@ -702,19 +702,9 @@ func (i *Importer) ImportAll(outputDir string) error {
 	}
 
 	for _, task := range resourceTasks {
-		if !utils.IsResourceCompatibleWithVersion(task.terraformResourceType, apiVersionString) {
-			tflog.Info(i.ctx, "Skipping resource due to API version incompatibility", map[string]interface{}{
-				"resource_name":           task.name,
-				"terraform_resource_type": task.terraformResourceType,
-				"api_version":             apiVersionString,
-			})
-			continue
-		}
-
-		tflog.Info(i.ctx, "Importing resource compatible with API version", map[string]interface{}{
+		tflog.Info(i.ctx, "Importing resource", map[string]interface{}{
 			"resource_name":           task.name,
 			"terraform_resource_type": task.terraformResourceType,
-			"api_version":             apiVersionString,
 		})
 
 		data, err := task.importer()
@@ -1123,12 +1113,12 @@ func (i *Importer) generateStagesTF() (string, error) {
 		}
 	}
 
-	// Filter stages based on resource compatibility with mode and API version
+	// Filter stages based on resource compatibility with mode
 	var compatibleStages []StageDefinition
 	var lastCompatibleStage string
 
 	for _, stage := range stageOrder {
-		if utils.IsResourceCompatible(stage.ResourceType, i.Mode, apiVersionString) {
+		if utils.IsResourceCompatibleWithMode(stage.ResourceType, i.Mode) {
 			if stage.DependsOnStage != "" && lastCompatibleStage != "" && stage.DependsOnStage != lastCompatibleStage {
 				stage.DependsOnStage = lastCompatibleStage
 			}
@@ -1139,7 +1129,6 @@ func (i *Importer) generateStagesTF() (string, error) {
 				"stage_name":    stage.StageName,
 				"resource_type": stage.ResourceType,
 				"mode":          i.Mode,
-				"api_version":   apiVersionString,
 			})
 		}
 	}

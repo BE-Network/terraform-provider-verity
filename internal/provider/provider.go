@@ -272,19 +272,19 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	apiVersion, err := getApiVersion(ctx, provCtx)
 	if err != nil {
-		if strings.Contains(err.Error(), "mode mismatch") {
-			resp.Diagnostics.AddError(
-				"Provider Mode Configuration Error",
-				err.Error(),
-			)
-			return
-		}
+		resp.Diagnostics.AddError(
+			"API Version Error",
+			err.Error(),
+		)
+		return
+	}
 
-		tflog.Warn(ctx, "Failed to get API version, using default compatibility", map[string]interface{}{
-			"error": err.Error(),
-		})
-		// Set a default version if we couldn't get the actual version
-		apiVersion = "6.4.0"
+	if err := utils.ValidateAPIVersion(apiVersion); err != nil {
+		resp.Diagnostics.AddError(
+			"API Version Mismatch",
+			err.Error(),
+		)
+		return
 	}
 
 	provCtx.apiVersion = apiVersion
@@ -301,8 +301,6 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 }
 
 func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error) {
-	const defaultVersion = "6.4"
-
 	if err := authenticate(ctx, provCtx); err != nil {
 		return "", fmt.Errorf("authentication failed when getting API version: %w", err)
 	}
@@ -310,32 +308,18 @@ func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error
 	tflog.Debug(ctx, "Fetching API version via OpenAPI client")
 
 	httpResp, err := provCtx.client.VersionAPI.VersionGet(ctx).Execute()
-
 	if err != nil {
-		tflog.Error(ctx, "Failed to execute API version request via OpenAPI client, defaulting.", map[string]interface{}{
-			"error":           err,
-			"default_version": defaultVersion,
-		})
-		return defaultVersion, nil // Return default version, no error to the caller of getApiVersion itself.
+		return "", fmt.Errorf("failed to get API version from server: %w. This Terraform provider requires the version endpoint to be available", err)
 	}
 	defer httpResp.Body.Close()
 
 	bodyBytes, err := io.ReadAll(httpResp.Body)
 	if err != nil {
-		tflog.Error(ctx, "Failed to read API version response body (OpenAPI client), defaulting.", map[string]interface{}{
-			"error":           err,
-			"default_version": defaultVersion,
-		})
-		return defaultVersion, nil
+		return "", fmt.Errorf("failed to read API version response: %w", err)
 	}
 
 	if httpResp.StatusCode != http.StatusOK {
-		tflog.Error(ctx, "API version request via OpenAPI client returned non-OK status, defaulting.", map[string]interface{}{
-			"status_code":     httpResp.StatusCode,
-			"response_body":   string(bodyBytes),
-			"default_version": defaultVersion,
-		})
-		return defaultVersion, nil
+		return "", fmt.Errorf("API version request returned status %d: %s", httpResp.StatusCode, string(bodyBytes))
 	}
 
 	var versionPayload struct {
@@ -343,20 +327,11 @@ func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error
 		Datacenter *bool  `json:"datacenter,omitempty"`
 	}
 	if err := json.Unmarshal(bodyBytes, &versionPayload); err != nil {
-		tflog.Error(ctx, "Failed to unmarshal API version JSON response (OpenAPI client), defaulting.", map[string]interface{}{
-			"error":           err,
-			"response_body":   string(bodyBytes),
-			"default_version": defaultVersion,
-		})
-		return defaultVersion, nil
+		return "", fmt.Errorf("failed to parse API version response: %w", err)
 	}
 
 	if versionPayload.Version == "" {
-		tflog.Warn(ctx, "API version string is empty in response (OpenAPI client), defaulting.", map[string]interface{}{
-			"response_body":   string(bodyBytes),
-			"default_version": defaultVersion,
-		})
-		return defaultVersion, nil
+		return "", fmt.Errorf("API version response is empty")
 	}
 
 	if versionPayload.Datacenter != nil {
@@ -372,7 +347,7 @@ func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error
 			}
 			configuredMode = provCtx.mode
 
-			return "", fmt.Errorf("mode mismatch: provider is configured for '%s' mode but the system is running in '%s' mode. Please update the provider configuration to match the actual system type", configuredMode, systemMode)
+			return "", fmt.Errorf("Mode mismatch: provider is configured for '%s' mode but the system is running in '%s' mode. Please update the provider configuration to match the actual system type", configuredMode, systemMode)
 		}
 
 		tflog.Info(ctx, "Mode validation successful", map[string]interface{}{
@@ -383,7 +358,7 @@ func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error
 		tflog.Debug(ctx, "No datacenter field in version response, skipping mode validation")
 	}
 
-	tflog.Info(ctx, "Successfully fetched API version via OpenAPI client", map[string]interface{}{
+	tflog.Info(ctx, "Successfully fetched API version", map[string]interface{}{
 		"version": versionPayload.Version,
 	})
 	return versionPayload.Version, nil
