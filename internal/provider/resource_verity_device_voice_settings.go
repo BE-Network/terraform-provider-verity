@@ -26,6 +26,7 @@ var (
 )
 
 const deviceVoiceSettingsResourceType = "devicevoicesettings"
+const deviceVoiceSettingsTerraformType = "verity_device_voice_settings"
 
 func NewVerityDeviceVoiceSettingsResource() resource.Resource {
 	return &verityDeviceVoiceSettingsResource{}
@@ -576,7 +577,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_voice_settings", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "ProxyServerPort", APIField: &dvsProps.ProxyServerPort, TFValue: config.ProxyServerPort, IsConfigured: configuredAttrs.IsConfigured("proxy_server_port")},
@@ -806,7 +807,7 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_voice_settings", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { dvsProps.Name = v }, &hasChanges)
@@ -1219,7 +1220,7 @@ func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req 
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_voice_settings", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

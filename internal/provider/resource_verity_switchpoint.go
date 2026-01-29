@@ -26,6 +26,7 @@ var (
 )
 
 const switchpointResourceType = "switchpoints"
+const switchpointTerraformType = "verity_switchpoint"
 
 func NewVeritySwitchpointResource() resource.Resource {
 	return &veritySwitchpointResource{}
@@ -524,7 +525,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_switchpoint", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, switchpointTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "BgpAsNumber", APIField: &spProps.BgpAsNumber, TFValue: config.BgpAsNumber, IsConfigured: configuredAttrs.IsConfigured("bgp_as_number")},
@@ -858,7 +859,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	var config veritySwitchpointResourceModel
 	req.Config.Get(ctx, &config)
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_switchpoint", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, switchpointTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { spProps.Name = v }, &hasChanges)
@@ -1642,7 +1643,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_switchpoint", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, switchpointTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

@@ -26,6 +26,7 @@ var (
 )
 
 const serviceResourceType = "services"
+const serviceTerraformType = "verity_service"
 
 func NewVerityServiceResource() resource.Resource {
 	return &verityServiceResource{}
@@ -343,7 +344,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_service", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "Vlan", APIField: &serviceReq.Vlan, TFValue: config.Vlan, IsConfigured: configuredAttrs.IsConfigured("vlan")},
@@ -572,7 +573,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_service", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { serviceReq.Name = v }, &hasChanges)
@@ -922,7 +923,7 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_service", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

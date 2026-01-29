@@ -26,6 +26,7 @@ var (
 )
 
 const tenantResourceType = "tenants"
+const tenantTerraformType = "verity_tenant"
 
 func NewVerityTenantResource() resource.Resource {
 	return &verityTenantResource{}
@@ -1094,7 +1095,7 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_tenant", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, tenantTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

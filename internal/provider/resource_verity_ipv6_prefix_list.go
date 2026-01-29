@@ -26,6 +26,7 @@ var (
 )
 
 const ipv6PrefixListResourceType = "ipv6prefixlists"
+const ipv6PrefixListTerraformType = "verity_ipv6_prefix_list"
 
 func NewVerityIpv6PrefixListResource() resource.Resource {
 	return &verityIpv6PrefixListResource{}
@@ -202,7 +203,7 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 
 	// Parse HCL to detect explicitly configured attributes
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv6_prefix_list", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ipv6PrefixListTerraformType, name)
 
 	// Handle lists
 	if len(plan.Lists) > 0 {
@@ -420,7 +421,7 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 	}
 
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv6_prefix_list", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ipv6PrefixListTerraformType, name)
 	var config verityIpv6PrefixListResourceModel
 	req.Config.Get(ctx, &config)
 	listsConfigMap := utils.BuildIndexedConfigMap(config.Lists)
@@ -683,7 +684,7 @@ func (r *verityIpv6PrefixListResource) ModifyPlan(ctx context.Context, req resou
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_ipv6_prefix_list", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ipv6PrefixListTerraformType, name)
 
 	for i, configItem := range config.Lists {
 		itemIndex := configItem.Index.ValueInt64()

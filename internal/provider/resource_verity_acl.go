@@ -26,6 +26,7 @@ var (
 )
 
 const aclResourceType = "acls"
+const aclTerraformTypePrefix = "verity_acl_v"
 
 func NewVerityACLV4Resource() resource.Resource {
 	return &verityACLUnifiedResource{ipVersion: "4"}
@@ -223,7 +224,7 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_acl_v"+r.ipVersion, name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, aclTerraformTypePrefix+r.ipVersion, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "SourcePort1", APIField: &aclProps.SourcePort1, TFValue: config.SourcePort1, IsConfigured: configuredAttrs.IsConfigured("source_port_1")},
@@ -422,7 +423,7 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_acl_v"+r.ipVersion, name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, aclTerraformTypePrefix+r.ipVersion, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { aclProps.Name = v }, &hasChanges)
@@ -655,7 +656,7 @@ func (r *verityACLUnifiedResource) ModifyPlan(ctx context.Context, req resource.
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_acl_v"+r.ipVersion, name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, aclTerraformTypePrefix+r.ipVersion, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

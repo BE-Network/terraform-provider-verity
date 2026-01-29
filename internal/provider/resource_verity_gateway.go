@@ -26,6 +26,7 @@ var (
 )
 
 const gatewayResourceType = "gateways"
+const gatewayTerraformType = "verity_gateway"
 
 func NewVerityGatewayResource() resource.Resource {
 	return &verityGatewayResource{}
@@ -393,7 +394,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_gateway", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "NeighborAsNumber", APIField: &gatewayProps.NeighborAsNumber, TFValue: config.NeighborAsNumber, IsConfigured: configuredAttrs.IsConfigured("neighbor_as_number")},
@@ -622,7 +623,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_gateway", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { gatewayProps.Name = v }, &hasChanges)
@@ -1030,7 +1031,7 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_gateway", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

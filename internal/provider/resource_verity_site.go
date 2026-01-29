@@ -26,6 +26,7 @@ var (
 )
 
 const siteResourceType = "sites"
+const siteTerraformType = "verity_site"
 
 func NewVeritySiteResource() resource.Resource {
 	return &veritySiteResource{}
@@ -562,7 +563,7 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_site", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, siteTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { siteReq.Name = v }, &hasChanges)
@@ -1112,7 +1113,7 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_site", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, siteTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

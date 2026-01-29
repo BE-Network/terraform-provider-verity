@@ -26,6 +26,7 @@ var (
 )
 
 const badgeResourceType = "badges"
+const badgeTerraformType = "verity_badge"
 
 func NewVerityBadgeResource() resource.Resource {
 	return &verityBadgeResource{}
@@ -158,7 +159,7 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_badge", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, badgeTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "Number", APIField: &badgeProps.Number, TFValue: config.Number, IsConfigured: configuredAttrs.IsConfigured("number")},
@@ -347,7 +348,7 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_badge", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, badgeTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { badgeProps.Name = v }, &hasChanges)
@@ -551,7 +552,7 @@ func (r *verityBadgeResource) ModifyPlan(ctx context.Context, req resource.Modif
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_badge", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, badgeTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

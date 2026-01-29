@@ -26,6 +26,7 @@ var (
 )
 
 const routeMapClauseResourceType = "routemapclauses"
+const routeMapClauseTerraformType = "verity_route_map_clause"
 
 func NewVerityRouteMapClauseResource() resource.Resource {
 	return &verityRouteMapClauseResource{}
@@ -353,7 +354,7 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_route_map_clause", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "MatchInterfaceNumber", APIField: &routeMapClauseProps.MatchInterfaceNumber, TFValue: config.MatchInterfaceNumber, IsConfigured: configuredAttrs.IsConfigured("match_interface_number")},
@@ -549,7 +550,7 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_route_map_clause", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { routeMapClauseProps.Name = v }, &hasChanges)
@@ -919,7 +920,7 @@ func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resou
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_route_map_clause", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

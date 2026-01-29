@@ -26,6 +26,7 @@ var (
 )
 
 const sflowCollectorResourceType = "sflowcollectors"
+const sflowCollectorTerraformType = "verity_sflow_collector"
 
 func NewVeritySflowCollectorResource() resource.Resource {
 	return &veritySflowCollectorResource{}
@@ -139,7 +140,7 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_sflow_collector", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, sflowCollectorTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "Port", APIField: &sflowCollectorReq.Port, TFValue: config.Port, IsConfigured: configuredAttrs.IsConfigured("port")},
@@ -319,7 +320,7 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_sflow_collector", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, sflowCollectorTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sflowCollectorProps.Name = v }, &hasChanges)
@@ -492,7 +493,7 @@ func (r *veritySflowCollectorResource) ModifyPlan(ctx context.Context, req resou
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_sflow_collector", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, sflowCollectorTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

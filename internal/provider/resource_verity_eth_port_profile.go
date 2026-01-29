@@ -26,6 +26,7 @@ var (
 )
 
 const ethPortProfileResourceType = "ethportprofiles"
+const ethPortProfileTerraformType = "verity_eth_port_profile"
 
 func NewVerityEthPortProfileResource() resource.Resource {
 	return &verityEthPortProfileResource{}
@@ -326,7 +327,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 
 	// Parse HCL to detect explicitly configured attributes
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_profile", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)
 
 	// Handle Services
 	if len(plan.Services) > 0 {
@@ -595,7 +596,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 	// Handle services
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_profile", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)
 	var config verityEthPortProfileResourceModel
 	req.Config.Get(ctx, &config)
 	servicesConfigMap := utils.BuildIndexedConfigMap(config.Services)
@@ -936,7 +937,7 @@ func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resou
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_profile", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)
 
 	for i, configItem := range config.Services {
 		itemIndex := configItem.Index.ValueInt64()

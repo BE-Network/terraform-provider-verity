@@ -26,6 +26,7 @@ var (
 )
 
 const authenticatedEthPortResourceType = "authenticatedethports"
+const authenticatedEthPortTerraformType = "verity_authenticated_eth_port"
 
 func NewVerityAuthenticatedEthPortResource() resource.Resource {
 	return &verityAuthenticatedEthPortResource{}
@@ -235,7 +236,7 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_authenticated_eth_port", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, authenticatedEthPortTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "ReauthorizationPeriodSec", APIField: &aepProps.ReauthorizationPeriodSec, TFValue: config.ReauthorizationPeriodSec, IsConfigured: configuredAttrs.IsConfigured("reauthorization_period_sec")},
@@ -448,7 +449,7 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_authenticated_eth_port", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, authenticatedEthPortTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { aepProps.Name = v }, &hasChanges)
@@ -753,7 +754,7 @@ func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_authenticated_eth_port", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, authenticatedEthPortTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

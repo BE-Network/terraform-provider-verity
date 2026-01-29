@@ -26,6 +26,7 @@ var (
 )
 
 const ethPortSettingsResourceType = "ethportsettings"
+const ethPortSettingsTerraformType = "verity_eth_port_settings"
 
 func NewVerityEthPortSettingsResource() resource.Resource {
 	return &verityEthPortSettingsResource{}
@@ -479,7 +480,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_settings", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "MaxAllowedValue", APIField: &ethPortSettingsProps.MaxAllowedValue, TFValue: config.MaxAllowedValue, IsConfigured: configuredAttrs.IsConfigured("max_allowed_value")},
@@ -707,7 +708,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_settings", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ethPortSettingsProps.Name = v }, &hasChanges)
@@ -1128,7 +1129,7 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_settings", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

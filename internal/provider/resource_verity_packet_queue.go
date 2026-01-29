@@ -26,6 +26,7 @@ var (
 )
 
 const packetQueueResourceType = "packetqueues"
+const packetQueueTerraformType = "verity_packet_queue"
 
 func NewVerityPacketQueueResource() resource.Resource {
 	return &verityPacketQueueResource{}
@@ -217,7 +218,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 
 	// Parse HCL to detect explicitly configured attributes
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_packet_queue", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 
 	// Handle Pbit
 	if len(plan.Pbit) > 0 {
@@ -461,7 +462,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_packet_queue", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 	var config verityPacketQueueResourceModel
 	req.Config.Get(ctx, &config)
 	pbitConfigMap := utils.BuildIndexedConfigMap(config.Pbit)
@@ -774,7 +775,7 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_packet_queue", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 
 	// Handle pbit block nullable fields
 	for i, configItem := range config.Pbit {

@@ -26,6 +26,7 @@ var (
 )
 
 const podResourceType = "pods"
+const podTerraformType = "verity_pod"
 
 func NewVerityPodResource() resource.Resource {
 	return &verityPodResource{}
@@ -147,7 +148,7 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_pod", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "ExpectedSpineCount", APIField: &podReq.ExpectedSpineCount, TFValue: config.ExpectedSpineCount, IsConfigured: configuredAttrs.IsConfigured("expected_spine_count")},
@@ -335,7 +336,7 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_pod", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { podReq.Name = v }, &hasChanges)
@@ -531,7 +532,7 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_pod", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,

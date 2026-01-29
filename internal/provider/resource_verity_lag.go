@@ -26,6 +26,7 @@ var (
 )
 
 const lagResourceType = "lags"
+const lagTerraformType = "verity_lag"
 
 func NewVerityLagResource() resource.Resource {
 	return &verityLagResource{}
@@ -203,7 +204,7 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_lag", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, lagTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "PeerLinkVlan", APIField: &lagReq.PeerLinkVlan, TFValue: config.PeerLinkVlan, IsConfigured: configuredAttrs.IsConfigured("peer_link_vlan")},
@@ -388,7 +389,7 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 
 	// Parse HCL to detect which fields are explicitly configured
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_lag", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, lagTerraformType, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { lagReq.Name = v }, &hasChanges)
@@ -602,7 +603,7 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_lag", name)
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, lagTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
 		Ctx:             ctx,
