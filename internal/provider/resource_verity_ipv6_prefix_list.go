@@ -220,16 +220,7 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 			})
 
 			// Get per-block configured info for nullable Int64 fields
-			itemIndex := listItem.Index.ValueInt64()
-			configItem := listItem // fallback to plan item
-			if cfgItem, ok := listsConfigMap[itemIndex]; ok {
-				configItem = cfgItem
-			}
-			cfg := &utils.IndexedBlockNullableFieldConfig{
-				BlockType:       "lists",
-				BlockIndex:      itemIndex,
-				ConfiguredAttrs: configuredAttrs,
-			}
+			configItem, cfg := utils.GetIndexedBlockConfig(listItem, listsConfigMap, "lists", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "GreaterThanEqualValue", APIField: &item.GreaterThanEqualValue, TFValue: configItem.GreaterThanEqualValue, IsConfigured: cfg.IsFieldConfigured("greater_than_equal_value")},
 				{FieldName: "LessThanEqualValue", APIField: &item.LessThanEqualValue, TFValue: configItem.LessThanEqualValue, IsConfigured: cfg.IsFieldConfigured("less_than_equal_value")},
@@ -451,16 +442,7 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 			})
 
 			// Get per-block configured info for nullable Int64 fields
-			itemIndex := planItem.Index.ValueInt64()
-			configItem := planItem // fallback to plan item
-			if cfgItem, ok := listsConfigMap[itemIndex]; ok {
-				configItem = cfgItem
-			}
-			cfg := &utils.IndexedBlockNullableFieldConfig{
-				BlockType:       "lists",
-				BlockIndex:      itemIndex,
-				ConfiguredAttrs: configuredAttrs,
-			}
+			configItem, cfg := utils.GetIndexedBlockConfig(planItem, listsConfigMap, "lists", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "GreaterThanEqualValue", APIField: &newItem.GreaterThanEqualValue, TFValue: configItem.GreaterThanEqualValue, IsConfigured: cfg.IsFieldConfigured("greater_than_equal_value")},
 				{FieldName: "LessThanEqualValue", APIField: &newItem.LessThanEqualValue, TFValue: configItem.LessThanEqualValue, IsConfigured: cfg.IsFieldConfigured("less_than_equal_value")},
@@ -485,8 +467,9 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 			utils.CompareAndSetStringField(planItem.Ipv6Prefix, stateItem.Ipv6Prefix, func(v *string) { updateItem.Ipv6Prefix = v }, &fieldChanged)
 
 			// Handle nullable int64 field changes
-			utils.CompareAndSetNullableInt64Field(planItem.GreaterThanEqualValue, stateItem.GreaterThanEqualValue, func(v *openapi.NullableInt32) { updateItem.GreaterThanEqualValue = *v }, &fieldChanged)
-			utils.CompareAndSetNullableInt64Field(planItem.LessThanEqualValue, stateItem.LessThanEqualValue, func(v *openapi.NullableInt32) { updateItem.LessThanEqualValue = *v }, &fieldChanged)
+			configItem, cfg := utils.GetIndexedBlockConfig(planItem, listsConfigMap, "lists", configuredAttrs)
+			utils.CompareAndSetNullableInt64Field(configItem.GreaterThanEqualValue, stateItem.GreaterThanEqualValue, cfg.IsFieldConfigured("greater_than_equal_value"), func(v *openapi.NullableInt32) { updateItem.GreaterThanEqualValue = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(configItem.LessThanEqualValue, stateItem.LessThanEqualValue, cfg.IsFieldConfigured("less_than_equal_value"), func(v *openapi.NullableInt32) { updateItem.LessThanEqualValue = *v }, &fieldChanged)
 
 			// Handle index field change
 			utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateItem.Index = v }, &fieldChanged)

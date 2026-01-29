@@ -209,3 +209,62 @@ type IndexedBlockNullableFieldConfig struct {
 func (c *IndexedBlockNullableFieldConfig) IsFieldConfigured(attrName string) bool {
 	return c.ConfiguredAttrs.IsIndexedBlockAttributeConfigured(c.BlockType, c.BlockIndex, attrName)
 }
+
+// ============================================================================
+// Object Properties Nullable Field Helpers
+// ============================================================================
+
+// ObjectPropertiesNullableFieldConfig provides config for checking nullable fields in object_properties blocks
+type ObjectPropertiesNullableFieldConfig struct {
+	ConfiguredAttrs *ConfiguredAttributes
+}
+
+// IsFieldConfigured checks if a field is configured in object_properties
+func (c *ObjectPropertiesNullableFieldConfig) IsFieldConfigured(attrName string) bool {
+	return c.ConfiguredAttrs.IsBlockAttributeConfigured("object_properties." + attrName)
+}
+
+// GetObjectPropertiesConfig returns the config item (from configItems if present, otherwise planItem)
+// and the ObjectPropertiesNullableFieldConfig for checking which fields are explicitly configured.
+// This is the equivalent of GetIndexedBlockConfig but for non-indexed object_properties blocks.
+func GetObjectPropertiesConfig[T any](
+	planItem T,
+	configItems []T,
+	configuredAttrs *ConfiguredAttributes,
+) (T, *ObjectPropertiesNullableFieldConfig) {
+	configItem := planItem
+	if len(configItems) > 0 {
+		configItem = configItems[0]
+	}
+
+	cfg := &ObjectPropertiesNullableFieldConfig{
+		ConfiguredAttrs: configuredAttrs,
+	}
+
+	return configItem, cfg
+}
+
+// GetIndexedBlockConfig returns the config item (from configMap if present, otherwise planItem)
+// and the IndexedBlockNullableFieldConfig for checking which fields are explicitly configured.
+func GetIndexedBlockConfig[T IndexedBlockItem](
+	planItem T,
+	configMap map[int64]T,
+	blockType string,
+	configuredAttrs *ConfiguredAttributes,
+) (T, *IndexedBlockNullableFieldConfig) {
+	itemIndex := planItem.GetIndex().ValueInt64()
+
+	// Get config item from map, fallback to plan item
+	configItem := planItem
+	if cfgItem, ok := configMap[itemIndex]; ok {
+		configItem = cfgItem
+	}
+
+	cfg := &IndexedBlockNullableFieldConfig{
+		BlockType:       blockType,
+		BlockIndex:      itemIndex,
+		ConfiguredAttrs: configuredAttrs,
+	}
+
+	return configItem, cfg
+}

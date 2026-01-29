@@ -313,6 +313,14 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityPodResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -325,14 +333,18 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	podReq := openapi.PodsPutRequestPodValue{}
 	hasChanges := false
 
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_pod", name)
+
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { podReq.Name = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { podReq.Enable = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.ExpectedSpineCount, state.ExpectedSpineCount, func(v *openapi.NullableInt32) { podReq.ExpectedSpineCount = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.ExpectedSpineCount, state.ExpectedSpineCount, configuredAttrs.IsConfigured("expected_spine_count"), func(v *openapi.NullableInt32) { podReq.ExpectedSpineCount = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

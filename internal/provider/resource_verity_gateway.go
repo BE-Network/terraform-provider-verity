@@ -436,16 +436,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 			})
 
 			// Get per-block configured info for nullable Int64 fields
-			itemIndex := item.Index.ValueInt64()
-			configItem := item // fallback to plan item
-			if cfgItem, ok := staticRoutesConfigMap[itemIndex]; ok {
-				configItem = cfgItem
-			}
-			cfg := &utils.IndexedBlockNullableFieldConfig{
-				BlockType:       "static_routes",
-				BlockIndex:      itemIndex,
-				ConfiguredAttrs: configuredAttrs,
-			}
+			configItem, cfg := utils.GetIndexedBlockConfig(item, staticRoutesConfigMap, "static_routes", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "AdValue", APIField: &rItem.AdValue, TFValue: configItem.AdValue, IsConfigured: cfg.IsFieldConfigured("ad_value")},
 			})
@@ -609,6 +600,14 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityGatewayResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -620,6 +619,10 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	name := plan.Name.ValueString()
 	gatewayProps := openapi.GatewaysPutRequestGatewayValue{}
 	hasChanges := false
+
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_gateway", name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { gatewayProps.Name = v }, &hasChanges)
@@ -643,20 +646,20 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetBoolField(plan.DefaultOriginate, state.DefaultOriginate, func(v *bool) { gatewayProps.DefaultOriginate = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.SwitchEncryptedMd5Password, state.SwitchEncryptedMd5Password, func(v *bool) { gatewayProps.SwitchEncryptedMd5Password = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.NeighborAsNumber, state.NeighborAsNumber, func(v *openapi.NullableInt32) { gatewayProps.NeighborAsNumber = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.KeepaliveTimer, state.KeepaliveTimer, func(v *openapi.NullableInt32) { gatewayProps.KeepaliveTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.HoldTimer, state.HoldTimer, func(v *openapi.NullableInt32) { gatewayProps.HoldTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.ConnectTimer, state.ConnectTimer, func(v *openapi.NullableInt32) { gatewayProps.ConnectTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.AdvertisementInterval, state.AdvertisementInterval, func(v *openapi.NullableInt32) { gatewayProps.AdvertisementInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.EbgpMultihop, state.EbgpMultihop, func(v *openapi.NullableInt32) { gatewayProps.EbgpMultihop = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.EgressVlan, state.EgressVlan, func(v *openapi.NullableInt32) { gatewayProps.EgressVlan = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.LocalAsNumber, state.LocalAsNumber, func(v *openapi.NullableInt32) { gatewayProps.LocalAsNumber = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MaxLocalAsOccurrences, state.MaxLocalAsOccurrences, func(v *openapi.NullableInt32) { gatewayProps.MaxLocalAsOccurrences = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.DynamicBgpLimits, state.DynamicBgpLimits, func(v *openapi.NullableInt32) { gatewayProps.DynamicBgpLimits = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.BfdReceiveInterval, state.BfdReceiveInterval, func(v *openapi.NullableInt32) { gatewayProps.BfdReceiveInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.BfdTransmissionInterval, state.BfdTransmissionInterval, func(v *openapi.NullableInt32) { gatewayProps.BfdTransmissionInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.BfdDetectMultiplier, state.BfdDetectMultiplier, func(v *openapi.NullableInt32) { gatewayProps.BfdDetectMultiplier = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.NeighborAsNumber, state.NeighborAsNumber, configuredAttrs.IsConfigured("neighbor_as_number"), func(v *openapi.NullableInt32) { gatewayProps.NeighborAsNumber = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.KeepaliveTimer, state.KeepaliveTimer, configuredAttrs.IsConfigured("keepalive_timer"), func(v *openapi.NullableInt32) { gatewayProps.KeepaliveTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.HoldTimer, state.HoldTimer, configuredAttrs.IsConfigured("hold_timer"), func(v *openapi.NullableInt32) { gatewayProps.HoldTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ConnectTimer, state.ConnectTimer, configuredAttrs.IsConfigured("connect_timer"), func(v *openapi.NullableInt32) { gatewayProps.ConnectTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.AdvertisementInterval, state.AdvertisementInterval, configuredAttrs.IsConfigured("advertisement_interval"), func(v *openapi.NullableInt32) { gatewayProps.AdvertisementInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.EbgpMultihop, state.EbgpMultihop, configuredAttrs.IsConfigured("ebgp_multihop"), func(v *openapi.NullableInt32) { gatewayProps.EbgpMultihop = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.EgressVlan, state.EgressVlan, configuredAttrs.IsConfigured("egress_vlan"), func(v *openapi.NullableInt32) { gatewayProps.EgressVlan = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LocalAsNumber, state.LocalAsNumber, configuredAttrs.IsConfigured("local_as_number"), func(v *openapi.NullableInt32) { gatewayProps.LocalAsNumber = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxLocalAsOccurrences, state.MaxLocalAsOccurrences, configuredAttrs.IsConfigured("max_local_as_occurrences"), func(v *openapi.NullableInt32) { gatewayProps.MaxLocalAsOccurrences = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DynamicBgpLimits, state.DynamicBgpLimits, configuredAttrs.IsConfigured("dynamic_bgp_limits"), func(v *openapi.NullableInt32) { gatewayProps.DynamicBgpLimits = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BfdReceiveInterval, state.BfdReceiveInterval, configuredAttrs.IsConfigured("bfd_receive_interval"), func(v *openapi.NullableInt32) { gatewayProps.BfdReceiveInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BfdTransmissionInterval, state.BfdTransmissionInterval, configuredAttrs.IsConfigured("bfd_transmission_interval"), func(v *openapi.NullableInt32) { gatewayProps.BfdTransmissionInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BfdDetectMultiplier, state.BfdDetectMultiplier, configuredAttrs.IsConfigured("bfd_detect_multiplier"), func(v *openapi.NullableInt32) { gatewayProps.BfdDetectMultiplier = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
@@ -712,10 +715,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	// Handle static routes
-	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_gateway", name)
-	var config verityGatewayResourceModel
-	req.Config.Get(ctx, &config)
 	staticRoutesConfigMap := utils.BuildIndexedConfigMap(config.StaticRoutes)
 
 	staticRoutesHandler := utils.IndexedItemHandler[verityGatewayStaticRoutesModel, openapi.GatewaysPutRequestGatewayValueStaticRoutesInner]{
@@ -736,16 +735,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			})
 
 			// Get per-block configured info for nullable Int64 fields
-			itemIndex := planItem.Index.ValueInt64()
-			configItem := planItem // fallback to plan item
-			if cfgItem, ok := staticRoutesConfigMap[itemIndex]; ok {
-				configItem = cfgItem
-			}
-			cfg := &utils.IndexedBlockNullableFieldConfig{
-				BlockType:       "static_routes",
-				BlockIndex:      itemIndex,
-				ConfiguredAttrs: configuredAttrs,
-			}
+			configItem, cfg := utils.GetIndexedBlockConfig(planItem, staticRoutesConfigMap, "static_routes", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "AdValue", APIField: &route.AdValue, TFValue: configItem.AdValue, IsConfigured: cfg.IsFieldConfigured("ad_value")},
 			})
@@ -769,7 +759,8 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 			utils.CompareAndSetStringField(planItem.NextHopIpAddress, stateItem.NextHopIpAddress, func(v *string) { route.NextHopIpAddress = v }, &fieldChanged)
 
 			// Handle nullable int64 fields
-			utils.CompareAndSetNullableInt64Field(planItem.AdValue, stateItem.AdValue, func(v *openapi.NullableInt32) { route.AdValue = *v }, &fieldChanged)
+			configItem, cfg := utils.GetIndexedBlockConfig(planItem, staticRoutesConfigMap, "static_routes", configuredAttrs)
+			utils.CompareAndSetNullableInt64Field(configItem.AdValue, stateItem.AdValue, cfg.IsFieldConfigured("ad_value"), func(v *openapi.NullableInt32) { route.AdValue = *v }, &fieldChanged)
 
 			return route, fieldChanged
 		},

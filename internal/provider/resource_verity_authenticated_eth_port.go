@@ -426,6 +426,14 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityAuthenticatedEthPortResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -438,6 +446,10 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	aepProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue{}
 	hasChanges := false
 
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_authenticated_eth_port", name)
+
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { aepProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ConnectionMode, state.ConnectionMode, func(v *string) { aepProps.ConnectionMode = v }, &hasChanges)
@@ -447,9 +459,9 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	utils.CompareAndSetBoolField(plan.AllowMacBasedAuthentication, state.AllowMacBasedAuthentication, func(v *bool) { aepProps.AllowMacBasedAuthentication = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { aepProps.TrustedPort = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.ReauthorizationPeriodSec, state.ReauthorizationPeriodSec, func(v *openapi.NullableInt32) { aepProps.ReauthorizationPeriodSec = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, func(v *openapi.NullableInt32) { aepProps.MacAuthenticationHoldoffSec = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.ReauthorizationPeriodSec, state.ReauthorizationPeriodSec, configuredAttrs.IsConfigured("reauthorization_period_sec"), func(v *openapi.NullableInt32) { aepProps.ReauthorizationPeriodSec = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, configuredAttrs.IsConfigured("mac_authentication_holdoff_sec"), func(v *openapi.NullableInt32) { aepProps.MacAuthenticationHoldoffSec = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

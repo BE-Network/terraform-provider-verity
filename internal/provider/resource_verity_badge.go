@@ -325,6 +325,14 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityBadgeResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -337,6 +345,10 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	badgeProps := openapi.BadgesPutRequestBadgeValue{}
 	hasChanges := false
 
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_badge", name)
+
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { badgeProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Color, state.Color, func(v *string) { badgeProps.Color = v }, &hasChanges)
@@ -344,8 +356,8 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { badgeProps.Enable = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.Number, state.Number, func(v *openapi.NullableInt32) { badgeProps.Number = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.Number, state.Number, configuredAttrs.IsConfigured("number"), func(v *openapi.NullableInt32) { badgeProps.Number = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

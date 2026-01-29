@@ -297,6 +297,14 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 		return
 	}
 
+	// Get config for nullable field handling
+	var config veritySflowCollectorResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -309,6 +317,10 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 	sflowCollectorProps := openapi.SflowcollectorsPutRequestSflowCollectorValue{}
 	hasChanges := false
 
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_sflow_collector", name)
+
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sflowCollectorProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Ip, state.Ip, func(v *string) { sflowCollectorProps.Ip = v }, &hasChanges)
@@ -316,8 +328,8 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sflowCollectorProps.Enable = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.Port, state.Port, func(v *openapi.NullableInt32) { sflowCollectorProps.Port = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.Port, state.Port, configuredAttrs.IsConfigured("port"), func(v *openapi.NullableInt32) { sflowCollectorProps.Port = *v }, &hasChanges)
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)

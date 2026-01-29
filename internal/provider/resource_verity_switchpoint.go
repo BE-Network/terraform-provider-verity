@@ -533,7 +533,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
-		configOp := config.ObjectProperties[0] // use config for nullable field detection
+		configOp, objPropsCfg := utils.GetObjectPropertiesConfig(op, config.ObjectProperties, configuredAttrs)
 		objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "UserNotes", TFValue: op.UserNotes, APIValue: &objProps.UserNotes},
@@ -544,7 +544,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 			{Name: "DrawAsEdgeDevice", TFValue: op.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
 		})
 		utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
-			{FieldName: "NumberOfMultipoints", APIField: &objProps.NumberOfMultipoints, TFValue: configOp.NumberOfMultipoints, IsConfigured: configuredAttrs.IsBlockAttributeConfigured("object_properties.number_of_multipoints")},
+			{FieldName: "NumberOfMultipoints", APIField: &objProps.NumberOfMultipoints, TFValue: configOp.NumberOfMultipoints, IsConfigured: objPropsCfg.IsFieldConfigured("number_of_multipoints")},
 		})
 		spProps.ObjectProperties = &objProps
 	}
@@ -853,6 +853,12 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	name := plan.Name.ValueString()
 	spProps := openapi.SwitchpointsPutRequestSwitchpointValue{}
 	hasChanges := false
+
+	// Get config for nullable field handling
+	var config veritySwitchpointResourceModel
+	req.Config.Get(ctx, &config)
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_switchpoint", name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { spProps.Name = v }, &hasChanges)
@@ -1293,6 +1299,9 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		st := state.ObjectProperties[0]
 		objPropsChanged := false
 
+		// Get config for nullable field handling in object_properties
+		configOp, objPropsCfg := utils.GetObjectPropertiesConfig(op, config.ObjectProperties, configuredAttrs)
+
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
 			{Name: "UserNotes", PlanValue: op.UserNotes, StateValue: st.UserNotes, APIValue: &objProps.UserNotes},
 			{Name: "ExpectedParentEndpoint", PlanValue: op.ExpectedParentEndpoint, StateValue: st.ExpectedParentEndpoint, APIValue: &objProps.ExpectedParentEndpoint},
@@ -1302,7 +1311,8 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			{Name: "DrawAsEdgeDevice", PlanValue: op.DrawAsEdgeDevice, StateValue: st.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
 		}, &objPropsChanged)
 
-		utils.CompareAndSetNullableInt64Field(op.NumberOfMultipoints, st.NumberOfMultipoints, func(v *openapi.NullableInt32) { objProps.NumberOfMultipoints = *v }, &objPropsChanged)
+		// Handle nullable field in object_properties
+		utils.CompareAndSetNullableInt64Field(configOp.NumberOfMultipoints, st.NumberOfMultipoints, objPropsCfg.IsFieldConfigured("number_of_multipoints"), func(v *openapi.NullableInt32) { objProps.NumberOfMultipoints = *v }, &objPropsChanged)
 
 		if objPropsChanged {
 			spProps.ObjectProperties = &objProps

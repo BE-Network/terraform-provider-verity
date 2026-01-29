@@ -784,6 +784,14 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityDeviceVoiceSettingsResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -795,6 +803,10 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	name := plan.Name.ValueString()
 	dvsProps := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
 	hasChanges := false
+
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_voice_settings", name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { dvsProps.Name = v }, &hasChanges)
@@ -840,27 +852,27 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	utils.CompareAndSetBoolField(plan.Rtcp, state.Rtcp, func(v *bool) { dvsProps.Rtcp = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.FaxT38, state.FaxT38, func(v *bool) { dvsProps.FaxT38 = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.ProxyServerPort, state.ProxyServerPort, func(v *openapi.NullableInt32) { dvsProps.ProxyServerPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.ProxyServerSecondaryPort, state.ProxyServerSecondaryPort, func(v *openapi.NullableInt32) { dvsProps.ProxyServerSecondaryPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.RegistrarServerPort, state.RegistrarServerPort, func(v *openapi.NullableInt32) { dvsProps.RegistrarServerPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.RegistrarServerSecondaryPort, state.RegistrarServerSecondaryPort, func(v *openapi.NullableInt32) { dvsProps.RegistrarServerSecondaryPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.UserAgentPort, state.UserAgentPort, func(v *openapi.NullableInt32) { dvsProps.UserAgentPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.OutboundProxyPort, state.OutboundProxyPort, func(v *openapi.NullableInt32) { dvsProps.OutboundProxyPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.OutboundProxySecondaryPort, state.OutboundProxySecondaryPort, func(v *openapi.NullableInt32) { dvsProps.OutboundProxySecondaryPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.RegistrationPeriod, state.RegistrationPeriod, func(v *openapi.NullableInt32) { dvsProps.RegistrationPeriod = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.RegisterExpires, state.RegisterExpires, func(v *openapi.NullableInt32) { dvsProps.RegisterExpires = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.VoicemailServerPort, state.VoicemailServerPort, func(v *openapi.NullableInt32) { dvsProps.VoicemailServerPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.VoicemailServerExpires, state.VoicemailServerExpires, func(v *openapi.NullableInt32) { dvsProps.VoicemailServerExpires = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.SipDscpMark, state.SipDscpMark, func(v *openapi.NullableInt32) { dvsProps.SipDscpMark = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.CallAgentPort1, state.CallAgentPort1, func(v *openapi.NullableInt32) { dvsProps.CallAgentPort1 = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.CallAgentPort2, state.CallAgentPort2, func(v *openapi.NullableInt32) { dvsProps.CallAgentPort2 = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MgcpDscpMark, state.MgcpDscpMark, func(v *openapi.NullableInt32) { dvsProps.MgcpDscpMark = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.LocalPortMin, state.LocalPortMin, func(v *openapi.NullableInt32) { dvsProps.LocalPortMin = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.LocalPortMax, state.LocalPortMax, func(v *openapi.NullableInt32) { dvsProps.LocalPortMax = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.EventPayloadType, state.EventPayloadType, func(v *openapi.NullableInt32) { dvsProps.EventPayloadType = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.CasEvents, state.CasEvents, func(v *openapi.NullableInt32) { dvsProps.CasEvents = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.DscpMark, state.DscpMark, func(v *openapi.NullableInt32) { dvsProps.DscpMark = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.ProxyServerPort, state.ProxyServerPort, configuredAttrs.IsConfigured("proxy_server_port"), func(v *openapi.NullableInt32) { dvsProps.ProxyServerPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ProxyServerSecondaryPort, state.ProxyServerSecondaryPort, configuredAttrs.IsConfigured("proxy_server_secondary_port"), func(v *openapi.NullableInt32) { dvsProps.ProxyServerSecondaryPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.RegistrarServerPort, state.RegistrarServerPort, configuredAttrs.IsConfigured("registrar_server_port"), func(v *openapi.NullableInt32) { dvsProps.RegistrarServerPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.RegistrarServerSecondaryPort, state.RegistrarServerSecondaryPort, configuredAttrs.IsConfigured("registrar_server_secondary_port"), func(v *openapi.NullableInt32) { dvsProps.RegistrarServerSecondaryPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.UserAgentPort, state.UserAgentPort, configuredAttrs.IsConfigured("user_agent_port"), func(v *openapi.NullableInt32) { dvsProps.UserAgentPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.OutboundProxyPort, state.OutboundProxyPort, configuredAttrs.IsConfigured("outbound_proxy_port"), func(v *openapi.NullableInt32) { dvsProps.OutboundProxyPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.OutboundProxySecondaryPort, state.OutboundProxySecondaryPort, configuredAttrs.IsConfigured("outbound_proxy_secondary_port"), func(v *openapi.NullableInt32) { dvsProps.OutboundProxySecondaryPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.RegistrationPeriod, state.RegistrationPeriod, configuredAttrs.IsConfigured("registration_period"), func(v *openapi.NullableInt32) { dvsProps.RegistrationPeriod = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.RegisterExpires, state.RegisterExpires, configuredAttrs.IsConfigured("register_expires"), func(v *openapi.NullableInt32) { dvsProps.RegisterExpires = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.VoicemailServerPort, state.VoicemailServerPort, configuredAttrs.IsConfigured("voicemail_server_port"), func(v *openapi.NullableInt32) { dvsProps.VoicemailServerPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.VoicemailServerExpires, state.VoicemailServerExpires, configuredAttrs.IsConfigured("voicemail_server_expires"), func(v *openapi.NullableInt32) { dvsProps.VoicemailServerExpires = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SipDscpMark, state.SipDscpMark, configuredAttrs.IsConfigured("sip_dscp_mark"), func(v *openapi.NullableInt32) { dvsProps.SipDscpMark = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.CallAgentPort1, state.CallAgentPort1, configuredAttrs.IsConfigured("call_agent_port_1"), func(v *openapi.NullableInt32) { dvsProps.CallAgentPort1 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.CallAgentPort2, state.CallAgentPort2, configuredAttrs.IsConfigured("call_agent_port_2"), func(v *openapi.NullableInt32) { dvsProps.CallAgentPort2 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MgcpDscpMark, state.MgcpDscpMark, configuredAttrs.IsConfigured("mgcp_dscp_mark"), func(v *openapi.NullableInt32) { dvsProps.MgcpDscpMark = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LocalPortMin, state.LocalPortMin, configuredAttrs.IsConfigured("local_port_min"), func(v *openapi.NullableInt32) { dvsProps.LocalPortMin = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LocalPortMax, state.LocalPortMax, configuredAttrs.IsConfigured("local_port_max"), func(v *openapi.NullableInt32) { dvsProps.LocalPortMax = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.EventPayloadType, state.EventPayloadType, configuredAttrs.IsConfigured("event_payload_type"), func(v *openapi.NullableInt32) { dvsProps.EventPayloadType = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.CasEvents, state.CasEvents, configuredAttrs.IsConfigured("cas_events"), func(v *openapi.NullableInt32) { dvsProps.CasEvents = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DscpMark, state.DscpMark, configuredAttrs.IsConfigured("dscp_mark"), func(v *openapi.NullableInt32) { dvsProps.DscpMark = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

@@ -37,11 +37,19 @@ func CompareAndSetInt64Field(plan, state types.Int64, setter func(*int32), hasCh
 	}
 }
 
-// CompareAndSetNullableInt64Field compares plan vs state and sets API nullable field if changed
-func CompareAndSetNullableInt64Field(plan, state types.Int64, setter func(*openapi.NullableInt32), hasChanges *bool) {
-	if !plan.Equal(state) {
-		if !plan.IsNull() {
-			val := int32(plan.ValueInt64())
+// CompareAndSetNullableInt64Field compares config vs state and sets API nullable field if changed.
+// Only processes the field if isConfigured is true (field is explicitly written in HCL).
+// If isConfigured is false, the field is omitted from HCL and should not be sent in the PATCH request.
+func CompareAndSetNullableInt64Field(configVal, stateVal types.Int64, isConfigured bool, setter func(*openapi.NullableInt32), hasChanges *bool) {
+	// Skip if field is not configured in HCL
+	if !isConfigured {
+		return
+	}
+
+	// Only send if value differs from state
+	if !configVal.Equal(stateVal) {
+		if !configVal.IsNull() {
+			val := int32(configVal.ValueInt64())
 			nullableVal := *openapi.NewNullableInt32(&val)
 			setter(&nullableVal)
 		} else {
@@ -52,12 +60,20 @@ func CompareAndSetNullableInt64Field(plan, state types.Int64, setter func(*opena
 	}
 }
 
-// CompareAndSetNullableNumberField compares plan vs state and sets API nullable field if changed
-// Uses types.Number (backed by big.Float) to avoid float precision issues
-func CompareAndSetNullableNumberField(plan, state types.Number, setter func(*openapi.NullableFloat32), hasChanges *bool) {
-	if !plan.Equal(state) {
-		if !plan.IsNull() {
-			bigVal := plan.ValueBigFloat()
+// CompareAndSetNullableNumberField compares config vs state and sets API nullable field if changed.
+// Uses types.Number (backed by big.Float) to avoid float precision issues.
+// Only processes the field if isConfigured is true (field is explicitly written in HCL).
+// If isConfigured is false, the field is omitted from HCL and should not be sent in the PATCH request.
+func CompareAndSetNullableNumberField(configVal, stateVal types.Number, isConfigured bool, setter func(*openapi.NullableFloat32), hasChanges *bool) {
+	// Skip if field is not configured in HCL
+	if !isConfigured {
+		return
+	}
+
+	// Only send if value differs from state
+	if !configVal.Equal(stateVal) {
+		if !configVal.IsNull() {
+			bigVal := configVal.ValueBigFloat()
 			float64Val, _ := bigVal.Float64()
 			val := float32(float64Val)
 			nullableVal := *openapi.NewNullableFloat32(&val)

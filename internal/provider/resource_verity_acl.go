@@ -400,6 +400,14 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityACLUnifiedResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -411,6 +419,10 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 	name := plan.Name.ValueString()
 	aclProps := openapi.AclsPutRequestIpFilterValue{}
 	hasChanges := false
+
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_acl_v"+r.ipVersion, name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { aclProps.Name = v }, &hasChanges)
@@ -424,11 +436,11 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { aclProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Bidirectional, state.Bidirectional, func(v *bool) { aclProps.Bidirectional = v }, &hasChanges)
 
-	// Handle nullable int64 field changes (ports)
-	utils.CompareAndSetNullableInt64Field(plan.SourcePort1, state.SourcePort1, func(v *openapi.NullableInt32) { aclProps.SourcePort1 = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.SourcePort2, state.SourcePort2, func(v *openapi.NullableInt32) { aclProps.SourcePort2 = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.DestinationPort1, state.DestinationPort1, func(v *openapi.NullableInt32) { aclProps.DestinationPort1 = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.DestinationPort2, state.DestinationPort2, func(v *openapi.NullableInt32) { aclProps.DestinationPort2 = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.SourcePort1, state.SourcePort1, configuredAttrs.IsConfigured("source_port_1"), func(v *openapi.NullableInt32) { aclProps.SourcePort1 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SourcePort2, state.SourcePort2, configuredAttrs.IsConfigured("source_port_2"), func(v *openapi.NullableInt32) { aclProps.SourcePort2 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DestinationPort1, state.DestinationPort1, configuredAttrs.IsConfigured("destination_port_1"), func(v *openapi.NullableInt32) { aclProps.DestinationPort1 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DestinationPort2, state.DestinationPort2, configuredAttrs.IsConfigured("destination_port_2"), func(v *openapi.NullableInt32) { aclProps.DestinationPort2 = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

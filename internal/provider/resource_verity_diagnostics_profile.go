@@ -318,6 +318,14 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityDiagnosticsProfileResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -330,6 +338,10 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	diagnosticsProfileProps := openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue{}
 	hasChanges := false
 
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_diagnostics_profile", name)
+
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { diagnosticsProfileProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.VrfType, state.VrfType, func(v *string) { diagnosticsProfileProps.VrfType = v }, &hasChanges)
@@ -338,8 +350,8 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { diagnosticsProfileProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EnableSflow, state.EnableSflow, func(v *bool) { diagnosticsProfileProps.EnableSflow = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.PollInterval, state.PollInterval, func(v *openapi.NullableInt32) { diagnosticsProfileProps.PollInterval = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.PollInterval, state.PollInterval, configuredAttrs.IsConfigured("poll_interval"), func(v *openapi.NullableInt32) { diagnosticsProfileProps.PollInterval = *v }, &hasChanges)
 
 	// Handle FlowCollector and FlowCollectorRefType fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(

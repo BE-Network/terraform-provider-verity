@@ -351,16 +351,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 			})
 
 			// Get per-block configured info for nullable Int64 fields
-			itemIndex := item.Index.ValueInt64()
-			configItem := item // fallback to plan item
-			if cfgItem, ok := servicesConfigMap[itemIndex]; ok {
-				configItem = cfgItem
-			}
-			cfg := &utils.IndexedBlockNullableFieldConfig{
-				BlockType:       "services",
-				BlockIndex:      itemIndex,
-				ConfiguredAttrs: configuredAttrs,
-			}
+			configItem, cfg := utils.GetIndexedBlockConfig(item, servicesConfigMap, "services", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
 			})
@@ -634,16 +625,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 			})
 
 			// Get per-block configured info for nullable Int64 fields
-			itemIndex := planItem.Index.ValueInt64()
-			configItem := planItem // fallback to plan item
-			if cfgItem, ok := servicesConfigMap[itemIndex]; ok {
-				configItem = cfgItem
-			}
-			cfg := &utils.IndexedBlockNullableFieldConfig{
-				BlockType:       "services",
-				BlockIndex:      itemIndex,
-				ConfiguredAttrs: configuredAttrs,
-			}
+			configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "RowNumExternalVlan", APIField: &service.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
 			})
@@ -663,7 +645,8 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 			utils.CompareAndSetBoolField(planItem.RowNumEnable, stateItem.RowNumEnable, func(v *bool) { service.RowNumEnable = v }, &fieldChanged)
 
 			// Handle nullable int64 fields
-			utils.CompareAndSetNullableInt64Field(planItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, func(v *openapi.NullableInt32) { service.RowNumExternalVlan = *v }, &fieldChanged)
+			configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)
+			utils.CompareAndSetNullableInt64Field(configItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, cfg.IsFieldConfigured("row_num_external_vlan"), func(v *openapi.NullableInt32) { service.RowNumExternalVlan = *v }, &fieldChanged)
 
 			// Handle row_num_service and row_num_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(

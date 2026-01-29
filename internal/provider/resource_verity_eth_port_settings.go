@@ -519,16 +519,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 			})
 
 			// Get per-block configured info for nullable Int64 fields
-			itemIndex := item.Index.ValueInt64()
-			configItem := item // fallback to plan item
-			if cfgItem, ok := lldpMedConfigMap[itemIndex]; ok {
-				configItem = cfgItem
-			}
-			cfg := &utils.IndexedBlockNullableFieldConfig{
-				BlockType:       "lldp_med",
-				BlockIndex:      itemIndex,
-				ConfiguredAttrs: configuredAttrs,
-			}
+			configItem, cfg := utils.GetIndexedBlockConfig(item, lldpMedConfigMap, "lldp_med", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: configItem.LldpMedRowNumDscpMark, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark")},
 				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: configItem.LldpMedRowNumPriority, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_priority")},
@@ -694,6 +685,14 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityEthPortSettingsResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -705,6 +704,10 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	name := plan.Name.ValueString()
 	ethPortSettingsProps := openapi.EthportsettingsPutRequestEthPortSettingsValue{}
 	hasChanges := false
+
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_settings", name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ethPortSettingsProps.Name = v }, &hasChanges)
@@ -743,15 +746,15 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetBoolField(plan.LldpEnable, state.LldpEnable, func(v *bool) { ethPortSettingsProps.LldpEnable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.LldpMedEnable, state.LldpMedEnable, func(v *bool) { ethPortSettingsProps.LldpMedEnable = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.MaxAllowedValue, state.MaxAllowedValue, func(v *openapi.NullableInt32) { ethPortSettingsProps.MaxAllowedValue = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MinimumWredThreshold, state.MinimumWredThreshold, func(v *openapi.NullableInt32) { ethPortSettingsProps.MinimumWredThreshold = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MaximumWredThreshold, state.MaximumWredThreshold, func(v *openapi.NullableInt32) { ethPortSettingsProps.MaximumWredThreshold = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.WredDropProbability, state.WredDropProbability, func(v *openapi.NullableInt32) { ethPortSettingsProps.WredDropProbability = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MacLimit, state.MacLimit, func(v *openapi.NullableInt32) { ethPortSettingsProps.MacLimit = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.AgingTime, state.AgingTime, func(v *openapi.NullableInt32) { ethPortSettingsProps.AgingTime = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.MaxAllowedValue, state.MaxAllowedValue, configuredAttrs.IsConfigured("max_allowed_value"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MaxAllowedValue = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MinimumWredThreshold, state.MinimumWredThreshold, configuredAttrs.IsConfigured("minimum_wred_threshold"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MinimumWredThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaximumWredThreshold, state.MaximumWredThreshold, configuredAttrs.IsConfigured("maximum_wred_threshold"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MaximumWredThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.WredDropProbability, state.WredDropProbability, configuredAttrs.IsConfigured("wred_drop_probability"), func(v *openapi.NullableInt32) { ethPortSettingsProps.WredDropProbability = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, configuredAttrs.IsConfigured("priority_flow_control_watchdog_detect_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, configuredAttrs.IsConfigured("priority_flow_control_watchdog_restore_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MacLimit, state.MacLimit, configuredAttrs.IsConfigured("mac_limit"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MacLimit = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.AgingTime, state.AgingTime, configuredAttrs.IsConfigured("aging_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.AgingTime = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
@@ -783,10 +786,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	}
 
 	// Handle LLDP Med
-	workDir := utils.GetWorkingDirectory()
-	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_eth_port_settings", name)
-	var config verityEthPortSettingsResourceModel
-	req.Config.Get(ctx, &config)
 	lldpMedConfigMap := utils.BuildIndexedConfigMap(config.LldpMed)
 
 	lldpMedHandler := utils.IndexedItemHandler[verityEthPortSettingsLldpMedModel, openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner]{
@@ -798,16 +797,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 			})
 
 			// Get per-block configured info for nullable Int64 fields
-			itemIndex := item.Index.ValueInt64()
-			configItem := item // fallback to plan item
-			if cfgItem, ok := lldpMedConfigMap[itemIndex]; ok {
-				configItem = cfgItem
-			}
-			cfg := &utils.IndexedBlockNullableFieldConfig{
-				BlockType:       "lldp_med",
-				BlockIndex:      itemIndex,
-				ConfiguredAttrs: configuredAttrs,
-			}
+			configItem, cfg := utils.GetIndexedBlockConfig(item, lldpMedConfigMap, "lldp_med", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: configItem.LldpMedRowNumDscpMark, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark")},
 				{FieldName: "LldpMedRowNumPriority", APIField: &lldpMedItem.LldpMedRowNumPriority, TFValue: configItem.LldpMedRowNumPriority, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_priority")},
@@ -841,8 +831,9 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 			utils.CompareAndSetStringField(planItem.LldpMedRowNumAdvertisedApplication, stateItem.LldpMedRowNumAdvertisedApplication, func(v *string) { lldpMedItem.LldpMedRowNumAdvertisedApplicatio = v }, &hasChanges)
 
 			// Handle nullable int64 fields
-			utils.CompareAndSetNullableInt64Field(planItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumDscpMark = *v }, &hasChanges)
-			utils.CompareAndSetNullableInt64Field(planItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumPriority = *v }, &hasChanges) // Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
+			configItem, cfg := utils.GetIndexedBlockConfig(planItem, lldpMedConfigMap, "lldp_med", configuredAttrs)
+			utils.CompareAndSetNullableInt64Field(configItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark"), func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumDscpMark = *v }, &hasChanges)
+			utils.CompareAndSetNullableInt64Field(configItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, cfg.IsFieldConfigured("lldp_med_row_num_priority"), func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumPriority = *v }, &hasChanges)
 
 			// Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(

@@ -413,6 +413,14 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityDeviceSettingsResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -425,6 +433,10 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	deviceSettingsProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValue{}
 	hasChanges := false
 
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_device_settings", name)
+
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { deviceSettingsProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Mode, state.Mode, func(v *string) { deviceSettingsProps.Mode = v }, &hasChanges)
@@ -436,16 +448,16 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetBoolField(plan.CutThroughSwitching, state.CutThroughSwitching, func(v *bool) { deviceSettingsProps.CutThroughSwitching = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.DisableTcpUdpLearnedPacketAcceleration, state.DisableTcpUdpLearnedPacketAcceleration, func(v *bool) { deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.ExternalBatteryPowerAvailable, state.ExternalBatteryPowerAvailable, func(v *openapi.NullableInt32) { deviceSettingsProps.ExternalBatteryPowerAvailable = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.ExternalPowerAvailable, state.ExternalPowerAvailable, func(v *openapi.NullableInt32) { deviceSettingsProps.ExternalPowerAvailable = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.SecurityAuditInterval, state.SecurityAuditInterval, func(v *openapi.NullableInt32) { deviceSettingsProps.SecurityAuditInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.CommitToFlashInterval, state.CommitToFlashInterval, func(v *openapi.NullableInt32) { deviceSettingsProps.CommitToFlashInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.HoldTimer, state.HoldTimer, func(v *openapi.NullableInt32) { deviceSettingsProps.HoldTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MacAgingTimerOverride, state.MacAgingTimerOverride, func(v *openapi.NullableInt32) { deviceSettingsProps.MacAgingTimerOverride = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.ExternalBatteryPowerAvailable, state.ExternalBatteryPowerAvailable, configuredAttrs.IsConfigured("external_battery_power_available"), func(v *openapi.NullableInt32) { deviceSettingsProps.ExternalBatteryPowerAvailable = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ExternalPowerAvailable, state.ExternalPowerAvailable, configuredAttrs.IsConfigured("external_power_available"), func(v *openapi.NullableInt32) { deviceSettingsProps.ExternalPowerAvailable = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SecurityAuditInterval, state.SecurityAuditInterval, configuredAttrs.IsConfigured("security_audit_interval"), func(v *openapi.NullableInt32) { deviceSettingsProps.SecurityAuditInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.CommitToFlashInterval, state.CommitToFlashInterval, configuredAttrs.IsConfigured("commit_to_flash_interval"), func(v *openapi.NullableInt32) { deviceSettingsProps.CommitToFlashInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.HoldTimer, state.HoldTimer, configuredAttrs.IsConfigured("hold_timer"), func(v *openapi.NullableInt32) { deviceSettingsProps.HoldTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MacAgingTimerOverride, state.MacAgingTimerOverride, configuredAttrs.IsConfigured("mac_aging_timer_override"), func(v *openapi.NullableInt32) { deviceSettingsProps.MacAgingTimerOverride = *v }, &hasChanges)
 
-	// Handle nullable float field changes
-	utils.CompareAndSetNullableNumberField(plan.UsageThreshold, state.UsageThreshold, func(v *openapi.NullableFloat32) { deviceSettingsProps.UsageThreshold = *v }, &hasChanges)
+	// Handle nullable float field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableNumberField(config.UsageThreshold, state.UsageThreshold, configuredAttrs.IsConfigured("usage_threshold"), func(v *openapi.NullableFloat32) { deviceSettingsProps.UsageThreshold = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

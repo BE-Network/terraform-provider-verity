@@ -525,6 +525,14 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
+	// Get config for nullable field handling
+	var config veritySiteResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	// Validate auto-assigned fields - this check prevents ineffective API calls
 	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
 	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
@@ -552,6 +560,10 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	siteReq := openapi.SitesPatchRequestSiteValue{}
 	hasChanges := false
 
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_site", name)
+
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { siteReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SpanningTreeType, state.SpanningTreeType, func(v *string) { siteReq.SpanningTreeType = v }, &hasChanges)
@@ -566,24 +578,24 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	utils.CompareAndSetBoolField(plan.EnableDhcpSnooping, state.EnableDhcpSnooping, func(v *bool) { siteReq.EnableDhcpSnooping = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.IpSourceGuard, state.IpSourceGuard, func(v *bool) { siteReq.IpSourceGuard = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.MacAddressAgingTime, state.MacAddressAgingTime, func(v *openapi.NullableInt32) { siteReq.MacAddressAgingTime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MlagDelayRestoreTimer, state.MlagDelayRestoreTimer, func(v *openapi.NullableInt32) { siteReq.MlagDelayRestoreTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.BgpKeepaliveTimer, state.BgpKeepaliveTimer, func(v *openapi.NullableInt32) { siteReq.BgpKeepaliveTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.BgpHoldDownTimer, state.BgpHoldDownTimer, func(v *openapi.NullableInt32) { siteReq.BgpHoldDownTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.SpineBgpAdvertisementInterval, state.SpineBgpAdvertisementInterval, func(v *openapi.NullableInt32) { siteReq.SpineBgpAdvertisementInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.SpineBgpConnectTimer, state.SpineBgpConnectTimer, func(v *openapi.NullableInt32) { siteReq.SpineBgpConnectTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.LeafBgpKeepAliveTimer, state.LeafBgpKeepAliveTimer, func(v *openapi.NullableInt32) { siteReq.LeafBgpKeepAliveTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.LeafBgpHoldDownTimer, state.LeafBgpHoldDownTimer, func(v *openapi.NullableInt32) { siteReq.LeafBgpHoldDownTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.LeafBgpAdvertisementInterval, state.LeafBgpAdvertisementInterval, func(v *openapi.NullableInt32) { siteReq.LeafBgpAdvertisementInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.LeafBgpConnectTimer, state.LeafBgpConnectTimer, func(v *openapi.NullableInt32) { siteReq.LeafBgpConnectTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.Revision, state.Revision, func(v *openapi.NullableInt32) { siteReq.Revision = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.LinkStateTimeoutValue, state.LinkStateTimeoutValue, func(v *openapi.NullableInt32) { siteReq.LinkStateTimeoutValue = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.EvpnMultihomingStartupDelay, state.EvpnMultihomingStartupDelay, func(v *openapi.NullableInt32) { siteReq.EvpnMultihomingStartupDelay = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.EvpnMacHoldtime, state.EvpnMacHoldtime, func(v *openapi.NullableInt32) { siteReq.EvpnMacHoldtime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.CrcFailureThreshold, state.CrcFailureThreshold, func(v *openapi.NullableInt32) { siteReq.CrcFailureThreshold = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.DuplicateAddressDetectionMaxNumberOfMoves, state.DuplicateAddressDetectionMaxNumberOfMoves, func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionMaxNumberOfMoves = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.MacAddressAgingTime, state.MacAddressAgingTime, configuredAttrs.IsConfigured("mac_address_aging_time"), func(v *openapi.NullableInt32) { siteReq.MacAddressAgingTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MlagDelayRestoreTimer, state.MlagDelayRestoreTimer, configuredAttrs.IsConfigured("mlag_delay_restore_timer"), func(v *openapi.NullableInt32) { siteReq.MlagDelayRestoreTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BgpKeepaliveTimer, state.BgpKeepaliveTimer, configuredAttrs.IsConfigured("bgp_keepalive_timer"), func(v *openapi.NullableInt32) { siteReq.BgpKeepaliveTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BgpHoldDownTimer, state.BgpHoldDownTimer, configuredAttrs.IsConfigured("bgp_hold_down_timer"), func(v *openapi.NullableInt32) { siteReq.BgpHoldDownTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SpineBgpAdvertisementInterval, state.SpineBgpAdvertisementInterval, configuredAttrs.IsConfigured("spine_bgp_advertisement_interval"), func(v *openapi.NullableInt32) { siteReq.SpineBgpAdvertisementInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SpineBgpConnectTimer, state.SpineBgpConnectTimer, configuredAttrs.IsConfigured("spine_bgp_connect_timer"), func(v *openapi.NullableInt32) { siteReq.SpineBgpConnectTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LeafBgpKeepAliveTimer, state.LeafBgpKeepAliveTimer, configuredAttrs.IsConfigured("leaf_bgp_keep_alive_timer"), func(v *openapi.NullableInt32) { siteReq.LeafBgpKeepAliveTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LeafBgpHoldDownTimer, state.LeafBgpHoldDownTimer, configuredAttrs.IsConfigured("leaf_bgp_hold_down_timer"), func(v *openapi.NullableInt32) { siteReq.LeafBgpHoldDownTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LeafBgpAdvertisementInterval, state.LeafBgpAdvertisementInterval, configuredAttrs.IsConfigured("leaf_bgp_advertisement_interval"), func(v *openapi.NullableInt32) { siteReq.LeafBgpAdvertisementInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LeafBgpConnectTimer, state.LeafBgpConnectTimer, configuredAttrs.IsConfigured("leaf_bgp_connect_timer"), func(v *openapi.NullableInt32) { siteReq.LeafBgpConnectTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.Revision, state.Revision, configuredAttrs.IsConfigured("revision"), func(v *openapi.NullableInt32) { siteReq.Revision = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LinkStateTimeoutValue, state.LinkStateTimeoutValue, configuredAttrs.IsConfigured("link_state_timeout_value"), func(v *openapi.NullableInt32) { siteReq.LinkStateTimeoutValue = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.EvpnMultihomingStartupDelay, state.EvpnMultihomingStartupDelay, configuredAttrs.IsConfigured("evpn_multihoming_startup_delay"), func(v *openapi.NullableInt32) { siteReq.EvpnMultihomingStartupDelay = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.EvpnMacHoldtime, state.EvpnMacHoldtime, configuredAttrs.IsConfigured("evpn_mac_holdtime"), func(v *openapi.NullableInt32) { siteReq.EvpnMacHoldtime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.CrcFailureThreshold, state.CrcFailureThreshold, configuredAttrs.IsConfigured("crc_failure_threshold"), func(v *openapi.NullableInt32) { siteReq.CrcFailureThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionMaxNumberOfMoves, state.DuplicateAddressDetectionMaxNumberOfMoves, configuredAttrs.IsConfigured("duplicate_address_detection_max_number_of_moves"), func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionMaxNumberOfMoves = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, configuredAttrs.IsConfigured("duplicate_address_detection_time"), func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
 
 	// Handle object properties with nested system_graphs
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

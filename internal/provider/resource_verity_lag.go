@@ -366,6 +366,14 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityLagResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -377,6 +385,10 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	name := plan.Name.ValueString()
 	lagReq := openapi.LagsPutRequestLagValue{}
 	hasChanges := false
+
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_lag", name)
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { lagReq.Name = v }, &hasChanges)
@@ -390,8 +402,8 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	utils.CompareAndSetBoolField(plan.FastRate, state.FastRate, func(v *bool) { lagReq.FastRate = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Uplink, state.Uplink, func(v *bool) { lagReq.Uplink = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.PeerLinkVlan, state.PeerLinkVlan, func(v *openapi.NullableInt32) { lagReq.PeerLinkVlan = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.PeerLinkVlan, state.PeerLinkVlan, configuredAttrs.IsConfigured("peer_link_vlan"), func(v *openapi.NullableInt32) { lagReq.PeerLinkVlan = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) == 0 {

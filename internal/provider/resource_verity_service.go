@@ -535,6 +535,14 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
+	// Get config for nullable field handling
+	var config verityServiceResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	// Validate auto-assigned fields - this check prevents ineffective API calls
 	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
 	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
@@ -562,6 +570,10 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	serviceReq := openapi.ServicesPutRequestServiceValue{}
 	hasChanges := false
 
+	// Parse HCL to detect which fields are explicitly configured
+	workDir := utils.GetWorkingDirectory()
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, "verity_service", name)
+
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { serviceReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Tenant, state.Tenant, func(v *string) { serviceReq.Tenant = v }, &hasChanges)
@@ -584,11 +596,11 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetBoolField(plan.UseDscpToPBitMappingForL3PacketsIfAvailable, state.UseDscpToPBitMappingForL3PacketsIfAvailable, func(v *bool) { serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AllowFastLeave, state.AllowFastLeave, func(v *bool) { serviceReq.AllowFastLeave = v }, &hasChanges)
 
-	// Handle nullable int64 field changes
-	utils.CompareAndSetNullableInt64Field(plan.Mtu, state.Mtu, func(v *openapi.NullableInt32) { serviceReq.Mtu = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, func(v *openapi.NullableInt32) { serviceReq.MaxUpstreamRateMbps = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, func(v *openapi.NullableInt32) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(plan.MstInstance, state.MstInstance, func(v *openapi.NullableInt32) { serviceReq.MstInstance = *v }, &hasChanges)
+	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.Mtu, state.Mtu, configuredAttrs.IsConfigured("mtu"), func(v *openapi.NullableInt32) { serviceReq.Mtu = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, configuredAttrs.IsConfigured("max_upstream_rate_mbps"), func(v *openapi.NullableInt32) { serviceReq.MaxUpstreamRateMbps = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, configuredAttrs.IsConfigured("max_downstream_rate_mbps"), func(v *openapi.NullableInt32) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MstInstance, state.MstInstance, configuredAttrs.IsConfigured("mst_instance"), func(v *openapi.NullableInt32) { serviceReq.MstInstance = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
@@ -611,7 +623,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	// Handle VLAN changes (preserve special handling for Unknown state)
 	if !plan.Vlan.IsUnknown() && !plan.Vlan.Equal(state.Vlan) {
-		utils.CompareAndSetNullableInt64Field(plan.Vlan, state.Vlan, func(v *openapi.NullableInt32) { serviceReq.Vlan = *v }, &hasChanges)
+		utils.CompareAndSetNullableInt64Field(config.Vlan, state.Vlan, configuredAttrs.IsConfigured("vlan"), func(v *openapi.NullableInt32) { serviceReq.Vlan = *v }, &hasChanges)
 	}
 
 	// Handle VNI and VniAutoAssigned changes
