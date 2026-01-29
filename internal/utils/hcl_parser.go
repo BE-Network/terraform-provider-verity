@@ -153,6 +153,12 @@ func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, reso
 // findResourceAttributes looks for a resource block with the given type and name
 // and returns all attributes and blocks that are explicitly set in it.
 // Returns nil if the resource is not found or cannot be fully parsed.
+//
+// Matching priority:
+//  1. First, check the "name" attribute inside the block - this is the authoritative
+//     resource identifier in the API and should be the primary matching mechanism.
+//  2. If "name" attribute is missing or cannot be evaluated, fall back to checking
+//     if the block label matches the resource name (or its sanitized version).
 func findResourceAttributes(ctx context.Context, body hcl.Body, resourceType string, resourceName string) *ConfiguredAttributes {
 	syntaxBody, ok := body.(*hclsyntax.Body)
 	if !ok {
@@ -160,8 +166,8 @@ func findResourceAttributes(ctx context.Context, body hcl.Body, resourceType str
 		return nil
 	}
 
-	// Also try the sanitized version of the name, since HCL resource labels
-	// use sanitized names while the API uses the original names.
+	// Also try the sanitized version of the name for label matching fallback,
+	// since HCL resource labels use sanitized names while the API uses the original names.
 	// Example: API name "(Device Settings)" -> HCL label "_Device_Settings_"
 	sanitizedName := SanitizeResourceName(resourceName)
 
@@ -170,45 +176,76 @@ func findResourceAttributes(ctx context.Context, body hcl.Body, resourceType str
 			blockType := block.Labels[0]
 			blockName := block.Labels[1]
 
-			// Match either the exact name or the sanitized version
-			if blockType == resourceType && (blockName == resourceName || blockName == sanitizedName) {
-				result := &ConfiguredAttributes{
-					Attributes:             make(map[string]bool),
-					BlockAttributes:        make(map[string]bool),
-					Blocks:                 make(map[string]bool),
-					IndexedBlockAttributes: make(map[string]map[int64]map[string]bool),
-				}
+			// Skip if resource type doesn't match
+			if blockType != resourceType {
+				continue
+			}
 
-				// Extract top-level attributes
-				for name := range block.Body.Attributes {
-					result.Attributes[name] = true
-				}
-
-				// Extract nested blocks and their attributes
-				extractNestedBlocks(block.Body.Blocks, result, "")
-
-				// Build a string representation of IndexedBlockAttributes for debugging
-				indexedAttrsStr := ""
-				for blockType, indexMap := range result.IndexedBlockAttributes {
-					for idx, attrMap := range indexMap {
-						attrs := make([]string, 0, len(attrMap))
-						for attr := range attrMap {
-							attrs = append(attrs, attr)
-						}
-						indexedAttrsStr += fmt.Sprintf("%s[%d]:{%s} ", blockType, idx, strings.Join(attrs, ","))
+			// Primary matching: check the "name" attribute inside the block
+			nameAttrMatches := false
+			nameAttrFound := false
+			if nameAttr, hasName := block.Body.Attributes["name"]; hasName {
+				val, diags := nameAttr.Expr.Value(nil)
+				if !diags.HasErrors() && val.Type() == cty.String && !val.IsNull() && val.IsKnown() {
+					nameAttrFound = true
+					nameAttrValue := val.AsString()
+					if nameAttrValue == resourceName {
+						nameAttrMatches = true
 					}
 				}
-
-				tflog.Debug(ctx, "HCL parser found resource", map[string]interface{}{
-					"resource":            resourceType + "." + resourceName,
-					"matched_label":       blockName,
-					"sanitized_name":      sanitizedName,
-					"attributes":          mapKeysToString(result.Attributes),
-					"blocks":              mapKeysToString(result.Blocks),
-					"indexed_block_attrs": indexedAttrsStr,
-				})
-				return result
 			}
+
+			// If name attribute was found and evaluated, use it as the sole matching criteria
+			if nameAttrFound {
+				if !nameAttrMatches {
+					continue // name attribute didn't match, skip this block
+				}
+				// name attribute matched, proceed to extract attributes
+			} else {
+				// Fallback: if name attribute is missing or can't be evaluated,
+				// check if block label matches
+				labelMatches := blockName == resourceName || blockName == sanitizedName
+				if !labelMatches {
+					continue
+				}
+			}
+
+			result := &ConfiguredAttributes{
+				Attributes:             make(map[string]bool),
+				BlockAttributes:        make(map[string]bool),
+				Blocks:                 make(map[string]bool),
+				IndexedBlockAttributes: make(map[string]map[int64]map[string]bool),
+			}
+
+			// Extract top-level attributes
+			for name := range block.Body.Attributes {
+				result.Attributes[name] = true
+			}
+
+			// Extract nested blocks and their attributes
+			extractNestedBlocks(block.Body.Blocks, result, "")
+
+			// Build a string representation of IndexedBlockAttributes for debugging
+			indexedAttrsStr := ""
+			for blockType, indexMap := range result.IndexedBlockAttributes {
+				for idx, attrMap := range indexMap {
+					attrs := make([]string, 0, len(attrMap))
+					for attr := range attrMap {
+						attrs = append(attrs, attr)
+					}
+					indexedAttrsStr += fmt.Sprintf("%s[%d]:{%s} ", blockType, idx, strings.Join(attrs, ","))
+				}
+			}
+
+			tflog.Debug(ctx, "HCL parser found resource", map[string]interface{}{
+				"resource":            resourceType + "." + resourceName,
+				"matched_label":       blockName,
+				"sanitized_name":      sanitizedName,
+				"attributes":          mapKeysToString(result.Attributes),
+				"blocks":              mapKeysToString(result.Blocks),
+				"indexed_block_attrs": indexedAttrsStr,
+			})
+			return result
 		}
 	}
 
