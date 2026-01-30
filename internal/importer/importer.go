@@ -585,29 +585,6 @@ func NewImporter(client *openapi.APIClient, mode string) *Importer {
 	}
 }
 
-func (i *Importer) getAPIVersion() string {
-	defaultVersion := "6.4"
-
-	versionResp, err := i.client.VersionAPI.VersionGet(i.ctx).Execute()
-	if err != nil {
-		// API 6.4 doesn't support /version endpoint (returns 404)
-		tflog.Info(i.ctx, "Version endpoint not available, using default version", map[string]interface{}{"default_version": defaultVersion})
-		return defaultVersion
-	}
-	defer versionResp.Body.Close()
-
-	// API 6.5+ should return a valid version response
-	var versionData struct {
-		Version string `json:"version"`
-	}
-	if err := json.NewDecoder(versionResp.Body).Decode(&versionData); err != nil || versionData.Version == "" {
-		tflog.Warn(i.ctx, "Failed to parse version response, using default", map[string]interface{}{"error": err, "default_version": defaultVersion})
-		return defaultVersion
-	}
-
-	return versionData.Version
-}
-
 // ImportAll fetches all resources and saves them as Terraform configuration files
 func (i *Importer) ImportAll(outputDir string) error {
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
@@ -615,11 +592,9 @@ func (i *Importer) ImportAll(outputDir string) error {
 	}
 
 	tflog.Info(i.ctx, "Starting importer with mode", map[string]interface{}{
-		"mode": i.Mode,
+		"mode":        i.Mode,
+		"api_version": utils.GetSupportedAPIVersionString(),
 	})
-
-	apiVersionString := i.getAPIVersion()
-	tflog.Info(i.ctx, "Using API Version for import", map[string]interface{}{"version": apiVersionString})
 
 	stagesTF, err := i.generateStagesTF()
 	if err != nil {
@@ -1005,10 +980,8 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 func (i *Importer) generateStagesTF() (string, error) {
 	var tfConfig strings.Builder
 
-	apiVersionString := i.getAPIVersion()
-	tflog.Info(i.ctx, "Generating stages for mode and version", map[string]interface{}{
-		"mode":    i.Mode,
-		"version": apiVersionString,
+	tflog.Info(i.ctx, "Generating stages for mode", map[string]interface{}{
+		"mode": i.Mode,
 	})
 
 	// Define stage orderings for each mode
@@ -1151,7 +1124,6 @@ func (i *Importer) generateStagesTF() (string, error) {
 
 	tflog.Info(i.ctx, "Generated stages", map[string]interface{}{
 		"mode":              i.Mode,
-		"api_version":       apiVersionString,
 		"total_stages":      len(stageOrder),
 		"compatible_stages": len(compatibleStages),
 	})
