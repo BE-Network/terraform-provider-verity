@@ -791,9 +791,20 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 		"tls_limit_in",
 	)
 
-	nullifier.NullifyNestedBlocks(
-		"services", "object_properties",
-	)
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "services",
+		ItemCount:    len(plan.Services),
+		StringFields: []string{"row_num_service", "row_num_service_ref_type_"},
+		BoolFields:   []string{"row_num_enable"},
+		Int64Fields:  []string{"index", "row_num_external_vlan", "row_num_limit_in", "row_num_limit_out"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group", "port_monitoring"},
+		BoolFields:   []string{"on_summary"},
+	})
 
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE

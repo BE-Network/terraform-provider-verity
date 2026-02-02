@@ -551,4 +551,12 @@ func (r *verityPBRoutingResource) ModifyPlan(ctx context.Context, req resource.M
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "policy",
+		ItemCount:    len(plan.Policy),
+		StringFields: []string{"pb_routing_acl", "pb_routing_acl_ref_type_"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
 }

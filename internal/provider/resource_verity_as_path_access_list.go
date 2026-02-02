@@ -612,4 +612,18 @@ func (r *verityAsPathAccessListResource) ModifyPlan(ctx context.Context, req res
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "lists",
+		ItemCount:    len(plan.Lists),
+		StringFields: []string{"regular_expression"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"notes"},
+	})
 }

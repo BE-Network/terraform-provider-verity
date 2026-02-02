@@ -614,4 +614,12 @@ func (r *verityGroupingRuleResource) ModifyPlan(ctx context.Context, req resourc
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "rules",
+		ItemCount:    len(plan.Rules),
+		StringFields: []string{"rule_type", "rule_value", "rule_value_path", "rule_value_path_ref_type_"},
+		BoolFields:   []string{"enable", "rule_invert"},
+		Int64Fields:  []string{"index"},
+	})
 }

@@ -937,4 +937,32 @@ func (r *verityPBRoutingACLResource) ModifyPlan(ctx context.Context, req resourc
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "ipv4_permit",
+		ItemCount:    len(plan.Ipv4Permit),
+		StringFields: []string{"filter", "filter_ref_type_"},
+		BoolFields:   []string{"enable"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "ipv4_deny",
+		ItemCount:    len(plan.Ipv4Deny),
+		StringFields: []string{"filter", "filter_ref_type_"},
+		BoolFields:   []string{"enable"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "ipv6_permit",
+		ItemCount:    len(plan.Ipv6Permit),
+		StringFields: []string{"filter", "filter_ref_type_"},
+		BoolFields:   []string{"enable"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "ipv6_deny",
+		ItemCount:    len(plan.Ipv6Deny),
+		StringFields: []string{"filter", "filter_ref_type_"},
+		BoolFields:   []string{"enable"},
+	})
 }

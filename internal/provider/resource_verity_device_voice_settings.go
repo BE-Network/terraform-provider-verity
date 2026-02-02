@@ -1191,6 +1191,19 @@ func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req 
 		"local_port_min", "local_port_max", "event_payload_type", "cas_events", "dscp_mark",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "codecs",
+		ItemCount:    len(plan.Codecs),
+		StringFields: []string{"codec_num_name", "codec_num_packetization_period"},
+		BoolFields:   []string{"codec_num_enable", "codec_num_silence_suppression"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+	})
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================

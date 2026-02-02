@@ -906,9 +906,22 @@ func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resou
 		"enable", "tls", "trusted_port",
 	)
 
-	nullifier.NullifyNestedBlocks(
-		"services", "object_properties",
-	)
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group", "port_monitoring", "label", "icon"},
+		BoolFields:   []string{"sort_by_name"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName: "services",
+		ItemCount: len(plan.Services),
+		StringFields: []string{"row_num_service", "row_num_service_ref_type_", "row_num_ingress_acl", "row_num_ingress_acl_ref_type_",
+			"row_num_egress_acl", "row_num_egress_acl_ref_type_", "row_num_mac_filter", "row_num_mac_filter_ref_type_",
+			"row_num_lan_iptv"},
+		BoolFields:  []string{"row_num_enable"},
+		Int64Fields: []string{"index", "row_num_external_vlan"},
+	})
 
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE

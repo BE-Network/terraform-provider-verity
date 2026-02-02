@@ -477,4 +477,12 @@ func (r *veritySfpBreakoutResource) ModifyPlan(ctx context.Context, req resource
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "breakout",
+		ItemCount:    len(plan.Breakout),
+		StringFields: []string{"vendor", "part_number", "breakout"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
 }

@@ -613,4 +613,18 @@ func (r *verityRouteMapResource) ModifyPlan(ctx context.Context, req resource.Mo
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "route_map_clauses",
+		ItemCount:    len(plan.RouteMapClauses),
+		StringFields: []string{"route_map_clause", "route_map_clause_ref_type_"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"notes"},
+	})
 }

@@ -725,6 +725,19 @@ func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req
 		"reauthorization_period_sec", "mac_authentication_holdoff_sec",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "eth_ports",
+		ItemCount:    len(plan.EthPorts),
+		StringFields: []string{"eth_port_profile_num_eth_port", "eth_port_profile_num_eth_port_ref_type_", "eth_port_profile_num_radius_filter_id"},
+		BoolFields:   []string{"eth_port_profile_num_enable", "eth_port_profile_num_walled_garden_set"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group", "port_monitoring"},
+	})
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================

@@ -627,6 +627,12 @@ func (r *verityACLUnifiedResource) ModifyPlan(ctx context.Context, req resource.
 		"destination_port_1", "destination_port_2",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"notes"},
+	})
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================

@@ -891,6 +891,12 @@ func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resou
 		"match_vni",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"notes", "match_fields_shown"},
+	})
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================

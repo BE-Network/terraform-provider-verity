@@ -790,4 +790,20 @@ func (r *verityThresholdGroupResource) ModifyPlan(ctx context.Context, req resou
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "targets",
+		ItemCount:    len(plan.Targets),
+		StringFields: []string{"type", "grouping_rules", "grouping_rules_ref_type_", "switchpoint", "switchpoint_ref_type_", "port"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "thresholds",
+		ItemCount:    len(plan.Thresholds),
+		StringFields: []string{"severity_override", "threshold", "threshold_ref_type_"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
 }

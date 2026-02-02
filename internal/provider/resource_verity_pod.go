@@ -503,6 +503,12 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		"expected_spine_count",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"notes"},
+	})
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================

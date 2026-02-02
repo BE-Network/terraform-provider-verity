@@ -998,9 +998,19 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 		"bfd_receive_interval", "bfd_transmission_interval", "bfd_detect_multiplier",
 	)
 
-	nullifier.NullifyNestedBlocks(
-		"static_routes", "object_properties",
-	)
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "static_routes",
+		ItemCount:    len(plan.StaticRoutes),
+		StringFields: []string{"ipv4_route_prefix", "next_hop_ip_address"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index", "ad_value"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+	})
 
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE

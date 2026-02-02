@@ -1080,6 +1080,41 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 		"duplicate_address_detection_time",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "islands",
+		ItemCount:    len(plan.Islands),
+		StringFields: []string{"toi_switchpoint", "toi_switchpoint_ref_type_"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName: "pairs",
+		ItemCount: len(plan.Pairs),
+		StringFields: []string{
+			"name", "switchpoint_1", "switchpoint_1_ref_type_",
+			"switchpoint_2", "switchpoint_2_ref_type_",
+			"lag_group", "lag_group_ref_type_",
+		},
+		BoolFields: []string{"is_whitebox_pair"},
+	})
+
+	// Handle object_properties with nested system_graphs sub-block
+	// Build item counts for system_graphs within each object_properties item
+	systemGraphsCounts := make([]int, len(plan.ObjectProperties))
+	for i, op := range plan.ObjectProperties {
+		systemGraphsCounts[i] = len(op.SystemGraphs)
+	}
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName: "object_properties",
+		ItemCount: len(plan.ObjectProperties),
+		SubBlocks: []utils.SubBlockFieldConfig{
+			{
+				SubBlockName: "system_graphs",
+				ItemCounts:   systemGraphsCounts,
+				StringFields: []string{"graph_num_data"},
+			},
+		},
+	})
+
 	// =========================================================================
 	// CREATE operation - handle auto-assigned fields
 	// =========================================================================

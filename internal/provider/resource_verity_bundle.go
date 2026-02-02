@@ -1117,4 +1117,36 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+		BoolFields:   []string{"is_for_switch", "is_public"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName: "eth_port_paths",
+		ItemCount: len(plan.EthPortPaths),
+		StringFields: []string{
+			"eth_port_num_eth_port_profile", "eth_port_num_eth_port_profile_ref_type_",
+			"eth_port_num_eth_port_settings", "eth_port_num_eth_port_settings_ref_type_",
+			"eth_port_num_gateway_profile", "eth_port_num_gateway_profile_ref_type_",
+			"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+			"port_name",
+		},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "user_services",
+		ItemCount:    len(plan.UserServices),
+		StringFields: []string{"row_app_connected_service", "row_app_connected_service_ref_type_", "row_app_cli_commands", "row_ip_mask"},
+		BoolFields:   []string{"row_app_enable"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "voice_port_profile_paths",
+		ItemCount:    len(plan.VoicePortProfilePaths),
+		StringFields: []string{"voice_port_num_voice_port_profiles", "voice_port_num_voice_port_profiles_ref_type_"},
+	})
 }

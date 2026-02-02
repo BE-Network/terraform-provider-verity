@@ -634,4 +634,18 @@ func (r *verityCommunityListResource) ModifyPlan(ctx context.Context, req resour
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "lists",
+		ItemCount:    len(plan.Lists),
+		StringFields: []string{"mode", "community_string_expanded_expression"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"notes"},
+	})
 }

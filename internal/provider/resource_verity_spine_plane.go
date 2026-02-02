@@ -459,4 +459,10 @@ func (r *veritySpinePlaneResource) ModifyPlan(ctx context.Context, req resource.
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"notes"},
+	})
 }

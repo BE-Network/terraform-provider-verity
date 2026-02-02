@@ -819,6 +819,13 @@ func (r *verityVoicePortProfileResource) ModifyPlan(ctx context.Context, req res
 		"jitter_buffer_max", "release_timer", "roh_timer",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"port_monitoring", "group"},
+		BoolFields:   []string{"format_dial_plan"},
+	})
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================

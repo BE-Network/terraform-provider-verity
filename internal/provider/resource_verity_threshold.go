@@ -715,4 +715,12 @@ func (r *verityThresholdResource) ModifyPlan(ctx context.Context, req resource.M
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "rules",
+		ItemCount:    len(plan.Rules),
+		StringFields: []string{"type", "metric", "operation", "value", "threshold", "threshold_ref_type_"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
 }

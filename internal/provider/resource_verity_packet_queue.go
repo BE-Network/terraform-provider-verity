@@ -744,9 +744,24 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 		"enable",
 	)
 
-	nullifier.NullifyNestedBlocks(
-		"pbit", "queue", "object_properties",
-	)
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:   "pbit",
+		ItemCount:   len(plan.Pbit),
+		Int64Fields: []string{"index", "packet_queue_for_p_bit"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "queue",
+		ItemCount:    len(plan.Queue),
+		StringFields: []string{"scheduler_type"},
+		Int64Fields:  []string{"index", "bandwidth_for_queue", "scheduler_weight"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+	})
 
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE

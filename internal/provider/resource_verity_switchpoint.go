@@ -1600,9 +1600,43 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		"bgp_as_number",
 	)
 
-	nullifier.NullifyNestedBlocks(
-		"badges", "children", "traffic_mirrors", "eths", "object_properties",
-	)
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "badges",
+		ItemCount:    len(plan.Badges),
+		StringFields: []string{"badge", "badge_ref_type_"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "children",
+		ItemCount:    len(plan.Children),
+		StringFields: []string{"child_num_endpoint", "child_num_endpoint_ref_type_", "child_num_device"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "traffic_mirrors",
+		ItemCount:    len(plan.TrafficMirrors),
+		StringFields: []string{"traffic_mirror_num_source_port", "traffic_mirror_num_destination_port"},
+		BoolFields:   []string{"traffic_mirror_num_enable", "traffic_mirror_num_source_lag_indicator", "traffic_mirror_num_inbound_traffic", "traffic_mirror_num_outbound_traffic"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "eths",
+		ItemCount:    len(plan.Eths),
+		StringFields: []string{"breakout", "eth_num_icon", "eth_num_label", "port_name"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"user_notes", "expected_parent_endpoint", "expected_parent_endpoint_ref_type_"},
+		BoolFields:   []string{"aggregate", "is_host", "draw_as_edge_device"},
+		Int64Fields:  []string{"number_of_multipoints"},
+	})
 
 	// =========================================================================
 	// CREATE operation - handle auto-assigned fields

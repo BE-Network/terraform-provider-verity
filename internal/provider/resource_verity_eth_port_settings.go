@@ -1096,9 +1096,19 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 		"mac_limit", "aging_time",
 	)
 
-	nullifier.NullifyNestedBlocks(
-		"object_properties", "lldp_med",
-	)
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "lldp_med",
+		ItemCount:    len(plan.LldpMed),
+		StringFields: []string{"lldp_med_row_num_advertised_applicatio", "lldp_med_row_num_service", "lldp_med_row_num_service_ref_type_"},
+		BoolFields:   []string{"lldp_med_row_num_enable"},
+		Int64Fields:  []string{"index", "lldp_med_row_num_dscp_mark", "lldp_med_row_num_priority"},
+	})
 
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE

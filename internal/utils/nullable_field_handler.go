@@ -58,12 +58,126 @@ func (n *ModeFieldNullifier) NullifyNumbers(fields ...string) {
 	}
 }
 
-// NullifyNestedBlocks sets nested block fields to null if the block doesn't apply to the current mode.
-func (n *ModeFieldNullifier) NullifyNestedBlocks(blocks ...string) {
-	for _, block := range blocks {
-		if !FieldAppliesToMode(n.ResourceType, block, n.Mode) {
-			// Set the nested block to an empty list when mode doesn't apply
-			n.Plan.SetAttribute(n.Ctx, path.Root(block), types.ListNull(types.ObjectType{}))
+// SubBlockFieldConfig defines fields within a nested block that is inside another nested block.
+type SubBlockFieldConfig struct {
+	SubBlockName string
+	ItemCounts   []int
+	StringFields []string
+	BoolFields   []string
+	Int64Fields  []string
+	NumberFields []string
+}
+
+// NestedBlockFieldConfig defines the fields within a nested block that need mode-aware nullification.
+type NestedBlockFieldConfig struct {
+	BlockName    string
+	ItemCount    int
+	StringFields []string
+	BoolFields   []string
+	Int64Fields  []string
+	NumberFields []string
+	SubBlocks    []SubBlockFieldConfig
+}
+
+// NullifyNestedBlockFields nullifies individual fields within a nested block based on mode.
+func (n *ModeFieldNullifier) NullifyNestedBlockFields(config NestedBlockFieldConfig) {
+	// First check if the block itself applies to the mode
+	if !FieldAppliesToMode(n.ResourceType, config.BlockName, n.Mode) {
+		// Block doesn't apply, nullify the entire block
+		n.Plan.SetAttribute(n.Ctx, path.Root(config.BlockName), types.ListNull(types.ObjectType{}))
+		return
+	}
+
+	// Block applies to the mode, but we need to check individual fields
+	// Iterate through each item in the block
+	for i := 0; i < config.ItemCount; i++ {
+		basePath := path.Root(config.BlockName).AtListIndex(i)
+
+		// Nullify string fields that don't apply
+		for _, field := range config.StringFields {
+			fieldPath := config.BlockName + "." + field
+			if !FieldAppliesToMode(n.ResourceType, fieldPath, n.Mode) {
+				n.Plan.SetAttribute(n.Ctx, basePath.AtName(field), types.StringNull())
+			}
+		}
+
+		// Nullify bool fields that don't apply
+		for _, field := range config.BoolFields {
+			fieldPath := config.BlockName + "." + field
+			if !FieldAppliesToMode(n.ResourceType, fieldPath, n.Mode) {
+				n.Plan.SetAttribute(n.Ctx, basePath.AtName(field), types.BoolNull())
+			}
+		}
+
+		// Nullify int64 fields that don't apply
+		for _, field := range config.Int64Fields {
+			fieldPath := config.BlockName + "." + field
+			if !FieldAppliesToMode(n.ResourceType, fieldPath, n.Mode) {
+				n.Plan.SetAttribute(n.Ctx, basePath.AtName(field), types.Int64Null())
+			}
+		}
+
+		// Nullify number fields that don't apply
+		for _, field := range config.NumberFields {
+			fieldPath := config.BlockName + "." + field
+			if !FieldAppliesToMode(n.ResourceType, fieldPath, n.Mode) {
+				n.Plan.SetAttribute(n.Ctx, basePath.AtName(field), types.NumberNull())
+			}
+		}
+
+		// Handle sub-blocks (deeply nested blocks)
+		for _, subBlock := range config.SubBlocks {
+			subBlockPath := config.BlockName + "." + subBlock.SubBlockName
+
+			// Check if sub-block applies to mode
+			if !FieldAppliesToMode(n.ResourceType, subBlockPath, n.Mode) {
+				// Sub-block doesn't apply, nullify the entire sub-block
+				n.Plan.SetAttribute(n.Ctx, basePath.AtName(subBlock.SubBlockName), types.ListNull(types.ObjectType{}))
+				continue
+			}
+
+			// Get item count for this parent index
+			subBlockItemCount := 0
+			if i < len(subBlock.ItemCounts) {
+				subBlockItemCount = subBlock.ItemCounts[i]
+			}
+
+			// Iterate through each item in the sub-block
+			for j := 0; j < subBlockItemCount; j++ {
+				subBasePath := basePath.AtName(subBlock.SubBlockName).AtListIndex(j)
+
+				// Nullify string fields that don't apply
+				for _, field := range subBlock.StringFields {
+					fieldPath := subBlockPath + "." + field
+					if !FieldAppliesToMode(n.ResourceType, fieldPath, n.Mode) {
+						n.Plan.SetAttribute(n.Ctx, subBasePath.AtName(field), types.StringNull())
+					}
+				}
+
+				// Nullify bool fields that don't apply
+				for _, field := range subBlock.BoolFields {
+					fieldPath := subBlockPath + "." + field
+					if !FieldAppliesToMode(n.ResourceType, fieldPath, n.Mode) {
+						n.Plan.SetAttribute(n.Ctx, subBasePath.AtName(field), types.BoolNull())
+					}
+				}
+
+				// Nullify int64 fields that don't apply
+				for _, field := range subBlock.Int64Fields {
+					fieldPath := subBlockPath + "." + field
+					if !FieldAppliesToMode(n.ResourceType, fieldPath, n.Mode) {
+						n.Plan.SetAttribute(n.Ctx, subBasePath.AtName(field), types.Int64Null())
+					}
+				}
+
+				// Nullify number fields that don't apply
+				for _, field := range subBlock.NumberFields {
+					fieldPath := subBlockPath + "." + field
+					if !FieldAppliesToMode(n.ResourceType, fieldPath, n.Mode) {
+						n.Plan.SetAttribute(n.Ctx, subBasePath.AtName(field), types.NumberNull())
+					}
+				}
+			}
 		}
 	}
 }

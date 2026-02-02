@@ -633,4 +633,18 @@ func (r *verityGatewayProfileResource) ModifyPlan(ctx context.Context, req resou
 	nullifier.NullifyBools(
 		"enable",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "external_gateways",
+		ItemCount:    len(plan.ExternalGateways),
+		StringFields: []string{"gateway", "gateway_ref_type_", "source_ip_mask"},
+		BoolFields:   []string{"enable", "peer_gw"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+	})
 }

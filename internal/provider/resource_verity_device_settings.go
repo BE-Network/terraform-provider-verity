@@ -656,6 +656,12 @@ func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resou
 		"usage_threshold",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+	})
+
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
 	// =========================================================================

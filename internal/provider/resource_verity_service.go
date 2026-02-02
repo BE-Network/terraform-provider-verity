@@ -890,6 +890,13 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		"mst_instance",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+		BoolFields:   []string{"on_summary", "warn_on_no_external_source"},
+	})
+
 	// =========================================================================
 	// CREATE operation - handle auto-assigned fields
 	// =========================================================================

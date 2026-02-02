@@ -1054,6 +1054,20 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		"layer_3_vni", "layer_3_vlan",
 	)
 
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"group"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "route_tenants",
+		ItemCount:    len(plan.RouteTenants),
+		StringFields: []string{"tenant"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
+
 	// =========================================================================
 	// CREATE operation - handle auto-assigned fields
 	// =========================================================================

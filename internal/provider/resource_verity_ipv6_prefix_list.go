@@ -653,9 +653,19 @@ func (r *verityIpv6PrefixListResource) ModifyPlan(ctx context.Context, req resou
 		"enable",
 	)
 
-	nullifier.NullifyNestedBlocks(
-		"lists", "object_properties",
-	)
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "lists",
+		ItemCount:    len(plan.Lists),
+		StringFields: []string{"permit_deny", "ipv6_prefix"},
+		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index", "greater_than_equal_value", "less_than_equal_value"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"notes"},
+	})
 
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
