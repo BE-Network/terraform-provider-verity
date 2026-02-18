@@ -25,6 +25,8 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	Enable *bool `json:"enable,omitempty"`
 	// Indicates if duplex mode should be auto negotiated
 	AutoNegotiation *bool `json:"auto_negotiation,omitempty"`
+	// Turns on speed control fields
+	EnableSpeedControl *bool `json:"enable_speed_control,omitempty"`
 	// Maximum Bit Rate allowed
 	MaxBitRate *string `json:"max_bit_rate,omitempty"`
 	// Duplex Mode
@@ -121,6 +123,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	this.Enable = &enable
 	var autoNegotiation bool = true
 	this.AutoNegotiation = &autoNegotiation
+	var enableSpeedControl bool = true
+	this.EnableSpeedControl = &enableSpeedControl
 	var maxBitRate string = "-1"
 	this.MaxBitRate = &maxBitRate
 	var duplexMode string = "Auto"
@@ -213,6 +217,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	this.Enable = &enable
 	var autoNegotiation bool = true
 	this.AutoNegotiation = &autoNegotiation
+	var enableSpeedControl bool = true
+	this.EnableSpeedControl = &enableSpeedControl
 	var maxBitRate string = "-1"
 	this.MaxBitRate = &maxBitRate
 	var duplexMode string = "Auto"
@@ -388,6 +394,38 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAutoNegotiation() boo
 // SetAutoNegotiation gets a reference to the given bool and assigns it to the AutoNegotiation field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAutoNegotiation(v bool) {
 	o.AutoNegotiation = &v
+}
+
+// GetEnableSpeedControl returns the EnableSpeedControl field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableSpeedControl() bool {
+	if o == nil || IsNil(o.EnableSpeedControl) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableSpeedControl
+}
+
+// GetEnableSpeedControlOk returns a tuple with the EnableSpeedControl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableSpeedControlOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableSpeedControl) {
+		return nil, false
+	}
+	return o.EnableSpeedControl, true
+}
+
+// HasEnableSpeedControl returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableSpeedControl() bool {
+	if o != nil && !IsNil(o.EnableSpeedControl) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableSpeedControl gets a reference to the given bool and assigns it to the EnableSpeedControl field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableSpeedControl(v bool) {
+	o.EnableSpeedControl = &v
 }
 
 // GetMaxBitRate returns the MaxBitRate field value if set, zero value otherwise.
@@ -1832,6 +1870,9 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	}
 	if !IsNil(o.AutoNegotiation) {
 		toSerialize["auto_negotiation"] = o.AutoNegotiation
+	}
+	if !IsNil(o.EnableSpeedControl) {
+		toSerialize["enable_speed_control"] = o.EnableSpeedControl
 	}
 	if !IsNil(o.MaxBitRate) {
 		toSerialize["max_bit_rate"] = o.MaxBitRate

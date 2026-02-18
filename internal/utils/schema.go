@@ -333,6 +333,7 @@ var ModeFields = map[string]map[string]FieldMode{
         "action": FieldModeBoth,
         "allocated_power": FieldModeBoth,
         "auto_negotiation": FieldModeBoth,
+        "enable_speed_control": FieldModeBoth,
         "bpdu_filter": FieldModeBoth,
         "bpdu_guard": FieldModeBoth,
         "broadcast": FieldModeBoth,

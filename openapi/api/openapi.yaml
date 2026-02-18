@@ -9653,6 +9653,10 @@ components:
           default: true
           description: Indicates if duplex mode should be auto negotiated
           type: boolean
+        enable_speed_control:
+          default: true
+          description: Turns on speed control fields
+          type: boolean
         max_bit_rate:
           default: "-1"
           description: Maximum Bit Rate allowed

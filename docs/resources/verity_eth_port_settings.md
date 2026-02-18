@@ -9,6 +9,7 @@ resource "verity_eth_port_settings" "example" {
   name = "example"
   enable = true
   auto_negotiation = true
+  enable_speed_control = true
   max_bit_rate = "-1"
   duplex_mode = "Auto"
   stp_enable = false
@@ -71,6 +72,7 @@ resource "verity_eth_port_settings" "example" {
 * `name` (String) - Object Name. Must be unique.
 * `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 * `auto_negotiation` (Boolean) - Indicates if duplex mode should be auto negotiated.
+* `enable_speed_control` (Boolean) - Turns on speed control fields.
 * `max_bit_rate` (String) - Maximum Bit Rate allowed.
 * `duplex_mode` (String) - Duplex Mode.
 * `stp_enable` (Boolean) - Enable Spanning Tree on the port. Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Site Settings.

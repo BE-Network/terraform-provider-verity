@@ -44,6 +44,7 @@ type verityEthPortSettingsResourceModel struct {
 	Enable                                 types.Bool                                   `tfsdk:"enable"`
 	ObjectProperties                       []verityEthPortSettingsObjectPropertiesModel `tfsdk:"object_properties"`
 	AutoNegotiation                        types.Bool                                   `tfsdk:"auto_negotiation"`
+	EnableSpeedControl                     types.Bool                                   `tfsdk:"enable_speed_control"`
 	MaxBitRate                             types.String                                 `tfsdk:"max_bit_rate"`
 	DuplexMode                             types.String                                 `tfsdk:"duplex_mode"`
 	StpEnable                              types.Bool                                   `tfsdk:"stp_enable"`
@@ -145,6 +146,11 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 			},
 			"auto_negotiation": schema.BoolAttribute{
 				Description: "Indicates if port speed and duplex mode should be auto negotiated",
+				Optional:    true,
+				Computed:    true,
+			},
+			"enable_speed_control": schema.BoolAttribute{
+				Description: "Turns on speed control fields",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -459,6 +465,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &ethPortSettingsProps.Enable, TFValue: plan.Enable},
 		{FieldName: "AutoNegotiation", APIField: &ethPortSettingsProps.AutoNegotiation, TFValue: plan.AutoNegotiation},
+		{FieldName: "EnableSpeedControl", APIField: &ethPortSettingsProps.EnableSpeedControl, TFValue: plan.EnableSpeedControl},
 		{FieldName: "StpEnable", APIField: &ethPortSettingsProps.StpEnable, TFValue: plan.StpEnable},
 		{FieldName: "FastLearningMode", APIField: &ethPortSettingsProps.FastLearningMode, TFValue: plan.FastLearningMode},
 		{FieldName: "BpduGuard", APIField: &ethPortSettingsProps.BpduGuard, TFValue: plan.BpduGuard},
@@ -729,6 +736,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ethPortSettingsProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AutoNegotiation, state.AutoNegotiation, func(v *bool) { ethPortSettingsProps.AutoNegotiation = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableSpeedControl, state.EnableSpeedControl, func(v *bool) { ethPortSettingsProps.EnableSpeedControl = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.StpEnable, state.StpEnable, func(v *bool) { ethPortSettingsProps.StpEnable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.FastLearningMode, state.FastLearningMode, func(v *bool) { ethPortSettingsProps.FastLearningMode = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.BpduGuard, state.BpduGuard, func(v *bool) { ethPortSettingsProps.BpduGuard = v }, &hasChanges)
@@ -958,6 +966,7 @@ func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettin
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.AutoNegotiation = utils.MapBoolWithMode(data, "auto_negotiation", resourceType, mode)
+	state.EnableSpeedControl = utils.MapBoolWithMode(data, "enable_speed_control", resourceType, mode)
 	state.StpEnable = utils.MapBoolWithMode(data, "stp_enable", resourceType, mode)
 	state.FastLearningMode = utils.MapBoolWithMode(data, "fast_learning_mode", resourceType, mode)
 	state.BpduGuard = utils.MapBoolWithMode(data, "bpdu_guard", resourceType, mode)
@@ -1082,6 +1091,7 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 
 	nullifier.NullifyBools(
 		"enable", "auto_negotiation", "stp_enable", "fast_learning_mode",
+		"enable_speed_control",
 		"bpdu_guard", "bpdu_filter", "guard_loop", "poe_enable",
 		"bsp_enable", "broadcast", "multicast", "single_link",
 		"enable_wred_tuning", "enable_ecn", "enable_watchdog_tuning",

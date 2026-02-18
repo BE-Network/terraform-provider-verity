@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **AutoNegotiation** | Pointer to **bool** | Indicates if duplex mode should be auto negotiated | [optional] [default to true]
+**EnableSpeedControl** | Pointer to **bool** | Turns on speed control fields | [optional] [default to true]
 **MaxBitRate** | Pointer to **string** | Maximum Bit Rate allowed | [optional] [default to "-1"]
 **DuplexMode** | Pointer to **string** | Duplex Mode | [optional] [default to "Auto"]
 **StpEnable** | Pointer to **bool** | Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Site Settings | [optional] [default to false]
@@ -143,6 +144,31 @@ SetAutoNegotiation sets AutoNegotiation field to given value.
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAutoNegotiation() bool`
 
 HasAutoNegotiation returns a boolean if a field has been set.
+
+### GetEnableSpeedControl
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableSpeedControl() bool`
+
+GetEnableSpeedControl returns the EnableSpeedControl field if non-nil, zero value otherwise.
+
+### GetEnableSpeedControlOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableSpeedControlOk() (*bool, bool)`
+
+GetEnableSpeedControlOk returns a tuple with the EnableSpeedControl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnableSpeedControl
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableSpeedControl(v bool)`
+
+SetEnableSpeedControl sets EnableSpeedControl field to given value.
+
+### HasEnableSpeedControl
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableSpeedControl() bool`
+
+HasEnableSpeedControl returns a boolean if a field has been set.
 
 ### GetMaxBitRate
 
