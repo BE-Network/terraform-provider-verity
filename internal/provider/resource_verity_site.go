@@ -428,12 +428,14 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 
 	siteName := state.Name.ValueString()
+	priorState := state
 
 	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if siteData, exists := r.bulkOpsMgr.GetResourceResponse("site", siteName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached site data for %s from recent operation", siteName))
 			state = populateSiteState(ctx, state, siteData, r.provCtx.mode)
+			filterSiteIndexedEntries(&state, &priorState)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -509,6 +511,7 @@ func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest,
 	tflog.Debug(ctx, fmt.Sprintf("Found site '%s' under API key '%s'", siteName, actualAPIName))
 
 	state = populateSiteState(ctx, state, siteMap, r.provCtx.mode)
+	filterSiteIndexedEntries(&state, &priorState)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -868,6 +871,7 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if siteData, exists := bulkMgr.GetResourceResponse("site", name); exists {
 			state := populateSiteState(ctx, minState, siteData, r.provCtx.mode)
+			filterSiteIndexedEntries(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -883,6 +887,13 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	r.Read(ctx, readReq, &readResp)
+
+	if !readResp.Diagnostics.HasError() {
+		var readState veritySiteResourceModel
+		readResp.State.Get(ctx, &readState)
+		filterSiteIndexedEntries(&readState, &plan)
+		resp.State.Set(ctx, &readState)
+	}
 }
 
 func (r *veritySiteResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -1209,5 +1220,20 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 				resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), state.AnycastMacAddress)
 			}
 		}
+	}
+}
+
+func filterSiteIndexedEntries(state *veritySiteResourceModel, ref *veritySiteResourceModel) {
+	if ref == nil {
+		return
+	}
+	state.Islands = utils.FilterIndexedEntries(state.Islands, ref.Islands)
+	state.Pairs = utils.FilterIndexedEntries(state.Pairs, ref.Pairs)
+
+	if len(state.ObjectProperties) > 0 && len(ref.ObjectProperties) > 0 {
+		state.ObjectProperties[0].SystemGraphs = utils.FilterIndexedEntries(
+			state.ObjectProperties[0].SystemGraphs,
+			ref.ObjectProperties[0].SystemGraphs,
+		)
 	}
 }

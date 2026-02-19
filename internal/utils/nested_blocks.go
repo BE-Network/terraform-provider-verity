@@ -85,3 +85,33 @@ func ProcessIndexedArrayUpdates[PlanType IndexedItem, APIType any](
 
 	return changedItems, hasChanges
 }
+
+// FilterIndexedEntries limits the entries in stateItems to only those whose
+// Index matches an entry in refItems. This is used for hardware-bound resources
+// where the API may return more entries than the user configured.
+func FilterIndexedEntries[T IndexedItem](stateItems []T, refItems []T) []T {
+	if len(refItems) == 0 || len(stateItems) == 0 {
+		return stateItems
+	}
+
+	refIndices := make(map[int64]bool, len(refItems))
+	for _, item := range refItems {
+		idx := item.GetIndex()
+		if !idx.IsNull() && !idx.IsUnknown() {
+			refIndices[idx.ValueInt64()] = true
+		}
+	}
+
+	var filtered []T
+	for _, item := range stateItems {
+		idx := item.GetIndex()
+		if !idx.IsNull() && !idx.IsUnknown() && refIndices[idx.ValueInt64()] {
+			filtered = append(filtered, item)
+		}
+	}
+
+	if len(filtered) > 0 {
+		return filtered
+	}
+	return stateItems
+}

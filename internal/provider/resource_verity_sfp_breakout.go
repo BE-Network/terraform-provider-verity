@@ -171,12 +171,14 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 	}
 
 	sfpBreakoutName := state.Name.ValueString()
+	priorState := state
 
 	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if sfpBreakoutData, exists := r.bulkOpsMgr.GetResourceResponse("sfp_breakout", sfpBreakoutName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached sfp_breakout data for %s from recent operation", sfpBreakoutName))
 			state = populateSfpBreakoutState(ctx, state, sfpBreakoutData, r.provCtx.mode)
+			filterSfpBreakoutEntries(&state, &priorState)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -253,6 +255,7 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 	tflog.Debug(ctx, fmt.Sprintf("Found SFP Breakout '%s' under API key '%s'", sfpBreakoutName, actualAPIName))
 
 	state = populateSfpBreakoutState(ctx, state, sfpBreakoutMap, r.provCtx.mode)
+	filterSfpBreakoutEntries(&state, &priorState)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -376,6 +379,7 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sfpBreakoutData, exists := bulkMgr.GetResourceResponse("sfp_breakout", name); exists {
 			newState := populateSfpBreakoutState(ctx, minState, sfpBreakoutData, r.provCtx.mode)
+			filterSfpBreakoutEntries(&newState, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -391,6 +395,13 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	r.Read(ctx, readReq, &readResp)
+
+	if !readResp.Diagnostics.HasError() {
+		var readState veritySfpBreakoutResourceModel
+		readResp.State.Get(ctx, &readState)
+		filterSfpBreakoutEntries(&readState, &plan)
+		resp.State.Set(ctx, &readState)
+	}
 }
 
 func (r *veritySfpBreakoutResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -485,4 +496,11 @@ func (r *veritySfpBreakoutResource) ModifyPlan(ctx context.Context, req resource
 		BoolFields:   []string{"enable"},
 		Int64Fields:  []string{"index"},
 	})
+}
+
+func filterSfpBreakoutEntries(state *veritySfpBreakoutResourceModel, ref *veritySfpBreakoutResourceModel) {
+	if ref == nil {
+		return
+	}
+	state.Breakout = utils.FilterIndexedEntries(state.Breakout, ref.Breakout)
 }

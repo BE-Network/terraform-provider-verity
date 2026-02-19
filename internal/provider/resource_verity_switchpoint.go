@@ -673,6 +673,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
 			state := populateSwitchpointState(ctx, minState, switchpointData, r.provCtx.mode)
+			preserveSwitchpointPortNames(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -688,6 +689,13 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	r.Read(ctx, readReq, &readResp)
+
+	if !readResp.Diagnostics.HasError() {
+		var readState veritySwitchpointResourceModel
+		readResp.State.Get(ctx, &readState)
+		preserveSwitchpointPortNames(&readState, &plan)
+		resp.State.Set(ctx, &readState)
+	}
 }
 
 func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -707,12 +715,14 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 	}
 
 	spName := state.Name.ValueString()
+	priorState := state // save prior state to preserve reference-only fields
 
 	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if switchpointData, exists := r.bulkOpsMgr.GetResourceResponse("switchpoint", spName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached switchpoint data for %s from recent operation", spName))
 			state = populateSwitchpointState(ctx, state, switchpointData, r.provCtx.mode)
+			preserveSwitchpointPortNames(&state, &priorState)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -789,6 +799,7 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 	tflog.Debug(ctx, fmt.Sprintf("Found switchpoint '%s' under API key '%s'", spName, actualAPIName))
 
 	state = populateSwitchpointState(ctx, state, switchpointMap, r.provCtx.mode)
+	preserveSwitchpointPortNames(&state, &priorState)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -1345,6 +1356,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
 			state := populateSwitchpointState(ctx, minState, switchpointData, r.provCtx.mode)
+			preserveSwitchpointPortNames(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -1360,6 +1372,13 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	r.Read(ctx, readReq, &readResp)
+
+	if !readResp.Diagnostics.HasError() {
+		var readState veritySwitchpointResourceModel
+		readResp.State.Get(ctx, &readState)
+		preserveSwitchpointPortNames(&readState, &plan)
+		resp.State.Set(ctx, &readState)
+	}
 }
 
 func (r *veritySwitchpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -1800,6 +1819,27 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 			if !state.SwitchVtepIdIpMask.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), state.SwitchVtepIdIpMask)
 			}
+		}
+	}
+}
+
+// preserveSwitchpointPortNames copies port_name values from a reference source (plan or prior state)
+// into the populated state. The API documents port_name as "reference only" – it accepts the value on PUT
+// but never persists or returns it, so GET always gives back "".
+func preserveSwitchpointPortNames(state *veritySwitchpointResourceModel, ref *veritySwitchpointResourceModel) {
+	if ref == nil || len(ref.Eths) == 0 || len(state.Eths) == 0 {
+		return
+	}
+
+	for i := range state.Eths {
+		if i >= len(ref.Eths) {
+			break
+		}
+
+		refPortName := ref.Eths[i].PortName
+
+		if !refPortName.IsNull() && !refPortName.IsUnknown() && state.Eths[i].PortName.ValueString() == "" {
+			state.Eths[i].PortName = refPortName
 		}
 	}
 }

@@ -457,6 +457,7 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if bundleData, exists := bulkMgr.GetResourceResponse("bundle", name); exists {
 			state := populateBundleState(ctx, minState, bundleData, r.provCtx.mode)
+			preserveBundlePortNames(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -472,6 +473,13 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	r.Read(ctx, readReq, &readResp)
+
+	if !readResp.Diagnostics.HasError() {
+		var readState verityBundleResourceModel
+		readResp.State.Get(ctx, &readState)
+		preserveBundlePortNames(&readState, &plan)
+		resp.State.Set(ctx, &readState)
+	}
 }
 
 func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -491,12 +499,14 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 	}
 
 	bundleName := state.Name.ValueString()
+	priorState := state // save prior state to preserve reference-only fields
 
 	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if bundleData, exists := r.bulkOpsMgr.GetResourceResponse("bundle", bundleName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached bundle data for %s from recent operation", bundleName))
 			state = populateBundleState(ctx, state, bundleData, r.provCtx.mode)
+			preserveBundlePortNames(&state, &priorState)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -572,6 +582,7 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 	tflog.Debug(ctx, fmt.Sprintf("Found bundle '%s' under API key '%s'", bundleName, actualAPIName))
 
 	state = populateBundleState(ctx, state, bundleMap, r.provCtx.mode)
+	preserveBundlePortNames(&state, &priorState)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -910,6 +921,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if bundleData, exists := bulkMgr.GetResourceResponse("bundle", name); exists {
 			newState := populateBundleState(ctx, minState, bundleData, r.provCtx.mode)
+			preserveBundlePortNames(&newState, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -925,6 +937,13 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	r.Read(ctx, readReq, &readResp)
+
+	if !readResp.Diagnostics.HasError() {
+		var readState verityBundleResourceModel
+		readResp.State.Get(ctx, &readState)
+		preserveBundlePortNames(&readState, &plan)
+		resp.State.Set(ctx, &readState)
+	}
 }
 
 func (r *verityBundleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -1149,4 +1168,25 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 		ItemCount:    len(plan.VoicePortProfilePaths),
 		StringFields: []string{"voice_port_num_voice_port_profiles", "voice_port_num_voice_port_profiles_ref_type_"},
 	})
+}
+
+// preserveBundlePortNames copies port_name values from a reference source (plan or prior state)
+// into the populated state. The API documents port_name as "reference only" – it accepts the value on PUT
+// but never persists or returns it, so GET always gives back "".
+func preserveBundlePortNames(state *verityBundleResourceModel, ref *verityBundleResourceModel) {
+	if ref == nil || len(ref.EthPortPaths) == 0 || len(state.EthPortPaths) == 0 {
+		return
+	}
+
+	for i := range state.EthPortPaths {
+		if i >= len(ref.EthPortPaths) {
+			break
+		}
+
+		refPortName := ref.EthPortPaths[i].PortName
+
+		if !refPortName.IsNull() && !refPortName.IsUnknown() && state.EthPortPaths[i].PortName.ValueString() == "" {
+			state.EthPortPaths[i].PortName = refPortName
+		}
+	}
 }
