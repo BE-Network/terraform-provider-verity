@@ -2,11 +2,14 @@ package provider
 
 import (
 	"context"
+	"fmt"
+	"terraform-provider-verity/internal/bulkops"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ resource.Resource = &operationStageResource{}
@@ -16,7 +19,7 @@ func NewVerityOperationStageResource() resource.Resource {
 }
 
 type operationStageResource struct {
-	// No client needed for this resource type
+	bulkOpsMgr *bulkops.Manager
 }
 
 type operationStageResourceModel struct {
@@ -39,8 +42,21 @@ func (r *operationStageResource) Schema(_ context.Context, _ resource.SchemaRequ
 	}
 }
 
-func (r *operationStageResource) Configure(_ context.Context, _ resource.ConfigureRequest, _ *resource.ConfigureResponse) {
-	// No configuration needed
+func (r *operationStageResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	provCtx, ok := req.ProviderData.(*providerContext)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected *providerContext, got: %T", req.ProviderData),
+		)
+		return
+	}
+
+	r.bulkOpsMgr = provCtx.bulkOpsMgr
 }
 
 func (r *operationStageResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -50,7 +66,15 @@ func (r *operationStageResource) Create(ctx context.Context, req resource.Create
 		return
 	}
 
-	// Just set a placeholder ID
+	if r.bulkOpsMgr != nil {
+		tflog.Debug(ctx, "Operation stage barrier: waiting for and flushing all pending bulk operations")
+		diags := r.bulkOpsMgr.WaitAndFlushAllOperations(ctx)
+		resp.Diagnostics.Append(diags...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+	}
+
 	plan.Id = types.StringValue("stage")
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
@@ -63,7 +87,6 @@ func (r *operationStageResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	// No actual reading needed, this is just a placeholder resource
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -74,15 +97,17 @@ func (r *operationStageResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	// No actual updating needed
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
 func (r *operationStageResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	// No actual deletion needed
+	if r.bulkOpsMgr != nil {
+		tflog.Debug(ctx, "Operation stage barrier (destroy): waiting for and flushing all pending bulk operations")
+		diags := r.bulkOpsMgr.WaitAndFlushAllOperations(ctx)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func (r *operationStageResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Simply set the ID of the resource to the import ID
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

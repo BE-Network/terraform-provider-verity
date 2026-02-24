@@ -1328,8 +1328,28 @@ func (m *Manager) FilterPreExistingResources(
 	return notExistingResources, nil
 }
 
-// getOperationCount returns the number of pending operations for a resource type
+func (m *Manager) hasPendingOperationsLocked() bool {
+	for _, res := range m.resources {
+		if len(res.Put) > 0 || len(res.Patch) > 0 || len(res.Delete) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func (m *Manager) hasPendingOperations() bool {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.hasPendingOperationsLocked()
+}
+
 func (m *Manager) getOperationCount(resourceType, operationType string) int {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getOperationCountLocked(resourceType, operationType)
+}
+
+func (m *Manager) getOperationCountLocked(resourceType, operationType string) int {
 	res, exists := m.resources[resourceType]
 	if !exists {
 		return 0

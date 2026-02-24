@@ -432,8 +432,9 @@ func (m *Manager) WaitForOperation(ctx context.Context, operationID string, time
 
 // updateOperationStatuses updates the status of pending operations based on the bulk operation result
 func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, operationType string, resourceNames []string, opErr error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	var idsToClose []string
+
+	m.operationMutex.Lock()
 
 	resourceMap := make(map[string]bool)
 	for _, name := range resourceNames {
@@ -471,9 +472,15 @@ func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, ope
 					m.operationErrors[opID] = opErr
 					m.operationResults[opID] = false
 				}
-				m.safeCloseChannel(opID, true)
+				idsToClose = append(idsToClose, opID)
 			}
 		}
+	}
+
+	m.operationMutex.Unlock()
+
+	for _, opID := range idsToClose {
+		m.safeCloseChannel(opID, false)
 	}
 }
 
@@ -512,6 +519,65 @@ func (m *Manager) markOperationsAsExecuting(resourceType, operationType string, 
 // BULK OPERATION EXECUTION ORCHESTRATION
 // ================================================================================================
 
+// WaitAndFlushAllOperations is called from stage resources acting as barriers between
+// resource type groups. Waits for sibling resources to queue ops, flushes them, and
+// returns only after consecutive quiet periods confirm no more ops will arrive.
+func (m *Manager) WaitAndFlushAllOperations(ctx context.Context) diag.Diagnostics {
+	var allDiags diag.Diagnostics
+
+	// Phase 1: Wait for operations to arrive from concurrent sibling resources.
+	initialWaitDeadline := MaxBatchDelay
+	checkInterval := 500 * time.Millisecond
+	elapsed := time.Duration(0)
+
+	tflog.Info(ctx, "[BULK-OPS] Stage barrier activated — waiting for operations from concurrent resources")
+
+	for elapsed < initialWaitDeadline {
+		if m.hasPendingOperations() {
+			tflog.Debug(ctx, fmt.Sprintf("Stage barrier: operations detected after %v", elapsed))
+			break
+		}
+		time.Sleep(checkInterval)
+		elapsed += checkInterval
+	}
+
+	if !m.hasPendingOperations() {
+		tflog.Info(ctx, "[BULK-OPS] Stage barrier: no operations arrived during initial wait — proceeding to next stage")
+		return allDiags
+	}
+
+	// Phase 2: Repeatedly flush until quiet (requires consecutive quiet periods).
+	const maxFlushCycles = 200
+	const requiredQuietPeriods = 3
+	consecutiveQuiet := 0
+
+	for cycle := 0; cycle < maxFlushCycles; cycle++ {
+		tflog.Debug(ctx, fmt.Sprintf("Stage barrier: flush cycle %d (quiet streak: %d/%d)", cycle, consecutiveQuiet, requiredQuietPeriods))
+
+		diags := m.ExecuteAllPendingOperations(ctx)
+		allDiags.Append(diags...)
+		if diags.HasError() {
+			return allDiags
+		}
+
+		// Wait to let concurrent resources queue more operations
+		time.Sleep(BatchCollectionWindow)
+
+		if m.hasPendingOperations() {
+			consecutiveQuiet = 0
+			continue
+		}
+
+		consecutiveQuiet++
+		if consecutiveQuiet >= requiredQuietPeriods {
+			tflog.Info(ctx, fmt.Sprintf("[BULK-OPS] Stage barrier: all operations flushed (%d quiet periods confirmed) — proceeding to next stage", requiredQuietPeriods))
+			break
+		}
+	}
+
+	return allDiags
+}
+
 func (m *Manager) ExecuteAllPendingOperations(ctx context.Context) diag.Diagnostics {
 	// Ensure only one execution runs at a time - prevents race conditions when multiple
 	// timer callbacks fire due to low parallelism causing resource waves
@@ -519,31 +585,64 @@ func (m *Manager) ExecuteAllPendingOperations(ctx context.Context) diag.Diagnost
 	defer m.executionMutex.Unlock()
 
 	var diagnostics diag.Diagnostics
+	anyOperationsPerformed := false
 
-	if time.Since(m.lastOperationTime) < BatchCollectionWindow {
-		remaining := BatchCollectionWindow - time.Since(m.lastOperationTime)
-		tflog.Debug(ctx, fmt.Sprintf("Waiting %v to collect more operations before executing", remaining))
-		time.Sleep(remaining)
+	// After executing all types in order, check if more operations arrived
+	// during execution (due to low parallelism releasing Terraform goroutines in waves).
+	const maxPasses = 100
+	for pass := 0; pass < maxPasses; pass++ {
+		tflog.Info(ctx, fmt.Sprintf("[BULK-OPS] ExecuteAllPendingOperations pass %d — checking for queued operations", pass))
+
+		if time.Since(m.lastOperationTime) < BatchCollectionWindow {
+			remaining := BatchCollectionWindow - time.Since(m.lastOperationTime)
+			tflog.Debug(ctx, fmt.Sprintf("Pass %d: Waiting %v to collect more operations before executing", pass, remaining))
+			time.Sleep(remaining)
+		}
+
+		var opsDiags diag.Diagnostics
+		var operationsPerformed bool
+
+		switch m.mode {
+		case "datacenter":
+			tflog.Debug(ctx, fmt.Sprintf("Pass %d: Executing pending operations in 'datacenter' mode", pass))
+			opsDiags, operationsPerformed = m.ExecuteDatacenterOperations(ctx)
+		case "campus":
+			tflog.Debug(ctx, fmt.Sprintf("Pass %d: Executing pending operations in 'campus' mode", pass))
+			opsDiags, operationsPerformed = m.ExecuteCampusOperations(ctx)
+		default:
+			tflog.Warn(ctx, fmt.Sprintf("Unknown mode '%s', defaulting to 'datacenter' mode", m.mode))
+			opsDiags, operationsPerformed = m.ExecuteDatacenterOperations(ctx)
+		}
+
+		diagnostics.Append(opsDiags...)
+
+		if operationsPerformed {
+			anyOperationsPerformed = true
+		}
+
+		if opsDiags.HasError() {
+			tflog.Debug(ctx, fmt.Sprintf("Pass %d: Stopping due to errors", pass))
+			break
+		}
+
+		if !operationsPerformed {
+			tflog.Debug(ctx, fmt.Sprintf("Pass %d: No operations performed, done", pass))
+			break
+		}
+
+		// Wait briefly to let in-flight Terraform goroutines submit new operations
+		time.Sleep(BatchCollectionWindow)
+
+		// Check if more operations arrived during execution
+		if !m.hasPendingOperations() {
+			tflog.Debug(ctx, fmt.Sprintf("Pass %d: No more pending operations, done", pass))
+			break
+		}
+
+		tflog.Debug(ctx, fmt.Sprintf("Pass %d: More operations arrived during execution, starting next pass", pass))
 	}
 
-	var opsDiags diag.Diagnostics
-	var operationsPerformed bool
-
-	switch m.mode {
-	case "datacenter":
-		tflog.Debug(ctx, "Executing pending operations in 'datacenter' mode")
-		opsDiags, operationsPerformed = m.ExecuteDatacenterOperations(ctx)
-	case "campus":
-		tflog.Debug(ctx, "Executing pending operations in 'campus' mode")
-		opsDiags, operationsPerformed = m.ExecuteCampusOperations(ctx)
-	default:
-		tflog.Warn(ctx, fmt.Sprintf("Unknown mode '%s', defaulting to 'datacenter' mode", m.mode))
-		opsDiags, operationsPerformed = m.ExecuteDatacenterOperations(ctx)
-	}
-
-	diagnostics.Append(opsDiags...)
-
-	if operationsPerformed {
+	if anyOperationsPerformed {
 		waitDuration := 800 * time.Millisecond
 		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for all operations to propagate before final cache refresh", waitDuration))
 		time.Sleep(waitDuration)
@@ -604,16 +703,16 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 
 	execute := func(opType string, count int, execFunc func(context.Context) diag.Diagnostics, resourceName string) bool {
 		if count > 0 {
-			tflog.Debug(ctx, fmt.Sprintf("Executing %s %s operations", resourceName, opType), map[string]interface{}{
-				"operation_count": count,
-			})
+			tflog.Info(ctx, fmt.Sprintf("[BULK-OPS] >>> Proceeding with %s %s for %d resource(s) — sending API request...", resourceName, opType, count))
 			diags := execFunc(ctx)
 			diagnostics.Append(diags...)
 			if diags.HasError() {
+				tflog.Error(ctx, fmt.Sprintf("[BULK-OPS] <<< FAILED %s %s — aborting remaining operations", resourceName, opType))
 				err := fmt.Errorf("bulk %s %s operation failed", resourceName, opType)
 				m.FailAllPendingOperations(ctx, err)
 				return false
 			}
+			tflog.Info(ctx, fmt.Sprintf("[BULK-OPS] <<< Completed %s %s for %d resource(s) — success, moving to next type", resourceName, opType, count))
 			operationsPerformed = true
 		}
 		return true
@@ -1199,16 +1298,16 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 
 	execute := func(opType string, count int, execFunc func(context.Context) diag.Diagnostics, resourceName string) bool {
 		if count > 0 {
-			tflog.Debug(ctx, fmt.Sprintf("Executing %s %s operations", resourceName, opType), map[string]interface{}{
-				"operation_count": count,
-			})
+			tflog.Info(ctx, fmt.Sprintf("[BULK-OPS] >>> Proceeding with %s %s for %d resource(s) — sending API request...", resourceName, opType, count))
 			diags := execFunc(ctx)
 			diagnostics.Append(diags...)
 			if diags.HasError() {
+				tflog.Error(ctx, fmt.Sprintf("[BULK-OPS] <<< FAILED %s %s — aborting remaining operations", resourceName, opType))
 				err := fmt.Errorf("bulk %s %s operation failed", resourceName, opType)
 				m.FailAllPendingOperations(ctx, err)
 				return false
 			}
+			tflog.Info(ctx, fmt.Sprintf("[BULK-OPS] <<< Completed %s %s for %d resource(s) — success, moving to next type", resourceName, opType, count))
 			operationsPerformed = true
 		}
 		return true
@@ -1560,46 +1659,7 @@ func (m *Manager) ShouldExecuteOperations(ctx context.Context) bool {
 	defer m.mutex.Unlock()
 
 	// If there are no pending operations, no need to execute
-	if m.getOperationCount("gateway", "PUT") == 0 && m.getOperationCount("gateway", "PATCH") == 0 && m.getOperationCount("gateway", "DELETE") == 0 &&
-		m.getOperationCount("lag", "PUT") == 0 && m.getOperationCount("lag", "PATCH") == 0 && m.getOperationCount("lag", "DELETE") == 0 &&
-		m.getOperationCount("tenant", "PUT") == 0 && m.getOperationCount("tenant", "PATCH") == 0 && m.getOperationCount("tenant", "DELETE") == 0 &&
-		m.getOperationCount("service", "PUT") == 0 && m.getOperationCount("service", "PATCH") == 0 && m.getOperationCount("service", "DELETE") == 0 &&
-		m.getOperationCount("gateway_profile", "PUT") == 0 && m.getOperationCount("gateway_profile", "PATCH") == 0 && m.getOperationCount("gateway_profile", "DELETE") == 0 &&
-		m.getOperationCount("eth_port_profile", "PUT") == 0 && m.getOperationCount("eth_port_profile", "PATCH") == 0 && m.getOperationCount("eth_port_profile", "DELETE") == 0 &&
-		m.getOperationCount("eth_port_settings", "PUT") == 0 && m.getOperationCount("eth_port_settings", "PATCH") == 0 && m.getOperationCount("eth_port_settings", "DELETE") == 0 &&
-		m.getOperationCount("device_settings", "PUT") == 0 && m.getOperationCount("device_settings", "PATCH") == 0 && m.getOperationCount("device_settings", "DELETE") == 0 &&
-		m.getOperationCount("bundle", "PUT") == 0 && m.getOperationCount("bundle", "PATCH") == 0 && m.getOperationCount("bundle", "DELETE") == 0 && m.getOperationCount("authenticated_eth_port", "PUT") == 0 && m.getOperationCount("authenticated_eth_port", "PATCH") == 0 &&
-		m.getOperationCount("authenticated_eth_port", "DELETE") == 0 && m.getOperationCount("acl", "PUT") == 0 && m.getOperationCount("acl", "PATCH") == 0 && m.getOperationCount("acl", "DELETE") == 0 &&
-		m.getOperationCount("ipv4_list", "PUT") == 0 && m.getOperationCount("ipv4_list", "PATCH") == 0 && m.getOperationCount("ipv4_list", "DELETE") == 0 &&
-		m.getOperationCount("ipv4_prefix_list", "PUT") == 0 && m.getOperationCount("ipv4_prefix_list", "PATCH") == 0 && m.getOperationCount("ipv4_prefix_list", "DELETE") == 0 &&
-		m.getOperationCount("ipv6_list", "PUT") == 0 && m.getOperationCount("ipv6_list", "PATCH") == 0 && m.getOperationCount("ipv6_list", "DELETE") == 0 &&
-		m.getOperationCount("ipv6_prefix_list", "PUT") == 0 && m.getOperationCount("ipv6_prefix_list", "PATCH") == 0 && m.getOperationCount("ipv6_prefix_list", "DELETE") == 0 &&
-		m.getOperationCount("badge", "PUT") == 0 && m.getOperationCount("badge", "PATCH") == 0 && m.getOperationCount("badge", "DELETE") == 0 &&
-		m.getOperationCount("voice_port_profile", "PUT") == 0 && m.getOperationCount("voice_port_profile", "PATCH") == 0 && m.getOperationCount("voice_port_profile", "DELETE") == 0 &&
-		m.getOperationCount("switchpoint", "PUT") == 0 && m.getOperationCount("switchpoint", "PATCH") == 0 && m.getOperationCount("switchpoint", "DELETE") == 0 &&
-		m.getOperationCount("service_port_profile", "PUT") == 0 && m.getOperationCount("service_port_profile", "PATCH") == 0 && m.getOperationCount("service_port_profile", "DELETE") == 0 &&
-		m.getOperationCount("packet_broker", "PUT") == 0 && m.getOperationCount("packet_broker", "PATCH") == 0 && m.getOperationCount("packet_broker", "DELETE") == 0 &&
-		m.getOperationCount("packet_queue", "PUT") == 0 && m.getOperationCount("packet_queue", "PATCH") == 0 && m.getOperationCount("packet_queue", "DELETE") == 0 &&
-		m.getOperationCount("device_voice_settings", "PUT") == 0 && m.getOperationCount("device_voice_settings", "PATCH") == 0 && m.getOperationCount("device_voice_settings", "DELETE") == 0 &&
-		m.getOperationCount("as_path_access_list", "PUT") == 0 && m.getOperationCount("as_path_access_list", "PATCH") == 0 && m.getOperationCount("as_path_access_list", "DELETE") == 0 &&
-		m.getOperationCount("community_list", "PUT") == 0 && m.getOperationCount("community_list", "PATCH") == 0 && m.getOperationCount("community_list", "DELETE") == 0 &&
-		m.getOperationCount("extended_community_list", "PUT") == 0 && m.getOperationCount("extended_community_list", "PATCH") == 0 && m.getOperationCount("extended_community_list", "DELETE") == 0 &&
-		m.getOperationCount("route_map_clause", "PUT") == 0 && m.getOperationCount("route_map_clause", "PATCH") == 0 && m.getOperationCount("route_map_clause", "DELETE") == 0 &&
-		m.getOperationCount("route_map", "PUT") == 0 && m.getOperationCount("route_map", "PATCH") == 0 && m.getOperationCount("route_map", "DELETE") == 0 &&
-		m.getOperationCount("sfp_breakout", "PATCH") == 0 &&
-		m.getOperationCount("site", "PATCH") == 0 &&
-		m.getOperationCount("pod", "PUT") == 0 && m.getOperationCount("pod", "PATCH") == 0 && m.getOperationCount("pod", "DELETE") == 0 &&
-		m.getOperationCount("pb_routing", "PUT") == 0 && m.getOperationCount("pb_routing", "PATCH") == 0 && m.getOperationCount("pb_routing", "DELETE") == 0 &&
-		m.getOperationCount("pb_routing_acl", "PUT") == 0 && m.getOperationCount("pb_routing_acl", "PATCH") == 0 && m.getOperationCount("pb_routing_acl", "DELETE") == 0 &&
-		m.getOperationCount("spine_plane", "PUT") == 0 && m.getOperationCount("spine_plane", "PATCH") == 0 && m.getOperationCount("spine_plane", "DELETE") == 0 &&
-		m.getOperationCount("port_acl", "PUT") == 0 && m.getOperationCount("port_acl", "PATCH") == 0 && m.getOperationCount("port_acl", "DELETE") == 0 &&
-		m.getOperationCount("sflow_collector", "PUT") == 0 && m.getOperationCount("sflow_collector", "PATCH") == 0 && m.getOperationCount("sflow_collector", "DELETE") == 0 &&
-		m.getOperationCount("diagnostics_profile", "PUT") == 0 && m.getOperationCount("diagnostics_profile", "PATCH") == 0 && m.getOperationCount("diagnostics_profile", "DELETE") == 0 &&
-		m.getOperationCount("diagnostics_port_profile", "PUT") == 0 && m.getOperationCount("diagnostics_port_profile", "PATCH") == 0 && m.getOperationCount("diagnostics_port_profile", "DELETE") == 0 &&
-		m.getOperationCount("device_controller", "PUT") == 0 && m.getOperationCount("device_controller", "PATCH") == 0 && m.getOperationCount("device_controller", "DELETE") == 0 &&
-		m.getOperationCount("grouping_rule", "PUT") == 0 && m.getOperationCount("grouping_rule", "PATCH") == 0 && m.getOperationCount("grouping_rule", "DELETE") == 0 &&
-		m.getOperationCount("threshold_group", "PUT") == 0 && m.getOperationCount("threshold_group", "PATCH") == 0 && m.getOperationCount("threshold_group", "DELETE") == 0 &&
-		m.getOperationCount("threshold", "PUT") == 0 && m.getOperationCount("threshold", "PATCH") == 0 && m.getOperationCount("threshold", "DELETE") == 0 {
+	if !m.hasPendingOperationsLocked() {
 		return false
 	}
 
@@ -1617,165 +1677,165 @@ func (m *Manager) ShouldExecuteOperations(ctx context.Context) bool {
 
 func (m *Manager) ExecuteIfMultipleOperations(ctx context.Context) diag.Diagnostics {
 	m.mutex.Lock()
-	gatewayPutCount := m.getOperationCount("gateway", "PUT")
-	gatewayPatchCount := m.getOperationCount("gateway", "PATCH")
-	gatewayDeleteCount := m.getOperationCount("gateway", "DELETE")
+	gatewayPutCount := m.getOperationCountLocked("gateway", "PUT")
+	gatewayPatchCount := m.getOperationCountLocked("gateway", "PATCH")
+	gatewayDeleteCount := m.getOperationCountLocked("gateway", "DELETE")
 
-	lagPutCount := m.getOperationCount("lag", "PUT")
-	lagPatchCount := m.getOperationCount("lag", "PATCH")
-	lagDeleteCount := m.getOperationCount("lag", "DELETE")
+	lagPutCount := m.getOperationCountLocked("lag", "PUT")
+	lagPatchCount := m.getOperationCountLocked("lag", "PATCH")
+	lagDeleteCount := m.getOperationCountLocked("lag", "DELETE")
 
-	tenantPutCount := m.getOperationCount("tenant", "PUT")
-	tenantPatchCount := m.getOperationCount("tenant", "PATCH")
-	tenantDeleteCount := m.getOperationCount("tenant", "DELETE")
+	tenantPutCount := m.getOperationCountLocked("tenant", "PUT")
+	tenantPatchCount := m.getOperationCountLocked("tenant", "PATCH")
+	tenantDeleteCount := m.getOperationCountLocked("tenant", "DELETE")
 
-	servicePutCount := m.getOperationCount("service", "PUT")
-	servicePatchCount := m.getOperationCount("service", "PATCH")
-	serviceDeleteCount := m.getOperationCount("service", "DELETE")
+	servicePutCount := m.getOperationCountLocked("service", "PUT")
+	servicePatchCount := m.getOperationCountLocked("service", "PATCH")
+	serviceDeleteCount := m.getOperationCountLocked("service", "DELETE")
 
-	gatewayProfilePutCount := m.getOperationCount("gateway_profile", "PUT")
-	gatewayProfilePatchCount := m.getOperationCount("gateway_profile", "PATCH")
-	gatewayProfileDeleteCount := m.getOperationCount("gateway_profile", "DELETE")
+	gatewayProfilePutCount := m.getOperationCountLocked("gateway_profile", "PUT")
+	gatewayProfilePatchCount := m.getOperationCountLocked("gateway_profile", "PATCH")
+	gatewayProfileDeleteCount := m.getOperationCountLocked("gateway_profile", "DELETE")
 
-	ethPortProfilePutCount := m.getOperationCount("eth_port_profile", "PUT")
-	ethPortProfilePatchCount := m.getOperationCount("eth_port_profile", "PATCH")
-	ethPortProfileDeleteCount := m.getOperationCount("eth_port_profile", "DELETE")
+	ethPortProfilePutCount := m.getOperationCountLocked("eth_port_profile", "PUT")
+	ethPortProfilePatchCount := m.getOperationCountLocked("eth_port_profile", "PATCH")
+	ethPortProfileDeleteCount := m.getOperationCountLocked("eth_port_profile", "DELETE")
 
-	ethPortSettingsPutCount := m.getOperationCount("eth_port_settings", "PUT")
-	ethPortSettingsPatchCount := m.getOperationCount("eth_port_settings", "PATCH")
-	ethPortSettingsDeleteCount := m.getOperationCount("eth_port_settings", "DELETE")
+	ethPortSettingsPutCount := m.getOperationCountLocked("eth_port_settings", "PUT")
+	ethPortSettingsPatchCount := m.getOperationCountLocked("eth_port_settings", "PATCH")
+	ethPortSettingsDeleteCount := m.getOperationCountLocked("eth_port_settings", "DELETE")
 
-	deviceSettingsPutCount := m.getOperationCount("device_settings", "PUT")
-	deviceSettingsPatchCount := m.getOperationCount("device_settings", "PATCH")
-	deviceSettingsDeleteCount := m.getOperationCount("device_settings", "DELETE")
+	deviceSettingsPutCount := m.getOperationCountLocked("device_settings", "PUT")
+	deviceSettingsPatchCount := m.getOperationCountLocked("device_settings", "PATCH")
+	deviceSettingsDeleteCount := m.getOperationCountLocked("device_settings", "DELETE")
 
-	sflowCollectorPutCount := m.getOperationCount("sflow_collector", "PUT")
-	sflowCollectorPatchCount := m.getOperationCount("sflow_collector", "PATCH")
-	sflowCollectorDeleteCount := m.getOperationCount("sflow_collector", "DELETE")
+	sflowCollectorPutCount := m.getOperationCountLocked("sflow_collector", "PUT")
+	sflowCollectorPatchCount := m.getOperationCountLocked("sflow_collector", "PATCH")
+	sflowCollectorDeleteCount := m.getOperationCountLocked("sflow_collector", "DELETE")
 
-	diagnosticsProfilePutCount := m.getOperationCount("diagnostics_profile", "PUT")
-	diagnosticsProfilePatchCount := m.getOperationCount("diagnostics_profile", "PATCH")
-	diagnosticsProfileDeleteCount := m.getOperationCount("diagnostics_profile", "DELETE")
+	diagnosticsProfilePutCount := m.getOperationCountLocked("diagnostics_profile", "PUT")
+	diagnosticsProfilePatchCount := m.getOperationCountLocked("diagnostics_profile", "PATCH")
+	diagnosticsProfileDeleteCount := m.getOperationCountLocked("diagnostics_profile", "DELETE")
 
-	diagnosticsPortProfilePutCount := m.getOperationCount("diagnostics_port_profile", "PUT")
-	diagnosticsPortProfilePatchCount := m.getOperationCount("diagnostics_port_profile", "PATCH")
-	diagnosticsPortProfileDeleteCount := m.getOperationCount("diagnostics_port_profile", "DELETE")
+	diagnosticsPortProfilePutCount := m.getOperationCountLocked("diagnostics_port_profile", "PUT")
+	diagnosticsPortProfilePatchCount := m.getOperationCountLocked("diagnostics_port_profile", "PATCH")
+	diagnosticsPortProfileDeleteCount := m.getOperationCountLocked("diagnostics_port_profile", "DELETE")
 
-	bundlePutCount := m.getOperationCount("bundle", "PUT")
-	bundlePatchCount := m.getOperationCount("bundle", "PATCH")
-	bundleDeleteCount := m.getOperationCount("bundle", "DELETE")
+	bundlePutCount := m.getOperationCountLocked("bundle", "PUT")
+	bundlePatchCount := m.getOperationCountLocked("bundle", "PATCH")
+	bundleDeleteCount := m.getOperationCountLocked("bundle", "DELETE")
 
-	aclPutCount := m.getOperationCount("acl", "PUT")
-	aclPatchCount := m.getOperationCount("acl", "PATCH")
-	aclDeleteCount := m.getOperationCount("acl", "DELETE")
+	aclPutCount := m.getOperationCountLocked("acl", "PUT")
+	aclPatchCount := m.getOperationCountLocked("acl", "PATCH")
+	aclDeleteCount := m.getOperationCountLocked("acl", "DELETE")
 
-	ipv4ListPutCount := m.getOperationCount("ipv4_list", "PUT")
-	ipv4ListPatchCount := m.getOperationCount("ipv4_list", "PATCH")
-	ipv4ListDeleteCount := m.getOperationCount("ipv4_list", "DELETE")
+	ipv4ListPutCount := m.getOperationCountLocked("ipv4_list", "PUT")
+	ipv4ListPatchCount := m.getOperationCountLocked("ipv4_list", "PATCH")
+	ipv4ListDeleteCount := m.getOperationCountLocked("ipv4_list", "DELETE")
 
-	ipv4PrefixListPutCount := m.getOperationCount("ipv4_prefix_list", "PUT")
-	ipv4PrefixListPatchCount := m.getOperationCount("ipv4_prefix_list", "PATCH")
-	ipv4PrefixListDeleteCount := m.getOperationCount("ipv4_prefix_list", "DELETE")
+	ipv4PrefixListPutCount := m.getOperationCountLocked("ipv4_prefix_list", "PUT")
+	ipv4PrefixListPatchCount := m.getOperationCountLocked("ipv4_prefix_list", "PATCH")
+	ipv4PrefixListDeleteCount := m.getOperationCountLocked("ipv4_prefix_list", "DELETE")
 
-	ipv6ListPutCount := m.getOperationCount("ipv6_list", "PUT")
-	ipv6ListPatchCount := m.getOperationCount("ipv6_list", "PATCH")
-	ipv6ListDeleteCount := m.getOperationCount("ipv6_list", "DELETE")
+	ipv6ListPutCount := m.getOperationCountLocked("ipv6_list", "PUT")
+	ipv6ListPatchCount := m.getOperationCountLocked("ipv6_list", "PATCH")
+	ipv6ListDeleteCount := m.getOperationCountLocked("ipv6_list", "DELETE")
 
-	ipv6PrefixListPutCount := m.getOperationCount("ipv6_prefix_list", "PUT")
-	ipv6PrefixListPatchCount := m.getOperationCount("ipv6_prefix_list", "PATCH")
-	ipv6PrefixListDeleteCount := m.getOperationCount("ipv6_prefix_list", "DELETE")
+	ipv6PrefixListPutCount := m.getOperationCountLocked("ipv6_prefix_list", "PUT")
+	ipv6PrefixListPatchCount := m.getOperationCountLocked("ipv6_prefix_list", "PATCH")
+	ipv6PrefixListDeleteCount := m.getOperationCountLocked("ipv6_prefix_list", "DELETE")
 
-	authenticatedEthPortPutCount := m.getOperationCount("authenticated_eth_port", "PUT")
-	authenticatedEthPortPatchCount := m.getOperationCount("authenticated_eth_port", "PATCH")
-	authenticatedEthPortDeleteCount := m.getOperationCount("authenticated_eth_port", "DELETE")
+	authenticatedEthPortPutCount := m.getOperationCountLocked("authenticated_eth_port", "PUT")
+	authenticatedEthPortPatchCount := m.getOperationCountLocked("authenticated_eth_port", "PATCH")
+	authenticatedEthPortDeleteCount := m.getOperationCountLocked("authenticated_eth_port", "DELETE")
 
-	badgePutCount := m.getOperationCount("badge", "PUT")
-	badgePatchCount := m.getOperationCount("badge", "PATCH")
-	badgeDeleteCount := m.getOperationCount("badge", "DELETE")
+	badgePutCount := m.getOperationCountLocked("badge", "PUT")
+	badgePatchCount := m.getOperationCountLocked("badge", "PATCH")
+	badgeDeleteCount := m.getOperationCountLocked("badge", "DELETE")
 
-	voicePortProfilePutCount := m.getOperationCount("voice_port_profile", "PUT")
-	voicePortProfilePatchCount := m.getOperationCount("voice_port_profile", "PATCH")
-	voicePortProfileDeleteCount := m.getOperationCount("voice_port_profile", "DELETE")
+	voicePortProfilePutCount := m.getOperationCountLocked("voice_port_profile", "PUT")
+	voicePortProfilePatchCount := m.getOperationCountLocked("voice_port_profile", "PATCH")
+	voicePortProfileDeleteCount := m.getOperationCountLocked("voice_port_profile", "DELETE")
 
-	switchpointPutCount := m.getOperationCount("switchpoint", "PUT")
-	switchpointPatchCount := m.getOperationCount("switchpoint", "PATCH")
-	switchpointDeleteCount := m.getOperationCount("switchpoint", "DELETE")
+	switchpointPutCount := m.getOperationCountLocked("switchpoint", "PUT")
+	switchpointPatchCount := m.getOperationCountLocked("switchpoint", "PATCH")
+	switchpointDeleteCount := m.getOperationCountLocked("switchpoint", "DELETE")
 
-	servicePortProfilePutCount := m.getOperationCount("service_port_profile", "PUT")
-	servicePortProfilePatchCount := m.getOperationCount("service_port_profile", "PATCH")
-	servicePortProfileDeleteCount := m.getOperationCount("service_port_profile", "DELETE")
+	servicePortProfilePutCount := m.getOperationCountLocked("service_port_profile", "PUT")
+	servicePortProfilePatchCount := m.getOperationCountLocked("service_port_profile", "PATCH")
+	servicePortProfileDeleteCount := m.getOperationCountLocked("service_port_profile", "DELETE")
 
-	packetBrokerPutCount := m.getOperationCount("packet_broker", "PUT")
-	packetBrokerPatchCount := m.getOperationCount("packet_broker", "PATCH")
-	packetBrokerDeleteCount := m.getOperationCount("packet_broker", "DELETE")
+	packetBrokerPutCount := m.getOperationCountLocked("packet_broker", "PUT")
+	packetBrokerPatchCount := m.getOperationCountLocked("packet_broker", "PATCH")
+	packetBrokerDeleteCount := m.getOperationCountLocked("packet_broker", "DELETE")
 
-	packetQueuePutCount := m.getOperationCount("packet_queue", "PUT")
-	packetQueuePatchCount := m.getOperationCount("packet_queue", "PATCH")
-	packetQueueDeleteCount := m.getOperationCount("packet_queue", "DELETE")
+	packetQueuePutCount := m.getOperationCountLocked("packet_queue", "PUT")
+	packetQueuePatchCount := m.getOperationCountLocked("packet_queue", "PATCH")
+	packetQueueDeleteCount := m.getOperationCountLocked("packet_queue", "DELETE")
 
-	deviceVoiceSettingsPutCount := m.getOperationCount("device_voice_settings", "PUT")
-	deviceVoiceSettingsPatchCount := m.getOperationCount("device_voice_settings", "PATCH")
-	deviceVoiceSettingsDeleteCount := m.getOperationCount("device_voice_settings", "DELETE")
+	deviceVoiceSettingsPutCount := m.getOperationCountLocked("device_voice_settings", "PUT")
+	deviceVoiceSettingsPatchCount := m.getOperationCountLocked("device_voice_settings", "PATCH")
+	deviceVoiceSettingsDeleteCount := m.getOperationCountLocked("device_voice_settings", "DELETE")
 
-	asPathAccessListPutCount := m.getOperationCount("as_path_access_list", "PUT")
-	asPathAccessListPatchCount := m.getOperationCount("as_path_access_list", "PATCH")
-	asPathAccessListDeleteCount := m.getOperationCount("as_path_access_list", "DELETE")
+	asPathAccessListPutCount := m.getOperationCountLocked("as_path_access_list", "PUT")
+	asPathAccessListPatchCount := m.getOperationCountLocked("as_path_access_list", "PATCH")
+	asPathAccessListDeleteCount := m.getOperationCountLocked("as_path_access_list", "DELETE")
 
-	communityListPutCount := m.getOperationCount("community_list", "PUT")
-	communityListPatchCount := m.getOperationCount("community_list", "PATCH")
-	communityListDeleteCount := m.getOperationCount("community_list", "DELETE")
+	communityListPutCount := m.getOperationCountLocked("community_list", "PUT")
+	communityListPatchCount := m.getOperationCountLocked("community_list", "PATCH")
+	communityListDeleteCount := m.getOperationCountLocked("community_list", "DELETE")
 
-	extendedCommunityListPutCount := m.getOperationCount("extended_community_list", "PUT")
-	extendedCommunityListPatchCount := m.getOperationCount("extended_community_list", "PATCH")
-	extendedCommunityListDeleteCount := m.getOperationCount("extended_community_list", "DELETE")
+	extendedCommunityListPutCount := m.getOperationCountLocked("extended_community_list", "PUT")
+	extendedCommunityListPatchCount := m.getOperationCountLocked("extended_community_list", "PATCH")
+	extendedCommunityListDeleteCount := m.getOperationCountLocked("extended_community_list", "DELETE")
 
-	routeMapClausePutCount := m.getOperationCount("route_map_clause", "PUT")
-	routeMapClausePatchCount := m.getOperationCount("route_map_clause", "PATCH")
-	routeMapClauseDeleteCount := m.getOperationCount("route_map_clause", "DELETE")
+	routeMapClausePutCount := m.getOperationCountLocked("route_map_clause", "PUT")
+	routeMapClausePatchCount := m.getOperationCountLocked("route_map_clause", "PATCH")
+	routeMapClauseDeleteCount := m.getOperationCountLocked("route_map_clause", "DELETE")
 
-	routeMapPutCount := m.getOperationCount("route_map", "PUT")
-	routeMapPatchCount := m.getOperationCount("route_map", "PATCH")
-	routeMapDeleteCount := m.getOperationCount("route_map", "DELETE")
+	routeMapPutCount := m.getOperationCountLocked("route_map", "PUT")
+	routeMapPatchCount := m.getOperationCountLocked("route_map", "PATCH")
+	routeMapDeleteCount := m.getOperationCountLocked("route_map", "DELETE")
 
-	sfpBreakoutPatchCount := m.getOperationCount("sfp_breakout", "PATCH")
+	sfpBreakoutPatchCount := m.getOperationCountLocked("sfp_breakout", "PATCH")
 
-	sitePatchCount := m.getOperationCount("site", "PATCH")
+	sitePatchCount := m.getOperationCountLocked("site", "PATCH")
 
-	podPutCount := m.getOperationCount("pod", "PUT")
-	podPatchCount := m.getOperationCount("pod", "PATCH")
-	podDeleteCount := m.getOperationCount("pod", "DELETE")
+	podPutCount := m.getOperationCountLocked("pod", "PUT")
+	podPatchCount := m.getOperationCountLocked("pod", "PATCH")
+	podDeleteCount := m.getOperationCountLocked("pod", "DELETE")
 
-	pbRoutingPutCount := m.getOperationCount("pb_routing", "PUT")
-	pbRoutingPatchCount := m.getOperationCount("pb_routing", "PATCH")
-	pbRoutingDeleteCount := m.getOperationCount("pb_routing", "DELETE")
+	pbRoutingPutCount := m.getOperationCountLocked("pb_routing", "PUT")
+	pbRoutingPatchCount := m.getOperationCountLocked("pb_routing", "PATCH")
+	pbRoutingDeleteCount := m.getOperationCountLocked("pb_routing", "DELETE")
 
-	pbRoutingAclPutCount := m.getOperationCount("pb_routing_acl", "PUT")
-	pbRoutingAclPatchCount := m.getOperationCount("pb_routing_acl", "PATCH")
-	pbRoutingAclDeleteCount := m.getOperationCount("pb_routing_acl", "DELETE")
+	pbRoutingAclPutCount := m.getOperationCountLocked("pb_routing_acl", "PUT")
+	pbRoutingAclPatchCount := m.getOperationCountLocked("pb_routing_acl", "PATCH")
+	pbRoutingAclDeleteCount := m.getOperationCountLocked("pb_routing_acl", "DELETE")
 
-	spinePlanePutCount := m.getOperationCount("spine_plane", "PUT")
-	spinePlanePatchCount := m.getOperationCount("spine_plane", "PATCH")
-	spinePlaneDeleteCount := m.getOperationCount("spine_plane", "DELETE")
+	spinePlanePutCount := m.getOperationCountLocked("spine_plane", "PUT")
+	spinePlanePatchCount := m.getOperationCountLocked("spine_plane", "PATCH")
+	spinePlaneDeleteCount := m.getOperationCountLocked("spine_plane", "DELETE")
 
-	portAclPutCount := m.getOperationCount("port_acl", "PUT")
-	portAclPatchCount := m.getOperationCount("port_acl", "PATCH")
-	portAclDeleteCount := m.getOperationCount("port_acl", "DELETE")
+	portAclPutCount := m.getOperationCountLocked("port_acl", "PUT")
+	portAclPatchCount := m.getOperationCountLocked("port_acl", "PATCH")
+	portAclDeleteCount := m.getOperationCountLocked("port_acl", "DELETE")
 
-	deviceControllerPutCount := m.getOperationCount("device_controller", "PUT")
-	deviceControllerPatchCount := m.getOperationCount("device_controller", "PATCH")
-	deviceControllerDeleteCount := m.getOperationCount("device_controller", "DELETE")
+	deviceControllerPutCount := m.getOperationCountLocked("device_controller", "PUT")
+	deviceControllerPatchCount := m.getOperationCountLocked("device_controller", "PATCH")
+	deviceControllerDeleteCount := m.getOperationCountLocked("device_controller", "DELETE")
 
-	groupingRulePutCount := m.getOperationCount("grouping_rule", "PUT")
-	groupingRulePatchCount := m.getOperationCount("grouping_rule", "PATCH")
-	groupingRuleDeleteCount := m.getOperationCount("grouping_rule", "DELETE")
+	groupingRulePutCount := m.getOperationCountLocked("grouping_rule", "PUT")
+	groupingRulePatchCount := m.getOperationCountLocked("grouping_rule", "PATCH")
+	groupingRuleDeleteCount := m.getOperationCountLocked("grouping_rule", "DELETE")
 
-	thresholdGroupPutCount := m.getOperationCount("threshold_group", "PUT")
-	thresholdGroupPatchCount := m.getOperationCount("threshold_group", "PATCH")
-	thresholdGroupDeleteCount := m.getOperationCount("threshold_group", "DELETE")
+	thresholdGroupPutCount := m.getOperationCountLocked("threshold_group", "PUT")
+	thresholdGroupPatchCount := m.getOperationCountLocked("threshold_group", "PATCH")
+	thresholdGroupDeleteCount := m.getOperationCountLocked("threshold_group", "DELETE")
 
-	thresholdPutCount := m.getOperationCount("threshold", "PUT")
-	thresholdPatchCount := m.getOperationCount("threshold", "PATCH")
-	thresholdDeleteCount := m.getOperationCount("threshold", "DELETE")
+	thresholdPutCount := m.getOperationCountLocked("threshold", "PUT")
+	thresholdPatchCount := m.getOperationCountLocked("threshold", "PATCH")
+	thresholdDeleteCount := m.getOperationCountLocked("threshold", "DELETE")
 
 	m.mutex.Unlock()
 

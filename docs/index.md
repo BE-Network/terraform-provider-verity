@@ -44,9 +44,19 @@ provider "verity" {
 If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable. For security, do not write sensitive values (like username and password) directly in your configuration files.
 
 
-### Required CLI Parallelism
+### Parallelism Configuration (Important)
 
-The Verity provider requires the following environment variable to be set at all times to allow the provider to make bulk requests to the API. If this variable is not set, Terraform will use the default parallelism of 10, which will significantly slow down the provider:
+The Verity provider uses a **bulk operations architecture** — all resources of a given type are collected and sent to the API in a single request. For this to work correctly, Terraform's parallelism must be set **higher than the total number of resources affected in a single `terraform apply` run** (creates + updates + deletes combined).
+
+For example, if one apply run adds 300 resources, updates 100, and deletes 50, the total is 450 — so `parallelism=500` is sufficient. This ensures all affected resources start concurrently, queue their operations, and each type is sent to the API in a single request.
+
+**Recommended: `parallelism=500`** — sufficient for most deployments (up to ~500 total affected resources per apply). For larger environments, use `parallelism=1000` or `parallelism=2000`.
+
+> **Why is high parallelism safe?** Terraform parallelism controls Go goroutines. Each resource goroutine blocks on a wait channel (sleeping) until the bulk operation for its type executes — consuming negligible CPU and memory. Values of 1000–2000 are perfectly safe even on modest hardware.
+>
+> **What happens with low parallelism?** If parallelism is lower than the total number of affected resources, resources are processed in waves. This means some types may be split across multiple API calls. While this is usually harmless, it can slow down execution and may cause issues if resources of the same type reference each other across batches. Cross-type ordering is always preserved regardless of parallelism.
+
+If this variable is not set, Terraform will use the default parallelism of 10, which will significantly slow down the provider and may cause batch-splitting issues:
 
 #### Unix-based Systems
 ```bash
@@ -56,6 +66,11 @@ export TF_CLI_ARGS_apply="-parallelism=500"
 #### Windows
 ```powershell
 $env:TF_CLI_ARGS_apply="-parallelism=500"
+```
+
+For large deployments (more than 500 affected resources per apply):
+```bash
+export TF_CLI_ARGS_apply="-parallelism=2000"
 ```
 
 Make sure to set these environment variables before running any Terraform commands.
@@ -178,13 +193,14 @@ The importer generates the following Terraform resource files:
 
 ### Resource Dependency Management
 
-The import process creates a special `stages.tf` file that defines explicit dependency ordering for resources. This uses the `verity_operation_stage` resource, which helps to:
+The import process creates a special `stages.tf` file that defines explicit dependency ordering for resources. This uses the `verity_operation_stage` resource, which acts as an **active barrier** between resource type groups:
 
 1. Establish a clear sequence for creating, updating, and destroying resources
 2. Prevent dependency conflicts between resource types
 3. Ensure that resources are processed in the optimal order for the Verity API
+4. Wait for all operations from the current type group to complete before allowing the next group to start
 
-Each imported resource is configured with the appropriate `depends_on` attribute referring to its corresponding stage. This prevents Terraform from attempting to create resources before their dependencies are ready, which is particularly important when working with the Verity API's interdependent resources.
+Each imported resource is configured with the appropriate `depends_on` attribute referring to its corresponding stage. When a stage's `Create` is executed, it actively waits for its sibling resources to queue their operations, flushes them to the API, and only returns once all operations for that type group are complete. This guarantees sequential, ordered API execution regardless of Terraform's internal scheduling.
 
 Since API version 6.5, the provider supports two modes: **campus** and **datacenter**. Each mode has its own resource dependency ordering for creation and update operations:
 

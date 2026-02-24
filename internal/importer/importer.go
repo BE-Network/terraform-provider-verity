@@ -596,18 +596,6 @@ func (i *Importer) ImportAll(outputDir string) error {
 		"api_version": utils.GetSupportedAPIVersionString(),
 	})
 
-	stagesTF, err := i.generateStagesTF()
-	if err != nil {
-		tflog.Error(i.ctx, "Failed to generate stages TF", map[string]interface{}{"error": err})
-		return fmt.Errorf("failed to generate stages: %w", err)
-	}
-
-	stagesFile := filepath.Join(outputDir, "stages.tf")
-	if err := os.WriteFile(stagesFile, []byte(stagesTF), 0644); err != nil {
-		tflog.Error(i.ctx, "Failed to write stages TF config", map[string]interface{}{"error": err, "file": stagesFile})
-		return fmt.Errorf("failed to write stages terraform config: %w", err)
-	}
-
 	allResourceTasks := []struct {
 		name                  string
 		terraformResourceType string
@@ -724,6 +712,18 @@ func (i *Importer) ImportAll(outputDir string) error {
 			return fmt.Errorf("failed to write %s terraform config: %w", task.name, err)
 		}
 		tflog.Info(i.ctx, "Successfully wrote TF config for resource", map[string]interface{}{"resource_name": task.name, "file": outputFile})
+	}
+
+	stagesTF, err := i.generateStagesTF()
+	if err != nil {
+		tflog.Error(i.ctx, "Failed to generate stages TF", map[string]interface{}{"error": err})
+		return fmt.Errorf("failed to generate stages: %w", err)
+	}
+
+	stagesFile := filepath.Join(outputDir, "stages.tf")
+	if err := os.WriteFile(stagesFile, []byte(stagesTF), 0644); err != nil {
+		tflog.Error(i.ctx, "Failed to write stages TF config", map[string]interface{}{"error": err, "file": stagesFile})
+		return fmt.Errorf("failed to write stages terraform config: %w", err)
 	}
 
 	return nil
