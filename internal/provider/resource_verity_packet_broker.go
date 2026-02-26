@@ -534,8 +534,10 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 					return updateFilter, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
+				})
 
 				return updateFilter, fieldChanged
 			},
@@ -592,8 +594,10 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 					return updateFilter, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
+				})
 
 				return updateFilter, fieldChanged
 			},
@@ -649,8 +653,10 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 					return updateFilter, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
+				})
 
 				return updateFilter, fieldChanged
 			},
@@ -707,8 +713,10 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 					return updateFilter, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateFilter.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
+				})
 
 				return updateFilter, fieldChanged
 			},

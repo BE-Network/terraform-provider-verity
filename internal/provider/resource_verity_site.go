@@ -622,7 +622,10 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 					graphProps := openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{}
 					fieldChanged := false
 					utils.CompareAndSetStringField(planItem.GraphNumData, stateItem.GraphNumData, func(v *string) { graphProps.GraphNumData = v }, &fieldChanged)
-					utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { graphProps.Index = v }, &fieldChanged)
+					// Always include index — API requires it to identify which array element to modify
+					utils.SetInt64Fields([]utils.Int64FieldMapping{
+						{FieldName: "Index", APIField: &graphProps.Index, TFValue: planItem.Index},
+					})
 					return graphProps, fieldChanged
 				},
 				CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner {
@@ -743,8 +746,10 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 					return updateIsland, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateIsland.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateIsland.Index, TFValue: planItem.Index},
+				})
 
 				return updateIsland, fieldChanged
 			},
@@ -831,8 +836,10 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 					return updatePair, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updatePair.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updatePair.Index, TFValue: planItem.Index},
+				})
 
 				return updatePair, fieldChanged
 			},

@@ -437,8 +437,10 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 					return updateClause, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateClause.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateClause.Index, TFValue: planItem.Index},
+				})
 
 				return updateClause, fieldChanged
 			},

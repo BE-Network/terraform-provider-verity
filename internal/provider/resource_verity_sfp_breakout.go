@@ -338,8 +338,10 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 				utils.CompareAndSetStringField(planItem.PartNumber, stateItem.PartNumber, func(v *string) { updateBreakout.PartNumber = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.Breakout, stateItem.Breakout, func(v *string) { updateBreakout.Breakout = v }, &fieldChanged)
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateBreakout.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateBreakout.Index, TFValue: planItem.Index},
+				})
 
 				return updateBreakout, fieldChanged
 			},

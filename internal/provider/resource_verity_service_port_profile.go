@@ -583,8 +583,10 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 					return updateService, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateService.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateService.Index, TFValue: planItem.Index},
+				})
 
 				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)

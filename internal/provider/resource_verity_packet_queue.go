@@ -491,8 +491,10 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 				updatePbit := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{}
 				fieldChanged := false
 
-				// Handle int64 field changes
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updatePbit.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updatePbit.Index, TFValue: planItem.Index},
+				})
 
 				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, pbitConfigMap, "pbit", configuredAttrs)
@@ -540,8 +542,10 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 				updateQueue := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{}
 				fieldChanged := false
 
-				// Handle int64 field changes
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateQueue.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateQueue.Index, TFValue: planItem.Index},
+				})
 
 				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, queueConfigMap, "queue", configuredAttrs)

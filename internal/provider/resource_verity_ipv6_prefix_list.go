@@ -472,8 +472,10 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 			utils.CompareAndSetNullableInt64Field(configItem.GreaterThanEqualValue, stateItem.GreaterThanEqualValue, cfg.IsFieldConfigured("greater_than_equal_value"), func(v *openapi.NullableInt32) { updateItem.GreaterThanEqualValue = *v }, &fieldChanged)
 			utils.CompareAndSetNullableInt64Field(configItem.LessThanEqualValue, stateItem.LessThanEqualValue, cfg.IsFieldConfigured("less_than_equal_value"), func(v *openapi.NullableInt32) { updateItem.LessThanEqualValue = *v }, &fieldChanged)
 
-			// Handle index field change
-			utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { updateItem.Index = v }, &fieldChanged)
+			// Always include index — API requires it to identify which array element to modify
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &updateItem.Index, TFValue: planItem.Index},
+			})
 
 			return updateItem, fieldChanged
 		},

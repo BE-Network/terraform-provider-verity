@@ -1121,8 +1121,10 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 					return badge, false
 				}
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { badge.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &badge.Index, TFValue: planItem.Index},
+				})
 
 				return badge, fieldChanged
 			},
@@ -1176,8 +1178,10 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				// Handle other string field changes
 				utils.CompareAndSetStringField(planItem.ChildNumDevice, stateItem.ChildNumDevice, func(v *string) { child.ChildNumDevice = v }, &fieldChanged)
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { child.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &child.Index, TFValue: planItem.Index},
+				})
 
 				return child, fieldChanged
 			},
@@ -1233,8 +1237,10 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				utils.CompareAndSetStringField(planItem.TrafficMirrorNumSourcePort, stateItem.TrafficMirrorNumSourcePort, func(v *string) { mirror.TrafficMirrorNumSourcePort = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.TrafficMirrorNumDestinationPort, stateItem.TrafficMirrorNumDestinationPort, func(v *string) { mirror.TrafficMirrorNumDestinationPort = v }, &fieldChanged)
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { mirror.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &mirror.Index, TFValue: planItem.Index},
+				})
 
 				return mirror, fieldChanged
 			},
@@ -1288,8 +1294,10 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { eth.Enable = v }, &fieldChanged)
 
-				// Handle index field change
-				utils.CompareAndSetInt64Field(planItem.Index, stateItem.Index, func(v *int32) { eth.Index = v }, &fieldChanged)
+				// Always include index — API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &eth.Index, TFValue: planItem.Index},
+				})
 
 				return eth, fieldChanged
 			},
