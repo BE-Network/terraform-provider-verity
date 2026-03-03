@@ -34,6 +34,12 @@ Resources that already exist on the server and cannot be created or deleted (e.g
 
 A resource is automatically detected as **update-only** when its `test_cases/` directory contains `modify.tf` but **no** `add.tf`.
 
+## Provider Mode
+
+The Verity provider supports two modes: **datacenter** and **campus**. Different modes may expose different resources or different schemas for the same resource. Test cases are organized into separate folders per mode.
+
+The `--mode` flag is **mandatory** for all test runs.
+
 ## Directory Structure
 
 ```
@@ -41,17 +47,22 @@ test_integration/
 ├── test_terraform_resources.py     # Main test runner
 ├── requirements.txt                # Python dependencies
 ├── README.md                       # This file
-└── test_cases/                     # Test case definitions
-    ├── gateways/                   # Normal resource (has both files)
-    │   ├── add.tf                  # Resources to create
-    │   └── modify.tf               # Partial overrides for Phase 2
-    ├── badges/                     # Normal resource
-    │   ├── add.tf
-    │   └── modify.tf
-    ├── sites/                      # Update-only resource (no add.tf)
-    │   └── modify.tf               # Partial overrides merged into existing .tf
-    └── sfpbreakouts/               # Update-only resource (no add.tf)
-        └── modify.tf
+└── test_cases/
+    ├── datacenter/                 # Test cases for datacenter mode
+    │   ├── gateways/
+    │   │   ├── add.tf
+    │   │   └── modify.tf
+    │   ├── tenants/
+    │   │   ├── add.tf
+    │   │   └── modify.tf
+    │   ├── sites/                  # Update-only (no add.tf)
+    │   │   └── modify.tf
+    │   └── ...
+    └── campus/                     # Test cases for campus mode
+        ├── tenants/
+        │   ├── add.tf
+        │   └── modify.tf
+        └── ...
 ```
 
 ## Usage
@@ -76,17 +87,22 @@ Make sure your Terraform environment is already initialized (the script does **n
 
 ### Running Tests
 
-Run the script from the directory containing your `.tf` files (e.g., `examples/`):
+Run the script from the directory containing your `.tf` files (e.g., `examples/`). The `--mode` flag is **required**:
 
 ```bash
 cd examples
 
-# Run the full batch test (default — all resources in one run)
-pytest ../test_integration/test_terraform_resources.py -v -s
+# Run the full batch test (datacenter mode)
+pytest ../test_integration/test_terraform_resources.py -v -s --mode datacenter
 
-# Run a single resource test
-pytest ../test_integration/test_terraform_resources.py -v -s -k badges
+# Run a single resource test (datacenter mode)
+pytest ../test_integration/test_terraform_resources.py -v -s --mode datacenter -k badges
 
+# Run campus mode tests
+pytest ../test_integration/test_terraform_resources.py -v -s --mode campus
+
+# Run a single resource test (campus mode)
+pytest ../test_integration/test_terraform_resources.py -v -s --mode campus -k tenants
 ```
 
 ### Test Modes
@@ -103,6 +119,7 @@ Runs the full lifecycle for one resource in isolation. Useful for debugging a sp
 
 | Flag | Description |
 |------|-------------|
+| `--mode <mode>` | **Required.** Provider mode: `datacenter` or `campus` |
 | `-v` | Verbose output (show test details) |
 | `-s` | Show print statements and terraform output (**highly recommended**) |
 | `-x` | Stop on first failure |
@@ -112,9 +129,9 @@ Runs the full lifecycle for one resource in isolation. Useful for debugging a sp
 
 ### Normal Resource (create + modify + delete)
 
-1. Create a directory matching the `.tf` file name (without extension):
+1. Create a directory matching the `.tf` file name (without extension) under the appropriate mode:
    ```bash
-   mkdir -p test_integration/test_cases/gateways
+   mkdir -p test_integration/test_cases/datacenter/gateways
    ```
 
 2. Create `add.tf` with the full resource definitions to create:
@@ -148,9 +165,9 @@ Runs the full lifecycle for one resource in isolation. Useful for debugging a sp
 
 For resources that already exist and cannot be created or deleted:
 
-1. Create a directory with **only** `modify.tf` (no `add.tf`):
+1. Create a directory with **only** `modify.tf` (no `add.tf`) under the appropriate mode:
    ```bash
-   mkdir -p test_integration/test_cases/sites
+   mkdir -p test_integration/test_cases/datacenter/sites
    ```
 
 2. Create `modify.tf` referencing the **existing** resource by its type and name as they appear in the `.tf` file:
@@ -188,7 +205,7 @@ The framework discovers resources using these rules:
 
 1. Scans the current directory for `*.tf` files
 2. Filters to only resources listed in `internal/importer/importer.go`
-3. Checks `test_cases/{name}/` for `add.tf` and/or `modify.tf` with valid resource definitions
+3. Checks `test_cases/{mode}/{name}/` for `add.tf` and/or `modify.tf` with valid resource definitions
 4. Classifies each as **normal** (has `add.tf`) or **update-only** (has only `modify.tf`)
 5. Skips resources with empty or comment-only test files
 

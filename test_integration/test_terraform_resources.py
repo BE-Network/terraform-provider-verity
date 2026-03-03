@@ -26,16 +26,33 @@ except ImportError:
 class TerraformTestRunner:
     """Handles terraform operations and test execution."""
 
-    def __init__(self, tf_dir: Optional[str] = None, test_cases_dir: Optional[str] = None):
+    VALID_MODES = ("datacenter", "campus")
+
+    _LOG_PREFIX_RE = re.compile(
+        r'^\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}:\d{2})\.\d+[+-]\d+'
+        r' \[DEBUG\] provider\.\S+:\s*(.*)'
+    )
+    _REQUEST_RE = re.compile(r'^(PUT|PATCH|DELETE) (/\S+) HTTP/')
+    _RESPONSE_RE = re.compile(r'^HTTP/\d+\.\d+ (\d+ .+)')
+
+    def __init__(
+        self, mode: str,
+        tf_dir: Optional[str] = None,
+        test_cases_dir: Optional[str] = None
+    ):
+        if mode not in self.VALID_MODES:
+            raise ValueError(f"Invalid mode '{mode}'. Must be one of: {', '.join(self.VALID_MODES)}")
+        self.mode = mode
+
         # Use current directory if not specified
         self.tf_dir = Path(tf_dir) if tf_dir else Path.cwd()
 
-        # Find test_cases directory relative to script location
+        # Find test_cases directory relative to script location, scoped by mode
         script_dir = Path(__file__).parent
         if test_cases_dir:
             self.test_cases_dir = Path(test_cases_dir)
         else:
-            self.test_cases_dir = script_dir / "test_cases"
+            self.test_cases_dir = script_dir / "test_cases" / mode
 
         self.backup_dir = None
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -686,27 +703,17 @@ class TerraformTestRunner:
 
         exchanges: List[Dict[str, str]] = []
         current: Optional[Dict[str, str]] = None
-
-        prefix_re = re.compile(
-            r'^\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}:\d{2})\.\d+[+-]\d+'
-            r' \[DEBUG\] provider\.\S+:\s*(.*)'
-        )
-        request_re = re.compile(
-            r'^(PUT|PATCH|DELETE) (/\S+) HTTP/'
-        )
-        response_re = re.compile(r'^HTTP/\d+\.\d+ (\d+ .+)')
+        phase = 'request'
 
         for line in content.splitlines():
-            m = prefix_re.match(line)
+            m = self._LOG_PREFIX_RE.match(line)
             if not m:
                 continue
 
             timestamp, body = m.group(1), m.group(2)
 
-            # New PUT/PATCH/DELETE request?
-            req_m = request_re.match(body)
+            req_m = self._REQUEST_RE.match(body)
             if req_m:
-                # Save any previous incomplete exchange
                 if current:
                     exchanges.append(current)
                 current = {
@@ -716,34 +723,28 @@ class TerraformTestRunner:
                     'request_body': '',
                     'response_status': '',
                     'response_body': '',
-                    '_phase': 'request',
                 }
+                phase = 'request'
                 continue
 
             if not current:
                 continue
 
-            # Response status line?
-            resp_m = response_re.match(body)
+            resp_m = self._RESPONSE_RE.match(body)
             if resp_m:
                 current['response_status'] = resp_m.group(1)
-                current['_phase'] = 'response'
+                phase = 'response'
                 continue
 
-            # JSON body line?
             stripped = body.strip()
             if stripped.startswith('{'):
-                if (current['_phase'] == 'request'
-                        and not current['request_body']):
+                if phase == 'request' and not current['request_body']:
                     current['request_body'] = stripped
-                elif (current['_phase'] == 'response'
-                        and not current['response_body']):
+                elif phase == 'response' and not current['response_body']:
                     current['response_body'] = stripped
-                    # Exchange complete
                     exchanges.append(current)
                     current = None
 
-        # Capture any trailing incomplete exchange
         if current:
             exchanges.append(current)
 
@@ -787,13 +788,13 @@ class TerraformTestRunner:
             shutil.rmtree(self.backup_dir)
 
 
-def _discover_resources() -> List[Tuple[str, str, Dict[str, str]]]:
+def _discover_resources(mode: str) -> List[Tuple[str, str, Dict[str, str]]]:
     """
     Discover .tf files in the current directory that have corresponding test cases.
     Called at pytest collection time for parametrization of single-resource tests.
     Returns list of tuples with string-serialized paths for clean pytest IDs.
     """
-    runner = TerraformTestRunner()
+    runner = TerraformTestRunner(mode=mode)
     resources = []
     for name, tf_file, test_cases in runner.discover_resources(verbose=False):
         cases_str = {k: str(v) for k, v in test_cases.items()}
@@ -802,10 +803,21 @@ def _discover_resources() -> List[Tuple[str, str, Dict[str, str]]]:
     return resources
 
 
+def pytest_addoption(parser):
+    """Register custom --mode command-line option."""
+    parser.addoption(
+        "--mode",
+        required=True,
+        choices=TerraformTestRunner.VALID_MODES,
+        help="Provider mode: datacenter or campus",
+    )
+
+
 def pytest_generate_tests(metafunc):
     """Dynamically parametrize test_single_resource with discovered resources."""
     if "resource_info" in metafunc.fixturenames:
-        resources = _discover_resources()
+        mode = metafunc.config.getoption("--mode")
+        resources = _discover_resources(mode)
         metafunc.parametrize(
             "resource_info",
             resources,
@@ -840,9 +852,10 @@ class TestTerraformResources:
     """Pytest test class for terraform resources."""
 
     @pytest.fixture(scope="class")
-    def runner(self):
-        """Create a test runner instance."""
-        runner = TerraformTestRunner()
+    def runner(self, request):
+        """Create a test runner instance with the selected mode."""
+        mode = request.config.getoption("--mode")
+        runner = TerraformTestRunner(mode=mode)
         yield runner
         runner.cleanup()
 
@@ -858,7 +871,7 @@ class TestTerraformResources:
         All phases use single terraform apply calls for efficiency.
         """
         print(f"\n{'='*60}")
-        print(f"Batch Testing All Resources")
+        print(f"Batch Testing All Resources (mode: {runner.mode})")
         print(f"{'='*60}")
 
         resources_with_tests = runner.discover_resources(verbose=True)
@@ -1191,7 +1204,3 @@ class TestTerraformResources:
         ):
             pytest.fail("terraform plan+apply failed during revert of update-only resource")
         print(f"  ✓ Update-only resource reverted successfully")
-
-
-if __name__ == "__main__":
-    sys.exit(pytest.main([__file__, "-v", "-s"]))
