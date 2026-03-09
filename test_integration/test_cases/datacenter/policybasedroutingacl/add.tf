@@ -8,6 +8,45 @@ resource "verity_pb_routing_acl" "pb_routing_acl_test_script1" {
 	ipv4_deny {
 		index = 1
 		enable = true
+		filter = "test4"
+		filter_ref_type_ = "ipv4_filter"
+	}
+	ipv4_deny {
+		index = 2
+		enable = true
+		filter = ""
+		filter_ref_type_ = ""
+	}
+	ipv4_permit {
+		index = 1
+		enable = true
+		filter = "ipv4_filter"
+		filter_ref_type_ = "ipv4_filter"
+	}
+	ipv6_deny {
+		index = 1
+		enable = false
+		filter = ""
+		filter_ref_type_ = ""
+	}
+	ipv6_permit {
+		index = 1
+		enable = false
+		filter = ""
+		filter_ref_type_ = ""
+	}
+	ipv_protocol = "ipv4"
+	next_hop_ips = "10.12.14.16"
+}
+
+
+resource "verity_pb_routing_acl" "pb_routing_acl_test_script2" {
+    name = "pb_routing_acl_test_script2"
+    depends_on = [verity_operation_stage.pb_routing_acl_stage]
+	enable = true
+	ipv4_deny {
+		index = 1
+		enable = true
 		filter = "filter1"
 		filter_ref_type_ = "ipv4_filter"
 	}

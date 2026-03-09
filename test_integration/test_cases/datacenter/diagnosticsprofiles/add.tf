@@ -11,3 +11,14 @@ resource "verity_diagnostics_profile" "diagnostics_profile_test_script1" {
 	poll_interval = 20
 	vrf_type = "management"
 }
+
+resource "verity_diagnostics_profile" "diagnostics_profile_test_script2" {
+    name = "diagnostics_profile_test_script2"
+    depends_on = [verity_operation_stage.diagnostics_profile_stage]
+	enable = false
+	enable_sflow = false
+	flow_collector = "Example Collector"
+	flow_collector_ref_type_ = "sflow_collector"
+	poll_interval = 30
+	vrf_type = "management"
+}

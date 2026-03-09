@@ -3,7 +3,16 @@
 
 resource "verity_acl_v4" "acl_v4_test_script1" {
 	object_properties {
-		notes = "test"
+		notes = "test1"
 	}
 	bidirectional = true
+	enable = false
+}
+
+resource "verity_acl_v4" "acl_v4_test_script2" {
+	object_properties {
+		notes = ""
+	}
+	bidirectional = false
+	enable = true
 }

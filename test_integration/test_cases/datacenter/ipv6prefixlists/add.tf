@@ -16,4 +16,29 @@ resource "verity_ipv6_prefix_list" "ipv6_prefix_list_test_script1" {
 		less_than_equal_value = null
 		permit_deny = "permit"
 	}
+	lists {
+		index = 2
+		enable = false
+		greater_than_equal_value = null
+		ipv6_prefix = "0::0/0"
+		less_than_equal_value = null
+		permit_deny = "permit"
+	}
+}
+
+resource "verity_ipv6_prefix_list" "ipv6_prefix_list_test_script2" {
+    name = "ipv6_prefix_list_test_script2"
+    depends_on = [verity_operation_stage.ipv6_prefix_list_stage]
+	object_properties {
+		notes = "test"
+	}
+	enable = true
+	lists {
+		index = 1
+		enable = false
+		greater_than_equal_value = null
+		ipv6_prefix = "0::0/0"
+		less_than_equal_value = null
+		permit_deny = "permit"
+	}
 }

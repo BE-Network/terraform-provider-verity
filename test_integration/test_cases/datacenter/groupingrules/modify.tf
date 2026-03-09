@@ -5,10 +5,17 @@ resource "verity_grouping_rule" "grouping_rule_test_script1" {
 	enable = false
 	rules {
 		index = 2
-		enable = true
+	}
+}
+
+resource "verity_grouping_rule" "grouping_rule_test_script2" {
+	enable = false
+	rules {
+		index = 2
+		enable = false
 		rule_invert = false
-		rule_type = "endpoint_type"
-		rule_value = "leaf"
+		rule_type = ""
+		rule_value = ""
 		rule_value_path = ""
 		rule_value_path_ref_type_ = ""
 	}

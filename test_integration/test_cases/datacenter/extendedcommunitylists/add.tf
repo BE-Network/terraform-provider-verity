@@ -5,6 +5,30 @@ resource "verity_extended_community_list" "extended_community_list_test_script1"
     name = "extended_community_list_test_script1"
     depends_on = [verity_operation_stage.extended_community_list_stage]
 	object_properties {
+		notes = "test"
+	}
+	any_all = "any"
+	enable = true
+	lists {
+		index = 1
+		enable = false
+		mode = "route"
+		route_target_expanded_expression = ""
+	}
+	lists {
+		index = 2
+		enable = false
+		mode = "route"
+		route_target_expanded_expression = ""
+	}
+	permit_deny = "permit"
+	standard_expanded = "standard"
+}
+
+resource "verity_extended_community_list" "extended_community_list_test_script2" {
+    name = "extended_community_list_test_script2"
+    depends_on = [verity_operation_stage.extended_community_list_stage]
+	object_properties {
 		notes = ""
 	}
 	any_all = "any"

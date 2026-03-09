@@ -7,3 +7,10 @@ resource "verity_diagnostics_port_profile" "diagnostics_port_profile_test_script
 	enable = true
 	enable_sflow = true
 }
+
+resource "verity_diagnostics_port_profile" "diagnostics_port_profile_test_script2" {
+    name = "diagnostics_port_profile_test_script2"
+    depends_on = [verity_operation_stage.diagnostics_port_profile_stage]
+	enable = false
+	enable_sflow = false
+}

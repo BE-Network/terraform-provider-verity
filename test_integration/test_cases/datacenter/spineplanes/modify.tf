@@ -5,5 +5,12 @@ resource "verity_spine_plane" "spine_plane_test_script1" {
 	object_properties {
 		notes = "test"
 	}
+	enable = true
+}
+
+resource "verity_spine_plane" "spine_plane_test_script2" {
+	object_properties {
+		notes = "test123"
+	}
 	enable = false
 }

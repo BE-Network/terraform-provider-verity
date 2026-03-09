@@ -3,7 +3,21 @@
 
 resource "verity_extended_community_list" "extended_community_list_test_script1" {
 	object_properties {
-		notes = "test"
+		notes = ""
+	}
+	enable = false
+	lists {
+		index = 1
+		enable = true
+	}
+	lists {
+		index = 2
+	}
+}
+
+resource "verity_extended_community_list" "extended_community_list_test_script2" {
+	object_properties {
+		notes = "test123"
 	}
 	enable = false
 	lists {

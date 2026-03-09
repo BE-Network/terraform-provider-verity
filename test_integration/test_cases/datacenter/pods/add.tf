@@ -10,3 +10,13 @@ resource "verity_pod" "pod_test_script1" {
 	enable = true
 	expected_spine_count = 1
 }
+
+resource "verity_pod" "pod_test_script2" {
+    name = "pod_test_script2"
+    depends_on = [verity_operation_stage.pod_stage]
+	object_properties {
+		notes = "test"
+	}
+	enable = false
+	expected_spine_count = 2
+}

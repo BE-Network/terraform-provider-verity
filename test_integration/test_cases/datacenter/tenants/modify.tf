@@ -8,8 +8,26 @@ resource "verity_tenant" "tenant_test_script1" {
 	default_originate = true
 	enable = false
 	route_tenants {
+		index = 1
+		enable = true
+	}
+	route_tenants {
 		index = 2
-		enable = false
-		tenant = ""
+	}
+}
+
+resource "verity_tenant" "tenant_test_script2" {
+	object_properties {
+		group = ""
+	}
+	default_originate = true
+	enable = false
+	route_tenants {
+		index = 1
+		enable = true
+	}
+	route_tenants {
+		index = 2
+		enable = true
 	}
 }

@@ -7,6 +7,21 @@ resource "verity_gateway_profile" "gateway_profile_test_script1" {
 	}
 	enable = false
 	external_gateways {
+		index = 1
+		enable = false
+		peer_gw = true
+	}
+	external_gateways {
+		index = 2
+	}
+}
+
+resource "verity_gateway_profile" "gateway_profile_test_script2" {
+	object_properties {
+		group = ""
+	}
+	enable = true
+	external_gateways {
 		index = 3
 		enable = false
 		gateway = ""

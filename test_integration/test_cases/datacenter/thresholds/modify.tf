@@ -4,13 +4,18 @@
 resource "verity_threshold" "threshold_test_script1" {
 	enable = false
 	rules {
+		index = 1
+		enable = false
+	}
+	rules {
 		index = 2
-		enable = true
-		metric = ""
-		operation = "eq"
-		threshold = ""
-		threshold_ref_type_ = ""
-		type = "metric"
-		value = "1"
+	}
+}
+
+resource "verity_threshold" "threshold_test_script2" {
+	enable = false
+	rules {
+		index = 1
+		enable = false
 	}
 }

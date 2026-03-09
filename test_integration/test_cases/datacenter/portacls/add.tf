@@ -30,3 +30,45 @@ resource "verity_port_acl" "port_acl_test_script1" {
 		filter_ref_type_ = ""
 	}
 }
+
+resource "verity_port_acl" "port_acl_test_script2" {
+    name = "port_acl_test_script2"
+    depends_on = [verity_operation_stage.port_acl_stage]
+	enable = false
+	ipv4_deny {
+		index = 1
+		enable = false
+		filter = ""
+		filter_ref_type_ = ""
+	}
+	ipv4_deny {
+		index = 2
+		enable = false
+		filter = ""
+		filter_ref_type_ = ""
+	}
+	ipv4_permit {
+		index = 1
+		enable = false
+		filter = ""
+		filter_ref_type_ = ""
+	}
+	ipv6_deny {
+		index = 1
+		enable = false
+		filter = ""
+		filter_ref_type_ = ""
+	}
+	ipv6_permit {
+		index = 1
+		enable = false
+		filter = ""
+		filter_ref_type_ = ""
+	}
+	ipv6_permit {
+		index = 2
+		enable = false
+		filter = ""
+		filter_ref_type_ = ""
+	}
+}

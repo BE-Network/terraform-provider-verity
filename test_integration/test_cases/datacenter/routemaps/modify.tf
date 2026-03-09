@@ -3,13 +3,25 @@
 
 resource "verity_route_map" "route_map_test_script1" {
 	object_properties {
-		notes = "test"
+		notes = "test123"
 	}
 	enable = false
 	route_map_clauses {
-		index = 2
+		index = 1
 		enable = false
-		route_map_clause = "ipv6_clause"
-		route_map_clause_ref_type_ = "route_map_clause"
+	}
+	route_map_clauses {
+		index = 2
+	}
+}
+
+resource "verity_route_map" "route_map_test_script2" {
+	object_properties {
+		notes = "test"
+	}
+	enable = true
+	route_map_clauses {
+		index = 1
+		enable = false
 	}
 }
