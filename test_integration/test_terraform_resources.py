@@ -803,16 +803,6 @@ def _discover_resources(mode: str) -> List[Tuple[str, str, Dict[str, str]]]:
     return resources
 
 
-def pytest_addoption(parser):
-    """Register custom --mode command-line option."""
-    parser.addoption(
-        "--mode",
-        required=True,
-        choices=TerraformTestRunner.VALID_MODES,
-        help="Provider mode: datacenter or campus",
-    )
-
-
 def pytest_generate_tests(metafunc):
     """Dynamically parametrize test_single_resource with discovered resources."""
     if "resource_info" in metafunc.fixturenames:
