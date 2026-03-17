@@ -297,6 +297,41 @@ Phase 3: Cleanup [tenants]
   ← {"status": "succeeded", "message": "Tenants tenant_test_script1 successfully deleted"}
 ```
 
+## Generating Request Payloads with tf_to_json.py
+
+`scripts/tf_to_json.py` is a standalone helper that converts `add.tf` and `modify.tf` test case files directly into the JSON request bodies you would send via the Swagger UI (or any HTTP client). Each resource type outputs its **PUT** payload immediately followed by its **PATCH** payload, so you can copy-paste and test both the create and update flows without running a full `terraform apply`.
+
+### Usage
+
+```bash
+# All resource types in a mode directory (PUT + PATCH for every type)
+python scripts/tf_to_json.py test_integration/test_cases/campus
+
+# Single resource type folder
+python scripts/tf_to_json.py test_integration/test_cases/campus/badges
+
+# Filter output to one specific resource by name
+python scripts/tf_to_json.py test_integration/test_cases/campus/ethportprofiles --resource eth_port_profile_test_script1
+```
+
+### Output format
+
+For each resource type the script prints a header line followed by the JSON body:
+
+```
+=== badges → PUT /badges ===
+{ "badge": { "badge_test_script1": { ... } } }
+
+=== badges → PATCH /badges ===
+{ "badge": { "badge_test_script1": { ... } } }
+```
+
+- **PUT** bodies are built from `add.tf` and contain the full resource definition (all fields, including `name`).
+- **PATCH** bodies are built from `modify.tf` and contain only the fields that change — matching exactly what the provider sends during Phase 2 of the test lifecycle.
+- Resources that cannot be created (e.g. `sites`, `sfpbreakouts`) emit only a PATCH section.
+
+This makes it easy to manually validate that the API accepts each payload before or after running the automated test suite.
+
 ## Valid Resource Names
 
 The script only tests resources defined in `internal/importer/importer.go`. If a `.tf` file doesn't match a name in that list, it is skipped.
