@@ -7,7 +7,7 @@ This directory contains an integration test framework for the Verity Terraform p
 Before running the tests, install the required Python packages:
 
 ```bash
-cd test_integration
+cd tests/integration
 pip install -r requirements.txt
 ```
 
@@ -43,7 +43,7 @@ The `--mode` flag is **mandatory** for all test runs.
 ## Directory Structure
 
 ```
-test_integration/
+tests/integration/
 ├── test_terraform_resources.py     # Main test runner
 ├── requirements.txt                # Python dependencies
 ├── README.md                       # This file
@@ -72,15 +72,15 @@ test_integration/
 Install Python dependencies:
 
 ```bash
-cd test_integration
+cd tests/integration
 pip install -r requirements.txt
 ```
 
 Using a virtual environment (recommended):
 ```bash
-python3 -m venv test_integration/venv
-source test_integration/venv/bin/activate
-pip install -r test_integration/requirements.txt
+python3 -m venv tests/integration/venv
+source tests/integration/venv/bin/activate
+pip install -r tests/integration/requirements.txt
 ```
 
 Make sure your Terraform environment is already initialized (the script does **not** run `terraform init`).
@@ -93,16 +93,16 @@ Run the script from the directory containing your `.tf` files (e.g., `examples/`
 cd examples
 
 # Run the full batch test (datacenter mode)
-pytest ../test_integration/test_terraform_resources.py -v -s --mode datacenter
+pytest ../tests/integration/test_terraform_resources.py -v -s --mode datacenter
 
 # Run a single resource test (datacenter mode)
-pytest ../test_integration/test_terraform_resources.py -v -s --mode datacenter -k badges
+pytest ../tests/integration/test_terraform_resources.py -v -s --mode datacenter -k badges
 
 # Run campus mode tests
-pytest ../test_integration/test_terraform_resources.py -v -s --mode campus
+pytest ../tests/integration/test_terraform_resources.py -v -s --mode campus
 
 # Run a single resource test (campus mode)
-pytest ../test_integration/test_terraform_resources.py -v -s --mode campus -k tenants
+pytest ../tests/integration/test_terraform_resources.py -v -s --mode campus -k tenants
 ```
 
 ### Test Modes
@@ -131,7 +131,7 @@ Runs the full lifecycle for one resource in isolation. Useful for debugging a sp
 
 1. Create a directory matching the `.tf` file name (without extension) under the appropriate mode:
    ```bash
-   mkdir -p test_integration/test_cases/datacenter/gateways
+   mkdir -p tests/integration/test_cases/datacenter/gateways
    ```
 
 2. Create `add.tf` with the full resource definitions to create:
@@ -167,7 +167,7 @@ For resources that already exist and cannot be created or deleted:
 
 1. Create a directory with **only** `modify.tf` (no `add.tf`) under the appropriate mode:
    ```bash
-   mkdir -p test_integration/test_cases/datacenter/sites
+   mkdir -p tests/integration/test_cases/datacenter/sites
    ```
 
 2. Create `modify.tf` referencing the **existing** resource by its type and name as they appear in the `.tf` file:
@@ -305,13 +305,13 @@ Phase 3: Cleanup [tenants]
 
 ```bash
 # All resource types in a mode directory (PUT + PATCH for every type)
-python scripts/tf_to_json.py test_integration/test_cases/campus
+python scripts/tf_to_json.py tests/integration/test_cases/campus
 
 # Single resource type folder
-python scripts/tf_to_json.py test_integration/test_cases/campus/badges
+python scripts/tf_to_json.py tests/integration/test_cases/campus/badges
 
 # Filter output to one specific resource by name
-python scripts/tf_to_json.py test_integration/test_cases/campus/ethportprofiles --resource eth_port_profile_test_script1
+python scripts/tf_to_json.py tests/integration/test_cases/campus/ethportprofiles --resource eth_port_profile_test_script1
 ```
 
 ### Output format

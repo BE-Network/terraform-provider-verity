@@ -4,13 +4,13 @@ Convert Terraform add.tf / modify.tf files to JSON PUT / PATCH request bodies fo
 
 Usage:
     # Single resource type folder:
-    python scripts/tf_to_json.py test_integration/test_cases/campus/badges
+    python scripts/tf_to_json.py tests/integration/test_cases/campus/badges
 
     # All resource types in a mode directory:
-    python scripts/tf_to_json.py test_integration/test_cases/campus
+    python scripts/tf_to_json.py tests/integration/test_cases/campus
 
     # Filter to a single resource by name:
-    python scripts/tf_to_json.py test_integration/test_cases/campus/ethportprofiles --resource eth_port_profile_test_script1
+    python scripts/tf_to_json.py tests/integration/test_cases/campus/ethportprofiles --resource eth_port_profile_test_script1
 """
 
 import argparse
