@@ -326,7 +326,13 @@ func mapKeysToString(m map[string]bool) string {
 	return strings.Join(keys, ", ")
 }
 
+// In production, this is the current working directory (where Terraform runs).
+// In unit tests, set VERITY_TF_WORKDIR to point to a temp dir with test .tf files,
+// since the test process working directory won't contain any.
 func GetWorkingDirectory() string {
+	if dir := os.Getenv("VERITY_TF_WORKDIR"); dir != "" {
+		return dir
+	}
 	wd, err := os.Getwd()
 	if err != nil {
 		return ""

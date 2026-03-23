@@ -441,8 +441,8 @@ func (p *providerContext) initBulkOpsTicker(ctx context.Context) {
 				p.debounceTimer.Stop()
 			}
 
-			// when no new ticks arrive for 15 seconds, execute operations
-			p.debounceTimer = time.AfterFunc(15*time.Second, func() {
+			// when no new ticks arrive, execute operations
+			p.debounceTimer = time.AfterFunc(bulkops.DebounceDelay, func() {
 				tflog.Debug(ctx, "Bulk operation debounce timer expired, executing pending operations")
 				if diags := p.bulkOpsMgr.ExecuteAllPendingOperations(ctx); diags != nil {
 					tflog.Error(ctx, "Failed to execute pending bulk operations", map[string]interface{}{

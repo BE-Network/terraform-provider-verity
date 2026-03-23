@@ -3,6 +3,7 @@ package bulkops
 import (
 	"context"
 	"net/http"
+	"os"
 	"reflect"
 	"sync"
 	"terraform-provider-verity/openapi"
@@ -123,13 +124,30 @@ const (
 
 // Configuration constants for bulk operation timing and limits.
 const (
-	MaxBatchSize          = 1000                    // Maximum number of resources per batch
-	MaxDeleteBatchSize    = 100                     // Maximum resources per DELETE batch to avoid URL length limits
-	DefaultBatchDelay     = 2 * time.Second         // Default delay between operations
-	BatchCollectionWindow = 2000 * time.Millisecond // Time to collect operations into batches
-	MaxBatchDelay         = 5 * time.Second         // Maximum time to wait before forcing execution
-	OperationTimeout      = 300 * time.Second       // Timeout for individual API operations
+	MaxBatchSize       = 1000              // Maximum number of resources per batch
+	MaxDeleteBatchSize = 100               // Maximum resources per DELETE batch to avoid URL length limits
+	OperationTimeout   = 300 * time.Second // Timeout for individual API operations
 )
+
+// Timing variables (configurable for CI/testing).
+var (
+	DefaultBatchDelay      = parseDuration("VERITY_DEFAULT_BATCH_DELAY", 2*time.Second)
+	BatchCollectionWindow  = parseDuration("VERITY_BATCH_COLLECTION_WINDOW", 2000*time.Millisecond)
+	MaxBatchDelay          = parseDuration("VERITY_MAX_BATCH_DELAY", 5*time.Second)
+	ResponseProcessorDelay = parseDuration("VERITY_RESPONSE_PROCESSOR_DELAY", 5*time.Second)
+	DebounceDelay          = parseDuration("VERITY_DEBOUNCE_DELAY", 15*time.Second)
+)
+
+// parseDuration reads a Go duration string from the environment variable.
+// Returns the default value if the variable is unset or unparseable.
+func parseDuration(envVar string, defaultVal time.Duration) time.Duration {
+	if v := os.Getenv(envVar); v != "" {
+		if d, err := time.ParseDuration(v); err == nil {
+			return d
+		}
+	}
+	return defaultVal
+}
 
 // ResourceOperationData holds operation data for a resource type
 type ResourceOperationData struct {

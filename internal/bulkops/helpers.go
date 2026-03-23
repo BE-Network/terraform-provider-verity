@@ -1150,7 +1150,7 @@ func (m *Manager) createHeaderAwareResponseProcessor(config ResourceConfig, oper
 // When headers is nil, it uses GetFunc; when headers is provided, it uses HeaderGetFunc.
 func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response) error {
 	return func(ctx context.Context, resp *http.Response) error {
-		delayTime := 5 * time.Second
+		delayTime := ResponseProcessorDelay
 		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for server values to be assigned before fetching %s", delayTime, config.ResourceType))
 		time.Sleep(delayTime)
 
