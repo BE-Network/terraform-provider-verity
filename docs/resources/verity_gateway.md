@@ -34,6 +34,7 @@ resource "verity_gateway" "example" {
   egress_vlan = null
   import_route_map = ""
   gateway_mode = "Dynamic BGP"
+  bgp_instance_as_number = null
   bfd_receive_interval = 307
   bfd_multihop = false
   fabric_interconnect = false
@@ -78,6 +79,7 @@ resource "verity_gateway" "example" {
 * `export_route_map` (String) - A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes.
 * `export_route_map_ref_type_` (String) - Object type for export_route_map field.
 * `gateway_mode` (String) - Gateway Mode is the method used for defining routes for the Tenant.
+* `bgp_instance_as_number` (Integer) - Override the switch's AS number used in the Tenant router definition where this Gateway is applied.
 * `local_as_number` (Integer) - Local AS Number to use as an override to switch AS number.
 * `local_as_no_prepend` (Boolean) - Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
 * `replace_as` (Boolean) - Prepend only Local AS in updates to EBGP peers.

@@ -8889,6 +8889,13 @@ components:
           - Static BGP
           minLength: 3
           type: string
+        bgp_instance_as_number:
+          description: Override the switch's AS number used in the Tenant router definition
+            where this Gateway is applied
+          maximum: 4294967295
+          minimum: 1
+          nullable: true
+          type: integer
         local_as_number:
           description: Local AS Number to use as an override to switch AS number
           maximum: 4294967295

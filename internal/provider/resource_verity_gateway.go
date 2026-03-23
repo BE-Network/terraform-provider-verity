@@ -79,6 +79,7 @@ type verityGatewayResourceModel struct {
 	DefaultOriginate           types.Bool                           `tfsdk:"default_originate"`
 	ExportRouteMapRefType      types.String                         `tfsdk:"export_route_map_ref_type_"`
 	ImportRouteMapRefType      types.String                         `tfsdk:"import_route_map_ref_type_"`
+	BgpInstanceAsNumber        types.Int64                          `tfsdk:"bgp_instance_as_number"`
 }
 
 type verityGatewayObjectPropertiesModel struct {
@@ -133,7 +134,7 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object.",
+				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -162,113 +163,144 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 				Computed: true,
 			},
 			"keepalive_timer": schema.Int64Attribute{
-				Description: "Interval in seconds between Keepalive messages",
+				Description: "Interval in seconds between Keepalive messages sent to remote BGP peer",
 				Optional:    true,
 				Computed:    true,
 			},
 			"hold_timer": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Time, in seconds, used to determine failure of session Keepalive messages received from remote BGP peer",
+				Optional:    true,
+				Computed:    true,
 			},
 			"connect_timer": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Time in seconds between successive attempts to establish BGP session",
+				Optional:    true,
+				Computed:    true,
 			},
 			"advertisement_interval": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "The minimum time in seconds between sending route updates to BGP neighbor",
+				Optional:    true,
+				Computed:    true,
 			},
 			"ebgp_multihop": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Allows external BGP neighbors to establish peering session multiple network hops away.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"egress_vlan": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "VLAN used to carry BGP TCP session",
+				Optional:    true,
+				Computed:    true,
 			},
 			"source_ip_address": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Source IP address used to override the default source address calculation for BGP TCP session",
+				Optional:    true,
+				Computed:    true,
 			},
 			"anycast_ip_mask": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"md5_password": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "MD5 Password used in the BGP session",
+				Optional:    true,
+				Computed:    true,
 			},
 			"md5_password_encrypted": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "MD5 Password Encrypted used in the BGP session",
+				Optional:    true,
+				Computed:    true,
 			},
 			"switch_encrypted_md5_password": schema.BoolAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Indicates the entered password is a switch encrypted password.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"import_route_map": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "A Route Map applied to routes imported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes",
+				Optional:    true,
+				Computed:    true,
 			},
 			"export_route_map": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes",
+				Optional:    true,
+				Computed:    true,
 			},
 			"gateway_mode": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Gateway Mode is the method used for defining routes for the Tenant",
+				Optional:    true,
+				Computed:    true,
+			},
+			"bgp_instance_as_number": schema.Int64Attribute{
+				Description: "Override the switch's AS number used in the Tenant router definition where this Gateway is applied",
+				Optional:    true,
+				Computed:    true,
 			},
 			"local_as_number": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Local AS Number to use as an override to switch AS number",
+				Optional:    true,
+				Computed:    true,
 			},
 			"local_as_no_prepend": schema.BoolAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"replace_as": schema.BoolAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Prepend only Local AS in updates to EBGP peers.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"max_local_as_occurrences": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or '0' to disable.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"dynamic_bgp_subnet": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Dynamic BGP Subnet",
+				Optional:    true,
+				Computed:    true,
 			},
 			"dynamic_bgp_limits": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Dynamic BGP Limits",
+				Optional:    true,
+				Computed:    true,
 			},
 			"helper_hop_ip_address": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection",
+				Optional:    true,
+				Computed:    true,
 			},
 			"enable_bfd": schema.BoolAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Enable BFD (Bi-Directional Forwarding)",
+				Optional:    true,
+				Computed:    true,
 			},
 			"bfd_receive_interval": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Configure the minimum interval during which the system can receive BFD control packets",
+				Optional:    true,
+				Computed:    true,
 			},
 			"bfd_transmission_interval": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Configure the minimum transmission interval during which the system can send BFD control packets",
+				Optional:    true,
+				Computed:    true,
 			},
 			"bfd_detect_multiplier": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "Configure the detection multiplier to determine packet loss",
+				Optional:    true,
+				Computed:    true,
 			},
 			"bfd_multihop": schema.BoolAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"next_hop_self": schema.BoolAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"default_originate": schema.BoolAttribute{
 				Description: "Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.",
@@ -276,12 +308,14 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 				Computed:    true,
 			},
 			"export_route_map_ref_type_": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Object type for export_route_map field",
+				Optional:    true,
+				Computed:    true,
 			},
 			"import_route_map_ref_type_": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "Object type for import_route_map field",
+				Optional:    true,
+				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -307,22 +341,22 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 							Computed:    true,
 						},
 						"ipv4_route_prefix": schema.StringAttribute{
-							Description: "IPv4 unicast IP address with subnet mask",
+							Description: "IPv4 unicast IP address followed by a subnet mask length",
 							Optional:    true,
 							Computed:    true,
 						},
 						"next_hop_ip_address": schema.StringAttribute{
-							Description: "Next Hop IP Address",
+							Description: "Next Hop IP Address. Must be a unicast IP address",
 							Optional:    true,
 							Computed:    true,
 						},
 						"ad_value": schema.Int64Attribute{
-							Description: "Administrative distance value (0-255)",
+							Description: "Administrative distancing value, also known as route preference - values from 0-255",
 							Optional:    true,
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "Index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -410,6 +444,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "BfdReceiveInterval", APIField: &gatewayProps.BfdReceiveInterval, TFValue: config.BfdReceiveInterval, IsConfigured: configuredAttrs.IsConfigured("bfd_receive_interval")},
 		{FieldName: "BfdTransmissionInterval", APIField: &gatewayProps.BfdTransmissionInterval, TFValue: config.BfdTransmissionInterval, IsConfigured: configuredAttrs.IsConfigured("bfd_transmission_interval")},
 		{FieldName: "BfdDetectMultiplier", APIField: &gatewayProps.BfdDetectMultiplier, TFValue: config.BfdDetectMultiplier, IsConfigured: configuredAttrs.IsConfigured("bfd_detect_multiplier")},
+		{FieldName: "BgpInstanceAsNumber", APIField: &gatewayProps.BgpInstanceAsNumber, TFValue: config.BgpInstanceAsNumber, IsConfigured: configuredAttrs.IsConfigured("bgp_instance_as_number")},
 	})
 
 	// Handle object properties
@@ -661,6 +696,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetNullableInt64Field(config.BfdReceiveInterval, state.BfdReceiveInterval, configuredAttrs.IsConfigured("bfd_receive_interval"), func(v *openapi.NullableInt32) { gatewayProps.BfdReceiveInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.BfdTransmissionInterval, state.BfdTransmissionInterval, configuredAttrs.IsConfigured("bfd_transmission_interval"), func(v *openapi.NullableInt32) { gatewayProps.BfdTransmissionInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.BfdDetectMultiplier, state.BfdDetectMultiplier, configuredAttrs.IsConfigured("bfd_detect_multiplier"), func(v *openapi.NullableInt32) { gatewayProps.BfdDetectMultiplier = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BgpInstanceAsNumber, state.BgpInstanceAsNumber, configuredAttrs.IsConfigured("bgp_instance_as_number"), func(v *openapi.NullableInt32) { gatewayProps.BgpInstanceAsNumber = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
@@ -873,6 +909,7 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 	state.BfdReceiveInterval = utils.MapInt64WithMode(data, "bfd_receive_interval", resourceType, mode)
 	state.BfdTransmissionInterval = utils.MapInt64WithMode(data, "bfd_transmission_interval", resourceType, mode)
 	state.BfdDetectMultiplier = utils.MapInt64WithMode(data, "bfd_detect_multiplier", resourceType, mode)
+	state.BgpInstanceAsNumber = utils.MapInt64WithMode(data, "bgp_instance_as_number", resourceType, mode)
 
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
@@ -996,6 +1033,7 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 		"advertisement_interval", "ebgp_multihop", "egress_vlan",
 		"local_as_number", "max_local_as_occurrences", "dynamic_bgp_limits",
 		"bfd_receive_interval", "bfd_transmission_interval", "bfd_detect_multiplier",
+		"bgp_instance_as_number",
 	)
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
@@ -1061,6 +1099,7 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 			{AttrName: "bfd_receive_interval", ConfigVal: config.BfdReceiveInterval, StateVal: state.BfdReceiveInterval},
 			{AttrName: "bfd_transmission_interval", ConfigVal: config.BfdTransmissionInterval, StateVal: state.BfdTransmissionInterval},
 			{AttrName: "bfd_detect_multiplier", ConfigVal: config.BfdDetectMultiplier, StateVal: state.BfdDetectMultiplier},
+			{AttrName: "bgp_instance_as_number", ConfigVal: config.BgpInstanceAsNumber, StateVal: state.BgpInstanceAsNumber},
 		},
 	})
 

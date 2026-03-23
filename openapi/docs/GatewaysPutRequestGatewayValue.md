@@ -25,6 +25,7 @@ Name | Type | Description | Notes
 **ExportRouteMap** | Pointer to **string** | A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ExportRouteMapRefType** | Pointer to **string** | Object type for export_route_map field | [optional] 
 **GatewayMode** | Pointer to **string** | Gateway Mode is the method used for defining routes for the Tenant | [optional] [default to "Static BGP"]
+**BgpInstanceAsNumber** | Pointer to **NullableInt32** | Override the switch&#39;s AS number used in the Tenant router definition where this Gateway is applied | [optional] 
 **LocalAsNumber** | Pointer to **NullableInt32** | Local AS Number to use as an override to switch AS number | [optional] 
 **LocalAsNoPrepend** | Pointer to **bool** | Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set. | [optional] [default to false]
 **ReplaceAs** | Pointer to **bool** | Prepend only Local AS in updates to EBGP peers. | [optional] [default to false]
@@ -658,6 +659,41 @@ SetGatewayMode sets GatewayMode field to given value.
 
 HasGatewayMode returns a boolean if a field has been set.
 
+### GetBgpInstanceAsNumber
+
+`func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int32`
+
+GetBgpInstanceAsNumber returns the BgpInstanceAsNumber field if non-nil, zero value otherwise.
+
+### GetBgpInstanceAsNumberOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumberOk() (*int32, bool)`
+
+GetBgpInstanceAsNumberOk returns a tuple with the BgpInstanceAsNumber field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetBgpInstanceAsNumber
+
+`func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumber(v int32)`
+
+SetBgpInstanceAsNumber sets BgpInstanceAsNumber field to given value.
+
+### HasBgpInstanceAsNumber
+
+`func (o *GatewaysPutRequestGatewayValue) HasBgpInstanceAsNumber() bool`
+
+HasBgpInstanceAsNumber returns a boolean if a field has been set.
+
+### SetBgpInstanceAsNumberNil
+
+`func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumberNil(b bool)`
+
+ SetBgpInstanceAsNumberNil sets the value for BgpInstanceAsNumber to be an explicit nil
+
+### UnsetBgpInstanceAsNumber
+`func (o *GatewaysPutRequestGatewayValue) UnsetBgpInstanceAsNumber()`
+
+UnsetBgpInstanceAsNumber ensures that no value is present for BgpInstanceAsNumber, not even an explicit nil
 ### GetLocalAsNumber
 
 `func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumber() int32`

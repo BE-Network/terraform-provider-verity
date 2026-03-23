@@ -61,6 +61,8 @@ type GatewaysPutRequestGatewayValue struct {
 	ExportRouteMapRefType *string `json:"export_route_map_ref_type_,omitempty"`
 	// Gateway Mode is the method used for defining routes for the Tenant
 	GatewayMode *string `json:"gateway_mode,omitempty"`
+	// Override the switch's AS number used in the Tenant router definition where this Gateway is applied
+	BgpInstanceAsNumber NullableInt32 `json:"bgp_instance_as_number,omitempty"`
 	// Local AS Number to use as an override to switch AS number
 	LocalAsNumber NullableInt32 `json:"local_as_number,omitempty"`
 	// Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
@@ -980,6 +982,48 @@ func (o *GatewaysPutRequestGatewayValue) SetGatewayMode(v string) {
 	o.GatewayMode = &v
 }
 
+// GetBgpInstanceAsNumber returns the BgpInstanceAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int32 {
+	if o == nil || IsNil(o.BgpInstanceAsNumber.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.BgpInstanceAsNumber.Get()
+}
+
+// GetBgpInstanceAsNumberOk returns a tuple with the BgpInstanceAsNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumberOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BgpInstanceAsNumber.Get(), o.BgpInstanceAsNumber.IsSet()
+}
+
+// HasBgpInstanceAsNumber returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasBgpInstanceAsNumber() bool {
+	if o != nil && o.BgpInstanceAsNumber.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBgpInstanceAsNumber gets a reference to the given NullableInt32 and assigns it to the BgpInstanceAsNumber field.
+func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumber(v int32) {
+	o.BgpInstanceAsNumber.Set(&v)
+}
+// SetBgpInstanceAsNumberNil sets the value for BgpInstanceAsNumber to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumberNil() {
+	o.BgpInstanceAsNumber.Set(nil)
+}
+
+// UnsetBgpInstanceAsNumber ensures that no value is present for BgpInstanceAsNumber, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetBgpInstanceAsNumber() {
+	o.BgpInstanceAsNumber.Unset()
+}
+
 // GetLocalAsNumber returns the LocalAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumber() int32 {
 	if o == nil || IsNil(o.LocalAsNumber.Get()) {
@@ -1688,6 +1732,9 @@ func (o GatewaysPutRequestGatewayValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.GatewayMode) {
 		toSerialize["gateway_mode"] = o.GatewayMode
+	}
+	if o.BgpInstanceAsNumber.IsSet() {
+		toSerialize["bgp_instance_as_number"] = o.BgpInstanceAsNumber.Get()
 	}
 	if o.LocalAsNumber.IsSet() {
 		toSerialize["local_as_number"] = o.LocalAsNumber.Get()
