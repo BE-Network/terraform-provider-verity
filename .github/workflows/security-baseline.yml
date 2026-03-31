@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   security-baseline:
@@ -22,6 +23,9 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
 
       - name: Dependency Review (license compliance)
         if: github.event_name == 'pull_request' && vars.ENABLE_DEPENDENCY_REVIEW == 'true'
@@ -54,6 +58,40 @@ jobs:
           path: gitleaks-report.json
           retention-days: 30
 
+      - name: Sign Gitleaks report
+        if: always() && hashFiles('gitleaks-report.json') != ''
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign-blob --yes \
+            --output-signature gitleaks-report.json.sig \
+            --output-certificate gitleaks-report.json.crt \
+            gitleaks-report.json
+
+      - name: Verify Gitleaks report signature
+        if: always() && hashFiles('gitleaks-report.json.sig') != ''
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob \
+            --signature gitleaks-report.json.sig \
+            --certificate gitleaks-report.json.crt \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+            gitleaks-report.json
+
+      - name: Upload Gitleaks signature
+        if: always() && hashFiles('gitleaks-report.json.sig') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report-signature
+          path: |
+            gitleaks-report.json.sig
+            gitleaks-report.json.crt
+          retention-days: 30
+
       - name: OSV-Scanner (dependency vulnerabilities)
         continue-on-error: true
         uses: google/osv-scanner-action/osv-scanner-action@v1.7.1
@@ -73,6 +111,40 @@ jobs:
           path: osv-results.sarif
           retention-days: 30
 
+      - name: Sign OSV SARIF
+        if: always() && hashFiles('osv-results.sarif') != ''
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign-blob --yes \
+            --output-signature osv-results.sarif.sig \
+            --output-certificate osv-results.sarif.crt \
+            osv-results.sarif
+
+      - name: Verify OSV SARIF signature
+        if: always() && hashFiles('osv-results.sarif.sig') != ''
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob \
+            --signature osv-results.sarif.sig \
+            --certificate osv-results.sarif.crt \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+            osv-results.sarif
+
+      - name: Upload OSV signature
+        if: always() && hashFiles('osv-results.sarif.sig') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: osv-results-signature
+          path: |
+            osv-results.sarif.sig
+            osv-results.sarif.crt
+          retention-days: 30
+
       - name: Generate SBOM (Syft)
         uses: anchore/sbom-action@v0
         with:
@@ -85,6 +157,40 @@ jobs:
         with:
           name: sbom-cyclonedx
           path: sbom.cdx.json
+          retention-days: 30
+
+      - name: Sign SBOM
+        if: always() && hashFiles('sbom.cdx.json') != ''
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign-blob --yes \
+            --output-signature sbom.cdx.json.sig \
+            --output-certificate sbom.cdx.json.crt \
+            sbom.cdx.json
+
+      - name: Verify SBOM signature
+        if: always() && hashFiles('sbom.cdx.json.sig') != ''
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob \
+            --signature sbom.cdx.json.sig \
+            --certificate sbom.cdx.json.crt \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+            sbom.cdx.json
+
+      - name: Upload SBOM signature
+        if: always() && hashFiles('sbom.cdx.json.sig') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx-signature
+          path: |
+            sbom.cdx.json.sig
+            sbom.cdx.json.crt
           retention-days: 30
 
       - name: Trivy config scan (IaC / Docker / Kubernetes)
@@ -104,4 +210,38 @@ jobs:
         with:
           name: trivy-config
           path: trivy-config.sarif
+          retention-days: 30
+
+      - name: Sign Trivy config SARIF
+        if: always() && hashFiles('trivy-config.sarif') != ''
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign-blob --yes \
+            --output-signature trivy-config.sarif.sig \
+            --output-certificate trivy-config.sarif.crt \
+            trivy-config.sarif
+
+      - name: Verify Trivy config SARIF signature
+        if: always() && hashFiles('trivy-config.sarif.sig') != ''
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob \
+            --signature trivy-config.sarif.sig \
+            --certificate trivy-config.sarif.crt \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+            trivy-config.sarif
+
+      - name: Upload Trivy config signature
+        if: always() && hashFiles('trivy-config.sarif.sig') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-config-signature
+          path: |
+            trivy-config.sarif.sig
+            trivy-config.sarif.crt
           retention-days: 30
