@@ -32,10 +32,10 @@ jobs:
           egress-policy: audit
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
 
       - name: Install Cosign
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@v4.1.0
 
       - name: Initialize CodeQL
         id: init
@@ -68,7 +68,7 @@ jobs:
       - name: Upload CodeQL SARIF (artifact)
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: codeql-sarif
           path: sarif-out/*.sarif
@@ -88,8 +88,7 @@ jobs:
           fi
           for f in sarif-out/*.sarif; do
             cosign sign-blob --yes \
-              --output-signature "${f}.sig" \
-              --output-certificate "${f}.crt" \
+              --bundle "${f}.bundle" \
               "$f"
           done
 
@@ -105,13 +104,12 @@ jobs:
             exit 0
           fi
           for f in sarif-out/*.sarif; do
-            if [ ! -f "${f}.sig" ] || [ ! -f "${f}.crt" ]; then
-              echo "Missing signature/cert for ${f}; skipping"
+            if [ ! -f "${f}.bundle" ]; then
+              echo "Missing bundle for ${f}; skipping"
               continue
             fi
             cosign verify-blob \
-              --signature "${f}.sig" \
-              --certificate "${f}.crt" \
+              --bundle "${f}.bundle" \
               --certificate-oidc-issuer https://token.actions.githubusercontent.com \
               --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
               "$f"
@@ -120,11 +118,10 @@ jobs:
       - name: Upload CodeQL signatures
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: codeql-sarif-signatures
           path: |
-            sarif-out/*.sarif.sig
-            sarif-out/*.sarif.crt
+            sarif-out/*.sarif.bundle
           if-no-files-found: ignore
           retention-days: 30
