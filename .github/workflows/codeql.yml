@@ -1,0 +1,127 @@
+name: CodeQL (SAST)
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+  security-events: write
+  id-token: write
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - go
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v4.1.0
+
+      - name: Initialize CodeQL
+        id: init
+        continue-on-error: true
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Create SARIF output directory
+        if: always()
+        continue-on-error: true
+        run: |
+          mkdir -p sarif-out
+
+      - name: Perform CodeQL Analysis
+        if: steps.init.outcome == 'success'
+        continue-on-error: true
+        uses: github/codeql-action/analyze@v4
+        with:
+          upload: false
+
+          output: sarif-out
+
+      - name: List SARIF outputs
+        if: always()
+        continue-on-error: true
+        run: |
+          ls -la sarif-out || true
+
+      - name: Upload CodeQL SARIF (artifact)
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: codeql-sarif
+          path: sarif-out/*.sarif
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Sign CodeQL SARIF
+        if: always()
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          shopt -s nullglob
+          if ! compgen -G "sarif-out/*.sarif" > /dev/null; then
+            echo "No SARIF files found in sarif-out/; skipping signing"
+            exit 0
+          fi
+          for f in sarif-out/*.sarif; do
+            cosign sign-blob --yes \
+              --bundle "${f}.bundle" \
+              "$f"
+          done
+
+      - name: Verify CodeQL SARIF signatures
+        if: always()
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          shopt -s nullglob
+          if ! compgen -G "sarif-out/*.sarif" > /dev/null; then
+            echo "No SARIF files found in sarif-out/; skipping verification"
+            exit 0
+          fi
+          for f in sarif-out/*.sarif; do
+            if [ ! -f "${f}.bundle" ]; then
+              echo "Missing bundle for ${f}; skipping"
+              continue
+            fi
+            cosign verify-blob \
+              --bundle "${f}.bundle" \
+              --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+              --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+              "$f"
+          done
+
+      - name: Upload CodeQL signatures
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: codeql-sarif-signatures
+          path: |
+            sarif-out/*.sarif.bundle
+          if-no-files-found: ignore
+          retention-days: 30

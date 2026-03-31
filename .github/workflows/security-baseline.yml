@@ -1,0 +1,231 @@
+name: Security Baseline
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  security-baseline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v4.1.0
+
+      - name: Dependency Review (license compliance)
+        if: github.event_name == 'pull_request' && vars.ENABLE_DEPENDENCY_REVIEW == 'true'
+        continue-on-error: true
+        uses: actions/dependency-review-action@v4
+        with:
+          license-check: true
+          vulnerability-check: false
+          warn-only: true
+
+      - name: Gitleaks (secrets scan)
+        continue-on-error: true
+        run: |
+          docker run --rm \
+            -v "$PWD:/repo" \
+            -w /repo \
+            ghcr.io/gitleaks/gitleaks:latest \
+            detect \
+            --source . \
+            --report-format json \
+            --report-path gitleaks-report.json \
+            --exit-code 0
+
+      - name: Upload Gitleaks report
+        if: always() && hashFiles('gitleaks-report.json') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+          retention-days: 30
+
+      - name: Sign Gitleaks report
+        if: always() && hashFiles('gitleaks-report.json') != ''
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign-blob --yes \
+            --bundle gitleaks-report.json.bundle \
+            gitleaks-report.json
+
+      - name: Verify Gitleaks report signature
+        if: always() && hashFiles('gitleaks-report.json.bundle') != ''
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob \
+            --bundle gitleaks-report.json.bundle \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+            gitleaks-report.json
+
+      - name: Upload Gitleaks signature
+        if: always() && hashFiles('gitleaks-report.json.bundle') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: gitleaks-report-signature
+          path: gitleaks-report.json.bundle
+          retention-days: 30
+
+      - name: OSV-Scanner (dependency vulnerabilities)
+        continue-on-error: true
+        uses: google/osv-scanner-action/osv-scanner-action@v2.3.3
+        with:
+          scan-args: |-
+            --recursive
+            --format=sarif
+            --output=osv-results.sarif
+            .
+
+      - name: Upload OSV SARIF
+        if: always() && hashFiles('osv-results.sarif') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: osv-results
+          path: osv-results.sarif
+          retention-days: 30
+
+      - name: Sign OSV SARIF
+        if: always() && hashFiles('osv-results.sarif') != ''
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign-blob --yes \
+            --bundle osv-results.sarif.bundle \
+            osv-results.sarif
+
+      - name: Verify OSV SARIF signature
+        if: always() && hashFiles('osv-results.sarif.bundle') != ''
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob \
+            --bundle osv-results.sarif.bundle \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+            osv-results.sarif
+
+      - name: Upload OSV signature
+        if: always() && hashFiles('osv-results.sarif.bundle') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: osv-results-signature
+          path: osv-results.sarif.bundle
+          retention-days: 30
+
+      - name: Generate SBOM (Syft)
+        uses: anchore/sbom-action@v0
+        with:
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+
+      - name: Upload SBOM
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: sbom-cyclonedx
+          path: sbom.cdx.json
+          retention-days: 30
+
+      - name: Sign SBOM
+        if: always() && hashFiles('sbom.cdx.json') != ''
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign-blob --yes \
+            --bundle sbom.cdx.json.bundle \
+            sbom.cdx.json
+
+      - name: Verify SBOM signature
+        if: always() && hashFiles('sbom.cdx.json.bundle') != ''
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob \
+            --bundle sbom.cdx.json.bundle \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+            sbom.cdx.json
+
+      - name: Upload SBOM signature
+        if: always() && hashFiles('sbom.cdx.json.bundle') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: sbom-cyclonedx-signature
+          path: sbom.cdx.json.bundle
+          retention-days: 30
+
+      - name: Trivy config scan (IaC / Docker / Kubernetes)
+        if: always()
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          scan-type: config
+          scan-ref: .
+          format: sarif
+          output: trivy-config.sarif
+
+      - name: Upload Trivy config SARIF
+        if: always() && hashFiles('trivy-config.sarif') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: trivy-config
+          path: trivy-config.sarif
+          retention-days: 30
+
+      - name: Sign Trivy config SARIF
+        if: always() && hashFiles('trivy-config.sarif') != ''
+        continue-on-error: true
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign sign-blob --yes \
+            --bundle trivy-config.sarif.bundle \
+            trivy-config.sarif
+
+      - name: Verify Trivy config SARIF signature
+        if: always() && hashFiles('trivy-config.sarif.bundle') != ''
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          cosign verify-blob \
+            --bundle trivy-config.sarif.bundle \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.*$" \
+            trivy-config.sarif
+
+      - name: Upload Trivy config signature
+        if: always() && hashFiles('trivy-config.sarif.bundle') != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: trivy-config-signature
+          path: trivy-config.sarif.bundle
+          retention-days: 30
