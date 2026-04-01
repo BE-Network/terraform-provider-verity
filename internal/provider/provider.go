@@ -42,6 +42,7 @@ type providerContext struct {
 	}
 	mode           string
 	apiVersion     string
+	workDir        string
 	responseCache  map[string]interface{}
 	cacheMutex     sync.Mutex
 	bulkOpsMgr     *bulkops.Manager
@@ -245,6 +246,7 @@ func (p *verityProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		tokenManager:   tokenManager,
 		responseCache:  make(map[string]interface{}),
 		mode:           mode,
+		workDir:        utils.GetWorkDirForProvider(baseURL),
 		debounceActive: true,
 	}
 

@@ -427,7 +427,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -657,7 +657,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	hasChanges := false
 
 	// Parse HCL to detect which fields are explicitly configured
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
 
 	// Handle string field changes
@@ -1078,7 +1078,7 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{

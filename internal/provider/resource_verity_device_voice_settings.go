@@ -576,7 +576,7 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -806,7 +806,7 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	hasChanges := false
 
 	// Parse HCL to detect which fields are explicitly configured
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)
 
 	// Handle string field changes
@@ -1232,7 +1232,7 @@ func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req 
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{

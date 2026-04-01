@@ -147,7 +147,7 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -335,7 +335,7 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	hasChanges := false
 
 	// Parse HCL to detect which fields are explicitly configured
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
 	// Handle string field changes
@@ -537,7 +537,7 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{

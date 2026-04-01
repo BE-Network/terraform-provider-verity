@@ -160,7 +160,7 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, diagnosticsProfileTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -340,7 +340,7 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	hasChanges := false
 
 	// Parse HCL to detect which fields are explicitly configured
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, diagnosticsProfileTerraformType, name)
 
 	// Handle string field changes
@@ -529,7 +529,7 @@ func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req r
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, diagnosticsProfileTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{

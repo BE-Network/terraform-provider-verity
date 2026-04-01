@@ -326,7 +326,7 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 	}
 
 	// Parse HCL to detect explicitly configured attributes
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)
 
 	// Handle Services
@@ -595,7 +595,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	}
 
 	// Handle services
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)
 	var config verityEthPortProfileResourceModel
 	req.Config.Get(ctx, &config)
@@ -949,7 +949,7 @@ func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resou
 	// Handle nullable fields in services nested blocks
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)
 
 	for i, configItem := range config.Services {

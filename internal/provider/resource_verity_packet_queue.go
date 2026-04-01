@@ -217,7 +217,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 	}
 
 	// Parse HCL to detect explicitly configured attributes
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 
 	// Handle Pbit
@@ -461,7 +461,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		}
 	}
 
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 	var config verityPacketQueueResourceModel
 	req.Config.Get(ctx, &config)
@@ -793,7 +793,7 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 	// Handle nullable fields in nested blocks
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 
 	// Handle pbit block nullable fields

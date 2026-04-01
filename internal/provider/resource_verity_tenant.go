@@ -1110,7 +1110,7 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, tenantTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{

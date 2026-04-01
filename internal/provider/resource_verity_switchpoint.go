@@ -524,7 +524,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, switchpointTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -869,7 +869,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	// Get config for nullable field handling
 	var config veritySwitchpointResourceModel
 	req.Config.Get(ctx, &config)
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, switchpointTerraformType, name)
 
 	// Handle string field changes
@@ -1703,7 +1703,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, switchpointTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{

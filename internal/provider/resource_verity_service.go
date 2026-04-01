@@ -343,7 +343,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -572,7 +572,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	hasChanges := false
 
 	// Parse HCL to detect which fields are explicitly configured
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
 
 	// Handle string field changes
@@ -929,7 +929,7 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{

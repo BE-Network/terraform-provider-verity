@@ -353,7 +353,7 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -549,7 +549,7 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 	hasChanges := false
 
 	// Parse HCL to detect which fields are explicitly configured
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)
 
 	// Handle string field changes
@@ -925,7 +925,7 @@ func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resou
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{

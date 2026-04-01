@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclparse"
@@ -13,6 +14,34 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/zclconf/go-cty/cty"
 )
+
+// workDirRegistry allows tests to register per-provider working directories,
+// keyed by provider URI, so parallel tests can each resolve their own .tf files.
+var workDirRegistry sync.Map
+
+func RegisterWorkDir(uri, dir string) {
+	workDirRegistry.Store(uri, dir)
+}
+
+func UnregisterWorkDir(uri string) {
+	workDirRegistry.Delete(uri)
+}
+
+// GetWorkDirForProvider returns the working directory for a provider URI.
+// Checks: registry → VERITY_TF_WORKDIR env var → os.Getwd().
+func GetWorkDirForProvider(uri string) string {
+	if dir, ok := workDirRegistry.Load(uri); ok {
+		return dir.(string)
+	}
+	if dir := os.Getenv("VERITY_TF_WORKDIR"); dir != "" {
+		return dir
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		return ""
+	}
+	return wd
+}
 
 // ConfiguredAttributes holds the set of attributes that were explicitly written
 // in the .tf file for a specific resource.
@@ -324,18 +353,4 @@ func mapKeysToString(m map[string]bool) string {
 		keys = append(keys, k)
 	}
 	return strings.Join(keys, ", ")
-}
-
-// In production, this is the current working directory (where Terraform runs).
-// In unit tests, set VERITY_TF_WORKDIR to point to a temp dir with test .tf files,
-// since the test process working directory won't contain any.
-func GetWorkingDirectory() string {
-	if dir := os.Getenv("VERITY_TF_WORKDIR"); dir != "" {
-		return dir
-	}
-	wd, err := os.Getwd()
-	if err != nil {
-		return ""
-	}
-	return wd
 }

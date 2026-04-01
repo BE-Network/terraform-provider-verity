@@ -202,7 +202,7 @@ func (r *verityIpv4PrefixListResource) Create(ctx context.Context, req resource.
 	}
 
 	// Parse HCL to detect explicitly configured attributes
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ipv4PrefixListTerraformType, name)
 
 	// Handle lists
@@ -420,7 +420,7 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 	}
 
 	// Handle lists
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ipv4PrefixListTerraformType, name)
 	var config verityIpv4PrefixListResourceModel
 	req.Config.Get(ctx, &config)
@@ -694,7 +694,7 @@ func (r *verityIpv4PrefixListResource) ModifyPlan(ctx context.Context, req resou
 	// Handle nullable fields in nested blocks
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ipv4PrefixListTerraformType, name)
 
 	for i, configItem := range config.Lists {

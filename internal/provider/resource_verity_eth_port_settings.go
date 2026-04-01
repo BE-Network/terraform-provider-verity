@@ -486,7 +486,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -714,7 +714,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	hasChanges := false
 
 	// Parse HCL to detect which fields are explicitly configured
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
 
 	// Handle string field changes
@@ -1148,7 +1148,7 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 	// is null. We detect explicit null in HCL and force plan to null.
 	// =========================================================================
 	name := plan.Name.ValueString()
-	workDir := utils.GetWorkingDirectory()
+	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
 
 	utils.HandleNullableFields(utils.NullableFieldsConfig{
