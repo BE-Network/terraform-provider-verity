@@ -1,0 +1,26 @@
+name: Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+      - run: |
+          go test ./tests/unit/lifecycle/ -count=1 -timeout 5m 2>&1
+          go test ./tests/unit/bulkops/ -count=1 -timeout 2m 2>&1
+        env:
+          VERITY_DEFAULT_BATCH_DELAY: 100ms
+          VERITY_BATCH_COLLECTION_WINDOW: 100ms
+          VERITY_MAX_BATCH_DELAY: 200ms
+          VERITY_RESPONSE_PROCESSOR_DELAY: 0s
+          VERITY_DEBOUNCE_DELAY: 100ms
