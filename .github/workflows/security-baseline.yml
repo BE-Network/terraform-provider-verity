@@ -43,6 +43,7 @@ jobs:
             -w /repo \
             ghcr.io/gitleaks/gitleaks:latest \
             detect \
+            --config .gitleaks.toml \
             --source . \
             --report-format json \
             --report-path gitleaks-report.json \
