@@ -1,0 +1,45 @@
+{
+  "voice_port_profiles": {
+    "(MGCP Voice Port)": {
+      "name": "(MGCP Voice Port)",
+      "enable": true,
+      "protocol": "MGCP",
+      "digit_map": "(T)",
+      "call_three_way_enable": false,
+      "caller_id_enable": false,
+      "caller_id_name_enable": false,
+      "call_waiting_enable": false,
+      "call_forward_unconditional_enable": false,
+      "call_forward_on_busy_enable": false,
+      "call_forward_on_no_answer_ring_count": 4,
+      "call_transfer_enable": false,
+      "audio_mwi_enable": false,
+      "anonymous_call_block_enable": false,
+      "do_not_disturb_enable": false,
+      "cid_blocking_enable": false,
+      "cid_num_presentation_status": "Public",
+      "cid_name_presentation_status": "Public",
+      "call_waiting_caller_id_enable": false,
+      "call_hold_enable": false,
+      "visual_mwi_enable": false,
+      "mwi_refresh_timer": 30,
+      "hotline_enable": false,
+      "dial_tone_feature_delay": 4,
+      "intercom_enable": false,
+      "intercom_transfer_enable": false,
+      "transmit_gain": -30,
+      "receive_gain": -30,
+      "echo_cancellation_enable": true,
+      "jitter_target": 40,
+      "jitter_buffer_max": 180,
+      "signaling_code": "LoopStart",
+      "release_timer": 10,
+      "roh_timer": 15,
+      "object_properties": {
+        "port_monitoring": "",
+        "group": "",
+        "format_dial_plan": true
+      }
+    }
+  }
+}

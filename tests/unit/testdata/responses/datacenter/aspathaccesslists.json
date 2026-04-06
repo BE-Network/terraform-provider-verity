@@ -1,0 +1,24 @@
+{
+  "as_path_access_list": {
+    "as_path_access_list_test1": {
+      "name": "as_path_access_list_test1",
+      "enable": true,
+      "permit_deny": "permit",
+      "lists": [
+        {
+          "enable": false,
+          "regular_expression": "",
+          "index": 1
+        },
+        {
+          "enable": false,
+          "regular_expression": "",
+          "index": 2
+        }
+      ],
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

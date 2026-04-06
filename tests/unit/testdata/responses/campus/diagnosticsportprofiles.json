@@ -1,0 +1,9 @@
+{
+  "diagnostics_port_profile": {
+    "diagnostics_port_profile_test1": {
+      "name": "diagnostics_port_profile_test1",
+      "enable": false,
+      "enable_sflow": true
+    }
+  }
+}

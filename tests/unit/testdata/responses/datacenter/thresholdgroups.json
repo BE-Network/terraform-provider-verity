@@ -1,0 +1,30 @@
+{
+  "threshold_group": {
+    "Test Alarm": {
+      "name": "Test Alarm",
+      "enable": true,
+      "type": "interface",
+      "thresholds": [
+        {
+          "enable": true,
+          "severity_override": "critical",
+          "threshold": "_newtest",
+          "threshold_ref_type_": "threshold",
+          "index": 1
+        }
+      ],
+      "targets": [
+        {
+          "enable": true,
+          "type": "element",
+          "grouping_rules": "",
+          "switchpoint": "t6",
+          "port": "Eth/0.5",
+          "index": 1,
+          "switchpoint_ref_type_": "switchpoint",
+          "grouping_rules_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

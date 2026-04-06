@@ -1,0 +1,9 @@
+{
+  "ipv6_list_filter": {
+    "ipv6_list_filter_test1": {
+      "name": "ipv6_list_filter_test1",
+      "enable": false,
+      "ipv6_list": ""
+    }
+  }
+}

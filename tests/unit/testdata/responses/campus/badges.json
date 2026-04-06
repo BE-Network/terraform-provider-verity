@@ -1,0 +1,13 @@
+{
+  "badge": {
+    "test": {
+      "name": "test",
+      "enable": true,
+      "color": "blue",
+      "number": 1,
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

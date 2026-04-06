@@ -1,0 +1,42 @@
+{
+  "eth_port_settings": {
+    "eth_create_1": {
+      "name": "eth_create_1",
+      "enable": false,
+      "auto_negotiation": true,
+      "enable_speed_control": true,
+      "max_bit_rate": "-1",
+      "duplex_mode": "Auto",
+      "stp_enable": false,
+      "fast_learning_mode": true,
+      "bpdu_guard": true,
+      "bpdu_filter": true,
+      "guard_loop": false,
+      "poe_enable": false,
+      "priority": "High",
+      "allocated_power": "2.0",
+      "bsp_enable": false,
+      "broadcast": true,
+      "multicast": true,
+      "max_allowed_value": 1500,
+      "max_allowed_unit": "pps",
+      "action": "Protect",
+      "fec": "unaltered",
+      "single_link": false,
+      "minimum_wred_threshold": 3,
+      "maximum_wred_threshold": 7,
+      "wred_drop_probability": 25,
+      "priority_flow_control_watchdog_action": "DROP",
+      "priority_flow_control_watchdog_detect_time": 150,
+      "priority_flow_control_watchdog_restore_time": 120,
+      "packet_queue": "",
+      "enable_wred_tuning": false,
+      "enable_ecn": true,
+      "enable_watchdog_tuning": false,
+      "packet_queue_ref_type_": "",
+      "object_properties": {
+        "group": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "grouping_rules": {
+    "grouping_rules_test1": {
+      "name": "grouping_rules_test1",
+      "enable": false,
+      "type": "device",
+      "operation": "and",
+      "rules": [
+        {
+          "enable": false,
+          "rule_invert": false,
+          "rule_type": "",
+          "rule_value": "",
+          "rule_value_path": "",
+          "index": 1,
+          "rule_value_path_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

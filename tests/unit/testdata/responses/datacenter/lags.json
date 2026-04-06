@@ -1,0 +1,17 @@
+{
+  "lag": {
+    "Changes_Lag": {
+      "name": "Changes_Lag",
+      "enable": true,
+      "is_peer_link": false,
+      "color": "anakiwa",
+      "lacp": true,
+      "eth_port_profile": "",
+      "peer_link_vlan": null,
+      "fallback": false,
+      "fast_rate": false,
+      "uplink": false,
+      "eth_port_profile_ref_type_": ""
+    }
+  }
+}

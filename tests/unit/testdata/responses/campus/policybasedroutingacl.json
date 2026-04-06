@@ -1,0 +1,10 @@
+{
+  "pb_routing_acl": {
+    "pb_routing_acl_test1": {
+      "name": "pb_routing_acl_test1",
+      "enable": false,
+      "ipv_protocol": "ipv4",
+      "next_hop_ips": ""
+    }
+  }
+}

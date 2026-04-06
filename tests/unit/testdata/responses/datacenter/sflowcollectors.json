@@ -1,0 +1,10 @@
+{
+  "sflow_collector": {
+    "Example Collector": {
+      "name": "Example Collector",
+      "enable": true,
+      "ip": "187.22.22.22",
+      "port": 6343
+    }
+  }
+}

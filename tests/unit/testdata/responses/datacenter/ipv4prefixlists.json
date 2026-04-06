@@ -1,0 +1,45 @@
+{
+  "ipv4_prefix_list": {
+    "test1": {
+      "name": "test1",
+      "enable": true,
+      "lists": [
+        {
+          "enable": false,
+          "permit_deny": "permit",
+          "ipv4_prefix": "",
+          "greater_than_equal_value": null,
+          "less_than_equal_value": null,
+          "index": 1
+        },
+        {
+          "enable": false,
+          "permit_deny": "permit",
+          "ipv4_prefix": "",
+          "greater_than_equal_value": null,
+          "less_than_equal_value": null,
+          "index": 2
+        },
+        {
+          "enable": false,
+          "permit_deny": "permit",
+          "ipv4_prefix": "",
+          "greater_than_equal_value": null,
+          "less_than_equal_value": null,
+          "index": 3
+        },
+        {
+          "enable": false,
+          "permit_deny": "permit",
+          "ipv4_prefix": "",
+          "greater_than_equal_value": null,
+          "less_than_equal_value": null,
+          "index": 4
+        }
+      ],
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

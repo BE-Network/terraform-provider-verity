@@ -1,0 +1,31 @@
+{
+  "threshold": {
+    "threshold_name": {
+      "name": "threshold_name",
+      "enable": false,
+      "type": "device",
+      "operation": "and",
+      "severity": "notice",
+      "for": "5",
+      "keep_firing_for": "5",
+      "escalation_metric": "",
+      "escalation_operation": "eq",
+      "critical_escalation_value": "",
+      "error_escalation_value": "",
+      "warning_escalation_value": "",
+      "notice_escalation_value": "",
+      "rules": [
+        {
+          "enable": false,
+          "type": "metric",
+          "metric": "",
+          "operation": "==",
+          "value": "",
+          "threshold": "",
+          "index": 1,
+          "threshold_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

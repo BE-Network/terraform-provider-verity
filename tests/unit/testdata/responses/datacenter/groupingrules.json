@@ -1,0 +1,21 @@
+{
+  "grouping_rules": {
+    "test": {
+      "name": "test",
+      "enable": true,
+      "type": "interface",
+      "operation": "and",
+      "rules": [
+        {
+          "enable": true,
+          "rule_invert": false,
+          "rule_type": "endpoint_type",
+          "rule_value": "leaf",
+          "rule_value_path": "",
+          "index": 1,
+          "rule_value_path_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

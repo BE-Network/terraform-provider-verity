@@ -1,0 +1,25 @@
+{
+  "eth_device_profiles": {
+    "(Device Settings)": {
+      "name": "(Device Settings)",
+      "enable": true,
+      "hold_timer": 0,
+      "mode": "IEEE 802.3af",
+      "usage_threshold": 0.99,
+      "external_battery_power_available": 0,
+      "external_power_available": 0,
+      "disable_tcp_udp_learned_packet_acceleration": false,
+      "mac_aging_timer_override": null,
+      "spanning_tree_priority": "byLevel",
+      "packet_queue": "(Packet Queue)",
+      "security_audit_interval": null,
+      "commit_to_flash_interval": null,
+      "rocev2": false,
+      "cut_through_switching": false,
+      "packet_queue_ref_type_": "packet_queue",
+      "object_properties": {
+        "group": ""
+      }
+    }
+  }
+}

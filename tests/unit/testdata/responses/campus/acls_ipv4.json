@@ -1,0 +1,21 @@
+{
+  "ipv4_filter": {
+    "hello-world-ipv4-filter": {
+      "name": "hello-world-ipv4-filter",
+      "enable": true,
+      "protocol": "tcp",
+      "bidirectional": false,
+      "source_ip": "",
+      "source_port_operator": "",
+      "source_port_1": null,
+      "source_port_2": null,
+      "destination_ip": "",
+      "destination_port_operator": "",
+      "destination_port_1": null,
+      "destination_port_2": null,
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

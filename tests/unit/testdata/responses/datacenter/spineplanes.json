@@ -1,0 +1,11 @@
+{
+  "spine_plane": {
+    "spine_plane_test1": {
+      "name": "spine_plane_test1",
+      "enable": true,
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "device_voice_settings": {
+    "(MGCP Voice Device)": {
+      "name": "(MGCP Voice Device)",
+      "enable": true,
+      "dtmf_method": "Inband",
+      "region": "US",
+      "protocol": "MGCP",
+      "proxy_server": "",
+      "proxy_server_port": 0,
+      "proxy_server_secondary": "",
+      "proxy_server_secondary_port": 0,
+      "registrar_server": "",
+      "registrar_server_port": 0,
+      "registrar_server_secondary": "",
+      "registrar_server_secondary_port": 0,
+      "user_agent_domain": "",
+      "user_agent_transport": "UDP",
+      "user_agent_port": 0,
+      "outbound_proxy": "",
+      "outbound_proxy_port": 0,
+      "outbound_proxy_secondary": "",
+      "outbound_proxy_secondary_port": 0,
+      "registration_period": 3240,
+      "register_expires": 3600,
+      "voicemail_server": "",
+      "voicemail_server_port": 0,
+      "voicemail_server_expires": 3600,
+      "sip_dscp_mark": 0,
+      "call_agent_1": "",
+      "call_agent_port_1": 0,
+      "call_agent_2": "",
+      "call_agent_port_2": 0,
+      "domain": "",
+      "mgcp_dscp_mark": 0,
+      "termination_base": "aaln/",
+      "local_port_min": 30000,
+      "local_port_max": 30200,
+      "event_payload_type": 101,
+      "cas_events": 0,
+      "dscp_mark": 0,
+      "rtcp": true,
+      "fax_t38": false,
+      "bit_rate": "14400",
+      "cancel_call_waiting": "*70",
+      "call_hold": "*9",
+      "cids_activate": "*67",
+      "cids_deactivate": "*82",
+      "do_not_disturb_activate": "*78",
+      "do_not_disturb_deactivate": "*79",
+      "do_not_disturb_pin_change": "*10",
+      "emergency_service_number": "911",
+      "anon_cid_block_activate": "*77",
+      "anon_cid_block_deactivate": "*87",
+      "call_forward_unconditional_activate": "*72",
+      "call_forward_unconditional_deactivate": "*73",
+      "call_forward_on_busy_activate": "*90",
+      "call_forward_on_busy_deactivate": "*91",
+      "call_forward_on_no_answer_activate": "*92",
+      "call_forward_on_no_answer_deactivate": "*93",
+      "intercom_1": "*53",
+      "intercom_2": "*54",
+      "intercom_3": "*55",
+      "codecs": [
+        {
+          "codec_num_name": "G.711MuLaw",
+          "codec_num_enable": true,
+          "codec_num_packetization_period": "20",
+          "codec_num_silence_suppression": false,
+          "index": 1
+        },
+        {
+          "codec_num_name": "G.711ALaw",
+          "codec_num_enable": true,
+          "codec_num_packetization_period": "20",
+          "codec_num_silence_suppression": false,
+          "index": 2
+        },
+        {
+          "codec_num_name": "G.726",
+          "codec_num_enable": true,
+          "codec_num_packetization_period": "20",
+          "codec_num_silence_suppression": false,
+          "index": 3
+        },
+        {
+          "codec_num_name": "G.722",
+          "codec_num_enable": true,
+          "codec_num_packetization_period": "20",
+          "codec_num_silence_suppression": false,
+          "index": 4
+        },
+        {
+          "codec_num_name": "G.729",
+          "codec_num_enable": true,
+          "codec_num_packetization_period": "20",
+          "codec_num_silence_suppression": false,
+          "index": 5
+        }
+      ],
+      "object_properties": {
+        "group": ""
+      }
+    }
+  }
+}

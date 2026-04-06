@@ -1,0 +1,34 @@
+{
+  "tenant": {
+    "tenant_test1": {
+      "name": "tenant_test1",
+      "enable": true,
+      "layer_3_vni": 102004,
+      "layer_3_vlan": 2004,
+      "dhcp_relay_source_ipv4s_subnet": "",
+      "dhcp_relay_source_ipv6s_subnet": "",
+      "route_distinguisher": "",
+      "route_target_import": "",
+      "route_target_export": "",
+      "import_route_map": "",
+      "export_route_map": "",
+      "vrf_name": "Vrf_4",
+      "default_originate": false,
+      "layer_3_vlan_auto_assigned_": true,
+      "export_route_map_ref_type_": "",
+      "route_tenants": [
+        {
+          "enable": false,
+          "tenant": "",
+          "index": 1
+        }
+      ],
+      "layer_3_vni_auto_assigned_": true,
+      "import_route_map_ref_type_": "",
+      "object_properties": {
+        "group": "test"
+      },
+      "vrf_name_auto_assigned_": true
+    }
+  }
+}

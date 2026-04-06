@@ -1,0 +1,24 @@
+{
+  "service": {
+    "service_test1": {
+      "name": "service_test1",
+      "enable": false,
+      "vlan": 108,
+      "vni": 100108,
+      "tenant": "Changes_EthPort-Tenant",
+      "anycast_ipv4_mask": "10.12.14.16/24",
+      "anycast_ipv6_mask": "",
+      "dhcp_server_ipv4": "",
+      "dhcp_server_ipv6": "",
+      "mtu": 1501,
+      "policy_based_routing": "",
+      "policy_based_routing_ref_type_": "",
+      "tenant_ref_type_": "tenant",
+      "object_properties": {
+        "group": "",
+        "on_summary": true
+      },
+      "vni_auto_assigned_": true
+    }
+  }
+}

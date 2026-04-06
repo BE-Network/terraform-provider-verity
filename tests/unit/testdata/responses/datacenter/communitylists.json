@@ -1,0 +1,28 @@
+{
+  "community_list": {
+    "Changes_BGP_CommunityLists": {
+      "name": "Changes_BGP_CommunityLists",
+      "enable": true,
+      "permit_deny": "permit",
+      "any_all": "any",
+      "standard_expanded": "standard",
+      "lists": [
+        {
+          "enable": false,
+          "mode": "community",
+          "community_string_expanded_expression": "",
+          "index": 1
+        },
+        {
+          "enable": false,
+          "mode": "community",
+          "community_string_expanded_expression": "",
+          "index": 2
+        }
+      ],
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

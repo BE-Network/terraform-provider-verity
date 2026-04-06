@@ -1,0 +1,21 @@
+{
+  "ipv6_filter": {
+    "ip_filter_test1": {
+      "name": "ip_filter_test1",
+      "enable": false,
+      "protocol": "",
+      "bidirectional": false,
+      "source_ip": "",
+      "source_port_operator": "",
+      "source_port_1": null,
+      "source_port_2": null,
+      "destination_ip": "",
+      "destination_port_operator": "",
+      "destination_port_1": null,
+      "destination_port_2": null,
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "threshold_group": {
+    "threshold_group_test1": {
+      "name": "threshold_group_test1",
+      "enable": false,
+      "type": "device",
+      "thresholds": [
+        {
+          "enable": false,
+          "severity_override": "",
+          "threshold": "",
+          "threshold_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "targets": [
+        {
+          "enable": false,
+          "type": "grouping_rules",
+          "grouping_rules": "",
+          "switchpoint": "",
+          "port": "",
+          "index": 1,
+          "switchpoint_ref_type_": "",
+          "grouping_rules_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

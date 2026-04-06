@@ -1,0 +1,17 @@
+{
+  "sfp_breakouts": {
+    "SFP Breakouts": {
+      "name": "SFP Breakouts",
+      "enable": false,
+      "breakout": [
+        {
+          "enable": false,
+          "vendor": "aaa",
+          "part_number": "",
+          "breakout": "1x100G",
+          "index": 1
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "pb_routing": {
+    "pbr1": {
+      "name": "pbr1",
+      "enable": true,
+      "policy": [
+        {
+          "enable": true,
+          "pb_routing_acl": "ipv4_1",
+          "pb_routing_acl_ref_type_": "pb_routing_acl",
+          "index": 1
+        },
+        {
+          "enable": true,
+          "pb_routing_acl": "pbr_acl_ipv6_1",
+          "pb_routing_acl_ref_type_": "pb_routing_acl",
+          "index": 2
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "switchpoint": {
+    "test": {
+      "traffic_mirrors": [],
+      "read_only_mode": true,
+      "spine_plane": "",
+      "pod": "",
+      "children": [],
+      "badges": [],
+      "connected_bundle_ref_type_": "endpoint_bundle",
+      "pod_ref_type_": "",
+      "eths": [
+        {
+          "eth_num_icon": "empty",
+          "index": 1,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 2,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 3,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 4,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 5,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 6,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 7,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 8,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 9,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 10,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 11,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 12,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 13,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 14,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 15,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 16,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 17,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 18,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 19,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 20,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 21,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 22,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 23,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 24,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": ""
+        }
+      ],
+      "bgp_as_number_auto_assigned_": true,
+      "spine_plane_ref_type_": "",
+      "switch_router_id_ip_mask": "",
+      "type": "management",
+      "connected_bundle": "Bundle for test",
+      "enable": true,
+      "out_of_band_management": false,
+      "bgp_as_number": null,
+      "device_serial_number": "",
+      "locked": false,
+      "name": "test",
+      "switch_vtep_id_ip_mask": "",
+      "switch_router_id_ip_mask_auto_assigned_": true,
+      "switch_vtep_id_ip_mask_auto_assigned_": true,
+      "rack": "",
+      "object_properties": {
+        "aggregate": false,
+        "user_notes": "",
+        "is_host": false,
+        "number_of_multipoints": null,
+        "expected_parent_endpoint": ""
+      }
+    }
+  }
+}

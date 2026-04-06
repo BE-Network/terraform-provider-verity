@@ -1,0 +1,16 @@
+{
+  "pb_routing": {
+    "pb_routing_test1": {
+      "name": "pb_routing_test1",
+      "enable": false,
+      "policy": [
+        {
+          "enable": false,
+          "pb_routing_acl": "",
+          "pb_routing_acl_ref_type_": "",
+          "index": 1
+        }
+      ]
+    }
+  }
+}

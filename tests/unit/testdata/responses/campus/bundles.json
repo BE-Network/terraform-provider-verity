@@ -1,0 +1,280 @@
+{
+  "endpoint_bundle": {
+    "Bundle for test": {
+      "name": "Bundle for test",
+      "enable": true,
+      "protocol": "SIP",
+      "device_settings": "(Device Settings)",
+      "device_voice_settings": "(SIP Voice Device)",
+      "cli_commands": "",
+      "diagnostics_profile": "",
+      "device_voice_settings_ref_type_": "device_voice_settings",
+      "eth_port_paths": [
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 1,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 2,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 3,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 4,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 5,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 6,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 7,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 8,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 9,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 10,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 11,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 12,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 13,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 14,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 15,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 16,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 17,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 18,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 19,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 20,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 21,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 22,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 23,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        },
+        {
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_settings": "",
+          "diagnostics_port_profile_num_diagnostics_port_profile": "",
+          "index": 24,
+          "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "port_name": "",
+          "eth_port_num_eth_port_profile_ref_type_": ""
+        }
+      ],
+      "voice_port_profile_paths": [
+        {
+          "voice_port_num_voice_port_profiles": "",
+          "voice_port_num_voice_port_profiles_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "device_settings_ref_type_": "eth_device_profiles",
+      "user_services": [
+        {
+          "row_app_enable": false,
+          "row_app_connected_service": "",
+          "row_app_cli_commands": "",
+          "row_ip_mask": "",
+          "index": 1,
+          "row_app_connected_service_ref_type_": ""
+        }
+      ],
+      "object_properties": {
+        "group": "",
+        "is_for_switch": true,
+        "is_public": false
+      },
+      "diagnostics_profile_ref_type_": ""
+    }
+  }
+}

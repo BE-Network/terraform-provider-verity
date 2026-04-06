@@ -1,0 +1,46 @@
+{
+  "port_acl": {
+    "Port_acl_1": {
+      "name": "Port_acl_1",
+      "enable": true,
+      "ipv6_deny": [
+        {
+          "enable": false,
+          "filter": "ipv6_te",
+          "index": 1,
+          "filter_ref_type_": "ipv6_filter"
+        }
+      ],
+      "ipv6_permit": [
+        {
+          "enable": true,
+          "filter": "ipv6_te",
+          "index": 1,
+          "filter_ref_type_": "ipv6_filter"
+        },
+        {
+          "enable": true,
+          "filter": "OINKER",
+          "index": 2,
+          "filter_ref_type_": "ipv6_filter"
+        }
+      ],
+      "ipv4_permit": [
+        {
+          "enable": true,
+          "filter": "test4",
+          "index": 1,
+          "filter_ref_type_": "ipv4_filter"
+        }
+      ],
+      "ipv4_deny": [
+        {
+          "enable": true,
+          "filter": "ipv4_filter",
+          "index": 1,
+          "filter_ref_type_": "ipv4_filter"
+        }
+      ]
+    }
+  }
+}

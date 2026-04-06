@@ -1,0 +1,54 @@
+{
+  "eth_port_settings": {
+    "test": {
+      "name": "test",
+      "enable": true,
+      "auto_negotiation": true,
+      "enable_speed_control": true,
+      "max_bit_rate": "400000",
+      "duplex_mode": "Half",
+      "cli_commands": "",
+      "detect_bridging_loops": false,
+      "unidirectional_link_detection": false,
+      "stp_enable": false,
+      "fast_learning_mode": true,
+      "bpdu_guard": false,
+      "bpdu_filter": false,
+      "guard_loop": false,
+      "poe_enable": false,
+      "priority": "High",
+      "allocated_power": "0.0",
+      "mac_security_mode": "disabled",
+      "mac_limit": 100,
+      "security_violation_action": "protect",
+      "aging_type": "absolute",
+      "aging_time": 0,
+      "lldp_enable": true,
+      "lldp_mode": "TxOnly",
+      "lldp_med_enable": true,
+      "bsp_enable": false,
+      "broadcast": true,
+      "multicast": true,
+      "max_allowed_value": 1000,
+      "max_allowed_unit": "pps",
+      "action": "Protect",
+      "fec": "unaltered",
+      "packet_queue": "",
+      "packet_queue_ref_type_": "",
+      "lldp_med": [
+        {
+          "lldp_med_row_num_enable": false,
+          "lldp_med_row_num_advertised_applicatio": "",
+          "lldp_med_row_num_dscp_mark": 0,
+          "lldp_med_row_num_priority": 0,
+          "lldp_med_row_num_service": "",
+          "index": 1,
+          "lldp_med_row_num_service_ref_type_": ""
+        }
+      ],
+      "object_properties": {
+        "group": ""
+      }
+    }
+  }
+}

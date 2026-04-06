@@ -1,0 +1,46 @@
+{
+  "pb_egress_profile": {
+    "prof": {
+      "name": "prof",
+      "enable": true,
+      "ipv6_deny": [
+        {
+          "enable": true,
+          "filter": "ipv6_list_test",
+          "index": 1,
+          "filter_ref_type_": "ipv6_list_filter"
+        }
+      ],
+      "ipv6_permit": [
+        {
+          "enable": true,
+          "filter": "ipv6_list_test",
+          "index": 1,
+          "filter_ref_type_": "ipv6_list_filter"
+        }
+      ],
+      "ipv4_permit": [
+        {
+          "enable": true,
+          "filter": "ipv4_test_2",
+          "index": 1,
+          "filter_ref_type_": "ipv4_list_filter"
+        }
+      ],
+      "ipv4_deny": [
+        {
+          "enable": true,
+          "filter": "ipv4_test_list",
+          "index": 1,
+          "filter_ref_type_": "ipv4_list_filter"
+        },
+        {
+          "enable": false,
+          "filter": "",
+          "index": 2,
+          "filter_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

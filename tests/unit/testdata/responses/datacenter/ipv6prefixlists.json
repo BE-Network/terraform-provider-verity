@@ -1,0 +1,21 @@
+{
+  "ipv6_prefix_list": {
+    "ipv6_list": {
+      "name": "ipv6_list",
+      "enable": true,
+      "lists": [
+        {
+          "enable": false,
+          "permit_deny": "permit",
+          "ipv6_prefix": "0::0/0",
+          "greater_than_equal_value": null,
+          "less_than_equal_value": null,
+          "index": 1
+        }
+      ],
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

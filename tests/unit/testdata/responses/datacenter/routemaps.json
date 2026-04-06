@@ -1,0 +1,34 @@
+{
+  "route_map": {
+    "Changes_BGP-RouteMaps": {
+      "name": "Changes_BGP-RouteMaps",
+      "enable": true,
+      "route_map_clauses": [
+        {
+          "enable": true,
+          "route_map_clause": "Changes_BGP_RMClause",
+          "index": 1,
+          "route_map_clause_ref_type_": "route_map_clause"
+        }
+      ],
+      "object_properties": {
+        "notes": ""
+      }
+    },
+    "Route Map": {
+      "name": "Route Map",
+      "enable": true,
+      "route_map_clauses": [
+        {
+          "enable": true,
+          "route_map_clause": "ipv6_clause",
+          "index": 1,
+          "route_map_clause_ref_type_": "route_map_clause"
+        }
+      ],
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

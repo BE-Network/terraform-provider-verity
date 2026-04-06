@@ -1,0 +1,41 @@
+{
+  "device_controller": {
+    "test1": {
+      "name": "test1",
+      "enable": true,
+      "ip_source": "dhcp",
+      "controller_ip_and_mask": "",
+      "gateway": "",
+      "switch_ip_and_mask": "10.10.10.9/24",
+      "switch_gateway": "10.10.10.1",
+      "comm_type": "snmpv2",
+      "snmp_community_string": "public",
+      "uplink_port": "",
+      "lldp_search_string": "82:82:82:82:08:08",
+      "ztp_identification": "",
+      "located_by": "LLDP",
+      "power_state": "on",
+      "communication_mode": "generic_advanced_snmp",
+      "cli_access_mode": "SSH",
+      "username": "",
+      "password": "",
+      "enable_password": "",
+      "ssh_key_or_password": "",
+      "managed_on_native_vlan": true,
+      "sdlc": "sdlc_test1",
+      "switchpoint": "t1",
+      "security_type": "noAuthNoPriv",
+      "snmpv3_username": "",
+      "authentication_protocol": "MD5",
+      "passphrase": "",
+      "private_protocol": "DES",
+      "private_password": "",
+      "password_encrypted": "",
+      "enable_password_encrypted": "",
+      "ssh_key_or_password_encrypted": "",
+      "passphrase_encrypted": "",
+      "private_password_encrypted": "",
+      "switchpoint_ref_type_": "switchpoint"
+    }
+  }
+}

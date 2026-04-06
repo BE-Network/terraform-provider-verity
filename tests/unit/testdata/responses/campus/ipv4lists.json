@@ -1,0 +1,9 @@
+{
+  "ipv4_list_filter": {
+    "ipv4_list_filter_test1": {
+      "name": "ipv4_list_filter_test1",
+      "enable": false,
+      "ipv4_list": ""
+    }
+  }
+}

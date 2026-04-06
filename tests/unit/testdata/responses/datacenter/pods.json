@@ -1,0 +1,12 @@
+{
+  "pod": {
+    "Pod 1": {
+      "name": "Pod 1",
+      "enable": true,
+      "expected_spine_count": 2,
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

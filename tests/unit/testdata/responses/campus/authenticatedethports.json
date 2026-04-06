@@ -1,0 +1,35 @@
+{
+  "authenticated_eth_port": {
+    "test": {
+      "name": "test",
+      "enable": true,
+      "connection_mode": "PortMode",
+      "reauthorization_period_sec": 3600,
+      "allow_mac_based_authentication": false,
+      "mac_authentication_holdoff_sec": 60,
+      "trusted_port": false,
+      "eth_ports": [
+        {
+          "eth_port_profile_num_enable": true,
+          "eth_port_profile_num_eth_port": "data_2",
+          "eth_port_profile_num_walled_garden_set": false,
+          "eth_port_profile_num_radius_filter_id": "data_2",
+          "index": 1,
+          "eth_port_profile_num_eth_port_ref_type_": "eth_port_profile_"
+        },
+        {
+          "eth_port_profile_num_enable": true,
+          "eth_port_profile_num_eth_port": "",
+          "eth_port_profile_num_walled_garden_set": false,
+          "eth_port_profile_num_radius_filter_id": "",
+          "index": 2,
+          "eth_port_profile_num_eth_port_ref_type_": ""
+        }
+      ],
+      "object_properties": {
+        "group": "",
+        "port_monitoring": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "diagnostics_profile": {
+    "Example": {
+      "name": "Example",
+      "enable": true,
+      "enable_sflow": true,
+      "flow_collector": "Example Collector",
+      "poll_interval": 20,
+      "vrf_type": "management",
+      "flow_collector_ref_type_": "sflow_collector"
+    }
+  }
+}

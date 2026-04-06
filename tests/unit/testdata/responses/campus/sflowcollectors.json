@@ -1,0 +1,10 @@
+{
+  "sflow_collector": {
+    "sflow_collector_test1": {
+      "name": "sflow_collector_test1",
+      "enable": false,
+      "ip": "",
+      "port": 6343
+    }
+  }
+}

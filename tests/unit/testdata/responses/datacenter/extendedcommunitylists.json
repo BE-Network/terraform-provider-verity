@@ -1,0 +1,22 @@
+{
+  "extended_community_list": {
+    "Extended Community List": {
+      "name": "Extended Community List",
+      "enable": true,
+      "permit_deny": "permit",
+      "any_all": "any",
+      "standard_expanded": "standard",
+      "lists": [
+        {
+          "enable": false,
+          "mode": "route",
+          "route_target_expanded_expression": "",
+          "index": 1
+        }
+      ],
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

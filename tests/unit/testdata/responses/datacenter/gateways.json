@@ -1,0 +1,56 @@
+{
+  "gateway": {
+    "gateway_test1": {
+      "name": "gateway_test1",
+      "enable": true,
+      "tenant": "Visualizator",
+      "neighbor_ip_address": "8.8.8.8",
+      "neighbor_as_number": 12,
+      "fabric_interconnect": false,
+      "keepalive_timer": 60,
+      "hold_timer": 182,
+      "connect_timer": 120,
+      "advertisement_interval": 30,
+      "ebgp_multihop": 255,
+      "egress_vlan": null,
+      "source_ip_address": "",
+      "anycast_ip_mask": "",
+      "md5_password": "",
+      "import_route_map": "",
+      "export_route_map": "",
+      "gateway_mode": "Static BGP",
+      "bgp_instance_as_number": null,
+      "local_as_number": 10,
+      "local_as_no_prepend": true,
+      "replace_as": false,
+      "max_local_as_occurrences": 0,
+      "dynamic_bgp_subnet": "",
+      "dynamic_bgp_limits": 0,
+      "helper_hop_ip_address": "",
+      "enable_bfd": false,
+      "bfd_receive_interval": 300,
+      "bfd_transmission_interval": 300,
+      "bfd_detect_multiplier": 3,
+      "next_hop_self": false,
+      "switch_encrypted_md5_password": false,
+      "md5_password_encrypted": "",
+      "default_originate": false,
+      "bfd_multihop": false,
+      "import_route_map_ref_type_": "",
+      "tenant_ref_type_": "tenant",
+      "static_routes": [
+        {
+          "enable": false,
+          "ipv4_route_prefix": "",
+          "next_hop_ip_address": "",
+          "ad_value": 1,
+          "index": 1
+        }
+      ],
+      "export_route_map_ref_type_": "",
+      "object_properties": {
+        "group": "test"
+      }
+    }
+  }
+}

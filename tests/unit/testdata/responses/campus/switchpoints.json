@@ -1,0 +1,100 @@
+{
+  "switchpoint": {
+    "sim": {
+      "connected_bundle": "fourth",
+      "connected_bundle_ref_type_": "endpoint_bundle",
+      "enable": true,
+      "locked": false,
+      "name": "sim",
+      "traffic_mirrors": [],
+      "read_only_mode": false,
+      "is_fabric": false,
+      "out_of_band_management": false,
+      "device_serial_number": "",
+      "badges": [],
+      "eths": [
+        {
+          "eth_num_icon": "empty",
+          "index": 1,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "vwan0"
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 2,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "Eth1"
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 3,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "Eth2"
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 4,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "Eth3"
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 5,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "Eth4"
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 6,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "Eth5"
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 7,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "Eth6"
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 8,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "Eth7"
+        },
+        {
+          "eth_num_icon": "empty",
+          "index": 9,
+          "enable": true,
+          "eth_num_label": "",
+          "breakout": "",
+          "port_name": "Eth8"
+        }
+      ],
+      "children": [],
+      "object_properties": {
+        "is_host": false,
+        "number_of_multipoints": 0,
+        "expected_parent_endpoint": "",
+        "draw_as_edge_device": false,
+        "user_notes": "",
+        "aggregate": false
+      }
+    }
+  }
+}

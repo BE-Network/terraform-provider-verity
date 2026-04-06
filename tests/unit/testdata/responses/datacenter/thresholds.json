@@ -1,0 +1,31 @@
+{
+  "threshold": {
+    "newtest": {
+      "name": "newtest",
+      "enable": true,
+      "type": "interface",
+      "operation": "and",
+      "severity": "notice",
+      "for": "5",
+      "keep_firing_for": "5",
+      "escalation_metric": "",
+      "escalation_operation": "eq",
+      "critical_escalation_value": "",
+      "error_escalation_value": "",
+      "warning_escalation_value": "",
+      "notice_escalation_value": "",
+      "rules": [
+        {
+          "enable": true,
+          "type": "metric",
+          "metric": "prometheus_Switch_interfaces_interface_stats_receive_rx_bytes",
+          "operation": "eq",
+          "value": "1",
+          "threshold": "",
+          "index": 1,
+          "threshold_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "service": {
+    "Test": {
+      "name": "Test",
+      "enable": true,
+      "vlan": 5,
+      "max_upstream_rate_mbps": null,
+      "max_downstream_rate_mbps": null,
+      "packet_priority": "0",
+      "multicast_management_mode": "flooding",
+      "tagged_packets": false,
+      "tls": false,
+      "allow_local_switching": true,
+      "act_as_multicast_querier": false,
+      "block_unknown_unicast_flood": false,
+      "block_downstream_dhcp_server": true,
+      "is_management_service": false,
+      "use_dscp_to_p_bit_mapping_for_l3_packets_if_available": false,
+      "allow_fast_leave": false,
+      "mst_instance": 0,
+      "policy_based_routing": "",
+      "policy_based_routing_ref_type_": "",
+      "object_properties": {
+        "group": "nbi",
+        "on_summary": true,
+        "warn_on_no_external_source": true
+      }
+    }
+  }
+}

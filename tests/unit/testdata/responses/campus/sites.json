@@ -1,0 +1,62 @@
+{
+  "site": {
+    "TOR Complex": {
+      "name": "TOR Complex",
+      "enable": true,
+      "service_for_site": "Management",
+      "spanning_tree_type": "pvst",
+      "region_name": "",
+      "revision": 0,
+      "force_spanning_tree_on_fabric_ports": false,
+      "read_only_mode": false,
+      "enable_dhcp_snooping": false,
+      "dscp_to_p_bit_map": "0000000011111111222222223333333344444444555555556666666677777777",
+      "link_state_timeout_value": 60,
+      "evpn_multihoming_startup_delay": 300,
+      "evpn_mac_holdtime": 1080,
+      "aggressive_reporting": false,
+      "crc_failure_threshold": null,
+      "ip_source_guard": false,
+      "duplicate_address_detection_max_number_of_moves": 5,
+      "duplicate_address_detection_time": 180,
+      "service_for_site_ref_type_": "service",
+      "pairs": [],
+      "islands": [
+        {
+          "toi_switchpoint": "OLT1s",
+          "index": 1,
+          "toi_switchpoint_ref_type_": "switchpoint"
+        },
+        {
+          "toi_switchpoint": "g",
+          "index": 2,
+          "toi_switchpoint_ref_type_": "switchpoint"
+        }
+      ],
+      "object_properties": {
+        "system_graphs": [
+          {
+            "index": 1,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=vNetC::graph_lagg_path=::graph_line_set=Free Disk and Memory::graph_processes=::graph_source_mod=vnetc::graph_source_path=::graph_sub_path=::graph_time_frame=24h"
+          },
+          {
+            "index": 2,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          },
+          {
+            "index": 3,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=vNetC Processes::graph_lagg_path=::graph_line_set=VSZ::graph_processes=ns_acsrpc|ns_admind|ns_bizd|snmpd|ns_snmp_listener::graph_source_mod=vnetc_processes::graph_source_path=::graph_sub_path=::graph_time_frame=12h"
+          },
+          {
+            "index": 4,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          },
+          {
+            "index": 5,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "eth_device_profiles": {
+    "device_settings_test1": {
+      "name": "device_settings_test1",
+      "enable": true,
+      "mode": "IEEE 802.3af",
+      "usage_threshold": 0.95,
+      "external_battery_power_available": 40,
+      "external_power_available": 75,
+      "disable_tcp_udp_learned_packet_acceleration": false,
+      "packet_queue": "(Packet Queue)",
+      "security_audit_interval": 0,
+      "commit_to_flash_interval": 0,
+      "rocev2": false,
+      "cut_through_switching": false,
+      "packet_queue_ref_type_": "packet_queue",
+      "object_properties": {
+        "group": ""
+      }
+    }
+  }
+}

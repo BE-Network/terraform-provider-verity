@@ -1,0 +1,83 @@
+{
+  "site": {
+    "TOR Complex": {
+      "name": "TOR Complex",
+      "enable": true,
+      "service_for_site": "Management",
+      "spanning_tree_type": "",
+      "region_name": "",
+      "revision": 0,
+      "force_spanning_tree_on_fabric_ports": false,
+      "read_only_mode": false,
+      "dscp_to_p_bit_map": "0000000011111111222222223333333344444444555555556666666677777777",
+      "anycast_mac_address": "00:00:00:00:01:01",
+      "mac_address_aging_time": 600,
+      "mlag_delay_restore_timer": 300,
+      "bgp_keepalive_timer": 60,
+      "bgp_hold_down_timer": 182,
+      "spine_bgp_advertisement_interval": 30,
+      "spine_bgp_connect_timer": 120,
+      "leaf_bgp_keep_alive_timer": 60,
+      "leaf_bgp_hold_down_timer": 180,
+      "leaf_bgp_advertisement_interval": 30,
+      "leaf_bgp_connect_timer": 120,
+      "link_state_timeout_value": 60,
+      "evpn_multihoming_startup_delay": 300,
+      "evpn_mac_holdtime": 1080,
+      "aggressive_reporting": false,
+      "crc_failure_threshold": null,
+      "duplicate_address_detection_max_number_of_moves": 5,
+      "duplicate_address_detection_time": 180,
+      "anycast_mac_address_auto_assigned_": true,
+      "service_for_site_ref_type_": "service",
+      "pairs": [
+        {
+          "name": "12",
+          "switchpoint_1": "Leaf 01",
+          "switchpoint_2": "Leaf 02",
+          "lag_group": "",
+          "is_whitebox_pair": true,
+          "index": 1,
+          "switchpoint_2_ref_type_": "switchpoint",
+          "switchpoint_1_ref_type_": "switchpoint",
+          "lag_group_ref_type_": ""
+        }
+      ],
+      "islands": [
+        {
+          "toi_switchpoint": "mgmt1",
+          "index": 1,
+          "toi_switchpoint_ref_type_": "switchpoint"
+        }
+      ],
+      "object_properties": {
+        "system_graphs": [
+          {
+            "index": 1,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          },
+          {
+            "index": 2,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          },
+          {
+            "index": 3,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          },
+          {
+            "index": 4,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          },
+          {
+            "index": 5,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          },
+          {
+            "index": 6,
+            "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
+          }
+        ]
+      }
+    }
+  }
+}
