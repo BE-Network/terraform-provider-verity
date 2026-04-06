@@ -378,7 +378,9 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 			serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
 		}
 	} else {
-		serviceReq.Vni = *openapi.NewNullableInt32(nil)
+		if configuredAttrs.IsConfigured("vni") {
+			serviceReq.Vni = *openapi.NewNullableInt32(nil)
+		}
 		if !plan.VniAutoAssigned.IsNull() {
 			serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
 		}
