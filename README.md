@@ -373,3 +373,44 @@ Our `data_source_state_importer` is designed to check if a field has a correspon
 
 **Best Practice:**
 Whenever you enable auto-assignment for a field, always remove the manually specified value for that field from your `.tf` resource block.
+
+## Unit Tests
+
+The provider includes a unit test suite that runs fully offline using a mock HTTP server — no real Verity API or Terraform state is required.
+
+### Test packages
+
+**`tests/unit/bulkops/`** — Tests for the bulk operations manager:
+- Delete batching: large delete sets are split into batches of ≤100; each batch contains the correct resource names with none missing or duplicated across batches; a batch failure aborts remaining batches immediately; ACL header parameters handling
+- Execution ordering: correct PUT/PATCH/DELETE sequencing for datacenter and campus modes, circular reference resolution, mixed operations, resource types with no queued operations generate no API calls; ACL v4 and v6 operations are dispatched as two separate PUT calls each carrying the correct `ip_version` query param; a PUT/PATCH/DELETE API failure stops all subsequent operations in the ordered sequence — resources scheduled after the failing type are never sent to the API, while those that already executed are unaffected
+
+**`tests/unit/lifecycle/`** — Generic resource lifecycle tests run against every registered provider resource:
+- Schema discovery: all resources expose a `name` attribute and discoverable fields/blocks
+- PUT body completeness: all schema fields appear in the initial create request, including both the ref field and its `*_ref_type_` companion; integer `0`, bool `false`, and empty string values are present rather than silently omitted
+- PUT body boundaries: a name-only create (only `name` provided in HCL) produces no unexpected extra fields beyond `name` and any auto-assigned flags
+- PATCH correctness: enable field toggling, single string field updates, ref field pairs, nested block updates
+- Nullable field transitions: explicit null vs omitted field handling
+- Auto-assigned field exclusion: when a boolean `*_auto_assigned_` flag is set to `true`, the corresponding value field (e.g. `layer_3_vni`) is omitted from the PUT body — the backend assigns the value instead
+- Mode field exclusion: datacenter-only fields absent in campus mode and vice versa
+- Required query params: ACL `ip_version` param sent correctly for v4/v6
+- Delete and import: resource removal and `terraform import` paths
+
+### Running locally
+
+```bash
+# Export those env vars to speed up tests
+export VERITY_DEFAULT_BATCH_DELAY=100ms
+export VERITY_BATCH_COLLECTION_WINDOW=100ms
+export VERITY_MAX_BATCH_DELAY=200ms
+export VERITY_RESPONSE_PROCESSOR_DELAY=0s
+export VERITY_DEBOUNCE_DELAY=100ms
+
+go test ./tests/unit/lifecycle/ -count=1 -timeout 5m
+go test ./tests/unit/bulkops/ -count=1 -timeout 2m
+```
+
+`-count=1` disables Go's test result cache, ensuring tests always execute rather than reusing a previous result.
+
+### CI
+
+Tests run automatically on every PR and push to `main` via `.github/workflows/test.yml`.
