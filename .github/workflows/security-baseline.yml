@@ -35,7 +35,7 @@ jobs:
           DOCKER_VERSION="$(docker --version || true)"
           PYTHON_VERSION="$(python3 --version 2>&1 || true)"
           COSIGN_VERSION="$(cosign version 2>/dev/null || true)"
-          GITLEAKS_VERSION="$(docker run --rm ghcr.io/gitleaks/gitleaks:latest version 2>/dev/null | head -n 1 || true)"
+          GITLEAKS_VERSION="$(docker run --rm ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f version 2>/dev/null | head -n 1 || true)"
 
           TS_UTC="$TS_UTC" \
           DOCKER_VERSION="$DOCKER_VERSION" \
@@ -60,7 +60,7 @@ jobs:
             "runner_os": os.environ.get("RUNNER_OS"),
             "runner_arch": os.environ.get("RUNNER_ARCH"),
             "tool_versions": {
-              "gitleaks_image": "ghcr.io/gitleaks/gitleaks:latest",
+              "gitleaks_image": "ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
               "gitleaks": os.environ.get("GITLEAKS_VERSION"),
               "osv_scanner_action": "google/osv-scanner-action/osv-scanner-action@v2.3.3",
               "sbom_action": "anchore/sbom-action@v0",
