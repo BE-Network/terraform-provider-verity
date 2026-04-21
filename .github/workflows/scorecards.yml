@@ -24,11 +24,12 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: Run Scorecard
-        uses: ossf/scorecard-action@v2.4.0
+        uses: ossf/scorecard-action@v2.4.3
         with:
           results_file: results.sarif
           results_format: sarif
-          publish_results: true
+          publish_results: false
+          repo_token: ${{ secrets.SCORECARD_TOKEN }}
 
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v4

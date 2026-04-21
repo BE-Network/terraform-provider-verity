@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: Install Cosign
-        uses: sigstore/cosign-installer@v4.1.0
+        uses: sigstore/cosign-installer@v4.1.1
 
       - name: Generate security metadata
         run: |
@@ -62,10 +62,10 @@ jobs:
             "tool_versions": {
               "gitleaks_image": "ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
               "gitleaks": os.environ.get("GITLEAKS_VERSION"),
-              "osv_scanner_action": "google/osv-scanner-action/osv-scanner-action@v2.3.3",
+              "osv_scanner_action": "google/osv-scanner-action/osv-scanner-action@v2.3.5",
               "sbom_action": "anchore/sbom-action@v0",
               "trivy_action": "aquasecurity/trivy-action@v0.35.0",
-              "cosign_installer": "sigstore/cosign-installer@v4.1.0",
+              "cosign_installer": "sigstore/cosign-installer@v4.1.1",
               "cosign": os.environ.get("COSIGN_VERSION"),
               "checkout": "actions/checkout@v6.0.2",
               "harden_runner": "step-security/harden-runner@v2",
@@ -81,7 +81,7 @@ jobs:
 
       - name: Upload security metadata
         if: always() && hashFiles('security-metadata.json') != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: security-metadata
           path: security-metadata.json
@@ -109,7 +109,7 @@ jobs:
 
       - name: Upload security metadata signature
         if: always() && hashFiles('security-metadata.json.bundle') != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: security-metadata-signature
           path: security-metadata.json.bundle
@@ -139,7 +139,7 @@ jobs:
 
       - name: Upload Gitleaks report
         if: always() && hashFiles('gitleaks-report.json') != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: gitleaks-report
           path: gitleaks-report.json
@@ -167,7 +167,7 @@ jobs:
 
       - name: Upload Gitleaks signature
         if: always() && hashFiles('gitleaks-report.json.bundle') != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: gitleaks-report-signature
           path: gitleaks-report.json.bundle
@@ -175,7 +175,7 @@ jobs:
 
       - name: OSV-Scanner (dependency vulnerabilities)
         continue-on-error: true
-        uses: google/osv-scanner-action/osv-scanner-action@v2.3.3
+        uses: google/osv-scanner-action/osv-scanner-action@v2.3.5
         with:
           scan-args: |-
             --recursive
@@ -239,7 +239,7 @@ jobs:
 
       - name: Upload OSV SARIF
         if: always() && hashFiles('osv-results.sarif') != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: osv-results
           path: osv-results.sarif
@@ -268,7 +268,7 @@ jobs:
 
       - name: Upload OSV signature
         if: always() && hashFiles('osv-results.sarif.bundle') != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: osv-results-signature
           path: osv-results.sarif.bundle
@@ -282,7 +282,7 @@ jobs:
 
       - name: Upload SBOM
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-cyclonedx
           path: sbom.cdx.json
@@ -310,7 +310,7 @@ jobs:
 
       - name: Upload SBOM signature
         if: always() && hashFiles('sbom.cdx.json.bundle') != ''  
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-cyclonedx-signature
           path: sbom.cdx.json.bundle
@@ -328,7 +328,7 @@ jobs:
       - name: Upload Trivy config SARIF
         if: always() && hashFiles('trivy-config.sarif') != ''
   
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: trivy-config
           path: trivy-config.sarif
@@ -357,7 +357,7 @@ jobs:
 
       - name: Upload Trivy config signature
         if: always() && hashFiles('trivy-config.sarif.bundle') != '' 
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: trivy-config-signature
           path: trivy-config.sarif.bundle
