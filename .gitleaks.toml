@@ -1,0 +1,7 @@
+[allowlist]
+paths = [
+  '''(?i)\.env$''',
+  '''(?i)\.env\..*$''',
+  '''(?i).*\.env$''',
+  '''(?i).*\.openapi\.yaml$'''
+]

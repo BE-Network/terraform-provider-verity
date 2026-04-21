@@ -1,5 +1,16 @@
 # Local Verity Terraform Provider Setup
 
+## Security Toolchain
+
+This repository uses a standardized security baseline implemented via GitHub Actions workflows:
+
+- `.github/workflows/security-baseline.yml`
+- `.github/workflows/codeql.yml`
+
+Central standard:
+
+- https://github.com/BE-Network/verity-monitoring/blob/main/SECURITY_TOOLCHAIN_STANDARD.md
+
 ## Building the Provider
 
 To compile the provider binary, run the following command in the root directory of the project:
