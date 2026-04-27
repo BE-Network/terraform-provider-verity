@@ -21,7 +21,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout repository
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6
 
       - name: Run Scorecard
         uses: ossf/scorecard-action@v2.4.3
