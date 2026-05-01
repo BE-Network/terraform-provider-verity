@@ -318,7 +318,7 @@ jobs:
 
       - name: Trivy config scan (IaC / Docker / Kubernetes)
         if: always()  
-        uses: aquasecurity/trivy-action@v0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
           scan-ref: .
