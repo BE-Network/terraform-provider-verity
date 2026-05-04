@@ -2,7 +2,7 @@
 # Both packages are REQUIRED to run the test script
 
 # Required for running tests
-pytest>=7.0.0
+pytest>=9.0.3
 
 # Required for parsing and merging HCL files
-python-hcl2>=4.3.0
+python-hcl2>=8.1.2
