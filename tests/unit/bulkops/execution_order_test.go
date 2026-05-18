@@ -288,8 +288,6 @@ func zeroPatchValue(resourceType string) interface{} {
 	switch resourceType {
 	case "sfp_breakout":
 		return *openapi.NewSfpbreakoutsPatchRequestSfpBreakoutsValue()
-	case "site":
-		return *openapi.NewSitesPatchRequestSiteValue()
 	default:
 		return zeroPutValue(resourceType)
 	}
