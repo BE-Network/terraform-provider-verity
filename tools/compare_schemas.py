@@ -43,6 +43,10 @@ EXCLUDED_ENDPOINTS = {
     "/switchpoints/upgrade",
     "/timetraveler",
     "/version",
+    "/sdlcs",
+    "/sdlcs/upgrade",
+    "/systemconfig",
+    "/users"
 }
 
 
