@@ -969,14 +969,13 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 			patchRequest.SetSfpBreakouts(sfpMap)
 			return patchRequest
 		case "site":
-			// Sites only support PATCH operations
-			patchRequest := openapi.NewSitesPatchRequest()
-			siteMap := make(map[string]openapi.SitesPatchRequestSiteValue)
+			putRequest := openapi.NewSitesPutRequest()
+			siteMap := make(map[string]openapi.SitesPutRequestSiteValue)
 			for name, props := range filteredData {
-				siteMap[name] = props.(openapi.SitesPatchRequestSiteValue)
+				siteMap[name] = props.(openapi.SitesPutRequestSiteValue)
 			}
-			patchRequest.SetSite(siteMap)
-			return patchRequest
+			putRequest.SetSite(siteMap)
+			return putRequest
 		case "packet_broker":
 			putRequest := openapi.NewPacketbrokerPutRequest()
 			brokerMap := make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)

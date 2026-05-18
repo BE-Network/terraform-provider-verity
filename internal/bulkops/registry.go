@@ -688,16 +688,20 @@ var resourceRegistry = map[string]ResourceConfig{
 	},
 	"site": {
 		ResourceType:     "site",
-		PutRequestType:   reflect.TypeOf(openapi.SitesPatchRequest{}),
-		PatchRequestType: reflect.TypeOf(openapi.SitesPatchRequest{}),
+		PutRequestType:   reflect.TypeOf(openapi.SitesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.SitesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "site"}
 		},
-		PutFunc: nil, // Sites only support PATCH
-		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
-			return c.SitesAPI.SitesPatch(ctx).SitesPatchRequest(*req.(*openapi.SitesPatchRequest)).Execute()
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.SitesAPI.SitesPut(ctx).SitesPutRequest(*req.(*openapi.SitesPutRequest)).Execute()
 		},
-		DeleteFunc: nil, // No DELETE operation
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.SitesAPI.SitesPatch(ctx).SitesPutRequest(*req.(*openapi.SitesPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.SitesAPI.SitesDelete(ctx).SiteName(names).Execute()
+		},
 		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
 			return c.SitesAPI.SitesGet(ctx).Execute()
 		},
