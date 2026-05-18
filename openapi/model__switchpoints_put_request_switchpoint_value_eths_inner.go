@@ -21,12 +21,14 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValueEthsInner{}
 type SwitchpointsPutRequestSwitchpointValueEthsInner struct {
 	// Breakout Port Override. Available options determined by Switch capability, Installed SFP and the capacity of the pipeline.
 	Breakout *string `json:"breakout,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	// A Value between 1 and 4096
+	CustomerVlan *string `json:"customer_vlan,omitempty"`
 	// Icon of this Eth Port
 	EthNumIcon *string `json:"eth_num_icon,omitempty"`
 	// Label of this Eth Port
 	EthNumLabel *string `json:"eth_num_label,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int32 `json:"index,omitempty"`
 	// Enable port. 
 	Enable *bool `json:"enable,omitempty"`
 	// The name identifying the port. Used for reference only, it won't actually change the port name.
@@ -41,6 +43,8 @@ func NewSwitchpointsPutRequestSwitchpointValueEthsInner() *SwitchpointsPutReques
 	this := SwitchpointsPutRequestSwitchpointValueEthsInner{}
 	var breakout string = ""
 	this.Breakout = &breakout
+	var customerVlan string = ""
+	this.CustomerVlan = &customerVlan
 	var ethNumIcon string = "empty"
 	this.EthNumIcon = &ethNumIcon
 	var ethNumLabel string = ""
@@ -57,6 +61,8 @@ func NewSwitchpointsPutRequestSwitchpointValueEthsInnerWithDefaults() *Switchpoi
 	this := SwitchpointsPutRequestSwitchpointValueEthsInner{}
 	var breakout string = ""
 	this.Breakout = &breakout
+	var customerVlan string = ""
+	this.CustomerVlan = &customerVlan
 	var ethNumIcon string = "empty"
 	this.EthNumIcon = &ethNumIcon
 	var ethNumLabel string = ""
@@ -98,36 +104,36 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetBreakout(v string) 
 	o.Breakout = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int32 {
-	if o == nil || IsNil(o.Index) {
-		var ret int32
+// GetCustomerVlan returns the CustomerVlan field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetCustomerVlan() string {
+	if o == nil || IsNil(o.CustomerVlan) {
+		var ret string
 		return ret
 	}
-	return *o.Index
+	return *o.CustomerVlan
 }
 
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// GetCustomerVlanOk returns a tuple with the CustomerVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndexOk() (*int32, bool) {
-	if o == nil || IsNil(o.Index) {
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetCustomerVlanOk() (*string, bool) {
+	if o == nil || IsNil(o.CustomerVlan) {
 		return nil, false
 	}
-	return o.Index, true
+	return o.CustomerVlan, true
 }
 
-// HasIndex returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
+// HasCustomerVlan returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasCustomerVlan() bool {
+	if o != nil && !IsNil(o.CustomerVlan) {
 		return true
 	}
 
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int32) {
-	o.Index = &v
+// SetCustomerVlan gets a reference to the given string and assigns it to the CustomerVlan field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetCustomerVlan(v string) {
+	o.CustomerVlan = &v
 }
 
 // GetEthNumIcon returns the EthNumIcon field value if set, zero value otherwise.
@@ -192,6 +198,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEthNumLabel() bool 
 // SetEthNumLabel gets a reference to the given string and assigns it to the EthNumLabel field.
 func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEthNumLabel(v string) {
 	o.EthNumLabel = &v
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int32 {
+	if o == nil || IsNil(o.Index) {
+		var ret int32
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndexOk() (*int32, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int32 and assigns it to the Index field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int32) {
+	o.Index = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -271,14 +309,17 @@ func (o SwitchpointsPutRequestSwitchpointValueEthsInner) ToMap() (map[string]int
 	if !IsNil(o.Breakout) {
 		toSerialize["breakout"] = o.Breakout
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.CustomerVlan) {
+		toSerialize["customer_vlan"] = o.CustomerVlan
 	}
 	if !IsNil(o.EthNumIcon) {
 		toSerialize["eth_num_icon"] = o.EthNumIcon
 	}
 	if !IsNil(o.EthNumLabel) {
 		toSerialize["eth_num_label"] = o.EthNumLabel
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable

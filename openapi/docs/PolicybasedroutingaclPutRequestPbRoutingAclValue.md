@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
-**IpvProtocol** | Pointer to **string** | IPv4 or IPv6 | [optional] [default to "ipv4"]
+**IpVersion** | Pointer to **string** | IPv4 or IPv6 | [optional] [default to "ipv4"]
 **NextHopIps** | Pointer to **string** | Next hop IP addresses | [optional] [default to ""]
 **Ipv4Permit** | Pointer to [**[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner**](PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner.md) |  | [optional] 
 **Ipv4Deny** | Pointer to [**[]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner**](PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner.md) |  | [optional] 
@@ -82,30 +82,30 @@ SetEnable sets Enable field to given value.
 
 HasEnable returns a boolean if a field has been set.
 
-### GetIpvProtocol
+### GetIpVersion
 
-`func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetIpvProtocol() string`
+`func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetIpVersion() string`
 
-GetIpvProtocol returns the IpvProtocol field if non-nil, zero value otherwise.
+GetIpVersion returns the IpVersion field if non-nil, zero value otherwise.
 
-### GetIpvProtocolOk
+### GetIpVersionOk
 
-`func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetIpvProtocolOk() (*string, bool)`
+`func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetIpVersionOk() (*string, bool)`
 
-GetIpvProtocolOk returns a tuple with the IpvProtocol field if it's non-nil, zero value otherwise
+GetIpVersionOk returns a tuple with the IpVersion field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetIpvProtocol
+### SetIpVersion
 
-`func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) SetIpvProtocol(v string)`
+`func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) SetIpVersion(v string)`
 
-SetIpvProtocol sets IpvProtocol field to given value.
+SetIpVersion sets IpVersion field to given value.
 
-### HasIpvProtocol
+### HasIpVersion
 
-`func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) HasIpvProtocol() bool`
+`func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) HasIpVersion() bool`
 
-HasIpvProtocol returns a boolean if a field has been set.
+HasIpVersion returns a boolean if a field has been set.
 
 ### GetNextHopIps
 

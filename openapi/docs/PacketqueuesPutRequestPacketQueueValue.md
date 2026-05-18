@@ -4,11 +4,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Pbit** | Pointer to [**[]PacketqueuesPutRequestPacketQueueValuePbitInner**](PacketqueuesPutRequestPacketQueueValuePbitInner.md) |  | [optional] 
 **Queue** | Pointer to [**[]PacketqueuesPutRequestPacketQueueValueQueueInner**](PacketqueuesPutRequestPacketQueueValueQueueInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
 
 ## Methods
 
@@ -131,20 +131,20 @@ HasQueue returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
+`func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() map[string]interface{}`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
+`func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (*map[string]interface{}, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
+`func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v map[string]interface{})`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

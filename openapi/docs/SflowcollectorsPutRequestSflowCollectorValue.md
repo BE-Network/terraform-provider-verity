@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Ip** | Pointer to **string** | IP address of the sFlow Collector  | [optional] [default to ""]
 **Port** | Pointer to **NullableInt32** | Port | [optional] [default to 6343]

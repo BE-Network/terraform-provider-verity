@@ -4,10 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **ExternalGateways** | Pointer to [**[]GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner**](GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -102,31 +101,6 @@ SetExternalGateways sets ExternalGateways field to given value.
 `func (o *GatewayprofilesPutRequestGatewayProfileValue) HasExternalGateways() bool`
 
 HasExternalGateways returns a boolean if a field has been set.
-
-### GetObjectProperties
-
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
-
-GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
-
-### GetObjectPropertiesOk
-
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
-
-GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetObjectProperties
-
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
-
-SetObjectProperties sets ObjectProperties field to given value.
-
-### HasObjectProperties
-
-`func (o *GatewayprofilesPutRequestGatewayProfileValue) HasObjectProperties() bool`
-
-HasObjectProperties returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

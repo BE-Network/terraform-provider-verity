@@ -19,7 +19,7 @@ var _ MappedNullable = &Ipv6listsPutRequestIpv6ListFilterValue{}
 
 // Ipv6listsPutRequestIpv6ListFilterValue struct for Ipv6listsPutRequestIpv6ListFilterValue
 type Ipv6listsPutRequestIpv6ListFilterValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`

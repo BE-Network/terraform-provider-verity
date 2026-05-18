@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **DtmfMethod** | Pointer to **string** | Specifies how DTMF signals are carried | [optional] [default to "Inband"]
 **Region** | Pointer to **string** | Region | [optional] [default to "US"]
@@ -65,7 +65,7 @@ Name | Type | Description | Notes
 **Intercom2** | Pointer to **string** | Intercom 2 | [optional] [default to "*54"]
 **Intercom3** | Pointer to **string** | Intercom 3 | [optional] [default to "*55"]
 **Codecs** | Pointer to [**[]DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner**](DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
+**ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
 
 ## Methods
 
@@ -1813,20 +1813,20 @@ HasCodecs returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectProperties() map[string]interface{}`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropertiesOk() (*map[string]interface{}, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectProperties(v map[string]interface{})`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

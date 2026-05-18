@@ -19,13 +19,13 @@ var _ MappedNullable = &PacketqueuesPutRequestPacketQueueValue{}
 
 // PacketqueuesPutRequestPacketQueueValue struct for PacketqueuesPutRequestPacketQueueValue
 type PacketqueuesPutRequestPacketQueueValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	Pbit []PacketqueuesPutRequestPacketQueueValuePbitInner `json:"pbit,omitempty"`
 	Queue []PacketqueuesPutRequestPacketQueueValueQueueInner `json:"queue,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 }
 
 // NewPacketqueuesPutRequestPacketQueueValue instantiates a new PacketqueuesPutRequestPacketQueueValue object
@@ -182,19 +182,19 @@ func (o *PacketqueuesPutRequestPacketQueueValue) SetQueue(v []PacketqueuesPutReq
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
+func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() map[string]interface{} {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.ObjectProperties
+	return o.ObjectProperties
 }
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
+func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.ObjectProperties, true
 }
@@ -208,9 +208,9 @@ func (o *PacketqueuesPutRequestPacketQueueValue) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
-	o.ObjectProperties = &v
+// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
+func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v map[string]interface{}) {
+	o.ObjectProperties = v
 }
 
 func (o PacketqueuesPutRequestPacketQueueValue) MarshalJSON() ([]byte, error) {

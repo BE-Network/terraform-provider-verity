@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Type** | Pointer to **string** | Type of elements to apply thresholds to | [optional] [default to "device"]
 **Targets** | Pointer to [**[]ThresholdgroupsPutRequestThresholdGroupValueTargetsInner**](ThresholdgroupsPutRequestThresholdGroupValueTargetsInner.md) |  | [optional] 

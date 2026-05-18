@@ -21,8 +21,6 @@ var _ MappedNullable = &VoiceportprofilesPutRequestVoicePortProfilesValueObjectP
 type VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties struct {
 	// Defines importance of Link Down on this port
 	PortMonitoring *string `json:"port_monitoring,omitempty"`
-	// Group
-	Group *string `json:"group,omitempty"`
 	// Format dial plan for easier viewing
 	FormatDialPlan *bool `json:"format_dial_plan,omitempty"`
 }
@@ -35,8 +33,6 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties() *Voi
 	this := VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
-	var group string = ""
-	this.Group = &group
 	var formatDialPlan bool = true
 	this.FormatDialPlan = &formatDialPlan
 	return &this
@@ -49,8 +45,6 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectPropertiesWithDef
 	this := VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
-	var group string = ""
-	this.Group = &group
 	var formatDialPlan bool = true
 	this.FormatDialPlan = &formatDialPlan
 	return &this
@@ -86,38 +80,6 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) HasP
 // SetPortMonitoring gets a reference to the given string and assigns it to the PortMonitoring field.
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) SetPortMonitoring(v string) {
 	o.PortMonitoring = &v
-}
-
-// GetGroup returns the Group field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetGroup() string {
-	if o == nil || IsNil(o.Group) {
-		var ret string
-		return ret
-	}
-	return *o.Group
-}
-
-// GetGroupOk returns a tuple with the Group field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetGroupOk() (*string, bool) {
-	if o == nil || IsNil(o.Group) {
-		return nil, false
-	}
-	return o.Group, true
-}
-
-// HasGroup returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) HasGroup() bool {
-	if o != nil && !IsNil(o.Group) {
-		return true
-	}
-
-	return false
-}
-
-// SetGroup gets a reference to the given string and assigns it to the Group field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) SetGroup(v string) {
-	o.Group = &v
 }
 
 // GetFormatDialPlan returns the FormatDialPlan field value if set, zero value otherwise.
@@ -164,9 +126,6 @@ func (o VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) ToMap
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.PortMonitoring) {
 		toSerialize["port_monitoring"] = o.PortMonitoring
-	}
-	if !IsNil(o.Group) {
-		toSerialize["group"] = o.Group
 	}
 	if !IsNil(o.FormatDialPlan) {
 		toSerialize["format_dial_plan"] = o.FormatDialPlan

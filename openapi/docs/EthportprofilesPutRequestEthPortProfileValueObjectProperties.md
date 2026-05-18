@@ -4,7 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Group** | Pointer to **string** | Group | [optional] [default to ""]
 **PortMonitoring** | Pointer to **string** | Defines importance of Link Down on this port | [optional] [default to ""]
 **SortByName** | Pointer to **bool** | Choose to sort by service name or by order of creation | [optional] [default to false]
 **Label** | Pointer to **string** | Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint | [optional] [default to ""]
@@ -28,31 +27,6 @@ will change when the set of required properties is changed
 NewEthportprofilesPutRequestEthPortProfileValueObjectPropertiesWithDefaults instantiates a new EthportprofilesPutRequestEthPortProfileValueObjectProperties object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
-
-### GetGroup
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetGroup() string`
-
-GetGroup returns the Group field if non-nil, zero value otherwise.
-
-### GetGroupOk
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetGroupOk() (*string, bool)`
-
-GetGroupOk returns a tuple with the Group field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetGroup
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetGroup(v string)`
-
-SetGroup sets Group field to given value.
-
-### HasGroup
-
-`func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasGroup() bool`
-
-HasGroup returns a boolean if a field has been set.
 
 ### GetPortMonitoring
 

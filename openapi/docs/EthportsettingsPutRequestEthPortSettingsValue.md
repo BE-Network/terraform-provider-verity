@@ -4,13 +4,19 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
+**PacketQueue** | Pointer to **string** | Packet Queue | [optional] [default to ""]
+**PacketQueueRefType** | Pointer to **string** | Object type for packet_queue field | [optional] 
+**EnableWredTuning** | Pointer to **bool** | Enables custom tuning of WRED values. Uncheck to use Switch default values. | [optional] [default to false]
+**EnableEcn** | Pointer to **bool** | Enables Explicit Congestion Notification for WRED. | [optional] [default to true]
+**EnableWatchdogTuning** | Pointer to **bool** | Enables custom tuning of Watchdog values. Uncheck to use Switch default values. | [optional] [default to false]
 **AutoNegotiation** | Pointer to **bool** | Indicates if duplex mode should be auto negotiated | [optional] [default to true]
 **EnableSpeedControl** | Pointer to **bool** | Turns on speed control fields | [optional] [default to true]
+**Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] 
 **MaxBitRate** | Pointer to **string** | Maximum Bit Rate allowed | [optional] [default to "-1"]
 **DuplexMode** | Pointer to **string** | Duplex Mode | [optional] [default to "Auto"]
-**StpEnable** | Pointer to **bool** | Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Site Settings | [optional] [default to false]
+**StpEnable** | Pointer to **bool** | Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Fabric Settings | [optional] [default to false]
 **FastLearningMode** | Pointer to **bool** | Enable Immediate Transition to Forwarding | [optional] [default to true]
 **BpduGuard** | Pointer to **bool** | Block port on BPDU Receive | [optional] [default to false]
 **BpduFilter** | Pointer to **bool** | Drop all Rx and Tx BPDUs | [optional] [default to false]
@@ -22,9 +28,9 @@ Name | Type | Description | Notes
 **Broadcast** | Pointer to **bool** | Broadcast | [optional] [default to true]
 **Multicast** | Pointer to **bool** | Multicast | [optional] [default to true]
 **MaxAllowedValue** | Pointer to **NullableInt32** | Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action | [optional] [default to 1000]
-**MaxAllowedUnit** | Pointer to **string** | Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action &lt;br&gt;                                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                                     %: Percentage.&lt;br&gt;                                                     kbps: kilobits per second &lt;br&gt;                                                     mbps: megabits per second &lt;br&gt;                                                     gbps: gigabits per second &lt;br&gt;                                                     pps: packet per second &lt;br&gt;                                                     kpps: kilopacket per second &lt;br&gt;                                                 &lt;/div&gt;                                                  | [optional] [default to "pps"]
-**Action** | Pointer to **string** | Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: &lt;br&gt;                                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                                     Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.&lt;br&gt;&lt;br&gt;                                                     Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.                                                     Alarm is raised . Alarm automatically clears when rate is below configured threshold. &lt;br&gt;&lt;br&gt;                                                     Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. &lt;br&gt;                                                 &lt;/div&gt;                                              | [optional] [default to "Protect"]
-**Fec** | Pointer to **string** | FEC is Forward Error Correction which is error correction on the fiber link.                                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                                     Any: Allows switch Negotiation between FC and RS &lt;br&gt;                                                     None: Disables FEC on an interface.&lt;br&gt;                                                     FC: Enables FEC on supported interfaces. FC stands for fire code.&lt;br&gt;                                                     RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. &lt;br&gt;                                                     None: VnetC doesn&#39;t alter the Switch Value.&lt;br&gt;                                                 &lt;/div&gt;                                              | [optional] [default to "unaltered"]
+**MaxAllowedUnit** | Pointer to **string** | Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action &lt;br&gt;            &lt;div class&#x3D;\&quot;tab\&quot;&gt;             %: Percentage.&lt;br&gt;             kbps: kilobits per second &lt;br&gt;             mbps: megabits per second &lt;br&gt;             gbps: gigabits per second &lt;br&gt;             pps: packet per second &lt;br&gt;             kpps: kilopacket per second &lt;br&gt;            &lt;/div&gt;             | [optional] [default to "pps"]
+**Action** | Pointer to **string** | Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: &lt;br&gt;            &lt;div class&#x3D;\&quot;tab\&quot;&gt;             Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.&lt;br&gt;&lt;br&gt;             Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.             Alarm is raised . Alarm automatically clears when rate is below configured threshold. &lt;br&gt;&lt;br&gt;             Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. &lt;br&gt;            &lt;/div&gt;            | [optional] [default to "Protect"]
+**Fec** | Pointer to **string** | FEC is Forward Error Correction which is error correction on the fiber link.            &lt;div class&#x3D;\&quot;tab\&quot;&gt;             Any: Allows switch Negotiation between FC and RS &lt;br&gt;             None: Disables FEC on an interface.&lt;br&gt;             FC: Enables FEC on supported interfaces. FC stands for fire code.&lt;br&gt;             RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. &lt;br&gt;             None: VnetC doesn&#39;t alter the Switch Value.&lt;br&gt;            &lt;/div&gt;            | [optional] [default to "unaltered"]
 **SingleLink** | Pointer to **bool** | Ports with this setting will be disabled when link state tracking takes effect | [optional] [default to false]
 **MinimumWredThreshold** | Pointer to **NullableInt32** | A value between 1 to 12480(in KiloBytes) | [optional] [default to 1]
 **MaximumWredThreshold** | Pointer to **NullableInt32** | A value between 1 to 12480(in KiloBytes) | [optional] [default to 1]
@@ -32,18 +38,13 @@ Name | Type | Description | Notes
 **PriorityFlowControlWatchdogAction** | Pointer to **string** | Ports with this setting will be disabled when link state tracking takes effect | [optional] [default to "DROP"]
 **PriorityFlowControlWatchdogDetectTime** | Pointer to **NullableInt32** | A value between 100 to 5000 | [optional] [default to 100]
 **PriorityFlowControlWatchdogRestoreTime** | Pointer to **NullableInt32** | A value between 100 to 60000 | [optional] [default to 100]
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
-**PacketQueue** | Pointer to **string** | Packet Queue | [optional] [default to ""]
-**PacketQueueRefType** | Pointer to **string** | Object type for packet_queue field | [optional] 
-**EnableWredTuning** | Pointer to **bool** | Enables custom tuning of WRED values. Uncheck to use Switch default values. | [optional] [default to false]
-**EnableEcn** | Pointer to **bool** | Enables Explicit Congestion Notification for WRED. | [optional] [default to true]
-**EnableWatchdogTuning** | Pointer to **bool** | Enables custom tuning of Watchdog values. Uncheck to use Switch default values. | [optional] [default to false]
+**ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
 **CliCommands** | Pointer to **string** | CLI Commands | [optional] [default to ""]
 **DetectBridgingLoops** | Pointer to **bool** | Enable Detection of Bridging Loops | [optional] [default to false]
 **UnidirectionalLinkDetection** | Pointer to **bool** | Enable Detection of Unidirectional Link | [optional] [default to false]
-**MacSecurityMode** | Pointer to **string** | Dynamic - MACs are learned and aged normally up to the limit. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     Packets will be dropped from clients exceeding the limit. &lt;br&gt;                                     Once a client ages out, a new client can take its slot. &lt;br&gt;                                     When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.&lt;br&gt;                                 &lt;/div&gt;                             Sticky - Semi permenant learning. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     Packets will be dropped from clients exceeding the limit. &lt;br&gt;                                     Addresses do not age out or move within the same switch. &lt;br&gt;                                     Operationally downing a port (disconnecting) does NOT flush the entries. &lt;br&gt;                                     Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.                                 &lt;/div&gt; | [optional] [default to "disabled"]
+**MacSecurityMode** | Pointer to **string** | Dynamic - MACs are learned and aged normally up to the limit. &lt;br&gt;        &lt;div class&#x3D;\&quot;tab\&quot;&gt;         Packets will be dropped from clients exceeding the limit. &lt;br&gt;         Once a client ages out, a new client can take its slot. &lt;br&gt;         When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.&lt;br&gt;        &lt;/div&gt;       Sticky - Semi permenant learning. &lt;br&gt;        &lt;div class&#x3D;\&quot;tab\&quot;&gt;         Packets will be dropped from clients exceeding the limit. &lt;br&gt;         Addresses do not age out or move within the same switch. &lt;br&gt;         Operationally downing a port (disconnecting) does NOT flush the entries. &lt;br&gt;         Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.        &lt;/div&gt; | [optional] [default to "disabled"]
 **MacLimit** | Pointer to **NullableInt32** | Between 1-1000 | [optional] [default to 1000]
-**SecurityViolationAction** | Pointer to **string** | Protect - All packets are dropped from clients above the MAC Limit. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     Exceeding the limit is not alarmed. &lt;br&gt;                                 &lt;/div&gt;                             Restrict - All packets are dropped from clients above the MAC Limit. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. &lt;br&gt;                                 &lt;/div&gt;                             Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. &lt;br&gt;                                 &lt;div class&#x3D;\&quot;tab\&quot;&gt;                                     User must administratively Disable and Enable the port to restore service.                                 &lt;/div&gt; | [optional] [default to "protect"]
+**SecurityViolationAction** | Pointer to **string** | Protect - All packets are dropped from clients above the MAC Limit. &lt;br&gt;        &lt;div class&#x3D;\&quot;tab\&quot;&gt;         Exceeding the limit is not alarmed. &lt;br&gt;        &lt;/div&gt;       Restrict - All packets are dropped from clients above the MAC Limit. &lt;br&gt;        &lt;div class&#x3D;\&quot;tab\&quot;&gt;         Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. &lt;br&gt;        &lt;/div&gt;       Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. &lt;br&gt;        &lt;div class&#x3D;\&quot;tab\&quot;&gt;         User must administratively Disable and Enable the port to restore service.        &lt;/div&gt; | [optional] [default to "protect"]
 **AgingType** | Pointer to **string** | Limit MAC authentication based on inactivity or on absolute time. See Also Aging Time | [optional] [default to "absolute"]
 **AgingTime** | Pointer to **NullableInt32** | In minutes, how long the client will stay authenticated. See Also Aging Type | [optional] [default to 0]
 **LldpEnable** | Pointer to **bool** | LLDP enable | [optional] [default to true]
@@ -120,6 +121,131 @@ SetEnable sets Enable field to given value.
 
 HasEnable returns a boolean if a field has been set.
 
+### GetPacketQueue
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueue() string`
+
+GetPacketQueue returns the PacketQueue field if non-nil, zero value otherwise.
+
+### GetPacketQueueOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueOk() (*string, bool)`
+
+GetPacketQueueOk returns a tuple with the PacketQueue field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPacketQueue
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueue(v string)`
+
+SetPacketQueue sets PacketQueue field to given value.
+
+### HasPacketQueue
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPacketQueue() bool`
+
+HasPacketQueue returns a boolean if a field has been set.
+
+### GetPacketQueueRefType
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueRefType() string`
+
+GetPacketQueueRefType returns the PacketQueueRefType field if non-nil, zero value otherwise.
+
+### GetPacketQueueRefTypeOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueRefTypeOk() (*string, bool)`
+
+GetPacketQueueRefTypeOk returns a tuple with the PacketQueueRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPacketQueueRefType
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueueRefType(v string)`
+
+SetPacketQueueRefType sets PacketQueueRefType field to given value.
+
+### HasPacketQueueRefType
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPacketQueueRefType() bool`
+
+HasPacketQueueRefType returns a boolean if a field has been set.
+
+### GetEnableWredTuning
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuning() bool`
+
+GetEnableWredTuning returns the EnableWredTuning field if non-nil, zero value otherwise.
+
+### GetEnableWredTuningOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuningOk() (*bool, bool)`
+
+GetEnableWredTuningOk returns a tuple with the EnableWredTuning field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnableWredTuning
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWredTuning(v bool)`
+
+SetEnableWredTuning sets EnableWredTuning field to given value.
+
+### HasEnableWredTuning
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWredTuning() bool`
+
+HasEnableWredTuning returns a boolean if a field has been set.
+
+### GetEnableEcn
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcn() bool`
+
+GetEnableEcn returns the EnableEcn field if non-nil, zero value otherwise.
+
+### GetEnableEcnOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcnOk() (*bool, bool)`
+
+GetEnableEcnOk returns a tuple with the EnableEcn field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnableEcn
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableEcn(v bool)`
+
+SetEnableEcn sets EnableEcn field to given value.
+
+### HasEnableEcn
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableEcn() bool`
+
+HasEnableEcn returns a boolean if a field has been set.
+
+### GetEnableWatchdogTuning
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuning() bool`
+
+GetEnableWatchdogTuning returns the EnableWatchdogTuning field if non-nil, zero value otherwise.
+
+### GetEnableWatchdogTuningOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuningOk() (*bool, bool)`
+
+GetEnableWatchdogTuningOk returns a tuple with the EnableWatchdogTuning field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnableWatchdogTuning
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWatchdogTuning(v bool)`
+
+SetEnableWatchdogTuning sets EnableWatchdogTuning field to given value.
+
+### HasEnableWatchdogTuning
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWatchdogTuning() bool`
+
+HasEnableWatchdogTuning returns a boolean if a field has been set.
+
 ### GetAutoNegotiation
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAutoNegotiation() bool`
@@ -170,6 +296,41 @@ SetEnableSpeedControl sets EnableSpeedControl field to given value.
 
 HasEnableSpeedControl returns a boolean if a field has been set.
 
+### GetMtu
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMtu() int32`
+
+GetMtu returns the Mtu field if non-nil, zero value otherwise.
+
+### GetMtuOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMtuOk() (*int32, bool)`
+
+GetMtuOk returns a tuple with the Mtu field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMtu
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMtu(v int32)`
+
+SetMtu sets Mtu field to given value.
+
+### HasMtu
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMtu() bool`
+
+HasMtu returns a boolean if a field has been set.
+
+### SetMtuNil
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMtuNil(b bool)`
+
+ SetMtuNil sets the value for Mtu to be an explicit nil
+
+### UnsetMtu
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMtu()`
+
+UnsetMtu ensures that no value is present for Mtu, not even an explicit nil
 ### GetMaxBitRate
 
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxBitRate() string`
@@ -832,20 +993,20 @@ HasPriorityFlowControlWatchdogRestoreTime returns a boolean if a field has been 
 UnsetPriorityFlowControlWatchdogRestoreTime ensures that no value is present for PriorityFlowControlWatchdogRestoreTime, not even an explicit nil
 ### GetObjectProperties
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() map[string]interface{}`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (*map[string]interface{}, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v map[string]interface{})`
 
 SetObjectProperties sets ObjectProperties field to given value.
 
@@ -854,131 +1015,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetPacketQueue
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueue() string`
-
-GetPacketQueue returns the PacketQueue field if non-nil, zero value otherwise.
-
-### GetPacketQueueOk
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueOk() (*string, bool)`
-
-GetPacketQueueOk returns a tuple with the PacketQueue field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPacketQueue
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueue(v string)`
-
-SetPacketQueue sets PacketQueue field to given value.
-
-### HasPacketQueue
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPacketQueue() bool`
-
-HasPacketQueue returns a boolean if a field has been set.
-
-### GetPacketQueueRefType
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueRefType() string`
-
-GetPacketQueueRefType returns the PacketQueueRefType field if non-nil, zero value otherwise.
-
-### GetPacketQueueRefTypeOk
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueRefTypeOk() (*string, bool)`
-
-GetPacketQueueRefTypeOk returns a tuple with the PacketQueueRefType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPacketQueueRefType
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueueRefType(v string)`
-
-SetPacketQueueRefType sets PacketQueueRefType field to given value.
-
-### HasPacketQueueRefType
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPacketQueueRefType() bool`
-
-HasPacketQueueRefType returns a boolean if a field has been set.
-
-### GetEnableWredTuning
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuning() bool`
-
-GetEnableWredTuning returns the EnableWredTuning field if non-nil, zero value otherwise.
-
-### GetEnableWredTuningOk
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuningOk() (*bool, bool)`
-
-GetEnableWredTuningOk returns a tuple with the EnableWredTuning field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEnableWredTuning
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWredTuning(v bool)`
-
-SetEnableWredTuning sets EnableWredTuning field to given value.
-
-### HasEnableWredTuning
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWredTuning() bool`
-
-HasEnableWredTuning returns a boolean if a field has been set.
-
-### GetEnableEcn
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcn() bool`
-
-GetEnableEcn returns the EnableEcn field if non-nil, zero value otherwise.
-
-### GetEnableEcnOk
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcnOk() (*bool, bool)`
-
-GetEnableEcnOk returns a tuple with the EnableEcn field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEnableEcn
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableEcn(v bool)`
-
-SetEnableEcn sets EnableEcn field to given value.
-
-### HasEnableEcn
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableEcn() bool`
-
-HasEnableEcn returns a boolean if a field has been set.
-
-### GetEnableWatchdogTuning
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuning() bool`
-
-GetEnableWatchdogTuning returns the EnableWatchdogTuning field if non-nil, zero value otherwise.
-
-### GetEnableWatchdogTuningOk
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuningOk() (*bool, bool)`
-
-GetEnableWatchdogTuningOk returns a tuple with the EnableWatchdogTuning field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEnableWatchdogTuning
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWatchdogTuning(v bool)`
-
-SetEnableWatchdogTuning sets EnableWatchdogTuning field to given value.
-
-### HasEnableWatchdogTuning
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWatchdogTuning() bool`
-
-HasEnableWatchdogTuning returns a boolean if a field has been set.
 
 ### GetCliCommands
 

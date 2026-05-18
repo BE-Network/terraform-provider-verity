@@ -19,10 +19,6 @@ var _ MappedNullable = &ServicesPutRequestServiceValueObjectProperties{}
 
 // ServicesPutRequestServiceValueObjectProperties struct for ServicesPutRequestServiceValueObjectProperties
 type ServicesPutRequestServiceValueObjectProperties struct {
-	// Group
-	Group *string `json:"group,omitempty"`
-	// Show on the summary view
-	OnSummary *bool `json:"on_summary,omitempty"`
 	// Warn if there is not outbound path for service in SD-Router or a Service Port Profile
 	WarnOnNoExternalSource *bool `json:"warn_on_no_external_source,omitempty"`
 }
@@ -33,10 +29,6 @@ type ServicesPutRequestServiceValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewServicesPutRequestServiceValueObjectProperties() *ServicesPutRequestServiceValueObjectProperties {
 	this := ServicesPutRequestServiceValueObjectProperties{}
-	var group string = ""
-	this.Group = &group
-	var onSummary bool = true
-	this.OnSummary = &onSummary
 	var warnOnNoExternalSource bool = true
 	this.WarnOnNoExternalSource = &warnOnNoExternalSource
 	return &this
@@ -47,77 +39,9 @@ func NewServicesPutRequestServiceValueObjectProperties() *ServicesPutRequestServ
 // but it doesn't guarantee that properties required by API are set
 func NewServicesPutRequestServiceValueObjectPropertiesWithDefaults() *ServicesPutRequestServiceValueObjectProperties {
 	this := ServicesPutRequestServiceValueObjectProperties{}
-	var group string = ""
-	this.Group = &group
-	var onSummary bool = true
-	this.OnSummary = &onSummary
 	var warnOnNoExternalSource bool = true
 	this.WarnOnNoExternalSource = &warnOnNoExternalSource
 	return &this
-}
-
-// GetGroup returns the Group field value if set, zero value otherwise.
-func (o *ServicesPutRequestServiceValueObjectProperties) GetGroup() string {
-	if o == nil || IsNil(o.Group) {
-		var ret string
-		return ret
-	}
-	return *o.Group
-}
-
-// GetGroupOk returns a tuple with the Group field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServicesPutRequestServiceValueObjectProperties) GetGroupOk() (*string, bool) {
-	if o == nil || IsNil(o.Group) {
-		return nil, false
-	}
-	return o.Group, true
-}
-
-// HasGroup returns a boolean if a field has been set.
-func (o *ServicesPutRequestServiceValueObjectProperties) HasGroup() bool {
-	if o != nil && !IsNil(o.Group) {
-		return true
-	}
-
-	return false
-}
-
-// SetGroup gets a reference to the given string and assigns it to the Group field.
-func (o *ServicesPutRequestServiceValueObjectProperties) SetGroup(v string) {
-	o.Group = &v
-}
-
-// GetOnSummary returns the OnSummary field value if set, zero value otherwise.
-func (o *ServicesPutRequestServiceValueObjectProperties) GetOnSummary() bool {
-	if o == nil || IsNil(o.OnSummary) {
-		var ret bool
-		return ret
-	}
-	return *o.OnSummary
-}
-
-// GetOnSummaryOk returns a tuple with the OnSummary field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServicesPutRequestServiceValueObjectProperties) GetOnSummaryOk() (*bool, bool) {
-	if o == nil || IsNil(o.OnSummary) {
-		return nil, false
-	}
-	return o.OnSummary, true
-}
-
-// HasOnSummary returns a boolean if a field has been set.
-func (o *ServicesPutRequestServiceValueObjectProperties) HasOnSummary() bool {
-	if o != nil && !IsNil(o.OnSummary) {
-		return true
-	}
-
-	return false
-}
-
-// SetOnSummary gets a reference to the given bool and assigns it to the OnSummary field.
-func (o *ServicesPutRequestServiceValueObjectProperties) SetOnSummary(v bool) {
-	o.OnSummary = &v
 }
 
 // GetWarnOnNoExternalSource returns the WarnOnNoExternalSource field value if set, zero value otherwise.
@@ -162,12 +86,6 @@ func (o ServicesPutRequestServiceValueObjectProperties) MarshalJSON() ([]byte, e
 
 func (o ServicesPutRequestServiceValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Group) {
-		toSerialize["group"] = o.Group
-	}
-	if !IsNil(o.OnSummary) {
-		toSerialize["on_summary"] = o.OnSummary
-	}
 	if !IsNil(o.WarnOnNoExternalSource) {
 		toSerialize["warn_on_no_external_source"] = o.WarnOnNoExternalSource
 	}

@@ -14,13 +14,15 @@ import (
 	"encoding/json"
 )
 
-// checks if the SitesPatchRequestSiteValuePairsInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &SitesPatchRequestSiteValuePairsInner{}
+// checks if the PairsPutRequestSwitchPairValue type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &PairsPutRequestSwitchPairValue{}
 
-// SitesPatchRequestSiteValuePairsInner struct for SitesPatchRequestSiteValuePairsInner
-type SitesPatchRequestSiteValuePairsInner struct {
-	// Object Name. Must be unique.
+// PairsPutRequestSwitchPairValue struct for PairsPutRequestSwitchPairValue
+type PairsPutRequestSwitchPairValue struct {
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
 	// Switchpoint
 	Switchpoint1 *string `json:"switchpoint_1,omitempty"`
 	// Object type for switchpoint_1 field
@@ -29,55 +31,57 @@ type SitesPatchRequestSiteValuePairsInner struct {
 	Switchpoint2 *string `json:"switchpoint_2,omitempty"`
 	// Object type for switchpoint_2 field
 	Switchpoint2RefType *string `json:"switchpoint_2_ref_type_,omitempty"`
-	// LAG Group
-	LagGroup *string `json:"lag_group,omitempty"`
-	// Object type for lag_group field
-	LagGroupRefType *string `json:"lag_group_ref_type_,omitempty"`
-	// LAG Pair
+	// LAG
+	Lag *string `json:"lag,omitempty"`
+	// Object type for lag field
+	LagRefType *string `json:"lag_ref_type_,omitempty"`
+	// Is Whitebox Pair
 	IsWhiteboxPair *bool `json:"is_whitebox_pair,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
 }
 
-// NewSitesPatchRequestSiteValuePairsInner instantiates a new SitesPatchRequestSiteValuePairsInner object
+// NewPairsPutRequestSwitchPairValue instantiates a new PairsPutRequestSwitchPairValue object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSitesPatchRequestSiteValuePairsInner() *SitesPatchRequestSiteValuePairsInner {
-	this := SitesPatchRequestSiteValuePairsInner{}
+func NewPairsPutRequestSwitchPairValue() *PairsPutRequestSwitchPairValue {
+	this := PairsPutRequestSwitchPairValue{}
 	var name string = ""
 	this.Name = &name
+	var enable bool = true
+	this.Enable = &enable
 	var switchpoint1 string = ""
 	this.Switchpoint1 = &switchpoint1
 	var switchpoint2 string = ""
 	this.Switchpoint2 = &switchpoint2
-	var lagGroup string = ""
-	this.LagGroup = &lagGroup
+	var lag string = ""
+	this.Lag = &lag
 	var isWhiteboxPair bool = false
 	this.IsWhiteboxPair = &isWhiteboxPair
 	return &this
 }
 
-// NewSitesPatchRequestSiteValuePairsInnerWithDefaults instantiates a new SitesPatchRequestSiteValuePairsInner object
+// NewPairsPutRequestSwitchPairValueWithDefaults instantiates a new PairsPutRequestSwitchPairValue object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewSitesPatchRequestSiteValuePairsInnerWithDefaults() *SitesPatchRequestSiteValuePairsInner {
-	this := SitesPatchRequestSiteValuePairsInner{}
+func NewPairsPutRequestSwitchPairValueWithDefaults() *PairsPutRequestSwitchPairValue {
+	this := PairsPutRequestSwitchPairValue{}
 	var name string = ""
 	this.Name = &name
+	var enable bool = true
+	this.Enable = &enable
 	var switchpoint1 string = ""
 	this.Switchpoint1 = &switchpoint1
 	var switchpoint2 string = ""
 	this.Switchpoint2 = &switchpoint2
-	var lagGroup string = ""
-	this.LagGroup = &lagGroup
+	var lag string = ""
+	this.Lag = &lag
 	var isWhiteboxPair bool = false
 	this.IsWhiteboxPair = &isWhiteboxPair
 	return &this
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetName() string {
+func (o *PairsPutRequestSwitchPairValue) GetName() string {
 	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
@@ -87,7 +91,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetNameOk() (*string, bool) {
+func (o *PairsPutRequestSwitchPairValue) GetNameOk() (*string, bool) {
 	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
@@ -95,7 +99,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetNameOk() (*string, bool) {
 }
 
 // HasName returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasName() bool {
+func (o *PairsPutRequestSwitchPairValue) HasName() bool {
 	if o != nil && !IsNil(o.Name) {
 		return true
 	}
@@ -104,12 +108,44 @@ func (o *SitesPatchRequestSiteValuePairsInner) HasName() bool {
 }
 
 // SetName gets a reference to the given string and assigns it to the Name field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetName(v string) {
+func (o *PairsPutRequestSwitchPairValue) SetName(v string) {
 	o.Name = &v
 }
 
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *PairsPutRequestSwitchPairValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PairsPutRequestSwitchPairValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *PairsPutRequestSwitchPairValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *PairsPutRequestSwitchPairValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
 // GetSwitchpoint1 returns the Switchpoint1 field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint1() string {
+func (o *PairsPutRequestSwitchPairValue) GetSwitchpoint1() string {
 	if o == nil || IsNil(o.Switchpoint1) {
 		var ret string
 		return ret
@@ -119,7 +155,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint1() string {
 
 // GetSwitchpoint1Ok returns a tuple with the Switchpoint1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint1Ok() (*string, bool) {
+func (o *PairsPutRequestSwitchPairValue) GetSwitchpoint1Ok() (*string, bool) {
 	if o == nil || IsNil(o.Switchpoint1) {
 		return nil, false
 	}
@@ -127,7 +163,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint1Ok() (*string, boo
 }
 
 // HasSwitchpoint1 returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasSwitchpoint1() bool {
+func (o *PairsPutRequestSwitchPairValue) HasSwitchpoint1() bool {
 	if o != nil && !IsNil(o.Switchpoint1) {
 		return true
 	}
@@ -136,12 +172,12 @@ func (o *SitesPatchRequestSiteValuePairsInner) HasSwitchpoint1() bool {
 }
 
 // SetSwitchpoint1 gets a reference to the given string and assigns it to the Switchpoint1 field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetSwitchpoint1(v string) {
+func (o *PairsPutRequestSwitchPairValue) SetSwitchpoint1(v string) {
 	o.Switchpoint1 = &v
 }
 
 // GetSwitchpoint1RefType returns the Switchpoint1RefType field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint1RefType() string {
+func (o *PairsPutRequestSwitchPairValue) GetSwitchpoint1RefType() string {
 	if o == nil || IsNil(o.Switchpoint1RefType) {
 		var ret string
 		return ret
@@ -151,7 +187,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint1RefType() string {
 
 // GetSwitchpoint1RefTypeOk returns a tuple with the Switchpoint1RefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint1RefTypeOk() (*string, bool) {
+func (o *PairsPutRequestSwitchPairValue) GetSwitchpoint1RefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.Switchpoint1RefType) {
 		return nil, false
 	}
@@ -159,7 +195,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint1RefTypeOk() (*stri
 }
 
 // HasSwitchpoint1RefType returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasSwitchpoint1RefType() bool {
+func (o *PairsPutRequestSwitchPairValue) HasSwitchpoint1RefType() bool {
 	if o != nil && !IsNil(o.Switchpoint1RefType) {
 		return true
 	}
@@ -168,12 +204,12 @@ func (o *SitesPatchRequestSiteValuePairsInner) HasSwitchpoint1RefType() bool {
 }
 
 // SetSwitchpoint1RefType gets a reference to the given string and assigns it to the Switchpoint1RefType field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetSwitchpoint1RefType(v string) {
+func (o *PairsPutRequestSwitchPairValue) SetSwitchpoint1RefType(v string) {
 	o.Switchpoint1RefType = &v
 }
 
 // GetSwitchpoint2 returns the Switchpoint2 field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint2() string {
+func (o *PairsPutRequestSwitchPairValue) GetSwitchpoint2() string {
 	if o == nil || IsNil(o.Switchpoint2) {
 		var ret string
 		return ret
@@ -183,7 +219,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint2() string {
 
 // GetSwitchpoint2Ok returns a tuple with the Switchpoint2 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint2Ok() (*string, bool) {
+func (o *PairsPutRequestSwitchPairValue) GetSwitchpoint2Ok() (*string, bool) {
 	if o == nil || IsNil(o.Switchpoint2) {
 		return nil, false
 	}
@@ -191,7 +227,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint2Ok() (*string, boo
 }
 
 // HasSwitchpoint2 returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasSwitchpoint2() bool {
+func (o *PairsPutRequestSwitchPairValue) HasSwitchpoint2() bool {
 	if o != nil && !IsNil(o.Switchpoint2) {
 		return true
 	}
@@ -200,12 +236,12 @@ func (o *SitesPatchRequestSiteValuePairsInner) HasSwitchpoint2() bool {
 }
 
 // SetSwitchpoint2 gets a reference to the given string and assigns it to the Switchpoint2 field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetSwitchpoint2(v string) {
+func (o *PairsPutRequestSwitchPairValue) SetSwitchpoint2(v string) {
 	o.Switchpoint2 = &v
 }
 
 // GetSwitchpoint2RefType returns the Switchpoint2RefType field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint2RefType() string {
+func (o *PairsPutRequestSwitchPairValue) GetSwitchpoint2RefType() string {
 	if o == nil || IsNil(o.Switchpoint2RefType) {
 		var ret string
 		return ret
@@ -215,7 +251,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint2RefType() string {
 
 // GetSwitchpoint2RefTypeOk returns a tuple with the Switchpoint2RefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint2RefTypeOk() (*string, bool) {
+func (o *PairsPutRequestSwitchPairValue) GetSwitchpoint2RefTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.Switchpoint2RefType) {
 		return nil, false
 	}
@@ -223,7 +259,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetSwitchpoint2RefTypeOk() (*stri
 }
 
 // HasSwitchpoint2RefType returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasSwitchpoint2RefType() bool {
+func (o *PairsPutRequestSwitchPairValue) HasSwitchpoint2RefType() bool {
 	if o != nil && !IsNil(o.Switchpoint2RefType) {
 		return true
 	}
@@ -232,76 +268,76 @@ func (o *SitesPatchRequestSiteValuePairsInner) HasSwitchpoint2RefType() bool {
 }
 
 // SetSwitchpoint2RefType gets a reference to the given string and assigns it to the Switchpoint2RefType field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetSwitchpoint2RefType(v string) {
+func (o *PairsPutRequestSwitchPairValue) SetSwitchpoint2RefType(v string) {
 	o.Switchpoint2RefType = &v
 }
 
-// GetLagGroup returns the LagGroup field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetLagGroup() string {
-	if o == nil || IsNil(o.LagGroup) {
+// GetLag returns the Lag field value if set, zero value otherwise.
+func (o *PairsPutRequestSwitchPairValue) GetLag() string {
+	if o == nil || IsNil(o.Lag) {
 		var ret string
 		return ret
 	}
-	return *o.LagGroup
+	return *o.Lag
 }
 
-// GetLagGroupOk returns a tuple with the LagGroup field value if set, nil otherwise
+// GetLagOk returns a tuple with the Lag field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetLagGroupOk() (*string, bool) {
-	if o == nil || IsNil(o.LagGroup) {
+func (o *PairsPutRequestSwitchPairValue) GetLagOk() (*string, bool) {
+	if o == nil || IsNil(o.Lag) {
 		return nil, false
 	}
-	return o.LagGroup, true
+	return o.Lag, true
 }
 
-// HasLagGroup returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasLagGroup() bool {
-	if o != nil && !IsNil(o.LagGroup) {
+// HasLag returns a boolean if a field has been set.
+func (o *PairsPutRequestSwitchPairValue) HasLag() bool {
+	if o != nil && !IsNil(o.Lag) {
 		return true
 	}
 
 	return false
 }
 
-// SetLagGroup gets a reference to the given string and assigns it to the LagGroup field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetLagGroup(v string) {
-	o.LagGroup = &v
+// SetLag gets a reference to the given string and assigns it to the Lag field.
+func (o *PairsPutRequestSwitchPairValue) SetLag(v string) {
+	o.Lag = &v
 }
 
-// GetLagGroupRefType returns the LagGroupRefType field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetLagGroupRefType() string {
-	if o == nil || IsNil(o.LagGroupRefType) {
+// GetLagRefType returns the LagRefType field value if set, zero value otherwise.
+func (o *PairsPutRequestSwitchPairValue) GetLagRefType() string {
+	if o == nil || IsNil(o.LagRefType) {
 		var ret string
 		return ret
 	}
-	return *o.LagGroupRefType
+	return *o.LagRefType
 }
 
-// GetLagGroupRefTypeOk returns a tuple with the LagGroupRefType field value if set, nil otherwise
+// GetLagRefTypeOk returns a tuple with the LagRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetLagGroupRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.LagGroupRefType) {
+func (o *PairsPutRequestSwitchPairValue) GetLagRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.LagRefType) {
 		return nil, false
 	}
-	return o.LagGroupRefType, true
+	return o.LagRefType, true
 }
 
-// HasLagGroupRefType returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasLagGroupRefType() bool {
-	if o != nil && !IsNil(o.LagGroupRefType) {
+// HasLagRefType returns a boolean if a field has been set.
+func (o *PairsPutRequestSwitchPairValue) HasLagRefType() bool {
+	if o != nil && !IsNil(o.LagRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetLagGroupRefType gets a reference to the given string and assigns it to the LagGroupRefType field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetLagGroupRefType(v string) {
-	o.LagGroupRefType = &v
+// SetLagRefType gets a reference to the given string and assigns it to the LagRefType field.
+func (o *PairsPutRequestSwitchPairValue) SetLagRefType(v string) {
+	o.LagRefType = &v
 }
 
 // GetIsWhiteboxPair returns the IsWhiteboxPair field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetIsWhiteboxPair() bool {
+func (o *PairsPutRequestSwitchPairValue) GetIsWhiteboxPair() bool {
 	if o == nil || IsNil(o.IsWhiteboxPair) {
 		var ret bool
 		return ret
@@ -311,7 +347,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetIsWhiteboxPair() bool {
 
 // GetIsWhiteboxPairOk returns a tuple with the IsWhiteboxPair field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetIsWhiteboxPairOk() (*bool, bool) {
+func (o *PairsPutRequestSwitchPairValue) GetIsWhiteboxPairOk() (*bool, bool) {
 	if o == nil || IsNil(o.IsWhiteboxPair) {
 		return nil, false
 	}
@@ -319,7 +355,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetIsWhiteboxPairOk() (*bool, boo
 }
 
 // HasIsWhiteboxPair returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasIsWhiteboxPair() bool {
+func (o *PairsPutRequestSwitchPairValue) HasIsWhiteboxPair() bool {
 	if o != nil && !IsNil(o.IsWhiteboxPair) {
 		return true
 	}
@@ -328,43 +364,11 @@ func (o *SitesPatchRequestSiteValuePairsInner) HasIsWhiteboxPair() bool {
 }
 
 // SetIsWhiteboxPair gets a reference to the given bool and assigns it to the IsWhiteboxPair field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetIsWhiteboxPair(v bool) {
+func (o *PairsPutRequestSwitchPairValue) SetIsWhiteboxPair(v bool) {
 	o.IsWhiteboxPair = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetIndex() int32 {
-	if o == nil || IsNil(o.Index) {
-		var ret int32
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetIndexOk() (*int32, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetIndex(v int32) {
-	o.Index = &v
-}
-
-func (o SitesPatchRequestSiteValuePairsInner) MarshalJSON() ([]byte, error) {
+func (o PairsPutRequestSwitchPairValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -372,10 +376,13 @@ func (o SitesPatchRequestSiteValuePairsInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o SitesPatchRequestSiteValuePairsInner) ToMap() (map[string]interface{}, error) {
+func (o PairsPutRequestSwitchPairValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.Switchpoint1) {
 		toSerialize["switchpoint_1"] = o.Switchpoint1
@@ -389,53 +396,50 @@ func (o SitesPatchRequestSiteValuePairsInner) ToMap() (map[string]interface{}, e
 	if !IsNil(o.Switchpoint2RefType) {
 		toSerialize["switchpoint_2_ref_type_"] = o.Switchpoint2RefType
 	}
-	if !IsNil(o.LagGroup) {
-		toSerialize["lag_group"] = o.LagGroup
+	if !IsNil(o.Lag) {
+		toSerialize["lag"] = o.Lag
 	}
-	if !IsNil(o.LagGroupRefType) {
-		toSerialize["lag_group_ref_type_"] = o.LagGroupRefType
+	if !IsNil(o.LagRefType) {
+		toSerialize["lag_ref_type_"] = o.LagRefType
 	}
 	if !IsNil(o.IsWhiteboxPair) {
 		toSerialize["is_whitebox_pair"] = o.IsWhiteboxPair
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
-	}
 	return toSerialize, nil
 }
 
-type NullableSitesPatchRequestSiteValuePairsInner struct {
-	value *SitesPatchRequestSiteValuePairsInner
+type NullablePairsPutRequestSwitchPairValue struct {
+	value *PairsPutRequestSwitchPairValue
 	isSet bool
 }
 
-func (v NullableSitesPatchRequestSiteValuePairsInner) Get() *SitesPatchRequestSiteValuePairsInner {
+func (v NullablePairsPutRequestSwitchPairValue) Get() *PairsPutRequestSwitchPairValue {
 	return v.value
 }
 
-func (v *NullableSitesPatchRequestSiteValuePairsInner) Set(val *SitesPatchRequestSiteValuePairsInner) {
+func (v *NullablePairsPutRequestSwitchPairValue) Set(val *PairsPutRequestSwitchPairValue) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableSitesPatchRequestSiteValuePairsInner) IsSet() bool {
+func (v NullablePairsPutRequestSwitchPairValue) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableSitesPatchRequestSiteValuePairsInner) Unset() {
+func (v *NullablePairsPutRequestSwitchPairValue) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableSitesPatchRequestSiteValuePairsInner(val *SitesPatchRequestSiteValuePairsInner) *NullableSitesPatchRequestSiteValuePairsInner {
-	return &NullableSitesPatchRequestSiteValuePairsInner{value: val, isSet: true}
+func NewNullablePairsPutRequestSwitchPairValue(val *PairsPutRequestSwitchPairValue) *NullablePairsPutRequestSwitchPairValue {
+	return &NullablePairsPutRequestSwitchPairValue{value: val, isSet: true}
 }
 
-func (v NullableSitesPatchRequestSiteValuePairsInner) MarshalJSON() ([]byte, error) {
+func (v NullablePairsPutRequestSwitchPairValue) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableSitesPatchRequestSiteValuePairsInner) UnmarshalJSON(src []byte) error {
+func (v *NullablePairsPutRequestSwitchPairValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

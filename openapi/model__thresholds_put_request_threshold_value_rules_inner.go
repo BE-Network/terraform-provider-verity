@@ -49,7 +49,7 @@ func NewThresholdsPutRequestThresholdValueRulesInner() *ThresholdsPutRequestThre
 	this.Type = &type_
 	var metric string = ""
 	this.Metric = &metric
-	var operation string = "=="
+	var operation string = "eq"
 	this.Operation = &operation
 	var value string = ""
 	this.Value = &value
@@ -69,7 +69,7 @@ func NewThresholdsPutRequestThresholdValueRulesInnerWithDefaults() *ThresholdsPu
 	this.Type = &type_
 	var metric string = ""
 	this.Metric = &metric
-	var operation string = "=="
+	var operation string = "eq"
 	this.Operation = &operation
 	var value string = ""
 	this.Value = &value

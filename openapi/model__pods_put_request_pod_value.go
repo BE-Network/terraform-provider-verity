@@ -19,13 +19,19 @@ var _ MappedNullable = &PodsPutRequestPodValue{}
 
 // PodsPutRequestPodValue struct for PodsPutRequestPodValue
 type PodsPutRequestPodValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Number of spine switches expected in this pod
 	ExpectedSpineCount NullableInt32 `json:"expected_spine_count,omitempty"`
+	// Fabric this Pod is assigned to
+	Site *string `json:"site,omitempty"`
+	// Object type for site field
+	SiteRefType *string `json:"site_ref_type_,omitempty"`
+	// Position of the Switch
+	Position NullableFloat32 `json:"position,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewPodsPutRequestPodValue instantiates a new PodsPutRequestPodValue object
@@ -40,6 +46,8 @@ func NewPodsPutRequestPodValue() *PodsPutRequestPodValue {
 	this.Enable = &enable
 	var expectedSpineCount int32 = 1
 	this.ExpectedSpineCount = *NewNullableInt32(&expectedSpineCount)
+	var site string = ""
+	this.Site = &site
 	return &this
 }
 
@@ -54,6 +62,8 @@ func NewPodsPutRequestPodValueWithDefaults() *PodsPutRequestPodValue {
 	this.Enable = &enable
 	var expectedSpineCount int32 = 1
 	this.ExpectedSpineCount = *NewNullableInt32(&expectedSpineCount)
+	var site string = ""
+	this.Site = &site
 	return &this
 }
 
@@ -121,38 +131,6 @@ func (o *PodsPutRequestPodValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *PodsPutRequestPodValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret AclsPutRequestIpFilterValueObjectProperties
-		return ret
-	}
-	return *o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PodsPutRequestPodValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilterValueObjectProperties, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *PodsPutRequestPodValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given AclsPutRequestIpFilterValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *PodsPutRequestPodValue) SetObjectProperties(v AclsPutRequestIpFilterValueObjectProperties) {
-	o.ObjectProperties = &v
-}
-
 // GetExpectedSpineCount returns the ExpectedSpineCount field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int32 {
 	if o == nil || IsNil(o.ExpectedSpineCount.Get()) {
@@ -195,6 +173,144 @@ func (o *PodsPutRequestPodValue) UnsetExpectedSpineCount() {
 	o.ExpectedSpineCount.Unset()
 }
 
+// GetSite returns the Site field value if set, zero value otherwise.
+func (o *PodsPutRequestPodValue) GetSite() string {
+	if o == nil || IsNil(o.Site) {
+		var ret string
+		return ret
+	}
+	return *o.Site
+}
+
+// GetSiteOk returns a tuple with the Site field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PodsPutRequestPodValue) GetSiteOk() (*string, bool) {
+	if o == nil || IsNil(o.Site) {
+		return nil, false
+	}
+	return o.Site, true
+}
+
+// HasSite returns a boolean if a field has been set.
+func (o *PodsPutRequestPodValue) HasSite() bool {
+	if o != nil && !IsNil(o.Site) {
+		return true
+	}
+
+	return false
+}
+
+// SetSite gets a reference to the given string and assigns it to the Site field.
+func (o *PodsPutRequestPodValue) SetSite(v string) {
+	o.Site = &v
+}
+
+// GetSiteRefType returns the SiteRefType field value if set, zero value otherwise.
+func (o *PodsPutRequestPodValue) GetSiteRefType() string {
+	if o == nil || IsNil(o.SiteRefType) {
+		var ret string
+		return ret
+	}
+	return *o.SiteRefType
+}
+
+// GetSiteRefTypeOk returns a tuple with the SiteRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PodsPutRequestPodValue) GetSiteRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SiteRefType) {
+		return nil, false
+	}
+	return o.SiteRefType, true
+}
+
+// HasSiteRefType returns a boolean if a field has been set.
+func (o *PodsPutRequestPodValue) HasSiteRefType() bool {
+	if o != nil && !IsNil(o.SiteRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSiteRefType gets a reference to the given string and assigns it to the SiteRefType field.
+func (o *PodsPutRequestPodValue) SetSiteRefType(v string) {
+	o.SiteRefType = &v
+}
+
+// GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PodsPutRequestPodValue) GetPosition() float32 {
+	if o == nil || IsNil(o.Position.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.Position.Get()
+}
+
+// GetPositionOk returns a tuple with the Position field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PodsPutRequestPodValue) GetPositionOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Position.Get(), o.Position.IsSet()
+}
+
+// HasPosition returns a boolean if a field has been set.
+func (o *PodsPutRequestPodValue) HasPosition() bool {
+	if o != nil && o.Position.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPosition gets a reference to the given NullableFloat32 and assigns it to the Position field.
+func (o *PodsPutRequestPodValue) SetPosition(v float32) {
+	o.Position.Set(&v)
+}
+// SetPositionNil sets the value for Position to be an explicit nil
+func (o *PodsPutRequestPodValue) SetPositionNil() {
+	o.Position.Set(nil)
+}
+
+// UnsetPosition ensures that no value is present for Position, not even an explicit nil
+func (o *PodsPutRequestPodValue) UnsetPosition() {
+	o.Position.Unset()
+}
+
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *PodsPutRequestPodValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret AclsPutRequestIpFilterValueObjectProperties
+		return ret
+	}
+	return *o.ObjectProperties
+}
+
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PodsPutRequestPodValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilterValueObjectProperties, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return nil, false
+	}
+	return o.ObjectProperties, true
+}
+
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *PodsPutRequestPodValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectProperties gets a reference to the given AclsPutRequestIpFilterValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *PodsPutRequestPodValue) SetObjectProperties(v AclsPutRequestIpFilterValueObjectProperties) {
+	o.ObjectProperties = &v
+}
+
 func (o PodsPutRequestPodValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -211,11 +327,20 @@ func (o PodsPutRequestPodValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
-	}
 	if o.ExpectedSpineCount.IsSet() {
 		toSerialize["expected_spine_count"] = o.ExpectedSpineCount.Get()
+	}
+	if !IsNil(o.Site) {
+		toSerialize["site"] = o.Site
+	}
+	if !IsNil(o.SiteRefType) {
+		toSerialize["site_ref_type_"] = o.SiteRefType
+	}
+	if o.Position.IsSet() {
+		toSerialize["position"] = o.Position.Get()
+	}
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	return toSerialize, nil
 }

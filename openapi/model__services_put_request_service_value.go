@@ -19,13 +19,17 @@ var _ MappedNullable = &ServicesPutRequestServiceValue{}
 
 // ServicesPutRequestServiceValue struct for ServicesPutRequestServiceValue
 type ServicesPutRequestServiceValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
+	// Policy Based Routing
+	PolicyBasedRouting *string `json:"policy_based_routing,omitempty"`
+	// Object type for policy_based_routing field
+	PolicyBasedRoutingRefType *string `json:"policy_based_routing_ref_type_,omitempty"`
 	// Layer 2 Virtual Network Identifier. A Value between 1 and 4096. <br> Some switches have reserved values within the range
 	Vlan NullableInt32 `json:"vlan,omitempty"`
-	// Identifies the service within the VXLAN fabric
+	// Identifies the service within the VXLAN fabric - Range is 1-16777215. If not using auto, must be outside of the reserved range settings
 	Vni NullableInt32 `json:"vni,omitempty"`
 	// Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit.
 	VniAutoAssigned *bool `json:"vni_auto_assigned_,omitempty"`
@@ -44,10 +48,6 @@ type ServicesPutRequestServiceValue struct {
 	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
 	Mtu NullableInt32 `json:"mtu,omitempty"`
 	ObjectProperties *ServicesPutRequestServiceValueObjectProperties `json:"object_properties,omitempty"`
-	// Policy Based Routing
-	PolicyBasedRouting *string `json:"policy_based_routing,omitempty"`
-	// Object type for policy_based_routing field
-	PolicyBasedRoutingRefType *string `json:"policy_based_routing_ref_type_,omitempty"`
 	// Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)
 	MaxUpstreamRateMbps NullableInt32 `json:"max_upstream_rate_mbps,omitempty"`
 	// Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)
@@ -88,6 +88,8 @@ func NewServicesPutRequestServiceValue() *ServicesPutRequestServiceValue {
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var policyBasedRouting string = ""
+	this.PolicyBasedRouting = &policyBasedRouting
 	var tenant string = ""
 	this.Tenant = &tenant
 	var anycastIpv4Mask string = ""
@@ -98,10 +100,6 @@ func NewServicesPutRequestServiceValue() *ServicesPutRequestServiceValue {
 	this.DhcpServerIpv4 = &dhcpServerIpv4
 	var dhcpServerIpv6 string = ""
 	this.DhcpServerIpv6 = &dhcpServerIpv6
-	var mtu int32 = 1500
-	this.Mtu = *NewNullableInt32(&mtu)
-	var policyBasedRouting string = ""
-	this.PolicyBasedRouting = &policyBasedRouting
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var multicastManagementMode string = "flooding"
@@ -138,6 +136,8 @@ func NewServicesPutRequestServiceValueWithDefaults() *ServicesPutRequestServiceV
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var policyBasedRouting string = ""
+	this.PolicyBasedRouting = &policyBasedRouting
 	var tenant string = ""
 	this.Tenant = &tenant
 	var anycastIpv4Mask string = ""
@@ -148,10 +148,6 @@ func NewServicesPutRequestServiceValueWithDefaults() *ServicesPutRequestServiceV
 	this.DhcpServerIpv4 = &dhcpServerIpv4
 	var dhcpServerIpv6 string = ""
 	this.DhcpServerIpv6 = &dhcpServerIpv6
-	var mtu int32 = 1500
-	this.Mtu = *NewNullableInt32(&mtu)
-	var policyBasedRouting string = ""
-	this.PolicyBasedRouting = &policyBasedRouting
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var multicastManagementMode string = "flooding"
@@ -241,6 +237,70 @@ func (o *ServicesPutRequestServiceValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *ServicesPutRequestServiceValue) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetPolicyBasedRouting returns the PolicyBasedRouting field value if set, zero value otherwise.
+func (o *ServicesPutRequestServiceValue) GetPolicyBasedRouting() string {
+	if o == nil || IsNil(o.PolicyBasedRouting) {
+		var ret string
+		return ret
+	}
+	return *o.PolicyBasedRouting
+}
+
+// GetPolicyBasedRoutingOk returns a tuple with the PolicyBasedRouting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingOk() (*string, bool) {
+	if o == nil || IsNil(o.PolicyBasedRouting) {
+		return nil, false
+	}
+	return o.PolicyBasedRouting, true
+}
+
+// HasPolicyBasedRouting returns a boolean if a field has been set.
+func (o *ServicesPutRequestServiceValue) HasPolicyBasedRouting() bool {
+	if o != nil && !IsNil(o.PolicyBasedRouting) {
+		return true
+	}
+
+	return false
+}
+
+// SetPolicyBasedRouting gets a reference to the given string and assigns it to the PolicyBasedRouting field.
+func (o *ServicesPutRequestServiceValue) SetPolicyBasedRouting(v string) {
+	o.PolicyBasedRouting = &v
+}
+
+// GetPolicyBasedRoutingRefType returns the PolicyBasedRoutingRefType field value if set, zero value otherwise.
+func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefType() string {
+	if o == nil || IsNil(o.PolicyBasedRoutingRefType) {
+		var ret string
+		return ret
+	}
+	return *o.PolicyBasedRoutingRefType
+}
+
+// GetPolicyBasedRoutingRefTypeOk returns a tuple with the PolicyBasedRoutingRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PolicyBasedRoutingRefType) {
+		return nil, false
+	}
+	return o.PolicyBasedRoutingRefType, true
+}
+
+// HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
+func (o *ServicesPutRequestServiceValue) HasPolicyBasedRoutingRefType() bool {
+	if o != nil && !IsNil(o.PolicyBasedRoutingRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPolicyBasedRoutingRefType gets a reference to the given string and assigns it to the PolicyBasedRoutingRefType field.
+func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string) {
+	o.PolicyBasedRoutingRefType = &v
 }
 
 // GetVlan returns the Vlan field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -623,70 +683,6 @@ func (o *ServicesPutRequestServiceValue) HasObjectProperties() bool {
 // SetObjectProperties gets a reference to the given ServicesPutRequestServiceValueObjectProperties and assigns it to the ObjectProperties field.
 func (o *ServicesPutRequestServiceValue) SetObjectProperties(v ServicesPutRequestServiceValueObjectProperties) {
 	o.ObjectProperties = &v
-}
-
-// GetPolicyBasedRouting returns the PolicyBasedRouting field value if set, zero value otherwise.
-func (o *ServicesPutRequestServiceValue) GetPolicyBasedRouting() string {
-	if o == nil || IsNil(o.PolicyBasedRouting) {
-		var ret string
-		return ret
-	}
-	return *o.PolicyBasedRouting
-}
-
-// GetPolicyBasedRoutingOk returns a tuple with the PolicyBasedRouting field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingOk() (*string, bool) {
-	if o == nil || IsNil(o.PolicyBasedRouting) {
-		return nil, false
-	}
-	return o.PolicyBasedRouting, true
-}
-
-// HasPolicyBasedRouting returns a boolean if a field has been set.
-func (o *ServicesPutRequestServiceValue) HasPolicyBasedRouting() bool {
-	if o != nil && !IsNil(o.PolicyBasedRouting) {
-		return true
-	}
-
-	return false
-}
-
-// SetPolicyBasedRouting gets a reference to the given string and assigns it to the PolicyBasedRouting field.
-func (o *ServicesPutRequestServiceValue) SetPolicyBasedRouting(v string) {
-	o.PolicyBasedRouting = &v
-}
-
-// GetPolicyBasedRoutingRefType returns the PolicyBasedRoutingRefType field value if set, zero value otherwise.
-func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefType() string {
-	if o == nil || IsNil(o.PolicyBasedRoutingRefType) {
-		var ret string
-		return ret
-	}
-	return *o.PolicyBasedRoutingRefType
-}
-
-// GetPolicyBasedRoutingRefTypeOk returns a tuple with the PolicyBasedRoutingRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.PolicyBasedRoutingRefType) {
-		return nil, false
-	}
-	return o.PolicyBasedRoutingRefType, true
-}
-
-// HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
-func (o *ServicesPutRequestServiceValue) HasPolicyBasedRoutingRefType() bool {
-	if o != nil && !IsNil(o.PolicyBasedRoutingRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetPolicyBasedRoutingRefType gets a reference to the given string and assigns it to the PolicyBasedRoutingRefType field.
-func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string) {
-	o.PolicyBasedRoutingRefType = &v
 }
 
 // GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1183,6 +1179,12 @@ func (o ServicesPutRequestServiceValue) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.PolicyBasedRouting) {
+		toSerialize["policy_based_routing"] = o.PolicyBasedRouting
+	}
+	if !IsNil(o.PolicyBasedRoutingRefType) {
+		toSerialize["policy_based_routing_ref_type_"] = o.PolicyBasedRoutingRefType
+	}
 	if o.Vlan.IsSet() {
 		toSerialize["vlan"] = o.Vlan.Get()
 	}
@@ -1215,12 +1217,6 @@ func (o ServicesPutRequestServiceValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.PolicyBasedRouting) {
-		toSerialize["policy_based_routing"] = o.PolicyBasedRouting
-	}
-	if !IsNil(o.PolicyBasedRoutingRefType) {
-		toSerialize["policy_based_routing_ref_type_"] = o.PolicyBasedRoutingRefType
 	}
 	if o.MaxUpstreamRateMbps.IsSet() {
 		toSerialize["max_upstream_rate_mbps"] = o.MaxUpstreamRateMbps.Get()

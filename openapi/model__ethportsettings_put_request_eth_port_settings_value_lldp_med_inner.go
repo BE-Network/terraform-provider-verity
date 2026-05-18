@@ -23,7 +23,7 @@ type EthportsettingsPutRequestEthPortSettingsValueLldpMedInner struct {
 	LldpMedRowNumEnable *bool `json:"lldp_med_row_num_enable,omitempty"`
 	// Advertised application
 	LldpMedRowNumAdvertisedApplicatio *string `json:"lldp_med_row_num_advertised_applicatio,omitempty"`
-	// LLDP DSCP Mark
+	// Defines egress LLDP sent when a device is connected to this Eth-Port Settings allowing the device to auto-provision its DSCP marking.
 	LldpMedRowNumDscpMark NullableInt32 `json:"lldp_med_row_num_dscp_mark,omitempty"`
 	// LLDP Priority
 	LldpMedRowNumPriority NullableInt32 `json:"lldp_med_row_num_priority,omitempty"`

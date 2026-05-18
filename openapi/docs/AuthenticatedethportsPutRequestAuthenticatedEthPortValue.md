@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **ConnectionMode** | Pointer to **string** | Choose connection mode for Authenticated Eth-Port&lt;br&gt;&lt;b&gt;Port Mode&lt;/b&gt;  Standard mode. The last authenticated clients VLAN access is applied.&lt;br&gt;&lt;b&gt;Single Client Mode&lt;/b&gt;  MAC filtered client. Only the authenticated clients traffic can pass. No traffic from a second client may pass. Only when the first client deauthenticates can a new authentication take place.&lt;br&gt;&lt;b&gt;Multiple Client Mode&lt;/b&gt;  MAC filtered clients. Only authenticated client traffic can pass. Multiple clients can authenticate and gain access to individual service offerings. MAC-based authentication is not supported. | [optional] [default to "PortMode"]
 **ReauthorizationPeriodSec** | Pointer to **NullableInt32** | Amount of time in seconds before 802.1X requires reauthorization of an active session. \&quot;0\&quot; disables reauthorization (not recommended) | [optional] [default to 3600]

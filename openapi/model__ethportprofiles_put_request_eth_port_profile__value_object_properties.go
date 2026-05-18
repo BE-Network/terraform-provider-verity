@@ -19,8 +19,6 @@ var _ MappedNullable = &EthportprofilesPutRequestEthPortProfileValueObjectProper
 
 // EthportprofilesPutRequestEthPortProfileValueObjectProperties struct for EthportprofilesPutRequestEthPortProfileValueObjectProperties
 type EthportprofilesPutRequestEthPortProfileValueObjectProperties struct {
-	// Group
-	Group *string `json:"group,omitempty"`
 	// Defines importance of Link Down on this port
 	PortMonitoring *string `json:"port_monitoring,omitempty"`
 	// Choose to sort by service name or by order of creation
@@ -37,8 +35,6 @@ type EthportprofilesPutRequestEthPortProfileValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewEthportprofilesPutRequestEthPortProfileValueObjectProperties() *EthportprofilesPutRequestEthPortProfileValueObjectProperties {
 	this := EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
-	var group string = ""
-	this.Group = &group
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
 	var sortByName bool = false
@@ -55,8 +51,6 @@ func NewEthportprofilesPutRequestEthPortProfileValueObjectProperties() *Ethportp
 // but it doesn't guarantee that properties required by API are set
 func NewEthportprofilesPutRequestEthPortProfileValueObjectPropertiesWithDefaults() *EthportprofilesPutRequestEthPortProfileValueObjectProperties {
 	this := EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
-	var group string = ""
-	this.Group = &group
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
 	var sortByName bool = false
@@ -66,38 +60,6 @@ func NewEthportprofilesPutRequestEthPortProfileValueObjectPropertiesWithDefaults
 	var icon string = "empty"
 	this.Icon = &icon
 	return &this
-}
-
-// GetGroup returns the Group field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetGroup() string {
-	if o == nil || IsNil(o.Group) {
-		var ret string
-		return ret
-	}
-	return *o.Group
-}
-
-// GetGroupOk returns a tuple with the Group field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetGroupOk() (*string, bool) {
-	if o == nil || IsNil(o.Group) {
-		return nil, false
-	}
-	return o.Group, true
-}
-
-// HasGroup returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasGroup() bool {
-	if o != nil && !IsNil(o.Group) {
-		return true
-	}
-
-	return false
-}
-
-// SetGroup gets a reference to the given string and assigns it to the Group field.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetGroup(v string) {
-	o.Group = &v
 }
 
 // GetPortMonitoring returns the PortMonitoring field value if set, zero value otherwise.
@@ -238,9 +200,6 @@ func (o EthportprofilesPutRequestEthPortProfileValueObjectProperties) MarshalJSO
 
 func (o EthportprofilesPutRequestEthPortProfileValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Group) {
-		toSerialize["group"] = o.Group
-	}
 	if !IsNil(o.PortMonitoring) {
 		toSerialize["port_monitoring"] = o.PortMonitoring
 	}

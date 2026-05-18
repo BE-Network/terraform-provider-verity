@@ -40,8 +40,12 @@ func (r ApiAuthPostRequest) Execute() (*http.Response, error) {
 /*
 AuthPost User authorization
 
-Authenticates a user using username and password, and returns a token if successful.
-
+Authenticates a user using username and password.
+            On successful authentication a cookie named "verity_api" is set for browser clients.
+            For non-browser/scripted clients the response body returns a JSON `token` field containing the same session value.
+            Include that token in subsequent requests by sending the cookie header `Cookie: verity_api=<token>`.
+            The session cookie expires after 20 minutes.
+        
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiAuthPostRequest

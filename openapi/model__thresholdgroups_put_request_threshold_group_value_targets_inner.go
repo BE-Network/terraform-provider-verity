@@ -27,10 +27,12 @@ type ThresholdgroupsPutRequestThresholdGroupValueTargetsInner struct {
 	GroupingRules *string `json:"grouping_rules,omitempty"`
 	// Object type for grouping_rules field
 	GroupingRulesRefType *string `json:"grouping_rules_ref_type_,omitempty"`
-	// Switchpoint to apply thresholds to
-	Switchpoint *string `json:"switchpoint,omitempty"`
-	// Object type for switchpoint field
-	SwitchpointRefType *string `json:"switchpoint_ref_type_,omitempty"`
+	// Element to apply thresholds to
+	Element *string `json:"element,omitempty"`
+	// Object type for element field
+	ElementRefType *string `json:"element_ref_type_,omitempty"`
+	// SDLC to apply thresholds to
+	Sdlc *string `json:"sdlc,omitempty"`
 	// Port to apply thresholds to
 	Port *string `json:"port,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
@@ -49,8 +51,10 @@ func NewThresholdgroupsPutRequestThresholdGroupValueTargetsInner() *Thresholdgro
 	this.Type = &type_
 	var groupingRules string = ""
 	this.GroupingRules = &groupingRules
-	var switchpoint string = ""
-	this.Switchpoint = &switchpoint
+	var element string = ""
+	this.Element = &element
+	var sdlc string = ""
+	this.Sdlc = &sdlc
 	var port string = ""
 	this.Port = &port
 	return &this
@@ -67,8 +71,10 @@ func NewThresholdgroupsPutRequestThresholdGroupValueTargetsInnerWithDefaults() *
 	this.Type = &type_
 	var groupingRules string = ""
 	this.GroupingRules = &groupingRules
-	var switchpoint string = ""
-	this.Switchpoint = &switchpoint
+	var element string = ""
+	this.Element = &element
+	var sdlc string = ""
+	this.Sdlc = &sdlc
 	var port string = ""
 	this.Port = &port
 	return &this
@@ -202,68 +208,100 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetGroupingRu
 	o.GroupingRulesRefType = &v
 }
 
-// GetSwitchpoint returns the Switchpoint field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSwitchpoint() string {
-	if o == nil || IsNil(o.Switchpoint) {
+// GetElement returns the Element field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetElement() string {
+	if o == nil || IsNil(o.Element) {
 		var ret string
 		return ret
 	}
-	return *o.Switchpoint
+	return *o.Element
 }
 
-// GetSwitchpointOk returns a tuple with the Switchpoint field value if set, nil otherwise
+// GetElementOk returns a tuple with the Element field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSwitchpointOk() (*string, bool) {
-	if o == nil || IsNil(o.Switchpoint) {
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetElementOk() (*string, bool) {
+	if o == nil || IsNil(o.Element) {
 		return nil, false
 	}
-	return o.Switchpoint, true
+	return o.Element, true
 }
 
-// HasSwitchpoint returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasSwitchpoint() bool {
-	if o != nil && !IsNil(o.Switchpoint) {
+// HasElement returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasElement() bool {
+	if o != nil && !IsNil(o.Element) {
 		return true
 	}
 
 	return false
 }
 
-// SetSwitchpoint gets a reference to the given string and assigns it to the Switchpoint field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetSwitchpoint(v string) {
-	o.Switchpoint = &v
+// SetElement gets a reference to the given string and assigns it to the Element field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetElement(v string) {
+	o.Element = &v
 }
 
-// GetSwitchpointRefType returns the SwitchpointRefType field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSwitchpointRefType() string {
-	if o == nil || IsNil(o.SwitchpointRefType) {
+// GetElementRefType returns the ElementRefType field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetElementRefType() string {
+	if o == nil || IsNil(o.ElementRefType) {
 		var ret string
 		return ret
 	}
-	return *o.SwitchpointRefType
+	return *o.ElementRefType
 }
 
-// GetSwitchpointRefTypeOk returns a tuple with the SwitchpointRefType field value if set, nil otherwise
+// GetElementRefTypeOk returns a tuple with the ElementRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSwitchpointRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.SwitchpointRefType) {
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetElementRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ElementRefType) {
 		return nil, false
 	}
-	return o.SwitchpointRefType, true
+	return o.ElementRefType, true
 }
 
-// HasSwitchpointRefType returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasSwitchpointRefType() bool {
-	if o != nil && !IsNil(o.SwitchpointRefType) {
+// HasElementRefType returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasElementRefType() bool {
+	if o != nil && !IsNil(o.ElementRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetSwitchpointRefType gets a reference to the given string and assigns it to the SwitchpointRefType field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetSwitchpointRefType(v string) {
-	o.SwitchpointRefType = &v
+// SetElementRefType gets a reference to the given string and assigns it to the ElementRefType field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetElementRefType(v string) {
+	o.ElementRefType = &v
+}
+
+// GetSdlc returns the Sdlc field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSdlc() string {
+	if o == nil || IsNil(o.Sdlc) {
+		var ret string
+		return ret
+	}
+	return *o.Sdlc
+}
+
+// GetSdlcOk returns a tuple with the Sdlc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSdlcOk() (*string, bool) {
+	if o == nil || IsNil(o.Sdlc) {
+		return nil, false
+	}
+	return o.Sdlc, true
+}
+
+// HasSdlc returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasSdlc() bool {
+	if o != nil && !IsNil(o.Sdlc) {
+		return true
+	}
+
+	return false
+}
+
+// SetSdlc gets a reference to the given string and assigns it to the Sdlc field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetSdlc(v string) {
+	o.Sdlc = &v
 }
 
 // GetPort returns the Port field value if set, zero value otherwise.
@@ -352,11 +390,14 @@ func (o ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) ToMap() (map[s
 	if !IsNil(o.GroupingRulesRefType) {
 		toSerialize["grouping_rules_ref_type_"] = o.GroupingRulesRefType
 	}
-	if !IsNil(o.Switchpoint) {
-		toSerialize["switchpoint"] = o.Switchpoint
+	if !IsNil(o.Element) {
+		toSerialize["element"] = o.Element
 	}
-	if !IsNil(o.SwitchpointRefType) {
-		toSerialize["switchpoint_ref_type_"] = o.SwitchpointRefType
+	if !IsNil(o.ElementRefType) {
+		toSerialize["element_ref_type_"] = o.ElementRefType
+	}
+	if !IsNil(o.Sdlc) {
+		toSerialize["sdlc"] = o.Sdlc
 	}
 	if !IsNil(o.Port) {
 		toSerialize["port"] = o.Port

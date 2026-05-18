@@ -4,8 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
+**PasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
+**EnablePasswordEncrypted** | Pointer to **string** | Enable Password - to enable privileged CLI operations | [optional] [default to ""]
+**SshKeyOrPasswordEncrypted** | Pointer to **string** | SSH Key or Password | [optional] [default to ""]
+**PassphraseEncrypted** | Pointer to **string** | Passphrase | [optional] [default to ""]
+**PrivatePasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
 **IpSource** | Pointer to **string** | IP Source | [optional] [default to "dhcp"]
 **ControllerIpAndMask** | Pointer to **string** | Controller IP and Mask | [optional] [default to ""]
 **Gateway** | Pointer to **string** | Gateway | [optional] [default to ""]
@@ -34,11 +39,6 @@ Name | Type | Description | Notes
 **Passphrase** | Pointer to **string** | Passphrase | [optional] [default to ""]
 **PrivateProtocol** | Pointer to **string** | Protocol | [optional] [default to "DES"]
 **PrivatePassword** | Pointer to **string** | Password | [optional] [default to ""]
-**PasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
-**EnablePasswordEncrypted** | Pointer to **string** | Enable Password - to enable privileged CLI operations | [optional] [default to ""]
-**SshKeyOrPasswordEncrypted** | Pointer to **string** | SSH Key or Password | [optional] [default to ""]
-**PassphraseEncrypted** | Pointer to **string** | Passphrase | [optional] [default to ""]
-**PrivatePasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
 **DeviceManagedAs** | Pointer to **string** | Device managed as | [optional] [default to "switch"]
 **Switch** | Pointer to **string** | Switchpoint locating the Switch to be controlled | [optional] [default to ""]
 **SwitchRefType** | Pointer to **string** | Object type for switch field | [optional] 
@@ -116,6 +116,131 @@ SetEnable sets Enable field to given value.
 `func (o *DevicecontrollersPutRequestDeviceControllerValue) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
+
+### GetPasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPasswordEncrypted() string`
+
+GetPasswordEncrypted returns the PasswordEncrypted field if non-nil, zero value otherwise.
+
+### GetPasswordEncryptedOk
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPasswordEncryptedOk() (*string, bool)`
+
+GetPasswordEncryptedOk returns a tuple with the PasswordEncrypted field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPasswordEncrypted(v string)`
+
+SetPasswordEncrypted sets PasswordEncrypted field to given value.
+
+### HasPasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPasswordEncrypted() bool`
+
+HasPasswordEncrypted returns a boolean if a field has been set.
+
+### GetEnablePasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetEnablePasswordEncrypted() string`
+
+GetEnablePasswordEncrypted returns the EnablePasswordEncrypted field if non-nil, zero value otherwise.
+
+### GetEnablePasswordEncryptedOk
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetEnablePasswordEncryptedOk() (*string, bool)`
+
+GetEnablePasswordEncryptedOk returns a tuple with the EnablePasswordEncrypted field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnablePasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetEnablePasswordEncrypted(v string)`
+
+SetEnablePasswordEncrypted sets EnablePasswordEncrypted field to given value.
+
+### HasEnablePasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasEnablePasswordEncrypted() bool`
+
+HasEnablePasswordEncrypted returns a boolean if a field has been set.
+
+### GetSshKeyOrPasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetSshKeyOrPasswordEncrypted() string`
+
+GetSshKeyOrPasswordEncrypted returns the SshKeyOrPasswordEncrypted field if non-nil, zero value otherwise.
+
+### GetSshKeyOrPasswordEncryptedOk
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetSshKeyOrPasswordEncryptedOk() (*string, bool)`
+
+GetSshKeyOrPasswordEncryptedOk returns a tuple with the SshKeyOrPasswordEncrypted field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSshKeyOrPasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetSshKeyOrPasswordEncrypted(v string)`
+
+SetSshKeyOrPasswordEncrypted sets SshKeyOrPasswordEncrypted field to given value.
+
+### HasSshKeyOrPasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasSshKeyOrPasswordEncrypted() bool`
+
+HasSshKeyOrPasswordEncrypted returns a boolean if a field has been set.
+
+### GetPassphraseEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPassphraseEncrypted() string`
+
+GetPassphraseEncrypted returns the PassphraseEncrypted field if non-nil, zero value otherwise.
+
+### GetPassphraseEncryptedOk
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPassphraseEncryptedOk() (*string, bool)`
+
+GetPassphraseEncryptedOk returns a tuple with the PassphraseEncrypted field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPassphraseEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPassphraseEncrypted(v string)`
+
+SetPassphraseEncrypted sets PassphraseEncrypted field to given value.
+
+### HasPassphraseEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPassphraseEncrypted() bool`
+
+HasPassphraseEncrypted returns a boolean if a field has been set.
+
+### GetPrivatePasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPrivatePasswordEncrypted() string`
+
+GetPrivatePasswordEncrypted returns the PrivatePasswordEncrypted field if non-nil, zero value otherwise.
+
+### GetPrivatePasswordEncryptedOk
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPrivatePasswordEncryptedOk() (*string, bool)`
+
+GetPrivatePasswordEncryptedOk returns a tuple with the PrivatePasswordEncrypted field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPrivatePasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPrivatePasswordEncrypted(v string)`
+
+SetPrivatePasswordEncrypted sets PrivatePasswordEncrypted field to given value.
+
+### HasPrivatePasswordEncrypted
+
+`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPrivatePasswordEncrypted() bool`
+
+HasPrivatePasswordEncrypted returns a boolean if a field has been set.
 
 ### GetIpSource
 
@@ -816,131 +941,6 @@ SetPrivatePassword sets PrivatePassword field to given value.
 `func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPrivatePassword() bool`
 
 HasPrivatePassword returns a boolean if a field has been set.
-
-### GetPasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPasswordEncrypted() string`
-
-GetPasswordEncrypted returns the PasswordEncrypted field if non-nil, zero value otherwise.
-
-### GetPasswordEncryptedOk
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPasswordEncryptedOk() (*string, bool)`
-
-GetPasswordEncryptedOk returns a tuple with the PasswordEncrypted field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPasswordEncrypted(v string)`
-
-SetPasswordEncrypted sets PasswordEncrypted field to given value.
-
-### HasPasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPasswordEncrypted() bool`
-
-HasPasswordEncrypted returns a boolean if a field has been set.
-
-### GetEnablePasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetEnablePasswordEncrypted() string`
-
-GetEnablePasswordEncrypted returns the EnablePasswordEncrypted field if non-nil, zero value otherwise.
-
-### GetEnablePasswordEncryptedOk
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetEnablePasswordEncryptedOk() (*string, bool)`
-
-GetEnablePasswordEncryptedOk returns a tuple with the EnablePasswordEncrypted field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEnablePasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetEnablePasswordEncrypted(v string)`
-
-SetEnablePasswordEncrypted sets EnablePasswordEncrypted field to given value.
-
-### HasEnablePasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasEnablePasswordEncrypted() bool`
-
-HasEnablePasswordEncrypted returns a boolean if a field has been set.
-
-### GetSshKeyOrPasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetSshKeyOrPasswordEncrypted() string`
-
-GetSshKeyOrPasswordEncrypted returns the SshKeyOrPasswordEncrypted field if non-nil, zero value otherwise.
-
-### GetSshKeyOrPasswordEncryptedOk
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetSshKeyOrPasswordEncryptedOk() (*string, bool)`
-
-GetSshKeyOrPasswordEncryptedOk returns a tuple with the SshKeyOrPasswordEncrypted field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSshKeyOrPasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetSshKeyOrPasswordEncrypted(v string)`
-
-SetSshKeyOrPasswordEncrypted sets SshKeyOrPasswordEncrypted field to given value.
-
-### HasSshKeyOrPasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasSshKeyOrPasswordEncrypted() bool`
-
-HasSshKeyOrPasswordEncrypted returns a boolean if a field has been set.
-
-### GetPassphraseEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPassphraseEncrypted() string`
-
-GetPassphraseEncrypted returns the PassphraseEncrypted field if non-nil, zero value otherwise.
-
-### GetPassphraseEncryptedOk
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPassphraseEncryptedOk() (*string, bool)`
-
-GetPassphraseEncryptedOk returns a tuple with the PassphraseEncrypted field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPassphraseEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPassphraseEncrypted(v string)`
-
-SetPassphraseEncrypted sets PassphraseEncrypted field to given value.
-
-### HasPassphraseEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPassphraseEncrypted() bool`
-
-HasPassphraseEncrypted returns a boolean if a field has been set.
-
-### GetPrivatePasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPrivatePasswordEncrypted() string`
-
-GetPrivatePasswordEncrypted returns the PrivatePasswordEncrypted field if non-nil, zero value otherwise.
-
-### GetPrivatePasswordEncryptedOk
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPrivatePasswordEncryptedOk() (*string, bool)`
-
-GetPrivatePasswordEncryptedOk returns a tuple with the PrivatePasswordEncrypted field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPrivatePasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPrivatePasswordEncrypted(v string)`
-
-SetPrivatePasswordEncrypted sets PrivatePasswordEncrypted field to given value.
-
-### HasPrivatePasswordEncrypted
-
-`func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPrivatePasswordEncrypted() bool`
-
-HasPrivatePasswordEncrypted returns a boolean if a field has been set.
 
 ### GetDeviceManagedAs
 

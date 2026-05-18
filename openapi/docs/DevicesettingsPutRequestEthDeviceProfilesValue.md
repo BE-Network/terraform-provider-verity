@@ -4,20 +4,26 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
+**CliCommands** | Pointer to **string** | CLI Commands | [optional] [default to ""]
 **Mode** | Pointer to **string** | Mode | [optional] [default to "IEEE 802.3af"]
 **UsageThreshold** | Pointer to **NullableFloat32** | Usage Threshold | [optional] 
 **ExternalBatteryPowerAvailable** | Pointer to **NullableInt32** | External Battery Power Available | [optional] [default to 40]
 **ExternalPowerAvailable** | Pointer to **NullableInt32** | External Power Available | [optional] [default to 75]
 **DisableTcpUdpLearnedPacketAcceleration** | Pointer to **bool** | Required for AVB, PTP and Cobranet Support for ONT Devices | [optional] [default to false]
-**PacketQueue** | Pointer to **string** | Packet Queue for device | [optional] [default to "packet_queue|(Packet Queue)|"]
+**PacketQueue** | Pointer to **string** | Packet Queue for device | [optional] [default to ""]
 **PacketQueueRefType** | Pointer to **string** | Object type for packet_queue field | [optional] 
 **SecurityAuditInterval** | Pointer to **NullableInt32** | Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 &lt;br&gt;if the value is blank, audit will use default switch settings.                                                 &lt;br&gt;if the value is 0, audit will be turned off.                                                  | [optional] [default to 60]
 **CommitToFlashInterval** | Pointer to **NullableInt32** | Time delay in minutes to write the Switch configuration to flash after a change is made.                                                 &lt;br&gt;if the value is blank, commit will use default switch settings of 12 hours.                                                 &lt;br&gt;if the value is 0, commit will be turned off. | [optional] [default to 60]
 **Rocev2** | Pointer to **bool** | Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs. | [optional] [default to false]
 **CutThroughSwitching** | Pointer to **bool** | Enable Cut-through Switching on all Switches | [optional] [default to false]
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
+**LoginBanner** | Pointer to **string** | Banner message displayed at login | [optional] [default to ""]
+**DnsServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner.md) |  | [optional] 
+**NtpServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner.md) |  | [optional] 
+**SyslogServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner.md) |  | [optional] 
+**TacacsServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner.md) |  | [optional] 
+**ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
 **HoldTimer** | Pointer to **NullableInt32** | Hold Timer | [optional] [default to 0]
 **MacAgingTimerOverride** | Pointer to **NullableInt32** | Blank uses the Device&#39;s default; otherwise an integer between 1 to 1,000,000 seconds | [optional] 
 **SpanningTreePriority** | Pointer to **string** | STP per switch, priority are in 4096 increments, the lower the number, the higher the priority. | [optional] [default to "byLevel"]
@@ -90,6 +96,31 @@ SetEnable sets Enable field to given value.
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
+
+### GetCliCommands
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCliCommands() string`
+
+GetCliCommands returns the CliCommands field if non-nil, zero value otherwise.
+
+### GetCliCommandsOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCliCommandsOk() (*string, bool)`
+
+GetCliCommandsOk returns a tuple with the CliCommands field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCliCommands
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCliCommands(v string)`
+
+SetCliCommands sets CliCommands field to given value.
+
+### HasCliCommands
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasCliCommands() bool`
+
+HasCliCommands returns a boolean if a field has been set.
 
 ### GetMode
 
@@ -416,22 +447,147 @@ SetCutThroughSwitching sets CutThroughSwitching field to given value.
 
 HasCutThroughSwitching returns a boolean if a field has been set.
 
+### GetLoginBanner
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetLoginBanner() string`
+
+GetLoginBanner returns the LoginBanner field if non-nil, zero value otherwise.
+
+### GetLoginBannerOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetLoginBannerOk() (*string, bool)`
+
+GetLoginBannerOk returns a tuple with the LoginBanner field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLoginBanner
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetLoginBanner(v string)`
+
+SetLoginBanner sets LoginBanner field to given value.
+
+### HasLoginBanner
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasLoginBanner() bool`
+
+HasLoginBanner returns a boolean if a field has been set.
+
+### GetDnsServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDnsServers() []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner`
+
+GetDnsServers returns the DnsServers field if non-nil, zero value otherwise.
+
+### GetDnsServersOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDnsServersOk() (*[]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, bool)`
+
+GetDnsServersOk returns a tuple with the DnsServers field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDnsServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDnsServers(v []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner)`
+
+SetDnsServers sets DnsServers field to given value.
+
+### HasDnsServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDnsServers() bool`
+
+HasDnsServers returns a boolean if a field has been set.
+
+### GetNtpServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner`
+
+GetNtpServers returns the NtpServers field if non-nil, zero value otherwise.
+
+### GetNtpServersOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServersOk() (*[]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, bool)`
+
+GetNtpServersOk returns a tuple with the NtpServers field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNtpServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpServers(v []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner)`
+
+SetNtpServers sets NtpServers field to given value.
+
+### HasNtpServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpServers() bool`
+
+HasNtpServers returns a boolean if a field has been set.
+
+### GetSyslogServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSyslogServers() []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner`
+
+GetSyslogServers returns the SyslogServers field if non-nil, zero value otherwise.
+
+### GetSyslogServersOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSyslogServersOk() (*[]DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner, bool)`
+
+GetSyslogServersOk returns a tuple with the SyslogServers field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSyslogServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSyslogServers(v []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner)`
+
+SetSyslogServers sets SyslogServers field to given value.
+
+### HasSyslogServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasSyslogServers() bool`
+
+HasSyslogServers returns a boolean if a field has been set.
+
+### GetTacacsServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetTacacsServers() []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner`
+
+GetTacacsServers returns the TacacsServers field if non-nil, zero value otherwise.
+
+### GetTacacsServersOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetTacacsServersOk() (*[]DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner, bool)`
+
+GetTacacsServersOk returns a tuple with the TacacsServers field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTacacsServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetTacacsServers(v []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner)`
+
+SetTacacsServers sets TacacsServers field to given value.
+
+### HasTacacsServers
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasTacacsServers() bool`
+
+HasTacacsServers returns a boolean if a field has been set.
+
 ### GetObjectProperties
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectProperties() map[string]interface{}`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectPropertiesOk() (*map[string]interface{}, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetObjectProperties(v map[string]interface{})`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

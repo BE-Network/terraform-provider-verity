@@ -19,7 +19,7 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 
 // SwitchpointsPutRequestSwitchpointValueObjectProperties struct for SwitchpointsPutRequestSwitchpointValueObjectProperties
 type SwitchpointsPutRequestSwitchpointValueObjectProperties struct {
-	// Notes writen by User about the site
+	// Notes writen by User about the fabric
 	UserNotes *string `json:"user_notes,omitempty"`
 	// Expected Parent Endpoint
 	ExpectedParentEndpoint *string `json:"expected_parent_endpoint,omitempty"`
@@ -31,6 +31,8 @@ type SwitchpointsPutRequestSwitchpointValueObjectProperties struct {
 	Aggregate *bool `json:"aggregate,omitempty"`
 	// For Switch Endpoints. Denotes the Host Switch
 	IsHost *bool `json:"is_host,omitempty"`
+	// Emulate RF Video Port
+	EmulateRfVideoPort *bool `json:"emulate_rf_video_port,omitempty"`
 	// Turn on to display the switch as an edge device instead of as a switch
 	DrawAsEdgeDevice *bool `json:"draw_as_edge_device,omitempty"`
 }
@@ -51,6 +53,8 @@ func NewSwitchpointsPutRequestSwitchpointValueObjectProperties() *SwitchpointsPu
 	this.Aggregate = &aggregate
 	var isHost bool = false
 	this.IsHost = &isHost
+	var emulateRfVideoPort bool = false
+	this.EmulateRfVideoPort = &emulateRfVideoPort
 	var drawAsEdgeDevice bool = false
 	this.DrawAsEdgeDevice = &drawAsEdgeDevice
 	return &this
@@ -71,6 +75,8 @@ func NewSwitchpointsPutRequestSwitchpointValueObjectPropertiesWithDefaults() *Sw
 	this.Aggregate = &aggregate
 	var isHost bool = false
 	this.IsHost = &isHost
+	var emulateRfVideoPort bool = false
+	this.EmulateRfVideoPort = &emulateRfVideoPort
 	var drawAsEdgeDevice bool = false
 	this.DrawAsEdgeDevice = &drawAsEdgeDevice
 	return &this
@@ -278,6 +284,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetIsHost(v boo
 	o.IsHost = &v
 }
 
+// GetEmulateRfVideoPort returns the EmulateRfVideoPort field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEmulateRfVideoPort() bool {
+	if o == nil || IsNil(o.EmulateRfVideoPort) {
+		var ret bool
+		return ret
+	}
+	return *o.EmulateRfVideoPort
+}
+
+// GetEmulateRfVideoPortOk returns a tuple with the EmulateRfVideoPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEmulateRfVideoPortOk() (*bool, bool) {
+	if o == nil || IsNil(o.EmulateRfVideoPort) {
+		return nil, false
+	}
+	return o.EmulateRfVideoPort, true
+}
+
+// HasEmulateRfVideoPort returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasEmulateRfVideoPort() bool {
+	if o != nil && !IsNil(o.EmulateRfVideoPort) {
+		return true
+	}
+
+	return false
+}
+
+// SetEmulateRfVideoPort gets a reference to the given bool and assigns it to the EmulateRfVideoPort field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetEmulateRfVideoPort(v bool) {
+	o.EmulateRfVideoPort = &v
+}
+
 // GetDrawAsEdgeDevice returns the DrawAsEdgeDevice field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDevice() bool {
 	if o == nil || IsNil(o.DrawAsEdgeDevice) {
@@ -337,6 +375,9 @@ func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) ToMap() (map[str
 	}
 	if !IsNil(o.IsHost) {
 		toSerialize["is_host"] = o.IsHost
+	}
+	if !IsNil(o.EmulateRfVideoPort) {
+		toSerialize["emulate_rf_video_port"] = o.EmulateRfVideoPort
 	}
 	if !IsNil(o.DrawAsEdgeDevice) {
 		toSerialize["draw_as_edge_device"] = o.DrawAsEdgeDevice

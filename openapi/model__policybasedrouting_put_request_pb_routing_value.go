@@ -19,7 +19,7 @@ var _ MappedNullable = &PolicybasedroutingPutRequestPbRoutingValue{}
 
 // PolicybasedroutingPutRequestPbRoutingValue struct for PolicybasedroutingPutRequestPbRoutingValue
 type PolicybasedroutingPutRequestPbRoutingValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`

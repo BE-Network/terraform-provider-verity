@@ -19,10 +19,20 @@ var _ MappedNullable = &DevicecontrollersPutRequestDeviceControllerValue{}
 
 // DevicecontrollersPutRequestDeviceControllerValue struct for DevicecontrollersPutRequestDeviceControllerValue
 type DevicecontrollersPutRequestDeviceControllerValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// Password
+	PasswordEncrypted *string `json:"password_encrypted,omitempty"`
+	// Enable Password - to enable privileged CLI operations
+	EnablePasswordEncrypted *string `json:"enable_password_encrypted,omitempty"`
+	// SSH Key or Password
+	SshKeyOrPasswordEncrypted *string `json:"ssh_key_or_password_encrypted,omitempty"`
+	// Passphrase
+	PassphraseEncrypted *string `json:"passphrase_encrypted,omitempty"`
+	// Password
+	PrivatePasswordEncrypted *string `json:"private_password_encrypted,omitempty"`
 	// IP Source
 	IpSource *string `json:"ip_source,omitempty"`
 	// Controller IP and Mask
@@ -79,16 +89,6 @@ type DevicecontrollersPutRequestDeviceControllerValue struct {
 	PrivateProtocol *string `json:"private_protocol,omitempty"`
 	// Password
 	PrivatePassword *string `json:"private_password,omitempty"`
-	// Password
-	PasswordEncrypted *string `json:"password_encrypted,omitempty"`
-	// Enable Password - to enable privileged CLI operations
-	EnablePasswordEncrypted *string `json:"enable_password_encrypted,omitempty"`
-	// SSH Key or Password
-	SshKeyOrPasswordEncrypted *string `json:"ssh_key_or_password_encrypted,omitempty"`
-	// Passphrase
-	PassphraseEncrypted *string `json:"passphrase_encrypted,omitempty"`
-	// Password
-	PrivatePasswordEncrypted *string `json:"private_password_encrypted,omitempty"`
 	// Device managed as
 	DeviceManagedAs *string `json:"device_managed_as,omitempty"`
 	// Switchpoint locating the Switch to be controlled
@@ -117,6 +117,16 @@ func NewDevicecontrollersPutRequestDeviceControllerValue() *DevicecontrollersPut
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var passwordEncrypted string = ""
+	this.PasswordEncrypted = &passwordEncrypted
+	var enablePasswordEncrypted string = ""
+	this.EnablePasswordEncrypted = &enablePasswordEncrypted
+	var sshKeyOrPasswordEncrypted string = ""
+	this.SshKeyOrPasswordEncrypted = &sshKeyOrPasswordEncrypted
+	var passphraseEncrypted string = ""
+	this.PassphraseEncrypted = &passphraseEncrypted
+	var privatePasswordEncrypted string = ""
+	this.PrivatePasswordEncrypted = &privatePasswordEncrypted
 	var ipSource string = "dhcp"
 	this.IpSource = &ipSource
 	var controllerIpAndMask string = ""
@@ -171,16 +181,6 @@ func NewDevicecontrollersPutRequestDeviceControllerValue() *DevicecontrollersPut
 	this.PrivateProtocol = &privateProtocol
 	var privatePassword string = ""
 	this.PrivatePassword = &privatePassword
-	var passwordEncrypted string = ""
-	this.PasswordEncrypted = &passwordEncrypted
-	var enablePasswordEncrypted string = ""
-	this.EnablePasswordEncrypted = &enablePasswordEncrypted
-	var sshKeyOrPasswordEncrypted string = ""
-	this.SshKeyOrPasswordEncrypted = &sshKeyOrPasswordEncrypted
-	var passphraseEncrypted string = ""
-	this.PassphraseEncrypted = &passphraseEncrypted
-	var privatePasswordEncrypted string = ""
-	this.PrivatePasswordEncrypted = &privatePasswordEncrypted
 	var deviceManagedAs string = "switch"
 	this.DeviceManagedAs = &deviceManagedAs
 	var switch_ string = ""
@@ -205,6 +205,16 @@ func NewDevicecontrollersPutRequestDeviceControllerValueWithDefaults() *Deviceco
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var passwordEncrypted string = ""
+	this.PasswordEncrypted = &passwordEncrypted
+	var enablePasswordEncrypted string = ""
+	this.EnablePasswordEncrypted = &enablePasswordEncrypted
+	var sshKeyOrPasswordEncrypted string = ""
+	this.SshKeyOrPasswordEncrypted = &sshKeyOrPasswordEncrypted
+	var passphraseEncrypted string = ""
+	this.PassphraseEncrypted = &passphraseEncrypted
+	var privatePasswordEncrypted string = ""
+	this.PrivatePasswordEncrypted = &privatePasswordEncrypted
 	var ipSource string = "dhcp"
 	this.IpSource = &ipSource
 	var controllerIpAndMask string = ""
@@ -259,16 +269,6 @@ func NewDevicecontrollersPutRequestDeviceControllerValueWithDefaults() *Deviceco
 	this.PrivateProtocol = &privateProtocol
 	var privatePassword string = ""
 	this.PrivatePassword = &privatePassword
-	var passwordEncrypted string = ""
-	this.PasswordEncrypted = &passwordEncrypted
-	var enablePasswordEncrypted string = ""
-	this.EnablePasswordEncrypted = &enablePasswordEncrypted
-	var sshKeyOrPasswordEncrypted string = ""
-	this.SshKeyOrPasswordEncrypted = &sshKeyOrPasswordEncrypted
-	var passphraseEncrypted string = ""
-	this.PassphraseEncrypted = &passphraseEncrypted
-	var privatePasswordEncrypted string = ""
-	this.PrivatePasswordEncrypted = &privatePasswordEncrypted
 	var deviceManagedAs string = "switch"
 	this.DeviceManagedAs = &deviceManagedAs
 	var switch_ string = ""
@@ -346,6 +346,166 @@ func (o *DevicecontrollersPutRequestDeviceControllerValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *DevicecontrollersPutRequestDeviceControllerValue) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetPasswordEncrypted returns the PasswordEncrypted field value if set, zero value otherwise.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPasswordEncrypted() string {
+	if o == nil || IsNil(o.PasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.PasswordEncrypted
+}
+
+// GetPasswordEncryptedOk returns a tuple with the PasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.PasswordEncrypted) {
+		return nil, false
+	}
+	return o.PasswordEncrypted, true
+}
+
+// HasPasswordEncrypted returns a boolean if a field has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.PasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetPasswordEncrypted gets a reference to the given string and assigns it to the PasswordEncrypted field.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPasswordEncrypted(v string) {
+	o.PasswordEncrypted = &v
+}
+
+// GetEnablePasswordEncrypted returns the EnablePasswordEncrypted field value if set, zero value otherwise.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetEnablePasswordEncrypted() string {
+	if o == nil || IsNil(o.EnablePasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.EnablePasswordEncrypted
+}
+
+// GetEnablePasswordEncryptedOk returns a tuple with the EnablePasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetEnablePasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.EnablePasswordEncrypted) {
+		return nil, false
+	}
+	return o.EnablePasswordEncrypted, true
+}
+
+// HasEnablePasswordEncrypted returns a boolean if a field has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) HasEnablePasswordEncrypted() bool {
+	if o != nil && !IsNil(o.EnablePasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnablePasswordEncrypted gets a reference to the given string and assigns it to the EnablePasswordEncrypted field.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) SetEnablePasswordEncrypted(v string) {
+	o.EnablePasswordEncrypted = &v
+}
+
+// GetSshKeyOrPasswordEncrypted returns the SshKeyOrPasswordEncrypted field value if set, zero value otherwise.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetSshKeyOrPasswordEncrypted() string {
+	if o == nil || IsNil(o.SshKeyOrPasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.SshKeyOrPasswordEncrypted
+}
+
+// GetSshKeyOrPasswordEncryptedOk returns a tuple with the SshKeyOrPasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetSshKeyOrPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.SshKeyOrPasswordEncrypted) {
+		return nil, false
+	}
+	return o.SshKeyOrPasswordEncrypted, true
+}
+
+// HasSshKeyOrPasswordEncrypted returns a boolean if a field has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) HasSshKeyOrPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.SshKeyOrPasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetSshKeyOrPasswordEncrypted gets a reference to the given string and assigns it to the SshKeyOrPasswordEncrypted field.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) SetSshKeyOrPasswordEncrypted(v string) {
+	o.SshKeyOrPasswordEncrypted = &v
+}
+
+// GetPassphraseEncrypted returns the PassphraseEncrypted field value if set, zero value otherwise.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPassphraseEncrypted() string {
+	if o == nil || IsNil(o.PassphraseEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.PassphraseEncrypted
+}
+
+// GetPassphraseEncryptedOk returns a tuple with the PassphraseEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPassphraseEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.PassphraseEncrypted) {
+		return nil, false
+	}
+	return o.PassphraseEncrypted, true
+}
+
+// HasPassphraseEncrypted returns a boolean if a field has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPassphraseEncrypted() bool {
+	if o != nil && !IsNil(o.PassphraseEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetPassphraseEncrypted gets a reference to the given string and assigns it to the PassphraseEncrypted field.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPassphraseEncrypted(v string) {
+	o.PassphraseEncrypted = &v
+}
+
+// GetPrivatePasswordEncrypted returns the PrivatePasswordEncrypted field value if set, zero value otherwise.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPrivatePasswordEncrypted() string {
+	if o == nil || IsNil(o.PrivatePasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.PrivatePasswordEncrypted
+}
+
+// GetPrivatePasswordEncryptedOk returns a tuple with the PrivatePasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPrivatePasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.PrivatePasswordEncrypted) {
+		return nil, false
+	}
+	return o.PrivatePasswordEncrypted, true
+}
+
+// HasPrivatePasswordEncrypted returns a boolean if a field has been set.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPrivatePasswordEncrypted() bool {
+	if o != nil && !IsNil(o.PrivatePasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivatePasswordEncrypted gets a reference to the given string and assigns it to the PrivatePasswordEncrypted field.
+func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPrivatePasswordEncrypted(v string) {
+	o.PrivatePasswordEncrypted = &v
 }
 
 // GetIpSource returns the IpSource field value if set, zero value otherwise.
@@ -1244,166 +1404,6 @@ func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPrivatePassword(v 
 	o.PrivatePassword = &v
 }
 
-// GetPasswordEncrypted returns the PasswordEncrypted field value if set, zero value otherwise.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPasswordEncrypted() string {
-	if o == nil || IsNil(o.PasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.PasswordEncrypted
-}
-
-// GetPasswordEncryptedOk returns a tuple with the PasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.PasswordEncrypted) {
-		return nil, false
-	}
-	return o.PasswordEncrypted, true
-}
-
-// HasPasswordEncrypted returns a boolean if a field has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPasswordEncrypted() bool {
-	if o != nil && !IsNil(o.PasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetPasswordEncrypted gets a reference to the given string and assigns it to the PasswordEncrypted field.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPasswordEncrypted(v string) {
-	o.PasswordEncrypted = &v
-}
-
-// GetEnablePasswordEncrypted returns the EnablePasswordEncrypted field value if set, zero value otherwise.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetEnablePasswordEncrypted() string {
-	if o == nil || IsNil(o.EnablePasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.EnablePasswordEncrypted
-}
-
-// GetEnablePasswordEncryptedOk returns a tuple with the EnablePasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetEnablePasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.EnablePasswordEncrypted) {
-		return nil, false
-	}
-	return o.EnablePasswordEncrypted, true
-}
-
-// HasEnablePasswordEncrypted returns a boolean if a field has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) HasEnablePasswordEncrypted() bool {
-	if o != nil && !IsNil(o.EnablePasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnablePasswordEncrypted gets a reference to the given string and assigns it to the EnablePasswordEncrypted field.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) SetEnablePasswordEncrypted(v string) {
-	o.EnablePasswordEncrypted = &v
-}
-
-// GetSshKeyOrPasswordEncrypted returns the SshKeyOrPasswordEncrypted field value if set, zero value otherwise.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetSshKeyOrPasswordEncrypted() string {
-	if o == nil || IsNil(o.SshKeyOrPasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.SshKeyOrPasswordEncrypted
-}
-
-// GetSshKeyOrPasswordEncryptedOk returns a tuple with the SshKeyOrPasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetSshKeyOrPasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.SshKeyOrPasswordEncrypted) {
-		return nil, false
-	}
-	return o.SshKeyOrPasswordEncrypted, true
-}
-
-// HasSshKeyOrPasswordEncrypted returns a boolean if a field has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) HasSshKeyOrPasswordEncrypted() bool {
-	if o != nil && !IsNil(o.SshKeyOrPasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetSshKeyOrPasswordEncrypted gets a reference to the given string and assigns it to the SshKeyOrPasswordEncrypted field.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) SetSshKeyOrPasswordEncrypted(v string) {
-	o.SshKeyOrPasswordEncrypted = &v
-}
-
-// GetPassphraseEncrypted returns the PassphraseEncrypted field value if set, zero value otherwise.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPassphraseEncrypted() string {
-	if o == nil || IsNil(o.PassphraseEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.PassphraseEncrypted
-}
-
-// GetPassphraseEncryptedOk returns a tuple with the PassphraseEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPassphraseEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.PassphraseEncrypted) {
-		return nil, false
-	}
-	return o.PassphraseEncrypted, true
-}
-
-// HasPassphraseEncrypted returns a boolean if a field has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPassphraseEncrypted() bool {
-	if o != nil && !IsNil(o.PassphraseEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetPassphraseEncrypted gets a reference to the given string and assigns it to the PassphraseEncrypted field.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPassphraseEncrypted(v string) {
-	o.PassphraseEncrypted = &v
-}
-
-// GetPrivatePasswordEncrypted returns the PrivatePasswordEncrypted field value if set, zero value otherwise.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPrivatePasswordEncrypted() string {
-	if o == nil || IsNil(o.PrivatePasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.PrivatePasswordEncrypted
-}
-
-// GetPrivatePasswordEncryptedOk returns a tuple with the PrivatePasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) GetPrivatePasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.PrivatePasswordEncrypted) {
-		return nil, false
-	}
-	return o.PrivatePasswordEncrypted, true
-}
-
-// HasPrivatePasswordEncrypted returns a boolean if a field has been set.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) HasPrivatePasswordEncrypted() bool {
-	if o != nil && !IsNil(o.PrivatePasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetPrivatePasswordEncrypted gets a reference to the given string and assigns it to the PrivatePasswordEncrypted field.
-func (o *DevicecontrollersPutRequestDeviceControllerValue) SetPrivatePasswordEncrypted(v string) {
-	o.PrivatePasswordEncrypted = &v
-}
-
 // GetDeviceManagedAs returns the DeviceManagedAs field value if set, zero value otherwise.
 func (o *DevicecontrollersPutRequestDeviceControllerValue) GetDeviceManagedAs() string {
 	if o == nil || IsNil(o.DeviceManagedAs) {
@@ -1676,6 +1676,21 @@ func (o DevicecontrollersPutRequestDeviceControllerValue) ToMap() (map[string]in
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.PasswordEncrypted) {
+		toSerialize["password_encrypted"] = o.PasswordEncrypted
+	}
+	if !IsNil(o.EnablePasswordEncrypted) {
+		toSerialize["enable_password_encrypted"] = o.EnablePasswordEncrypted
+	}
+	if !IsNil(o.SshKeyOrPasswordEncrypted) {
+		toSerialize["ssh_key_or_password_encrypted"] = o.SshKeyOrPasswordEncrypted
+	}
+	if !IsNil(o.PassphraseEncrypted) {
+		toSerialize["passphrase_encrypted"] = o.PassphraseEncrypted
+	}
+	if !IsNil(o.PrivatePasswordEncrypted) {
+		toSerialize["private_password_encrypted"] = o.PrivatePasswordEncrypted
+	}
 	if !IsNil(o.IpSource) {
 		toSerialize["ip_source"] = o.IpSource
 	}
@@ -1759,21 +1774,6 @@ func (o DevicecontrollersPutRequestDeviceControllerValue) ToMap() (map[string]in
 	}
 	if !IsNil(o.PrivatePassword) {
 		toSerialize["private_password"] = o.PrivatePassword
-	}
-	if !IsNil(o.PasswordEncrypted) {
-		toSerialize["password_encrypted"] = o.PasswordEncrypted
-	}
-	if !IsNil(o.EnablePasswordEncrypted) {
-		toSerialize["enable_password_encrypted"] = o.EnablePasswordEncrypted
-	}
-	if !IsNil(o.SshKeyOrPasswordEncrypted) {
-		toSerialize["ssh_key_or_password_encrypted"] = o.SshKeyOrPasswordEncrypted
-	}
-	if !IsNil(o.PassphraseEncrypted) {
-		toSerialize["passphrase_encrypted"] = o.PassphraseEncrypted
-	}
-	if !IsNil(o.PrivatePasswordEncrypted) {
-		toSerialize["private_password_encrypted"] = o.PrivatePasswordEncrypted
 	}
 	if !IsNil(o.DeviceManagedAs) {
 		toSerialize["device_managed_as"] = o.DeviceManagedAs

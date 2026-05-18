@@ -4,7 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Group** | Pointer to **string** | Group | [optional] [default to ""]
 **IsForSwitch** | Pointer to **bool** | Denotes a Switch Bundle | [optional] [default to false]
 **IsPublic** | Pointer to **bool** | Denotes a shared Switch Bundle | [optional] [default to false]
 
@@ -26,31 +25,6 @@ will change when the set of required properties is changed
 NewBundlesPutRequestEndpointBundleValueObjectPropertiesWithDefaults instantiates a new BundlesPutRequestEndpointBundleValueObjectProperties object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
-
-### GetGroup
-
-`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetGroup() string`
-
-GetGroup returns the Group field if non-nil, zero value otherwise.
-
-### GetGroupOk
-
-`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) GetGroupOk() (*string, bool)`
-
-GetGroupOk returns a tuple with the Group field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetGroup
-
-`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) SetGroup(v string)`
-
-SetGroup sets Group field to given value.
-
-### HasGroup
-
-`func (o *BundlesPutRequestEndpointBundleValueObjectProperties) HasGroup() bool`
-
-HasGroup returns a boolean if a field has been set.
 
 ### GetIsForSwitch
 

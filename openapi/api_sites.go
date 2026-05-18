@@ -16,11 +16,130 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"reflect"
 )
 
 
 // SitesAPIService SitesAPI service
 type SitesAPIService service
+
+type ApiSitesDeleteRequest struct {
+	ctx context.Context
+	ApiService *SitesAPIService
+	siteName *[]string
+	changesetName *string
+}
+
+func (r ApiSitesDeleteRequest) SiteName(siteName []string) ApiSitesDeleteRequest {
+	r.siteName = &siteName
+	return r
+}
+
+func (r ApiSitesDeleteRequest) ChangesetName(changesetName string) ApiSitesDeleteRequest {
+	r.changesetName = &changesetName
+	return r
+}
+
+func (r ApiSitesDeleteRequest) Execute() (*http.Response, error) {
+	return r.ApiService.SitesDeleteExecute(r)
+}
+
+/*
+SitesDelete Delete Site
+
+Deletes an existing Site from the system if changeset_name is empty, from a changeset if its name is provided.
+
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiSitesDeleteRequest
+*/
+func (a *SitesAPIService) SitesDelete(ctx context.Context) ApiSitesDeleteRequest {
+	return ApiSitesDeleteRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+func (a *SitesAPIService) SitesDeleteExecute(r ApiSitesDeleteRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodDelete
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SitesAPIService.SitesDelete")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/sites"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.siteName == nil {
+		return nil, reportError("siteName is required and must be specified")
+	}
+
+	{
+		t := *r.siteName
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "site_name", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "site_name", t, "form", "multi")
+		}
+	}
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
 
 type ApiSitesGetRequest struct {
 	ctx context.Context
@@ -142,7 +261,7 @@ type ApiSitesPatchRequest struct {
 	ctx context.Context
 	ApiService *SitesAPIService
 	changesetName *string
-	sitesPatchRequest *SitesPatchRequest
+	sitesPutRequest *SitesPutRequest
 }
 
 func (r ApiSitesPatchRequest) ChangesetName(changesetName string) ApiSitesPatchRequest {
@@ -150,8 +269,8 @@ func (r ApiSitesPatchRequest) ChangesetName(changesetName string) ApiSitesPatchR
 	return r
 }
 
-func (r ApiSitesPatchRequest) SitesPatchRequest(sitesPatchRequest SitesPatchRequest) ApiSitesPatchRequest {
-	r.sitesPatchRequest = &sitesPatchRequest
+func (r ApiSitesPatchRequest) SitesPutRequest(sitesPutRequest SitesPutRequest) ApiSitesPatchRequest {
+	r.sitesPutRequest = &sitesPutRequest
 	return r
 }
 
@@ -215,7 +334,113 @@ func (a *SitesAPIService) SitesPatchExecute(r ApiSitesPatchRequest) (*http.Respo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.sitesPatchRequest
+	localVarPostBody = r.sitesPutRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiSitesPutRequest struct {
+	ctx context.Context
+	ApiService *SitesAPIService
+	changesetName *string
+	sitesPutRequest *SitesPutRequest
+}
+
+func (r ApiSitesPutRequest) ChangesetName(changesetName string) ApiSitesPutRequest {
+	r.changesetName = &changesetName
+	return r
+}
+
+func (r ApiSitesPutRequest) SitesPutRequest(sitesPutRequest SitesPutRequest) ApiSitesPutRequest {
+	r.sitesPutRequest = &sitesPutRequest
+	return r
+}
+
+func (r ApiSitesPutRequest) Execute() (*http.Response, error) {
+	return r.ApiService.SitesPutExecute(r)
+}
+
+/*
+SitesPut Create Site
+
+Create Site into the system if changeset_name is empty, into a changeset if its name is provided.
+
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiSitesPutRequest
+*/
+func (a *SitesAPIService) SitesPut(ctx context.Context) ApiSitesPutRequest {
+	return ApiSitesPutRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+func (a *SitesAPIService) SitesPutExecute(r ApiSitesPutRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPut
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SitesAPIService.SitesPut")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/sites"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.changesetName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "changeset_name", r.changesetName, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.sitesPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

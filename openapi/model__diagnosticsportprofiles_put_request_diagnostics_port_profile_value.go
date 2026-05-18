@@ -19,7 +19,7 @@ var _ MappedNullable = &DiagnosticsportprofilesPutRequestDiagnosticsPortProfileV
 
 // DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue struct for DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue
 type DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`

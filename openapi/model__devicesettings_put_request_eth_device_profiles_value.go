@@ -19,10 +19,12 @@ var _ MappedNullable = &DevicesettingsPutRequestEthDeviceProfilesValue{}
 
 // DevicesettingsPutRequestEthDeviceProfilesValue struct for DevicesettingsPutRequestEthDeviceProfilesValue
 type DevicesettingsPutRequestEthDeviceProfilesValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// CLI Commands
+	CliCommands *string `json:"cli_commands,omitempty"`
 	// Mode
 	Mode *string `json:"mode,omitempty"`
 	// Usage Threshold
@@ -45,7 +47,13 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	Rocev2 *bool `json:"rocev2,omitempty"`
 	// Enable Cut-through Switching on all Switches
 	CutThroughSwitching *bool `json:"cut_through_switching,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
+	// Banner message displayed at login
+	LoginBanner *string `json:"login_banner,omitempty"`
+	DnsServers []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner `json:"dns_servers,omitempty"`
+	NtpServers []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner `json:"ntp_servers,omitempty"`
+	SyslogServers []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner `json:"syslog_servers,omitempty"`
+	TacacsServers []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner `json:"tacacs_servers,omitempty"`
+	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 	// Hold Timer
 	HoldTimer NullableInt32 `json:"hold_timer,omitempty"`
 	// Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds
@@ -64,6 +72,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var cliCommands string = ""
+	this.CliCommands = &cliCommands
 	var mode string = "IEEE 802.3af"
 	this.Mode = &mode
 	var externalBatteryPowerAvailable int32 = 40
@@ -72,7 +82,7 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.ExternalPowerAvailable = *NewNullableInt32(&externalPowerAvailable)
 	var disableTcpUdpLearnedPacketAcceleration bool = false
 	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
-	var packetQueue string = "packet_queue|(Packet Queue)|"
+	var packetQueue string = ""
 	this.PacketQueue = &packetQueue
 	var securityAuditInterval int32 = 60
 	this.SecurityAuditInterval = *NewNullableInt32(&securityAuditInterval)
@@ -82,6 +92,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.Rocev2 = &rocev2
 	var cutThroughSwitching bool = false
 	this.CutThroughSwitching = &cutThroughSwitching
+	var loginBanner string = ""
+	this.LoginBanner = &loginBanner
 	var holdTimer int32 = 0
 	this.HoldTimer = *NewNullableInt32(&holdTimer)
 	var spanningTreePriority string = "byLevel"
@@ -98,6 +110,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var cliCommands string = ""
+	this.CliCommands = &cliCommands
 	var mode string = "IEEE 802.3af"
 	this.Mode = &mode
 	var externalBatteryPowerAvailable int32 = 40
@@ -106,7 +120,7 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.ExternalPowerAvailable = *NewNullableInt32(&externalPowerAvailable)
 	var disableTcpUdpLearnedPacketAcceleration bool = false
 	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
-	var packetQueue string = "packet_queue|(Packet Queue)|"
+	var packetQueue string = ""
 	this.PacketQueue = &packetQueue
 	var securityAuditInterval int32 = 60
 	this.SecurityAuditInterval = *NewNullableInt32(&securityAuditInterval)
@@ -116,6 +130,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.Rocev2 = &rocev2
 	var cutThroughSwitching bool = false
 	this.CutThroughSwitching = &cutThroughSwitching
+	var loginBanner string = ""
+	this.LoginBanner = &loginBanner
 	var holdTimer int32 = 0
 	this.HoldTimer = *NewNullableInt32(&holdTimer)
 	var spanningTreePriority string = "byLevel"
@@ -185,6 +201,38 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetCliCommands returns the CliCommands field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCliCommands() string {
+	if o == nil || IsNil(o.CliCommands) {
+		var ret string
+		return ret
+	}
+	return *o.CliCommands
+}
+
+// GetCliCommandsOk returns a tuple with the CliCommands field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCliCommandsOk() (*string, bool) {
+	if o == nil || IsNil(o.CliCommands) {
+		return nil, false
+	}
+	return o.CliCommands, true
+}
+
+// HasCliCommands returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasCliCommands() bool {
+	if o != nil && !IsNil(o.CliCommands) {
+		return true
+	}
+
+	return false
+}
+
+// SetCliCommands gets a reference to the given string and assigns it to the CliCommands field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCliCommands(v string) {
+	o.CliCommands = &v
 }
 
 // GetMode returns the Mode field value if set, zero value otherwise.
@@ -589,20 +637,180 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCutThroughSwitching(
 	o.CutThroughSwitching = &v
 }
 
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
+// GetLoginBanner returns the LoginBanner field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetLoginBanner() string {
+	if o == nil || IsNil(o.LoginBanner) {
+		var ret string
 		return ret
 	}
-	return *o.ObjectProperties
+	return *o.LoginBanner
+}
+
+// GetLoginBannerOk returns a tuple with the LoginBanner field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetLoginBannerOk() (*string, bool) {
+	if o == nil || IsNil(o.LoginBanner) {
+		return nil, false
+	}
+	return o.LoginBanner, true
+}
+
+// HasLoginBanner returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasLoginBanner() bool {
+	if o != nil && !IsNil(o.LoginBanner) {
+		return true
+	}
+
+	return false
+}
+
+// SetLoginBanner gets a reference to the given string and assigns it to the LoginBanner field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetLoginBanner(v string) {
+	o.LoginBanner = &v
+}
+
+// GetDnsServers returns the DnsServers field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDnsServers() []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
+	if o == nil || IsNil(o.DnsServers) {
+		var ret []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner
+		return ret
+	}
+	return o.DnsServers
+}
+
+// GetDnsServersOk returns a tuple with the DnsServers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDnsServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, bool) {
+	if o == nil || IsNil(o.DnsServers) {
+		return nil, false
+	}
+	return o.DnsServers, true
+}
+
+// HasDnsServers returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDnsServers() bool {
+	if o != nil && !IsNil(o.DnsServers) {
+		return true
+	}
+
+	return false
+}
+
+// SetDnsServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner and assigns it to the DnsServers field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDnsServers(v []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner) {
+	o.DnsServers = v
+}
+
+// GetNtpServers returns the NtpServers field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
+	if o == nil || IsNil(o.NtpServers) {
+		var ret []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner
+		return ret
+	}
+	return o.NtpServers
+}
+
+// GetNtpServersOk returns a tuple with the NtpServers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, bool) {
+	if o == nil || IsNil(o.NtpServers) {
+		return nil, false
+	}
+	return o.NtpServers, true
+}
+
+// HasNtpServers returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpServers() bool {
+	if o != nil && !IsNil(o.NtpServers) {
+		return true
+	}
+
+	return false
+}
+
+// SetNtpServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner and assigns it to the NtpServers field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpServers(v []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) {
+	o.NtpServers = v
+}
+
+// GetSyslogServers returns the SyslogServers field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSyslogServers() []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner {
+	if o == nil || IsNil(o.SyslogServers) {
+		var ret []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner
+		return ret
+	}
+	return o.SyslogServers
+}
+
+// GetSyslogServersOk returns a tuple with the SyslogServers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSyslogServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner, bool) {
+	if o == nil || IsNil(o.SyslogServers) {
+		return nil, false
+	}
+	return o.SyslogServers, true
+}
+
+// HasSyslogServers returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasSyslogServers() bool {
+	if o != nil && !IsNil(o.SyslogServers) {
+		return true
+	}
+
+	return false
+}
+
+// SetSyslogServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner and assigns it to the SyslogServers field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSyslogServers(v []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) {
+	o.SyslogServers = v
+}
+
+// GetTacacsServers returns the TacacsServers field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetTacacsServers() []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner {
+	if o == nil || IsNil(o.TacacsServers) {
+		var ret []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner
+		return ret
+	}
+	return o.TacacsServers
+}
+
+// GetTacacsServersOk returns a tuple with the TacacsServers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetTacacsServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner, bool) {
+	if o == nil || IsNil(o.TacacsServers) {
+		return nil, false
+	}
+	return o.TacacsServers, true
+}
+
+// HasTacacsServers returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasTacacsServers() bool {
+	if o != nil && !IsNil(o.TacacsServers) {
+		return true
+	}
+
+	return false
+}
+
+// SetTacacsServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner and assigns it to the TacacsServers field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetTacacsServers(v []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) {
+	o.TacacsServers = v
+}
+
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectProperties() map[string]interface{} {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.ObjectProperties
 }
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.ObjectProperties, true
 }
@@ -616,9 +824,9 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasObjectProperties() b
 	return false
 }
 
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
-	o.ObjectProperties = &v
+// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetObjectProperties(v map[string]interface{}) {
+	o.ObjectProperties = v
 }
 
 // GetHoldTimer returns the HoldTimer field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -753,6 +961,9 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.CliCommands) {
+		toSerialize["cli_commands"] = o.CliCommands
+	}
 	if !IsNil(o.Mode) {
 		toSerialize["mode"] = o.Mode
 	}
@@ -785,6 +996,21 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	}
 	if !IsNil(o.CutThroughSwitching) {
 		toSerialize["cut_through_switching"] = o.CutThroughSwitching
+	}
+	if !IsNil(o.LoginBanner) {
+		toSerialize["login_banner"] = o.LoginBanner
+	}
+	if !IsNil(o.DnsServers) {
+		toSerialize["dns_servers"] = o.DnsServers
+	}
+	if !IsNil(o.NtpServers) {
+		toSerialize["ntp_servers"] = o.NtpServers
+	}
+	if !IsNil(o.SyslogServers) {
+		toSerialize["syslog_servers"] = o.SyslogServers
+	}
+	if !IsNil(o.TacacsServers) {
+		toSerialize["tacacs_servers"] = o.TacacsServers
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

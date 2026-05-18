@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **LldpMedRowNumEnable** | Pointer to **bool** | Per LLDP Med row enable | [optional] [default to false]
 **LldpMedRowNumAdvertisedApplicatio** | Pointer to **string** | Advertised application | [optional] [default to ""]
-**LldpMedRowNumDscpMark** | Pointer to **NullableInt32** | LLDP DSCP Mark | [optional] [default to 0]
+**LldpMedRowNumDscpMark** | Pointer to **NullableInt32** | Defines egress LLDP sent when a device is connected to this Eth-Port Settings allowing the device to auto-provision its DSCP marking. | [optional] [default to 0]
 **LldpMedRowNumPriority** | Pointer to **NullableInt32** | LLDP Priority | [optional] [default to 0]
 **LldpMedRowNumService** | Pointer to **string** | LLDP Service | [optional] [default to ""]
 **LldpMedRowNumServiceRefType** | Pointer to **string** | Object type for lldp_med_row_num_service field | [optional] 

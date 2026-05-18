@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to true]
 **Layer3Vni** | Pointer to **NullableInt32** | VNI value used to transport traffic between services of a Tenant  | [optional] 
 **Layer3VniAutoAssigned** | Pointer to **bool** | Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit. | [optional] 
@@ -17,13 +17,13 @@ Name | Type | Description | Notes
 **RouteTargetExport** | Pointer to **string** | A route-target (BGP Community) to attach while exporting routes from the current tenant. It should be a comma-separated list of BGP Communities: each Community being two numbers separated by a colon. | [optional] [default to ""]
 **ImportRouteMap** | Pointer to **string** | A route-map applied to routes imported into the current tenant from other tenants with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ImportRouteMapRefType** | Pointer to **string** | Object type for import_route_map field | [optional] 
-**ExportRouteMap** | Pointer to **string** | A route-map applied to routes exported into the current tenant from other tenants with the purpose of filtering or modifying the routes | [optional] [default to ""]
+**ExportRouteMap** | Pointer to **string** | A route-map applied to routes exported from the current tenant to other tenants with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ExportRouteMapRefType** | Pointer to **string** | Object type for export_route_map field | [optional] 
 **VrfName** | Pointer to **string** | Virtual Routing and Forwarding instance name associated to tenants  | [optional] [default to "(auto)"]
 **VrfNameAutoAssigned** | Pointer to **bool** | Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit. | [optional] 
+**DefaultOriginate** | Pointer to **bool** | When enabled, provision an underlay gateway on the switch for this tenant. | [optional] [default to false]
+**TenantType** | Pointer to **string** | Type of Tenant. To Provision on Spectrum-X sites, select East-West. | [optional] [default to "NorthSouth"]
 **RouteTenants** | Pointer to [**[]TenantsPutRequestTenantValueRouteTenantsInner**](TenantsPutRequestTenantValueRouteTenantsInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
-**DefaultOriginate** | Pointer to **bool** | Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric. | [optional] [default to false]
 
 ## Methods
 
@@ -489,56 +489,6 @@ SetVrfNameAutoAssigned sets VrfNameAutoAssigned field to given value.
 
 HasVrfNameAutoAssigned returns a boolean if a field has been set.
 
-### GetRouteTenants
-
-`func (o *TenantsPutRequestTenantValue) GetRouteTenants() []TenantsPutRequestTenantValueRouteTenantsInner`
-
-GetRouteTenants returns the RouteTenants field if non-nil, zero value otherwise.
-
-### GetRouteTenantsOk
-
-`func (o *TenantsPutRequestTenantValue) GetRouteTenantsOk() (*[]TenantsPutRequestTenantValueRouteTenantsInner, bool)`
-
-GetRouteTenantsOk returns a tuple with the RouteTenants field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetRouteTenants
-
-`func (o *TenantsPutRequestTenantValue) SetRouteTenants(v []TenantsPutRequestTenantValueRouteTenantsInner)`
-
-SetRouteTenants sets RouteTenants field to given value.
-
-### HasRouteTenants
-
-`func (o *TenantsPutRequestTenantValue) HasRouteTenants() bool`
-
-HasRouteTenants returns a boolean if a field has been set.
-
-### GetObjectProperties
-
-`func (o *TenantsPutRequestTenantValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
-
-GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
-
-### GetObjectPropertiesOk
-
-`func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
-
-GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetObjectProperties
-
-`func (o *TenantsPutRequestTenantValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
-
-SetObjectProperties sets ObjectProperties field to given value.
-
-### HasObjectProperties
-
-`func (o *TenantsPutRequestTenantValue) HasObjectProperties() bool`
-
-HasObjectProperties returns a boolean if a field has been set.
-
 ### GetDefaultOriginate
 
 `func (o *TenantsPutRequestTenantValue) GetDefaultOriginate() bool`
@@ -563,6 +513,56 @@ SetDefaultOriginate sets DefaultOriginate field to given value.
 `func (o *TenantsPutRequestTenantValue) HasDefaultOriginate() bool`
 
 HasDefaultOriginate returns a boolean if a field has been set.
+
+### GetTenantType
+
+`func (o *TenantsPutRequestTenantValue) GetTenantType() string`
+
+GetTenantType returns the TenantType field if non-nil, zero value otherwise.
+
+### GetTenantTypeOk
+
+`func (o *TenantsPutRequestTenantValue) GetTenantTypeOk() (*string, bool)`
+
+GetTenantTypeOk returns a tuple with the TenantType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTenantType
+
+`func (o *TenantsPutRequestTenantValue) SetTenantType(v string)`
+
+SetTenantType sets TenantType field to given value.
+
+### HasTenantType
+
+`func (o *TenantsPutRequestTenantValue) HasTenantType() bool`
+
+HasTenantType returns a boolean if a field has been set.
+
+### GetRouteTenants
+
+`func (o *TenantsPutRequestTenantValue) GetRouteTenants() []TenantsPutRequestTenantValueRouteTenantsInner`
+
+GetRouteTenants returns the RouteTenants field if non-nil, zero value otherwise.
+
+### GetRouteTenantsOk
+
+`func (o *TenantsPutRequestTenantValue) GetRouteTenantsOk() (*[]TenantsPutRequestTenantValueRouteTenantsInner, bool)`
+
+GetRouteTenantsOk returns a tuple with the RouteTenants field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRouteTenants
+
+`func (o *TenantsPutRequestTenantValue) SetRouteTenants(v []TenantsPutRequestTenantValueRouteTenantsInner)`
+
+SetRouteTenants sets RouteTenants field to given value.
+
+### HasRouteTenants
+
+`func (o *TenantsPutRequestTenantValue) HasRouteTenants() bool`
+
+HasRouteTenants returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

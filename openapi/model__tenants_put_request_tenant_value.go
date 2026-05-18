@@ -19,7 +19,7 @@ var _ MappedNullable = &TenantsPutRequestTenantValue{}
 
 // TenantsPutRequestTenantValue struct for TenantsPutRequestTenantValue
 type TenantsPutRequestTenantValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
@@ -45,7 +45,7 @@ type TenantsPutRequestTenantValue struct {
 	ImportRouteMap *string `json:"import_route_map,omitempty"`
 	// Object type for import_route_map field
 	ImportRouteMapRefType *string `json:"import_route_map_ref_type_,omitempty"`
-	// A route-map applied to routes exported into the current tenant from other tenants with the purpose of filtering or modifying the routes
+	// A route-map applied to routes exported from the current tenant to other tenants with the purpose of filtering or modifying the routes
 	ExportRouteMap *string `json:"export_route_map,omitempty"`
 	// Object type for export_route_map field
 	ExportRouteMapRefType *string `json:"export_route_map_ref_type_,omitempty"`
@@ -53,10 +53,11 @@ type TenantsPutRequestTenantValue struct {
 	VrfName *string `json:"vrf_name,omitempty"`
 	// Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit.
 	VrfNameAutoAssigned *bool `json:"vrf_name_auto_assigned_,omitempty"`
-	RouteTenants []TenantsPutRequestTenantValueRouteTenantsInner `json:"route_tenants,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
-	// Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.
+	// When enabled, provision an underlay gateway on the switch for this tenant.
 	DefaultOriginate *bool `json:"default_originate,omitempty"`
+	// Type of Tenant. To Provision on Spectrum-X sites, select East-West.
+	TenantType *string `json:"tenant_type,omitempty"`
+	RouteTenants []TenantsPutRequestTenantValueRouteTenantsInner `json:"route_tenants,omitempty"`
 }
 
 // NewTenantsPutRequestTenantValue instantiates a new TenantsPutRequestTenantValue object
@@ -87,6 +88,8 @@ func NewTenantsPutRequestTenantValue() *TenantsPutRequestTenantValue {
 	this.VrfName = &vrfName
 	var defaultOriginate bool = false
 	this.DefaultOriginate = &defaultOriginate
+	var tenantType string = "NorthSouth"
+	this.TenantType = &tenantType
 	return &this
 }
 
@@ -117,6 +120,8 @@ func NewTenantsPutRequestTenantValueWithDefaults() *TenantsPutRequestTenantValue
 	this.VrfName = &vrfName
 	var defaultOriginate bool = false
 	this.DefaultOriginate = &defaultOriginate
+	var tenantType string = "NorthSouth"
+	this.TenantType = &tenantType
 	return &this
 }
 
@@ -684,70 +689,6 @@ func (o *TenantsPutRequestTenantValue) SetVrfNameAutoAssigned(v bool) {
 	o.VrfNameAutoAssigned = &v
 }
 
-// GetRouteTenants returns the RouteTenants field value if set, zero value otherwise.
-func (o *TenantsPutRequestTenantValue) GetRouteTenants() []TenantsPutRequestTenantValueRouteTenantsInner {
-	if o == nil || IsNil(o.RouteTenants) {
-		var ret []TenantsPutRequestTenantValueRouteTenantsInner
-		return ret
-	}
-	return o.RouteTenants
-}
-
-// GetRouteTenantsOk returns a tuple with the RouteTenants field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TenantsPutRequestTenantValue) GetRouteTenantsOk() ([]TenantsPutRequestTenantValueRouteTenantsInner, bool) {
-	if o == nil || IsNil(o.RouteTenants) {
-		return nil, false
-	}
-	return o.RouteTenants, true
-}
-
-// HasRouteTenants returns a boolean if a field has been set.
-func (o *TenantsPutRequestTenantValue) HasRouteTenants() bool {
-	if o != nil && !IsNil(o.RouteTenants) {
-		return true
-	}
-
-	return false
-}
-
-// SetRouteTenants gets a reference to the given []TenantsPutRequestTenantValueRouteTenantsInner and assigns it to the RouteTenants field.
-func (o *TenantsPutRequestTenantValue) SetRouteTenants(v []TenantsPutRequestTenantValueRouteTenantsInner) {
-	o.RouteTenants = v
-}
-
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *TenantsPutRequestTenantValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
-		return ret
-	}
-	return *o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TenantsPutRequestTenantValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *TenantsPutRequestTenantValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *TenantsPutRequestTenantValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
-	o.ObjectProperties = &v
-}
-
 // GetDefaultOriginate returns the DefaultOriginate field value if set, zero value otherwise.
 func (o *TenantsPutRequestTenantValue) GetDefaultOriginate() bool {
 	if o == nil || IsNil(o.DefaultOriginate) {
@@ -778,6 +719,70 @@ func (o *TenantsPutRequestTenantValue) HasDefaultOriginate() bool {
 // SetDefaultOriginate gets a reference to the given bool and assigns it to the DefaultOriginate field.
 func (o *TenantsPutRequestTenantValue) SetDefaultOriginate(v bool) {
 	o.DefaultOriginate = &v
+}
+
+// GetTenantType returns the TenantType field value if set, zero value otherwise.
+func (o *TenantsPutRequestTenantValue) GetTenantType() string {
+	if o == nil || IsNil(o.TenantType) {
+		var ret string
+		return ret
+	}
+	return *o.TenantType
+}
+
+// GetTenantTypeOk returns a tuple with the TenantType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TenantsPutRequestTenantValue) GetTenantTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TenantType) {
+		return nil, false
+	}
+	return o.TenantType, true
+}
+
+// HasTenantType returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValue) HasTenantType() bool {
+	if o != nil && !IsNil(o.TenantType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTenantType gets a reference to the given string and assigns it to the TenantType field.
+func (o *TenantsPutRequestTenantValue) SetTenantType(v string) {
+	o.TenantType = &v
+}
+
+// GetRouteTenants returns the RouteTenants field value if set, zero value otherwise.
+func (o *TenantsPutRequestTenantValue) GetRouteTenants() []TenantsPutRequestTenantValueRouteTenantsInner {
+	if o == nil || IsNil(o.RouteTenants) {
+		var ret []TenantsPutRequestTenantValueRouteTenantsInner
+		return ret
+	}
+	return o.RouteTenants
+}
+
+// GetRouteTenantsOk returns a tuple with the RouteTenants field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TenantsPutRequestTenantValue) GetRouteTenantsOk() ([]TenantsPutRequestTenantValueRouteTenantsInner, bool) {
+	if o == nil || IsNil(o.RouteTenants) {
+		return nil, false
+	}
+	return o.RouteTenants, true
+}
+
+// HasRouteTenants returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValue) HasRouteTenants() bool {
+	if o != nil && !IsNil(o.RouteTenants) {
+		return true
+	}
+
+	return false
+}
+
+// SetRouteTenants gets a reference to the given []TenantsPutRequestTenantValueRouteTenantsInner and assigns it to the RouteTenants field.
+func (o *TenantsPutRequestTenantValue) SetRouteTenants(v []TenantsPutRequestTenantValueRouteTenantsInner) {
+	o.RouteTenants = v
 }
 
 func (o TenantsPutRequestTenantValue) MarshalJSON() ([]byte, error) {
@@ -841,14 +846,14 @@ func (o TenantsPutRequestTenantValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.VrfNameAutoAssigned) {
 		toSerialize["vrf_name_auto_assigned_"] = o.VrfNameAutoAssigned
 	}
-	if !IsNil(o.RouteTenants) {
-		toSerialize["route_tenants"] = o.RouteTenants
-	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
-	}
 	if !IsNil(o.DefaultOriginate) {
 		toSerialize["default_originate"] = o.DefaultOriginate
+	}
+	if !IsNil(o.TenantType) {
+		toSerialize["tenant_type"] = o.TenantType
+	}
+	if !IsNil(o.RouteTenants) {
+		toSerialize["route_tenants"] = o.RouteTenants
 	}
 	return toSerialize, nil
 }

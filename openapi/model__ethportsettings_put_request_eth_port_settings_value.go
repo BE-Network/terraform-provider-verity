@@ -19,19 +19,31 @@ var _ MappedNullable = &EthportsettingsPutRequestEthPortSettingsValue{}
 
 // EthportsettingsPutRequestEthPortSettingsValue struct for EthportsettingsPutRequestEthPortSettingsValue
 type EthportsettingsPutRequestEthPortSettingsValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
+	// Packet Queue
+	PacketQueue *string `json:"packet_queue,omitempty"`
+	// Object type for packet_queue field
+	PacketQueueRefType *string `json:"packet_queue_ref_type_,omitempty"`
+	// Enables custom tuning of WRED values. Uncheck to use Switch default values.
+	EnableWredTuning *bool `json:"enable_wred_tuning,omitempty"`
+	// Enables Explicit Congestion Notification for WRED.
+	EnableEcn *bool `json:"enable_ecn,omitempty"`
+	// Enables custom tuning of Watchdog values. Uncheck to use Switch default values.
+	EnableWatchdogTuning *bool `json:"enable_watchdog_tuning,omitempty"`
 	// Indicates if duplex mode should be auto negotiated
 	AutoNegotiation *bool `json:"auto_negotiation,omitempty"`
 	// Turns on speed control fields
 	EnableSpeedControl *bool `json:"enable_speed_control,omitempty"`
+	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
+	Mtu NullableInt32 `json:"mtu,omitempty"`
 	// Maximum Bit Rate allowed
 	MaxBitRate *string `json:"max_bit_rate,omitempty"`
 	// Duplex Mode
 	DuplexMode *string `json:"duplex_mode,omitempty"`
-	// Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Site Settings
+	// Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Fabric Settings
 	StpEnable *bool `json:"stp_enable,omitempty"`
 	// Enable Immediate Transition to Forwarding
 	FastLearningMode *bool `json:"fast_learning_mode,omitempty"`
@@ -55,11 +67,11 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	Multicast *bool `json:"multicast,omitempty"`
 	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action
 	MaxAllowedValue NullableInt32 `json:"max_allowed_value,omitempty"`
-	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>                                                 <div class=\"tab\">                                                     %: Percentage.<br>                                                     kbps: kilobits per second <br>                                                     mbps: megabits per second <br>                                                     gbps: gigabits per second <br>                                                     pps: packet per second <br>                                                     kpps: kilopacket per second <br>                                                 </div>                                                 
+	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>            <div class=\"tab\">             %: Percentage.<br>             kbps: kilobits per second <br>             mbps: megabits per second <br>             gbps: gigabits per second <br>             pps: packet per second <br>             kpps: kilopacket per second <br>            </div>            
 	MaxAllowedUnit *string `json:"max_allowed_unit,omitempty"`
-	// Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: <br>                                                 <div class=\"tab\">                                                     Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.<br><br>                                                     Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.                                                     Alarm is raised . Alarm automatically clears when rate is below configured threshold. <br><br>                                                     Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. <br>                                                 </div>                                             
+	// Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: <br>            <div class=\"tab\">             Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.<br><br>             Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.             Alarm is raised . Alarm automatically clears when rate is below configured threshold. <br><br>             Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. <br>            </div>           
 	Action *string `json:"action,omitempty"`
-	// FEC is Forward Error Correction which is error correction on the fiber link.                                                 <div class=\"tab\">                                                     Any: Allows switch Negotiation between FC and RS <br>                                                     None: Disables FEC on an interface.<br>                                                     FC: Enables FEC on supported interfaces. FC stands for fire code.<br>                                                     RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. <br>                                                     None: VnetC doesn't alter the Switch Value.<br>                                                 </div>                                             
+	// FEC is Forward Error Correction which is error correction on the fiber link.            <div class=\"tab\">             Any: Allows switch Negotiation between FC and RS <br>             None: Disables FEC on an interface.<br>             FC: Enables FEC on supported interfaces. FC stands for fire code.<br>             RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. <br>             None: VnetC doesn't alter the Switch Value.<br>            </div>           
 	Fec *string `json:"fec,omitempty"`
 	// Ports with this setting will be disabled when link state tracking takes effect
 	SingleLink *bool `json:"single_link,omitempty"`
@@ -75,28 +87,18 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	PriorityFlowControlWatchdogDetectTime NullableInt32 `json:"priority_flow_control_watchdog_detect_time,omitempty"`
 	// A value between 100 to 60000
 	PriorityFlowControlWatchdogRestoreTime NullableInt32 `json:"priority_flow_control_watchdog_restore_time,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
-	// Packet Queue
-	PacketQueue *string `json:"packet_queue,omitempty"`
-	// Object type for packet_queue field
-	PacketQueueRefType *string `json:"packet_queue_ref_type_,omitempty"`
-	// Enables custom tuning of WRED values. Uncheck to use Switch default values.
-	EnableWredTuning *bool `json:"enable_wred_tuning,omitempty"`
-	// Enables Explicit Congestion Notification for WRED.
-	EnableEcn *bool `json:"enable_ecn,omitempty"`
-	// Enables custom tuning of Watchdog values. Uncheck to use Switch default values.
-	EnableWatchdogTuning *bool `json:"enable_watchdog_tuning,omitempty"`
+	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 	// CLI Commands
 	CliCommands *string `json:"cli_commands,omitempty"`
 	// Enable Detection of Bridging Loops
 	DetectBridgingLoops *bool `json:"detect_bridging_loops,omitempty"`
 	// Enable Detection of Unidirectional Link
 	UnidirectionalLinkDetection *bool `json:"unidirectional_link_detection,omitempty"`
-	// Dynamic - MACs are learned and aged normally up to the limit. <br>                                 <div class=\"tab\">                                     Packets will be dropped from clients exceeding the limit. <br>                                     Once a client ages out, a new client can take its slot. <br>                                     When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.<br>                                 </div>                             Sticky - Semi permenant learning. <br>                                 <div class=\"tab\">                                     Packets will be dropped from clients exceeding the limit. <br>                                     Addresses do not age out or move within the same switch. <br>                                     Operationally downing a port (disconnecting) does NOT flush the entries. <br>                                     Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.                                 </div>
+	// Dynamic - MACs are learned and aged normally up to the limit. <br>        <div class=\"tab\">         Packets will be dropped from clients exceeding the limit. <br>         Once a client ages out, a new client can take its slot. <br>         When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.<br>        </div>       Sticky - Semi permenant learning. <br>        <div class=\"tab\">         Packets will be dropped from clients exceeding the limit. <br>         Addresses do not age out or move within the same switch. <br>         Operationally downing a port (disconnecting) does NOT flush the entries. <br>         Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.        </div>
 	MacSecurityMode *string `json:"mac_security_mode,omitempty"`
 	// Between 1-1000
 	MacLimit NullableInt32 `json:"mac_limit,omitempty"`
-	// Protect - All packets are dropped from clients above the MAC Limit. <br>                                 <div class=\"tab\">                                     Exceeding the limit is not alarmed. <br>                                 </div>                             Restrict - All packets are dropped from clients above the MAC Limit. <br>                                 <div class=\"tab\">                                     Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. <br>                                 </div>                             Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. <br>                                 <div class=\"tab\">                                     User must administratively Disable and Enable the port to restore service.                                 </div>
+	// Protect - All packets are dropped from clients above the MAC Limit. <br>        <div class=\"tab\">         Exceeding the limit is not alarmed. <br>        </div>       Restrict - All packets are dropped from clients above the MAC Limit. <br>        <div class=\"tab\">         Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. <br>        </div>       Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. <br>        <div class=\"tab\">         User must administratively Disable and Enable the port to restore service.        </div>
 	SecurityViolationAction *string `json:"security_violation_action,omitempty"`
 	// Limit MAC authentication based on inactivity or on absolute time. See Also Aging Time
 	AgingType *string `json:"aging_type,omitempty"`
@@ -121,6 +123,14 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var packetQueue string = ""
+	this.PacketQueue = &packetQueue
+	var enableWredTuning bool = false
+	this.EnableWredTuning = &enableWredTuning
+	var enableEcn bool = true
+	this.EnableEcn = &enableEcn
+	var enableWatchdogTuning bool = false
+	this.EnableWatchdogTuning = &enableWatchdogTuning
 	var autoNegotiation bool = true
 	this.AutoNegotiation = &autoNegotiation
 	var enableSpeedControl bool = true
@@ -173,14 +183,6 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	this.PriorityFlowControlWatchdogDetectTime = *NewNullableInt32(&priorityFlowControlWatchdogDetectTime)
 	var priorityFlowControlWatchdogRestoreTime int32 = 100
 	this.PriorityFlowControlWatchdogRestoreTime = *NewNullableInt32(&priorityFlowControlWatchdogRestoreTime)
-	var packetQueue string = ""
-	this.PacketQueue = &packetQueue
-	var enableWredTuning bool = false
-	this.EnableWredTuning = &enableWredTuning
-	var enableEcn bool = true
-	this.EnableEcn = &enableEcn
-	var enableWatchdogTuning bool = false
-	this.EnableWatchdogTuning = &enableWatchdogTuning
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
 	var detectBridgingLoops bool = false
@@ -215,6 +217,14 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var packetQueue string = ""
+	this.PacketQueue = &packetQueue
+	var enableWredTuning bool = false
+	this.EnableWredTuning = &enableWredTuning
+	var enableEcn bool = true
+	this.EnableEcn = &enableEcn
+	var enableWatchdogTuning bool = false
+	this.EnableWatchdogTuning = &enableWatchdogTuning
 	var autoNegotiation bool = true
 	this.AutoNegotiation = &autoNegotiation
 	var enableSpeedControl bool = true
@@ -267,14 +277,6 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	this.PriorityFlowControlWatchdogDetectTime = *NewNullableInt32(&priorityFlowControlWatchdogDetectTime)
 	var priorityFlowControlWatchdogRestoreTime int32 = 100
 	this.PriorityFlowControlWatchdogRestoreTime = *NewNullableInt32(&priorityFlowControlWatchdogRestoreTime)
-	var packetQueue string = ""
-	this.PacketQueue = &packetQueue
-	var enableWredTuning bool = false
-	this.EnableWredTuning = &enableWredTuning
-	var enableEcn bool = true
-	this.EnableEcn = &enableEcn
-	var enableWatchdogTuning bool = false
-	this.EnableWatchdogTuning = &enableWatchdogTuning
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
 	var detectBridgingLoops bool = false
@@ -364,6 +366,166 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
+// GetPacketQueue returns the PacketQueue field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueue() string {
+	if o == nil || IsNil(o.PacketQueue) {
+		var ret string
+		return ret
+	}
+	return *o.PacketQueue
+}
+
+// GetPacketQueueOk returns a tuple with the PacketQueue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueue) {
+		return nil, false
+	}
+	return o.PacketQueue, true
+}
+
+// HasPacketQueue returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPacketQueue() bool {
+	if o != nil && !IsNil(o.PacketQueue) {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketQueue gets a reference to the given string and assigns it to the PacketQueue field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueue(v string) {
+	o.PacketQueue = &v
+}
+
+// GetPacketQueueRefType returns the PacketQueueRefType field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueRefType() string {
+	if o == nil || IsNil(o.PacketQueueRefType) {
+		var ret string
+		return ret
+	}
+	return *o.PacketQueueRefType
+}
+
+// GetPacketQueueRefTypeOk returns a tuple with the PacketQueueRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueueRefType) {
+		return nil, false
+	}
+	return o.PacketQueueRefType, true
+}
+
+// HasPacketQueueRefType returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPacketQueueRefType() bool {
+	if o != nil && !IsNil(o.PacketQueueRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketQueueRefType gets a reference to the given string and assigns it to the PacketQueueRefType field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueueRefType(v string) {
+	o.PacketQueueRefType = &v
+}
+
+// GetEnableWredTuning returns the EnableWredTuning field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuning() bool {
+	if o == nil || IsNil(o.EnableWredTuning) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableWredTuning
+}
+
+// GetEnableWredTuningOk returns a tuple with the EnableWredTuning field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuningOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableWredTuning) {
+		return nil, false
+	}
+	return o.EnableWredTuning, true
+}
+
+// HasEnableWredTuning returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWredTuning() bool {
+	if o != nil && !IsNil(o.EnableWredTuning) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableWredTuning gets a reference to the given bool and assigns it to the EnableWredTuning field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWredTuning(v bool) {
+	o.EnableWredTuning = &v
+}
+
+// GetEnableEcn returns the EnableEcn field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcn() bool {
+	if o == nil || IsNil(o.EnableEcn) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableEcn
+}
+
+// GetEnableEcnOk returns a tuple with the EnableEcn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcnOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableEcn) {
+		return nil, false
+	}
+	return o.EnableEcn, true
+}
+
+// HasEnableEcn returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableEcn() bool {
+	if o != nil && !IsNil(o.EnableEcn) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableEcn gets a reference to the given bool and assigns it to the EnableEcn field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableEcn(v bool) {
+	o.EnableEcn = &v
+}
+
+// GetEnableWatchdogTuning returns the EnableWatchdogTuning field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuning() bool {
+	if o == nil || IsNil(o.EnableWatchdogTuning) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableWatchdogTuning
+}
+
+// GetEnableWatchdogTuningOk returns a tuple with the EnableWatchdogTuning field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuningOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableWatchdogTuning) {
+		return nil, false
+	}
+	return o.EnableWatchdogTuning, true
+}
+
+// HasEnableWatchdogTuning returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWatchdogTuning() bool {
+	if o != nil && !IsNil(o.EnableWatchdogTuning) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableWatchdogTuning gets a reference to the given bool and assigns it to the EnableWatchdogTuning field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWatchdogTuning(v bool) {
+	o.EnableWatchdogTuning = &v
+}
+
 // GetAutoNegotiation returns the AutoNegotiation field value if set, zero value otherwise.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAutoNegotiation() bool {
 	if o == nil || IsNil(o.AutoNegotiation) {
@@ -426,6 +588,48 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableSpeedControl() 
 // SetEnableSpeedControl gets a reference to the given bool and assigns it to the EnableSpeedControl field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableSpeedControl(v bool) {
 	o.EnableSpeedControl = &v
+}
+
+// GetMtu returns the Mtu field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMtu() int32 {
+	if o == nil || IsNil(o.Mtu.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.Mtu.Get()
+}
+
+// GetMtuOk returns a tuple with the Mtu field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMtuOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Mtu.Get(), o.Mtu.IsSet()
+}
+
+// HasMtu returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMtu() bool {
+	if o != nil && o.Mtu.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMtu gets a reference to the given NullableInt32 and assigns it to the Mtu field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMtu(v int32) {
+	o.Mtu.Set(&v)
+}
+// SetMtuNil sets the value for Mtu to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMtuNil() {
+	o.Mtu.Set(nil)
+}
+
+// UnsetMtu ensures that no value is present for Mtu, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMtu() {
+	o.Mtu.Unset()
 }
 
 // GetMaxBitRate returns the MaxBitRate field value if set, zero value otherwise.
@@ -1257,19 +1461,19 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetPriorityFlowControl
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() map[string]interface{} {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.ObjectProperties
+	return o.ObjectProperties
 }
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.ObjectProperties, true
 }
@@ -1283,169 +1487,9 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasObjectProperties() bo
 	return false
 }
 
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
-	o.ObjectProperties = &v
-}
-
-// GetPacketQueue returns the PacketQueue field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueue() string {
-	if o == nil || IsNil(o.PacketQueue) {
-		var ret string
-		return ret
-	}
-	return *o.PacketQueue
-}
-
-// GetPacketQueueOk returns a tuple with the PacketQueue field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueOk() (*string, bool) {
-	if o == nil || IsNil(o.PacketQueue) {
-		return nil, false
-	}
-	return o.PacketQueue, true
-}
-
-// HasPacketQueue returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPacketQueue() bool {
-	if o != nil && !IsNil(o.PacketQueue) {
-		return true
-	}
-
-	return false
-}
-
-// SetPacketQueue gets a reference to the given string and assigns it to the PacketQueue field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueue(v string) {
-	o.PacketQueue = &v
-}
-
-// GetPacketQueueRefType returns the PacketQueueRefType field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueRefType() string {
-	if o == nil || IsNil(o.PacketQueueRefType) {
-		var ret string
-		return ret
-	}
-	return *o.PacketQueueRefType
-}
-
-// GetPacketQueueRefTypeOk returns a tuple with the PacketQueueRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPacketQueueRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.PacketQueueRefType) {
-		return nil, false
-	}
-	return o.PacketQueueRefType, true
-}
-
-// HasPacketQueueRefType returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPacketQueueRefType() bool {
-	if o != nil && !IsNil(o.PacketQueueRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetPacketQueueRefType gets a reference to the given string and assigns it to the PacketQueueRefType field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueueRefType(v string) {
-	o.PacketQueueRefType = &v
-}
-
-// GetEnableWredTuning returns the EnableWredTuning field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuning() bool {
-	if o == nil || IsNil(o.EnableWredTuning) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableWredTuning
-}
-
-// GetEnableWredTuningOk returns a tuple with the EnableWredTuning field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuningOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableWredTuning) {
-		return nil, false
-	}
-	return o.EnableWredTuning, true
-}
-
-// HasEnableWredTuning returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWredTuning() bool {
-	if o != nil && !IsNil(o.EnableWredTuning) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableWredTuning gets a reference to the given bool and assigns it to the EnableWredTuning field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWredTuning(v bool) {
-	o.EnableWredTuning = &v
-}
-
-// GetEnableEcn returns the EnableEcn field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcn() bool {
-	if o == nil || IsNil(o.EnableEcn) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableEcn
-}
-
-// GetEnableEcnOk returns a tuple with the EnableEcn field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcnOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableEcn) {
-		return nil, false
-	}
-	return o.EnableEcn, true
-}
-
-// HasEnableEcn returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableEcn() bool {
-	if o != nil && !IsNil(o.EnableEcn) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableEcn gets a reference to the given bool and assigns it to the EnableEcn field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableEcn(v bool) {
-	o.EnableEcn = &v
-}
-
-// GetEnableWatchdogTuning returns the EnableWatchdogTuning field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuning() bool {
-	if o == nil || IsNil(o.EnableWatchdogTuning) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableWatchdogTuning
-}
-
-// GetEnableWatchdogTuningOk returns a tuple with the EnableWatchdogTuning field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuningOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableWatchdogTuning) {
-		return nil, false
-	}
-	return o.EnableWatchdogTuning, true
-}
-
-// HasEnableWatchdogTuning returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWatchdogTuning() bool {
-	if o != nil && !IsNil(o.EnableWatchdogTuning) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableWatchdogTuning gets a reference to the given bool and assigns it to the EnableWatchdogTuning field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWatchdogTuning(v bool) {
-	o.EnableWatchdogTuning = &v
+// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v map[string]interface{}) {
+	o.ObjectProperties = v
 }
 
 // GetCliCommands returns the CliCommands field value if set, zero value otherwise.
@@ -1868,11 +1912,29 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.PacketQueue) {
+		toSerialize["packet_queue"] = o.PacketQueue
+	}
+	if !IsNil(o.PacketQueueRefType) {
+		toSerialize["packet_queue_ref_type_"] = o.PacketQueueRefType
+	}
+	if !IsNil(o.EnableWredTuning) {
+		toSerialize["enable_wred_tuning"] = o.EnableWredTuning
+	}
+	if !IsNil(o.EnableEcn) {
+		toSerialize["enable_ecn"] = o.EnableEcn
+	}
+	if !IsNil(o.EnableWatchdogTuning) {
+		toSerialize["enable_watchdog_tuning"] = o.EnableWatchdogTuning
+	}
 	if !IsNil(o.AutoNegotiation) {
 		toSerialize["auto_negotiation"] = o.AutoNegotiation
 	}
 	if !IsNil(o.EnableSpeedControl) {
 		toSerialize["enable_speed_control"] = o.EnableSpeedControl
+	}
+	if o.Mtu.IsSet() {
+		toSerialize["mtu"] = o.Mtu.Get()
 	}
 	if !IsNil(o.MaxBitRate) {
 		toSerialize["max_bit_rate"] = o.MaxBitRate
@@ -1948,21 +2010,6 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.PacketQueue) {
-		toSerialize["packet_queue"] = o.PacketQueue
-	}
-	if !IsNil(o.PacketQueueRefType) {
-		toSerialize["packet_queue_ref_type_"] = o.PacketQueueRefType
-	}
-	if !IsNil(o.EnableWredTuning) {
-		toSerialize["enable_wred_tuning"] = o.EnableWredTuning
-	}
-	if !IsNil(o.EnableEcn) {
-		toSerialize["enable_ecn"] = o.EnableEcn
-	}
-	if !IsNil(o.EnableWatchdogTuning) {
-		toSerialize["enable_watchdog_tuning"] = o.EnableWatchdogTuning
 	}
 	if !IsNil(o.CliCommands) {
 		toSerialize["cli_commands"] = o.CliCommands

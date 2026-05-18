@@ -9,8 +9,13 @@ servers:
 paths:
   /auth:
     post:
-      description: |
-        Authenticates a user using username and password, and returns a token if successful.
+      description: "Authenticates a user using username and password.\n          \
+        \  On successful authentication a cookie named \"verity_api\" is set for browser\
+        \ clients.\n            For non-browser/scripted clients the response body\
+        \ returns a JSON `token` field containing the same session value.\n      \
+        \      Include that token in subsequent requests by sending the cookie header\
+        \ `Cookie: verity_api=<token>`.\n            The session cookie expires after\
+        \ 20 minutes.\n        "
       requestBody:
         content:
           application/json:
@@ -30,6 +35,18 @@ paths:
               example:
                 error: Internal server error
           description: Server error
+        "411":
+          content:
+            application/json:
+              example:
+                error: Content-Length header required
+          description: Length Required
+        "401":
+          content:
+            application/json:
+              example:
+                error: User is not authorized
+          description: Unauthorized
         "400":
           content:
             application/json:
@@ -3376,6 +3393,153 @@ paths:
       summary: Create Packet Queue
       tags:
       - Packet Queues
+  /pairs:
+    delete:
+      description: |
+        Deletes an existing Switch Pair from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: switch_pair_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Switch Pair
+      tags:
+      - Switch Pairs
+    get:
+      description: |
+        Downloads all Switch Pairs from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: switch_pair_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all Switch Pairs
+      tags:
+      - Switch Pairs
+    patch:
+      description: |
+        Update Switch Pair into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_pairs_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update Switch Pair
+      tags:
+      - Switch Pairs
+    put:
+      description: |
+        Create Switch Pair into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_pairs_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Switch Pair
+      tags:
+      - Switch Pairs
   /pods:
     delete:
       description: |
@@ -4628,6 +4792,45 @@ paths:
       tags:
       - SFP Breakouts
   /sites:
+    delete:
+      description: |
+        Deletes an existing Site from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: site_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete Site
+      tags:
+      - Sites
     get:
       description: |
         Retrieves all Sites from the system.
@@ -4685,7 +4888,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/_sites_patch_request"
+              $ref: "#/components/schemas/_sites_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -4700,6 +4903,39 @@ paths:
       security:
       - TokenAuth: []
       summary: Update Site
+      tags:
+      - Sites
+    put:
+      description: |
+        Create Site into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_sites_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create Site
       tags:
       - Sites
   /spineplanes:
@@ -4849,6 +5085,300 @@ paths:
       summary: Create Spine Plane
       tags:
       - Spine Planes
+  /sspgroups:
+    delete:
+      description: |
+        Deletes an existing SuperSpine Group from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: superspine_group_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete SuperSpine Group
+      tags:
+      - SuperSpine Groups
+    get:
+      description: |
+        Downloads all SuperSpine Groups from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: superspine_group_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all SuperSpine Groups
+      tags:
+      - SuperSpine Groups
+    patch:
+      description: |
+        Update SuperSpine Group into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_sspgroups_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update SuperSpine Group
+      tags:
+      - SuperSpine Groups
+    put:
+      description: |
+        Create SuperSpine Group into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_sspgroups_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create SuperSpine Group
+      tags:
+      - SuperSpine Groups
+  /sus:
+    delete:
+      description: |
+        Deletes an existing SU from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: su_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete SU
+      tags:
+      - SUs
+    get:
+      description: |
+        Downloads all SUs from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: su_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all SUs
+      tags:
+      - SUs
+    patch:
+      description: |
+        Update SU into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_sus_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update SU
+      tags:
+      - SUs
+    put:
+      description: |
+        Create SU into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_sus_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create SU
+      tags:
+      - SUs
   /switchpoints:
     delete:
       description: |
@@ -5897,6 +6427,153 @@ paths:
       summary: Create Device Voice Setting
       tags:
       - Device Voice Settings
+  /macfilters:
+    delete:
+      description: |
+        Deletes an existing MAC Filter from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: mac_filter_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete MAC Filter
+      tags:
+      - MAC Filters
+    get:
+      description: |
+        Downloads all MAC Filters from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: mac_filter_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all MAC Filters
+      tags:
+      - MAC Filters
+    patch:
+      description: |
+        Update MAC Filter into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_macfilters_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update MAC Filter
+      tags:
+      - MAC Filters
+    put:
+      description: |
+        Create MAC Filter into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_macfilters_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create MAC Filter
+      tags:
+      - MAC Filters
   /serviceportprofiles:
     delete:
       description: |
@@ -6197,7 +6874,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -6205,12 +6882,16 @@ components:
           default: false
           description: Enable object.
           type: boolean
+        cli_commands:
+          default: ""
+          description: CLI Commands
+          type: string
         mode:
           default: IEEE 802.3af
           description: Mode
           enum:
-          - IEEE 802.3af
           - Manual
+          - IEEE 802.3af
           type: string
         usage_threshold:
           description: Usage Threshold
@@ -6233,7 +6914,7 @@ components:
           description: "Required for AVB, PTP and Cobranet Support for ONT Devices"
           type: boolean
         packet_queue:
-          default: packet_queue|(Packet Queue)|
+          default: ""
           description: Packet Queue for device
           type: string
         packet_queue_ref_type_:
@@ -6271,8 +6952,29 @@ components:
           default: false
           description: Enable Cut-through Switching on all Switches
           type: boolean
+        login_banner:
+          default: ""
+          description: Banner message displayed at login
+          type: string
+        dns_servers:
+          items:
+            $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_dns_servers_inner"
+          type: array
+        ntp_servers:
+          items:
+            $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_ntp_servers_inner"
+          type: array
+        syslog_servers:
+          items:
+            $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_syslog_servers_inner"
+          type: array
+        tacacs_servers:
+          items:
+            $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_tacacs_servers_inner"
+          type: array
         object_properties:
-          $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
+          properties: {}
+          type: object
         hold_timer:
           default: 0
           description: Hold Timer
@@ -6320,10 +7022,6 @@ components:
       type: object
     _authenticatedethports_put_request_authenticated_eth_port_value_object_properties:
       properties:
-        group:
-          default: ""
-          description: Group
-          type: string
         port_monitoring:
           default: ""
           description: Defines importance of Link Down on this port
@@ -6337,7 +7035,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -6348,6 +7046,10 @@ components:
         enable_sflow:
           default: false
           description: 'Enable sFlow for this Diagnostics Profile '
+          type: boolean
+        usesatori:
+          default: false
+          description: Use Verity as the flow collector
           type: boolean
         flow_collector:
           default: ""
@@ -6419,51 +7121,51 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
-          - 4x400G
-          - 8x800G
-          - 1x400G
-          - 8x1G
-          - 1x50G
-          - pg10G
-          - 1x200G
-          - pg50G
-          - 2x40G
-          - 2x50G
-          - 2x800G
-          - 4x50G
-          - 4x100G
-          - pg800G
-          - pg40G
-          - 8x50G
-          - 1x100G
-          - 2x10G
-          - 8x400G
-          - pg200G
-          - 2x400G
-          - 1x40G
-          - 1x25G
-          - 2x1G
-          - 1x800G
-          - pg1G
-          - 4x25G
-          - 8x200G
-          - 4x10G
-          - 4x800G
-          - pg100G
-          - 1x10G
-          - 8x40G
+          - 4x40G
           - 2x25G
+          - 4x1G
+          - 4x25G
+          - 4x10G
+          - 8x800G
+          - 4x100G
+          - 2x1G
+          - pg800G
+          - 8x40G
+          - 4x50G
+          - 4x400G
+          - pg100G
+          - 1x25G
+          - 4x200G
+          - 4x800G
+          - 1x800G
+          - pg40G
+          - 1x40G
+          - 8x1G
+          - 2x10G
+          - pg25G
+          - 2x50G
+          - 8x200G
+          - 2x200G
+          - pg200G
+          - 1x200G
+          - 1x400G
+          - 2x100G
+          - 2x400G
+          - 8x400G
+          - 8x25G
+          - 8x50G
+          - pg400G
           - 8x10G
           - 8x100G
-          - 8x25G
-          - 4x200G
-          - 2x200G
-          - 4x40G
-          - pg25G
-          - 4x1G
-          - 2x100G
-          - pg400G
+          - 2x800G
+          - 2x40G
+          - 1x10G
+          - pg1G
+          - pg50G
           - 1x1G
+          - 1x50G
+          - pg10G
+          - 1x100G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -6472,10 +7174,6 @@ components:
       type: object
     _bundles_put_request_endpoint_bundle_value_object_properties:
       properties:
-        group:
-          default: ""
-          description: Group
-          type: string
         is_for_switch:
           default: false
           description: Denotes a Switch Bundle
@@ -6493,16 +7191,41 @@ components:
           properties: {}
           type: object
       type: object
-    _sites_patch_request_site_value_islands_inner:
+    _switchpoints_put_request_switchpoint_value_pots_inner:
       properties:
-        toi_switchpoint:
+        pots_num_enable:
+          default: false
+          description: Enable POTS port
+          type: boolean
+        pots_num_uri:
           default: ""
-          description: TOI Switchpoint
+          description: Specific telephone extension for SIP for POTS port
+          minLength: 1
           type: string
-        toi_switchpoint_ref_type_:
-          description: Object type for toi_switchpoint field
-          enum:
-          - switchpoint
+        pots_num_username:
+          default: ""
+          description: SIP username used for authentication for POTS port
+          minLength: 1
+          type: string
+        pots_num_password:
+          default: ""
+          description: SIP password used for authentication for POTS port
+          minLength: 1
+          type: string
+        pots_num_caller_id:
+          default: ""
+          description: ASCII string defining the user for the Caller ID display for
+            POTS port
+          minLength: 1
+          type: string
+        pots_num_hot_line:
+          default: ""
+          description: URI of line to autodial upon off-hook for POTS port
+          type: string
+        pots_num_password_encrypted:
+          default: ""
+          description: SIP password used for authentication for POTS port
+          minLength: 1
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -6513,7 +7236,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -6544,10 +7267,10 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
+          - equal
           - range
           - greater
           - less
-          - equal
           type: string
         source_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -6573,10 +7296,10 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
+          - equal
           - range
           - greater
           - less
-          - equal
           type: string
         destination_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -6616,8 +7339,8 @@ components:
           enum:
           - ""
           - SP
-          - WRR
           - DWRR
+          - WRR
           type: string
         scheduler_weight:
           default: 0
@@ -6642,7 +7365,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -6654,27 +7377,27 @@ components:
           default: next available color
           description: Color of Badge
           enum:
-          - blue
-          - orange
           - purple
-          - yellow
-          - red
           - green
+          - orange
+          - red
+          - yellow
+          - blue
           minLength: 1
           type: string
         number:
           description: Number of Badge
           enum:
-          - 0
           - 3
-          - 7
           - 1
-          - 9
-          - 5
-          - 2
-          - 6
-          - 4
           - 8
+          - 6
+          - 5
+          - 7
+          - 9
+          - 0
+          - 4
+          - 2
           maximum: 9
           nullable: true
           type: integer
@@ -6685,7 +7408,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           minLength: 1
           type: string
         enable:
@@ -6715,6 +7438,21 @@ components:
           properties: {}
           type: object
       type: object
+    _devicesettings_put_request_eth_device_profiles_value_ntp_servers_inner:
+      properties:
+        enabled:
+          default: false
+          description: Enable NTP server
+          type: boolean
+        server:
+          default: ""
+          description: "IPv4, IPv6, or DNS name for NTP server"
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
     _serviceportprofiles_put_request_service_port_profile_value_object_properties:
       properties:
         on_summary:
@@ -6729,16 +7467,27 @@ components:
           - high
           - ""
           type: string
-        group:
+      type: object
+    _devicesettings_put_request_eth_device_profiles_value_dns_servers_inner:
+      properties:
+        enabled:
+          default: false
+          description: Enable DNS name server
+          type: boolean
+        server:
           default: ""
-          description: Group
+          description: IPv4 or IPv6 DNS name server address
           type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _imageupdatesets_patch_request_image_update_sets_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -6766,8 +7515,8 @@ components:
           default: whitebox
           description: Type of Image Update Sets
           enum:
-          - blackbox
           - whitebox
+          - blackbox
           type: string
         section_pointless:
           items:
@@ -6792,48 +7541,33 @@ components:
           properties: {}
           type: object
       type: object
-    _sites_patch_request_site_value_pairs_inner:
+    _sspgroups_put_request_superspine_group_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
+          format: name
           minLength: 1
           type: string
-        switchpoint_1:
-          default: ""
-          description: Switchpoint
-          type: string
-        switchpoint_1_ref_type_:
-          description: Object type for switchpoint_1 field
-          enum:
-          - switchpoint
-          type: string
-        switchpoint_2:
-          default: ""
-          description: Switchpoint
-          type: string
-        switchpoint_2_ref_type_:
-          description: Object type for switchpoint_2 field
-          enum:
-          - switchpoint
-          type: string
-        lag_group:
-          default: ""
-          description: LAG Group
-          type: string
-        lag_group_ref_type_:
-          description: Object type for lag_group field
-          enum:
-          - lag
-          type: string
-        is_whitebox_pair:
-          default: false
-          description: LAG Pair
+        enable:
+          default: true
+          description: Enable object.
           type: boolean
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
+        site:
+          default: ""
+          description: Fabric this SuperSpine Group is assigned to
+          type: string
+        site_ref_type_:
+          description: Object type for site field
+          enum:
+          - site
+          type: string
+        position:
+          description: Position of the Switch
+          nullable: true
+          type: number
+        object_properties:
+          $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
       type: object
     _pods_put_request:
       properties:
@@ -6842,6 +7576,34 @@ components:
             $ref: "#/components/schemas/_pods_put_request_pod_value"
           properties: {}
           type: object
+      type: object
+    _sus_put_request_su_value:
+      properties:
+        name:
+          default: ""
+          description: Template Name. Must be unique within type.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: true
+          description: Enable object.
+          type: boolean
+        pod:
+          default: ""
+          description: Pod this SU is assigned to
+          type: string
+        pod_ref_type_:
+          description: Object type for pod field
+          enum:
+          - pod
+          type: string
+        position:
+          description: Position of the Switch
+          nullable: true
+          type: number
+        object_properties:
+          $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
       type: object
     _switchpoints_markoutofservice_put_request:
       properties:
@@ -6976,7 +7738,8 @@ components:
           type: string
         lldp_med_row_num_dscp_mark:
           default: 0
-          description: LLDP DSCP Mark
+          description: Defines egress LLDP sent when a device is connected to this
+            Eth-Port Settings allowing the device to auto-provision its DSCP marking.
           maximum: 63
           nullable: true
           type: integer
@@ -7012,7 +7775,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -7020,6 +7783,15 @@ components:
           default: true
           description: Enable object.
           type: boolean
+        site:
+          default: ""
+          description: Fabric this Spine Plane is assigned to
+          type: string
+        site_ref_type_:
+          description: Object type for site field
+          enum:
+          - site
+          type: string
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
       type: object
@@ -7035,7 +7807,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -7077,11 +7849,26 @@ components:
             object to the list.
           type: integer
       type: object
+    _sites_put_request_site_value_object_properties_system_graphs_inner:
+      properties:
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
     _sfpbreakouts_patch_request:
       properties:
         sfp_breakouts:
           additionalProperties:
             $ref: "#/components/schemas/_sfpbreakouts_patch_request_sfp_breakouts_value"
+          properties: {}
+          type: object
+      type: object
+    _sspgroups_put_request:
+      properties:
+        superspine_group:
+          additionalProperties:
+            $ref: "#/components/schemas/_sspgroups_put_request_superspine_group_value"
           properties: {}
           type: object
       type: object
@@ -7097,7 +7884,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -7113,7 +7900,7 @@ components:
           minLength: 1
           type: string
         device_settings:
-          default: eth_device_profile|(Device Settings)|
+          default: (predefined):(Default)
           description: Device Settings for device
           type: string
         device_settings_ref_type_:
@@ -7145,7 +7932,7 @@ components:
         object_properties:
           $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_object_properties"
         device_voice_settings:
-          default: voice_device_profile|(SIP Voice Device)|
+          default: (predefined):(Default)
           description: Device Voice Settings for device
           type: string
         device_voice_settings_ref_type_:
@@ -7156,6 +7943,10 @@ components:
         voice_port_profile_paths:
           items:
             $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_voice_port_profile_paths_inner"
+          type: array
+        rg_services:
+          items:
+            $ref: "#/components/schemas/_bundles_put_request_endpoint_bundle_value_rg_services_inner"
           type: array
       type: object
     _extendedcommunitylists_put_request_extended_community_list_value_lists_inner:
@@ -7184,7 +7975,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           type: string
         enable:
@@ -7222,225 +8013,6 @@ components:
           type: array
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
-      type: object
-    _sites_patch_request_site_value_object_properties_system_graphs_inner:
-      properties:
-        graph_num_data:
-          default: ""
-          description: The graph data detailing this graph choice
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
-      type: object
-    _sites_patch_request_site_value:
-      properties:
-        name:
-          default: ""
-          description: Object Name. Must be unique.
-          format: name
-          minLength: 1
-          type: string
-        enable:
-          default: true
-          description: Enable object.
-          type: boolean
-        service_for_site:
-          default: service|Management|
-          description: Service for Site
-          type: string
-        service_for_site_ref_type_:
-          description: Object type for service_for_site field
-          enum:
-          - service
-          type: string
-        spanning_tree_type:
-          default: pvst
-          description: Sets the spanning tree type for all Ports in this Site with
-            Spanning Tree enabled
-          enum:
-          - ""
-          - pvst
-          - mstp
-          - port
-          minLength: 1
-          type: string
-        region_name:
-          default: ""
-          description: Defines the logical boundary of the network. All switches in
-            an MSTP region must have the same configured region name
-          type: string
-        revision:
-          default: 0
-          description: A logical number that signifies a revision for the MSTP configuration.
-            All switches in an MSTP region must have the same revision number
-          maximum: 65535
-          nullable: true
-          type: integer
-        force_spanning_tree_on_fabric_ports:
-          default: false
-          description: Enable spanning tree on all fabric connections.  This overrides
-            the Eth Port Settings for Fabric ports
-          type: boolean
-        read_only_mode:
-          default: false
-          description: "When Read Only Mode is checked, vNetC will perform all functions\
-            \ except writing database updates to the target hardware"
-          type: boolean
-        dscp_to_p_bit_map:
-          default: "0000000011111111222222223333333344444444555555556666666677777777"
-          description: For any Service that is using DSCP to p-bit map packet prioritization.
-            A string of length 64 with a 0-7 in each position
-          maxLength: 64
-          type: string
-        anycast_mac_address:
-          default: (auto)
-          description: Site Level MAC Address for Anycast
-          format: mac
-          type: string
-        anycast_mac_address_auto_assigned_:
-          description: Whether or not the value in anycast_mac_address field has been
-            automatically assigned or not. Set to false and change anycast_mac_address
-            value to edit.
-          type: boolean
-        mac_address_aging_time:
-          default: 600
-          description: MAC Address Aging Time (between 1-100000)
-          maximum: 100000
-          minimum: 1
-          nullable: true
-          type: integer
-        mlag_delay_restore_timer:
-          default: 300
-          description: MLAG Delay Restore Timer
-          maximum: 3600
-          minimum: 1
-          nullable: true
-          type: integer
-        bgp_keepalive_timer:
-          default: 60
-          description: Spine BGP Keepalive Timer
-          maximum: 3600
-          minimum: 1
-          nullable: true
-          type: integer
-        bgp_hold_down_timer:
-          default: 180
-          description: Spine BGP Hold Down Timer
-          maximum: 3600
-          minimum: 1
-          nullable: true
-          type: integer
-        spine_bgp_advertisement_interval:
-          default: 1
-          description: BGP Advertisement Interval for spines/superspines. Use "0"
-            for immediate updates
-          maximum: 3600
-          nullable: true
-          type: integer
-        spine_bgp_connect_timer:
-          default: 120
-          description: BGP Connect Timer
-          maximum: 3600
-          minimum: 1
-          nullable: true
-          type: integer
-        leaf_bgp_keep_alive_timer:
-          default: 60
-          description: Leaf BGP Keep Alive Timer
-          maximum: 3600
-          minimum: 1
-          nullable: true
-          type: integer
-        leaf_bgp_hold_down_timer:
-          default: 180
-          description: Leaf BGP Hold Down Timer
-          maximum: 3600
-          minimum: 1
-          nullable: true
-          type: integer
-        leaf_bgp_advertisement_interval:
-          default: 1
-          description: BGP Advertisement Interval for leafs. Use "0" for immediate
-            updates
-          maximum: 3600
-          nullable: true
-          type: integer
-        leaf_bgp_connect_timer:
-          default: 120
-          description: BGP Connect Timer
-          maximum: 3600
-          minimum: 1
-          nullable: true
-          type: integer
-        link_state_timeout_value:
-          default: 60
-          description: Link State Timeout Value
-          nullable: true
-          type: integer
-        evpn_multihoming_startup_delay:
-          default: 300
-          description: Startup Delay
-          nullable: true
-          type: integer
-        evpn_mac_holdtime:
-          default: 1080
-          description: MAC Holdtime
-          nullable: true
-          type: integer
-        aggressive_reporting:
-          default: true
-          description: "Fast Reporting of Switch Communications, Link Up/Down, and\
-            \ BGP Status"
-          type: boolean
-        crc_failure_threshold:
-          default: 5
-          description: Threshold in Errors per second that when met will disable the
-            links as part of LAGs
-          maximum: 4294967296
-          minimum: 1
-          nullable: true
-          type: integer
-        islands:
-          items:
-            $ref: "#/components/schemas/_sites_patch_request_site_value_islands_inner"
-          type: array
-        pairs:
-          items:
-            $ref: "#/components/schemas/_sites_patch_request_site_value_pairs_inner"
-          type: array
-        object_properties:
-          $ref: "#/components/schemas/_sites_patch_request_site_value_object_properties"
-        duplicate_address_detection_max_number_of_moves:
-          default: 5
-          description: Controls duplicate MAC address detection (DAD) Max Number of
-            Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of
-            moves (2 to 1000; default 5 if left blank)
-          maximum: 1000
-          minimum: 2
-          nullable: true
-          type: integer
-        duplicate_address_detection_time:
-          default: 180
-          description: Controls duplicate MAC address detection (DAD) time for EVPN
-            (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800;
-            default 180 if left blank)
-          maximum: 1800
-          minimum: 2
-          nullable: true
-          type: integer
-        enable_dhcp_snooping:
-          default: false
-          description: Enables the switches to monitor DHCP traffic and collect assigned
-            IP addresses which are then placed in the DHCP assigned IPs report.
-          type: boolean
-        ip_source_guard:
-          default: false
-          description: "On untrusted ports, only allow known traffic from known IP\
-            \ addresses. IP addresses are discovered via DHCP snooping or with static\
-            \ IP settings"
-          type: boolean
       type: object
     _auth_post_request_auth:
       properties:
@@ -7500,6 +8072,14 @@ components:
             object to the list.
           type: integer
       type: object
+    _sites_put_request:
+      properties:
+        site:
+          additionalProperties:
+            $ref: "#/components/schemas/_sites_put_request_site_value"
+          properties: {}
+          type: object
+      type: object
     _imageupdatesets_patch_request_image_update_sets_value_section_inner:
       properties:
         endpoint_set_num_name:
@@ -7511,13 +8091,16 @@ components:
           description: The target SW version for member devices of the Endpoint Set
           enum:
           - unmanaged
-          - 1.8.1.11
-          - 1.8.1.28
-          - 1.8.1.27
-          - 1.8.1.29
+          - 1.9.0.212
+          - 1.9.0.219
+          - 1.9.0.222
+          - 1.9.0.220
+          - 1.9.0.218
+          - 1.9.0.217
+          - 1.9.0.221
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17625188662231"
+          default: "17791022808261"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -7537,14 +8120,14 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
-          - endpoint_type
+          - deviceSerialNumber
+          - pod
+          - badge
           - endpoint
           - badge_color
-          - pod
-          - productClass
           - bundle_id
-          - deviceSerialNumber
-          - badge
+          - productClass
+          - endpoint_type
           type: string
         endpoint_set_num_subrule_1_value:
           default: ""
@@ -7566,14 +8149,14 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
-          - endpoint_type
+          - deviceSerialNumber
+          - pod
+          - badge
           - endpoint
           - badge_color
-          - pod
-          - productClass
           - bundle_id
-          - deviceSerialNumber
-          - badge
+          - productClass
+          - endpoint_type
           type: string
         endpoint_set_num_subrule_2_value:
           default: ""
@@ -7595,14 +8178,14 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
-          - endpoint_type
+          - deviceSerialNumber
+          - pod
+          - badge
           - endpoint
           - badge_color
-          - pod
-          - productClass
           - bundle_id
-          - deviceSerialNumber
-          - badge
+          - productClass
+          - endpoint_type
           type: string
         endpoint_set_num_subrule_3_value:
           default: ""
@@ -7620,7 +8203,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -7647,7 +8230,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -7673,10 +8256,13 @@ components:
           description: The target SW version for member devices of the Endpoint Set
           enum:
           - unmanaged
-          - 1.8.1.11
-          - 1.8.1.28
-          - 1.8.1.27
-          - 1.8.1.29
+          - 1.9.0.212
+          - 1.9.0.219
+          - 1.9.0.222
+          - 1.9.0.220
+          - 1.9.0.218
+          - 1.9.0.217
+          - 1.9.0.221
           type: string
         endpoint_set_for_endpointless_unique_identifier:
           default: pointless
@@ -7713,14 +8299,20 @@ components:
           enum:
           - grouping_rules
           type: string
-        switchpoint:
+        element:
           default: ""
-          description: Switchpoint to apply thresholds to
+          description: Element to apply thresholds to
           type: string
-        switchpoint_ref_type_:
-          description: Object type for switchpoint field
+        element_ref_type_:
+          description: Object type for element field
           enum:
+          - type
+          - sensai
           - switchpoint
+          type: string
+        sdlc:
+          default: ""
+          description: SDLC to apply thresholds to
           type: string
         port:
           default: ""
@@ -7751,7 +8343,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -7759,12 +8351,37 @@ components:
           default: false
           description: Enable object.
           type: boolean
+        password_encrypted:
+          default: ""
+          description: Password
+          format: password
+          type: string
+        enable_password_encrypted:
+          default: ""
+          description: Enable Password - to enable privileged CLI operations
+          format: password
+          type: string
+        ssh_key_or_password_encrypted:
+          default: ""
+          description: SSH Key or Password
+          format: password
+          type: string
+        passphrase_encrypted:
+          default: ""
+          description: Passphrase
+          format: password
+          type: string
+        private_password_encrypted:
+          default: ""
+          description: Password
+          format: password
+          type: string
         ip_source:
           default: dhcp
           description: IP Source
           enum:
-          - static
           - dhcp
+          - static
           minLength: 1
           type: string
         controller_ip_and_mask:
@@ -7792,8 +8409,10 @@ components:
           description: Comm Type
           enum:
           - snmpv2
-          - snmpv3
+          - cli
+          - restconf
           - gnmi
+          - snmpv3
           minLength: 1
           type: string
         snmp_community_string:
@@ -7824,37 +8443,38 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - Static Port
-          - LAG
           - as_site
           - LAG_IDL
+          - LAG
+          - Static Port
           - LLDP
           minLength: 1
           type: string
         power_state:
           default: "on"
           description: Power state of Switch Controller
+          minLength: 2
           type: string
         communication_mode:
           default: generic_snmp
           description: Communication Mode
           enum:
-          - cisco_catalyst_c3xxx
-          - hpe_aruba_2530_series
-          - cisco_nexus_9xxx
-          - microtik_routeros_telnet
-          - arista_7050_series
-          - juniper_acx5048
-          - sonic
-          - eltex_ltp_gpon_olt
-          - ruckus_icx7150
-          - generic_advanced_snmp
-          - netgear_prosafe_series
           - tibit_xgs_olt_sfp
-          - adtran_netvanta_series
-          - cisco_small_business_sgxxx
-          - edgecore_ecs21000
           - generic_snmp
+          - cisco_catalyst_c3xxx
+          - sonic
+          - hpe_aruba_2530_series
+          - arista_7050_series
+          - eltex_ltp_gpon_olt
+          - cisco_nexus_9xxx
+          - adtran_netvanta_series
+          - edgecore_ecs21000
+          - ruckus_icx7150
+          - netgear_prosafe_series
+          - microtik_routeros_telnet
+          - cisco_small_business_sgxxx
+          - juniper_acx5048
+          - generic_advanced_snmp
           minLength: 1
           type: string
         cli_access_mode:
@@ -7906,9 +8526,9 @@ components:
           default: noAuthNoPriv
           description: Security level
           enum:
-          - noAuthNoPriv
           - authNoPriv
           - authPriv
+          - noAuthNoPriv
           type: string
         snmpv3_username:
           default: ""
@@ -7919,8 +8539,8 @@ components:
           default: MD5
           description: Protocol
           enum:
-          - SHA
           - MD5
+          - SHA
           minLength: 1
           type: string
         passphrase:
@@ -7932,36 +8552,11 @@ components:
           default: DES
           description: Protocol
           enum:
-          - AES
           - DES
+          - AES
           minLength: 1
           type: string
         private_password:
-          default: ""
-          description: Password
-          format: password
-          type: string
-        password_encrypted:
-          default: ""
-          description: Password
-          format: password
-          type: string
-        enable_password_encrypted:
-          default: ""
-          description: Enable Password - to enable privileged CLI operations
-          format: password
-          type: string
-        ssh_key_or_password_encrypted:
-          default: ""
-          description: SSH Key or Password
-          format: password
-          type: string
-        passphrase_encrypted:
-          default: ""
-          description: Passphrase
-          format: password
-          type: string
-        private_password_encrypted:
           default: ""
           description: Password
           format: password
@@ -8008,6 +8603,14 @@ components:
             packets
           type: boolean
       type: object
+    _sus_put_request:
+      properties:
+        su:
+          additionalProperties:
+            $ref: "#/components/schemas/_sus_put_request_su_value"
+          properties: {}
+          type: object
+      type: object
     _bundles_put_request_endpoint_bundle_value_user_services_inner:
       properties:
         row_app_enable:
@@ -8047,10 +8650,6 @@ components:
           - high
           - ""
           type: string
-        group:
-          default: ""
-          description: Group
-          type: string
         format_dial_plan:
           default: true
           description: Format dial plan for easier viewing
@@ -8067,10 +8666,13 @@ components:
           description: The target SW version for member devices of the Endpoint Set
           enum:
           - unmanaged
-          - 1.8.1.11
-          - 1.8.1.28
-          - 1.8.1.27
-          - 1.8.1.29
+          - 1.9.0.212
+          - 1.9.0.219
+          - 1.9.0.222
+          - 1.9.0.220
+          - 1.9.0.218
+          - 1.9.0.217
+          - 1.9.0.221
           type: string
         endpoint_set_for_all_others_unique_identifier:
           default: else
@@ -8085,11 +8687,55 @@ components:
           description: The time to update to the target SW version
           type: string
       type: object
+    _pairs_put_request_switch_pair_value:
+      properties:
+        name:
+          default: ""
+          description: Template Name. Must be unique within type.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: true
+          description: Enable object.
+          type: boolean
+        switchpoint_1:
+          default: ""
+          description: Switchpoint
+          type: string
+        switchpoint_1_ref_type_:
+          description: Object type for switchpoint_1 field
+          enum:
+          - switchpoint
+          type: string
+        switchpoint_2:
+          default: ""
+          description: Switchpoint
+          type: string
+        switchpoint_2_ref_type_:
+          description: Object type for switchpoint_2 field
+          enum:
+          - switchpoint
+          type: string
+        lag:
+          default: ""
+          description: LAG
+          type: string
+        lag_ref_type_:
+          description: Object type for lag field
+          enum:
+          - lag
+          type: string
+        is_whitebox_pair:
+          default: false
+          description: Is Whitebox Pair
+          type: boolean
+      type: object
     _switchpoints_put_request_switchpoint_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -8099,6 +8745,15 @@ components:
             Enable object.
             It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
+        tenant:
+          default: ""
+          description: The Tenant of this Device
+          type: string
+        tenant_ref_type_:
+          description: Object type for tenant field
+          enum:
+          - tenant
+          type: string
         device_serial_number:
           default: ""
           description: Device Serial Number
@@ -8112,6 +8767,10 @@ components:
           enum:
           - endpoint_bundle
           type: string
+        is_top_of_island:
+          default: false
+          description: Mark this Switchpoint as Top of Island
+          type: boolean
         read_only_mode:
           default: false
           description: "When Read Only Mode is checked, vNetC will perform all functions\
@@ -8121,6 +8780,15 @@ components:
           default: false
           description: Permission lock
           type: boolean
+        expected_site:
+          default: ""
+          description: Expected Fabric
+          type: string
+        expected_site_ref_type_:
+          description: Object type for expected_site field
+          enum:
+          - site
+          type: string
         out_of_band_management:
           default: false
           description: For Switch Endpoints. Denotes a Switch is managed out of band
@@ -8134,6 +8802,7 @@ components:
           - packet_broker
           - management
           - leaf
+          - hgx
           - spine
           - packet_broker_tor
           - superspine
@@ -8157,11 +8826,37 @@ components:
           enum:
           - pod
           type: string
+        su:
+          default: ""
+          description: SU
+          type: string
+        su_ref_type_:
+          description: Object type for su field
+          enum:
+          - su
+          type: string
+        ssp_group:
+          default: ""
+          description: SuperSpine Group - grouping of superspines in 3-tier config
+          type: string
+        ssp_group_ref_type_:
+          description: Object type for ssp_group field
+          enum:
+          - superspine_group
+          type: string
         rack:
           default: ""
           description: 'Physical Rack location of the Switch '
           minLength: 1
           type: string
+        position:
+          description: Position of the Switch
+          nullable: true
+          type: number
+        rail_group:
+          description: Rail Group the Switch is part of
+          nullable: true
+          type: number
         switch_router_id_ip_mask:
           default: (auto)
           description: Switch BGP Router Identifier
@@ -8185,7 +8880,7 @@ components:
             value to edit.
           type: boolean
         bgp_as_number:
-          description: 'BGP Autonomous System Number for the site underlay '
+          description: 'BGP Autonomous System Number for the Fabric Underlay '
           maximum: 4294967295
           minimum: 1
           nullable: true
@@ -8217,12 +8912,16 @@ components:
           description: For Switch Endpoints. Denotes a Switch that is Fabric rather
             than an Edge Device
           type: boolean
+        pots:
+          items:
+            $ref: "#/components/schemas/_switchpoints_put_request_switchpoint_value_pots_inner"
+          type: array
       type: object
     _gatewayprofiles_put_request_gateway_profile_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -8236,14 +8935,12 @@ components:
           items:
             $ref: "#/components/schemas/_gatewayprofiles_put_request_gateway_profile_value_external_gateways_inner"
           type: array
-        object_properties:
-          $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
       type: object
     _sflowcollectors_put_request_sflow_collector_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -8276,18 +8973,22 @@ components:
       - device_names
       - package_version
       type: object
+    _macfilters_put_request:
+      properties:
+        mac_filter:
+          additionalProperties:
+            $ref: "#/components/schemas/_macfilters_put_request_mac_filter_value"
+          properties: {}
+          type: object
+      type: object
     _ethportprofiles_put_request_eth_port_profile__value_object_properties:
       properties:
-        group:
-          default: ""
-          description: Group
-          type: string
         port_monitoring:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
-          - ""
           - high
+          - ""
           - critical
           type: string
         sort_by_name:
@@ -8320,7 +9021,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -8378,7 +9079,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -8391,23 +9092,27 @@ components:
           description: Type of elements threshold applies to
           enum:
           - device
+          - satori
+          - vnc
           - interface
+          - sdlc
+          - sdlc_container
           type: string
         operation:
           default: and
           description: How to combine rules
           enum:
-          - and
-          - escalation
           - or
+          - escalation
+          - and
           type: string
         severity:
           default: notice
           description: Severity of the alarm when the threshold is met
           enum:
+          - critical
           - warning
           - error
-          - critical
           - notice
           type: string
         for:
@@ -8425,45 +9130,68 @@ components:
           description: Metric threshold is on
           enum:
           - ""
-          - prometheus_Switch_system_memory_free_percent
+          - prometheus_Switch_system_virtual_chassis_sync_uptime
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
+          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_system_controller_memory_inuse_MB
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
+          - prometheus_Switch_system_memory_available_MB
+          - prometheus_Switch_sensors_sensor_value
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
+          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
+          - prometheus_Switch_system_load_average
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
+          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
-          - prometheus_Switch_bgp_status_neighbors_uptime
-          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
+          - container_memory_usage_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
           - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
+          - prometheus_Infrastructure_host_mem_free_percent
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
           - prometheus_Switch_system_uptime
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
-          - prometheus_Switch_system_virtual_chassis_sync_uptime
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
-          - prometheus_Switch_sensors_sensor_value
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
+          - node_filesystem_free_bytes
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_bytes
+          - prometheus_Switch_system_memory_free_percent
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
           - prometheus_Switch_system_memory_free_MB
-          - prometheus_Switch_system_cpu_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
+          - container_cpu_system_seconds_total
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
+          - prometheus_Switch_interfaces_interface_stats_link_state_changes
+          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
+          - prometheus_Infrastructure_host_mem_used_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
           type: string
         escalation_operation:
           default: eq
           description: How to compare the metric to the value
           enum:
+          - lt
+          - gt
           - eq
           - ge
-          - lt
           - le
-          - gt
           type: string
         critical_escalation_value:
           default: ""
@@ -8506,7 +9234,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -8575,9 +9303,9 @@ components:
             only
           enum:
           - ""
-          - error
-          - warning
           - critical
+          - warning
+          - error
           - notice
           type: string
         threshold:
@@ -8602,6 +9330,62 @@ components:
           maximum: 7
           nullable: true
           type: integer
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _bundles_put_request_endpoint_bundle_value_rg_services_inner:
+      properties:
+        row_app_enable:
+          default: false
+          description: Enable of this ONT application
+          type: boolean
+        row_app_connected_service:
+          default: ""
+          description: Service connected to this ONT application
+          type: string
+        row_app_connected_service_ref_type_:
+          description: Object type for row_app_connected_service field
+          enum:
+          - service
+          type: string
+        row_app_type:
+          default: ""
+          description: Type of ONT Application
+          type: string
+        row_ip_mask:
+          default: ""
+          description: IP/Mask
+          format: ipv4
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
+      type: object
+    _devicesettings_put_request_eth_device_profiles_value_syslog_servers_inner:
+      properties:
+        enabled:
+          default: false
+          description: Enable syslog server
+          type: boolean
+        scheme:
+          default: udp_bsd
+          description: Syslog connection scheme
+          enum:
+          - tcp_tls
+          - tcp_bsd
+          - udp_bsd
+          type: string
+        server:
+          default: ""
+          description: "IPv4, IPv6, or DNS name for syslog server"
+          type: string
+        port:
+          default: ""
+          description: Syslog server port
+          type: string
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
@@ -8654,18 +9438,19 @@ components:
           default: ""
           description: Which type of rule to apply
           enum:
-          - endpoint_type
-          - endpoint
-          - pod
-          - diagnosticsPortProfile
-          - groupingRule
-          - portImportance
-          - archipelago
-          - deviceSerialNumber
-          - portNumber
+          - ""
           - ethPort
+          - deviceSerialNumber
           - externalGatewayProfile
+          - portNumber
+          - diagnosticsPortProfile
+          - pod
+          - endpoint
           - portUsage
+          - groupingRule
+          - archipelago
+          - endpoint_type
+          - portImportance
           type: string
         rule_value:
           default: ""
@@ -8677,11 +9462,30 @@ components:
           type: string
         rule_value_path_ref_type_:
           description: Object type for rule_value_path field
+          enum:
+          - pod
+          - lag
+          - service_port_profile
+          - site
+          - type
+          - diagnostics_port_profile
+          - nac_port_profile
+          - eth_port_profile_
+          - gateway_profile
+          - authenticated_eth_port
+          - grouping_rules
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
+      type: object
+    _sites_put_request_site_value_object_properties:
+      properties:
+        system_graphs:
+          items:
+            $ref: "#/components/schemas/_sites_put_request_site_value_object_properties_system_graphs_inner"
+          type: array
       type: object
     _thresholds_put_request:
       properties:
@@ -8758,7 +9562,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -8768,6 +9572,25 @@ components:
             Enable object.
             It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
+        switch_encrypted_md5_password:
+          default: false
+          description: Indicates the entered password is a switch encrypted password.
+          type: boolean
+        md5_password_encrypted:
+          default: ""
+          description: MD5 Password Encrypted used in the BGP session
+          format: password
+          type: string
+        default_originate:
+          default: false
+          description: Instructs BGP to generate and send a default route 0.0.0.0/0
+            to the specified neighbor.
+          type: boolean
+        bfd_multihop:
+          default: false
+          description: Enable BFD Multi-Hop for Neighbor. This is used to detect failures
+            in the forwarding path between the BGP peers.
+          type: boolean
         tenant:
           default: ""
           description: Tenant
@@ -8776,7 +9599,14 @@ components:
           description: Object type for tenant field
           enum:
           - tenant
-          - site
+          type: string
+        type:
+          default: tenant
+          description: Gateway classification
+          enum:
+          - archipelago
+          - tenant
+          minLength: 1
           type: string
         neighbor_ip_address:
           default: ""
@@ -8858,9 +9688,9 @@ components:
           type: string
         import_route_map:
           default: ""
-          description: A Route Map applied to routes imported into the current tenant
-            from the targeted BGP router with the purpose of filtering or modifying
-            the routes
+          description: A Route Map applied to routes imported into the tenant from
+            the neighbor BGP router with the purpose of filtering or modifying the
+            routes
           type: string
         import_route_map_ref_type_:
           description: Object type for import_route_map field
@@ -8869,9 +9699,8 @@ components:
           type: string
         export_route_map:
           default: ""
-          description: A route-map applied to routes exported into the current tenant
-            from the targeted BGP router with the purpose of filtering or modifying
-            the routes
+          description: A route-map applied to routes exported from the tenant to the
+            neighbor BGP router with the purpose of filtering or modifying the routes
           type: string
         export_route_map_ref_type_:
           description: Object type for export_route_map field
@@ -8908,6 +9737,11 @@ components:
             advertised through this BGP gateway. The Local AS Number must be set for
             this to be able to be set.
           type: boolean
+        remove_private_as:
+          default: false
+          description: Remove all private AS numbers from AS-PATH attributes for routes
+            advertised through this BGP gateway.
+          type: boolean
         replace_as:
           default: false
           description: Prepend only Local AS in updates to EBGP peers.
@@ -8920,6 +9754,11 @@ components:
           maximum: 10
           nullable: true
           type: integer
+        allowas_in_origin:
+          default: false
+          description: Only accept the current AS in the as-path if the route was
+            originated in the Local AS
+          type: boolean
         dynamic_bgp_subnet:
           default: ""
           description: Dynamic BGP Subnet
@@ -8974,27 +9813,6 @@ components:
           items:
             $ref: "#/components/schemas/_gateways_put_request_gateway_value_static_routes_inner"
           type: array
-        object_properties:
-          $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
-        switch_encrypted_md5_password:
-          default: false
-          description: Indicates the entered password is a switch encrypted password.
-          type: boolean
-        md5_password_encrypted:
-          default: ""
-          description: MD5 Password Encrypted used in the BGP session
-          format: password
-          type: string
-        default_originate:
-          default: false
-          description: Instructs BGP to generate and send a default route 0.0.0.0/0
-            to the specified neighbor.
-          type: boolean
-        bfd_multihop:
-          default: false
-          description: Enable BFD Multi-Hop for Neighbor. This is used to detect failures
-            in the forwarding path between the BGP peers.
-          type: boolean
       type: object
     _lags_put_request:
       properties:
@@ -9011,13 +9829,6 @@ components:
             $ref: "#/components/schemas/_communitylists_put_request_community_list_value"
           properties: {}
           type: object
-      type: object
-    _devicesettings_put_request_eth_device_profiles_value_object_properties:
-      properties:
-        group:
-          default: ""
-          description: Group
-          type: string
       type: object
     _gatewayprofiles_put_request_gateway_profile_value_external_gateways_inner:
       properties:
@@ -9056,7 +9867,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -9066,6 +9877,12 @@ components:
             Enable object.
             It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
+        uplink:
+          default: false
+          description: Indicates this LAG is designated as an uplink in the case of
+            a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces
+            and the MCLAG Peer Link VLAN
+          type: boolean
         is_peer_link:
           default: false
           description: Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link
@@ -9074,12 +9891,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - chardonnay
-          - anakiwa
-          - lavender
-          - emerald
           - cornflower
+          - chardonnay
+          - emerald
+          - anakiwa
           - starship
+          - lavender
           minLength: 1
           type: string
         lacp:
@@ -9094,9 +9911,9 @@ components:
           description: Object type for eth_port_profile field
           enum:
           - eth_port_profile_
-          - pb_egress_profile
-          - service_port_profile
           - gateway_profile
+          - service_port_profile
+          - pb_egress_profile
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
@@ -9115,15 +9932,15 @@ components:
           description: "Send LACP packets every second (if disabled, packets are sent\
             \ every 30 seconds)"
           type: boolean
+        crc_failure_threshold:
+          description: Threshold in Errors per second that when met will disable this
+            LAG's links
+          maximum: 4294967296
+          minimum: 1
+          nullable: true
+          type: integer
         object_properties:
-          properties: {}
-          type: object
-        uplink:
-          default: false
-          description: Indicates this LAG is designated as an uplink in the case of
-            a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces
-            and the MCLAG Peer Link VLAN
-          type: boolean
+          $ref: "#/components/schemas/_lags_put_request_lag_value_object_properties"
       type: object
     _switchpoints_put_request_switchpoint_value_children_inner:
       properties:
@@ -9154,13 +9971,13 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
-          - authenticated_eth_port
-          - type
-          - eth_port_profile_
-          - nbi_eth_port
-          - service_port_profile
           - pb_egress_profile
           - lag
+          - type
+          - service_port_profile
+          - nac_port_profile
+          - eth_port_profile_
+          - authenticated_eth_port
           type: string
         eth_port_num_eth_port_settings:
           default: ""
@@ -9173,7 +9990,7 @@ components:
           type: string
         eth_port_num_gateway_profile:
           default: ""
-          description: Gateway Profile or LAG for Eth Port
+          description: Gateway Profile for Eth Port
           type: string
         eth_port_num_gateway_profile_ref_type_:
           description: Object type for eth_port_num_gateway_profile field
@@ -9181,13 +9998,12 @@ components:
           - gateway_profile
           - lag
           type: string
-        diagnostics_port_profile_num_diagnostics_port_profile:
+        eth_port_num_diagnostics_port_profile:
           default: ""
           description: Diagnostics Port Profile for port
           type: string
-        diagnostics_port_profile_num_diagnostics_port_profile_ref_type_:
-          description: Object type for diagnostics_port_profile_num_diagnostics_port_profile
-            field
+        eth_port_num_diagnostics_port_profile_ref_type_:
+          description: Object type for eth_port_num_diagnostics_port_profile field
           enum:
           - diagnostics_port_profile
           type: string
@@ -9283,13 +10099,17 @@ components:
         row_num_lan_iptv:
           default: ""
           description: Denotes a LAN or IPTV service
+          enum:
+          - IPTV
+          - ""
+          - LAN
           type: string
       type: object
     _groupingrules_put_request_grouping_rules_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -9302,14 +10122,18 @@ components:
           description: Type of elements to group
           enum:
           - device
+          - satori
+          - vnc
           - interface
+          - sdlc
+          - sdlc_container
           type: string
         operation:
           default: and
           description: How to combine rules
           enum:
-          - and
           - or
+          - and
           type: string
         rules:
           items:
@@ -9320,7 +10144,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -9392,6 +10216,24 @@ components:
           description: Object type for match_ipv4_next_hop_ip_prefix_list field
           enum:
           - ipv4_prefix_list
+          type: string
+        match_ipv6_address_ipv6_prefix_list:
+          default: ""
+          description: Match IPv4 Address IPv6 Prefix List
+          type: string
+        match_ipv6_address_ipv6_prefix_list_ref_type_:
+          description: Object type for match_ipv6_address_ipv6_prefix_list field
+          enum:
+          - ipv6_prefix_list
+          type: string
+        match_ipv6_next_hop_ipv6_prefix_list:
+          default: ""
+          description: Match IPv6 Next Hop IPv6 Prefix List
+          type: string
+        match_ipv6_next_hop_ipv6_prefix_list_ref_type_:
+          description: Object type for match_ipv6_next_hop_ipv6_prefix_list field
+          enum:
+          - ipv6_prefix_list
           type: string
         match_local_preference:
           description: 'Match BGP Local Preference value on the route '
@@ -9475,24 +10317,27 @@ components:
           type: integer
         object_properties:
           $ref: "#/components/schemas/_routemapclauses_put_request_route_map_clause_value_object_properties"
-        match_ipv6_address_ipv6_prefix_list:
+      type: object
+    _macfilters_put_request_mac_filter_value_filters_inner:
+      properties:
+        filter_num_mac:
           default: ""
-          description: Match IPv4 Address IPv6 Prefix List
+          description: MAC address descriptor including colons example 01:23:45:67:9a:ab.
+            and * notation accepted example 12:*
           type: string
-        match_ipv6_address_ipv6_prefix_list_ref_type_:
-          description: Object type for match_ipv6_address_ipv6_prefix_list field
-          enum:
-          - ipv6_prefix_list
-          type: string
-        match_ipv6_next_hop_ipv6_prefix_list:
+        filter_num_mask:
           default: ""
-          description: Match IPv6 Next Hop IPv6 Prefix List
+          description: Hexidecimal mask including colons example ff:ff:fe:00:00:00.
+            /n and * notation accepted example /16 or 12:*
           type: string
-        match_ipv6_next_hop_ipv6_prefix_list_ref_type_:
-          description: Object type for match_ipv6_next_hop_ipv6_prefix_list field
-          enum:
-          - ipv6_prefix_list
-          type: string
+        filter_num_enable:
+          default: false
+          description: 'Enable of this MAC Filter '
+          type: boolean
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _acls_put_request:
       properties:
@@ -9510,56 +10355,56 @@ components:
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
           - ""
-          - 4x400G
-          - 8x800G
-          - 1x400G
-          - 8x1G
-          - 1x50G
-          - pg10G
-          - 1x200G
-          - pg50G
-          - 2x40G
-          - 2x50G
-          - 2x800G
-          - 4x50G
-          - 4x100G
-          - pg800G
-          - pg40G
-          - 8x50G
-          - 1x100G
-          - 2x10G
-          - 8x400G
-          - pg200G
-          - 2x400G
-          - 1x40G
-          - 1x25G
-          - 2x1G
-          - 1x800G
-          - pg1G
-          - 4x25G
-          - 8x200G
-          - 4x10G
-          - 4x800G
-          - pg100G
-          - 1x10G
-          - 8x40G
+          - 4x40G
           - 2x25G
+          - 4x1G
+          - 4x25G
+          - 4x10G
+          - 8x800G
+          - 4x100G
+          - 2x1G
+          - pg800G
+          - 8x40G
+          - 4x50G
+          - 4x400G
+          - pg100G
+          - 1x25G
+          - 4x200G
+          - 4x800G
+          - 1x800G
+          - pg40G
+          - 1x40G
+          - 8x1G
+          - 2x10G
+          - pg25G
+          - 2x50G
+          - 8x200G
+          - 2x200G
+          - pg200G
+          - 1x200G
+          - 1x400G
+          - 2x100G
+          - 2x400G
+          - 8x400G
+          - 8x25G
+          - 8x50G
+          - pg400G
           - 8x10G
           - 8x100G
-          - 8x25G
-          - 4x200G
-          - 2x200G
-          - 4x40G
-          - pg25G
-          - 4x1G
-          - 2x100G
-          - pg400G
+          - 2x800G
+          - 2x40G
+          - 1x10G
+          - pg1G
+          - pg50G
           - 1x1G
+          - 1x50G
+          - pg10G
+          - 1x100G
           type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
+        customer_vlan:
+          default: ""
+          description: A Value between 1 and 4096
+          type: string
         eth_num_icon:
           default: empty
           description: Icon of this Eth Port
@@ -9568,6 +10413,10 @@ components:
           default: ""
           description: Label of this Eth Port
           type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
         enable:
           default: true
           description: |
@@ -9610,7 +10459,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -9623,7 +10472,11 @@ components:
           description: Type of elements to apply thresholds to
           enum:
           - device
+          - satori
+          - vnc
           - interface
+          - sdlc
+          - sdlc_container
           type: string
         targets:
           items:
@@ -9646,7 +10499,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -9656,6 +10509,29 @@ components:
             Enable object.
             It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
+        packet_queue:
+          default: ""
+          description: Packet Queue
+          type: string
+        packet_queue_ref_type_:
+          description: Object type for packet_queue field
+          enum:
+          - packet_queue
+          type: string
+        enable_wred_tuning:
+          default: false
+          description: Enables custom tuning of WRED values. Uncheck to use Switch
+            default values.
+          type: boolean
+        enable_ecn:
+          default: true
+          description: Enables Explicit Congestion Notification for WRED.
+          type: boolean
+        enable_watchdog_tuning:
+          default: false
+          description: Enables custom tuning of Watchdog values. Uncheck to use Switch
+            default values.
+          type: boolean
         auto_negotiation:
           default: true
           description: Indicates if duplex mode should be auto negotiated
@@ -9664,22 +10540,31 @@ components:
           default: true
           description: Turns on speed control fields
           type: boolean
+        mtu:
+          description: "MTU (Maximum Transmission Unit) The size used by a switch\
+            \ to determine when large packets must be broken up into smaller packets\
+            \ for delivery. If mismatched within a single vlan network, can cause\
+            \ dropped packets."
+          maximum: 9216
+          minimum: 1312
+          nullable: true
+          type: integer
         max_bit_rate:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "100000"
-          - "10"
-          - "25000"
-          - "10000"
-          - "5000"
-          - "2500"
-          - "40000"
-          - "400000"
-          - "100"
-          - "-1"
           - "50000"
           - "1000"
+          - "100000"
+          - "10000"
+          - "40000"
+          - "400000"
+          - "2500"
+          - "-1"
+          - "10"
+          - "100"
+          - "25000"
+          - "5000"
           minLength: 1
           type: string
         duplex_mode:
@@ -9687,14 +10572,14 @@ components:
           description: Duplex Mode
           enum:
           - Full
-          - Auto
           - Half
+          - Auto
           minLength: 1
           type: string
         stp_enable:
           default: false
           description: "Enable Spanning Tree on the port.  Note: the Spanning Tree\
-            \ Type (VLAN, Port, MST) is controlled in the Site Settings"
+            \ Type (VLAN, Port, MST) is controlled in the Fabric Settings"
           type: boolean
         fast_learning_mode:
           default: true
@@ -9720,8 +10605,8 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
-          - Low
           - High
+          - Low
           - Critical
           minLength: 1
           type: string
@@ -9753,66 +10638,57 @@ components:
         max_allowed_unit:
           default: pps
           description: "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast\
-            \ traffic before invoking the protective action <br>\n               \
-            \                                 <div class=\"tab\">\n              \
-            \                                      %: Percentage.<br>\n          \
-            \                                          kbps: kilobits per second <br>\n\
-            \                                                    mbps: megabits per\
-            \ second <br>\n                                                    gbps:\
-            \ gigabits per second <br>\n                                         \
-            \           pps: packet per second <br>\n                            \
-            \                        kpps: kilopacket per second <br>\n          \
-            \                                      </div>\n                      \
-            \                          "
+            \ traffic before invoking the protective action <br>\n\t\t\t\t\t\t\t\t\
+            \t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\t%: Percentage.<br>\n\
+            \t\t\t\t\t\t\t\t\t\t\t\tkbps: kilobits per second <br>\n\t\t\t\t\t\t\t\
+            \t\t\t\t\tmbps: megabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tgbps:\
+            \ gigabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tpps: packet per second\
+            \ <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkpps: kilopacket per second <br>\n\t\t\
+            \t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t"
           enum:
-          - pps
           - Kpps
           - '%'
+          - pps
           minLength: 1
           type: string
         action:
           default: Protect
           description: "Action taken if broadcast/multicast/unknown-unicast traffic\
-            \ excedes the Max. One of: <br>\n                                    \
-            \            <div class=\"tab\">\n                                   \
-            \                 Protect: Broadcast/Multicast packets beyond the percent\
-            \ rate are silently dropped. QOS drop counters should indicate the drops.<br><br>\n\
-            \                                                    Restrict: Broadcast/Multicast\
+            \ excedes the Max. One of: <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\"\
+            >\n\t\t\t\t\t\t\t\t\t\t\t\tProtect: Broadcast/Multicast packets beyond\
+            \ the percent rate are silently dropped. QOS drop counters should indicate\
+            \ the drops.<br><br>\n\t\t\t\t\t\t\t\t\t\t\t\tRestrict: Broadcast/Multicast\
             \ packets beyond the percent rate are dropped. QOS drop counters should\
-            \ indicate the drops.\n                                              \
-            \      Alarm is raised . Alarm automatically clears when rate is below\
-            \ configured threshold. <br><br>\n                                   \
-            \                 Shutdown: Alarm is raised and port is taken out of service.\
-            \ User must administratively Disable and Enable the port to restore service.\
-            \ <br>\n                                                </div>\n     \
-            \                                       "
+            \ indicate the drops.\n\t\t\t\t\t\t\t\t\t\t\t\tAlarm is raised . Alarm\
+            \ automatically clears when rate is below configured threshold. <br><br>\n\
+            \t\t\t\t\t\t\t\t\t\t\t\tShutdown: Alarm is raised and port is taken out\
+            \ of service. User must administratively Disable and Enable the port to\
+            \ restore service. <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\
+            \t\t"
           enum:
+          - Restrict
           - Shutdown
           - Protect
-          - Restrict
           minLength: 1
           type: string
         fec:
           default: unaltered
           description: "FEC is Forward Error Correction which is error correction\
-            \ on the fiber link.\n                                               \
-            \ <div class=\"tab\">\n                                              \
-            \      Any: Allows switch Negotiation between FC and RS <br>\n       \
-            \                                             None: Disables FEC on an\
-            \ interface.<br>\n                                                   \
-            \ FC: Enables FEC on supported interfaces. FC stands for fire code.<br>\n\
-            \                                                    RS: Enables FEC on\
-            \ supported interfaces. RS stands for Reed-Solomon code. <br>\n      \
-            \                                              None: VnetC doesn't alter\
-            \ the Switch Value.<br>\n                                            \
-            \    </div>\n                                            "
+            \ on the fiber link.\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\
+            \t\t\t\t\t\t\t\t\tAny: Allows switch Negotiation between FC and RS <br>\n\
+            \t\t\t\t\t\t\t\t\t\t\t\tNone: Disables FEC on an interface.<br>\n\t\t\t\
+            \t\t\t\t\t\t\t\t\tFC: Enables FEC on supported interfaces. FC stands for\
+            \ fire code.<br>\n\t\t\t\t\t\t\t\t\t\t\t\tRS: Enables FEC on supported\
+            \ interfaces. RS stands for Reed-Solomon code. <br>\n\t\t\t\t\t\t\t\t\t\
+            \t\t\tNone: VnetC doesn't alter the Switch Value.<br>\n\t\t\t\t\t\t\t\t\
+            \t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t"
           enum:
+          - none
+          - unaltered
           - fc
           - rs-custom
-          - none
-          - auto
           - rs
-          - unaltered
+          - auto
           minLength: 1
           type: string
         single_link:
@@ -9864,30 +10740,8 @@ components:
           nullable: true
           type: integer
         object_properties:
-          $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
-        packet_queue:
-          default: ""
-          description: Packet Queue
-          type: string
-        packet_queue_ref_type_:
-          description: Object type for packet_queue field
-          enum:
-          - packet_queue
-          type: string
-        enable_wred_tuning:
-          default: false
-          description: Enables custom tuning of WRED values. Uncheck to use Switch
-            default values.
-          type: boolean
-        enable_ecn:
-          default: true
-          description: Enables Explicit Congestion Notification for WRED.
-          type: boolean
-        enable_watchdog_tuning:
-          default: false
-          description: Enables custom tuning of Watchdog values. Uncheck to use Switch
-            default values.
-          type: boolean
+          properties: {}
+          type: object
         cli_commands:
           default: ""
           description: CLI Commands
@@ -9902,20 +10756,19 @@ components:
           type: boolean
         mac_security_mode:
           default: disabled
-          description: |-
-            Dynamic - MACs are learned and aged normally up to the limit. <br>
-                                            <div class="tab">
-                                                Packets will be dropped from clients exceeding the limit. <br>
-                                                Once a client ages out, a new client can take its slot. <br>
-                                                When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.<br>
-                                            </div>
-                                        Sticky - Semi permenant learning. <br>
-                                            <div class="tab">
-                                                Packets will be dropped from clients exceeding the limit. <br>
-                                                Addresses do not age out or move within the same switch. <br>
-                                                Operationally downing a port (disconnecting) does NOT flush the entries. <br>
-                                                Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.
-                                            </div>
+          description: "Dynamic - MACs are learned and aged normally up to the limit.\
+            \ <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tPackets will\
+            \ be dropped from clients exceeding the limit. <br>\n\t\t\t\t\t\t\t\t\
+            Once a client ages out, a new client can take its slot. <br>\n\t\t\t\t\
+            \t\t\t\tWhen the port goes operationally down (disconnecting or disabling),\
+            \ the MACs will be flushed.<br>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\tSticky\
+            \ - Semi permenant learning. <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\
+            \t\t\t\t\t\t\t\tPackets will be dropped from clients exceeding the limit.\
+            \ <br>\n\t\t\t\t\t\t\t\tAddresses do not age out or move within the same\
+            \ switch. <br>\n\t\t\t\t\t\t\t\tOperationally downing a port (disconnecting)\
+            \ does NOT flush the entries. <br>\n\t\t\t\t\t\t\t\tLearned MACs can only\
+            \ be flushed by administratively taking the port down or rebooting the\
+            \ switch.\n\t\t\t\t\t\t\t</div>"
           enum:
           - disabled
           - dynamic
@@ -9931,19 +10784,16 @@ components:
           type: integer
         security_violation_action:
           default: protect
-          description: |-
-            Protect - All packets are dropped from clients above the MAC Limit. <br>
-                                            <div class="tab">
-                                                Exceeding the limit is not alarmed. <br>
-                                            </div>
-                                        Restrict - All packets are dropped from clients above the MAC Limit. <br>
-                                            <div class="tab">
-                                                Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. <br>
-                                            </div>
-                                        Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. <br>
-                                            <div class="tab">
-                                                User must administratively Disable and Enable the port to restore service.
-                                            </div>
+          description: "Protect - All packets are dropped from clients above the MAC\
+            \ Limit. <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tExceeding\
+            \ the limit is not alarmed. <br>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\tRestrict\
+            \ - All packets are dropped from clients above the MAC Limit. <br>\n\t\
+            \t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tAlarm is raised while\
+            \ attempts to exceed limit are active (MAC has not aged). Alarm automatically\
+            \ clears. <br>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\tShutdown - Alarm is\
+            \ raised and port is taken down if attempt to exceed MAC limit is made.\
+            \ <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tUser must administratively\
+            \ Disable and Enable the port to restore service.\n\t\t\t\t\t\t\t</div>"
           enum:
           - restrict
           - protect
@@ -10042,11 +10892,303 @@ components:
           properties: {}
           type: object
       type: object
+    _sites_put_request_site_value:
+      properties:
+        name:
+          default: ""
+          description: Template Name. Must be unique within type.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: true
+          description: Enable object.
+          type: boolean
+        su_support:
+          default: false
+          description: Support grouping leaf switches in SUs
+          type: boolean
+        allow_all_underlay_connections:
+          default: false
+          description: Allows underlay connections between PODs
+          type: boolean
+        site_type:
+          default: enterprise
+          description: Type of Fabric
+          enum:
+          - packet_broker
+          - datacenter
+          - management
+          - spx_2t
+          - enterprise
+          - spx_3t
+          - hyperscale_architecture
+          - datacenter_5
+          type: string
+        duplicate_address_detection_max_number_of_moves:
+          default: 5
+          description: Controls duplicate MAC address detection (DAD) Max Number of
+            Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of
+            moves (2 to 1000; default 5 if left blank)
+          maximum: 1000
+          minimum: 2
+          nullable: true
+          type: integer
+        duplicate_address_detection_time:
+          default: 180
+          description: Controls duplicate MAC address detection (DAD) time for EVPN
+            (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800;
+            default 180 if left blank)
+          maximum: 1800
+          minimum: 2
+          nullable: true
+          type: integer
+        port_admin_polling_interval:
+          default: 0
+          description: "polling interval values in seconds, set if aggressive reporting\
+            \ is not enabled"
+          nullable: true
+          type: integer
+        port_status_polling_interval:
+          default: 0
+          description: "polling interval values in seconds, set if aggressive reporting\
+            \ is not enabled"
+          nullable: true
+          type: integer
+        service_for_site:
+          default: (predefined):Management
+          description: Service for Fabric
+          type: string
+        service_for_site_ref_type_:
+          description: Object type for service_for_site field
+          enum:
+          - service
+          type: string
+        spanning_tree_type:
+          default: pvst
+          description: Sets the spanning tree type for all Ports in this Fabric with
+            Spanning Tree enabled
+          enum:
+          - ""
+          - pvst
+          - port
+          - mstp
+          minLength: 1
+          type: string
+        region_name:
+          default: ""
+          description: Defines the logical boundary of the network. All switches in
+            an MSTP region must have the same configured region name
+          type: string
+        revision:
+          default: 0
+          description: A logical number that signifies a revision for the MSTP configuration.
+            All switches in an MSTP region must have the same revision number
+          maximum: 65535
+          nullable: true
+          type: integer
+        force_spanning_tree_on_fabric_ports:
+          default: false
+          description: Enable spanning tree on all fabric connections.  This overrides
+            the Eth Port Settings for Fabric ports
+          type: boolean
+        read_only_mode:
+          default: false
+          description: "When Read Only Mode is checked, vNetC will perform all functions\
+            \ except writing database updates to the target hardware"
+          type: boolean
+        domain_for_site:
+          default: ""
+          description: Fabric Collection for Fabric
+          type: string
+        domain_for_site_ref_type_:
+          description: Object type for domain_for_site field
+          enum:
+          - site_collection
+          type: string
+        enable_dscp:
+          default: true
+          description: "Enable DSCP to p-bit/TC configuration. When enabled, DSCP\
+            \ to p-bit/TC mappings are applied."
+          type: boolean
+        dscp_to_p_bit_map:
+          default: "0000000011111111222222223333333344444444555555556666666677777777"
+          description: For any Service that is using DSCP to p-bit map packet prioritization.
+            A string of length 64 with a 0-7 in each position
+          maxLength: 64
+          type: string
+        anycast_mac_address:
+          default: (auto)
+          description: Fabric Level MAC Address for Anycast
+          format: mac
+          type: string
+        anycast_mac_address_auto_assigned_:
+          description: Whether or not the value in anycast_mac_address field has been
+            automatically assigned or not. Set to false and change anycast_mac_address
+            value to edit.
+          type: boolean
+        mac_address_aging_time:
+          default: 600
+          description: MAC Address Aging Time (between 1-100000)
+          maximum: 100000
+          minimum: 1
+          nullable: true
+          type: integer
+        mlag_delay_restore_timer:
+          default: 300
+          description: MLAG Delay Restore Timer
+          maximum: 3600
+          minimum: 1
+          nullable: true
+          type: integer
+        bgp_keepalive_timer:
+          default: 60
+          description: Spine BGP Keepalive Timer
+          maximum: 3600
+          minimum: 1
+          nullable: true
+          type: integer
+        bgp_hold_down_timer:
+          default: 180
+          description: Spine BGP Hold Down Timer
+          maximum: 3600
+          minimum: 1
+          nullable: true
+          type: integer
+        spine_bgp_advertisement_interval:
+          default: 1
+          description: BGP Advertisement Interval for spines/superspines. Use "0"
+            for immediate updates
+          maximum: 3600
+          nullable: true
+          type: integer
+        spine_bgp_connect_timer:
+          default: 120
+          description: BGP Connect Timer
+          maximum: 3600
+          minimum: 1
+          nullable: true
+          type: integer
+        spine_as_number:
+          description: BGP AS number applied uniformly to all spine endpoints in this
+            CLOS fabric on save. Leave blank to manage spine AS numbers individually.
+          maximum: 4294967295
+          minimum: 1
+          nullable: true
+          type: integer
+        leaf_bgp_keep_alive_timer:
+          default: 60
+          description: Leaf BGP Keep Alive Timer
+          maximum: 3600
+          minimum: 1
+          nullable: true
+          type: integer
+        leaf_bgp_hold_down_timer:
+          default: 180
+          description: Leaf BGP Hold Down Timer
+          maximum: 3600
+          minimum: 1
+          nullable: true
+          type: integer
+        leaf_bgp_advertisement_interval:
+          default: 1
+          description: BGP Advertisement Interval for leafs. Use "0" for immediate
+            updates
+          maximum: 3600
+          nullable: true
+          type: integer
+        leaf_bgp_connect_timer:
+          default: 120
+          description: BGP Connect Timer
+          maximum: 3600
+          minimum: 1
+          nullable: true
+          type: integer
+        link_state_timeout_value:
+          default: 60
+          description: Link State Timeout Value
+          nullable: true
+          type: integer
+        evpn_multihoming_startup_delay:
+          default: 300
+          description: Startup Delay
+          nullable: true
+          type: integer
+        evpn_mac_holdtime:
+          default: 1080
+          description: MAC Holdtime
+          nullable: true
+          type: integer
+        aggressive_reporting:
+          default: true
+          description: "Fast Reporting of Switch Communications, Link Up/Down, and\
+            \ BGP Status"
+          type: boolean
+        crc_failure_threshold:
+          default: 5
+          description: Threshold in Errors per second that when met will disable the
+            links as part of LAGs
+          maximum: 4294967296
+          minimum: 1
+          nullable: true
+          type: integer
+        switch_ip_base:
+          default: ""
+          description: Base IPv4 address for switch IPs in this Fabric
+          format: ipv4
+          type: string
+        controller_ip_base:
+          default: ""
+          description: Base IPv4 address for controller IPs in this Fabric
+          format: ipv4
+          type: string
+        loopback0_base:
+          default: ""
+          description: Base IPv4 address for Loopback0 interfaces in this Fabric
+          format: ipv4
+          type: string
+        multi_tenant:
+          default: true
+          description: Allow multiple tenants to HGX endpoints on this fabric.
+          type: boolean
+        pause_validation_alarms:
+          default: false
+          description: "Validation still runs, but validation alarms are not raised\
+            \ for this Fabric while enabled."
+          type: boolean
+        starting_octet:
+          description: This is the starting octet value
+          maximum: 254
+          minimum: 1
+          nullable: true
+          type: integer
+        max_sus:
+          description: Maximum number of SUs allowed per POD
+          nullable: true
+          type: integer
+        max_pods:
+          description: Maximum number of PODs allowed in the Fabric
+          nullable: true
+          type: integer
+        object_properties:
+          $ref: "#/components/schemas/_sites_put_request_site_value_object_properties"
+        ip_source_guard:
+          default: false
+          description: "On untrusted ports, only allow known traffic from known IP\
+            \ addresses. IP addresses are discovered via DHCP snooping or with static\
+            \ IP settings"
+          type: boolean
+        enable_dhcp_snooping:
+          default: false
+          description: Enables the switches to monitor DHCP traffic and collect assigned
+            IP addresses which are then placed in the DHCP assigned IPs report.
+          type: boolean
+      type: object
     _switchpoints_put_request_switchpoint_value_object_properties:
       properties:
         user_notes:
           default: ""
-          description: Notes writen by User about the site
+          description: Notes writen by User about the fabric
           type: string
         expected_parent_endpoint:
           default: ""
@@ -10070,6 +11212,10 @@ components:
         is_host:
           default: false
           description: For Switch Endpoints. Denotes the Host Switch
+          type: boolean
+        emulate_rf_video_port:
+          default: false
+          description: Emulate RF Video Port
           type: boolean
         draw_as_edge_device:
           default: false
@@ -10098,18 +11244,11 @@ components:
         auth:
           $ref: "#/components/schemas/_auth_post_request_auth"
       type: object
-    _sites_patch_request_site_value_object_properties:
+    _pairs_put_request:
       properties:
-        system_graphs:
-          items:
-            $ref: "#/components/schemas/_sites_patch_request_site_value_object_properties_system_graphs_inner"
-          type: array
-      type: object
-    _sites_patch_request:
-      properties:
-        site:
+        switch_pair:
           additionalProperties:
-            $ref: "#/components/schemas/_sites_patch_request_site_value"
+            $ref: "#/components/schemas/_pairs_put_request_switch_pair_value"
           properties: {}
           type: object
       type: object
@@ -10117,7 +11256,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -10435,13 +11574,14 @@ components:
             $ref: "#/components/schemas/_devicevoicesettings_put_request_device_voice_settings_value_codecs_inner"
           type: array
         object_properties:
-          $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
+          properties: {}
+          type: object
       type: object
     _policybasedrouting_put_request_pb_routing_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -10462,11 +11602,48 @@ components:
           properties: {}
           type: object
       type: object
+    _lags_put_request_lag_value_object_properties:
+      properties:
+        site:
+          default: ""
+          description: Choose a Fabric
+          type: string
+        site_ref_type_:
+          description: Object type for site field
+          enum:
+          - site
+          type: string
+      type: object
+    _macfilters_put_request_mac_filter_value:
+      properties:
+        name:
+          default: ""
+          description: Template Name. Must be unique within type.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        type:
+          default: White
+          description: Black vs White MAC Filter
+          enum:
+          - White
+          - Black
+          minLength: 1
+          type: string
+        filters:
+          items:
+            $ref: "#/components/schemas/_macfilters_put_request_mac_filter_value_filters_inner"
+          type: array
+      type: object
     _portacls_put_request_port_acl_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -10501,55 +11678,78 @@ components:
           default: metric
           description: Use a metric or a nested threshold
           enum:
-          - threshold
           - metric
+          - threshold
           type: string
         metric:
           default: ""
           description: Metric threshold is on
           enum:
           - ""
-          - prometheus_Switch_system_memory_free_percent
+          - prometheus_Switch_system_virtual_chassis_sync_uptime
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
+          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_system_controller_memory_inuse_MB
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
+          - prometheus_Switch_system_memory_available_MB
+          - prometheus_Switch_sensors_sensor_value
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
+          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
+          - prometheus_Switch_system_load_average
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
+          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
-          - prometheus_Switch_bgp_status_neighbors_uptime
-          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
+          - container_memory_usage_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
           - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
+          - prometheus_Infrastructure_host_mem_free_percent
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
           - prometheus_Switch_system_uptime
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
-          - prometheus_Switch_system_virtual_chassis_sync_uptime
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
-          - prometheus_Switch_sensors_sensor_value
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
+          - node_filesystem_free_bytes
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_bytes
+          - prometheus_Switch_system_memory_free_percent
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
           - prometheus_Switch_system_memory_free_MB
-          - prometheus_Switch_system_cpu_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
+          - container_cpu_system_seconds_total
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
+          - prometheus_Switch_interfaces_interface_stats_link_state_changes
+          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
+          - prometheus_Infrastructure_host_mem_used_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
           type: string
         operation:
-          default: ==
+          default: eq
           description: How to compare the metric to the value
           enum:
           - ""
-          - eq
-          - ge
           - lt
           - ne
-          - le
+          - eq
           - gt
+          - ge
+          - le
           type: string
         value:
           default: ""
@@ -10589,7 +11789,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -10599,6 +11799,15 @@ components:
             Enable object.
             It's highly recommended to set this value to true so that validation on the object will be ran.
           type: boolean
+        policy_based_routing:
+          default: ""
+          description: Policy Based Routing
+          type: string
+        policy_based_routing_ref_type_:
+          description: Object type for policy_based_routing field
+          enum:
+          - pb_routing
+          type: string
         vlan:
           description: Layer 2 Virtual Network Identifier. A Value between 1 and 4096.
             <br> Some switches have reserved values within the range
@@ -10607,7 +11816,9 @@ components:
           nullable: true
           type: integer
         vni:
-          description: Identifies the service within the VXLAN fabric
+          description: "Identifies the service within the VXLAN fabric - Range is\
+            \ 1-16777215. If not using auto, must be outside of the reserved range\
+            \ settings"
           maximum: 16777215
           minimum: 1
           nullable: true
@@ -10648,7 +11859,6 @@ components:
           format: ipv6
           type: string
         mtu:
-          default: 1500
           description: "MTU (Maximum Transmission Unit) The size used by a switch\
             \ to determine when large packets must be broken up into smaller packets\
             \ for delivery. If mismatched within a single vlan network, can cause\
@@ -10659,15 +11869,6 @@ components:
           type: integer
         object_properties:
           $ref: "#/components/schemas/_services_put_request_service_value_object_properties"
-        policy_based_routing:
-          default: ""
-          description: Policy Based Routing
-          type: string
-        policy_based_routing_ref_type_:
-          description: Object type for policy_based_routing field
-          enum:
-          - pb_routing
-          type: string
         max_upstream_rate_mbps:
           description: Bandwidth allocated per port in the upstream direction. (Max
             10000 Mbps)
@@ -10781,7 +11982,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -10842,7 +12043,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -10897,7 +12098,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -10905,7 +12106,7 @@ components:
           default: false
           description: Enable object.
           type: boolean
-        ipv_protocol:
+        ip_version:
           default: ipv4
           description: IPv4 or IPv6
           enum:
@@ -10945,7 +12146,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11114,7 +12315,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11131,13 +12332,14 @@ components:
             $ref: "#/components/schemas/_packetqueues_put_request_packet_queue_value_queue_inner"
           type: array
         object_properties:
-          $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
+          properties: {}
+          type: object
       type: object
     _ipv4lists_put_request_ipv4_list_filter_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11212,7 +12414,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11241,7 +12443,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11249,20 +12451,73 @@ components:
           default: true
           description: Enable object.
           type: boolean
-        object_properties:
-          $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
         expected_spine_count:
           default: 1
           description: Number of spine switches expected in this pod
           minimum: 1
           nullable: true
           type: integer
+        site:
+          default: ""
+          description: Fabric this Pod is assigned to
+          type: string
+        site_ref_type_:
+          description: Object type for site field
+          enum:
+          - site
+          type: string
+        position:
+          description: Position of the Switch
+          nullable: true
+          type: number
+        object_properties:
+          $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
+      type: object
+    _devicesettings_put_request_eth_device_profiles_value_tacacs_servers_inner:
+      properties:
+        enabled:
+          default: false
+          description: Enable TACACS+ server
+          type: boolean
+        server:
+          default: ""
+          description: "IPv4, IPv6, or DNS name for TACACS+ server"
+          type: string
+        auth_type:
+          default: pap
+          description: TACACS+ authentication type
+          enum:
+          - mschap
+          - pap
+          - chap
+          type: string
+        port:
+          default: ""
+          description: TACACS+ server port
+          type: string
+        timeout:
+          description: TACACS+ server timeout in seconds
+          maximum: 60
+          nullable: true
+          type: integer
+        secret:
+          default: ""
+          description: TACACS+ shared secret
+          type: string
+        enc_secret:
+          default: ""
+          description: TACACS+ shared secret (encrypted)
+          type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _ipv6prefixlists_put_request_ipv6_prefix_list_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11304,7 +12559,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11356,7 +12611,7 @@ components:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11433,8 +12688,8 @@ components:
           type: string
         export_route_map:
           default: ""
-          description: A route-map applied to routes exported into the current tenant
-            from other tenants with the purpose of filtering or modifying the routes
+          description: A route-map applied to routes exported from the current tenant
+            to other tenants with the purpose of filtering or modifying the routes
           type: string
         export_route_map_ref_type_:
           description: Object type for export_route_map field
@@ -11452,23 +12707,28 @@ components:
           description: Whether or not the value in vrf_name field has been automatically
             assigned or not. Set to false and change vrf_name value to edit.
           type: boolean
+        default_originate:
+          default: false
+          description: "When enabled, provision an underlay gateway on the switch\
+            \ for this tenant."
+          type: boolean
+        tenant_type:
+          default: NorthSouth
+          description: "Type of Tenant. To Provision on Spectrum-X sites, select East-West."
+          enum:
+          - EastWest
+          - NorthSouth
+          type: string
         route_tenants:
           items:
             $ref: "#/components/schemas/_tenants_put_request_tenant_value_route_tenants_inner"
           type: array
-        object_properties:
-          $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_object_properties"
-        default_originate:
-          default: false
-          description: Enables a leaf switch to originate IPv4 default type-5 EVPN
-            routes across the switching fabric.
-          type: boolean
       type: object
     _diagnosticsportprofiles_put_request_diagnostics_port_profile_value:
       properties:
         name:
           default: ""
-          description: Object Name. Must be unique.
+          description: Template Name. Must be unique within type.
           format: name
           minLength: 1
           type: string
@@ -11491,14 +12751,6 @@ components:
       type: object
     _services_put_request_service_value_object_properties:
       properties:
-        group:
-          default: ""
-          description: Group
-          type: string
-        on_summary:
-          default: true
-          description: Show on the summary view
-          type: boolean
         warn_on_no_external_source:
           default: true
           description: Warn if there is not outbound path for service in SD-Router
@@ -11547,5 +12799,5 @@ components:
   securitySchemes:
     TokenAuth:
       in: cookie
-      name: ivn_api
+      name: verity_api
       type: apiKey

@@ -4,9 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **EnableSflow** | Pointer to **bool** | Enable sFlow for this Diagnostics Profile  | [optional] [default to false]
+**Usesatori** | Pointer to **bool** | Use Verity as the flow collector | [optional] [default to false]
 **FlowCollector** | Pointer to **string** | Flow Collector for this Diagnostics Profile  | [optional] [default to ""]
 **FlowCollectorRefType** | Pointer to **string** | Object type for flow_collector field | [optional] 
 **PollInterval** | Pointer to **NullableInt32** | The sampling rate for sFlow polling (seconds) | [optional] [default to 20]
@@ -105,6 +106,31 @@ SetEnableSflow sets EnableSflow field to given value.
 `func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasEnableSflow() bool`
 
 HasEnableSflow returns a boolean if a field has been set.
+
+### GetUsesatori
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUsesatori() bool`
+
+GetUsesatori returns the Usesatori field if non-nil, zero value otherwise.
+
+### GetUsesatoriOk
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUsesatoriOk() (*bool, bool)`
+
+GetUsesatoriOk returns a tuple with the Usesatori field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUsesatori
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetUsesatori(v bool)`
+
+SetUsesatori sets Usesatori field to given value.
+
+### HasUsesatori
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasUsesatori() bool`
+
+HasUsesatori returns a boolean if a field has been set.
 
 ### GetFlowCollector
 

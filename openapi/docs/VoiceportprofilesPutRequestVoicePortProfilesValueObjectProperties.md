@@ -5,7 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **PortMonitoring** | Pointer to **string** | Defines importance of Link Down on this port | [optional] [default to ""]
-**Group** | Pointer to **string** | Group | [optional] [default to ""]
 **FormatDialPlan** | Pointer to **bool** | Format dial plan for easier viewing | [optional] [default to true]
 
 ## Methods
@@ -51,31 +50,6 @@ SetPortMonitoring sets PortMonitoring field to given value.
 `func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) HasPortMonitoring() bool`
 
 HasPortMonitoring returns a boolean if a field has been set.
-
-### GetGroup
-
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetGroup() string`
-
-GetGroup returns the Group field if non-nil, zero value otherwise.
-
-### GetGroupOk
-
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetGroupOk() (*string, bool)`
-
-GetGroupOk returns a tuple with the Group field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetGroup
-
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) SetGroup(v string)`
-
-SetGroup sets Group field to given value.
-
-### HasGroup
-
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) HasGroup() bool`
-
-HasGroup returns a boolean if a field has been set.
 
 ### GetFormatDialPlan
 

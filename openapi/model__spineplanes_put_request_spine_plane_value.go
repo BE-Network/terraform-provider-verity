@@ -19,10 +19,14 @@ var _ MappedNullable = &SpineplanesPutRequestSpinePlaneValue{}
 
 // SpineplanesPutRequestSpinePlaneValue struct for SpineplanesPutRequestSpinePlaneValue
 type SpineplanesPutRequestSpinePlaneValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// Fabric this Spine Plane is assigned to
+	Site *string `json:"site,omitempty"`
+	// Object type for site field
+	SiteRefType *string `json:"site_ref_type_,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -36,6 +40,8 @@ func NewSpineplanesPutRequestSpinePlaneValue() *SpineplanesPutRequestSpinePlaneV
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var site string = ""
+	this.Site = &site
 	return &this
 }
 
@@ -48,6 +54,8 @@ func NewSpineplanesPutRequestSpinePlaneValueWithDefaults() *SpineplanesPutReques
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var site string = ""
+	this.Site = &site
 	return &this
 }
 
@@ -115,6 +123,70 @@ func (o *SpineplanesPutRequestSpinePlaneValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
+// GetSite returns the Site field value if set, zero value otherwise.
+func (o *SpineplanesPutRequestSpinePlaneValue) GetSite() string {
+	if o == nil || IsNil(o.Site) {
+		var ret string
+		return ret
+	}
+	return *o.Site
+}
+
+// GetSiteOk returns a tuple with the Site field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteOk() (*string, bool) {
+	if o == nil || IsNil(o.Site) {
+		return nil, false
+	}
+	return o.Site, true
+}
+
+// HasSite returns a boolean if a field has been set.
+func (o *SpineplanesPutRequestSpinePlaneValue) HasSite() bool {
+	if o != nil && !IsNil(o.Site) {
+		return true
+	}
+
+	return false
+}
+
+// SetSite gets a reference to the given string and assigns it to the Site field.
+func (o *SpineplanesPutRequestSpinePlaneValue) SetSite(v string) {
+	o.Site = &v
+}
+
+// GetSiteRefType returns the SiteRefType field value if set, zero value otherwise.
+func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteRefType() string {
+	if o == nil || IsNil(o.SiteRefType) {
+		var ret string
+		return ret
+	}
+	return *o.SiteRefType
+}
+
+// GetSiteRefTypeOk returns a tuple with the SiteRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SiteRefType) {
+		return nil, false
+	}
+	return o.SiteRefType, true
+}
+
+// HasSiteRefType returns a boolean if a field has been set.
+func (o *SpineplanesPutRequestSpinePlaneValue) HasSiteRefType() bool {
+	if o != nil && !IsNil(o.SiteRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSiteRefType gets a reference to the given string and assigns it to the SiteRefType field.
+func (o *SpineplanesPutRequestSpinePlaneValue) SetSiteRefType(v string) {
+	o.SiteRefType = &v
+}
+
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *SpineplanesPutRequestSpinePlaneValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -162,6 +234,12 @@ func (o SpineplanesPutRequestSpinePlaneValue) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.Site) {
+		toSerialize["site"] = o.Site
+	}
+	if !IsNil(o.SiteRefType) {
+		toSerialize["site_ref_type_"] = o.SiteRefType
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

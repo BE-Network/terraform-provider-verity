@@ -4,10 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
+**PolicyBasedRouting** | Pointer to **string** | Policy Based Routing | [optional] [default to ""]
+**PolicyBasedRoutingRefType** | Pointer to **string** | Object type for policy_based_routing field | [optional] 
 **Vlan** | Pointer to **NullableInt32** | Layer 2 Virtual Network Identifier. A Value between 1 and 4096. &lt;br&gt; Some switches have reserved values within the range | [optional] 
-**Vni** | Pointer to **NullableInt32** | Identifies the service within the VXLAN fabric | [optional] 
+**Vni** | Pointer to **NullableInt32** | Identifies the service within the VXLAN fabric - Range is 1-16777215. If not using auto, must be outside of the reserved range settings | [optional] 
 **VniAutoAssigned** | Pointer to **bool** | Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit. | [optional] 
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
@@ -15,10 +17,8 @@ Name | Type | Description | Notes
 **AnycastIpv6Mask** | Pointer to **string** | Comma separated list of Static anycast gateway addresses(IPv6) for service  | [optional] [default to ""]
 **DhcpServerIpv4** | Pointer to **string** | IPv4 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
 **DhcpServerIpv6** | Pointer to **string** | IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
-**Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] [default to 1500]
+**Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] 
 **ObjectProperties** | Pointer to [**ServicesPutRequestServiceValueObjectProperties**](ServicesPutRequestServiceValueObjectProperties.md) |  | [optional] 
-**PolicyBasedRouting** | Pointer to **string** | Policy Based Routing | [optional] [default to ""]
-**PolicyBasedRoutingRefType** | Pointer to **string** | Object type for policy_based_routing field | [optional] 
 **MaxUpstreamRateMbps** | Pointer to **NullableInt32** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
 **MaxDownstreamRateMbps** | Pointer to **NullableInt32** | Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps) | [optional] 
 **PacketPriority** | Pointer to **string** | Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped | [optional] [default to "0"]
@@ -102,6 +102,56 @@ SetEnable sets Enable field to given value.
 `func (o *ServicesPutRequestServiceValue) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
+
+### GetPolicyBasedRouting
+
+`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRouting() string`
+
+GetPolicyBasedRouting returns the PolicyBasedRouting field if non-nil, zero value otherwise.
+
+### GetPolicyBasedRoutingOk
+
+`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingOk() (*string, bool)`
+
+GetPolicyBasedRoutingOk returns a tuple with the PolicyBasedRouting field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPolicyBasedRouting
+
+`func (o *ServicesPutRequestServiceValue) SetPolicyBasedRouting(v string)`
+
+SetPolicyBasedRouting sets PolicyBasedRouting field to given value.
+
+### HasPolicyBasedRouting
+
+`func (o *ServicesPutRequestServiceValue) HasPolicyBasedRouting() bool`
+
+HasPolicyBasedRouting returns a boolean if a field has been set.
+
+### GetPolicyBasedRoutingRefType
+
+`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefType() string`
+
+GetPolicyBasedRoutingRefType returns the PolicyBasedRoutingRefType field if non-nil, zero value otherwise.
+
+### GetPolicyBasedRoutingRefTypeOk
+
+`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefTypeOk() (*string, bool)`
+
+GetPolicyBasedRoutingRefTypeOk returns a tuple with the PolicyBasedRoutingRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPolicyBasedRoutingRefType
+
+`func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string)`
+
+SetPolicyBasedRoutingRefType sets PolicyBasedRoutingRefType field to given value.
+
+### HasPolicyBasedRoutingRefType
+
+`func (o *ServicesPutRequestServiceValue) HasPolicyBasedRoutingRefType() bool`
+
+HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
 
 ### GetVlan
 
@@ -407,56 +457,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *ServicesPutRequestServiceValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetPolicyBasedRouting
-
-`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRouting() string`
-
-GetPolicyBasedRouting returns the PolicyBasedRouting field if non-nil, zero value otherwise.
-
-### GetPolicyBasedRoutingOk
-
-`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingOk() (*string, bool)`
-
-GetPolicyBasedRoutingOk returns a tuple with the PolicyBasedRouting field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPolicyBasedRouting
-
-`func (o *ServicesPutRequestServiceValue) SetPolicyBasedRouting(v string)`
-
-SetPolicyBasedRouting sets PolicyBasedRouting field to given value.
-
-### HasPolicyBasedRouting
-
-`func (o *ServicesPutRequestServiceValue) HasPolicyBasedRouting() bool`
-
-HasPolicyBasedRouting returns a boolean if a field has been set.
-
-### GetPolicyBasedRoutingRefType
-
-`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefType() string`
-
-GetPolicyBasedRoutingRefType returns the PolicyBasedRoutingRefType field if non-nil, zero value otherwise.
-
-### GetPolicyBasedRoutingRefTypeOk
-
-`func (o *ServicesPutRequestServiceValue) GetPolicyBasedRoutingRefTypeOk() (*string, bool)`
-
-GetPolicyBasedRoutingRefTypeOk returns a tuple with the PolicyBasedRoutingRefType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPolicyBasedRoutingRefType
-
-`func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string)`
-
-SetPolicyBasedRoutingRefType sets PolicyBasedRoutingRefType field to given value.
-
-### HasPolicyBasedRoutingRefType
-
-`func (o *ServicesPutRequestServiceValue) HasPolicyBasedRoutingRefType() bool`
-
-HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
 
 ### GetMaxUpstreamRateMbps
 

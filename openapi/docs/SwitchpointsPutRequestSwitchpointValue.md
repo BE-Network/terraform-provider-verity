@@ -4,25 +4,36 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to true]
+**Tenant** | Pointer to **string** | The Tenant of this Device | [optional] [default to ""]
+**TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
 **DeviceSerialNumber** | Pointer to **string** | Device Serial Number | [optional] [default to ""]
 **ConnectedBundle** | Pointer to **string** | Connected Bundle | [optional] [default to ""]
 **ConnectedBundleRefType** | Pointer to **string** | Object type for connected_bundle field | [optional] 
+**IsTopOfIsland** | Pointer to **bool** | Mark this Switchpoint as Top of Island | [optional] [default to false]
 **ReadOnlyMode** | Pointer to **bool** | When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware | [optional] [default to false]
 **Locked** | Pointer to **bool** | Permission lock | [optional] [default to false]
+**ExpectedSite** | Pointer to **string** | Expected Fabric | [optional] [default to ""]
+**ExpectedSiteRefType** | Pointer to **string** | Object type for expected_site field | [optional] 
 **OutOfBandManagement** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch is managed out of band via the management port | [optional] [default to false]
 **Type** | Pointer to **string** | Type of Switchpoint | [optional] [default to "leaf"]
 **SpinePlane** | Pointer to **string** | Spine Plane - subgrouping of super spine and spine | [optional] [default to ""]
 **SpinePlaneRefType** | Pointer to **string** | Object type for spine_plane field | [optional] 
 **Pod** | Pointer to **string** | Pod - subgrouping of spine and leaf switches | [optional] [default to ""]
 **PodRefType** | Pointer to **string** | Object type for pod field | [optional] 
+**Su** | Pointer to **string** | SU | [optional] [default to ""]
+**SuRefType** | Pointer to **string** | Object type for su field | [optional] 
+**SspGroup** | Pointer to **string** | SuperSpine Group - grouping of superspines in 3-tier config | [optional] [default to ""]
+**SspGroupRefType** | Pointer to **string** | Object type for ssp_group field | [optional] 
 **Rack** | Pointer to **string** | Physical Rack location of the Switch  | [optional] [default to ""]
+**Position** | Pointer to **NullableFloat32** | Position of the Switch | [optional] 
+**RailGroup** | Pointer to **NullableFloat32** | Rail Group the Switch is part of | [optional] 
 **SwitchRouterIdIpMask** | Pointer to **string** | Switch BGP Router Identifier | [optional] [default to "(auto)"]
 **SwitchRouterIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit. | [optional] 
 **SwitchVtepIdIpMask** | Pointer to **string** | Switch VETP Identifier | [optional] [default to "(auto)"]
 **SwitchVtepIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit. | [optional] 
-**BgpAsNumber** | Pointer to **NullableInt32** | BGP Autonomous System Number for the site underlay  | [optional] 
+**BgpAsNumber** | Pointer to **NullableInt32** | BGP Autonomous System Number for the Fabric Underlay  | [optional] 
 **BgpAsNumberAutoAssigned** | Pointer to **bool** | Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit. | [optional] 
 **Badges** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueBadgesInner**](SwitchpointsPutRequestSwitchpointValueBadgesInner.md) |  | [optional] 
 **Children** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueChildrenInner**](SwitchpointsPutRequestSwitchpointValueChildrenInner.md) |  | [optional] 
@@ -30,6 +41,7 @@ Name | Type | Description | Notes
 **Eths** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueEthsInner**](SwitchpointsPutRequestSwitchpointValueEthsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SwitchpointsPutRequestSwitchpointValueObjectProperties**](SwitchpointsPutRequestSwitchpointValueObjectProperties.md) |  | [optional] 
 **IsFabric** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device | [optional] [default to false]
+**Pots** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValuePotsInner**](SwitchpointsPutRequestSwitchpointValuePotsInner.md) |  | [optional] 
 
 ## Methods
 
@@ -99,6 +111,56 @@ SetEnable sets Enable field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
+
+### GetTenant
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetTenant() string`
+
+GetTenant returns the Tenant field if non-nil, zero value otherwise.
+
+### GetTenantOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetTenantOk() (*string, bool)`
+
+GetTenantOk returns a tuple with the Tenant field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTenant
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetTenant(v string)`
+
+SetTenant sets Tenant field to given value.
+
+### HasTenant
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasTenant() bool`
+
+HasTenant returns a boolean if a field has been set.
+
+### GetTenantRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetTenantRefType() string`
+
+GetTenantRefType returns the TenantRefType field if non-nil, zero value otherwise.
+
+### GetTenantRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetTenantRefTypeOk() (*string, bool)`
+
+GetTenantRefTypeOk returns a tuple with the TenantRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTenantRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetTenantRefType(v string)`
+
+SetTenantRefType sets TenantRefType field to given value.
+
+### HasTenantRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasTenantRefType() bool`
+
+HasTenantRefType returns a boolean if a field has been set.
 
 ### GetDeviceSerialNumber
 
@@ -175,6 +237,31 @@ SetConnectedBundleRefType sets ConnectedBundleRefType field to given value.
 
 HasConnectedBundleRefType returns a boolean if a field has been set.
 
+### GetIsTopOfIsland
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetIsTopOfIsland() bool`
+
+GetIsTopOfIsland returns the IsTopOfIsland field if non-nil, zero value otherwise.
+
+### GetIsTopOfIslandOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetIsTopOfIslandOk() (*bool, bool)`
+
+GetIsTopOfIslandOk returns a tuple with the IsTopOfIsland field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsTopOfIsland
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetIsTopOfIsland(v bool)`
+
+SetIsTopOfIsland sets IsTopOfIsland field to given value.
+
+### HasIsTopOfIsland
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasIsTopOfIsland() bool`
+
+HasIsTopOfIsland returns a boolean if a field has been set.
+
 ### GetReadOnlyMode
 
 `func (o *SwitchpointsPutRequestSwitchpointValue) GetReadOnlyMode() bool`
@@ -224,6 +311,56 @@ SetLocked sets Locked field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasLocked() bool`
 
 HasLocked returns a boolean if a field has been set.
+
+### GetExpectedSite
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSite() string`
+
+GetExpectedSite returns the ExpectedSite field if non-nil, zero value otherwise.
+
+### GetExpectedSiteOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteOk() (*string, bool)`
+
+GetExpectedSiteOk returns a tuple with the ExpectedSite field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExpectedSite
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSite(v string)`
+
+SetExpectedSite sets ExpectedSite field to given value.
+
+### HasExpectedSite
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSite() bool`
+
+HasExpectedSite returns a boolean if a field has been set.
+
+### GetExpectedSiteRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefType() string`
+
+GetExpectedSiteRefType returns the ExpectedSiteRefType field if non-nil, zero value otherwise.
+
+### GetExpectedSiteRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefTypeOk() (*string, bool)`
+
+GetExpectedSiteRefTypeOk returns a tuple with the ExpectedSiteRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExpectedSiteRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSiteRefType(v string)`
+
+SetExpectedSiteRefType sets ExpectedSiteRefType field to given value.
+
+### HasExpectedSiteRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSiteRefType() bool`
+
+HasExpectedSiteRefType returns a boolean if a field has been set.
 
 ### GetOutOfBandManagement
 
@@ -375,6 +512,106 @@ SetPodRefType sets PodRefType field to given value.
 
 HasPodRefType returns a boolean if a field has been set.
 
+### GetSu
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSu() string`
+
+GetSu returns the Su field if non-nil, zero value otherwise.
+
+### GetSuOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSuOk() (*string, bool)`
+
+GetSuOk returns a tuple with the Su field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSu
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetSu(v string)`
+
+SetSu sets Su field to given value.
+
+### HasSu
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasSu() bool`
+
+HasSu returns a boolean if a field has been set.
+
+### GetSuRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSuRefType() string`
+
+GetSuRefType returns the SuRefType field if non-nil, zero value otherwise.
+
+### GetSuRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSuRefTypeOk() (*string, bool)`
+
+GetSuRefTypeOk returns a tuple with the SuRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSuRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetSuRefType(v string)`
+
+SetSuRefType sets SuRefType field to given value.
+
+### HasSuRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasSuRefType() bool`
+
+HasSuRefType returns a boolean if a field has been set.
+
+### GetSspGroup
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSspGroup() string`
+
+GetSspGroup returns the SspGroup field if non-nil, zero value otherwise.
+
+### GetSspGroupOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSspGroupOk() (*string, bool)`
+
+GetSspGroupOk returns a tuple with the SspGroup field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSspGroup
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetSspGroup(v string)`
+
+SetSspGroup sets SspGroup field to given value.
+
+### HasSspGroup
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasSspGroup() bool`
+
+HasSspGroup returns a boolean if a field has been set.
+
+### GetSspGroupRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSspGroupRefType() string`
+
+GetSspGroupRefType returns the SspGroupRefType field if non-nil, zero value otherwise.
+
+### GetSspGroupRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSspGroupRefTypeOk() (*string, bool)`
+
+GetSspGroupRefTypeOk returns a tuple with the SspGroupRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSspGroupRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetSspGroupRefType(v string)`
+
+SetSspGroupRefType sets SspGroupRefType field to given value.
+
+### HasSspGroupRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasSspGroupRefType() bool`
+
+HasSspGroupRefType returns a boolean if a field has been set.
+
 ### GetRack
 
 `func (o *SwitchpointsPutRequestSwitchpointValue) GetRack() string`
@@ -400,6 +637,76 @@ SetRack sets Rack field to given value.
 
 HasRack returns a boolean if a field has been set.
 
+### GetPosition
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPosition() float32`
+
+GetPosition returns the Position field if non-nil, zero value otherwise.
+
+### GetPositionOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPositionOk() (*float32, bool)`
+
+GetPositionOk returns a tuple with the Position field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPosition
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPosition(v float32)`
+
+SetPosition sets Position field to given value.
+
+### HasPosition
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasPosition() bool`
+
+HasPosition returns a boolean if a field has been set.
+
+### SetPositionNil
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPositionNil(b bool)`
+
+ SetPositionNil sets the value for Position to be an explicit nil
+
+### UnsetPosition
+`func (o *SwitchpointsPutRequestSwitchpointValue) UnsetPosition()`
+
+UnsetPosition ensures that no value is present for Position, not even an explicit nil
+### GetRailGroup
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroup() float32`
+
+GetRailGroup returns the RailGroup field if non-nil, zero value otherwise.
+
+### GetRailGroupOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroupOk() (*float32, bool)`
+
+GetRailGroupOk returns a tuple with the RailGroup field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRailGroup
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetRailGroup(v float32)`
+
+SetRailGroup sets RailGroup field to given value.
+
+### HasRailGroup
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasRailGroup() bool`
+
+HasRailGroup returns a boolean if a field has been set.
+
+### SetRailGroupNil
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetRailGroupNil(b bool)`
+
+ SetRailGroupNil sets the value for RailGroup to be an explicit nil
+
+### UnsetRailGroup
+`func (o *SwitchpointsPutRequestSwitchpointValue) UnsetRailGroup()`
+
+UnsetRailGroup ensures that no value is present for RailGroup, not even an explicit nil
 ### GetSwitchRouterIdIpMask
 
 `func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchRouterIdIpMask() string`
@@ -709,6 +1016,31 @@ SetIsFabric sets IsFabric field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasIsFabric() bool`
 
 HasIsFabric returns a boolean if a field has been set.
+
+### GetPots
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPots() []SwitchpointsPutRequestSwitchpointValuePotsInner`
+
+GetPots returns the Pots field if non-nil, zero value otherwise.
+
+### GetPotsOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPotsOk() (*[]SwitchpointsPutRequestSwitchpointValuePotsInner, bool)`
+
+GetPotsOk returns a tuple with the Pots field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPots
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPots(v []SwitchpointsPutRequestSwitchpointValuePotsInner)`
+
+SetPots sets Pots field to given value.
+
+### HasPots
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasPots() bool`
+
+HasPots returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

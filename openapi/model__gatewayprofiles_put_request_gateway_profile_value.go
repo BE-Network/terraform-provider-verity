@@ -19,12 +19,11 @@ var _ MappedNullable = &GatewayprofilesPutRequestGatewayProfileValue{}
 
 // GatewayprofilesPutRequestGatewayProfileValue struct for GatewayprofilesPutRequestGatewayProfileValue
 type GatewayprofilesPutRequestGatewayProfileValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	ExternalGateways []GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner `json:"external_gateways,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewGatewayprofilesPutRequestGatewayProfileValue instantiates a new GatewayprofilesPutRequestGatewayProfileValue object
@@ -148,38 +147,6 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) SetExternalGateways(v []G
 	o.ExternalGateways = v
 }
 
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
-		return ret
-	}
-	return *o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
-	o.ObjectProperties = &v
-}
-
 func (o GatewayprofilesPutRequestGatewayProfileValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -198,9 +165,6 @@ func (o GatewayprofilesPutRequestGatewayProfileValue) ToMap() (map[string]interf
 	}
 	if !IsNil(o.ExternalGateways) {
 		toSerialize["external_gateways"] = o.ExternalGateways
-	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	return toSerialize, nil
 }

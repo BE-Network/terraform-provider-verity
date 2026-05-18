@@ -8,10 +8,10 @@ Name | Type | Description | Notes
 **EthPortNumEthPortProfileRefType** | Pointer to **string** | Object type for eth_port_num_eth_port_profile field | [optional] 
 **EthPortNumEthPortSettings** | Pointer to **string** | Choose an Eth Port Settings | [optional] [default to ""]
 **EthPortNumEthPortSettingsRefType** | Pointer to **string** | Object type for eth_port_num_eth_port_settings field | [optional] 
-**EthPortNumGatewayProfile** | Pointer to **string** | Gateway Profile or LAG for Eth Port | [optional] [default to ""]
+**EthPortNumGatewayProfile** | Pointer to **string** | Gateway Profile for Eth Port | [optional] [default to ""]
 **EthPortNumGatewayProfileRefType** | Pointer to **string** | Object type for eth_port_num_gateway_profile field | [optional] 
-**DiagnosticsPortProfileNumDiagnosticsPortProfile** | Pointer to **string** | Diagnostics Port Profile for port | [optional] [default to ""]
-**DiagnosticsPortProfileNumDiagnosticsPortProfileRefType** | Pointer to **string** | Object type for diagnostics_port_profile_num_diagnostics_port_profile field | [optional] 
+**EthPortNumDiagnosticsPortProfile** | Pointer to **string** | Diagnostics Port Profile for port | [optional] [default to ""]
+**EthPortNumDiagnosticsPortProfileRefType** | Pointer to **string** | Object type for eth_port_num_diagnostics_port_profile field | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 **PortName** | Pointer to **string** | The name identifying the port. Used for reference only, it won&#39;t actually change the port name. | [optional] 
 
@@ -184,55 +184,55 @@ SetEthPortNumGatewayProfileRefType sets EthPortNumGatewayProfileRefType field to
 
 HasEthPortNumGatewayProfileRefType returns a boolean if a field has been set.
 
-### GetDiagnosticsPortProfileNumDiagnosticsPortProfile
+### GetEthPortNumDiagnosticsPortProfile
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetDiagnosticsPortProfileNumDiagnosticsPortProfile() string`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfile() string`
 
-GetDiagnosticsPortProfileNumDiagnosticsPortProfile returns the DiagnosticsPortProfileNumDiagnosticsPortProfile field if non-nil, zero value otherwise.
+GetEthPortNumDiagnosticsPortProfile returns the EthPortNumDiagnosticsPortProfile field if non-nil, zero value otherwise.
 
-### GetDiagnosticsPortProfileNumDiagnosticsPortProfileOk
+### GetEthPortNumDiagnosticsPortProfileOk
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetDiagnosticsPortProfileNumDiagnosticsPortProfileOk() (*string, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileOk() (*string, bool)`
 
-GetDiagnosticsPortProfileNumDiagnosticsPortProfileOk returns a tuple with the DiagnosticsPortProfileNumDiagnosticsPortProfile field if it's non-nil, zero value otherwise
+GetEthPortNumDiagnosticsPortProfileOk returns a tuple with the EthPortNumDiagnosticsPortProfile field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetDiagnosticsPortProfileNumDiagnosticsPortProfile
+### SetEthPortNumDiagnosticsPortProfile
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetDiagnosticsPortProfileNumDiagnosticsPortProfile(v string)`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumDiagnosticsPortProfile(v string)`
 
-SetDiagnosticsPortProfileNumDiagnosticsPortProfile sets DiagnosticsPortProfileNumDiagnosticsPortProfile field to given value.
+SetEthPortNumDiagnosticsPortProfile sets EthPortNumDiagnosticsPortProfile field to given value.
 
-### HasDiagnosticsPortProfileNumDiagnosticsPortProfile
+### HasEthPortNumDiagnosticsPortProfile
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasDiagnosticsPortProfileNumDiagnosticsPortProfile() bool`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumDiagnosticsPortProfile() bool`
 
-HasDiagnosticsPortProfileNumDiagnosticsPortProfile returns a boolean if a field has been set.
+HasEthPortNumDiagnosticsPortProfile returns a boolean if a field has been set.
 
-### GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType
+### GetEthPortNumDiagnosticsPortProfileRefType
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType() string`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileRefType() string`
 
-GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType returns the DiagnosticsPortProfileNumDiagnosticsPortProfileRefType field if non-nil, zero value otherwise.
+GetEthPortNumDiagnosticsPortProfileRefType returns the EthPortNumDiagnosticsPortProfileRefType field if non-nil, zero value otherwise.
 
-### GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefTypeOk
+### GetEthPortNumDiagnosticsPortProfileRefTypeOk
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefTypeOk() (*string, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileRefTypeOk() (*string, bool)`
 
-GetDiagnosticsPortProfileNumDiagnosticsPortProfileRefTypeOk returns a tuple with the DiagnosticsPortProfileNumDiagnosticsPortProfileRefType field if it's non-nil, zero value otherwise
+GetEthPortNumDiagnosticsPortProfileRefTypeOk returns a tuple with the EthPortNumDiagnosticsPortProfileRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType
+### SetEthPortNumDiagnosticsPortProfileRefType
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType(v string)`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumDiagnosticsPortProfileRefType(v string)`
 
-SetDiagnosticsPortProfileNumDiagnosticsPortProfileRefType sets DiagnosticsPortProfileNumDiagnosticsPortProfileRefType field to given value.
+SetEthPortNumDiagnosticsPortProfileRefType sets EthPortNumDiagnosticsPortProfileRefType field to given value.
 
-### HasDiagnosticsPortProfileNumDiagnosticsPortProfileRefType
+### HasEthPortNumDiagnosticsPortProfileRefType
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasDiagnosticsPortProfileNumDiagnosticsPortProfileRefType() bool`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumDiagnosticsPortProfileRefType() bool`
 
-HasDiagnosticsPortProfileNumDiagnosticsPortProfileRefType returns a boolean if a field has been set.
+HasEthPortNumDiagnosticsPortProfileRefType returns a boolean if a field has been set.
 
 ### GetIndex
 

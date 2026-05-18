@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **Protocol** | Pointer to **string** | Voice Protocol: MGCP or SIP | [optional] [default to "SIP"]
-**DeviceSettings** | Pointer to **string** | Device Settings for device | [optional] [default to "eth_device_profile|(Device Settings)|"]
+**DeviceSettings** | Pointer to **string** | Device Settings for device | [optional] [default to "(predefined):(Default)"]
 **DeviceSettingsRefType** | Pointer to **string** | Object type for device_settings field | [optional] 
 **CliCommands** | Pointer to **string** | CLI Commands | [optional] [default to ""]
 **DiagnosticsProfile** | Pointer to **string** | Diagnostics Profile for device | [optional] [default to ""]
@@ -15,9 +15,10 @@ Name | Type | Description | Notes
 **EthPortPaths** | Pointer to [**[]BundlesPutRequestEndpointBundleValueEthPortPathsInner**](BundlesPutRequestEndpointBundleValueEthPortPathsInner.md) |  | [optional] 
 **UserServices** | Pointer to [**[]BundlesPutRequestEndpointBundleValueUserServicesInner**](BundlesPutRequestEndpointBundleValueUserServicesInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**BundlesPutRequestEndpointBundleValueObjectProperties**](BundlesPutRequestEndpointBundleValueObjectProperties.md) |  | [optional] 
-**DeviceVoiceSettings** | Pointer to **string** | Device Voice Settings for device | [optional] [default to "voice_device_profile|(SIP Voice Device)|"]
+**DeviceVoiceSettings** | Pointer to **string** | Device Voice Settings for device | [optional] [default to "(predefined):(Default)"]
 **DeviceVoiceSettingsRefType** | Pointer to **string** | Object type for device_voice_settings field | [optional] 
 **VoicePortProfilePaths** | Pointer to [**[]BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner**](BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner.md) |  | [optional] 
+**RgServices** | Pointer to [**[]BundlesPutRequestEndpointBundleValueRgServicesInner**](BundlesPutRequestEndpointBundleValueRgServicesInner.md) |  | [optional] 
 
 ## Methods
 
@@ -387,6 +388,31 @@ SetVoicePortProfilePaths sets VoicePortProfilePaths field to given value.
 `func (o *BundlesPutRequestEndpointBundleValue) HasVoicePortProfilePaths() bool`
 
 HasVoicePortProfilePaths returns a boolean if a field has been set.
+
+### GetRgServices
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetRgServices() []BundlesPutRequestEndpointBundleValueRgServicesInner`
+
+GetRgServices returns the RgServices field if non-nil, zero value otherwise.
+
+### GetRgServicesOk
+
+`func (o *BundlesPutRequestEndpointBundleValue) GetRgServicesOk() (*[]BundlesPutRequestEndpointBundleValueRgServicesInner, bool)`
+
+GetRgServicesOk returns a tuple with the RgServices field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRgServices
+
+`func (o *BundlesPutRequestEndpointBundleValue) SetRgServices(v []BundlesPutRequestEndpointBundleValueRgServicesInner)`
+
+SetRgServices sets RgServices field to given value.
+
+### HasRgServices
+
+`func (o *BundlesPutRequestEndpointBundleValue) HasRgServices() bool`
+
+HasRgServices returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -96,6 +96,8 @@ type APIClient struct {
 
 	LAGsAPI *LAGsAPIService
 
+	MACFiltersAPI *MACFiltersAPIService
+
 	PBRoutingAPI *PBRoutingAPIService
 
 	PBRoutingACLAPI *PBRoutingACLAPIService
@@ -116,6 +118,8 @@ type APIClient struct {
 
 	SFlowCollectorsAPI *SFlowCollectorsAPIService
 
+	SUsAPI *SUsAPIService
+
 	ServicePortProfilesAPI *ServicePortProfilesAPIService
 
 	ServicesAPI *ServicesAPIService
@@ -123,6 +127,10 @@ type APIClient struct {
 	SitesAPI *SitesAPIService
 
 	SpinePlanesAPI *SpinePlanesAPIService
+
+	SuperSpineGroupsAPI *SuperSpineGroupsAPIService
+
+	SwitchPairsAPI *SwitchPairsAPIService
 
 	SwitchpointsAPI *SwitchpointsAPIService
 
@@ -177,6 +185,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.IPv6PrefixListsAPI = (*IPv6PrefixListsAPIService)(&c.common)
 	c.ImageUpdateSetsAPI = (*ImageUpdateSetsAPIService)(&c.common)
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)
+	c.MACFiltersAPI = (*MACFiltersAPIService)(&c.common)
 	c.PBRoutingAPI = (*PBRoutingAPIService)(&c.common)
 	c.PBRoutingACLAPI = (*PBRoutingACLAPIService)(&c.common)
 	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
@@ -187,10 +196,13 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.RouteMapsAPI = (*RouteMapsAPIService)(&c.common)
 	c.SFPBreakoutsAPI = (*SFPBreakoutsAPIService)(&c.common)
 	c.SFlowCollectorsAPI = (*SFlowCollectorsAPIService)(&c.common)
+	c.SUsAPI = (*SUsAPIService)(&c.common)
 	c.ServicePortProfilesAPI = (*ServicePortProfilesAPIService)(&c.common)
 	c.ServicesAPI = (*ServicesAPIService)(&c.common)
 	c.SitesAPI = (*SitesAPIService)(&c.common)
 	c.SpinePlanesAPI = (*SpinePlanesAPIService)(&c.common)
+	c.SuperSpineGroupsAPI = (*SuperSpineGroupsAPIService)(&c.common)
+	c.SwitchPairsAPI = (*SwitchPairsAPIService)(&c.common)
 	c.SwitchpointsAPI = (*SwitchpointsAPIService)(&c.common)
 	c.TenantsAPI = (*TenantsAPIService)(&c.common)
 	c.ThresholdGroupsAPI = (*ThresholdGroupsAPIService)(&c.common)

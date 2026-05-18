@@ -19,7 +19,7 @@ var _ MappedNullable = &EthportprofilesPutRequestEthPortProfileValue{}
 
 // EthportprofilesPutRequestEthPortProfileValue struct for EthportprofilesPutRequestEthPortProfileValue
 type EthportprofilesPutRequestEthPortProfileValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`

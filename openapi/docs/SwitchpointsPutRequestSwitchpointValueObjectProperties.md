@@ -4,12 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**UserNotes** | Pointer to **string** | Notes writen by User about the site | [optional] [default to ""]
+**UserNotes** | Pointer to **string** | Notes writen by User about the fabric | [optional] [default to ""]
 **ExpectedParentEndpoint** | Pointer to **string** | Expected Parent Endpoint | [optional] [default to ""]
 **ExpectedParentEndpointRefType** | Pointer to **string** | Object type for expected_parent_endpoint field | [optional] 
 **NumberOfMultipoints** | Pointer to **NullableInt32** | Number of Multipoints | [optional] [default to 0]
 **Aggregate** | Pointer to **bool** | For Switch Endpoints. Denotes switch aggregated with all of its sub switches | [optional] [default to false]
 **IsHost** | Pointer to **bool** | For Switch Endpoints. Denotes the Host Switch | [optional] [default to false]
+**EmulateRfVideoPort** | Pointer to **bool** | Emulate RF Video Port | [optional] [default to false]
 **DrawAsEdgeDevice** | Pointer to **bool** | Turn on to display the switch as an edge device instead of as a switch | [optional] [default to false]
 
 ## Methods
@@ -190,6 +191,31 @@ SetIsHost sets IsHost field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasIsHost() bool`
 
 HasIsHost returns a boolean if a field has been set.
+
+### GetEmulateRfVideoPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEmulateRfVideoPort() bool`
+
+GetEmulateRfVideoPort returns the EmulateRfVideoPort field if non-nil, zero value otherwise.
+
+### GetEmulateRfVideoPortOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEmulateRfVideoPortOk() (*bool, bool)`
+
+GetEmulateRfVideoPortOk returns a tuple with the EmulateRfVideoPort field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEmulateRfVideoPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetEmulateRfVideoPort(v bool)`
+
+SetEmulateRfVideoPort sets EmulateRfVideoPort field to given value.
+
+### HasEmulateRfVideoPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasEmulateRfVideoPort() bool`
+
+HasEmulateRfVideoPort returns a boolean if a field has been set.
 
 ### GetDrawAsEdgeDevice
 

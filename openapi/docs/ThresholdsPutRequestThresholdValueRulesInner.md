@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable | [optional] [default to false]
 **Type** | Pointer to **string** | Use a metric or a nested threshold | [optional] [default to "metric"]
 **Metric** | Pointer to **string** | Metric threshold is on | [optional] [default to ""]
-**Operation** | Pointer to **string** | How to compare the metric to the value | [optional] [default to "=="]
+**Operation** | Pointer to **string** | How to compare the metric to the value | [optional] [default to "eq"]
 **Value** | Pointer to **string** | Value to compare the metric to | [optional] [default to ""]
 **Threshold** | Pointer to **string** | How to compare the metric to the value | [optional] [default to ""]
 **ThresholdRefType** | Pointer to **string** | Object type for threshold field | [optional] 

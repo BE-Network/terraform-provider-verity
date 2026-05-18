@@ -19,7 +19,7 @@ var _ MappedNullable = &BundlesPutRequestEndpointBundleValue{}
 
 // BundlesPutRequestEndpointBundleValue struct for BundlesPutRequestEndpointBundleValue
 type BundlesPutRequestEndpointBundleValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
@@ -43,6 +43,7 @@ type BundlesPutRequestEndpointBundleValue struct {
 	// Object type for device_voice_settings field
 	DeviceVoiceSettingsRefType *string `json:"device_voice_settings_ref_type_,omitempty"`
 	VoicePortProfilePaths []BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner `json:"voice_port_profile_paths,omitempty"`
+	RgServices []BundlesPutRequestEndpointBundleValueRgServicesInner `json:"rg_services,omitempty"`
 }
 
 // NewBundlesPutRequestEndpointBundleValue instantiates a new BundlesPutRequestEndpointBundleValue object
@@ -57,13 +58,13 @@ func NewBundlesPutRequestEndpointBundleValue() *BundlesPutRequestEndpointBundleV
 	this.Enable = &enable
 	var protocol string = "SIP"
 	this.Protocol = &protocol
-	var deviceSettings string = "eth_device_profile|(Device Settings)|"
+	var deviceSettings string = "(predefined):(Default)"
 	this.DeviceSettings = &deviceSettings
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
 	var diagnosticsProfile string = ""
 	this.DiagnosticsProfile = &diagnosticsProfile
-	var deviceVoiceSettings string = "voice_device_profile|(SIP Voice Device)|"
+	var deviceVoiceSettings string = "(predefined):(Default)"
 	this.DeviceVoiceSettings = &deviceVoiceSettings
 	return &this
 }
@@ -79,13 +80,13 @@ func NewBundlesPutRequestEndpointBundleValueWithDefaults() *BundlesPutRequestEnd
 	this.Enable = &enable
 	var protocol string = "SIP"
 	this.Protocol = &protocol
-	var deviceSettings string = "eth_device_profile|(Device Settings)|"
+	var deviceSettings string = "(predefined):(Default)"
 	this.DeviceSettings = &deviceSettings
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
 	var diagnosticsProfile string = ""
 	this.DiagnosticsProfile = &diagnosticsProfile
-	var deviceVoiceSettings string = "voice_device_profile|(SIP Voice Device)|"
+	var deviceVoiceSettings string = "(predefined):(Default)"
 	this.DeviceVoiceSettings = &deviceVoiceSettings
 	return &this
 }
@@ -538,6 +539,38 @@ func (o *BundlesPutRequestEndpointBundleValue) SetVoicePortProfilePaths(v []Bund
 	o.VoicePortProfilePaths = v
 }
 
+// GetRgServices returns the RgServices field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValue) GetRgServices() []BundlesPutRequestEndpointBundleValueRgServicesInner {
+	if o == nil || IsNil(o.RgServices) {
+		var ret []BundlesPutRequestEndpointBundleValueRgServicesInner
+		return ret
+	}
+	return o.RgServices
+}
+
+// GetRgServicesOk returns a tuple with the RgServices field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValue) GetRgServicesOk() ([]BundlesPutRequestEndpointBundleValueRgServicesInner, bool) {
+	if o == nil || IsNil(o.RgServices) {
+		return nil, false
+	}
+	return o.RgServices, true
+}
+
+// HasRgServices returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValue) HasRgServices() bool {
+	if o != nil && !IsNil(o.RgServices) {
+		return true
+	}
+
+	return false
+}
+
+// SetRgServices gets a reference to the given []BundlesPutRequestEndpointBundleValueRgServicesInner and assigns it to the RgServices field.
+func (o *BundlesPutRequestEndpointBundleValue) SetRgServices(v []BundlesPutRequestEndpointBundleValueRgServicesInner) {
+	o.RgServices = v
+}
+
 func (o BundlesPutRequestEndpointBundleValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -589,6 +622,9 @@ func (o BundlesPutRequestEndpointBundleValue) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.VoicePortProfilePaths) {
 		toSerialize["voice_port_profile_paths"] = o.VoicePortProfilePaths
+	}
+	if !IsNil(o.RgServices) {
+		toSerialize["rg_services"] = o.RgServices
 	}
 	return toSerialize, nil
 }

@@ -5,9 +5,10 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Breakout** | Pointer to **string** | Breakout Port Override. Available options determined by Switch capability, Installed SFP and the capacity of the pipeline. | [optional] [default to ""]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**CustomerVlan** | Pointer to **string** | A Value between 1 and 4096 | [optional] [default to ""]
 **EthNumIcon** | Pointer to **string** | Icon of this Eth Port | [optional] [default to "empty"]
 **EthNumLabel** | Pointer to **string** | Label of this Eth Port | [optional] [default to ""]
+**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 **Enable** | Pointer to **bool** | Enable port.  | [optional] [default to true]
 **PortName** | Pointer to **string** | The name identifying the port. Used for reference only, it won&#39;t actually change the port name. | [optional] 
 
@@ -55,30 +56,30 @@ SetBreakout sets Breakout field to given value.
 
 HasBreakout returns a boolean if a field has been set.
 
-### GetIndex
+### GetCustomerVlan
 
-`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int32`
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetCustomerVlan() string`
 
-GetIndex returns the Index field if non-nil, zero value otherwise.
+GetCustomerVlan returns the CustomerVlan field if non-nil, zero value otherwise.
 
-### GetIndexOk
+### GetCustomerVlanOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndexOk() (*int32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetCustomerVlanOk() (*string, bool)`
 
-GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
+GetCustomerVlanOk returns a tuple with the CustomerVlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetIndex
+### SetCustomerVlan
 
-`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int32)`
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetCustomerVlan(v string)`
 
-SetIndex sets Index field to given value.
+SetCustomerVlan sets CustomerVlan field to given value.
 
-### HasIndex
+### HasCustomerVlan
 
-`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasIndex() bool`
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasCustomerVlan() bool`
 
-HasIndex returns a boolean if a field has been set.
+HasCustomerVlan returns a boolean if a field has been set.
 
 ### GetEthNumIcon
 
@@ -129,6 +130,31 @@ SetEthNumLabel sets EthNumLabel field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEthNumLabel() bool`
 
 HasEthNumLabel returns a boolean if a field has been set.
+
+### GetIndex
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int32`
+
+GetIndex returns the Index field if non-nil, zero value otherwise.
+
+### GetIndexOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndexOk() (*int32, bool)`
+
+GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIndex
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int32)`
+
+SetIndex sets Index field to given value.
+
+### HasIndex
+
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasIndex() bool`
+
+HasIndex returns a boolean if a field has been set.
 
 ### GetEnable
 

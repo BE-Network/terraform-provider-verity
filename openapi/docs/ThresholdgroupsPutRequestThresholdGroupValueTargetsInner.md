@@ -8,8 +8,9 @@ Name | Type | Description | Notes
 **Type** | Pointer to **string** | Specific element or Grouping Rules to apply thresholds to | [optional] [default to "grouping_rules"]
 **GroupingRules** | Pointer to **string** | Elements to apply thresholds to | [optional] [default to ""]
 **GroupingRulesRefType** | Pointer to **string** | Object type for grouping_rules field | [optional] 
-**Switchpoint** | Pointer to **string** | Switchpoint to apply thresholds to | [optional] [default to ""]
-**SwitchpointRefType** | Pointer to **string** | Object type for switchpoint field | [optional] 
+**Element** | Pointer to **string** | Element to apply thresholds to | [optional] [default to ""]
+**ElementRefType** | Pointer to **string** | Object type for element field | [optional] 
+**Sdlc** | Pointer to **string** | SDLC to apply thresholds to | [optional] [default to ""]
 **Port** | Pointer to **string** | Port to apply thresholds to | [optional] [default to ""]
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
@@ -132,55 +133,80 @@ SetGroupingRulesRefType sets GroupingRulesRefType field to given value.
 
 HasGroupingRulesRefType returns a boolean if a field has been set.
 
-### GetSwitchpoint
+### GetElement
 
-`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSwitchpoint() string`
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetElement() string`
 
-GetSwitchpoint returns the Switchpoint field if non-nil, zero value otherwise.
+GetElement returns the Element field if non-nil, zero value otherwise.
 
-### GetSwitchpointOk
+### GetElementOk
 
-`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSwitchpointOk() (*string, bool)`
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetElementOk() (*string, bool)`
 
-GetSwitchpointOk returns a tuple with the Switchpoint field if it's non-nil, zero value otherwise
+GetElementOk returns a tuple with the Element field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSwitchpoint
+### SetElement
 
-`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetSwitchpoint(v string)`
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetElement(v string)`
 
-SetSwitchpoint sets Switchpoint field to given value.
+SetElement sets Element field to given value.
 
-### HasSwitchpoint
+### HasElement
 
-`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasSwitchpoint() bool`
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasElement() bool`
 
-HasSwitchpoint returns a boolean if a field has been set.
+HasElement returns a boolean if a field has been set.
 
-### GetSwitchpointRefType
+### GetElementRefType
 
-`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSwitchpointRefType() string`
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetElementRefType() string`
 
-GetSwitchpointRefType returns the SwitchpointRefType field if non-nil, zero value otherwise.
+GetElementRefType returns the ElementRefType field if non-nil, zero value otherwise.
 
-### GetSwitchpointRefTypeOk
+### GetElementRefTypeOk
 
-`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSwitchpointRefTypeOk() (*string, bool)`
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetElementRefTypeOk() (*string, bool)`
 
-GetSwitchpointRefTypeOk returns a tuple with the SwitchpointRefType field if it's non-nil, zero value otherwise
+GetElementRefTypeOk returns a tuple with the ElementRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSwitchpointRefType
+### SetElementRefType
 
-`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetSwitchpointRefType(v string)`
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetElementRefType(v string)`
 
-SetSwitchpointRefType sets SwitchpointRefType field to given value.
+SetElementRefType sets ElementRefType field to given value.
 
-### HasSwitchpointRefType
+### HasElementRefType
 
-`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasSwitchpointRefType() bool`
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasElementRefType() bool`
 
-HasSwitchpointRefType returns a boolean if a field has been set.
+HasElementRefType returns a boolean if a field has been set.
+
+### GetSdlc
+
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSdlc() string`
+
+GetSdlc returns the Sdlc field if non-nil, zero value otherwise.
+
+### GetSdlcOk
+
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSdlcOk() (*string, bool)`
+
+GetSdlcOk returns a tuple with the Sdlc field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSdlc
+
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetSdlc(v string)`
+
+SetSdlc sets Sdlc field to given value.
+
+### HasSdlc
+
+`func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasSdlc() bool`
+
+HasSdlc returns a boolean if a field has been set.
 
 ### GetPort
 

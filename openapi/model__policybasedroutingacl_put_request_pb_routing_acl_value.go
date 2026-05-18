@@ -19,12 +19,12 @@ var _ MappedNullable = &PolicybasedroutingaclPutRequestPbRoutingAclValue{}
 
 // PolicybasedroutingaclPutRequestPbRoutingAclValue struct for PolicybasedroutingaclPutRequestPbRoutingAclValue
 type PolicybasedroutingaclPutRequestPbRoutingAclValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// IPv4 or IPv6
-	IpvProtocol *string `json:"ipv_protocol,omitempty"`
+	IpVersion *string `json:"ip_version,omitempty"`
 	// Next hop IP addresses
 	NextHopIps *string `json:"next_hop_ips,omitempty"`
 	Ipv4Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner `json:"ipv4_permit,omitempty"`
@@ -43,8 +43,8 @@ func NewPolicybasedroutingaclPutRequestPbRoutingAclValue() *Policybasedroutingac
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
-	var ipvProtocol string = "ipv4"
-	this.IpvProtocol = &ipvProtocol
+	var ipVersion string = "ipv4"
+	this.IpVersion = &ipVersion
 	var nextHopIps string = ""
 	this.NextHopIps = &nextHopIps
 	return &this
@@ -59,8 +59,8 @@ func NewPolicybasedroutingaclPutRequestPbRoutingAclValueWithDefaults() *Policyba
 	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
-	var ipvProtocol string = "ipv4"
-	this.IpvProtocol = &ipvProtocol
+	var ipVersion string = "ipv4"
+	this.IpVersion = &ipVersion
 	var nextHopIps string = ""
 	this.NextHopIps = &nextHopIps
 	return &this
@@ -130,36 +130,36 @@ func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetIpvProtocol returns the IpvProtocol field value if set, zero value otherwise.
-func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetIpvProtocol() string {
-	if o == nil || IsNil(o.IpvProtocol) {
+// GetIpVersion returns the IpVersion field value if set, zero value otherwise.
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetIpVersion() string {
+	if o == nil || IsNil(o.IpVersion) {
 		var ret string
 		return ret
 	}
-	return *o.IpvProtocol
+	return *o.IpVersion
 }
 
-// GetIpvProtocolOk returns a tuple with the IpvProtocol field value if set, nil otherwise
+// GetIpVersionOk returns a tuple with the IpVersion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetIpvProtocolOk() (*string, bool) {
-	if o == nil || IsNil(o.IpvProtocol) {
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetIpVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.IpVersion) {
 		return nil, false
 	}
-	return o.IpvProtocol, true
+	return o.IpVersion, true
 }
 
-// HasIpvProtocol returns a boolean if a field has been set.
-func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) HasIpvProtocol() bool {
-	if o != nil && !IsNil(o.IpvProtocol) {
+// HasIpVersion returns a boolean if a field has been set.
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) HasIpVersion() bool {
+	if o != nil && !IsNil(o.IpVersion) {
 		return true
 	}
 
 	return false
 }
 
-// SetIpvProtocol gets a reference to the given string and assigns it to the IpvProtocol field.
-func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) SetIpvProtocol(v string) {
-	o.IpvProtocol = &v
+// SetIpVersion gets a reference to the given string and assigns it to the IpVersion field.
+func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) SetIpVersion(v string) {
+	o.IpVersion = &v
 }
 
 // GetNextHopIps returns the NextHopIps field value if set, zero value otherwise.
@@ -338,8 +338,8 @@ func (o PolicybasedroutingaclPutRequestPbRoutingAclValue) ToMap() (map[string]in
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.IpvProtocol) {
-		toSerialize["ipv_protocol"] = o.IpvProtocol
+	if !IsNil(o.IpVersion) {
+		toSerialize["ip_version"] = o.IpVersion
 	}
 	if !IsNil(o.NextHopIps) {
 		toSerialize["next_hop_ips"] = o.NextHopIps

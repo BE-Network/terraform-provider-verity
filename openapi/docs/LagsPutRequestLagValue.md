@@ -4,8 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
+**Uplink** | Pointer to **bool** | Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN | [optional] [default to false]
 **IsPeerLink** | Pointer to **bool** | Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link | [optional] [default to false]
 **Color** | Pointer to **string** | Choose the color to display the connectors on the network view | [optional] [default to "anakiwa"]
 **Lacp** | Pointer to **bool** | LACP | [optional] [default to true]
@@ -14,8 +15,8 @@ Name | Type | Description | Notes
 **PeerLinkVlan** | Pointer to **NullableInt32** | For peer-peer LAGs. The VLAN used for control | [optional] 
 **Fallback** | Pointer to **bool** | Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer. | [optional] [default to false]
 **FastRate** | Pointer to **bool** | Send LACP packets every second (if disabled, packets are sent every 30 seconds) | [optional] [default to false]
-**ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
-**Uplink** | Pointer to **bool** | Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN | [optional] [default to false]
+**CrcFailureThreshold** | Pointer to **NullableInt32** | Threshold in Errors per second that when met will disable this LAG&#39;s links | [optional] 
+**ObjectProperties** | Pointer to [**LagsPutRequestLagValueObjectProperties**](LagsPutRequestLagValueObjectProperties.md) |  | [optional] 
 
 ## Methods
 
@@ -85,6 +86,31 @@ SetEnable sets Enable field to given value.
 `func (o *LagsPutRequestLagValue) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
+
+### GetUplink
+
+`func (o *LagsPutRequestLagValue) GetUplink() bool`
+
+GetUplink returns the Uplink field if non-nil, zero value otherwise.
+
+### GetUplinkOk
+
+`func (o *LagsPutRequestLagValue) GetUplinkOk() (*bool, bool)`
+
+GetUplinkOk returns a tuple with the Uplink field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUplink
+
+`func (o *LagsPutRequestLagValue) SetUplink(v bool)`
+
+SetUplink sets Uplink field to given value.
+
+### HasUplink
+
+`func (o *LagsPutRequestLagValue) HasUplink() bool`
+
+HasUplink returns a boolean if a field has been set.
 
 ### GetIsPeerLink
 
@@ -296,22 +322,57 @@ SetFastRate sets FastRate field to given value.
 
 HasFastRate returns a boolean if a field has been set.
 
+### GetCrcFailureThreshold
+
+`func (o *LagsPutRequestLagValue) GetCrcFailureThreshold() int32`
+
+GetCrcFailureThreshold returns the CrcFailureThreshold field if non-nil, zero value otherwise.
+
+### GetCrcFailureThresholdOk
+
+`func (o *LagsPutRequestLagValue) GetCrcFailureThresholdOk() (*int32, bool)`
+
+GetCrcFailureThresholdOk returns a tuple with the CrcFailureThreshold field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCrcFailureThreshold
+
+`func (o *LagsPutRequestLagValue) SetCrcFailureThreshold(v int32)`
+
+SetCrcFailureThreshold sets CrcFailureThreshold field to given value.
+
+### HasCrcFailureThreshold
+
+`func (o *LagsPutRequestLagValue) HasCrcFailureThreshold() bool`
+
+HasCrcFailureThreshold returns a boolean if a field has been set.
+
+### SetCrcFailureThresholdNil
+
+`func (o *LagsPutRequestLagValue) SetCrcFailureThresholdNil(b bool)`
+
+ SetCrcFailureThresholdNil sets the value for CrcFailureThreshold to be an explicit nil
+
+### UnsetCrcFailureThreshold
+`func (o *LagsPutRequestLagValue) UnsetCrcFailureThreshold()`
+
+UnsetCrcFailureThreshold ensures that no value is present for CrcFailureThreshold, not even an explicit nil
 ### GetObjectProperties
 
-`func (o *LagsPutRequestLagValue) GetObjectProperties() map[string]interface{}`
+`func (o *LagsPutRequestLagValue) GetObjectProperties() LagsPutRequestLagValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *LagsPutRequestLagValue) GetObjectPropertiesOk() (*map[string]interface{}, bool)`
+`func (o *LagsPutRequestLagValue) GetObjectPropertiesOk() (*LagsPutRequestLagValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *LagsPutRequestLagValue) SetObjectProperties(v map[string]interface{})`
+`func (o *LagsPutRequestLagValue) SetObjectProperties(v LagsPutRequestLagValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 
@@ -320,31 +381,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *LagsPutRequestLagValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetUplink
-
-`func (o *LagsPutRequestLagValue) GetUplink() bool`
-
-GetUplink returns the Uplink field if non-nil, zero value otherwise.
-
-### GetUplinkOk
-
-`func (o *LagsPutRequestLagValue) GetUplinkOk() (*bool, bool)`
-
-GetUplinkOk returns a tuple with the Uplink field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetUplink
-
-`func (o *LagsPutRequestLagValue) SetUplink(v bool)`
-
-SetUplink sets Uplink field to given value.
-
-### HasUplink
-
-`func (o *LagsPutRequestLagValue) HasUplink() bool`
-
-HasUplink returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

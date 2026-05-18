@@ -19,20 +19,30 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValue{}
 
 // SwitchpointsPutRequestSwitchpointValue struct for SwitchpointsPutRequestSwitchpointValue
 type SwitchpointsPutRequestSwitchpointValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
+	// The Tenant of this Device
+	Tenant *string `json:"tenant,omitempty"`
+	// Object type for tenant field
+	TenantRefType *string `json:"tenant_ref_type_,omitempty"`
 	// Device Serial Number
 	DeviceSerialNumber *string `json:"device_serial_number,omitempty"`
 	// Connected Bundle
 	ConnectedBundle *string `json:"connected_bundle,omitempty"`
 	// Object type for connected_bundle field
 	ConnectedBundleRefType *string `json:"connected_bundle_ref_type_,omitempty"`
+	// Mark this Switchpoint as Top of Island
+	IsTopOfIsland *bool `json:"is_top_of_island,omitempty"`
 	// When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware
 	ReadOnlyMode *bool `json:"read_only_mode,omitempty"`
 	// Permission lock
 	Locked *bool `json:"locked,omitempty"`
+	// Expected Fabric
+	ExpectedSite *string `json:"expected_site,omitempty"`
+	// Object type for expected_site field
+	ExpectedSiteRefType *string `json:"expected_site_ref_type_,omitempty"`
 	// For Switch Endpoints. Denotes a Switch is managed out of band via the management port
 	OutOfBandManagement *bool `json:"out_of_band_management,omitempty"`
 	// Type of Switchpoint
@@ -45,8 +55,20 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	Pod *string `json:"pod,omitempty"`
 	// Object type for pod field
 	PodRefType *string `json:"pod_ref_type_,omitempty"`
+	// SU
+	Su *string `json:"su,omitempty"`
+	// Object type for su field
+	SuRefType *string `json:"su_ref_type_,omitempty"`
+	// SuperSpine Group - grouping of superspines in 3-tier config
+	SspGroup *string `json:"ssp_group,omitempty"`
+	// Object type for ssp_group field
+	SspGroupRefType *string `json:"ssp_group_ref_type_,omitempty"`
 	// Physical Rack location of the Switch 
 	Rack *string `json:"rack,omitempty"`
+	// Position of the Switch
+	Position NullableFloat32 `json:"position,omitempty"`
+	// Rail Group the Switch is part of
+	RailGroup NullableFloat32 `json:"rail_group,omitempty"`
 	// Switch BGP Router Identifier
 	SwitchRouterIdIpMask *string `json:"switch_router_id_ip_mask,omitempty"`
 	// Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit.
@@ -55,7 +77,7 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	SwitchVtepIdIpMask *string `json:"switch_vtep_id_ip_mask,omitempty"`
 	// Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit.
 	SwitchVtepIdIpMaskAutoAssigned *bool `json:"switch_vtep_id_ip_mask_auto_assigned_,omitempty"`
-	// BGP Autonomous System Number for the site underlay 
+	// BGP Autonomous System Number for the Fabric Underlay 
 	BgpAsNumber NullableInt32 `json:"bgp_as_number,omitempty"`
 	// Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit.
 	BgpAsNumberAutoAssigned *bool `json:"bgp_as_number_auto_assigned_,omitempty"`
@@ -66,6 +88,7 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	ObjectProperties *SwitchpointsPutRequestSwitchpointValueObjectProperties `json:"object_properties,omitempty"`
 	// For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device
 	IsFabric *bool `json:"is_fabric,omitempty"`
+	Pots []SwitchpointsPutRequestSwitchpointValuePotsInner `json:"pots,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValue instantiates a new SwitchpointsPutRequestSwitchpointValue object
@@ -78,14 +101,20 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var tenant string = ""
+	this.Tenant = &tenant
 	var deviceSerialNumber string = ""
 	this.DeviceSerialNumber = &deviceSerialNumber
 	var connectedBundle string = ""
 	this.ConnectedBundle = &connectedBundle
+	var isTopOfIsland bool = false
+	this.IsTopOfIsland = &isTopOfIsland
 	var readOnlyMode bool = false
 	this.ReadOnlyMode = &readOnlyMode
 	var locked bool = false
 	this.Locked = &locked
+	var expectedSite string = ""
+	this.ExpectedSite = &expectedSite
 	var outOfBandManagement bool = false
 	this.OutOfBandManagement = &outOfBandManagement
 	var type_ string = "leaf"
@@ -94,6 +123,10 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.SpinePlane = &spinePlane
 	var pod string = ""
 	this.Pod = &pod
+	var su string = ""
+	this.Su = &su
+	var sspGroup string = ""
+	this.SspGroup = &sspGroup
 	var rack string = ""
 	this.Rack = &rack
 	var switchRouterIdIpMask string = "(auto)"
@@ -114,14 +147,20 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var tenant string = ""
+	this.Tenant = &tenant
 	var deviceSerialNumber string = ""
 	this.DeviceSerialNumber = &deviceSerialNumber
 	var connectedBundle string = ""
 	this.ConnectedBundle = &connectedBundle
+	var isTopOfIsland bool = false
+	this.IsTopOfIsland = &isTopOfIsland
 	var readOnlyMode bool = false
 	this.ReadOnlyMode = &readOnlyMode
 	var locked bool = false
 	this.Locked = &locked
+	var expectedSite string = ""
+	this.ExpectedSite = &expectedSite
 	var outOfBandManagement bool = false
 	this.OutOfBandManagement = &outOfBandManagement
 	var type_ string = "leaf"
@@ -130,6 +169,10 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.SpinePlane = &spinePlane
 	var pod string = ""
 	this.Pod = &pod
+	var su string = ""
+	this.Su = &su
+	var sspGroup string = ""
+	this.SspGroup = &sspGroup
 	var rack string = ""
 	this.Rack = &rack
 	var switchRouterIdIpMask string = "(auto)"
@@ -203,6 +246,70 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetTenant returns the Tenant field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetTenant() string {
+	if o == nil || IsNil(o.Tenant) {
+		var ret string
+		return ret
+	}
+	return *o.Tenant
+}
+
+// GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetTenantOk() (*string, bool) {
+	if o == nil || IsNil(o.Tenant) {
+		return nil, false
+	}
+	return o.Tenant, true
+}
+
+// HasTenant returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasTenant() bool {
+	if o != nil && !IsNil(o.Tenant) {
+		return true
+	}
+
+	return false
+}
+
+// SetTenant gets a reference to the given string and assigns it to the Tenant field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetTenant(v string) {
+	o.Tenant = &v
+}
+
+// GetTenantRefType returns the TenantRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetTenantRefType() string {
+	if o == nil || IsNil(o.TenantRefType) {
+		var ret string
+		return ret
+	}
+	return *o.TenantRefType
+}
+
+// GetTenantRefTypeOk returns a tuple with the TenantRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetTenantRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TenantRefType) {
+		return nil, false
+	}
+	return o.TenantRefType, true
+}
+
+// HasTenantRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasTenantRefType() bool {
+	if o != nil && !IsNil(o.TenantRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTenantRefType gets a reference to the given string and assigns it to the TenantRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetTenantRefType(v string) {
+	o.TenantRefType = &v
 }
 
 // GetDeviceSerialNumber returns the DeviceSerialNumber field value if set, zero value otherwise.
@@ -301,6 +408,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetConnectedBundleRefType(v str
 	o.ConnectedBundleRefType = &v
 }
 
+// GetIsTopOfIsland returns the IsTopOfIsland field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetIsTopOfIsland() bool {
+	if o == nil || IsNil(o.IsTopOfIsland) {
+		var ret bool
+		return ret
+	}
+	return *o.IsTopOfIsland
+}
+
+// GetIsTopOfIslandOk returns a tuple with the IsTopOfIsland field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetIsTopOfIslandOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsTopOfIsland) {
+		return nil, false
+	}
+	return o.IsTopOfIsland, true
+}
+
+// HasIsTopOfIsland returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasIsTopOfIsland() bool {
+	if o != nil && !IsNil(o.IsTopOfIsland) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsTopOfIsland gets a reference to the given bool and assigns it to the IsTopOfIsland field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetIsTopOfIsland(v bool) {
+	o.IsTopOfIsland = &v
+}
+
 // GetReadOnlyMode returns the ReadOnlyMode field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetReadOnlyMode() bool {
 	if o == nil || IsNil(o.ReadOnlyMode) {
@@ -363,6 +502,70 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasLocked() bool {
 // SetLocked gets a reference to the given bool and assigns it to the Locked field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetLocked(v bool) {
 	o.Locked = &v
+}
+
+// GetExpectedSite returns the ExpectedSite field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSite() string {
+	if o == nil || IsNil(o.ExpectedSite) {
+		var ret string
+		return ret
+	}
+	return *o.ExpectedSite
+}
+
+// GetExpectedSiteOk returns a tuple with the ExpectedSite field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteOk() (*string, bool) {
+	if o == nil || IsNil(o.ExpectedSite) {
+		return nil, false
+	}
+	return o.ExpectedSite, true
+}
+
+// HasExpectedSite returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSite() bool {
+	if o != nil && !IsNil(o.ExpectedSite) {
+		return true
+	}
+
+	return false
+}
+
+// SetExpectedSite gets a reference to the given string and assigns it to the ExpectedSite field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSite(v string) {
+	o.ExpectedSite = &v
+}
+
+// GetExpectedSiteRefType returns the ExpectedSiteRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefType() string {
+	if o == nil || IsNil(o.ExpectedSiteRefType) {
+		var ret string
+		return ret
+	}
+	return *o.ExpectedSiteRefType
+}
+
+// GetExpectedSiteRefTypeOk returns a tuple with the ExpectedSiteRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ExpectedSiteRefType) {
+		return nil, false
+	}
+	return o.ExpectedSiteRefType, true
+}
+
+// HasExpectedSiteRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSiteRefType() bool {
+	if o != nil && !IsNil(o.ExpectedSiteRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetExpectedSiteRefType gets a reference to the given string and assigns it to the ExpectedSiteRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSiteRefType(v string) {
+	o.ExpectedSiteRefType = &v
 }
 
 // GetOutOfBandManagement returns the OutOfBandManagement field value if set, zero value otherwise.
@@ -557,6 +760,134 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetPodRefType(v string) {
 	o.PodRefType = &v
 }
 
+// GetSu returns the Su field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSu() string {
+	if o == nil || IsNil(o.Su) {
+		var ret string
+		return ret
+	}
+	return *o.Su
+}
+
+// GetSuOk returns a tuple with the Su field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSuOk() (*string, bool) {
+	if o == nil || IsNil(o.Su) {
+		return nil, false
+	}
+	return o.Su, true
+}
+
+// HasSu returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSu() bool {
+	if o != nil && !IsNil(o.Su) {
+		return true
+	}
+
+	return false
+}
+
+// SetSu gets a reference to the given string and assigns it to the Su field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSu(v string) {
+	o.Su = &v
+}
+
+// GetSuRefType returns the SuRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSuRefType() string {
+	if o == nil || IsNil(o.SuRefType) {
+		var ret string
+		return ret
+	}
+	return *o.SuRefType
+}
+
+// GetSuRefTypeOk returns a tuple with the SuRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSuRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SuRefType) {
+		return nil, false
+	}
+	return o.SuRefType, true
+}
+
+// HasSuRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSuRefType() bool {
+	if o != nil && !IsNil(o.SuRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSuRefType gets a reference to the given string and assigns it to the SuRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSuRefType(v string) {
+	o.SuRefType = &v
+}
+
+// GetSspGroup returns the SspGroup field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSspGroup() string {
+	if o == nil || IsNil(o.SspGroup) {
+		var ret string
+		return ret
+	}
+	return *o.SspGroup
+}
+
+// GetSspGroupOk returns a tuple with the SspGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSspGroupOk() (*string, bool) {
+	if o == nil || IsNil(o.SspGroup) {
+		return nil, false
+	}
+	return o.SspGroup, true
+}
+
+// HasSspGroup returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSspGroup() bool {
+	if o != nil && !IsNil(o.SspGroup) {
+		return true
+	}
+
+	return false
+}
+
+// SetSspGroup gets a reference to the given string and assigns it to the SspGroup field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSspGroup(v string) {
+	o.SspGroup = &v
+}
+
+// GetSspGroupRefType returns the SspGroupRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSspGroupRefType() string {
+	if o == nil || IsNil(o.SspGroupRefType) {
+		var ret string
+		return ret
+	}
+	return *o.SspGroupRefType
+}
+
+// GetSspGroupRefTypeOk returns a tuple with the SspGroupRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSspGroupRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SspGroupRefType) {
+		return nil, false
+	}
+	return o.SspGroupRefType, true
+}
+
+// HasSspGroupRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSspGroupRefType() bool {
+	if o != nil && !IsNil(o.SspGroupRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSspGroupRefType gets a reference to the given string and assigns it to the SspGroupRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSspGroupRefType(v string) {
+	o.SspGroupRefType = &v
+}
+
 // GetRack returns the Rack field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetRack() string {
 	if o == nil || IsNil(o.Rack) {
@@ -587,6 +918,90 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasRack() bool {
 // SetRack gets a reference to the given string and assigns it to the Rack field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetRack(v string) {
 	o.Rack = &v
+}
+
+// GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPosition() float32 {
+	if o == nil || IsNil(o.Position.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.Position.Get()
+}
+
+// GetPositionOk returns a tuple with the Position field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPositionOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Position.Get(), o.Position.IsSet()
+}
+
+// HasPosition returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPosition() bool {
+	if o != nil && o.Position.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPosition gets a reference to the given NullableFloat32 and assigns it to the Position field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPosition(v float32) {
+	o.Position.Set(&v)
+}
+// SetPositionNil sets the value for Position to be an explicit nil
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPositionNil() {
+	o.Position.Set(nil)
+}
+
+// UnsetPosition ensures that no value is present for Position, not even an explicit nil
+func (o *SwitchpointsPutRequestSwitchpointValue) UnsetPosition() {
+	o.Position.Unset()
+}
+
+// GetRailGroup returns the RailGroup field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroup() float32 {
+	if o == nil || IsNil(o.RailGroup.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.RailGroup.Get()
+}
+
+// GetRailGroupOk returns a tuple with the RailGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroupOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RailGroup.Get(), o.RailGroup.IsSet()
+}
+
+// HasRailGroup returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasRailGroup() bool {
+	if o != nil && o.RailGroup.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRailGroup gets a reference to the given NullableFloat32 and assigns it to the RailGroup field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetRailGroup(v float32) {
+	o.RailGroup.Set(&v)
+}
+// SetRailGroupNil sets the value for RailGroup to be an explicit nil
+func (o *SwitchpointsPutRequestSwitchpointValue) SetRailGroupNil() {
+	o.RailGroup.Set(nil)
+}
+
+// UnsetRailGroup ensures that no value is present for RailGroup, not even an explicit nil
+func (o *SwitchpointsPutRequestSwitchpointValue) UnsetRailGroup() {
+	o.RailGroup.Unset()
 }
 
 // GetSwitchRouterIdIpMask returns the SwitchRouterIdIpMask field value if set, zero value otherwise.
@@ -983,6 +1398,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetIsFabric(v bool) {
 	o.IsFabric = &v
 }
 
+// GetPots returns the Pots field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPots() []SwitchpointsPutRequestSwitchpointValuePotsInner {
+	if o == nil || IsNil(o.Pots) {
+		var ret []SwitchpointsPutRequestSwitchpointValuePotsInner
+		return ret
+	}
+	return o.Pots
+}
+
+// GetPotsOk returns a tuple with the Pots field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPotsOk() ([]SwitchpointsPutRequestSwitchpointValuePotsInner, bool) {
+	if o == nil || IsNil(o.Pots) {
+		return nil, false
+	}
+	return o.Pots, true
+}
+
+// HasPots returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPots() bool {
+	if o != nil && !IsNil(o.Pots) {
+		return true
+	}
+
+	return false
+}
+
+// SetPots gets a reference to the given []SwitchpointsPutRequestSwitchpointValuePotsInner and assigns it to the Pots field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPots(v []SwitchpointsPutRequestSwitchpointValuePotsInner) {
+	o.Pots = v
+}
+
 func (o SwitchpointsPutRequestSwitchpointValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -999,6 +1446,12 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.Tenant) {
+		toSerialize["tenant"] = o.Tenant
+	}
+	if !IsNil(o.TenantRefType) {
+		toSerialize["tenant_ref_type_"] = o.TenantRefType
+	}
 	if !IsNil(o.DeviceSerialNumber) {
 		toSerialize["device_serial_number"] = o.DeviceSerialNumber
 	}
@@ -1008,11 +1461,20 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.ConnectedBundleRefType) {
 		toSerialize["connected_bundle_ref_type_"] = o.ConnectedBundleRefType
 	}
+	if !IsNil(o.IsTopOfIsland) {
+		toSerialize["is_top_of_island"] = o.IsTopOfIsland
+	}
 	if !IsNil(o.ReadOnlyMode) {
 		toSerialize["read_only_mode"] = o.ReadOnlyMode
 	}
 	if !IsNil(o.Locked) {
 		toSerialize["locked"] = o.Locked
+	}
+	if !IsNil(o.ExpectedSite) {
+		toSerialize["expected_site"] = o.ExpectedSite
+	}
+	if !IsNil(o.ExpectedSiteRefType) {
+		toSerialize["expected_site_ref_type_"] = o.ExpectedSiteRefType
 	}
 	if !IsNil(o.OutOfBandManagement) {
 		toSerialize["out_of_band_management"] = o.OutOfBandManagement
@@ -1032,8 +1494,26 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.PodRefType) {
 		toSerialize["pod_ref_type_"] = o.PodRefType
 	}
+	if !IsNil(o.Su) {
+		toSerialize["su"] = o.Su
+	}
+	if !IsNil(o.SuRefType) {
+		toSerialize["su_ref_type_"] = o.SuRefType
+	}
+	if !IsNil(o.SspGroup) {
+		toSerialize["ssp_group"] = o.SspGroup
+	}
+	if !IsNil(o.SspGroupRefType) {
+		toSerialize["ssp_group_ref_type_"] = o.SspGroupRefType
+	}
 	if !IsNil(o.Rack) {
 		toSerialize["rack"] = o.Rack
+	}
+	if o.Position.IsSet() {
+		toSerialize["position"] = o.Position.Get()
+	}
+	if o.RailGroup.IsSet() {
+		toSerialize["rail_group"] = o.RailGroup.Get()
 	}
 	if !IsNil(o.SwitchRouterIdIpMask) {
 		toSerialize["switch_router_id_ip_mask"] = o.SwitchRouterIdIpMask
@@ -1070,6 +1550,9 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.IsFabric) {
 		toSerialize["is_fabric"] = o.IsFabric
+	}
+	if !IsNil(o.Pots) {
+		toSerialize["pots"] = o.Pots
 	}
 	return toSerialize, nil
 }

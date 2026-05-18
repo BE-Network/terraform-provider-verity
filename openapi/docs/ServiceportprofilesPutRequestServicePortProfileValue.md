@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **PortType** | Pointer to **string** | Determines what Service are provisioned on the port and if those Services are propagated upstream&lt;ul&gt;&lt;li&gt;* \&quot;Upstream Switchport\&quot; Services specified below.  Services are not propagated.&lt;/li&gt;&lt;li&gt;* \&quot;Downstream Switchport\&quot; Services specified below. Services are propagated.&lt;/li&gt;&lt;li&gt;* \&quot;Crosslink Switchport\&quot; Services is union of all Services on each switch.  Services are not propagated.&lt;/li&gt;&lt;li&gt;* \&quot;Upstream L3 (L2/L3 Switches Only\&quot; No Services.&lt;/li&gt;&lt;/ul&gt; | [optional] [default to "up"]
 **TlsLimitIn** | Pointer to **NullableInt32** | Speed of ingress (Mbps) for TLS (Transparent LAN Service) | [optional] [default to 1000]

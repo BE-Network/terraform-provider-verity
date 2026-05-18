@@ -19,12 +19,14 @@ var _ MappedNullable = &DiagnosticsprofilesPutRequestDiagnosticsProfileValue{}
 
 // DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct for DiagnosticsprofilesPutRequestDiagnosticsProfileValue
 type DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Enable sFlow for this Diagnostics Profile 
 	EnableSflow *bool `json:"enable_sflow,omitempty"`
+	// Use Verity as the flow collector
+	Usesatori *bool `json:"usesatori,omitempty"`
 	// Flow Collector for this Diagnostics Profile 
 	FlowCollector *string `json:"flow_collector,omitempty"`
 	// Object type for flow_collector field
@@ -47,6 +49,8 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue() *Diagnosticsprofi
 	this.Enable = &enable
 	var enableSflow bool = false
 	this.EnableSflow = &enableSflow
+	var usesatori bool = false
+	this.Usesatori = &usesatori
 	var flowCollector string = ""
 	this.FlowCollector = &flowCollector
 	var pollInterval int32 = 20
@@ -67,6 +71,8 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValueWithDefaults() *Diag
 	this.Enable = &enable
 	var enableSflow bool = false
 	this.EnableSflow = &enableSflow
+	var usesatori bool = false
+	this.Usesatori = &usesatori
 	var flowCollector string = ""
 	this.FlowCollector = &flowCollector
 	var pollInterval int32 = 20
@@ -170,6 +176,38 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasEnableSflow() 
 // SetEnableSflow gets a reference to the given bool and assigns it to the EnableSflow field.
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetEnableSflow(v bool) {
 	o.EnableSflow = &v
+}
+
+// GetUsesatori returns the Usesatori field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUsesatori() bool {
+	if o == nil || IsNil(o.Usesatori) {
+		var ret bool
+		return ret
+	}
+	return *o.Usesatori
+}
+
+// GetUsesatoriOk returns a tuple with the Usesatori field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUsesatoriOk() (*bool, bool) {
+	if o == nil || IsNil(o.Usesatori) {
+		return nil, false
+	}
+	return o.Usesatori, true
+}
+
+// HasUsesatori returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasUsesatori() bool {
+	if o != nil && !IsNil(o.Usesatori) {
+		return true
+	}
+
+	return false
+}
+
+// SetUsesatori gets a reference to the given bool and assigns it to the Usesatori field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetUsesatori(v bool) {
+	o.Usesatori = &v
 }
 
 // GetFlowCollector returns the FlowCollector field value if set, zero value otherwise.
@@ -328,6 +366,9 @@ func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) ToMap() (map[strin
 	}
 	if !IsNil(o.EnableSflow) {
 		toSerialize["enable_sflow"] = o.EnableSflow
+	}
+	if !IsNil(o.Usesatori) {
+		toSerialize["usesatori"] = o.Usesatori
 	}
 	if !IsNil(o.FlowCollector) {
 		toSerialize["flow_collector"] = o.FlowCollector

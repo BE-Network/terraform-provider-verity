@@ -19,7 +19,7 @@ var _ MappedNullable = &DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
 
 // DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct for DevicevoicesettingsPutRequestDeviceVoiceSettingsValue
 type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
@@ -140,7 +140,7 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
 	// Intercom 3
 	Intercom3 *string `json:"intercom_3,omitempty"`
 	Codecs []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner `json:"codecs,omitempty"`
-	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
+	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 }
 
 // NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValue instantiates a new DevicevoicesettingsPutRequestDeviceVoiceSettingsValue object
@@ -2553,19 +2553,19 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCodecs(v []De
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectProperties() map[string]interface{} {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.ObjectProperties
+	return o.ObjectProperties
 }
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.ObjectProperties, true
 }
@@ -2579,9 +2579,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasObjectPropert
 	return false
 }
 
-// SetObjectProperties gets a reference to the given DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties) {
-	o.ObjectProperties = &v
+// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectProperties(v map[string]interface{}) {
+	o.ObjectProperties = v
 }
 
 func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) MarshalJSON() ([]byte, error) {

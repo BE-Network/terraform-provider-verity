@@ -4,8 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
+**Site** | Pointer to **string** | Fabric this Spine Plane is assigned to | [optional] [default to ""]
+**SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -76,6 +78,56 @@ SetEnable sets Enable field to given value.
 `func (o *SpineplanesPutRequestSpinePlaneValue) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
+
+### GetSite
+
+`func (o *SpineplanesPutRequestSpinePlaneValue) GetSite() string`
+
+GetSite returns the Site field if non-nil, zero value otherwise.
+
+### GetSiteOk
+
+`func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteOk() (*string, bool)`
+
+GetSiteOk returns a tuple with the Site field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSite
+
+`func (o *SpineplanesPutRequestSpinePlaneValue) SetSite(v string)`
+
+SetSite sets Site field to given value.
+
+### HasSite
+
+`func (o *SpineplanesPutRequestSpinePlaneValue) HasSite() bool`
+
+HasSite returns a boolean if a field has been set.
+
+### GetSiteRefType
+
+`func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteRefType() string`
+
+GetSiteRefType returns the SiteRefType field if non-nil, zero value otherwise.
+
+### GetSiteRefTypeOk
+
+`func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteRefTypeOk() (*string, bool)`
+
+GetSiteRefTypeOk returns a tuple with the SiteRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSiteRefType
+
+`func (o *SpineplanesPutRequestSpinePlaneValue) SetSiteRefType(v string)`
+
+SetSiteRefType sets SiteRefType field to given value.
+
+### HasSiteRefType
+
+`func (o *SpineplanesPutRequestSpinePlaneValue) HasSiteRefType() bool`
+
+HasSiteRefType returns a boolean if a field has been set.
 
 ### GetObjectProperties
 

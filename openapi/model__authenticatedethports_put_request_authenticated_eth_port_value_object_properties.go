@@ -19,8 +19,6 @@ var _ MappedNullable = &AuthenticatedethportsPutRequestAuthenticatedEthPortValue
 
 // AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties struct for AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties
 type AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties struct {
-	// Group
-	Group *string `json:"group,omitempty"`
 	// Defines importance of Link Down on this port
 	PortMonitoring *string `json:"port_monitoring,omitempty"`
 }
@@ -31,8 +29,6 @@ type AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties st
 // will change when the set of required properties is changed
 func NewAuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties() *AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties {
 	this := AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
-	var group string = ""
-	this.Group = &group
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
 	return &this
@@ -43,43 +39,9 @@ func NewAuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties
 // but it doesn't guarantee that properties required by API are set
 func NewAuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectPropertiesWithDefaults() *AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties {
 	this := AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
-	var group string = ""
-	this.Group = &group
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
 	return &this
-}
-
-// GetGroup returns the Group field value if set, zero value otherwise.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties) GetGroup() string {
-	if o == nil || IsNil(o.Group) {
-		var ret string
-		return ret
-	}
-	return *o.Group
-}
-
-// GetGroupOk returns a tuple with the Group field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties) GetGroupOk() (*string, bool) {
-	if o == nil || IsNil(o.Group) {
-		return nil, false
-	}
-	return o.Group, true
-}
-
-// HasGroup returns a boolean if a field has been set.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties) HasGroup() bool {
-	if o != nil && !IsNil(o.Group) {
-		return true
-	}
-
-	return false
-}
-
-// SetGroup gets a reference to the given string and assigns it to the Group field.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties) SetGroup(v string) {
-	o.Group = &v
 }
 
 // GetPortMonitoring returns the PortMonitoring field value if set, zero value otherwise.
@@ -124,9 +86,6 @@ func (o AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties
 
 func (o AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Group) {
-		toSerialize["group"] = o.Group
-	}
 	if !IsNil(o.PortMonitoring) {
 		toSerialize["port_monitoring"] = o.PortMonitoring
 	}

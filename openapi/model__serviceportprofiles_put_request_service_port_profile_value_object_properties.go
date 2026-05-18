@@ -23,8 +23,6 @@ type ServiceportprofilesPutRequestServicePortProfileValueObjectProperties struct
 	OnSummary *bool `json:"on_summary,omitempty"`
 	// Defines importance of Link Down on this port
 	PortMonitoring *string `json:"port_monitoring,omitempty"`
-	// Group
-	Group *string `json:"group,omitempty"`
 }
 
 // NewServiceportprofilesPutRequestServicePortProfileValueObjectProperties instantiates a new ServiceportprofilesPutRequestServicePortProfileValueObjectProperties object
@@ -37,8 +35,6 @@ func NewServiceportprofilesPutRequestServicePortProfileValueObjectProperties() *
 	this.OnSummary = &onSummary
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
-	var group string = ""
-	this.Group = &group
 	return &this
 }
 
@@ -51,8 +47,6 @@ func NewServiceportprofilesPutRequestServicePortProfileValueObjectPropertiesWith
 	this.OnSummary = &onSummary
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
-	var group string = ""
-	this.Group = &group
 	return &this
 }
 
@@ -120,38 +114,6 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) S
 	o.PortMonitoring = &v
 }
 
-// GetGroup returns the Group field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) GetGroup() string {
-	if o == nil || IsNil(o.Group) {
-		var ret string
-		return ret
-	}
-	return *o.Group
-}
-
-// GetGroupOk returns a tuple with the Group field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) GetGroupOk() (*string, bool) {
-	if o == nil || IsNil(o.Group) {
-		return nil, false
-	}
-	return o.Group, true
-}
-
-// HasGroup returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) HasGroup() bool {
-	if o != nil && !IsNil(o.Group) {
-		return true
-	}
-
-	return false
-}
-
-// SetGroup gets a reference to the given string and assigns it to the Group field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) SetGroup(v string) {
-	o.Group = &v
-}
-
 func (o ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -167,9 +129,6 @@ func (o ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) To
 	}
 	if !IsNil(o.PortMonitoring) {
 		toSerialize["port_monitoring"] = o.PortMonitoring
-	}
-	if !IsNil(o.Group) {
-		toSerialize["group"] = o.Group
 	}
 	return toSerialize, nil
 }

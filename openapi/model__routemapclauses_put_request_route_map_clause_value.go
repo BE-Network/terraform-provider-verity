@@ -19,7 +19,7 @@ var _ MappedNullable = &RoutemapclausesPutRequestRouteMapClauseValue{}
 
 // RoutemapclausesPutRequestRouteMapClauseValue struct for RoutemapclausesPutRequestRouteMapClauseValue
 type RoutemapclausesPutRequestRouteMapClauseValue struct {
-	// Object Name. Must be unique.
+	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Enable flag of this provisioning object
 	Enable *bool `json:"enable,omitempty"`
@@ -49,6 +49,14 @@ type RoutemapclausesPutRequestRouteMapClauseValue struct {
 	MatchIpv4NextHopIpPrefixList *string `json:"match_ipv4_next_hop_ip_prefix_list,omitempty"`
 	// Object type for match_ipv4_next_hop_ip_prefix_list field
 	MatchIpv4NextHopIpPrefixListRefType *string `json:"match_ipv4_next_hop_ip_prefix_list_ref_type_,omitempty"`
+	// Match IPv4 Address IPv6 Prefix List
+	MatchIpv6AddressIpv6PrefixList *string `json:"match_ipv6_address_ipv6_prefix_list,omitempty"`
+	// Object type for match_ipv6_address_ipv6_prefix_list field
+	MatchIpv6AddressIpv6PrefixListRefType *string `json:"match_ipv6_address_ipv6_prefix_list_ref_type_,omitempty"`
+	// Match IPv6 Next Hop IPv6 Prefix List
+	MatchIpv6NextHopIpv6PrefixList *string `json:"match_ipv6_next_hop_ipv6_prefix_list,omitempty"`
+	// Object type for match_ipv6_next_hop_ipv6_prefix_list field
+	MatchIpv6NextHopIpv6PrefixListRefType *string `json:"match_ipv6_next_hop_ipv6_prefix_list_ref_type_,omitempty"`
 	// Match BGP Local Preference value on the route 
 	MatchLocalPreference NullableInt32 `json:"match_local_preference,omitempty"`
 	// Match Metric of the IP route entry 
@@ -76,14 +84,6 @@ type RoutemapclausesPutRequestRouteMapClauseValue struct {
 	// Match based on the VNI value 
 	MatchVni NullableInt32 `json:"match_vni,omitempty"`
 	ObjectProperties *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties `json:"object_properties,omitempty"`
-	// Match IPv4 Address IPv6 Prefix List
-	MatchIpv6AddressIpv6PrefixList *string `json:"match_ipv6_address_ipv6_prefix_list,omitempty"`
-	// Object type for match_ipv6_address_ipv6_prefix_list field
-	MatchIpv6AddressIpv6PrefixListRefType *string `json:"match_ipv6_address_ipv6_prefix_list_ref_type_,omitempty"`
-	// Match IPv6 Next Hop IPv6 Prefix List
-	MatchIpv6NextHopIpv6PrefixList *string `json:"match_ipv6_next_hop_ipv6_prefix_list,omitempty"`
-	// Object type for match_ipv6_next_hop_ipv6_prefix_list field
-	MatchIpv6NextHopIpv6PrefixListRefType *string `json:"match_ipv6_next_hop_ipv6_prefix_list_ref_type_,omitempty"`
 }
 
 // NewRoutemapclausesPutRequestRouteMapClauseValue instantiates a new RoutemapclausesPutRequestRouteMapClauseValue object
@@ -108,6 +108,10 @@ func NewRoutemapclausesPutRequestRouteMapClauseValue() *RoutemapclausesPutReques
 	this.MatchIpv4AddressIpPrefixList = &matchIpv4AddressIpPrefixList
 	var matchIpv4NextHopIpPrefixList string = ""
 	this.MatchIpv4NextHopIpPrefixList = &matchIpv4NextHopIpPrefixList
+	var matchIpv6AddressIpv6PrefixList string = ""
+	this.MatchIpv6AddressIpv6PrefixList = &matchIpv6AddressIpv6PrefixList
+	var matchIpv6NextHopIpv6PrefixList string = ""
+	this.MatchIpv6NextHopIpv6PrefixList = &matchIpv6NextHopIpv6PrefixList
 	var matchOrigin string = ""
 	this.MatchOrigin = &matchOrigin
 	var matchPeerIpAddress string = ""
@@ -118,10 +122,6 @@ func NewRoutemapclausesPutRequestRouteMapClauseValue() *RoutemapclausesPutReques
 	this.MatchVrf = &matchVrf
 	var matchEvpnRouteType string = ""
 	this.MatchEvpnRouteType = &matchEvpnRouteType
-	var matchIpv6AddressIpv6PrefixList string = ""
-	this.MatchIpv6AddressIpv6PrefixList = &matchIpv6AddressIpv6PrefixList
-	var matchIpv6NextHopIpv6PrefixList string = ""
-	this.MatchIpv6NextHopIpv6PrefixList = &matchIpv6NextHopIpv6PrefixList
 	return &this
 }
 
@@ -146,6 +146,10 @@ func NewRoutemapclausesPutRequestRouteMapClauseValueWithDefaults() *Routemapclau
 	this.MatchIpv4AddressIpPrefixList = &matchIpv4AddressIpPrefixList
 	var matchIpv4NextHopIpPrefixList string = ""
 	this.MatchIpv4NextHopIpPrefixList = &matchIpv4NextHopIpPrefixList
+	var matchIpv6AddressIpv6PrefixList string = ""
+	this.MatchIpv6AddressIpv6PrefixList = &matchIpv6AddressIpv6PrefixList
+	var matchIpv6NextHopIpv6PrefixList string = ""
+	this.MatchIpv6NextHopIpv6PrefixList = &matchIpv6NextHopIpv6PrefixList
 	var matchOrigin string = ""
 	this.MatchOrigin = &matchOrigin
 	var matchPeerIpAddress string = ""
@@ -156,10 +160,6 @@ func NewRoutemapclausesPutRequestRouteMapClauseValueWithDefaults() *Routemapclau
 	this.MatchVrf = &matchVrf
 	var matchEvpnRouteType string = ""
 	this.MatchEvpnRouteType = &matchEvpnRouteType
-	var matchIpv6AddressIpv6PrefixList string = ""
-	this.MatchIpv6AddressIpv6PrefixList = &matchIpv6AddressIpv6PrefixList
-	var matchIpv6NextHopIpv6PrefixList string = ""
-	this.MatchIpv6NextHopIpv6PrefixList = &matchIpv6NextHopIpv6PrefixList
 	return &this
 }
 
@@ -661,6 +661,134 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv4NextHopIpPref
 // SetMatchIpv4NextHopIpPrefixListRefType gets a reference to the given string and assigns it to the MatchIpv4NextHopIpPrefixListRefType field.
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv4NextHopIpPrefixListRefType(v string) {
 	o.MatchIpv4NextHopIpPrefixListRefType = &v
+}
+
+// GetMatchIpv6AddressIpv6PrefixList returns the MatchIpv6AddressIpv6PrefixList field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6AddressIpv6PrefixList() string {
+	if o == nil || IsNil(o.MatchIpv6AddressIpv6PrefixList) {
+		var ret string
+		return ret
+	}
+	return *o.MatchIpv6AddressIpv6PrefixList
+}
+
+// GetMatchIpv6AddressIpv6PrefixListOk returns a tuple with the MatchIpv6AddressIpv6PrefixList field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6AddressIpv6PrefixListOk() (*string, bool) {
+	if o == nil || IsNil(o.MatchIpv6AddressIpv6PrefixList) {
+		return nil, false
+	}
+	return o.MatchIpv6AddressIpv6PrefixList, true
+}
+
+// HasMatchIpv6AddressIpv6PrefixList returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv6AddressIpv6PrefixList() bool {
+	if o != nil && !IsNil(o.MatchIpv6AddressIpv6PrefixList) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchIpv6AddressIpv6PrefixList gets a reference to the given string and assigns it to the MatchIpv6AddressIpv6PrefixList field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv6AddressIpv6PrefixList(v string) {
+	o.MatchIpv6AddressIpv6PrefixList = &v
+}
+
+// GetMatchIpv6AddressIpv6PrefixListRefType returns the MatchIpv6AddressIpv6PrefixListRefType field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6AddressIpv6PrefixListRefType() string {
+	if o == nil || IsNil(o.MatchIpv6AddressIpv6PrefixListRefType) {
+		var ret string
+		return ret
+	}
+	return *o.MatchIpv6AddressIpv6PrefixListRefType
+}
+
+// GetMatchIpv6AddressIpv6PrefixListRefTypeOk returns a tuple with the MatchIpv6AddressIpv6PrefixListRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6AddressIpv6PrefixListRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MatchIpv6AddressIpv6PrefixListRefType) {
+		return nil, false
+	}
+	return o.MatchIpv6AddressIpv6PrefixListRefType, true
+}
+
+// HasMatchIpv6AddressIpv6PrefixListRefType returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv6AddressIpv6PrefixListRefType() bool {
+	if o != nil && !IsNil(o.MatchIpv6AddressIpv6PrefixListRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchIpv6AddressIpv6PrefixListRefType gets a reference to the given string and assigns it to the MatchIpv6AddressIpv6PrefixListRefType field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv6AddressIpv6PrefixListRefType(v string) {
+	o.MatchIpv6AddressIpv6PrefixListRefType = &v
+}
+
+// GetMatchIpv6NextHopIpv6PrefixList returns the MatchIpv6NextHopIpv6PrefixList field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6NextHopIpv6PrefixList() string {
+	if o == nil || IsNil(o.MatchIpv6NextHopIpv6PrefixList) {
+		var ret string
+		return ret
+	}
+	return *o.MatchIpv6NextHopIpv6PrefixList
+}
+
+// GetMatchIpv6NextHopIpv6PrefixListOk returns a tuple with the MatchIpv6NextHopIpv6PrefixList field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6NextHopIpv6PrefixListOk() (*string, bool) {
+	if o == nil || IsNil(o.MatchIpv6NextHopIpv6PrefixList) {
+		return nil, false
+	}
+	return o.MatchIpv6NextHopIpv6PrefixList, true
+}
+
+// HasMatchIpv6NextHopIpv6PrefixList returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv6NextHopIpv6PrefixList() bool {
+	if o != nil && !IsNil(o.MatchIpv6NextHopIpv6PrefixList) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchIpv6NextHopIpv6PrefixList gets a reference to the given string and assigns it to the MatchIpv6NextHopIpv6PrefixList field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv6NextHopIpv6PrefixList(v string) {
+	o.MatchIpv6NextHopIpv6PrefixList = &v
+}
+
+// GetMatchIpv6NextHopIpv6PrefixListRefType returns the MatchIpv6NextHopIpv6PrefixListRefType field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6NextHopIpv6PrefixListRefType() string {
+	if o == nil || IsNil(o.MatchIpv6NextHopIpv6PrefixListRefType) {
+		var ret string
+		return ret
+	}
+	return *o.MatchIpv6NextHopIpv6PrefixListRefType
+}
+
+// GetMatchIpv6NextHopIpv6PrefixListRefTypeOk returns a tuple with the MatchIpv6NextHopIpv6PrefixListRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6NextHopIpv6PrefixListRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MatchIpv6NextHopIpv6PrefixListRefType) {
+		return nil, false
+	}
+	return o.MatchIpv6NextHopIpv6PrefixListRefType, true
+}
+
+// HasMatchIpv6NextHopIpv6PrefixListRefType returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv6NextHopIpv6PrefixListRefType() bool {
+	if o != nil && !IsNil(o.MatchIpv6NextHopIpv6PrefixListRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchIpv6NextHopIpv6PrefixListRefType gets a reference to the given string and assigns it to the MatchIpv6NextHopIpv6PrefixListRefType field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv6NextHopIpv6PrefixListRefType(v string) {
+	o.MatchIpv6NextHopIpv6PrefixListRefType = &v
 }
 
 // GetMatchLocalPreference returns the MatchLocalPreference field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1171,134 +1299,6 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetObjectProperties(v Rou
 	o.ObjectProperties = &v
 }
 
-// GetMatchIpv6AddressIpv6PrefixList returns the MatchIpv6AddressIpv6PrefixList field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6AddressIpv6PrefixList() string {
-	if o == nil || IsNil(o.MatchIpv6AddressIpv6PrefixList) {
-		var ret string
-		return ret
-	}
-	return *o.MatchIpv6AddressIpv6PrefixList
-}
-
-// GetMatchIpv6AddressIpv6PrefixListOk returns a tuple with the MatchIpv6AddressIpv6PrefixList field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6AddressIpv6PrefixListOk() (*string, bool) {
-	if o == nil || IsNil(o.MatchIpv6AddressIpv6PrefixList) {
-		return nil, false
-	}
-	return o.MatchIpv6AddressIpv6PrefixList, true
-}
-
-// HasMatchIpv6AddressIpv6PrefixList returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv6AddressIpv6PrefixList() bool {
-	if o != nil && !IsNil(o.MatchIpv6AddressIpv6PrefixList) {
-		return true
-	}
-
-	return false
-}
-
-// SetMatchIpv6AddressIpv6PrefixList gets a reference to the given string and assigns it to the MatchIpv6AddressIpv6PrefixList field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv6AddressIpv6PrefixList(v string) {
-	o.MatchIpv6AddressIpv6PrefixList = &v
-}
-
-// GetMatchIpv6AddressIpv6PrefixListRefType returns the MatchIpv6AddressIpv6PrefixListRefType field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6AddressIpv6PrefixListRefType() string {
-	if o == nil || IsNil(o.MatchIpv6AddressIpv6PrefixListRefType) {
-		var ret string
-		return ret
-	}
-	return *o.MatchIpv6AddressIpv6PrefixListRefType
-}
-
-// GetMatchIpv6AddressIpv6PrefixListRefTypeOk returns a tuple with the MatchIpv6AddressIpv6PrefixListRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6AddressIpv6PrefixListRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.MatchIpv6AddressIpv6PrefixListRefType) {
-		return nil, false
-	}
-	return o.MatchIpv6AddressIpv6PrefixListRefType, true
-}
-
-// HasMatchIpv6AddressIpv6PrefixListRefType returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv6AddressIpv6PrefixListRefType() bool {
-	if o != nil && !IsNil(o.MatchIpv6AddressIpv6PrefixListRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetMatchIpv6AddressIpv6PrefixListRefType gets a reference to the given string and assigns it to the MatchIpv6AddressIpv6PrefixListRefType field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv6AddressIpv6PrefixListRefType(v string) {
-	o.MatchIpv6AddressIpv6PrefixListRefType = &v
-}
-
-// GetMatchIpv6NextHopIpv6PrefixList returns the MatchIpv6NextHopIpv6PrefixList field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6NextHopIpv6PrefixList() string {
-	if o == nil || IsNil(o.MatchIpv6NextHopIpv6PrefixList) {
-		var ret string
-		return ret
-	}
-	return *o.MatchIpv6NextHopIpv6PrefixList
-}
-
-// GetMatchIpv6NextHopIpv6PrefixListOk returns a tuple with the MatchIpv6NextHopIpv6PrefixList field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6NextHopIpv6PrefixListOk() (*string, bool) {
-	if o == nil || IsNil(o.MatchIpv6NextHopIpv6PrefixList) {
-		return nil, false
-	}
-	return o.MatchIpv6NextHopIpv6PrefixList, true
-}
-
-// HasMatchIpv6NextHopIpv6PrefixList returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv6NextHopIpv6PrefixList() bool {
-	if o != nil && !IsNil(o.MatchIpv6NextHopIpv6PrefixList) {
-		return true
-	}
-
-	return false
-}
-
-// SetMatchIpv6NextHopIpv6PrefixList gets a reference to the given string and assigns it to the MatchIpv6NextHopIpv6PrefixList field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv6NextHopIpv6PrefixList(v string) {
-	o.MatchIpv6NextHopIpv6PrefixList = &v
-}
-
-// GetMatchIpv6NextHopIpv6PrefixListRefType returns the MatchIpv6NextHopIpv6PrefixListRefType field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6NextHopIpv6PrefixListRefType() string {
-	if o == nil || IsNil(o.MatchIpv6NextHopIpv6PrefixListRefType) {
-		var ret string
-		return ret
-	}
-	return *o.MatchIpv6NextHopIpv6PrefixListRefType
-}
-
-// GetMatchIpv6NextHopIpv6PrefixListRefTypeOk returns a tuple with the MatchIpv6NextHopIpv6PrefixListRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchIpv6NextHopIpv6PrefixListRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.MatchIpv6NextHopIpv6PrefixListRefType) {
-		return nil, false
-	}
-	return o.MatchIpv6NextHopIpv6PrefixListRefType, true
-}
-
-// HasMatchIpv6NextHopIpv6PrefixListRefType returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchIpv6NextHopIpv6PrefixListRefType() bool {
-	if o != nil && !IsNil(o.MatchIpv6NextHopIpv6PrefixListRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetMatchIpv6NextHopIpv6PrefixListRefType gets a reference to the given string and assigns it to the MatchIpv6NextHopIpv6PrefixListRefType field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv6NextHopIpv6PrefixListRefType(v string) {
-	o.MatchIpv6NextHopIpv6PrefixListRefType = &v
-}
-
 func (o RoutemapclausesPutRequestRouteMapClauseValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -1354,6 +1354,18 @@ func (o RoutemapclausesPutRequestRouteMapClauseValue) ToMap() (map[string]interf
 	if !IsNil(o.MatchIpv4NextHopIpPrefixListRefType) {
 		toSerialize["match_ipv4_next_hop_ip_prefix_list_ref_type_"] = o.MatchIpv4NextHopIpPrefixListRefType
 	}
+	if !IsNil(o.MatchIpv6AddressIpv6PrefixList) {
+		toSerialize["match_ipv6_address_ipv6_prefix_list"] = o.MatchIpv6AddressIpv6PrefixList
+	}
+	if !IsNil(o.MatchIpv6AddressIpv6PrefixListRefType) {
+		toSerialize["match_ipv6_address_ipv6_prefix_list_ref_type_"] = o.MatchIpv6AddressIpv6PrefixListRefType
+	}
+	if !IsNil(o.MatchIpv6NextHopIpv6PrefixList) {
+		toSerialize["match_ipv6_next_hop_ipv6_prefix_list"] = o.MatchIpv6NextHopIpv6PrefixList
+	}
+	if !IsNil(o.MatchIpv6NextHopIpv6PrefixListRefType) {
+		toSerialize["match_ipv6_next_hop_ipv6_prefix_list_ref_type_"] = o.MatchIpv6NextHopIpv6PrefixListRefType
+	}
 	if o.MatchLocalPreference.IsSet() {
 		toSerialize["match_local_preference"] = o.MatchLocalPreference.Get()
 	}
@@ -1395,18 +1407,6 @@ func (o RoutemapclausesPutRequestRouteMapClauseValue) ToMap() (map[string]interf
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.MatchIpv6AddressIpv6PrefixList) {
-		toSerialize["match_ipv6_address_ipv6_prefix_list"] = o.MatchIpv6AddressIpv6PrefixList
-	}
-	if !IsNil(o.MatchIpv6AddressIpv6PrefixListRefType) {
-		toSerialize["match_ipv6_address_ipv6_prefix_list_ref_type_"] = o.MatchIpv6AddressIpv6PrefixListRefType
-	}
-	if !IsNil(o.MatchIpv6NextHopIpv6PrefixList) {
-		toSerialize["match_ipv6_next_hop_ipv6_prefix_list"] = o.MatchIpv6NextHopIpv6PrefixList
-	}
-	if !IsNil(o.MatchIpv6NextHopIpv6PrefixListRefType) {
-		toSerialize["match_ipv6_next_hop_ipv6_prefix_list_ref_type_"] = o.MatchIpv6NextHopIpv6PrefixListRefType
 	}
 	return toSerialize, nil
 }

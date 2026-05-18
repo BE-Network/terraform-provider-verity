@@ -4,10 +4,15 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
+**Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
+**SwitchEncryptedMd5Password** | Pointer to **bool** | Indicates the entered password is a switch encrypted password. | [optional] [default to false]
+**Md5PasswordEncrypted** | Pointer to **string** | MD5 Password Encrypted used in the BGP session | [optional] [default to ""]
+**DefaultOriginate** | Pointer to **bool** | Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor. | [optional] [default to false]
+**BfdMultihop** | Pointer to **bool** | Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers. | [optional] [default to false]
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
+**Type** | Pointer to **string** | Gateway classification | [optional] [default to "tenant"]
 **NeighborIpAddress** | Pointer to **string** | IP address of remote BGP peer | [optional] [default to ""]
 **NeighborAsNumber** | Pointer to **NullableInt32** | Autonomous System Number of remote BGP peer  | [optional] 
 **FabricInterconnect** | Pointer to **bool** |  | [optional] [default to false]
@@ -20,16 +25,18 @@ Name | Type | Description | Notes
 **SourceIpAddress** | Pointer to **string** | Source IP address used to override the default source address calculation for BGP TCP session | [optional] [default to ""]
 **AnycastIpMask** | Pointer to **string** | The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router. | [optional] [default to ""]
 **Md5Password** | Pointer to **string** | MD5 Password used in the BGP session | [optional] [default to ""]
-**ImportRouteMap** | Pointer to **string** | A Route Map applied to routes imported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
+**ImportRouteMap** | Pointer to **string** | A Route Map applied to routes imported into the tenant from the neighbor BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ImportRouteMapRefType** | Pointer to **string** | Object type for import_route_map field | [optional] 
-**ExportRouteMap** | Pointer to **string** | A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
+**ExportRouteMap** | Pointer to **string** | A route-map applied to routes exported from the tenant to the neighbor BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ExportRouteMapRefType** | Pointer to **string** | Object type for export_route_map field | [optional] 
 **GatewayMode** | Pointer to **string** | Gateway Mode is the method used for defining routes for the Tenant | [optional] [default to "Static BGP"]
 **BgpInstanceAsNumber** | Pointer to **NullableInt32** | Override the switch&#39;s AS number used in the Tenant router definition where this Gateway is applied | [optional] 
 **LocalAsNumber** | Pointer to **NullableInt32** | Local AS Number to use as an override to switch AS number | [optional] 
 **LocalAsNoPrepend** | Pointer to **bool** | Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set. | [optional] [default to false]
+**RemovePrivateAs** | Pointer to **bool** | Remove all private AS numbers from AS-PATH attributes for routes advertised through this BGP gateway. | [optional] [default to false]
 **ReplaceAs** | Pointer to **bool** | Prepend only Local AS in updates to EBGP peers. | [optional] [default to false]
 **MaxLocalAsOccurrences** | Pointer to **NullableInt32** | Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or &#39;0&#39; to disable. | [optional] [default to 0]
+**AllowasInOrigin** | Pointer to **bool** | Only accept the current AS in the as-path if the route was originated in the Local AS | [optional] [default to false]
 **DynamicBgpSubnet** | Pointer to **string** | Dynamic BGP Subnet | [optional] [default to ""]
 **DynamicBgpLimits** | Pointer to **NullableInt32** | Dynamic BGP Limits | [optional] [default to 0]
 **HelperHopIpAddress** | Pointer to **string** | Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection | [optional] [default to ""]
@@ -39,11 +46,6 @@ Name | Type | Description | Notes
 **BfdDetectMultiplier** | Pointer to **NullableInt32** | Configure the detection multiplier to determine packet loss | [optional] [default to 3]
 **NextHopSelf** | Pointer to **bool** | Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself. | [optional] [default to false]
 **StaticRoutes** | Pointer to [**[]GatewaysPutRequestGatewayValueStaticRoutesInner**](GatewaysPutRequestGatewayValueStaticRoutesInner.md) |  | [optional] 
-**ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
-**SwitchEncryptedMd5Password** | Pointer to **bool** | Indicates the entered password is a switch encrypted password. | [optional] [default to false]
-**Md5PasswordEncrypted** | Pointer to **string** | MD5 Password Encrypted used in the BGP session | [optional] [default to ""]
-**DefaultOriginate** | Pointer to **bool** | Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor. | [optional] [default to false]
-**BfdMultihop** | Pointer to **bool** | Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers. | [optional] [default to false]
 
 ## Methods
 
@@ -114,6 +116,106 @@ SetEnable sets Enable field to given value.
 
 HasEnable returns a boolean if a field has been set.
 
+### GetSwitchEncryptedMd5Password
+
+`func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5Password() bool`
+
+GetSwitchEncryptedMd5Password returns the SwitchEncryptedMd5Password field if non-nil, zero value otherwise.
+
+### GetSwitchEncryptedMd5PasswordOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5PasswordOk() (*bool, bool)`
+
+GetSwitchEncryptedMd5PasswordOk returns a tuple with the SwitchEncryptedMd5Password field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchEncryptedMd5Password
+
+`func (o *GatewaysPutRequestGatewayValue) SetSwitchEncryptedMd5Password(v bool)`
+
+SetSwitchEncryptedMd5Password sets SwitchEncryptedMd5Password field to given value.
+
+### HasSwitchEncryptedMd5Password
+
+`func (o *GatewaysPutRequestGatewayValue) HasSwitchEncryptedMd5Password() bool`
+
+HasSwitchEncryptedMd5Password returns a boolean if a field has been set.
+
+### GetMd5PasswordEncrypted
+
+`func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncrypted() string`
+
+GetMd5PasswordEncrypted returns the Md5PasswordEncrypted field if non-nil, zero value otherwise.
+
+### GetMd5PasswordEncryptedOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncryptedOk() (*string, bool)`
+
+GetMd5PasswordEncryptedOk returns a tuple with the Md5PasswordEncrypted field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMd5PasswordEncrypted
+
+`func (o *GatewaysPutRequestGatewayValue) SetMd5PasswordEncrypted(v string)`
+
+SetMd5PasswordEncrypted sets Md5PasswordEncrypted field to given value.
+
+### HasMd5PasswordEncrypted
+
+`func (o *GatewaysPutRequestGatewayValue) HasMd5PasswordEncrypted() bool`
+
+HasMd5PasswordEncrypted returns a boolean if a field has been set.
+
+### GetDefaultOriginate
+
+`func (o *GatewaysPutRequestGatewayValue) GetDefaultOriginate() bool`
+
+GetDefaultOriginate returns the DefaultOriginate field if non-nil, zero value otherwise.
+
+### GetDefaultOriginateOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetDefaultOriginateOk() (*bool, bool)`
+
+GetDefaultOriginateOk returns a tuple with the DefaultOriginate field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDefaultOriginate
+
+`func (o *GatewaysPutRequestGatewayValue) SetDefaultOriginate(v bool)`
+
+SetDefaultOriginate sets DefaultOriginate field to given value.
+
+### HasDefaultOriginate
+
+`func (o *GatewaysPutRequestGatewayValue) HasDefaultOriginate() bool`
+
+HasDefaultOriginate returns a boolean if a field has been set.
+
+### GetBfdMultihop
+
+`func (o *GatewaysPutRequestGatewayValue) GetBfdMultihop() bool`
+
+GetBfdMultihop returns the BfdMultihop field if non-nil, zero value otherwise.
+
+### GetBfdMultihopOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetBfdMultihopOk() (*bool, bool)`
+
+GetBfdMultihopOk returns a tuple with the BfdMultihop field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetBfdMultihop
+
+`func (o *GatewaysPutRequestGatewayValue) SetBfdMultihop(v bool)`
+
+SetBfdMultihop sets BfdMultihop field to given value.
+
+### HasBfdMultihop
+
+`func (o *GatewaysPutRequestGatewayValue) HasBfdMultihop() bool`
+
+HasBfdMultihop returns a boolean if a field has been set.
+
 ### GetTenant
 
 `func (o *GatewaysPutRequestGatewayValue) GetTenant() string`
@@ -163,6 +265,31 @@ SetTenantRefType sets TenantRefType field to given value.
 `func (o *GatewaysPutRequestGatewayValue) HasTenantRefType() bool`
 
 HasTenantRefType returns a boolean if a field has been set.
+
+### GetType
+
+`func (o *GatewaysPutRequestGatewayValue) GetType() string`
+
+GetType returns the Type field if non-nil, zero value otherwise.
+
+### GetTypeOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetTypeOk() (*string, bool)`
+
+GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetType
+
+`func (o *GatewaysPutRequestGatewayValue) SetType(v string)`
+
+SetType sets Type field to given value.
+
+### HasType
+
+`func (o *GatewaysPutRequestGatewayValue) HasType() bool`
+
+HasType returns a boolean if a field has been set.
 
 ### GetNeighborIpAddress
 
@@ -754,6 +881,31 @@ SetLocalAsNoPrepend sets LocalAsNoPrepend field to given value.
 
 HasLocalAsNoPrepend returns a boolean if a field has been set.
 
+### GetRemovePrivateAs
+
+`func (o *GatewaysPutRequestGatewayValue) GetRemovePrivateAs() bool`
+
+GetRemovePrivateAs returns the RemovePrivateAs field if non-nil, zero value otherwise.
+
+### GetRemovePrivateAsOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetRemovePrivateAsOk() (*bool, bool)`
+
+GetRemovePrivateAsOk returns a tuple with the RemovePrivateAs field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRemovePrivateAs
+
+`func (o *GatewaysPutRequestGatewayValue) SetRemovePrivateAs(v bool)`
+
+SetRemovePrivateAs sets RemovePrivateAs field to given value.
+
+### HasRemovePrivateAs
+
+`func (o *GatewaysPutRequestGatewayValue) HasRemovePrivateAs() bool`
+
+HasRemovePrivateAs returns a boolean if a field has been set.
+
 ### GetReplaceAs
 
 `func (o *GatewaysPutRequestGatewayValue) GetReplaceAs() bool`
@@ -814,6 +966,31 @@ HasMaxLocalAsOccurrences returns a boolean if a field has been set.
 `func (o *GatewaysPutRequestGatewayValue) UnsetMaxLocalAsOccurrences()`
 
 UnsetMaxLocalAsOccurrences ensures that no value is present for MaxLocalAsOccurrences, not even an explicit nil
+### GetAllowasInOrigin
+
+`func (o *GatewaysPutRequestGatewayValue) GetAllowasInOrigin() bool`
+
+GetAllowasInOrigin returns the AllowasInOrigin field if non-nil, zero value otherwise.
+
+### GetAllowasInOriginOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetAllowasInOriginOk() (*bool, bool)`
+
+GetAllowasInOriginOk returns a tuple with the AllowasInOrigin field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAllowasInOrigin
+
+`func (o *GatewaysPutRequestGatewayValue) SetAllowasInOrigin(v bool)`
+
+SetAllowasInOrigin sets AllowasInOrigin field to given value.
+
+### HasAllowasInOrigin
+
+`func (o *GatewaysPutRequestGatewayValue) HasAllowasInOrigin() bool`
+
+HasAllowasInOrigin returns a boolean if a field has been set.
+
 ### GetDynamicBgpSubnet
 
 `func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpSubnet() string`
@@ -1078,131 +1255,6 @@ SetStaticRoutes sets StaticRoutes field to given value.
 `func (o *GatewaysPutRequestGatewayValue) HasStaticRoutes() bool`
 
 HasStaticRoutes returns a boolean if a field has been set.
-
-### GetObjectProperties
-
-`func (o *GatewaysPutRequestGatewayValue) GetObjectProperties() DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties`
-
-GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
-
-### GetObjectPropertiesOk
-
-`func (o *GatewaysPutRequestGatewayValue) GetObjectPropertiesOk() (*DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties, bool)`
-
-GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetObjectProperties
-
-`func (o *GatewaysPutRequestGatewayValue) SetObjectProperties(v DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties)`
-
-SetObjectProperties sets ObjectProperties field to given value.
-
-### HasObjectProperties
-
-`func (o *GatewaysPutRequestGatewayValue) HasObjectProperties() bool`
-
-HasObjectProperties returns a boolean if a field has been set.
-
-### GetSwitchEncryptedMd5Password
-
-`func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5Password() bool`
-
-GetSwitchEncryptedMd5Password returns the SwitchEncryptedMd5Password field if non-nil, zero value otherwise.
-
-### GetSwitchEncryptedMd5PasswordOk
-
-`func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5PasswordOk() (*bool, bool)`
-
-GetSwitchEncryptedMd5PasswordOk returns a tuple with the SwitchEncryptedMd5Password field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSwitchEncryptedMd5Password
-
-`func (o *GatewaysPutRequestGatewayValue) SetSwitchEncryptedMd5Password(v bool)`
-
-SetSwitchEncryptedMd5Password sets SwitchEncryptedMd5Password field to given value.
-
-### HasSwitchEncryptedMd5Password
-
-`func (o *GatewaysPutRequestGatewayValue) HasSwitchEncryptedMd5Password() bool`
-
-HasSwitchEncryptedMd5Password returns a boolean if a field has been set.
-
-### GetMd5PasswordEncrypted
-
-`func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncrypted() string`
-
-GetMd5PasswordEncrypted returns the Md5PasswordEncrypted field if non-nil, zero value otherwise.
-
-### GetMd5PasswordEncryptedOk
-
-`func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncryptedOk() (*string, bool)`
-
-GetMd5PasswordEncryptedOk returns a tuple with the Md5PasswordEncrypted field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMd5PasswordEncrypted
-
-`func (o *GatewaysPutRequestGatewayValue) SetMd5PasswordEncrypted(v string)`
-
-SetMd5PasswordEncrypted sets Md5PasswordEncrypted field to given value.
-
-### HasMd5PasswordEncrypted
-
-`func (o *GatewaysPutRequestGatewayValue) HasMd5PasswordEncrypted() bool`
-
-HasMd5PasswordEncrypted returns a boolean if a field has been set.
-
-### GetDefaultOriginate
-
-`func (o *GatewaysPutRequestGatewayValue) GetDefaultOriginate() bool`
-
-GetDefaultOriginate returns the DefaultOriginate field if non-nil, zero value otherwise.
-
-### GetDefaultOriginateOk
-
-`func (o *GatewaysPutRequestGatewayValue) GetDefaultOriginateOk() (*bool, bool)`
-
-GetDefaultOriginateOk returns a tuple with the DefaultOriginate field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDefaultOriginate
-
-`func (o *GatewaysPutRequestGatewayValue) SetDefaultOriginate(v bool)`
-
-SetDefaultOriginate sets DefaultOriginate field to given value.
-
-### HasDefaultOriginate
-
-`func (o *GatewaysPutRequestGatewayValue) HasDefaultOriginate() bool`
-
-HasDefaultOriginate returns a boolean if a field has been set.
-
-### GetBfdMultihop
-
-`func (o *GatewaysPutRequestGatewayValue) GetBfdMultihop() bool`
-
-GetBfdMultihop returns the BfdMultihop field if non-nil, zero value otherwise.
-
-### GetBfdMultihopOk
-
-`func (o *GatewaysPutRequestGatewayValue) GetBfdMultihopOk() (*bool, bool)`
-
-GetBfdMultihopOk returns a tuple with the BfdMultihop field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetBfdMultihop
-
-`func (o *GatewaysPutRequestGatewayValue) SetBfdMultihop(v bool)`
-
-SetBfdMultihop sets BfdMultihop field to given value.
-
-### HasBfdMultihop
-
-`func (o *GatewaysPutRequestGatewayValue) HasBfdMultihop() bool`
-
-HasBfdMultihop returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
