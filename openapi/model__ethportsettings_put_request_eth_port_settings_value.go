@@ -35,6 +35,8 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	EnableWatchdogTuning *bool `json:"enable_watchdog_tuning,omitempty"`
 	// Indicates if duplex mode should be auto negotiated
 	AutoNegotiation *bool `json:"auto_negotiation,omitempty"`
+	// For use when the port speed/FEC are manually fixed, but the physical link still needs SerDes tuning most commonly high-speed passive DAC/copper links
+	StandaloneLinkTraining *bool `json:"standalone_link_training,omitempty"`
 	// Turns on speed control fields
 	EnableSpeedControl *bool `json:"enable_speed_control,omitempty"`
 	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
@@ -53,7 +55,7 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	BpduFilter *bool `json:"bpdu_filter,omitempty"`
 	// Enable Cisco Guard Loop
 	GuardLoop *bool `json:"guard_loop,omitempty"`
-	// PoE Enable
+	// Enable PoE on the port
 	PoeEnable *bool `json:"poe_enable,omitempty"`
 	// Priority given when assigning power in a limited power situation
 	Priority *string `json:"priority,omitempty"`
@@ -133,6 +135,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	this.EnableWatchdogTuning = &enableWatchdogTuning
 	var autoNegotiation bool = true
 	this.AutoNegotiation = &autoNegotiation
+	var standaloneLinkTraining bool = false
+	this.StandaloneLinkTraining = &standaloneLinkTraining
 	var enableSpeedControl bool = true
 	this.EnableSpeedControl = &enableSpeedControl
 	var maxBitRate string = "-1"
@@ -227,6 +231,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	this.EnableWatchdogTuning = &enableWatchdogTuning
 	var autoNegotiation bool = true
 	this.AutoNegotiation = &autoNegotiation
+	var standaloneLinkTraining bool = false
+	this.StandaloneLinkTraining = &standaloneLinkTraining
 	var enableSpeedControl bool = true
 	this.EnableSpeedControl = &enableSpeedControl
 	var maxBitRate string = "-1"
@@ -556,6 +562,38 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAutoNegotiation() boo
 // SetAutoNegotiation gets a reference to the given bool and assigns it to the AutoNegotiation field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAutoNegotiation(v bool) {
 	o.AutoNegotiation = &v
+}
+
+// GetStandaloneLinkTraining returns the StandaloneLinkTraining field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStandaloneLinkTraining() bool {
+	if o == nil || IsNil(o.StandaloneLinkTraining) {
+		var ret bool
+		return ret
+	}
+	return *o.StandaloneLinkTraining
+}
+
+// GetStandaloneLinkTrainingOk returns a tuple with the StandaloneLinkTraining field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStandaloneLinkTrainingOk() (*bool, bool) {
+	if o == nil || IsNil(o.StandaloneLinkTraining) {
+		return nil, false
+	}
+	return o.StandaloneLinkTraining, true
+}
+
+// HasStandaloneLinkTraining returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasStandaloneLinkTraining() bool {
+	if o != nil && !IsNil(o.StandaloneLinkTraining) {
+		return true
+	}
+
+	return false
+}
+
+// SetStandaloneLinkTraining gets a reference to the given bool and assigns it to the StandaloneLinkTraining field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetStandaloneLinkTraining(v bool) {
+	o.StandaloneLinkTraining = &v
 }
 
 // GetEnableSpeedControl returns the EnableSpeedControl field value if set, zero value otherwise.
@@ -1929,6 +1967,9 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	}
 	if !IsNil(o.AutoNegotiation) {
 		toSerialize["auto_negotiation"] = o.AutoNegotiation
+	}
+	if !IsNil(o.StandaloneLinkTraining) {
+		toSerialize["standalone_link_training"] = o.StandaloneLinkTraining
 	}
 	if !IsNil(o.EnableSpeedControl) {
 		toSerialize["enable_speed_control"] = o.EnableSpeedControl

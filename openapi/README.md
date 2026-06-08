@@ -97,10 +97,10 @@ Class | Method | HTTP request | Description
 *CommunityListsAPI* | [**CommunitylistsGet**](docs/CommunityListsAPI.md#communitylistsget) | **Get** /communitylists | Get all Community Lists
 *CommunityListsAPI* | [**CommunitylistsPatch**](docs/CommunityListsAPI.md#communitylistspatch) | **Patch** /communitylists | Update Community List
 *CommunityListsAPI* | [**CommunitylistsPut**](docs/CommunityListsAPI.md#communitylistsput) | **Put** /communitylists | Create Community List
-*DeviceControllersAPI* | [**DevicecontrollersDelete**](docs/DeviceControllersAPI.md#devicecontrollersdelete) | **Delete** /devicecontrollers | Delete Device Controllers
-*DeviceControllersAPI* | [**DevicecontrollersGet**](docs/DeviceControllersAPI.md#devicecontrollersget) | **Get** /devicecontrollers | Get all Device Controllers
-*DeviceControllersAPI* | [**DevicecontrollersPatch**](docs/DeviceControllersAPI.md#devicecontrollerspatch) | **Patch** /devicecontrollers | Update Device Controller
-*DeviceControllersAPI* | [**DevicecontrollersPut**](docs/DeviceControllersAPI.md#devicecontrollersput) | **Put** /devicecontrollers | Create Device Controller
+*DeviceAAAProfilesAPI* | [**DeviceaaaprofilesDelete**](docs/DeviceAAAProfilesAPI.md#deviceaaaprofilesdelete) | **Delete** /deviceaaaprofiles | Delete Device AAA Profile
+*DeviceAAAProfilesAPI* | [**DeviceaaaprofilesGet**](docs/DeviceAAAProfilesAPI.md#deviceaaaprofilesget) | **Get** /deviceaaaprofiles | Get all Device AAA Profiles
+*DeviceAAAProfilesAPI* | [**DeviceaaaprofilesPatch**](docs/DeviceAAAProfilesAPI.md#deviceaaaprofilespatch) | **Patch** /deviceaaaprofiles | Update Device AAA Profile
+*DeviceAAAProfilesAPI* | [**DeviceaaaprofilesPut**](docs/DeviceAAAProfilesAPI.md#deviceaaaprofilesput) | **Put** /deviceaaaprofiles | Create Device AAA Profile
 *DeviceSettingsAPI* | [**DevicesettingsDelete**](docs/DeviceSettingsAPI.md#devicesettingsdelete) | **Delete** /devicesettings | Delete Device Settings
 *DeviceSettingsAPI* | [**DevicesettingsGet**](docs/DeviceSettingsAPI.md#devicesettingsget) | **Get** /devicesettings | Get all Device Settings
 *DeviceSettingsAPI* | [**DevicesettingsPatch**](docs/DeviceSettingsAPI.md#devicesettingspatch) | **Patch** /devicesettings | Update Device Settings
@@ -241,6 +241,10 @@ Class | Method | HTTP request | Description
 *SwitchpointsAPI* | [**SwitchpointsPatch**](docs/SwitchpointsAPI.md#switchpointspatch) | **Patch** /switchpoints | Update Switchpoint
 *SwitchpointsAPI* | [**SwitchpointsPut**](docs/SwitchpointsAPI.md#switchpointsput) | **Put** /switchpoints | Create Switchpoint
 *SwitchpointsAPI* | [**SwitchpointsUpgradePatch**](docs/SwitchpointsAPI.md#switchpointsupgradepatch) | **Patch** /switchpoints/upgrade | Update Switchpoint firmware version
+*TACACSProfilesAPI* | [**TacacsprofilesDelete**](docs/TACACSProfilesAPI.md#tacacsprofilesdelete) | **Delete** /tacacsprofiles | Delete TACACS Profile
+*TACACSProfilesAPI* | [**TacacsprofilesGet**](docs/TACACSProfilesAPI.md#tacacsprofilesget) | **Get** /tacacsprofiles | Get all TACACS Profiles
+*TACACSProfilesAPI* | [**TacacsprofilesPatch**](docs/TACACSProfilesAPI.md#tacacsprofilespatch) | **Patch** /tacacsprofiles | Update TACACS Profile
+*TACACSProfilesAPI* | [**TacacsprofilesPut**](docs/TACACSProfilesAPI.md#tacacsprofilesput) | **Put** /tacacsprofiles | Create TACACS Profile
 *TenantsAPI* | [**TenantsDelete**](docs/TenantsAPI.md#tenantsdelete) | **Delete** /tenants | Delete tenant
 *TenantsAPI* | [**TenantsGet**](docs/TenantsAPI.md#tenantsget) | **Get** /tenants | Get all tenants
 *TenantsAPI* | [**TenantsPatch**](docs/TenantsAPI.md#tenantspatch) | **Patch** /tenants | Update tenant
@@ -286,14 +290,14 @@ Class | Method | HTTP request | Description
  - [CommunitylistsPutRequest](docs/CommunitylistsPutRequest.md)
  - [CommunitylistsPutRequestCommunityListValue](docs/CommunitylistsPutRequestCommunityListValue.md)
  - [CommunitylistsPutRequestCommunityListValueListsInner](docs/CommunitylistsPutRequestCommunityListValueListsInner.md)
- - [DevicecontrollersPutRequest](docs/DevicecontrollersPutRequest.md)
- - [DevicecontrollersPutRequestDeviceControllerValue](docs/DevicecontrollersPutRequestDeviceControllerValue.md)
+ - [DeviceaaaprofilesPutRequest](docs/DeviceaaaprofilesPutRequest.md)
+ - [DeviceaaaprofilesPutRequestDeviceAaaProfileValue](docs/DeviceaaaprofilesPutRequestDeviceAaaProfileValue.md)
+ - [DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner](docs/DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner.md)
  - [DevicesettingsPutRequest](docs/DevicesettingsPutRequest.md)
  - [DevicesettingsPutRequestEthDeviceProfilesValue](docs/DevicesettingsPutRequestEthDeviceProfilesValue.md)
  - [DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner](docs/DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner.md)
  - [DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner](docs/DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner.md)
  - [DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner](docs/DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner.md)
- - [DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner](docs/DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner.md)
  - [DevicevoicesettingsPutRequest](docs/DevicevoicesettingsPutRequest.md)
  - [DevicevoicesettingsPutRequestDeviceVoiceSettingsValue](docs/DevicevoicesettingsPutRequestDeviceVoiceSettingsValue.md)
  - [DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner](docs/DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner.md)
@@ -401,6 +405,9 @@ Class | Method | HTTP request | Description
  - [SwitchpointsPutRequestSwitchpointValuePotsInner](docs/SwitchpointsPutRequestSwitchpointValuePotsInner.md)
  - [SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner](docs/SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner.md)
  - [SwitchpointsUpgradePatchRequest](docs/SwitchpointsUpgradePatchRequest.md)
+ - [TacacsprofilesPutRequest](docs/TacacsprofilesPutRequest.md)
+ - [TacacsprofilesPutRequestTacacsProfileValue](docs/TacacsprofilesPutRequestTacacsProfileValue.md)
+ - [TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner](docs/TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner.md)
  - [TenantsPutRequest](docs/TenantsPutRequest.md)
  - [TenantsPutRequestTenantValue](docs/TenantsPutRequestTenantValue.md)
  - [TenantsPutRequestTenantValueRouteTenantsInner](docs/TenantsPutRequestTenantValueRouteTenantsInner.md)

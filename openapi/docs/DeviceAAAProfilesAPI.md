@@ -1,21 +1,21 @@
-# \DeviceControllersAPI
+# \DeviceAAAProfilesAPI
 
 All URIs are relative to *http://localhost/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**DevicecontrollersDelete**](DeviceControllersAPI.md#DevicecontrollersDelete) | **Delete** /devicecontrollers | Delete Device Controllers
-[**DevicecontrollersGet**](DeviceControllersAPI.md#DevicecontrollersGet) | **Get** /devicecontrollers | Get all Device Controllers
-[**DevicecontrollersPatch**](DeviceControllersAPI.md#DevicecontrollersPatch) | **Patch** /devicecontrollers | Update Device Controller
-[**DevicecontrollersPut**](DeviceControllersAPI.md#DevicecontrollersPut) | **Put** /devicecontrollers | Create Device Controller
+[**DeviceaaaprofilesDelete**](DeviceAAAProfilesAPI.md#DeviceaaaprofilesDelete) | **Delete** /deviceaaaprofiles | Delete Device AAA Profile
+[**DeviceaaaprofilesGet**](DeviceAAAProfilesAPI.md#DeviceaaaprofilesGet) | **Get** /deviceaaaprofiles | Get all Device AAA Profiles
+[**DeviceaaaprofilesPatch**](DeviceAAAProfilesAPI.md#DeviceaaaprofilesPatch) | **Patch** /deviceaaaprofiles | Update Device AAA Profile
+[**DeviceaaaprofilesPut**](DeviceAAAProfilesAPI.md#DeviceaaaprofilesPut) | **Put** /deviceaaaprofiles | Create Device AAA Profile
 
 
 
-## DevicecontrollersDelete
+## DeviceaaaprofilesDelete
 
-> DevicecontrollersDelete(ctx).DeviceControllerName(deviceControllerName).ChangesetName(changesetName).Execute()
+> DeviceaaaprofilesDelete(ctx).DeviceAaaProfileName(deviceAaaProfileName).ChangesetName(changesetName).Execute()
 
-Delete Device Controllers
+Delete Device AAA Profile
 
 
 
@@ -32,14 +32,14 @@ import (
 )
 
 func main() {
-	deviceControllerName := []string{"Inner_example"} // []string | 
+	deviceAaaProfileName := []string{"Inner_example"} // []string | 
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.DeviceControllersAPI.DevicecontrollersDelete(context.Background()).DeviceControllerName(deviceControllerName).ChangesetName(changesetName).Execute()
+	r, err := apiClient.DeviceAAAProfilesAPI.DeviceaaaprofilesDelete(context.Background()).DeviceAaaProfileName(deviceAaaProfileName).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersDelete``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DeviceAAAProfilesAPI.DeviceaaaprofilesDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -51,12 +51,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDevicecontrollersDeleteRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDeviceaaaprofilesDeleteRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **deviceControllerName** | **[]string** |  | 
+ **deviceAaaProfileName** | **[]string** |  | 
  **changesetName** | **string** |  | 
 
 ### Return type
@@ -77,11 +77,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## DevicecontrollersGet
+## DeviceaaaprofilesGet
 
-> DevicecontrollersGet(ctx).DeviceControllerName(deviceControllerName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+> DeviceaaaprofilesGet(ctx).DeviceAaaProfileName(deviceAaaProfileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
-Get all Device Controllers
+Get all Device AAA Profiles
 
 
 
@@ -98,15 +98,15 @@ import (
 )
 
 func main() {
-	deviceControllerName := "deviceControllerName_example" // string |  (optional)
+	deviceAaaProfileName := "deviceAaaProfileName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.DeviceControllersAPI.DevicecontrollersGet(context.Background()).DeviceControllerName(deviceControllerName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+	r, err := apiClient.DeviceAAAProfilesAPI.DeviceaaaprofilesGet(context.Background()).DeviceAaaProfileName(deviceAaaProfileName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersGet``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DeviceAAAProfilesAPI.DeviceaaaprofilesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -118,12 +118,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDevicecontrollersGetRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDeviceaaaprofilesGetRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **deviceControllerName** | **string** |  | 
+ **deviceAaaProfileName** | **string** |  | 
  **includeData** | **bool** |  | 
  **changesetName** | **string** |  | 
 
@@ -145,11 +145,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## DevicecontrollersPatch
+## DeviceaaaprofilesPatch
 
-> DevicecontrollersPatch(ctx).ChangesetName(changesetName).DevicecontrollersPutRequest(devicecontrollersPutRequest).Execute()
+> DeviceaaaprofilesPatch(ctx).ChangesetName(changesetName).DeviceaaaprofilesPutRequest(deviceaaaprofilesPutRequest).Execute()
 
-Update Device Controller
+Update Device AAA Profile
 
 
 
@@ -167,13 +167,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	devicecontrollersPutRequest := *openapiclient.NewDevicecontrollersPutRequest() // DevicecontrollersPutRequest |  (optional)
+	deviceaaaprofilesPutRequest := *openapiclient.NewDeviceaaaprofilesPutRequest() // DeviceaaaprofilesPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.DeviceControllersAPI.DevicecontrollersPatch(context.Background()).ChangesetName(changesetName).DevicecontrollersPutRequest(devicecontrollersPutRequest).Execute()
+	r, err := apiClient.DeviceAAAProfilesAPI.DeviceaaaprofilesPatch(context.Background()).ChangesetName(changesetName).DeviceaaaprofilesPutRequest(deviceaaaprofilesPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersPatch``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DeviceAAAProfilesAPI.DeviceaaaprofilesPatch``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -185,13 +185,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDevicecontrollersPatchRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDeviceaaaprofilesPatchRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **devicecontrollersPutRequest** | [**DevicecontrollersPutRequest**](DevicecontrollersPutRequest.md) |  | 
+ **deviceaaaprofilesPutRequest** | [**DeviceaaaprofilesPutRequest**](DeviceaaaprofilesPutRequest.md) |  | 
 
 ### Return type
 
@@ -211,11 +211,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## DevicecontrollersPut
+## DeviceaaaprofilesPut
 
-> DevicecontrollersPut(ctx).ChangesetName(changesetName).DevicecontrollersPutRequest(devicecontrollersPutRequest).Execute()
+> DeviceaaaprofilesPut(ctx).ChangesetName(changesetName).DeviceaaaprofilesPutRequest(deviceaaaprofilesPutRequest).Execute()
 
-Create Device Controller
+Create Device AAA Profile
 
 
 
@@ -233,13 +233,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	devicecontrollersPutRequest := *openapiclient.NewDevicecontrollersPutRequest() // DevicecontrollersPutRequest |  (optional)
+	deviceaaaprofilesPutRequest := *openapiclient.NewDeviceaaaprofilesPutRequest() // DeviceaaaprofilesPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.DeviceControllersAPI.DevicecontrollersPut(context.Background()).ChangesetName(changesetName).DevicecontrollersPutRequest(devicecontrollersPutRequest).Execute()
+	r, err := apiClient.DeviceAAAProfilesAPI.DeviceaaaprofilesPut(context.Background()).ChangesetName(changesetName).DeviceaaaprofilesPutRequest(deviceaaaprofilesPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DeviceControllersAPI.DevicecontrollersPut``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DeviceAAAProfilesAPI.DeviceaaaprofilesPut``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -251,13 +251,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDevicecontrollersPutRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDeviceaaaprofilesPutRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **devicecontrollersPutRequest** | [**DevicecontrollersPutRequest**](DevicecontrollersPutRequest.md) |  | 
+ **deviceaaaprofilesPutRequest** | [**DeviceaaaprofilesPutRequest**](DeviceaaaprofilesPutRequest.md) |  | 
 
 ### Return type
 

@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner{}
+// checks if the TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner{}
 
-// DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner struct for DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner
-type DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner struct {
+// TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner struct for TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner
+type TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner struct {
 	// Enable TACACS+ server
 	Enabled *bool `json:"enabled,omitempty"`
 	// IPv4, IPv6, or DNS name for TACACS+ server
@@ -33,16 +33,14 @@ type DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner struct {
 	Secret *string `json:"secret,omitempty"`
 	// TACACS+ shared secret (encrypted)
 	EncSecret *string `json:"enc_secret,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
 }
 
-// NewDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner instantiates a new DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner object
+// NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner instantiates a new TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner() *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner {
-	this := DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner{}
+func NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner() *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner {
+	this := TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner{}
 	var enabled bool = false
 	this.Enabled = &enabled
 	var server string = ""
@@ -58,11 +56,11 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner() *Devi
 	return &this
 }
 
-// NewDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInnerWithDefaults instantiates a new DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner object
+// NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInnerWithDefaults instantiates a new TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInnerWithDefaults() *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner {
-	this := DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner{}
+func NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInnerWithDefaults() *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner {
+	this := TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner{}
 	var enabled bool = false
 	this.Enabled = &enabled
 	var server string = ""
@@ -79,7 +77,7 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInnerWithDefa
 }
 
 // GetEnabled returns the Enabled field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetEnabled() bool {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetEnabled() bool {
 	if o == nil || IsNil(o.Enabled) {
 		var ret bool
 		return ret
@@ -89,7 +87,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetEn
 
 // GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetEnabledOk() (*bool, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetEnabledOk() (*bool, bool) {
 	if o == nil || IsNil(o.Enabled) {
 		return nil, false
 	}
@@ -97,7 +95,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetEn
 }
 
 // HasEnabled returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasEnabled() bool {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasEnabled() bool {
 	if o != nil && !IsNil(o.Enabled) {
 		return true
 	}
@@ -106,12 +104,12 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasEn
 }
 
 // SetEnabled gets a reference to the given bool and assigns it to the Enabled field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetEnabled(v bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetEnabled(v bool) {
 	o.Enabled = &v
 }
 
 // GetServer returns the Server field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetServer() string {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetServer() string {
 	if o == nil || IsNil(o.Server) {
 		var ret string
 		return ret
@@ -121,7 +119,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetSe
 
 // GetServerOk returns a tuple with the Server field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetServerOk() (*string, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetServerOk() (*string, bool) {
 	if o == nil || IsNil(o.Server) {
 		return nil, false
 	}
@@ -129,7 +127,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetSe
 }
 
 // HasServer returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasServer() bool {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasServer() bool {
 	if o != nil && !IsNil(o.Server) {
 		return true
 	}
@@ -138,12 +136,12 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasSe
 }
 
 // SetServer gets a reference to the given string and assigns it to the Server field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetServer(v string) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetServer(v string) {
 	o.Server = &v
 }
 
 // GetAuthType returns the AuthType field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetAuthType() string {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetAuthType() string {
 	if o == nil || IsNil(o.AuthType) {
 		var ret string
 		return ret
@@ -153,7 +151,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetAu
 
 // GetAuthTypeOk returns a tuple with the AuthType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetAuthTypeOk() (*string, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetAuthTypeOk() (*string, bool) {
 	if o == nil || IsNil(o.AuthType) {
 		return nil, false
 	}
@@ -161,7 +159,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetAu
 }
 
 // HasAuthType returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasAuthType() bool {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasAuthType() bool {
 	if o != nil && !IsNil(o.AuthType) {
 		return true
 	}
@@ -170,12 +168,12 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasAu
 }
 
 // SetAuthType gets a reference to the given string and assigns it to the AuthType field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetAuthType(v string) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetAuthType(v string) {
 	o.AuthType = &v
 }
 
 // GetPort returns the Port field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetPort() string {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetPort() string {
 	if o == nil || IsNil(o.Port) {
 		var ret string
 		return ret
@@ -185,7 +183,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetPo
 
 // GetPortOk returns a tuple with the Port field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetPortOk() (*string, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetPortOk() (*string, bool) {
 	if o == nil || IsNil(o.Port) {
 		return nil, false
 	}
@@ -193,7 +191,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetPo
 }
 
 // HasPort returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasPort() bool {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasPort() bool {
 	if o != nil && !IsNil(o.Port) {
 		return true
 	}
@@ -202,12 +200,12 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasPo
 }
 
 // SetPort gets a reference to the given string and assigns it to the Port field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetPort(v string) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetPort(v string) {
 	o.Port = &v
 }
 
 // GetTimeout returns the Timeout field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetTimeout() int32 {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeout() int32 {
 	if o == nil || IsNil(o.Timeout.Get()) {
 		var ret int32
 		return ret
@@ -218,7 +216,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetTi
 // GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetTimeoutOk() (*int32, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeoutOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -226,7 +224,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetTi
 }
 
 // HasTimeout returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasTimeout() bool {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasTimeout() bool {
 	if o != nil && o.Timeout.IsSet() {
 		return true
 	}
@@ -235,21 +233,21 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasTi
 }
 
 // SetTimeout gets a reference to the given NullableInt32 and assigns it to the Timeout field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetTimeout(v int32) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetTimeout(v int32) {
 	o.Timeout.Set(&v)
 }
 // SetTimeoutNil sets the value for Timeout to be an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetTimeoutNil() {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetTimeoutNil() {
 	o.Timeout.Set(nil)
 }
 
 // UnsetTimeout ensures that no value is present for Timeout, not even an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) UnsetTimeout() {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) UnsetTimeout() {
 	o.Timeout.Unset()
 }
 
 // GetSecret returns the Secret field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetSecret() string {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetSecret() string {
 	if o == nil || IsNil(o.Secret) {
 		var ret string
 		return ret
@@ -259,7 +257,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetSe
 
 // GetSecretOk returns a tuple with the Secret field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetSecretOk() (*string, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetSecretOk() (*string, bool) {
 	if o == nil || IsNil(o.Secret) {
 		return nil, false
 	}
@@ -267,7 +265,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetSe
 }
 
 // HasSecret returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasSecret() bool {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasSecret() bool {
 	if o != nil && !IsNil(o.Secret) {
 		return true
 	}
@@ -276,12 +274,12 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasSe
 }
 
 // SetSecret gets a reference to the given string and assigns it to the Secret field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetSecret(v string) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetSecret(v string) {
 	o.Secret = &v
 }
 
 // GetEncSecret returns the EncSecret field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetEncSecret() string {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetEncSecret() string {
 	if o == nil || IsNil(o.EncSecret) {
 		var ret string
 		return ret
@@ -291,7 +289,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetEn
 
 // GetEncSecretOk returns a tuple with the EncSecret field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetEncSecretOk() (*string, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetEncSecretOk() (*string, bool) {
 	if o == nil || IsNil(o.EncSecret) {
 		return nil, false
 	}
@@ -299,7 +297,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetEn
 }
 
 // HasEncSecret returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasEncSecret() bool {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasEncSecret() bool {
 	if o != nil && !IsNil(o.EncSecret) {
 		return true
 	}
@@ -308,43 +306,11 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasEn
 }
 
 // SetEncSecret gets a reference to the given string and assigns it to the EncSecret field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetEncSecret(v string) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetEncSecret(v string) {
 	o.EncSecret = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetIndex() int32 {
-	if o == nil || IsNil(o.Index) {
-		var ret int32
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) GetIndexOk() (*int32, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) SetIndex(v int32) {
-	o.Index = &v
-}
-
-func (o DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) MarshalJSON() ([]byte, error) {
+func (o TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -352,7 +318,7 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) Marsha
 	return json.Marshal(toSerialize)
 }
 
-func (o DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) ToMap() (map[string]interface{}, error) {
+func (o TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enabled) {
 		toSerialize["enabled"] = o.Enabled
@@ -375,44 +341,41 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) ToMap(
 	if !IsNil(o.EncSecret) {
 		toSerialize["enc_secret"] = o.EncSecret
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
-	}
 	return toSerialize, nil
 }
 
-type NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner struct {
-	value *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner
+type NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner struct {
+	value *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner
 	isSet bool
 }
 
-func (v NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) Get() *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner {
+func (v NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) Get() *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner {
 	return v.value
 }
 
-func (v *NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) Set(val *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) {
+func (v *NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) Set(val *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) IsSet() bool {
+func (v NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) Unset() {
+func (v *NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner(val *DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) *NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner {
-	return &NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner{value: val, isSet: true}
+func NewNullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner(val *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) *NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner {
+	return &NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner{value: val, isSet: true}
 }
 
-func (v NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) MarshalJSON() ([]byte, error) {
+func (v NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableDevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) UnmarshalJSON(src []byte) error {
+func (v *NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

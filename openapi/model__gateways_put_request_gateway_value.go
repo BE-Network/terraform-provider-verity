@@ -35,6 +35,10 @@ type GatewaysPutRequestGatewayValue struct {
 	Tenant *string `json:"tenant,omitempty"`
 	// Object type for tenant field
 	TenantRefType *string `json:"tenant_ref_type_,omitempty"`
+	// Fabric this Gateway is assigned to
+	Site *string `json:"site,omitempty"`
+	// Object type for site field
+	SiteRefType *string `json:"site_ref_type_,omitempty"`
 	// Gateway classification
 	Type *string `json:"type,omitempty"`
 	// IP address of remote BGP peer
@@ -124,6 +128,8 @@ func NewGatewaysPutRequestGatewayValue() *GatewaysPutRequestGatewayValue {
 	this.BfdMultihop = &bfdMultihop
 	var tenant string = ""
 	this.Tenant = &tenant
+	var site string = ""
+	this.Site = &site
 	var type_ string = "tenant"
 	this.Type = &type_
 	var neighborIpAddress string = ""
@@ -200,6 +206,8 @@ func NewGatewaysPutRequestGatewayValueWithDefaults() *GatewaysPutRequestGatewayV
 	this.BfdMultihop = &bfdMultihop
 	var tenant string = ""
 	this.Tenant = &tenant
+	var site string = ""
+	this.Site = &site
 	var type_ string = "tenant"
 	this.Type = &type_
 	var neighborIpAddress string = ""
@@ -511,6 +519,70 @@ func (o *GatewaysPutRequestGatewayValue) HasTenantRefType() bool {
 // SetTenantRefType gets a reference to the given string and assigns it to the TenantRefType field.
 func (o *GatewaysPutRequestGatewayValue) SetTenantRefType(v string) {
 	o.TenantRefType = &v
+}
+
+// GetSite returns the Site field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetSite() string {
+	if o == nil || IsNil(o.Site) {
+		var ret string
+		return ret
+	}
+	return *o.Site
+}
+
+// GetSiteOk returns a tuple with the Site field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetSiteOk() (*string, bool) {
+	if o == nil || IsNil(o.Site) {
+		return nil, false
+	}
+	return o.Site, true
+}
+
+// HasSite returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasSite() bool {
+	if o != nil && !IsNil(o.Site) {
+		return true
+	}
+
+	return false
+}
+
+// SetSite gets a reference to the given string and assigns it to the Site field.
+func (o *GatewaysPutRequestGatewayValue) SetSite(v string) {
+	o.Site = &v
+}
+
+// GetSiteRefType returns the SiteRefType field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetSiteRefType() string {
+	if o == nil || IsNil(o.SiteRefType) {
+		var ret string
+		return ret
+	}
+	return *o.SiteRefType
+}
+
+// GetSiteRefTypeOk returns a tuple with the SiteRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetSiteRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SiteRefType) {
+		return nil, false
+	}
+	return o.SiteRefType, true
+}
+
+// HasSiteRefType returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasSiteRefType() bool {
+	if o != nil && !IsNil(o.SiteRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSiteRefType gets a reference to the given string and assigns it to the SiteRefType field.
+func (o *GatewaysPutRequestGatewayValue) SetSiteRefType(v string) {
+	o.SiteRefType = &v
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
@@ -1774,6 +1846,12 @@ func (o GatewaysPutRequestGatewayValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.TenantRefType) {
 		toSerialize["tenant_ref_type_"] = o.TenantRefType
+	}
+	if !IsNil(o.Site) {
+		toSerialize["site"] = o.Site
+	}
+	if !IsNil(o.SiteRefType) {
+		toSerialize["site_ref_type_"] = o.SiteRefType
 	}
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type

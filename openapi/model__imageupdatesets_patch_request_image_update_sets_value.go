@@ -21,8 +21,6 @@ var _ MappedNullable = &ImageupdatesetsPatchRequestImageUpdateSetsValue{}
 type ImageupdatesetsPatchRequestImageUpdateSetsValue struct {
 	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// Show Upgrader Pie Chart on Summary
 	UpgraderOnSummary *bool `json:"upgrader_on_summary,omitempty"`
 	// Show Installation Pie Chart on Summary
@@ -47,8 +45,6 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValue() *ImageupdatesetsPatchR
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValue{}
 	var name string = ""
 	this.Name = &name
-	var enable bool = true
-	this.Enable = &enable
 	var upgraderOnSummary bool = true
 	this.UpgraderOnSummary = &upgraderOnSummary
 	var installationOnSummary bool = true
@@ -69,8 +65,6 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueWithDefaults() *Imageupda
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValue{}
 	var name string = ""
 	this.Name = &name
-	var enable bool = true
-	this.Enable = &enable
 	var upgraderOnSummary bool = true
 	this.UpgraderOnSummary = &upgraderOnSummary
 	var installationOnSummary bool = true
@@ -114,38 +108,6 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetName(v string) {
 	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetUpgraderOnSummary returns the UpgraderOnSummary field value if set, zero value otherwise.
@@ -448,9 +410,6 @@ func (o ImageupdatesetsPatchRequestImageUpdateSetsValue) ToMap() (map[string]int
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.UpgraderOnSummary) {
 		toSerialize["upgrader_on_summary"] = o.UpgraderOnSummary

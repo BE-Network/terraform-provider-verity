@@ -62,7 +62,7 @@ type APIClient struct {
 
 	CommunityListsAPI *CommunityListsAPIService
 
-	DeviceControllersAPI *DeviceControllersAPIService
+	DeviceAAAProfilesAPI *DeviceAAAProfilesAPIService
 
 	DeviceSettingsAPI *DeviceSettingsAPIService
 
@@ -134,6 +134,8 @@ type APIClient struct {
 
 	SwitchpointsAPI *SwitchpointsAPIService
 
+	TACACSProfilesAPI *TACACSProfilesAPIService
+
 	TenantsAPI *TenantsAPIService
 
 	ThresholdGroupsAPI *ThresholdGroupsAPIService
@@ -168,7 +170,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.BadgesAPI = (*BadgesAPIService)(&c.common)
 	c.BundlesAPI = (*BundlesAPIService)(&c.common)
 	c.CommunityListsAPI = (*CommunityListsAPIService)(&c.common)
-	c.DeviceControllersAPI = (*DeviceControllersAPIService)(&c.common)
+	c.DeviceAAAProfilesAPI = (*DeviceAAAProfilesAPIService)(&c.common)
 	c.DeviceSettingsAPI = (*DeviceSettingsAPIService)(&c.common)
 	c.DeviceVoiceSettingsAPI = (*DeviceVoiceSettingsAPIService)(&c.common)
 	c.DiagnosticsPortProfilesAPI = (*DiagnosticsPortProfilesAPIService)(&c.common)
@@ -204,6 +206,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.SuperSpineGroupsAPI = (*SuperSpineGroupsAPIService)(&c.common)
 	c.SwitchPairsAPI = (*SwitchPairsAPIService)(&c.common)
 	c.SwitchpointsAPI = (*SwitchpointsAPIService)(&c.common)
+	c.TACACSProfilesAPI = (*TACACSProfilesAPIService)(&c.common)
 	c.TenantsAPI = (*TenantsAPIService)(&c.common)
 	c.ThresholdGroupsAPI = (*ThresholdGroupsAPIService)(&c.common)
 	c.ThresholdsAPI = (*ThresholdsAPIService)(&c.common)

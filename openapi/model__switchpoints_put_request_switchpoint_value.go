@@ -81,6 +81,70 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	BgpAsNumber NullableInt32 `json:"bgp_as_number,omitempty"`
 	// Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit.
 	BgpAsNumberAutoAssigned *bool `json:"bgp_as_number_auto_assigned_,omitempty"`
+	// Expose fields for Device Management
+	BbSwitch *bool `json:"bb_switch,omitempty"`
+	// Password
+	PasswordEncrypted *string `json:"password_encrypted,omitempty"`
+	// Enable Password - to enable privileged CLI operations
+	EnablePasswordEncrypted *string `json:"enable_password_encrypted,omitempty"`
+	// SSH Key or Password
+	SshKeyOrPasswordEncrypted *string `json:"ssh_key_or_password_encrypted,omitempty"`
+	// Passphrase
+	PassphraseEncrypted *string `json:"passphrase_encrypted,omitempty"`
+	// Password
+	PrivatePasswordEncrypted *string `json:"private_password_encrypted,omitempty"`
+	// IP Source
+	IpSource *string `json:"ip_source,omitempty"`
+	// Controller IP and Mask
+	ControllerIpAndMask *string `json:"controller_ip_and_mask,omitempty"`
+	// Gateway
+	Gateway *string `json:"gateway,omitempty"`
+	// Switch IP and Mask
+	SwitchIpAndMask *string `json:"switch_ip_and_mask,omitempty"`
+	// Gateway of Managed Device
+	SwitchGateway *string `json:"switch_gateway,omitempty"`
+	// Comm Type
+	CommType *string `json:"comm_type,omitempty"`
+	// Comm Credentials
+	SnmpCommunityString *string `json:"snmp_community_string,omitempty"`
+	// Uplink Port of Managed Device
+	UplinkPort *string `json:"uplink_port,omitempty"`
+	// Optional unless Located By is \"LLDP\" or Device managed as \"Active SFP\". Must be either the chassis-id or the hostname of the LLDP from the managed device. Used to detect connections between managed devices. If blank, the chassis-id detected by the Device Controller via SNMP/CLI is used
+	LldpSearchString *string `json:"lldp_search_string,omitempty"`
+	// Service Tag or Serial Number to identify device for Zero Touch Provisioning
+	ZtpIdentification *string `json:"ztp_identification,omitempty"`
+	// Controls how the system locates this Device within its LAN
+	LocatedBy *string `json:"located_by,omitempty"`
+	// Power state of Switch Controller
+	PowerState *string `json:"power_state,omitempty"`
+	// Communication Mode
+	CommunicationMode *string `json:"communication_mode,omitempty"`
+	// CLI Access Mode
+	CliAccessMode *string `json:"cli_access_mode,omitempty"`
+	// Username
+	Username *string `json:"username,omitempty"`
+	// Password
+	Password *string `json:"password,omitempty"`
+	// Enable Password - to enable privileged CLI operations
+	EnablePassword *string `json:"enable_password,omitempty"`
+	// SSH Key or Password
+	SshKeyOrPassword *string `json:"ssh_key_or_password,omitempty"`
+	// Managed on native VLAN
+	ManagedOnNativeVlan *bool `json:"managed_on_native_vlan,omitempty"`
+	// SDLC that Device Controller belongs to
+	Sdlc *string `json:"sdlc,omitempty"`
+	// Security level
+	SecurityType *string `json:"security_type,omitempty"`
+	// Username
+	Snmpv3Username *string `json:"snmpv3_username,omitempty"`
+	// Protocol
+	AuthenticationProtocol *string `json:"authentication_protocol,omitempty"`
+	// Passphrase
+	Passphrase *string `json:"passphrase,omitempty"`
+	// Protocol
+	PrivateProtocol *string `json:"private_protocol,omitempty"`
+	// Password
+	PrivatePassword *string `json:"private_password,omitempty"`
 	Badges []SwitchpointsPutRequestSwitchpointValueBadgesInner `json:"badges,omitempty"`
 	Children []SwitchpointsPutRequestSwitchpointValueChildrenInner `json:"children,omitempty"`
 	TrafficMirrors []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner `json:"traffic_mirrors,omitempty"`
@@ -88,6 +152,20 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	ObjectProperties *SwitchpointsPutRequestSwitchpointValueObjectProperties `json:"object_properties,omitempty"`
 	// For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device
 	IsFabric *bool `json:"is_fabric,omitempty"`
+	// Device managed as
+	DeviceManagedAs *string `json:"device_managed_as,omitempty"`
+	// Switchpoint locating the Switch to be controlled
+	Switch *string `json:"switch,omitempty"`
+	// Object type for switch field
+	SwitchRefType *string `json:"switch_ref_type_,omitempty"`
+	// Connect a Service
+	ConnectionService *string `json:"connection_service,omitempty"`
+	// Object type for connection_service field
+	ConnectionServiceRefType *string `json:"connection_service_ref_type_,omitempty"`
+	// Port locating the Switch to be controlled
+	Port *string `json:"port,omitempty"`
+	// Indicates if the direct interface expects tagged or untagged packets
+	UsesTaggedPackets *bool `json:"uses_tagged_packets,omitempty"`
 	Pots []SwitchpointsPutRequestSwitchpointValuePotsInner `json:"pots,omitempty"`
 }
 
@@ -133,8 +211,82 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
+	var bbSwitch bool = false
+	this.BbSwitch = &bbSwitch
+	var passwordEncrypted string = ""
+	this.PasswordEncrypted = &passwordEncrypted
+	var enablePasswordEncrypted string = ""
+	this.EnablePasswordEncrypted = &enablePasswordEncrypted
+	var sshKeyOrPasswordEncrypted string = ""
+	this.SshKeyOrPasswordEncrypted = &sshKeyOrPasswordEncrypted
+	var passphraseEncrypted string = ""
+	this.PassphraseEncrypted = &passphraseEncrypted
+	var privatePasswordEncrypted string = ""
+	this.PrivatePasswordEncrypted = &privatePasswordEncrypted
+	var ipSource string = "dhcp"
+	this.IpSource = &ipSource
+	var controllerIpAndMask string = ""
+	this.ControllerIpAndMask = &controllerIpAndMask
+	var gateway string = ""
+	this.Gateway = &gateway
+	var switchIpAndMask string = ""
+	this.SwitchIpAndMask = &switchIpAndMask
+	var switchGateway string = ""
+	this.SwitchGateway = &switchGateway
+	var commType string = "snmpv2"
+	this.CommType = &commType
+	var snmpCommunityString string = ""
+	this.SnmpCommunityString = &snmpCommunityString
+	var uplinkPort string = ""
+	this.UplinkPort = &uplinkPort
+	var lldpSearchString string = ""
+	this.LldpSearchString = &lldpSearchString
+	var ztpIdentification string = ""
+	this.ZtpIdentification = &ztpIdentification
+	var locatedBy string = "LLDP"
+	this.LocatedBy = &locatedBy
+	var powerState string = "on"
+	this.PowerState = &powerState
+	var communicationMode string = "generic_snmp"
+	this.CommunicationMode = &communicationMode
+	var cliAccessMode string = "SSH"
+	this.CliAccessMode = &cliAccessMode
+	var username string = ""
+	this.Username = &username
+	var password string = ""
+	this.Password = &password
+	var enablePassword string = ""
+	this.EnablePassword = &enablePassword
+	var sshKeyOrPassword string = ""
+	this.SshKeyOrPassword = &sshKeyOrPassword
+	var managedOnNativeVlan bool = false
+	this.ManagedOnNativeVlan = &managedOnNativeVlan
+	var sdlc string = ""
+	this.Sdlc = &sdlc
+	var securityType string = "noAuthNoPriv"
+	this.SecurityType = &securityType
+	var snmpv3Username string = ""
+	this.Snmpv3Username = &snmpv3Username
+	var authenticationProtocol string = "MD5"
+	this.AuthenticationProtocol = &authenticationProtocol
+	var passphrase string = ""
+	this.Passphrase = &passphrase
+	var privateProtocol string = "DES"
+	this.PrivateProtocol = &privateProtocol
+	var privatePassword string = ""
+	this.PrivatePassword = &privatePassword
 	var isFabric bool = false
 	this.IsFabric = &isFabric
+	var deviceManagedAs string = "switch"
+	this.DeviceManagedAs = &deviceManagedAs
+	var switch_ string = ""
+	this.Switch = &switch_
+	var connectionService string = ""
+	this.ConnectionService = &connectionService
+	var port string = ""
+	this.Port = &port
+	var usesTaggedPackets bool = true
+	this.UsesTaggedPackets = &usesTaggedPackets
 	return &this
 }
 
@@ -179,8 +331,82 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
+	var bbSwitch bool = false
+	this.BbSwitch = &bbSwitch
+	var passwordEncrypted string = ""
+	this.PasswordEncrypted = &passwordEncrypted
+	var enablePasswordEncrypted string = ""
+	this.EnablePasswordEncrypted = &enablePasswordEncrypted
+	var sshKeyOrPasswordEncrypted string = ""
+	this.SshKeyOrPasswordEncrypted = &sshKeyOrPasswordEncrypted
+	var passphraseEncrypted string = ""
+	this.PassphraseEncrypted = &passphraseEncrypted
+	var privatePasswordEncrypted string = ""
+	this.PrivatePasswordEncrypted = &privatePasswordEncrypted
+	var ipSource string = "dhcp"
+	this.IpSource = &ipSource
+	var controllerIpAndMask string = ""
+	this.ControllerIpAndMask = &controllerIpAndMask
+	var gateway string = ""
+	this.Gateway = &gateway
+	var switchIpAndMask string = ""
+	this.SwitchIpAndMask = &switchIpAndMask
+	var switchGateway string = ""
+	this.SwitchGateway = &switchGateway
+	var commType string = "snmpv2"
+	this.CommType = &commType
+	var snmpCommunityString string = ""
+	this.SnmpCommunityString = &snmpCommunityString
+	var uplinkPort string = ""
+	this.UplinkPort = &uplinkPort
+	var lldpSearchString string = ""
+	this.LldpSearchString = &lldpSearchString
+	var ztpIdentification string = ""
+	this.ZtpIdentification = &ztpIdentification
+	var locatedBy string = "LLDP"
+	this.LocatedBy = &locatedBy
+	var powerState string = "on"
+	this.PowerState = &powerState
+	var communicationMode string = "generic_snmp"
+	this.CommunicationMode = &communicationMode
+	var cliAccessMode string = "SSH"
+	this.CliAccessMode = &cliAccessMode
+	var username string = ""
+	this.Username = &username
+	var password string = ""
+	this.Password = &password
+	var enablePassword string = ""
+	this.EnablePassword = &enablePassword
+	var sshKeyOrPassword string = ""
+	this.SshKeyOrPassword = &sshKeyOrPassword
+	var managedOnNativeVlan bool = false
+	this.ManagedOnNativeVlan = &managedOnNativeVlan
+	var sdlc string = ""
+	this.Sdlc = &sdlc
+	var securityType string = "noAuthNoPriv"
+	this.SecurityType = &securityType
+	var snmpv3Username string = ""
+	this.Snmpv3Username = &snmpv3Username
+	var authenticationProtocol string = "MD5"
+	this.AuthenticationProtocol = &authenticationProtocol
+	var passphrase string = ""
+	this.Passphrase = &passphrase
+	var privateProtocol string = "DES"
+	this.PrivateProtocol = &privateProtocol
+	var privatePassword string = ""
+	this.PrivatePassword = &privatePassword
 	var isFabric bool = false
 	this.IsFabric = &isFabric
+	var deviceManagedAs string = "switch"
+	this.DeviceManagedAs = &deviceManagedAs
+	var switch_ string = ""
+	this.Switch = &switch_
+	var connectionService string = ""
+	this.ConnectionService = &connectionService
+	var port string = ""
+	this.Port = &port
+	var usesTaggedPackets bool = true
+	this.UsesTaggedPackets = &usesTaggedPackets
 	return &this
 }
 
@@ -1206,6 +1432,1030 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumberAutoAssigned(v bo
 	o.BgpAsNumberAutoAssigned = &v
 }
 
+// GetBbSwitch returns the BbSwitch field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetBbSwitch() bool {
+	if o == nil || IsNil(o.BbSwitch) {
+		var ret bool
+		return ret
+	}
+	return *o.BbSwitch
+}
+
+// GetBbSwitchOk returns a tuple with the BbSwitch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetBbSwitchOk() (*bool, bool) {
+	if o == nil || IsNil(o.BbSwitch) {
+		return nil, false
+	}
+	return o.BbSwitch, true
+}
+
+// HasBbSwitch returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasBbSwitch() bool {
+	if o != nil && !IsNil(o.BbSwitch) {
+		return true
+	}
+
+	return false
+}
+
+// SetBbSwitch gets a reference to the given bool and assigns it to the BbSwitch field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetBbSwitch(v bool) {
+	o.BbSwitch = &v
+}
+
+// GetPasswordEncrypted returns the PasswordEncrypted field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPasswordEncrypted() string {
+	if o == nil || IsNil(o.PasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.PasswordEncrypted
+}
+
+// GetPasswordEncryptedOk returns a tuple with the PasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.PasswordEncrypted) {
+		return nil, false
+	}
+	return o.PasswordEncrypted, true
+}
+
+// HasPasswordEncrypted returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.PasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetPasswordEncrypted gets a reference to the given string and assigns it to the PasswordEncrypted field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPasswordEncrypted(v string) {
+	o.PasswordEncrypted = &v
+}
+
+// GetEnablePasswordEncrypted returns the EnablePasswordEncrypted field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetEnablePasswordEncrypted() string {
+	if o == nil || IsNil(o.EnablePasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.EnablePasswordEncrypted
+}
+
+// GetEnablePasswordEncryptedOk returns a tuple with the EnablePasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetEnablePasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.EnablePasswordEncrypted) {
+		return nil, false
+	}
+	return o.EnablePasswordEncrypted, true
+}
+
+// HasEnablePasswordEncrypted returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasEnablePasswordEncrypted() bool {
+	if o != nil && !IsNil(o.EnablePasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnablePasswordEncrypted gets a reference to the given string and assigns it to the EnablePasswordEncrypted field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetEnablePasswordEncrypted(v string) {
+	o.EnablePasswordEncrypted = &v
+}
+
+// GetSshKeyOrPasswordEncrypted returns the SshKeyOrPasswordEncrypted field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSshKeyOrPasswordEncrypted() string {
+	if o == nil || IsNil(o.SshKeyOrPasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.SshKeyOrPasswordEncrypted
+}
+
+// GetSshKeyOrPasswordEncryptedOk returns a tuple with the SshKeyOrPasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSshKeyOrPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.SshKeyOrPasswordEncrypted) {
+		return nil, false
+	}
+	return o.SshKeyOrPasswordEncrypted, true
+}
+
+// HasSshKeyOrPasswordEncrypted returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSshKeyOrPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.SshKeyOrPasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetSshKeyOrPasswordEncrypted gets a reference to the given string and assigns it to the SshKeyOrPasswordEncrypted field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSshKeyOrPasswordEncrypted(v string) {
+	o.SshKeyOrPasswordEncrypted = &v
+}
+
+// GetPassphraseEncrypted returns the PassphraseEncrypted field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPassphraseEncrypted() string {
+	if o == nil || IsNil(o.PassphraseEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.PassphraseEncrypted
+}
+
+// GetPassphraseEncryptedOk returns a tuple with the PassphraseEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPassphraseEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.PassphraseEncrypted) {
+		return nil, false
+	}
+	return o.PassphraseEncrypted, true
+}
+
+// HasPassphraseEncrypted returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPassphraseEncrypted() bool {
+	if o != nil && !IsNil(o.PassphraseEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetPassphraseEncrypted gets a reference to the given string and assigns it to the PassphraseEncrypted field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPassphraseEncrypted(v string) {
+	o.PassphraseEncrypted = &v
+}
+
+// GetPrivatePasswordEncrypted returns the PrivatePasswordEncrypted field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPrivatePasswordEncrypted() string {
+	if o == nil || IsNil(o.PrivatePasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.PrivatePasswordEncrypted
+}
+
+// GetPrivatePasswordEncryptedOk returns a tuple with the PrivatePasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPrivatePasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.PrivatePasswordEncrypted) {
+		return nil, false
+	}
+	return o.PrivatePasswordEncrypted, true
+}
+
+// HasPrivatePasswordEncrypted returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPrivatePasswordEncrypted() bool {
+	if o != nil && !IsNil(o.PrivatePasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivatePasswordEncrypted gets a reference to the given string and assigns it to the PrivatePasswordEncrypted field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPrivatePasswordEncrypted(v string) {
+	o.PrivatePasswordEncrypted = &v
+}
+
+// GetIpSource returns the IpSource field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetIpSource() string {
+	if o == nil || IsNil(o.IpSource) {
+		var ret string
+		return ret
+	}
+	return *o.IpSource
+}
+
+// GetIpSourceOk returns a tuple with the IpSource field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetIpSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.IpSource) {
+		return nil, false
+	}
+	return o.IpSource, true
+}
+
+// HasIpSource returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasIpSource() bool {
+	if o != nil && !IsNil(o.IpSource) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpSource gets a reference to the given string and assigns it to the IpSource field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetIpSource(v string) {
+	o.IpSource = &v
+}
+
+// GetControllerIpAndMask returns the ControllerIpAndMask field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetControllerIpAndMask() string {
+	if o == nil || IsNil(o.ControllerIpAndMask) {
+		var ret string
+		return ret
+	}
+	return *o.ControllerIpAndMask
+}
+
+// GetControllerIpAndMaskOk returns a tuple with the ControllerIpAndMask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetControllerIpAndMaskOk() (*string, bool) {
+	if o == nil || IsNil(o.ControllerIpAndMask) {
+		return nil, false
+	}
+	return o.ControllerIpAndMask, true
+}
+
+// HasControllerIpAndMask returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasControllerIpAndMask() bool {
+	if o != nil && !IsNil(o.ControllerIpAndMask) {
+		return true
+	}
+
+	return false
+}
+
+// SetControllerIpAndMask gets a reference to the given string and assigns it to the ControllerIpAndMask field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetControllerIpAndMask(v string) {
+	o.ControllerIpAndMask = &v
+}
+
+// GetGateway returns the Gateway field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetGateway() string {
+	if o == nil || IsNil(o.Gateway) {
+		var ret string
+		return ret
+	}
+	return *o.Gateway
+}
+
+// GetGatewayOk returns a tuple with the Gateway field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetGatewayOk() (*string, bool) {
+	if o == nil || IsNil(o.Gateway) {
+		return nil, false
+	}
+	return o.Gateway, true
+}
+
+// HasGateway returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasGateway() bool {
+	if o != nil && !IsNil(o.Gateway) {
+		return true
+	}
+
+	return false
+}
+
+// SetGateway gets a reference to the given string and assigns it to the Gateway field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetGateway(v string) {
+	o.Gateway = &v
+}
+
+// GetSwitchIpAndMask returns the SwitchIpAndMask field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchIpAndMask() string {
+	if o == nil || IsNil(o.SwitchIpAndMask) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchIpAndMask
+}
+
+// GetSwitchIpAndMaskOk returns a tuple with the SwitchIpAndMask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchIpAndMaskOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchIpAndMask) {
+		return nil, false
+	}
+	return o.SwitchIpAndMask, true
+}
+
+// HasSwitchIpAndMask returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchIpAndMask() bool {
+	if o != nil && !IsNil(o.SwitchIpAndMask) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchIpAndMask gets a reference to the given string and assigns it to the SwitchIpAndMask field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchIpAndMask(v string) {
+	o.SwitchIpAndMask = &v
+}
+
+// GetSwitchGateway returns the SwitchGateway field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchGateway() string {
+	if o == nil || IsNil(o.SwitchGateway) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchGateway
+}
+
+// GetSwitchGatewayOk returns a tuple with the SwitchGateway field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchGatewayOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchGateway) {
+		return nil, false
+	}
+	return o.SwitchGateway, true
+}
+
+// HasSwitchGateway returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchGateway() bool {
+	if o != nil && !IsNil(o.SwitchGateway) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchGateway gets a reference to the given string and assigns it to the SwitchGateway field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchGateway(v string) {
+	o.SwitchGateway = &v
+}
+
+// GetCommType returns the CommType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetCommType() string {
+	if o == nil || IsNil(o.CommType) {
+		var ret string
+		return ret
+	}
+	return *o.CommType
+}
+
+// GetCommTypeOk returns a tuple with the CommType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetCommTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.CommType) {
+		return nil, false
+	}
+	return o.CommType, true
+}
+
+// HasCommType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasCommType() bool {
+	if o != nil && !IsNil(o.CommType) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommType gets a reference to the given string and assigns it to the CommType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetCommType(v string) {
+	o.CommType = &v
+}
+
+// GetSnmpCommunityString returns the SnmpCommunityString field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSnmpCommunityString() string {
+	if o == nil || IsNil(o.SnmpCommunityString) {
+		var ret string
+		return ret
+	}
+	return *o.SnmpCommunityString
+}
+
+// GetSnmpCommunityStringOk returns a tuple with the SnmpCommunityString field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSnmpCommunityStringOk() (*string, bool) {
+	if o == nil || IsNil(o.SnmpCommunityString) {
+		return nil, false
+	}
+	return o.SnmpCommunityString, true
+}
+
+// HasSnmpCommunityString returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSnmpCommunityString() bool {
+	if o != nil && !IsNil(o.SnmpCommunityString) {
+		return true
+	}
+
+	return false
+}
+
+// SetSnmpCommunityString gets a reference to the given string and assigns it to the SnmpCommunityString field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSnmpCommunityString(v string) {
+	o.SnmpCommunityString = &v
+}
+
+// GetUplinkPort returns the UplinkPort field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUplinkPort() string {
+	if o == nil || IsNil(o.UplinkPort) {
+		var ret string
+		return ret
+	}
+	return *o.UplinkPort
+}
+
+// GetUplinkPortOk returns a tuple with the UplinkPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUplinkPortOk() (*string, bool) {
+	if o == nil || IsNil(o.UplinkPort) {
+		return nil, false
+	}
+	return o.UplinkPort, true
+}
+
+// HasUplinkPort returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasUplinkPort() bool {
+	if o != nil && !IsNil(o.UplinkPort) {
+		return true
+	}
+
+	return false
+}
+
+// SetUplinkPort gets a reference to the given string and assigns it to the UplinkPort field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetUplinkPort(v string) {
+	o.UplinkPort = &v
+}
+
+// GetLldpSearchString returns the LldpSearchString field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetLldpSearchString() string {
+	if o == nil || IsNil(o.LldpSearchString) {
+		var ret string
+		return ret
+	}
+	return *o.LldpSearchString
+}
+
+// GetLldpSearchStringOk returns a tuple with the LldpSearchString field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetLldpSearchStringOk() (*string, bool) {
+	if o == nil || IsNil(o.LldpSearchString) {
+		return nil, false
+	}
+	return o.LldpSearchString, true
+}
+
+// HasLldpSearchString returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasLldpSearchString() bool {
+	if o != nil && !IsNil(o.LldpSearchString) {
+		return true
+	}
+
+	return false
+}
+
+// SetLldpSearchString gets a reference to the given string and assigns it to the LldpSearchString field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetLldpSearchString(v string) {
+	o.LldpSearchString = &v
+}
+
+// GetZtpIdentification returns the ZtpIdentification field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetZtpIdentification() string {
+	if o == nil || IsNil(o.ZtpIdentification) {
+		var ret string
+		return ret
+	}
+	return *o.ZtpIdentification
+}
+
+// GetZtpIdentificationOk returns a tuple with the ZtpIdentification field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetZtpIdentificationOk() (*string, bool) {
+	if o == nil || IsNil(o.ZtpIdentification) {
+		return nil, false
+	}
+	return o.ZtpIdentification, true
+}
+
+// HasZtpIdentification returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasZtpIdentification() bool {
+	if o != nil && !IsNil(o.ZtpIdentification) {
+		return true
+	}
+
+	return false
+}
+
+// SetZtpIdentification gets a reference to the given string and assigns it to the ZtpIdentification field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetZtpIdentification(v string) {
+	o.ZtpIdentification = &v
+}
+
+// GetLocatedBy returns the LocatedBy field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetLocatedBy() string {
+	if o == nil || IsNil(o.LocatedBy) {
+		var ret string
+		return ret
+	}
+	return *o.LocatedBy
+}
+
+// GetLocatedByOk returns a tuple with the LocatedBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetLocatedByOk() (*string, bool) {
+	if o == nil || IsNil(o.LocatedBy) {
+		return nil, false
+	}
+	return o.LocatedBy, true
+}
+
+// HasLocatedBy returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasLocatedBy() bool {
+	if o != nil && !IsNil(o.LocatedBy) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocatedBy gets a reference to the given string and assigns it to the LocatedBy field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetLocatedBy(v string) {
+	o.LocatedBy = &v
+}
+
+// GetPowerState returns the PowerState field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPowerState() string {
+	if o == nil || IsNil(o.PowerState) {
+		var ret string
+		return ret
+	}
+	return *o.PowerState
+}
+
+// GetPowerStateOk returns a tuple with the PowerState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPowerStateOk() (*string, bool) {
+	if o == nil || IsNil(o.PowerState) {
+		return nil, false
+	}
+	return o.PowerState, true
+}
+
+// HasPowerState returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPowerState() bool {
+	if o != nil && !IsNil(o.PowerState) {
+		return true
+	}
+
+	return false
+}
+
+// SetPowerState gets a reference to the given string and assigns it to the PowerState field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPowerState(v string) {
+	o.PowerState = &v
+}
+
+// GetCommunicationMode returns the CommunicationMode field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetCommunicationMode() string {
+	if o == nil || IsNil(o.CommunicationMode) {
+		var ret string
+		return ret
+	}
+	return *o.CommunicationMode
+}
+
+// GetCommunicationModeOk returns a tuple with the CommunicationMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetCommunicationModeOk() (*string, bool) {
+	if o == nil || IsNil(o.CommunicationMode) {
+		return nil, false
+	}
+	return o.CommunicationMode, true
+}
+
+// HasCommunicationMode returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasCommunicationMode() bool {
+	if o != nil && !IsNil(o.CommunicationMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommunicationMode gets a reference to the given string and assigns it to the CommunicationMode field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetCommunicationMode(v string) {
+	o.CommunicationMode = &v
+}
+
+// GetCliAccessMode returns the CliAccessMode field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetCliAccessMode() string {
+	if o == nil || IsNil(o.CliAccessMode) {
+		var ret string
+		return ret
+	}
+	return *o.CliAccessMode
+}
+
+// GetCliAccessModeOk returns a tuple with the CliAccessMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetCliAccessModeOk() (*string, bool) {
+	if o == nil || IsNil(o.CliAccessMode) {
+		return nil, false
+	}
+	return o.CliAccessMode, true
+}
+
+// HasCliAccessMode returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasCliAccessMode() bool {
+	if o != nil && !IsNil(o.CliAccessMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetCliAccessMode gets a reference to the given string and assigns it to the CliAccessMode field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetCliAccessMode(v string) {
+	o.CliAccessMode = &v
+}
+
+// GetUsername returns the Username field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUsername() string {
+	if o == nil || IsNil(o.Username) {
+		var ret string
+		return ret
+	}
+	return *o.Username
+}
+
+// GetUsernameOk returns a tuple with the Username field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.Username) {
+		return nil, false
+	}
+	return o.Username, true
+}
+
+// HasUsername returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasUsername() bool {
+	if o != nil && !IsNil(o.Username) {
+		return true
+	}
+
+	return false
+}
+
+// SetUsername gets a reference to the given string and assigns it to the Username field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetUsername(v string) {
+	o.Username = &v
+}
+
+// GetPassword returns the Password field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPassword() string {
+	if o == nil || IsNil(o.Password) {
+		var ret string
+		return ret
+	}
+	return *o.Password
+}
+
+// GetPasswordOk returns a tuple with the Password field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.Password) {
+		return nil, false
+	}
+	return o.Password, true
+}
+
+// HasPassword returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPassword() bool {
+	if o != nil && !IsNil(o.Password) {
+		return true
+	}
+
+	return false
+}
+
+// SetPassword gets a reference to the given string and assigns it to the Password field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPassword(v string) {
+	o.Password = &v
+}
+
+// GetEnablePassword returns the EnablePassword field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetEnablePassword() string {
+	if o == nil || IsNil(o.EnablePassword) {
+		var ret string
+		return ret
+	}
+	return *o.EnablePassword
+}
+
+// GetEnablePasswordOk returns a tuple with the EnablePassword field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetEnablePasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.EnablePassword) {
+		return nil, false
+	}
+	return o.EnablePassword, true
+}
+
+// HasEnablePassword returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasEnablePassword() bool {
+	if o != nil && !IsNil(o.EnablePassword) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnablePassword gets a reference to the given string and assigns it to the EnablePassword field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetEnablePassword(v string) {
+	o.EnablePassword = &v
+}
+
+// GetSshKeyOrPassword returns the SshKeyOrPassword field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSshKeyOrPassword() string {
+	if o == nil || IsNil(o.SshKeyOrPassword) {
+		var ret string
+		return ret
+	}
+	return *o.SshKeyOrPassword
+}
+
+// GetSshKeyOrPasswordOk returns a tuple with the SshKeyOrPassword field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSshKeyOrPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.SshKeyOrPassword) {
+		return nil, false
+	}
+	return o.SshKeyOrPassword, true
+}
+
+// HasSshKeyOrPassword returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSshKeyOrPassword() bool {
+	if o != nil && !IsNil(o.SshKeyOrPassword) {
+		return true
+	}
+
+	return false
+}
+
+// SetSshKeyOrPassword gets a reference to the given string and assigns it to the SshKeyOrPassword field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSshKeyOrPassword(v string) {
+	o.SshKeyOrPassword = &v
+}
+
+// GetManagedOnNativeVlan returns the ManagedOnNativeVlan field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetManagedOnNativeVlan() bool {
+	if o == nil || IsNil(o.ManagedOnNativeVlan) {
+		var ret bool
+		return ret
+	}
+	return *o.ManagedOnNativeVlan
+}
+
+// GetManagedOnNativeVlanOk returns a tuple with the ManagedOnNativeVlan field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetManagedOnNativeVlanOk() (*bool, bool) {
+	if o == nil || IsNil(o.ManagedOnNativeVlan) {
+		return nil, false
+	}
+	return o.ManagedOnNativeVlan, true
+}
+
+// HasManagedOnNativeVlan returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasManagedOnNativeVlan() bool {
+	if o != nil && !IsNil(o.ManagedOnNativeVlan) {
+		return true
+	}
+
+	return false
+}
+
+// SetManagedOnNativeVlan gets a reference to the given bool and assigns it to the ManagedOnNativeVlan field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetManagedOnNativeVlan(v bool) {
+	o.ManagedOnNativeVlan = &v
+}
+
+// GetSdlc returns the Sdlc field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSdlc() string {
+	if o == nil || IsNil(o.Sdlc) {
+		var ret string
+		return ret
+	}
+	return *o.Sdlc
+}
+
+// GetSdlcOk returns a tuple with the Sdlc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSdlcOk() (*string, bool) {
+	if o == nil || IsNil(o.Sdlc) {
+		return nil, false
+	}
+	return o.Sdlc, true
+}
+
+// HasSdlc returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSdlc() bool {
+	if o != nil && !IsNil(o.Sdlc) {
+		return true
+	}
+
+	return false
+}
+
+// SetSdlc gets a reference to the given string and assigns it to the Sdlc field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSdlc(v string) {
+	o.Sdlc = &v
+}
+
+// GetSecurityType returns the SecurityType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSecurityType() string {
+	if o == nil || IsNil(o.SecurityType) {
+		var ret string
+		return ret
+	}
+	return *o.SecurityType
+}
+
+// GetSecurityTypeOk returns a tuple with the SecurityType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSecurityTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SecurityType) {
+		return nil, false
+	}
+	return o.SecurityType, true
+}
+
+// HasSecurityType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSecurityType() bool {
+	if o != nil && !IsNil(o.SecurityType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityType gets a reference to the given string and assigns it to the SecurityType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSecurityType(v string) {
+	o.SecurityType = &v
+}
+
+// GetSnmpv3Username returns the Snmpv3Username field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSnmpv3Username() string {
+	if o == nil || IsNil(o.Snmpv3Username) {
+		var ret string
+		return ret
+	}
+	return *o.Snmpv3Username
+}
+
+// GetSnmpv3UsernameOk returns a tuple with the Snmpv3Username field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSnmpv3UsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.Snmpv3Username) {
+		return nil, false
+	}
+	return o.Snmpv3Username, true
+}
+
+// HasSnmpv3Username returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSnmpv3Username() bool {
+	if o != nil && !IsNil(o.Snmpv3Username) {
+		return true
+	}
+
+	return false
+}
+
+// SetSnmpv3Username gets a reference to the given string and assigns it to the Snmpv3Username field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSnmpv3Username(v string) {
+	o.Snmpv3Username = &v
+}
+
+// GetAuthenticationProtocol returns the AuthenticationProtocol field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetAuthenticationProtocol() string {
+	if o == nil || IsNil(o.AuthenticationProtocol) {
+		var ret string
+		return ret
+	}
+	return *o.AuthenticationProtocol
+}
+
+// GetAuthenticationProtocolOk returns a tuple with the AuthenticationProtocol field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetAuthenticationProtocolOk() (*string, bool) {
+	if o == nil || IsNil(o.AuthenticationProtocol) {
+		return nil, false
+	}
+	return o.AuthenticationProtocol, true
+}
+
+// HasAuthenticationProtocol returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasAuthenticationProtocol() bool {
+	if o != nil && !IsNil(o.AuthenticationProtocol) {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthenticationProtocol gets a reference to the given string and assigns it to the AuthenticationProtocol field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetAuthenticationProtocol(v string) {
+	o.AuthenticationProtocol = &v
+}
+
+// GetPassphrase returns the Passphrase field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPassphrase() string {
+	if o == nil || IsNil(o.Passphrase) {
+		var ret string
+		return ret
+	}
+	return *o.Passphrase
+}
+
+// GetPassphraseOk returns a tuple with the Passphrase field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPassphraseOk() (*string, bool) {
+	if o == nil || IsNil(o.Passphrase) {
+		return nil, false
+	}
+	return o.Passphrase, true
+}
+
+// HasPassphrase returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPassphrase() bool {
+	if o != nil && !IsNil(o.Passphrase) {
+		return true
+	}
+
+	return false
+}
+
+// SetPassphrase gets a reference to the given string and assigns it to the Passphrase field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPassphrase(v string) {
+	o.Passphrase = &v
+}
+
+// GetPrivateProtocol returns the PrivateProtocol field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPrivateProtocol() string {
+	if o == nil || IsNil(o.PrivateProtocol) {
+		var ret string
+		return ret
+	}
+	return *o.PrivateProtocol
+}
+
+// GetPrivateProtocolOk returns a tuple with the PrivateProtocol field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPrivateProtocolOk() (*string, bool) {
+	if o == nil || IsNil(o.PrivateProtocol) {
+		return nil, false
+	}
+	return o.PrivateProtocol, true
+}
+
+// HasPrivateProtocol returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPrivateProtocol() bool {
+	if o != nil && !IsNil(o.PrivateProtocol) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivateProtocol gets a reference to the given string and assigns it to the PrivateProtocol field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPrivateProtocol(v string) {
+	o.PrivateProtocol = &v
+}
+
+// GetPrivatePassword returns the PrivatePassword field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPrivatePassword() string {
+	if o == nil || IsNil(o.PrivatePassword) {
+		var ret string
+		return ret
+	}
+	return *o.PrivatePassword
+}
+
+// GetPrivatePasswordOk returns a tuple with the PrivatePassword field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPrivatePasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.PrivatePassword) {
+		return nil, false
+	}
+	return o.PrivatePassword, true
+}
+
+// HasPrivatePassword returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPrivatePassword() bool {
+	if o != nil && !IsNil(o.PrivatePassword) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivatePassword gets a reference to the given string and assigns it to the PrivatePassword field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPrivatePassword(v string) {
+	o.PrivatePassword = &v
+}
+
 // GetBadges returns the Badges field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetBadges() []SwitchpointsPutRequestSwitchpointValueBadgesInner {
 	if o == nil || IsNil(o.Badges) {
@@ -1398,6 +2648,230 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetIsFabric(v bool) {
 	o.IsFabric = &v
 }
 
+// GetDeviceManagedAs returns the DeviceManagedAs field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetDeviceManagedAs() string {
+	if o == nil || IsNil(o.DeviceManagedAs) {
+		var ret string
+		return ret
+	}
+	return *o.DeviceManagedAs
+}
+
+// GetDeviceManagedAsOk returns a tuple with the DeviceManagedAs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetDeviceManagedAsOk() (*string, bool) {
+	if o == nil || IsNil(o.DeviceManagedAs) {
+		return nil, false
+	}
+	return o.DeviceManagedAs, true
+}
+
+// HasDeviceManagedAs returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasDeviceManagedAs() bool {
+	if o != nil && !IsNil(o.DeviceManagedAs) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeviceManagedAs gets a reference to the given string and assigns it to the DeviceManagedAs field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetDeviceManagedAs(v string) {
+	o.DeviceManagedAs = &v
+}
+
+// GetSwitch returns the Switch field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitch() string {
+	if o == nil || IsNil(o.Switch) {
+		var ret string
+		return ret
+	}
+	return *o.Switch
+}
+
+// GetSwitchOk returns a tuple with the Switch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchOk() (*string, bool) {
+	if o == nil || IsNil(o.Switch) {
+		return nil, false
+	}
+	return o.Switch, true
+}
+
+// HasSwitch returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitch() bool {
+	if o != nil && !IsNil(o.Switch) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitch gets a reference to the given string and assigns it to the Switch field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitch(v string) {
+	o.Switch = &v
+}
+
+// GetSwitchRefType returns the SwitchRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchRefType() string {
+	if o == nil || IsNil(o.SwitchRefType) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchRefType
+}
+
+// GetSwitchRefTypeOk returns a tuple with the SwitchRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchRefType) {
+		return nil, false
+	}
+	return o.SwitchRefType, true
+}
+
+// HasSwitchRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchRefType() bool {
+	if o != nil && !IsNil(o.SwitchRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchRefType gets a reference to the given string and assigns it to the SwitchRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchRefType(v string) {
+	o.SwitchRefType = &v
+}
+
+// GetConnectionService returns the ConnectionService field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetConnectionService() string {
+	if o == nil || IsNil(o.ConnectionService) {
+		var ret string
+		return ret
+	}
+	return *o.ConnectionService
+}
+
+// GetConnectionServiceOk returns a tuple with the ConnectionService field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetConnectionServiceOk() (*string, bool) {
+	if o == nil || IsNil(o.ConnectionService) {
+		return nil, false
+	}
+	return o.ConnectionService, true
+}
+
+// HasConnectionService returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasConnectionService() bool {
+	if o != nil && !IsNil(o.ConnectionService) {
+		return true
+	}
+
+	return false
+}
+
+// SetConnectionService gets a reference to the given string and assigns it to the ConnectionService field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetConnectionService(v string) {
+	o.ConnectionService = &v
+}
+
+// GetConnectionServiceRefType returns the ConnectionServiceRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetConnectionServiceRefType() string {
+	if o == nil || IsNil(o.ConnectionServiceRefType) {
+		var ret string
+		return ret
+	}
+	return *o.ConnectionServiceRefType
+}
+
+// GetConnectionServiceRefTypeOk returns a tuple with the ConnectionServiceRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetConnectionServiceRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ConnectionServiceRefType) {
+		return nil, false
+	}
+	return o.ConnectionServiceRefType, true
+}
+
+// HasConnectionServiceRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasConnectionServiceRefType() bool {
+	if o != nil && !IsNil(o.ConnectionServiceRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetConnectionServiceRefType gets a reference to the given string and assigns it to the ConnectionServiceRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetConnectionServiceRefType(v string) {
+	o.ConnectionServiceRefType = &v
+}
+
+// GetPort returns the Port field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPort() string {
+	if o == nil || IsNil(o.Port) {
+		var ret string
+		return ret
+	}
+	return *o.Port
+}
+
+// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPortOk() (*string, bool) {
+	if o == nil || IsNil(o.Port) {
+		return nil, false
+	}
+	return o.Port, true
+}
+
+// HasPort returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasPort() bool {
+	if o != nil && !IsNil(o.Port) {
+		return true
+	}
+
+	return false
+}
+
+// SetPort gets a reference to the given string and assigns it to the Port field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPort(v string) {
+	o.Port = &v
+}
+
+// GetUsesTaggedPackets returns the UsesTaggedPackets field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUsesTaggedPackets() bool {
+	if o == nil || IsNil(o.UsesTaggedPackets) {
+		var ret bool
+		return ret
+	}
+	return *o.UsesTaggedPackets
+}
+
+// GetUsesTaggedPacketsOk returns a tuple with the UsesTaggedPackets field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUsesTaggedPacketsOk() (*bool, bool) {
+	if o == nil || IsNil(o.UsesTaggedPackets) {
+		return nil, false
+	}
+	return o.UsesTaggedPackets, true
+}
+
+// HasUsesTaggedPackets returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasUsesTaggedPackets() bool {
+	if o != nil && !IsNil(o.UsesTaggedPackets) {
+		return true
+	}
+
+	return false
+}
+
+// SetUsesTaggedPackets gets a reference to the given bool and assigns it to the UsesTaggedPackets field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetUsesTaggedPackets(v bool) {
+	o.UsesTaggedPackets = &v
+}
+
 // GetPots returns the Pots field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetPots() []SwitchpointsPutRequestSwitchpointValuePotsInner {
 	if o == nil || IsNil(o.Pots) {
@@ -1533,6 +3007,102 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.BgpAsNumberAutoAssigned) {
 		toSerialize["bgp_as_number_auto_assigned_"] = o.BgpAsNumberAutoAssigned
 	}
+	if !IsNil(o.BbSwitch) {
+		toSerialize["bb_switch"] = o.BbSwitch
+	}
+	if !IsNil(o.PasswordEncrypted) {
+		toSerialize["password_encrypted"] = o.PasswordEncrypted
+	}
+	if !IsNil(o.EnablePasswordEncrypted) {
+		toSerialize["enable_password_encrypted"] = o.EnablePasswordEncrypted
+	}
+	if !IsNil(o.SshKeyOrPasswordEncrypted) {
+		toSerialize["ssh_key_or_password_encrypted"] = o.SshKeyOrPasswordEncrypted
+	}
+	if !IsNil(o.PassphraseEncrypted) {
+		toSerialize["passphrase_encrypted"] = o.PassphraseEncrypted
+	}
+	if !IsNil(o.PrivatePasswordEncrypted) {
+		toSerialize["private_password_encrypted"] = o.PrivatePasswordEncrypted
+	}
+	if !IsNil(o.IpSource) {
+		toSerialize["ip_source"] = o.IpSource
+	}
+	if !IsNil(o.ControllerIpAndMask) {
+		toSerialize["controller_ip_and_mask"] = o.ControllerIpAndMask
+	}
+	if !IsNil(o.Gateway) {
+		toSerialize["gateway"] = o.Gateway
+	}
+	if !IsNil(o.SwitchIpAndMask) {
+		toSerialize["switch_ip_and_mask"] = o.SwitchIpAndMask
+	}
+	if !IsNil(o.SwitchGateway) {
+		toSerialize["switch_gateway"] = o.SwitchGateway
+	}
+	if !IsNil(o.CommType) {
+		toSerialize["comm_type"] = o.CommType
+	}
+	if !IsNil(o.SnmpCommunityString) {
+		toSerialize["snmp_community_string"] = o.SnmpCommunityString
+	}
+	if !IsNil(o.UplinkPort) {
+		toSerialize["uplink_port"] = o.UplinkPort
+	}
+	if !IsNil(o.LldpSearchString) {
+		toSerialize["lldp_search_string"] = o.LldpSearchString
+	}
+	if !IsNil(o.ZtpIdentification) {
+		toSerialize["ztp_identification"] = o.ZtpIdentification
+	}
+	if !IsNil(o.LocatedBy) {
+		toSerialize["located_by"] = o.LocatedBy
+	}
+	if !IsNil(o.PowerState) {
+		toSerialize["power_state"] = o.PowerState
+	}
+	if !IsNil(o.CommunicationMode) {
+		toSerialize["communication_mode"] = o.CommunicationMode
+	}
+	if !IsNil(o.CliAccessMode) {
+		toSerialize["cli_access_mode"] = o.CliAccessMode
+	}
+	if !IsNil(o.Username) {
+		toSerialize["username"] = o.Username
+	}
+	if !IsNil(o.Password) {
+		toSerialize["password"] = o.Password
+	}
+	if !IsNil(o.EnablePassword) {
+		toSerialize["enable_password"] = o.EnablePassword
+	}
+	if !IsNil(o.SshKeyOrPassword) {
+		toSerialize["ssh_key_or_password"] = o.SshKeyOrPassword
+	}
+	if !IsNil(o.ManagedOnNativeVlan) {
+		toSerialize["managed_on_native_vlan"] = o.ManagedOnNativeVlan
+	}
+	if !IsNil(o.Sdlc) {
+		toSerialize["sdlc"] = o.Sdlc
+	}
+	if !IsNil(o.SecurityType) {
+		toSerialize["security_type"] = o.SecurityType
+	}
+	if !IsNil(o.Snmpv3Username) {
+		toSerialize["snmpv3_username"] = o.Snmpv3Username
+	}
+	if !IsNil(o.AuthenticationProtocol) {
+		toSerialize["authentication_protocol"] = o.AuthenticationProtocol
+	}
+	if !IsNil(o.Passphrase) {
+		toSerialize["passphrase"] = o.Passphrase
+	}
+	if !IsNil(o.PrivateProtocol) {
+		toSerialize["private_protocol"] = o.PrivateProtocol
+	}
+	if !IsNil(o.PrivatePassword) {
+		toSerialize["private_password"] = o.PrivatePassword
+	}
 	if !IsNil(o.Badges) {
 		toSerialize["badges"] = o.Badges
 	}
@@ -1550,6 +3120,27 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.IsFabric) {
 		toSerialize["is_fabric"] = o.IsFabric
+	}
+	if !IsNil(o.DeviceManagedAs) {
+		toSerialize["device_managed_as"] = o.DeviceManagedAs
+	}
+	if !IsNil(o.Switch) {
+		toSerialize["switch"] = o.Switch
+	}
+	if !IsNil(o.SwitchRefType) {
+		toSerialize["switch_ref_type_"] = o.SwitchRefType
+	}
+	if !IsNil(o.ConnectionService) {
+		toSerialize["connection_service"] = o.ConnectionService
+	}
+	if !IsNil(o.ConnectionServiceRefType) {
+		toSerialize["connection_service_ref_type_"] = o.ConnectionServiceRefType
+	}
+	if !IsNil(o.Port) {
+		toSerialize["port"] = o.Port
+	}
+	if !IsNil(o.UsesTaggedPackets) {
+		toSerialize["uses_tagged_packets"] = o.UsesTaggedPackets
 	}
 	if !IsNil(o.Pots) {
 		toSerialize["pots"] = o.Pots

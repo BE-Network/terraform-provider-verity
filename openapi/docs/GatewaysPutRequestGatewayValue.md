@@ -12,6 +12,8 @@ Name | Type | Description | Notes
 **BfdMultihop** | Pointer to **bool** | Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers. | [optional] [default to false]
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
+**Site** | Pointer to **string** | Fabric this Gateway is assigned to | [optional] [default to ""]
+**SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
 **Type** | Pointer to **string** | Gateway classification | [optional] [default to "tenant"]
 **NeighborIpAddress** | Pointer to **string** | IP address of remote BGP peer | [optional] [default to ""]
 **NeighborAsNumber** | Pointer to **NullableInt32** | Autonomous System Number of remote BGP peer  | [optional] 
@@ -265,6 +267,56 @@ SetTenantRefType sets TenantRefType field to given value.
 `func (o *GatewaysPutRequestGatewayValue) HasTenantRefType() bool`
 
 HasTenantRefType returns a boolean if a field has been set.
+
+### GetSite
+
+`func (o *GatewaysPutRequestGatewayValue) GetSite() string`
+
+GetSite returns the Site field if non-nil, zero value otherwise.
+
+### GetSiteOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetSiteOk() (*string, bool)`
+
+GetSiteOk returns a tuple with the Site field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSite
+
+`func (o *GatewaysPutRequestGatewayValue) SetSite(v string)`
+
+SetSite sets Site field to given value.
+
+### HasSite
+
+`func (o *GatewaysPutRequestGatewayValue) HasSite() bool`
+
+HasSite returns a boolean if a field has been set.
+
+### GetSiteRefType
+
+`func (o *GatewaysPutRequestGatewayValue) GetSiteRefType() string`
+
+GetSiteRefType returns the SiteRefType field if non-nil, zero value otherwise.
+
+### GetSiteRefTypeOk
+
+`func (o *GatewaysPutRequestGatewayValue) GetSiteRefTypeOk() (*string, bool)`
+
+GetSiteRefTypeOk returns a tuple with the SiteRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSiteRefType
+
+`func (o *GatewaysPutRequestGatewayValue) SetSiteRefType(v string)`
+
+SetSiteRefType sets SiteRefType field to given value.
+
+### HasSiteRefType
+
+`func (o *GatewaysPutRequestGatewayValue) HasSiteRefType() bool`
+
+HasSiteRefType returns a boolean if a field has been set.
 
 ### GetType
 

@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **EnableEcn** | Pointer to **bool** | Enables Explicit Congestion Notification for WRED. | [optional] [default to true]
 **EnableWatchdogTuning** | Pointer to **bool** | Enables custom tuning of Watchdog values. Uncheck to use Switch default values. | [optional] [default to false]
 **AutoNegotiation** | Pointer to **bool** | Indicates if duplex mode should be auto negotiated | [optional] [default to true]
+**StandaloneLinkTraining** | Pointer to **bool** | For use when the port speed/FEC are manually fixed, but the physical link still needs SerDes tuning most commonly high-speed passive DAC/copper links | [optional] [default to false]
 **EnableSpeedControl** | Pointer to **bool** | Turns on speed control fields | [optional] [default to true]
 **Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] 
 **MaxBitRate** | Pointer to **string** | Maximum Bit Rate allowed | [optional] [default to "-1"]
@@ -21,7 +22,7 @@ Name | Type | Description | Notes
 **BpduGuard** | Pointer to **bool** | Block port on BPDU Receive | [optional] [default to false]
 **BpduFilter** | Pointer to **bool** | Drop all Rx and Tx BPDUs | [optional] [default to false]
 **GuardLoop** | Pointer to **bool** | Enable Cisco Guard Loop | [optional] [default to false]
-**PoeEnable** | Pointer to **bool** | PoE Enable | [optional] [default to false]
+**PoeEnable** | Pointer to **bool** | Enable PoE on the port | [optional] [default to false]
 **Priority** | Pointer to **string** | Priority given when assigning power in a limited power situation | [optional] [default to "High"]
 **AllocatedPower** | Pointer to **string** | Power the PoE system will attempt to allocate on this port | [optional] [default to "0.0"]
 **BspEnable** | Pointer to **bool** | Enable Traffic Storm Protection which prevents excessive broadcast/multicast/unknown-unicast traffic from overwhelming the Switch CPU | [optional] [default to false]
@@ -270,6 +271,31 @@ SetAutoNegotiation sets AutoNegotiation field to given value.
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAutoNegotiation() bool`
 
 HasAutoNegotiation returns a boolean if a field has been set.
+
+### GetStandaloneLinkTraining
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStandaloneLinkTraining() bool`
+
+GetStandaloneLinkTraining returns the StandaloneLinkTraining field if non-nil, zero value otherwise.
+
+### GetStandaloneLinkTrainingOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStandaloneLinkTrainingOk() (*bool, bool)`
+
+GetStandaloneLinkTrainingOk returns a tuple with the StandaloneLinkTraining field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetStandaloneLinkTraining
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetStandaloneLinkTraining(v bool)`
+
+SetStandaloneLinkTraining sets StandaloneLinkTraining field to given value.
+
+### HasStandaloneLinkTraining
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasStandaloneLinkTraining() bool`
+
+HasStandaloneLinkTraining returns a boolean if a field has been set.
 
 ### GetEnableSpeedControl
 

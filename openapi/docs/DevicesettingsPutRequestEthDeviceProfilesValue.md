@@ -22,8 +22,9 @@ Name | Type | Description | Notes
 **DnsServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner.md) |  | [optional] 
 **NtpServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner.md) |  | [optional] 
 **SyslogServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner.md) |  | [optional] 
-**TacacsServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
+**DeviceAaaProfile** | Pointer to **string** | Device AAA Profile for authentication settings | [optional] [default to ""]
+**DeviceAaaProfileRefType** | Pointer to **string** | Object type for device_aaa_profile field | [optional] 
 **HoldTimer** | Pointer to **NullableInt32** | Hold Timer | [optional] [default to 0]
 **MacAgingTimerOverride** | Pointer to **NullableInt32** | Blank uses the Device&#39;s default; otherwise an integer between 1 to 1,000,000 seconds | [optional] 
 **SpanningTreePriority** | Pointer to **string** | STP per switch, priority are in 4096 increments, the lower the number, the higher the priority. | [optional] [default to "byLevel"]
@@ -547,31 +548,6 @@ SetSyslogServers sets SyslogServers field to given value.
 
 HasSyslogServers returns a boolean if a field has been set.
 
-### GetTacacsServers
-
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetTacacsServers() []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner`
-
-GetTacacsServers returns the TacacsServers field if non-nil, zero value otherwise.
-
-### GetTacacsServersOk
-
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetTacacsServersOk() (*[]DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner, bool)`
-
-GetTacacsServersOk returns a tuple with the TacacsServers field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetTacacsServers
-
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetTacacsServers(v []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner)`
-
-SetTacacsServers sets TacacsServers field to given value.
-
-### HasTacacsServers
-
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasTacacsServers() bool`
-
-HasTacacsServers returns a boolean if a field has been set.
-
 ### GetObjectProperties
 
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectProperties() map[string]interface{}`
@@ -596,6 +572,56 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetDeviceAaaProfile
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDeviceAaaProfile() string`
+
+GetDeviceAaaProfile returns the DeviceAaaProfile field if non-nil, zero value otherwise.
+
+### GetDeviceAaaProfileOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDeviceAaaProfileOk() (*string, bool)`
+
+GetDeviceAaaProfileOk returns a tuple with the DeviceAaaProfile field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDeviceAaaProfile
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDeviceAaaProfile(v string)`
+
+SetDeviceAaaProfile sets DeviceAaaProfile field to given value.
+
+### HasDeviceAaaProfile
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDeviceAaaProfile() bool`
+
+HasDeviceAaaProfile returns a boolean if a field has been set.
+
+### GetDeviceAaaProfileRefType
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDeviceAaaProfileRefType() string`
+
+GetDeviceAaaProfileRefType returns the DeviceAaaProfileRefType field if non-nil, zero value otherwise.
+
+### GetDeviceAaaProfileRefTypeOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDeviceAaaProfileRefTypeOk() (*string, bool)`
+
+GetDeviceAaaProfileRefTypeOk returns a tuple with the DeviceAaaProfileRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDeviceAaaProfileRefType
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDeviceAaaProfileRefType(v string)`
+
+SetDeviceAaaProfileRefType sets DeviceAaaProfileRefType field to given value.
+
+### HasDeviceAaaProfileRefType
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDeviceAaaProfileRefType() bool`
+
+HasDeviceAaaProfileRefType returns a boolean if a field has been set.
 
 ### GetHoldTimer
 

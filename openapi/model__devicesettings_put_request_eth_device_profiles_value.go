@@ -52,8 +52,11 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	DnsServers []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner `json:"dns_servers,omitempty"`
 	NtpServers []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner `json:"ntp_servers,omitempty"`
 	SyslogServers []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner `json:"syslog_servers,omitempty"`
-	TacacsServers []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner `json:"tacacs_servers,omitempty"`
 	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
+	// Device AAA Profile for authentication settings
+	DeviceAaaProfile *string `json:"device_aaa_profile,omitempty"`
+	// Object type for device_aaa_profile field
+	DeviceAaaProfileRefType *string `json:"device_aaa_profile_ref_type_,omitempty"`
 	// Hold Timer
 	HoldTimer NullableInt32 `json:"hold_timer,omitempty"`
 	// Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds
@@ -94,6 +97,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.CutThroughSwitching = &cutThroughSwitching
 	var loginBanner string = ""
 	this.LoginBanner = &loginBanner
+	var deviceAaaProfile string = ""
+	this.DeviceAaaProfile = &deviceAaaProfile
 	var holdTimer int32 = 0
 	this.HoldTimer = *NewNullableInt32(&holdTimer)
 	var spanningTreePriority string = "byLevel"
@@ -132,6 +137,8 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.CutThroughSwitching = &cutThroughSwitching
 	var loginBanner string = ""
 	this.LoginBanner = &loginBanner
+	var deviceAaaProfile string = ""
+	this.DeviceAaaProfile = &deviceAaaProfile
 	var holdTimer int32 = 0
 	this.HoldTimer = *NewNullableInt32(&holdTimer)
 	var spanningTreePriority string = "byLevel"
@@ -765,38 +772,6 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSyslogServers(v []De
 	o.SyslogServers = v
 }
 
-// GetTacacsServers returns the TacacsServers field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetTacacsServers() []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner {
-	if o == nil || IsNil(o.TacacsServers) {
-		var ret []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner
-		return ret
-	}
-	return o.TacacsServers
-}
-
-// GetTacacsServersOk returns a tuple with the TacacsServers field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetTacacsServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner, bool) {
-	if o == nil || IsNil(o.TacacsServers) {
-		return nil, false
-	}
-	return o.TacacsServers, true
-}
-
-// HasTacacsServers returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasTacacsServers() bool {
-	if o != nil && !IsNil(o.TacacsServers) {
-		return true
-	}
-
-	return false
-}
-
-// SetTacacsServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner and assigns it to the TacacsServers field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetTacacsServers(v []DevicesettingsPutRequestEthDeviceProfilesValueTacacsServersInner) {
-	o.TacacsServers = v
-}
-
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectProperties() map[string]interface{} {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -827,6 +802,70 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasObjectProperties() b
 // SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetObjectProperties(v map[string]interface{}) {
 	o.ObjectProperties = v
+}
+
+// GetDeviceAaaProfile returns the DeviceAaaProfile field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDeviceAaaProfile() string {
+	if o == nil || IsNil(o.DeviceAaaProfile) {
+		var ret string
+		return ret
+	}
+	return *o.DeviceAaaProfile
+}
+
+// GetDeviceAaaProfileOk returns a tuple with the DeviceAaaProfile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDeviceAaaProfileOk() (*string, bool) {
+	if o == nil || IsNil(o.DeviceAaaProfile) {
+		return nil, false
+	}
+	return o.DeviceAaaProfile, true
+}
+
+// HasDeviceAaaProfile returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDeviceAaaProfile() bool {
+	if o != nil && !IsNil(o.DeviceAaaProfile) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeviceAaaProfile gets a reference to the given string and assigns it to the DeviceAaaProfile field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDeviceAaaProfile(v string) {
+	o.DeviceAaaProfile = &v
+}
+
+// GetDeviceAaaProfileRefType returns the DeviceAaaProfileRefType field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDeviceAaaProfileRefType() string {
+	if o == nil || IsNil(o.DeviceAaaProfileRefType) {
+		var ret string
+		return ret
+	}
+	return *o.DeviceAaaProfileRefType
+}
+
+// GetDeviceAaaProfileRefTypeOk returns a tuple with the DeviceAaaProfileRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDeviceAaaProfileRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.DeviceAaaProfileRefType) {
+		return nil, false
+	}
+	return o.DeviceAaaProfileRefType, true
+}
+
+// HasDeviceAaaProfileRefType returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDeviceAaaProfileRefType() bool {
+	if o != nil && !IsNil(o.DeviceAaaProfileRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeviceAaaProfileRefType gets a reference to the given string and assigns it to the DeviceAaaProfileRefType field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDeviceAaaProfileRefType(v string) {
+	o.DeviceAaaProfileRefType = &v
 }
 
 // GetHoldTimer returns the HoldTimer field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1009,11 +1048,14 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	if !IsNil(o.SyslogServers) {
 		toSerialize["syslog_servers"] = o.SyslogServers
 	}
-	if !IsNil(o.TacacsServers) {
-		toSerialize["tacacs_servers"] = o.TacacsServers
-	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.DeviceAaaProfile) {
+		toSerialize["device_aaa_profile"] = o.DeviceAaaProfile
+	}
+	if !IsNil(o.DeviceAaaProfileRefType) {
+		toSerialize["device_aaa_profile_ref_type_"] = o.DeviceAaaProfileRefType
 	}
 	if o.HoldTimer.IsSet() {
 		toSerialize["hold_timer"] = o.HoldTimer.Get()

@@ -819,14 +819,14 @@ paths:
       summary: Create Community List
       tags:
       - Community Lists
-  /devicecontrollers:
+  /deviceaaaprofiles:
     delete:
       description: |
-        Deletes an existing Device Controllers from the system if changeset_name is empty, from a changeset if its name is provided.
+        Deletes an existing Device AAA Profile from the system if changeset_name is empty, from a changeset if its name is provided.
       parameters:
       - explode: true
         in: query
-        name: device_controller_name
+        name: device_aaa_profile_name
         required: true
         schema:
           items:
@@ -856,16 +856,16 @@ paths:
           description: Server error
       security:
       - TokenAuth: []
-      summary: Delete Device Controllers
+      summary: Delete Device AAA Profile
       tags:
-      - Device Controllers
+      - Device AAA Profiles
     get:
       description: |
-        Retrieves all Device Controllers from the system.
+        Downloads all Device AAA Profiles from the system.
       parameters:
       - explode: true
         in: query
-        name: device_controller_name
+        name: device_aaa_profile_name
         required: false
         schema:
           type: string
@@ -897,12 +897,12 @@ paths:
           description: Bad Request
       security:
       - TokenAuth: []
-      summary: Get all Device Controllers
+      summary: Get all Device AAA Profiles
       tags:
-      - Device Controllers
+      - Device AAA Profiles
     patch:
       description: |
-        Update Device Controller into the system if changeset_name is empty, into a changeset if its name is provided.
+        Update Device AAA Profile into the system if changeset_name is empty, into a changeset if its name is provided.
       parameters:
       - explode: true
         in: query
@@ -916,7 +916,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/_devicecontrollers_put_request"
+              $ref: "#/components/schemas/_deviceaaaprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -930,12 +930,12 @@ paths:
           description: Bad Request
       security:
       - TokenAuth: []
-      summary: Update Device Controller
+      summary: Update Device AAA Profile
       tags:
-      - Device Controllers
+      - Device AAA Profiles
     put:
       description: |
-        Create Device Controller into the system if changeset_name is empty, into a changeset if its name is provided.
+        Create Device AAA Profile into the system if changeset_name is empty, into a changeset if its name is provided.
       parameters:
       - explode: true
         in: query
@@ -949,7 +949,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/_devicecontrollers_put_request"
+              $ref: "#/components/schemas/_deviceaaaprofiles_put_request"
       responses:
         "201":
           description: Created or Updated
@@ -963,9 +963,9 @@ paths:
           description: Bad Request
       security:
       - TokenAuth: []
-      summary: Create Device Controller
+      summary: Create Device AAA Profile
       tags:
-      - Device Controllers
+      - Device AAA Profiles
   /devicesettings:
     delete:
       description: |
@@ -5656,6 +5656,153 @@ paths:
       summary: Update Switchpoint firmware version
       tags:
       - Switchpoints
+  /tacacsprofiles:
+    delete:
+      description: |
+        Deletes an existing TACACS Profile from the system if changeset_name is empty, from a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: tacacs_profile_name
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Successful response
+        "429":
+          description: Too Many Requests
+        "404":
+          description: Not Found
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+        "500":
+          description: Server error
+      security:
+      - TokenAuth: []
+      summary: Delete TACACS Profile
+      tags:
+      - TACACS Profiles
+    get:
+      description: |
+        Downloads all TACACS Profiles from the system.
+      parameters:
+      - explode: true
+        in: query
+        name: tacacs_profile_name
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: include_data
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "429":
+          description: Too Many Requests
+        "200":
+          description: Successful response
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Get all TACACS Profiles
+      tags:
+      - TACACS Profiles
+    patch:
+      description: |
+        Update TACACS Profile into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_tacacsprofiles_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Update TACACS Profile
+      tags:
+      - TACACS Profiles
+    put:
+      description: |
+        Create TACACS Profile into the system if changeset_name is empty, into a changeset if its name is provided.
+      parameters:
+      - explode: true
+        in: query
+        name: changeset_name
+        required: false
+        schema:
+          description: Changeset name
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/_tacacsprofiles_put_request"
+      responses:
+        "201":
+          description: Created or Updated
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Server error
+        "401":
+          description: Unauthorized
+        "400":
+          description: Bad Request
+      security:
+      - TokenAuth: []
+      summary: Create TACACS Profile
+      tags:
+      - TACACS Profiles
   /tenants:
     delete:
       description: |
@@ -6968,13 +7115,18 @@ components:
           items:
             $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_syslog_servers_inner"
           type: array
-        tacacs_servers:
-          items:
-            $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_tacacs_servers_inner"
-          type: array
         object_properties:
           properties: {}
           type: object
+        device_aaa_profile:
+          default: ""
+          description: Device AAA Profile for authentication settings
+          type: string
+        device_aaa_profile_ref_type_:
+          description: Object type for device_aaa_profile field
+          enum:
+          - device_aaa_profile
+          type: string
         hold_timer:
           default: 0
           description: Hold Timer
@@ -7071,8 +7223,8 @@ components:
           default: management
           description: Management or Underlay
           enum:
-          - underlay
           - management
+          - underlay
           type: string
       type: object
     _switchpoints_put_request_switchpoint_value_badges_inner:
@@ -7121,51 +7273,51 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
-          - 4x40G
-          - 2x25G
-          - 4x1G
-          - 4x25G
-          - 4x10G
+          - 8x400G
+          - 2x400G
           - 8x800G
+          - pg200G
+          - 4x25G
+          - 8x100G
           - 4x100G
-          - 2x1G
-          - pg800G
-          - 8x40G
-          - 4x50G
-          - 4x400G
-          - pg100G
-          - 1x25G
-          - 4x200G
-          - 4x800G
-          - 1x800G
           - pg40G
-          - 1x40G
+          - 4x1G
+          - 8x25G
+          - pg10G
           - 8x1G
           - 2x10G
-          - pg25G
+          - 1x25G
+          - 1x800G
           - 2x50G
-          - 8x200G
+          - 2x1G
+          - pg25G
+          - pg100G
+          - 4x200G
           - 2x200G
-          - pg200G
-          - 1x200G
-          - 1x400G
-          - 2x100G
-          - 2x400G
-          - 8x400G
-          - 8x25G
-          - 8x50G
-          - pg400G
-          - 8x10G
-          - 8x100G
           - 2x800G
+          - 8x10G
           - 2x40G
+          - pg800G
+          - 4x800G
+          - 8x40G
+          - 1x50G
+          - pg50G
+          - 1x200G
+          - 8x200G
+          - 4x50G
+          - 1x1G
+          - 2x25G
+          - 2x100G
+          - 4x40G
+          - 1x40G
+          - 4x400G
+          - 1x100G
+          - 8x50G
           - 1x10G
           - pg1G
-          - pg50G
-          - 1x1G
-          - 1x50G
-          - pg10G
-          - 1x100G
+          - 4x10G
+          - 1x400G
+          - pg400G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -7268,9 +7420,9 @@ components:
           enum:
           - ""
           - equal
+          - less
           - range
           - greater
-          - less
           type: string
         source_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -7297,9 +7449,9 @@ components:
           enum:
           - ""
           - equal
+          - less
           - range
           - greater
-          - less
           type: string
         destination_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -7338,9 +7490,9 @@ components:
           description: Scheduler Type for Queue
           enum:
           - ""
-          - SP
-          - DWRR
           - WRR
+          - DWRR
+          - SP
           type: string
         scheduler_weight:
           default: 0
@@ -7377,27 +7529,27 @@ components:
           default: next available color
           description: Color of Badge
           enum:
-          - purple
-          - green
           - orange
           - red
-          - yellow
+          - green
           - blue
+          - yellow
+          - purple
           minLength: 1
           type: string
         number:
           description: Number of Badge
           enum:
-          - 3
-          - 1
-          - 8
-          - 6
-          - 5
-          - 7
-          - 9
           - 0
-          - 4
+          - 5
+          - 1
+          - 9
           - 2
+          - 6
+          - 8
+          - 7
+          - 4
+          - 3
           maximum: 9
           nullable: true
           type: integer
@@ -7491,10 +7643,6 @@ components:
           format: name
           minLength: 1
           type: string
-        enable:
-          default: true
-          description: Enable object.
-          type: boolean
         upgrader_on_summary:
           default: true
           description: Show Upgrader Pie Chart on Summary
@@ -7864,6 +8012,37 @@ components:
           properties: {}
           type: object
       type: object
+    _deviceaaaprofiles_put_request_device_aaa_profile_value:
+      properties:
+        name:
+          default: ""
+          description: Template Name. Must be unique within type.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        fail-through:
+          default: true
+          description: "When enabled, authentication continues to access each server\
+            \ in the method list if an authentication request fails on one server"
+          type: boolean
+        tacacs_profile:
+          default: ""
+          description: TACACS+ profile for authentication
+          type: string
+        tacacs_profile_ref_type_:
+          description: Object type for tacacs_profile field
+          enum:
+          - tacacs_profile
+          type: string
+        login_default:
+          items:
+            $ref: "#/components/schemas/_deviceaaaprofiles_put_request_device_aaa_profile_value_login_default_inner"
+          type: array
+      type: object
     _sspgroups_put_request:
       properties:
         superspine_group:
@@ -8090,17 +8269,12 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
+          - 1.9.1.5
+          - 1.9.1.4
           - unmanaged
-          - 1.9.0.212
-          - 1.9.0.219
-          - 1.9.0.222
-          - 1.9.0.220
-          - 1.9.0.218
-          - 1.9.0.217
-          - 1.9.0.221
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17791022808261"
+          default: "17809140323411"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -8120,14 +8294,14 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
-          - deviceSerialNumber
-          - pod
-          - badge
           - endpoint
-          - badge_color
-          - bundle_id
-          - productClass
           - endpoint_type
+          - bundle_id
+          - deviceSerialNumber
+          - badge
+          - badge_color
+          - pod
+          - productClass
           type: string
         endpoint_set_num_subrule_1_value:
           default: ""
@@ -8149,14 +8323,14 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
-          - deviceSerialNumber
-          - pod
-          - badge
           - endpoint
-          - badge_color
-          - bundle_id
-          - productClass
           - endpoint_type
+          - bundle_id
+          - deviceSerialNumber
+          - badge
+          - badge_color
+          - pod
+          - productClass
           type: string
         endpoint_set_num_subrule_2_value:
           default: ""
@@ -8178,14 +8352,14 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
-          - deviceSerialNumber
-          - pod
-          - badge
           - endpoint
-          - badge_color
-          - bundle_id
-          - productClass
           - endpoint_type
+          - bundle_id
+          - deviceSerialNumber
+          - badge
+          - badge_color
+          - pod
+          - productClass
           type: string
         endpoint_set_num_subrule_3_value:
           default: ""
@@ -8255,14 +8429,9 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
+          - 1.9.1.5
+          - 1.9.1.4
           - unmanaged
-          - 1.9.0.212
-          - 1.9.0.219
-          - 1.9.0.222
-          - 1.9.0.220
-          - 1.9.0.218
-          - 1.9.0.217
-          - 1.9.0.221
           type: string
         endpoint_set_for_endpointless_unique_identifier:
           default: pointless
@@ -8307,8 +8476,8 @@ components:
           description: Object type for element field
           enum:
           - type
-          - sensai
           - switchpoint
+          - sensai
           type: string
         sdlc:
           default: ""
@@ -8338,270 +8507,6 @@ components:
             $ref: "#/components/schemas/_aspathaccesslists_put_request_as_path_access_list_value"
           properties: {}
           type: object
-      type: object
-    _devicecontrollers_put_request_device_controller_value:
-      properties:
-        name:
-          default: ""
-          description: Template Name. Must be unique within type.
-          format: name
-          minLength: 1
-          type: string
-        enable:
-          default: false
-          description: Enable object.
-          type: boolean
-        password_encrypted:
-          default: ""
-          description: Password
-          format: password
-          type: string
-        enable_password_encrypted:
-          default: ""
-          description: Enable Password - to enable privileged CLI operations
-          format: password
-          type: string
-        ssh_key_or_password_encrypted:
-          default: ""
-          description: SSH Key or Password
-          format: password
-          type: string
-        passphrase_encrypted:
-          default: ""
-          description: Passphrase
-          format: password
-          type: string
-        private_password_encrypted:
-          default: ""
-          description: Password
-          format: password
-          type: string
-        ip_source:
-          default: dhcp
-          description: IP Source
-          enum:
-          - dhcp
-          - static
-          minLength: 1
-          type: string
-        controller_ip_and_mask:
-          default: ""
-          description: Controller IP and Mask
-          format: ipv4
-          type: string
-        gateway:
-          default: ""
-          description: Gateway
-          format: ipv4
-          type: string
-        switch_ip_and_mask:
-          default: ""
-          description: Switch IP and Mask
-          format: ipv4
-          type: string
-        switch_gateway:
-          default: ""
-          description: Gateway of Managed Device
-          format: ipv4
-          type: string
-        comm_type:
-          default: snmpv2
-          description: Comm Type
-          enum:
-          - snmpv2
-          - cli
-          - restconf
-          - gnmi
-          - snmpv3
-          minLength: 1
-          type: string
-        snmp_community_string:
-          default: ""
-          description: Comm Credentials
-          maxLength: 32
-          type: string
-        uplink_port:
-          default: ""
-          description: Uplink Port of Managed Device
-          type: string
-        lldp_search_string:
-          default: ""
-          description: "Optional unless Located By is \"LLDP\" or Device managed as\
-            \ \"Active SFP\". Must be either the chassis-id or the hostname of the\
-            \ LLDP from the managed device. Used to detect connections between managed\
-            \ devices. If blank, the chassis-id detected by the Device Controller\
-            \ via SNMP/CLI is used"
-          maxLength: 64
-          type: string
-        ztp_identification:
-          default: ""
-          description: Service Tag or Serial Number to identify device for Zero Touch
-            Provisioning
-          maxLength: 64
-          type: string
-        located_by:
-          default: LLDP
-          description: Controls how the system locates this Device within its LAN
-          enum:
-          - as_site
-          - LAG_IDL
-          - LAG
-          - Static Port
-          - LLDP
-          minLength: 1
-          type: string
-        power_state:
-          default: "on"
-          description: Power state of Switch Controller
-          minLength: 2
-          type: string
-        communication_mode:
-          default: generic_snmp
-          description: Communication Mode
-          enum:
-          - tibit_xgs_olt_sfp
-          - generic_snmp
-          - cisco_catalyst_c3xxx
-          - sonic
-          - hpe_aruba_2530_series
-          - arista_7050_series
-          - eltex_ltp_gpon_olt
-          - cisco_nexus_9xxx
-          - adtran_netvanta_series
-          - edgecore_ecs21000
-          - ruckus_icx7150
-          - netgear_prosafe_series
-          - microtik_routeros_telnet
-          - cisco_small_business_sgxxx
-          - juniper_acx5048
-          - generic_advanced_snmp
-          minLength: 1
-          type: string
-        cli_access_mode:
-          default: SSH
-          description: CLI Access Mode
-          enum:
-          - Telnet
-          - SSH
-          minLength: 1
-          type: string
-        username:
-          default: ""
-          description: Username
-          type: string
-        password:
-          default: ""
-          description: Password
-          format: password
-          type: string
-        enable_password:
-          default: ""
-          description: Enable Password - to enable privileged CLI operations
-          format: password
-          type: string
-        ssh_key_or_password:
-          default: ""
-          description: SSH Key or Password
-          format: password
-          type: string
-        managed_on_native_vlan:
-          default: false
-          description: Managed on native VLAN
-          type: boolean
-        sdlc:
-          default: ""
-          description: SDLC that Device Controller belongs to
-          format: hostname
-          type: string
-        switchpoint:
-          default: ""
-          description: Switchpoint reference
-          type: string
-        switchpoint_ref_type_:
-          description: Object type for switchpoint field
-          enum:
-          - switchpoint
-          type: string
-        security_type:
-          default: noAuthNoPriv
-          description: Security level
-          enum:
-          - authNoPriv
-          - authPriv
-          - noAuthNoPriv
-          type: string
-        snmpv3_username:
-          default: ""
-          description: Username
-          format: name
-          type: string
-        authentication_protocol:
-          default: MD5
-          description: Protocol
-          enum:
-          - MD5
-          - SHA
-          minLength: 1
-          type: string
-        passphrase:
-          default: ""
-          description: Passphrase
-          format: password
-          type: string
-        private_protocol:
-          default: DES
-          description: Protocol
-          enum:
-          - DES
-          - AES
-          minLength: 1
-          type: string
-        private_password:
-          default: ""
-          description: Password
-          format: password
-          type: string
-        device_managed_as:
-          default: switch
-          description: Device managed as
-          enum:
-          - co_located_switch
-          - tibit
-          - switch
-          - tibit_old
-          minLength: 1
-          type: string
-        switch:
-          default: ""
-          description: Switchpoint locating the Switch to be controlled
-          type: string
-        switch_ref_type_:
-          description: Object type for switch field
-          enum:
-          - switchpoint
-          type: string
-        connection_service:
-          default: ""
-          description: Connect a Service
-          type: string
-        connection_service_ref_type_:
-          description: Object type for connection_service field
-          enum:
-          - service
-          type: string
-        port:
-          default: ""
-          description: Port locating the Switch to be controlled
-          type: string
-        sfp_mac_address_or_sn:
-          default: ""
-          description: SFP MAC Address or SN
-          type: string
-        uses_tagged_packets:
-          default: true
-          description: Indicates if the direct interface expects tagged or untagged
-            packets
-          type: boolean
       type: object
     _sus_put_request:
       properties:
@@ -8640,6 +8545,22 @@ components:
             object to the list.
           type: integer
       type: object
+    _deviceaaaprofiles_put_request_device_aaa_profile_value_login_default_inner:
+      properties:
+        enabled:
+          default: true
+          description: Enable this login method
+          type: boolean
+        login_method:
+          default: local
+          description: "Authentication method for remote access (SSH, etc.)"
+          enum:
+          - local
+          - tacacs+
+          - ldap
+          - radius
+          type: string
+      type: object
     _voiceportprofiles_put_request_voice_port_profiles_value_object_properties:
       properties:
         port_monitoring:
@@ -8655,6 +8576,42 @@ components:
           description: Format dial plan for easier viewing
           type: boolean
       type: object
+    _tacacsprofiles_put_request_tacacs_profile_value_tacacs_servers_inner:
+      properties:
+        enabled:
+          default: false
+          description: Enable TACACS+ server
+          type: boolean
+        server:
+          default: ""
+          description: "IPv4, IPv6, or DNS name for TACACS+ server"
+          type: string
+        auth_type:
+          default: pap
+          description: TACACS+ authentication type
+          enum:
+          - mschap
+          - pap
+          - chap
+          type: string
+        port:
+          default: ""
+          description: TACACS+ server port
+          type: string
+        timeout:
+          description: TACACS+ server timeout in seconds
+          maximum: 60
+          nullable: true
+          type: integer
+        secret:
+          default: ""
+          description: TACACS+ shared secret
+          type: string
+        enc_secret:
+          default: ""
+          description: TACACS+ shared secret (encrypted)
+          type: string
+      type: object
     _imageupdatesets_patch_request_image_update_sets_value_section_else_inner:
       properties:
         endpoint_set_num_name:
@@ -8665,14 +8622,9 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
+          - 1.9.1.5
+          - 1.9.1.4
           - unmanaged
-          - 1.9.0.212
-          - 1.9.0.219
-          - 1.9.0.222
-          - 1.9.0.220
-          - 1.9.0.218
-          - 1.9.0.217
-          - 1.9.0.221
           type: string
         endpoint_set_for_all_others_unique_identifier:
           default: else
@@ -8889,6 +8841,211 @@ components:
           description: Whether or not the value in bgp_as_number field has been automatically
             assigned or not. Set to false and change bgp_as_number value to edit.
           type: boolean
+        bb_switch:
+          default: false
+          description: Expose fields for Device Management
+          type: boolean
+        password_encrypted:
+          default: ""
+          description: Password
+          format: password
+          type: string
+        enable_password_encrypted:
+          default: ""
+          description: Enable Password - to enable privileged CLI operations
+          format: password
+          type: string
+        ssh_key_or_password_encrypted:
+          default: ""
+          description: SSH Key or Password
+          format: password
+          type: string
+        passphrase_encrypted:
+          default: ""
+          description: Passphrase
+          format: password
+          type: string
+        private_password_encrypted:
+          default: ""
+          description: Password
+          format: password
+          type: string
+        ip_source:
+          default: dhcp
+          description: IP Source
+          enum:
+          - dhcp
+          - static
+          minLength: 1
+          type: string
+        controller_ip_and_mask:
+          default: ""
+          description: Controller IP and Mask
+          format: ipv4
+          type: string
+        gateway:
+          default: ""
+          description: Gateway
+          format: ipv4
+          type: string
+        switch_ip_and_mask:
+          default: ""
+          description: Switch IP and Mask
+          format: ipv4
+          type: string
+        switch_gateway:
+          default: ""
+          description: Gateway of Managed Device
+          format: ipv4
+          type: string
+        comm_type:
+          default: snmpv2
+          description: Comm Type
+          enum:
+          - cli
+          - restconf
+          - gnmi
+          - snmpv2
+          - snmpv3
+          minLength: 1
+          type: string
+        snmp_community_string:
+          default: ""
+          description: Comm Credentials
+          maxLength: 32
+          type: string
+        uplink_port:
+          default: ""
+          description: Uplink Port of Managed Device
+          type: string
+        lldp_search_string:
+          default: ""
+          description: "Optional unless Located By is \"LLDP\" or Device managed as\
+            \ \"Active SFP\". Must be either the chassis-id or the hostname of the\
+            \ LLDP from the managed device. Used to detect connections between managed\
+            \ devices. If blank, the chassis-id detected by the Device Controller\
+            \ via SNMP/CLI is used"
+          maxLength: 64
+          type: string
+        ztp_identification:
+          default: ""
+          description: Service Tag or Serial Number to identify device for Zero Touch
+            Provisioning
+          maxLength: 64
+          type: string
+        located_by:
+          default: LLDP
+          description: Controls how the system locates this Device within its LAN
+          enum:
+          - Static Port
+          - LLDP
+          - LAG_IDL
+          - as_site
+          - LAG
+          minLength: 1
+          type: string
+        power_state:
+          default: "on"
+          description: Power state of Switch Controller
+          minLength: 2
+          type: string
+        communication_mode:
+          default: generic_snmp
+          description: Communication Mode
+          enum:
+          - arista_7050_series
+          - cisco_catalyst_c3xxx
+          - hpe_aruba_2530_series
+          - microtik_routeros_telnet
+          - generic_advanced_snmp
+          - generic_snmp
+          - tibit_xgs_olt_sfp
+          - sonic
+          - eltex_ltp_gpon_olt
+          - ruckus_icx7150
+          - adtran_netvanta_series
+          - cisco_nexus_9xxx
+          - edgecore_ecs21000
+          - cisco_small_business_sgxxx
+          - netgear_prosafe_series
+          - juniper_acx5048
+          minLength: 1
+          type: string
+        cli_access_mode:
+          default: SSH
+          description: CLI Access Mode
+          enum:
+          - SSH
+          - Telnet
+          minLength: 1
+          type: string
+        username:
+          default: ""
+          description: Username
+          type: string
+        password:
+          default: ""
+          description: Password
+          format: password
+          type: string
+        enable_password:
+          default: ""
+          description: Enable Password - to enable privileged CLI operations
+          format: password
+          type: string
+        ssh_key_or_password:
+          default: ""
+          description: SSH Key or Password
+          format: password
+          type: string
+        managed_on_native_vlan:
+          default: false
+          description: Managed on native VLAN
+          type: boolean
+        sdlc:
+          default: ""
+          description: SDLC that Device Controller belongs to
+          format: hostname
+          type: string
+        security_type:
+          default: noAuthNoPriv
+          description: Security level
+          enum:
+          - noAuthNoPriv
+          - authPriv
+          - authNoPriv
+          type: string
+        snmpv3_username:
+          default: ""
+          description: Username
+          format: name
+          type: string
+        authentication_protocol:
+          default: MD5
+          description: Protocol
+          enum:
+          - MD5
+          - SHA
+          minLength: 1
+          type: string
+        passphrase:
+          default: ""
+          description: Passphrase
+          format: password
+          type: string
+        private_protocol:
+          default: DES
+          description: Protocol
+          enum:
+          - DES
+          - AES
+          minLength: 1
+          type: string
+        private_password:
+          default: ""
+          description: Password
+          format: password
+          type: string
         badges:
           items:
             $ref: "#/components/schemas/_switchpoints_put_request_switchpoint_value_badges_inner"
@@ -8911,6 +9068,43 @@ components:
           default: false
           description: For Switch Endpoints. Denotes a Switch that is Fabric rather
             than an Edge Device
+          type: boolean
+        device_managed_as:
+          default: switch
+          description: Device managed as
+          enum:
+          - co_located_switch
+          - tibit
+          - switch
+          - tibit_old
+          minLength: 1
+          type: string
+        switch:
+          default: ""
+          description: Switchpoint locating the Switch to be controlled
+          type: string
+        switch_ref_type_:
+          description: Object type for switch field
+          enum:
+          - switchpoint
+          type: string
+        connection_service:
+          default: ""
+          description: Connect a Service
+          type: string
+        connection_service_ref_type_:
+          description: Object type for connection_service field
+          enum:
+          - service
+          type: string
+        port:
+          default: ""
+          description: Port locating the Switch to be controlled
+          type: string
+        uses_tagged_packets:
+          default: true
+          description: Indicates if the direct interface expects tagged or untagged
+            packets
           type: boolean
         pots:
           items:
@@ -8987,9 +9181,9 @@ components:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
-          - high
           - ""
           - critical
+          - high
           type: string
         sort_by_name:
           default: false
@@ -9091,28 +9285,28 @@ components:
           default: device
           description: Type of elements threshold applies to
           enum:
+          - vnc
+          - sdlc
+          - interface
           - device
           - satori
-          - vnc
-          - interface
-          - sdlc
           - sdlc_container
           type: string
         operation:
           default: and
           description: How to combine rules
           enum:
+          - and
           - or
           - escalation
-          - and
           type: string
         severity:
           default: notice
           description: Severity of the alarm when the threshold is met
           enum:
-          - critical
-          - warning
           - error
+          - warning
+          - critical
           - notice
           type: string
         for:
@@ -9130,58 +9324,62 @@ components:
           description: Metric threshold is on
           enum:
           - ""
-          - prometheus_Switch_system_virtual_chassis_sync_uptime
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
-          - prometheus_Switch_interfaces_sfp_info_Temperature_C
-          - prometheus_Switch_system_controller_memory_inuse_MB
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
-          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
-          - prometheus_Switch_system_memory_available_MB
-          - prometheus_Switch_sensors_sensor_value
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
-          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
-          - prometheus_Switch_system_load_average
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
-          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
-          - container_memory_usage_bytes
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
           - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
-          - prometheus_Infrastructure_host_mem_free_percent
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
-          - prometheus_Switch_system_uptime
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
-          - node_filesystem_free_bytes
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_bytes
-          - prometheus_Switch_system_memory_free_percent
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
-          - prometheus_Switch_system_memory_free_MB
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
-          - container_cpu_system_seconds_total
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
-          - prometheus_Switch_interfaces_interface_stats_link_state_changes
-          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
+          - prometheus_Switch_system_cpu_percent
           - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
-          - prometheus_Infrastructure_host_mem_used_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
+          - prometheus_Switch_system_controller_memory_inuse_MB
+          - container_memory_usage_bytes
+          - prometheus_Switch_sensors_sensor_value
+          - prometheus_Infrastructure_host_mem_used_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
+          - prometheus_Switch_system_memory_free_percent
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
+          - prometheus_Infrastructure_host_loadavg
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
+          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
+          - container_cpu_system_seconds_total
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
+          - node_filesystem_free_bytes
+          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_system_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
+          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
+          - prometheus_Switch_system_virtual_chassis_sync_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
+          - prometheus_Switch_system_memory_available_MB
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
+          - prometheus_Infrastructure_host_mem_free_percent
+          - prometheus_Switch_system_memory_free_MB
+          - prometheus_Switch_system_controller_cpu_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_bytes
+          - prometheus_Switch_interfaces_interface_stats_link_state_changes
+          - prometheus_Switch_system_load_average
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
+          - prometheus_Switch_system_controller_uptime
           type: string
         escalation_operation:
           default: eq
@@ -9190,8 +9388,8 @@ components:
           - lt
           - gt
           - eq
-          - ge
           - le
+          - ge
           type: string
         critical_escalation_value:
           default: ""
@@ -9229,6 +9427,23 @@ components:
             $ref: "#/components/schemas/_routemaps_put_request_route_map_value"
           properties: {}
           type: object
+      type: object
+    _tacacsprofiles_put_request_tacacs_profile_value:
+      properties:
+        name:
+          default: ""
+          description: Template Name. Must be unique within type.
+          format: name
+          minLength: 1
+          type: string
+        enable:
+          default: false
+          description: Enable object.
+          type: boolean
+        tacacs_servers:
+          items:
+            $ref: "#/components/schemas/_tacacsprofiles_put_request_tacacs_profile_value_tacacs_servers_inner"
+          type: array
       type: object
     _authenticatedethports_put_request_authenticated_eth_port_value:
       properties:
@@ -9303,10 +9518,10 @@ components:
             only
           enum:
           - ""
-          - critical
-          - warning
           - error
           - notice
+          - critical
+          - warning
           type: string
         threshold:
           default: ""
@@ -9374,8 +9589,8 @@ components:
           default: udp_bsd
           description: Syslog connection scheme
           enum:
-          - tcp_tls
           - tcp_bsd
+          - tcp_tls
           - udp_bsd
           type: string
         server:
@@ -9439,18 +9654,18 @@ components:
           description: Which type of rule to apply
           enum:
           - ""
-          - ethPort
-          - deviceSerialNumber
-          - externalGatewayProfile
-          - portNumber
-          - diagnosticsPortProfile
-          - pod
           - endpoint
-          - portUsage
-          - groupingRule
-          - archipelago
           - endpoint_type
+          - externalGatewayProfile
+          - diagnosticsPortProfile
+          - deviceSerialNumber
           - portImportance
+          - groupingRule
+          - pod
+          - ethPort
+          - portNumber
+          - archipelago
+          - portUsage
           type: string
         rule_value:
           default: ""
@@ -9463,17 +9678,17 @@ components:
         rule_value_path_ref_type_:
           description: Object type for rule_value_path field
           enum:
-          - pod
-          - lag
-          - service_port_profile
-          - site
           - type
+          - service_port_profile
           - diagnostics_port_profile
-          - nac_port_profile
-          - eth_port_profile_
           - gateway_profile
+          - pod
           - authenticated_eth_port
+          - site
+          - eth_port_profile_
           - grouping_rules
+          - lag
+          - nac_port_profile
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -9600,6 +9815,15 @@ components:
           enum:
           - tenant
           type: string
+        site:
+          default: ""
+          description: Fabric this Gateway is assigned to
+          type: string
+        site_ref_type_:
+          description: Object type for site field
+          enum:
+          - site
+          type: string
         type:
           default: tenant
           description: Gateway classification
@@ -9713,8 +9937,9 @@ components:
             Tenant
           enum:
           - Default
-          - Dynamic BGP
+          - IPV6 Unnumbered
           - Static
+          - Dynamic BGP
           - Static BGP
           minLength: 3
           type: string
@@ -9891,12 +10116,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - cornflower
           - chardonnay
           - emerald
           - anakiwa
-          - starship
           - lavender
+          - starship
+          - cornflower
           minLength: 1
           type: string
         lacp:
@@ -9910,10 +10135,9 @@ components:
         eth_port_profile_ref_type_:
           description: Object type for eth_port_profile field
           enum:
-          - eth_port_profile_
-          - gateway_profile
           - service_port_profile
           - pb_egress_profile
+          - eth_port_profile_
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
@@ -9941,6 +10165,14 @@ components:
           type: integer
         object_properties:
           $ref: "#/components/schemas/_lags_put_request_lag_value_object_properties"
+      type: object
+    _tacacsprofiles_put_request:
+      properties:
+        tacacs_profile:
+          additionalProperties:
+            $ref: "#/components/schemas/_tacacsprofiles_put_request_tacacs_profile_value"
+          properties: {}
+          type: object
       type: object
     _switchpoints_put_request_switchpoint_value_children_inner:
       properties:
@@ -9971,13 +10203,13 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
-          - pb_egress_profile
-          - lag
           - type
           - service_port_profile
-          - nac_port_profile
-          - eth_port_profile_
+          - pb_egress_profile
           - authenticated_eth_port
+          - eth_port_profile_
+          - lag
+          - nac_port_profile
           type: string
         eth_port_num_eth_port_settings:
           default: ""
@@ -10121,19 +10353,19 @@ components:
           default: device
           description: Type of elements to group
           enum:
+          - vnc
+          - sdlc
+          - interface
           - device
           - satori
-          - vnc
-          - interface
-          - sdlc
           - sdlc_container
           type: string
         operation:
           default: and
           description: How to combine rules
           enum:
-          - or
           - and
+          - or
           type: string
         rules:
           items:
@@ -10355,51 +10587,51 @@ components:
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
           - ""
-          - 4x40G
-          - 2x25G
-          - 4x1G
-          - 4x25G
-          - 4x10G
+          - 8x400G
+          - 2x400G
           - 8x800G
+          - pg200G
+          - 4x25G
+          - 8x100G
           - 4x100G
-          - 2x1G
-          - pg800G
-          - 8x40G
-          - 4x50G
-          - 4x400G
-          - pg100G
-          - 1x25G
-          - 4x200G
-          - 4x800G
-          - 1x800G
           - pg40G
-          - 1x40G
+          - 4x1G
+          - 8x25G
+          - pg10G
           - 8x1G
           - 2x10G
-          - pg25G
+          - 1x25G
+          - 1x800G
           - 2x50G
-          - 8x200G
+          - 2x1G
+          - pg25G
+          - pg100G
+          - 4x200G
           - 2x200G
-          - pg200G
-          - 1x200G
-          - 1x400G
-          - 2x100G
-          - 2x400G
-          - 8x400G
-          - 8x25G
-          - 8x50G
-          - pg400G
-          - 8x10G
-          - 8x100G
           - 2x800G
+          - 8x10G
           - 2x40G
+          - pg800G
+          - 4x800G
+          - 8x40G
+          - 1x50G
+          - pg50G
+          - 1x200G
+          - 8x200G
+          - 4x50G
+          - 1x1G
+          - 2x25G
+          - 2x100G
+          - 4x40G
+          - 1x40G
+          - 4x400G
+          - 1x100G
+          - 8x50G
           - 1x10G
           - pg1G
-          - pg50G
-          - 1x1G
-          - 1x50G
-          - pg10G
-          - 1x100G
+          - 4x10G
+          - 1x400G
+          - pg400G
           type: string
         customer_vlan:
           default: ""
@@ -10471,11 +10703,11 @@ components:
           default: device
           description: Type of elements to apply thresholds to
           enum:
+          - vnc
+          - sdlc
+          - interface
           - device
           - satori
-          - vnc
-          - interface
-          - sdlc
           - sdlc_container
           type: string
         targets:
@@ -10536,6 +10768,12 @@ components:
           default: true
           description: Indicates if duplex mode should be auto negotiated
           type: boolean
+        standalone_link_training:
+          default: false
+          description: "For use when the port speed/FEC are manually fixed, but the\
+            \ physical link still needs SerDes tuning most commonly high-speed passive\
+            \ DAC/copper links"
+          type: boolean
         enable_speed_control:
           default: true
           description: Turns on speed control fields
@@ -10553,18 +10791,18 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "50000"
-          - "1000"
-          - "100000"
-          - "10000"
           - "40000"
-          - "400000"
-          - "2500"
           - "-1"
+          - "10000"
+          - "50000"
+          - "400000"
+          - "5000"
+          - "100000"
+          - "1000"
           - "10"
+          - "2500"
           - "100"
           - "25000"
-          - "5000"
           minLength: 1
           type: string
         duplex_mode:
@@ -10572,8 +10810,8 @@ components:
           description: Duplex Mode
           enum:
           - Full
-          - Half
           - Auto
+          - Half
           minLength: 1
           type: string
         stp_enable:
@@ -10599,15 +10837,15 @@ components:
           type: boolean
         poe_enable:
           default: false
-          description: PoE Enable
+          description: Enable PoE on the port
           type: boolean
         priority:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
+          - Critical
           - High
           - Low
-          - Critical
           minLength: 1
           type: string
         allocated_power:
@@ -10646,9 +10884,9 @@ components:
             \ <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkpps: kilopacket per second <br>\n\t\t\
             \t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t"
           enum:
+          - pps
           - Kpps
           - '%'
-          - pps
           minLength: 1
           type: string
         action:
@@ -10667,8 +10905,8 @@ components:
             \t\t"
           enum:
           - Restrict
-          - Shutdown
           - Protect
+          - Shutdown
           minLength: 1
           type: string
         fec:
@@ -10684,11 +10922,11 @@ components:
             \t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t"
           enum:
           - none
+          - rs-custom
           - unaltered
           - fc
-          - rs-custom
-          - rs
           - auto
+          - rs
           minLength: 1
           type: string
         single_link:
@@ -10916,13 +11154,13 @@ components:
           default: enterprise
           description: Type of Fabric
           enum:
-          - packet_broker
-          - datacenter
-          - management
-          - spx_2t
-          - enterprise
-          - spx_3t
           - hyperscale_architecture
+          - packet_broker
+          - management
+          - datacenter
+          - spx_3t
+          - enterprise
+          - spx_2t
           - datacenter_5
           type: string
         duplicate_address_detection_max_number_of_moves:
@@ -10971,8 +11209,8 @@ components:
           enum:
           - ""
           - pvst
-          - port
           - mstp
+          - port
           minLength: 1
           type: string
         region_name:
@@ -11124,14 +11362,6 @@ components:
           description: "Fast Reporting of Switch Communications, Link Up/Down, and\
             \ BGP Status"
           type: boolean
-        crc_failure_threshold:
-          default: 5
-          description: Threshold in Errors per second that when met will disable the
-            links as part of LAGs
-          maximum: 4294967296
-          minimum: 1
-          nullable: true
-          type: integer
         switch_ip_base:
           default: ""
           description: Base IPv4 address for switch IPs in this Fabric
@@ -11151,13 +11381,35 @@ components:
           default: true
           description: Allow multiple tenants to HGX endpoints on this fabric.
           type: boolean
+        base_bgp_as_number:
+          default: "61000"
+          description: 'Base BGP Autonomous System Number used for switches in the
+            fabric '
+          type: string
+        router_id_base_prefix:
+          default: 172.16.0.0
+          description: 'Router ID starting IP address '
+          type: string
+        vtep_id_base_prefix:
+          default: 172.16.10.0
+          description: 'Vtep ID starting IP address '
+          type: string
+        paired_ip_subnet:
+          default: 192.168.254.0/24
+          description: 'IP address range reserved for communication between paired
+            switches '
+          type: string
+        max_switches:
+          default: "2000"
+          description: 'Max number Switches to support in this site '
+          type: string
         pause_validation_alarms:
           default: false
           description: "Validation still runs, but validation alarms are not raised\
             \ for this Fabric while enabled."
           type: boolean
         starting_octet:
-          description: This is the starting octet value
+          description: Starting Octet for HGX Port IPs
           maximum: 254
           minimum: 1
           nullable: true
@@ -11686,58 +11938,62 @@ components:
           description: Metric threshold is on
           enum:
           - ""
-          - prometheus_Switch_system_virtual_chassis_sync_uptime
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
-          - prometheus_Switch_interfaces_sfp_info_Temperature_C
-          - prometheus_Switch_system_controller_memory_inuse_MB
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
-          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
-          - prometheus_Switch_system_memory_available_MB
-          - prometheus_Switch_sensors_sensor_value
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
-          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
-          - prometheus_Switch_system_load_average
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
-          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
-          - container_memory_usage_bytes
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
           - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
-          - prometheus_Infrastructure_host_mem_free_percent
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
-          - prometheus_Switch_system_uptime
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
-          - node_filesystem_free_bytes
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_bytes
-          - prometheus_Switch_system_memory_free_percent
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
-          - prometheus_Switch_system_memory_free_MB
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
-          - container_cpu_system_seconds_total
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
-          - prometheus_Switch_interfaces_interface_stats_link_state_changes
-          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
+          - prometheus_Switch_system_cpu_percent
           - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
-          - prometheus_Infrastructure_host_mem_used_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
+          - prometheus_Switch_system_controller_memory_inuse_MB
+          - container_memory_usage_bytes
+          - prometheus_Switch_sensors_sensor_value
+          - prometheus_Infrastructure_host_mem_used_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
+          - prometheus_Switch_system_memory_free_percent
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
+          - prometheus_Infrastructure_host_loadavg
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
+          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
+          - container_cpu_system_seconds_total
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
+          - node_filesystem_free_bytes
+          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_system_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
+          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
+          - prometheus_Switch_system_virtual_chassis_sync_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
+          - prometheus_Switch_system_memory_available_MB
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
+          - prometheus_Infrastructure_host_mem_free_percent
+          - prometheus_Switch_system_memory_free_MB
+          - prometheus_Switch_system_controller_cpu_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_bytes
+          - prometheus_Switch_interfaces_interface_stats_link_state_changes
+          - prometheus_Switch_system_load_average
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
+          - prometheus_Switch_system_controller_uptime
           type: string
         operation:
           default: eq
@@ -11746,10 +12002,10 @@ components:
           - ""
           - lt
           - ne
-          - eq
           - gt
-          - ge
+          - eq
           - le
+          - ge
           type: string
         value:
           default: ""
@@ -11768,14 +12024,6 @@ components:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
           type: integer
-      type: object
-    _devicecontrollers_put_request:
-      properties:
-        device_controller:
-          additionalProperties:
-            $ref: "#/components/schemas/_devicecontrollers_put_request_device_controller_value"
-          properties: {}
-          type: object
       type: object
     _extendedcommunitylists_put_request:
       properties:
@@ -12047,10 +12295,6 @@ components:
           format: name
           minLength: 1
           type: string
-        enable:
-          default: false
-          description: Enable object.
-          type: boolean
         breakout:
           items:
             $ref: "#/components/schemas/_sfpbreakouts_patch_request_sfp_breakouts_value_breakout_inner"
@@ -12473,46 +12717,6 @@ components:
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
       type: object
-    _devicesettings_put_request_eth_device_profiles_value_tacacs_servers_inner:
-      properties:
-        enabled:
-          default: false
-          description: Enable TACACS+ server
-          type: boolean
-        server:
-          default: ""
-          description: "IPv4, IPv6, or DNS name for TACACS+ server"
-          type: string
-        auth_type:
-          default: pap
-          description: TACACS+ authentication type
-          enum:
-          - mschap
-          - pap
-          - chap
-          type: string
-        port:
-          default: ""
-          description: TACACS+ server port
-          type: string
-        timeout:
-          description: TACACS+ server timeout in seconds
-          maximum: 60
-          nullable: true
-          type: integer
-        secret:
-          default: ""
-          description: TACACS+ shared secret
-          type: string
-        enc_secret:
-          default: ""
-          description: TACACS+ shared secret (encrypted)
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
-      type: object
     _ipv6prefixlists_put_request_ipv6_prefix_list_value:
       properties:
         name:
@@ -12598,6 +12802,14 @@ components:
           type: array
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
+      type: object
+    _deviceaaaprofiles_put_request:
+      properties:
+        device_aaa_profile:
+          additionalProperties:
+            $ref: "#/components/schemas/_deviceaaaprofiles_put_request_device_aaa_profile_value"
+          properties: {}
+          type: object
       type: object
     _diagnosticsprofiles_put_request:
       properties:

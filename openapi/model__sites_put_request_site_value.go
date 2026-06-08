@@ -93,8 +93,6 @@ type SitesPutRequestSiteValue struct {
 	EvpnMacHoldtime NullableInt32 `json:"evpn_mac_holdtime,omitempty"`
 	// Fast Reporting of Switch Communications, Link Up/Down, and BGP Status
 	AggressiveReporting *bool `json:"aggressive_reporting,omitempty"`
-	// Threshold in Errors per second that when met will disable the links as part of LAGs
-	CrcFailureThreshold NullableInt32 `json:"crc_failure_threshold,omitempty"`
 	// Base IPv4 address for switch IPs in this Fabric
 	SwitchIpBase *string `json:"switch_ip_base,omitempty"`
 	// Base IPv4 address for controller IPs in this Fabric
@@ -103,9 +101,19 @@ type SitesPutRequestSiteValue struct {
 	Loopback0Base *string `json:"loopback0_base,omitempty"`
 	// Allow multiple tenants to HGX endpoints on this fabric.
 	MultiTenant *bool `json:"multi_tenant,omitempty"`
+	// Base BGP Autonomous System Number used for switches in the fabric 
+	BaseBgpAsNumber *string `json:"base_bgp_as_number,omitempty"`
+	// Router ID starting IP address 
+	RouterIdBasePrefix *string `json:"router_id_base_prefix,omitempty"`
+	// Vtep ID starting IP address 
+	VtepIdBasePrefix *string `json:"vtep_id_base_prefix,omitempty"`
+	// IP address range reserved for communication between paired switches 
+	PairedIpSubnet *string `json:"paired_ip_subnet,omitempty"`
+	// Max number Switches to support in this site 
+	MaxSwitches *string `json:"max_switches,omitempty"`
 	// Validation still runs, but validation alarms are not raised for this Fabric while enabled.
 	PauseValidationAlarms *bool `json:"pause_validation_alarms,omitempty"`
-	// This is the starting octet value
+	// Starting Octet for HGX Port IPs
 	StartingOctet NullableInt32 `json:"starting_octet,omitempty"`
 	// Maximum number of SUs allowed per POD
 	MaxSus NullableInt32 `json:"max_sus,omitempty"`
@@ -190,8 +198,6 @@ func NewSitesPutRequestSiteValue() *SitesPutRequestSiteValue {
 	this.EvpnMacHoldtime = *NewNullableInt32(&evpnMacHoldtime)
 	var aggressiveReporting bool = true
 	this.AggressiveReporting = &aggressiveReporting
-	var crcFailureThreshold int32 = 5
-	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
 	var switchIpBase string = ""
 	this.SwitchIpBase = &switchIpBase
 	var controllerIpBase string = ""
@@ -200,6 +206,16 @@ func NewSitesPutRequestSiteValue() *SitesPutRequestSiteValue {
 	this.Loopback0Base = &loopback0Base
 	var multiTenant bool = true
 	this.MultiTenant = &multiTenant
+	var baseBgpAsNumber string = "61000"
+	this.BaseBgpAsNumber = &baseBgpAsNumber
+	var routerIdBasePrefix string = "172.16.0.0"
+	this.RouterIdBasePrefix = &routerIdBasePrefix
+	var vtepIdBasePrefix string = "172.16.10.0"
+	this.VtepIdBasePrefix = &vtepIdBasePrefix
+	var pairedIpSubnet string = "192.168.254.0/24"
+	this.PairedIpSubnet = &pairedIpSubnet
+	var maxSwitches string = "2000"
+	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
 	var ipSourceGuard bool = false
@@ -280,8 +296,6 @@ func NewSitesPutRequestSiteValueWithDefaults() *SitesPutRequestSiteValue {
 	this.EvpnMacHoldtime = *NewNullableInt32(&evpnMacHoldtime)
 	var aggressiveReporting bool = true
 	this.AggressiveReporting = &aggressiveReporting
-	var crcFailureThreshold int32 = 5
-	this.CrcFailureThreshold = *NewNullableInt32(&crcFailureThreshold)
 	var switchIpBase string = ""
 	this.SwitchIpBase = &switchIpBase
 	var controllerIpBase string = ""
@@ -290,6 +304,16 @@ func NewSitesPutRequestSiteValueWithDefaults() *SitesPutRequestSiteValue {
 	this.Loopback0Base = &loopback0Base
 	var multiTenant bool = true
 	this.MultiTenant = &multiTenant
+	var baseBgpAsNumber string = "61000"
+	this.BaseBgpAsNumber = &baseBgpAsNumber
+	var routerIdBasePrefix string = "172.16.0.0"
+	this.RouterIdBasePrefix = &routerIdBasePrefix
+	var vtepIdBasePrefix string = "172.16.10.0"
+	this.VtepIdBasePrefix = &vtepIdBasePrefix
+	var pairedIpSubnet string = "192.168.254.0/24"
+	this.PairedIpSubnet = &pairedIpSubnet
+	var maxSwitches string = "2000"
+	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
 	var ipSourceGuard bool = false
@@ -1673,48 +1697,6 @@ func (o *SitesPutRequestSiteValue) SetAggressiveReporting(v bool) {
 	o.AggressiveReporting = &v
 }
 
-// GetCrcFailureThreshold returns the CrcFailureThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SitesPutRequestSiteValue) GetCrcFailureThreshold() int32 {
-	if o == nil || IsNil(o.CrcFailureThreshold.Get()) {
-		var ret int32
-		return ret
-	}
-	return *o.CrcFailureThreshold.Get()
-}
-
-// GetCrcFailureThresholdOk returns a tuple with the CrcFailureThreshold field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SitesPutRequestSiteValue) GetCrcFailureThresholdOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.CrcFailureThreshold.Get(), o.CrcFailureThreshold.IsSet()
-}
-
-// HasCrcFailureThreshold returns a boolean if a field has been set.
-func (o *SitesPutRequestSiteValue) HasCrcFailureThreshold() bool {
-	if o != nil && o.CrcFailureThreshold.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetCrcFailureThreshold gets a reference to the given NullableInt32 and assigns it to the CrcFailureThreshold field.
-func (o *SitesPutRequestSiteValue) SetCrcFailureThreshold(v int32) {
-	o.CrcFailureThreshold.Set(&v)
-}
-// SetCrcFailureThresholdNil sets the value for CrcFailureThreshold to be an explicit nil
-func (o *SitesPutRequestSiteValue) SetCrcFailureThresholdNil() {
-	o.CrcFailureThreshold.Set(nil)
-}
-
-// UnsetCrcFailureThreshold ensures that no value is present for CrcFailureThreshold, not even an explicit nil
-func (o *SitesPutRequestSiteValue) UnsetCrcFailureThreshold() {
-	o.CrcFailureThreshold.Unset()
-}
-
 // GetSwitchIpBase returns the SwitchIpBase field value if set, zero value otherwise.
 func (o *SitesPutRequestSiteValue) GetSwitchIpBase() string {
 	if o == nil || IsNil(o.SwitchIpBase) {
@@ -1841,6 +1823,166 @@ func (o *SitesPutRequestSiteValue) HasMultiTenant() bool {
 // SetMultiTenant gets a reference to the given bool and assigns it to the MultiTenant field.
 func (o *SitesPutRequestSiteValue) SetMultiTenant(v bool) {
 	o.MultiTenant = &v
+}
+
+// GetBaseBgpAsNumber returns the BaseBgpAsNumber field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetBaseBgpAsNumber() string {
+	if o == nil || IsNil(o.BaseBgpAsNumber) {
+		var ret string
+		return ret
+	}
+	return *o.BaseBgpAsNumber
+}
+
+// GetBaseBgpAsNumberOk returns a tuple with the BaseBgpAsNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetBaseBgpAsNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.BaseBgpAsNumber) {
+		return nil, false
+	}
+	return o.BaseBgpAsNumber, true
+}
+
+// HasBaseBgpAsNumber returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasBaseBgpAsNumber() bool {
+	if o != nil && !IsNil(o.BaseBgpAsNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetBaseBgpAsNumber gets a reference to the given string and assigns it to the BaseBgpAsNumber field.
+func (o *SitesPutRequestSiteValue) SetBaseBgpAsNumber(v string) {
+	o.BaseBgpAsNumber = &v
+}
+
+// GetRouterIdBasePrefix returns the RouterIdBasePrefix field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetRouterIdBasePrefix() string {
+	if o == nil || IsNil(o.RouterIdBasePrefix) {
+		var ret string
+		return ret
+	}
+	return *o.RouterIdBasePrefix
+}
+
+// GetRouterIdBasePrefixOk returns a tuple with the RouterIdBasePrefix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetRouterIdBasePrefixOk() (*string, bool) {
+	if o == nil || IsNil(o.RouterIdBasePrefix) {
+		return nil, false
+	}
+	return o.RouterIdBasePrefix, true
+}
+
+// HasRouterIdBasePrefix returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasRouterIdBasePrefix() bool {
+	if o != nil && !IsNil(o.RouterIdBasePrefix) {
+		return true
+	}
+
+	return false
+}
+
+// SetRouterIdBasePrefix gets a reference to the given string and assigns it to the RouterIdBasePrefix field.
+func (o *SitesPutRequestSiteValue) SetRouterIdBasePrefix(v string) {
+	o.RouterIdBasePrefix = &v
+}
+
+// GetVtepIdBasePrefix returns the VtepIdBasePrefix field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetVtepIdBasePrefix() string {
+	if o == nil || IsNil(o.VtepIdBasePrefix) {
+		var ret string
+		return ret
+	}
+	return *o.VtepIdBasePrefix
+}
+
+// GetVtepIdBasePrefixOk returns a tuple with the VtepIdBasePrefix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetVtepIdBasePrefixOk() (*string, bool) {
+	if o == nil || IsNil(o.VtepIdBasePrefix) {
+		return nil, false
+	}
+	return o.VtepIdBasePrefix, true
+}
+
+// HasVtepIdBasePrefix returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasVtepIdBasePrefix() bool {
+	if o != nil && !IsNil(o.VtepIdBasePrefix) {
+		return true
+	}
+
+	return false
+}
+
+// SetVtepIdBasePrefix gets a reference to the given string and assigns it to the VtepIdBasePrefix field.
+func (o *SitesPutRequestSiteValue) SetVtepIdBasePrefix(v string) {
+	o.VtepIdBasePrefix = &v
+}
+
+// GetPairedIpSubnet returns the PairedIpSubnet field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetPairedIpSubnet() string {
+	if o == nil || IsNil(o.PairedIpSubnet) {
+		var ret string
+		return ret
+	}
+	return *o.PairedIpSubnet
+}
+
+// GetPairedIpSubnetOk returns a tuple with the PairedIpSubnet field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetPairedIpSubnetOk() (*string, bool) {
+	if o == nil || IsNil(o.PairedIpSubnet) {
+		return nil, false
+	}
+	return o.PairedIpSubnet, true
+}
+
+// HasPairedIpSubnet returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasPairedIpSubnet() bool {
+	if o != nil && !IsNil(o.PairedIpSubnet) {
+		return true
+	}
+
+	return false
+}
+
+// SetPairedIpSubnet gets a reference to the given string and assigns it to the PairedIpSubnet field.
+func (o *SitesPutRequestSiteValue) SetPairedIpSubnet(v string) {
+	o.PairedIpSubnet = &v
+}
+
+// GetMaxSwitches returns the MaxSwitches field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetMaxSwitches() string {
+	if o == nil || IsNil(o.MaxSwitches) {
+		var ret string
+		return ret
+	}
+	return *o.MaxSwitches
+}
+
+// GetMaxSwitchesOk returns a tuple with the MaxSwitches field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetMaxSwitchesOk() (*string, bool) {
+	if o == nil || IsNil(o.MaxSwitches) {
+		return nil, false
+	}
+	return o.MaxSwitches, true
+}
+
+// HasMaxSwitches returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasMaxSwitches() bool {
+	if o != nil && !IsNil(o.MaxSwitches) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxSwitches gets a reference to the given string and assigns it to the MaxSwitches field.
+func (o *SitesPutRequestSiteValue) SetMaxSwitches(v string) {
+	o.MaxSwitches = &v
 }
 
 // GetPauseValidationAlarms returns the PauseValidationAlarms field value if set, zero value otherwise.
@@ -2218,9 +2360,6 @@ func (o SitesPutRequestSiteValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AggressiveReporting) {
 		toSerialize["aggressive_reporting"] = o.AggressiveReporting
 	}
-	if o.CrcFailureThreshold.IsSet() {
-		toSerialize["crc_failure_threshold"] = o.CrcFailureThreshold.Get()
-	}
 	if !IsNil(o.SwitchIpBase) {
 		toSerialize["switch_ip_base"] = o.SwitchIpBase
 	}
@@ -2232,6 +2371,21 @@ func (o SitesPutRequestSiteValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MultiTenant) {
 		toSerialize["multi_tenant"] = o.MultiTenant
+	}
+	if !IsNil(o.BaseBgpAsNumber) {
+		toSerialize["base_bgp_as_number"] = o.BaseBgpAsNumber
+	}
+	if !IsNil(o.RouterIdBasePrefix) {
+		toSerialize["router_id_base_prefix"] = o.RouterIdBasePrefix
+	}
+	if !IsNil(o.VtepIdBasePrefix) {
+		toSerialize["vtep_id_base_prefix"] = o.VtepIdBasePrefix
+	}
+	if !IsNil(o.PairedIpSubnet) {
+		toSerialize["paired_ip_subnet"] = o.PairedIpSubnet
+	}
+	if !IsNil(o.MaxSwitches) {
+		toSerialize["max_switches"] = o.MaxSwitches
 	}
 	if !IsNil(o.PauseValidationAlarms) {
 		toSerialize["pause_validation_alarms"] = o.PauseValidationAlarms

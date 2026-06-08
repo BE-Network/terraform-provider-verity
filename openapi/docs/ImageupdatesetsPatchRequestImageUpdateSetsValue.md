@@ -5,7 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
-**Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
 **UpgraderOnSummary** | Pointer to **bool** | Show Upgrader Pie Chart on Summary | [optional] [default to true]
 **InstallationOnSummary** | Pointer to **bool** | Show Installation Pie Chart on Summary | [optional] [default to true]
 **CommOnSummary** | Pointer to **bool** | Show Comm Pie Chart on Summary | [optional] [default to true]
@@ -59,31 +58,6 @@ SetName sets Name field to given value.
 `func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasName() bool`
 
 HasName returns a boolean if a field has been set.
-
-### GetEnable
-
-`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetEnable() bool`
-
-GetEnable returns the Enable field if non-nil, zero value otherwise.
-
-### GetEnableOk
-
-`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetEnableOk() (*bool, bool)`
-
-GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEnable
-
-`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetEnable(v bool)`
-
-SetEnable sets Enable field to given value.
-
-### HasEnable
-
-`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasEnable() bool`
-
-HasEnable returns a boolean if a field has been set.
 
 ### GetUpgraderOnSummary
 

@@ -41,13 +41,17 @@ Name | Type | Description | Notes
 **EvpnMultihomingStartupDelay** | Pointer to **NullableInt32** | Startup Delay | [optional] [default to 300]
 **EvpnMacHoldtime** | Pointer to **NullableInt32** | MAC Holdtime | [optional] [default to 1080]
 **AggressiveReporting** | Pointer to **bool** | Fast Reporting of Switch Communications, Link Up/Down, and BGP Status | [optional] [default to true]
-**CrcFailureThreshold** | Pointer to **NullableInt32** | Threshold in Errors per second that when met will disable the links as part of LAGs | [optional] [default to 5]
 **SwitchIpBase** | Pointer to **string** | Base IPv4 address for switch IPs in this Fabric | [optional] [default to ""]
 **ControllerIpBase** | Pointer to **string** | Base IPv4 address for controller IPs in this Fabric | [optional] [default to ""]
 **Loopback0Base** | Pointer to **string** | Base IPv4 address for Loopback0 interfaces in this Fabric | [optional] [default to ""]
 **MultiTenant** | Pointer to **bool** | Allow multiple tenants to HGX endpoints on this fabric. | [optional] [default to true]
+**BaseBgpAsNumber** | Pointer to **string** | Base BGP Autonomous System Number used for switches in the fabric  | [optional] [default to "61000"]
+**RouterIdBasePrefix** | Pointer to **string** | Router ID starting IP address  | [optional] [default to "172.16.0.0"]
+**VtepIdBasePrefix** | Pointer to **string** | Vtep ID starting IP address  | [optional] [default to "172.16.10.0"]
+**PairedIpSubnet** | Pointer to **string** | IP address range reserved for communication between paired switches  | [optional] [default to "192.168.254.0/24"]
+**MaxSwitches** | Pointer to **string** | Max number Switches to support in this site  | [optional] [default to "2000"]
 **PauseValidationAlarms** | Pointer to **bool** | Validation still runs, but validation alarms are not raised for this Fabric while enabled. | [optional] [default to false]
-**StartingOctet** | Pointer to **NullableInt32** | This is the starting octet value | [optional] 
+**StartingOctet** | Pointer to **NullableInt32** | Starting Octet for HGX Port IPs | [optional] 
 **MaxSus** | Pointer to **NullableInt32** | Maximum number of SUs allowed per POD | [optional] 
 **MaxPods** | Pointer to **NullableInt32** | Maximum number of PODs allowed in the Fabric | [optional] 
 **ObjectProperties** | Pointer to [**SitesPutRequestSiteValueObjectProperties**](SitesPutRequestSiteValueObjectProperties.md) |  | [optional] 
@@ -1188,41 +1192,6 @@ SetAggressiveReporting sets AggressiveReporting field to given value.
 
 HasAggressiveReporting returns a boolean if a field has been set.
 
-### GetCrcFailureThreshold
-
-`func (o *SitesPutRequestSiteValue) GetCrcFailureThreshold() int32`
-
-GetCrcFailureThreshold returns the CrcFailureThreshold field if non-nil, zero value otherwise.
-
-### GetCrcFailureThresholdOk
-
-`func (o *SitesPutRequestSiteValue) GetCrcFailureThresholdOk() (*int32, bool)`
-
-GetCrcFailureThresholdOk returns a tuple with the CrcFailureThreshold field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetCrcFailureThreshold
-
-`func (o *SitesPutRequestSiteValue) SetCrcFailureThreshold(v int32)`
-
-SetCrcFailureThreshold sets CrcFailureThreshold field to given value.
-
-### HasCrcFailureThreshold
-
-`func (o *SitesPutRequestSiteValue) HasCrcFailureThreshold() bool`
-
-HasCrcFailureThreshold returns a boolean if a field has been set.
-
-### SetCrcFailureThresholdNil
-
-`func (o *SitesPutRequestSiteValue) SetCrcFailureThresholdNil(b bool)`
-
- SetCrcFailureThresholdNil sets the value for CrcFailureThreshold to be an explicit nil
-
-### UnsetCrcFailureThreshold
-`func (o *SitesPutRequestSiteValue) UnsetCrcFailureThreshold()`
-
-UnsetCrcFailureThreshold ensures that no value is present for CrcFailureThreshold, not even an explicit nil
 ### GetSwitchIpBase
 
 `func (o *SitesPutRequestSiteValue) GetSwitchIpBase() string`
@@ -1322,6 +1291,131 @@ SetMultiTenant sets MultiTenant field to given value.
 `func (o *SitesPutRequestSiteValue) HasMultiTenant() bool`
 
 HasMultiTenant returns a boolean if a field has been set.
+
+### GetBaseBgpAsNumber
+
+`func (o *SitesPutRequestSiteValue) GetBaseBgpAsNumber() string`
+
+GetBaseBgpAsNumber returns the BaseBgpAsNumber field if non-nil, zero value otherwise.
+
+### GetBaseBgpAsNumberOk
+
+`func (o *SitesPutRequestSiteValue) GetBaseBgpAsNumberOk() (*string, bool)`
+
+GetBaseBgpAsNumberOk returns a tuple with the BaseBgpAsNumber field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetBaseBgpAsNumber
+
+`func (o *SitesPutRequestSiteValue) SetBaseBgpAsNumber(v string)`
+
+SetBaseBgpAsNumber sets BaseBgpAsNumber field to given value.
+
+### HasBaseBgpAsNumber
+
+`func (o *SitesPutRequestSiteValue) HasBaseBgpAsNumber() bool`
+
+HasBaseBgpAsNumber returns a boolean if a field has been set.
+
+### GetRouterIdBasePrefix
+
+`func (o *SitesPutRequestSiteValue) GetRouterIdBasePrefix() string`
+
+GetRouterIdBasePrefix returns the RouterIdBasePrefix field if non-nil, zero value otherwise.
+
+### GetRouterIdBasePrefixOk
+
+`func (o *SitesPutRequestSiteValue) GetRouterIdBasePrefixOk() (*string, bool)`
+
+GetRouterIdBasePrefixOk returns a tuple with the RouterIdBasePrefix field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRouterIdBasePrefix
+
+`func (o *SitesPutRequestSiteValue) SetRouterIdBasePrefix(v string)`
+
+SetRouterIdBasePrefix sets RouterIdBasePrefix field to given value.
+
+### HasRouterIdBasePrefix
+
+`func (o *SitesPutRequestSiteValue) HasRouterIdBasePrefix() bool`
+
+HasRouterIdBasePrefix returns a boolean if a field has been set.
+
+### GetVtepIdBasePrefix
+
+`func (o *SitesPutRequestSiteValue) GetVtepIdBasePrefix() string`
+
+GetVtepIdBasePrefix returns the VtepIdBasePrefix field if non-nil, zero value otherwise.
+
+### GetVtepIdBasePrefixOk
+
+`func (o *SitesPutRequestSiteValue) GetVtepIdBasePrefixOk() (*string, bool)`
+
+GetVtepIdBasePrefixOk returns a tuple with the VtepIdBasePrefix field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVtepIdBasePrefix
+
+`func (o *SitesPutRequestSiteValue) SetVtepIdBasePrefix(v string)`
+
+SetVtepIdBasePrefix sets VtepIdBasePrefix field to given value.
+
+### HasVtepIdBasePrefix
+
+`func (o *SitesPutRequestSiteValue) HasVtepIdBasePrefix() bool`
+
+HasVtepIdBasePrefix returns a boolean if a field has been set.
+
+### GetPairedIpSubnet
+
+`func (o *SitesPutRequestSiteValue) GetPairedIpSubnet() string`
+
+GetPairedIpSubnet returns the PairedIpSubnet field if non-nil, zero value otherwise.
+
+### GetPairedIpSubnetOk
+
+`func (o *SitesPutRequestSiteValue) GetPairedIpSubnetOk() (*string, bool)`
+
+GetPairedIpSubnetOk returns a tuple with the PairedIpSubnet field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPairedIpSubnet
+
+`func (o *SitesPutRequestSiteValue) SetPairedIpSubnet(v string)`
+
+SetPairedIpSubnet sets PairedIpSubnet field to given value.
+
+### HasPairedIpSubnet
+
+`func (o *SitesPutRequestSiteValue) HasPairedIpSubnet() bool`
+
+HasPairedIpSubnet returns a boolean if a field has been set.
+
+### GetMaxSwitches
+
+`func (o *SitesPutRequestSiteValue) GetMaxSwitches() string`
+
+GetMaxSwitches returns the MaxSwitches field if non-nil, zero value otherwise.
+
+### GetMaxSwitchesOk
+
+`func (o *SitesPutRequestSiteValue) GetMaxSwitchesOk() (*string, bool)`
+
+GetMaxSwitchesOk returns a tuple with the MaxSwitches field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMaxSwitches
+
+`func (o *SitesPutRequestSiteValue) SetMaxSwitches(v string)`
+
+SetMaxSwitches sets MaxSwitches field to given value.
+
+### HasMaxSwitches
+
+`func (o *SitesPutRequestSiteValue) HasMaxSwitches() bool`
+
+HasMaxSwitches returns a boolean if a field has been set.
 
 ### GetPauseValidationAlarms
 

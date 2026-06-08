@@ -20,77 +20,77 @@ import (
 )
 
 
-// DeviceControllersAPIService DeviceControllersAPI service
-type DeviceControllersAPIService service
+// DeviceAAAProfilesAPIService DeviceAAAProfilesAPI service
+type DeviceAAAProfilesAPIService service
 
-type ApiDevicecontrollersDeleteRequest struct {
+type ApiDeviceaaaprofilesDeleteRequest struct {
 	ctx context.Context
-	ApiService *DeviceControllersAPIService
-	deviceControllerName *[]string
+	ApiService *DeviceAAAProfilesAPIService
+	deviceAaaProfileName *[]string
 	changesetName *string
 }
 
-func (r ApiDevicecontrollersDeleteRequest) DeviceControllerName(deviceControllerName []string) ApiDevicecontrollersDeleteRequest {
-	r.deviceControllerName = &deviceControllerName
+func (r ApiDeviceaaaprofilesDeleteRequest) DeviceAaaProfileName(deviceAaaProfileName []string) ApiDeviceaaaprofilesDeleteRequest {
+	r.deviceAaaProfileName = &deviceAaaProfileName
 	return r
 }
 
-func (r ApiDevicecontrollersDeleteRequest) ChangesetName(changesetName string) ApiDevicecontrollersDeleteRequest {
+func (r ApiDeviceaaaprofilesDeleteRequest) ChangesetName(changesetName string) ApiDeviceaaaprofilesDeleteRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiDevicecontrollersDeleteRequest) Execute() (*http.Response, error) {
-	return r.ApiService.DevicecontrollersDeleteExecute(r)
+func (r ApiDeviceaaaprofilesDeleteRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeviceaaaprofilesDeleteExecute(r)
 }
 
 /*
-DevicecontrollersDelete Delete Device Controllers
+DeviceaaaprofilesDelete Delete Device AAA Profile
 
-Deletes an existing Device Controllers from the system if changeset_name is empty, from a changeset if its name is provided.
+Deletes an existing Device AAA Profile from the system if changeset_name is empty, from a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicecontrollersDeleteRequest
+ @return ApiDeviceaaaprofilesDeleteRequest
 */
-func (a *DeviceControllersAPIService) DevicecontrollersDelete(ctx context.Context) ApiDevicecontrollersDeleteRequest {
-	return ApiDevicecontrollersDeleteRequest{
+func (a *DeviceAAAProfilesAPIService) DeviceaaaprofilesDelete(ctx context.Context) ApiDeviceaaaprofilesDeleteRequest {
+	return ApiDeviceaaaprofilesDeleteRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *DeviceControllersAPIService) DevicecontrollersDeleteExecute(r ApiDevicecontrollersDeleteRequest) (*http.Response, error) {
+func (a *DeviceAAAProfilesAPIService) DeviceaaaprofilesDeleteExecute(r ApiDeviceaaaprofilesDeleteRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceControllersAPIService.DevicecontrollersDelete")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceAAAProfilesAPIService.DeviceaaaprofilesDelete")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/devicecontrollers"
+	localVarPath := localBasePath + "/deviceaaaprofiles"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.deviceControllerName == nil {
-		return nil, reportError("deviceControllerName is required and must be specified")
+	if r.deviceAaaProfileName == nil {
+		return nil, reportError("deviceAaaProfileName is required and must be specified")
 	}
 
 	{
-		t := *r.deviceControllerName
+		t := *r.deviceAaaProfileName
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "device_controller_name", s.Index(i).Interface(), "form", "multi")
+				parameterAddToHeaderOrQuery(localVarQueryParams, "device_aaa_profile_name", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "device_controller_name", t, "form", "multi")
+			parameterAddToHeaderOrQuery(localVarQueryParams, "device_aaa_profile_name", t, "form", "multi")
 		}
 	}
 	if r.changesetName != nil {
@@ -141,70 +141,70 @@ func (a *DeviceControllersAPIService) DevicecontrollersDeleteExecute(r ApiDevice
 	return localVarHTTPResponse, nil
 }
 
-type ApiDevicecontrollersGetRequest struct {
+type ApiDeviceaaaprofilesGetRequest struct {
 	ctx context.Context
-	ApiService *DeviceControllersAPIService
-	deviceControllerName *string
+	ApiService *DeviceAAAProfilesAPIService
+	deviceAaaProfileName *string
 	includeData *bool
 	changesetName *string
 }
 
-func (r ApiDevicecontrollersGetRequest) DeviceControllerName(deviceControllerName string) ApiDevicecontrollersGetRequest {
-	r.deviceControllerName = &deviceControllerName
+func (r ApiDeviceaaaprofilesGetRequest) DeviceAaaProfileName(deviceAaaProfileName string) ApiDeviceaaaprofilesGetRequest {
+	r.deviceAaaProfileName = &deviceAaaProfileName
 	return r
 }
 
-func (r ApiDevicecontrollersGetRequest) IncludeData(includeData bool) ApiDevicecontrollersGetRequest {
+func (r ApiDeviceaaaprofilesGetRequest) IncludeData(includeData bool) ApiDeviceaaaprofilesGetRequest {
 	r.includeData = &includeData
 	return r
 }
 
-func (r ApiDevicecontrollersGetRequest) ChangesetName(changesetName string) ApiDevicecontrollersGetRequest {
+func (r ApiDeviceaaaprofilesGetRequest) ChangesetName(changesetName string) ApiDeviceaaaprofilesGetRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiDevicecontrollersGetRequest) Execute() (*http.Response, error) {
-	return r.ApiService.DevicecontrollersGetExecute(r)
+func (r ApiDeviceaaaprofilesGetRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeviceaaaprofilesGetExecute(r)
 }
 
 /*
-DevicecontrollersGet Get all Device Controllers
+DeviceaaaprofilesGet Get all Device AAA Profiles
 
-Retrieves all Device Controllers from the system.
+Downloads all Device AAA Profiles from the system.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicecontrollersGetRequest
+ @return ApiDeviceaaaprofilesGetRequest
 */
-func (a *DeviceControllersAPIService) DevicecontrollersGet(ctx context.Context) ApiDevicecontrollersGetRequest {
-	return ApiDevicecontrollersGetRequest{
+func (a *DeviceAAAProfilesAPIService) DeviceaaaprofilesGet(ctx context.Context) ApiDeviceaaaprofilesGetRequest {
+	return ApiDeviceaaaprofilesGetRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *DeviceControllersAPIService) DevicecontrollersGetExecute(r ApiDevicecontrollersGetRequest) (*http.Response, error) {
+func (a *DeviceAAAProfilesAPIService) DeviceaaaprofilesGetExecute(r ApiDeviceaaaprofilesGetRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceControllersAPIService.DevicecontrollersGet")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceAAAProfilesAPIService.DeviceaaaprofilesGet")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/devicecontrollers"
+	localVarPath := localBasePath + "/deviceaaaprofiles"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.deviceControllerName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "device_controller_name", r.deviceControllerName, "form", "")
+	if r.deviceAaaProfileName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "device_aaa_profile_name", r.deviceAaaProfileName, "form", "")
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
@@ -257,57 +257,57 @@ func (a *DeviceControllersAPIService) DevicecontrollersGetExecute(r ApiDevicecon
 	return localVarHTTPResponse, nil
 }
 
-type ApiDevicecontrollersPatchRequest struct {
+type ApiDeviceaaaprofilesPatchRequest struct {
 	ctx context.Context
-	ApiService *DeviceControllersAPIService
+	ApiService *DeviceAAAProfilesAPIService
 	changesetName *string
-	devicecontrollersPutRequest *DevicecontrollersPutRequest
+	deviceaaaprofilesPutRequest *DeviceaaaprofilesPutRequest
 }
 
-func (r ApiDevicecontrollersPatchRequest) ChangesetName(changesetName string) ApiDevicecontrollersPatchRequest {
+func (r ApiDeviceaaaprofilesPatchRequest) ChangesetName(changesetName string) ApiDeviceaaaprofilesPatchRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiDevicecontrollersPatchRequest) DevicecontrollersPutRequest(devicecontrollersPutRequest DevicecontrollersPutRequest) ApiDevicecontrollersPatchRequest {
-	r.devicecontrollersPutRequest = &devicecontrollersPutRequest
+func (r ApiDeviceaaaprofilesPatchRequest) DeviceaaaprofilesPutRequest(deviceaaaprofilesPutRequest DeviceaaaprofilesPutRequest) ApiDeviceaaaprofilesPatchRequest {
+	r.deviceaaaprofilesPutRequest = &deviceaaaprofilesPutRequest
 	return r
 }
 
-func (r ApiDevicecontrollersPatchRequest) Execute() (*http.Response, error) {
-	return r.ApiService.DevicecontrollersPatchExecute(r)
+func (r ApiDeviceaaaprofilesPatchRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeviceaaaprofilesPatchExecute(r)
 }
 
 /*
-DevicecontrollersPatch Update Device Controller
+DeviceaaaprofilesPatch Update Device AAA Profile
 
-Update Device Controller into the system if changeset_name is empty, into a changeset if its name is provided.
+Update Device AAA Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicecontrollersPatchRequest
+ @return ApiDeviceaaaprofilesPatchRequest
 */
-func (a *DeviceControllersAPIService) DevicecontrollersPatch(ctx context.Context) ApiDevicecontrollersPatchRequest {
-	return ApiDevicecontrollersPatchRequest{
+func (a *DeviceAAAProfilesAPIService) DeviceaaaprofilesPatch(ctx context.Context) ApiDeviceaaaprofilesPatchRequest {
+	return ApiDeviceaaaprofilesPatchRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *DeviceControllersAPIService) DevicecontrollersPatchExecute(r ApiDevicecontrollersPatchRequest) (*http.Response, error) {
+func (a *DeviceAAAProfilesAPIService) DeviceaaaprofilesPatchExecute(r ApiDeviceaaaprofilesPatchRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPatch
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceControllersAPIService.DevicecontrollersPatch")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceAAAProfilesAPIService.DeviceaaaprofilesPatch")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/devicecontrollers"
+	localVarPath := localBasePath + "/deviceaaaprofiles"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -334,7 +334,7 @@ func (a *DeviceControllersAPIService) DevicecontrollersPatchExecute(r ApiDevicec
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.devicecontrollersPutRequest
+	localVarPostBody = r.deviceaaaprofilesPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -363,57 +363,57 @@ func (a *DeviceControllersAPIService) DevicecontrollersPatchExecute(r ApiDevicec
 	return localVarHTTPResponse, nil
 }
 
-type ApiDevicecontrollersPutRequest struct {
+type ApiDeviceaaaprofilesPutRequest struct {
 	ctx context.Context
-	ApiService *DeviceControllersAPIService
+	ApiService *DeviceAAAProfilesAPIService
 	changesetName *string
-	devicecontrollersPutRequest *DevicecontrollersPutRequest
+	deviceaaaprofilesPutRequest *DeviceaaaprofilesPutRequest
 }
 
-func (r ApiDevicecontrollersPutRequest) ChangesetName(changesetName string) ApiDevicecontrollersPutRequest {
+func (r ApiDeviceaaaprofilesPutRequest) ChangesetName(changesetName string) ApiDeviceaaaprofilesPutRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiDevicecontrollersPutRequest) DevicecontrollersPutRequest(devicecontrollersPutRequest DevicecontrollersPutRequest) ApiDevicecontrollersPutRequest {
-	r.devicecontrollersPutRequest = &devicecontrollersPutRequest
+func (r ApiDeviceaaaprofilesPutRequest) DeviceaaaprofilesPutRequest(deviceaaaprofilesPutRequest DeviceaaaprofilesPutRequest) ApiDeviceaaaprofilesPutRequest {
+	r.deviceaaaprofilesPutRequest = &deviceaaaprofilesPutRequest
 	return r
 }
 
-func (r ApiDevicecontrollersPutRequest) Execute() (*http.Response, error) {
-	return r.ApiService.DevicecontrollersPutExecute(r)
+func (r ApiDeviceaaaprofilesPutRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeviceaaaprofilesPutExecute(r)
 }
 
 /*
-DevicecontrollersPut Create Device Controller
+DeviceaaaprofilesPut Create Device AAA Profile
 
-Create Device Controller into the system if changeset_name is empty, into a changeset if its name is provided.
+Create Device AAA Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicecontrollersPutRequest
+ @return ApiDeviceaaaprofilesPutRequest
 */
-func (a *DeviceControllersAPIService) DevicecontrollersPut(ctx context.Context) ApiDevicecontrollersPutRequest {
-	return ApiDevicecontrollersPutRequest{
+func (a *DeviceAAAProfilesAPIService) DeviceaaaprofilesPut(ctx context.Context) ApiDeviceaaaprofilesPutRequest {
+	return ApiDeviceaaaprofilesPutRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *DeviceControllersAPIService) DevicecontrollersPutExecute(r ApiDevicecontrollersPutRequest) (*http.Response, error) {
+func (a *DeviceAAAProfilesAPIService) DeviceaaaprofilesPutExecute(r ApiDeviceaaaprofilesPutRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceControllersAPIService.DevicecontrollersPut")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceAAAProfilesAPIService.DeviceaaaprofilesPut")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/devicecontrollers"
+	localVarPath := localBasePath + "/deviceaaaprofiles"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -440,7 +440,7 @@ func (a *DeviceControllersAPIService) DevicecontrollersPutExecute(r ApiDevicecon
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.devicecontrollersPutRequest
+	localVarPostBody = r.deviceaaaprofilesPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
