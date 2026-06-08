@@ -666,7 +666,6 @@ func (m *Manager) ExecuteAllPendingOperations(ctx context.Context) diag.Diagnost
 			m.clearCacheFunc(ctx, m.contextProvider(), "packet_brokers")
 			m.clearCacheFunc(ctx, m.contextProvider(), "badges")
 			m.clearCacheFunc(ctx, m.contextProvider(), "switchpoints")
-			m.clearCacheFunc(ctx, m.contextProvider(), "device_controllers")
 			m.clearCacheFunc(ctx, m.contextProvider(), "authenticated_eth_ports")
 			m.clearCacheFunc(ctx, m.contextProvider(), "device_voice_settings")
 			m.clearCacheFunc(ctx, m.contextProvider(), "service_port_profiles")
@@ -929,11 +928,6 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("PUT", m.getOperationCount("threshold_group", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "threshold_group", "PUT") }, "Threshold Group") {
 		return diagnostics, operationsPerformed
 	}
-	// 38. device_controller
-	if !execute("PUT", m.getOperationCount("device_controller", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_controller", "PUT") }, "Device Controller") {
-		return diagnostics, operationsPerformed
-	}
-
 	// PATCH operations - DC Order
 	// 1. sfp_breakout
 	if !execute("PATCH", m.getOperationCount("sfp_breakout", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "sfp_breakout", "PATCH") }, "SFP Breakout") {
@@ -1083,11 +1077,6 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("PATCH", m.getOperationCount("site", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "site", "PATCH") }, "Site") {
 		return diagnostics, operationsPerformed
 	}
-	// 38. device_controller
-	if !execute("PATCH", m.getOperationCount("device_controller", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_controller", "PATCH") }, "Device Controller") {
-		return diagnostics, operationsPerformed
-	}
-
 	// DELETE operations - Reverse DC Order (note: sfp_breakout and site are skipped - they only support GET and PATCH)
 
 	// CIRCULAR REFERENCE FIX FOR DELETE OPERATIONS
@@ -1144,10 +1133,6 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 		tflog.Info(ctx, "Successfully cleared match_vrf references, proceeding with deletions")
 	}
 
-	// 38. device_controller
-	if !execute("DELETE", m.getOperationCount("device_controller", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_controller", "DELETE") }, "Device Controller") {
-		return diagnostics, operationsPerformed
-	}
 	// 36. threshold_group
 	if !execute("DELETE", m.getOperationCount("threshold_group", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "threshold_group", "DELETE") }, "Threshold Group") {
 		return diagnostics, operationsPerformed
@@ -1416,11 +1401,6 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 	if !execute("PUT", m.getOperationCount("threshold_group", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "threshold_group", "PUT") }, "Threshold Group") {
 		return diagnostics, operationsPerformed
 	}
-	// 28. device_controller
-	if !execute("PUT", m.getOperationCount("device_controller", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_controller", "PUT") }, "Device Controller") {
-		return diagnostics, operationsPerformed
-	}
-
 	// PATCH operations - Campus Order
 	// 1. ipv4_list
 	if !execute("PATCH", m.getOperationCount("ipv4_list", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "ipv4_list", "PATCH") }, "IPv4 List") {
@@ -1532,16 +1512,7 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 	if !execute("PATCH", m.getOperationCount("site", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "site", "PATCH") }, "Site") {
 		return diagnostics, operationsPerformed
 	}
-	// 28. device_controller
-	if !execute("PATCH", m.getOperationCount("device_controller", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_controller", "PATCH") }, "Device Controller") {
-		return diagnostics, operationsPerformed
-	}
-
 	// DELETE operations - Reverse Campus Order (note: site is skipped - it only supports GET and PATCH)
-	// 28. device_controller
-	if !execute("DELETE", m.getOperationCount("device_controller", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_controller", "DELETE") }, "Device Controller") {
-		return diagnostics, operationsPerformed
-	}
 	// 26. threshold_group
 	if !execute("DELETE", m.getOperationCount("threshold_group", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "threshold_group", "DELETE") }, "Threshold Group") {
 		return diagnostics, operationsPerformed
@@ -1821,10 +1792,6 @@ func (m *Manager) ExecuteIfMultipleOperations(ctx context.Context) diag.Diagnost
 	portAclPatchCount := m.getOperationCountLocked("port_acl", "PATCH")
 	portAclDeleteCount := m.getOperationCountLocked("port_acl", "DELETE")
 
-	deviceControllerPutCount := m.getOperationCountLocked("device_controller", "PUT")
-	deviceControllerPatchCount := m.getOperationCountLocked("device_controller", "PATCH")
-	deviceControllerDeleteCount := m.getOperationCountLocked("device_controller", "DELETE")
-
 	groupingRulePutCount := m.getOperationCountLocked("grouping_rule", "PUT")
 	groupingRulePatchCount := m.getOperationCountLocked("grouping_rule", "PATCH")
 	groupingRuleDeleteCount := m.getOperationCountLocked("grouping_rule", "DELETE")
@@ -1874,7 +1841,6 @@ func (m *Manager) ExecuteIfMultipleOperations(ctx context.Context) diag.Diagnost
 		spinePlanePutCount + spinePlanePatchCount + spinePlaneDeleteCount +
 		portAclPutCount + portAclPatchCount + portAclDeleteCount +
 		authenticatedEthPortPutCount + authenticatedEthPortPatchCount + authenticatedEthPortDeleteCount +
-		deviceControllerPutCount + deviceControllerPatchCount + deviceControllerDeleteCount +
 		groupingRulePutCount + groupingRulePatchCount + groupingRuleDeleteCount +
 		thresholdGroupPutCount + thresholdGroupPatchCount + thresholdGroupDeleteCount +
 		thresholdPutCount + thresholdPatchCount + thresholdDeleteCount
@@ -1979,9 +1945,6 @@ func (m *Manager) ExecuteIfMultipleOperations(ctx context.Context) diag.Diagnost
 			"authenticated_eth_port_put_count":      authenticatedEthPortPutCount,
 			"authenticated_eth_port_patch_count":    authenticatedEthPortPatchCount,
 			"authenticated_eth_port_delete_count":   authenticatedEthPortDeleteCount,
-			"device_controller_put_count":           deviceControllerPutCount,
-			"device_controller_patch_count":         deviceControllerPatchCount,
-			"device_controller_delete_count":        deviceControllerDeleteCount,
 			"sflow_collector_put_count":             sflowCollectorPutCount,
 			"sflow_collector_patch_count":           sflowCollectorPatchCount,
 			"sflow_collector_delete_count":          sflowCollectorDeleteCount,

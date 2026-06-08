@@ -54,7 +54,6 @@ var resourceAPIPath = map[string]string{
 	"threshold":                "/thresholds",
 	"grouping_rule":            "/groupingrules",
 	"threshold_group":          "/thresholdgroups",
-	"device_controller":        "/devicecontrollers",
 	"sfp_breakout":             "/sfpbreakouts",
 	"site":                     "/sites",
 	"service_port_profile":     "/serviceportprofiles",
@@ -98,7 +97,6 @@ var dcPutOrder = []string{
 	"threshold",
 	"grouping_rule",
 	"threshold_group",
-	"device_controller",
 }
 
 var campusPutOrder = []string{
@@ -127,7 +125,6 @@ var campusPutOrder = []string{
 	"threshold",
 	"grouping_rule",
 	"threshold_group",
-	"device_controller",
 }
 
 var dcDeleteOrder = func() []string {
@@ -147,27 +144,27 @@ var campusDeleteOrder = func() []string {
 }()
 
 // dcPatchOrder is dcPutOrder with "sfp_breakout" prepended and "site" inserted
-// before "device_controller" (both are PATCH-only resources).
+// after "threshold_group" (both are PATCH-only resources).
 var dcPatchOrder = func() []string {
 	result := make([]string, 0, len(dcPutOrder)+2)
 	result = append(result, "sfp_breakout")
 	for _, rt := range dcPutOrder {
-		if rt == "device_controller" {
+		result = append(result, rt)
+		if rt == "threshold_group" {
 			result = append(result, "site")
 		}
-		result = append(result, rt)
 	}
 	return result
 }()
 
-// campusPatchOrder is campusPutOrder with "site" inserted before "device_controller".
+// campusPatchOrder is campusPutOrder with "site" inserted after "threshold_group".
 var campusPatchOrder = func() []string {
 	result := make([]string, 0, len(campusPutOrder)+1)
 	for _, rt := range campusPutOrder {
-		if rt == "device_controller" {
+		result = append(result, rt)
+		if rt == "threshold_group" {
 			result = append(result, "site")
 		}
-		result = append(result, rt)
 	}
 	return result
 }()
@@ -255,8 +252,6 @@ func zeroPutValue(resourceType string) interface{} {
 		return *openapi.NewSwitchpointsPutRequestSwitchpointValue()
 	case "voice_port_profile":
 		return *openapi.NewVoiceportprofilesPutRequestVoicePortProfilesValue()
-	case "device_controller":
-		return *openapi.NewDevicecontrollersPutRequestDeviceControllerValue()
 	case "pod":
 		return *openapi.NewPodsPutRequestPodValue()
 	case "port_acl":
@@ -943,7 +938,7 @@ func TestPatchErrorAbortsRemainingOperations(t *testing.T) {
 func TestDeleteErrorAbortsRemainingOperations(t *testing.T) {
 	t.Parallel()
 	server, records, mu := failingOrderTrackingServer(t, func(r *http.Request) bool {
-		return r.Method == http.MethodDelete && r.URL.Path == "/devicecontrollers"
+		return r.Method == http.MethodDelete && r.URL.Path == "/thresholdgroups"
 	})
 
 	client := newTestClient(server.URL)
@@ -951,32 +946,32 @@ func TestDeleteErrorAbortsRemainingOperations(t *testing.T) {
 
 	ctx := context.Background()
 
-	// device_controller is first in reverse DC order — its failure should abort the rest
-	mgr.AddDelete(ctx, "device_controller", "test_dc")
-	// These come AFTER device_controller in reverse DC order — should NOT execute
+	// threshold_group is first in reverse DC order — its failure should abort the rest
 	mgr.AddDelete(ctx, "threshold_group", "test_tg")
+	// These come AFTER threshold_group in reverse DC order — should NOT execute
+	mgr.AddDelete(ctx, "grouping_rule", "test_gr")
 	mgr.AddDelete(ctx, "badge", "test_badge")
 
 	diags, _ := mgr.ExecuteDatacenterOperations(ctx)
 	if !diags.HasError() {
-		t.Fatal("expected errors from failed device_controller DELETE, got none")
+		t.Fatal("expected errors from failed threshold_group DELETE, got none")
 	}
 
 	deletePaths := filterRecords(snapshotRecords(mu, records), http.MethodDelete)
 
 	for _, path := range deletePaths {
-		if path == "/thresholdgroups" || path == "/badges" {
-			t.Errorf("path %q should NOT have been deleted after device_controller DELETE failure", path)
+		if path == "/groupingrules" || path == "/badges" {
+			t.Errorf("path %q should NOT have been deleted after threshold_group DELETE failure", path)
 		}
 	}
 
-	foundDC := false
+	foundTG := false
 	for _, path := range deletePaths {
-		if path == "/devicecontrollers" {
-			foundDC = true
+		if path == "/thresholdgroups" {
+			foundTG = true
 		}
 	}
-	if !foundDC {
-		t.Error("device_controller DELETE should have been attempted")
+	if !foundTG {
+		t.Error("threshold_group DELETE should have been attempted")
 	}
 }

@@ -86,7 +86,6 @@ The provider supports the following resource types:
 - `verity_badge`
 - `verity_bundle`
 - `verity_community_list`
-- `verity_device_controller`
 - `verity_device_settings`
 - `verity_device_voice_settings`
 - `verity_diagnostics_port_profile`

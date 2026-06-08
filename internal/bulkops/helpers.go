@@ -567,21 +567,6 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					}
 					return result.VoicePortProfile, nil
 
-				case "device_controller":
-					resp, err := m.client.DeviceControllersAPI.DevicecontrollersGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						DeviceController map[string]interface{} `json:"device_controller"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.DeviceController, nil
-
 				case "pod":
 					resp, err := m.client.PodsAPI.PodsGet(apiCtx).Execute()
 					if err != nil {
@@ -1015,14 +1000,6 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 				profileMap[name] = props.(openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
 			}
 			putRequest.SetVoicePortProfiles(profileMap)
-			return putRequest
-		case "device_controller":
-			putRequest := openapi.NewDevicecontrollersPutRequest()
-			deviceMap := make(map[string]openapi.DevicecontrollersPutRequestDeviceControllerValue)
-			for name, props := range filteredData {
-				deviceMap[name] = props.(openapi.DevicecontrollersPutRequestDeviceControllerValue)
-			}
-			putRequest.SetDeviceController(deviceMap)
 			return putRequest
 		case "pod":
 			putRequest := openapi.NewPodsPutRequest()

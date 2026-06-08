@@ -196,7 +196,6 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 		"verity_port_acl":                 {},
 		"verity_badge":                    {},
 		"verity_switchpoint":              {},
-		"verity_device_controller":        {},
 		"verity_site":                     {},
 		"verity_tenant":                   {},
 		"verity_gateway_profile":          {},

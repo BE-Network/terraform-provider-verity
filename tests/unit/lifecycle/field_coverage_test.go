@@ -141,14 +141,6 @@ var allResourceTests = []ResourceCoverageEntry{
 		ResourceName:  "cov_sp",
 	},
 	{
-		TerraformType: "verity_device_controller",
-		Factory:       provider.NewVerityDeviceControllerResource,
-		APIPath:       "/api/devicecontrollers",
-		WrapperKey:    "device_controller",
-		Mode:          "datacenter",
-		ResourceName:  "cov_dc",
-	},
-	{
 		TerraformType: "verity_device_settings",
 		Factory:       provider.NewVerityDeviceSettingsResource,
 		APIPath:       "/api/devicesettings",

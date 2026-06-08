@@ -370,26 +370,6 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.SwitchpointsAPI.SwitchpointsGet(ctx).Execute()
 		},
 	},
-	"device_controller": {
-		ResourceType:     "device_controller",
-		PutRequestType:   reflect.TypeOf(openapi.DevicecontrollersPutRequest{}),
-		PatchRequestType: reflect.TypeOf(openapi.DevicecontrollersPutRequest{}),
-		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
-			return &GenericAPIClient{client: c, resourceType: "device_controller"}
-		},
-		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
-			return c.DeviceControllersAPI.DevicecontrollersPut(ctx).DevicecontrollersPutRequest(*req.(*openapi.DevicecontrollersPutRequest)).Execute()
-		},
-		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
-			return c.DeviceControllersAPI.DevicecontrollersPatch(ctx).DevicecontrollersPutRequest(*req.(*openapi.DevicecontrollersPutRequest)).Execute()
-		},
-		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
-			return c.DeviceControllersAPI.DevicecontrollersDelete(ctx).DeviceControllerName(names).Execute()
-		},
-		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
-			return c.DeviceControllersAPI.DevicecontrollersGet(ctx).Execute()
-		},
-	},
 	"authenticated_eth_port": {
 		ResourceType:     "authenticated_eth_port",
 		PutRequestType:   reflect.TypeOf(openapi.AuthenticatedethportsPutRequest{}),

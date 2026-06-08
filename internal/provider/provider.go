@@ -400,7 +400,6 @@ func getAllResources() []func() resource.Resource {
 		NewVerityServicePortProfileResource,
 		NewVerityVoicePortProfileResource,
 		NewVeritySwitchpointResource,
-		NewVerityDeviceControllerResource,
 		NewVerityAsPathAccessListResource,
 		NewVerityCommunityListResource,
 		NewVerityDeviceSettingsResource,

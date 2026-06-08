@@ -109,9 +109,6 @@ var importerRegistry = map[string]struct {
 	"switchpoints": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SwitchpointsAPI.SwitchpointsGet(ctx).Execute()
 	}},
-	"devicecontrollers": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.DeviceControllersAPI.DevicecontrollersGet(ctx).Execute()
-	}},
 	"aspathaccesslists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.ASPathAccessListsAPI.AspathaccesslistsGet(ctx).Execute()
 	}},
@@ -193,7 +190,6 @@ var terraformTypeToResourceKey = map[string]string{
 	"verity_acl_v6":                   "acl_v6",
 	"verity_badge":                    "badge",
 	"verity_authenticated_eth_port":   "authenticated_eth_port",
-	"verity_device_controller":        "device_controller",
 	"verity_device_voice_settings":    "device_voice_settings",
 	"verity_packet_broker":            "packet_broker",
 	"verity_packet_queue":             "packet_queue",
@@ -363,14 +359,6 @@ var resourceConfigs = map[string]ResourceConfig{
 		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:        universalObjectPropsHandler,
 		NestedBlockFields:         map[string]bool{"eth_ports": true, "object_properties": true},
-	},
-	"device_controller": {
-		ResourceType:                 "device_controller",
-		StageName:                    "device_controller_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
 	},
 	"device_voice_settings": {
 		ResourceType:                 "device_voice_settings",
@@ -618,7 +606,6 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "acls_ipv6", terraformResourceType: "verity_acl_v6", importer: i.importACLsIPv6},
 		{name: "badges", terraformResourceType: "verity_badge", importer: func() (interface{}, error) { return i.importResource("badges") }},
 		{name: "authenticatedethports", terraformResourceType: "verity_authenticated_eth_port", importer: func() (interface{}, error) { return i.importResource("authenticatedethports") }},
-		{name: "devicecontrollers", terraformResourceType: "verity_device_controller", importer: func() (interface{}, error) { return i.importResource("devicecontrollers") }},
 		{name: "devicevoicesettings", terraformResourceType: "verity_device_voice_settings", importer: func() (interface{}, error) { return i.importResource("devicevoicesettings") }},
 		{name: "packetbroker", terraformResourceType: "verity_packet_broker", importer: func() (interface{}, error) { return i.importResource("packetbroker") }},
 		{name: "packetqueues", terraformResourceType: "verity_packet_queue", importer: func() (interface{}, error) { return i.importResource("packetqueues") }},
@@ -1001,7 +988,7 @@ func (i *Importer) generateStagesTF() (string, error) {
 		// 14. Device Voice Settings, 15. Authenticated Eth Ports, 16. Diagnostics Profiles,
 		// 17. Eth Port Settings, 18. Voice Port Profiles, 19. Device Settings, 20. Lags,
 		// 21. Bundles, 22. Badges, 23. Switchpoints, 24. Thresholds, 25. Grouping Rules,
-		// 26. Threshold Groups, 27. Sites, 28. Device Controllers
+		// 26. Threshold Groups, 27. Sites
 		stageOrder = []StageDefinition{
 			{"ipv4_list_stage", "verity_ipv4_list", ""},
 			{"ipv6_list_stage", "verity_ipv6_list", "ipv4_list_stage"},
@@ -1030,7 +1017,6 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
 			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
 			{"site_stage", "verity_site", "threshold_group_stage"},
-			{"device_controller_stage", "verity_device_controller", "site_stage"},
 		}
 	} else {
 		// DATACENTER mode staging order:
@@ -1042,7 +1028,7 @@ func (i *Importer) generateStagesTF() (string, error) {
 		// 22. Gateways, 23. Lags, 24. Eth Port Settings, 25. Diagnostics Profiles,
 		// 26. Gateway Profiles,  27. Device Settings, 28. Diagnostics Port Profiles, 29. Bundles, 30. Pods,
 		// 31. Badges, 32. Spine Planes, 33. Switchpoints, 34. Thresholds, 35. Grouping Rules,
-		// 36. Threshold Groups, 37. Sites, 38. Device Controllers
+		// 36. Threshold Groups, 37. Sites
 
 		stageOrder = []StageDefinition{
 			{"sfp_breakout_stage", "verity_sfp_breakout", ""},
@@ -1082,7 +1068,6 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
 			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
 			{"site_stage", "verity_site", "threshold_group_stage"},
-			{"device_controller_stage", "verity_device_controller", "site_stage"},
 		}
 	}
 

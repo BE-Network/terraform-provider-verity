@@ -59,7 +59,6 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_acl_v6":                   ResourceModeBoth,
 	"verity_badge":                    ResourceModeBoth,
 	"verity_bundle":                   ResourceModeBoth,
-	"verity_device_controller":        ResourceModeBoth,
 	"verity_device_settings":          ResourceModeBoth,
 	"verity_diagnostics_port_profile": ResourceModeBoth,
 	"verity_diagnostics_profile":      ResourceModeBoth,
