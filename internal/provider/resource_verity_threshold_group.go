@@ -43,8 +43,9 @@ type verityThresholdGroupTargetsModel struct {
 	Type                 types.String `tfsdk:"type"`
 	GroupingRules        types.String `tfsdk:"grouping_rules"`
 	GroupingRulesRefType types.String `tfsdk:"grouping_rules_ref_type_"`
-	Switchpoint          types.String `tfsdk:"switchpoint"`
-	SwitchpointRefType   types.String `tfsdk:"switchpoint_ref_type_"`
+	Element              types.String `tfsdk:"element"`
+	ElementRefType       types.String `tfsdk:"element_ref_type_"`
+	Sdlc                 types.String `tfsdk:"sdlc"`
 	Port                 types.String `tfsdk:"port"`
 	Index                types.Int64  `tfsdk:"index"`
 }
@@ -144,13 +145,18 @@ func (r *verityThresholdGroupResource) Schema(_ context.Context, _ resource.Sche
 							Optional:    true,
 							Computed:    true,
 						},
-						"switchpoint": schema.StringAttribute{
-							Description: "Switchpoint to apply thresholds to.",
+						"element": schema.StringAttribute{
+							Description: "Element to apply thresholds to.",
 							Optional:    true,
 							Computed:    true,
 						},
-						"switchpoint_ref_type_": schema.StringAttribute{
-							Description: "Object type for switchpoint field. Valid values: 'switchpoint'.",
+						"element_ref_type_": schema.StringAttribute{
+							Description: "Object type for element field. Valid values: 'sensai', 'switchpoint', 'type'.",
+							Optional:    true,
+							Computed:    true,
+						},
+						"sdlc": schema.StringAttribute{
+							Description: "SDLC to apply thresholds to.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -248,8 +254,9 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 				{FieldName: "Type", APIField: &target.Type, TFValue: targetItem.Type},
 				{FieldName: "GroupingRules", APIField: &target.GroupingRules, TFValue: targetItem.GroupingRules},
 				{FieldName: "GroupingRulesRefType", APIField: &target.GroupingRulesRefType, TFValue: targetItem.GroupingRulesRefType},
-				{FieldName: "Switchpoint", APIField: &target.Switchpoint, TFValue: targetItem.Switchpoint},
-				{FieldName: "SwitchpointRefType", APIField: &target.SwitchpointRefType, TFValue: targetItem.SwitchpointRefType},
+				{FieldName: "Element", APIField: &target.Element, TFValue: targetItem.Element},
+				{FieldName: "ElementRefType", APIField: &target.ElementRefType, TFValue: targetItem.ElementRefType},
+				{FieldName: "Sdlc", APIField: &target.Sdlc, TFValue: targetItem.Sdlc},
 				{FieldName: "Port", APIField: &target.Port, TFValue: targetItem.Port},
 			})
 
@@ -477,8 +484,9 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 				{FieldName: "Type", APIField: &target.Type, TFValue: planItem.Type},
 				{FieldName: "GroupingRules", APIField: &target.GroupingRules, TFValue: planItem.GroupingRules},
 				{FieldName: "GroupingRulesRefType", APIField: &target.GroupingRulesRefType, TFValue: planItem.GroupingRulesRefType},
-				{FieldName: "Switchpoint", APIField: &target.Switchpoint, TFValue: planItem.Switchpoint},
-				{FieldName: "SwitchpointRefType", APIField: &target.SwitchpointRefType, TFValue: planItem.SwitchpointRefType},
+				{FieldName: "Element", APIField: &target.Element, TFValue: planItem.Element},
+				{FieldName: "ElementRefType", APIField: &target.ElementRefType, TFValue: planItem.ElementRefType},
+				{FieldName: "Sdlc", APIField: &target.Sdlc, TFValue: planItem.Sdlc},
 				{FieldName: "Port", APIField: &target.Port, TFValue: planItem.Port},
 			})
 
@@ -499,6 +507,7 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 			// Handle string fields
 			utils.CompareAndSetStringField(planItem.Type, stateItem.Type, func(v *string) { target.Type = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.Port, stateItem.Port, func(v *string) { target.Port = v }, &fieldChanged)
+			utils.CompareAndSetStringField(planItem.Sdlc, stateItem.Sdlc, func(v *string) { target.Sdlc = v }, &fieldChanged)
 
 			// Handle grouping_rules and grouping_rules_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
@@ -511,12 +520,12 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 				return target, false
 			}
 
-			// Handle switchpoint and switchpoint_ref_type_ using "One ref type supported" pattern
-			if !utils.HandleOneRefTypeSupported(
-				planItem.Switchpoint, stateItem.Switchpoint, planItem.SwitchpointRefType, stateItem.SwitchpointRefType,
-				func(v *string) { target.Switchpoint = v },
-				func(v *string) { target.SwitchpointRefType = v },
-				"switchpoint", "switchpoint_ref_type_",
+			// Handle element and element_ref_type_ using "Many ref types supported" pattern
+			if !utils.HandleMultipleRefTypesSupported(
+				planItem.Element, stateItem.Element, planItem.ElementRefType, stateItem.ElementRefType,
+				func(v *string) { target.Element = v },
+				func(v *string) { target.ElementRefType = v },
+				"element", "element_ref_type_",
 				&fieldChanged, &resp.Diagnostics,
 			) {
 				return target, false
@@ -704,8 +713,9 @@ func populateThresholdGroupState(ctx context.Context, state verityThresholdGroup
 					Type:                 utils.MapStringWithModeNested(target, "type", resourceType, "targets.type", mode),
 					GroupingRules:        utils.MapStringWithModeNested(target, "grouping_rules", resourceType, "targets.grouping_rules", mode),
 					GroupingRulesRefType: utils.MapStringWithModeNested(target, "grouping_rules_ref_type_", resourceType, "targets.grouping_rules_ref_type_", mode),
-					Switchpoint:          utils.MapStringWithModeNested(target, "switchpoint", resourceType, "targets.switchpoint", mode),
-					SwitchpointRefType:   utils.MapStringWithModeNested(target, "switchpoint_ref_type_", resourceType, "targets.switchpoint_ref_type_", mode),
+					Element:              utils.MapStringWithModeNested(target, "element", resourceType, "targets.element", mode),
+					ElementRefType:       utils.MapStringWithModeNested(target, "element_ref_type_", resourceType, "targets.element_ref_type_", mode),
+					Sdlc:                 utils.MapStringWithModeNested(target, "sdlc", resourceType, "targets.sdlc", mode),
 					Port:                 utils.MapStringWithModeNested(target, "port", resourceType, "targets.port", mode),
 					Index:                utils.MapInt64WithModeNested(target, "index", resourceType, "targets.index", mode),
 				}
@@ -794,7 +804,7 @@ func (r *verityThresholdGroupResource) ModifyPlan(ctx context.Context, req resou
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "targets",
 		ItemCount:    len(plan.Targets),
-		StringFields: []string{"type", "grouping_rules", "grouping_rules_ref_type_", "switchpoint", "switchpoint_ref_type_", "port"},
+		StringFields: []string{"type", "grouping_rules", "grouping_rules_ref_type_", "element", "element_ref_type_", "sdlc", "port"},
 		BoolFields:   []string{"enable"},
 		Int64Fields:  []string{"index"},
 	})

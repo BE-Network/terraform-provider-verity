@@ -94,6 +94,11 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Optional:    true,
 				Computed:    true,
 			},
+			"crc_failure_threshold": schema.Int64Attribute{
+				Description: "Threshold in Errors per second that when met will disable this LAG's links",
+				Optional:    true,
+				Computed:    true,
+			},
 			"eth_port_profile_ref_type_": schema.StringAttribute{
 				Description: "Reference type for the Ethernet port profile.",
 				Optional:    true,
@@ -110,7 +115,16 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "Object properties.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						// No attributes defined - object_properties is an empty object in the schema
+						"site": schema.StringAttribute{
+							Description: "Choose a Fabric",
+							Optional:    true,
+							Computed:    true,
+						},
+						"site_ref_type_": schema.StringAttribute{
+							Description: "Object type for site field",
+							Optional:    true,
+							Computed:    true,
+						},
 					},
 				},
 			},
@@ -149,12 +163,14 @@ type verityLagResourceModel struct {
 	PeerLinkVlan          types.Int64                      `tfsdk:"peer_link_vlan"`
 	Fallback              types.Bool                       `tfsdk:"fallback"`
 	FastRate              types.Bool                       `tfsdk:"fast_rate"`
+	CrcFailureThreshold   types.Int64                      `tfsdk:"crc_failure_threshold"`
 	EthPortProfileRefType types.String                     `tfsdk:"eth_port_profile_ref_type_"`
 	Uplink                types.Bool                       `tfsdk:"uplink"`
 }
 
 type verityLagObjectPropertiesModel struct {
-	// No attributes defined - object_properties is an empty object in the schema
+	Site        types.String `tfsdk:"site"`
+	SiteRefType types.String `tfsdk:"site_ref_type_"`
 }
 
 func (r *verityLagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -208,11 +224,18 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "PeerLinkVlan", APIField: &lagReq.PeerLinkVlan, TFValue: config.PeerLinkVlan, IsConfigured: configuredAttrs.IsConfigured("peer_link_vlan")},
+		{FieldName: "CrcFailureThreshold", APIField: &lagReq.CrcFailureThreshold, TFValue: config.CrcFailureThreshold, IsConfigured: configuredAttrs.IsConfigured("crc_failure_threshold")},
 	})
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
-		lagReq.ObjectProperties = make(map[string]interface{})
+		op := plan.ObjectProperties[0]
+		objProps := openapi.LagsPutRequestLagValueObjectProperties{}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "Site", TFValue: op.Site, APIValue: &objProps.Site},
+			{Name: "SiteRefType", TFValue: op.SiteRefType, APIValue: &objProps.SiteRefType},
+		})
+		lagReq.ObjectProperties = &objProps
 	} else {
 		lagReq.ObjectProperties = nil
 	}
@@ -405,11 +428,24 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.PeerLinkVlan, state.PeerLinkVlan, configuredAttrs.IsConfigured("peer_link_vlan"), func(v *openapi.NullableInt32) { lagReq.PeerLinkVlan = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.CrcFailureThreshold, state.CrcFailureThreshold, configuredAttrs.IsConfigured("crc_failure_threshold"), func(v *openapi.NullableInt32) { lagReq.CrcFailureThreshold = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) == 0 {
-		lagReq.ObjectProperties = make(map[string]interface{})
-		hasChanges = true
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.LagsPutRequestLagValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "Site", PlanValue: op.Site, StateValue: st.Site, APIValue: &objProps.Site},
+			{Name: "SiteRefType", PlanValue: op.SiteRefType, StateValue: st.SiteRefType, APIValue: &objProps.SiteRefType},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
+			lagReq.ObjectProperties = &objProps
+			hasChanges = true
+		}
 	}
 
 	// Handle EthPortProfile and EthPortProfileRefType using "Many ref types supported" pattern
@@ -505,6 +541,7 @@ func populateLagState(ctx context.Context, state verityLagResourceModel, data ma
 
 	// Int fields
 	state.PeerLinkVlan = utils.MapInt64WithMode(data, "peer_link_vlan", resourceType, mode)
+	state.CrcFailureThreshold = utils.MapInt64WithMode(data, "crc_failure_threshold", resourceType, mode)
 
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
@@ -521,8 +558,12 @@ func populateLagState(ctx context.Context, state verityLagResourceModel, data ma
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if _, ok := data["object_properties"]; ok {
-			state.ObjectProperties = []verityLagObjectPropertiesModel{{}}
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityLagObjectPropertiesModel{
+				Site:        utils.MapStringWithModeNested(objProps, "site", resourceType, "object_properties.site", mode),
+				SiteRefType: utils.MapStringWithModeNested(objProps, "site_ref_type_", resourceType, "object_properties.site_ref_type_", mode),
+			}
+			state.ObjectProperties = []verityLagObjectPropertiesModel{objPropsModel}
 		} else {
 			state.ObjectProperties = nil
 		}
@@ -571,8 +612,14 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	)
 
 	nullifier.NullifyInt64s(
-		"peer_link_vlan",
+		"peer_link_vlan", "crc_failure_threshold",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"site", "site_ref_type_"},
+	})
 
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE
@@ -611,6 +658,7 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		ConfiguredAttrs: configuredAttrs,
 		Int64Fields: []utils.NullableInt64Field{
 			{AttrName: "peer_link_vlan", ConfigVal: config.PeerLinkVlan, StateVal: state.PeerLinkVlan},
+			{AttrName: "crc_failure_threshold", ConfigVal: config.CrcFailureThreshold, StateVal: state.CrcFailureThreshold},
 		},
 	})
 }

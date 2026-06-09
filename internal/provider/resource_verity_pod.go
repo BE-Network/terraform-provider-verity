@@ -43,6 +43,9 @@ type verityPodResourceModel struct {
 	Name               types.String                     `tfsdk:"name"`
 	Enable             types.Bool                       `tfsdk:"enable"`
 	ExpectedSpineCount types.Int64                      `tfsdk:"expected_spine_count"`
+	Site               types.String                     `tfsdk:"site"`
+	SiteRefType        types.String                     `tfsdk:"site_ref_type_"`
+	Position           types.Number                     `tfsdk:"position"`
 	ObjectProperties   []verityPodObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
@@ -95,6 +98,21 @@ func (r *verityPodResource) Schema(ctx context.Context, req resource.SchemaReque
 				Optional:    true,
 				Computed:    true,
 			},
+			"site": schema.StringAttribute{
+				Description: "Fabric this Pod is assigned to",
+				Optional:    true,
+				Computed:    true,
+			},
+			"site_ref_type_": schema.StringAttribute{
+				Description: "Object type for site field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"position": schema.NumberAttribute{
+				Description: "Position of the Switch",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
@@ -141,17 +159,27 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 		Name: openapi.PtrString(name),
 	}
 
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Site", APIField: &podReq.Site, TFValue: plan.Site},
+		{FieldName: "SiteRefType", APIField: &podReq.SiteRefType, TFValue: plan.SiteRefType},
+	})
+
 	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &podReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
+	// Handle nullable int64 and number fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "ExpectedSpineCount", APIField: &podReq.ExpectedSpineCount, TFValue: config.ExpectedSpineCount, IsConfigured: configuredAttrs.IsConfigured("expected_spine_count")},
+	})
+
+	utils.SetNullableNumberFields([]utils.NullableNumberFieldMapping{
+		{FieldName: "Position", APIField: &podReq.Position, TFValue: config.Position, IsConfigured: configuredAttrs.IsConfigured("position")},
 	})
 
 	// Handle object properties
@@ -344,8 +372,20 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { podReq.Enable = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	// Handle nullable int64 and number field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.ExpectedSpineCount, state.ExpectedSpineCount, configuredAttrs.IsConfigured("expected_spine_count"), func(v *openapi.NullableInt32) { podReq.ExpectedSpineCount = *v }, &hasChanges)
+	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat32) { podReq.Position = *v }, &hasChanges)
+
+	// Handle site and site_ref_type_ using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,
+		func(v *string) { podReq.Site = v },
+		func(v *string) { podReq.SiteRefType = v },
+		"site", "site_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
@@ -446,8 +486,15 @@ func populatePodState(ctx context.Context, state verityPodResourceModel, data ma
 	// Int fields
 	state.ExpectedSpineCount = utils.MapInt64WithMode(data, "expected_spine_count", resourceType, mode)
 
+	// Number fields
+	state.Position = utils.MapNumberWithMode(data, "position", resourceType, mode)
+
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
+
+	// String fields
+	state.Site = utils.MapStringWithMode(data, "site", resourceType, mode)
+	state.SiteRefType = utils.MapStringWithMode(data, "site_ref_type_", resourceType, mode)
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
@@ -495,12 +542,20 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		Plan:         &resp.Plan,
 	}
 
+	nullifier.NullifyStrings(
+		"site", "site_ref_type_",
+	)
+
 	nullifier.NullifyBools(
 		"enable",
 	)
 
 	nullifier.NullifyInt64s(
 		"expected_spine_count",
+	)
+
+	nullifier.NullifyNumbers(
+		"position",
 	)
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
@@ -546,6 +601,9 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		ConfiguredAttrs: configuredAttrs,
 		Int64Fields: []utils.NullableInt64Field{
 			{AttrName: "expected_spine_count", ConfigVal: config.ExpectedSpineCount, StateVal: state.ExpectedSpineCount},
+		},
+		NumberFields: []utils.NullableNumberField{
+			{AttrName: "position", ConfigVal: config.Position, StateVal: state.Position},
 		},
 	})
 }

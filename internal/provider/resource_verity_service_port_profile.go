@@ -69,7 +69,6 @@ func (m verityServicePortProfileServiceModel) GetIndex() types.Int64 {
 type verityServicePortProfileObjectPropertiesModel struct {
 	OnSummary      types.Bool   `tfsdk:"on_summary"`
 	PortMonitoring types.String `tfsdk:"port_monitoring"`
-	Group          types.String `tfsdk:"group"`
 }
 
 func (r *verityServicePortProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -200,11 +199,6 @@ func (r *verityServicePortProfileResource) Schema(ctx context.Context, req resou
 							Optional:    true,
 							Computed:    true,
 						},
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
 					},
 				},
 			},
@@ -269,7 +263,6 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "OnSummary", TFValue: op.OnSummary, APIValue: &objProps.OnSummary},
 			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 		})
 		sppProps.ObjectProperties = &objProps
 	}
@@ -510,7 +503,6 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
 			{Name: "OnSummary", PlanValue: op.OnSummary, StateValue: st.OnSummary, APIValue: &objProps.OnSummary},
 			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
 		}, &objPropsChanged)
 
 		if objPropsChanged {
@@ -705,7 +697,6 @@ func populateServicePortProfileState(ctx context.Context, state verityServicePor
 			objPropsModel := verityServicePortProfileObjectPropertiesModel{
 				OnSummary:      utils.MapBoolWithModeNested(objProps, "on_summary", resourceType, "object_properties.on_summary", mode),
 				PortMonitoring: utils.MapStringWithModeNested(objProps, "port_monitoring", resourceType, "object_properties.port_monitoring", mode),
-				Group:          utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
 			}
 			state.ObjectProperties = []verityServicePortProfileObjectPropertiesModel{objPropsModel}
 		} else {
@@ -804,7 +795,7 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "object_properties",
 		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group", "port_monitoring"},
+		StringFields: []string{"port_monitoring"},
 		BoolFields:   []string{"on_summary"},
 	})
 

@@ -42,6 +42,7 @@ type verityDeviceSettingsResource struct {
 type verityDeviceSettingsResourceModel struct {
 	Name                                   types.String                                `tfsdk:"name"`
 	Enable                                 types.Bool                                  `tfsdk:"enable"`
+	CliCommands                            types.String                                `tfsdk:"cli_commands"`
 	Mode                                   types.String                                `tfsdk:"mode"`
 	UsageThreshold                         types.Number                                `tfsdk:"usage_threshold"`
 	ExternalBatteryPowerAvailable          types.Int64                                 `tfsdk:"external_battery_power_available"`
@@ -50,7 +51,13 @@ type verityDeviceSettingsResourceModel struct {
 	CommitToFlashInterval                  types.Int64                                 `tfsdk:"commit_to_flash_interval"`
 	Rocev2                                 types.Bool                                  `tfsdk:"rocev2"`
 	CutThroughSwitching                    types.Bool                                  `tfsdk:"cut_through_switching"`
+	LoginBanner                            types.String                                `tfsdk:"login_banner"`
+	DnsServers                             []verityDeviceSettingsDnsServerModel        `tfsdk:"dns_servers"`
+	NtpServers                             []verityDeviceSettingsNtpServerModel        `tfsdk:"ntp_servers"`
+	SyslogServers                          []verityDeviceSettingsSyslogServerModel     `tfsdk:"syslog_servers"`
 	HoldTimer                              types.Int64                                 `tfsdk:"hold_timer"`
+	DeviceAaaProfile                       types.String                                `tfsdk:"device_aaa_profile"`
+	DeviceAaaProfileRefType                types.String                                `tfsdk:"device_aaa_profile_ref_type_"`
 	DisableTcpUdpLearnedPacketAcceleration types.Bool                                  `tfsdk:"disable_tcp_udp_learned_packet_acceleration"`
 	MacAgingTimerOverride                  types.Int64                                 `tfsdk:"mac_aging_timer_override"`
 	SpanningTreePriority                   types.String                                `tfsdk:"spanning_tree_priority"`
@@ -59,9 +66,39 @@ type verityDeviceSettingsResourceModel struct {
 	ObjectProperties                       []verityDeviceSettingsObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
-type verityDeviceSettingsObjectPropertiesModel struct {
-	Group types.String `tfsdk:"group"`
+type verityDeviceSettingsDnsServerModel struct {
+	Enabled types.Bool   `tfsdk:"enabled"`
+	Server  types.String `tfsdk:"server"`
+	Index   types.Int64  `tfsdk:"index"`
 }
+
+func (m verityDeviceSettingsDnsServerModel) GetIndex() types.Int64 {
+	return m.Index
+}
+
+type verityDeviceSettingsNtpServerModel struct {
+	Enabled types.Bool   `tfsdk:"enabled"`
+	Server  types.String `tfsdk:"server"`
+	Index   types.Int64  `tfsdk:"index"`
+}
+
+func (m verityDeviceSettingsNtpServerModel) GetIndex() types.Int64 {
+	return m.Index
+}
+
+type verityDeviceSettingsSyslogServerModel struct {
+	Enabled types.Bool   `tfsdk:"enabled"`
+	Scheme  types.String `tfsdk:"scheme"`
+	Server  types.String `tfsdk:"server"`
+	Port    types.String `tfsdk:"port"`
+	Index   types.Int64  `tfsdk:"index"`
+}
+
+func (m verityDeviceSettingsSyslogServerModel) GetIndex() types.Int64 {
+	return m.Index
+}
+
+type verityDeviceSettingsObjectPropertiesModel struct{}
 
 func (r *verityDeviceSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_device_settings"
@@ -100,6 +137,11 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 			},
 			"enable": schema.BoolAttribute{
 				Description: "Enable object.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"cli_commands": schema.StringAttribute{
+				Description: "CLI Commands",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -143,8 +185,23 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 				Optional:    true,
 				Computed:    true,
 			},
+			"login_banner": schema.StringAttribute{
+				Description: "Banner message displayed at login",
+				Optional:    true,
+				Computed:    true,
+			},
 			"hold_timer": schema.Int64Attribute{
 				Description: "Hold Timer (maximum: 86400)",
+				Optional:    true,
+				Computed:    true,
+			},
+			"device_aaa_profile": schema.StringAttribute{
+				Description: "Device AAA Profile for authentication settings",
+				Optional:    true,
+				Computed:    true,
+			},
+			"device_aaa_profile_ref_type_": schema.StringAttribute{
+				Description: "Object type for device_aaa_profile field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -175,15 +232,87 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 			},
 		},
 		Blocks: map[string]schema.Block{
+			"dns_servers": schema.ListNestedBlock{
+				Description: "DNS servers",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"enabled": schema.BoolAttribute{
+							Description: "Enable DNS name server",
+							Optional:    true,
+							Computed:    true,
+						},
+						"server": schema.StringAttribute{
+							Description: "IPv4 or IPv6 DNS name server address",
+							Optional:    true,
+							Computed:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
+							Optional:    true,
+							Computed:    true,
+						},
+					},
+				},
+			},
+			"ntp_servers": schema.ListNestedBlock{
+				Description: "NTP servers",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"enabled": schema.BoolAttribute{
+							Description: "Enable NTP server",
+							Optional:    true,
+							Computed:    true,
+						},
+						"server": schema.StringAttribute{
+							Description: "IPv4, IPv6, or DNS name for NTP server",
+							Optional:    true,
+							Computed:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
+							Optional:    true,
+							Computed:    true,
+						},
+					},
+				},
+			},
+			"syslog_servers": schema.ListNestedBlock{
+				Description: "Syslog servers",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"enabled": schema.BoolAttribute{
+							Description: "Enable syslog server",
+							Optional:    true,
+							Computed:    true,
+						},
+						"scheme": schema.StringAttribute{
+							Description: "Syslog connection scheme",
+							Optional:    true,
+							Computed:    true,
+						},
+						"server": schema.StringAttribute{
+							Description: "IPv4, IPv6, or DNS name for syslog server",
+							Optional:    true,
+							Computed:    true,
+						},
+						"port": schema.StringAttribute{
+							Description: "Syslog server port",
+							Optional:    true,
+							Computed:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
+							Optional:    true,
+							Computed:    true,
+						},
+					},
+				},
+			},
 			"object_properties": schema.ListNestedBlock{
 				Description: "Object properties for the Device Settings",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
+						// Empty object according to schema
 					},
 				},
 			},
@@ -221,7 +350,11 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 
 	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "CliCommands", APIField: &deviceSettingsProps.CliCommands, TFValue: plan.CliCommands},
 		{FieldName: "Mode", APIField: &deviceSettingsProps.Mode, TFValue: plan.Mode},
+		{FieldName: "LoginBanner", APIField: &deviceSettingsProps.LoginBanner, TFValue: plan.LoginBanner},
+		{FieldName: "DeviceAaaProfile", APIField: &deviceSettingsProps.DeviceAaaProfile, TFValue: plan.DeviceAaaProfile},
+		{FieldName: "DeviceAaaProfileRefType", APIField: &deviceSettingsProps.DeviceAaaProfileRefType, TFValue: plan.DeviceAaaProfileRefType},
 		{FieldName: "SpanningTreePriority", APIField: &deviceSettingsProps.SpanningTreePriority, TFValue: plan.SpanningTreePriority},
 		{FieldName: "PacketQueue", APIField: &deviceSettingsProps.PacketQueue, TFValue: plan.PacketQueue},
 		{FieldName: "PacketQueueRefType", APIField: &deviceSettingsProps.PacketQueueRefType, TFValue: plan.PacketQueueRefType},
@@ -253,14 +386,89 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		{FieldName: "UsageThreshold", APIField: &deviceSettingsProps.UsageThreshold, TFValue: config.UsageThreshold, IsConfigured: configuredAttrs.IsConfigured("usage_threshold")},
 	})
 
+	// Handle DNS servers
+	if len(plan.DnsServers) > 0 {
+		dnsServers := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, len(plan.DnsServers))
+		for i, dns := range plan.DnsServers {
+			dnsServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
+
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enabled", APIField: &dnsServer.Enabled, TFValue: dns.Enabled},
+			})
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Server", APIField: &dnsServer.Server, TFValue: dns.Server},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &dnsServer.Index, TFValue: dns.Index},
+			})
+
+			dnsServers[i] = dnsServer
+		}
+		deviceSettingsProps.DnsServers = dnsServers
+	}
+
+	// Handle NTP servers
+	if len(plan.NtpServers) > 0 {
+		ntpServers := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, len(plan.NtpServers))
+		for i, ntp := range plan.NtpServers {
+			ntpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
+
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enabled", APIField: &ntpServer.Enabled, TFValue: ntp.Enabled},
+			})
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Server", APIField: &ntpServer.Server, TFValue: ntp.Server},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &ntpServer.Index, TFValue: ntp.Index},
+			})
+
+			ntpServers[i] = ntpServer
+		}
+		deviceSettingsProps.NtpServers = ntpServers
+	}
+
+	// Handle syslog servers
+	if len(plan.SyslogServers) > 0 {
+		syslogServers := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner, len(plan.SyslogServers))
+		for i, syslog := range plan.SyslogServers {
+			syslogServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{}
+
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "Enabled", APIField: &syslogServer.Enabled, TFValue: syslog.Enabled},
+			})
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "Scheme", APIField: &syslogServer.Scheme, TFValue: syslog.Scheme},
+				{FieldName: "Server", APIField: &syslogServer.Server, TFValue: syslog.Server},
+				{FieldName: "Port", APIField: &syslogServer.Port, TFValue: syslog.Port},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &syslogServer.Index, TFValue: syslog.Index},
+			})
+
+			syslogServers[i] = syslogServer
+		}
+		deviceSettingsProps.SyslogServers = syslogServers
+	}
+
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-		})
-		deviceSettingsProps.ObjectProperties = &objProps
+		deviceSettingsProps.SetObjectProperties(map[string]interface{}{})
 	}
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "device_settings", name, *deviceSettingsProps, &resp.Diagnostics)
@@ -440,7 +648,9 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { deviceSettingsProps.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CliCommands, state.CliCommands, func(v *string) { deviceSettingsProps.CliCommands = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Mode, state.Mode, func(v *string) { deviceSettingsProps.Mode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.LoginBanner, state.LoginBanner, func(v *string) { deviceSettingsProps.LoginBanner = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SpanningTreePriority, state.SpanningTreePriority, func(v *string) { deviceSettingsProps.SpanningTreePriority = v }, &hasChanges)
 
 	// Handle boolean field changes
@@ -461,20 +671,11 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetNullableNumberField(config.UsageThreshold, state.UsageThreshold, configuredAttrs.IsConfigured("usage_threshold"), func(v *openapi.NullableFloat32) { deviceSettingsProps.UsageThreshold = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
-		objPropsChanged := false
-
-		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-		}, &objPropsChanged)
-
-		if objPropsChanged {
-			deviceSettingsProps.ObjectProperties = &objProps
-			hasChanges = true
+	if (len(plan.ObjectProperties) == 0) != (len(state.ObjectProperties) == 0) {
+		if len(plan.ObjectProperties) > 0 {
+			deviceSettingsProps.SetObjectProperties(map[string]interface{}{})
 		}
+		hasChanges = true
 	}
 
 	// Handle PacketQueue and PacketQueueRefType using "One ref type supported" pattern
@@ -487,6 +688,172 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		&resp.Diagnostics,
 	) {
 		return
+	}
+
+	// Handle DeviceAaaProfile and DeviceAaaProfileRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.DeviceAaaProfile, state.DeviceAaaProfile, plan.DeviceAaaProfileRefType, state.DeviceAaaProfileRefType,
+		func(v *string) { deviceSettingsProps.DeviceAaaProfile = v },
+		func(v *string) { deviceSettingsProps.DeviceAaaProfileRefType = v },
+		"device_aaa_profile", "device_aaa_profile_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	changedDnsServers, dnsServersChanged := utils.ProcessIndexedArrayUpdates(plan.DnsServers, state.DnsServers,
+		utils.IndexedItemHandler[verityDeviceSettingsDnsServerModel, openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner]{
+			CreateNew: func(planItem verityDeviceSettingsDnsServerModel) openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
+				newDnsServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
+
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enabled", APIField: &newDnsServer.Enabled, TFValue: planItem.Enabled},
+				})
+
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Server", APIField: &newDnsServer.Server, TFValue: planItem.Server},
+				})
+
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newDnsServer.Index, TFValue: planItem.Index},
+				})
+
+				return newDnsServer
+			},
+			UpdateExisting: func(planItem, stateItem verityDeviceSettingsDnsServerModel) (openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, bool) {
+				updateDnsServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
+				fieldChanged := false
+
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enabled, stateItem.Enabled, func(v *bool) { updateDnsServer.Enabled = v }, &fieldChanged)
+
+				// Handle string field changes
+				utils.CompareAndSetStringField(planItem.Server, stateItem.Server, func(v *string) { updateDnsServer.Server = v }, &fieldChanged)
+
+				// Always include index - API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateDnsServer.Index, TFValue: planItem.Index},
+				})
+
+				return updateDnsServer, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
+				return openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{
+					Index: openapi.PtrInt32(int32(index)),
+				}
+			},
+		})
+	if dnsServersChanged {
+		deviceSettingsProps.DnsServers = changedDnsServers
+		hasChanges = true
+	}
+
+	changedNtpServers, ntpServersChanged := utils.ProcessIndexedArrayUpdates(plan.NtpServers, state.NtpServers,
+		utils.IndexedItemHandler[verityDeviceSettingsNtpServerModel, openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner]{
+			CreateNew: func(planItem verityDeviceSettingsNtpServerModel) openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
+				newNtpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
+
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enabled", APIField: &newNtpServer.Enabled, TFValue: planItem.Enabled},
+				})
+
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Server", APIField: &newNtpServer.Server, TFValue: planItem.Server},
+				})
+
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newNtpServer.Index, TFValue: planItem.Index},
+				})
+
+				return newNtpServer
+			},
+			UpdateExisting: func(planItem, stateItem verityDeviceSettingsNtpServerModel) (openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, bool) {
+				updateNtpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
+				fieldChanged := false
+
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enabled, stateItem.Enabled, func(v *bool) { updateNtpServer.Enabled = v }, &fieldChanged)
+
+				// Handle string field changes
+				utils.CompareAndSetStringField(planItem.Server, stateItem.Server, func(v *string) { updateNtpServer.Server = v }, &fieldChanged)
+
+				// Always include index - API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateNtpServer.Index, TFValue: planItem.Index},
+				})
+
+				return updateNtpServer, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
+				return openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{
+					Index: openapi.PtrInt32(int32(index)),
+				}
+			},
+		})
+	if ntpServersChanged {
+		deviceSettingsProps.NtpServers = changedNtpServers
+		hasChanges = true
+	}
+
+	changedSyslogServers, syslogServersChanged := utils.ProcessIndexedArrayUpdates(plan.SyslogServers, state.SyslogServers,
+		utils.IndexedItemHandler[verityDeviceSettingsSyslogServerModel, openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner]{
+			CreateNew: func(planItem verityDeviceSettingsSyslogServerModel) openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner {
+				newSyslogServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{}
+
+				// Handle boolean fields
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "Enabled", APIField: &newSyslogServer.Enabled, TFValue: planItem.Enabled},
+				})
+
+				// Handle string fields
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "Scheme", APIField: &newSyslogServer.Scheme, TFValue: planItem.Scheme},
+					{FieldName: "Server", APIField: &newSyslogServer.Server, TFValue: planItem.Server},
+					{FieldName: "Port", APIField: &newSyslogServer.Port, TFValue: planItem.Port},
+				})
+
+				// Handle int64 fields
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &newSyslogServer.Index, TFValue: planItem.Index},
+				})
+
+				return newSyslogServer
+			},
+			UpdateExisting: func(planItem, stateItem verityDeviceSettingsSyslogServerModel) (openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner, bool) {
+				updateSyslogServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{}
+				fieldChanged := false
+
+				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enabled, stateItem.Enabled, func(v *bool) { updateSyslogServer.Enabled = v }, &fieldChanged)
+
+				// Handle string field changes
+				utils.CompareAndSetStringField(planItem.Scheme, stateItem.Scheme, func(v *string) { updateSyslogServer.Scheme = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.Server, stateItem.Server, func(v *string) { updateSyslogServer.Server = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.Port, stateItem.Port, func(v *string) { updateSyslogServer.Port = v }, &fieldChanged)
+
+				// Always include index - API requires it to identify which array element to modify
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &updateSyslogServer.Index, TFValue: planItem.Index},
+				})
+
+				return updateSyslogServer, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner {
+				return openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{
+					Index: openapi.PtrInt32(int32(index)),
+				}
+			},
+		})
+	if syslogServersChanged {
+		deviceSettingsProps.SyslogServers = changedSyslogServers
+		hasChanges = true
 	}
 
 	if !hasChanges {
@@ -575,10 +942,14 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 	state.DisableTcpUdpLearnedPacketAcceleration = utils.MapBoolWithMode(data, "disable_tcp_udp_learned_packet_acceleration", resourceType, mode)
 
 	// String fields
+	state.CliCommands = utils.MapStringWithMode(data, "cli_commands", resourceType, mode)
 	state.Mode = utils.MapStringWithMode(data, "mode", resourceType, mode)
+	state.LoginBanner = utils.MapStringWithMode(data, "login_banner", resourceType, mode)
 	state.SpanningTreePriority = utils.MapStringWithMode(data, "spanning_tree_priority", resourceType, mode)
 	state.PacketQueue = utils.MapStringWithMode(data, "packet_queue", resourceType, mode)
 	state.PacketQueueRefType = utils.MapStringWithMode(data, "packet_queue_ref_type_", resourceType, mode)
+	state.DeviceAaaProfile = utils.MapStringWithMode(data, "device_aaa_profile", resourceType, mode)
+	state.DeviceAaaProfileRefType = utils.MapStringWithMode(data, "device_aaa_profile_ref_type_", resourceType, mode)
 
 	// Int64 fields
 	state.ExternalBatteryPowerAvailable = utils.MapInt64WithMode(data, "external_battery_power_available", resourceType, mode)
@@ -591,13 +962,82 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 	// Float fields
 	state.UsageThreshold = utils.MapNumberWithMode(data, "usage_threshold", resourceType, mode)
 
+	// Handle dns_servers list block
+	if utils.FieldAppliesToMode(resourceType, "dns_servers", mode) {
+		if serversData, ok := data["dns_servers"].([]interface{}); ok && len(serversData) > 0 {
+			var servers []verityDeviceSettingsDnsServerModel
+			for _, item := range serversData {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				servers = append(servers, verityDeviceSettingsDnsServerModel{
+					Enabled: utils.MapBoolWithModeNested(itemMap, "enabled", resourceType, "dns_servers.enabled", mode),
+					Server:  utils.MapStringWithModeNested(itemMap, "server", resourceType, "dns_servers.server", mode),
+					Index:   utils.MapInt64WithModeNested(itemMap, "index", resourceType, "dns_servers.index", mode),
+				})
+			}
+			state.DnsServers = servers
+		} else {
+			state.DnsServers = nil
+		}
+	} else {
+		state.DnsServers = nil
+	}
+
+	// Handle ntp_servers list block
+	if utils.FieldAppliesToMode(resourceType, "ntp_servers", mode) {
+		if serversData, ok := data["ntp_servers"].([]interface{}); ok && len(serversData) > 0 {
+			var servers []verityDeviceSettingsNtpServerModel
+			for _, item := range serversData {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				servers = append(servers, verityDeviceSettingsNtpServerModel{
+					Enabled: utils.MapBoolWithModeNested(itemMap, "enabled", resourceType, "ntp_servers.enabled", mode),
+					Server:  utils.MapStringWithModeNested(itemMap, "server", resourceType, "ntp_servers.server", mode),
+					Index:   utils.MapInt64WithModeNested(itemMap, "index", resourceType, "ntp_servers.index", mode),
+				})
+			}
+			state.NtpServers = servers
+		} else {
+			state.NtpServers = nil
+		}
+	} else {
+		state.NtpServers = nil
+	}
+
+	// Handle syslog_servers list block
+	if utils.FieldAppliesToMode(resourceType, "syslog_servers", mode) {
+		if serversData, ok := data["syslog_servers"].([]interface{}); ok && len(serversData) > 0 {
+			var servers []verityDeviceSettingsSyslogServerModel
+			for _, item := range serversData {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				servers = append(servers, verityDeviceSettingsSyslogServerModel{
+					Enabled: utils.MapBoolWithModeNested(itemMap, "enabled", resourceType, "syslog_servers.enabled", mode),
+					Scheme:  utils.MapStringWithModeNested(itemMap, "scheme", resourceType, "syslog_servers.scheme", mode),
+					Server:  utils.MapStringWithModeNested(itemMap, "server", resourceType, "syslog_servers.server", mode),
+					Port:    utils.MapStringWithModeNested(itemMap, "port", resourceType, "syslog_servers.port", mode),
+					Index:   utils.MapInt64WithModeNested(itemMap, "index", resourceType, "syslog_servers.index", mode),
+				})
+			}
+			state.SyslogServers = servers
+		} else {
+			state.SyslogServers = nil
+		}
+	} else {
+		state.SyslogServers = nil
+	}
+
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
-			objPropsModel := verityDeviceSettingsObjectPropertiesModel{
-				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
-			}
-			state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{objPropsModel}
+			_ = objProps
+			state.ObjectProperties = []verityDeviceSettingsObjectPropertiesModel{{}}
 		} else {
 			state.ObjectProperties = nil
 		}
@@ -638,7 +1078,7 @@ func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resou
 	}
 
 	nullifier.NullifyStrings(
-		"mode", "spanning_tree_priority", "packet_queue", "packet_queue_ref_type_",
+		"cli_commands", "mode", "login_banner", "spanning_tree_priority", "packet_queue", "packet_queue_ref_type_", "device_aaa_profile", "device_aaa_profile_ref_type_",
 	)
 
 	nullifier.NullifyBools(
@@ -657,9 +1097,27 @@ func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resou
 	)
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
+		BlockName:    "dns_servers",
+		ItemCount:    len(plan.DnsServers),
+		StringFields: []string{"server"},
+		BoolFields:   []string{"enabled"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "ntp_servers",
+		ItemCount:    len(plan.NtpServers),
+		StringFields: []string{"server"},
+		BoolFields:   []string{"enabled"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "syslog_servers",
+		ItemCount:    len(plan.SyslogServers),
+		StringFields: []string{"scheme", "server", "port"},
+		BoolFields:   []string{"enabled"},
+		Int64Fields:  []string{"index"},
 	})
 
 	// =========================================================================

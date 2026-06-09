@@ -42,13 +42,21 @@ type veritySiteResource struct {
 type veritySiteResourceModel struct {
 	Name                                      types.String                      `tfsdk:"name"`
 	Enable                                    types.Bool                        `tfsdk:"enable"`
+	SuSupport                                 types.Bool                        `tfsdk:"su_support"`
+	AllowAllUnderlayConnections               types.Bool                        `tfsdk:"allow_all_underlay_connections"`
+	SiteType                                  types.String                      `tfsdk:"site_type"`
 	ServiceForSite                            types.String                      `tfsdk:"service_for_site"`
 	ServiceForSiteRefType                     types.String                      `tfsdk:"service_for_site_ref_type_"`
+	PortAdminPollingInterval                  types.Int64                       `tfsdk:"port_admin_polling_interval"`
+	PortStatusPollingInterval                 types.Int64                       `tfsdk:"port_status_polling_interval"`
 	SpanningTreeType                          types.String                      `tfsdk:"spanning_tree_type"`
 	RegionName                                types.String                      `tfsdk:"region_name"`
 	Revision                                  types.Int64                       `tfsdk:"revision"`
 	ForceSpanningTreeOnFabricPorts            types.Bool                        `tfsdk:"force_spanning_tree_on_fabric_ports"`
 	ReadOnlyMode                              types.Bool                        `tfsdk:"read_only_mode"`
+	DomainForSite                             types.String                      `tfsdk:"domain_for_site"`
+	DomainForSiteRefType                      types.String                      `tfsdk:"domain_for_site_ref_type_"`
+	EnableDscp                                types.Bool                        `tfsdk:"enable_dscp"`
 	DscpToPBitMap                             types.String                      `tfsdk:"dscp_to_p_bit_map"`
 	AnycastMacAddress                         types.String                      `tfsdk:"anycast_mac_address"`
 	AnycastMacAddressAutoAssigned             types.Bool                        `tfsdk:"anycast_mac_address_auto_assigned_"`
@@ -58,6 +66,7 @@ type veritySiteResourceModel struct {
 	BgpHoldDownTimer                          types.Int64                       `tfsdk:"bgp_hold_down_timer"`
 	SpineBgpAdvertisementInterval             types.Int64                       `tfsdk:"spine_bgp_advertisement_interval"`
 	SpineBgpConnectTimer                      types.Int64                       `tfsdk:"spine_bgp_connect_timer"`
+	SpineAsNumber                             types.Int64                       `tfsdk:"spine_as_number"`
 	LeafBgpKeepAliveTimer                     types.Int64                       `tfsdk:"leaf_bgp_keep_alive_timer"`
 	LeafBgpHoldDownTimer                      types.Int64                       `tfsdk:"leaf_bgp_hold_down_timer"`
 	LeafBgpAdvertisementInterval              types.Int64                       `tfsdk:"leaf_bgp_advertisement_interval"`
@@ -66,40 +75,24 @@ type veritySiteResourceModel struct {
 	EvpnMultihomingStartupDelay               types.Int64                       `tfsdk:"evpn_multihoming_startup_delay"`
 	EvpnMacHoldtime                           types.Int64                       `tfsdk:"evpn_mac_holdtime"`
 	AggressiveReporting                       types.Bool                        `tfsdk:"aggressive_reporting"`
-	CrcFailureThreshold                       types.Int64                       `tfsdk:"crc_failure_threshold"`
+	SwitchIpBase                              types.String                      `tfsdk:"switch_ip_base"`
+	ControllerIpBase                          types.String                      `tfsdk:"controller_ip_base"`
+	Loopback0Base                             types.String                      `tfsdk:"loopback0_base"`
+	MultiTenant                               types.Bool                        `tfsdk:"multi_tenant"`
+	BaseBgpAsNumber                           types.String                      `tfsdk:"base_bgp_as_number"`
+	RouterIdBasePrefix                        types.String                      `tfsdk:"router_id_base_prefix"`
+	VtepIdBasePrefix                          types.String                      `tfsdk:"vtep_id_base_prefix"`
+	PairedIpSubnet                            types.String                      `tfsdk:"paired_ip_subnet"`
+	MaxSwitches                               types.String                      `tfsdk:"max_switches"`
+	PauseValidationAlarms                     types.Bool                        `tfsdk:"pause_validation_alarms"`
+	StartingOctet                             types.Int64                       `tfsdk:"starting_octet"`
+	MaxSus                                    types.Int64                       `tfsdk:"max_sus"`
+	MaxPods                                   types.Int64                       `tfsdk:"max_pods"`
 	EnableDhcpSnooping                        types.Bool                        `tfsdk:"enable_dhcp_snooping"`
 	IpSourceGuard                             types.Bool                        `tfsdk:"ip_source_guard"`
 	DuplicateAddressDetectionMaxNumberOfMoves types.Int64                       `tfsdk:"duplicate_address_detection_max_number_of_moves"`
 	DuplicateAddressDetectionTime             types.Int64                       `tfsdk:"duplicate_address_detection_time"`
-	Islands                                   []veritySiteIslandsModel          `tfsdk:"islands"`
-	Pairs                                     []veritySitePairsModel            `tfsdk:"pairs"`
 	ObjectProperties                          []veritySiteObjectPropertiesModel `tfsdk:"object_properties"`
-}
-
-type veritySiteIslandsModel struct {
-	ToiSwitchpoint        types.String `tfsdk:"toi_switchpoint"`
-	ToiSwitchpointRefType types.String `tfsdk:"toi_switchpoint_ref_type_"`
-	Index                 types.Int64  `tfsdk:"index"`
-}
-
-func (m veritySiteIslandsModel) GetIndex() types.Int64 {
-	return m.Index
-}
-
-type veritySitePairsModel struct {
-	Name                types.String `tfsdk:"name"`
-	Switchpoint1        types.String `tfsdk:"switchpoint_1"`
-	Switchpoint1RefType types.String `tfsdk:"switchpoint_1_ref_type_"`
-	Switchpoint2        types.String `tfsdk:"switchpoint_2"`
-	Switchpoint2RefType types.String `tfsdk:"switchpoint_2_ref_type_"`
-	LagGroup            types.String `tfsdk:"lag_group"`
-	LagGroupRefType     types.String `tfsdk:"lag_group_ref_type_"`
-	IsWhiteboxPair      types.Bool   `tfsdk:"is_whitebox_pair"`
-	Index               types.Int64  `tfsdk:"index"`
-}
-
-func (m veritySitePairsModel) GetIndex() types.Int64 {
-	return m.Index
 }
 
 type veritySiteObjectPropertiesModel struct {
@@ -107,8 +100,7 @@ type veritySiteObjectPropertiesModel struct {
 }
 
 type veritySiteSystemGraphsModel struct {
-	GraphNumData types.String `tfsdk:"graph_num_data"`
-	Index        types.Int64  `tfsdk:"index"`
+	Index types.Int64 `tfsdk:"index"`
 }
 
 func (m veritySiteSystemGraphsModel) GetIndex() types.Int64 {
@@ -155,6 +147,21 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 			},
+			"su_support": schema.BoolAttribute{
+				Description: "Support grouping leaf switches in SUs",
+				Optional:    true,
+				Computed:    true,
+			},
+			"allow_all_underlay_connections": schema.BoolAttribute{
+				Description: "Allows underlay connections between PODs",
+				Optional:    true,
+				Computed:    true,
+			},
+			"site_type": schema.StringAttribute{
+				Description: "Type of Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
 			"service_for_site": schema.StringAttribute{
 				Description: "Service for Site",
 				Optional:    true,
@@ -162,6 +169,16 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"service_for_site_ref_type_": schema.StringAttribute{
 				Description: "Object type for service_for_site field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"port_admin_polling_interval": schema.Int64Attribute{
+				Description: "Polling interval value in seconds used when aggressive reporting is disabled",
+				Optional:    true,
+				Computed:    true,
+			},
+			"port_status_polling_interval": schema.Int64Attribute{
+				Description: "Polling interval value in seconds used when aggressive reporting is disabled",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -187,6 +204,21 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"read_only_mode": schema.BoolAttribute{
 				Description: "When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware",
+				Optional:    true,
+				Computed:    true,
+			},
+			"domain_for_site": schema.StringAttribute{
+				Description: "Fabric Collection for Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"domain_for_site_ref_type_": schema.StringAttribute{
+				Description: "Object type for domain_for_site field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"enable_dscp": schema.BoolAttribute{
+				Description: "Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -235,6 +267,11 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 			},
+			"spine_as_number": schema.Int64Attribute{
+				Description: "BGP AS number applied uniformly to all spine endpoints in this CLOS fabric on save. Leave blank to manage spine AS numbers individually.",
+				Optional:    true,
+				Computed:    true,
+			},
 			"leaf_bgp_keep_alive_timer": schema.Int64Attribute{
 				Description: "Leaf BGP Keep Alive Timer (minimum: 1, maximum: 3600)",
 				Optional:    true,
@@ -275,8 +312,68 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 			},
-			"crc_failure_threshold": schema.Int64Attribute{
-				Description: "Threshold in Errors per second that when met will disable the links as part of LAGs (minimum: 1, maximum: 4294967296)",
+			"switch_ip_base": schema.StringAttribute{
+				Description: "Base IPv4 address for switch IPs in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"controller_ip_base": schema.StringAttribute{
+				Description: "Base IPv4 address for controller IPs in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"loopback0_base": schema.StringAttribute{
+				Description: "Base IPv4 address for Loopback0 interfaces in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"multi_tenant": schema.BoolAttribute{
+				Description: "Allow multiple tenants to HGX endpoints on this fabric.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"base_bgp_as_number": schema.StringAttribute{
+				Description: "Base BGP Autonomous System Number used for switches in the fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"router_id_base_prefix": schema.StringAttribute{
+				Description: "Router ID starting IP address",
+				Optional:    true,
+				Computed:    true,
+			},
+			"vtep_id_base_prefix": schema.StringAttribute{
+				Description: "Vtep ID starting IP address",
+				Optional:    true,
+				Computed:    true,
+			},
+			"paired_ip_subnet": schema.StringAttribute{
+				Description: "IP address range reserved for communication between paired switches",
+				Optional:    true,
+				Computed:    true,
+			},
+			"max_switches": schema.StringAttribute{
+				Description: "Max number Switches to support in this site",
+				Optional:    true,
+				Computed:    true,
+			},
+			"pause_validation_alarms": schema.BoolAttribute{
+				Description: "Validation still runs, but validation alarms are not raised for this Fabric while enabled.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"starting_octet": schema.Int64Attribute{
+				Description: "Starting Octet for HGX Port IPs",
+				Optional:    true,
+				Computed:    true,
+			},
+			"max_sus": schema.Int64Attribute{
+				Description: "Maximum number of SUs allowed per POD",
+				Optional:    true,
+				Computed:    true,
+			},
+			"max_pods": schema.Int64Attribute{
+				Description: "Maximum number of PODs allowed in the Fabric",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -302,80 +399,6 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"islands": schema.ListNestedBlock{
-				Description: "List of islands",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"toi_switchpoint": schema.StringAttribute{
-							Description: "TOI Switchpoint",
-							Optional:    true,
-							Computed:    true,
-						},
-						"toi_switchpoint_ref_type_": schema.StringAttribute{
-							Description: "Object type for toi_switchpoint field",
-							Optional:    true,
-							Computed:    true,
-						},
-						"index": schema.Int64Attribute{
-							Description: "The index identifying the object. Zero if you want to add an object to the list.",
-							Optional:    true,
-							Computed:    true,
-						},
-					},
-				},
-			},
-			"pairs": schema.ListNestedBlock{
-				Description: "List of pairs",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"name": schema.StringAttribute{
-							Description: "Object Name. Must be unique.",
-							Optional:    true,
-							Computed:    true,
-						},
-						"switchpoint_1": schema.StringAttribute{
-							Description: "Switchpoint",
-							Optional:    true,
-							Computed:    true,
-						},
-						"switchpoint_1_ref_type_": schema.StringAttribute{
-							Description: "Object type for switchpoint_1 field",
-							Optional:    true,
-							Computed:    true,
-						},
-						"switchpoint_2": schema.StringAttribute{
-							Description: "Switchpoint",
-							Optional:    true,
-							Computed:    true,
-						},
-						"switchpoint_2_ref_type_": schema.StringAttribute{
-							Description: "Object type for switchpoint_2 field",
-							Optional:    true,
-							Computed:    true,
-						},
-						"lag_group": schema.StringAttribute{
-							Description: "LAG Group",
-							Optional:    true,
-							Computed:    true,
-						},
-						"lag_group_ref_type_": schema.StringAttribute{
-							Description: "Object type for lag_group field",
-							Optional:    true,
-							Computed:    true,
-						},
-						"is_whitebox_pair": schema.BoolAttribute{
-							Description: "LAG Pair",
-							Optional:    true,
-							Computed:    true,
-						},
-						"index": schema.Int64Attribute{
-							Description: "The index identifying the object. Zero if you want to add an object to the list.",
-							Optional:    true,
-							Computed:    true,
-						},
-					},
-				},
-			},
 			"object_properties": schema.ListNestedBlock{
 				Description: "Object properties for the Site",
 				NestedObject: schema.NestedBlockObject{
@@ -384,11 +407,6 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 							Description: "System graphs",
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
-									"graph_num_data": schema.StringAttribute{
-										Description: "The graph data detailing this graph choice",
-										Optional:    true,
-										Computed:    true,
-									},
 									"index": schema.Int64Attribute{
 										Description: "The index identifying the object. Zero if you want to add an object to the list.",
 										Optional:    true,
@@ -561,7 +579,7 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	name := plan.Name.ValueString()
-	siteReq := openapi.SitesPatchRequestSiteValue{}
+	siteReq := openapi.SitesPutRequestSiteValue{}
 	hasChanges := false
 
 	// Parse HCL to detect which fields are explicitly configured
@@ -570,25 +588,43 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { siteReq.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SiteType, state.SiteType, func(v *string) { siteReq.SiteType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SpanningTreeType, state.SpanningTreeType, func(v *string) { siteReq.SpanningTreeType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RegionName, state.RegionName, func(v *string) { siteReq.RegionName = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DomainForSite, state.DomainForSite, func(v *string) { siteReq.DomainForSite = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DscpToPBitMap, state.DscpToPBitMap, func(v *string) { siteReq.DscpToPBitMap = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchIpBase, state.SwitchIpBase, func(v *string) { siteReq.SwitchIpBase = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ControllerIpBase, state.ControllerIpBase, func(v *string) { siteReq.ControllerIpBase = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Loopback0Base, state.Loopback0Base, func(v *string) { siteReq.Loopback0Base = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.BaseBgpAsNumber, state.BaseBgpAsNumber, func(v *string) { siteReq.BaseBgpAsNumber = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RouterIdBasePrefix, state.RouterIdBasePrefix, func(v *string) { siteReq.RouterIdBasePrefix = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.VtepIdBasePrefix, state.VtepIdBasePrefix, func(v *string) { siteReq.VtepIdBasePrefix = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PairedIpSubnet, state.PairedIpSubnet, func(v *string) { siteReq.PairedIpSubnet = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.MaxSwitches, state.MaxSwitches, func(v *string) { siteReq.MaxSwitches = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { siteReq.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.SuSupport, state.SuSupport, func(v *bool) { siteReq.SuSupport = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AllowAllUnderlayConnections, state.AllowAllUnderlayConnections, func(v *bool) { siteReq.AllowAllUnderlayConnections = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.ForceSpanningTreeOnFabricPorts, state.ForceSpanningTreeOnFabricPorts, func(v *bool) { siteReq.ForceSpanningTreeOnFabricPorts = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.ReadOnlyMode, state.ReadOnlyMode, func(v *bool) { siteReq.ReadOnlyMode = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.EnableDscp, state.EnableDscp, func(v *bool) { siteReq.EnableDscp = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AggressiveReporting, state.AggressiveReporting, func(v *bool) { siteReq.AggressiveReporting = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.MultiTenant, state.MultiTenant, func(v *bool) { siteReq.MultiTenant = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.PauseValidationAlarms, state.PauseValidationAlarms, func(v *bool) { siteReq.PauseValidationAlarms = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EnableDhcpSnooping, state.EnableDhcpSnooping, func(v *bool) { siteReq.EnableDhcpSnooping = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.IpSourceGuard, state.IpSourceGuard, func(v *bool) { siteReq.IpSourceGuard = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
+	utils.CompareAndSetNullableInt64Field(config.PortAdminPollingInterval, state.PortAdminPollingInterval, configuredAttrs.IsConfigured("port_admin_polling_interval"), func(v *openapi.NullableInt32) { siteReq.PortAdminPollingInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PortStatusPollingInterval, state.PortStatusPollingInterval, configuredAttrs.IsConfigured("port_status_polling_interval"), func(v *openapi.NullableInt32) { siteReq.PortStatusPollingInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MacAddressAgingTime, state.MacAddressAgingTime, configuredAttrs.IsConfigured("mac_address_aging_time"), func(v *openapi.NullableInt32) { siteReq.MacAddressAgingTime = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MlagDelayRestoreTimer, state.MlagDelayRestoreTimer, configuredAttrs.IsConfigured("mlag_delay_restore_timer"), func(v *openapi.NullableInt32) { siteReq.MlagDelayRestoreTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.BgpKeepaliveTimer, state.BgpKeepaliveTimer, configuredAttrs.IsConfigured("bgp_keepalive_timer"), func(v *openapi.NullableInt32) { siteReq.BgpKeepaliveTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.BgpHoldDownTimer, state.BgpHoldDownTimer, configuredAttrs.IsConfigured("bgp_hold_down_timer"), func(v *openapi.NullableInt32) { siteReq.BgpHoldDownTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.SpineBgpAdvertisementInterval, state.SpineBgpAdvertisementInterval, configuredAttrs.IsConfigured("spine_bgp_advertisement_interval"), func(v *openapi.NullableInt32) { siteReq.SpineBgpAdvertisementInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.SpineBgpConnectTimer, state.SpineBgpConnectTimer, configuredAttrs.IsConfigured("spine_bgp_connect_timer"), func(v *openapi.NullableInt32) { siteReq.SpineBgpConnectTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SpineAsNumber, state.SpineAsNumber, configuredAttrs.IsConfigured("spine_as_number"), func(v *openapi.NullableInt32) { siteReq.SpineAsNumber = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.LeafBgpKeepAliveTimer, state.LeafBgpKeepAliveTimer, configuredAttrs.IsConfigured("leaf_bgp_keep_alive_timer"), func(v *openapi.NullableInt32) { siteReq.LeafBgpKeepAliveTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.LeafBgpHoldDownTimer, state.LeafBgpHoldDownTimer, configuredAttrs.IsConfigured("leaf_bgp_hold_down_timer"), func(v *openapi.NullableInt32) { siteReq.LeafBgpHoldDownTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.LeafBgpAdvertisementInterval, state.LeafBgpAdvertisementInterval, configuredAttrs.IsConfigured("leaf_bgp_advertisement_interval"), func(v *openapi.NullableInt32) { siteReq.LeafBgpAdvertisementInterval = *v }, &hasChanges)
@@ -597,7 +633,9 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	utils.CompareAndSetNullableInt64Field(config.LinkStateTimeoutValue, state.LinkStateTimeoutValue, configuredAttrs.IsConfigured("link_state_timeout_value"), func(v *openapi.NullableInt32) { siteReq.LinkStateTimeoutValue = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.EvpnMultihomingStartupDelay, state.EvpnMultihomingStartupDelay, configuredAttrs.IsConfigured("evpn_multihoming_startup_delay"), func(v *openapi.NullableInt32) { siteReq.EvpnMultihomingStartupDelay = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.EvpnMacHoldtime, state.EvpnMacHoldtime, configuredAttrs.IsConfigured("evpn_mac_holdtime"), func(v *openapi.NullableInt32) { siteReq.EvpnMacHoldtime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.CrcFailureThreshold, state.CrcFailureThreshold, configuredAttrs.IsConfigured("crc_failure_threshold"), func(v *openapi.NullableInt32) { siteReq.CrcFailureThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.StartingOctet, state.StartingOctet, configuredAttrs.IsConfigured("starting_octet"), func(v *openapi.NullableInt32) { siteReq.StartingOctet = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxSus, state.MaxSus, configuredAttrs.IsConfigured("max_sus"), func(v *openapi.NullableInt32) { siteReq.MaxSus = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxPods, state.MaxPods, configuredAttrs.IsConfigured("max_pods"), func(v *openapi.NullableInt32) { siteReq.MaxPods = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionMaxNumberOfMoves, state.DuplicateAddressDetectionMaxNumberOfMoves, configuredAttrs.IsConfigured("duplicate_address_detection_max_number_of_moves"), func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionMaxNumberOfMoves = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, configuredAttrs.IsConfigured("duplicate_address_detection_time"), func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
 
@@ -607,39 +645,34 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 		st := state.ObjectProperties[0]
 
 		changedSystemGraphs, systemGraphsChanged := utils.ProcessIndexedArrayUpdates(op.SystemGraphs, st.SystemGraphs,
-			utils.IndexedItemHandler[veritySiteSystemGraphsModel, openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner]{
-				CreateNew: func(planItem veritySiteSystemGraphsModel) openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner {
-					graphProps := openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{}
-					utils.SetStringFields([]utils.StringFieldMapping{
-						{FieldName: "GraphNumData", APIField: &graphProps.GraphNumData, TFValue: planItem.GraphNumData},
-					})
+			utils.IndexedItemHandler[veritySiteSystemGraphsModel, openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner]{
+				CreateNew: func(planItem veritySiteSystemGraphsModel) openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner {
+					graphProps := openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner{}
 					utils.SetInt64Fields([]utils.Int64FieldMapping{
 						{FieldName: "Index", APIField: &graphProps.Index, TFValue: planItem.Index},
 					})
 					return graphProps
 				},
-				UpdateExisting: func(planItem veritySiteSystemGraphsModel, stateItem veritySiteSystemGraphsModel) (openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner, bool) {
-					graphProps := openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{}
-					fieldChanged := false
-					utils.CompareAndSetStringField(planItem.GraphNumData, stateItem.GraphNumData, func(v *string) { graphProps.GraphNumData = v }, &fieldChanged)
+				UpdateExisting: func(planItem veritySiteSystemGraphsModel, stateItem veritySiteSystemGraphsModel) (openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner, bool) {
+					graphProps := openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner{}
 					// Always include index — API requires it to identify which array element to modify
 					utils.SetInt64Fields([]utils.Int64FieldMapping{
 						{FieldName: "Index", APIField: &graphProps.Index, TFValue: planItem.Index},
 					})
-					return graphProps, fieldChanged
+					return graphProps, false
 				},
-				CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner {
-					return openapi.SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner{
+				CreateDeleted: func(index int64) openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner {
+					return openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner{
 						Index: openapi.PtrInt32(int32(index)),
 					}
 				},
 			})
 
 		if systemGraphsChanged {
-			siteObjProps := openapi.SitesPatchRequestSiteValueObjectProperties{
+			siteObjProps := openapi.SitesPutRequestSiteValueObjectProperties{
 				SystemGraphs: changedSystemGraphs,
 			}
-			siteReq.ObjectProperties = &siteObjProps
+			siteReq.SetObjectProperties(siteObjProps)
 			hasChanges = true
 		}
 	}
@@ -650,6 +683,16 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 		func(v *string) { siteReq.ServiceForSite = v },
 		func(v *string) { siteReq.ServiceForSiteRefType = v },
 		"service_for_site", "service_for_site_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.DomainForSite, state.DomainForSite, plan.DomainForSiteRefType, state.DomainForSiteRefType,
+		func(v *string) { siteReq.DomainForSite = v },
+		func(v *string) { siteReq.DomainForSiteRefType = v },
+		"domain_for_site", "domain_for_site_ref_type_",
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
@@ -709,148 +752,6 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 			}
 		}
 
-		hasChanges = true
-	}
-
-	// Handle islands
-	changedIslands, islandsChanged := utils.ProcessIndexedArrayUpdates(plan.Islands, state.Islands,
-		utils.IndexedItemHandler[veritySiteIslandsModel, openapi.SitesPatchRequestSiteValueIslandsInner]{
-			CreateNew: func(planItem veritySiteIslandsModel) openapi.SitesPatchRequestSiteValueIslandsInner {
-				newIsland := openapi.SitesPatchRequestSiteValueIslandsInner{}
-
-				// Handle string fields
-				utils.SetStringFields([]utils.StringFieldMapping{
-					{FieldName: "ToiSwitchpoint", APIField: &newIsland.ToiSwitchpoint, TFValue: planItem.ToiSwitchpoint},
-					{FieldName: "ToiSwitchpointRefType", APIField: &newIsland.ToiSwitchpointRefType, TFValue: planItem.ToiSwitchpointRefType},
-				})
-
-				// Handle int64 fields
-				utils.SetInt64Fields([]utils.Int64FieldMapping{
-					{FieldName: "Index", APIField: &newIsland.Index, TFValue: planItem.Index},
-				})
-
-				return newIsland
-			},
-			UpdateExisting: func(planItem veritySiteIslandsModel, stateItem veritySiteIslandsModel) (openapi.SitesPatchRequestSiteValueIslandsInner, bool) {
-				updateIsland := openapi.SitesPatchRequestSiteValueIslandsInner{}
-				fieldChanged := false
-
-				// Handle toi_switchpoint and toi_switchpoint_ref_type_ using one ref type supported pattern
-				if !utils.HandleOneRefTypeSupported(
-					planItem.ToiSwitchpoint, stateItem.ToiSwitchpoint, planItem.ToiSwitchpointRefType, stateItem.ToiSwitchpointRefType,
-					func(v *string) { updateIsland.ToiSwitchpoint = v },
-					func(v *string) { updateIsland.ToiSwitchpointRefType = v },
-					"toi_switchpoint", "toi_switchpoint_ref_type_",
-					&fieldChanged, &resp.Diagnostics,
-				) {
-					return updateIsland, false
-				}
-
-				// Always include index — API requires it to identify which array element to modify
-				utils.SetInt64Fields([]utils.Int64FieldMapping{
-					{FieldName: "Index", APIField: &updateIsland.Index, TFValue: planItem.Index},
-				})
-
-				return updateIsland, fieldChanged
-			},
-			CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValueIslandsInner {
-				return openapi.SitesPatchRequestSiteValueIslandsInner{
-					Index: openapi.PtrInt32(int32(index)),
-				}
-			},
-		})
-	if islandsChanged {
-		siteReq.Islands = changedIslands
-		hasChanges = true
-	}
-
-	// Handle pairs list
-	changedPairs, pairsChanged := utils.ProcessIndexedArrayUpdates(plan.Pairs, state.Pairs,
-		utils.IndexedItemHandler[veritySitePairsModel, openapi.SitesPatchRequestSiteValuePairsInner]{
-			CreateNew: func(planItem veritySitePairsModel) openapi.SitesPatchRequestSiteValuePairsInner {
-				newPair := openapi.SitesPatchRequestSiteValuePairsInner{}
-
-				// Handle boolean fields
-				utils.SetBoolFields([]utils.BoolFieldMapping{
-					{FieldName: "IsWhiteboxPair", APIField: &newPair.IsWhiteboxPair, TFValue: planItem.IsWhiteboxPair},
-				})
-
-				// Handle string fields
-				utils.SetStringFields([]utils.StringFieldMapping{
-					{FieldName: "Name", APIField: &newPair.Name, TFValue: planItem.Name},
-					{FieldName: "Switchpoint1", APIField: &newPair.Switchpoint1, TFValue: planItem.Switchpoint1},
-					{FieldName: "Switchpoint1RefType", APIField: &newPair.Switchpoint1RefType, TFValue: planItem.Switchpoint1RefType},
-					{FieldName: "Switchpoint2", APIField: &newPair.Switchpoint2, TFValue: planItem.Switchpoint2},
-					{FieldName: "Switchpoint2RefType", APIField: &newPair.Switchpoint2RefType, TFValue: planItem.Switchpoint2RefType},
-					{FieldName: "LagGroup", APIField: &newPair.LagGroup, TFValue: planItem.LagGroup},
-					{FieldName: "LagGroupRefType", APIField: &newPair.LagGroupRefType, TFValue: planItem.LagGroupRefType},
-				})
-
-				// Handle int64 fields
-				utils.SetInt64Fields([]utils.Int64FieldMapping{
-					{FieldName: "Index", APIField: &newPair.Index, TFValue: planItem.Index},
-				})
-
-				return newPair
-			},
-			UpdateExisting: func(planItem veritySitePairsModel, stateItem veritySitePairsModel) (openapi.SitesPatchRequestSiteValuePairsInner, bool) {
-				updatePair := openapi.SitesPatchRequestSiteValuePairsInner{}
-				fieldChanged := false
-
-				// Handle boolean field changes
-				utils.CompareAndSetBoolField(planItem.IsWhiteboxPair, stateItem.IsWhiteboxPair, func(v *bool) { updatePair.IsWhiteboxPair = v }, &fieldChanged)
-
-				// Handle simple string field changes
-				utils.CompareAndSetStringField(planItem.Name, stateItem.Name, func(v *string) { updatePair.Name = v }, &fieldChanged)
-
-				// Handle switchpoint_1 and switchpoint_1_ref_type_ using one ref type supported pattern
-				if !utils.HandleOneRefTypeSupported(
-					planItem.Switchpoint1, stateItem.Switchpoint1, planItem.Switchpoint1RefType, stateItem.Switchpoint1RefType,
-					func(v *string) { updatePair.Switchpoint1 = v },
-					func(v *string) { updatePair.Switchpoint1RefType = v },
-					"switchpoint_1", "switchpoint_1_ref_type_",
-					&fieldChanged, &resp.Diagnostics,
-				) {
-					return updatePair, false
-				}
-
-				// Handle switchpoint_2 and switchpoint_2_ref_type_ using one ref type supported pattern
-				if !utils.HandleOneRefTypeSupported(
-					planItem.Switchpoint2, stateItem.Switchpoint2, planItem.Switchpoint2RefType, stateItem.Switchpoint2RefType,
-					func(v *string) { updatePair.Switchpoint2 = v },
-					func(v *string) { updatePair.Switchpoint2RefType = v },
-					"switchpoint_2", "switchpoint_2_ref_type_",
-					&fieldChanged, &resp.Diagnostics,
-				) {
-					return updatePair, false
-				}
-
-				// Handle lag_group and lag_group_ref_type_ using one ref type supported pattern
-				if !utils.HandleOneRefTypeSupported(
-					planItem.LagGroup, stateItem.LagGroup, planItem.LagGroupRefType, stateItem.LagGroupRefType,
-					func(v *string) { updatePair.LagGroup = v },
-					func(v *string) { updatePair.LagGroupRefType = v },
-					"lag_group", "lag_group_ref_type_",
-					&fieldChanged, &resp.Diagnostics,
-				) {
-					return updatePair, false
-				}
-
-				// Always include index — API requires it to identify which array element to modify
-				utils.SetInt64Fields([]utils.Int64FieldMapping{
-					{FieldName: "Index", APIField: &updatePair.Index, TFValue: planItem.Index},
-				})
-
-				return updatePair, fieldChanged
-			},
-			CreateDeleted: func(index int64) openapi.SitesPatchRequestSiteValuePairsInner {
-				return openapi.SitesPatchRequestSiteValuePairsInner{
-					Index: openapi.PtrInt32(int32(index)),
-				}
-			},
-		})
-	if pairsChanged {
-		siteReq.Pairs = changedPairs
 		hasChanges = true
 	}
 
@@ -921,12 +822,15 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 
 	// Int fields
 	state.Revision = utils.MapInt64WithMode(siteData, "revision", resourceType, mode)
+	state.PortAdminPollingInterval = utils.MapInt64WithMode(siteData, "port_admin_polling_interval", resourceType, mode)
+	state.PortStatusPollingInterval = utils.MapInt64WithMode(siteData, "port_status_polling_interval", resourceType, mode)
 	state.MacAddressAgingTime = utils.MapInt64WithMode(siteData, "mac_address_aging_time", resourceType, mode)
 	state.MlagDelayRestoreTimer = utils.MapInt64WithMode(siteData, "mlag_delay_restore_timer", resourceType, mode)
 	state.BgpKeepaliveTimer = utils.MapInt64WithMode(siteData, "bgp_keepalive_timer", resourceType, mode)
 	state.BgpHoldDownTimer = utils.MapInt64WithMode(siteData, "bgp_hold_down_timer", resourceType, mode)
 	state.SpineBgpAdvertisementInterval = utils.MapInt64WithMode(siteData, "spine_bgp_advertisement_interval", resourceType, mode)
 	state.SpineBgpConnectTimer = utils.MapInt64WithMode(siteData, "spine_bgp_connect_timer", resourceType, mode)
+	state.SpineAsNumber = utils.MapInt64WithMode(siteData, "spine_as_number", resourceType, mode)
 	state.LeafBgpKeepAliveTimer = utils.MapInt64WithMode(siteData, "leaf_bgp_keep_alive_timer", resourceType, mode)
 	state.LeafBgpHoldDownTimer = utils.MapInt64WithMode(siteData, "leaf_bgp_hold_down_timer", resourceType, mode)
 	state.LeafBgpAdvertisementInterval = utils.MapInt64WithMode(siteData, "leaf_bgp_advertisement_interval", resourceType, mode)
@@ -934,26 +838,44 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 	state.LinkStateTimeoutValue = utils.MapInt64WithMode(siteData, "link_state_timeout_value", resourceType, mode)
 	state.EvpnMultihomingStartupDelay = utils.MapInt64WithMode(siteData, "evpn_multihoming_startup_delay", resourceType, mode)
 	state.EvpnMacHoldtime = utils.MapInt64WithMode(siteData, "evpn_mac_holdtime", resourceType, mode)
-	state.CrcFailureThreshold = utils.MapInt64WithMode(siteData, "crc_failure_threshold", resourceType, mode)
+	state.StartingOctet = utils.MapInt64WithMode(siteData, "starting_octet", resourceType, mode)
+	state.MaxSus = utils.MapInt64WithMode(siteData, "max_sus", resourceType, mode)
+	state.MaxPods = utils.MapInt64WithMode(siteData, "max_pods", resourceType, mode)
 	state.DuplicateAddressDetectionMaxNumberOfMoves = utils.MapInt64WithMode(siteData, "duplicate_address_detection_max_number_of_moves", resourceType, mode)
 	state.DuplicateAddressDetectionTime = utils.MapInt64WithMode(siteData, "duplicate_address_detection_time", resourceType, mode)
 
 	// Bool fields
 	state.Enable = utils.MapBoolWithMode(siteData, "enable", resourceType, mode)
+	state.SuSupport = utils.MapBoolWithMode(siteData, "su_support", resourceType, mode)
+	state.AllowAllUnderlayConnections = utils.MapBoolWithMode(siteData, "allow_all_underlay_connections", resourceType, mode)
 	state.ForceSpanningTreeOnFabricPorts = utils.MapBoolWithMode(siteData, "force_spanning_tree_on_fabric_ports", resourceType, mode)
 	state.ReadOnlyMode = utils.MapBoolWithMode(siteData, "read_only_mode", resourceType, mode)
+	state.EnableDscp = utils.MapBoolWithMode(siteData, "enable_dscp", resourceType, mode)
 	state.AggressiveReporting = utils.MapBoolWithMode(siteData, "aggressive_reporting", resourceType, mode)
+	state.MultiTenant = utils.MapBoolWithMode(siteData, "multi_tenant", resourceType, mode)
+	state.PauseValidationAlarms = utils.MapBoolWithMode(siteData, "pause_validation_alarms", resourceType, mode)
 	state.EnableDhcpSnooping = utils.MapBoolWithMode(siteData, "enable_dhcp_snooping", resourceType, mode)
 	state.IpSourceGuard = utils.MapBoolWithMode(siteData, "ip_source_guard", resourceType, mode)
 	state.AnycastMacAddressAutoAssigned = utils.MapBoolWithMode(siteData, "anycast_mac_address_auto_assigned_", resourceType, mode)
 
 	// String fields
+	state.SiteType = utils.MapStringWithMode(siteData, "site_type", resourceType, mode)
 	state.ServiceForSite = utils.MapStringWithMode(siteData, "service_for_site", resourceType, mode)
 	state.ServiceForSiteRefType = utils.MapStringWithMode(siteData, "service_for_site_ref_type_", resourceType, mode)
 	state.SpanningTreeType = utils.MapStringWithMode(siteData, "spanning_tree_type", resourceType, mode)
 	state.RegionName = utils.MapStringWithMode(siteData, "region_name", resourceType, mode)
+	state.DomainForSite = utils.MapStringWithMode(siteData, "domain_for_site", resourceType, mode)
+	state.DomainForSiteRefType = utils.MapStringWithMode(siteData, "domain_for_site_ref_type_", resourceType, mode)
 	state.DscpToPBitMap = utils.MapStringWithMode(siteData, "dscp_to_p_bit_map", resourceType, mode)
 	state.AnycastMacAddress = utils.MapStringWithMode(siteData, "anycast_mac_address", resourceType, mode)
+	state.SwitchIpBase = utils.MapStringWithMode(siteData, "switch_ip_base", resourceType, mode)
+	state.ControllerIpBase = utils.MapStringWithMode(siteData, "controller_ip_base", resourceType, mode)
+	state.Loopback0Base = utils.MapStringWithMode(siteData, "loopback0_base", resourceType, mode)
+	state.BaseBgpAsNumber = utils.MapStringWithMode(siteData, "base_bgp_as_number", resourceType, mode)
+	state.RouterIdBasePrefix = utils.MapStringWithMode(siteData, "router_id_base_prefix", resourceType, mode)
+	state.VtepIdBasePrefix = utils.MapStringWithMode(siteData, "vtep_id_base_prefix", resourceType, mode)
+	state.PairedIpSubnet = utils.MapStringWithMode(siteData, "paired_ip_subnet", resourceType, mode)
+	state.MaxSwitches = utils.MapStringWithMode(siteData, "max_switches", resourceType, mode)
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
@@ -969,8 +891,7 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 						continue
 					}
 					graphModel := veritySiteSystemGraphsModel{
-						GraphNumData: utils.MapStringWithModeNested(graphMap, "graph_num_data", resourceType, "object_properties.system_graphs.graph_num_data", mode),
-						Index:        utils.MapInt64WithModeNested(graphMap, "index", resourceType, "object_properties.system_graphs.index", mode),
+						Index: utils.MapInt64WithModeNested(graphMap, "index", resourceType, "object_properties.system_graphs.index", mode),
 					}
 					graphsList = append(graphsList, graphModel)
 				}
@@ -985,60 +906,6 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 		}
 	} else {
 		state.ObjectProperties = nil
-	}
-
-	// Handle islands block
-	if utils.FieldAppliesToMode(resourceType, "islands", mode) {
-		if islands, ok := siteData["islands"].([]interface{}); ok && len(islands) > 0 {
-			var islandsList []veritySiteIslandsModel
-			for _, island := range islands {
-				islandMap, ok := island.(map[string]interface{})
-				if !ok {
-					continue
-				}
-				islandModel := veritySiteIslandsModel{
-					ToiSwitchpoint:        utils.MapStringWithModeNested(islandMap, "toi_switchpoint", resourceType, "islands.toi_switchpoint", mode),
-					ToiSwitchpointRefType: utils.MapStringWithModeNested(islandMap, "toi_switchpoint_ref_type_", resourceType, "islands.toi_switchpoint_ref_type_", mode),
-					Index:                 utils.MapInt64WithModeNested(islandMap, "index", resourceType, "islands.index", mode),
-				}
-				islandsList = append(islandsList, islandModel)
-			}
-			state.Islands = islandsList
-		} else {
-			state.Islands = nil
-		}
-	} else {
-		state.Islands = nil
-	}
-
-	// Handle pairs block
-	if utils.FieldAppliesToMode(resourceType, "pairs", mode) {
-		if pairs, ok := siteData["pairs"].([]interface{}); ok && len(pairs) > 0 {
-			var pairsList []veritySitePairsModel
-			for _, pair := range pairs {
-				pairMap, ok := pair.(map[string]interface{})
-				if !ok {
-					continue
-				}
-				pairModel := veritySitePairsModel{
-					Name:                utils.MapStringWithModeNested(pairMap, "name", resourceType, "pairs.name", mode),
-					Switchpoint1:        utils.MapStringWithModeNested(pairMap, "switchpoint_1", resourceType, "pairs.switchpoint_1", mode),
-					Switchpoint1RefType: utils.MapStringWithModeNested(pairMap, "switchpoint_1_ref_type_", resourceType, "pairs.switchpoint_1_ref_type_", mode),
-					Switchpoint2:        utils.MapStringWithModeNested(pairMap, "switchpoint_2", resourceType, "pairs.switchpoint_2", mode),
-					Switchpoint2RefType: utils.MapStringWithModeNested(pairMap, "switchpoint_2_ref_type_", resourceType, "pairs.switchpoint_2_ref_type_", mode),
-					LagGroup:            utils.MapStringWithModeNested(pairMap, "lag_group", resourceType, "pairs.lag_group", mode),
-					LagGroupRefType:     utils.MapStringWithModeNested(pairMap, "lag_group_ref_type_", resourceType, "pairs.lag_group_ref_type_", mode),
-					IsWhiteboxPair:      utils.MapBoolWithModeNested(pairMap, "is_whitebox_pair", resourceType, "pairs.is_whitebox_pair", mode),
-					Index:               utils.MapInt64WithModeNested(pairMap, "index", resourceType, "pairs.index", mode),
-				}
-				pairsList = append(pairsList, pairModel)
-			}
-			state.Pairs = pairsList
-		} else {
-			state.Pairs = nil
-		}
-	} else {
-		state.Pairs = nil
 	}
 
 	return state
@@ -1074,46 +941,39 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 	}
 
 	nullifier.NullifyStrings(
+		"site_type",
 		"service_for_site", "service_for_site_ref_type_",
 		"spanning_tree_type", "region_name",
+		"domain_for_site", "domain_for_site_ref_type_",
 		"dscp_to_p_bit_map", "anycast_mac_address",
+		"switch_ip_base", "controller_ip_base", "loopback0_base",
+		"base_bgp_as_number", "router_id_base_prefix",
+		"vtep_id_base_prefix", "paired_ip_subnet", "max_switches",
 	)
 
 	nullifier.NullifyBools(
+		"su_support", "allow_all_underlay_connections",
 		"enable", "force_spanning_tree_on_fabric_ports",
-		"read_only_mode", "aggressive_reporting",
+		"read_only_mode", "enable_dscp", "aggressive_reporting",
+		"multi_tenant", "pause_validation_alarms",
 		"enable_dhcp_snooping", "ip_source_guard",
 		"anycast_mac_address_auto_assigned_",
 	)
 
 	nullifier.NullifyInt64s(
-		"revision", "mac_address_aging_time",
+		"revision", "port_admin_polling_interval",
+		"port_status_polling_interval", "mac_address_aging_time",
 		"mlag_delay_restore_timer", "bgp_keepalive_timer",
 		"bgp_hold_down_timer", "spine_bgp_advertisement_interval",
-		"spine_bgp_connect_timer", "leaf_bgp_keep_alive_timer",
+		"spine_bgp_connect_timer", "spine_as_number",
+		"leaf_bgp_keep_alive_timer",
 		"leaf_bgp_hold_down_timer", "leaf_bgp_advertisement_interval",
 		"leaf_bgp_connect_timer", "link_state_timeout_value",
 		"evpn_multihoming_startup_delay", "evpn_mac_holdtime",
-		"crc_failure_threshold", "duplicate_address_detection_max_number_of_moves",
+		"starting_octet", "max_sus", "max_pods",
+		"duplicate_address_detection_max_number_of_moves",
 		"duplicate_address_detection_time",
 	)
-
-	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "islands",
-		ItemCount:    len(plan.Islands),
-		StringFields: []string{"toi_switchpoint", "toi_switchpoint_ref_type_"},
-	})
-
-	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName: "pairs",
-		ItemCount: len(plan.Pairs),
-		StringFields: []string{
-			"name", "switchpoint_1", "switchpoint_1_ref_type_",
-			"switchpoint_2", "switchpoint_2_ref_type_",
-			"lag_group", "lag_group_ref_type_",
-		},
-		BoolFields: []string{"is_whitebox_pair"},
-	})
 
 	// Handle object_properties with nested system_graphs sub-block
 	// Build item counts for system_graphs within each object_properties item
@@ -1128,7 +988,6 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 			{
 				SubBlockName: "system_graphs",
 				ItemCounts:   systemGraphsCounts,
-				StringFields: []string{"graph_num_data"},
 			},
 		},
 	})
@@ -1174,12 +1033,15 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 		ConfiguredAttrs: configuredAttrs,
 		Int64Fields: []utils.NullableInt64Field{
 			{AttrName: "revision", ConfigVal: config.Revision, StateVal: state.Revision},
+			{AttrName: "port_admin_polling_interval", ConfigVal: config.PortAdminPollingInterval, StateVal: state.PortAdminPollingInterval},
+			{AttrName: "port_status_polling_interval", ConfigVal: config.PortStatusPollingInterval, StateVal: state.PortStatusPollingInterval},
 			{AttrName: "mac_address_aging_time", ConfigVal: config.MacAddressAgingTime, StateVal: state.MacAddressAgingTime},
 			{AttrName: "mlag_delay_restore_timer", ConfigVal: config.MlagDelayRestoreTimer, StateVal: state.MlagDelayRestoreTimer},
 			{AttrName: "bgp_keepalive_timer", ConfigVal: config.BgpKeepaliveTimer, StateVal: state.BgpKeepaliveTimer},
 			{AttrName: "bgp_hold_down_timer", ConfigVal: config.BgpHoldDownTimer, StateVal: state.BgpHoldDownTimer},
 			{AttrName: "spine_bgp_advertisement_interval", ConfigVal: config.SpineBgpAdvertisementInterval, StateVal: state.SpineBgpAdvertisementInterval},
 			{AttrName: "spine_bgp_connect_timer", ConfigVal: config.SpineBgpConnectTimer, StateVal: state.SpineBgpConnectTimer},
+			{AttrName: "spine_as_number", ConfigVal: config.SpineAsNumber, StateVal: state.SpineAsNumber},
 			{AttrName: "leaf_bgp_keep_alive_timer", ConfigVal: config.LeafBgpKeepAliveTimer, StateVal: state.LeafBgpKeepAliveTimer},
 			{AttrName: "leaf_bgp_hold_down_timer", ConfigVal: config.LeafBgpHoldDownTimer, StateVal: state.LeafBgpHoldDownTimer},
 			{AttrName: "leaf_bgp_advertisement_interval", ConfigVal: config.LeafBgpAdvertisementInterval, StateVal: state.LeafBgpAdvertisementInterval},
@@ -1187,7 +1049,9 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 			{AttrName: "link_state_timeout_value", ConfigVal: config.LinkStateTimeoutValue, StateVal: state.LinkStateTimeoutValue},
 			{AttrName: "evpn_multihoming_startup_delay", ConfigVal: config.EvpnMultihomingStartupDelay, StateVal: state.EvpnMultihomingStartupDelay},
 			{AttrName: "evpn_mac_holdtime", ConfigVal: config.EvpnMacHoldtime, StateVal: state.EvpnMacHoldtime},
-			{AttrName: "crc_failure_threshold", ConfigVal: config.CrcFailureThreshold, StateVal: state.CrcFailureThreshold},
+			{AttrName: "starting_octet", ConfigVal: config.StartingOctet, StateVal: state.StartingOctet},
+			{AttrName: "max_sus", ConfigVal: config.MaxSus, StateVal: state.MaxSus},
+			{AttrName: "max_pods", ConfigVal: config.MaxPods, StateVal: state.MaxPods},
 			{AttrName: "duplicate_address_detection_max_number_of_moves", ConfigVal: config.DuplicateAddressDetectionMaxNumberOfMoves, StateVal: state.DuplicateAddressDetectionMaxNumberOfMoves},
 			{AttrName: "duplicate_address_detection_time", ConfigVal: config.DuplicateAddressDetectionTime, StateVal: state.DuplicateAddressDetectionTime},
 		},
@@ -1234,9 +1098,6 @@ func filterSiteIndexedEntries(state *veritySiteResourceModel, ref *veritySiteRes
 	if ref == nil {
 		return
 	}
-	state.Islands = utils.FilterIndexedEntries(state.Islands, ref.Islands)
-	state.Pairs = utils.FilterIndexedEntries(state.Pairs, ref.Pairs)
-
 	if len(state.ObjectProperties) > 0 && len(ref.ObjectProperties) > 0 {
 		state.ObjectProperties[0].SystemGraphs = utils.FilterIndexedEntries(
 			state.ObjectProperties[0].SystemGraphs,

@@ -65,7 +65,6 @@ func (ep verityAuthenticatedEthPortEthPortModel) GetIndex() types.Int64 {
 }
 
 type verityAuthenticatedEthPortObjectPropertiesModel struct {
-	Group          types.String `tfsdk:"group"`
 	PortMonitoring types.String `tfsdk:"port_monitoring"`
 }
 
@@ -177,11 +176,6 @@ func (r *verityAuthenticatedEthPortResource) Schema(ctx context.Context, req res
 				Description: "Object properties for the authenticated eth-port",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
 						"port_monitoring": schema.StringAttribute{
 							Description: "Defines importance of Link Down on this port",
 							Optional:    true,
@@ -248,7 +242,6 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
 		})
 		aepProps.ObjectProperties = &objProps
@@ -472,7 +465,6 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		objPropsChanged := false
 
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
 			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
 		}, &objPropsChanged)
 
@@ -670,7 +662,6 @@ func populateAuthenticatedEthPortState(ctx context.Context, state verityAuthenti
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityAuthenticatedEthPortObjectPropertiesModel{
-				Group:          utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
 				PortMonitoring: utils.MapStringWithModeNested(objProps, "port_monitoring", resourceType, "object_properties.port_monitoring", mode),
 			}
 			state.ObjectProperties = []verityAuthenticatedEthPortObjectPropertiesModel{objPropsModel}
@@ -735,7 +726,7 @@ func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "object_properties",
 		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group", "port_monitoring"},
+		StringFields: []string{"port_monitoring"},
 	})
 
 	// =========================================================================

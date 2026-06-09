@@ -39,10 +39,10 @@ type verityPBRoutingACLResource struct {
 }
 
 type verityPBRoutingACLResourceModel struct {
-	Name        types.String                    `tfsdk:"name"`
-	Enable      types.Bool                      `tfsdk:"enable"`
-	IpvProtocol types.String                    `tfsdk:"ipv_protocol"`
-	NextHopIps  types.String                    `tfsdk:"next_hop_ips"`
+	Name       types.String                    `tfsdk:"name"`
+	Enable     types.Bool                      `tfsdk:"enable"`
+	IpVersion  types.String                    `tfsdk:"ip_version"`
+	NextHopIps types.String                    `tfsdk:"next_hop_ips"`
 	Ipv4Permit  []verityPBRoutingACLFilterModel `tfsdk:"ipv4_permit"`
 	Ipv4Deny    []verityPBRoutingACLFilterModel `tfsdk:"ipv4_deny"`
 	Ipv6Permit  []verityPBRoutingACLFilterModel `tfsdk:"ipv6_permit"`
@@ -100,7 +100,7 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 				Optional:    true,
 				Computed:    true,
 			},
-			"ipv_protocol": schema.StringAttribute{
+			"ip_version": schema.StringAttribute{
 				Description: "IPv4 or IPv6",
 				Optional:    true,
 				Computed:    true,
@@ -252,7 +252,7 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 
 	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
-		{FieldName: "IpvProtocol", APIField: &pbRoutingACLProps.IpvProtocol, TFValue: plan.IpvProtocol},
+		{FieldName: "IpVersion", APIField: &pbRoutingACLProps.IpVersion, TFValue: plan.IpVersion},
 		{FieldName: "NextHopIps", APIField: &pbRoutingACLProps.NextHopIps, TFValue: plan.NextHopIps},
 	})
 
@@ -502,7 +502,7 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { pbRoutingACLProps.Name = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.IpvProtocol, state.IpvProtocol, func(v *string) { pbRoutingACLProps.IpvProtocol = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.IpVersion, state.IpVersion, func(v *string) { pbRoutingACLProps.IpVersion = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.NextHopIps, state.NextHopIps, func(v *string) { pbRoutingACLProps.NextHopIps = v }, &hasChanges)
 
 	// Handle boolean field changes
@@ -835,7 +835,7 @@ func populatePBRoutingACLState(ctx context.Context, state verityPBRoutingACLReso
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
 	// String fields
-	state.IpvProtocol = utils.MapStringWithMode(data, "ipv_protocol", resourceType, mode)
+	state.IpVersion = utils.MapStringWithMode(data, "ip_version", resourceType, mode)
 	state.NextHopIps = utils.MapStringWithMode(data, "next_hop_ips", resourceType, mode)
 
 	// Helper function to parse filter arrays with mode awareness
@@ -931,7 +931,7 @@ func (r *verityPBRoutingACLResource) ModifyPlan(ctx context.Context, req resourc
 	}
 
 	nullifier.NullifyStrings(
-		"ipv_protocol", "next_hop_ips",
+		"ip_version", "next_hop_ips",
 	)
 
 	nullifier.NullifyBools(

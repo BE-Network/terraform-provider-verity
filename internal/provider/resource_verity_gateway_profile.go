@@ -41,12 +41,7 @@ type verityGatewayProfileResource struct {
 type verityGatewayProfileResourceModel struct {
 	Name             types.String                                `tfsdk:"name"`
 	Enable           types.Bool                                  `tfsdk:"enable"`
-	ObjectProperties []verityGatewayProfileObjectPropertiesModel `tfsdk:"object_properties"`
 	ExternalGateways []verityGatewayProfileExternalGatewaysModel `tfsdk:"external_gateways"`
-}
-
-type verityGatewayProfileObjectPropertiesModel struct {
-	Group types.String `tfsdk:"group"`
 }
 
 type verityGatewayProfileExternalGatewaysModel struct {
@@ -104,18 +99,6 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"object_properties": schema.ListNestedBlock{
-				Description: "Object properties for the gateway profile",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
-					},
-				},
-			},
 			"external_gateways": schema.ListNestedBlock{
 				Description: "List of external gateway configurations",
 				NestedObject: schema.NestedBlockObject{
@@ -182,16 +165,6 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &profileProps.Enable, TFValue: plan.Enable},
 	})
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-		})
-		profileProps.ObjectProperties = &objProps
-	}
 
 	// Handle external gateways
 	if len(plan.ExternalGateways) > 0 {
@@ -385,23 +358,6 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { profileProps.Enable = v }, &hasChanges)
 
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
-		objPropsChanged := false
-
-		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-		}, &objPropsChanged)
-
-		if objPropsChanged {
-			profileProps.ObjectProperties = &objProps
-			hasChanges = true
-		}
-	}
-
 	// Handle external gateways
 	externalGatewaysHandler := utils.IndexedItemHandler[verityGatewayProfileExternalGatewaysModel, openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner]{
 		CreateNew: func(planItem verityGatewayProfileExternalGatewaysModel) openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner {
@@ -553,19 +509,6 @@ func populateGatewayProfileState(ctx context.Context, state verityGatewayProfile
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle object properties
-	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
-			state.ObjectProperties = []verityGatewayProfileObjectPropertiesModel{
-				{Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode)},
-			}
-		} else {
-			state.ObjectProperties = nil
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
 	// Handle external gateways
 	if utils.FieldAppliesToMode(resourceType, "external_gateways", mode) {
 		if ext, ok := data["external_gateways"].([]interface{}); ok && len(ext) > 0 {
@@ -640,11 +583,5 @@ func (r *verityGatewayProfileResource) ModifyPlan(ctx context.Context, req resou
 		StringFields: []string{"gateway", "gateway_ref_type_", "source_ip_mask"},
 		BoolFields:   []string{"enable", "peer_gw"},
 		Int64Fields:  []string{"index"},
-	})
-
-	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
 	})
 }

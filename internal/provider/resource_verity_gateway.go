@@ -40,50 +40,50 @@ type verityGatewayResource struct {
 }
 
 type verityGatewayResourceModel struct {
-	Name                       types.String                         `tfsdk:"name"`
-	Enable                     types.Bool                           `tfsdk:"enable"`
-	ObjectProperties           []verityGatewayObjectPropertiesModel `tfsdk:"object_properties"`
-	Tenant                     types.String                         `tfsdk:"tenant"`
-	TenantRefType              types.String                         `tfsdk:"tenant_ref_type_"`
-	NeighborIpAddress          types.String                         `tfsdk:"neighbor_ip_address"`
-	NeighborAsNumber           types.Int64                          `tfsdk:"neighbor_as_number"`
-	FabricInterconnect         types.Bool                           `tfsdk:"fabric_interconnect"`
-	KeepaliveTimer             types.Int64                          `tfsdk:"keepalive_timer"`
-	HoldTimer                  types.Int64                          `tfsdk:"hold_timer"`
-	ConnectTimer               types.Int64                          `tfsdk:"connect_timer"`
-	AdvertisementInterval      types.Int64                          `tfsdk:"advertisement_interval"`
-	EbgpMultihop               types.Int64                          `tfsdk:"ebgp_multihop"`
-	EgressVlan                 types.Int64                          `tfsdk:"egress_vlan"`
-	SourceIpAddress            types.String                         `tfsdk:"source_ip_address"`
-	AnycastIpMask              types.String                         `tfsdk:"anycast_ip_mask"`
-	Md5Password                types.String                         `tfsdk:"md5_password"`
-	Md5PasswordEncrypted       types.String                         `tfsdk:"md5_password_encrypted"`
-	SwitchEncryptedMd5Password types.Bool                           `tfsdk:"switch_encrypted_md5_password"`
-	ImportRouteMap             types.String                         `tfsdk:"import_route_map"`
-	StaticRoutes               []verityGatewayStaticRoutesModel     `tfsdk:"static_routes"`
-	ExportRouteMap             types.String                         `tfsdk:"export_route_map"`
-	GatewayMode                types.String                         `tfsdk:"gateway_mode"`
-	LocalAsNumber              types.Int64                          `tfsdk:"local_as_number"`
-	LocalAsNoPrepend           types.Bool                           `tfsdk:"local_as_no_prepend"`
-	ReplaceAs                  types.Bool                           `tfsdk:"replace_as"`
-	MaxLocalAsOccurrences      types.Int64                          `tfsdk:"max_local_as_occurrences"`
-	DynamicBgpSubnet           types.String                         `tfsdk:"dynamic_bgp_subnet"`
-	DynamicBgpLimits           types.Int64                          `tfsdk:"dynamic_bgp_limits"`
-	HelperHopIpAddress         types.String                         `tfsdk:"helper_hop_ip_address"`
-	EnableBfd                  types.Bool                           `tfsdk:"enable_bfd"`
-	BfdReceiveInterval         types.Int64                          `tfsdk:"bfd_receive_interval"`
-	BfdTransmissionInterval    types.Int64                          `tfsdk:"bfd_transmission_interval"`
-	BfdDetectMultiplier        types.Int64                          `tfsdk:"bfd_detect_multiplier"`
-	BfdMultihop                types.Bool                           `tfsdk:"bfd_multihop"`
-	NextHopSelf                types.Bool                           `tfsdk:"next_hop_self"`
-	DefaultOriginate           types.Bool                           `tfsdk:"default_originate"`
-	ExportRouteMapRefType      types.String                         `tfsdk:"export_route_map_ref_type_"`
-	ImportRouteMapRefType      types.String                         `tfsdk:"import_route_map_ref_type_"`
-	BgpInstanceAsNumber        types.Int64                          `tfsdk:"bgp_instance_as_number"`
-}
-
-type verityGatewayObjectPropertiesModel struct {
-	Group types.String `tfsdk:"group"`
+	Name                       types.String                     `tfsdk:"name"`
+	Enable                     types.Bool                       `tfsdk:"enable"`
+	Tenant                     types.String                     `tfsdk:"tenant"`
+	TenantRefType              types.String                     `tfsdk:"tenant_ref_type_"`
+	Site                       types.String                     `tfsdk:"site"`
+	SiteRefType                types.String                     `tfsdk:"site_ref_type_"`
+	NeighborIpAddress          types.String                     `tfsdk:"neighbor_ip_address"`
+	NeighborAsNumber           types.Int64                      `tfsdk:"neighbor_as_number"`
+	FabricInterconnect         types.Bool                       `tfsdk:"fabric_interconnect"`
+	KeepaliveTimer             types.Int64                      `tfsdk:"keepalive_timer"`
+	HoldTimer                  types.Int64                      `tfsdk:"hold_timer"`
+	ConnectTimer               types.Int64                      `tfsdk:"connect_timer"`
+	AdvertisementInterval      types.Int64                      `tfsdk:"advertisement_interval"`
+	EbgpMultihop               types.Int64                      `tfsdk:"ebgp_multihop"`
+	EgressVlan                 types.Int64                      `tfsdk:"egress_vlan"`
+	SourceIpAddress            types.String                     `tfsdk:"source_ip_address"`
+	AnycastIpMask              types.String                     `tfsdk:"anycast_ip_mask"`
+	Md5Password                types.String                     `tfsdk:"md5_password"`
+	Md5PasswordEncrypted       types.String                     `tfsdk:"md5_password_encrypted"`
+	SwitchEncryptedMd5Password types.Bool                       `tfsdk:"switch_encrypted_md5_password"`
+	ImportRouteMap             types.String                     `tfsdk:"import_route_map"`
+	StaticRoutes               []verityGatewayStaticRoutesModel `tfsdk:"static_routes"`
+	ExportRouteMap             types.String                     `tfsdk:"export_route_map"`
+	GatewayMode                types.String                     `tfsdk:"gateway_mode"`
+	LocalAsNumber              types.Int64                      `tfsdk:"local_as_number"`
+	LocalAsNoPrepend           types.Bool                       `tfsdk:"local_as_no_prepend"`
+	ReplaceAs                  types.Bool                       `tfsdk:"replace_as"`
+	MaxLocalAsOccurrences      types.Int64                      `tfsdk:"max_local_as_occurrences"`
+	DynamicBgpSubnet           types.String                     `tfsdk:"dynamic_bgp_subnet"`
+	DynamicBgpLimits           types.Int64                      `tfsdk:"dynamic_bgp_limits"`
+	HelperHopIpAddress         types.String                     `tfsdk:"helper_hop_ip_address"`
+	EnableBfd                  types.Bool                       `tfsdk:"enable_bfd"`
+	BfdReceiveInterval         types.Int64                      `tfsdk:"bfd_receive_interval"`
+	BfdTransmissionInterval    types.Int64                      `tfsdk:"bfd_transmission_interval"`
+	BfdDetectMultiplier        types.Int64                      `tfsdk:"bfd_detect_multiplier"`
+	BfdMultihop                types.Bool                       `tfsdk:"bfd_multihop"`
+	NextHopSelf                types.Bool                       `tfsdk:"next_hop_self"`
+	DefaultOriginate           types.Bool                       `tfsdk:"default_originate"`
+	ExportRouteMapRefType      types.String                     `tfsdk:"export_route_map_ref_type_"`
+	ImportRouteMapRefType      types.String                     `tfsdk:"import_route_map_ref_type_"`
+	BgpInstanceAsNumber        types.Int64                      `tfsdk:"bgp_instance_as_number"`
+	AllowasInOrigin            types.Bool                       `tfsdk:"allowas_in_origin"`
+	RemovePrivateAs            types.Bool                       `tfsdk:"remove_private_as"`
+	Type                       types.String                     `tfsdk:"type"`
 }
 
 type verityGatewayStaticRoutesModel struct {
@@ -145,6 +145,16 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 			},
 			"tenant_ref_type_": schema.StringAttribute{
 				Description: "Object type for tenant field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"site": schema.StringAttribute{
+				Description: "Fabric this Gateway is assigned to",
+				Optional:    true,
+				Computed:    true,
+			},
+			"site_ref_type_": schema.StringAttribute{
+				Description: "Object type for site field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -317,20 +327,23 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:    true,
 				Computed:    true,
 			},
+			"allowas_in_origin": schema.BoolAttribute{
+				Description: "Only accept the current AS in the as-path if the route was originated in the Local AS",
+				Optional:    true,
+				Computed:    true,
+			},
+			"remove_private_as": schema.BoolAttribute{
+				Description: "Remove all private AS numbers from AS-PATH attributes for routes advertised through this BGP gateway",
+				Optional:    true,
+				Computed:    true,
+			},
+			"type": schema.StringAttribute{
+				Description: "Gateway classification",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
-			"object_properties": schema.ListNestedBlock{
-				Description: "Object properties for the gateway",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
-					},
-				},
-			},
 			"static_routes": schema.ListNestedBlock{
 				Description: "List of static routes",
 				NestedObject: schema.NestedBlockObject{
@@ -399,6 +412,8 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Tenant", APIField: &gatewayProps.Tenant, TFValue: plan.Tenant},
 		{FieldName: "TenantRefType", APIField: &gatewayProps.TenantRefType, TFValue: plan.TenantRefType},
+		{FieldName: "Site", APIField: &gatewayProps.Site, TFValue: plan.Site},
+		{FieldName: "SiteRefType", APIField: &gatewayProps.SiteRefType, TFValue: plan.SiteRefType},
 		{FieldName: "NeighborIpAddress", APIField: &gatewayProps.NeighborIpAddress, TFValue: plan.NeighborIpAddress},
 		{FieldName: "SourceIpAddress", APIField: &gatewayProps.SourceIpAddress, TFValue: plan.SourceIpAddress},
 		{FieldName: "AnycastIpMask", APIField: &gatewayProps.AnycastIpMask, TFValue: plan.AnycastIpMask},
@@ -411,6 +426,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "HelperHopIpAddress", APIField: &gatewayProps.HelperHopIpAddress, TFValue: plan.HelperHopIpAddress},
 		{FieldName: "ExportRouteMapRefType", APIField: &gatewayProps.ExportRouteMapRefType, TFValue: plan.ExportRouteMapRefType},
 		{FieldName: "ImportRouteMapRefType", APIField: &gatewayProps.ImportRouteMapRefType, TFValue: plan.ImportRouteMapRefType},
+		{FieldName: "Type", APIField: &gatewayProps.Type, TFValue: plan.Type},
 	})
 
 	// Handle boolean fields
@@ -424,6 +440,8 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "NextHopSelf", APIField: &gatewayProps.NextHopSelf, TFValue: plan.NextHopSelf},
 		{FieldName: "DefaultOriginate", APIField: &gatewayProps.DefaultOriginate, TFValue: plan.DefaultOriginate},
 		{FieldName: "SwitchEncryptedMd5Password", APIField: &gatewayProps.SwitchEncryptedMd5Password, TFValue: plan.SwitchEncryptedMd5Password},
+		{FieldName: "AllowasInOrigin", APIField: &gatewayProps.AllowasInOrigin, TFValue: plan.AllowasInOrigin},
+		{FieldName: "RemovePrivateAs", APIField: &gatewayProps.RemovePrivateAs, TFValue: plan.RemovePrivateAs},
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
@@ -446,16 +464,6 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "BfdDetectMultiplier", APIField: &gatewayProps.BfdDetectMultiplier, TFValue: config.BfdDetectMultiplier, IsConfigured: configuredAttrs.IsConfigured("bfd_detect_multiplier")},
 		{FieldName: "BgpInstanceAsNumber", APIField: &gatewayProps.BgpInstanceAsNumber, TFValue: config.BgpInstanceAsNumber, IsConfigured: configuredAttrs.IsConfigured("bgp_instance_as_number")},
 	})
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-		})
-		gatewayProps.ObjectProperties = &objProps
-	}
 
 	// Handle static routes
 	if len(plan.StaticRoutes) > 0 {
@@ -681,6 +689,9 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetBoolField(plan.NextHopSelf, state.NextHopSelf, func(v *bool) { gatewayProps.NextHopSelf = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.DefaultOriginate, state.DefaultOriginate, func(v *bool) { gatewayProps.DefaultOriginate = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.SwitchEncryptedMd5Password, state.SwitchEncryptedMd5Password, func(v *bool) { gatewayProps.SwitchEncryptedMd5Password = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.AllowasInOrigin, state.AllowasInOrigin, func(v *bool) { gatewayProps.AllowasInOrigin = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.RemovePrivateAs, state.RemovePrivateAs, func(v *bool) { gatewayProps.RemovePrivateAs = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { gatewayProps.Type = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.NeighborAsNumber, state.NeighborAsNumber, configuredAttrs.IsConfigured("neighbor_as_number"), func(v *openapi.NullableInt32) { gatewayProps.NeighborAsNumber = *v }, &hasChanges)
@@ -698,29 +709,24 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetNullableInt64Field(config.BfdDetectMultiplier, state.BfdDetectMultiplier, configuredAttrs.IsConfigured("bfd_detect_multiplier"), func(v *openapi.NullableInt32) { gatewayProps.BfdDetectMultiplier = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.BgpInstanceAsNumber, state.BgpInstanceAsNumber, configuredAttrs.IsConfigured("bgp_instance_as_number"), func(v *openapi.NullableInt32) { gatewayProps.BgpInstanceAsNumber = *v }, &hasChanges)
 
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
-		objPropsChanged := false
-
-		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-		}, &objPropsChanged)
-
-		if objPropsChanged {
-			gatewayProps.ObjectProperties = &objProps
-			hasChanges = true
-		}
-	}
-
 	// Handle tenant and tenant_ref_type_ fields using "Many ref types supported" pattern
 	if !utils.HandleMultipleRefTypesSupported(
 		plan.Tenant, state.Tenant, plan.TenantRefType, state.TenantRefType,
 		func(v *string) { gatewayProps.Tenant = v },
 		func(v *string) { gatewayProps.TenantRefType = v },
 		"tenant", "tenant_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle Site and SiteRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,
+		func(v *string) { gatewayProps.Site = v },
+		func(v *string) { gatewayProps.SiteRefType = v },
+		"site", "site_ref_type_",
 		&hasChanges,
 		&resp.Diagnostics,
 	) {
@@ -921,10 +927,14 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 	state.NextHopSelf = utils.MapBoolWithMode(data, "next_hop_self", resourceType, mode)
 	state.DefaultOriginate = utils.MapBoolWithMode(data, "default_originate", resourceType, mode)
 	state.SwitchEncryptedMd5Password = utils.MapBoolWithMode(data, "switch_encrypted_md5_password", resourceType, mode)
+	state.AllowasInOrigin = utils.MapBoolWithMode(data, "allowas_in_origin", resourceType, mode)
+	state.RemovePrivateAs = utils.MapBoolWithMode(data, "remove_private_as", resourceType, mode)
 
 	// String fields
 	state.Tenant = utils.MapStringWithMode(data, "tenant", resourceType, mode)
 	state.TenantRefType = utils.MapStringWithMode(data, "tenant_ref_type_", resourceType, mode)
+	state.Site = utils.MapStringWithMode(data, "site", resourceType, mode)
+	state.SiteRefType = utils.MapStringWithMode(data, "site_ref_type_", resourceType, mode)
 	state.NeighborIpAddress = utils.MapStringWithMode(data, "neighbor_ip_address", resourceType, mode)
 	state.SourceIpAddress = utils.MapStringWithMode(data, "source_ip_address", resourceType, mode)
 	state.AnycastIpMask = utils.MapStringWithMode(data, "anycast_ip_mask", resourceType, mode)
@@ -937,20 +947,7 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 	state.HelperHopIpAddress = utils.MapStringWithMode(data, "helper_hop_ip_address", resourceType, mode)
 	state.ExportRouteMapRefType = utils.MapStringWithMode(data, "export_route_map_ref_type_", resourceType, mode)
 	state.ImportRouteMapRefType = utils.MapStringWithMode(data, "import_route_map_ref_type_", resourceType, mode)
-
-	// Handle object_properties block
-	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
-			objPropsModel := verityGatewayObjectPropertiesModel{
-				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
-			}
-			state.ObjectProperties = []verityGatewayObjectPropertiesModel{objPropsModel}
-		} else {
-			state.ObjectProperties = nil
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
+	state.Type = utils.MapStringWithMode(data, "type", resourceType, mode)
 
 	// Handle static_routes list block
 	if utils.FieldAppliesToMode(resourceType, "static_routes", mode) {
@@ -1015,17 +1012,18 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 	}
 
 	nullifier.NullifyStrings(
-		"tenant", "tenant_ref_type_", "neighbor_ip_address", "source_ip_address",
+		"tenant", "tenant_ref_type_", "site", "site_ref_type_", "neighbor_ip_address", "source_ip_address",
 		"anycast_ip_mask", "md5_password", "md5_password_encrypted",
 		"import_route_map", "export_route_map", "gateway_mode",
 		"dynamic_bgp_subnet", "helper_hop_ip_address",
 		"export_route_map_ref_type_", "import_route_map_ref_type_",
+		"type",
 	)
 
 	nullifier.NullifyBools(
 		"enable", "fabric_interconnect", "local_as_no_prepend", "replace_as",
 		"enable_bfd", "bfd_multihop", "next_hop_self", "default_originate",
-		"switch_encrypted_md5_password",
+		"switch_encrypted_md5_password", "allowas_in_origin", "remove_private_as",
 	)
 
 	nullifier.NullifyInt64s(
@@ -1042,12 +1040,6 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 		StringFields: []string{"ipv4_route_prefix", "next_hop_ip_address"},
 		BoolFields:   []string{"enable"},
 		Int64Fields:  []string{"index", "ad_value"},
-	})
-
-	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
 	})
 
 	// =========================================================================

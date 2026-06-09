@@ -40,11 +40,10 @@ type verityPacketQueueResource struct {
 }
 
 type verityPacketQueueResourceModel struct {
-	Name             types.String                             `tfsdk:"name"`
-	Enable           types.Bool                               `tfsdk:"enable"`
-	Pbit             []verityPacketQueuePbitModel             `tfsdk:"pbit"`
-	Queue            []verityPacketQueueQueueModel            `tfsdk:"queue"`
-	ObjectProperties []verityPacketQueueObjectPropertiesModel `tfsdk:"object_properties"`
+	Name   types.String                  `tfsdk:"name"`
+	Enable types.Bool                    `tfsdk:"enable"`
+	Pbit   []verityPacketQueuePbitModel  `tfsdk:"pbit"`
+	Queue  []verityPacketQueueQueueModel `tfsdk:"queue"`
 }
 
 type verityPacketQueuePbitModel struct {
@@ -65,10 +64,6 @@ type verityPacketQueueQueueModel struct {
 
 func (q verityPacketQueueQueueModel) GetIndex() types.Int64 {
 	return q.Index
-}
-
-type verityPacketQueueObjectPropertiesModel struct {
-	Group types.String `tfsdk:"group"`
 }
 
 func (r *verityPacketQueueResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -157,18 +152,6 @@ func (r *verityPacketQueueResource) Schema(ctx context.Context, req resource.Sch
 					},
 				},
 			},
-			"object_properties": schema.ListNestedBlock{
-				Description: "Object properties for the packet queue",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
-					},
-				},
-			},
 		},
 	}
 }
@@ -205,16 +188,6 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &pqProps.Enable, TFValue: plan.Enable},
 	})
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-		})
-		pqProps.ObjectProperties = &objProps
-	}
 
 	// Parse HCL to detect explicitly configured attributes
 	workDir := r.provCtx.workDir
@@ -444,23 +417,6 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { pqProps.Enable = v }, &hasChanges)
 
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
-		objPropsChanged := false
-
-		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-		}, &objPropsChanged)
-
-		if objPropsChanged {
-			pqProps.ObjectProperties = &objProps
-			hasChanges = true
-		}
-	}
-
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 	var config verityPacketQueueResourceModel
@@ -650,20 +606,6 @@ func populatePacketQueueState(ctx context.Context, state verityPacketQueueResour
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle object_properties block
-	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
-			objPropsModel := verityPacketQueueObjectPropertiesModel{
-				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
-			}
-			state.ObjectProperties = []verityPacketQueueObjectPropertiesModel{objPropsModel}
-		} else {
-			state.ObjectProperties = nil
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
 	// Handle pbit array with mode awareness
 	if utils.FieldAppliesToMode(resourceType, "pbit", mode) {
 		if pbitArray, ok := data["pbit"].([]interface{}); ok && len(pbitArray) > 0 {
@@ -759,12 +701,6 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 		ItemCount:    len(plan.Queue),
 		StringFields: []string{"scheduler_type"},
 		Int64Fields:  []string{"index", "bandwidth_for_queue", "scheduler_weight"},
-	})
-
-	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
 	})
 
 	// =========================================================================

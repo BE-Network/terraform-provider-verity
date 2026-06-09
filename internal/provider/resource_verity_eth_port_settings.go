@@ -40,56 +40,53 @@ type verityEthPortSettingsResource struct {
 }
 
 type verityEthPortSettingsResourceModel struct {
-	Name                                   types.String                                 `tfsdk:"name"`
-	Enable                                 types.Bool                                   `tfsdk:"enable"`
-	ObjectProperties                       []verityEthPortSettingsObjectPropertiesModel `tfsdk:"object_properties"`
-	AutoNegotiation                        types.Bool                                   `tfsdk:"auto_negotiation"`
-	EnableSpeedControl                     types.Bool                                   `tfsdk:"enable_speed_control"`
-	MaxBitRate                             types.String                                 `tfsdk:"max_bit_rate"`
-	DuplexMode                             types.String                                 `tfsdk:"duplex_mode"`
-	StpEnable                              types.Bool                                   `tfsdk:"stp_enable"`
-	FastLearningMode                       types.Bool                                   `tfsdk:"fast_learning_mode"`
-	BpduGuard                              types.Bool                                   `tfsdk:"bpdu_guard"`
-	BpduFilter                             types.Bool                                   `tfsdk:"bpdu_filter"`
-	GuardLoop                              types.Bool                                   `tfsdk:"guard_loop"`
-	PoeEnable                              types.Bool                                   `tfsdk:"poe_enable"`
-	Priority                               types.String                                 `tfsdk:"priority"`
-	AllocatedPower                         types.String                                 `tfsdk:"allocated_power"`
-	BspEnable                              types.Bool                                   `tfsdk:"bsp_enable"`
-	Broadcast                              types.Bool                                   `tfsdk:"broadcast"`
-	Multicast                              types.Bool                                   `tfsdk:"multicast"`
-	MaxAllowedValue                        types.Int64                                  `tfsdk:"max_allowed_value"`
-	MaxAllowedUnit                         types.String                                 `tfsdk:"max_allowed_unit"`
-	Action                                 types.String                                 `tfsdk:"action"`
-	Fec                                    types.String                                 `tfsdk:"fec"`
-	SingleLink                             types.Bool                                   `tfsdk:"single_link"`
-	MinimumWredThreshold                   types.Int64                                  `tfsdk:"minimum_wred_threshold"`
-	MaximumWredThreshold                   types.Int64                                  `tfsdk:"maximum_wred_threshold"`
-	WredDropProbability                    types.Int64                                  `tfsdk:"wred_drop_probability"`
-	PriorityFlowControlWatchdogAction      types.String                                 `tfsdk:"priority_flow_control_watchdog_action"`
-	PriorityFlowControlWatchdogDetectTime  types.Int64                                  `tfsdk:"priority_flow_control_watchdog_detect_time"`
-	PriorityFlowControlWatchdogRestoreTime types.Int64                                  `tfsdk:"priority_flow_control_watchdog_restore_time"`
-	PacketQueue                            types.String                                 `tfsdk:"packet_queue"`
-	PacketQueueRefType                     types.String                                 `tfsdk:"packet_queue_ref_type_"`
-	EnableWredTuning                       types.Bool                                   `tfsdk:"enable_wred_tuning"`
-	EnableEcn                              types.Bool                                   `tfsdk:"enable_ecn"`
-	EnableWatchdogTuning                   types.Bool                                   `tfsdk:"enable_watchdog_tuning"`
-	CliCommands                            types.String                                 `tfsdk:"cli_commands"`
-	DetectBridgingLoops                    types.Bool                                   `tfsdk:"detect_bridging_loops"`
-	UnidirectionalLinkDetection            types.Bool                                   `tfsdk:"unidirectional_link_detection"`
-	MacSecurityMode                        types.String                                 `tfsdk:"mac_security_mode"`
-	MacLimit                               types.Int64                                  `tfsdk:"mac_limit"`
-	SecurityViolationAction                types.String                                 `tfsdk:"security_violation_action"`
-	AgingType                              types.String                                 `tfsdk:"aging_type"`
-	AgingTime                              types.Int64                                  `tfsdk:"aging_time"`
-	LldpEnable                             types.Bool                                   `tfsdk:"lldp_enable"`
-	LldpMode                               types.String                                 `tfsdk:"lldp_mode"`
-	LldpMedEnable                          types.Bool                                   `tfsdk:"lldp_med_enable"`
-	LldpMed                                []verityEthPortSettingsLldpMedModel          `tfsdk:"lldp_med"`
-}
-
-type verityEthPortSettingsObjectPropertiesModel struct {
-	Group types.String `tfsdk:"group"`
+	Name                                   types.String                        `tfsdk:"name"`
+	Enable                                 types.Bool                          `tfsdk:"enable"`
+	AutoNegotiation                        types.Bool                          `tfsdk:"auto_negotiation"`
+	StandaloneLinkTraining                 types.Bool                          `tfsdk:"standalone_link_training"`
+	EnableSpeedControl                     types.Bool                          `tfsdk:"enable_speed_control"`
+	MaxBitRate                             types.String                        `tfsdk:"max_bit_rate"`
+	DuplexMode                             types.String                        `tfsdk:"duplex_mode"`
+	StpEnable                              types.Bool                          `tfsdk:"stp_enable"`
+	FastLearningMode                       types.Bool                          `tfsdk:"fast_learning_mode"`
+	BpduGuard                              types.Bool                          `tfsdk:"bpdu_guard"`
+	BpduFilter                             types.Bool                          `tfsdk:"bpdu_filter"`
+	GuardLoop                              types.Bool                          `tfsdk:"guard_loop"`
+	PoeEnable                              types.Bool                          `tfsdk:"poe_enable"`
+	Priority                               types.String                        `tfsdk:"priority"`
+	AllocatedPower                         types.String                        `tfsdk:"allocated_power"`
+	BspEnable                              types.Bool                          `tfsdk:"bsp_enable"`
+	Broadcast                              types.Bool                          `tfsdk:"broadcast"`
+	Multicast                              types.Bool                          `tfsdk:"multicast"`
+	MaxAllowedValue                        types.Int64                         `tfsdk:"max_allowed_value"`
+	MaxAllowedUnit                         types.String                        `tfsdk:"max_allowed_unit"`
+	Mtu                                    types.Int64                         `tfsdk:"mtu"`
+	Action                                 types.String                        `tfsdk:"action"`
+	Fec                                    types.String                        `tfsdk:"fec"`
+	SingleLink                             types.Bool                          `tfsdk:"single_link"`
+	MinimumWredThreshold                   types.Int64                         `tfsdk:"minimum_wred_threshold"`
+	MaximumWredThreshold                   types.Int64                         `tfsdk:"maximum_wred_threshold"`
+	WredDropProbability                    types.Int64                         `tfsdk:"wred_drop_probability"`
+	PriorityFlowControlWatchdogAction      types.String                        `tfsdk:"priority_flow_control_watchdog_action"`
+	PriorityFlowControlWatchdogDetectTime  types.Int64                         `tfsdk:"priority_flow_control_watchdog_detect_time"`
+	PriorityFlowControlWatchdogRestoreTime types.Int64                         `tfsdk:"priority_flow_control_watchdog_restore_time"`
+	PacketQueue                            types.String                        `tfsdk:"packet_queue"`
+	PacketQueueRefType                     types.String                        `tfsdk:"packet_queue_ref_type_"`
+	EnableWredTuning                       types.Bool                          `tfsdk:"enable_wred_tuning"`
+	EnableEcn                              types.Bool                          `tfsdk:"enable_ecn"`
+	EnableWatchdogTuning                   types.Bool                          `tfsdk:"enable_watchdog_tuning"`
+	CliCommands                            types.String                        `tfsdk:"cli_commands"`
+	DetectBridgingLoops                    types.Bool                          `tfsdk:"detect_bridging_loops"`
+	UnidirectionalLinkDetection            types.Bool                          `tfsdk:"unidirectional_link_detection"`
+	MacSecurityMode                        types.String                        `tfsdk:"mac_security_mode"`
+	MacLimit                               types.Int64                         `tfsdk:"mac_limit"`
+	SecurityViolationAction                types.String                        `tfsdk:"security_violation_action"`
+	AgingType                              types.String                        `tfsdk:"aging_type"`
+	AgingTime                              types.Int64                         `tfsdk:"aging_time"`
+	LldpEnable                             types.Bool                          `tfsdk:"lldp_enable"`
+	LldpMode                               types.String                        `tfsdk:"lldp_mode"`
+	LldpMedEnable                          types.Bool                          `tfsdk:"lldp_med_enable"`
+	LldpMed                                []verityEthPortSettingsLldpMedModel `tfsdk:"lldp_med"`
 }
 
 type verityEthPortSettingsLldpMedModel struct {
@@ -146,6 +143,11 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 			},
 			"auto_negotiation": schema.BoolAttribute{
 				Description: "Indicates if port speed and duplex mode should be auto negotiated",
+				Optional:    true,
+				Computed:    true,
+			},
+			"standalone_link_training": schema.BoolAttribute{
+				Description: "For use when the port speed/FEC are manually fixed, but the physical link still needs SerDes tuning most commonly high-speed passive DAC/copper links",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -274,6 +276,11 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Optional:    true,
 				Computed:    true,
 			},
+			"mtu": schema.Int64Attribute{
+				Description: "MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery.",
+				Optional:    true,
+				Computed:    true,
+			},
 			"packet_queue": schema.StringAttribute{
 				Description: "Packet Queue",
 				Optional:    true,
@@ -356,18 +363,6 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"object_properties": schema.ListNestedBlock{
-				Description: "Object properties for the eth port settings",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
-					},
-				},
-			},
 			"lldp_med": schema.ListNestedBlock{
 				Description: "LLDP MED configurations",
 				NestedObject: schema.NestedBlockObject{
@@ -465,6 +460,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &ethPortSettingsProps.Enable, TFValue: plan.Enable},
 		{FieldName: "AutoNegotiation", APIField: &ethPortSettingsProps.AutoNegotiation, TFValue: plan.AutoNegotiation},
+		{FieldName: "StandaloneLinkTraining", APIField: &ethPortSettingsProps.StandaloneLinkTraining, TFValue: plan.StandaloneLinkTraining},
 		{FieldName: "EnableSpeedControl", APIField: &ethPortSettingsProps.EnableSpeedControl, TFValue: plan.EnableSpeedControl},
 		{FieldName: "StpEnable", APIField: &ethPortSettingsProps.StpEnable, TFValue: plan.StpEnable},
 		{FieldName: "FastLearningMode", APIField: &ethPortSettingsProps.FastLearningMode, TFValue: plan.FastLearningMode},
@@ -496,19 +492,10 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		{FieldName: "WredDropProbability", APIField: &ethPortSettingsProps.WredDropProbability, TFValue: config.WredDropProbability, IsConfigured: configuredAttrs.IsConfigured("wred_drop_probability")},
 		{FieldName: "PriorityFlowControlWatchdogDetectTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime, TFValue: config.PriorityFlowControlWatchdogDetectTime, IsConfigured: configuredAttrs.IsConfigured("priority_flow_control_watchdog_detect_time")},
 		{FieldName: "PriorityFlowControlWatchdogRestoreTime", APIField: &ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime, TFValue: config.PriorityFlowControlWatchdogRestoreTime, IsConfigured: configuredAttrs.IsConfigured("priority_flow_control_watchdog_restore_time")},
+		{FieldName: "Mtu", APIField: &ethPortSettingsProps.Mtu, TFValue: config.Mtu, IsConfigured: configuredAttrs.IsConfigured("mtu")},
 		{FieldName: "MacLimit", APIField: &ethPortSettingsProps.MacLimit, TFValue: config.MacLimit, IsConfigured: configuredAttrs.IsConfigured("mac_limit")},
 		{FieldName: "AgingTime", APIField: &ethPortSettingsProps.AgingTime, TFValue: config.AgingTime, IsConfigured: configuredAttrs.IsConfigured("aging_time")},
 	})
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-		})
-		ethPortSettingsProps.ObjectProperties = &objProps
-	}
 
 	// Handle LLDP Med
 	if len(plan.LldpMed) > 0 {
@@ -736,6 +723,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ethPortSettingsProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AutoNegotiation, state.AutoNegotiation, func(v *bool) { ethPortSettingsProps.AutoNegotiation = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.StandaloneLinkTraining, state.StandaloneLinkTraining, func(v *bool) { ethPortSettingsProps.StandaloneLinkTraining = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EnableSpeedControl, state.EnableSpeedControl, func(v *bool) { ethPortSettingsProps.EnableSpeedControl = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.StpEnable, state.StpEnable, func(v *bool) { ethPortSettingsProps.StpEnable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.FastLearningMode, state.FastLearningMode, func(v *bool) { ethPortSettingsProps.FastLearningMode = v }, &hasChanges)
@@ -762,25 +750,9 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetNullableInt64Field(config.WredDropProbability, state.WredDropProbability, configuredAttrs.IsConfigured("wred_drop_probability"), func(v *openapi.NullableInt32) { ethPortSettingsProps.WredDropProbability = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, configuredAttrs.IsConfigured("priority_flow_control_watchdog_detect_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, configuredAttrs.IsConfigured("priority_flow_control_watchdog_restore_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.Mtu, state.Mtu, configuredAttrs.IsConfigured("mtu"), func(v *openapi.NullableInt32) { ethPortSettingsProps.Mtu = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MacLimit, state.MacLimit, configuredAttrs.IsConfigured("mac_limit"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MacLimit = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.AgingTime, state.AgingTime, configuredAttrs.IsConfigured("aging_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.AgingTime = *v }, &hasChanges)
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
-		objPropsChanged := false
-
-		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-		}, &objPropsChanged)
-
-		if objPropsChanged {
-			ethPortSettingsProps.ObjectProperties = &objProps
-			hasChanges = true
-		}
-	}
 
 	// Handle packet_queue and packet_queue_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
@@ -960,12 +932,14 @@ func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettin
 	state.WredDropProbability = utils.MapInt64WithMode(data, "wred_drop_probability", resourceType, mode)
 	state.PriorityFlowControlWatchdogDetectTime = utils.MapInt64WithMode(data, "priority_flow_control_watchdog_detect_time", resourceType, mode)
 	state.PriorityFlowControlWatchdogRestoreTime = utils.MapInt64WithMode(data, "priority_flow_control_watchdog_restore_time", resourceType, mode)
+	state.Mtu = utils.MapInt64WithMode(data, "mtu", resourceType, mode)
 	state.MacLimit = utils.MapInt64WithMode(data, "mac_limit", resourceType, mode)
 	state.AgingTime = utils.MapInt64WithMode(data, "aging_time", resourceType, mode)
 
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.AutoNegotiation = utils.MapBoolWithMode(data, "auto_negotiation", resourceType, mode)
+	state.StandaloneLinkTraining = utils.MapBoolWithMode(data, "standalone_link_training", resourceType, mode)
 	state.EnableSpeedControl = utils.MapBoolWithMode(data, "enable_speed_control", resourceType, mode)
 	state.StpEnable = utils.MapBoolWithMode(data, "stp_enable", resourceType, mode)
 	state.FastLearningMode = utils.MapBoolWithMode(data, "fast_learning_mode", resourceType, mode)
@@ -1001,20 +975,6 @@ func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettin
 	state.SecurityViolationAction = utils.MapStringWithMode(data, "security_violation_action", resourceType, mode)
 	state.AgingType = utils.MapStringWithMode(data, "aging_type", resourceType, mode)
 	state.LldpMode = utils.MapStringWithMode(data, "lldp_mode", resourceType, mode)
-
-	// Handle object_properties block
-	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
-			objPropsModel := verityEthPortSettingsObjectPropertiesModel{
-				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
-			}
-			state.ObjectProperties = []verityEthPortSettingsObjectPropertiesModel{objPropsModel}
-		} else {
-			state.ObjectProperties = nil
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
 
 	// Handle lldp_med list block
 	if utils.FieldAppliesToMode(resourceType, "lldp_med", mode) {
@@ -1090,7 +1050,7 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 	)
 
 	nullifier.NullifyBools(
-		"enable", "auto_negotiation", "stp_enable", "fast_learning_mode",
+		"enable", "auto_negotiation", "standalone_link_training", "stp_enable", "fast_learning_mode",
 		"enable_speed_control",
 		"bpdu_guard", "bpdu_filter", "guard_loop", "poe_enable",
 		"bsp_enable", "broadcast", "multicast", "single_link",
@@ -1103,14 +1063,8 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 		"max_allowed_value",
 		"minimum_wred_threshold", "maximum_wred_threshold", "wred_drop_probability",
 		"priority_flow_control_watchdog_detect_time", "priority_flow_control_watchdog_restore_time",
-		"mac_limit", "aging_time",
+		"mac_limit", "aging_time", "mtu",
 	)
-
-	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
-	})
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "lldp_med",
@@ -1162,6 +1116,7 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 			{AttrName: "wred_drop_probability", ConfigVal: config.WredDropProbability, StateVal: state.WredDropProbability},
 			{AttrName: "priority_flow_control_watchdog_detect_time", ConfigVal: config.PriorityFlowControlWatchdogDetectTime, StateVal: state.PriorityFlowControlWatchdogDetectTime},
 			{AttrName: "priority_flow_control_watchdog_restore_time", ConfigVal: config.PriorityFlowControlWatchdogRestoreTime, StateVal: state.PriorityFlowControlWatchdogRestoreTime},
+			{AttrName: "mtu", ConfigVal: config.Mtu, StateVal: state.Mtu},
 			{AttrName: "mac_limit", ConfigVal: config.MacLimit, StateVal: state.MacLimit},
 			{AttrName: "aging_time", ConfigVal: config.AgingTime, StateVal: state.AgingTime},
 		},

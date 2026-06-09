@@ -40,68 +40,67 @@ type verityDeviceVoiceSettingsResource struct {
 }
 
 type verityDeviceVoiceSettingsResourceModel struct {
-	Name                               types.String                                     `tfsdk:"name"`
-	Enable                             types.Bool                                       `tfsdk:"enable"`
-	DtmfMethod                         types.String                                     `tfsdk:"dtmf_method"`
-	Region                             types.String                                     `tfsdk:"region"`
-	Protocol                           types.String                                     `tfsdk:"protocol"`
-	ProxyServer                        types.String                                     `tfsdk:"proxy_server"`
-	ProxyServerPort                    types.Int64                                      `tfsdk:"proxy_server_port"`
-	ProxyServerSecondary               types.String                                     `tfsdk:"proxy_server_secondary"`
-	ProxyServerSecondaryPort           types.Int64                                      `tfsdk:"proxy_server_secondary_port"`
-	RegistrarServer                    types.String                                     `tfsdk:"registrar_server"`
-	RegistrarServerPort                types.Int64                                      `tfsdk:"registrar_server_port"`
-	RegistrarServerSecondary           types.String                                     `tfsdk:"registrar_server_secondary"`
-	RegistrarServerSecondaryPort       types.Int64                                      `tfsdk:"registrar_server_secondary_port"`
-	UserAgentDomain                    types.String                                     `tfsdk:"user_agent_domain"`
-	UserAgentTransport                 types.String                                     `tfsdk:"user_agent_transport"`
-	UserAgentPort                      types.Int64                                      `tfsdk:"user_agent_port"`
-	OutboundProxy                      types.String                                     `tfsdk:"outbound_proxy"`
-	OutboundProxyPort                  types.Int64                                      `tfsdk:"outbound_proxy_port"`
-	OutboundProxySecondary             types.String                                     `tfsdk:"outbound_proxy_secondary"`
-	OutboundProxySecondaryPort         types.Int64                                      `tfsdk:"outbound_proxy_secondary_port"`
-	RegistrationPeriod                 types.Int64                                      `tfsdk:"registration_period"`
-	RegisterExpires                    types.Int64                                      `tfsdk:"register_expires"`
-	VoicemailServer                    types.String                                     `tfsdk:"voicemail_server"`
-	VoicemailServerPort                types.Int64                                      `tfsdk:"voicemail_server_port"`
-	VoicemailServerExpires             types.Int64                                      `tfsdk:"voicemail_server_expires"`
-	SipDscpMark                        types.Int64                                      `tfsdk:"sip_dscp_mark"`
-	CallAgent1                         types.String                                     `tfsdk:"call_agent_1"`
-	CallAgentPort1                     types.Int64                                      `tfsdk:"call_agent_port_1"`
-	CallAgent2                         types.String                                     `tfsdk:"call_agent_2"`
-	CallAgentPort2                     types.Int64                                      `tfsdk:"call_agent_port_2"`
-	Domain                             types.String                                     `tfsdk:"domain"`
-	MgcpDscpMark                       types.Int64                                      `tfsdk:"mgcp_dscp_mark"`
-	TerminationBase                    types.String                                     `tfsdk:"termination_base"`
-	LocalPortMin                       types.Int64                                      `tfsdk:"local_port_min"`
-	LocalPortMax                       types.Int64                                      `tfsdk:"local_port_max"`
-	EventPayloadType                   types.Int64                                      `tfsdk:"event_payload_type"`
-	CasEvents                          types.Int64                                      `tfsdk:"cas_events"`
-	DscpMark                           types.Int64                                      `tfsdk:"dscp_mark"`
-	Rtcp                               types.Bool                                       `tfsdk:"rtcp"`
-	FaxT38                             types.Bool                                       `tfsdk:"fax_t38"`
-	BitRate                            types.String                                     `tfsdk:"bit_rate"`
-	CancelCallWaiting                  types.String                                     `tfsdk:"cancel_call_waiting"`
-	CallHold                           types.String                                     `tfsdk:"call_hold"`
-	CidsActivate                       types.String                                     `tfsdk:"cids_activate"`
-	CidsDeactivate                     types.String                                     `tfsdk:"cids_deactivate"`
-	DoNotDisturbActivate               types.String                                     `tfsdk:"do_not_disturb_activate"`
-	DoNotDisturbDeactivate             types.String                                     `tfsdk:"do_not_disturb_deactivate"`
-	DoNotDisturbPinChange              types.String                                     `tfsdk:"do_not_disturb_pin_change"`
-	EmergencyServiceNumber             types.String                                     `tfsdk:"emergency_service_number"`
-	AnonCidBlockActivate               types.String                                     `tfsdk:"anon_cid_block_activate"`
-	AnonCidBlockDeactivate             types.String                                     `tfsdk:"anon_cid_block_deactivate"`
-	CallForwardUnconditionalActivate   types.String                                     `tfsdk:"call_forward_unconditional_activate"`
-	CallForwardUnconditionalDeactivate types.String                                     `tfsdk:"call_forward_unconditional_deactivate"`
-	CallForwardOnBusyActivate          types.String                                     `tfsdk:"call_forward_on_busy_activate"`
-	CallForwardOnBusyDeactivate        types.String                                     `tfsdk:"call_forward_on_busy_deactivate"`
-	CallForwardOnNoAnswerActivate      types.String                                     `tfsdk:"call_forward_on_no_answer_activate"`
-	CallForwardOnNoAnswerDeactivate    types.String                                     `tfsdk:"call_forward_on_no_answer_deactivate"`
-	Intercom1                          types.String                                     `tfsdk:"intercom_1"`
-	Intercom2                          types.String                                     `tfsdk:"intercom_2"`
-	Intercom3                          types.String                                     `tfsdk:"intercom_3"`
-	Codecs                             []verityDeviceVoiceSettingsCodecModel            `tfsdk:"codecs"`
-	ObjectProperties                   []verityDeviceVoiceSettingsObjectPropertiesModel `tfsdk:"object_properties"`
+	Name                               types.String                          `tfsdk:"name"`
+	Enable                             types.Bool                            `tfsdk:"enable"`
+	DtmfMethod                         types.String                          `tfsdk:"dtmf_method"`
+	Region                             types.String                          `tfsdk:"region"`
+	Protocol                           types.String                          `tfsdk:"protocol"`
+	ProxyServer                        types.String                          `tfsdk:"proxy_server"`
+	ProxyServerPort                    types.Int64                           `tfsdk:"proxy_server_port"`
+	ProxyServerSecondary               types.String                          `tfsdk:"proxy_server_secondary"`
+	ProxyServerSecondaryPort           types.Int64                           `tfsdk:"proxy_server_secondary_port"`
+	RegistrarServer                    types.String                          `tfsdk:"registrar_server"`
+	RegistrarServerPort                types.Int64                           `tfsdk:"registrar_server_port"`
+	RegistrarServerSecondary           types.String                          `tfsdk:"registrar_server_secondary"`
+	RegistrarServerSecondaryPort       types.Int64                           `tfsdk:"registrar_server_secondary_port"`
+	UserAgentDomain                    types.String                          `tfsdk:"user_agent_domain"`
+	UserAgentTransport                 types.String                          `tfsdk:"user_agent_transport"`
+	UserAgentPort                      types.Int64                           `tfsdk:"user_agent_port"`
+	OutboundProxy                      types.String                          `tfsdk:"outbound_proxy"`
+	OutboundProxyPort                  types.Int64                           `tfsdk:"outbound_proxy_port"`
+	OutboundProxySecondary             types.String                          `tfsdk:"outbound_proxy_secondary"`
+	OutboundProxySecondaryPort         types.Int64                           `tfsdk:"outbound_proxy_secondary_port"`
+	RegistrationPeriod                 types.Int64                           `tfsdk:"registration_period"`
+	RegisterExpires                    types.Int64                           `tfsdk:"register_expires"`
+	VoicemailServer                    types.String                          `tfsdk:"voicemail_server"`
+	VoicemailServerPort                types.Int64                           `tfsdk:"voicemail_server_port"`
+	VoicemailServerExpires             types.Int64                           `tfsdk:"voicemail_server_expires"`
+	SipDscpMark                        types.Int64                           `tfsdk:"sip_dscp_mark"`
+	CallAgent1                         types.String                          `tfsdk:"call_agent_1"`
+	CallAgentPort1                     types.Int64                           `tfsdk:"call_agent_port_1"`
+	CallAgent2                         types.String                          `tfsdk:"call_agent_2"`
+	CallAgentPort2                     types.Int64                           `tfsdk:"call_agent_port_2"`
+	Domain                             types.String                          `tfsdk:"domain"`
+	MgcpDscpMark                       types.Int64                           `tfsdk:"mgcp_dscp_mark"`
+	TerminationBase                    types.String                          `tfsdk:"termination_base"`
+	LocalPortMin                       types.Int64                           `tfsdk:"local_port_min"`
+	LocalPortMax                       types.Int64                           `tfsdk:"local_port_max"`
+	EventPayloadType                   types.Int64                           `tfsdk:"event_payload_type"`
+	CasEvents                          types.Int64                           `tfsdk:"cas_events"`
+	DscpMark                           types.Int64                           `tfsdk:"dscp_mark"`
+	Rtcp                               types.Bool                            `tfsdk:"rtcp"`
+	FaxT38                             types.Bool                            `tfsdk:"fax_t38"`
+	BitRate                            types.String                          `tfsdk:"bit_rate"`
+	CancelCallWaiting                  types.String                          `tfsdk:"cancel_call_waiting"`
+	CallHold                           types.String                          `tfsdk:"call_hold"`
+	CidsActivate                       types.String                          `tfsdk:"cids_activate"`
+	CidsDeactivate                     types.String                          `tfsdk:"cids_deactivate"`
+	DoNotDisturbActivate               types.String                          `tfsdk:"do_not_disturb_activate"`
+	DoNotDisturbDeactivate             types.String                          `tfsdk:"do_not_disturb_deactivate"`
+	DoNotDisturbPinChange              types.String                          `tfsdk:"do_not_disturb_pin_change"`
+	EmergencyServiceNumber             types.String                          `tfsdk:"emergency_service_number"`
+	AnonCidBlockActivate               types.String                          `tfsdk:"anon_cid_block_activate"`
+	AnonCidBlockDeactivate             types.String                          `tfsdk:"anon_cid_block_deactivate"`
+	CallForwardUnconditionalActivate   types.String                          `tfsdk:"call_forward_unconditional_activate"`
+	CallForwardUnconditionalDeactivate types.String                          `tfsdk:"call_forward_unconditional_deactivate"`
+	CallForwardOnBusyActivate          types.String                          `tfsdk:"call_forward_on_busy_activate"`
+	CallForwardOnBusyDeactivate        types.String                          `tfsdk:"call_forward_on_busy_deactivate"`
+	CallForwardOnNoAnswerActivate      types.String                          `tfsdk:"call_forward_on_no_answer_activate"`
+	CallForwardOnNoAnswerDeactivate    types.String                          `tfsdk:"call_forward_on_no_answer_deactivate"`
+	Intercom1                          types.String                          `tfsdk:"intercom_1"`
+	Intercom2                          types.String                          `tfsdk:"intercom_2"`
+	Intercom3                          types.String                          `tfsdk:"intercom_3"`
+	Codecs                             []verityDeviceVoiceSettingsCodecModel `tfsdk:"codecs"`
 }
 
 type verityDeviceVoiceSettingsCodecModel struct {
@@ -114,10 +113,6 @@ type verityDeviceVoiceSettingsCodecModel struct {
 
 func (c verityDeviceVoiceSettingsCodecModel) GetIndex() types.Int64 {
 	return c.Index
-}
-
-type verityDeviceVoiceSettingsObjectPropertiesModel struct {
-	Group types.String `tfsdk:"group"`
 }
 
 func (r *verityDeviceVoiceSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -484,18 +479,6 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 					},
 				},
 			},
-			"object_properties": schema.ListNestedBlock{
-				Description: "Object properties for the device voice settings",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
-					},
-				},
-			},
 		},
 	}
 }
@@ -601,16 +584,6 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		{FieldName: "CasEvents", APIField: &dvsProps.CasEvents, TFValue: config.CasEvents, IsConfigured: configuredAttrs.IsConfigured("cas_events")},
 		{FieldName: "DscpMark", APIField: &dvsProps.DscpMark, TFValue: config.DscpMark, IsConfigured: configuredAttrs.IsConfigured("dscp_mark")},
 	})
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-		})
-		dvsProps.ObjectProperties = &objProps
-	}
 
 	// Handle codecs
 	if len(plan.Codecs) > 0 {
@@ -875,23 +848,6 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	utils.CompareAndSetNullableInt64Field(config.CasEvents, state.CasEvents, configuredAttrs.IsConfigured("cas_events"), func(v *openapi.NullableInt32) { dvsProps.CasEvents = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.DscpMark, state.DscpMark, configuredAttrs.IsConfigured("dscp_mark"), func(v *openapi.NullableInt32) { dvsProps.DscpMark = *v }, &hasChanges)
 
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
-		objPropsChanged := false
-
-		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-		}, &objPropsChanged)
-
-		if objPropsChanged {
-			dvsProps.ObjectProperties = &objProps
-			hasChanges = true
-		}
-	}
-
 	// Handle codecs
 	codecsHandler := utils.IndexedItemHandler[verityDeviceVoiceSettingsCodecModel, openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner]{
 		CreateNew: func(planItem verityDeviceVoiceSettingsCodecModel) openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
@@ -1117,20 +1073,6 @@ func populateDeviceVoiceSettingsState(ctx context.Context, state verityDeviceVoi
 		state.Codecs = nil
 	}
 
-	// Handle object_properties block
-	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
-			objPropsModel := verityDeviceVoiceSettingsObjectPropertiesModel{
-				Group: utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
-			}
-			state.ObjectProperties = []verityDeviceVoiceSettingsObjectPropertiesModel{objPropsModel}
-		} else {
-			state.ObjectProperties = nil
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
-
 	return state
 }
 
@@ -1196,12 +1138,6 @@ func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req 
 		ItemCount:    len(plan.Codecs),
 		StringFields: []string{"codec_num_name", "codec_num_packetization_period"},
 		BoolFields:   []string{"codec_num_enable", "codec_num_silence_suppression"},
-	})
-
-	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
 	})
 
 	// =========================================================================

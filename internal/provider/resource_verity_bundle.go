@@ -53,25 +53,25 @@ type verityBundleResourceModel struct {
 	EthPortPaths               []ethPortPathsModel                 `tfsdk:"eth_port_paths"`
 	UserServices               []userServicesModel                 `tfsdk:"user_services"`
 	VoicePortProfilePaths      []voicePortProfilePathsModel        `tfsdk:"voice_port_profile_paths"`
+	RgServices                 []rgServicesModel                   `tfsdk:"rg_services"`
 }
 
 type verityBundleObjectPropertiesModel struct {
-	IsForSwitch types.Bool   `tfsdk:"is_for_switch"`
-	Group       types.String `tfsdk:"group"`
-	IsPublic    types.Bool   `tfsdk:"is_public"`
+	IsForSwitch types.Bool `tfsdk:"is_for_switch"`
+	IsPublic    types.Bool `tfsdk:"is_public"`
 }
 
 type ethPortPathsModel struct {
-	EthPortNumEthPortProfile                               types.String `tfsdk:"eth_port_num_eth_port_profile"`
-	EthPortNumEthPortProfileRefType                        types.String `tfsdk:"eth_port_num_eth_port_profile_ref_type_"`
-	EthPortNumEthPortSettings                              types.String `tfsdk:"eth_port_num_eth_port_settings"`
-	EthPortNumEthPortSettingsRefType                       types.String `tfsdk:"eth_port_num_eth_port_settings_ref_type_"`
-	EthPortNumGatewayProfile                               types.String `tfsdk:"eth_port_num_gateway_profile"`
-	EthPortNumGatewayProfileRefType                        types.String `tfsdk:"eth_port_num_gateway_profile_ref_type_"`
-	DiagnosticsPortProfileNumDiagnosticsPortProfile        types.String `tfsdk:"diagnostics_port_profile_num_diagnostics_port_profile"`
-	DiagnosticsPortProfileNumDiagnosticsPortProfileRefType types.String `tfsdk:"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_"`
-	PortName                                               types.String `tfsdk:"port_name"`
-	Index                                                  types.Int64  `tfsdk:"index"`
+	EthPortNumEthPortProfile                types.String `tfsdk:"eth_port_num_eth_port_profile"`
+	EthPortNumEthPortProfileRefType         types.String `tfsdk:"eth_port_num_eth_port_profile_ref_type_"`
+	EthPortNumEthPortSettings               types.String `tfsdk:"eth_port_num_eth_port_settings"`
+	EthPortNumEthPortSettingsRefType        types.String `tfsdk:"eth_port_num_eth_port_settings_ref_type_"`
+	EthPortNumGatewayProfile                types.String `tfsdk:"eth_port_num_gateway_profile"`
+	EthPortNumGatewayProfileRefType         types.String `tfsdk:"eth_port_num_gateway_profile_ref_type_"`
+	EthPortNumDiagnosticsPortProfile        types.String `tfsdk:"eth_port_num_diagnostics_port_profile"`
+	EthPortNumDiagnosticsPortProfileRefType types.String `tfsdk:"eth_port_num_diagnostics_port_profile_ref_type_"`
+	PortName                                types.String `tfsdk:"port_name"`
+	Index                                   types.Int64  `tfsdk:"index"`
 }
 
 func (epp ethPortPathsModel) GetIndex() types.Int64 {
@@ -99,6 +99,19 @@ type userServicesModel struct {
 
 func (us userServicesModel) GetIndex() types.Int64 {
 	return us.Index
+}
+
+type rgServicesModel struct {
+	RowAppEnable                  types.Bool   `tfsdk:"row_app_enable"`
+	RowAppConnectedService        types.String `tfsdk:"row_app_connected_service"`
+	RowAppConnectedServiceRefType types.String `tfsdk:"row_app_connected_service_ref_type_"`
+	RowAppType                    types.String `tfsdk:"row_app_type"`
+	RowIpMask                     types.String `tfsdk:"row_ip_mask"`
+	Index                         types.Int64  `tfsdk:"index"`
+}
+
+func (rgs rgServicesModel) GetIndex() types.Int64 {
+	return rgs.Index
 }
 
 func (r *verityBundleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -192,11 +205,6 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 							Optional:    true,
 							Computed:    true,
 						},
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
 						"is_public": schema.BoolAttribute{
 							Description: "Denotes a shared Switch Bundle",
 							Optional:    true,
@@ -239,13 +247,13 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 							Optional:    true,
 							Computed:    true,
 						},
-						"diagnostics_port_profile_num_diagnostics_port_profile": schema.StringAttribute{
+						"eth_port_num_diagnostics_port_profile": schema.StringAttribute{
 							Description: "Diagnostics Port Profile for port",
 							Optional:    true,
 							Computed:    true,
 						},
-						"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": schema.StringAttribute{
-							Description: "Object type for diagnostics_port_profile_num_diagnostics_port_profile field",
+						"eth_port_num_diagnostics_port_profile_ref_type_": schema.StringAttribute{
+							Description: "Object type for eth_port_num_diagnostics_port_profile field",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -321,6 +329,43 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 					},
 				},
 			},
+			"rg_services": schema.ListNestedBlock{
+				Description: "List of RG services configurations",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"row_app_enable": schema.BoolAttribute{
+							Description: "Enable of this ONT application",
+							Optional:    true,
+							Computed:    true,
+						},
+						"row_app_connected_service": schema.StringAttribute{
+							Description: "Service connected to this ONT application",
+							Optional:    true,
+							Computed:    true,
+						},
+						"row_app_connected_service_ref_type_": schema.StringAttribute{
+							Description: "Object type for row_app_connected_service field",
+							Optional:    true,
+							Computed:    true,
+						},
+						"row_app_type": schema.StringAttribute{
+							Description: "Type of ONT Application",
+							Optional:    true,
+							Computed:    true,
+						},
+						"row_ip_mask": schema.StringAttribute{
+							Description: "IP/Mask in IPv4 format",
+							Optional:    true,
+							Computed:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
+							Optional:    true,
+							Computed:    true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -369,7 +414,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "IsForSwitch", TFValue: op.IsForSwitch, APIValue: &objProps.IsForSwitch},
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 			{Name: "IsPublic", TFValue: op.IsPublic, APIValue: &objProps.IsPublic},
 		})
 		bundleProps.ObjectProperties = &objProps
@@ -387,8 +431,8 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 				{FieldName: "EthPortNumEthPortSettingsRefType", APIField: &pathItem.EthPortNumEthPortSettingsRefType, TFValue: item.EthPortNumEthPortSettingsRefType},
 				{FieldName: "EthPortNumGatewayProfile", APIField: &pathItem.EthPortNumGatewayProfile, TFValue: item.EthPortNumGatewayProfile},
 				{FieldName: "EthPortNumGatewayProfileRefType", APIField: &pathItem.EthPortNumGatewayProfileRefType, TFValue: item.EthPortNumGatewayProfileRefType},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfile", APIField: &pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, TFValue: item.DiagnosticsPortProfileNumDiagnosticsPortProfile},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfileRefType", APIField: &pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, TFValue: item.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType},
+				{FieldName: "EthPortNumDiagnosticsPortProfile", APIField: &pathItem.EthPortNumDiagnosticsPortProfile, TFValue: item.EthPortNumDiagnosticsPortProfile},
+				{FieldName: "EthPortNumDiagnosticsPortProfileRefType", APIField: &pathItem.EthPortNumDiagnosticsPortProfileRefType, TFValue: item.EthPortNumDiagnosticsPortProfileRefType},
 				{FieldName: "PortName", APIField: &pathItem.PortName, TFValue: item.PortName},
 			})
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
@@ -436,6 +480,28 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 			voicePortProfilePaths[i] = pathItem
 		}
 		bundleProps.VoicePortProfilePaths = voicePortProfilePaths
+	}
+
+	// Handle rg services
+	if len(plan.RgServices) > 0 {
+		rgServices := make([]openapi.BundlesPutRequestEndpointBundleValueRgServicesInner, len(plan.RgServices))
+		for i, item := range plan.RgServices {
+			serviceItem := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RowAppEnable", APIField: &serviceItem.RowAppEnable, TFValue: item.RowAppEnable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RowAppConnectedService", APIField: &serviceItem.RowAppConnectedService, TFValue: item.RowAppConnectedService},
+				{FieldName: "RowAppConnectedServiceRefType", APIField: &serviceItem.RowAppConnectedServiceRefType, TFValue: item.RowAppConnectedServiceRefType},
+				{FieldName: "RowAppType", APIField: &serviceItem.RowAppType, TFValue: item.RowAppType},
+				{FieldName: "RowIpMask", APIField: &serviceItem.RowIpMask, TFValue: item.RowIpMask},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: item.Index},
+			})
+			rgServices[i] = serviceItem
+		}
+		bundleProps.RgServices = rgServices
 	}
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "bundle", name, *bundleProps, &resp.Diagnostics)
@@ -629,7 +695,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
 			{Name: "IsForSwitch", PlanValue: op.IsForSwitch, StateValue: st.IsForSwitch, APIValue: &objProps.IsForSwitch},
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
 			{Name: "IsPublic", PlanValue: op.IsPublic, StateValue: st.IsPublic, APIValue: &objProps.IsPublic},
 		}, &objPropsChanged)
 
@@ -692,8 +757,8 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				{FieldName: "EthPortNumEthPortProfileRefType", APIField: &ethPortPath.EthPortNumEthPortProfileRefType, TFValue: planItem.EthPortNumEthPortProfileRefType},
 				{FieldName: "EthPortNumGatewayProfile", APIField: &ethPortPath.EthPortNumGatewayProfile, TFValue: planItem.EthPortNumGatewayProfile},
 				{FieldName: "EthPortNumGatewayProfileRefType", APIField: &ethPortPath.EthPortNumGatewayProfileRefType, TFValue: planItem.EthPortNumGatewayProfileRefType},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfile", APIField: &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile, TFValue: planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfileRefType", APIField: &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, TFValue: planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType},
+				{FieldName: "EthPortNumDiagnosticsPortProfile", APIField: &ethPortPath.EthPortNumDiagnosticsPortProfile, TFValue: planItem.EthPortNumDiagnosticsPortProfile},
+				{FieldName: "EthPortNumDiagnosticsPortProfileRefType", APIField: &ethPortPath.EthPortNumDiagnosticsPortProfileRefType, TFValue: planItem.EthPortNumDiagnosticsPortProfileRefType},
 			})
 
 			return ethPortPath
@@ -746,12 +811,12 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				return ethPortPath, false
 			}
 
-			// Handle diagnostics_port_profile_num_diagnostics_port_profile and diagnostics_port_profile_num_diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
+			// Handle diagnostics_port_profile and diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
-				planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
-				func(v *string) { ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = v },
-				func(v *string) { ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = v },
-				"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+				planItem.EthPortNumDiagnosticsPortProfile, stateItem.EthPortNumDiagnosticsPortProfile, planItem.EthPortNumDiagnosticsPortProfileRefType, stateItem.EthPortNumDiagnosticsPortProfileRefType,
+				func(v *string) { ethPortPath.EthPortNumDiagnosticsPortProfile = v },
+				func(v *string) { ethPortPath.EthPortNumDiagnosticsPortProfileRefType = v },
+				"eth_port_num_diagnostics_port_profile", "eth_port_num_diagnostics_port_profile_ref_type_",
 				&fieldChanged,
 				&resp.Diagnostics,
 			) {
@@ -896,6 +961,73 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
+	// Handle rg services
+	rgServicesHandler := utils.IndexedItemHandler[rgServicesModel, openapi.BundlesPutRequestEndpointBundleValueRgServicesInner]{
+		CreateNew: func(planItem rgServicesModel) openapi.BundlesPutRequestEndpointBundleValueRgServicesInner {
+			rgService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &rgService.Index, TFValue: planItem.Index},
+			})
+
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RowAppEnable", APIField: &rgService.RowAppEnable, TFValue: planItem.RowAppEnable},
+			})
+
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RowAppConnectedService", APIField: &rgService.RowAppConnectedService, TFValue: planItem.RowAppConnectedService},
+				{FieldName: "RowAppConnectedServiceRefType", APIField: &rgService.RowAppConnectedServiceRefType, TFValue: planItem.RowAppConnectedServiceRefType},
+				{FieldName: "RowAppType", APIField: &rgService.RowAppType, TFValue: planItem.RowAppType},
+				{FieldName: "RowIpMask", APIField: &rgService.RowIpMask, TFValue: planItem.RowIpMask},
+			})
+
+			return rgService
+		},
+		UpdateExisting: func(planItem rgServicesModel, stateItem rgServicesModel) (openapi.BundlesPutRequestEndpointBundleValueRgServicesInner, bool) {
+			rgService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{}
+
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &rgService.Index, TFValue: planItem.Index},
+			})
+
+			fieldChanged := false
+
+			// Handle boolean fields
+			utils.CompareAndSetBoolField(planItem.RowAppEnable, stateItem.RowAppEnable, func(v *bool) { rgService.RowAppEnable = v }, &fieldChanged)
+
+			// Handle row_app_connected_service and row_app_connected_service_ref_type_ using "One ref type supported" pattern
+			if !utils.HandleOneRefTypeSupported(
+				planItem.RowAppConnectedService, stateItem.RowAppConnectedService, planItem.RowAppConnectedServiceRefType, stateItem.RowAppConnectedServiceRefType,
+				func(v *string) { rgService.RowAppConnectedService = v },
+				func(v *string) { rgService.RowAppConnectedServiceRefType = v },
+				"row_app_connected_service", "row_app_connected_service_ref_type_",
+				&fieldChanged,
+				&resp.Diagnostics,
+			) {
+				return rgService, false
+			}
+
+			// Handle non-ref-type string fields
+			utils.CompareAndSetStringField(planItem.RowAppType, stateItem.RowAppType, func(v *string) { rgService.RowAppType = v }, &fieldChanged)
+			utils.CompareAndSetStringField(planItem.RowIpMask, stateItem.RowIpMask, func(v *string) { rgService.RowIpMask = v }, &fieldChanged)
+
+			return rgService, fieldChanged
+		},
+		CreateDeleted: func(index int64) openapi.BundlesPutRequestEndpointBundleValueRgServicesInner {
+			item := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &item.Index, TFValue: types.Int64Value(index)},
+			})
+			return item
+		},
+	}
+
+	changedRgServices, rgServicesChanged := utils.ProcessIndexedArrayUpdates(plan.RgServices, state.RgServices, rgServicesHandler)
+	if rgServicesChanged {
+		bundleProps.RgServices = changedRgServices
+		hasChanges = true
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
@@ -1001,7 +1133,6 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityBundleObjectPropertiesModel{
 				IsForSwitch: utils.MapBoolWithModeNested(objProps, "is_for_switch", resourceType, "object_properties.is_for_switch", mode),
-				Group:       utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
 				IsPublic:    utils.MapBoolWithModeNested(objProps, "is_public", resourceType, "object_properties.is_public", mode),
 			}
 			state.ObjectProperties = []verityBundleObjectPropertiesModel{objPropsModel}
@@ -1022,16 +1153,16 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 					continue
 				}
 				pathModel := ethPortPathsModel{
-					EthPortNumEthPortProfile:                               utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile", resourceType, "eth_port_paths.eth_port_num_eth_port_profile", mode),
-					EthPortNumEthPortProfileRefType:                        utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_profile_ref_type_", mode),
-					EthPortNumEthPortSettings:                              utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings", resourceType, "eth_port_paths.eth_port_num_eth_port_settings", mode),
-					EthPortNumEthPortSettingsRefType:                       utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_settings_ref_type_", mode),
-					EthPortNumGatewayProfile:                               utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile", resourceType, "eth_port_paths.eth_port_num_gateway_profile", mode),
-					EthPortNumGatewayProfileRefType:                        utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_gateway_profile_ref_type_", mode),
-					DiagnosticsPortProfileNumDiagnosticsPortProfile:        utils.MapStringWithModeNested(pathItem, "diagnostics_port_profile_num_diagnostics_port_profile", resourceType, "eth_port_paths.diagnostics_port_profile_num_diagnostics_port_profile", mode),
-					DiagnosticsPortProfileNumDiagnosticsPortProfileRefType: utils.MapStringWithModeNested(pathItem, "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_", resourceType, "eth_port_paths.diagnostics_port_profile_num_diagnostics_port_profile_ref_type_", mode),
-					PortName: utils.MapStringWithModeNested(pathItem, "port_name", resourceType, "eth_port_paths.port_name", mode),
-					Index:    utils.MapInt64WithModeNested(pathItem, "index", resourceType, "eth_port_paths.index", mode),
+					EthPortNumEthPortProfile:                utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile", resourceType, "eth_port_paths.eth_port_num_eth_port_profile", mode),
+					EthPortNumEthPortProfileRefType:         utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_profile_ref_type_", mode),
+					EthPortNumEthPortSettings:               utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings", resourceType, "eth_port_paths.eth_port_num_eth_port_settings", mode),
+					EthPortNumEthPortSettingsRefType:        utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_settings_ref_type_", mode),
+					EthPortNumGatewayProfile:                utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile", resourceType, "eth_port_paths.eth_port_num_gateway_profile", mode),
+					EthPortNumGatewayProfileRefType:         utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_gateway_profile_ref_type_", mode),
+					EthPortNumDiagnosticsPortProfile:        utils.MapStringWithModeNested(pathItem, "eth_port_num_diagnostics_port_profile", resourceType, "eth_port_paths.eth_port_num_diagnostics_port_profile", mode),
+					EthPortNumDiagnosticsPortProfileRefType: utils.MapStringWithModeNested(pathItem, "eth_port_num_diagnostics_port_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_diagnostics_port_profile_ref_type_", mode),
+					PortName:                                utils.MapStringWithModeNested(pathItem, "port_name", resourceType, "eth_port_paths.port_name", mode),
+					Index:                                   utils.MapInt64WithModeNested(pathItem, "index", resourceType, "eth_port_paths.index", mode),
 				}
 				ethPortPaths = append(ethPortPaths, pathModel)
 			}
@@ -1094,6 +1225,33 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 		state.VoicePortProfilePaths = nil
 	}
 
+	// Handle rg_services array
+	if utils.FieldAppliesToMode(resourceType, "rg_services", mode) {
+		if servicesData, ok := data["rg_services"].([]interface{}); ok && len(servicesData) > 0 {
+			var rgServices []rgServicesModel
+			for _, s := range servicesData {
+				serviceItem, ok := s.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				serviceModel := rgServicesModel{
+					RowAppEnable:                  utils.MapBoolWithModeNested(serviceItem, "row_app_enable", resourceType, "rg_services.row_app_enable", mode),
+					RowAppConnectedService:        utils.MapStringWithModeNested(serviceItem, "row_app_connected_service", resourceType, "rg_services.row_app_connected_service", mode),
+					RowAppConnectedServiceRefType: utils.MapStringWithModeNested(serviceItem, "row_app_connected_service_ref_type_", resourceType, "rg_services.row_app_connected_service_ref_type_", mode),
+					RowAppType:                    utils.MapStringWithModeNested(serviceItem, "row_app_type", resourceType, "rg_services.row_app_type", mode),
+					RowIpMask:                     utils.MapStringWithModeNested(serviceItem, "row_ip_mask", resourceType, "rg_services.row_ip_mask", mode),
+					Index:                         utils.MapInt64WithModeNested(serviceItem, "index", resourceType, "rg_services.index", mode),
+				}
+				rgServices = append(rgServices, serviceModel)
+			}
+			state.RgServices = rgServices
+		} else {
+			state.RgServices = nil
+		}
+	} else {
+		state.RgServices = nil
+	}
+
 	return state
 }
 
@@ -1138,10 +1296,9 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 	)
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
-		BoolFields:   []string{"is_for_switch", "is_public"},
+		BlockName:  "object_properties",
+		ItemCount:  len(plan.ObjectProperties),
+		BoolFields: []string{"is_for_switch", "is_public"},
 	})
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
@@ -1151,7 +1308,7 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 			"eth_port_num_eth_port_profile", "eth_port_num_eth_port_profile_ref_type_",
 			"eth_port_num_eth_port_settings", "eth_port_num_eth_port_settings_ref_type_",
 			"eth_port_num_gateway_profile", "eth_port_num_gateway_profile_ref_type_",
-			"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+			"eth_port_num_diagnostics_port_profile", "eth_port_num_diagnostics_port_profile_ref_type_",
 			"port_name",
 		},
 	})
@@ -1167,6 +1324,13 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 		BlockName:    "voice_port_profile_paths",
 		ItemCount:    len(plan.VoicePortProfilePaths),
 		StringFields: []string{"voice_port_num_voice_port_profiles", "voice_port_num_voice_port_profiles_ref_type_"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "rg_services",
+		ItemCount:    len(plan.RgServices),
+		StringFields: []string{"row_app_connected_service", "row_app_connected_service_ref_type_", "row_app_type", "row_ip_mask"},
+		BoolFields:   []string{"row_app_enable"},
 	})
 }
 

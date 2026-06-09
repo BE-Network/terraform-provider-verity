@@ -79,7 +79,6 @@ type verityVoicePortProfileResourceModel struct {
 
 type verityVoicePortProfileObjectPropertiesModel struct {
 	PortMonitoring types.String `tfsdk:"port_monitoring"`
-	Group          types.String `tfsdk:"group"`
 	FormatDialPlan types.Bool   `tfsdk:"format_dial_plan"`
 }
 
@@ -294,11 +293,6 @@ func (r *verityVoicePortProfileResource) Schema(ctx context.Context, req resourc
 							Optional:    true,
 							Computed:    true,
 						},
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
 						"format_dial_plan": schema.BoolAttribute{
 							Description: "Format dial plan for easier viewing",
 							Optional:    true,
@@ -393,7 +387,6 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 			{Name: "FormatDialPlan", TFValue: op.FormatDialPlan, APIValue: &objProps.FormatDialPlan},
 		})
 		vppProps.ObjectProperties = &objProps
@@ -623,7 +616,6 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
 			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
 			{Name: "FormatDialPlan", PlanValue: op.FormatDialPlan, StateValue: st.FormatDialPlan, APIValue: &objProps.FormatDialPlan},
 		}, &objPropsChanged)
 
@@ -756,7 +748,6 @@ func populateVoicePortProfileState(ctx context.Context, state verityVoicePortPro
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityVoicePortProfileObjectPropertiesModel{
 				PortMonitoring: utils.MapStringWithModeNested(objProps, "port_monitoring", resourceType, "object_properties.port_monitoring", mode),
-				Group:          utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
 				FormatDialPlan: utils.MapBoolWithModeNested(objProps, "format_dial_plan", resourceType, "object_properties.format_dial_plan", mode),
 			}
 			state.ObjectProperties = []verityVoicePortProfileObjectPropertiesModel{objPropsModel}
@@ -822,7 +813,7 @@ func (r *verityVoicePortProfileResource) ModifyPlan(ctx context.Context, req res
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "object_properties",
 		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"port_monitoring", "group"},
+		StringFields: []string{"port_monitoring"},
 		BoolFields:   []string{"format_dial_plan"},
 	})
 

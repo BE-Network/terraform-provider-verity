@@ -41,6 +41,8 @@ type veritySpinePlaneResource struct {
 type veritySpinePlaneResourceModel struct {
 	Name             types.String                            `tfsdk:"name"`
 	Enable           types.Bool                              `tfsdk:"enable"`
+	Site             types.String                            `tfsdk:"site"`
+	SiteRefType      types.String                            `tfsdk:"site_ref_type_"`
 	ObjectProperties []veritySpinePlaneObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
@@ -88,6 +90,16 @@ func (r *veritySpinePlaneResource) Schema(ctx context.Context, req resource.Sche
 				Optional:    true,
 				Computed:    true,
 			},
+			"site": schema.StringAttribute{
+				Description: "Fabric this Spine Plane is assigned to",
+				Optional:    true,
+				Computed:    true,
+			},
+			"site_ref_type_": schema.StringAttribute{
+				Description: "Object type for site field",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
@@ -126,6 +138,12 @@ func (r *veritySpinePlaneResource) Create(ctx context.Context, req resource.Crea
 	spinePlaneReq := &openapi.SpineplanesPutRequestSpinePlaneValue{
 		Name: openapi.PtrString(name),
 	}
+
+	// Handle string fields
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Site", APIField: &spinePlaneReq.Site, TFValue: plan.Site},
+		{FieldName: "SiteRefType", APIField: &spinePlaneReq.SiteRefType, TFValue: plan.SiteRefType},
+	})
 
 	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -310,6 +328,17 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { spinePlaneReq.Enable = v }, &hasChanges)
 
+	// Handle site and site_ref_type_ using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,
+		func(v *string) { spinePlaneReq.Site = v },
+		func(v *string) { spinePlaneReq.SiteRefType = v },
+		"site", "site_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -409,6 +438,10 @@ func populateSpinePlaneState(ctx context.Context, state veritySpinePlaneResource
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
+	// String fields
+	state.Site = utils.MapStringWithMode(data, "site", resourceType, mode)
+	state.SiteRefType = utils.MapStringWithMode(data, "site_ref_type_", resourceType, mode)
+
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
@@ -455,6 +488,10 @@ func (r *veritySpinePlaneResource) ModifyPlan(ctx context.Context, req resource.
 		Mode:         mode,
 		Plan:         &resp.Plan,
 	}
+
+	nullifier.NullifyStrings(
+		"site", "site_ref_type_",
+	)
 
 	nullifier.NullifyBools(
 		"enable",

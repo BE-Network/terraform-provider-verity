@@ -42,29 +42,80 @@ type veritySwitchpointResource struct {
 type veritySwitchpointResourceModel struct {
 	Name                             types.String                             `tfsdk:"name"`
 	Enable                           types.Bool                               `tfsdk:"enable"`
+	Tenant                           types.String                             `tfsdk:"tenant"`
+	TenantRefType                    types.String                             `tfsdk:"tenant_ref_type_"`
 	DeviceSerialNumber               types.String                             `tfsdk:"device_serial_number"`
 	ConnectedBundle                  types.String                             `tfsdk:"connected_bundle"`
 	ConnectedBundleRefType           types.String                             `tfsdk:"connected_bundle_ref_type_"`
+	IsTopOfIsland                    types.Bool                               `tfsdk:"is_top_of_island"`
 	ReadOnlyMode                     types.Bool                               `tfsdk:"read_only_mode"`
 	Locked                           types.Bool                               `tfsdk:"locked"`
+	ExpectedSite                     types.String                             `tfsdk:"expected_site"`
+	ExpectedSiteRefType              types.String                             `tfsdk:"expected_site_ref_type_"`
 	OutOfBandManagement              types.Bool                               `tfsdk:"out_of_band_management"`
 	Type                             types.String                             `tfsdk:"type"`
 	SpinePlane                       types.String                             `tfsdk:"spine_plane"`
 	SpinePlaneRefType                types.String                             `tfsdk:"spine_plane_ref_type_"`
 	Pod                              types.String                             `tfsdk:"pod"`
 	PodRefType                       types.String                             `tfsdk:"pod_ref_type_"`
+	Su                               types.String                             `tfsdk:"su"`
+	SuRefType                        types.String                             `tfsdk:"su_ref_type_"`
+	SspGroup                         types.String                             `tfsdk:"ssp_group"`
+	SspGroupRefType                  types.String                             `tfsdk:"ssp_group_ref_type_"`
 	Rack                             types.String                             `tfsdk:"rack"`
+	Position                         types.Number                             `tfsdk:"position"`
+	RailGroup                        types.Number                             `tfsdk:"rail_group"`
 	SwitchRouterIdIpMask             types.String                             `tfsdk:"switch_router_id_ip_mask"`
 	SwitchRouterIdIpMaskAutoAssigned types.Bool                               `tfsdk:"switch_router_id_ip_mask_auto_assigned_"`
 	SwitchVtepIdIpMask               types.String                             `tfsdk:"switch_vtep_id_ip_mask"`
 	SwitchVtepIdIpMaskAutoAssigned   types.Bool                               `tfsdk:"switch_vtep_id_ip_mask_auto_assigned_"`
 	BgpAsNumber                      types.Int64                              `tfsdk:"bgp_as_number"`
 	BgpAsNumberAutoAssigned          types.Bool                               `tfsdk:"bgp_as_number_auto_assigned_"`
+	BbSwitch                         types.Bool                               `tfsdk:"bb_switch"`
+	PasswordEncrypted                types.String                             `tfsdk:"password_encrypted"`
+	EnablePasswordEncrypted          types.String                             `tfsdk:"enable_password_encrypted"`
+	SshKeyOrPasswordEncrypted        types.String                             `tfsdk:"ssh_key_or_password_encrypted"`
+	PassphraseEncrypted              types.String                             `tfsdk:"passphrase_encrypted"`
+	PrivatePasswordEncrypted         types.String                             `tfsdk:"private_password_encrypted"`
+	IpSource                         types.String                             `tfsdk:"ip_source"`
+	ControllerIpAndMask              types.String                             `tfsdk:"controller_ip_and_mask"`
+	Gateway                          types.String                             `tfsdk:"gateway"`
+	SwitchIpAndMask                  types.String                             `tfsdk:"switch_ip_and_mask"`
+	SwitchGateway                    types.String                             `tfsdk:"switch_gateway"`
+	CommType                         types.String                             `tfsdk:"comm_type"`
+	SnmpCommunityString              types.String                             `tfsdk:"snmp_community_string"`
+	UplinkPort                       types.String                             `tfsdk:"uplink_port"`
+	LldpSearchString                 types.String                             `tfsdk:"lldp_search_string"`
+	ZtpIdentification                types.String                             `tfsdk:"ztp_identification"`
+	LocatedBy                        types.String                             `tfsdk:"located_by"`
+	PowerState                       types.String                             `tfsdk:"power_state"`
+	CommunicationMode                types.String                             `tfsdk:"communication_mode"`
+	CliAccessMode                    types.String                             `tfsdk:"cli_access_mode"`
+	Username                         types.String                             `tfsdk:"username"`
+	Password                         types.String                             `tfsdk:"password"`
+	EnablePassword                   types.String                             `tfsdk:"enable_password"`
+	SshKeyOrPassword                 types.String                             `tfsdk:"ssh_key_or_password"`
+	ManagedOnNativeVlan              types.Bool                               `tfsdk:"managed_on_native_vlan"`
+	Sdlc                             types.String                             `tfsdk:"sdlc"`
+	SecurityType                     types.String                             `tfsdk:"security_type"`
+	Snmpv3Username                   types.String                             `tfsdk:"snmpv3_username"`
+	AuthenticationProtocol           types.String                             `tfsdk:"authentication_protocol"`
+	Passphrase                       types.String                             `tfsdk:"passphrase"`
+	PrivateProtocol                  types.String                             `tfsdk:"private_protocol"`
+	PrivatePassword                  types.String                             `tfsdk:"private_password"`
 	IsFabric                         types.Bool                               `tfsdk:"is_fabric"`
+	DeviceManagedAs                  types.String                             `tfsdk:"device_managed_as"`
+	Switch                           types.String                             `tfsdk:"switch"`
+	SwitchRefType                    types.String                             `tfsdk:"switch_ref_type_"`
+	ConnectionService                types.String                             `tfsdk:"connection_service"`
+	ConnectionServiceRefType         types.String                             `tfsdk:"connection_service_ref_type_"`
+	Port                             types.String                             `tfsdk:"port"`
+	UsesTaggedPackets                types.Bool                               `tfsdk:"uses_tagged_packets"`
 	Badges                           []veritySwitchpointBadgeModel            `tfsdk:"badges"`
 	Children                         []veritySwitchpointChildModel            `tfsdk:"children"`
 	TrafficMirrors                   []veritySwitchpointTrafficMirrorModel    `tfsdk:"traffic_mirrors"`
 	Eths                             []veritySwitchpointEthModel              `tfsdk:"eths"`
+	Pots                             []veritySwitchpointPotsModel             `tfsdk:"pots"`
 	ObjectProperties                 []veritySwitchpointObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
@@ -104,16 +155,32 @@ func (tm veritySwitchpointTrafficMirrorModel) GetIndex() types.Int64 {
 }
 
 type veritySwitchpointEthModel struct {
-	Breakout    types.String `tfsdk:"breakout"`
-	Index       types.Int64  `tfsdk:"index"`
-	EthNumIcon  types.String `tfsdk:"eth_num_icon"`
-	EthNumLabel types.String `tfsdk:"eth_num_label"`
-	Enable      types.Bool   `tfsdk:"enable"`
-	PortName    types.String `tfsdk:"port_name"`
+	Breakout     types.String `tfsdk:"breakout"`
+	CustomerVlan types.String `tfsdk:"customer_vlan"`
+	Index        types.Int64  `tfsdk:"index"`
+	EthNumIcon   types.String `tfsdk:"eth_num_icon"`
+	EthNumLabel  types.String `tfsdk:"eth_num_label"`
+	Enable       types.Bool   `tfsdk:"enable"`
+	PortName     types.String `tfsdk:"port_name"`
 }
 
 func (e veritySwitchpointEthModel) GetIndex() types.Int64 {
 	return e.Index
+}
+
+type veritySwitchpointPotsModel struct {
+	PotsNumEnable            types.Bool   `tfsdk:"pots_num_enable"`
+	PotsNumUri               types.String `tfsdk:"pots_num_uri"`
+	PotsNumUsername          types.String `tfsdk:"pots_num_username"`
+	PotsNumPassword          types.String `tfsdk:"pots_num_password"`
+	PotsNumCallerId          types.String `tfsdk:"pots_num_caller_id"`
+	PotsNumHotLine           types.String `tfsdk:"pots_num_hot_line"`
+	PotsNumPasswordEncrypted types.String `tfsdk:"pots_num_password_encrypted"`
+	Index                    types.Int64  `tfsdk:"index"`
+}
+
+func (p veritySwitchpointPotsModel) GetIndex() types.Int64 {
+	return p.Index
 }
 
 type veritySwitchpointObjectPropertiesModel struct {
@@ -123,6 +190,7 @@ type veritySwitchpointObjectPropertiesModel struct {
 	NumberOfMultipoints           types.Int64  `tfsdk:"number_of_multipoints"`
 	Aggregate                     types.Bool   `tfsdk:"aggregate"`
 	IsHost                        types.Bool   `tfsdk:"is_host"`
+	EmulateRfVideoPort            types.Bool   `tfsdk:"emulate_rf_video_port"`
 	DrawAsEdgeDevice              types.Bool   `tfsdk:"draw_as_edge_device"`
 }
 
@@ -166,6 +234,16 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 				Computed:    true,
 			},
+			"tenant": schema.StringAttribute{
+				Description: "The Tenant of this Device",
+				Optional:    true,
+				Computed:    true,
+			},
+			"tenant_ref_type_": schema.StringAttribute{
+				Description: "Object type for tenant field",
+				Optional:    true,
+				Computed:    true,
+			},
 			"device_serial_number": schema.StringAttribute{
 				Description: "Device Serial Number",
 				Optional:    true,
@@ -181,6 +259,11 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 				Computed:    true,
 			},
+			"is_top_of_island": schema.BoolAttribute{
+				Description: "Mark this Switchpoint as Top of Island",
+				Optional:    true,
+				Computed:    true,
+			},
 			"read_only_mode": schema.BoolAttribute{
 				Description: "When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware",
 				Optional:    true,
@@ -188,6 +271,16 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"locked": schema.BoolAttribute{
 				Description: "Permission lock",
+				Optional:    true,
+				Computed:    true,
+			},
+			"expected_site": schema.StringAttribute{
+				Description: "Expected Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"expected_site_ref_type_": schema.StringAttribute{
+				Description: "Object type for expected_site field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -221,8 +314,38 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 				Computed:    true,
 			},
+			"su": schema.StringAttribute{
+				Description: "SU",
+				Optional:    true,
+				Computed:    true,
+			},
+			"su_ref_type_": schema.StringAttribute{
+				Description: "Object type for su field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ssp_group": schema.StringAttribute{
+				Description: "SuperSpine Group - grouping of superspines in 3-tier config",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ssp_group_ref_type_": schema.StringAttribute{
+				Description: "Object type for ssp_group field",
+				Optional:    true,
+				Computed:    true,
+			},
 			"rack": schema.StringAttribute{
 				Description: "Physical Rack location of the Switch",
+				Optional:    true,
+				Computed:    true,
+			},
+			"position": schema.NumberAttribute{
+				Description: "Position of the Switch",
+				Optional:    true,
+				Computed:    true,
+			},
+			"rail_group": schema.NumberAttribute{
+				Description: "Rail Group the Switch is part of",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -256,8 +379,203 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 				Computed:    true,
 			},
+			"bb_switch": schema.BoolAttribute{
+				Description: "Expose fields for Device Management",
+				Optional:    true,
+				Computed:    true,
+			},
+			"password_encrypted": schema.StringAttribute{
+				Description: "Password",
+				Optional:    true,
+				Computed:    true,
+			},
+			"enable_password_encrypted": schema.StringAttribute{
+				Description: "Enable Password - to enable privileged CLI operations",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ssh_key_or_password_encrypted": schema.StringAttribute{
+				Description: "SSH Key or Password",
+				Optional:    true,
+				Computed:    true,
+			},
+			"passphrase_encrypted": schema.StringAttribute{
+				Description: "Passphrase",
+				Optional:    true,
+				Computed:    true,
+			},
+			"private_password_encrypted": schema.StringAttribute{
+				Description: "Password",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ip_source": schema.StringAttribute{
+				Description: "IP Source",
+				Optional:    true,
+				Computed:    true,
+			},
+			"controller_ip_and_mask": schema.StringAttribute{
+				Description: "Controller IP and Mask",
+				Optional:    true,
+				Computed:    true,
+			},
+			"gateway": schema.StringAttribute{
+				Description: "Gateway",
+				Optional:    true,
+				Computed:    true,
+			},
+			"switch_ip_and_mask": schema.StringAttribute{
+				Description: "Switch IP and Mask",
+				Optional:    true,
+				Computed:    true,
+			},
+			"switch_gateway": schema.StringAttribute{
+				Description: "Gateway of Managed Device",
+				Optional:    true,
+				Computed:    true,
+			},
+			"comm_type": schema.StringAttribute{
+				Description: "Comm Type",
+				Optional:    true,
+				Computed:    true,
+			},
+			"snmp_community_string": schema.StringAttribute{
+				Description: "Comm Credentials",
+				Optional:    true,
+				Computed:    true,
+			},
+			"uplink_port": schema.StringAttribute{
+				Description: "Uplink Port of Managed Device",
+				Optional:    true,
+				Computed:    true,
+			},
+			"lldp_search_string": schema.StringAttribute{
+				Description: "Optional unless Located By is LLDP or Device managed as Active SFP",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ztp_identification": schema.StringAttribute{
+				Description: "Service Tag or Serial Number to identify device for Zero Touch Provisioning",
+				Optional:    true,
+				Computed:    true,
+			},
+			"located_by": schema.StringAttribute{
+				Description: "Controls how the system locates this Device within its LAN",
+				Optional:    true,
+				Computed:    true,
+			},
+			"power_state": schema.StringAttribute{
+				Description: "Power state of Switch Controller",
+				Optional:    true,
+				Computed:    true,
+			},
+			"communication_mode": schema.StringAttribute{
+				Description: "Communication Mode",
+				Optional:    true,
+				Computed:    true,
+			},
+			"cli_access_mode": schema.StringAttribute{
+				Description: "CLI Access Mode",
+				Optional:    true,
+				Computed:    true,
+			},
+			"username": schema.StringAttribute{
+				Description: "Username",
+				Optional:    true,
+				Computed:    true,
+			},
+			"password": schema.StringAttribute{
+				Description: "Password",
+				Optional:    true,
+				Computed:    true,
+			},
+			"enable_password": schema.StringAttribute{
+				Description: "Enable Password - to enable privileged CLI operations",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ssh_key_or_password": schema.StringAttribute{
+				Description: "SSH Key or Password",
+				Optional:    true,
+				Computed:    true,
+			},
+			"managed_on_native_vlan": schema.BoolAttribute{
+				Description: "Managed on native VLAN",
+				Optional:    true,
+				Computed:    true,
+			},
+			"sdlc": schema.StringAttribute{
+				Description: "SDLC that Device Controller belongs to",
+				Optional:    true,
+				Computed:    true,
+			},
+			"security_type": schema.StringAttribute{
+				Description: "Security level",
+				Optional:    true,
+				Computed:    true,
+			},
+			"snmpv3_username": schema.StringAttribute{
+				Description: "Username",
+				Optional:    true,
+				Computed:    true,
+			},
+			"authentication_protocol": schema.StringAttribute{
+				Description: "Protocol",
+				Optional:    true,
+				Computed:    true,
+			},
+			"passphrase": schema.StringAttribute{
+				Description: "Passphrase",
+				Optional:    true,
+				Computed:    true,
+			},
+			"private_protocol": schema.StringAttribute{
+				Description: "Protocol",
+				Optional:    true,
+				Computed:    true,
+			},
+			"private_password": schema.StringAttribute{
+				Description: "Password",
+				Optional:    true,
+				Computed:    true,
+			},
 			"is_fabric": schema.BoolAttribute{
 				Description: "For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device",
+				Optional:    true,
+				Computed:    true,
+			},
+			"device_managed_as": schema.StringAttribute{
+				Description: "Device managed as",
+				Optional:    true,
+				Computed:    true,
+			},
+			"switch": schema.StringAttribute{
+				Description: "Switchpoint locating the Switch to be controlled",
+				Optional:    true,
+				Computed:    true,
+			},
+			"switch_ref_type_": schema.StringAttribute{
+				Description: "Object type for switch field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"connection_service": schema.StringAttribute{
+				Description: "Connect a Service",
+				Optional:    true,
+				Computed:    true,
+			},
+			"connection_service_ref_type_": schema.StringAttribute{
+				Description: "Object type for connection_service field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"port": schema.StringAttribute{
+				Description: "Port locating the Switch to be controlled",
+				Optional:    true,
+				Computed:    true,
+			},
+			"uses_tagged_packets": schema.BoolAttribute{
+				Description: "Indicates if the direct interface expects tagged or untagged packets",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -363,6 +681,11 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 							Optional:    true,
 							Computed:    true,
 						},
+						"customer_vlan": schema.StringAttribute{
+							Description: "A Value between 1 and 4096",
+							Optional:    true,
+							Computed:    true,
+						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
 							Optional:    true,
@@ -385,6 +708,53 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						},
 						"port_name": schema.StringAttribute{
 							Description: "The name identifying the port. Used for reference only, it won't actually change the port name.",
+							Optional:    true,
+							Computed:    true,
+						},
+					},
+				},
+			},
+			"pots": schema.ListNestedBlock{
+				Description: "POTS configurations",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"pots_num_enable": schema.BoolAttribute{
+							Description: "Enable POTS port",
+							Optional:    true,
+							Computed:    true,
+						},
+						"pots_num_uri": schema.StringAttribute{
+							Description: "Specific telephone extension for SIP for POTS port",
+							Optional:    true,
+							Computed:    true,
+						},
+						"pots_num_username": schema.StringAttribute{
+							Description: "SIP username used for authentication for POTS port",
+							Optional:    true,
+							Computed:    true,
+						},
+						"pots_num_password": schema.StringAttribute{
+							Description: "SIP password used for authentication for POTS port",
+							Optional:    true,
+							Computed:    true,
+						},
+						"pots_num_caller_id": schema.StringAttribute{
+							Description: "ASCII string defining the user for the Caller ID display for POTS port",
+							Optional:    true,
+							Computed:    true,
+						},
+						"pots_num_hot_line": schema.StringAttribute{
+							Description: "URI of line to autodial upon off-hook for POTS port",
+							Optional:    true,
+							Computed:    true,
+						},
+						"pots_num_password_encrypted": schema.StringAttribute{
+							Description: "SIP password used for authentication for POTS port",
+							Optional:    true,
+							Computed:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -422,6 +792,11 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 						},
 						"is_host": schema.BoolAttribute{
 							Description: "For Switch Endpoints. Denotes the Host Switch",
+							Optional:    true,
+							Computed:    true,
+						},
+						"emulate_rf_video_port": schema.BoolAttribute{
+							Description: "Emulate RF Video Port",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -498,29 +873,77 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 
 	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "Tenant", APIField: &spProps.Tenant, TFValue: plan.Tenant},
+		{FieldName: "TenantRefType", APIField: &spProps.TenantRefType, TFValue: plan.TenantRefType},
 		{FieldName: "DeviceSerialNumber", APIField: &spProps.DeviceSerialNumber, TFValue: plan.DeviceSerialNumber},
 		{FieldName: "ConnectedBundle", APIField: &spProps.ConnectedBundle, TFValue: plan.ConnectedBundle},
 		{FieldName: "ConnectedBundleRefType", APIField: &spProps.ConnectedBundleRefType, TFValue: plan.ConnectedBundleRefType},
+		{FieldName: "ExpectedSite", APIField: &spProps.ExpectedSite, TFValue: plan.ExpectedSite},
+		{FieldName: "ExpectedSiteRefType", APIField: &spProps.ExpectedSiteRefType, TFValue: plan.ExpectedSiteRefType},
 		{FieldName: "Type", APIField: &spProps.Type, TFValue: plan.Type},
 		{FieldName: "SpinePlane", APIField: &spProps.SpinePlane, TFValue: plan.SpinePlane},
 		{FieldName: "SpinePlaneRefType", APIField: &spProps.SpinePlaneRefType, TFValue: plan.SpinePlaneRefType},
 		{FieldName: "Pod", APIField: &spProps.Pod, TFValue: plan.Pod},
 		{FieldName: "PodRefType", APIField: &spProps.PodRefType, TFValue: plan.PodRefType},
+		{FieldName: "Su", APIField: &spProps.Su, TFValue: plan.Su},
+		{FieldName: "SuRefType", APIField: &spProps.SuRefType, TFValue: plan.SuRefType},
+		{FieldName: "SspGroup", APIField: &spProps.SspGroup, TFValue: plan.SspGroup},
+		{FieldName: "SspGroupRefType", APIField: &spProps.SspGroupRefType, TFValue: plan.SspGroupRefType},
 		{FieldName: "Rack", APIField: &spProps.Rack, TFValue: plan.Rack},
 		{FieldName: "SwitchRouterIdIpMask", APIField: &spProps.SwitchRouterIdIpMask, TFValue: plan.SwitchRouterIdIpMask},
 		{FieldName: "SwitchVtepIdIpMask", APIField: &spProps.SwitchVtepIdIpMask, TFValue: plan.SwitchVtepIdIpMask},
+		{FieldName: "PasswordEncrypted", APIField: &spProps.PasswordEncrypted, TFValue: plan.PasswordEncrypted},
+		{FieldName: "EnablePasswordEncrypted", APIField: &spProps.EnablePasswordEncrypted, TFValue: plan.EnablePasswordEncrypted},
+		{FieldName: "SshKeyOrPasswordEncrypted", APIField: &spProps.SshKeyOrPasswordEncrypted, TFValue: plan.SshKeyOrPasswordEncrypted},
+		{FieldName: "PassphraseEncrypted", APIField: &spProps.PassphraseEncrypted, TFValue: plan.PassphraseEncrypted},
+		{FieldName: "PrivatePasswordEncrypted", APIField: &spProps.PrivatePasswordEncrypted, TFValue: plan.PrivatePasswordEncrypted},
+		{FieldName: "IpSource", APIField: &spProps.IpSource, TFValue: plan.IpSource},
+		{FieldName: "ControllerIpAndMask", APIField: &spProps.ControllerIpAndMask, TFValue: plan.ControllerIpAndMask},
+		{FieldName: "Gateway", APIField: &spProps.Gateway, TFValue: plan.Gateway},
+		{FieldName: "SwitchIpAndMask", APIField: &spProps.SwitchIpAndMask, TFValue: plan.SwitchIpAndMask},
+		{FieldName: "SwitchGateway", APIField: &spProps.SwitchGateway, TFValue: plan.SwitchGateway},
+		{FieldName: "CommType", APIField: &spProps.CommType, TFValue: plan.CommType},
+		{FieldName: "SnmpCommunityString", APIField: &spProps.SnmpCommunityString, TFValue: plan.SnmpCommunityString},
+		{FieldName: "UplinkPort", APIField: &spProps.UplinkPort, TFValue: plan.UplinkPort},
+		{FieldName: "LldpSearchString", APIField: &spProps.LldpSearchString, TFValue: plan.LldpSearchString},
+		{FieldName: "ZtpIdentification", APIField: &spProps.ZtpIdentification, TFValue: plan.ZtpIdentification},
+		{FieldName: "LocatedBy", APIField: &spProps.LocatedBy, TFValue: plan.LocatedBy},
+		{FieldName: "PowerState", APIField: &spProps.PowerState, TFValue: plan.PowerState},
+		{FieldName: "CommunicationMode", APIField: &spProps.CommunicationMode, TFValue: plan.CommunicationMode},
+		{FieldName: "CliAccessMode", APIField: &spProps.CliAccessMode, TFValue: plan.CliAccessMode},
+		{FieldName: "Username", APIField: &spProps.Username, TFValue: plan.Username},
+		{FieldName: "Password", APIField: &spProps.Password, TFValue: plan.Password},
+		{FieldName: "EnablePassword", APIField: &spProps.EnablePassword, TFValue: plan.EnablePassword},
+		{FieldName: "SshKeyOrPassword", APIField: &spProps.SshKeyOrPassword, TFValue: plan.SshKeyOrPassword},
+		{FieldName: "Sdlc", APIField: &spProps.Sdlc, TFValue: plan.Sdlc},
+		{FieldName: "SecurityType", APIField: &spProps.SecurityType, TFValue: plan.SecurityType},
+		{FieldName: "Snmpv3Username", APIField: &spProps.Snmpv3Username, TFValue: plan.Snmpv3Username},
+		{FieldName: "AuthenticationProtocol", APIField: &spProps.AuthenticationProtocol, TFValue: plan.AuthenticationProtocol},
+		{FieldName: "Passphrase", APIField: &spProps.Passphrase, TFValue: plan.Passphrase},
+		{FieldName: "PrivateProtocol", APIField: &spProps.PrivateProtocol, TFValue: plan.PrivateProtocol},
+		{FieldName: "PrivatePassword", APIField: &spProps.PrivatePassword, TFValue: plan.PrivatePassword},
+		{FieldName: "DeviceManagedAs", APIField: &spProps.DeviceManagedAs, TFValue: plan.DeviceManagedAs},
+		{FieldName: "Switch", APIField: &spProps.Switch, TFValue: plan.Switch},
+		{FieldName: "SwitchRefType", APIField: &spProps.SwitchRefType, TFValue: plan.SwitchRefType},
+		{FieldName: "ConnectionService", APIField: &spProps.ConnectionService, TFValue: plan.ConnectionService},
+		{FieldName: "ConnectionServiceRefType", APIField: &spProps.ConnectionServiceRefType, TFValue: plan.ConnectionServiceRefType},
+		{FieldName: "Port", APIField: &spProps.Port, TFValue: plan.Port},
 	})
 
 	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &spProps.Enable, TFValue: plan.Enable},
+		{FieldName: "IsTopOfIsland", APIField: &spProps.IsTopOfIsland, TFValue: plan.IsTopOfIsland},
 		{FieldName: "ReadOnlyMode", APIField: &spProps.ReadOnlyMode, TFValue: plan.ReadOnlyMode},
 		{FieldName: "Locked", APIField: &spProps.Locked, TFValue: plan.Locked},
 		{FieldName: "OutOfBandManagement", APIField: &spProps.OutOfBandManagement, TFValue: plan.OutOfBandManagement},
 		{FieldName: "SwitchRouterIdIpMaskAutoAssigned", APIField: &spProps.SwitchRouterIdIpMaskAutoAssigned, TFValue: plan.SwitchRouterIdIpMaskAutoAssigned},
 		{FieldName: "SwitchVtepIdIpMaskAutoAssigned", APIField: &spProps.SwitchVtepIdIpMaskAutoAssigned, TFValue: plan.SwitchVtepIdIpMaskAutoAssigned},
 		{FieldName: "BgpAsNumberAutoAssigned", APIField: &spProps.BgpAsNumberAutoAssigned, TFValue: plan.BgpAsNumberAutoAssigned},
+		{FieldName: "BbSwitch", APIField: &spProps.BbSwitch, TFValue: plan.BbSwitch},
+		{FieldName: "ManagedOnNativeVlan", APIField: &spProps.ManagedOnNativeVlan, TFValue: plan.ManagedOnNativeVlan},
 		{FieldName: "IsFabric", APIField: &spProps.IsFabric, TFValue: plan.IsFabric},
+		{FieldName: "UsesTaggedPackets", APIField: &spProps.UsesTaggedPackets, TFValue: plan.UsesTaggedPackets},
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
@@ -529,6 +952,10 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "BgpAsNumber", APIField: &spProps.BgpAsNumber, TFValue: config.BgpAsNumber, IsConfigured: configuredAttrs.IsConfigured("bgp_as_number")},
+	})
+	utils.SetNullableNumberFields([]utils.NullableNumberFieldMapping{
+		{FieldName: "Position", APIField: &spProps.Position, TFValue: config.Position, IsConfigured: configuredAttrs.IsConfigured("position")},
+		{FieldName: "RailGroup", APIField: &spProps.RailGroup, TFValue: config.RailGroup, IsConfigured: configuredAttrs.IsConfigured("rail_group")},
 	})
 
 	// Handle object properties
@@ -542,6 +969,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 			{Name: "ExpectedParentEndpointRefType", TFValue: op.ExpectedParentEndpointRefType, APIValue: &objProps.ExpectedParentEndpointRefType},
 			{Name: "Aggregate", TFValue: op.Aggregate, APIValue: &objProps.Aggregate},
 			{Name: "IsHost", TFValue: op.IsHost, APIValue: &objProps.IsHost},
+			{Name: "EmulateRfVideoPort", TFValue: op.EmulateRfVideoPort, APIValue: &objProps.EmulateRfVideoPort},
 			{Name: "DrawAsEdgeDevice", TFValue: op.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
 		})
 		utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
@@ -634,6 +1062,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Breakout", APIField: &ethItem.Breakout, TFValue: eth.Breakout},
+				{FieldName: "CustomerVlan", APIField: &ethItem.CustomerVlan, TFValue: eth.CustomerVlan},
 				{FieldName: "EthNumIcon", APIField: &ethItem.EthNumIcon, TFValue: eth.EthNumIcon},
 				{FieldName: "EthNumLabel", APIField: &ethItem.EthNumLabel, TFValue: eth.EthNumLabel},
 				{FieldName: "PortName", APIField: &ethItem.PortName, TFValue: eth.PortName},
@@ -652,6 +1081,35 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 			eths[i] = ethItem
 		}
 		spProps.Eths = eths
+	}
+
+	if len(plan.Pots) > 0 {
+		pots := make([]openapi.SwitchpointsPutRequestSwitchpointValuePotsInner, len(plan.Pots))
+		for i, pot := range plan.Pots {
+			potItem := openapi.SwitchpointsPutRequestSwitchpointValuePotsInner{}
+
+			// Handle string fields
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "PotsNumUri", APIField: &potItem.PotsNumUri, TFValue: pot.PotsNumUri},
+				{FieldName: "PotsNumUsername", APIField: &potItem.PotsNumUsername, TFValue: pot.PotsNumUsername},
+				{FieldName: "PotsNumPassword", APIField: &potItem.PotsNumPassword, TFValue: pot.PotsNumPassword},
+				{FieldName: "PotsNumCallerId", APIField: &potItem.PotsNumCallerId, TFValue: pot.PotsNumCallerId},
+				{FieldName: "PotsNumHotLine", APIField: &potItem.PotsNumHotLine, TFValue: pot.PotsNumHotLine},
+				{FieldName: "PotsNumPasswordEncrypted", APIField: &potItem.PotsNumPasswordEncrypted, TFValue: pot.PotsNumPasswordEncrypted},
+			})
+
+			// Handle boolean fields
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "PotsNumEnable", APIField: &potItem.PotsNumEnable, TFValue: pot.PotsNumEnable},
+			})
+
+			// Handle int64 fields
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &potItem.Index, TFValue: pot.Index},
+			})
+			pots[i] = potItem
+		}
+		spProps.Pots = pots
 	}
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "switchpoint", name, *spProps, &resp.Diagnostics)
@@ -875,15 +1333,52 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { spProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DeviceSerialNumber, state.DeviceSerialNumber, func(v *string) { spProps.DeviceSerialNumber = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ExpectedSite, state.ExpectedSite, func(v *string) { spProps.ExpectedSite = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { spProps.Type = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Rack, state.Rack, func(v *string) { spProps.Rack = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PasswordEncrypted, state.PasswordEncrypted, func(v *string) { spProps.PasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.EnablePasswordEncrypted, state.EnablePasswordEncrypted, func(v *string) { spProps.EnablePasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SshKeyOrPasswordEncrypted, state.SshKeyOrPasswordEncrypted, func(v *string) { spProps.SshKeyOrPasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PassphraseEncrypted, state.PassphraseEncrypted, func(v *string) { spProps.PassphraseEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PrivatePasswordEncrypted, state.PrivatePasswordEncrypted, func(v *string) { spProps.PrivatePasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.IpSource, state.IpSource, func(v *string) { spProps.IpSource = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ControllerIpAndMask, state.ControllerIpAndMask, func(v *string) { spProps.ControllerIpAndMask = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Gateway, state.Gateway, func(v *string) { spProps.Gateway = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchIpAndMask, state.SwitchIpAndMask, func(v *string) { spProps.SwitchIpAndMask = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchGateway, state.SwitchGateway, func(v *string) { spProps.SwitchGateway = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CommType, state.CommType, func(v *string) { spProps.CommType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SnmpCommunityString, state.SnmpCommunityString, func(v *string) { spProps.SnmpCommunityString = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.UplinkPort, state.UplinkPort, func(v *string) { spProps.UplinkPort = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.LldpSearchString, state.LldpSearchString, func(v *string) { spProps.LldpSearchString = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ZtpIdentification, state.ZtpIdentification, func(v *string) { spProps.ZtpIdentification = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.LocatedBy, state.LocatedBy, func(v *string) { spProps.LocatedBy = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PowerState, state.PowerState, func(v *string) { spProps.PowerState = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CommunicationMode, state.CommunicationMode, func(v *string) { spProps.CommunicationMode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.CliAccessMode, state.CliAccessMode, func(v *string) { spProps.CliAccessMode = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Username, state.Username, func(v *string) { spProps.Username = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Password, state.Password, func(v *string) { spProps.Password = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.EnablePassword, state.EnablePassword, func(v *string) { spProps.EnablePassword = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SshKeyOrPassword, state.SshKeyOrPassword, func(v *string) { spProps.SshKeyOrPassword = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Sdlc, state.Sdlc, func(v *string) { spProps.Sdlc = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SecurityType, state.SecurityType, func(v *string) { spProps.SecurityType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Snmpv3Username, state.Snmpv3Username, func(v *string) { spProps.Snmpv3Username = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.AuthenticationProtocol, state.AuthenticationProtocol, func(v *string) { spProps.AuthenticationProtocol = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Passphrase, state.Passphrase, func(v *string) { spProps.Passphrase = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PrivateProtocol, state.PrivateProtocol, func(v *string) { spProps.PrivateProtocol = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PrivatePassword, state.PrivatePassword, func(v *string) { spProps.PrivatePassword = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DeviceManagedAs, state.DeviceManagedAs, func(v *string) { spProps.DeviceManagedAs = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.Port, state.Port, func(v *string) { spProps.Port = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { spProps.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.IsTopOfIsland, state.IsTopOfIsland, func(v *bool) { spProps.IsTopOfIsland = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.ReadOnlyMode, state.ReadOnlyMode, func(v *bool) { spProps.ReadOnlyMode = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Locked, state.Locked, func(v *bool) { spProps.Locked = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.OutOfBandManagement, state.OutOfBandManagement, func(v *bool) { spProps.OutOfBandManagement = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.BbSwitch, state.BbSwitch, func(v *bool) { spProps.BbSwitch = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.ManagedOnNativeVlan, state.ManagedOnNativeVlan, func(v *bool) { spProps.ManagedOnNativeVlan = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.IsFabric, state.IsFabric, func(v *bool) { spProps.IsFabric = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.UsesTaggedPackets, state.UsesTaggedPackets, func(v *bool) { spProps.UsesTaggedPackets = v }, &hasChanges)
 
 	// Handle ConnectedBundle and ConnectedBundleRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
@@ -919,6 +1414,69 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	) {
 		return
 	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.Tenant, state.Tenant, plan.TenantRefType, state.TenantRefType,
+		func(v *string) { spProps.Tenant = v },
+		func(v *string) { spProps.TenantRefType = v },
+		"tenant", "tenant_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.ExpectedSite, state.ExpectedSite, plan.ExpectedSiteRefType, state.ExpectedSiteRefType,
+		func(v *string) { spProps.ExpectedSite = v },
+		func(v *string) { spProps.ExpectedSiteRefType = v },
+		"expected_site", "expected_site_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.Su, state.Su, plan.SuRefType, state.SuRefType,
+		func(v *string) { spProps.Su = v },
+		func(v *string) { spProps.SuRefType = v },
+		"su", "su_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.SspGroup, state.SspGroup, plan.SspGroupRefType, state.SspGroupRefType,
+		func(v *string) { spProps.SspGroup = v },
+		func(v *string) { spProps.SspGroupRefType = v },
+		"ssp_group", "ssp_group_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.Switch, state.Switch, plan.SwitchRefType, state.SwitchRefType,
+		func(v *string) { spProps.Switch = v },
+		func(v *string) { spProps.SwitchRefType = v },
+		"switch", "switch_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.ConnectionService, state.ConnectionService, plan.ConnectionServiceRefType, state.ConnectionServiceRefType,
+		func(v *string) { spProps.ConnectionService = v },
+		func(v *string) { spProps.ConnectionServiceRefType = v },
+		"connection_service", "connection_service_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat32) { spProps.Position = *v }, &hasChanges)
+	utils.CompareAndSetNullableNumberField(config.RailGroup, state.RailGroup, configuredAttrs.IsConfigured("rail_group"), func(v *openapi.NullableFloat32) { spProps.RailGroup = *v }, &hasChanges)
 
 	// Handle BgpAsNumber and BgpAsNumberAutoAssigned changes
 	bgpAsNumberChanged := !plan.BgpAsNumber.IsUnknown() && !plan.BgpAsNumber.Equal(state.BgpAsNumber)
@@ -1264,6 +1822,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Breakout", APIField: &eth.Breakout, TFValue: planItem.Breakout},
+					{FieldName: "CustomerVlan", APIField: &eth.CustomerVlan, TFValue: planItem.CustomerVlan},
 					{FieldName: "EthNumIcon", APIField: &eth.EthNumIcon, TFValue: planItem.EthNumIcon},
 					{FieldName: "EthNumLabel", APIField: &eth.EthNumLabel, TFValue: planItem.EthNumLabel},
 					{FieldName: "PortName", APIField: &eth.PortName, TFValue: planItem.PortName},
@@ -1287,6 +1846,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.Breakout, stateItem.Breakout, func(v *string) { eth.Breakout = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.CustomerVlan, stateItem.CustomerVlan, func(v *string) { eth.CustomerVlan = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.EthNumIcon, stateItem.EthNumIcon, func(v *string) { eth.EthNumIcon = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.EthNumLabel, stateItem.EthNumLabel, func(v *string) { eth.EthNumLabel = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.PortName, stateItem.PortName, func(v *string) { eth.PortName = v }, &fieldChanged)
@@ -1312,6 +1872,52 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		hasChanges = true
 	}
 
+	changedPots, potsChanged := utils.ProcessIndexedArrayUpdates(plan.Pots, state.Pots,
+		utils.IndexedItemHandler[veritySwitchpointPotsModel, openapi.SwitchpointsPutRequestSwitchpointValuePotsInner]{
+			CreateNew: func(planItem veritySwitchpointPotsModel) openapi.SwitchpointsPutRequestSwitchpointValuePotsInner {
+				pot := openapi.SwitchpointsPutRequestSwitchpointValuePotsInner{}
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "PotsNumEnable", APIField: &pot.PotsNumEnable, TFValue: planItem.PotsNumEnable},
+				})
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "PotsNumUri", APIField: &pot.PotsNumUri, TFValue: planItem.PotsNumUri},
+					{FieldName: "PotsNumUsername", APIField: &pot.PotsNumUsername, TFValue: planItem.PotsNumUsername},
+					{FieldName: "PotsNumPassword", APIField: &pot.PotsNumPassword, TFValue: planItem.PotsNumPassword},
+					{FieldName: "PotsNumCallerId", APIField: &pot.PotsNumCallerId, TFValue: planItem.PotsNumCallerId},
+					{FieldName: "PotsNumHotLine", APIField: &pot.PotsNumHotLine, TFValue: planItem.PotsNumHotLine},
+					{FieldName: "PotsNumPasswordEncrypted", APIField: &pot.PotsNumPasswordEncrypted, TFValue: planItem.PotsNumPasswordEncrypted},
+				})
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &pot.Index, TFValue: planItem.Index},
+				})
+				return pot
+			},
+			UpdateExisting: func(planItem veritySwitchpointPotsModel, stateItem veritySwitchpointPotsModel) (openapi.SwitchpointsPutRequestSwitchpointValuePotsInner, bool) {
+				pot := openapi.SwitchpointsPutRequestSwitchpointValuePotsInner{}
+				fieldChanged := false
+				utils.CompareAndSetBoolField(planItem.PotsNumEnable, stateItem.PotsNumEnable, func(v *bool) { pot.PotsNumEnable = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.PotsNumUri, stateItem.PotsNumUri, func(v *string) { pot.PotsNumUri = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.PotsNumUsername, stateItem.PotsNumUsername, func(v *string) { pot.PotsNumUsername = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.PotsNumPassword, stateItem.PotsNumPassword, func(v *string) { pot.PotsNumPassword = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.PotsNumCallerId, stateItem.PotsNumCallerId, func(v *string) { pot.PotsNumCallerId = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.PotsNumHotLine, stateItem.PotsNumHotLine, func(v *string) { pot.PotsNumHotLine = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.PotsNumPasswordEncrypted, stateItem.PotsNumPasswordEncrypted, func(v *string) { pot.PotsNumPasswordEncrypted = v }, &fieldChanged)
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &pot.Index, TFValue: planItem.Index},
+				})
+				return pot, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValuePotsInner {
+				return openapi.SwitchpointsPutRequestSwitchpointValuePotsInner{
+					Index: openapi.PtrInt32(int32(index)),
+				}
+			},
+		})
+	if potsChanged {
+		spProps.Pots = changedPots
+		hasChanges = true
+	}
+
 	// Handle object_properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties{}
@@ -1328,6 +1934,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			{Name: "ExpectedParentEndpointRefType", PlanValue: op.ExpectedParentEndpointRefType, StateValue: st.ExpectedParentEndpointRefType, APIValue: &objProps.ExpectedParentEndpointRefType},
 			{Name: "Aggregate", PlanValue: op.Aggregate, StateValue: st.Aggregate, APIValue: &objProps.Aggregate},
 			{Name: "IsHost", PlanValue: op.IsHost, StateValue: st.IsHost, APIValue: &objProps.IsHost},
+			{Name: "EmulateRfVideoPort", PlanValue: op.EmulateRfVideoPort, StateValue: st.EmulateRfVideoPort, APIValue: &objProps.EmulateRfVideoPort},
 			{Name: "DrawAsEdgeDevice", PlanValue: op.DrawAsEdgeDevice, StateValue: st.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
 		}, &objPropsChanged)
 
@@ -1429,28 +2036,80 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	// Int fields
 	state.BgpAsNumber = utils.MapInt64WithMode(switchpointData, "bgp_as_number", resourceType, mode)
 
+	// Number fields
+	state.Position = utils.MapNumberWithMode(switchpointData, "position", resourceType, mode)
+	state.RailGroup = utils.MapNumberWithMode(switchpointData, "rail_group", resourceType, mode)
+
 	// Bool fields
 	state.Enable = utils.MapBoolWithMode(switchpointData, "enable", resourceType, mode)
+	state.IsTopOfIsland = utils.MapBoolWithMode(switchpointData, "is_top_of_island", resourceType, mode)
 	state.ReadOnlyMode = utils.MapBoolWithMode(switchpointData, "read_only_mode", resourceType, mode)
 	state.Locked = utils.MapBoolWithMode(switchpointData, "locked", resourceType, mode)
 	state.OutOfBandManagement = utils.MapBoolWithMode(switchpointData, "out_of_band_management", resourceType, mode)
+	state.BbSwitch = utils.MapBoolWithMode(switchpointData, "bb_switch", resourceType, mode)
+	state.ManagedOnNativeVlan = utils.MapBoolWithMode(switchpointData, "managed_on_native_vlan", resourceType, mode)
 	state.IsFabric = utils.MapBoolWithMode(switchpointData, "is_fabric", resourceType, mode)
+	state.UsesTaggedPackets = utils.MapBoolWithMode(switchpointData, "uses_tagged_packets", resourceType, mode)
 	state.BgpAsNumberAutoAssigned = utils.MapBoolWithMode(switchpointData, "bgp_as_number_auto_assigned_", resourceType, mode)
 	state.SwitchVtepIdIpMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_vtep_id_ip_mask_auto_assigned_", resourceType, mode)
 	state.SwitchRouterIdIpMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_router_id_ip_mask_auto_assigned_", resourceType, mode)
 
 	// String fields
+	state.Tenant = utils.MapStringWithMode(switchpointData, "tenant", resourceType, mode)
+	state.TenantRefType = utils.MapStringWithMode(switchpointData, "tenant_ref_type_", resourceType, mode)
 	state.DeviceSerialNumber = utils.MapStringWithMode(switchpointData, "device_serial_number", resourceType, mode)
 	state.ConnectedBundle = utils.MapStringWithMode(switchpointData, "connected_bundle", resourceType, mode)
 	state.ConnectedBundleRefType = utils.MapStringWithMode(switchpointData, "connected_bundle_ref_type_", resourceType, mode)
+	state.ExpectedSite = utils.MapStringWithMode(switchpointData, "expected_site", resourceType, mode)
+	state.ExpectedSiteRefType = utils.MapStringWithMode(switchpointData, "expected_site_ref_type_", resourceType, mode)
 	state.Type = utils.MapStringWithMode(switchpointData, "type", resourceType, mode)
 	state.SpinePlane = utils.MapStringWithMode(switchpointData, "spine_plane", resourceType, mode)
 	state.SpinePlaneRefType = utils.MapStringWithMode(switchpointData, "spine_plane_ref_type_", resourceType, mode)
 	state.Pod = utils.MapStringWithMode(switchpointData, "pod", resourceType, mode)
 	state.PodRefType = utils.MapStringWithMode(switchpointData, "pod_ref_type_", resourceType, mode)
+	state.Su = utils.MapStringWithMode(switchpointData, "su", resourceType, mode)
+	state.SuRefType = utils.MapStringWithMode(switchpointData, "su_ref_type_", resourceType, mode)
+	state.SspGroup = utils.MapStringWithMode(switchpointData, "ssp_group", resourceType, mode)
+	state.SspGroupRefType = utils.MapStringWithMode(switchpointData, "ssp_group_ref_type_", resourceType, mode)
 	state.Rack = utils.MapStringWithMode(switchpointData, "rack", resourceType, mode)
 	state.SwitchRouterIdIpMask = utils.MapStringWithMode(switchpointData, "switch_router_id_ip_mask", resourceType, mode)
 	state.SwitchVtepIdIpMask = utils.MapStringWithMode(switchpointData, "switch_vtep_id_ip_mask", resourceType, mode)
+	state.PasswordEncrypted = utils.MapStringWithMode(switchpointData, "password_encrypted", resourceType, mode)
+	state.EnablePasswordEncrypted = utils.MapStringWithMode(switchpointData, "enable_password_encrypted", resourceType, mode)
+	state.SshKeyOrPasswordEncrypted = utils.MapStringWithMode(switchpointData, "ssh_key_or_password_encrypted", resourceType, mode)
+	state.PassphraseEncrypted = utils.MapStringWithMode(switchpointData, "passphrase_encrypted", resourceType, mode)
+	state.PrivatePasswordEncrypted = utils.MapStringWithMode(switchpointData, "private_password_encrypted", resourceType, mode)
+	state.IpSource = utils.MapStringWithMode(switchpointData, "ip_source", resourceType, mode)
+	state.ControllerIpAndMask = utils.MapStringWithMode(switchpointData, "controller_ip_and_mask", resourceType, mode)
+	state.Gateway = utils.MapStringWithMode(switchpointData, "gateway", resourceType, mode)
+	state.SwitchIpAndMask = utils.MapStringWithMode(switchpointData, "switch_ip_and_mask", resourceType, mode)
+	state.SwitchGateway = utils.MapStringWithMode(switchpointData, "switch_gateway", resourceType, mode)
+	state.CommType = utils.MapStringWithMode(switchpointData, "comm_type", resourceType, mode)
+	state.SnmpCommunityString = utils.MapStringWithMode(switchpointData, "snmp_community_string", resourceType, mode)
+	state.UplinkPort = utils.MapStringWithMode(switchpointData, "uplink_port", resourceType, mode)
+	state.LldpSearchString = utils.MapStringWithMode(switchpointData, "lldp_search_string", resourceType, mode)
+	state.ZtpIdentification = utils.MapStringWithMode(switchpointData, "ztp_identification", resourceType, mode)
+	state.LocatedBy = utils.MapStringWithMode(switchpointData, "located_by", resourceType, mode)
+	state.PowerState = utils.MapStringWithMode(switchpointData, "power_state", resourceType, mode)
+	state.CommunicationMode = utils.MapStringWithMode(switchpointData, "communication_mode", resourceType, mode)
+	state.CliAccessMode = utils.MapStringWithMode(switchpointData, "cli_access_mode", resourceType, mode)
+	state.Username = utils.MapStringWithMode(switchpointData, "username", resourceType, mode)
+	state.Password = utils.MapStringWithMode(switchpointData, "password", resourceType, mode)
+	state.EnablePassword = utils.MapStringWithMode(switchpointData, "enable_password", resourceType, mode)
+	state.SshKeyOrPassword = utils.MapStringWithMode(switchpointData, "ssh_key_or_password", resourceType, mode)
+	state.Sdlc = utils.MapStringWithMode(switchpointData, "sdlc", resourceType, mode)
+	state.SecurityType = utils.MapStringWithMode(switchpointData, "security_type", resourceType, mode)
+	state.Snmpv3Username = utils.MapStringWithMode(switchpointData, "snmpv3_username", resourceType, mode)
+	state.AuthenticationProtocol = utils.MapStringWithMode(switchpointData, "authentication_protocol", resourceType, mode)
+	state.Passphrase = utils.MapStringWithMode(switchpointData, "passphrase", resourceType, mode)
+	state.PrivateProtocol = utils.MapStringWithMode(switchpointData, "private_protocol", resourceType, mode)
+	state.PrivatePassword = utils.MapStringWithMode(switchpointData, "private_password", resourceType, mode)
+	state.DeviceManagedAs = utils.MapStringWithMode(switchpointData, "device_managed_as", resourceType, mode)
+	state.Switch = utils.MapStringWithMode(switchpointData, "switch", resourceType, mode)
+	state.SwitchRefType = utils.MapStringWithMode(switchpointData, "switch_ref_type_", resourceType, mode)
+	state.ConnectionService = utils.MapStringWithMode(switchpointData, "connection_service", resourceType, mode)
+	state.ConnectionServiceRefType = utils.MapStringWithMode(switchpointData, "connection_service_ref_type_", resourceType, mode)
+	state.Port = utils.MapStringWithMode(switchpointData, "port", resourceType, mode)
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
@@ -1462,6 +2121,7 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 				NumberOfMultipoints:           utils.MapInt64WithModeNested(objProps, "number_of_multipoints", resourceType, "object_properties.number_of_multipoints", mode),
 				Aggregate:                     utils.MapBoolWithModeNested(objProps, "aggregate", resourceType, "object_properties.aggregate", mode),
 				IsHost:                        utils.MapBoolWithModeNested(objProps, "is_host", resourceType, "object_properties.is_host", mode),
+				EmulateRfVideoPort:            utils.MapBoolWithModeNested(objProps, "emulate_rf_video_port", resourceType, "object_properties.emulate_rf_video_port", mode),
 				DrawAsEdgeDevice:              utils.MapBoolWithModeNested(objProps, "draw_as_edge_device", resourceType, "object_properties.draw_as_edge_device", mode),
 			}
 			state.ObjectProperties = []veritySwitchpointObjectPropertiesModel{op}
@@ -1559,12 +2219,13 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 					continue
 				}
 				ethModel := veritySwitchpointEthModel{
-					Breakout:    utils.MapStringWithModeNested(eth, "breakout", resourceType, "eths.breakout", mode),
-					Index:       utils.MapInt64WithModeNested(eth, "index", resourceType, "eths.index", mode),
-					EthNumIcon:  utils.MapStringWithModeNested(eth, "eth_num_icon", resourceType, "eths.eth_num_icon", mode),
-					EthNumLabel: utils.MapStringWithModeNested(eth, "eth_num_label", resourceType, "eths.eth_num_label", mode),
-					Enable:      utils.MapBoolWithModeNested(eth, "enable", resourceType, "eths.enable", mode),
-					PortName:    utils.MapStringWithModeNested(eth, "port_name", resourceType, "eths.port_name", mode),
+					Breakout:     utils.MapStringWithModeNested(eth, "breakout", resourceType, "eths.breakout", mode),
+					CustomerVlan: utils.MapStringWithModeNested(eth, "customer_vlan", resourceType, "eths.customer_vlan", mode),
+					Index:        utils.MapInt64WithModeNested(eth, "index", resourceType, "eths.index", mode),
+					EthNumIcon:   utils.MapStringWithModeNested(eth, "eth_num_icon", resourceType, "eths.eth_num_icon", mode),
+					EthNumLabel:  utils.MapStringWithModeNested(eth, "eth_num_label", resourceType, "eths.eth_num_label", mode),
+					Enable:       utils.MapBoolWithModeNested(eth, "enable", resourceType, "eths.enable", mode),
+					PortName:     utils.MapStringWithModeNested(eth, "port_name", resourceType, "eths.port_name", mode),
 				}
 				eths = append(eths, ethModel)
 			}
@@ -1574,6 +2235,34 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 		}
 	} else {
 		state.Eths = nil
+	}
+
+	if utils.FieldAppliesToMode(resourceType, "pots", mode) {
+		if potsArray, ok := switchpointData["pots"].([]interface{}); ok && len(potsArray) > 0 {
+			var pots []veritySwitchpointPotsModel
+			for _, p := range potsArray {
+				pot, ok := p.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				potModel := veritySwitchpointPotsModel{
+					PotsNumEnable:            utils.MapBoolWithModeNested(pot, "pots_num_enable", resourceType, "pots.pots_num_enable", mode),
+					PotsNumUri:               utils.MapStringWithModeNested(pot, "pots_num_uri", resourceType, "pots.pots_num_uri", mode),
+					PotsNumUsername:          utils.MapStringWithModeNested(pot, "pots_num_username", resourceType, "pots.pots_num_username", mode),
+					PotsNumPassword:          utils.MapStringWithModeNested(pot, "pots_num_password", resourceType, "pots.pots_num_password", mode),
+					PotsNumCallerId:          utils.MapStringWithModeNested(pot, "pots_num_caller_id", resourceType, "pots.pots_num_caller_id", mode),
+					PotsNumHotLine:           utils.MapStringWithModeNested(pot, "pots_num_hot_line", resourceType, "pots.pots_num_hot_line", mode),
+					PotsNumPasswordEncrypted: utils.MapStringWithModeNested(pot, "pots_num_password_encrypted", resourceType, "pots.pots_num_password_encrypted", mode),
+					Index:                    utils.MapInt64WithModeNested(pot, "index", resourceType, "pots.index", mode),
+				}
+				pots = append(pots, potModel)
+			}
+			state.Pots = pots
+		} else {
+			state.Pots = nil
+		}
+	} else {
+		state.Pots = nil
 	}
 
 	return state
@@ -1609,15 +2298,32 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 	}
 
 	nullifier.NullifyStrings(
-		"device_serial_number", "connected_bundle", "connected_bundle_ref_type_",
+		"tenant", "tenant_ref_type_", "device_serial_number",
+		"connected_bundle", "connected_bundle_ref_type_",
+		"expected_site", "expected_site_ref_type_",
 		"type", "spine_plane", "spine_plane_ref_type_",
-		"pod", "pod_ref_type_", "rack",
+		"pod", "pod_ref_type_", "su", "su_ref_type_",
+		"ssp_group", "ssp_group_ref_type_", "rack",
 		"switch_router_id_ip_mask", "switch_vtep_id_ip_mask",
+		"password_encrypted", "enable_password_encrypted",
+		"ssh_key_or_password_encrypted", "passphrase_encrypted",
+		"private_password_encrypted", "ip_source",
+		"controller_ip_and_mask", "gateway", "switch_ip_and_mask",
+		"switch_gateway", "comm_type", "snmp_community_string",
+		"uplink_port", "lldp_search_string", "ztp_identification",
+		"located_by", "power_state", "communication_mode",
+		"cli_access_mode", "username", "password", "enable_password",
+		"ssh_key_or_password", "sdlc", "security_type",
+		"snmpv3_username", "authentication_protocol", "passphrase",
+		"private_protocol", "private_password", "device_managed_as",
+		"switch", "switch_ref_type_", "connection_service",
+		"connection_service_ref_type_", "port",
 	)
 
 	nullifier.NullifyBools(
-		"enable", "read_only_mode", "locked",
-		"out_of_band_management", "is_fabric",
+		"enable", "is_top_of_island", "read_only_mode", "locked",
+		"out_of_band_management", "bb_switch", "managed_on_native_vlan",
+		"is_fabric", "uses_tagged_packets",
 		"switch_router_id_ip_mask_auto_assigned_",
 		"switch_vtep_id_ip_mask_auto_assigned_",
 		"bgp_as_number_auto_assigned_",
@@ -1625,6 +2331,9 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 
 	nullifier.NullifyInt64s(
 		"bgp_as_number",
+	)
+	nullifier.NullifyNumbers(
+		"position", "rail_group",
 	)
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
@@ -1652,8 +2361,16 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "eths",
 		ItemCount:    len(plan.Eths),
-		StringFields: []string{"breakout", "eth_num_icon", "eth_num_label", "port_name"},
+		StringFields: []string{"breakout", "customer_vlan", "eth_num_icon", "eth_num_label", "port_name"},
 		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "pots",
+		ItemCount:    len(plan.Pots),
+		StringFields: []string{"pots_num_uri", "pots_num_username", "pots_num_password", "pots_num_caller_id", "pots_num_hot_line", "pots_num_password_encrypted"},
+		BoolFields:   []string{"pots_num_enable"},
 		Int64Fields:  []string{"index"},
 	})
 
@@ -1661,7 +2378,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		BlockName:    "object_properties",
 		ItemCount:    len(plan.ObjectProperties),
 		StringFields: []string{"user_notes", "expected_parent_endpoint", "expected_parent_endpoint_ref_type_"},
-		BoolFields:   []string{"aggregate", "is_host", "draw_as_edge_device"},
+		BoolFields:   []string{"aggregate", "is_host", "emulate_rf_video_port", "draw_as_edge_device"},
 		Int64Fields:  []string{"number_of_multipoints"},
 	})
 
@@ -1712,6 +2429,10 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		ConfiguredAttrs: configuredAttrs,
 		Int64Fields: []utils.NullableInt64Field{
 			{AttrName: "bgp_as_number", ConfigVal: config.BgpAsNumber, StateVal: state.BgpAsNumber},
+		},
+		NumberFields: []utils.NullableNumberField{
+			{AttrName: "position", ConfigVal: config.Position, StateVal: state.Position},
+			{AttrName: "rail_group", ConfigVal: config.RailGroup, StateVal: state.RailGroup},
 		},
 	})
 

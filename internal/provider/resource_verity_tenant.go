@@ -40,30 +40,26 @@ type verityTenantResource struct {
 }
 
 type verityTenantResourceModel struct {
-	Name                       types.String                        `tfsdk:"name"`
-	Enable                     types.Bool                          `tfsdk:"enable"`
-	ObjectProperties           []verityTenantObjectPropertiesModel `tfsdk:"object_properties"`
-	Layer3Vni                  types.Int64                         `tfsdk:"layer_3_vni"`
-	Layer3VniAutoAssigned      types.Bool                          `tfsdk:"layer_3_vni_auto_assigned_"`
-	Layer3Vlan                 types.Int64                         `tfsdk:"layer_3_vlan"`
-	Layer3VlanAutoAssigned     types.Bool                          `tfsdk:"layer_3_vlan_auto_assigned_"`
-	DhcpRelaySourceIpv4sSubnet types.String                        `tfsdk:"dhcp_relay_source_ipv4s_subnet"`
-	DhcpRelaySourceIpv6sSubnet types.String                        `tfsdk:"dhcp_relay_source_ipv6s_subnet"`
-	RouteDistinguisher         types.String                        `tfsdk:"route_distinguisher"`
-	RouteTargetImport          types.String                        `tfsdk:"route_target_import"`
-	RouteTargetExport          types.String                        `tfsdk:"route_target_export"`
-	ImportRouteMap             types.String                        `tfsdk:"import_route_map"`
-	ImportRouteMapRefType      types.String                        `tfsdk:"import_route_map_ref_type_"`
-	ExportRouteMap             types.String                        `tfsdk:"export_route_map"`
-	ExportRouteMapRefType      types.String                        `tfsdk:"export_route_map_ref_type_"`
-	VrfName                    types.String                        `tfsdk:"vrf_name"`
-	VrfNameAutoAssigned        types.Bool                          `tfsdk:"vrf_name_auto_assigned_"`
-	RouteTenants               []verityTenantRouteTenantModel      `tfsdk:"route_tenants"`
-	DefaultOriginate           types.Bool                          `tfsdk:"default_originate"`
-}
-
-type verityTenantObjectPropertiesModel struct {
-	Group types.String `tfsdk:"group"`
+	Name                       types.String                   `tfsdk:"name"`
+	Enable                     types.Bool                     `tfsdk:"enable"`
+	Layer3Vni                  types.Int64                    `tfsdk:"layer_3_vni"`
+	Layer3VniAutoAssigned      types.Bool                     `tfsdk:"layer_3_vni_auto_assigned_"`
+	Layer3Vlan                 types.Int64                    `tfsdk:"layer_3_vlan"`
+	Layer3VlanAutoAssigned     types.Bool                     `tfsdk:"layer_3_vlan_auto_assigned_"`
+	DhcpRelaySourceIpv4sSubnet types.String                   `tfsdk:"dhcp_relay_source_ipv4s_subnet"`
+	DhcpRelaySourceIpv6sSubnet types.String                   `tfsdk:"dhcp_relay_source_ipv6s_subnet"`
+	RouteDistinguisher         types.String                   `tfsdk:"route_distinguisher"`
+	RouteTargetImport          types.String                   `tfsdk:"route_target_import"`
+	RouteTargetExport          types.String                   `tfsdk:"route_target_export"`
+	ImportRouteMap             types.String                   `tfsdk:"import_route_map"`
+	ImportRouteMapRefType      types.String                   `tfsdk:"import_route_map_ref_type_"`
+	ExportRouteMap             types.String                   `tfsdk:"export_route_map"`
+	ExportRouteMapRefType      types.String                   `tfsdk:"export_route_map_ref_type_"`
+	VrfName                    types.String                   `tfsdk:"vrf_name"`
+	VrfNameAutoAssigned        types.Bool                     `tfsdk:"vrf_name_auto_assigned_"`
+	RouteTenants               []verityTenantRouteTenantModel `tfsdk:"route_tenants"`
+	DefaultOriginate           types.Bool                     `tfsdk:"default_originate"`
+	TenantType                 types.String                   `tfsdk:"tenant_type"`
 }
 
 type verityTenantRouteTenantModel struct {
@@ -194,20 +190,13 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
+			"tenant_type": schema.StringAttribute{
+				Description: "Tenant type classification",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
-			"object_properties": schema.ListNestedBlock{
-				Description: "Object properties for the tenant",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
-					},
-				},
-			},
 			"route_tenants": schema.ListNestedBlock{
 				Description: "Route tenants configuration",
 				NestedObject: schema.NestedBlockObject{
@@ -297,6 +286,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		{FieldName: "ImportRouteMapRefType", APIField: &tenantReq.ImportRouteMapRefType, TFValue: plan.ImportRouteMapRefType},
 		{FieldName: "ExportRouteMap", APIField: &tenantReq.ExportRouteMap, TFValue: plan.ExportRouteMap},
 		{FieldName: "ExportRouteMapRefType", APIField: &tenantReq.ExportRouteMapRefType, TFValue: plan.ExportRouteMapRefType},
+		{FieldName: "TenantType", APIField: &tenantReq.TenantType, TFValue: plan.TenantType},
 	})
 
 	// Handle boolean fields
@@ -304,16 +294,6 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		{FieldName: "Enable", APIField: &tenantReq.Enable, TFValue: plan.Enable},
 		{FieldName: "DefaultOriginate", APIField: &tenantReq.DefaultOriginate, TFValue: plan.DefaultOriginate},
 	})
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-		})
-		tenantReq.ObjectProperties = &objProps
-	}
 
 	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
 		tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(true)
@@ -596,27 +576,11 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetStringField(plan.RouteDistinguisher, state.RouteDistinguisher, func(v *string) { tenantReq.RouteDistinguisher = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouteTargetImport, state.RouteTargetImport, func(v *string) { tenantReq.RouteTargetImport = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouteTargetExport, state.RouteTargetExport, func(v *string) { tenantReq.RouteTargetExport = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.TenantType, state.TenantType, func(v *string) { tenantReq.TenantType = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { tenantReq.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.DefaultOriginate, state.DefaultOriginate, func(v *bool) { tenantReq.DefaultOriginate = v }, &hasChanges)
-
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties{}
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
-		objPropsChanged := false
-
-		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-		}, &objPropsChanged)
-
-		if objPropsChanged {
-			tenantReq.ObjectProperties = &objProps
-			hasChanges = true
-		}
-	}
 
 	// Handle Layer3Vni and Layer3VniAutoAssigned changes
 	layer3VniChanged := !plan.Layer3Vni.IsUnknown() && !plan.Layer3Vni.Equal(state.Layer3Vni)
@@ -967,20 +931,7 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	state.ExportRouteMap = utils.MapStringWithMode(tenantData, "export_route_map", resourceType, mode)
 	state.ExportRouteMapRefType = utils.MapStringWithMode(tenantData, "export_route_map_ref_type_", resourceType, mode)
 	state.VrfName = utils.MapStringWithMode(tenantData, "vrf_name", resourceType, mode)
-
-	// Handle object_properties block
-	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if op, ok := tenantData["object_properties"].(map[string]interface{}); ok {
-			objProps := verityTenantObjectPropertiesModel{
-				Group: utils.MapStringWithModeNested(op, "group", resourceType, "object_properties.group", mode),
-			}
-			state.ObjectProperties = []verityTenantObjectPropertiesModel{objProps}
-		} else {
-			state.ObjectProperties = nil
-		}
-	} else {
-		state.ObjectProperties = nil
-	}
+	state.TenantType = utils.MapStringWithMode(tenantData, "tenant_type", resourceType, mode)
 
 	// Handle route_tenants block
 	if utils.FieldAppliesToMode(resourceType, "route_tenants", mode) {
@@ -1043,7 +994,7 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		"route_distinguisher", "route_target_import", "route_target_export",
 		"import_route_map", "import_route_map_ref_type_",
 		"export_route_map", "export_route_map_ref_type_",
-		"vrf_name",
+		"vrf_name", "tenant_type",
 	)
 
 	nullifier.NullifyBools(
@@ -1055,12 +1006,6 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 	nullifier.NullifyInt64s(
 		"layer_3_vni", "layer_3_vlan",
 	)
-
-	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
-	})
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "route_tenants",

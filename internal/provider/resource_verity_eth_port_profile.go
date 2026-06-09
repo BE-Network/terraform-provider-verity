@@ -55,7 +55,6 @@ type verityEthPortProfileResourceModel struct {
 }
 
 type verityEthPortProfileObjectPropertiesModel struct {
-	Group          types.String `tfsdk:"group"`
 	PortMonitoring types.String `tfsdk:"port_monitoring"`
 	SortByName     types.Bool   `tfsdk:"sort_by_name"`
 	Label          types.String `tfsdk:"label"`
@@ -167,11 +166,6 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 				Description: "Object properties for the profile",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
 						"port_monitoring": schema.StringAttribute{
 							Description: "Defines importance of Link Down on this port",
 							Optional:    true,
@@ -316,7 +310,6 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		op := plan.ObjectProperties[0]
 		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
 			{Name: "PortMonitoring", TFValue: op.PortMonitoring, APIValue: &objProps.PortMonitoring},
 			{Name: "SortByName", TFValue: op.SortByName, APIValue: &objProps.SortByName},
 			{Name: "Label", TFValue: op.Label, APIValue: &objProps.Label},
@@ -545,7 +538,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		objPropsChanged := false
 
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
 			{Name: "PortMonitoring", PlanValue: op.PortMonitoring, StateValue: st.PortMonitoring, APIValue: &objProps.PortMonitoring},
 			{Name: "SortByName", PlanValue: op.SortByName, StateValue: st.SortByName, APIValue: &objProps.SortByName},
 			{Name: "Label", PlanValue: op.Label, StateValue: st.Label, APIValue: &objProps.Label},
@@ -813,7 +805,6 @@ func populateEthPortProfileState(ctx context.Context, state verityEthPortProfile
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityEthPortProfileObjectPropertiesModel{
-				Group:          utils.MapStringWithModeNested(objProps, "group", resourceType, "object_properties.group", mode),
 				PortMonitoring: utils.MapStringWithModeNested(objProps, "port_monitoring", resourceType, "object_properties.port_monitoring", mode),
 				SortByName:     utils.MapBoolWithModeNested(objProps, "sort_by_name", resourceType, "object_properties.sort_by_name", mode),
 				Label:          utils.MapStringWithModeNested(objProps, "label", resourceType, "object_properties.label", mode),
@@ -909,7 +900,7 @@ func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resou
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "object_properties",
 		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group", "port_monitoring", "label", "icon"},
+		StringFields: []string{"port_monitoring", "label", "icon"},
 		BoolFields:   []string{"sort_by_name"},
 	})
 

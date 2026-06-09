@@ -40,7 +40,6 @@ type veritySfpBreakoutResource struct {
 
 type veritySfpBreakoutResourceModel struct {
 	Name             types.String                            `tfsdk:"name"`
-	Enable           types.Bool                              `tfsdk:"enable"`
 	Breakout         []veritySfpBreakoutBreakoutModel        `tfsdk:"breakout"`
 	ObjectProperties *veritySfpBreakoutObjectPropertiesModel `tfsdk:"object_properties"`
 }
@@ -95,11 +94,6 @@ func (r *veritySfpBreakoutResource) Schema(ctx context.Context, req resource.Sch
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-			},
-			"enable": schema.BoolAttribute{
-				Description: "Enable object.",
-				Optional:    true,
-				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -288,9 +282,6 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sfpBreakoutProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
-	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sfpBreakoutProps.Enable = v }, &hasChanges)
-
 	// Handle object properties
 	if (plan.ObjectProperties == nil) != (state.ObjectProperties == nil) {
 		if plan.ObjectProperties != nil {
@@ -422,9 +413,6 @@ func populateSfpBreakoutState(ctx context.Context, state veritySfpBreakoutResour
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
-	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
-
 	// Handle breakout block
 	if utils.FieldAppliesToMode(resourceType, "breakout", mode) {
 		if breakoutData, ok := data["breakout"].([]interface{}); ok && len(breakoutData) > 0 {
@@ -486,10 +474,6 @@ func (r *veritySfpBreakoutResource) ModifyPlan(ctx context.Context, req resource
 		Mode:         mode,
 		Plan:         &resp.Plan,
 	}
-
-	nullifier.NullifyBools(
-		"enable",
-	)
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "breakout",

@@ -39,10 +39,13 @@ type verityServiceResource struct {
 	notifyOperationAdded func()
 }
 
+type verityServiceObjectPropertiesModel struct {
+	WarnOnNoExternalSource types.Bool `tfsdk:"warn_on_no_external_source"`
+}
+
 type verityServiceResourceModel struct {
 	Name                                        types.String                         `tfsdk:"name"`
 	Enable                                      types.Bool                           `tfsdk:"enable"`
-	ObjectProperties                            []verityServiceObjectPropertiesModel `tfsdk:"object_properties"`
 	Vlan                                        types.Int64                          `tfsdk:"vlan"`
 	Vni                                         types.Int64                          `tfsdk:"vni"`
 	VniAutoAssigned                             types.Bool                           `tfsdk:"vni_auto_assigned_"`
@@ -69,12 +72,7 @@ type verityServiceResourceModel struct {
 	MstInstance                                 types.Int64                          `tfsdk:"mst_instance"`
 	PolicyBasedRouting                          types.String                         `tfsdk:"policy_based_routing"`
 	PolicyBasedRoutingRefType                   types.String                         `tfsdk:"policy_based_routing_ref_type_"`
-}
-
-type verityServiceObjectPropertiesModel struct {
-	Group                  types.String `tfsdk:"group"`
-	OnSummary              types.Bool   `tfsdk:"on_summary"`
-	WarnOnNoExternalSource types.Bool   `tfsdk:"warn_on_no_external_source"`
+	ObjectProperties                            []verityServiceObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
 func (r *verityServiceResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -250,19 +248,9 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 		},
 		Blocks: map[string]schema.Block{
 			"object_properties": schema.ListNestedBlock{
-				Description: "Object properties for the service",
+				Description: "Object properties for the service.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"group": schema.StringAttribute{
-							Description: "Group",
-							Optional:    true,
-							Computed:    true,
-						},
-						"on_summary": schema.BoolAttribute{
-							Description: "Show on the summary view",
-							Optional:    true,
-							Computed:    true,
-						},
 						"warn_on_no_external_source": schema.BoolAttribute{
 							Description: "Warn if there is not outbound path for service in SD-Router or a Service Port Profile",
 							Optional:    true,
@@ -354,18 +342,6 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: config.MstInstance, IsConfigured: configuredAttrs.IsConfigured("mst_instance")},
 	})
 
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
-		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
-			{Name: "Group", TFValue: op.Group, APIValue: &objProps.Group},
-			{Name: "OnSummary", TFValue: op.OnSummary, APIValue: &objProps.OnSummary},
-			{Name: "WarnOnNoExternalSource", TFValue: op.WarnOnNoExternalSource, APIValue: &objProps.WarnOnNoExternalSource},
-		})
-		serviceReq.ObjectProperties = &objProps
-	}
-
 	// Handle auto-assigned VNI logic
 	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		serviceReq.VniAutoAssigned = openapi.PtrBool(true)
@@ -384,6 +360,16 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		if !plan.VniAutoAssigned.IsNull() {
 			serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
 		}
+	}
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
+		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
+			{Name: "WarnOnNoExternalSource", TFValue: op.WarnOnNoExternalSource, APIValue: &objProps.WarnOnNoExternalSource},
+		})
+		serviceReq.ObjectProperties = &objProps
 	}
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "service", name, *serviceReq, &resp.Diagnostics)
@@ -605,25 +591,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetNullableInt64Field(config.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, configuredAttrs.IsConfigured("max_downstream_rate_mbps"), func(v *openapi.NullableInt32) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MstInstance, state.MstInstance, configuredAttrs.IsConfigured("mst_instance"), func(v *openapi.NullableInt32) { serviceReq.MstInstance = *v }, &hasChanges)
 
-	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
-		objPropsChanged := false
-
-		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
-			{Name: "Group", PlanValue: op.Group, StateValue: st.Group, APIValue: &objProps.Group},
-			{Name: "OnSummary", PlanValue: op.OnSummary, StateValue: st.OnSummary, APIValue: &objProps.OnSummary},
-			{Name: "WarnOnNoExternalSource", PlanValue: op.WarnOnNoExternalSource, StateValue: st.WarnOnNoExternalSource, APIValue: &objProps.WarnOnNoExternalSource},
-		}, &objPropsChanged)
-
-		if objPropsChanged {
-			serviceReq.ObjectProperties = &objProps
-			hasChanges = true
-		}
-	}
-
 	// Handle VLAN changes (preserve special handling for Unknown state)
 	if !plan.Vlan.IsUnknown() && !plan.Vlan.Equal(state.Vlan) {
 		utils.CompareAndSetNullableInt64Field(config.Vlan, state.Vlan, configuredAttrs.IsConfigured("vlan"), func(v *openapi.NullableInt32) { serviceReq.Vlan = *v }, &hasChanges)
@@ -708,6 +675,23 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
+	}
+
+	// Handle object properties
+	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
+		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		st := state.ObjectProperties[0]
+		objPropsChanged := false
+
+		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
+			{Name: "WarnOnNoExternalSource", PlanValue: op.WarnOnNoExternalSource, StateValue: st.WarnOnNoExternalSource, APIValue: &objProps.WarnOnNoExternalSource},
+		}, &objPropsChanged)
+
+		if objPropsChanged {
+			serviceReq.ObjectProperties = &objProps
+			hasChanges = true
+		}
 	}
 
 	if !hasChanges {
@@ -823,13 +807,11 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if op, ok := serviceData["object_properties"].(map[string]interface{}); ok {
-			objProps := verityServiceObjectPropertiesModel{
-				Group:                  utils.MapStringWithModeNested(op, "group", resourceType, "object_properties.group", mode),
-				OnSummary:              utils.MapBoolWithModeNested(op, "on_summary", resourceType, "object_properties.on_summary", mode),
-				WarnOnNoExternalSource: utils.MapBoolWithModeNested(op, "warn_on_no_external_source", resourceType, "object_properties.warn_on_no_external_source", mode),
+		if objProps, ok := serviceData["object_properties"].(map[string]interface{}); ok {
+			objPropsModel := verityServiceObjectPropertiesModel{
+				WarnOnNoExternalSource: utils.MapBoolWithModeNested(objProps, "warn_on_no_external_source", resourceType, "object_properties.warn_on_no_external_source", mode),
 			}
-			state.ObjectProperties = []verityServiceObjectPropertiesModel{objProps}
+			state.ObjectProperties = []verityServiceObjectPropertiesModel{objPropsModel}
 		} else {
 			state.ObjectProperties = nil
 		}
@@ -893,10 +875,9 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 	)
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
-		BlockName:    "object_properties",
-		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"group"},
-		BoolFields:   []string{"on_summary", "warn_on_no_external_source"},
+		BlockName:  "object_properties",
+		ItemCount:  len(plan.ObjectProperties),
+		BoolFields: []string{"warn_on_no_external_source"},
 	})
 
 	// =========================================================================
