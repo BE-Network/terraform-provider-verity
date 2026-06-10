@@ -7109,7 +7109,7 @@ components:
           type: array
         ntp_servers:
           items:
-            $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_ntp_servers_inner"
+            $ref: "#/components/schemas/_devicesettings_put_request_eth_device_profiles_value_dns_servers_inner"
           type: array
         syslog_servers:
           items:
@@ -7140,6 +7140,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         spanning_tree_priority:
           default: byLevel
           description: "STP per switch, priority are in 4096 increments, the lower\
@@ -7431,12 +7432,14 @@ components:
           maximum: 65535
           nullable: true
           type: integer
+          default: null
         source_port_2:
           description: This field will only be used in the range TCP/UDP port value
             match operation to define the top value in the range.
           maximum: 65535
           nullable: true
           type: integer
+          default: null
         destination_ip:
           default: ""
           description: This field matches the destination IP address of an IPv4 packet.
@@ -7460,12 +7463,14 @@ components:
           maximum: 65535
           nullable: true
           type: integer
+          default: null
         destination_port_2:
           description: This field will only be used in the range TCP/UDP port value
             match operation to define the top value in the range.
           maximum: 65535
           nullable: true
           type: integer
+          default: null
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
       type: object
@@ -7553,6 +7558,7 @@ components:
           maximum: 9
           nullable: true
           type: integer
+          default: null
         object_properties:
           $ref: "#/components/schemas/_acls_put_request_ip_filter_value_object_properties"
       type: object
@@ -7589,21 +7595,6 @@ components:
             $ref: "#/components/schemas/_ethportprofiles_put_request_eth_port_profile__value"
           properties: {}
           type: object
-      type: object
-    _devicesettings_put_request_eth_device_profiles_value_ntp_servers_inner:
-      properties:
-        enabled:
-          default: false
-          description: Enable NTP server
-          type: boolean
-        server:
-          default: ""
-          description: "IPv4, IPv6, or DNS name for NTP server"
-          type: string
-        index:
-          description: The index identifying the object. Zero if you want to add an
-            object to the list.
-          type: integer
       type: object
     _serviceportprofiles_put_request_service_port_profile_value_object_properties:
       properties:
@@ -8240,12 +8231,14 @@ components:
           maximum: 32
           nullable: true
           type: integer
+          default: null
         less_than_equal_value:
           description: Match IP routes with a subnet mask less than or equal to the
             value indicated
           maximum: 32
           nullable: true
           type: integer
+          default: null
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
@@ -8560,6 +8553,10 @@ components:
           - ldap
           - radius
           type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _voiceportprofiles_put_request_voice_port_profiles_value_object_properties:
       properties:
@@ -8603,6 +8600,7 @@ components:
           maximum: 60
           nullable: true
           type: integer
+          default: null
         secret:
           default: ""
           description: TACACS+ shared secret
@@ -8837,6 +8835,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         bgp_as_number_auto_assigned_:
           description: Whether or not the value in bgp_as_number field has been automatically
             assigned or not. Set to false and change bgp_as_number value to edit.
@@ -9737,6 +9736,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         less_than_equal_value:
           description: Match IP routes with a subnet mask less than or equal to the
             value indicated
@@ -9744,6 +9744,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
@@ -9842,6 +9843,7 @@ components:
           maximum: 4294967295
           nullable: true
           type: integer
+          default: null
         fabric_interconnect:
           default: false
           description: ""
@@ -9891,6 +9893,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         source_ip_address:
           default: ""
           description: Source IP address used to override the default source address
@@ -9950,12 +9953,14 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         local_as_number:
           description: Local AS Number to use as an override to switch AS number
           maximum: 4294967295
           minimum: 1
           nullable: true
           type: integer
+          default: null
         local_as_no_prepend:
           default: false
           description: Do not prepend the local-as number to the AS-PATH for routes
@@ -10145,6 +10150,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         fallback:
           default: false
           description: Allows an active member interface to establish a connection
@@ -10163,6 +10169,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         object_properties:
           $ref: "#/components/schemas/_lags_put_request_lag_value_object_properties"
       type: object
@@ -10297,6 +10304,7 @@ components:
           minimum: 2
           nullable: true
           type: integer
+          default: null
         row_num_ingress_acl:
           default: ""
           description: Choose an ingress access control list
@@ -10425,12 +10433,14 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         match_interface_vlan:
           description: Match Interface VLAN
           maximum: 4094
           minimum: 1
           nullable: true
           type: integer
+          default: null
         match_ipv4_address_ip_prefix_list:
           default: ""
           description: Match IPv4 Address IPv4 Prefix List
@@ -10472,12 +10482,14 @@ components:
           maximum: 4294967295
           nullable: true
           type: integer
+          default: null
         match_metric:
           description: 'Match Metric of the IP route entry '
           maximum: 4294967295
           minimum: 1
           nullable: true
           type: integer
+          default: null
         match_origin:
           default: ""
           description: 'Match routes based on the value of the BGP Origin attribute '
@@ -10498,12 +10510,14 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         match_peer_vlan:
           description: 'Match BGP Peer VLAN over which the route was learned '
           maximum: 4094
           minimum: 1
           nullable: true
           type: integer
+          default: null
         match_source_protocol:
           default: ""
           description: 'Match Routing  Protocol the route originated from '
@@ -10529,9 +10543,11 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         match_evpn_route_type_default:
           description: Match based on the type of EVPN Route Type being Default"
           type: boolean
+          default: null
         match_evpn_route_type:
           default: ""
           description: Match based on the indicated EVPN Route Type
@@ -10547,6 +10563,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         object_properties:
           $ref: "#/components/schemas/_routemapclauses_put_request_route_map_clause_value_object_properties"
       type: object
@@ -10787,6 +10804,7 @@ components:
           minimum: 1312
           nullable: true
           type: integer
+          default: null
         max_bit_rate:
           default: "-1"
           description: Maximum Bit Rate allowed
@@ -11314,6 +11332,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         leaf_bgp_keep_alive_timer:
           default: 60
           description: Leaf BGP Keep Alive Timer
@@ -11414,14 +11433,17 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         max_sus:
           description: Maximum number of SUs allowed per POD
           nullable: true
           type: integer
+          default: null
         max_pods:
           description: Maximum number of PODs allowed in the Fabric
           nullable: true
           type: integer
+          default: null
         object_properties:
           $ref: "#/components/schemas/_sites_put_request_site_value_object_properties"
         ip_source_guard:
@@ -12063,6 +12085,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         vni:
           description: "Identifies the service within the VXLAN fabric - Range is\
             \ 1-16777215. If not using auto, must be outside of the reserved range\
@@ -12071,6 +12094,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         vni_auto_assigned_:
           description: Whether or not the value in vni field has been automatically
             assigned or not. Set to false and change vni value to edit.
@@ -12115,6 +12139,7 @@ components:
           minimum: 1312
           nullable: true
           type: integer
+          default: null
         object_properties:
           $ref: "#/components/schemas/_services_put_request_service_value_object_properties"
         max_upstream_rate_mbps:
@@ -12123,12 +12148,14 @@ components:
           maximum: 10000
           nullable: true
           type: integer
+          default: null
         max_downstream_rate_mbps:
           description: Bandwidth allocated per port in the downstream direction. (Max
             10000 Mbps)
           maximum: 10000
           nullable: true
           type: integer
+          default: null
         packet_priority:
           default: "0"
           description: Priority untagged packets will be tagged with on ingress to
@@ -12333,6 +12360,7 @@ components:
           maximum: 255
           nullable: true
           type: integer
+          default: null
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
@@ -12840,6 +12868,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         layer_3_vni_auto_assigned_:
           description: Whether or not the value in layer_3_vni field has been automatically
             assigned or not. Set to false and change layer_3_vni value to edit.
@@ -12851,6 +12880,7 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         layer_3_vlan_auto_assigned_:
           description: Whether or not the value in layer_3_vlan field has been automatically
             assigned or not. Set to false and change layer_3_vlan value to edit.
@@ -12990,12 +13020,14 @@ components:
           minimum: 1
           nullable: true
           type: integer
+          default: null
         row_num_limit_in:
           description: Speed of ingress (Mbps)
           maximum: 10000
           minimum: 1
           nullable: true
           type: integer
+          default: null
         row_num_limit_out:
           default: 1000
           description: Speed of egress (Mbps)

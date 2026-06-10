@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Enabled** | Pointer to **bool** | Enable this login method | [optional] [default to true]
 **LoginMethod** | Pointer to **string** | Authentication method for remote access (SSH, etc.) | [optional] [default to "local"]
+**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -75,6 +76,31 @@ SetLoginMethod sets LoginMethod field to given value.
 `func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) HasLoginMethod() bool`
 
 HasLoginMethod returns a boolean if a field has been set.
+
+### GetIndex
+
+`func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) GetIndex() int32`
+
+GetIndex returns the Index field if non-nil, zero value otherwise.
+
+### GetIndexOk
+
+`func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) GetIndexOk() (*int32, bool)`
+
+GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIndex
+
+`func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) SetIndex(v int32)`
+
+SetIndex sets Index field to given value.
+
+### HasIndex
+
+`func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) HasIndex() bool`
+
+HasIndex returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

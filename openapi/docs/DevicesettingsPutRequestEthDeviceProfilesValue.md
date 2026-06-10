@@ -20,7 +20,7 @@ Name | Type | Description | Notes
 **CutThroughSwitching** | Pointer to **bool** | Enable Cut-through Switching on all Switches | [optional] [default to false]
 **LoginBanner** | Pointer to **string** | Banner message displayed at login | [optional] [default to ""]
 **DnsServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner.md) |  | [optional] 
-**NtpServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner.md) |  | [optional] 
+**NtpServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner.md) |  | [optional] 
 **SyslogServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
 **DeviceAaaProfile** | Pointer to **string** | Device AAA Profile for authentication settings | [optional] [default to ""]
@@ -500,20 +500,20 @@ HasDnsServers returns a boolean if a field has been set.
 
 ### GetNtpServers
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner`
 
 GetNtpServers returns the NtpServers field if non-nil, zero value otherwise.
 
 ### GetNtpServersOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServersOk() (*[]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServersOk() (*[]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, bool)`
 
 GetNtpServersOk returns a tuple with the NtpServers field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetNtpServers
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpServers(v []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpServers(v []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner)`
 
 SetNtpServers sets NtpServers field to given value.
 

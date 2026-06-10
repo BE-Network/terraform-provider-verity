@@ -50,7 +50,7 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	// Banner message displayed at login
 	LoginBanner *string `json:"login_banner,omitempty"`
 	DnsServers []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner `json:"dns_servers,omitempty"`
-	NtpServers []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner `json:"ntp_servers,omitempty"`
+	NtpServers []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner `json:"ntp_servers,omitempty"`
 	SyslogServers []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner `json:"syslog_servers,omitempty"`
 	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 	// Device AAA Profile for authentication settings
@@ -709,9 +709,9 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDnsServers(v []Devic
 }
 
 // GetNtpServers returns the NtpServers field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
 	if o == nil || IsNil(o.NtpServers) {
-		var ret []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner
+		var ret []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner
 		return ret
 	}
 	return o.NtpServers
@@ -719,7 +719,7 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []Devic
 
 // GetNtpServersOk returns a tuple with the NtpServers field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, bool) {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, bool) {
 	if o == nil || IsNil(o.NtpServers) {
 		return nil, false
 	}
@@ -735,8 +735,8 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpServers() bool {
 	return false
 }
 
-// SetNtpServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner and assigns it to the NtpServers field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpServers(v []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) {
+// SetNtpServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner and assigns it to the NtpServers field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpServers(v []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner) {
 	o.NtpServers = v
 }
 
