@@ -120,6 +120,46 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.GatewayProfilesAPI.GatewayprofilesGet(ctx).Execute()
 		},
 	},
+	"device_aaa_profile": {
+		ResourceType:     "device_aaa_profile",
+		PutRequestType:   reflect.TypeOf(openapi.DeviceaaaprofilesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.DeviceaaaprofilesPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "device_aaa_profile"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.DeviceAAAProfilesAPI.DeviceaaaprofilesPut(ctx).DeviceaaaprofilesPutRequest(*req.(*openapi.DeviceaaaprofilesPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.DeviceAAAProfilesAPI.DeviceaaaprofilesPatch(ctx).DeviceaaaprofilesPutRequest(*req.(*openapi.DeviceaaaprofilesPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.DeviceAAAProfilesAPI.DeviceaaaprofilesDelete(ctx).DeviceAaaProfileName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.DeviceAAAProfilesAPI.DeviceaaaprofilesGet(ctx).Execute()
+		},
+	},
+	"tacacs_profile": {
+		ResourceType:     "tacacs_profile",
+		PutRequestType:   reflect.TypeOf(openapi.TacacsprofilesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.TacacsprofilesPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "tacacs_profile"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.TACACSProfilesAPI.TacacsprofilesPut(ctx).TacacsprofilesPutRequest(*req.(*openapi.TacacsprofilesPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.TACACSProfilesAPI.TacacsprofilesPatch(ctx).TacacsprofilesPutRequest(*req.(*openapi.TacacsprofilesPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.TACACSProfilesAPI.TacacsprofilesDelete(ctx).TacacsProfileName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.TACACSProfilesAPI.TacacsprofilesGet(ctx).Execute()
+		},
+	},
 	"grouping_rule": {
 		ResourceType:     "grouping_rule",
 		PutRequestType:   reflect.TypeOf(openapi.GroupingrulesPutRequest{}),
@@ -370,6 +410,26 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.SwitchpointsAPI.SwitchpointsGet(ctx).Execute()
 		},
 	},
+	"pair": {
+		ResourceType:     "pair",
+		PutRequestType:   reflect.TypeOf(openapi.PairsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.PairsPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "pair"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.SwitchPairsAPI.PairsPut(ctx).PairsPutRequest(*req.(*openapi.PairsPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.SwitchPairsAPI.PairsPatch(ctx).PairsPutRequest(*req.(*openapi.PairsPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.SwitchPairsAPI.PairsDelete(ctx).SwitchPairName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.SwitchPairsAPI.PairsGet(ctx).Execute()
+		},
+	},
 	"authenticated_eth_port": {
 		ResourceType:     "authenticated_eth_port",
 		PutRequestType:   reflect.TypeOf(openapi.AuthenticatedethportsPutRequest{}),
@@ -488,6 +548,26 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
 			return c.CommunityListsAPI.CommunitylistsGet(ctx).Execute()
+		},
+	},
+	"mac_filter": {
+		ResourceType:     "mac_filter",
+		PutRequestType:   reflect.TypeOf(openapi.MacfiltersPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.MacfiltersPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "mac_filter"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.MACFiltersAPI.MacfiltersPut(ctx).MacfiltersPutRequest(*req.(*openapi.MacfiltersPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.MACFiltersAPI.MacfiltersPatch(ctx).MacfiltersPutRequest(*req.(*openapi.MacfiltersPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.MACFiltersAPI.MacfiltersDelete(ctx).MacFilterName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.MACFiltersAPI.MacfiltersGet(ctx).Execute()
 		},
 	},
 	"device_settings": {
@@ -844,6 +924,46 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
 			return c.SpinePlanesAPI.SpineplanesGet(ctx).Execute()
+		},
+	},
+	"ssp_group": {
+		ResourceType:     "ssp_group",
+		PutRequestType:   reflect.TypeOf(openapi.SspgroupsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.SspgroupsPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "ssp_group"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.SuperSpineGroupsAPI.SspgroupsPut(ctx).SspgroupsPutRequest(*req.(*openapi.SspgroupsPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.SuperSpineGroupsAPI.SspgroupsPatch(ctx).SspgroupsPutRequest(*req.(*openapi.SspgroupsPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.SuperSpineGroupsAPI.SspgroupsDelete(ctx).SuperspineGroupName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.SuperSpineGroupsAPI.SspgroupsGet(ctx).Execute()
+		},
+	},
+	"su": {
+		ResourceType:     "su",
+		PutRequestType:   reflect.TypeOf(openapi.SusPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.SusPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "su"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.SUsAPI.SusPut(ctx).SusPutRequest(*req.(*openapi.SusPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.SUsAPI.SusPatch(ctx).SusPutRequest(*req.(*openapi.SusPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.SUsAPI.SusDelete(ctx).SuName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.SUsAPI.SusGet(ctx).Execute()
 		},
 	},
 }

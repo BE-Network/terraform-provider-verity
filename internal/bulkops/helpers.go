@@ -213,6 +213,36 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					}
 					return result.GatewayProfile, nil
 
+				case "device_aaa_profile":
+					resp, err := m.client.DeviceAAAProfilesAPI.DeviceaaaprofilesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						DeviceAaaProfile map[string]interface{} `json:"device_aaa_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.DeviceAaaProfile, nil
+
+				case "tacacs_profile":
+					resp, err := m.client.TACACSProfilesAPI.TacacsprofilesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						TacacsProfile map[string]interface{} `json:"tacacs_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.TacacsProfile, nil
+
 				case "eth_port_profile":
 					resp, err := m.client.EthPortProfilesAPI.EthportprofilesGet(apiCtx).Execute()
 					if err != nil {
@@ -447,6 +477,21 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					}
 					return result.CommunityList, nil
 
+				case "mac_filter":
+					resp, err := m.client.MACFiltersAPI.MacfiltersGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						MacFilter map[string]interface{} `json:"mac_filter"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.MacFilter, nil
+
 				case "extended_community_list":
 					resp, err := m.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(apiCtx).Execute()
 					if err != nil {
@@ -536,6 +581,21 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 						return nil, err
 					}
 					return result.ServicePortProfile, nil
+
+				case "pair":
+					resp, err := m.client.SwitchPairsAPI.PairsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						SwitchPair map[string]interface{} `json:"switch_pair"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.SwitchPair, nil
 
 				case "switchpoint":
 					resp, err := m.client.SwitchpointsAPI.SwitchpointsGet(apiCtx).Execute()
@@ -687,6 +747,36 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					}
 					return result.SpinePlane, nil
 
+				case "ssp_group":
+					resp, err := m.client.SuperSpineGroupsAPI.SspgroupsGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						SuperspineGroup map[string]interface{} `json:"superspine_group"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.SuperspineGroup, nil
+
+				case "su":
+					resp, err := m.client.SUsAPI.SusGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Su map[string]interface{} `json:"su"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Su, nil
+
 				case "grouping_rule":
 					resp, err := m.client.GroupingRulesAPI.GroupingrulesGet(apiCtx).Execute()
 					if err != nil {
@@ -808,6 +898,22 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 			}
 			putRequest.SetGatewayProfile(profileMap)
 			return putRequest
+		case "device_aaa_profile":
+			putRequest := openapi.NewDeviceaaaprofilesPutRequest()
+			profileMap := make(map[string]openapi.DeviceaaaprofilesPutRequestDeviceAaaProfileValue)
+			for name, props := range filteredData {
+				profileMap[name] = props.(openapi.DeviceaaaprofilesPutRequestDeviceAaaProfileValue)
+			}
+			putRequest.SetDeviceAaaProfile(profileMap)
+			return putRequest
+		case "tacacs_profile":
+			putRequest := openapi.NewTacacsprofilesPutRequest()
+			profileMap := make(map[string]openapi.TacacsprofilesPutRequestTacacsProfileValue)
+			for name, props := range filteredData {
+				profileMap[name] = props.(openapi.TacacsprofilesPutRequestTacacsProfileValue)
+			}
+			putRequest.SetTacacsProfile(profileMap)
+			return putRequest
 		case "eth_port_profile":
 			putRequest := openapi.NewEthportprofilesPutRequest()
 			profileMap := make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue)
@@ -920,6 +1026,14 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 			}
 			putRequest.SetCommunityList(communityMap)
 			return putRequest
+		case "mac_filter":
+			putRequest := openapi.NewMacfiltersPutRequest()
+			macFilterMap := make(map[string]openapi.MacfiltersPutRequestMacFilterValue)
+			for name, props := range filteredData {
+				macFilterMap[name] = props.(openapi.MacfiltersPutRequestMacFilterValue)
+			}
+			putRequest.SetMacFilter(macFilterMap)
+			return putRequest
 		case "extended_community_list":
 			putRequest := openapi.NewExtendedcommunitylistsPutRequest()
 			extCommunityMap := make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
@@ -960,6 +1074,14 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 				siteMap[name] = props.(openapi.SitesPutRequestSiteValue)
 			}
 			putRequest.SetSite(siteMap)
+			return putRequest
+		case "pair":
+			putRequest := openapi.NewPairsPutRequest()
+			pairMap := make(map[string]openapi.PairsPutRequestSwitchPairValue)
+			for name, props := range filteredData {
+				pairMap[name] = props.(openapi.PairsPutRequestSwitchPairValue)
+			}
+			putRequest.SetSwitchPair(pairMap)
 			return putRequest
 		case "packet_broker":
 			putRequest := openapi.NewPacketbrokerPutRequest()
@@ -1064,6 +1186,22 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 				spinePlaneMap[name] = props.(openapi.SpineplanesPutRequestSpinePlaneValue)
 			}
 			putRequest.SetSpinePlane(spinePlaneMap)
+			return putRequest
+		case "ssp_group":
+			putRequest := openapi.NewSspgroupsPutRequest()
+			sspGroupMap := make(map[string]openapi.SspgroupsPutRequestSuperspineGroupValue)
+			for name, props := range filteredData {
+				sspGroupMap[name] = props.(openapi.SspgroupsPutRequestSuperspineGroupValue)
+			}
+			putRequest.SetSuperspineGroup(sspGroupMap)
+			return putRequest
+		case "su":
+			putRequest := openapi.NewSusPutRequest()
+			suMap := make(map[string]openapi.SusPutRequestSuValue)
+			for name, props := range filteredData {
+				suMap[name] = props.(openapi.SusPutRequestSuValue)
+			}
+			putRequest.SetSu(suMap)
 			return putRequest
 		case "grouping_rule":
 			putRequest := openapi.NewGroupingrulesPutRequest()
