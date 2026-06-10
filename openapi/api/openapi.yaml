@@ -8609,6 +8609,10 @@ components:
           default: ""
           description: TACACS+ shared secret (encrypted)
           type: string
+        index:
+          description: The index identifying the object. Zero if you want to add an
+            object to the list.
+          type: integer
       type: object
     _imageupdatesets_patch_request_image_update_sets_value_section_else_inner:
       properties:

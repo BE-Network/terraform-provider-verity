@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **Timeout** | Pointer to **NullableInt32** | TACACS+ server timeout in seconds | [optional] 
 **Secret** | Pointer to **string** | TACACS+ shared secret | [optional] [default to ""]
 **EncSecret** | Pointer to **string** | TACACS+ shared secret (encrypted) | [optional] [default to ""]
+**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -215,6 +216,31 @@ SetEncSecret sets EncSecret field to given value.
 `func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasEncSecret() bool`
 
 HasEncSecret returns a boolean if a field has been set.
+
+### GetIndex
+
+`func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetIndex() int32`
+
+GetIndex returns the Index field if non-nil, zero value otherwise.
+
+### GetIndexOk
+
+`func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetIndexOk() (*int32, bool)`
+
+GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIndex
+
+`func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetIndex(v int32)`
+
+SetIndex sets Index field to given value.
+
+### HasIndex
+
+`func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasIndex() bool`
+
+HasIndex returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
