@@ -414,9 +414,9 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 
 	// Handle NTP servers
 	if len(plan.NtpServers) > 0 {
-		ntpServers := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, len(plan.NtpServers))
+		ntpServers := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, len(plan.NtpServers))
 		for i, ntp := range plan.NtpServers {
-			ntpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
+			ntpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
 
 			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -753,9 +753,9 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	}
 
 	changedNtpServers, ntpServersChanged := utils.ProcessIndexedArrayUpdates(plan.NtpServers, state.NtpServers,
-		utils.IndexedItemHandler[verityDeviceSettingsNtpServerModel, openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner]{
-			CreateNew: func(planItem verityDeviceSettingsNtpServerModel) openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
-				newNtpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
+		utils.IndexedItemHandler[verityDeviceSettingsNtpServerModel, openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner]{
+			CreateNew: func(planItem verityDeviceSettingsNtpServerModel) openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
+				newNtpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
 
 				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -774,8 +774,8 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 
 				return newNtpServer
 			},
-			UpdateExisting: func(planItem, stateItem verityDeviceSettingsNtpServerModel) (openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, bool) {
-				updateNtpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
+			UpdateExisting: func(planItem, stateItem verityDeviceSettingsNtpServerModel) (openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, bool) {
+				updateNtpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
 				fieldChanged := false
 
 				// Handle boolean field changes
@@ -791,8 +791,8 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 
 				return updateNtpServer, fieldChanged
 			},
-			CreateDeleted: func(index int64) openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
-				return openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{
+			CreateDeleted: func(index int64) openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
+				return openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{
 					Index: openapi.PtrInt32(int32(index)),
 				}
 			},
