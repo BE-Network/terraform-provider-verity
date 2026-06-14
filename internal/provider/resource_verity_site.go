@@ -423,10 +423,167 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 }
 
 func (r *veritySiteResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	resp.Diagnostics.AddError(
-		"Create Not Supported",
-		"Site resources cannot be created. They represent existing site configurations that can only be read and updated.",
-	)
+	var plan veritySiteResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var config veritySiteResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
+		if !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() && plan.AnycastMacAddress.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Anycast MAC Address cannot be specified when auto-assigned",
+				"The 'anycast_mac_address' field cannot be specified in the configuration when 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
+		resp.Diagnostics.AddError(
+			"Failed to Authenticate",
+			fmt.Sprintf("Error authenticating with API: %v", err),
+		)
+		return
+	}
+
+	name := plan.Name.ValueString()
+	siteReq := &openapi.SitesPutRequestSiteValue{
+		Name: openapi.PtrString(name),
+	}
+
+	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "SiteType", APIField: &siteReq.SiteType, TFValue: plan.SiteType},
+		{FieldName: "ServiceForSite", APIField: &siteReq.ServiceForSite, TFValue: plan.ServiceForSite},
+		{FieldName: "ServiceForSiteRefType", APIField: &siteReq.ServiceForSiteRefType, TFValue: plan.ServiceForSiteRefType},
+		{FieldName: "SpanningTreeType", APIField: &siteReq.SpanningTreeType, TFValue: plan.SpanningTreeType},
+		{FieldName: "RegionName", APIField: &siteReq.RegionName, TFValue: plan.RegionName},
+		{FieldName: "DomainForSite", APIField: &siteReq.DomainForSite, TFValue: plan.DomainForSite},
+		{FieldName: "DomainForSiteRefType", APIField: &siteReq.DomainForSiteRefType, TFValue: plan.DomainForSiteRefType},
+		{FieldName: "DscpToPBitMap", APIField: &siteReq.DscpToPBitMap, TFValue: plan.DscpToPBitMap},
+		{FieldName: "SwitchIpBase", APIField: &siteReq.SwitchIpBase, TFValue: plan.SwitchIpBase},
+		{FieldName: "ControllerIpBase", APIField: &siteReq.ControllerIpBase, TFValue: plan.ControllerIpBase},
+		{FieldName: "Loopback0Base", APIField: &siteReq.Loopback0Base, TFValue: plan.Loopback0Base},
+		{FieldName: "BaseBgpAsNumber", APIField: &siteReq.BaseBgpAsNumber, TFValue: plan.BaseBgpAsNumber},
+		{FieldName: "RouterIdBasePrefix", APIField: &siteReq.RouterIdBasePrefix, TFValue: plan.RouterIdBasePrefix},
+		{FieldName: "VtepIdBasePrefix", APIField: &siteReq.VtepIdBasePrefix, TFValue: plan.VtepIdBasePrefix},
+		{FieldName: "PairedIpSubnet", APIField: &siteReq.PairedIpSubnet, TFValue: plan.PairedIpSubnet},
+		{FieldName: "MaxSwitches", APIField: &siteReq.MaxSwitches, TFValue: plan.MaxSwitches},
+	})
+
+	utils.SetBoolFields([]utils.BoolFieldMapping{
+		{FieldName: "Enable", APIField: &siteReq.Enable, TFValue: plan.Enable},
+		{FieldName: "SuSupport", APIField: &siteReq.SuSupport, TFValue: plan.SuSupport},
+		{FieldName: "AllowAllUnderlayConnections", APIField: &siteReq.AllowAllUnderlayConnections, TFValue: plan.AllowAllUnderlayConnections},
+		{FieldName: "ForceSpanningTreeOnFabricPorts", APIField: &siteReq.ForceSpanningTreeOnFabricPorts, TFValue: plan.ForceSpanningTreeOnFabricPorts},
+		{FieldName: "ReadOnlyMode", APIField: &siteReq.ReadOnlyMode, TFValue: plan.ReadOnlyMode},
+		{FieldName: "EnableDscp", APIField: &siteReq.EnableDscp, TFValue: plan.EnableDscp},
+		{FieldName: "AggressiveReporting", APIField: &siteReq.AggressiveReporting, TFValue: plan.AggressiveReporting},
+		{FieldName: "MultiTenant", APIField: &siteReq.MultiTenant, TFValue: plan.MultiTenant},
+		{FieldName: "PauseValidationAlarms", APIField: &siteReq.PauseValidationAlarms, TFValue: plan.PauseValidationAlarms},
+		{FieldName: "EnableDhcpSnooping", APIField: &siteReq.EnableDhcpSnooping, TFValue: plan.EnableDhcpSnooping},
+		{FieldName: "IpSourceGuard", APIField: &siteReq.IpSourceGuard, TFValue: plan.IpSourceGuard},
+	})
+
+	workDir := r.provCtx.workDir
+	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, siteTerraformType, name)
+
+	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
+		{FieldName: "PortAdminPollingInterval", APIField: &siteReq.PortAdminPollingInterval, TFValue: config.PortAdminPollingInterval, IsConfigured: configuredAttrs.IsConfigured("port_admin_polling_interval")},
+		{FieldName: "PortStatusPollingInterval", APIField: &siteReq.PortStatusPollingInterval, TFValue: config.PortStatusPollingInterval, IsConfigured: configuredAttrs.IsConfigured("port_status_polling_interval")},
+		{FieldName: "MacAddressAgingTime", APIField: &siteReq.MacAddressAgingTime, TFValue: config.MacAddressAgingTime, IsConfigured: configuredAttrs.IsConfigured("mac_address_aging_time")},
+		{FieldName: "MlagDelayRestoreTimer", APIField: &siteReq.MlagDelayRestoreTimer, TFValue: config.MlagDelayRestoreTimer, IsConfigured: configuredAttrs.IsConfigured("mlag_delay_restore_timer")},
+		{FieldName: "BgpKeepaliveTimer", APIField: &siteReq.BgpKeepaliveTimer, TFValue: config.BgpKeepaliveTimer, IsConfigured: configuredAttrs.IsConfigured("bgp_keepalive_timer")},
+		{FieldName: "BgpHoldDownTimer", APIField: &siteReq.BgpHoldDownTimer, TFValue: config.BgpHoldDownTimer, IsConfigured: configuredAttrs.IsConfigured("bgp_hold_down_timer")},
+		{FieldName: "SpineBgpAdvertisementInterval", APIField: &siteReq.SpineBgpAdvertisementInterval, TFValue: config.SpineBgpAdvertisementInterval, IsConfigured: configuredAttrs.IsConfigured("spine_bgp_advertisement_interval")},
+		{FieldName: "SpineBgpConnectTimer", APIField: &siteReq.SpineBgpConnectTimer, TFValue: config.SpineBgpConnectTimer, IsConfigured: configuredAttrs.IsConfigured("spine_bgp_connect_timer")},
+		{FieldName: "SpineAsNumber", APIField: &siteReq.SpineAsNumber, TFValue: config.SpineAsNumber, IsConfigured: configuredAttrs.IsConfigured("spine_as_number")},
+		{FieldName: "LeafBgpKeepAliveTimer", APIField: &siteReq.LeafBgpKeepAliveTimer, TFValue: config.LeafBgpKeepAliveTimer, IsConfigured: configuredAttrs.IsConfigured("leaf_bgp_keep_alive_timer")},
+		{FieldName: "LeafBgpHoldDownTimer", APIField: &siteReq.LeafBgpHoldDownTimer, TFValue: config.LeafBgpHoldDownTimer, IsConfigured: configuredAttrs.IsConfigured("leaf_bgp_hold_down_timer")},
+		{FieldName: "LeafBgpAdvertisementInterval", APIField: &siteReq.LeafBgpAdvertisementInterval, TFValue: config.LeafBgpAdvertisementInterval, IsConfigured: configuredAttrs.IsConfigured("leaf_bgp_advertisement_interval")},
+		{FieldName: "LeafBgpConnectTimer", APIField: &siteReq.LeafBgpConnectTimer, TFValue: config.LeafBgpConnectTimer, IsConfigured: configuredAttrs.IsConfigured("leaf_bgp_connect_timer")},
+		{FieldName: "Revision", APIField: &siteReq.Revision, TFValue: config.Revision, IsConfigured: configuredAttrs.IsConfigured("revision")},
+		{FieldName: "LinkStateTimeoutValue", APIField: &siteReq.LinkStateTimeoutValue, TFValue: config.LinkStateTimeoutValue, IsConfigured: configuredAttrs.IsConfigured("link_state_timeout_value")},
+		{FieldName: "EvpnMultihomingStartupDelay", APIField: &siteReq.EvpnMultihomingStartupDelay, TFValue: config.EvpnMultihomingStartupDelay, IsConfigured: configuredAttrs.IsConfigured("evpn_multihoming_startup_delay")},
+		{FieldName: "EvpnMacHoldtime", APIField: &siteReq.EvpnMacHoldtime, TFValue: config.EvpnMacHoldtime, IsConfigured: configuredAttrs.IsConfigured("evpn_mac_holdtime")},
+		{FieldName: "StartingOctet", APIField: &siteReq.StartingOctet, TFValue: config.StartingOctet, IsConfigured: configuredAttrs.IsConfigured("starting_octet")},
+		{FieldName: "MaxSus", APIField: &siteReq.MaxSus, TFValue: config.MaxSus, IsConfigured: configuredAttrs.IsConfigured("max_sus")},
+		{FieldName: "MaxPods", APIField: &siteReq.MaxPods, TFValue: config.MaxPods, IsConfigured: configuredAttrs.IsConfigured("max_pods")},
+		{FieldName: "DuplicateAddressDetectionMaxNumberOfMoves", APIField: &siteReq.DuplicateAddressDetectionMaxNumberOfMoves, TFValue: config.DuplicateAddressDetectionMaxNumberOfMoves, IsConfigured: configuredAttrs.IsConfigured("duplicate_address_detection_max_number_of_moves")},
+		{FieldName: "DuplicateAddressDetectionTime", APIField: &siteReq.DuplicateAddressDetectionTime, TFValue: config.DuplicateAddressDetectionTime, IsConfigured: configuredAttrs.IsConfigured("duplicate_address_detection_time")},
+	})
+
+	if len(plan.ObjectProperties) > 0 {
+		op := plan.ObjectProperties[0]
+		systemGraphs := make([]openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner, len(op.SystemGraphs))
+		for i, graph := range op.SystemGraphs {
+			graphProps := openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner{}
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &graphProps.Index, TFValue: graph.Index},
+			})
+			systemGraphs[i] = graphProps
+		}
+		siteReq.SetObjectProperties(openapi.SitesPutRequestSiteValueObjectProperties{
+			SystemGraphs: systemGraphs,
+		})
+	}
+
+	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
+		siteReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(true)
+		// Don't include the specific MAC in the request
+	} else if !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() && plan.AnycastMacAddress.ValueString() != "" {
+		// User explicitly specified a value
+		siteReq.AnycastMacAddress = openapi.PtrString(plan.AnycastMacAddress.ValueString())
+		if !plan.AnycastMacAddressAutoAssigned.IsNull() {
+			siteReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
+		}
+	} else if !plan.AnycastMacAddressAutoAssigned.IsNull() {
+		// No MAC value was provided, but preserve the user's explicit flag setting
+		siteReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
+	}
+
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "site", name, *siteReq, &resp.Diagnostics)
+	if !success {
+		return
+	}
+
+	tflog.Info(ctx, fmt.Sprintf("Site %s creation operation completed successfully", name))
+	clearCache(ctx, r.provCtx, "sites")
+
+	var minState veritySiteResourceModel
+	minState.Name = types.StringValue(name)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
+		if siteData, exists := bulkMgr.GetResourceResponse("site", name); exists {
+			state := populateSiteState(ctx, minState, siteData, r.provCtx.mode)
+			filterSiteIndexedEntries(&state, &plan)
+			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			return
+		}
+	}
+
+	readReq := resource.ReadRequest{
+		State: resp.State,
+	}
+	readResp := resource.ReadResponse{
+		State:       resp.State,
+		Diagnostics: resp.Diagnostics,
+	}
+
+	r.Read(ctx, readReq, &readResp)
 }
 
 func (r *veritySiteResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -640,9 +797,15 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, configuredAttrs.IsConfigured("duplicate_address_detection_time"), func(v *openapi.NullableInt32) { siteReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
 
 	// Handle object properties with nested system_graphs
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
-		op := plan.ObjectProperties[0]
-		st := state.ObjectProperties[0]
+	if len(plan.ObjectProperties) > 0 || len(state.ObjectProperties) > 0 {
+		var op veritySiteObjectPropertiesModel
+		var st veritySiteObjectPropertiesModel
+		if len(plan.ObjectProperties) > 0 {
+			op = plan.ObjectProperties[0]
+		}
+		if len(state.ObjectProperties) > 0 {
+			st = state.ObjectProperties[0]
+		}
 
 		changedSystemGraphs, systemGraphsChanged := utils.ProcessIndexedArrayUpdates(op.SystemGraphs, st.SystemGraphs,
 			utils.IndexedItemHandler[veritySiteSystemGraphsModel, openapi.SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner]{
@@ -805,10 +968,31 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 }
 
 func (r *veritySiteResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	resp.Diagnostics.AddError(
-		"Delete Not Supported",
-		"Site resources cannot be deleted. They represent existing site configurations that can only be read and updated.",
-	)
+	var state veritySiteResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
+		resp.Diagnostics.AddError(
+			"Failed to Authenticate",
+			fmt.Sprintf("Error authenticating with API: %v", err),
+		)
+		return
+	}
+
+	name := state.Name.ValueString()
+
+	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "delete", "site", name, nil, &resp.Diagnostics)
+	if !success {
+		return
+	}
+
+	tflog.Info(ctx, fmt.Sprintf("Site %s deletion operation completed successfully", name))
+	clearCache(ctx, r.provCtx, "sites")
+	resp.State.RemoveResource(ctx)
 }
 
 func (r *veritySiteResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
@@ -996,6 +1180,16 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 	// CREATE operation - handle auto-assigned fields
 	// =========================================================================
 	if req.State.Raw.IsNull() {
+		if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
+			if !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() && plan.AnycastMacAddress.ValueString() != "" {
+				resp.Diagnostics.AddError(
+					"Anycast MAC Address cannot be specified when auto-assigned",
+					"The 'anycast_mac_address' field cannot be specified in the configuration when 'anycast_mac_address_auto_assigned_' is set to true. The API will assign this value automatically.",
+				)
+				return
+			}
+		}
+
 		// Site-specific: AnycastMacAddress auto-assignment on create
 		if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), types.StringUnknown())
