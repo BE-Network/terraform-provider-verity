@@ -36,8 +36,6 @@ resource "verity_service" "example" {
   mst_instance = 0
 
   object_properties {
-    group = ""
-    on_summary = true
     warn_on_no_external_source = true
   }
 }
@@ -58,8 +56,6 @@ resource "verity_service" "example" {
 * `dhcp_server_ipv6` (String) - IPv6 address(s) of the DHCP server for service. May have up to four separated by commas
 * `mtu` (Integer) - MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets
 * `object_properties` (Object) - Additional object properties
-  * `group` (String) - Group
-  * `on_summary` (Boolean) - Show on the summary view
   * `warn_on_no_external_source` (Boolean) - Warn if there is not outbound path for service in SD-Router or a Service Port Profile
 * `policy_based_routing` (String) - Policy Based Routing
 * `policy_based_routing_ref_type_` (String) - Object type for policy_based_routing field

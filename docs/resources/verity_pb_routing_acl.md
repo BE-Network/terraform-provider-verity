@@ -8,6 +8,8 @@ Manages a Policy-Based Routing ACL configuration in Verity. This resource allows
 resource "verity_pb_routing_acl" "example" {
   name   = "example"
   enable = true
+  ip_version = "IPv4"
+  next_hop_ips = ""
 
   ipv4_permit {
     enable = true
@@ -43,6 +45,8 @@ resource "verity_pb_routing_acl" "example" {
 
 * `name` (String) - Object Name. Must be unique.
 * `enable` (Boolean) - Enable object.
+* `ip_version` (String) - IPv4 or IPv6.
+* `next_hop_ips` (String) - Next hop IP addresses.
 * `ipv4_permit` (Array) - 
   * `enable` (Boolean) - Enable.
   * `filter` (String) - Filter.

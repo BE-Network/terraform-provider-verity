@@ -28,10 +28,6 @@ resource "verity_tenant" "example" {
     enable = true
     tenant = ""
   }
-
-  object_properties {
-    group = ""
-  }
 }
 ```
 
@@ -54,12 +50,11 @@ resource "verity_tenant" "example" {
 * `export_route_map_ref_type_` (String) - Object type for export route map
 * `vrf_name` (String) - VRF name
 * `vrf_name_auto_assigned_` (Boolean) - Whether VRF name is auto-assigned
+* `tenant_type` (String) - Tenant type.
 * `route_tenants` (Array) - List of route tenant blocks
   * `enable` (Boolean) - Enable this route tenant
   * `tenant` (String) - Reference to another tenant
   * `index` (Integer) - Index value for ordering
-* `object_properties` (Object) - Object properties block
-  * `group` (String) - Group name
 * `default_originate` (Boolean) - Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric
 
 ## Import

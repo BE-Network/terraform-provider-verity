@@ -24,7 +24,6 @@ resource "verity_authenticated_eth_port" "example" {
   }
 
   object_properties {
-    group = ""
     port_monitoring = ""
   }
 }
@@ -47,7 +46,6 @@ resource "verity_authenticated_eth_port" "example" {
   * `eth_port_profile_num_radius_filter_id` (String) - The value of filter-id in the RADIUS response which will evoke this Eth Port Profile.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
 * `object_properties` (Object) - 
-  * `group` (String) - Group.
   * `port_monitoring` (String) - Defines importance of Link Down on this port.
 
 ## Import

@@ -1,4 +1,4 @@
-# SFB Breakout Resource
+# SFP Breakout Resource
 
 Manages an SFP Breakout object in the Verity system.
 

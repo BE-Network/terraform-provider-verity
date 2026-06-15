@@ -38,9 +38,7 @@ resource "verity_voice_port_profile" "example" {
   roh_timer = 30
 
   object_properties {
-    isdefault = false
     port_monitoring = "enabled"
-    group = "voice-group"
     format_dial_plan = true
   }
 }
@@ -84,7 +82,6 @@ resource "verity_voice_port_profile" "example" {
 * `roh_timer` (Integer) - Receiver off-hook timer in seconds.
 * `object_properties` (Object) - Object properties configuration:
   * `port_monitoring` (String) - Port monitoring status.
-  * `group` (String) - Group name.
   * `format_dial_plan` (Boolean) - Format dial plan. Default is `false`.
 
 ## Import

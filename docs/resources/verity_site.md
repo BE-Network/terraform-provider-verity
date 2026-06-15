@@ -1,126 +1,132 @@
 # Site Resource
 
-Manages a Site object in the Verity system.
-
-**Note:** Only PATCH operations are supported for this resource. Create and delete operations are prohibited.
+`verity_site` manages Site resources in Verity.
 
 ## Example Usage
 
 ```hcl
 resource "verity_site" "example" {
-    name = "example"
-    aggressive_reporting = true
-    anycast_mac_address_auto_assigned_ = true
-    bgp_hold_down_timer = 180
-    bgp_keepalive_timer = 60
-    crc_failure_threshold = 5
-    dscp_to_p_bit_map = "00000000"
-    enable = true
-    evpn_mac_holdtime = 1080
-    evpn_multihoming_startup_delay = 300
-    force_spanning_tree_on_fabric_ports = false
-    leaf_bgp_advertisement_interval = 1
-    leaf_bgp_connect_timer = 120
-    leaf_bgp_hold_down_timer = 180
-    leaf_bgp_keep_alive_timer = 60
-    link_state_timeout_value = 60
-    mac_address_aging_time = 600
-    mlag_delay_restore_timer = 300
-    read_only_mode = false
-    region_name = ""
-    revision = 0
-    service_for_site = "Management"
-    service_for_site_ref_type_ = "service"
-    spanning_tree_type = "pvst"
-    spine_bgp_advertisement_interval = 1
-    spine_bgp_connect_timer = 120
-    duplicate_address_detection_max_number_of_moves = 5
-    duplicate_address_detection_time = 180
-    enable_dhcp_snooping = false
-    ip_source_guard = false
+  name = "example"
+  enable = true
+  site_type = "enterprise"
+  service_for_site = "Management"
+  service_for_site_ref_type_ = "service"
+  spanning_tree_type = "pvst"
+  region_name = ""
+  revision = 0
+  force_spanning_tree_on_fabric_ports = false
+  read_only_mode = false
+  domain_for_site = ""
+  domain_for_site_ref_type_ = "site_collection"
+  enable_dscp = true
+  dscp_to_p_bit_map = "0000000011111111222222223333333344444444555555556666666677777777"
+  anycast_mac_address_auto_assigned_ = true
+  mac_address_aging_time = 600
+  mlag_delay_restore_timer = 300
+  bgp_keepalive_timer = 60
+  bgp_hold_down_timer = 180
+  spine_bgp_advertisement_interval = 1
+  spine_bgp_connect_timer = 120
+  spine_as_number = null
+  leaf_bgp_keep_alive_timer = 60
+  leaf_bgp_hold_down_timer = 180
+  leaf_bgp_advertisement_interval = 1
+  leaf_bgp_connect_timer = 120
+  link_state_timeout_value = 60
+  evpn_multihoming_startup_delay = 300
+  evpn_mac_holdtime = 1080
+  aggressive_reporting = true
+  switch_ip_base = ""
+  controller_ip_base = ""
+  loopback0_base = ""
+  multi_tenant = true
+  base_bgp_as_number = "61000"
+  router_id_base_prefix = "172.16.0.0"
+  vtep_id_base_prefix = "172.16.10.0"
+  paired_ip_subnet = "192.168.254.0/24"
+  max_switches = "2000"
+  pause_validation_alarms = false
+  starting_octet = null
+  max_sus = null
+  max_pods = null
+  su_support = false
+  allow_all_underlay_connections = false
+  port_admin_polling_interval = 0
+  port_status_polling_interval = 0
+  enable_dhcp_snooping = false
+  ip_source_guard = false
+  duplicate_address_detection_max_number_of_moves = 5
+  duplicate_address_detection_time = 180
 
-    pairs {
-        name = "pair1"
-        switchpoint_1 = "switch1"
-        switchpoint_1_ref_type_ = "switchpoint"
-        switchpoint_2 = "switch2"
-        switchpoint_2_ref_type_ = "switchpoint"
-        lag_group = "lag1"
-        lag_group_ref_type_ = "lag"
-        is_whitebox_pair = false
-        index = 1
+  object_properties {
+    system_graphs {
+      index = 1
     }
-
-    islands {
-        index = 1
-        toi_switchpoint = ""
-        toi_switchpoint_ref_type_ = ""
-    }
-
-    object_properties {
-        system_graphs {
-            graph_num_data = "graph_endpoint_path"
-            index = 1
-        }
-    }
+  }
 }
 ```
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique
-* `enable` (Boolean) - Enable object
-* `service_for_site` (String) - Service for Site
-* `service_for_site_ref_type_` (String) - Object type for service_for_site field
-* `spanning_tree_type` (String) - Sets the spanning tree type for all Ports in this Site with Spanning Tree enabled
-* `region_name` (String) - Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name
-* `revision` (Integer) - A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number
-* `force_spanning_tree_on_fabric_ports` (Boolean) - Enable spanning tree on all fabric connections. This overrides the Eth Port Settings for Fabric ports
-* `read_only_mode` (Boolean) - When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware
-* `dscp_to_p_bit_map` (String) - For any Service that is using DSCP to p-bit map packet prioritization. A string of length 64 with a 0-7 in each position
-* `anycast_mac_address` (String) - Site Level MAC Address for Anycast
-* `anycast_mac_address_auto_assigned_` (Boolean) - Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit.
-* `mac_address_aging_time` (Integer) - MAC Address Aging Time (between 1-100000)
-* `mlag_delay_restore_timer` (Integer) - MLAG Delay Restore Timer
-* `bgp_keepalive_timer` (Integer) - Spine BGP Keepalive Timer
-* `bgp_hold_down_timer` (Integer) - Spine BGP Hold Down Timer
-* `spine_bgp_advertisement_interval` (Integer) - BGP Advertisement Interval for spines/superspines. Use "0" for immediate updates
-* `spine_bgp_connect_timer` (Integer) - BGP Connect Timer
-* `leaf_bgp_keep_alive_timer` (Integer) - Leaf BGP Keep Alive Timer
-* `leaf_bgp_hold_down_timer` (Integer) - Leaf BGP Hold Down Timer
-* `leaf_bgp_advertisement_interval` (Integer) - BGP Advertisement Interval for leafs. Use "0" for immediate updates
-* `leaf_bgp_connect_timer` (Integer) - BGP Connect Timer
-* `link_state_timeout_value` (Integer) - Link State Timeout Value
-* `evpn_multihoming_startup_delay` (Integer) - Startup Delay
-* `evpn_mac_holdtime` (Integer) - MAC Holdtime
-* `aggressive_reporting` (Boolean) - Fast Reporting of Switch Communications, Link Up/Down, and BGP Status
-* `crc_failure_threshold` (Integer) - Threshold in Errors per second that when met will disable the links as part of LAGs
-* `duplicate_address_detection_max_number_of_moves` (Integer) - Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank)
-* `duplicate_address_detection_time` (Integer) - Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
-* `enable_dhcp_snooping` (Boolean) - Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
-* `ip_source_guard` (Boolean) - On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
-* `islands` (Array) - Defines islands for the site
-  * `toi_switchpoint` (String) - TOI Switchpoint
-  * `toi_switchpoint_ref_type_` (String) - Object type for toi_switchpoint field
-  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-* `pairs` (Array) - Defines pairs for the site
-  * `name` (String) - Object Name. Must be unique.
-  * `switchpoint_1` (String) - Switchpoint
-  * `switchpoint_1_ref_type_` (String) - Object type for switchpoint_1 field
-  * `switchpoint_2` (String) - Switchpoint
-  * `switchpoint_2_ref_type_` (String) - Object type for switchpoint_2 field
-  * `lag_group` (String) - LAG Group
-  * `lag_group_ref_type_` (String) - Object type for lag_group field
-  * `is_whitebox_pair` (Boolean) - LAG Pair
-  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-* `object_properties` (Object) - Additional object properties
-  * `system_graphs` (Array) - Graph data for the site
-    * `graph_num_data` (String) - The graph data detailing this graph choice
+* `name` (String) - Object Name. Must be unique.
+* `enable` (Boolean) - Enable object.
+* `su_support` (Boolean) - Support grouping leaf switches in SUs.
+* `allow_all_underlay_connections` (Boolean) - Allows underlay connections between PODs.
+* `site_type` (String) - Type of Fabric.
+* `service_for_site` (String) - Service for Site.
+* `service_for_site_ref_type_` (String) - Object type for `service_for_site` field.
+* `port_admin_polling_interval` (Integer) - Polling interval value in seconds used when aggressive reporting is disabled.
+* `port_status_polling_interval` (Integer) - Polling interval value in seconds used when aggressive reporting is disabled.
+* `spanning_tree_type` (String) - Sets the spanning tree type for all Ports in this Site with Spanning Tree enabled.
+* `region_name` (String) - Defines the logical boundary of the network.
+* `revision` (Integer) - Revision for the MSTP configuration.
+* `force_spanning_tree_on_fabric_ports` (Boolean) - Enable spanning tree on all fabric connections.
+* `read_only_mode` (Boolean) - When enabled, vNetC will perform all functions except writing database updates to target hardware.
+* `domain_for_site` (String) - Fabric Collection for Fabric.
+* `domain_for_site_ref_type_` (String) - Object type for `domain_for_site` field.
+* `enable_dscp` (Boolean) - Enable DSCP to p-bit/TC configuration.
+* `dscp_to_p_bit_map` (String) - DSCP to TC map string of length 64.
+* `anycast_mac_address` (String) - Anycast MAC address to use.
+* `anycast_mac_address_auto_assigned_` (Boolean) - Whether the anycast MAC address should be automatically assigned by the API.
+* `mac_address_aging_time` (Integer) - MAC Address Aging Time.
+* `mlag_delay_restore_timer` (Integer) - MLAG Delay Restore Timer.
+* `bgp_keepalive_timer` (Integer) - Spine BGP Keepalive Timer.
+* `bgp_hold_down_timer` (Integer) - Spine BGP Hold Down Timer.
+* `spine_bgp_advertisement_interval` (Integer) - BGP Advertisement Interval for spines/superspines.
+* `spine_bgp_connect_timer` (Integer) - BGP Connect Timer.
+* `spine_as_number` (Integer) - BGP AS number applied uniformly to all spine endpoints in this fabric.
+* `leaf_bgp_keep_alive_timer` (Integer) - Leaf BGP Keep Alive Timer.
+* `leaf_bgp_hold_down_timer` (Integer) - Leaf BGP Hold Down Timer.
+* `leaf_bgp_advertisement_interval` (Integer) - BGP Advertisement Interval for leafs.
+* `leaf_bgp_connect_timer` (Integer) - BGP Connect Timer.
+* `link_state_timeout_value` (Integer) - Link State Timeout Value.
+* `evpn_multihoming_startup_delay` (Integer) - Startup Delay.
+* `evpn_mac_holdtime` (Integer) - MAC Holdtime.
+* `aggressive_reporting` (Boolean) - Fast reporting of switch communications, link up/down, and BGP status.
+* `switch_ip_base` (String) - Base IPv4 address for switch IPs in this Fabric.
+* `controller_ip_base` (String) - Base IPv4 address for controller IPs in this Fabric.
+* `loopback0_base` (String) - Base IPv4 address for Loopback0 interfaces in this Fabric.
+* `multi_tenant` (Boolean) - Allow multiple tenants to HGX endpoints on this fabric.
+* `base_bgp_as_number` (String) - Base BGP Autonomous System Number used for switches in the fabric.
+* `router_id_base_prefix` (String) - Router ID starting IP address.
+* `vtep_id_base_prefix` (String) - VTEP ID starting IP address.
+* `paired_ip_subnet` (String) - IP address range reserved for communication between paired switches.
+* `max_switches` (String) - Maximum number of switches to support in this site.
+* `pause_validation_alarms` (Boolean) - Validation still runs, but validation alarms are not raised while enabled.
+* `starting_octet` (Integer) - Starting Octet for HGX Port IPs.
+* `max_sus` (Integer) - Maximum number of SUs allowed per POD.
+* `max_pods` (Integer) - Maximum number of PODs allowed in the Fabric.
+* `enable_dhcp_snooping` (Boolean) - Enables DHCP snooping.
+* `ip_source_guard` (Boolean) - On untrusted ports, only allow known traffic from known IP addresses.
+* `duplicate_address_detection_max_number_of_moves` (Integer) - Duplicate Address Detection Max Number of Moves.
+* `duplicate_address_detection_time` (Integer) - Duplicate Address Detection Time.
+* `object_properties` (Object) - Additional object properties.
+  * `system_graphs` (Array) - System graphs.
     * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
 
 ## Import
 
-This resource can be imported using the object name:
+Site resources can be imported using the `name` attribute:
 
 ```sh
 terraform import verity_site.<resource_name> <name>

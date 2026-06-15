@@ -16,8 +16,9 @@ resource "verity_threshold_group" "example" {
     type = "grouping_rules"
     grouping_rules = "teste"
     grouping_rules_ref_type_ = "grouping_rules"
-    switchpoint = ""
-    switchpoint_ref_type_ = ""
+    element = ""
+    element_ref_type_ = ""
+    sdlc = ""
     port = ""
   }
 
@@ -41,8 +42,9 @@ resource "verity_threshold_group" "example" {
   * `type` (String) - Specific element or Grouping Rules to apply thresholds to
   * `grouping_rules` (String) - Elements to apply thresholds to
   * `grouping_rules_ref_type_` (String) - Object type for grouping_rules field
-  * `switchpoint` (String) - Switchpoint to apply thresholds to
-  * `switchpoint_ref_type_` (String) - Object type for switchpoint field
+  * `element` (String) - Element to apply thresholds to
+  * `element_ref_type_` (String) - Object type for element field
+  * `sdlc` (String) - SDLC to apply thresholds to
   * `port` (String) - Port to apply thresholds to
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list
 * `thresholds` (Array) - List of threshold blocks

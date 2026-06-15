@@ -8,7 +8,11 @@
 resource "verity_gateway" "example" {
   name = "example"
   tenant = ""
+  site = ""
+  site_ref_type_ = "site"
   md5_password = ""
+  md5_password_encrypted = ""
+  switch_encrypted_md5_password = false
   local_as_no_prepend = false
   dynamic_bgp_subnet = ""
   import_route_map_ref_type_ = ""
@@ -41,6 +45,10 @@ resource "verity_gateway" "example" {
   export_route_map = ""
   replace_as = false
   neighbor_ip_address = ""
+  allowas_in_origin = false
+  remove_private_as = false
+  default_originate = false
+  type = ""
 
   static_routes {
     index = 1
@@ -50,9 +58,6 @@ resource "verity_gateway" "example" {
     next_hop_ip_address = ""
   }
 
-  object_properties {
-    group = ""
-  }
 }
 ```
 
@@ -62,6 +67,8 @@ resource "verity_gateway" "example" {
 * `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 * `tenant` (String) - Tenant.
 * `tenant_ref_type_` (String) - Object type for tenant field.
+* `site` (String) - Fabric this Gateway is assigned to.
+* `site_ref_type_` (String) - Object type for site field.
 * `neighbor_ip_address` (String) - IP address of remote BGP peer.
 * `neighbor_as_number` (Integer) - Autonomous System Number of remote BGP peer.
 * `fabric_interconnect` (Boolean) - .
@@ -104,6 +111,9 @@ resource "verity_gateway" "example" {
 * `switch_encrypted_md5_password` (Boolean) - Indicates the entered password is a switch encrypted password.
 * `md5_password_encrypted` (String) - MD5 Password Encrypted used in the BGP session.
 * `default_originate` (Boolean) - Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.
+* `allowas_in_origin` (Boolean) - Allow the local AS to appear in the route origin path.
+* `remove_private_as` (Boolean) - Remove private AS values from advertised paths.
+* `type` (String) - Gateway type.
 
 ## Import
 

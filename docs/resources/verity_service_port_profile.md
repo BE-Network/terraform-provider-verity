@@ -28,7 +28,6 @@ resource "verity_service_port_profile" "example" {
   object_properties {
     on_summary = true
     port_monitoring = "enabled"
-    group = "profile-group"
   }
 }
 ```
@@ -54,7 +53,6 @@ resource "verity_service_port_profile" "example" {
 * `object_properties` (Object) - Additional object properties
   * `on_summary` (Boolean) - Show on the summary view
   * `port_monitoring` (String) - Defines importance of Link Down on this port
-  * `group` (String) - Group
 
 ## Import
 

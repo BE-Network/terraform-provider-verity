@@ -17,10 +17,6 @@ resource "verity_gateway_profile" "example" {
     peer_gw = false
     gateway_ref_type_ = ""
   }
-
-  object_properties {
-    group = ""
-  }
 }
 ```
 
@@ -35,9 +31,6 @@ resource "verity_gateway_profile" "example" {
   * `source_ip_mask` (String) - Source address on the port if untagged or on the VLAN if tagged used for the outgoing BGP session.
   * `peer_gw` (Boolean) - Setting for paired switches only. Flag indicating that this gateway is a peer gateway. For each gateway profile referencing a BGP session on a member of a leaf pair, the peer should have a gateway profile entry indicating the IP address for the peers gateway.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-* `object_properties` (Object) - 
-  * `group` (String) - Group.
-
 ## Import
 
 Gateway profile resources can be imported using the `name` attribute:

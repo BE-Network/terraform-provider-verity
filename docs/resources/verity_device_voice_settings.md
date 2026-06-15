@@ -74,10 +74,6 @@ resource "verity_device_voice_settings" "example" {
     codec_num_silence_suppression = false
     index = 1
   }
-
-  object_properties {
-    group = "voice-group"
-  }
 }
 ```
 
@@ -149,9 +145,6 @@ resource "verity_device_voice_settings" "example" {
   * `codec_num_packetization_period` (String) - Packet period selection interval in milliseconds.
   * `codec_num_silence_suppression` (Boolean) - Specifies whether silence suppression is on or off. Valid values are 0 = off and 1 = on.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-* `object_properties` (Object) - 
-  * `group` (String) - Group.
-
 ## Import
 
 Device Voice Settings resources can be imported using the `name` attribute:

@@ -9,6 +9,7 @@ resource "verity_eth_port_settings" "example" {
   name = "example"
   enable = true
   auto_negotiation = true
+  standalone_link_training = false
   enable_speed_control = true
   max_bit_rate = "-1"
   duplex_mode = "Auto"
@@ -25,6 +26,7 @@ resource "verity_eth_port_settings" "example" {
   multicast = true
   max_allowed_value = 1000
   max_allowed_unit = "pps"
+  mtu = 1500
   action = "Protect"
   fec = "unaltered"
   single_link = false
@@ -61,9 +63,6 @@ resource "verity_eth_port_settings" "example" {
     index = 1
   }
 
-  object_properties {
-    group = ""
-  }
 }
 ```
 
@@ -72,6 +71,7 @@ resource "verity_eth_port_settings" "example" {
 * `name` (String) - Object Name. Must be unique.
 * `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 * `auto_negotiation` (Boolean) - Indicates if duplex mode should be auto negotiated.
+* `standalone_link_training` (Boolean) - For manually fixed speed/FEC links that still need physical link training.
 * `enable_speed_control` (Boolean) - Turns on speed control fields.
 * `max_bit_rate` (String) - Maximum Bit Rate allowed.
 * `duplex_mode` (String) - Duplex Mode.
@@ -88,6 +88,7 @@ resource "verity_eth_port_settings" "example" {
 * `multicast` (Boolean) - Multicast.
 * `max_allowed_value` (Integer) - Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action.
 * `max_allowed_unit` (String) - Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action. %: Percentage. kbps: kilobits per second. mbps: megabits per second. gbps: gigabits per second. pps: packet per second. kpps: kilopacket per second.
+* `mtu` (Integer) - Maximum transmission unit.
 * `action` (String) - Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops. Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops. Alarm is raised. Alarm automatically clears when rate is below configured threshold. Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service.
 * `fec` (String) - FEC is Forward Error Correction which is error correction on the fiber link. Any: Allows switch Negotiation between FC and RS. None: Disables FEC on an interface. FC: Enables FEC on supported interfaces. FC stands for fire code. RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. None: VnetC doesn't alter the Switch Value.
 * `single_link` (Boolean) - Ports with this setting will be disabled when link state tracking takes effect.
@@ -97,8 +98,6 @@ resource "verity_eth_port_settings" "example" {
 * `priority_flow_control_watchdog_action` (String) - Ports with this setting will be disabled when link state tracking takes effect.
 * `priority_flow_control_watchdog_detect_time` (Integer) - A value between 100 to 5000.
 * `priority_flow_control_watchdog_restore_time` (Integer) - A value between 100 to 60000.
-* `object_properties` (Object) - 
-  * `group` (String) - Group.
 * `packet_queue` (String) - Packet Queue.
 * `packet_queue_ref_type_` (String) - Object type for packet_queue field.
 * `enable_wred_tuning` (Boolean) - Enables custom tuning of WRED values. Uncheck to use Switch default values.

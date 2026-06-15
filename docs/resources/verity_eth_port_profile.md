@@ -33,7 +33,6 @@ resource "verity_eth_port_profile" "example" {
   }
 
   object_properties {
-    group = ""
     port_monitoring = ""
     sort_by_name = false
     label = ""
@@ -64,7 +63,6 @@ resource "verity_eth_port_profile" "example" {
   * `row_num_mac_filter_ref_type_` (String) - Object type for row_num_mac_filter field.
   * `row_num_lan_iptv` (String) - Denotes a LAN or IPTV service.
 * `object_properties` (Object) - 
-  * `group` (String) - Group.
   * `port_monitoring` (String) - Defines importance of Link Down on this port.
   * `sort_by_name` (Boolean) - Choose to sort by service name or by order of creation.
   * `label` (String) - Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint.

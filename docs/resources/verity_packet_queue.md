@@ -20,10 +20,6 @@ resource "verity_packet_queue" "example" {
     scheduler_weight = 10
     index = 1
   }
-  
-  object_properties {
-    group = "queue-group"
-  }
 }
 ```
 
@@ -39,9 +35,6 @@ resource "verity_packet_queue" "example" {
   * `scheduler_type` (String) - Scheduler Type for Queue.
   * `scheduler_weight` (Integer) - Weight associated with WRR or DWRR scheduler.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-* `object_properties` (Object) - 
-  * `group` (String) - Group.
-
 ## Import
 
 Packet Queue resources can be imported using the `name` attribute:
