@@ -13,7 +13,7 @@ import (
 // SupportedAPIVersion defines the API version this provider is built for
 const (
 	SupportedAPIMajor = 6
-	SupportedAPIMinor = 5
+	SupportedAPIMinor = 6
 )
 
 type OperationMode string
