@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"terraform-provider-verity/internal/importer"
+	"terraform-provider-verity/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -144,7 +145,7 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 		}
 	}
 
-	importBlocksFile, err := createImportBlocks(ctx, absPath)
+	importBlocksFile, err := createImportBlocks(ctx, absPath, d.client.mode)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Generating Import Blocks",
@@ -161,7 +162,7 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
+func createImportBlocks(ctx context.Context, dirPath string, mode string) (string, error) {
 	outputFile := filepath.Join(dirPath, "import_blocks.tf")
 
 	file, err := os.Create(outputFile)
@@ -276,6 +277,15 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 				continue
 			}
 
+			if !importerCompatibleWithMode(resourceType, mode) {
+				tflog.Debug(ctx, "Skipping mode-incompatible resource type", map[string]any{
+					"resource_type": resourceType,
+					"file":          entry.Name(),
+					"mode":          mode,
+				})
+				continue
+			}
+
 			hclName := resourceMatches[2]
 
 			nameValue := hclName
@@ -306,6 +316,10 @@ func createImportBlocks(ctx context.Context, dirPath string) (string, error) {
 	}
 
 	return outputFile, nil
+}
+
+func importerCompatibleWithMode(resourceType string, mode string) bool {
+	return utils.IsResourceCompatibleWithMode(resourceType, mode)
 }
 
 func containsVerityResources(filePath string) (bool, error) {
