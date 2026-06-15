@@ -55,6 +55,7 @@ var ResourceCompatibility = map[string]ResourceMode{
 	// Campus-only resources
 	"verity_authenticated_eth_port": ResourceModeCampus,
 	"verity_device_voice_settings":  ResourceModeCampus,
+	"verity_mac_filter":             ResourceModeCampus,
 	"verity_service_port_profile":   ResourceModeCampus,
 	"verity_voice_port_profile":     ResourceModeCampus,
 
@@ -72,7 +73,6 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_ipv4_list":                ResourceModeBoth,
 	"verity_ipv6_list":                ResourceModeBoth,
 	"verity_lag":                      ResourceModeBoth,
-	"verity_mac_filter":               ResourceModeBoth,
 	"verity_packet_queue":             ResourceModeBoth,
 	"verity_pair":                     ResourceModeBoth,
 	"verity_port_acl":                 ResourceModeBoth,

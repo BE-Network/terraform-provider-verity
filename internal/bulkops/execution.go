@@ -857,55 +857,51 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("PUT", m.getOperationCount("port_acl", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "port_acl", "PUT") }, "Port ACL") {
 		return diagnostics, operationsPerformed
 	}
-	// 18. mac_filter
-	if !execute("PUT", m.getOperationCount("mac_filter", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "mac_filter", "PUT") }, "MAC Filter") {
-		return diagnostics, operationsPerformed
-	}
-	// 19. tacacs_profile
+	// 18. tacacs_profile
 	if !execute("PUT", m.getOperationCount("tacacs_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "PUT") }, "TACACS Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 20. packet_broker
+	// 19. packet_broker
 	if !execute("PUT", m.getOperationCount("packet_broker", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "packet_broker", "PUT") }, "Packet Broker") {
 		return diagnostics, operationsPerformed
 	}
-	// 21. eth_port_profile
+	// 20. eth_port_profile
 	if !execute("PUT", m.getOperationCount("eth_port_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "eth_port_profile", "PUT") }, "Eth Port Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 22. packet_queue
+	// 21. packet_queue
 	if !execute("PUT", m.getOperationCount("packet_queue", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "packet_queue", "PUT") }, "Packet Queue") {
 		return diagnostics, operationsPerformed
 	}
-	// 23. sflow_collector
+	// 22. sflow_collector
 	if !execute("PUT", m.getOperationCount("sflow_collector", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "sflow_collector", "PUT") }, "SFlow Collector") {
 		return diagnostics, operationsPerformed
 	}
-	// 24. gateway
+	// 23. gateway
 	if !execute("PUT", m.getOperationCount("gateway", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "gateway", "PUT") }, "Gateway") {
 		return diagnostics, operationsPerformed
 	}
-	// 25. device_aaa_profile
+	// 24. device_aaa_profile
 	if !execute("PUT", m.getOperationCount("device_aaa_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_aaa_profile", "PUT") }, "Device AAA Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 26. lag
+	// 25. lag
 	if !execute("PUT", m.getOperationCount("lag", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "lag", "PUT") }, "LAG") {
 		return diagnostics, operationsPerformed
 	}
-	// 27. eth_port_settings
+	// 26. eth_port_settings
 	if !execute("PUT", m.getOperationCount("eth_port_settings", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "eth_port_settings", "PUT") }, "Eth Port Settings") {
 		return diagnostics, operationsPerformed
 	}
-	// 28. diagnostics_profile
+	// 27. diagnostics_profile
 	if !execute("PUT", m.getOperationCount("diagnostics_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "diagnostics_profile", "PUT") }, "Diagnostics Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 29. gateway_profile
+	// 28. gateway_profile
 	if !execute("PUT", m.getOperationCount("gateway_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "gateway_profile", "PUT") }, "Gateway Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 30. device_settings
+	// 29. device_settings
 	if !execute("PUT", m.getOperationCount("device_settings", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "device_settings", "PUT") }, "Device Settings") {
 		return diagnostics, operationsPerformed
 	}
@@ -1030,31 +1026,27 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("PATCH", m.getOperationCount("port_acl", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "port_acl", "PATCH") }, "Port ACL") {
 		return diagnostics, operationsPerformed
 	}
-	// 18. mac_filter
-	if !execute("PATCH", m.getOperationCount("mac_filter", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "mac_filter", "PATCH") }, "MAC Filter") {
-		return diagnostics, operationsPerformed
-	}
-	// 19. tacacs_profile
+	// 18. tacacs_profile
 	if !execute("PATCH", m.getOperationCount("tacacs_profile", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "PATCH") }, "TACACS Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 20. packet_broker
+	// 19. packet_broker
 	if !execute("PATCH", m.getOperationCount("packet_broker", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "packet_broker", "PATCH") }, "Packet Broker") {
 		return diagnostics, operationsPerformed
 	}
-	// 21. eth_port_profile
+	// 20. eth_port_profile
 	if !execute("PATCH", m.getOperationCount("eth_port_profile", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "eth_port_profile", "PATCH") }, "Eth Port Profile") {
 		return diagnostics, operationsPerformed
 	}
-	// 22. packet_queue
+	// 21. packet_queue
 	if !execute("PATCH", m.getOperationCount("packet_queue", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "packet_queue", "PATCH") }, "Packet Queue") {
 		return diagnostics, operationsPerformed
 	}
-	// 23. sflow_collector
+	// 22. sflow_collector
 	if !execute("PATCH", m.getOperationCount("sflow_collector", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "sflow_collector", "PATCH") }, "SFlow Collector") {
 		return diagnostics, operationsPerformed
 	}
-	// 24. gateway
+	// 23. gateway
 	if !execute("PATCH", m.getOperationCount("gateway", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "gateway", "PATCH") }, "Gateway") {
 		return diagnostics, operationsPerformed
 	}
@@ -1291,12 +1283,8 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("DELETE", m.getOperationCount("packet_broker", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "packet_broker", "DELETE") }, "Packet Broker") {
 		return diagnostics, operationsPerformed
 	}
-	// 19. tacacs_profile
+	// 18. tacacs_profile
 	if !execute("DELETE", m.getOperationCount("tacacs_profile", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "DELETE") }, "TACACS Profile") {
-		return diagnostics, operationsPerformed
-	}
-	// 18. mac_filter
-	if !execute("DELETE", m.getOperationCount("mac_filter", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "mac_filter", "DELETE") }, "MAC Filter") {
 		return diagnostics, operationsPerformed
 	}
 	// 17. port_acl

@@ -263,33 +263,31 @@ Since API version 6.5, the provider supports two modes: **campus** and **datacen
 15. IPv6 Lists
 16. Services
 17. Port ACLs
-18. Mac Filters
-19. TACACS Profiles
-20. Packet Broker
-21. Eth Port Profiles
-22. Packet Queues
-23. SFlow Collectors
-24. Gateways
-25. Device AAA Profiles
-26. Lags
-27. Eth Port Settings
-28. Diagnostics Profiles
-29. Gateway Profiles
-30. Device Settings
-31. Diagnostics Port Profiles
-32. Bundles
-33. Pods
-34. Badges
-35. SUs
-36. SS Groups
-37. Spine Planes
-38. Switchpoints
-39. Thresholds
-40. Grouping Rules
-41. Threshold Groups
-42. Pairs
-43. Sites
-38. Device Controllers
+18. TACACS Profiles
+19. Packet Broker
+20. Eth Port Profiles
+21. Packet Queues
+22. SFlow Collectors
+23. Gateways
+24. Device AAA Profiles
+25. Lags
+26. Eth Port Settings
+27. Diagnostics Profiles
+28. Gateway Profiles
+29. Device Settings
+30. Diagnostics Port Profiles
+31. Bundles
+32. Pods
+33. Badges
+34. SUs
+35. SS Groups
+36. Spine Planes
+37. Switchpoints
+38. Thresholds
+39. Grouping Rules
+40. Threshold Groups
+41. Pairs
+42. Sites
 
 For delete operations, the order is automatically reversed to ensure proper dependency handling when removing resources.
 
