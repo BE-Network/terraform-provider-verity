@@ -38,7 +38,15 @@ resource "verity_site" "example" {
   aggressive_reporting = true
   switch_ip_base = ""
   controller_ip_base = ""
-  loopback0_base = ""
+  switch_username = "admin"
+  switch_password = "switch-password"
+  switch_password_encrypted = ""
+  hgx_username = "hgx-admin"
+  hgx_password = "hgx-password"
+  hgx_password_encrypted = ""
+  switch_gateway = "192.168.1.1"
+  controller_gateway = "192.168.2.1"
+  hgx_gateway = "192.168.3.1"
   multi_tenant = true
   base_bgp_as_number = "61000"
   router_id_base_prefix = "172.16.0.0"
@@ -105,7 +113,15 @@ resource "verity_site" "example" {
 * `aggressive_reporting` (Boolean) - Fast reporting of switch communications, link up/down, and BGP status.
 * `switch_ip_base` (String) - Base IPv4 address for switch IPs in this Fabric.
 * `controller_ip_base` (String) - Base IPv4 address for controller IPs in this Fabric.
-* `loopback0_base` (String) - Base IPv4 address for Loopback0 interfaces in this Fabric.
+* `switch_username` (String) - Default username for managed switches in this Fabric.
+* `switch_password` (String) - Default password for managed switches in this Fabric.
+* `switch_password_encrypted` (String) - Default password for managed switches in this Fabric.
+* `hgx_username` (String) - Default username for HGX devices in this Fabric.
+* `hgx_password` (String) - Default password for HGX devices in this Fabric.
+* `hgx_password_encrypted` (String) - Default password for HGX devices in this Fabric.
+* `switch_gateway` (String) - Default switch management gateway IP for devices in this Fabric.
+* `controller_gateway` (String) - Default controller gateway IP for devices in this Fabric.
+* `hgx_gateway` (String) - Default HGX management gateway IP for devices in this Fabric.
 * `multi_tenant` (Boolean) - Allow multiple tenants to HGX endpoints on this fabric.
 * `base_bgp_as_number` (String) - Base BGP Autonomous System Number used for switches in the fabric.
 * `router_id_base_prefix` (String) - Router ID starting IP address.

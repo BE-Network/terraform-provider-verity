@@ -77,7 +77,15 @@ type veritySiteResourceModel struct {
 	AggressiveReporting                       types.Bool                        `tfsdk:"aggressive_reporting"`
 	SwitchIpBase                              types.String                      `tfsdk:"switch_ip_base"`
 	ControllerIpBase                          types.String                      `tfsdk:"controller_ip_base"`
-	Loopback0Base                             types.String                      `tfsdk:"loopback0_base"`
+	SwitchUsername                            types.String                      `tfsdk:"switch_username"`
+	SwitchPassword                            types.String                      `tfsdk:"switch_password"`
+	SwitchPasswordEncrypted                   types.String                      `tfsdk:"switch_password_encrypted"`
+	HgxUsername                               types.String                      `tfsdk:"hgx_username"`
+	HgxPassword                               types.String                      `tfsdk:"hgx_password"`
+	HgxPasswordEncrypted                      types.String                      `tfsdk:"hgx_password_encrypted"`
+	SwitchGateway                             types.String                      `tfsdk:"switch_gateway"`
+	ControllerGateway                         types.String                      `tfsdk:"controller_gateway"`
+	HgxGateway                                types.String                      `tfsdk:"hgx_gateway"`
 	MultiTenant                               types.Bool                        `tfsdk:"multi_tenant"`
 	BaseBgpAsNumber                           types.String                      `tfsdk:"base_bgp_as_number"`
 	RouterIdBasePrefix                        types.String                      `tfsdk:"router_id_base_prefix"`
@@ -322,8 +330,48 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 			},
-			"loopback0_base": schema.StringAttribute{
-				Description: "Base IPv4 address for Loopback0 interfaces in this Fabric",
+			"switch_username": schema.StringAttribute{
+				Description: "Default username for managed switches in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"switch_password": schema.StringAttribute{
+				Description: "Default password for managed switches in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"switch_password_encrypted": schema.StringAttribute{
+				Description: "Default password for managed switches in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"hgx_username": schema.StringAttribute{
+				Description: "Default username for HGX devices in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"hgx_password": schema.StringAttribute{
+				Description: "Default password for HGX devices in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"hgx_password_encrypted": schema.StringAttribute{
+				Description: "Default password for HGX devices in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"switch_gateway": schema.StringAttribute{
+				Description: "Default switch management gateway IP for devices in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"controller_gateway": schema.StringAttribute{
+				Description: "Default controller gateway IP for devices in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"hgx_gateway": schema.StringAttribute{
+				Description: "Default HGX management gateway IP for devices in this Fabric",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -471,7 +519,15 @@ func (r *veritySiteResource) Create(ctx context.Context, req resource.CreateRequ
 		{FieldName: "DscpToPBitMap", APIField: &siteReq.DscpToPBitMap, TFValue: plan.DscpToPBitMap},
 		{FieldName: "SwitchIpBase", APIField: &siteReq.SwitchIpBase, TFValue: plan.SwitchIpBase},
 		{FieldName: "ControllerIpBase", APIField: &siteReq.ControllerIpBase, TFValue: plan.ControllerIpBase},
-		{FieldName: "Loopback0Base", APIField: &siteReq.Loopback0Base, TFValue: plan.Loopback0Base},
+		{FieldName: "SwitchUsername", APIField: &siteReq.SwitchUsername, TFValue: plan.SwitchUsername},
+		{FieldName: "SwitchPassword", APIField: &siteReq.SwitchPassword, TFValue: plan.SwitchPassword},
+		{FieldName: "SwitchPasswordEncrypted", APIField: &siteReq.SwitchPasswordEncrypted, TFValue: plan.SwitchPasswordEncrypted},
+		{FieldName: "HgxUsername", APIField: &siteReq.HgxUsername, TFValue: plan.HgxUsername},
+		{FieldName: "HgxPassword", APIField: &siteReq.HgxPassword, TFValue: plan.HgxPassword},
+		{FieldName: "HgxPasswordEncrypted", APIField: &siteReq.HgxPasswordEncrypted, TFValue: plan.HgxPasswordEncrypted},
+		{FieldName: "SwitchGateway", APIField: &siteReq.SwitchGateway, TFValue: plan.SwitchGateway},
+		{FieldName: "ControllerGateway", APIField: &siteReq.ControllerGateway, TFValue: plan.ControllerGateway},
+		{FieldName: "HgxGateway", APIField: &siteReq.HgxGateway, TFValue: plan.HgxGateway},
 		{FieldName: "BaseBgpAsNumber", APIField: &siteReq.BaseBgpAsNumber, TFValue: plan.BaseBgpAsNumber},
 		{FieldName: "RouterIdBasePrefix", APIField: &siteReq.RouterIdBasePrefix, TFValue: plan.RouterIdBasePrefix},
 		{FieldName: "VtepIdBasePrefix", APIField: &siteReq.VtepIdBasePrefix, TFValue: plan.VtepIdBasePrefix},
@@ -752,7 +808,15 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 	utils.CompareAndSetStringField(plan.DscpToPBitMap, state.DscpToPBitMap, func(v *string) { siteReq.DscpToPBitMap = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SwitchIpBase, state.SwitchIpBase, func(v *string) { siteReq.SwitchIpBase = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ControllerIpBase, state.ControllerIpBase, func(v *string) { siteReq.ControllerIpBase = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.Loopback0Base, state.Loopback0Base, func(v *string) { siteReq.Loopback0Base = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchUsername, state.SwitchUsername, func(v *string) { siteReq.SwitchUsername = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchPassword, state.SwitchPassword, func(v *string) { siteReq.SwitchPassword = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchPasswordEncrypted, state.SwitchPasswordEncrypted, func(v *string) { siteReq.SwitchPasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.HgxUsername, state.HgxUsername, func(v *string) { siteReq.HgxUsername = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.HgxPassword, state.HgxPassword, func(v *string) { siteReq.HgxPassword = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.HgxPasswordEncrypted, state.HgxPasswordEncrypted, func(v *string) { siteReq.HgxPasswordEncrypted = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SwitchGateway, state.SwitchGateway, func(v *string) { siteReq.SwitchGateway = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ControllerGateway, state.ControllerGateway, func(v *string) { siteReq.ControllerGateway = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.HgxGateway, state.HgxGateway, func(v *string) { siteReq.HgxGateway = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.BaseBgpAsNumber, state.BaseBgpAsNumber, func(v *string) { siteReq.BaseBgpAsNumber = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouterIdBasePrefix, state.RouterIdBasePrefix, func(v *string) { siteReq.RouterIdBasePrefix = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.VtepIdBasePrefix, state.VtepIdBasePrefix, func(v *string) { siteReq.VtepIdBasePrefix = v }, &hasChanges)
@@ -1054,7 +1118,15 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 	state.AnycastMacAddress = utils.MapStringWithMode(siteData, "anycast_mac_address", resourceType, mode)
 	state.SwitchIpBase = utils.MapStringWithMode(siteData, "switch_ip_base", resourceType, mode)
 	state.ControllerIpBase = utils.MapStringWithMode(siteData, "controller_ip_base", resourceType, mode)
-	state.Loopback0Base = utils.MapStringWithMode(siteData, "loopback0_base", resourceType, mode)
+	state.SwitchUsername = utils.MapStringWithMode(siteData, "switch_username", resourceType, mode)
+	state.SwitchPassword = utils.MapStringWithMode(siteData, "switch_password", resourceType, mode)
+	state.SwitchPasswordEncrypted = utils.MapStringWithMode(siteData, "switch_password_encrypted", resourceType, mode)
+	state.HgxUsername = utils.MapStringWithMode(siteData, "hgx_username", resourceType, mode)
+	state.HgxPassword = utils.MapStringWithMode(siteData, "hgx_password", resourceType, mode)
+	state.HgxPasswordEncrypted = utils.MapStringWithMode(siteData, "hgx_password_encrypted", resourceType, mode)
+	state.SwitchGateway = utils.MapStringWithMode(siteData, "switch_gateway", resourceType, mode)
+	state.ControllerGateway = utils.MapStringWithMode(siteData, "controller_gateway", resourceType, mode)
+	state.HgxGateway = utils.MapStringWithMode(siteData, "hgx_gateway", resourceType, mode)
 	state.BaseBgpAsNumber = utils.MapStringWithMode(siteData, "base_bgp_as_number", resourceType, mode)
 	state.RouterIdBasePrefix = utils.MapStringWithMode(siteData, "router_id_base_prefix", resourceType, mode)
 	state.VtepIdBasePrefix = utils.MapStringWithMode(siteData, "vtep_id_base_prefix", resourceType, mode)
@@ -1130,7 +1202,10 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 		"spanning_tree_type", "region_name",
 		"domain_for_site", "domain_for_site_ref_type_",
 		"dscp_to_p_bit_map", "anycast_mac_address",
-		"switch_ip_base", "controller_ip_base", "loopback0_base",
+		"switch_ip_base", "controller_ip_base",
+		"switch_username", "switch_password", "switch_password_encrypted",
+		"hgx_username", "hgx_password", "hgx_password_encrypted",
+		"switch_gateway", "controller_gateway", "hgx_gateway",
 		"base_bgp_as_number", "router_id_base_prefix",
 		"vtep_id_base_prefix", "paired_ip_subnet", "max_switches",
 	)
