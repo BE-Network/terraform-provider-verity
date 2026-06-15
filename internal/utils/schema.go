@@ -713,9 +713,10 @@ var ModeFields = map[string]map[string]FieldMode{
 		"trusted_port":                       FieldModeCampus,
 	},
 	"services": {
-		"enable":                         FieldModeBoth,
-		"name":                           FieldModeBoth,
-		"object_properties":              FieldModeBoth,
+		"enable":            FieldModeBoth,
+		"name":              FieldModeBoth,
+		"object_properties": FieldModeBoth,
+		"object_properties.warn_on_no_external_source": FieldModeCampus,
 		"vlan":                           FieldModeBoth,
 		"anycast_ipv4_mask":              FieldModeDatacenter,
 		"anycast_ipv6_mask":              FieldModeDatacenter,
