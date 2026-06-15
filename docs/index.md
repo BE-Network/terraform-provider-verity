@@ -29,7 +29,7 @@ terraform {
   required_providers {
     verity = {
       source  = "BE-Network/verity"
-      version = "6.4.0" # Replace with the desired release version
+      version = "6.6.0" # Replace with the desired release version
     }
   }
 }
@@ -39,7 +39,7 @@ provider "verity" {
 }
 ```
 
-> Replace `6.4.0` with the desired release version. Set `mode` to match your Verity deployment type.
+> Replace `6.6.0` with the desired release version. Set `mode` to match your Verity deployment type.
 
 If a configuration value is not specified in the provider block, the provider will automatically look for it in the corresponding environment variable. For security, do not write sensitive values (like username and password) directly in your configuration files.
 
@@ -79,6 +79,7 @@ Make sure to set these environment variables before running any Terraform comman
 
 The provider supports the following resource types:
 
+- `verity_aaa_profile`
 - `verity_acl_v4`
 - `verity_acl_v6`
 - `verity_as_path_access_list`
@@ -101,9 +102,11 @@ The provider supports the following resource types:
 - `verity_ipv6_list`
 - `verity_ipv6_prefix_list`
 - `verity_lag`
+- `verity_mac_filter`
 - `verity_operation_stage`
 - `verity_packet_broker`
 - `verity_packet_queue`
+- `verity_pair`
 - `verity_pb_routing`
 - `verity_pb_routing_acl`
 - `verity_pod`
@@ -114,9 +117,12 @@ The provider supports the following resource types:
 - `verity_service_port_profile`
 - `verity_sflow_collector`
 - `verity_sfp_breakout`
+- `verity_ssp_group`
 - `verity_site`
 - `verity_spine_plane`
 - `verity_switchpoint`
+- `verity_su`
+- `verity_tacacs_profile`
 - `verity_tenant`
 - `verity_threshold`
 - `verity_threshold_group`
@@ -144,6 +150,7 @@ The state importer workflow:
 
 ### Generated Files
 The importer generates the following Terraform resource files:
+- `deviceaaaprofiles.tf`
 - `acls_ipv4.tf`
 - `acls_ipv6.tf`
 - `aspathaccesslists.tf`
@@ -151,7 +158,6 @@ The importer generates the following Terraform resource files:
 - `badges.tf`
 - `bundles.tf`
 - `communitylists.tf`
-- `devicecontrollers.tf`
 - `devicesettings.tf`
 - `devicevoicesettings.tf`
 - `diagnosticsportprofiles.tf`
@@ -167,8 +173,10 @@ The importer generates the following Terraform resource files:
 - `ipv6lists.tf`
 - `ipv6prefixlists.tf`
 - `lags.tf`
+- `macfilters.tf`
 - `packetbroker.tf`
 - `packetqueues.tf`
+- `pairs.tf`
 - `policybasedrouting.tf`
 - `policybasedroutingacl.tf`
 - `pods.tf`
@@ -181,7 +189,10 @@ The importer generates the following Terraform resource files:
 - `sfpbreakouts.tf`
 - `sites.tf`
 - `spineplanes.tf`
+- `sspgroups.tf`
 - `switchpoints.tf`
+- `sus.tf`
+- `tacacsprofiles.tf`
 - `tenants.tf`
 - `thresholdgroups.tf`
 - `thresholds.tf`
@@ -206,32 +217,33 @@ Since API version 6.5, the provider supports two modes: **campus** and **datacen
 **Order for CAMPUS:**
 1. IPv4 Lists
 2. IPv6 Lists
-3. ACLs (IPv4)
-4. ACLs (IPv6)
-5. PB Routing ACL
-6. PB Routing
-7. Port ACLs
-8. Services
+3. TACACS Profiles
+4. ACLs v4
+5. ACLs v6
+6. Port ACLs
+7. Services
+8. Mac Filters
 9. Eth Port Profiles
 10. SFlow Collectors
 11. Packet Queues
-12. Service Port Profiles
-13. Diagnostics Port Profiles
-14. Device Voice Settings
-15. Authenticated Eth-Ports
-16. Diagnostics Profiles
-17. Eth Port Settings
-18. Voice-Port Profiles
-19. Device Settings
-20. Lags
-21. Bundles
-22. Badges
-23. Switchpoints
-24. Thresholds
-25. Grouping Rules
-26. Threshold Groups
-27. Sites
-28. Device Controllers
+12. Device AAA Profiles
+13. Service Port Profiles
+14. Diagnostics Port Profiles
+15. Device Voice Settings
+16. Authenticated Eth Ports
+17. Diagnostics Profiles
+18. Eth Port Settings
+19. Voice Port Profiles
+20. Device Settings
+21. Lags
+22. Bundles
+23. Badges
+24. Switchpoints
+25. Thresholds
+26. Grouping Rules
+27. Threshold Groups
+28. Pairs
+29. Sites
 
 **Order for DATACENTER:**
 1. SFP Breakouts
@@ -251,26 +263,32 @@ Since API version 6.5, the provider supports two modes: **campus** and **datacen
 15. IPv6 Lists
 16. Services
 17. Port ACLs
-18. Packet Broker
-19. Eth Port Profiles
-20. Packet Queues
-21. SFlow Collectors
-22. Gateways
-23. Lags
-24. Eth Port Settings
-25. Diagnostics Profiles
-26. Gateway Profiles
-27. Device Settings
-28. Diagnostics Port Profiles
-29. Bundles
-30. Pods
-31. Badges
-32. Spine Planes
-33. Switchpoints
-34. Thresholds
-35. Grouping Rules
-36. Threshold Groups
-37. Sites
+18. Mac Filters
+19. TACACS Profiles
+20. Packet Broker
+21. Eth Port Profiles
+22. Packet Queues
+23. SFlow Collectors
+24. Gateways
+25. Device AAA Profiles
+26. Lags
+27. Eth Port Settings
+28. Diagnostics Profiles
+29. Gateway Profiles
+30. Device Settings
+31. Diagnostics Port Profiles
+32. Bundles
+33. Pods
+34. Badges
+35. SUs
+36. SS Groups
+37. Spine Planes
+38. Switchpoints
+39. Thresholds
+40. Grouping Rules
+41. Threshold Groups
+42. Pairs
+43. Sites
 38. Device Controllers
 
 For delete operations, the order is automatically reversed to ensure proper dependency handling when removing resources.
@@ -320,7 +338,7 @@ To import your existing Verity system state into Terraform, run the appropriate 
 > **Tip:** You can always locate the `tools` folder inside the provider directory (where the provider binary is installed). Use your file browser or terminal to navigate to the correct folder, then right-click the script and choose "Copy Path" (Linux/macOS) or "Copy as path" (Windows) to avoid manually typing the full path.
 
 > **Note:** Replace:
-> - `<VERSION>` with the actual provider version (e.g. `6.4.0`)
+> - `<VERSION>` with the actual provider version (e.g. `6.6.0`)
 > - `<OS>` with your operating system (e.g. `linux`, `windows`, `darwin`)
 > - `<ARCH>` with your CPU architecture (e.g. `amd64`, `arm64`)
 
