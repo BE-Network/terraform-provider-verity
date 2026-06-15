@@ -97,8 +97,6 @@ type SitesPutRequestSiteValue struct {
 	SwitchIpBase *string `json:"switch_ip_base,omitempty"`
 	// Base IPv4 address for controller IPs in this Fabric
 	ControllerIpBase *string `json:"controller_ip_base,omitempty"`
-	// Base IPv4 address for Loopback0 interfaces in this Fabric
-	Loopback0Base *string `json:"loopback0_base,omitempty"`
 	// Allow multiple tenants to HGX endpoints on this fabric.
 	MultiTenant *bool `json:"multi_tenant,omitempty"`
 	// Base BGP Autonomous System Number used for switches in the fabric 
@@ -120,6 +118,24 @@ type SitesPutRequestSiteValue struct {
 	// Maximum number of PODs allowed in the Fabric
 	MaxPods NullableInt32 `json:"max_pods,omitempty"`
 	ObjectProperties *SitesPutRequestSiteValueObjectProperties `json:"object_properties,omitempty"`
+	// Default username for managed switches in this Fabric
+	SwitchUsername *string `json:"switch_username,omitempty"`
+	// Default password for managed switches in this Fabric
+	SwitchPassword *string `json:"switch_password,omitempty"`
+	// Default password for managed switches in this Fabric
+	SwitchPasswordEncrypted *string `json:"switch_password_encrypted,omitempty"`
+	// Default username for HGX devices in this Fabric
+	HgxUsername *string `json:"hgx_username,omitempty"`
+	// Default password for HGX devices in this Fabric
+	HgxPassword *string `json:"hgx_password,omitempty"`
+	// Default password for HGX devices in this Fabric
+	HgxPasswordEncrypted *string `json:"hgx_password_encrypted,omitempty"`
+	// Default switch management gateway IP for devices in this Fabric
+	SwitchGateway *string `json:"switch_gateway,omitempty"`
+	// Default controller gateway IP for devices in this Fabric
+	ControllerGateway *string `json:"controller_gateway,omitempty"`
+	// Default HGX management gateway IP for devices in this Fabric
+	HgxGateway *string `json:"hgx_gateway,omitempty"`
 	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
 	IpSourceGuard *bool `json:"ip_source_guard,omitempty"`
 	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
@@ -202,8 +218,6 @@ func NewSitesPutRequestSiteValue() *SitesPutRequestSiteValue {
 	this.SwitchIpBase = &switchIpBase
 	var controllerIpBase string = ""
 	this.ControllerIpBase = &controllerIpBase
-	var loopback0Base string = ""
-	this.Loopback0Base = &loopback0Base
 	var multiTenant bool = true
 	this.MultiTenant = &multiTenant
 	var baseBgpAsNumber string = "61000"
@@ -218,6 +232,24 @@ func NewSitesPutRequestSiteValue() *SitesPutRequestSiteValue {
 	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
+	var switchUsername string = ""
+	this.SwitchUsername = &switchUsername
+	var switchPassword string = ""
+	this.SwitchPassword = &switchPassword
+	var switchPasswordEncrypted string = ""
+	this.SwitchPasswordEncrypted = &switchPasswordEncrypted
+	var hgxUsername string = ""
+	this.HgxUsername = &hgxUsername
+	var hgxPassword string = ""
+	this.HgxPassword = &hgxPassword
+	var hgxPasswordEncrypted string = ""
+	this.HgxPasswordEncrypted = &hgxPasswordEncrypted
+	var switchGateway string = ""
+	this.SwitchGateway = &switchGateway
+	var controllerGateway string = ""
+	this.ControllerGateway = &controllerGateway
+	var hgxGateway string = ""
+	this.HgxGateway = &hgxGateway
 	var ipSourceGuard bool = false
 	this.IpSourceGuard = &ipSourceGuard
 	var enableDhcpSnooping bool = false
@@ -300,8 +332,6 @@ func NewSitesPutRequestSiteValueWithDefaults() *SitesPutRequestSiteValue {
 	this.SwitchIpBase = &switchIpBase
 	var controllerIpBase string = ""
 	this.ControllerIpBase = &controllerIpBase
-	var loopback0Base string = ""
-	this.Loopback0Base = &loopback0Base
 	var multiTenant bool = true
 	this.MultiTenant = &multiTenant
 	var baseBgpAsNumber string = "61000"
@@ -316,6 +346,24 @@ func NewSitesPutRequestSiteValueWithDefaults() *SitesPutRequestSiteValue {
 	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
+	var switchUsername string = ""
+	this.SwitchUsername = &switchUsername
+	var switchPassword string = ""
+	this.SwitchPassword = &switchPassword
+	var switchPasswordEncrypted string = ""
+	this.SwitchPasswordEncrypted = &switchPasswordEncrypted
+	var hgxUsername string = ""
+	this.HgxUsername = &hgxUsername
+	var hgxPassword string = ""
+	this.HgxPassword = &hgxPassword
+	var hgxPasswordEncrypted string = ""
+	this.HgxPasswordEncrypted = &hgxPasswordEncrypted
+	var switchGateway string = ""
+	this.SwitchGateway = &switchGateway
+	var controllerGateway string = ""
+	this.ControllerGateway = &controllerGateway
+	var hgxGateway string = ""
+	this.HgxGateway = &hgxGateway
 	var ipSourceGuard bool = false
 	this.IpSourceGuard = &ipSourceGuard
 	var enableDhcpSnooping bool = false
@@ -1761,38 +1809,6 @@ func (o *SitesPutRequestSiteValue) SetControllerIpBase(v string) {
 	o.ControllerIpBase = &v
 }
 
-// GetLoopback0Base returns the Loopback0Base field value if set, zero value otherwise.
-func (o *SitesPutRequestSiteValue) GetLoopback0Base() string {
-	if o == nil || IsNil(o.Loopback0Base) {
-		var ret string
-		return ret
-	}
-	return *o.Loopback0Base
-}
-
-// GetLoopback0BaseOk returns a tuple with the Loopback0Base field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SitesPutRequestSiteValue) GetLoopback0BaseOk() (*string, bool) {
-	if o == nil || IsNil(o.Loopback0Base) {
-		return nil, false
-	}
-	return o.Loopback0Base, true
-}
-
-// HasLoopback0Base returns a boolean if a field has been set.
-func (o *SitesPutRequestSiteValue) HasLoopback0Base() bool {
-	if o != nil && !IsNil(o.Loopback0Base) {
-		return true
-	}
-
-	return false
-}
-
-// SetLoopback0Base gets a reference to the given string and assigns it to the Loopback0Base field.
-func (o *SitesPutRequestSiteValue) SetLoopback0Base(v string) {
-	o.Loopback0Base = &v
-}
-
 // GetMultiTenant returns the MultiTenant field value if set, zero value otherwise.
 func (o *SitesPutRequestSiteValue) GetMultiTenant() bool {
 	if o == nil || IsNil(o.MultiTenant) {
@@ -2175,6 +2191,294 @@ func (o *SitesPutRequestSiteValue) SetObjectProperties(v SitesPutRequestSiteValu
 	o.ObjectProperties = &v
 }
 
+// GetSwitchUsername returns the SwitchUsername field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetSwitchUsername() string {
+	if o == nil || IsNil(o.SwitchUsername) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchUsername
+}
+
+// GetSwitchUsernameOk returns a tuple with the SwitchUsername field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetSwitchUsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchUsername) {
+		return nil, false
+	}
+	return o.SwitchUsername, true
+}
+
+// HasSwitchUsername returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasSwitchUsername() bool {
+	if o != nil && !IsNil(o.SwitchUsername) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchUsername gets a reference to the given string and assigns it to the SwitchUsername field.
+func (o *SitesPutRequestSiteValue) SetSwitchUsername(v string) {
+	o.SwitchUsername = &v
+}
+
+// GetSwitchPassword returns the SwitchPassword field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetSwitchPassword() string {
+	if o == nil || IsNil(o.SwitchPassword) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchPassword
+}
+
+// GetSwitchPasswordOk returns a tuple with the SwitchPassword field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetSwitchPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchPassword) {
+		return nil, false
+	}
+	return o.SwitchPassword, true
+}
+
+// HasSwitchPassword returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasSwitchPassword() bool {
+	if o != nil && !IsNil(o.SwitchPassword) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchPassword gets a reference to the given string and assigns it to the SwitchPassword field.
+func (o *SitesPutRequestSiteValue) SetSwitchPassword(v string) {
+	o.SwitchPassword = &v
+}
+
+// GetSwitchPasswordEncrypted returns the SwitchPasswordEncrypted field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetSwitchPasswordEncrypted() string {
+	if o == nil || IsNil(o.SwitchPasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchPasswordEncrypted
+}
+
+// GetSwitchPasswordEncryptedOk returns a tuple with the SwitchPasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetSwitchPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchPasswordEncrypted) {
+		return nil, false
+	}
+	return o.SwitchPasswordEncrypted, true
+}
+
+// HasSwitchPasswordEncrypted returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasSwitchPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.SwitchPasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchPasswordEncrypted gets a reference to the given string and assigns it to the SwitchPasswordEncrypted field.
+func (o *SitesPutRequestSiteValue) SetSwitchPasswordEncrypted(v string) {
+	o.SwitchPasswordEncrypted = &v
+}
+
+// GetHgxUsername returns the HgxUsername field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetHgxUsername() string {
+	if o == nil || IsNil(o.HgxUsername) {
+		var ret string
+		return ret
+	}
+	return *o.HgxUsername
+}
+
+// GetHgxUsernameOk returns a tuple with the HgxUsername field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetHgxUsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.HgxUsername) {
+		return nil, false
+	}
+	return o.HgxUsername, true
+}
+
+// HasHgxUsername returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasHgxUsername() bool {
+	if o != nil && !IsNil(o.HgxUsername) {
+		return true
+	}
+
+	return false
+}
+
+// SetHgxUsername gets a reference to the given string and assigns it to the HgxUsername field.
+func (o *SitesPutRequestSiteValue) SetHgxUsername(v string) {
+	o.HgxUsername = &v
+}
+
+// GetHgxPassword returns the HgxPassword field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetHgxPassword() string {
+	if o == nil || IsNil(o.HgxPassword) {
+		var ret string
+		return ret
+	}
+	return *o.HgxPassword
+}
+
+// GetHgxPasswordOk returns a tuple with the HgxPassword field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetHgxPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.HgxPassword) {
+		return nil, false
+	}
+	return o.HgxPassword, true
+}
+
+// HasHgxPassword returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasHgxPassword() bool {
+	if o != nil && !IsNil(o.HgxPassword) {
+		return true
+	}
+
+	return false
+}
+
+// SetHgxPassword gets a reference to the given string and assigns it to the HgxPassword field.
+func (o *SitesPutRequestSiteValue) SetHgxPassword(v string) {
+	o.HgxPassword = &v
+}
+
+// GetHgxPasswordEncrypted returns the HgxPasswordEncrypted field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetHgxPasswordEncrypted() string {
+	if o == nil || IsNil(o.HgxPasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.HgxPasswordEncrypted
+}
+
+// GetHgxPasswordEncryptedOk returns a tuple with the HgxPasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetHgxPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.HgxPasswordEncrypted) {
+		return nil, false
+	}
+	return o.HgxPasswordEncrypted, true
+}
+
+// HasHgxPasswordEncrypted returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasHgxPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.HgxPasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetHgxPasswordEncrypted gets a reference to the given string and assigns it to the HgxPasswordEncrypted field.
+func (o *SitesPutRequestSiteValue) SetHgxPasswordEncrypted(v string) {
+	o.HgxPasswordEncrypted = &v
+}
+
+// GetSwitchGateway returns the SwitchGateway field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetSwitchGateway() string {
+	if o == nil || IsNil(o.SwitchGateway) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchGateway
+}
+
+// GetSwitchGatewayOk returns a tuple with the SwitchGateway field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetSwitchGatewayOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchGateway) {
+		return nil, false
+	}
+	return o.SwitchGateway, true
+}
+
+// HasSwitchGateway returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasSwitchGateway() bool {
+	if o != nil && !IsNil(o.SwitchGateway) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchGateway gets a reference to the given string and assigns it to the SwitchGateway field.
+func (o *SitesPutRequestSiteValue) SetSwitchGateway(v string) {
+	o.SwitchGateway = &v
+}
+
+// GetControllerGateway returns the ControllerGateway field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetControllerGateway() string {
+	if o == nil || IsNil(o.ControllerGateway) {
+		var ret string
+		return ret
+	}
+	return *o.ControllerGateway
+}
+
+// GetControllerGatewayOk returns a tuple with the ControllerGateway field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetControllerGatewayOk() (*string, bool) {
+	if o == nil || IsNil(o.ControllerGateway) {
+		return nil, false
+	}
+	return o.ControllerGateway, true
+}
+
+// HasControllerGateway returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasControllerGateway() bool {
+	if o != nil && !IsNil(o.ControllerGateway) {
+		return true
+	}
+
+	return false
+}
+
+// SetControllerGateway gets a reference to the given string and assigns it to the ControllerGateway field.
+func (o *SitesPutRequestSiteValue) SetControllerGateway(v string) {
+	o.ControllerGateway = &v
+}
+
+// GetHgxGateway returns the HgxGateway field value if set, zero value otherwise.
+func (o *SitesPutRequestSiteValue) GetHgxGateway() string {
+	if o == nil || IsNil(o.HgxGateway) {
+		var ret string
+		return ret
+	}
+	return *o.HgxGateway
+}
+
+// GetHgxGatewayOk returns a tuple with the HgxGateway field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPutRequestSiteValue) GetHgxGatewayOk() (*string, bool) {
+	if o == nil || IsNil(o.HgxGateway) {
+		return nil, false
+	}
+	return o.HgxGateway, true
+}
+
+// HasHgxGateway returns a boolean if a field has been set.
+func (o *SitesPutRequestSiteValue) HasHgxGateway() bool {
+	if o != nil && !IsNil(o.HgxGateway) {
+		return true
+	}
+
+	return false
+}
+
+// SetHgxGateway gets a reference to the given string and assigns it to the HgxGateway field.
+func (o *SitesPutRequestSiteValue) SetHgxGateway(v string) {
+	o.HgxGateway = &v
+}
+
 // GetIpSourceGuard returns the IpSourceGuard field value if set, zero value otherwise.
 func (o *SitesPutRequestSiteValue) GetIpSourceGuard() bool {
 	if o == nil || IsNil(o.IpSourceGuard) {
@@ -2366,9 +2670,6 @@ func (o SitesPutRequestSiteValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ControllerIpBase) {
 		toSerialize["controller_ip_base"] = o.ControllerIpBase
 	}
-	if !IsNil(o.Loopback0Base) {
-		toSerialize["loopback0_base"] = o.Loopback0Base
-	}
 	if !IsNil(o.MultiTenant) {
 		toSerialize["multi_tenant"] = o.MultiTenant
 	}
@@ -2401,6 +2702,33 @@ func (o SitesPutRequestSiteValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.SwitchUsername) {
+		toSerialize["switch_username"] = o.SwitchUsername
+	}
+	if !IsNil(o.SwitchPassword) {
+		toSerialize["switch_password"] = o.SwitchPassword
+	}
+	if !IsNil(o.SwitchPasswordEncrypted) {
+		toSerialize["switch_password_encrypted"] = o.SwitchPasswordEncrypted
+	}
+	if !IsNil(o.HgxUsername) {
+		toSerialize["hgx_username"] = o.HgxUsername
+	}
+	if !IsNil(o.HgxPassword) {
+		toSerialize["hgx_password"] = o.HgxPassword
+	}
+	if !IsNil(o.HgxPasswordEncrypted) {
+		toSerialize["hgx_password_encrypted"] = o.HgxPasswordEncrypted
+	}
+	if !IsNil(o.SwitchGateway) {
+		toSerialize["switch_gateway"] = o.SwitchGateway
+	}
+	if !IsNil(o.ControllerGateway) {
+		toSerialize["controller_gateway"] = o.ControllerGateway
+	}
+	if !IsNil(o.HgxGateway) {
+		toSerialize["hgx_gateway"] = o.HgxGateway
 	}
 	if !IsNil(o.IpSourceGuard) {
 		toSerialize["ip_source_guard"] = o.IpSourceGuard

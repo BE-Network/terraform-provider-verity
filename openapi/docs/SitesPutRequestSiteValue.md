@@ -43,7 +43,6 @@ Name | Type | Description | Notes
 **AggressiveReporting** | Pointer to **bool** | Fast Reporting of Switch Communications, Link Up/Down, and BGP Status | [optional] [default to true]
 **SwitchIpBase** | Pointer to **string** | Base IPv4 address for switch IPs in this Fabric | [optional] [default to ""]
 **ControllerIpBase** | Pointer to **string** | Base IPv4 address for controller IPs in this Fabric | [optional] [default to ""]
-**Loopback0Base** | Pointer to **string** | Base IPv4 address for Loopback0 interfaces in this Fabric | [optional] [default to ""]
 **MultiTenant** | Pointer to **bool** | Allow multiple tenants to HGX endpoints on this fabric. | [optional] [default to true]
 **BaseBgpAsNumber** | Pointer to **string** | Base BGP Autonomous System Number used for switches in the fabric  | [optional] [default to "61000"]
 **RouterIdBasePrefix** | Pointer to **string** | Router ID starting IP address  | [optional] [default to "172.16.0.0"]
@@ -55,6 +54,15 @@ Name | Type | Description | Notes
 **MaxSus** | Pointer to **NullableInt32** | Maximum number of SUs allowed per POD | [optional] 
 **MaxPods** | Pointer to **NullableInt32** | Maximum number of PODs allowed in the Fabric | [optional] 
 **ObjectProperties** | Pointer to [**SitesPutRequestSiteValueObjectProperties**](SitesPutRequestSiteValueObjectProperties.md) |  | [optional] 
+**SwitchUsername** | Pointer to **string** | Default username for managed switches in this Fabric | [optional] [default to ""]
+**SwitchPassword** | Pointer to **string** | Default password for managed switches in this Fabric | [optional] [default to ""]
+**SwitchPasswordEncrypted** | Pointer to **string** | Default password for managed switches in this Fabric | [optional] [default to ""]
+**HgxUsername** | Pointer to **string** | Default username for HGX devices in this Fabric | [optional] [default to ""]
+**HgxPassword** | Pointer to **string** | Default password for HGX devices in this Fabric | [optional] [default to ""]
+**HgxPasswordEncrypted** | Pointer to **string** | Default password for HGX devices in this Fabric | [optional] [default to ""]
+**SwitchGateway** | Pointer to **string** | Default switch management gateway IP for devices in this Fabric | [optional] [default to ""]
+**ControllerGateway** | Pointer to **string** | Default controller gateway IP for devices in this Fabric | [optional] [default to ""]
+**HgxGateway** | Pointer to **string** | Default HGX management gateway IP for devices in this Fabric | [optional] [default to ""]
 **IpSourceGuard** | Pointer to **bool** | On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings | [optional] [default to false]
 **EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
 
@@ -1242,31 +1250,6 @@ SetControllerIpBase sets ControllerIpBase field to given value.
 
 HasControllerIpBase returns a boolean if a field has been set.
 
-### GetLoopback0Base
-
-`func (o *SitesPutRequestSiteValue) GetLoopback0Base() string`
-
-GetLoopback0Base returns the Loopback0Base field if non-nil, zero value otherwise.
-
-### GetLoopback0BaseOk
-
-`func (o *SitesPutRequestSiteValue) GetLoopback0BaseOk() (*string, bool)`
-
-GetLoopback0BaseOk returns a tuple with the Loopback0Base field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetLoopback0Base
-
-`func (o *SitesPutRequestSiteValue) SetLoopback0Base(v string)`
-
-SetLoopback0Base sets Loopback0Base field to given value.
-
-### HasLoopback0Base
-
-`func (o *SitesPutRequestSiteValue) HasLoopback0Base() bool`
-
-HasLoopback0Base returns a boolean if a field has been set.
-
 ### GetMultiTenant
 
 `func (o *SitesPutRequestSiteValue) GetMultiTenant() bool`
@@ -1571,6 +1554,231 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *SitesPutRequestSiteValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetSwitchUsername
+
+`func (o *SitesPutRequestSiteValue) GetSwitchUsername() string`
+
+GetSwitchUsername returns the SwitchUsername field if non-nil, zero value otherwise.
+
+### GetSwitchUsernameOk
+
+`func (o *SitesPutRequestSiteValue) GetSwitchUsernameOk() (*string, bool)`
+
+GetSwitchUsernameOk returns a tuple with the SwitchUsername field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchUsername
+
+`func (o *SitesPutRequestSiteValue) SetSwitchUsername(v string)`
+
+SetSwitchUsername sets SwitchUsername field to given value.
+
+### HasSwitchUsername
+
+`func (o *SitesPutRequestSiteValue) HasSwitchUsername() bool`
+
+HasSwitchUsername returns a boolean if a field has been set.
+
+### GetSwitchPassword
+
+`func (o *SitesPutRequestSiteValue) GetSwitchPassword() string`
+
+GetSwitchPassword returns the SwitchPassword field if non-nil, zero value otherwise.
+
+### GetSwitchPasswordOk
+
+`func (o *SitesPutRequestSiteValue) GetSwitchPasswordOk() (*string, bool)`
+
+GetSwitchPasswordOk returns a tuple with the SwitchPassword field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchPassword
+
+`func (o *SitesPutRequestSiteValue) SetSwitchPassword(v string)`
+
+SetSwitchPassword sets SwitchPassword field to given value.
+
+### HasSwitchPassword
+
+`func (o *SitesPutRequestSiteValue) HasSwitchPassword() bool`
+
+HasSwitchPassword returns a boolean if a field has been set.
+
+### GetSwitchPasswordEncrypted
+
+`func (o *SitesPutRequestSiteValue) GetSwitchPasswordEncrypted() string`
+
+GetSwitchPasswordEncrypted returns the SwitchPasswordEncrypted field if non-nil, zero value otherwise.
+
+### GetSwitchPasswordEncryptedOk
+
+`func (o *SitesPutRequestSiteValue) GetSwitchPasswordEncryptedOk() (*string, bool)`
+
+GetSwitchPasswordEncryptedOk returns a tuple with the SwitchPasswordEncrypted field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchPasswordEncrypted
+
+`func (o *SitesPutRequestSiteValue) SetSwitchPasswordEncrypted(v string)`
+
+SetSwitchPasswordEncrypted sets SwitchPasswordEncrypted field to given value.
+
+### HasSwitchPasswordEncrypted
+
+`func (o *SitesPutRequestSiteValue) HasSwitchPasswordEncrypted() bool`
+
+HasSwitchPasswordEncrypted returns a boolean if a field has been set.
+
+### GetHgxUsername
+
+`func (o *SitesPutRequestSiteValue) GetHgxUsername() string`
+
+GetHgxUsername returns the HgxUsername field if non-nil, zero value otherwise.
+
+### GetHgxUsernameOk
+
+`func (o *SitesPutRequestSiteValue) GetHgxUsernameOk() (*string, bool)`
+
+GetHgxUsernameOk returns a tuple with the HgxUsername field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHgxUsername
+
+`func (o *SitesPutRequestSiteValue) SetHgxUsername(v string)`
+
+SetHgxUsername sets HgxUsername field to given value.
+
+### HasHgxUsername
+
+`func (o *SitesPutRequestSiteValue) HasHgxUsername() bool`
+
+HasHgxUsername returns a boolean if a field has been set.
+
+### GetHgxPassword
+
+`func (o *SitesPutRequestSiteValue) GetHgxPassword() string`
+
+GetHgxPassword returns the HgxPassword field if non-nil, zero value otherwise.
+
+### GetHgxPasswordOk
+
+`func (o *SitesPutRequestSiteValue) GetHgxPasswordOk() (*string, bool)`
+
+GetHgxPasswordOk returns a tuple with the HgxPassword field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHgxPassword
+
+`func (o *SitesPutRequestSiteValue) SetHgxPassword(v string)`
+
+SetHgxPassword sets HgxPassword field to given value.
+
+### HasHgxPassword
+
+`func (o *SitesPutRequestSiteValue) HasHgxPassword() bool`
+
+HasHgxPassword returns a boolean if a field has been set.
+
+### GetHgxPasswordEncrypted
+
+`func (o *SitesPutRequestSiteValue) GetHgxPasswordEncrypted() string`
+
+GetHgxPasswordEncrypted returns the HgxPasswordEncrypted field if non-nil, zero value otherwise.
+
+### GetHgxPasswordEncryptedOk
+
+`func (o *SitesPutRequestSiteValue) GetHgxPasswordEncryptedOk() (*string, bool)`
+
+GetHgxPasswordEncryptedOk returns a tuple with the HgxPasswordEncrypted field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHgxPasswordEncrypted
+
+`func (o *SitesPutRequestSiteValue) SetHgxPasswordEncrypted(v string)`
+
+SetHgxPasswordEncrypted sets HgxPasswordEncrypted field to given value.
+
+### HasHgxPasswordEncrypted
+
+`func (o *SitesPutRequestSiteValue) HasHgxPasswordEncrypted() bool`
+
+HasHgxPasswordEncrypted returns a boolean if a field has been set.
+
+### GetSwitchGateway
+
+`func (o *SitesPutRequestSiteValue) GetSwitchGateway() string`
+
+GetSwitchGateway returns the SwitchGateway field if non-nil, zero value otherwise.
+
+### GetSwitchGatewayOk
+
+`func (o *SitesPutRequestSiteValue) GetSwitchGatewayOk() (*string, bool)`
+
+GetSwitchGatewayOk returns a tuple with the SwitchGateway field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchGateway
+
+`func (o *SitesPutRequestSiteValue) SetSwitchGateway(v string)`
+
+SetSwitchGateway sets SwitchGateway field to given value.
+
+### HasSwitchGateway
+
+`func (o *SitesPutRequestSiteValue) HasSwitchGateway() bool`
+
+HasSwitchGateway returns a boolean if a field has been set.
+
+### GetControllerGateway
+
+`func (o *SitesPutRequestSiteValue) GetControllerGateway() string`
+
+GetControllerGateway returns the ControllerGateway field if non-nil, zero value otherwise.
+
+### GetControllerGatewayOk
+
+`func (o *SitesPutRequestSiteValue) GetControllerGatewayOk() (*string, bool)`
+
+GetControllerGatewayOk returns a tuple with the ControllerGateway field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetControllerGateway
+
+`func (o *SitesPutRequestSiteValue) SetControllerGateway(v string)`
+
+SetControllerGateway sets ControllerGateway field to given value.
+
+### HasControllerGateway
+
+`func (o *SitesPutRequestSiteValue) HasControllerGateway() bool`
+
+HasControllerGateway returns a boolean if a field has been set.
+
+### GetHgxGateway
+
+`func (o *SitesPutRequestSiteValue) GetHgxGateway() string`
+
+GetHgxGateway returns the HgxGateway field if non-nil, zero value otherwise.
+
+### GetHgxGatewayOk
+
+`func (o *SitesPutRequestSiteValue) GetHgxGatewayOk() (*string, bool)`
+
+GetHgxGatewayOk returns a tuple with the HgxGateway field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHgxGateway
+
+`func (o *SitesPutRequestSiteValue) SetHgxGateway(v string)`
+
+SetHgxGateway sets HgxGateway field to given value.
+
+### HasHgxGateway
+
+`func (o *SitesPutRequestSiteValue) HasHgxGateway() bool`
+
+HasHgxGateway returns a boolean if a field has been set.
 
 ### GetIpSourceGuard
 
