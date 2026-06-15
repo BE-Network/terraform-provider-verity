@@ -246,25 +246,34 @@ def compare_fields(
         # Use datacenter schema as reference for common fields
         field_info = extract_field_info(key, dc_schema, FieldMode.COMMON, parent_path)
         
-        # Check if nested fields need comparison
-        if field_info.nested_fields and dc_schema.get("type") in ("array", "object"):
+        # Check if nested fields need comparison.
+        # Important: one mode may define an empty object while the other mode
+        # contains nested properties under the same parent field.
+        if dc_schema.get("type") in ("array", "object") or campus_schema.get("type") in ("array", "object"):
             dc_nested = {}
             campus_nested = {}
-            
+
             if dc_schema.get("type") == "array":
                 dc_nested = dc_schema.get("items", {}).get("properties", {})
-                campus_nested = campus_schema.get("items", {}).get("properties", {})
             elif dc_schema.get("type") == "object":
                 dc_nested = dc_schema.get("properties", {})
+
+            if campus_schema.get("type") == "array":
+                campus_nested = campus_schema.get("items", {}).get("properties", {})
+            elif campus_schema.get("type") == "object":
                 campus_nested = campus_schema.get("properties", {})
-            
+
             if dc_nested or campus_nested:
+                nested_parent_path = f"{field_info.path}[]" if (
+                    dc_schema.get("type") == "array" or campus_schema.get("type") == "array"
+                ) else field_info.path
+
                 nested_common, nested_dc_only, nested_campus_only = compare_fields(
-                    dc_nested, 
+                    dc_nested,
                     campus_nested,
-                    f"{field_info.path}[]" if dc_schema.get("type") == "array" else field_info.path
+                    nested_parent_path
                 )
-                
+
                 # Update nested fields with comparison results
                 all_nested = {}
                 all_nested.update(nested_common)
