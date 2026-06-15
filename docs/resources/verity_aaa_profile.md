@@ -8,7 +8,7 @@
 resource "verity_aaa_profile" "example" {
   name = "example"
   enable = true
-  fail-through = true
+  fail_through = true
   tacacs_profile = "example-tacacs"
   tacacs_profile_ref_type_ = "tacacs_profile"
 
@@ -24,7 +24,7 @@ resource "verity_aaa_profile" "example" {
 
 * `name` (String) - Template Name. Must be unique within type.
 * `enable` (Boolean) - Enable object.
-* `fail-through` (Boolean) - When enabled, authentication continues to access each server in the method list if an authentication request fails on one server.
+* `fail_through` (Boolean) - When enabled, authentication continues to access each server in the method list if an authentication request fails on one server.
 * `tacacs_profile` (String) - TACACS+ profile for authentication.
 * `tacacs_profile_ref_type_` (String) - Object type for `tacacs_profile` field.
 * `login_default` (Array) -

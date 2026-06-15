@@ -274,6 +274,7 @@ var resourceConfigs = map[string]ResourceConfig{
 		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:        universalObjectPropsHandler,
 		NestedBlockFields:         map[string]bool{"login_default": true},
+		FieldMappings:             map[string]string{"fail-through": "fail_through"},
 	},
 	"eth_port_profile": {
 		ResourceType:               "eth_port_profile",

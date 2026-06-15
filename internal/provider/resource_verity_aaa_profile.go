@@ -42,7 +42,7 @@ type verityAaaProfileResource struct {
 type verityAaaProfileResourceModel struct {
 	Name                 types.String                        `tfsdk:"name"`
 	Enable               types.Bool                          `tfsdk:"enable"`
-	FailThrough          types.Bool                          `tfsdk:"fail-through"`
+	FailThrough          types.Bool                          `tfsdk:"fail_through"`
 	TacacsProfile        types.String                        `tfsdk:"tacacs_profile"`
 	TacacsProfileRefType types.String                        `tfsdk:"tacacs_profile_ref_type_"`
 	LoginDefault         []verityAaaProfileLoginDefaultModel `tfsdk:"login_default"`
@@ -98,7 +98,7 @@ func (r *verityAaaProfileResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
-			"fail-through": schema.BoolAttribute{
+			"fail_through": schema.BoolAttribute{
 				Description: "When enabled, authentication continues to access each server in the method list if an authentication request fails on one server",
 				Optional:    true,
 				Computed:    true,
@@ -551,7 +551,7 @@ func (r *verityAaaProfileResource) ModifyPlan(ctx context.Context, req resource.
 	)
 
 	nullifier.NullifyBools(
-		"enable", "fail-through",
+		"enable", "fail_through",
 	)
 
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
