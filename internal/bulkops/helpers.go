@@ -597,6 +597,21 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					}
 					return result.SwitchPair, nil
 
+				case "site":
+					resp, err := m.client.SitesAPI.SitesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Site map[string]interface{} `json:"site"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Site, nil
+
 				case "switchpoint":
 					resp, err := m.client.SwitchpointsAPI.SwitchpointsGet(apiCtx).Execute()
 					if err != nil {

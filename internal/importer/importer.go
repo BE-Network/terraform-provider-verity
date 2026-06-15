@@ -61,6 +61,9 @@ var importerRegistry = map[string]struct {
 	"gatewayprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.GatewayProfilesAPI.GatewayprofilesGet(ctx).Execute()
 	}},
+	"deviceaaaprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.DeviceAAAProfilesAPI.DeviceaaaprofilesGet(ctx).Execute()
+	}},
 	"ethportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
 	}},
@@ -100,6 +103,9 @@ var importerRegistry = map[string]struct {
 	"packetqueues": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PacketQueuesAPI.PacketqueuesGet(ctx).Execute()
 	}},
+	"tacacsprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.TACACSProfilesAPI.TacacsprofilesGet(ctx).Execute()
+	}},
 	"serviceportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.ServicePortProfilesAPI.ServiceportprofilesGet(ctx).Execute()
 	}},
@@ -114,6 +120,9 @@ var importerRegistry = map[string]struct {
 	}},
 	"communitylists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.CommunityListsAPI.CommunitylistsGet(ctx).Execute()
+	}},
+	"macfilters": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.MACFiltersAPI.MacfiltersGet(ctx).Execute()
 	}},
 	"devicesettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.DeviceSettingsAPI.DevicesettingsGet(ctx).Execute()
@@ -145,11 +154,20 @@ var importerRegistry = map[string]struct {
 	"sites": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SitesAPI.SitesGet(ctx).Execute()
 	}},
+	"pairs": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.SwitchPairsAPI.PairsGet(ctx).Execute()
+	}},
 	"pods": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PodsAPI.PodsGet(ctx).Execute()
 	}},
+	"sspgroups": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.SuperSpineGroupsAPI.SspgroupsGet(ctx).Execute()
+	}},
 	"spineplanes": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SpinePlanesAPI.SpineplanesGet(ctx).Execute()
+	}},
+	"sus": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.SUsAPI.SusGet(ctx).Execute()
 	}},
 	"policybasedroutingacl": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.PBRoutingACLAPI.PolicybasedroutingaclGet(ctx).Execute()
@@ -176,6 +194,7 @@ var terraformTypeToResourceKey = map[string]string{
 	"verity_tenant":                   "tenant",
 	"verity_gateway":                  "gateway",
 	"verity_gateway_profile":          "gateway_profile",
+	"verity_aaa_profile":              "aaa_profile",
 	"verity_eth_port_profile":         "eth_port_profile",
 	"verity_lag":                      "lag",
 	"verity_sflow_collector":          "sflow_collector",
@@ -193,12 +212,14 @@ var terraformTypeToResourceKey = map[string]string{
 	"verity_device_voice_settings":    "device_voice_settings",
 	"verity_packet_broker":            "packet_broker",
 	"verity_packet_queue":             "packet_queue",
+	"verity_tacacs_profile":           "tacacs_profile",
 	"verity_service_port_profile":     "service_port_profile",
 	"verity_voice_port_profile":       "voice_port_profile",
 	"verity_spine_plane":              "spine_plane",
 	"verity_switchpoint":              "switchpoint",
 	"verity_as_path_access_list":      "as_path_access_list",
 	"verity_community_list":           "community_list",
+	"verity_mac_filter":               "mac_filter",
 	"verity_device_settings":          "device_settings",
 	"verity_extended_community_list":  "extended_community_list",
 	"verity_ipv4_list":                "ipv4_list",
@@ -209,7 +230,10 @@ var terraformTypeToResourceKey = map[string]string{
 	"verity_route_map":                "route_map",
 	"verity_sfp_breakout":             "sfp_breakout",
 	"verity_site":                     "site",
+	"verity_pair":                     "pair",
 	"verity_pod":                      "pod",
+	"verity_ssp_group":                "ssp_group",
+	"verity_su":                       "su",
 	"verity_port_acl":                 "port_acl",
 	"verity_grouping_rule":            "grouping_rule",
 	"verity_threshold_group":          "threshold_group",
@@ -242,6 +266,14 @@ var resourceConfigs = map[string]ResourceConfig{
 		ObjectPropsHandler:         universalObjectPropsHandler,
 		NestedBlockFields:          map[string]bool{"external_gateways": true},
 		AdditionalTopLevelSkipKeys: []string{"index"},
+	},
+	"aaa_profile": {
+		ResourceType:              "aaa_profile",
+		StageName:                 "device_aaa_profile_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"login_default": true},
 	},
 	"eth_port_profile": {
 		ResourceType:               "eth_port_profile",
@@ -358,7 +390,7 @@ var resourceConfigs = map[string]ResourceConfig{
 		HeaderNameLineFormat:      "    name = \"%s\"\n",
 		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"eth_ports": true, "object_properties": true},
+		NestedBlockFields:         map[string]bool{"eth_ports": true},
 	},
 	"device_voice_settings": {
 		ResourceType:                 "device_voice_settings",
@@ -386,6 +418,14 @@ var resourceConfigs = map[string]ResourceConfig{
 		ObjectPropsHandler:        universalObjectPropsHandler,
 		NestedBlockFields:         map[string]bool{"pbit": true, "queue": true},
 	},
+	"tacacs_profile": {
+		ResourceType:              "tacacs_profile",
+		StageName:                 "tacacs_profile_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"tacacs_servers": true},
+	},
 	"service_port_profile": {
 		ResourceType:              "service_port_profile",
 		StageName:                 "service_port_profile_stage",
@@ -410,13 +450,12 @@ var resourceConfigs = map[string]ResourceConfig{
 		ObjectPropsHandler:        universalObjectPropsHandler,
 	},
 	"switchpoint": {
-		ResourceType:                 "switchpoint",
-		StageName:                    "switchpoint_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		NestedBlockFields:            map[string]bool{"badges": true, "children": true, "traffic_mirrors": true, "eths": true},
-		ObjectPropsNestedBlockFields: map[string]bool{"eths": true},
+		ResourceType:              "switchpoint",
+		StageName:                 "switchpoint_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"badges": true, "children": true, "traffic_mirrors": true, "eths": true, "pots": true},
 	},
 	"as_path_access_list": {
 		ResourceType:              "as_path_access_list",
@@ -434,12 +473,21 @@ var resourceConfigs = map[string]ResourceConfig{
 		ObjectPropsHandler:        universalObjectPropsHandler,
 		NestedBlockFields:         map[string]bool{"lists": true},
 	},
+	"mac_filter": {
+		ResourceType:              "mac_filter",
+		StageName:                 "mac_filter_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"filters": true},
+	},
 	"device_settings": {
 		ResourceType:              "device_settings",
 		StageName:                 "device_settings_stage",
 		HeaderNameLineFormat:      "    name = \"%s\"\n",
 		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:        universalObjectPropsHandler,
+		NestedBlockFields:         map[string]bool{"dns_servers": true, "ntp_servers": true, "syslog_servers": true},
 	},
 	"extended_community_list": {
 		ResourceType:              "extended_community_list",
@@ -508,12 +556,32 @@ var resourceConfigs = map[string]ResourceConfig{
 		HeaderNameLineFormat:         "    name = \"%s\"\n",
 		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:           universalObjectPropsHandler,
-		NestedBlockFields:            map[string]bool{"islands": true, "pairs": true, "system_graphs": true},
 		ObjectPropsNestedBlockFields: map[string]bool{"system_graphs": true},
+	},
+	"pair": {
+		ResourceType:              "pair",
+		StageName:                 "pair_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
 	},
 	"pod": {
 		ResourceType:              "pod",
 		StageName:                 "pod_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"ssp_group": {
+		ResourceType:              "ssp_group",
+		StageName:                 "ssp_group_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"su": {
+		ResourceType:              "su",
+		StageName:                 "su_stage",
 		HeaderNameLineFormat:      "    name = \"%s\"\n",
 		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:        universalObjectPropsHandler,
@@ -592,6 +660,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "tenants", terraformResourceType: "verity_tenant", importer: func() (interface{}, error) { return i.importResource("tenants") }},
 		{name: "gateways", terraformResourceType: "verity_gateway", importer: func() (interface{}, error) { return i.importResource("gateways") }},
 		{name: "gatewayprofiles", terraformResourceType: "verity_gateway_profile", importer: func() (interface{}, error) { return i.importResource("gatewayprofiles") }},
+		{name: "deviceaaaprofiles", terraformResourceType: "verity_aaa_profile", importer: func() (interface{}, error) { return i.importResource("deviceaaaprofiles") }},
 		{name: "ethportprofiles", terraformResourceType: "verity_eth_port_profile", importer: func() (interface{}, error) { return i.importResource("ethportprofiles") }},
 		{name: "lags", terraformResourceType: "verity_lag", importer: func() (interface{}, error) { return i.importResource("lags") }},
 		{name: "sflowcollectors", terraformResourceType: "verity_sflow_collector", importer: func() (interface{}, error) { return i.importResource("sflowcollectors") }},
@@ -609,12 +678,14 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "devicevoicesettings", terraformResourceType: "verity_device_voice_settings", importer: func() (interface{}, error) { return i.importResource("devicevoicesettings") }},
 		{name: "packetbroker", terraformResourceType: "verity_packet_broker", importer: func() (interface{}, error) { return i.importResource("packetbroker") }},
 		{name: "packetqueues", terraformResourceType: "verity_packet_queue", importer: func() (interface{}, error) { return i.importResource("packetqueues") }},
+		{name: "tacacsprofiles", terraformResourceType: "verity_tacacs_profile", importer: func() (interface{}, error) { return i.importResource("tacacsprofiles") }},
 		{name: "serviceportprofiles", terraformResourceType: "verity_service_port_profile", importer: func() (interface{}, error) { return i.importResource("serviceportprofiles") }},
 		{name: "voiceportprofiles", terraformResourceType: "verity_voice_port_profile", importer: func() (interface{}, error) { return i.importResource("voiceportprofiles") }},
 		{name: "spineplanes", terraformResourceType: "verity_spine_plane", importer: func() (interface{}, error) { return i.importResource("spineplanes") }},
 		{name: "switchpoints", terraformResourceType: "verity_switchpoint", importer: func() (interface{}, error) { return i.importResource("switchpoints") }},
 		{name: "aspathaccesslists", terraformResourceType: "verity_as_path_access_list", importer: func() (interface{}, error) { return i.importResource("aspathaccesslists") }},
 		{name: "communitylists", terraformResourceType: "verity_community_list", importer: func() (interface{}, error) { return i.importResource("communitylists") }},
+		{name: "macfilters", terraformResourceType: "verity_mac_filter", importer: func() (interface{}, error) { return i.importResource("macfilters") }},
 		{name: "devicesettings", terraformResourceType: "verity_device_settings", importer: func() (interface{}, error) { return i.importResource("devicesettings") }},
 		{name: "extendedcommunitylists", terraformResourceType: "verity_extended_community_list", importer: func() (interface{}, error) { return i.importResource("extendedcommunitylists") }},
 		{name: "ipv4lists", terraformResourceType: "verity_ipv4_list", importer: func() (interface{}, error) { return i.importResource("ipv4lists") }},
@@ -625,7 +696,10 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "routemaps", terraformResourceType: "verity_route_map", importer: func() (interface{}, error) { return i.importResource("routemaps") }},
 		{name: "sfpbreakouts", terraformResourceType: "verity_sfp_breakout", importer: func() (interface{}, error) { return i.importResource("sfpbreakouts") }},
 		{name: "sites", terraformResourceType: "verity_site", importer: func() (interface{}, error) { return i.importResource("sites") }},
+		{name: "pairs", terraformResourceType: "verity_pair", importer: func() (interface{}, error) { return i.importResource("pairs") }},
 		{name: "pods", terraformResourceType: "verity_pod", importer: func() (interface{}, error) { return i.importResource("pods") }},
+		{name: "sspgroups", terraformResourceType: "verity_ssp_group", importer: func() (interface{}, error) { return i.importResource("sspgroups") }},
+		{name: "sus", terraformResourceType: "verity_su", importer: func() (interface{}, error) { return i.importResource("sus") }},
 		{name: "portacls", terraformResourceType: "verity_port_acl", importer: func() (interface{}, error) { return i.importResource("portacls") }},
 		{name: "groupingrules", terraformResourceType: "verity_grouping_rule", importer: func() (interface{}, error) { return i.importResource("groupingrules") }},
 		{name: "thresholdgroups", terraformResourceType: "verity_threshold_group", importer: func() (interface{}, error) { return i.importResource("thresholdgroups") }},
@@ -981,27 +1055,21 @@ func (i *Importer) generateStagesTF() (string, error) {
 	var stageOrder []StageDefinition
 
 	if i.Mode == "campus" {
-		// CAMPUS mode staging order:
-		// 1. IPv4 Lists, 2. IPv6 Lists, 3. ACLs v4, 4. ACLs v6, 5. PB Routing ACL,
-		// 6. PB Routing, 7. Port ACLs, 8. Services, 9. Eth Port Profiles, 10. SFlow Collectors,
-		// 11. Packet Queues, 12. Service Port Profiles, 13. Diagnostics Port Profiles,
-		// 14. Device Voice Settings, 15. Authenticated Eth Ports, 16. Diagnostics Profiles,
-		// 17. Eth Port Settings, 18. Voice Port Profiles, 19. Device Settings, 20. Lags,
-		// 21. Bundles, 22. Badges, 23. Switchpoints, 24. Thresholds, 25. Grouping Rules,
-		// 26. Threshold Groups, 27. Sites
+		// CAMPUS mode staging order mirrors the API batching order.
 		stageOrder = []StageDefinition{
 			{"ipv4_list_stage", "verity_ipv4_list", ""},
 			{"ipv6_list_stage", "verity_ipv6_list", "ipv4_list_stage"},
-			{"acl_v4_stage", "verity_acl_v4", "ipv6_list_stage"},
+			{"tacacs_profile_stage", "verity_tacacs_profile", "ipv6_list_stage"},
+			{"acl_v4_stage", "verity_acl_v4", "tacacs_profile_stage"},
 			{"acl_v6_stage", "verity_acl_v6", "acl_v4_stage"},
-			{"pb_routing_acl_stage", "verity_pb_routing_acl", "acl_v6_stage"},
-			{"pb_routing_stage", "verity_pb_routing", "pb_routing_acl_stage"},
-			{"port_acl_stage", "verity_port_acl", "pb_routing_stage"},
+			{"port_acl_stage", "verity_port_acl", "acl_v6_stage"},
 			{"service_stage", "verity_service", "port_acl_stage"},
-			{"eth_port_profile_stage", "verity_eth_port_profile", "service_stage"},
+			{"mac_filter_stage", "verity_mac_filter", "service_stage"},
+			{"eth_port_profile_stage", "verity_eth_port_profile", "mac_filter_stage"},
 			{"sflow_collector_stage", "verity_sflow_collector", "eth_port_profile_stage"},
 			{"packet_queue_stage", "verity_packet_queue", "sflow_collector_stage"},
-			{"service_port_profile_stage", "verity_service_port_profile", "packet_queue_stage"},
+			{"device_aaa_profile_stage", "verity_aaa_profile", "packet_queue_stage"},
+			{"service_port_profile_stage", "verity_service_port_profile", "device_aaa_profile_stage"},
 			{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "service_port_profile_stage"},
 			{"device_voice_setting_stage", "verity_device_voice_settings", "diagnostics_port_profile_stage"},
 			{"authenticated_eth_port_stage", "verity_authenticated_eth_port", "device_voice_setting_stage"},
@@ -1016,20 +1084,11 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"threshold_stage", "verity_threshold", "switchpoint_stage"},
 			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
 			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
-			{"site_stage", "verity_site", "threshold_group_stage"},
+			{"pair_stage", "verity_pair", "threshold_group_stage"},
+			{"site_stage", "verity_site", "pair_stage"},
 		}
 	} else {
-		// DATACENTER mode staging order:
-		// 1. SFP Breakouts, 2. IPv6 Prefix Lists, 3. Community Lists, 4. IPv4 Prefix Lists,
-		// 5. Extended Community Lists, 6. AS Path Access Lists, 7. Route Map Clauses,
-		// 8. ACLs v6, 9. ACLs v4, 10. Route Maps, 11. PB Routing ACL, 12. Tenants,
-		// 13. PB Routing, 14. IPv4 Lists, 15. IPv6 Lists, 16. Services, 17. Port ACLs,
-		// 18. Packet Broker, 19. Eth Port Profiles, 20. Packet Queues, 21. SFlow Collectors,
-		// 22. Gateways, 23. Lags, 24. Eth Port Settings, 25. Diagnostics Profiles,
-		// 26. Gateway Profiles,  27. Device Settings, 28. Diagnostics Port Profiles, 29. Bundles, 30. Pods,
-		// 31. Badges, 32. Spine Planes, 33. Switchpoints, 34. Thresholds, 35. Grouping Rules,
-		// 36. Threshold Groups, 37. Sites
-
+		// DATACENTER mode staging order mirrors the API batching order.
 		stageOrder = []StageDefinition{
 			{"sfp_breakout_stage", "verity_sfp_breakout", ""},
 			{"ipv6_prefix_list_stage", "verity_ipv6_prefix_list", "sfp_breakout_stage"},
@@ -1048,12 +1107,15 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"ipv6_list_stage", "verity_ipv6_list", "ipv4_list_stage"},
 			{"service_stage", "verity_service", "ipv6_list_stage"},
 			{"port_acl_stage", "verity_port_acl", "service_stage"},
-			{"packet_broker_stage", "verity_packet_broker", "port_acl_stage"},
+			{"mac_filter_stage", "verity_mac_filter", "port_acl_stage"},
+			{"tacacs_profile_stage", "verity_tacacs_profile", "mac_filter_stage"},
+			{"packet_broker_stage", "verity_packet_broker", "tacacs_profile_stage"},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "packet_broker_stage"},
 			{"packet_queue_stage", "verity_packet_queue", "eth_port_profile_stage"},
 			{"sflow_collector_stage", "verity_sflow_collector", "packet_queue_stage"},
 			{"gateway_stage", "verity_gateway", "sflow_collector_stage"},
-			{"lag_stage", "verity_lag", "gateway_stage"},
+			{"device_aaa_profile_stage", "verity_aaa_profile", "gateway_stage"},
+			{"lag_stage", "verity_lag", "device_aaa_profile_stage"},
 			{"eth_port_settings_stage", "verity_eth_port_settings", "lag_stage"},
 			{"diagnostics_profile_stage", "verity_diagnostics_profile", "eth_port_settings_stage"},
 			{"gateway_profile_stage", "verity_gateway_profile", "diagnostics_profile_stage"},
@@ -1062,12 +1124,15 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"bundle_stage", "verity_bundle", "diagnostics_port_profile_stage"},
 			{"pod_stage", "verity_pod", "bundle_stage"},
 			{"badge_stage", "verity_badge", "pod_stage"},
-			{"spine_plane_stage", "verity_spine_plane", "badge_stage"},
+			{"su_stage", "verity_su", "badge_stage"},
+			{"ssp_group_stage", "verity_ssp_group", "su_stage"},
+			{"spine_plane_stage", "verity_spine_plane", "ssp_group_stage"},
 			{"switchpoint_stage", "verity_switchpoint", "spine_plane_stage"},
 			{"threshold_stage", "verity_threshold", "switchpoint_stage"},
 			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
 			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
-			{"site_stage", "verity_site", "threshold_group_stage"},
+			{"pair_stage", "verity_pair", "threshold_group_stage"},
+			{"site_stage", "verity_site", "pair_stage"},
 		}
 	}
 
