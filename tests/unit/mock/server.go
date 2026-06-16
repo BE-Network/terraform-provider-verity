@@ -42,7 +42,7 @@ func NewMockServer(mode string) *MockServer {
 
 	datacenter := mode == "datacenter"
 	ms.versionResponse = []byte(fmt.Sprintf(
-		`{"version":"6.5","datacenter":%t}`, datacenter,
+		`{"version":"6.6","datacenter":%t}`, datacenter,
 	))
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
