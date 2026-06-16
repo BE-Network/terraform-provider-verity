@@ -38,6 +38,10 @@ resource "verity_switchpoint" "example" {
   bgp_as_number = 65001
   bgp_as_number_auto_assigned_ = false
   is_fabric = false
+  controller_ip_and_mask = "10.10.10.10"
+  controller_ip_and_mask_auto_assigned_ = false
+  switch_ip_and_mask = "10.10.10.11"
+  switch_ip_and_mask_auto_assigned_ = false
   
   badges {
     badge = "badge1"
@@ -132,9 +136,11 @@ resource "verity_switchpoint" "example" {
 * `is_fabric` (Boolean) - Whether this is a fabric switch
 * `bb_switch` (Boolean) - Expose fields for Device Management
 * `ip_source` (String) - IP Source
-* `controller_ip_and_mask` (String) - Controller IP and Mask
+* `controller_ip_and_mask` (String) - Controller IP and Mask. This field should not be specified when `controller_ip_and_mask_auto_assigned_` is set to `true`, as the API will assign this value automatically.
+* `controller_ip_and_mask_auto_assigned_` (Boolean) - Whether the Controller IP and Mask should be automatically assigned by the API. When set to `true`, do not specify the `controller_ip_and_mask` field in your configuration.
 * `gateway` (String) - Gateway
-* `switch_ip_and_mask` (String) - Switch IP and Mask
+* `switch_ip_and_mask` (String) - Switch IP and Mask. This field should not be specified when `switch_ip_and_mask_auto_assigned_` is set to `true`, as the API will assign this value automatically.
+* `switch_ip_and_mask_auto_assigned_` (Boolean) - Whether the Switch IP and Mask should be automatically assigned by the API. When set to `true`, do not specify the `switch_ip_and_mask` field in your configuration.
 * `switch_gateway` (String) - Gateway of Managed Device
 * `comm_type` (String) - Comm Type
 * `snmp_community_string` (String) - Comm Credentials
