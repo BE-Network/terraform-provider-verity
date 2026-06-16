@@ -97,10 +97,14 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	IpSource *string `json:"ip_source,omitempty"`
 	// Controller IP and Mask
 	ControllerIpAndMask *string `json:"controller_ip_and_mask,omitempty"`
+	// Whether or not the value in controller_ip_and_mask field has been automatically assigned or not. Set to false and change controller_ip_and_mask value to edit.
+	ControllerIpAndMaskAutoAssigned *bool `json:"controller_ip_and_mask_auto_assigned_,omitempty"`
 	// Gateway
 	Gateway *string `json:"gateway,omitempty"`
 	// Switch IP and Mask
 	SwitchIpAndMask *string `json:"switch_ip_and_mask,omitempty"`
+	// Whether or not the value in switch_ip_and_mask field has been automatically assigned or not. Set to false and change switch_ip_and_mask value to edit.
+	SwitchIpAndMaskAutoAssigned *bool `json:"switch_ip_and_mask_auto_assigned_,omitempty"`
 	// Gateway of Managed Device
 	SwitchGateway *string `json:"switch_gateway,omitempty"`
 	// Comm Type
@@ -1688,6 +1692,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetControllerIpAndMask(v string
 	o.ControllerIpAndMask = &v
 }
 
+// GetControllerIpAndMaskAutoAssigned returns the ControllerIpAndMaskAutoAssigned field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetControllerIpAndMaskAutoAssigned() bool {
+	if o == nil || IsNil(o.ControllerIpAndMaskAutoAssigned) {
+		var ret bool
+		return ret
+	}
+	return *o.ControllerIpAndMaskAutoAssigned
+}
+
+// GetControllerIpAndMaskAutoAssignedOk returns a tuple with the ControllerIpAndMaskAutoAssigned field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetControllerIpAndMaskAutoAssignedOk() (*bool, bool) {
+	if o == nil || IsNil(o.ControllerIpAndMaskAutoAssigned) {
+		return nil, false
+	}
+	return o.ControllerIpAndMaskAutoAssigned, true
+}
+
+// HasControllerIpAndMaskAutoAssigned returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasControllerIpAndMaskAutoAssigned() bool {
+	if o != nil && !IsNil(o.ControllerIpAndMaskAutoAssigned) {
+		return true
+	}
+
+	return false
+}
+
+// SetControllerIpAndMaskAutoAssigned gets a reference to the given bool and assigns it to the ControllerIpAndMaskAutoAssigned field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetControllerIpAndMaskAutoAssigned(v bool) {
+	o.ControllerIpAndMaskAutoAssigned = &v
+}
+
 // GetGateway returns the Gateway field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetGateway() string {
 	if o == nil || IsNil(o.Gateway) {
@@ -1750,6 +1786,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchIpAndMask() bool {
 // SetSwitchIpAndMask gets a reference to the given string and assigns it to the SwitchIpAndMask field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchIpAndMask(v string) {
 	o.SwitchIpAndMask = &v
+}
+
+// GetSwitchIpAndMaskAutoAssigned returns the SwitchIpAndMaskAutoAssigned field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchIpAndMaskAutoAssigned() bool {
+	if o == nil || IsNil(o.SwitchIpAndMaskAutoAssigned) {
+		var ret bool
+		return ret
+	}
+	return *o.SwitchIpAndMaskAutoAssigned
+}
+
+// GetSwitchIpAndMaskAutoAssignedOk returns a tuple with the SwitchIpAndMaskAutoAssigned field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchIpAndMaskAutoAssignedOk() (*bool, bool) {
+	if o == nil || IsNil(o.SwitchIpAndMaskAutoAssigned) {
+		return nil, false
+	}
+	return o.SwitchIpAndMaskAutoAssigned, true
+}
+
+// HasSwitchIpAndMaskAutoAssigned returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchIpAndMaskAutoAssigned() bool {
+	if o != nil && !IsNil(o.SwitchIpAndMaskAutoAssigned) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchIpAndMaskAutoAssigned gets a reference to the given bool and assigns it to the SwitchIpAndMaskAutoAssigned field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchIpAndMaskAutoAssigned(v bool) {
+	o.SwitchIpAndMaskAutoAssigned = &v
 }
 
 // GetSwitchGateway returns the SwitchGateway field value if set, zero value otherwise.
@@ -3031,11 +3099,17 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.ControllerIpAndMask) {
 		toSerialize["controller_ip_and_mask"] = o.ControllerIpAndMask
 	}
+	if !IsNil(o.ControllerIpAndMaskAutoAssigned) {
+		toSerialize["controller_ip_and_mask_auto_assigned_"] = o.ControllerIpAndMaskAutoAssigned
+	}
 	if !IsNil(o.Gateway) {
 		toSerialize["gateway"] = o.Gateway
 	}
 	if !IsNil(o.SwitchIpAndMask) {
 		toSerialize["switch_ip_and_mask"] = o.SwitchIpAndMask
+	}
+	if !IsNil(o.SwitchIpAndMaskAutoAssigned) {
+		toSerialize["switch_ip_and_mask_auto_assigned_"] = o.SwitchIpAndMaskAutoAssigned
 	}
 	if !IsNil(o.SwitchGateway) {
 		toSerialize["switch_gateway"] = o.SwitchGateway
