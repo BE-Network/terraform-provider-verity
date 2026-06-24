@@ -36,6 +36,8 @@ Name | Type | Description | Notes
 **ObjectProperties** | Pointer to [**SitesPatchRequestSiteValueObjectProperties**](SitesPatchRequestSiteValueObjectProperties.md) |  | [optional] 
 **DuplicateAddressDetectionMaxNumberOfMoves** | Pointer to **NullableInt32** | Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank) | [optional] [default to 5]
 **DuplicateAddressDetectionTime** | Pointer to **NullableInt32** | Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank) | [optional] [default to 180]
+**DomainForSite** | Pointer to **string** | Domain for Site | [optional] [default to ""]
+**DomainForSiteRefType** | Pointer to **string** | Object type for domain_for_site field | [optional] 
 **EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
 **IpSourceGuard** | Pointer to **bool** | On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings | [optional] [default to false]
 
@@ -1028,6 +1030,56 @@ HasDuplicateAddressDetectionTime returns a boolean if a field has been set.
 `func (o *SitesPatchRequestSiteValue) UnsetDuplicateAddressDetectionTime()`
 
 UnsetDuplicateAddressDetectionTime ensures that no value is present for DuplicateAddressDetectionTime, not even an explicit nil
+### GetDomainForSite
+
+`func (o *SitesPatchRequestSiteValue) GetDomainForSite() string`
+
+GetDomainForSite returns the DomainForSite field if non-nil, zero value otherwise.
+
+### GetDomainForSiteOk
+
+`func (o *SitesPatchRequestSiteValue) GetDomainForSiteOk() (*string, bool)`
+
+GetDomainForSiteOk returns a tuple with the DomainForSite field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDomainForSite
+
+`func (o *SitesPatchRequestSiteValue) SetDomainForSite(v string)`
+
+SetDomainForSite sets DomainForSite field to given value.
+
+### HasDomainForSite
+
+`func (o *SitesPatchRequestSiteValue) HasDomainForSite() bool`
+
+HasDomainForSite returns a boolean if a field has been set.
+
+### GetDomainForSiteRefType
+
+`func (o *SitesPatchRequestSiteValue) GetDomainForSiteRefType() string`
+
+GetDomainForSiteRefType returns the DomainForSiteRefType field if non-nil, zero value otherwise.
+
+### GetDomainForSiteRefTypeOk
+
+`func (o *SitesPatchRequestSiteValue) GetDomainForSiteRefTypeOk() (*string, bool)`
+
+GetDomainForSiteRefTypeOk returns a tuple with the DomainForSiteRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDomainForSiteRefType
+
+`func (o *SitesPatchRequestSiteValue) SetDomainForSiteRefType(v string)`
+
+SetDomainForSiteRefType sets DomainForSiteRefType field to given value.
+
+### HasDomainForSiteRefType
+
+`func (o *SitesPatchRequestSiteValue) HasDomainForSiteRefType() bool`
+
+HasDomainForSiteRefType returns a boolean if a field has been set.
+
 ### GetEnableDhcpSnooping
 
 `func (o *SitesPatchRequestSiteValue) GetEnableDhcpSnooping() bool`

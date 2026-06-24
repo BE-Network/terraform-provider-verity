@@ -145,6 +145,7 @@ docs/Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner.md
 docs/LAGsAPI.md
 docs/LagsPutRequest.md
 docs/LagsPutRequestLagValue.md
+docs/LagsPutRequestLagValueObjectProperties.md
 docs/PBRoutingACLAPI.md
 docs/PBRoutingAPI.md
 docs/PacketBrokerAPI.md
@@ -307,6 +308,7 @@ model__ipv6prefixlists_put_request_ipv6_prefix_list_value.go
 model__ipv6prefixlists_put_request_ipv6_prefix_list_value_lists_inner.go
 model__lags_put_request.go
 model__lags_put_request_lag_value.go
+model__lags_put_request_lag_value_object_properties.go
 model__packetbroker_put_request.go
 model__packetbroker_put_request_pb_egress_profile_value.go
 model__packetbroker_put_request_pb_egress_profile_value_ipv4_permit_inner.go

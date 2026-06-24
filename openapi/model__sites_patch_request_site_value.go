@@ -80,6 +80,10 @@ type SitesPatchRequestSiteValue struct {
 	DuplicateAddressDetectionMaxNumberOfMoves NullableInt32 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
 	// Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
 	DuplicateAddressDetectionTime NullableInt32 `json:"duplicate_address_detection_time,omitempty"`
+	// Domain for Site
+	DomainForSite *string `json:"domain_for_site,omitempty"`
+	// Object type for domain_for_site field
+	DomainForSiteRefType *string `json:"domain_for_site_ref_type_,omitempty"`
 	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
 	EnableDhcpSnooping *bool `json:"enable_dhcp_snooping,omitempty"`
 	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
@@ -146,6 +150,8 @@ func NewSitesPatchRequestSiteValue() *SitesPatchRequestSiteValue {
 	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt32(&duplicateAddressDetectionMaxNumberOfMoves)
 	var duplicateAddressDetectionTime int32 = 180
 	this.DuplicateAddressDetectionTime = *NewNullableInt32(&duplicateAddressDetectionTime)
+	var domainForSite string = ""
+	this.DomainForSite = &domainForSite
 	var enableDhcpSnooping bool = false
 	this.EnableDhcpSnooping = &enableDhcpSnooping
 	var ipSourceGuard bool = false
@@ -212,6 +218,8 @@ func NewSitesPatchRequestSiteValueWithDefaults() *SitesPatchRequestSiteValue {
 	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt32(&duplicateAddressDetectionMaxNumberOfMoves)
 	var duplicateAddressDetectionTime int32 = 180
 	this.DuplicateAddressDetectionTime = *NewNullableInt32(&duplicateAddressDetectionTime)
+	var domainForSite string = ""
+	this.DomainForSite = &domainForSite
 	var enableDhcpSnooping bool = false
 	this.EnableDhcpSnooping = &enableDhcpSnooping
 	var ipSourceGuard bool = false
@@ -1413,6 +1421,70 @@ func (o *SitesPatchRequestSiteValue) UnsetDuplicateAddressDetectionTime() {
 	o.DuplicateAddressDetectionTime.Unset()
 }
 
+// GetDomainForSite returns the DomainForSite field value if set, zero value otherwise.
+func (o *SitesPatchRequestSiteValue) GetDomainForSite() string {
+	if o == nil || IsNil(o.DomainForSite) {
+		var ret string
+		return ret
+	}
+	return *o.DomainForSite
+}
+
+// GetDomainForSiteOk returns a tuple with the DomainForSite field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPatchRequestSiteValue) GetDomainForSiteOk() (*string, bool) {
+	if o == nil || IsNil(o.DomainForSite) {
+		return nil, false
+	}
+	return o.DomainForSite, true
+}
+
+// HasDomainForSite returns a boolean if a field has been set.
+func (o *SitesPatchRequestSiteValue) HasDomainForSite() bool {
+	if o != nil && !IsNil(o.DomainForSite) {
+		return true
+	}
+
+	return false
+}
+
+// SetDomainForSite gets a reference to the given string and assigns it to the DomainForSite field.
+func (o *SitesPatchRequestSiteValue) SetDomainForSite(v string) {
+	o.DomainForSite = &v
+}
+
+// GetDomainForSiteRefType returns the DomainForSiteRefType field value if set, zero value otherwise.
+func (o *SitesPatchRequestSiteValue) GetDomainForSiteRefType() string {
+	if o == nil || IsNil(o.DomainForSiteRefType) {
+		var ret string
+		return ret
+	}
+	return *o.DomainForSiteRefType
+}
+
+// GetDomainForSiteRefTypeOk returns a tuple with the DomainForSiteRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SitesPatchRequestSiteValue) GetDomainForSiteRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.DomainForSiteRefType) {
+		return nil, false
+	}
+	return o.DomainForSiteRefType, true
+}
+
+// HasDomainForSiteRefType returns a boolean if a field has been set.
+func (o *SitesPatchRequestSiteValue) HasDomainForSiteRefType() bool {
+	if o != nil && !IsNil(o.DomainForSiteRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetDomainForSiteRefType gets a reference to the given string and assigns it to the DomainForSiteRefType field.
+func (o *SitesPatchRequestSiteValue) SetDomainForSiteRefType(v string) {
+	o.DomainForSiteRefType = &v
+}
+
 // GetEnableDhcpSnooping returns the EnableDhcpSnooping field value if set, zero value otherwise.
 func (o *SitesPatchRequestSiteValue) GetEnableDhcpSnooping() bool {
 	if o == nil || IsNil(o.EnableDhcpSnooping) {
@@ -1582,6 +1654,12 @@ func (o SitesPatchRequestSiteValue) ToMap() (map[string]interface{}, error) {
 	}
 	if o.DuplicateAddressDetectionTime.IsSet() {
 		toSerialize["duplicate_address_detection_time"] = o.DuplicateAddressDetectionTime.Get()
+	}
+	if !IsNil(o.DomainForSite) {
+		toSerialize["domain_for_site"] = o.DomainForSite
+	}
+	if !IsNil(o.DomainForSiteRefType) {
+		toSerialize["domain_for_site_ref_type_"] = o.DomainForSiteRefType
 	}
 	if !IsNil(o.EnableDhcpSnooping) {
 		toSerialize["enable_dhcp_snooping"] = o.EnableDhcpSnooping

@@ -23,7 +23,7 @@ Name | Type | Description | Notes
 **VrfNameAutoAssigned** | Pointer to **bool** | Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit. | [optional] 
 **RouteTenants** | Pointer to [**[]TenantsPutRequestTenantValueRouteTenantsInner**](TenantsPutRequestTenantValueRouteTenantsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
-**DefaultOriginate** | Pointer to **bool** | Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric. | [optional] [default to false]
+**DefaultOriginate** | Pointer to **bool** | When enabled, provision an underlay gateway on the switch for this tenant. | [optional] [default to false]
 
 ## Methods
 

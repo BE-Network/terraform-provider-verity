@@ -21,12 +21,12 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValueEthsInner{}
 type SwitchpointsPutRequestSwitchpointValueEthsInner struct {
 	// Breakout Port Override. Available options determined by Switch capability, Installed SFP and the capacity of the pipeline.
 	Breakout *string `json:"breakout,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
 	// Icon of this Eth Port
 	EthNumIcon *string `json:"eth_num_icon,omitempty"`
 	// Label of this Eth Port
 	EthNumLabel *string `json:"eth_num_label,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int32 `json:"index,omitempty"`
 	// Enable port. 
 	Enable *bool `json:"enable,omitempty"`
 	// The name identifying the port. Used for reference only, it won't actually change the port name.
@@ -98,38 +98,6 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetBreakout(v string) 
 	o.Breakout = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int32 {
-	if o == nil || IsNil(o.Index) {
-		var ret int32
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndexOk() (*int32, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int32) {
-	o.Index = &v
-}
-
 // GetEthNumIcon returns the EthNumIcon field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumIcon() string {
 	if o == nil || IsNil(o.EthNumIcon) {
@@ -192,6 +160,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEthNumLabel() bool 
 // SetEthNumLabel gets a reference to the given string and assigns it to the EthNumLabel field.
 func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEthNumLabel(v string) {
 	o.EthNumLabel = &v
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int32 {
+	if o == nil || IsNil(o.Index) {
+		var ret int32
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndexOk() (*int32, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int32 and assigns it to the Index field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int32) {
+	o.Index = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -271,14 +271,14 @@ func (o SwitchpointsPutRequestSwitchpointValueEthsInner) ToMap() (map[string]int
 	if !IsNil(o.Breakout) {
 		toSerialize["breakout"] = o.Breakout
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
-	}
 	if !IsNil(o.EthNumIcon) {
 		toSerialize["eth_num_icon"] = o.EthNumIcon
 	}
 	if !IsNil(o.EthNumLabel) {
 		toSerialize["eth_num_label"] = o.EthNumLabel
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable

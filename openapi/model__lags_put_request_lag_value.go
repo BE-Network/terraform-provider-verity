@@ -39,7 +39,7 @@ type LagsPutRequestLagValue struct {
 	Fallback *bool `json:"fallback,omitempty"`
 	// Send LACP packets every second (if disabled, packets are sent every 30 seconds)
 	FastRate *bool `json:"fast_rate,omitempty"`
-	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
+	ObjectProperties *LagsPutRequestLagValueObjectProperties `json:"object_properties,omitempty"`
 	// Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN
 	Uplink *bool `json:"uplink,omitempty"`
 }
@@ -428,19 +428,19 @@ func (o *LagsPutRequestLagValue) SetFastRate(v bool) {
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValue) GetObjectProperties() map[string]interface{} {
+func (o *LagsPutRequestLagValue) GetObjectProperties() LagsPutRequestLagValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
-		var ret map[string]interface{}
+		var ret LagsPutRequestLagValueObjectProperties
 		return ret
 	}
-	return o.ObjectProperties
+	return *o.ObjectProperties
 }
 
 // GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
+func (o *LagsPutRequestLagValue) GetObjectPropertiesOk() (*LagsPutRequestLagValueObjectProperties, bool) {
 	if o == nil || IsNil(o.ObjectProperties) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.ObjectProperties, true
 }
@@ -454,9 +454,9 @@ func (o *LagsPutRequestLagValue) HasObjectProperties() bool {
 	return false
 }
 
-// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
-func (o *LagsPutRequestLagValue) SetObjectProperties(v map[string]interface{}) {
-	o.ObjectProperties = v
+// SetObjectProperties gets a reference to the given LagsPutRequestLagValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *LagsPutRequestLagValue) SetObjectProperties(v LagsPutRequestLagValueObjectProperties) {
+	o.ObjectProperties = &v
 }
 
 // GetUplink returns the Uplink field value if set, zero value otherwise.

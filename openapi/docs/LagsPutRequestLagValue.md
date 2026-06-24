@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 **PeerLinkVlan** | Pointer to **NullableInt32** | For peer-peer LAGs. The VLAN used for control | [optional] 
 **Fallback** | Pointer to **bool** | Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer. | [optional] [default to false]
 **FastRate** | Pointer to **bool** | Send LACP packets every second (if disabled, packets are sent every 30 seconds) | [optional] [default to false]
-**ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
+**ObjectProperties** | Pointer to [**LagsPutRequestLagValueObjectProperties**](LagsPutRequestLagValueObjectProperties.md) |  | [optional] 
 **Uplink** | Pointer to **bool** | Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN | [optional] [default to false]
 
 ## Methods
@@ -298,20 +298,20 @@ HasFastRate returns a boolean if a field has been set.
 
 ### GetObjectProperties
 
-`func (o *LagsPutRequestLagValue) GetObjectProperties() map[string]interface{}`
+`func (o *LagsPutRequestLagValue) GetObjectProperties() LagsPutRequestLagValueObjectProperties`
 
 GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
 
 ### GetObjectPropertiesOk
 
-`func (o *LagsPutRequestLagValue) GetObjectPropertiesOk() (*map[string]interface{}, bool)`
+`func (o *LagsPutRequestLagValue) GetObjectPropertiesOk() (*LagsPutRequestLagValueObjectProperties, bool)`
 
 GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObjectProperties
 
-`func (o *LagsPutRequestLagValue) SetObjectProperties(v map[string]interface{})`
+`func (o *LagsPutRequestLagValue) SetObjectProperties(v LagsPutRequestLagValueObjectProperties)`
 
 SetObjectProperties sets ObjectProperties field to given value.
 

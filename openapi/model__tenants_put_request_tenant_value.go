@@ -55,7 +55,7 @@ type TenantsPutRequestTenantValue struct {
 	VrfNameAutoAssigned *bool `json:"vrf_name_auto_assigned_,omitempty"`
 	RouteTenants []TenantsPutRequestTenantValueRouteTenantsInner `json:"route_tenants,omitempty"`
 	ObjectProperties *DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties `json:"object_properties,omitempty"`
-	// Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.
+	// When enabled, provision an underlay gateway on the switch for this tenant.
 	DefaultOriginate *bool `json:"default_originate,omitempty"`
 }
 

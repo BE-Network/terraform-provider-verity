@@ -29,6 +29,8 @@ Name | Type | Description | Notes
 **TrafficMirrors** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner**](SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner.md) |  | [optional] 
 **Eths** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueEthsInner**](SwitchpointsPutRequestSwitchpointValueEthsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SwitchpointsPutRequestSwitchpointValueObjectProperties**](SwitchpointsPutRequestSwitchpointValueObjectProperties.md) |  | [optional] 
+**ExpectedSite** | Pointer to **string** | Expected Site | [optional] [default to ""]
+**ExpectedSiteRefType** | Pointer to **string** | Object type for expected_site field | [optional] 
 **IsFabric** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device | [optional] [default to false]
 
 ## Methods
@@ -684,6 +686,56 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetExpectedSite
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSite() string`
+
+GetExpectedSite returns the ExpectedSite field if non-nil, zero value otherwise.
+
+### GetExpectedSiteOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteOk() (*string, bool)`
+
+GetExpectedSiteOk returns a tuple with the ExpectedSite field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExpectedSite
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSite(v string)`
+
+SetExpectedSite sets ExpectedSite field to given value.
+
+### HasExpectedSite
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSite() bool`
+
+HasExpectedSite returns a boolean if a field has been set.
+
+### GetExpectedSiteRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefType() string`
+
+GetExpectedSiteRefType returns the ExpectedSiteRefType field if non-nil, zero value otherwise.
+
+### GetExpectedSiteRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefTypeOk() (*string, bool)`
+
+GetExpectedSiteRefTypeOk returns a tuple with the ExpectedSiteRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExpectedSiteRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSiteRefType(v string)`
+
+SetExpectedSiteRefType sets ExpectedSiteRefType field to given value.
+
+### HasExpectedSiteRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSiteRefType() bool`
+
+HasExpectedSiteRefType returns a boolean if a field has been set.
 
 ### GetIsFabric
 

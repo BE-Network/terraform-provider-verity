@@ -64,6 +64,10 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	TrafficMirrors []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner `json:"traffic_mirrors,omitempty"`
 	Eths []SwitchpointsPutRequestSwitchpointValueEthsInner `json:"eths,omitempty"`
 	ObjectProperties *SwitchpointsPutRequestSwitchpointValueObjectProperties `json:"object_properties,omitempty"`
+	// Expected Site
+	ExpectedSite *string `json:"expected_site,omitempty"`
+	// Object type for expected_site field
+	ExpectedSiteRefType *string `json:"expected_site_ref_type_,omitempty"`
 	// For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device
 	IsFabric *bool `json:"is_fabric,omitempty"`
 }
@@ -100,6 +104,8 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
+	var expectedSite string = ""
+	this.ExpectedSite = &expectedSite
 	var isFabric bool = false
 	this.IsFabric = &isFabric
 	return &this
@@ -136,6 +142,8 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
+	var expectedSite string = ""
+	this.ExpectedSite = &expectedSite
 	var isFabric bool = false
 	this.IsFabric = &isFabric
 	return &this
@@ -951,6 +959,70 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetObjectProperties(v Switchpoi
 	o.ObjectProperties = &v
 }
 
+// GetExpectedSite returns the ExpectedSite field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSite() string {
+	if o == nil || IsNil(o.ExpectedSite) {
+		var ret string
+		return ret
+	}
+	return *o.ExpectedSite
+}
+
+// GetExpectedSiteOk returns a tuple with the ExpectedSite field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteOk() (*string, bool) {
+	if o == nil || IsNil(o.ExpectedSite) {
+		return nil, false
+	}
+	return o.ExpectedSite, true
+}
+
+// HasExpectedSite returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSite() bool {
+	if o != nil && !IsNil(o.ExpectedSite) {
+		return true
+	}
+
+	return false
+}
+
+// SetExpectedSite gets a reference to the given string and assigns it to the ExpectedSite field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSite(v string) {
+	o.ExpectedSite = &v
+}
+
+// GetExpectedSiteRefType returns the ExpectedSiteRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefType() string {
+	if o == nil || IsNil(o.ExpectedSiteRefType) {
+		var ret string
+		return ret
+	}
+	return *o.ExpectedSiteRefType
+}
+
+// GetExpectedSiteRefTypeOk returns a tuple with the ExpectedSiteRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ExpectedSiteRefType) {
+		return nil, false
+	}
+	return o.ExpectedSiteRefType, true
+}
+
+// HasExpectedSiteRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSiteRefType() bool {
+	if o != nil && !IsNil(o.ExpectedSiteRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetExpectedSiteRefType gets a reference to the given string and assigns it to the ExpectedSiteRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSiteRefType(v string) {
+	o.ExpectedSiteRefType = &v
+}
+
 // GetIsFabric returns the IsFabric field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetIsFabric() bool {
 	if o == nil || IsNil(o.IsFabric) {
@@ -1067,6 +1139,12 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.ExpectedSite) {
+		toSerialize["expected_site"] = o.ExpectedSite
+	}
+	if !IsNil(o.ExpectedSiteRefType) {
+		toSerialize["expected_site_ref_type_"] = o.ExpectedSiteRefType
 	}
 	if !IsNil(o.IsFabric) {
 		toSerialize["is_fabric"] = o.IsFabric
