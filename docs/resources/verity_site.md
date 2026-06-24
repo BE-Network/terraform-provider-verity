@@ -31,6 +31,8 @@ resource "verity_site" "example" {
     revision = 0
     service_for_site = "Management"
     service_for_site_ref_type_ = "service"
+    domain_for_site = ""
+    domain_for_site_ref_type_ = "domain"
     spanning_tree_type = "pvst"
     spine_bgp_advertisement_interval = 1
     spine_bgp_connect_timer = 120
@@ -72,6 +74,8 @@ resource "verity_site" "example" {
 * `enable` (Boolean) - Enable object
 * `service_for_site` (String) - Service for Site
 * `service_for_site_ref_type_` (String) - Object type for service_for_site field
+* `domain_for_site` (String) - Domain for Site
+* `domain_for_site_ref_type_` (String) - Object type for domain_for_site field
 * `spanning_tree_type` (String) - Sets the spanning tree type for all Ports in this Site with Spanning Tree enabled
 * `region_name` (String) - Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name
 * `revision` (Integer) - A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number

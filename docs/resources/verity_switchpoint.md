@@ -19,6 +19,8 @@ resource "verity_switchpoint" "example" {
   spine_plane_ref_type_ = "spine_plane"
   pod = "rack1"
   pod_ref_type_ = "pod"
+  expected_site = ""
+  expected_site_ref_type_ = "site"
   rack = "A1"
   switch_router_id_ip_mask = "192.168.1.1"
   switch_router_id_ip_mask_auto_assigned_ = false
@@ -87,6 +89,8 @@ resource "verity_switchpoint" "example" {
 * `spine_plane_ref_type_` (String) - Object type for spine_plane field
 * `pod` (String) - Pod - subgrouping of spine and leaf switches
 * `pod_ref_type_` (String) - Object type for pod field
+* `expected_site` (String) - Expected Site
+* `expected_site_ref_type_` (String) - Object type for expected_site field
 * `rack` (String) - Physical Rack location of the Switch
 * `switch_router_id_ip_mask` (String) - Switch BGP Router Identifier
 * `switch_router_id_ip_mask_auto_assigned_` (Boolean) - Whether router ID is auto-assigned

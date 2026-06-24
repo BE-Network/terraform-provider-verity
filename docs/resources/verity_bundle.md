@@ -24,8 +24,8 @@ resource "verity_bundle" "example" {
     eth_port_num_eth_port_settings_ref_type_ = "eth_port_settings"
     eth_port_num_gateway_profile = ""
     eth_port_num_gateway_profile_ref_type_ = ""
-    diagnostics_port_profile_num_diagnostics_port_profile = ""
-    diagnostics_port_profile_num_diagnostics_port_profile_ref_type_ = "diagnostics_port_profile"
+    eth_port_num_diagnostics_port_profile = ""
+    eth_port_num_diagnostics_port_profile_ref_type_ = "diagnostics_port_profile"
     index = 1
     port_name = ""
   }
@@ -72,8 +72,8 @@ resource "verity_bundle" "example" {
   * `eth_port_num_eth_port_settings_ref_type_` (String) - Object type for eth_port_num_eth_port_settings field.
   * `eth_port_num_gateway_profile` (String) - Gateway Profile or LAG for Eth Port.
   * `eth_port_num_gateway_profile_ref_type_` (String) - Object type for eth_port_num_gateway_profile field.
-  * `diagnostics_port_profile_num_diagnostics_port_profile` (String) - Diagnostics Port Profile for port.
-  * `diagnostics_port_profile_num_diagnostics_port_profile_ref_type_` (String) - Object type for diagnostics_port_profile_num_diagnostics_port_profile field.
+  * `eth_port_num_diagnostics_port_profile` (String) - Diagnostics Port Profile for port.
+  * `eth_port_num_diagnostics_port_profile_ref_type_` (String) - Object type for eth_port_num_diagnostics_port_profile field.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
   * `port_name` (String) - The name identifying the port. Used for reference only, it won't actually change the port name.
 * `user_services` (Array) - 
@@ -99,4 +99,3 @@ Bundle resources can be imported using the `name` attribute:
 ```sh
 terraform import verity_bundle.<resource_name> <name>
 ```
-

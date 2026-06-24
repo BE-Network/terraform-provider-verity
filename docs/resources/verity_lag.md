@@ -17,6 +17,11 @@ resource "verity_lag" "example" {
   eth_port_profile = ""
   uplink = false
   eth_port_profile_ref_type_ = ""
+
+  object_properties {
+    site = ""
+    site_ref_type_ = "site"
+  }
 }
 ```
 
@@ -33,6 +38,9 @@ resource "verity_lag" "example" {
 * `fallback` (Boolean) - Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer.
 * `fast_rate` (Boolean) - Send LACP packets every second (if disabled, packets are sent every 30 seconds).
 * `uplink` (Boolean) - Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN.
+* `object_properties` (Object) -
+  * `site` (String) - Choose a Site.
+  * `site_ref_type_` (String) - Object type for site field.
 
 ## Import
 
