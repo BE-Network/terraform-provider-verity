@@ -18,6 +18,8 @@ Name | Type | Description | Notes
 **ExpectedSiteRefType** | Pointer to **string** | Object type for expected_site field | [optional] 
 **OutOfBandManagement** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch is managed out of band via the management port | [optional] [default to false]
 **Type** | Pointer to **string** | Type of Switchpoint | [optional] [default to "leaf"]
+**Plane** | Pointer to **string** | Plane | [optional] [default to ""]
+**PlaneRefType** | Pointer to **string** | Object type for plane field | [optional] 
 **SpinePlane** | Pointer to **string** | Spine Plane - subgrouping of super spine and spine | [optional] [default to ""]
 **SpinePlaneRefType** | Pointer to **string** | Object type for spine_plane field | [optional] 
 **Pod** | Pointer to **string** | Pod - subgrouping of spine and leaf switches | [optional] [default to ""]
@@ -43,10 +45,8 @@ Name | Type | Description | Notes
 **PrivatePasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
 **IpSource** | Pointer to **string** | IP Source | [optional] [default to "dhcp"]
 **ControllerIpAndMask** | Pointer to **string** | Controller IP and Mask | [optional] [default to ""]
-**ControllerIpAndMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in controller_ip_and_mask field has been automatically assigned or not. Set to false and change controller_ip_and_mask value to edit. | [optional] 
 **Gateway** | Pointer to **string** | Gateway | [optional] [default to ""]
 **SwitchIpAndMask** | Pointer to **string** | Switch IP and Mask | [optional] [default to ""]
-**SwitchIpAndMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_ip_and_mask field has been automatically assigned or not. Set to false and change switch_ip_and_mask value to edit. | [optional] 
 **SwitchGateway** | Pointer to **string** | Gateway of Managed Device | [optional] [default to ""]
 **CommType** | Pointer to **string** | Comm Type | [optional] [default to "snmpv2"]
 **SnmpCommunityString** | Pointer to **string** | Comm Credentials | [optional] [default to ""]
@@ -452,6 +452,56 @@ SetType sets Type field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasType() bool`
 
 HasType returns a boolean if a field has been set.
+
+### GetPlane
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPlane() string`
+
+GetPlane returns the Plane field if non-nil, zero value otherwise.
+
+### GetPlaneOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPlaneOk() (*string, bool)`
+
+GetPlaneOk returns a tuple with the Plane field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPlane
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPlane(v string)`
+
+SetPlane sets Plane field to given value.
+
+### HasPlane
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasPlane() bool`
+
+HasPlane returns a boolean if a field has been set.
+
+### GetPlaneRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPlaneRefType() string`
+
+GetPlaneRefType returns the PlaneRefType field if non-nil, zero value otherwise.
+
+### GetPlaneRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPlaneRefTypeOk() (*string, bool)`
+
+GetPlaneRefTypeOk returns a tuple with the PlaneRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPlaneRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPlaneRefType(v string)`
+
+SetPlaneRefType sets PlaneRefType field to given value.
+
+### HasPlaneRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasPlaneRefType() bool`
+
+HasPlaneRefType returns a boolean if a field has been set.
 
 ### GetSpinePlane
 
@@ -1108,31 +1158,6 @@ SetControllerIpAndMask sets ControllerIpAndMask field to given value.
 
 HasControllerIpAndMask returns a boolean if a field has been set.
 
-### GetControllerIpAndMaskAutoAssigned
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetControllerIpAndMaskAutoAssigned() bool`
-
-GetControllerIpAndMaskAutoAssigned returns the ControllerIpAndMaskAutoAssigned field if non-nil, zero value otherwise.
-
-### GetControllerIpAndMaskAutoAssignedOk
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetControllerIpAndMaskAutoAssignedOk() (*bool, bool)`
-
-GetControllerIpAndMaskAutoAssignedOk returns a tuple with the ControllerIpAndMaskAutoAssigned field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetControllerIpAndMaskAutoAssigned
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetControllerIpAndMaskAutoAssigned(v bool)`
-
-SetControllerIpAndMaskAutoAssigned sets ControllerIpAndMaskAutoAssigned field to given value.
-
-### HasControllerIpAndMaskAutoAssigned
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasControllerIpAndMaskAutoAssigned() bool`
-
-HasControllerIpAndMaskAutoAssigned returns a boolean if a field has been set.
-
 ### GetGateway
 
 `func (o *SwitchpointsPutRequestSwitchpointValue) GetGateway() string`
@@ -1182,31 +1207,6 @@ SetSwitchIpAndMask sets SwitchIpAndMask field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchIpAndMask() bool`
 
 HasSwitchIpAndMask returns a boolean if a field has been set.
-
-### GetSwitchIpAndMaskAutoAssigned
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchIpAndMaskAutoAssigned() bool`
-
-GetSwitchIpAndMaskAutoAssigned returns the SwitchIpAndMaskAutoAssigned field if non-nil, zero value otherwise.
-
-### GetSwitchIpAndMaskAutoAssignedOk
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchIpAndMaskAutoAssignedOk() (*bool, bool)`
-
-GetSwitchIpAndMaskAutoAssignedOk returns a tuple with the SwitchIpAndMaskAutoAssigned field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSwitchIpAndMaskAutoAssigned
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchIpAndMaskAutoAssigned(v bool)`
-
-SetSwitchIpAndMaskAutoAssigned sets SwitchIpAndMaskAutoAssigned field to given value.
-
-### HasSwitchIpAndMaskAutoAssigned
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchIpAndMaskAutoAssigned() bool`
-
-HasSwitchIpAndMaskAutoAssigned returns a boolean if a field has been set.
 
 ### GetSwitchGateway
 

@@ -41,9 +41,9 @@ func (r ApiAuthPostRequest) Execute() (*http.Response, error) {
 AuthPost User authorization
 
 Authenticates a user using username and password.
-            On successful authentication a cookie named "verity_api" is set for browser clients.
+            On successful authentication a cookie named "nbi_auth" is set for browser clients.
             For non-browser/scripted clients the response body returns a JSON `token` field containing the same session value.
-            Include that token in subsequent requests by sending the cookie header `Cookie: verity_api=<token>`.
+            Include that token in subsequent requests by sending the cookie header "Cookie: nbi_auth=<token>".
             The session cookie expires after 20 minutes.
         
 

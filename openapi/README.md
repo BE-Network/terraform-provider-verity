@@ -429,7 +429,7 @@ Authentication schemes defined for the API:
 ### TokenAuth
 
 - **Type**: API key
-- **API key parameter name**: verity_api
+- **API key parameter name**: nbi_auth
 - **Location**: 
 
 Note, each API key must be added to a map of `map[string]APIKey` where the key is: TokenAuth and passed in as the auth context for each request.
