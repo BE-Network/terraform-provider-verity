@@ -477,7 +477,7 @@ func authenticate(ctx context.Context, provCtx *providerContext) error {
 		u, _ := url.Parse(provCtx.config.Servers[0].URL)
 		provCtx.config.HTTPClient.Jar.SetCookies(u, []*http.Cookie{
 			{
-				Name:  "ivn_api",
+				Name:  "nbi_auth",
 				Value: token,
 			},
 		})
@@ -513,7 +513,7 @@ func authenticate(ctx context.Context, provCtx *providerContext) error {
 	u, _ := url.Parse(provCtx.config.Servers[0].URL)
 	provCtx.config.HTTPClient.Jar.SetCookies(u, []*http.Cookie{
 		{
-			Name:  "ivn_api",
+			Name:  "nbi_auth",
 			Value: result.Token,
 		},
 	})
