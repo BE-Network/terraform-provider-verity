@@ -8,6 +8,138 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type RefTypeSupportMode string
+
+const (
+	RefTypeSupportOne      RefTypeSupportMode = "one"
+	RefTypeSupportMultiple RefTypeSupportMode = "multiple"
+)
+
+type RefTypeFieldMapping struct {
+	FieldName        string
+	RefTypeFieldName string
+	APIField         **string
+	RefTypeAPIField  **string
+	TFValue          types.String
+	RefTypeTFValue   types.String
+}
+
+type RefTypeFieldWithComparison struct {
+	FieldName         string
+	RefTypeFieldName  string
+	APIField          func(*string)
+	RefTypeAPIField   func(*string)
+	PlanValue         types.String
+	StateValue        types.String
+	PlanRefTypeValue  types.String
+	StateRefTypeValue types.String
+	SupportMode       RefTypeSupportMode
+}
+
+// SetRefTypeFields sets reference field pairs without change detection.
+// This is generic and can be used for top-level fields, object_properties, or indexed nested items.
+func SetRefTypeFields(fields []RefTypeFieldMapping) {
+	for _, field := range fields {
+		SetStringFields([]StringFieldMapping{
+			{FieldName: field.FieldName, APIField: field.APIField, TFValue: field.TFValue},
+			{FieldName: field.RefTypeFieldName, APIField: field.RefTypeAPIField, TFValue: field.RefTypeTFValue},
+		})
+	}
+}
+
+// CompareAndSetRefTypeFields applies shared ref-pair change detection and validation.
+// This is generic and can be used for top-level fields, object_properties, or indexed nested items.
+func CompareAndSetRefTypeFields(fields []RefTypeFieldWithComparison, hasChanges *bool, diags *diag.Diagnostics) bool {
+	for _, field := range fields {
+		if !applyRefTypeFieldChange(
+			field.PlanValue, field.StateValue,
+			field.PlanRefTypeValue, field.StateRefTypeValue,
+			field.APIField, field.RefTypeAPIField,
+			field.FieldName, field.RefTypeFieldName,
+			field.SupportMode,
+			hasChanges, diags,
+		) {
+			return false
+		}
+	}
+	return true
+}
+
+func applyRefTypeFieldChange(
+	planBase, stateBase, planRefType, stateRefType types.String,
+	baseSetter, refTypeSetter func(*string),
+	baseFieldName, refTypeFieldName string,
+	supportMode RefTypeSupportMode,
+	hasChanges *bool,
+	diags *diag.Diagnostics,
+) bool {
+	baseChanged := !planBase.Equal(stateBase)
+	refTypeChanged := !planRefType.Equal(stateRefType)
+
+	if !baseChanged && !refTypeChanged {
+		return true
+	}
+
+	switch supportMode {
+	case RefTypeSupportMultiple:
+		if !ValidateMultipleRefTypesSupported(diags, planBase, planRefType, baseFieldName, refTypeFieldName) {
+			return false
+		}
+
+		baseValue := stateBase
+		if baseChanged {
+			baseValue = planBase
+		}
+		if !baseValue.IsNull() && baseValue.ValueString() != "" {
+			baseSetter(openapi.PtrString(baseValue.ValueString()))
+		} else {
+			baseSetter(openapi.PtrString(""))
+		}
+
+		refTypeValue := stateRefType
+		if refTypeChanged {
+			refTypeValue = planRefType
+		}
+		if !refTypeValue.IsNull() && refTypeValue.ValueString() != "" {
+			refTypeSetter(openapi.PtrString(refTypeValue.ValueString()))
+		} else {
+			refTypeSetter(openapi.PtrString(""))
+		}
+
+		*hasChanges = true
+		return true
+
+	default:
+		if !ValidateOneRefTypeSupported(diags, planBase, planRefType, baseFieldName, refTypeFieldName, baseChanged, refTypeChanged) {
+			return false
+		}
+
+		if baseChanged && !refTypeChanged {
+			if !planBase.IsNull() && planBase.ValueString() != "" {
+				baseSetter(openapi.PtrString(planBase.ValueString()))
+			} else {
+				baseSetter(openapi.PtrString(""))
+			}
+			*hasChanges = true
+			return true
+		}
+
+		if !planBase.IsNull() && planBase.ValueString() != "" {
+			baseSetter(openapi.PtrString(planBase.ValueString()))
+		} else {
+			baseSetter(openapi.PtrString(""))
+		}
+
+		if !planRefType.IsNull() && planRefType.ValueString() != "" {
+			refTypeSetter(openapi.PtrString(planRefType.ValueString()))
+		} else {
+			refTypeSetter(openapi.PtrString(""))
+		}
+		*hasChanges = true
+		return true
+	}
+}
+
 // CompareAndSetStringField compares plan vs state and sets API field if changed
 func CompareAndSetStringField(plan, state types.String, setter func(*string), hasChanges *bool) {
 	if !plan.Equal(state) {
@@ -95,39 +227,13 @@ func HandleMultipleRefTypesSupported(
 	hasChanges *bool,
 	diags *diag.Diagnostics,
 ) bool {
-	baseChanged := !planBase.Equal(stateBase)
-	refTypeChanged := !planRefType.Equal(stateRefType)
-
-	if baseChanged || refTypeChanged {
-		// Validate using "many ref types supported" rules
-		if !ValidateMultipleRefTypesSupported(diags, planBase, planRefType, baseFieldName, refTypeFieldName) {
-			return false
-		}
-
-		// Always send both fields when either changes
-		baseValue := stateBase
-		if baseChanged {
-			baseValue = planBase
-		}
-		if !baseValue.IsNull() && baseValue.ValueString() != "" {
-			baseSetter(openapi.PtrString(baseValue.ValueString()))
-		} else {
-			baseSetter(openapi.PtrString(""))
-		}
-
-		refTypeValue := stateRefType
-		if refTypeChanged {
-			refTypeValue = planRefType
-		}
-		if !refTypeValue.IsNull() && refTypeValue.ValueString() != "" {
-			refTypeSetter(openapi.PtrString(refTypeValue.ValueString()))
-		} else {
-			refTypeSetter(openapi.PtrString(""))
-		}
-
-		*hasChanges = true
-	}
-	return true
+	return applyRefTypeFieldChange(
+		planBase, stateBase, planRefType, stateRefType,
+		baseSetter, refTypeSetter,
+		baseFieldName, refTypeFieldName,
+		RefTypeSupportMultiple,
+		hasChanges, diags,
+	)
 }
 
 // HandleOneRefTypeSupported handles ref type logic for "one ref type supported" pattern
@@ -139,41 +245,13 @@ func HandleOneRefTypeSupported(
 	hasChanges *bool,
 	diags *diag.Diagnostics,
 ) bool {
-	baseChanged := !planBase.Equal(stateBase)
-	refTypeChanged := !planRefType.Equal(stateRefType)
-
-	if baseChanged || refTypeChanged {
-		// Validate using "one ref type supported" rules
-		if !ValidateOneRefTypeSupported(diags, planBase, planRefType, baseFieldName, refTypeFieldName, baseChanged, refTypeChanged) {
-			return false
-		}
-
-		// Only send the base field if only it changed
-		if baseChanged && !refTypeChanged {
-			// Just send the base field
-			if !planBase.IsNull() && planBase.ValueString() != "" {
-				baseSetter(openapi.PtrString(planBase.ValueString()))
-			} else {
-				baseSetter(openapi.PtrString(""))
-			}
-			*hasChanges = true
-		} else if refTypeChanged {
-			// Send both fields
-			if !planBase.IsNull() && planBase.ValueString() != "" {
-				baseSetter(openapi.PtrString(planBase.ValueString()))
-			} else {
-				baseSetter(openapi.PtrString(""))
-			}
-
-			if !planRefType.IsNull() && planRefType.ValueString() != "" {
-				refTypeSetter(openapi.PtrString(planRefType.ValueString()))
-			} else {
-				refTypeSetter(openapi.PtrString(""))
-			}
-			*hasChanges = true
-		}
-	}
-	return true
+	return applyRefTypeFieldChange(
+		planBase, stateBase, planRefType, stateRefType,
+		baseSetter, refTypeSetter,
+		baseFieldName, refTypeFieldName,
+		RefTypeSupportOne,
+		hasChanges, diags,
+	)
 }
 
 // ValidateMissingReferenceType checks if a base field is non-empty but the reference type is empty

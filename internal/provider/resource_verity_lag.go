@@ -224,9 +224,15 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.LagsPutRequestLagValueObjectProperties{}
-		utils.SetStringFields([]utils.StringFieldMapping{
-			{FieldName: "Site", APIField: &objProps.Site, TFValue: op.Site},
-			{FieldName: "SiteRefType", APIField: &objProps.SiteRefType, TFValue: op.SiteRefType},
+		utils.SetRefTypeFields([]utils.RefTypeFieldMapping{
+			{
+				FieldName:        "site",
+				RefTypeFieldName: "site_ref_type_",
+				APIField:         &objProps.Site,
+				RefTypeAPIField:  &objProps.SiteRefType,
+				TFValue:          op.Site,
+				RefTypeTFValue:   op.SiteRefType,
+			},
 		})
 		lagReq.ObjectProperties = &objProps
 	} else {
@@ -432,11 +438,17 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		}
 		objPropsChanged := false
 
-		if !utils.HandleOneRefTypeSupported(
-			op.Site, st.Site, op.SiteRefType, st.SiteRefType,
-			func(v *string) { objProps.Site = v },
-			func(v *string) { objProps.SiteRefType = v },
-			"site", "site_ref_type_",
+		if !utils.CompareAndSetRefTypeFields([]utils.RefTypeFieldWithComparison{{
+			FieldName:         "site",
+			RefTypeFieldName:  "site_ref_type_",
+			APIField:          func(v *string) { objProps.Site = v },
+			RefTypeAPIField:   func(v *string) { objProps.SiteRefType = v },
+			PlanValue:         op.Site,
+			StateValue:        st.Site,
+			PlanRefTypeValue:  op.SiteRefType,
+			StateRefTypeValue: st.SiteRefType,
+			SupportMode:       utils.RefTypeSupportOne,
+		}},
 			&objPropsChanged,
 			&resp.Diagnostics,
 		) {
