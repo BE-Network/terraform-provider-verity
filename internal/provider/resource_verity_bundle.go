@@ -62,16 +62,16 @@ type verityBundleObjectPropertiesModel struct {
 }
 
 type ethPortPathsModel struct {
-	EthPortNumEthPortProfile                               types.String `tfsdk:"eth_port_num_eth_port_profile"`
-	EthPortNumEthPortProfileRefType                        types.String `tfsdk:"eth_port_num_eth_port_profile_ref_type_"`
-	EthPortNumEthPortSettings                              types.String `tfsdk:"eth_port_num_eth_port_settings"`
-	EthPortNumEthPortSettingsRefType                       types.String `tfsdk:"eth_port_num_eth_port_settings_ref_type_"`
-	EthPortNumGatewayProfile                               types.String `tfsdk:"eth_port_num_gateway_profile"`
-	EthPortNumGatewayProfileRefType                        types.String `tfsdk:"eth_port_num_gateway_profile_ref_type_"`
-	DiagnosticsPortProfileNumDiagnosticsPortProfile        types.String `tfsdk:"diagnostics_port_profile_num_diagnostics_port_profile"`
-	DiagnosticsPortProfileNumDiagnosticsPortProfileRefType types.String `tfsdk:"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_"`
-	PortName                                               types.String `tfsdk:"port_name"`
-	Index                                                  types.Int64  `tfsdk:"index"`
+	EthPortNumEthPortProfile                types.String `tfsdk:"eth_port_num_eth_port_profile"`
+	EthPortNumEthPortProfileRefType         types.String `tfsdk:"eth_port_num_eth_port_profile_ref_type_"`
+	EthPortNumEthPortSettings               types.String `tfsdk:"eth_port_num_eth_port_settings"`
+	EthPortNumEthPortSettingsRefType        types.String `tfsdk:"eth_port_num_eth_port_settings_ref_type_"`
+	EthPortNumGatewayProfile                types.String `tfsdk:"eth_port_num_gateway_profile"`
+	EthPortNumGatewayProfileRefType         types.String `tfsdk:"eth_port_num_gateway_profile_ref_type_"`
+	EthPortNumDiagnosticsPortProfile        types.String `tfsdk:"eth_port_num_diagnostics_port_profile"`
+	EthPortNumDiagnosticsPortProfileRefType types.String `tfsdk:"eth_port_num_diagnostics_port_profile_ref_type_"`
+	PortName                                types.String `tfsdk:"port_name"`
+	Index                                   types.Int64  `tfsdk:"index"`
 }
 
 func (epp ethPortPathsModel) GetIndex() types.Int64 {
@@ -239,13 +239,13 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 							Optional:    true,
 							Computed:    true,
 						},
-						"diagnostics_port_profile_num_diagnostics_port_profile": schema.StringAttribute{
+						"eth_port_num_diagnostics_port_profile": schema.StringAttribute{
 							Description: "Diagnostics Port Profile for port",
 							Optional:    true,
 							Computed:    true,
 						},
-						"diagnostics_port_profile_num_diagnostics_port_profile_ref_type_": schema.StringAttribute{
-							Description: "Object type for diagnostics_port_profile_num_diagnostics_port_profile field",
+						"eth_port_num_diagnostics_port_profile_ref_type_": schema.StringAttribute{
+							Description: "Object type for eth_port_num_diagnostics_port_profile field",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -387,8 +387,8 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 				{FieldName: "EthPortNumEthPortSettingsRefType", APIField: &pathItem.EthPortNumEthPortSettingsRefType, TFValue: item.EthPortNumEthPortSettingsRefType},
 				{FieldName: "EthPortNumGatewayProfile", APIField: &pathItem.EthPortNumGatewayProfile, TFValue: item.EthPortNumGatewayProfile},
 				{FieldName: "EthPortNumGatewayProfileRefType", APIField: &pathItem.EthPortNumGatewayProfileRefType, TFValue: item.EthPortNumGatewayProfileRefType},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfile", APIField: &pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, TFValue: item.DiagnosticsPortProfileNumDiagnosticsPortProfile},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfileRefType", APIField: &pathItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, TFValue: item.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType},
+				{FieldName: "EthPortNumDiagnosticsPortProfile", APIField: &pathItem.EthPortNumDiagnosticsPortProfile, TFValue: item.EthPortNumDiagnosticsPortProfile},
+				{FieldName: "EthPortNumDiagnosticsPortProfileRefType", APIField: &pathItem.EthPortNumDiagnosticsPortProfileRefType, TFValue: item.EthPortNumDiagnosticsPortProfileRefType},
 				{FieldName: "PortName", APIField: &pathItem.PortName, TFValue: item.PortName},
 			})
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
@@ -692,8 +692,8 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				{FieldName: "EthPortNumEthPortProfileRefType", APIField: &ethPortPath.EthPortNumEthPortProfileRefType, TFValue: planItem.EthPortNumEthPortProfileRefType},
 				{FieldName: "EthPortNumGatewayProfile", APIField: &ethPortPath.EthPortNumGatewayProfile, TFValue: planItem.EthPortNumGatewayProfile},
 				{FieldName: "EthPortNumGatewayProfileRefType", APIField: &ethPortPath.EthPortNumGatewayProfileRefType, TFValue: planItem.EthPortNumGatewayProfileRefType},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfile", APIField: &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile, TFValue: planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile},
-				{FieldName: "DiagnosticsPortProfileNumDiagnosticsPortProfileRefType", APIField: &ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, TFValue: planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType},
+				{FieldName: "EthPortNumDiagnosticsPortProfile", APIField: &ethPortPath.EthPortNumDiagnosticsPortProfile, TFValue: planItem.EthPortNumDiagnosticsPortProfile},
+				{FieldName: "EthPortNumDiagnosticsPortProfileRefType", APIField: &ethPortPath.EthPortNumDiagnosticsPortProfileRefType, TFValue: planItem.EthPortNumDiagnosticsPortProfileRefType},
 			})
 
 			return ethPortPath
@@ -746,12 +746,12 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				return ethPortPath, false
 			}
 
-			// Handle diagnostics_port_profile_num_diagnostics_port_profile and diagnostics_port_profile_num_diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
+			// Handle eth_port_num_diagnostics_port_profile and eth_port_num_diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
-				planItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfile, planItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType, stateItem.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType,
-				func(v *string) { ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfile = v },
-				func(v *string) { ethPortPath.DiagnosticsPortProfileNumDiagnosticsPortProfileRefType = v },
-				"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+				planItem.EthPortNumDiagnosticsPortProfile, stateItem.EthPortNumDiagnosticsPortProfile, planItem.EthPortNumDiagnosticsPortProfileRefType, stateItem.EthPortNumDiagnosticsPortProfileRefType,
+				func(v *string) { ethPortPath.EthPortNumDiagnosticsPortProfile = v },
+				func(v *string) { ethPortPath.EthPortNumDiagnosticsPortProfileRefType = v },
+				"eth_port_num_diagnostics_port_profile", "eth_port_num_diagnostics_port_profile_ref_type_",
 				&fieldChanged,
 				&resp.Diagnostics,
 			) {
@@ -1022,16 +1022,16 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 					continue
 				}
 				pathModel := ethPortPathsModel{
-					EthPortNumEthPortProfile:                               utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile", resourceType, "eth_port_paths.eth_port_num_eth_port_profile", mode),
-					EthPortNumEthPortProfileRefType:                        utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_profile_ref_type_", mode),
-					EthPortNumEthPortSettings:                              utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings", resourceType, "eth_port_paths.eth_port_num_eth_port_settings", mode),
-					EthPortNumEthPortSettingsRefType:                       utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_settings_ref_type_", mode),
-					EthPortNumGatewayProfile:                               utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile", resourceType, "eth_port_paths.eth_port_num_gateway_profile", mode),
-					EthPortNumGatewayProfileRefType:                        utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_gateway_profile_ref_type_", mode),
-					DiagnosticsPortProfileNumDiagnosticsPortProfile:        utils.MapStringWithModeNested(pathItem, "diagnostics_port_profile_num_diagnostics_port_profile", resourceType, "eth_port_paths.diagnostics_port_profile_num_diagnostics_port_profile", mode),
-					DiagnosticsPortProfileNumDiagnosticsPortProfileRefType: utils.MapStringWithModeNested(pathItem, "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_", resourceType, "eth_port_paths.diagnostics_port_profile_num_diagnostics_port_profile_ref_type_", mode),
-					PortName: utils.MapStringWithModeNested(pathItem, "port_name", resourceType, "eth_port_paths.port_name", mode),
-					Index:    utils.MapInt64WithModeNested(pathItem, "index", resourceType, "eth_port_paths.index", mode),
+					EthPortNumEthPortProfile:                utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile", resourceType, "eth_port_paths.eth_port_num_eth_port_profile", mode),
+					EthPortNumEthPortProfileRefType:         utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_profile_ref_type_", mode),
+					EthPortNumEthPortSettings:               utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings", resourceType, "eth_port_paths.eth_port_num_eth_port_settings", mode),
+					EthPortNumEthPortSettingsRefType:        utils.MapStringWithModeNested(pathItem, "eth_port_num_eth_port_settings_ref_type_", resourceType, "eth_port_paths.eth_port_num_eth_port_settings_ref_type_", mode),
+					EthPortNumGatewayProfile:                utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile", resourceType, "eth_port_paths.eth_port_num_gateway_profile", mode),
+					EthPortNumGatewayProfileRefType:         utils.MapStringWithModeNested(pathItem, "eth_port_num_gateway_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_gateway_profile_ref_type_", mode),
+					EthPortNumDiagnosticsPortProfile:        utils.MapStringWithModeNested(pathItem, "eth_port_num_diagnostics_port_profile", resourceType, "eth_port_paths.eth_port_num_diagnostics_port_profile", mode),
+					EthPortNumDiagnosticsPortProfileRefType: utils.MapStringWithModeNested(pathItem, "eth_port_num_diagnostics_port_profile_ref_type_", resourceType, "eth_port_paths.eth_port_num_diagnostics_port_profile_ref_type_", mode),
+					PortName:                                utils.MapStringWithModeNested(pathItem, "port_name", resourceType, "eth_port_paths.port_name", mode),
+					Index:                                   utils.MapInt64WithModeNested(pathItem, "index", resourceType, "eth_port_paths.index", mode),
 				}
 				ethPortPaths = append(ethPortPaths, pathModel)
 			}
@@ -1151,7 +1151,7 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 			"eth_port_num_eth_port_profile", "eth_port_num_eth_port_profile_ref_type_",
 			"eth_port_num_eth_port_settings", "eth_port_num_eth_port_settings_ref_type_",
 			"eth_port_num_gateway_profile", "eth_port_num_gateway_profile_ref_type_",
-			"diagnostics_port_profile_num_diagnostics_port_profile", "diagnostics_port_profile_num_diagnostics_port_profile_ref_type_",
+			"eth_port_num_diagnostics_port_profile", "eth_port_num_diagnostics_port_profile_ref_type_",
 			"port_name",
 		},
 	})

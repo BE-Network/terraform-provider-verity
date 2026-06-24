@@ -110,7 +110,16 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "Object properties.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						// No attributes defined - object_properties is an empty object in the schema
+						"site": schema.StringAttribute{
+							Description: "Choose a Site",
+							Optional:    true,
+							Computed:    true,
+						},
+						"site_ref_type_": schema.StringAttribute{
+							Description: "Object type for site field",
+							Optional:    true,
+							Computed:    true,
+						},
 					},
 				},
 			},
@@ -154,7 +163,8 @@ type verityLagResourceModel struct {
 }
 
 type verityLagObjectPropertiesModel struct {
-	// No attributes defined - object_properties is an empty object in the schema
+	Site        types.String `tfsdk:"site"`
+	SiteRefType types.String `tfsdk:"site_ref_type_"`
 }
 
 func (r *verityLagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -212,7 +222,13 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
-		lagReq.ObjectProperties = make(map[string]interface{})
+		op := plan.ObjectProperties[0]
+		objProps := openapi.LagsPutRequestLagValueObjectProperties{}
+		utils.SetStringFields([]utils.StringFieldMapping{
+			{FieldName: "Site", APIField: &objProps.Site, TFValue: op.Site},
+			{FieldName: "SiteRefType", APIField: &objProps.SiteRefType, TFValue: op.SiteRefType},
+		})
+		lagReq.ObjectProperties = &objProps
 	} else {
 		lagReq.ObjectProperties = nil
 	}
@@ -407,9 +423,30 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	utils.CompareAndSetNullableInt64Field(config.PeerLinkVlan, state.PeerLinkVlan, configuredAttrs.IsConfigured("peer_link_vlan"), func(v *openapi.NullableInt32) { lagReq.PeerLinkVlan = *v }, &hasChanges)
 
 	// Handle object properties
-	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) == 0 {
-		lagReq.ObjectProperties = make(map[string]interface{})
-		hasChanges = true
+	if len(plan.ObjectProperties) > 0 {
+		objProps := openapi.LagsPutRequestLagValueObjectProperties{}
+		op := plan.ObjectProperties[0]
+		var st verityLagObjectPropertiesModel
+		if len(state.ObjectProperties) > 0 {
+			st = state.ObjectProperties[0]
+		}
+		objPropsChanged := false
+
+		if !utils.HandleOneRefTypeSupported(
+			op.Site, st.Site, op.SiteRefType, st.SiteRefType,
+			func(v *string) { objProps.Site = v },
+			func(v *string) { objProps.SiteRefType = v },
+			"site", "site_ref_type_",
+			&objPropsChanged,
+			&resp.Diagnostics,
+		) {
+			return
+		}
+
+		if objPropsChanged {
+			lagReq.ObjectProperties = &objProps
+			hasChanges = true
+		}
 	}
 
 	// Handle EthPortProfile and EthPortProfileRefType using "Many ref types supported" pattern
@@ -521,8 +558,11 @@ func populateLagState(ctx context.Context, state verityLagResourceModel, data ma
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
-		if _, ok := data["object_properties"]; ok {
-			state.ObjectProperties = []verityLagObjectPropertiesModel{{}}
+		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
+			state.ObjectProperties = []verityLagObjectPropertiesModel{{
+				Site:        utils.MapStringWithModeNested(objProps, "site", resourceType, "object_properties.site", mode),
+				SiteRefType: utils.MapStringWithModeNested(objProps, "site_ref_type_", resourceType, "object_properties.site_ref_type_", mode),
+			}}
 		} else {
 			state.ObjectProperties = nil
 		}
@@ -573,6 +613,12 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	nullifier.NullifyInt64s(
 		"peer_link_vlan",
 	)
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "object_properties",
+		ItemCount:    len(plan.ObjectProperties),
+		StringFields: []string{"site", "site_ref_type_"},
+	})
 
 	// =========================================================================
 	// Skip UPDATE-specific logic during CREATE

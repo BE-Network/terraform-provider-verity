@@ -44,6 +44,8 @@ type veritySiteResourceModel struct {
 	Enable                                    types.Bool                        `tfsdk:"enable"`
 	ServiceForSite                            types.String                      `tfsdk:"service_for_site"`
 	ServiceForSiteRefType                     types.String                      `tfsdk:"service_for_site_ref_type_"`
+	DomainForSite                             types.String                      `tfsdk:"domain_for_site"`
+	DomainForSiteRefType                      types.String                      `tfsdk:"domain_for_site_ref_type_"`
 	SpanningTreeType                          types.String                      `tfsdk:"spanning_tree_type"`
 	RegionName                                types.String                      `tfsdk:"region_name"`
 	Revision                                  types.Int64                       `tfsdk:"revision"`
@@ -162,6 +164,16 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"service_for_site_ref_type_": schema.StringAttribute{
 				Description: "Object type for service_for_site field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"domain_for_site": schema.StringAttribute{
+				Description: "Domain for Site",
+				Optional:    true,
+				Computed:    true,
+			},
+			"domain_for_site_ref_type_": schema.StringAttribute{
+				Description: "Object type for domain_for_site field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -655,6 +667,17 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
+	// Handle domain_for_site and domain_for_site_ref_type_ fields using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.DomainForSite, state.DomainForSite, plan.DomainForSiteRefType, state.DomainForSiteRefType,
+		func(v *string) { siteReq.DomainForSite = v },
+		func(v *string) { siteReq.DomainForSiteRefType = v },
+		"domain_for_site", "domain_for_site_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
 	// Handle AnycastMacAddress and AnycastMacAddressAutoAssigned changes
 	anycastMacAddressChanged := !plan.AnycastMacAddress.IsUnknown() && !plan.AnycastMacAddress.Equal(state.AnycastMacAddress)
 	anycastMacAddressAutoAssignedChanged := !plan.AnycastMacAddressAutoAssigned.Equal(state.AnycastMacAddressAutoAssigned)
@@ -950,6 +973,8 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 	// String fields
 	state.ServiceForSite = utils.MapStringWithMode(siteData, "service_for_site", resourceType, mode)
 	state.ServiceForSiteRefType = utils.MapStringWithMode(siteData, "service_for_site_ref_type_", resourceType, mode)
+	state.DomainForSite = utils.MapStringWithMode(siteData, "domain_for_site", resourceType, mode)
+	state.DomainForSiteRefType = utils.MapStringWithMode(siteData, "domain_for_site_ref_type_", resourceType, mode)
 	state.SpanningTreeType = utils.MapStringWithMode(siteData, "spanning_tree_type", resourceType, mode)
 	state.RegionName = utils.MapStringWithMode(siteData, "region_name", resourceType, mode)
 	state.DscpToPBitMap = utils.MapStringWithMode(siteData, "dscp_to_p_bit_map", resourceType, mode)
@@ -1075,6 +1100,7 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 
 	nullifier.NullifyStrings(
 		"service_for_site", "service_for_site_ref_type_",
+		"domain_for_site", "domain_for_site_ref_type_",
 		"spanning_tree_type", "region_name",
 		"dscp_to_p_bit_map", "anycast_mac_address",
 	)

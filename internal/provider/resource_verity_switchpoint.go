@@ -53,6 +53,8 @@ type veritySwitchpointResourceModel struct {
 	SpinePlaneRefType                types.String                             `tfsdk:"spine_plane_ref_type_"`
 	Pod                              types.String                             `tfsdk:"pod"`
 	PodRefType                       types.String                             `tfsdk:"pod_ref_type_"`
+	ExpectedSite                     types.String                             `tfsdk:"expected_site"`
+	ExpectedSiteRefType              types.String                             `tfsdk:"expected_site_ref_type_"`
 	Rack                             types.String                             `tfsdk:"rack"`
 	SwitchRouterIdIpMask             types.String                             `tfsdk:"switch_router_id_ip_mask"`
 	SwitchRouterIdIpMaskAutoAssigned types.Bool                               `tfsdk:"switch_router_id_ip_mask_auto_assigned_"`
@@ -218,6 +220,16 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"pod_ref_type_": schema.StringAttribute{
 				Description: "Object type for pod field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"expected_site": schema.StringAttribute{
+				Description: "Expected Site",
+				Optional:    true,
+				Computed:    true,
+			},
+			"expected_site_ref_type_": schema.StringAttribute{
+				Description: "Object type for expected_site field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -506,6 +518,8 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "SpinePlaneRefType", APIField: &spProps.SpinePlaneRefType, TFValue: plan.SpinePlaneRefType},
 		{FieldName: "Pod", APIField: &spProps.Pod, TFValue: plan.Pod},
 		{FieldName: "PodRefType", APIField: &spProps.PodRefType, TFValue: plan.PodRefType},
+		{FieldName: "ExpectedSite", APIField: &spProps.ExpectedSite, TFValue: plan.ExpectedSite},
+		{FieldName: "ExpectedSiteRefType", APIField: &spProps.ExpectedSiteRefType, TFValue: plan.ExpectedSiteRefType},
 		{FieldName: "Rack", APIField: &spProps.Rack, TFValue: plan.Rack},
 		{FieldName: "SwitchRouterIdIpMask", APIField: &spProps.SwitchRouterIdIpMask, TFValue: plan.SwitchRouterIdIpMask},
 		{FieldName: "SwitchVtepIdIpMask", APIField: &spProps.SwitchVtepIdIpMask, TFValue: plan.SwitchVtepIdIpMask},
@@ -914,6 +928,18 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		func(v *string) { spProps.Pod = v },
 		func(v *string) { spProps.PodRefType = v },
 		"pod", "pod_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle ExpectedSite and ExpectedSiteRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.ExpectedSite, state.ExpectedSite, plan.ExpectedSiteRefType, state.ExpectedSiteRefType,
+		func(v *string) { spProps.ExpectedSite = v },
+		func(v *string) { spProps.ExpectedSiteRefType = v },
+		"expected_site", "expected_site_ref_type_",
 		&hasChanges,
 		&resp.Diagnostics,
 	) {
@@ -1448,6 +1474,8 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	state.SpinePlaneRefType = utils.MapStringWithMode(switchpointData, "spine_plane_ref_type_", resourceType, mode)
 	state.Pod = utils.MapStringWithMode(switchpointData, "pod", resourceType, mode)
 	state.PodRefType = utils.MapStringWithMode(switchpointData, "pod_ref_type_", resourceType, mode)
+	state.ExpectedSite = utils.MapStringWithMode(switchpointData, "expected_site", resourceType, mode)
+	state.ExpectedSiteRefType = utils.MapStringWithMode(switchpointData, "expected_site_ref_type_", resourceType, mode)
 	state.Rack = utils.MapStringWithMode(switchpointData, "rack", resourceType, mode)
 	state.SwitchRouterIdIpMask = utils.MapStringWithMode(switchpointData, "switch_router_id_ip_mask", resourceType, mode)
 	state.SwitchVtepIdIpMask = utils.MapStringWithMode(switchpointData, "switch_vtep_id_ip_mask", resourceType, mode)
@@ -1611,7 +1639,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 	nullifier.NullifyStrings(
 		"device_serial_number", "connected_bundle", "connected_bundle_ref_type_",
 		"type", "spine_plane", "spine_plane_ref_type_",
-		"pod", "pod_ref_type_", "rack",
+		"pod", "pod_ref_type_", "expected_site", "expected_site_ref_type_", "rack",
 		"switch_router_id_ip_mask", "switch_vtep_id_ip_mask",
 	)
 
