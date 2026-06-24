@@ -552,7 +552,11 @@ Examples:
         "/snmp",
         "/syslog",
         "/backups",
-        "/timetraveler"
+        "/timetraveler",
+        "/sdlcs",
+        "/sdlcs/upgrade",
+        "/systemconfig",
+        "/users"
     ]
     
     cleaned_swagger, removed = remove_endpoints(merged_swagger, endpoints_to_remove)
