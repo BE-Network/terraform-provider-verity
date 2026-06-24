@@ -1000,11 +1000,20 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
 			{Name: "UserNotes", TFValue: op.UserNotes, APIValue: &objProps.UserNotes},
 			{Name: "ExpectedParentEndpoint", TFValue: op.ExpectedParentEndpoint, APIValue: &objProps.ExpectedParentEndpoint},
-			{Name: "ExpectedParentEndpointRefType", TFValue: op.ExpectedParentEndpointRefType, APIValue: &objProps.ExpectedParentEndpointRefType},
 			{Name: "Aggregate", TFValue: op.Aggregate, APIValue: &objProps.Aggregate},
 			{Name: "IsHost", TFValue: op.IsHost, APIValue: &objProps.IsHost},
 			{Name: "EmulateRfVideoPort", TFValue: op.EmulateRfVideoPort, APIValue: &objProps.EmulateRfVideoPort},
 			{Name: "DrawAsEdgeDevice", TFValue: op.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
+		})
+		utils.SetRefTypeFields([]utils.RefTypeFieldMapping{
+			{
+				FieldName:        "expected_parent_endpoint",
+				RefTypeFieldName: "expected_parent_endpoint_ref_type_",
+				APIField:         &objProps.ExpectedParentEndpoint,
+				RefTypeAPIField:  &objProps.ExpectedParentEndpointRefType,
+				TFValue:          op.ExpectedParentEndpoint,
+				RefTypeTFValue:   op.ExpectedParentEndpointRefType,
+			},
 		})
 		utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 			{FieldName: "NumberOfMultipoints", APIField: &objProps.NumberOfMultipoints, TFValue: configOp.NumberOfMultipoints, IsConfigured: objPropsCfg.IsFieldConfigured("number_of_multipoints")},
@@ -2050,13 +2059,25 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 		utils.CompareAndSetObjectPropertiesFields([]utils.ObjectPropertiesFieldWithComparison{
 			{Name: "UserNotes", PlanValue: op.UserNotes, StateValue: st.UserNotes, APIValue: &objProps.UserNotes},
-			{Name: "ExpectedParentEndpoint", PlanValue: op.ExpectedParentEndpoint, StateValue: st.ExpectedParentEndpoint, APIValue: &objProps.ExpectedParentEndpoint},
-			{Name: "ExpectedParentEndpointRefType", PlanValue: op.ExpectedParentEndpointRefType, StateValue: st.ExpectedParentEndpointRefType, APIValue: &objProps.ExpectedParentEndpointRefType},
 			{Name: "Aggregate", PlanValue: op.Aggregate, StateValue: st.Aggregate, APIValue: &objProps.Aggregate},
 			{Name: "IsHost", PlanValue: op.IsHost, StateValue: st.IsHost, APIValue: &objProps.IsHost},
 			{Name: "EmulateRfVideoPort", PlanValue: op.EmulateRfVideoPort, StateValue: st.EmulateRfVideoPort, APIValue: &objProps.EmulateRfVideoPort},
 			{Name: "DrawAsEdgeDevice", PlanValue: op.DrawAsEdgeDevice, StateValue: st.DrawAsEdgeDevice, APIValue: &objProps.DrawAsEdgeDevice},
 		}, &objPropsChanged)
+
+		if !utils.CompareAndSetRefTypeFields([]utils.RefTypeFieldWithComparison{{
+			FieldName:         "expected_parent_endpoint",
+			RefTypeFieldName:  "expected_parent_endpoint_ref_type_",
+			APIField:          func(v *string) { objProps.ExpectedParentEndpoint = v },
+			RefTypeAPIField:   func(v *string) { objProps.ExpectedParentEndpointRefType = v },
+			PlanValue:         op.ExpectedParentEndpoint,
+			StateValue:        st.ExpectedParentEndpoint,
+			PlanRefTypeValue:  op.ExpectedParentEndpointRefType,
+			StateRefTypeValue: st.ExpectedParentEndpointRefType,
+			SupportMode:       utils.RefTypeSupportOne,
+		}}, &objPropsChanged, &resp.Diagnostics) {
+			return
+		}
 
 		// Handle nullable field in object_properties
 		utils.CompareAndSetNullableInt64Field(configOp.NumberOfMultipoints, st.NumberOfMultipoints, objPropsCfg.IsFieldConfigured("number_of_multipoints"), func(v *openapi.NullableInt32) { objProps.NumberOfMultipoints = *v }, &objPropsChanged)
