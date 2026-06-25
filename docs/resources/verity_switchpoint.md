@@ -20,6 +20,8 @@ resource "verity_switchpoint" "example" {
   expected_site_ref_type_ = "site"
   out_of_band_management = true
   type = "leaf"
+  plane = "plane-a"
+  plane_ref_type_ = "plane"
   spine_plane = "plane1"
   spine_plane_ref_type_ = "spine_plane"
   pod = "rack1"
@@ -39,9 +41,7 @@ resource "verity_switchpoint" "example" {
   bgp_as_number_auto_assigned_ = false
   is_fabric = false
   controller_ip_and_mask = "10.10.10.10"
-  controller_ip_and_mask_auto_assigned_ = false
   switch_ip_and_mask = "10.10.10.11"
-  switch_ip_and_mask_auto_assigned_ = false
   
   badges {
     badge = "badge1"
@@ -116,6 +116,8 @@ resource "verity_switchpoint" "example" {
 * `expected_site_ref_type_` (String) - Object type for expected_site field
 * `out_of_band_management` (Boolean) - Whether out-of-band management is enabled
 * `type` (String) - Type of switchpoint
+* `plane` (String) - Plane
+* `plane_ref_type_` (String) - Object type for plane field
 * `spine_plane` (String) - Spine Plane - subgrouping of super spine and spine
 * `spine_plane_ref_type_` (String) - Object type for spine_plane field
 * `pod` (String) - Pod - subgrouping of spine and leaf switches
@@ -136,11 +138,9 @@ resource "verity_switchpoint" "example" {
 * `is_fabric` (Boolean) - Whether this is a fabric switch
 * `bb_switch` (Boolean) - Expose fields for Device Management
 * `ip_source` (String) - IP Source
-* `controller_ip_and_mask` (String) - Controller IP and Mask. This field should not be specified when `controller_ip_and_mask_auto_assigned_` is set to `true`, as the API will assign this value automatically.
-* `controller_ip_and_mask_auto_assigned_` (Boolean) - Whether the Controller IP and Mask should be automatically assigned by the API. When set to `true`, do not specify the `controller_ip_and_mask` field in your configuration.
+* `controller_ip_and_mask` (String) - Controller IP and Mask
 * `gateway` (String) - Gateway
-* `switch_ip_and_mask` (String) - Switch IP and Mask. This field should not be specified when `switch_ip_and_mask_auto_assigned_` is set to `true`, as the API will assign this value automatically.
-* `switch_ip_and_mask_auto_assigned_` (Boolean) - Whether the Switch IP and Mask should be automatically assigned by the API. When set to `true`, do not specify the `switch_ip_and_mask` field in your configuration.
+* `switch_ip_and_mask` (String) - Switch IP and Mask
 * `switch_gateway` (String) - Gateway of Managed Device
 * `comm_type` (String) - Comm Type
 * `snmp_community_string` (String) - Comm Credentials
