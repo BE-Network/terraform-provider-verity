@@ -54,6 +54,8 @@ type veritySwitchpointResourceModel struct {
 	ExpectedSiteRefType              types.String                             `tfsdk:"expected_site_ref_type_"`
 	OutOfBandManagement              types.Bool                               `tfsdk:"out_of_band_management"`
 	Type                             types.String                             `tfsdk:"type"`
+	Plane                            types.String                             `tfsdk:"plane"`
+	PlaneRefType                     types.String                             `tfsdk:"plane_ref_type_"`
 	SpinePlane                       types.String                             `tfsdk:"spine_plane"`
 	SpinePlaneRefType                types.String                             `tfsdk:"spine_plane_ref_type_"`
 	Pod                              types.String                             `tfsdk:"pod"`
@@ -79,10 +81,8 @@ type veritySwitchpointResourceModel struct {
 	PrivatePasswordEncrypted         types.String                             `tfsdk:"private_password_encrypted"`
 	IpSource                         types.String                             `tfsdk:"ip_source"`
 	ControllerIpAndMask              types.String                             `tfsdk:"controller_ip_and_mask"`
-	ControllerIpAndMaskAutoAssigned  types.Bool                               `tfsdk:"controller_ip_and_mask_auto_assigned_"`
 	Gateway                          types.String                             `tfsdk:"gateway"`
 	SwitchIpAndMask                  types.String                             `tfsdk:"switch_ip_and_mask"`
-	SwitchIpAndMaskAutoAssigned      types.Bool                               `tfsdk:"switch_ip_and_mask_auto_assigned_"`
 	SwitchGateway                    types.String                             `tfsdk:"switch_gateway"`
 	CommType                         types.String                             `tfsdk:"comm_type"`
 	SnmpCommunityString              types.String                             `tfsdk:"snmp_community_string"`
@@ -296,6 +296,16 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 				Computed:    true,
 			},
+			"plane": schema.StringAttribute{
+				Description: "Plane",
+				Optional:    true,
+				Computed:    true,
+			},
+			"plane_ref_type_": schema.StringAttribute{
+				Description: "Object type for plane field",
+				Optional:    true,
+				Computed:    true,
+			},
 			"spine_plane": schema.StringAttribute{
 				Description: "Spine Plane - subgrouping of super spine and spine",
 				Optional:    true,
@@ -417,12 +427,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"controller_ip_and_mask": schema.StringAttribute{
-				Description: "Controller IP and Mask. This field should not be specified when 'controller_ip_and_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
-				Optional:    true,
-				Computed:    true,
-			},
-			"controller_ip_and_mask_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the Controller IP and Mask should be automatically assigned by the API. When set to true, do not specify the 'controller_ip_and_mask' field in your configuration.",
+				Description: "Controller IP and Mask",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -432,12 +437,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"switch_ip_and_mask": schema.StringAttribute{
-				Description: "Switch IP and Mask. This field should not be specified when 'switch_ip_and_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
-				Optional:    true,
-				Computed:    true,
-			},
-			"switch_ip_and_mask_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the Switch IP and Mask should be automatically assigned by the API. When set to true, do not specify the 'switch_ip_and_mask' field in your configuration.",
+				Description: "Switch IP and Mask",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -870,26 +870,6 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		}
 	}
 
-	if !plan.ControllerIpAndMaskAutoAssigned.IsNull() && plan.ControllerIpAndMaskAutoAssigned.ValueBool() {
-		if !plan.ControllerIpAndMask.IsNull() && !plan.ControllerIpAndMask.IsUnknown() && plan.ControllerIpAndMask.ValueString() != "" {
-			resp.Diagnostics.AddError(
-				"Controller IP and Mask cannot be specified when auto-assigned",
-				"The 'controller_ip_and_mask' field cannot be specified in the configuration when 'controller_ip_and_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-			)
-			return
-		}
-	}
-
-	if !plan.SwitchIpAndMaskAutoAssigned.IsNull() && plan.SwitchIpAndMaskAutoAssigned.ValueBool() {
-		if !plan.SwitchIpAndMask.IsNull() && !plan.SwitchIpAndMask.IsUnknown() && plan.SwitchIpAndMask.ValueString() != "" {
-			resp.Diagnostics.AddError(
-				"Switch IP and Mask cannot be specified when auto-assigned",
-				"The 'switch_ip_and_mask' field cannot be specified in the configuration when 'switch_ip_and_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-			)
-			return
-		}
-	}
-
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -913,6 +893,8 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "ExpectedSite", APIField: &spProps.ExpectedSite, TFValue: plan.ExpectedSite},
 		{FieldName: "ExpectedSiteRefType", APIField: &spProps.ExpectedSiteRefType, TFValue: plan.ExpectedSiteRefType},
 		{FieldName: "Type", APIField: &spProps.Type, TFValue: plan.Type},
+		{FieldName: "Plane", APIField: &spProps.Plane, TFValue: plan.Plane},
+		{FieldName: "PlaneRefType", APIField: &spProps.PlaneRefType, TFValue: plan.PlaneRefType},
 		{FieldName: "SpinePlane", APIField: &spProps.SpinePlane, TFValue: plan.SpinePlane},
 		{FieldName: "SpinePlaneRefType", APIField: &spProps.SpinePlaneRefType, TFValue: plan.SpinePlaneRefType},
 		{FieldName: "Pod", APIField: &spProps.Pod, TFValue: plan.Pod},
@@ -972,8 +954,6 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "SwitchRouterIdIpMaskAutoAssigned", APIField: &spProps.SwitchRouterIdIpMaskAutoAssigned, TFValue: plan.SwitchRouterIdIpMaskAutoAssigned},
 		{FieldName: "SwitchVtepIdIpMaskAutoAssigned", APIField: &spProps.SwitchVtepIdIpMaskAutoAssigned, TFValue: plan.SwitchVtepIdIpMaskAutoAssigned},
 		{FieldName: "BgpAsNumberAutoAssigned", APIField: &spProps.BgpAsNumberAutoAssigned, TFValue: plan.BgpAsNumberAutoAssigned},
-		{FieldName: "ControllerIpAndMaskAutoAssigned", APIField: &spProps.ControllerIpAndMaskAutoAssigned, TFValue: plan.ControllerIpAndMaskAutoAssigned},
-		{FieldName: "SwitchIpAndMaskAutoAssigned", APIField: &spProps.SwitchIpAndMaskAutoAssigned, TFValue: plan.SwitchIpAndMaskAutoAssigned},
 		{FieldName: "BbSwitch", APIField: &spProps.BbSwitch, TFValue: plan.BbSwitch},
 		{FieldName: "ManagedOnNativeVlan", APIField: &spProps.ManagedOnNativeVlan, TFValue: plan.ManagedOnNativeVlan},
 		{FieldName: "IsFabric", APIField: &spProps.IsFabric, TFValue: plan.IsFabric},
@@ -1434,6 +1414,18 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
+	// Handle Plane and PlaneRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.Plane, state.Plane, plan.PlaneRefType, state.PlaneRefType,
+		func(v *string) { spProps.Plane = v },
+		func(v *string) { spProps.PlaneRefType = v },
+		"plane", "plane_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
 	// Handle SpinePlane and SpinePlaneRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.SpinePlane, state.SpinePlane, plan.SpinePlaneRefType, state.SpinePlaneRefType,
@@ -1681,92 +1673,6 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 				spProps.SwitchVtepIdIpMaskAutoAssigned = openapi.PtrBool(state.SwitchVtepIdIpMaskAutoAssigned.ValueBool())
 			} else {
 				spProps.SwitchVtepIdIpMaskAutoAssigned = openapi.PtrBool(false)
-			}
-		}
-
-		hasChanges = true
-	}
-
-	// Handle ControllerIpAndMask and ControllerIpAndMaskAutoAssigned changes
-	controllerIpAndMaskChanged := !plan.ControllerIpAndMask.IsUnknown() && !plan.ControllerIpAndMask.Equal(state.ControllerIpAndMask)
-	controllerIpAndMaskAutoAssignedChanged := !plan.ControllerIpAndMaskAutoAssigned.Equal(state.ControllerIpAndMaskAutoAssigned)
-
-	if controllerIpAndMaskChanged || controllerIpAndMaskAutoAssignedChanged {
-		if controllerIpAndMaskChanged {
-			spProps.ControllerIpAndMask = openapi.PtrString(plan.ControllerIpAndMask.ValueString())
-		}
-
-		if controllerIpAndMaskAutoAssignedChanged {
-			var config veritySwitchpointResourceModel
-			userSpecifiedControllerIpAndMaskAutoAssigned := false
-			if !req.Config.Raw.IsNull() {
-				if err := req.Config.Get(ctx, &config); err == nil {
-					userSpecifiedControllerIpAndMaskAutoAssigned = !config.ControllerIpAndMaskAutoAssigned.IsNull()
-				}
-			}
-
-			if userSpecifiedControllerIpAndMaskAutoAssigned {
-				spProps.ControllerIpAndMaskAutoAssigned = openapi.PtrBool(plan.ControllerIpAndMaskAutoAssigned.ValueBool())
-
-				if !state.ControllerIpAndMaskAutoAssigned.IsNull() && state.ControllerIpAndMaskAutoAssigned.ValueBool() &&
-					!plan.ControllerIpAndMaskAutoAssigned.ValueBool() {
-					if !plan.ControllerIpAndMask.IsNull() {
-						spProps.ControllerIpAndMask = openapi.PtrString(plan.ControllerIpAndMask.ValueString())
-					} else if !state.ControllerIpAndMask.IsNull() {
-						spProps.ControllerIpAndMask = openapi.PtrString(state.ControllerIpAndMask.ValueString())
-					}
-				}
-			}
-		} else if controllerIpAndMaskChanged {
-			if !plan.ControllerIpAndMaskAutoAssigned.IsNull() {
-				spProps.ControllerIpAndMaskAutoAssigned = openapi.PtrBool(plan.ControllerIpAndMaskAutoAssigned.ValueBool())
-			} else if !state.ControllerIpAndMaskAutoAssigned.IsNull() {
-				spProps.ControllerIpAndMaskAutoAssigned = openapi.PtrBool(state.ControllerIpAndMaskAutoAssigned.ValueBool())
-			} else {
-				spProps.ControllerIpAndMaskAutoAssigned = openapi.PtrBool(false)
-			}
-		}
-
-		hasChanges = true
-	}
-
-	// Handle SwitchIpAndMask and SwitchIpAndMaskAutoAssigned changes
-	switchIpAndMaskChanged := !plan.SwitchIpAndMask.IsUnknown() && !plan.SwitchIpAndMask.Equal(state.SwitchIpAndMask)
-	switchIpAndMaskAutoAssignedChanged := !plan.SwitchIpAndMaskAutoAssigned.Equal(state.SwitchIpAndMaskAutoAssigned)
-
-	if switchIpAndMaskChanged || switchIpAndMaskAutoAssignedChanged {
-		if switchIpAndMaskChanged {
-			spProps.SwitchIpAndMask = openapi.PtrString(plan.SwitchIpAndMask.ValueString())
-		}
-
-		if switchIpAndMaskAutoAssignedChanged {
-			var config veritySwitchpointResourceModel
-			userSpecifiedSwitchIpAndMaskAutoAssigned := false
-			if !req.Config.Raw.IsNull() {
-				if err := req.Config.Get(ctx, &config); err == nil {
-					userSpecifiedSwitchIpAndMaskAutoAssigned = !config.SwitchIpAndMaskAutoAssigned.IsNull()
-				}
-			}
-
-			if userSpecifiedSwitchIpAndMaskAutoAssigned {
-				spProps.SwitchIpAndMaskAutoAssigned = openapi.PtrBool(plan.SwitchIpAndMaskAutoAssigned.ValueBool())
-
-				if !state.SwitchIpAndMaskAutoAssigned.IsNull() && state.SwitchIpAndMaskAutoAssigned.ValueBool() &&
-					!plan.SwitchIpAndMaskAutoAssigned.ValueBool() {
-					if !plan.SwitchIpAndMask.IsNull() {
-						spProps.SwitchIpAndMask = openapi.PtrString(plan.SwitchIpAndMask.ValueString())
-					} else if !state.SwitchIpAndMask.IsNull() {
-						spProps.SwitchIpAndMask = openapi.PtrString(state.SwitchIpAndMask.ValueString())
-					}
-				}
-			}
-		} else if switchIpAndMaskChanged {
-			if !plan.SwitchIpAndMaskAutoAssigned.IsNull() {
-				spProps.SwitchIpAndMaskAutoAssigned = openapi.PtrBool(plan.SwitchIpAndMaskAutoAssigned.ValueBool())
-			} else if !state.SwitchIpAndMaskAutoAssigned.IsNull() {
-				spProps.SwitchIpAndMaskAutoAssigned = openapi.PtrBool(state.SwitchIpAndMaskAutoAssigned.ValueBool())
-			} else {
-				spProps.SwitchIpAndMaskAutoAssigned = openapi.PtrBool(false)
 			}
 		}
 
@@ -2194,9 +2100,6 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	state.BgpAsNumberAutoAssigned = utils.MapBoolWithMode(switchpointData, "bgp_as_number_auto_assigned_", resourceType, mode)
 	state.SwitchVtepIdIpMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_vtep_id_ip_mask_auto_assigned_", resourceType, mode)
 	state.SwitchRouterIdIpMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_router_id_ip_mask_auto_assigned_", resourceType, mode)
-	state.ControllerIpAndMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "controller_ip_and_mask_auto_assigned_", resourceType, mode)
-	state.SwitchIpAndMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_ip_and_mask_auto_assigned_", resourceType, mode)
-
 	// String fields
 	state.Tenant = utils.MapStringWithMode(switchpointData, "tenant", resourceType, mode)
 	state.TenantRefType = utils.MapStringWithMode(switchpointData, "tenant_ref_type_", resourceType, mode)
@@ -2206,6 +2109,8 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	state.ExpectedSite = utils.MapStringWithMode(switchpointData, "expected_site", resourceType, mode)
 	state.ExpectedSiteRefType = utils.MapStringWithMode(switchpointData, "expected_site_ref_type_", resourceType, mode)
 	state.Type = utils.MapStringWithMode(switchpointData, "type", resourceType, mode)
+	state.Plane = utils.MapStringWithMode(switchpointData, "plane", resourceType, mode)
+	state.PlaneRefType = utils.MapStringWithMode(switchpointData, "plane_ref_type_", resourceType, mode)
 	state.SpinePlane = utils.MapStringWithMode(switchpointData, "spine_plane", resourceType, mode)
 	state.SpinePlaneRefType = utils.MapStringWithMode(switchpointData, "spine_plane_ref_type_", resourceType, mode)
 	state.Pod = utils.MapStringWithMode(switchpointData, "pod", resourceType, mode)
@@ -2444,7 +2349,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		"tenant", "tenant_ref_type_", "device_serial_number",
 		"connected_bundle", "connected_bundle_ref_type_",
 		"expected_site", "expected_site_ref_type_",
-		"type", "spine_plane", "spine_plane_ref_type_",
+		"type", "plane", "plane_ref_type_", "spine_plane", "spine_plane_ref_type_",
 		"pod", "pod_ref_type_", "su", "su_ref_type_",
 		"ssp_group", "ssp_group_ref_type_", "rack",
 		"switch_router_id_ip_mask", "switch_vtep_id_ip_mask",
@@ -2470,8 +2375,6 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		"switch_router_id_ip_mask_auto_assigned_",
 		"switch_vtep_id_ip_mask_auto_assigned_",
 		"bgp_as_number_auto_assigned_",
-		"controller_ip_and_mask_auto_assigned_",
-		"switch_ip_and_mask_auto_assigned_",
 	)
 
 	nullifier.NullifyInt64s(
@@ -2540,12 +2443,6 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		}
 		if !plan.SwitchVtepIdIpMaskAutoAssigned.IsNull() && plan.SwitchVtepIdIpMaskAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("switch_vtep_id_ip_mask"), types.StringUnknown())
-		}
-		if !plan.ControllerIpAndMaskAutoAssigned.IsNull() && plan.ControllerIpAndMaskAutoAssigned.ValueBool() {
-			resp.Plan.SetAttribute(ctx, path.Root("controller_ip_and_mask"), types.StringUnknown())
-		}
-		if !plan.SwitchIpAndMaskAutoAssigned.IsNull() && plan.SwitchIpAndMaskAutoAssigned.ValueBool() {
-			resp.Plan.SetAttribute(ctx, path.Root("switch_ip_and_mask"), types.StringUnknown())
 		}
 		return
 	}
@@ -2633,26 +2530,6 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		}
 	}
 
-	if !config.ControllerIpAndMaskAutoAssigned.IsNull() && config.ControllerIpAndMaskAutoAssigned.ValueBool() {
-		if !config.ControllerIpAndMask.IsNull() && !config.ControllerIpAndMask.IsUnknown() && config.ControllerIpAndMask.ValueString() != "" {
-			resp.Diagnostics.AddError(
-				"Controller IP and Mask cannot be specified when auto-assigned",
-				"The 'controller_ip_and_mask' field cannot be specified in the configuration when 'controller_ip_and_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-			)
-			return
-		}
-	}
-
-	if !config.SwitchIpAndMaskAutoAssigned.IsNull() && config.SwitchIpAndMaskAutoAssigned.ValueBool() {
-		if !config.SwitchIpAndMask.IsNull() && !config.SwitchIpAndMask.IsUnknown() && config.SwitchIpAndMask.ValueString() != "" {
-			resp.Diagnostics.AddError(
-				"Switch IP and Mask cannot be specified when auto-assigned",
-				"The 'switch_ip_and_mask' field cannot be specified in the configuration when 'switch_ip_and_mask_auto_assigned_' is set to true. The API will assign this value automatically.",
-			)
-			return
-		}
-	}
-
 	// =========================================================================
 	// Resource-specific auto-assigned field logic (BgpAsNumber)
 	// =========================================================================
@@ -2722,47 +2599,6 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		}
 	}
 
-	// =========================================================================
-	// Resource-specific auto-assigned field logic (ControllerIpAndMask)
-	// =========================================================================
-	if !plan.ControllerIpAndMaskAutoAssigned.IsNull() && plan.ControllerIpAndMaskAutoAssigned.ValueBool() {
-		if !plan.ControllerIpAndMaskAutoAssigned.Equal(state.ControllerIpAndMaskAutoAssigned) {
-			resp.Plan.SetAttribute(ctx, path.Root("controller_ip_and_mask"), types.StringUnknown())
-			resp.Diagnostics.AddWarning(
-				"Controller IP and Mask will be assigned by the API",
-				"The 'controller_ip_and_mask' field will be automatically assigned by the API because 'controller_ip_and_mask_auto_assigned_' is being set to true.",
-			)
-		} else if !plan.ControllerIpAndMask.Equal(state.ControllerIpAndMask) {
-			resp.Diagnostics.AddWarning(
-				"Ignoring controller_ip_and_mask changes with auto-assignment enabled",
-				"The 'controller_ip_and_mask' field changes will be ignored because 'controller_ip_and_mask_auto_assigned_' is set to true.",
-			)
-			if !state.ControllerIpAndMask.IsNull() {
-				resp.Plan.SetAttribute(ctx, path.Root("controller_ip_and_mask"), state.ControllerIpAndMask)
-			}
-		}
-	}
-
-	// =========================================================================
-	// Resource-specific auto-assigned field logic (SwitchIpAndMask)
-	// =========================================================================
-	if !plan.SwitchIpAndMaskAutoAssigned.IsNull() && plan.SwitchIpAndMaskAutoAssigned.ValueBool() {
-		if !plan.SwitchIpAndMaskAutoAssigned.Equal(state.SwitchIpAndMaskAutoAssigned) {
-			resp.Plan.SetAttribute(ctx, path.Root("switch_ip_and_mask"), types.StringUnknown())
-			resp.Diagnostics.AddWarning(
-				"Switch IP and Mask will be assigned by the API",
-				"The 'switch_ip_and_mask' field will be automatically assigned by the API because 'switch_ip_and_mask_auto_assigned_' is being set to true.",
-			)
-		} else if !plan.SwitchIpAndMask.Equal(state.SwitchIpAndMask) {
-			resp.Diagnostics.AddWarning(
-				"Ignoring switch_ip_and_mask changes with auto-assignment enabled",
-				"The 'switch_ip_and_mask' field changes will be ignored because 'switch_ip_and_mask_auto_assigned_' is set to true.",
-			)
-			if !state.SwitchIpAndMask.IsNull() {
-				resp.Plan.SetAttribute(ctx, path.Root("switch_ip_and_mask"), state.SwitchIpAndMask)
-			}
-		}
-	}
 }
 
 // preserveSwitchpointPortNames copies port_name values from a reference source (plan or prior state)
