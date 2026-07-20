@@ -45,6 +45,8 @@ type verityAaaProfileResourceModel struct {
 	FailThrough          types.Bool                          `tfsdk:"fail_through"`
 	TacacsProfile        types.String                        `tfsdk:"tacacs_profile"`
 	TacacsProfileRefType types.String                        `tfsdk:"tacacs_profile_ref_type_"`
+	LdapProfile          types.String                        `tfsdk:"ldap_profile"`
+	LdapProfileRefType   types.String                        `tfsdk:"ldap_profile_ref_type_"`
 	LoginDefault         []verityAaaProfileLoginDefaultModel `tfsdk:"login_default"`
 }
 
@@ -113,6 +115,16 @@ func (r *verityAaaProfileResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
+			"ldap_profile": schema.StringAttribute{
+				Description: "LDAP profile for authentication",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ldap_profile_ref_type_": schema.StringAttribute{
+				Description: "Object type for ldap_profile field",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"login_default": schema.ListNestedBlock{
@@ -165,6 +177,8 @@ func (r *verityAaaProfileResource) Create(ctx context.Context, req resource.Crea
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "TacacsProfile", APIField: &aaaProfileProps.TacacsProfile, TFValue: plan.TacacsProfile},
 		{FieldName: "TacacsProfileRefType", APIField: &aaaProfileProps.TacacsProfileRefType, TFValue: plan.TacacsProfileRefType},
+		{FieldName: "LdapProfile", APIField: &aaaProfileProps.LdapProfile, TFValue: plan.LdapProfile},
+		{FieldName: "LdapProfileRefType", APIField: &aaaProfileProps.LdapProfileRefType, TFValue: plan.LdapProfileRefType},
 	})
 
 	utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -370,6 +384,17 @@ func (r *verityAaaProfileResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
+	if !utils.HandleOneRefTypeSupported(
+		plan.LdapProfile, state.LdapProfile, plan.LdapProfileRefType, state.LdapProfileRefType,
+		func(v *string) { aaaProfileProps.LdapProfile = v },
+		func(v *string) { aaaProfileProps.LdapProfileRefType = v },
+		"ldap_profile", "ldap_profile_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
 	loginDefaultHandler := utils.IndexedItemHandler[verityAaaProfileLoginDefaultModel, openapi.DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner]{
 		CreateNew: func(planItem verityAaaProfileLoginDefaultModel) openapi.DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner {
 			loginMethod := openapi.DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner{}
@@ -493,9 +518,11 @@ func populateAaaProfileState(ctx context.Context, state verityAaaProfileResource
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
-	state.FailThrough = utils.MapBoolWithMode(data, "fail-through", resourceType, mode)
+	state.FailThrough = utils.MapBoolWithMode(data, "fail_through", resourceType, mode)
 	state.TacacsProfile = utils.MapStringWithMode(data, "tacacs_profile", resourceType, mode)
 	state.TacacsProfileRefType = utils.MapStringWithMode(data, "tacacs_profile_ref_type_", resourceType, mode)
+	state.LdapProfile = utils.MapStringWithMode(data, "ldap_profile", resourceType, mode)
+	state.LdapProfileRefType = utils.MapStringWithMode(data, "ldap_profile_ref_type_", resourceType, mode)
 
 	if utils.FieldAppliesToMode(resourceType, "login_default", mode) {
 		if loginDefaultData, ok := data["login_default"].([]interface{}); ok && len(loginDefaultData) > 0 {
@@ -548,6 +575,7 @@ func (r *verityAaaProfileResource) ModifyPlan(ctx context.Context, req resource.
 
 	nullifier.NullifyStrings(
 		"tacacs_profile", "tacacs_profile_ref_type_",
+		"ldap_profile", "ldap_profile_ref_type_",
 	)
 
 	nullifier.NullifyBools(

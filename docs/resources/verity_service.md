@@ -11,6 +11,7 @@ resource "verity_service" "example" {
   anycast_ipv6_mask = ""
   dhcp_server_ipv4 = ""
   dhcp_server_ipv6 = ""
+  ip_attach_host_advertise = null
   mtu = 1500
   tenant = ""
   tenant_ref_type_ = "tenant"
@@ -54,6 +55,7 @@ resource "verity_service" "example" {
 * `anycast_ipv6_mask` (String) - Comma separated list of Static anycast gateway addresses(IPv6) for service
 * `dhcp_server_ipv4` (String) - IPv4 address(s) of the DHCP server for service. May have up to four separated by commas
 * `dhcp_server_ipv6` (String) - IPv6 address(s) of the DHCP server for service. May have up to four separated by commas
+* `ip_attach_host_advertise` (Integer) - IP Attach Host Advertise.
 * `mtu` (Integer) - MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets
 * `object_properties` (Object) - Additional object properties
   * `warn_on_no_external_source` (Boolean) - Warn if there is not outbound path for service in SD-Router or a Service Port Profile

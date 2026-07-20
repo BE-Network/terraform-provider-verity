@@ -64,6 +64,9 @@ var importerRegistry = map[string]struct {
 	"deviceaaaprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.DeviceAAAProfilesAPI.DeviceaaaprofilesGet(ctx).Execute()
 	}},
+	"ldapprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.LDAPProfilesAPI.LdapprofilesGet(ctx).Execute()
+	}},
 	"ethportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
 	}},
@@ -195,6 +198,7 @@ var terraformTypeToResourceKey = map[string]string{
 	"verity_gateway":                  "gateway",
 	"verity_gateway_profile":          "gateway_profile",
 	"verity_aaa_profile":              "aaa_profile",
+	"verity_ldap_profile":             "ldap_profile",
 	"verity_eth_port_profile":         "eth_port_profile",
 	"verity_lag":                      "lag",
 	"verity_sflow_collector":          "sflow_collector",
@@ -274,7 +278,13 @@ var resourceConfigs = map[string]ResourceConfig{
 		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:        universalObjectPropsHandler,
 		NestedBlockFields:         map[string]bool{"login_default": true},
-		FieldMappings:             map[string]string{"fail-through": "fail_through"},
+	},
+	"ldap_profile": {
+		ResourceType:              "ldap_profile",
+		StageName:                 "ldap_profile_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		NestedBlockFields:         map[string]bool{"ldap_servers": true, "attribute_maps": true},
 	},
 	"eth_port_profile": {
 		ResourceType:               "eth_port_profile",
@@ -662,6 +672,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "gateways", terraformResourceType: "verity_gateway", importer: func() (interface{}, error) { return i.importResource("gateways") }},
 		{name: "gatewayprofiles", terraformResourceType: "verity_gateway_profile", importer: func() (interface{}, error) { return i.importResource("gatewayprofiles") }},
 		{name: "deviceaaaprofiles", terraformResourceType: "verity_aaa_profile", importer: func() (interface{}, error) { return i.importResource("deviceaaaprofiles") }},
+		{name: "ldapprofiles", terraformResourceType: "verity_ldap_profile", importer: func() (interface{}, error) { return i.importResource("ldapprofiles") }},
 		{name: "ethportprofiles", terraformResourceType: "verity_eth_port_profile", importer: func() (interface{}, error) { return i.importResource("ethportprofiles") }},
 		{name: "lags", terraformResourceType: "verity_lag", importer: func() (interface{}, error) { return i.importResource("lags") }},
 		{name: "sflowcollectors", terraformResourceType: "verity_sflow_collector", importer: func() (interface{}, error) { return i.importResource("sflowcollectors") }},
@@ -1061,7 +1072,8 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"ipv4_list_stage", "verity_ipv4_list", ""},
 			{"ipv6_list_stage", "verity_ipv6_list", "ipv4_list_stage"},
 			{"tacacs_profile_stage", "verity_tacacs_profile", "ipv6_list_stage"},
-			{"acl_v4_stage", "verity_acl_v4", "tacacs_profile_stage"},
+			{"ldap_profile_stage", "verity_ldap_profile", "tacacs_profile_stage"},
+			{"acl_v4_stage", "verity_acl_v4", "ldap_profile_stage"},
 			{"acl_v6_stage", "verity_acl_v6", "acl_v4_stage"},
 			{"port_acl_stage", "verity_port_acl", "acl_v6_stage"},
 			{"service_stage", "verity_service", "port_acl_stage"},
@@ -1109,7 +1121,8 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"service_stage", "verity_service", "ipv6_list_stage"},
 			{"port_acl_stage", "verity_port_acl", "service_stage"},
 			{"tacacs_profile_stage", "verity_tacacs_profile", "port_acl_stage"},
-			{"packet_broker_stage", "verity_packet_broker", "tacacs_profile_stage"},
+			{"ldap_profile_stage", "verity_ldap_profile", "tacacs_profile_stage"},
+			{"packet_broker_stage", "verity_packet_broker", "ldap_profile_stage"},
 			{"eth_port_profile_stage", "verity_eth_port_profile", "packet_broker_stage"},
 			{"packet_queue_stage", "verity_packet_queue", "eth_port_profile_stage"},
 			{"sflow_collector_stage", "verity_sflow_collector", "packet_queue_stage"},

@@ -42,7 +42,9 @@ type veritySiteResource struct {
 type veritySiteResourceModel struct {
 	Name                                      types.String                      `tfsdk:"name"`
 	Enable                                    types.Bool                        `tfsdk:"enable"`
+	PlaneCount                                types.String                      `tfsdk:"plane_count"`
 	SuSupport                                 types.Bool                        `tfsdk:"su_support"`
+	ServerManagement                          types.Bool                        `tfsdk:"server_management"`
 	AllowAllUnderlayConnections               types.Bool                        `tfsdk:"allow_all_underlay_connections"`
 	SiteType                                  types.String                      `tfsdk:"site_type"`
 	ServiceForSite                            types.String                      `tfsdk:"service_for_site"`
@@ -155,8 +157,18 @@ func (r *veritySiteResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 			},
+			"plane_count": schema.StringAttribute{
+				Description: "Number of planes in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
 			"su_support": schema.BoolAttribute{
 				Description: "Support grouping leaf switches in SUs",
+				Optional:    true,
+				Computed:    true,
+			},
+			"server_management": schema.BoolAttribute{
+				Description: "Support managing servers",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -509,6 +521,7 @@ func (r *veritySiteResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	utils.SetStringFields([]utils.StringFieldMapping{
+		{FieldName: "PlaneCount", APIField: &siteReq.PlaneCount, TFValue: plan.PlaneCount},
 		{FieldName: "SiteType", APIField: &siteReq.SiteType, TFValue: plan.SiteType},
 		{FieldName: "ServiceForSite", APIField: &siteReq.ServiceForSite, TFValue: plan.ServiceForSite},
 		{FieldName: "ServiceForSiteRefType", APIField: &siteReq.ServiceForSiteRefType, TFValue: plan.ServiceForSiteRefType},
@@ -537,6 +550,7 @@ func (r *veritySiteResource) Create(ctx context.Context, req resource.CreateRequ
 
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &siteReq.Enable, TFValue: plan.Enable},
+		{FieldName: "ServerManagement", APIField: &siteReq.ServerManagement, TFValue: plan.ServerManagement},
 		{FieldName: "SuSupport", APIField: &siteReq.SuSupport, TFValue: plan.SuSupport},
 		{FieldName: "AllowAllUnderlayConnections", APIField: &siteReq.AllowAllUnderlayConnections, TFValue: plan.AllowAllUnderlayConnections},
 		{FieldName: "ForceSpanningTreeOnFabricPorts", APIField: &siteReq.ForceSpanningTreeOnFabricPorts, TFValue: plan.ForceSpanningTreeOnFabricPorts},
@@ -801,6 +815,7 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { siteReq.Name = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.PlaneCount, state.PlaneCount, func(v *string) { siteReq.PlaneCount = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SiteType, state.SiteType, func(v *string) { siteReq.SiteType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SpanningTreeType, state.SpanningTreeType, func(v *string) { siteReq.SpanningTreeType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RegionName, state.RegionName, func(v *string) { siteReq.RegionName = v }, &hasChanges)
@@ -825,6 +840,7 @@ func (r *veritySiteResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { siteReq.Enable = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.ServerManagement, state.ServerManagement, func(v *bool) { siteReq.ServerManagement = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.SuSupport, state.SuSupport, func(v *bool) { siteReq.SuSupport = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AllowAllUnderlayConnections, state.AllowAllUnderlayConnections, func(v *bool) { siteReq.AllowAllUnderlayConnections = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.ForceSpanningTreeOnFabricPorts, state.ForceSpanningTreeOnFabricPorts, func(v *bool) { siteReq.ForceSpanningTreeOnFabricPorts = v }, &hasChanges)
@@ -1094,6 +1110,7 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 
 	// Bool fields
 	state.Enable = utils.MapBoolWithMode(siteData, "enable", resourceType, mode)
+	state.ServerManagement = utils.MapBoolWithMode(siteData, "server_management", resourceType, mode)
 	state.SuSupport = utils.MapBoolWithMode(siteData, "su_support", resourceType, mode)
 	state.AllowAllUnderlayConnections = utils.MapBoolWithMode(siteData, "allow_all_underlay_connections", resourceType, mode)
 	state.ForceSpanningTreeOnFabricPorts = utils.MapBoolWithMode(siteData, "force_spanning_tree_on_fabric_ports", resourceType, mode)
@@ -1108,6 +1125,7 @@ func populateSiteState(ctx context.Context, state veritySiteResourceModel, siteD
 
 	// String fields
 	state.SiteType = utils.MapStringWithMode(siteData, "site_type", resourceType, mode)
+	state.PlaneCount = utils.MapStringWithMode(siteData, "plane_count", resourceType, mode)
 	state.ServiceForSite = utils.MapStringWithMode(siteData, "service_for_site", resourceType, mode)
 	state.ServiceForSiteRefType = utils.MapStringWithMode(siteData, "service_for_site_ref_type_", resourceType, mode)
 	state.SpanningTreeType = utils.MapStringWithMode(siteData, "spanning_tree_type", resourceType, mode)
@@ -1197,7 +1215,7 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 	}
 
 	nullifier.NullifyStrings(
-		"site_type",
+		"site_type", "plane_count",
 		"service_for_site", "service_for_site_ref_type_",
 		"spanning_tree_type", "region_name",
 		"domain_for_site", "domain_for_site_ref_type_",
@@ -1211,7 +1229,7 @@ func (r *veritySiteResource) ModifyPlan(ctx context.Context, req resource.Modify
 	)
 
 	nullifier.NullifyBools(
-		"su_support", "allow_all_underlay_connections",
+		"su_support", "server_management", "allow_all_underlay_connections",
 		"enable", "force_spanning_tree_on_fabric_ports",
 		"read_only_mode", "enable_dscp", "aggressive_reporting",
 		"multi_tenant", "pause_validation_alarms",

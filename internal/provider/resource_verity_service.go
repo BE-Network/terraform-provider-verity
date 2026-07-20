@@ -53,6 +53,7 @@ type verityServiceResourceModel struct {
 	TenantRefType                               types.String                         `tfsdk:"tenant_ref_type_"`
 	DhcpServerIpv4                              types.String                         `tfsdk:"dhcp_server_ipv4"`
 	DhcpServerIpv6                              types.String                         `tfsdk:"dhcp_server_ipv6"`
+	IpAttachHostAdvertise                       types.Int64                          `tfsdk:"ip_attach_host_advertise"`
 	Mtu                                         types.Int64                          `tfsdk:"mtu"`
 	AnycastIpv4Mask                             types.String                         `tfsdk:"anycast_ipv4_mask"`
 	AnycastIpv6Mask                             types.String                         `tfsdk:"anycast_ipv6_mask"`
@@ -147,6 +148,11 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 			},
 			"dhcp_server_ipv6": schema.StringAttribute{
 				Description: "IPv6 address(s) of the DHCP server for service. May have up to four separated by commas.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ip_attach_host_advertise": schema.Int64Attribute{
+				Description: "IP Attach Host Advertise",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -337,6 +343,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "Vlan", APIField: &serviceReq.Vlan, TFValue: config.Vlan, IsConfigured: configuredAttrs.IsConfigured("vlan")},
 		{FieldName: "Mtu", APIField: &serviceReq.Mtu, TFValue: config.Mtu, IsConfigured: configuredAttrs.IsConfigured("mtu")},
+		{FieldName: "IpAttachHostAdvertise", APIField: &serviceReq.IpAttachHostAdvertise, TFValue: config.IpAttachHostAdvertise, IsConfigured: configuredAttrs.IsConfigured("ip_attach_host_advertise")},
 		{FieldName: "MaxUpstreamRateMbps", APIField: &serviceReq.MaxUpstreamRateMbps, TFValue: config.MaxUpstreamRateMbps, IsConfigured: configuredAttrs.IsConfigured("max_upstream_rate_mbps")},
 		{FieldName: "MaxDownstreamRateMbps", APIField: &serviceReq.MaxDownstreamRateMbps, TFValue: config.MaxDownstreamRateMbps, IsConfigured: configuredAttrs.IsConfigured("max_downstream_rate_mbps")},
 		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: config.MstInstance, IsConfigured: configuredAttrs.IsConfigured("mst_instance")},
@@ -587,6 +594,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.Mtu, state.Mtu, configuredAttrs.IsConfigured("mtu"), func(v *openapi.NullableInt32) { serviceReq.Mtu = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.IpAttachHostAdvertise, state.IpAttachHostAdvertise, configuredAttrs.IsConfigured("ip_attach_host_advertise"), func(v *openapi.NullableInt32) { serviceReq.IpAttachHostAdvertise = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, configuredAttrs.IsConfigured("max_upstream_rate_mbps"), func(v *openapi.NullableInt32) { serviceReq.MaxUpstreamRateMbps = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, configuredAttrs.IsConfigured("max_downstream_rate_mbps"), func(v *openapi.NullableInt32) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MstInstance, state.MstInstance, configuredAttrs.IsConfigured("mst_instance"), func(v *openapi.NullableInt32) { serviceReq.MstInstance = *v }, &hasChanges)
@@ -776,6 +784,7 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	state.Vlan = utils.MapInt64WithMode(serviceData, "vlan", resourceType, mode)
 	state.Vni = utils.MapInt64WithMode(serviceData, "vni", resourceType, mode)
 	state.Mtu = utils.MapInt64WithMode(serviceData, "mtu", resourceType, mode)
+	state.IpAttachHostAdvertise = utils.MapInt64WithMode(serviceData, "ip_attach_host_advertise", resourceType, mode)
 	state.MaxUpstreamRateMbps = utils.MapInt64WithMode(serviceData, "max_upstream_rate_mbps", resourceType, mode)
 	state.MaxDownstreamRateMbps = utils.MapInt64WithMode(serviceData, "max_downstream_rate_mbps", resourceType, mode)
 	state.MstInstance = utils.MapInt64WithMode(serviceData, "mst_instance", resourceType, mode)
@@ -869,7 +878,7 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 	)
 
 	nullifier.NullifyInt64s(
-		"vlan", "vni", "mtu",
+		"vlan", "vni", "mtu", "ip_attach_host_advertise",
 		"max_upstream_rate_mbps", "max_downstream_rate_mbps",
 		"mst_instance",
 	)
@@ -922,6 +931,7 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		Int64Fields: []utils.NullableInt64Field{
 			{AttrName: "vlan", ConfigVal: config.Vlan, StateVal: state.Vlan},
 			{AttrName: "mtu", ConfigVal: config.Mtu, StateVal: state.Mtu},
+			{AttrName: "ip_attach_host_advertise", ConfigVal: config.IpAttachHostAdvertise, StateVal: state.IpAttachHostAdvertise},
 			{AttrName: "max_upstream_rate_mbps", ConfigVal: config.MaxUpstreamRateMbps, StateVal: state.MaxUpstreamRateMbps},
 			{AttrName: "max_downstream_rate_mbps", ConfigVal: config.MaxDownstreamRateMbps, StateVal: state.MaxDownstreamRateMbps},
 			{AttrName: "mst_instance", ConfigVal: config.MstInstance, StateVal: state.MstInstance},

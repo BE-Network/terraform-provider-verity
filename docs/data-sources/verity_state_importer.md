@@ -21,6 +21,7 @@ data "verity_state_importer" "import" {
 The importer writes multiple `.tf` files into the output directory. The importer always writes `stages.tf` and then may write any of the following files:
 
 - `deviceaaaprofiles.tf`
+- `ldapprofiles.tf`
 - `acls_ipv4.tf`
 - `acls_ipv6.tf`
 - `aspathaccesslists.tf`

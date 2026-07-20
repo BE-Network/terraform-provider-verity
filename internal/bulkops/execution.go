@@ -653,6 +653,7 @@ func (m *Manager) ExecuteAllPendingOperations(ctx context.Context) diag.Diagnost
 			m.clearCacheFunc(ctx, m.contextProvider(), "gateways")
 			m.clearCacheFunc(ctx, m.contextProvider(), "gateway_profiles")
 			m.clearCacheFunc(ctx, m.contextProvider(), "device_aaa_profiles")
+			m.clearCacheFunc(ctx, m.contextProvider(), "ldap_profiles")
 			m.clearCacheFunc(ctx, m.contextProvider(), "services")
 			m.clearCacheFunc(ctx, m.contextProvider(), "packet_queues")
 			m.clearCacheFunc(ctx, m.contextProvider(), "tacacs_profiles")
@@ -861,6 +862,9 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("PUT", m.getOperationCount("tacacs_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "PUT") }, "TACACS Profile") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("PUT", m.getOperationCount("ldap_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "ldap_profile", "PUT") }, "LDAP Profile") {
+		return diagnostics, operationsPerformed
+	}
 	// 19. packet_broker
 	if !execute("PUT", m.getOperationCount("packet_broker", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "packet_broker", "PUT") }, "Packet Broker") {
 		return diagnostics, operationsPerformed
@@ -1028,6 +1032,9 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	}
 	// 18. tacacs_profile
 	if !execute("PATCH", m.getOperationCount("tacacs_profile", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "PATCH") }, "TACACS Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", m.getOperationCount("ldap_profile", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "ldap_profile", "PATCH") }, "LDAP Profile") {
 		return diagnostics, operationsPerformed
 	}
 	// 19. packet_broker
@@ -1283,6 +1290,9 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	if !execute("DELETE", m.getOperationCount("packet_broker", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "packet_broker", "DELETE") }, "Packet Broker") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("DELETE", m.getOperationCount("ldap_profile", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "ldap_profile", "DELETE") }, "LDAP Profile") {
+		return diagnostics, operationsPerformed
+	}
 	// 18. tacacs_profile
 	if !execute("DELETE", m.getOperationCount("tacacs_profile", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "DELETE") }, "TACACS Profile") {
 		return diagnostics, operationsPerformed
@@ -1385,6 +1395,9 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 	}
 	// 3. tacacs_profile
 	if !execute("PUT", m.getOperationCount("tacacs_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "PUT") }, "TACACS Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PUT", m.getOperationCount("ldap_profile", "PUT"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "ldap_profile", "PUT") }, "LDAP Profile") {
 		return diagnostics, operationsPerformed
 	}
 	// 4-5. acl (both ipv4 and ipv6)
@@ -1500,6 +1513,9 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 	}
 	// 3. tacacs_profile
 	if !execute("PATCH", m.getOperationCount("tacacs_profile", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "PATCH") }, "TACACS Profile") {
+		return diagnostics, operationsPerformed
+	}
+	if !execute("PATCH", m.getOperationCount("ldap_profile", "PATCH"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "ldap_profile", "PATCH") }, "LDAP Profile") {
 		return diagnostics, operationsPerformed
 	}
 	// 4-5. acl (both ipv4 and ipv6)
@@ -1717,6 +1733,9 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 	if !execute("DELETE", m.getOperationCount("acl", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "acl", "DELETE") }, "ACL") {
 		return diagnostics, operationsPerformed
 	}
+	if !execute("DELETE", m.getOperationCount("ldap_profile", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "ldap_profile", "DELETE") }, "LDAP Profile") {
+		return diagnostics, operationsPerformed
+	}
 	// 3. tacacs_profile
 	if !execute("DELETE", m.getOperationCount("tacacs_profile", "DELETE"), func(ctx context.Context) diag.Diagnostics { return m.ExecuteBulk(ctx, "tacacs_profile", "DELETE") }, "TACACS Profile") {
 		return diagnostics, operationsPerformed
@@ -1779,6 +1798,10 @@ func (m *Manager) ExecuteIfMultipleOperations(ctx context.Context) diag.Diagnost
 	deviceAaaProfilePutCount := m.getOperationCountLocked("device_aaa_profile", "PUT")
 	deviceAaaProfilePatchCount := m.getOperationCountLocked("device_aaa_profile", "PATCH")
 	deviceAaaProfileDeleteCount := m.getOperationCountLocked("device_aaa_profile", "DELETE")
+
+	ldapProfilePutCount := m.getOperationCountLocked("ldap_profile", "PUT")
+	ldapProfilePatchCount := m.getOperationCountLocked("ldap_profile", "PATCH")
+	ldapProfileDeleteCount := m.getOperationCountLocked("ldap_profile", "DELETE")
 
 	ethPortProfilePutCount := m.getOperationCountLocked("eth_port_profile", "PUT")
 	ethPortProfilePatchCount := m.getOperationCountLocked("eth_port_profile", "PATCH")
@@ -2006,6 +2029,9 @@ func (m *Manager) ExecuteIfMultipleOperations(ctx context.Context) diag.Diagnost
 			"device_aaa_profile_put_count":          deviceAaaProfilePutCount,
 			"device_aaa_profile_patch_count":        deviceAaaProfilePatchCount,
 			"device_aaa_profile_delete_count":       deviceAaaProfileDeleteCount,
+			"ldap_profile_put_count":                ldapProfilePutCount,
+			"ldap_profile_patch_count":              ldapProfilePatchCount,
+			"ldap_profile_delete_count":             ldapProfileDeleteCount,
 			"eth_port_profile_put_count":            ethPortProfilePutCount,
 			"eth_port_profile_patch_count":          ethPortProfilePatchCount,
 			"eth_port_profile_delete_count":         ethPortProfileDeleteCount,

@@ -391,6 +391,7 @@ func getAllResources() []func() resource.Resource {
 		NewVerityLagResource,
 		NewVerityGatewayProfileResource,
 		NewVerityAaaProfileResource,
+		NewVerityLdapProfileResource,
 		NewVerityACLV4Resource,
 		NewVerityACLV6Resource,
 		NewVerityBadgeResource,

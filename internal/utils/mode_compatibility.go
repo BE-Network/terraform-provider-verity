@@ -65,6 +65,7 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_badge":                    ResourceModeBoth,
 	"verity_bundle":                   ResourceModeBoth,
 	"verity_aaa_profile":              ResourceModeBoth,
+	"verity_ldap_profile":             ResourceModeBoth,
 	"verity_device_settings":          ResourceModeBoth,
 	"verity_diagnostics_port_profile": ResourceModeBoth,
 	"verity_diagnostics_profile":      ResourceModeBoth,
@@ -123,14 +124,11 @@ func FilterResourcesByMode(
 
 	for _, constructorFn := range resources {
 		instance := constructorFn()
+		metadataResponse := resource.MetadataResponse{}
+		instance.Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "verity"}, &metadataResponse)
 
-		for resourceType := range ResourceCompatibility {
-			baseName := strings.TrimPrefix(resourceType, "verity_")
-			constructorName := fmt.Sprintf("%T", instance)
-			if strings.Contains(strings.ToLower(constructorName), strings.ToLower(baseName)) {
-				resourceTypeToConstructor[resourceType] = constructorFn
-				break
-			}
+		if _, isModeControlled := ResourceCompatibility[metadataResponse.TypeName]; isModeControlled {
+			resourceTypeToConstructor[metadataResponse.TypeName] = constructorFn
 		}
 	}
 

@@ -11,6 +11,8 @@ resource "verity_aaa_profile" "example" {
   fail_through = true
   tacacs_profile = "example-tacacs"
   tacacs_profile_ref_type_ = "tacacs_profile"
+  ldap_profile = "example-ldap"
+  ldap_profile_ref_type_ = "ldap_profile"
 
   login_default {
     index = 1
@@ -27,6 +29,8 @@ resource "verity_aaa_profile" "example" {
 * `fail_through` (Boolean) - When enabled, authentication continues to access each server in the method list if an authentication request fails on one server.
 * `tacacs_profile` (String) - TACACS+ profile for authentication.
 * `tacacs_profile_ref_type_` (String) - Object type for `tacacs_profile` field.
+* `ldap_profile` (String) - LDAP profile for authentication.
+* `ldap_profile_ref_type_` (String) - Object type for `ldap_profile` field.
 * `login_default` (Array) -
   * `enabled` (Boolean) - Enable this login method.
   * `login_method` (String) - Authentication method for remote access (SSH, etc.).

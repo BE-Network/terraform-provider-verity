@@ -102,6 +102,7 @@ The provider supports the following resource types:
 - `verity_ipv6_list`
 - `verity_ipv6_prefix_list`
 - `verity_lag`
+- `verity_ldap_profile`
 - `verity_mac_filter`
 - `verity_operation_stage`
 - `verity_packet_broker`
@@ -151,6 +152,7 @@ The state importer workflow:
 ### Generated Files
 The importer generates the following Terraform resource files:
 - `deviceaaaprofiles.tf`
+- `ldapprofiles.tf`
 - `acls_ipv4.tf`
 - `acls_ipv6.tf`
 - `aspathaccesslists.tf`

@@ -243,6 +243,21 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					}
 					return result.TacacsProfile, nil
 
+				case "ldap_profile":
+					resp, err := m.client.LDAPProfilesAPI.LdapprofilesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						LdapProfile map[string]interface{} `json:"ldap_profile"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.LdapProfile, nil
+
 				case "eth_port_profile":
 					resp, err := m.client.EthPortProfilesAPI.EthportprofilesGet(apiCtx).Execute()
 					if err != nil {
@@ -928,6 +943,14 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 				profileMap[name] = props.(openapi.TacacsprofilesPutRequestTacacsProfileValue)
 			}
 			putRequest.SetTacacsProfile(profileMap)
+			return putRequest
+		case "ldap_profile":
+			putRequest := openapi.NewLdapprofilesPutRequest()
+			profileMap := make(map[string]openapi.LdapprofilesPutRequestLdapProfileValue)
+			for name, props := range filteredData {
+				profileMap[name] = props.(openapi.LdapprofilesPutRequestLdapProfileValue)
+			}
+			putRequest.SetLdapProfile(profileMap)
 			return putRequest
 		case "eth_port_profile":
 			putRequest := openapi.NewEthportprofilesPutRequest()

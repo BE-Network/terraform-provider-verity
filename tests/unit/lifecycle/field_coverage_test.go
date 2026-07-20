@@ -74,6 +74,22 @@ var allResourceTests = []ResourceCoverageEntry{
 		ResourceName:  "cov_service",
 	},
 	{
+		TerraformType: "verity_aaa_profile",
+		Factory:       provider.NewVerityAaaProfileResource,
+		APIPath:       "/api/deviceaaaprofiles",
+		WrapperKey:    "device_aaa_profile",
+		Mode:          "datacenter",
+		ResourceName:  "cov_aaa",
+	},
+	{
+		TerraformType: "verity_ldap_profile",
+		Factory:       provider.NewVerityLdapProfileResource,
+		APIPath:       "/api/ldapprofiles",
+		WrapperKey:    "ldap_profile",
+		Mode:          "datacenter",
+		ResourceName:  "cov_ldap",
+	},
+	{
 		TerraformType: "verity_site",
 		Factory:       provider.NewVeritySiteResource,
 		APIPath:       "/api/sites",

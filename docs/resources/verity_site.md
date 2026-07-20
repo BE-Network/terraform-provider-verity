@@ -8,6 +8,8 @@
 resource "verity_site" "example" {
   name = "example"
   enable = true
+  plane_count = "1"
+  server_management = true
   site_type = "enterprise"
   service_for_site = "Management"
   service_for_site_ref_type_ = "service"
@@ -78,7 +80,9 @@ resource "verity_site" "example" {
 
 * `name` (String) - Object Name. Must be unique.
 * `enable` (Boolean) - Enable object.
+* `plane_count` (String) - Number of planes in this Fabric.
 * `su_support` (Boolean) - Support grouping leaf switches in SUs.
+* `server_management` (Boolean) - Support managing servers.
 * `allow_all_underlay_connections` (Boolean) - Allows underlay connections between PODs.
 * `site_type` (String) - Type of Fabric.
 * `service_for_site` (String) - Service for Site.

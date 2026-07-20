@@ -140,6 +140,26 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.DeviceAAAProfilesAPI.DeviceaaaprofilesGet(ctx).Execute()
 		},
 	},
+	"ldap_profile": {
+		ResourceType:     "ldap_profile",
+		PutRequestType:   reflect.TypeOf(openapi.LdapprofilesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.LdapprofilesPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "ldap_profile"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.LDAPProfilesAPI.LdapprofilesPut(ctx).LdapprofilesPutRequest(*req.(*openapi.LdapprofilesPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.LDAPProfilesAPI.LdapprofilesPatch(ctx).LdapprofilesPutRequest(*req.(*openapi.LdapprofilesPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.LDAPProfilesAPI.LdapprofilesDelete(ctx).LdapProfileName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.LDAPProfilesAPI.LdapprofilesGet(ctx).Execute()
+		},
+	},
 	"tacacs_profile": {
 		ResourceType:     "tacacs_profile",
 		PutRequestType:   reflect.TypeOf(openapi.TacacsprofilesPutRequest{}),

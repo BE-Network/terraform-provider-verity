@@ -178,6 +178,7 @@ func createImportBlocks(ctx context.Context, dirPath string, mode string) (strin
 	supportedResources := map[string]struct{}{
 		"verity_service":                  {},
 		"verity_aaa_profile":              {},
+		"verity_ldap_profile":             {},
 		"verity_eth_port_profile":         {},
 		"verity_authenticated_eth_port":   {},
 		"verity_device_voice_settings":    {},
