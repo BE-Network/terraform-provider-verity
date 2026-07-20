@@ -41,7 +41,9 @@ resource "verity_switchpoint" "example" {
   bgp_as_number_auto_assigned_ = false
   is_fabric = false
   controller_ip_and_mask = "10.10.10.10"
+  controller_ip_and_mask_auto_assigned_ = false
   switch_ip_and_mask = "10.10.10.11"
+  switch_ip_and_mask_auto_assigned_ = false
   
   badges {
     badge = "badge1"
@@ -139,8 +141,10 @@ resource "verity_switchpoint" "example" {
 * `bb_switch` (Boolean) - Expose fields for Device Management
 * `ip_source` (String) - IP Source
 * `controller_ip_and_mask` (String) - Controller IP and Mask
+* `controller_ip_and_mask_auto_assigned_` (Boolean) - Whether Controller IP and Mask is auto-assigned
 * `gateway` (String) - Gateway
 * `switch_ip_and_mask` (String) - Switch IP and Mask
+* `switch_ip_and_mask_auto_assigned_` (Boolean) - Whether Switch IP and Mask is auto-assigned
 * `switch_gateway` (String) - Gateway of Managed Device
 * `comm_type` (String) - Comm Type
 * `snmp_community_string` (String) - Comm Credentials

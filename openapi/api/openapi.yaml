@@ -9256,6 +9256,11 @@ components:
           description: Controller IP and Mask
           format: ipv4
           type: string
+        controller_ip_and_mask_auto_assigned_:
+          description: Whether or not the value in controller_ip_and_mask field has
+            been automatically assigned or not. Set to false and change controller_ip_and_mask
+            value to edit.
+          type: boolean
         gateway:
           default: ""
           description: Gateway
@@ -9266,6 +9271,11 @@ components:
           description: Switch IP and Mask
           format: ipv4
           type: string
+        switch_ip_and_mask_auto_assigned_:
+          description: Whether or not the value in switch_ip_and_mask field has been
+            automatically assigned or not. Set to false and change switch_ip_and_mask
+            value to edit.
+          type: boolean
         switch_gateway:
           default: ""
           description: Gateway of Managed Device
