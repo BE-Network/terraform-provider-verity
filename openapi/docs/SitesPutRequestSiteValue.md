@@ -6,7 +6,9 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
+**PlaneCount** | Pointer to **string** | Number of planes in this Fabric | [optional] [default to "1"]
 **SuSupport** | Pointer to **bool** | Support grouping leaf switches in SUs | [optional] [default to false]
+**ServerManagement** | Pointer to **bool** | Support managing servers | [optional] [default to true]
 **AllowAllUnderlayConnections** | Pointer to **bool** | Allows underlay connections between PODs | [optional] [default to false]
 **SiteType** | Pointer to **string** | Type of Fabric | [optional] [default to "enterprise"]
 **DuplicateAddressDetectionMaxNumberOfMoves** | Pointer to **NullableInt32** | Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank) | [optional] [default to 5]
@@ -135,6 +137,31 @@ SetEnable sets Enable field to given value.
 
 HasEnable returns a boolean if a field has been set.
 
+### GetPlaneCount
+
+`func (o *SitesPutRequestSiteValue) GetPlaneCount() string`
+
+GetPlaneCount returns the PlaneCount field if non-nil, zero value otherwise.
+
+### GetPlaneCountOk
+
+`func (o *SitesPutRequestSiteValue) GetPlaneCountOk() (*string, bool)`
+
+GetPlaneCountOk returns a tuple with the PlaneCount field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPlaneCount
+
+`func (o *SitesPutRequestSiteValue) SetPlaneCount(v string)`
+
+SetPlaneCount sets PlaneCount field to given value.
+
+### HasPlaneCount
+
+`func (o *SitesPutRequestSiteValue) HasPlaneCount() bool`
+
+HasPlaneCount returns a boolean if a field has been set.
+
 ### GetSuSupport
 
 `func (o *SitesPutRequestSiteValue) GetSuSupport() bool`
@@ -159,6 +186,31 @@ SetSuSupport sets SuSupport field to given value.
 `func (o *SitesPutRequestSiteValue) HasSuSupport() bool`
 
 HasSuSupport returns a boolean if a field has been set.
+
+### GetServerManagement
+
+`func (o *SitesPutRequestSiteValue) GetServerManagement() bool`
+
+GetServerManagement returns the ServerManagement field if non-nil, zero value otherwise.
+
+### GetServerManagementOk
+
+`func (o *SitesPutRequestSiteValue) GetServerManagementOk() (*bool, bool)`
+
+GetServerManagementOk returns a tuple with the ServerManagement field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetServerManagement
+
+`func (o *SitesPutRequestSiteValue) SetServerManagement(v bool)`
+
+SetServerManagement sets ServerManagement field to given value.
+
+### HasServerManagement
+
+`func (o *SitesPutRequestSiteValue) HasServerManagement() bool`
+
+HasServerManagement returns a boolean if a field has been set.
 
 ### GetAllowAllUnderlayConnections
 

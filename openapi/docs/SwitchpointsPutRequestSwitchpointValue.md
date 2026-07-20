@@ -55,7 +55,7 @@ Name | Type | Description | Notes
 **ZtpIdentification** | Pointer to **string** | Service Tag or Serial Number to identify device for Zero Touch Provisioning | [optional] [default to ""]
 **LocatedBy** | Pointer to **string** | Controls how the system locates this Device within its LAN | [optional] [default to "LLDP"]
 **PowerState** | Pointer to **string** | Power state of Switch Controller | [optional] [default to "on"]
-**CommunicationMode** | Pointer to **string** | Communication Mode | [optional] [default to "generic_snmp"]
+**CommunicationMode** | Pointer to **string** | Select the network operating system (NOS) type for this endpoint. | [optional] [default to "generic_snmp"]
 **CliAccessMode** | Pointer to **string** | CLI Access Mode | [optional] [default to "SSH"]
 **Username** | Pointer to **string** | Username | [optional] [default to ""]
 **Password** | Pointer to **string** | Password | [optional] [default to ""]

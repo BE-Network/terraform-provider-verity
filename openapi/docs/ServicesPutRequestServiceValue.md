@@ -17,6 +17,7 @@ Name | Type | Description | Notes
 **AnycastIpv6Mask** | Pointer to **string** | Comma separated list of Static anycast gateway addresses(IPv6) for service  | [optional] [default to ""]
 **DhcpServerIpv4** | Pointer to **string** | IPv4 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
 **DhcpServerIpv6** | Pointer to **string** | IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
+**IpAttachHostAdvertise** | Pointer to **NullableInt32** | IP Attach Host Advertise | [optional] 
 **Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] 
 **ObjectProperties** | Pointer to [**ServicesPutRequestServiceValueObjectProperties**](ServicesPutRequestServiceValueObjectProperties.md) |  | [optional] 
 **MaxUpstreamRateMbps** | Pointer to **NullableInt32** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
@@ -398,6 +399,41 @@ SetDhcpServerIpv6 sets DhcpServerIpv6 field to given value.
 
 HasDhcpServerIpv6 returns a boolean if a field has been set.
 
+### GetIpAttachHostAdvertise
+
+`func (o *ServicesPutRequestServiceValue) GetIpAttachHostAdvertise() int32`
+
+GetIpAttachHostAdvertise returns the IpAttachHostAdvertise field if non-nil, zero value otherwise.
+
+### GetIpAttachHostAdvertiseOk
+
+`func (o *ServicesPutRequestServiceValue) GetIpAttachHostAdvertiseOk() (*int32, bool)`
+
+GetIpAttachHostAdvertiseOk returns a tuple with the IpAttachHostAdvertise field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIpAttachHostAdvertise
+
+`func (o *ServicesPutRequestServiceValue) SetIpAttachHostAdvertise(v int32)`
+
+SetIpAttachHostAdvertise sets IpAttachHostAdvertise field to given value.
+
+### HasIpAttachHostAdvertise
+
+`func (o *ServicesPutRequestServiceValue) HasIpAttachHostAdvertise() bool`
+
+HasIpAttachHostAdvertise returns a boolean if a field has been set.
+
+### SetIpAttachHostAdvertiseNil
+
+`func (o *ServicesPutRequestServiceValue) SetIpAttachHostAdvertiseNil(b bool)`
+
+ SetIpAttachHostAdvertiseNil sets the value for IpAttachHostAdvertise to be an explicit nil
+
+### UnsetIpAttachHostAdvertise
+`func (o *ServicesPutRequestServiceValue) UnsetIpAttachHostAdvertise()`
+
+UnsetIpAttachHostAdvertise ensures that no value is present for IpAttachHostAdvertise, not even an explicit nil
 ### GetMtu
 
 `func (o *ServicesPutRequestServiceValue) GetMtu() int32`
