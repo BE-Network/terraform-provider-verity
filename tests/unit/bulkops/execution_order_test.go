@@ -103,8 +103,6 @@ var campusPutOrder = []string{
 	"ipv4_list",
 	"ipv6_list",
 	"acl",
-	"pb_routing_acl",
-	"pb_routing",
 	"port_acl",
 	"service",
 	"eth_port_profile",
@@ -250,6 +248,8 @@ func zeroPutValue(resourceType string) interface{} {
 		return *openapi.NewServiceportprofilesPutRequestServicePortProfileValue()
 	case "switchpoint":
 		return *openapi.NewSwitchpointsPutRequestSwitchpointValue()
+	case "site":
+		return *openapi.NewSitesPutRequestSiteValue()
 	case "voice_port_profile":
 		return *openapi.NewVoiceportprofilesPutRequestVoicePortProfilesValue()
 	case "pod":
