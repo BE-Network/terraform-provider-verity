@@ -2,9 +2,15 @@ name: Security Baseline
 
 on:
   pull_request:
+    branches:
+      - main
+      - 'release/**'
+      - 'dev/**'
   push:
     branches:
       - main
+      - 'release/**'
+      - 'dev/**'
   workflow_dispatch:
 
 permissions:
