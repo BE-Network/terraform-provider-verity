@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **Port** | Pointer to **NullableInt32** | Server port (overrides global default port) | [optional] 
 **UseType** | Pointer to **string** | Which LDAP client(s) use this server | [optional] [default to "all"]
 **Priority** | Pointer to **NullableInt32** | Server priority (1-99, lower &#x3D; higher priority) | [optional] 
-**SslTlsMode** | Pointer to **string** | Per-server TLS mode (overrides global setting) | [optional] [default to ""]
+**SslTlsMode** | Pointer to **string** | Per-server TLS mode (overrides global setting) | [optional] [default to "off"]
 **RetransmitAttempts** | Pointer to **NullableInt32** | Per-server retransmit attempts (0-10) | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 

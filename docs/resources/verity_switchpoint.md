@@ -17,7 +17,7 @@ resource "verity_switchpoint" "example" {
   read_only_mode = false
   locked = false
   expected_site = "dc-fabric"
-  expected_site_ref_type_ = "site"
+  expected_site_ref_type_ = "fabric"
   out_of_band_management = true
   type = "leaf"
   plane = "plane-a"
@@ -30,7 +30,9 @@ resource "verity_switchpoint" "example" {
   su_ref_type_ = "su"
   ssp_group = "ssp-a"
   ssp_group_ref_type_ = "superspine_group"
-  rack = "A1"
+  rack_info = "A1"
+  rack = "rack-a"
+  rack_ref_type_ = "rack"
   position = 0
   rail_group = 0
   switch_router_id_ip_mask = "192.168.1.1"
@@ -128,7 +130,9 @@ resource "verity_switchpoint" "example" {
 * `su_ref_type_` (String) - Object type for su field
 * `ssp_group` (String) - SuperSpine Group - grouping of superspines in 3-tier config
 * `ssp_group_ref_type_` (String) - Object type for ssp_group field
-* `rack` (String) - Physical Rack location of the Switch
+* `rack_info` (String) - Physical Rack location of the Switch
+* `rack` (String) - Rack
+* `rack_ref_type_` (String) - Object type for rack field
 * `position` (Number) - Position of the Switch
 * `rail_group` (Number) - Rail Group the Switch is part of
 * `switch_router_id_ip_mask` (String) - Switch BGP Router Identifier

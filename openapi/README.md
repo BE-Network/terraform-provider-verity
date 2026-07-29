@@ -129,6 +129,10 @@ Class | Method | HTTP request | Description
 *ExtendedCommunityListsAPI* | [**ExtendedcommunitylistsGet**](docs/ExtendedCommunityListsAPI.md#extendedcommunitylistsget) | **Get** /extendedcommunitylists | Get all Extended Community Lists
 *ExtendedCommunityListsAPI* | [**ExtendedcommunitylistsPatch**](docs/ExtendedCommunityListsAPI.md#extendedcommunitylistspatch) | **Patch** /extendedcommunitylists | Update Extended Community List
 *ExtendedCommunityListsAPI* | [**ExtendedcommunitylistsPut**](docs/ExtendedCommunityListsAPI.md#extendedcommunitylistsput) | **Put** /extendedcommunitylists | Create Extended Community List
+*FabricsAPI* | [**FabricsDelete**](docs/FabricsAPI.md#fabricsdelete) | **Delete** /fabrics | Delete Fabric
+*FabricsAPI* | [**FabricsGet**](docs/FabricsAPI.md#fabricsget) | **Get** /fabrics | Get all Fabrics
+*FabricsAPI* | [**FabricsPatch**](docs/FabricsAPI.md#fabricspatch) | **Patch** /fabrics | Update Fabric
+*FabricsAPI* | [**FabricsPut**](docs/FabricsAPI.md#fabricsput) | **Put** /fabrics | Create Fabric
 *GatewayProfilesAPI* | [**GatewayprofilesDelete**](docs/GatewayProfilesAPI.md#gatewayprofilesdelete) | **Delete** /gatewayprofiles | Delete Gateway Profile
 *GatewayProfilesAPI* | [**GatewayprofilesGet**](docs/GatewayProfilesAPI.md#gatewayprofilesget) | **Get** /gatewayprofiles | Get all Gateway Profiles
 *GatewayProfilesAPI* | [**GatewayprofilesPatch**](docs/GatewayProfilesAPI.md#gatewayprofilespatch) | **Patch** /gatewayprofiles | Update Gateway Profile
@@ -187,6 +191,10 @@ Class | Method | HTTP request | Description
 *PacketQueuesAPI* | [**PacketqueuesGet**](docs/PacketQueuesAPI.md#packetqueuesget) | **Get** /packetqueues | Get all Packet Queues
 *PacketQueuesAPI* | [**PacketqueuesPatch**](docs/PacketQueuesAPI.md#packetqueuespatch) | **Patch** /packetqueues | Update Packet Queue
 *PacketQueuesAPI* | [**PacketqueuesPut**](docs/PacketQueuesAPI.md#packetqueuesput) | **Put** /packetqueues | Create Packet Queue
+*PlanesAPI* | [**PlanesDelete**](docs/PlanesAPI.md#planesdelete) | **Delete** /planes | Delete plane
+*PlanesAPI* | [**PlanesGet**](docs/PlanesAPI.md#planesget) | **Get** /planes | Get all planes
+*PlanesAPI* | [**PlanesPatch**](docs/PlanesAPI.md#planespatch) | **Patch** /planes | Update plane
+*PlanesAPI* | [**PlanesPut**](docs/PlanesAPI.md#planesput) | **Put** /planes | Create plane
 *PodsAPI* | [**PodsDelete**](docs/PodsAPI.md#podsdelete) | **Delete** /pods | Delete Pod
 *PodsAPI* | [**PodsGet**](docs/PodsAPI.md#podsget) | **Get** /pods | Get all Pods
 *PodsAPI* | [**PodsPatch**](docs/PodsAPI.md#podspatch) | **Patch** /pods | Update Pod
@@ -195,6 +203,10 @@ Class | Method | HTTP request | Description
 *PortACLsAPI* | [**PortaclsGet**](docs/PortACLsAPI.md#portaclsget) | **Get** /portacls | Get all Port ACLs
 *PortACLsAPI* | [**PortaclsPatch**](docs/PortACLsAPI.md#portaclspatch) | **Patch** /portacls | Update Port ACL
 *PortACLsAPI* | [**PortaclsPut**](docs/PortACLsAPI.md#portaclsput) | **Put** /portacls | Create Port ACL
+*RacksAPI* | [**RacksDelete**](docs/RacksAPI.md#racksdelete) | **Delete** /racks | Delete rack
+*RacksAPI* | [**RacksGet**](docs/RacksAPI.md#racksget) | **Get** /racks | Get all racks
+*RacksAPI* | [**RacksPatch**](docs/RacksAPI.md#rackspatch) | **Patch** /racks | Update rack
+*RacksAPI* | [**RacksPut**](docs/RacksAPI.md#racksput) | **Put** /racks | Create rack
 *RouteMapClausesAPI* | [**RoutemapclausesDelete**](docs/RouteMapClausesAPI.md#routemapclausesdelete) | **Delete** /routemapclauses | Delete Route Map Clause
 *RouteMapClausesAPI* | [**RoutemapclausesGet**](docs/RouteMapClausesAPI.md#routemapclausesget) | **Get** /routemapclauses | Get all Route Map Clauses
 *RouteMapClausesAPI* | [**RoutemapclausesPatch**](docs/RouteMapClausesAPI.md#routemapclausespatch) | **Patch** /routemapclauses | Update Route Map Clause
@@ -221,10 +233,6 @@ Class | Method | HTTP request | Description
 *ServicesAPI* | [**ServicesGet**](docs/ServicesAPI.md#servicesget) | **Get** /services | Get all services
 *ServicesAPI* | [**ServicesPatch**](docs/ServicesAPI.md#servicespatch) | **Patch** /services | Update a service
 *ServicesAPI* | [**ServicesPut**](docs/ServicesAPI.md#servicesput) | **Put** /services | Create service
-*SitesAPI* | [**SitesDelete**](docs/SitesAPI.md#sitesdelete) | **Delete** /sites | Delete Site
-*SitesAPI* | [**SitesGet**](docs/SitesAPI.md#sitesget) | **Get** /sites | Get all Sites
-*SitesAPI* | [**SitesPatch**](docs/SitesAPI.md#sitespatch) | **Patch** /sites | Update Site
-*SitesAPI* | [**SitesPut**](docs/SitesAPI.md#sitesput) | **Put** /sites | Create Site
 *SpinePlanesAPI* | [**SpineplanesDelete**](docs/SpinePlanesAPI.md#spineplanesdelete) | **Delete** /spineplanes | Delete Spine Plane
 *SpinePlanesAPI* | [**SpineplanesGet**](docs/SpinePlanesAPI.md#spineplanesget) | **Get** /spineplanes | Get all Spine Planes
 *SpinePlanesAPI* | [**SpineplanesPatch**](docs/SpinePlanesAPI.md#spineplanespatch) | **Patch** /spineplanes | Update Spine Plane
@@ -319,6 +327,10 @@ Class | Method | HTTP request | Description
  - [ExtendedcommunitylistsPutRequest](docs/ExtendedcommunitylistsPutRequest.md)
  - [ExtendedcommunitylistsPutRequestExtendedCommunityListValue](docs/ExtendedcommunitylistsPutRequestExtendedCommunityListValue.md)
  - [ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner](docs/ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner.md)
+ - [FabricsPutRequest](docs/FabricsPutRequest.md)
+ - [FabricsPutRequestFabricValue](docs/FabricsPutRequestFabricValue.md)
+ - [FabricsPutRequestFabricValueObjectProperties](docs/FabricsPutRequestFabricValueObjectProperties.md)
+ - [FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner](docs/FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner.md)
  - [GatewayprofilesPutRequest](docs/GatewayprofilesPutRequest.md)
  - [GatewayprofilesPutRequestGatewayProfileValue](docs/GatewayprofilesPutRequestGatewayProfileValue.md)
  - [GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner](docs/GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md)
@@ -364,6 +376,8 @@ Class | Method | HTTP request | Description
  - [PacketqueuesPutRequestPacketQueueValueQueueInner](docs/PacketqueuesPutRequestPacketQueueValueQueueInner.md)
  - [PairsPutRequest](docs/PairsPutRequest.md)
  - [PairsPutRequestSwitchPairValue](docs/PairsPutRequestSwitchPairValue.md)
+ - [PlanesPutRequest](docs/PlanesPutRequest.md)
+ - [PlanesPutRequestPlaneValue](docs/PlanesPutRequestPlaneValue.md)
  - [PodsPutRequest](docs/PodsPutRequest.md)
  - [PodsPutRequestPodValue](docs/PodsPutRequestPodValue.md)
  - [PolicybasedroutingPutRequest](docs/PolicybasedroutingPutRequest.md)
@@ -375,6 +389,8 @@ Class | Method | HTTP request | Description
  - [PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner](docs/PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner.md)
  - [PortaclsPutRequest](docs/PortaclsPutRequest.md)
  - [PortaclsPutRequestPortAclValue](docs/PortaclsPutRequestPortAclValue.md)
+ - [RacksPutRequest](docs/RacksPutRequest.md)
+ - [RacksPutRequestRackValue](docs/RacksPutRequestRackValue.md)
  - [RoutemapclausesPutRequest](docs/RoutemapclausesPutRequest.md)
  - [RoutemapclausesPutRequestRouteMapClauseValue](docs/RoutemapclausesPutRequestRouteMapClauseValue.md)
  - [RoutemapclausesPutRequestRouteMapClauseValueObjectProperties](docs/RoutemapclausesPutRequestRouteMapClauseValueObjectProperties.md)
@@ -393,10 +409,6 @@ Class | Method | HTTP request | Description
  - [SfpbreakoutsPatchRequest](docs/SfpbreakoutsPatchRequest.md)
  - [SfpbreakoutsPatchRequestSfpBreakoutsValue](docs/SfpbreakoutsPatchRequestSfpBreakoutsValue.md)
  - [SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner](docs/SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner.md)
- - [SitesPutRequest](docs/SitesPutRequest.md)
- - [SitesPutRequestSiteValue](docs/SitesPutRequestSiteValue.md)
- - [SitesPutRequestSiteValueObjectProperties](docs/SitesPutRequestSiteValueObjectProperties.md)
- - [SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner](docs/SitesPutRequestSiteValueObjectPropertiesSystemGraphsInner.md)
  - [SpineplanesPutRequest](docs/SpineplanesPutRequest.md)
  - [SpineplanesPutRequestSpinePlaneValue](docs/SpineplanesPutRequestSpinePlaneValue.md)
  - [SspgroupsPutRequest](docs/SspgroupsPutRequest.md)

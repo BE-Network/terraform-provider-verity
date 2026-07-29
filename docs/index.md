@@ -119,7 +119,9 @@ The provider supports the following resource types:
 - `verity_sflow_collector`
 - `verity_sfp_breakout`
 - `verity_ssp_group`
-- `verity_site`
+- `verity_fabric`
+- `verity_plane`
+- `verity_rack`
 - `verity_spine_plane`
 - `verity_switchpoint`
 - `verity_su`
@@ -189,7 +191,9 @@ The importer generates the following Terraform resource files:
 - `serviceportprofiles.tf`
 - `sflowcollectors.tf`
 - `sfpbreakouts.tf`
-- `sites.tf`
+- `fabrics.tf`
+- `planes.tf`
+- `racks.tf`
 - `spineplanes.tf`
 - `sspgroups.tf`
 - `switchpoints.tf`
@@ -213,85 +217,6 @@ The import process creates a special `stages.tf` file that defines explicit depe
 4. Wait for all operations from the current type group to complete before allowing the next group to start
 
 Each imported resource is configured with the appropriate `depends_on` attribute referring to its corresponding stage. When a stage's `Create` is executed, it actively waits for its sibling resources to queue their operations, flushes them to the API, and only returns once all operations for that type group are complete. This guarantees sequential, ordered API execution regardless of Terraform's internal scheduling.
-
-Since API version 6.5, the provider supports two modes: **campus** and **datacenter**. Each mode has its own resource dependency ordering for creation and update operations:
-
-**Order for CAMPUS:**
-1. IPv4 Lists
-2. IPv6 Lists
-3. TACACS Profiles
-4. ACLs v4
-5. ACLs v6
-6. Port ACLs
-7. Services
-8. Mac Filters
-9. Eth Port Profiles
-10. SFlow Collectors
-11. Packet Queues
-12. Device AAA Profiles
-13. Service Port Profiles
-14. Diagnostics Port Profiles
-15. Device Voice Settings
-16. Authenticated Eth Ports
-17. Diagnostics Profiles
-18. Eth Port Settings
-19. Voice Port Profiles
-20. Device Settings
-21. Lags
-22. Bundles
-23. Badges
-24. Switchpoints
-25. Thresholds
-26. Grouping Rules
-27. Threshold Groups
-28. Pairs
-29. Sites
-
-**Order for DATACENTER:**
-1. SFP Breakouts
-2. IPv6 Prefix Lists
-3. Community Lists
-4. IPv4 Prefix Lists
-5. Extended Community Lists
-6. AS Path Access Lists
-7. Route Map Clauses
-8. ACLs (IPv6)
-9. ACLs (IPv4)
-10. Route Maps
-11. PB Routing ACL
-12. Tenants
-13. PB Routing
-14. IPv4 Lists
-15. IPv6 Lists
-16. Services
-17. Port ACLs
-18. TACACS Profiles
-19. Packet Broker
-20. Eth Port Profiles
-21. Packet Queues
-22. SFlow Collectors
-23. Gateways
-24. Device AAA Profiles
-25. Lags
-26. Eth Port Settings
-27. Diagnostics Profiles
-28. Gateway Profiles
-29. Device Settings
-30. Diagnostics Port Profiles
-31. Bundles
-32. Pods
-33. Badges
-34. SUs
-35. SS Groups
-36. Spine Planes
-37. Switchpoints
-38. Thresholds
-39. Grouping Rules
-40. Threshold Groups
-41. Pairs
-42. Sites
-
-For delete operations, the order is automatically reversed to ensure proper dependency handling when removing resources.
 
 #### Creating New Resources
 

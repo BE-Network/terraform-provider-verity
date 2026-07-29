@@ -45,7 +45,7 @@ type ServicesPutRequestServiceValue struct {
 	DhcpServerIpv4 *string `json:"dhcp_server_ipv4,omitempty"`
 	// IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas.
 	DhcpServerIpv6 *string `json:"dhcp_server_ipv6,omitempty"`
-	// IP Attach Host Advertise
+	// Converts IP addresses learned via ARP and ND into host routes and adds them to the routing table. Sets the administrative distance of the attached route (range 0-250).
 	IpAttachHostAdvertise NullableInt32 `json:"ip_attach_host_advertise,omitempty"`
 	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
 	Mtu NullableInt32 `json:"mtu,omitempty"`

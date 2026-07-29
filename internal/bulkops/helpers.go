@@ -612,20 +612,35 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					}
 					return result.SwitchPair, nil
 
-				case "site":
-					resp, err := m.client.SitesAPI.SitesGet(apiCtx).Execute()
+				case "fabric":
+					resp, err := m.client.FabricsAPI.FabricsGet(apiCtx).Execute()
 					if err != nil {
 						return nil, err
 					}
 					defer resp.Body.Close()
 
 					var result struct {
-						Site map[string]interface{} `json:"site"`
+						Fabric map[string]interface{} `json:"fabric"`
 					}
 					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 						return nil, err
 					}
-					return result.Site, nil
+					return result.Fabric, nil
+
+				case "plane":
+					resp, err := m.client.PlanesAPI.PlanesGet(apiCtx).Execute()
+					if err != nil {
+						return nil, err
+					}
+					defer resp.Body.Close()
+
+					var result struct {
+						Plane map[string]interface{} `json:"plane"`
+					}
+					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+						return nil, err
+					}
+					return result.Plane, nil
 
 				case "switchpoint":
 					resp, err := m.client.SwitchpointsAPI.SwitchpointsGet(apiCtx).Execute()
@@ -1105,13 +1120,29 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 			}
 			patchRequest.SetSfpBreakouts(sfpMap)
 			return patchRequest
-		case "site":
-			putRequest := openapi.NewSitesPutRequest()
-			siteMap := make(map[string]openapi.SitesPutRequestSiteValue)
+		case "fabric":
+			putRequest := openapi.NewFabricsPutRequest()
+			fabricMap := make(map[string]openapi.FabricsPutRequestFabricValue)
 			for name, props := range filteredData {
-				siteMap[name] = props.(openapi.SitesPutRequestSiteValue)
+				fabricMap[name] = props.(openapi.FabricsPutRequestFabricValue)
 			}
-			putRequest.SetSite(siteMap)
+			putRequest.SetFabric(fabricMap)
+			return putRequest
+		case "plane":
+			putRequest := openapi.NewPlanesPutRequest()
+			planeMap := make(map[string]openapi.PlanesPutRequestPlaneValue)
+			for name, props := range filteredData {
+				planeMap[name] = props.(openapi.PlanesPutRequestPlaneValue)
+			}
+			putRequest.SetPlane(planeMap)
+			return putRequest
+		case "rack":
+			putRequest := openapi.NewRacksPutRequest()
+			rackMap := make(map[string]openapi.RacksPutRequestRackValue)
+			for name, props := range filteredData {
+				rackMap[name] = props.(openapi.RacksPutRequestRackValue)
+			}
+			putRequest.SetRack(rackMap)
 			return putRequest
 		case "pair":
 			putRequest := openapi.NewPairsPutRequest()

@@ -28,7 +28,9 @@ Name | Type | Description | Notes
 **SuRefType** | Pointer to **string** | Object type for su field | [optional] 
 **SspGroup** | Pointer to **string** | SuperSpine Group - grouping of superspines in 3-tier config | [optional] [default to ""]
 **SspGroupRefType** | Pointer to **string** | Object type for ssp_group field | [optional] 
-**Rack** | Pointer to **string** | Physical Rack location of the Switch  | [optional] [default to ""]
+**RackInfo** | Pointer to **string** | Physical Rack location of the Switch  | [optional] [default to ""]
+**Rack** | Pointer to **string** | Rack | [optional] [default to ""]
+**RackRefType** | Pointer to **string** | Object type for rack field | [optional] 
 **Position** | Pointer to **NullableFloat32** | Position of the Switch | [optional] 
 **RailGroup** | Pointer to **NullableFloat32** | Rail Group the Switch is part of | [optional] 
 **SwitchRouterIdIpMask** | Pointer to **string** | Switch BGP Router Identifier | [optional] [default to "(auto)"]
@@ -705,6 +707,31 @@ SetSspGroupRefType sets SspGroupRefType field to given value.
 
 HasSspGroupRefType returns a boolean if a field has been set.
 
+### GetRackInfo
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetRackInfo() string`
+
+GetRackInfo returns the RackInfo field if non-nil, zero value otherwise.
+
+### GetRackInfoOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetRackInfoOk() (*string, bool)`
+
+GetRackInfoOk returns a tuple with the RackInfo field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRackInfo
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetRackInfo(v string)`
+
+SetRackInfo sets RackInfo field to given value.
+
+### HasRackInfo
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasRackInfo() bool`
+
+HasRackInfo returns a boolean if a field has been set.
+
 ### GetRack
 
 `func (o *SwitchpointsPutRequestSwitchpointValue) GetRack() string`
@@ -729,6 +756,31 @@ SetRack sets Rack field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasRack() bool`
 
 HasRack returns a boolean if a field has been set.
+
+### GetRackRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetRackRefType() string`
+
+GetRackRefType returns the RackRefType field if non-nil, zero value otherwise.
+
+### GetRackRefTypeOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetRackRefTypeOk() (*string, bool)`
+
+GetRackRefTypeOk returns a tuple with the RackRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRackRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetRackRefType(v string)`
+
+SetRackRefType sets RackRefType field to given value.
+
+### HasRackRefType
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasRackRefType() bool`
+
+HasRackRefType returns a boolean if a field has been set.
 
 ### GetPosition
 

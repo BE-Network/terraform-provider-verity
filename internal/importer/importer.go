@@ -154,8 +154,14 @@ var importerRegistry = map[string]struct {
 	"sfpbreakouts": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SFPBreakoutsAPI.SfpbreakoutsGet(ctx).Execute()
 	}},
-	"sites": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.SitesAPI.SitesGet(ctx).Execute()
+	"fabrics": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.FabricsAPI.FabricsGet(ctx).Execute()
+	}},
+	"planes": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.PlanesAPI.PlanesGet(ctx).Execute()
+	}},
+	"racks": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
+		return client.RacksAPI.RacksGet(ctx).Execute()
 	}},
 	"pairs": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
 		return client.SwitchPairsAPI.PairsGet(ctx).Execute()
@@ -233,7 +239,9 @@ var terraformTypeToResourceKey = map[string]string{
 	"verity_route_map_clause":         "route_map_clause",
 	"verity_route_map":                "route_map",
 	"verity_sfp_breakout":             "sfp_breakout",
-	"verity_site":                     "site",
+	"verity_fabric":                   "fabric",
+	"verity_plane":                    "plane",
+	"verity_rack":                     "rack",
 	"verity_pair":                     "pair",
 	"verity_pod":                      "pod",
 	"verity_ssp_group":                "ssp_group",
@@ -561,13 +569,27 @@ var resourceConfigs = map[string]ResourceConfig{
 		ObjectPropsHandler:        universalObjectPropsHandler,
 		NestedBlockFields:         map[string]bool{"breakout": true},
 	},
-	"site": {
-		ResourceType:                 "site",
-		StageName:                    "site_stage",
+	"fabric": {
+		ResourceType:                 "fabric",
+		StageName:                    "fabric_stage",
 		HeaderNameLineFormat:         "    name = \"%s\"\n",
 		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:           universalObjectPropsHandler,
 		ObjectPropsNestedBlockFields: map[string]bool{"system_graphs": true},
+	},
+	"plane": {
+		ResourceType:              "plane",
+		StageName:                 "plane_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
+	},
+	"rack": {
+		ResourceType:              "rack",
+		StageName:                 "rack_stage",
+		HeaderNameLineFormat:      "    name = \"%s\"\n",
+		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
+		ObjectPropsHandler:        universalObjectPropsHandler,
 	},
 	"pair": {
 		ResourceType:              "pair",
@@ -707,7 +729,9 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "routemapclauses", terraformResourceType: "verity_route_map_clause", importer: func() (interface{}, error) { return i.importResource("routemapclauses") }},
 		{name: "routemaps", terraformResourceType: "verity_route_map", importer: func() (interface{}, error) { return i.importResource("routemaps") }},
 		{name: "sfpbreakouts", terraformResourceType: "verity_sfp_breakout", importer: func() (interface{}, error) { return i.importResource("sfpbreakouts") }},
-		{name: "sites", terraformResourceType: "verity_site", importer: func() (interface{}, error) { return i.importResource("sites") }},
+		{name: "fabrics", terraformResourceType: "verity_fabric", importer: func() (interface{}, error) { return i.importResource("fabrics") }},
+		{name: "planes", terraformResourceType: "verity_plane", importer: func() (interface{}, error) { return i.importResource("planes") }},
+		{name: "racks", terraformResourceType: "verity_rack", importer: func() (interface{}, error) { return i.importResource("racks") }},
 		{name: "pairs", terraformResourceType: "verity_pair", importer: func() (interface{}, error) { return i.importResource("pairs") }},
 		{name: "pods", terraformResourceType: "verity_pod", importer: func() (interface{}, error) { return i.importResource("pods") }},
 		{name: "sspgroups", terraformResourceType: "verity_ssp_group", importer: func() (interface{}, error) { return i.importResource("sspgroups") }},
@@ -1093,12 +1117,14 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"lag_stage", "verity_lag", "device_settings_stage"},
 			{"bundle_stage", "verity_bundle", "lag_stage"},
 			{"badge_stage", "verity_badge", "bundle_stage"},
-			{"switchpoint_stage", "verity_switchpoint", "badge_stage"},
+			{"rack_stage", "verity_rack", "badge_stage"},
+			{"switchpoint_stage", "verity_switchpoint", "rack_stage"},
 			{"threshold_stage", "verity_threshold", "switchpoint_stage"},
 			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
 			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
 			{"pair_stage", "verity_pair", "threshold_group_stage"},
-			{"site_stage", "verity_site", "pair_stage"},
+			{"fabric_stage", "verity_fabric", "pair_stage"},
+			{"plane_stage", "verity_plane", "fabric_stage"},
 		}
 	} else {
 		// DATACENTER mode staging order mirrors the API batching order.
@@ -1138,14 +1164,16 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"pod_stage", "verity_pod", "bundle_stage"},
 			{"badge_stage", "verity_badge", "pod_stage"},
 			{"su_stage", "verity_su", "badge_stage"},
-			{"ssp_group_stage", "verity_ssp_group", "su_stage"},
+			{"rack_stage", "verity_rack", "su_stage"},
+			{"ssp_group_stage", "verity_ssp_group", "rack_stage"},
 			{"spine_plane_stage", "verity_spine_plane", "ssp_group_stage"},
 			{"switchpoint_stage", "verity_switchpoint", "spine_plane_stage"},
 			{"threshold_stage", "verity_threshold", "switchpoint_stage"},
 			{"grouping_rule_stage", "verity_grouping_rule", "threshold_stage"},
 			{"threshold_group_stage", "verity_threshold_group", "grouping_rule_stage"},
 			{"pair_stage", "verity_pair", "threshold_group_stage"},
-			{"site_stage", "verity_site", "pair_stage"},
+			{"fabric_stage", "verity_fabric", "pair_stage"},
+			{"plane_stage", "verity_plane", "fabric_stage"},
 		}
 	}
 

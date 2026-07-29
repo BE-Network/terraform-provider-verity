@@ -58,7 +58,9 @@ The importer writes multiple `.tf` files into the output directory. The importer
 - `serviceportprofiles.tf`
 - `sflowcollectors.tf`
 - `sfpbreakouts.tf`
-- `sites.tf`
+- `fabrics.tf`
+- `planes.tf`
+- `racks.tf`
 - `spineplanes.tf`
 - `sspgroups.tf`
 - `switchpoints.tf`

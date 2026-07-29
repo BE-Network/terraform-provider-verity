@@ -1,11 +1,11 @@
-# Site Resource
+# Fabric Resource
 
-`verity_site` manages Site resources in Verity.
+`verity_fabric` manages Fabric resources in Verity.
 
 ## Example Usage
 
 ```hcl
-resource "verity_site" "example" {
+resource "verity_fabric" "example" {
   name = "example"
   enable = true
   plane_count = "1"
@@ -49,6 +49,7 @@ resource "verity_site" "example" {
   switch_gateway = "192.168.1.1"
   controller_gateway = "192.168.2.1"
   hgx_gateway = "192.168.3.1"
+  gpu_architecture = "hgx"
   multi_tenant = true
   base_bgp_as_number = "61000"
   router_id_base_prefix = "172.16.0.0"
@@ -78,18 +79,18 @@ resource "verity_site" "example" {
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique.
+* `name` (String) - Template Name. Must be unique within type.
 * `enable` (Boolean) - Enable object.
 * `plane_count` (String) - Number of planes in this Fabric.
 * `su_support` (Boolean) - Support grouping leaf switches in SUs.
 * `server_management` (Boolean) - Support managing servers.
 * `allow_all_underlay_connections` (Boolean) - Allows underlay connections between PODs.
 * `site_type` (String) - Type of Fabric.
-* `service_for_site` (String) - Service for Site.
+* `service_for_site` (String) - Service for Fabric.
 * `service_for_site_ref_type_` (String) - Object type for `service_for_site` field.
 * `port_admin_polling_interval` (Integer) - Polling interval value in seconds used when aggressive reporting is disabled.
 * `port_status_polling_interval` (Integer) - Polling interval value in seconds used when aggressive reporting is disabled.
-* `spanning_tree_type` (String) - Sets the spanning tree type for all Ports in this Site with Spanning Tree enabled.
+* `spanning_tree_type` (String) - Sets the spanning tree type for all Ports in this Fabric with Spanning Tree enabled.
 * `region_name` (String) - Defines the logical boundary of the network.
 * `revision` (Integer) - Revision for the MSTP configuration.
 * `force_spanning_tree_on_fabric_ports` (Boolean) - Enable spanning tree on all fabric connections.
@@ -124,7 +125,7 @@ resource "verity_site" "example" {
 * `hgx_password` (String) - Default password for HGX devices in this Fabric.
 * `hgx_password_encrypted` (String) - Default password for HGX devices in this Fabric.
 * `switch_gateway` (String) - Default switch management gateway IP for devices in this Fabric.
-* `controller_gateway` (String) - Default controller gateway IP for devices in this Fabric.
+* `controller_gateway` (String) - Default Device Management VM gateway IP for devices in this Fabric.
 * `hgx_gateway` (String) - Default HGX management gateway IP for devices in this Fabric.
 * `multi_tenant` (Boolean) - Allow multiple tenants to HGX endpoints on this fabric.
 * `base_bgp_as_number` (String) - Base BGP Autonomous System Number used for switches in the fabric.
@@ -136,6 +137,7 @@ resource "verity_site" "example" {
 * `starting_octet` (Integer) - Starting Octet for HGX Port IPs.
 * `max_sus` (Integer) - Maximum number of SUs allowed per POD.
 * `max_pods` (Integer) - Maximum number of PODs allowed in the Fabric.
+* `gpu_architecture` (String) - GPU Architecture used within this Fabric.
 * `enable_dhcp_snooping` (Boolean) - Enables DHCP snooping.
 * `ip_source_guard` (Boolean) - On untrusted ports, only allow known traffic from known IP addresses.
 * `duplicate_address_detection_max_number_of_moves` (Integer) - Duplicate Address Detection Max Number of Moves.
@@ -146,8 +148,8 @@ resource "verity_site" "example" {
 
 ## Import
 
-Site resources can be imported using the `name` attribute:
+Fabric resources can be imported using the `name` attribute:
 
 ```sh
-terraform import verity_site.<resource_name> <name>
+terraform import verity_fabric.<resource_name> <name>
 ```

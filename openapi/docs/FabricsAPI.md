@@ -1,21 +1,21 @@
-# \SitesAPI
+# \FabricsAPI
 
 All URIs are relative to *http://localhost/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**SitesDelete**](SitesAPI.md#SitesDelete) | **Delete** /sites | Delete Site
-[**SitesGet**](SitesAPI.md#SitesGet) | **Get** /sites | Get all Sites
-[**SitesPatch**](SitesAPI.md#SitesPatch) | **Patch** /sites | Update Site
-[**SitesPut**](SitesAPI.md#SitesPut) | **Put** /sites | Create Site
+[**FabricsDelete**](FabricsAPI.md#FabricsDelete) | **Delete** /fabrics | Delete Fabric
+[**FabricsGet**](FabricsAPI.md#FabricsGet) | **Get** /fabrics | Get all Fabrics
+[**FabricsPatch**](FabricsAPI.md#FabricsPatch) | **Patch** /fabrics | Update Fabric
+[**FabricsPut**](FabricsAPI.md#FabricsPut) | **Put** /fabrics | Create Fabric
 
 
 
-## SitesDelete
+## FabricsDelete
 
-> SitesDelete(ctx).SiteName(siteName).ChangesetName(changesetName).Execute()
+> FabricsDelete(ctx).FabricName(fabricName).ChangesetName(changesetName).Execute()
 
-Delete Site
+Delete Fabric
 
 
 
@@ -32,14 +32,14 @@ import (
 )
 
 func main() {
-	siteName := []string{"Inner_example"} // []string | 
+	fabricName := []string{"Inner_example"} // []string | 
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.SitesAPI.SitesDelete(context.Background()).SiteName(siteName).ChangesetName(changesetName).Execute()
+	r, err := apiClient.FabricsAPI.FabricsDelete(context.Background()).FabricName(fabricName).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `SitesAPI.SitesDelete``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `FabricsAPI.FabricsDelete``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -51,12 +51,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiSitesDeleteRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiFabricsDeleteRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **siteName** | **[]string** |  | 
+ **fabricName** | **[]string** |  | 
  **changesetName** | **string** |  | 
 
 ### Return type
@@ -77,11 +77,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## SitesGet
+## FabricsGet
 
-> SitesGet(ctx).SiteName(siteName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+> FabricsGet(ctx).FabricName(fabricName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 
-Get all Sites
+Get all Fabrics
 
 
 
@@ -98,15 +98,15 @@ import (
 )
 
 func main() {
-	siteName := "siteName_example" // string |  (optional)
+	fabricName := "fabricName_example" // string |  (optional)
 	includeData := true // bool |  (optional)
 	changesetName := "changesetName_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.SitesAPI.SitesGet(context.Background()).SiteName(siteName).IncludeData(includeData).ChangesetName(changesetName).Execute()
+	r, err := apiClient.FabricsAPI.FabricsGet(context.Background()).FabricName(fabricName).IncludeData(includeData).ChangesetName(changesetName).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `SitesAPI.SitesGet``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `FabricsAPI.FabricsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -118,12 +118,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiSitesGetRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiFabricsGetRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **siteName** | **string** |  | 
+ **fabricName** | **string** |  | 
  **includeData** | **bool** |  | 
  **changesetName** | **string** |  | 
 
@@ -145,11 +145,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## SitesPatch
+## FabricsPatch
 
-> SitesPatch(ctx).ChangesetName(changesetName).SitesPutRequest(sitesPutRequest).Execute()
+> FabricsPatch(ctx).ChangesetName(changesetName).FabricsPutRequest(fabricsPutRequest).Execute()
 
-Update Site
+Update Fabric
 
 
 
@@ -167,13 +167,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	sitesPutRequest := *openapiclient.NewSitesPutRequest() // SitesPutRequest |  (optional)
+	fabricsPutRequest := *openapiclient.NewFabricsPutRequest() // FabricsPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.SitesAPI.SitesPatch(context.Background()).ChangesetName(changesetName).SitesPutRequest(sitesPutRequest).Execute()
+	r, err := apiClient.FabricsAPI.FabricsPatch(context.Background()).ChangesetName(changesetName).FabricsPutRequest(fabricsPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `SitesAPI.SitesPatch``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `FabricsAPI.FabricsPatch``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -185,13 +185,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiSitesPatchRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiFabricsPatchRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **sitesPutRequest** | [**SitesPutRequest**](SitesPutRequest.md) |  | 
+ **fabricsPutRequest** | [**FabricsPutRequest**](FabricsPutRequest.md) |  | 
 
 ### Return type
 
@@ -211,11 +211,11 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## SitesPut
+## FabricsPut
 
-> SitesPut(ctx).ChangesetName(changesetName).SitesPutRequest(sitesPutRequest).Execute()
+> FabricsPut(ctx).ChangesetName(changesetName).FabricsPutRequest(fabricsPutRequest).Execute()
 
-Create Site
+Create Fabric
 
 
 
@@ -233,13 +233,13 @@ import (
 
 func main() {
 	changesetName := "changesetName_example" // string |  (optional)
-	sitesPutRequest := *openapiclient.NewSitesPutRequest() // SitesPutRequest |  (optional)
+	fabricsPutRequest := *openapiclient.NewFabricsPutRequest() // FabricsPutRequest |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.SitesAPI.SitesPut(context.Background()).ChangesetName(changesetName).SitesPutRequest(sitesPutRequest).Execute()
+	r, err := apiClient.FabricsAPI.FabricsPut(context.Background()).ChangesetName(changesetName).FabricsPutRequest(fabricsPutRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `SitesAPI.SitesPut``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `FabricsAPI.FabricsPut``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -251,13 +251,13 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiSitesPutRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiFabricsPutRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **changesetName** | **string** |  | 
- **sitesPutRequest** | [**SitesPutRequest**](SitesPutRequest.md) |  | 
+ **fabricsPutRequest** | [**FabricsPutRequest**](FabricsPutRequest.md) |  | 
 
 ### Return type
 

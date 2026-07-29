@@ -68,7 +68,11 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	// Object type for ssp_group field
 	SspGroupRefType *string `json:"ssp_group_ref_type_,omitempty"`
 	// Physical Rack location of the Switch 
+	RackInfo *string `json:"rack_info,omitempty"`
+	// Rack
 	Rack *string `json:"rack,omitempty"`
+	// Object type for rack field
+	RackRefType *string `json:"rack_ref_type_,omitempty"`
 	// Position of the Switch
 	Position NullableFloat32 `json:"position,omitempty"`
 	// Rail Group the Switch is part of
@@ -215,6 +219,8 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.Su = &su
 	var sspGroup string = ""
 	this.SspGroup = &sspGroup
+	var rackInfo string = ""
+	this.RackInfo = &rackInfo
 	var rack string = ""
 	this.Rack = &rack
 	var switchRouterIdIpMask string = "(auto)"
@@ -337,6 +343,8 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.Su = &su
 	var sspGroup string = ""
 	this.SspGroup = &sspGroup
+	var rackInfo string = ""
+	this.RackInfo = &rackInfo
 	var rack string = ""
 	this.Rack = &rack
 	var switchRouterIdIpMask string = "(auto)"
@@ -1190,6 +1198,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetSspGroupRefType(v string) {
 	o.SspGroupRefType = &v
 }
 
+// GetRackInfo returns the RackInfo field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetRackInfo() string {
+	if o == nil || IsNil(o.RackInfo) {
+		var ret string
+		return ret
+	}
+	return *o.RackInfo
+}
+
+// GetRackInfoOk returns a tuple with the RackInfo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetRackInfoOk() (*string, bool) {
+	if o == nil || IsNil(o.RackInfo) {
+		return nil, false
+	}
+	return o.RackInfo, true
+}
+
+// HasRackInfo returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasRackInfo() bool {
+	if o != nil && !IsNil(o.RackInfo) {
+		return true
+	}
+
+	return false
+}
+
+// SetRackInfo gets a reference to the given string and assigns it to the RackInfo field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetRackInfo(v string) {
+	o.RackInfo = &v
+}
+
 // GetRack returns the Rack field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetRack() string {
 	if o == nil || IsNil(o.Rack) {
@@ -1220,6 +1260,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasRack() bool {
 // SetRack gets a reference to the given string and assigns it to the Rack field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetRack(v string) {
 	o.Rack = &v
+}
+
+// GetRackRefType returns the RackRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetRackRefType() string {
+	if o == nil || IsNil(o.RackRefType) {
+		var ret string
+		return ret
+	}
+	return *o.RackRefType
+}
+
+// GetRackRefTypeOk returns a tuple with the RackRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetRackRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.RackRefType) {
+		return nil, false
+	}
+	return o.RackRefType, true
+}
+
+// HasRackRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasRackRefType() bool {
+	if o != nil && !IsNil(o.RackRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetRackRefType gets a reference to the given string and assigns it to the RackRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetRackRefType(v string) {
+	o.RackRefType = &v
 }
 
 // GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -3126,8 +3198,14 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.SspGroupRefType) {
 		toSerialize["ssp_group_ref_type_"] = o.SspGroupRefType
 	}
+	if !IsNil(o.RackInfo) {
+		toSerialize["rack_info"] = o.RackInfo
+	}
 	if !IsNil(o.Rack) {
 		toSerialize["rack"] = o.Rack
+	}
+	if !IsNil(o.RackRefType) {
+		toSerialize["rack_ref_type_"] = o.RackRefType
 	}
 	if o.Position.IsSet() {
 		toSerialize["position"] = o.Position.Get()

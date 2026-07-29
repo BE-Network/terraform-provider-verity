@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **EnableSflow** | Pointer to **bool** | Enable sFlow for this Diagnostics Profile  | [optional] [default to false]
-**Usesatori** | Pointer to **bool** | Use Verity as the flow collector | [optional] [default to false]
+**Usesatori** | Pointer to **bool** | Use the internal Collector as the flow collector | [optional] [default to false]
 **FlowCollector** | Pointer to **string** | Flow Collector for this Diagnostics Profile  | [optional] [default to ""]
 **FlowCollectorRefType** | Pointer to **string** | Object type for flow_collector field | [optional] 
 **PollInterval** | Pointer to **NullableInt32** | The sampling rate for sFlow polling (seconds) | [optional] [default to 20]

@@ -20,77 +20,77 @@ import (
 )
 
 
-// SitesAPIService SitesAPI service
-type SitesAPIService service
+// RacksAPIService RacksAPI service
+type RacksAPIService service
 
-type ApiSitesDeleteRequest struct {
+type ApiRacksDeleteRequest struct {
 	ctx context.Context
-	ApiService *SitesAPIService
-	siteName *[]string
+	ApiService *RacksAPIService
+	rackName *[]string
 	changesetName *string
 }
 
-func (r ApiSitesDeleteRequest) SiteName(siteName []string) ApiSitesDeleteRequest {
-	r.siteName = &siteName
+func (r ApiRacksDeleteRequest) RackName(rackName []string) ApiRacksDeleteRequest {
+	r.rackName = &rackName
 	return r
 }
 
-func (r ApiSitesDeleteRequest) ChangesetName(changesetName string) ApiSitesDeleteRequest {
+func (r ApiRacksDeleteRequest) ChangesetName(changesetName string) ApiRacksDeleteRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiSitesDeleteRequest) Execute() (*http.Response, error) {
-	return r.ApiService.SitesDeleteExecute(r)
+func (r ApiRacksDeleteRequest) Execute() (*http.Response, error) {
+	return r.ApiService.RacksDeleteExecute(r)
 }
 
 /*
-SitesDelete Delete Site
+RacksDelete Delete rack
 
-Deletes an existing Site from the system if changeset_name is empty, from a changeset if its name is provided.
+Deletes an existing rack from the system if changeset_name is empty, from a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSitesDeleteRequest
+ @return ApiRacksDeleteRequest
 */
-func (a *SitesAPIService) SitesDelete(ctx context.Context) ApiSitesDeleteRequest {
-	return ApiSitesDeleteRequest{
+func (a *RacksAPIService) RacksDelete(ctx context.Context) ApiRacksDeleteRequest {
+	return ApiRacksDeleteRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *SitesAPIService) SitesDeleteExecute(r ApiSitesDeleteRequest) (*http.Response, error) {
+func (a *RacksAPIService) RacksDeleteExecute(r ApiRacksDeleteRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SitesAPIService.SitesDelete")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RacksAPIService.RacksDelete")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/sites"
+	localVarPath := localBasePath + "/racks"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.siteName == nil {
-		return nil, reportError("siteName is required and must be specified")
+	if r.rackName == nil {
+		return nil, reportError("rackName is required and must be specified")
 	}
 
 	{
-		t := *r.siteName
+		t := *r.rackName
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "site_name", s.Index(i).Interface(), "form", "multi")
+				parameterAddToHeaderOrQuery(localVarQueryParams, "rack_name", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "site_name", t, "form", "multi")
+			parameterAddToHeaderOrQuery(localVarQueryParams, "rack_name", t, "form", "multi")
 		}
 	}
 	if r.changesetName != nil {
@@ -141,70 +141,70 @@ func (a *SitesAPIService) SitesDeleteExecute(r ApiSitesDeleteRequest) (*http.Res
 	return localVarHTTPResponse, nil
 }
 
-type ApiSitesGetRequest struct {
+type ApiRacksGetRequest struct {
 	ctx context.Context
-	ApiService *SitesAPIService
-	siteName *string
+	ApiService *RacksAPIService
+	rackName *string
 	includeData *bool
 	changesetName *string
 }
 
-func (r ApiSitesGetRequest) SiteName(siteName string) ApiSitesGetRequest {
-	r.siteName = &siteName
+func (r ApiRacksGetRequest) RackName(rackName string) ApiRacksGetRequest {
+	r.rackName = &rackName
 	return r
 }
 
-func (r ApiSitesGetRequest) IncludeData(includeData bool) ApiSitesGetRequest {
+func (r ApiRacksGetRequest) IncludeData(includeData bool) ApiRacksGetRequest {
 	r.includeData = &includeData
 	return r
 }
 
-func (r ApiSitesGetRequest) ChangesetName(changesetName string) ApiSitesGetRequest {
+func (r ApiRacksGetRequest) ChangesetName(changesetName string) ApiRacksGetRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiSitesGetRequest) Execute() (*http.Response, error) {
-	return r.ApiService.SitesGetExecute(r)
+func (r ApiRacksGetRequest) Execute() (*http.Response, error) {
+	return r.ApiService.RacksGetExecute(r)
 }
 
 /*
-SitesGet Get all Sites
+RacksGet Get all racks
 
-Retrieves all Sites from the system.
+Downloads all racks from the system.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSitesGetRequest
+ @return ApiRacksGetRequest
 */
-func (a *SitesAPIService) SitesGet(ctx context.Context) ApiSitesGetRequest {
-	return ApiSitesGetRequest{
+func (a *RacksAPIService) RacksGet(ctx context.Context) ApiRacksGetRequest {
+	return ApiRacksGetRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *SitesAPIService) SitesGetExecute(r ApiSitesGetRequest) (*http.Response, error) {
+func (a *RacksAPIService) RacksGetExecute(r ApiRacksGetRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SitesAPIService.SitesGet")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RacksAPIService.RacksGet")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/sites"
+	localVarPath := localBasePath + "/racks"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.siteName != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "site_name", r.siteName, "form", "")
+	if r.rackName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "rack_name", r.rackName, "form", "")
 	}
 	if r.includeData != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_data", r.includeData, "form", "")
@@ -257,57 +257,57 @@ func (a *SitesAPIService) SitesGetExecute(r ApiSitesGetRequest) (*http.Response,
 	return localVarHTTPResponse, nil
 }
 
-type ApiSitesPatchRequest struct {
+type ApiRacksPatchRequest struct {
 	ctx context.Context
-	ApiService *SitesAPIService
+	ApiService *RacksAPIService
 	changesetName *string
-	sitesPutRequest *SitesPutRequest
+	racksPutRequest *RacksPutRequest
 }
 
-func (r ApiSitesPatchRequest) ChangesetName(changesetName string) ApiSitesPatchRequest {
+func (r ApiRacksPatchRequest) ChangesetName(changesetName string) ApiRacksPatchRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiSitesPatchRequest) SitesPutRequest(sitesPutRequest SitesPutRequest) ApiSitesPatchRequest {
-	r.sitesPutRequest = &sitesPutRequest
+func (r ApiRacksPatchRequest) RacksPutRequest(racksPutRequest RacksPutRequest) ApiRacksPatchRequest {
+	r.racksPutRequest = &racksPutRequest
 	return r
 }
 
-func (r ApiSitesPatchRequest) Execute() (*http.Response, error) {
-	return r.ApiService.SitesPatchExecute(r)
+func (r ApiRacksPatchRequest) Execute() (*http.Response, error) {
+	return r.ApiService.RacksPatchExecute(r)
 }
 
 /*
-SitesPatch Update Site
+RacksPatch Update rack
 
-Update Site into the system if changeset_name is empty, into a changeset if its name is provided.
+Update rack into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSitesPatchRequest
+ @return ApiRacksPatchRequest
 */
-func (a *SitesAPIService) SitesPatch(ctx context.Context) ApiSitesPatchRequest {
-	return ApiSitesPatchRequest{
+func (a *RacksAPIService) RacksPatch(ctx context.Context) ApiRacksPatchRequest {
+	return ApiRacksPatchRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *SitesAPIService) SitesPatchExecute(r ApiSitesPatchRequest) (*http.Response, error) {
+func (a *RacksAPIService) RacksPatchExecute(r ApiRacksPatchRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPatch
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SitesAPIService.SitesPatch")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RacksAPIService.RacksPatch")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/sites"
+	localVarPath := localBasePath + "/racks"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -334,7 +334,7 @@ func (a *SitesAPIService) SitesPatchExecute(r ApiSitesPatchRequest) (*http.Respo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.sitesPutRequest
+	localVarPostBody = r.racksPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -363,57 +363,57 @@ func (a *SitesAPIService) SitesPatchExecute(r ApiSitesPatchRequest) (*http.Respo
 	return localVarHTTPResponse, nil
 }
 
-type ApiSitesPutRequest struct {
+type ApiRacksPutRequest struct {
 	ctx context.Context
-	ApiService *SitesAPIService
+	ApiService *RacksAPIService
 	changesetName *string
-	sitesPutRequest *SitesPutRequest
+	racksPutRequest *RacksPutRequest
 }
 
-func (r ApiSitesPutRequest) ChangesetName(changesetName string) ApiSitesPutRequest {
+func (r ApiRacksPutRequest) ChangesetName(changesetName string) ApiRacksPutRequest {
 	r.changesetName = &changesetName
 	return r
 }
 
-func (r ApiSitesPutRequest) SitesPutRequest(sitesPutRequest SitesPutRequest) ApiSitesPutRequest {
-	r.sitesPutRequest = &sitesPutRequest
+func (r ApiRacksPutRequest) RacksPutRequest(racksPutRequest RacksPutRequest) ApiRacksPutRequest {
+	r.racksPutRequest = &racksPutRequest
 	return r
 }
 
-func (r ApiSitesPutRequest) Execute() (*http.Response, error) {
-	return r.ApiService.SitesPutExecute(r)
+func (r ApiRacksPutRequest) Execute() (*http.Response, error) {
+	return r.ApiService.RacksPutExecute(r)
 }
 
 /*
-SitesPut Create Site
+RacksPut Create rack
 
-Create Site into the system if changeset_name is empty, into a changeset if its name is provided.
+Create rack into the system if changeset_name is empty, into a changeset if its name is provided.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSitesPutRequest
+ @return ApiRacksPutRequest
 */
-func (a *SitesAPIService) SitesPut(ctx context.Context) ApiSitesPutRequest {
-	return ApiSitesPutRequest{
+func (a *RacksAPIService) RacksPut(ctx context.Context) ApiRacksPutRequest {
+	return ApiRacksPutRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *SitesAPIService) SitesPutExecute(r ApiSitesPutRequest) (*http.Response, error) {
+func (a *RacksAPIService) RacksPutExecute(r ApiRacksPutRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SitesAPIService.SitesPut")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RacksAPIService.RacksPut")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/sites"
+	localVarPath := localBasePath + "/racks"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -440,7 +440,7 @@ func (a *SitesAPIService) SitesPutExecute(r ApiSitesPutRequest) (*http.Response,
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.sitesPutRequest
+	localVarPostBody = r.racksPutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

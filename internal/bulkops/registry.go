@@ -766,24 +766,64 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.SFPBreakoutsAPI.SfpbreakoutsGet(ctx).Execute()
 		},
 	},
-	"site": {
-		ResourceType:     "site",
-		PutRequestType:   reflect.TypeOf(openapi.SitesPutRequest{}),
-		PatchRequestType: reflect.TypeOf(openapi.SitesPutRequest{}),
+	"fabric": {
+		ResourceType:     "fabric",
+		PutRequestType:   reflect.TypeOf(openapi.FabricsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.FabricsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
-			return &GenericAPIClient{client: c, resourceType: "site"}
+			return &GenericAPIClient{client: c, resourceType: "fabric"}
 		},
 		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
-			return c.SitesAPI.SitesPut(ctx).SitesPutRequest(*req.(*openapi.SitesPutRequest)).Execute()
+			return c.FabricsAPI.FabricsPut(ctx).FabricsPutRequest(*req.(*openapi.FabricsPutRequest)).Execute()
 		},
 		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
-			return c.SitesAPI.SitesPatch(ctx).SitesPutRequest(*req.(*openapi.SitesPutRequest)).Execute()
+			return c.FabricsAPI.FabricsPatch(ctx).FabricsPutRequest(*req.(*openapi.FabricsPutRequest)).Execute()
 		},
 		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
-			return c.SitesAPI.SitesDelete(ctx).SiteName(names).Execute()
+			return c.FabricsAPI.FabricsDelete(ctx).FabricName(names).Execute()
 		},
 		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
-			return c.SitesAPI.SitesGet(ctx).Execute()
+			return c.FabricsAPI.FabricsGet(ctx).Execute()
+		},
+	},
+	"plane": {
+		ResourceType:     "plane",
+		PutRequestType:   reflect.TypeOf(openapi.PlanesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.PlanesPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "plane"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.PlanesAPI.PlanesPut(ctx).PlanesPutRequest(*req.(*openapi.PlanesPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.PlanesAPI.PlanesPatch(ctx).PlanesPutRequest(*req.(*openapi.PlanesPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.PlanesAPI.PlanesDelete(ctx).PlaneName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.PlanesAPI.PlanesGet(ctx).Execute()
+		},
+	},
+	"rack": {
+		ResourceType:     "rack",
+		PutRequestType:   reflect.TypeOf(openapi.RacksPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.RacksPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "rack"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.RacksAPI.RacksPut(ctx).RacksPutRequest(*req.(*openapi.RacksPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.RacksAPI.RacksPatch(ctx).RacksPutRequest(*req.(*openapi.RacksPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.RacksAPI.RacksDelete(ctx).RackName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.RacksAPI.RacksGet(ctx).Execute()
 		},
 	},
 	"pod": {

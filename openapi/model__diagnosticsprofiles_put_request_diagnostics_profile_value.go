@@ -25,7 +25,7 @@ type DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct {
 	Enable *bool `json:"enable,omitempty"`
 	// Enable sFlow for this Diagnostics Profile 
 	EnableSflow *bool `json:"enable_sflow,omitempty"`
-	// Use Verity as the flow collector
+	// Use the internal Collector as the flow collector
 	Usesatori *bool `json:"usesatori,omitempty"`
 	// Flow Collector for this Diagnostics Profile 
 	FlowCollector *string `json:"flow_collector,omitempty"`

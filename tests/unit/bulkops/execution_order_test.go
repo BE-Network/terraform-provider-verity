@@ -36,10 +36,13 @@ var resourceAPIPath = map[string]string{
 	"service":                  "/services",
 	"port_acl":                 "/portacls",
 	"packet_broker":            "/packetbroker",
+	"tacacs_profile":           "/tacacsprofiles",
+	"ldap_profile":             "/ldapprofiles",
 	"eth_port_profile":         "/ethportprofiles",
 	"packet_queue":             "/packetqueues",
 	"sflow_collector":          "/sflowcollectors",
 	"gateway":                  "/gateways",
+	"device_aaa_profile":       "/deviceaaaprofiles",
 	"lag":                      "/lags",
 	"eth_port_settings":        "/ethportsettings",
 	"diagnostics_profile":      "/diagnosticsprofiles",
@@ -49,13 +52,19 @@ var resourceAPIPath = map[string]string{
 	"bundle":                   "/bundles",
 	"pod":                      "/pods",
 	"badge":                    "/badges",
+	"su":                       "/sus",
+	"ssp_group":                "/sspgroups",
+	"pair":                     "/pairs",
+	"mac_filter":               "/macfilters",
 	"spine_plane":              "/spineplanes",
 	"switchpoint":              "/switchpoints",
 	"threshold":                "/thresholds",
 	"grouping_rule":            "/groupingrules",
 	"threshold_group":          "/thresholdgroups",
 	"sfp_breakout":             "/sfpbreakouts",
-	"site":                     "/sites",
+	"fabric":                   "/fabrics",
+	"plane":                    "/planes",
+	"rack":                     "/racks",
 	"service_port_profile":     "/serviceportprofiles",
 	"device_voice_settings":    "/devicevoicesettings",
 	"authenticated_eth_port":   "/authenticatedethports",
@@ -78,11 +87,14 @@ var dcPutOrder = []string{
 	"ipv6_list",
 	"service",
 	"port_acl",
+	"tacacs_profile",
+	"ldap_profile",
 	"packet_broker",
 	"eth_port_profile",
 	"packet_queue",
 	"sflow_collector",
 	"gateway",
+	"device_aaa_profile",
 	"lag",
 	"eth_port_settings",
 	"diagnostics_profile",
@@ -92,22 +104,32 @@ var dcPutOrder = []string{
 	"bundle",
 	"pod",
 	"badge",
+	"su",
+	"rack",
+	"ssp_group",
 	"spine_plane",
 	"switchpoint",
 	"threshold",
 	"grouping_rule",
 	"threshold_group",
+	"pair",
+	"fabric",
+	"plane",
 }
 
 var campusPutOrder = []string{
 	"ipv4_list",
 	"ipv6_list",
+	"tacacs_profile",
+	"ldap_profile",
 	"acl",
 	"port_acl",
 	"service",
+	"mac_filter",
 	"eth_port_profile",
 	"sflow_collector",
 	"packet_queue",
+	"device_aaa_profile",
 	"service_port_profile",
 	"diagnostics_port_profile",
 	"device_voice_settings",
@@ -119,10 +141,14 @@ var campusPutOrder = []string{
 	"lag",
 	"bundle",
 	"badge",
+	"rack",
 	"switchpoint",
 	"threshold",
 	"grouping_rule",
 	"threshold_group",
+	"pair",
+	"fabric",
+	"plane",
 }
 
 var dcDeleteOrder = func() []string {
@@ -141,31 +167,15 @@ var campusDeleteOrder = func() []string {
 	return r
 }()
 
-// dcPatchOrder is dcPutOrder with "sfp_breakout" prepended and "site" inserted
-// after "threshold_group" (both are PATCH-only resources).
+// dcPatchOrder is dcPutOrder with "sfp_breakout" prepended.
 var dcPatchOrder = func() []string {
-	result := make([]string, 0, len(dcPutOrder)+2)
+	result := make([]string, 0, len(dcPutOrder)+1)
 	result = append(result, "sfp_breakout")
-	for _, rt := range dcPutOrder {
-		result = append(result, rt)
-		if rt == "threshold_group" {
-			result = append(result, "site")
-		}
-	}
+	result = append(result, dcPutOrder...)
 	return result
 }()
 
-// campusPatchOrder is campusPutOrder with "site" inserted after "threshold_group".
-var campusPatchOrder = func() []string {
-	result := make([]string, 0, len(campusPutOrder)+1)
-	for _, rt := range campusPutOrder {
-		result = append(result, rt)
-		if rt == "threshold_group" {
-			result = append(result, "site")
-		}
-	}
-	return result
-}()
+var campusPatchOrder = append([]string(nil), campusPutOrder...)
 
 func orderTrackingServer(t *testing.T) (*httptest.Server, *[]requestRecord, *sync.Mutex) {
 	t.Helper()
@@ -198,6 +208,12 @@ func zeroPutValue(resourceType string) interface{} {
 	switch resourceType {
 	case "gateway":
 		return *openapi.NewGatewaysPutRequestGatewayValue()
+	case "device_aaa_profile":
+		return *openapi.NewDeviceaaaprofilesPutRequestDeviceAaaProfileValue()
+	case "ldap_profile":
+		return *openapi.NewLdapprofilesPutRequestLdapProfileValue()
+	case "tacacs_profile":
+		return *openapi.NewTacacsprofilesPutRequestTacacsProfileValue()
 	case "lag":
 		return *openapi.NewLagsPutRequestLagValue()
 	case "tenant":
@@ -242,14 +258,22 @@ func zeroPutValue(resourceType string) interface{} {
 		return *openapi.NewRoutemapsPutRequestRouteMapValue()
 	case "packet_broker":
 		return *openapi.NewPacketbrokerPutRequestPbEgressProfileValue()
+	case "mac_filter":
+		return *openapi.NewMacfiltersPutRequestMacFilterValue()
+	case "pair":
+		return *openapi.NewPairsPutRequestSwitchPairValue()
 	case "packet_queue":
 		return *openapi.NewPacketqueuesPutRequestPacketQueueValue()
 	case "service_port_profile":
 		return *openapi.NewServiceportprofilesPutRequestServicePortProfileValue()
 	case "switchpoint":
 		return *openapi.NewSwitchpointsPutRequestSwitchpointValue()
-	case "site":
-		return *openapi.NewSitesPutRequestSiteValue()
+	case "fabric":
+		return *openapi.NewFabricsPutRequestFabricValue()
+	case "plane":
+		return *openapi.NewPlanesPutRequestPlaneValue()
+	case "rack":
+		return *openapi.NewRacksPutRequestRackValue()
 	case "voice_port_profile":
 		return *openapi.NewVoiceportprofilesPutRequestVoicePortProfilesValue()
 	case "pod":
@@ -268,6 +292,10 @@ func zeroPutValue(resourceType string) interface{} {
 		return *openapi.NewPolicybasedroutingaclPutRequestPbRoutingAclValue()
 	case "spine_plane":
 		return *openapi.NewSpineplanesPutRequestSpinePlaneValue()
+	case "ssp_group":
+		return *openapi.NewSspgroupsPutRequestSuperspineGroupValue()
+	case "su":
+		return *openapi.NewSusPutRequestSuValue()
 	case "grouping_rule":
 		return *openapi.NewGroupingrulesPutRequestGroupingRulesValue()
 	case "threshold_group":

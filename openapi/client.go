@@ -78,6 +78,8 @@ type APIClient struct {
 
 	ExtendedCommunityListsAPI *ExtendedCommunityListsAPIService
 
+	FabricsAPI *FabricsAPIService
+
 	GatewayProfilesAPI *GatewayProfilesAPIService
 
 	GatewaysAPI *GatewaysAPIService
@@ -108,9 +110,13 @@ type APIClient struct {
 
 	PacketQueuesAPI *PacketQueuesAPIService
 
+	PlanesAPI *PlanesAPIService
+
 	PodsAPI *PodsAPIService
 
 	PortACLsAPI *PortACLsAPIService
+
+	RacksAPI *RacksAPIService
 
 	RouteMapClausesAPI *RouteMapClausesAPIService
 
@@ -125,8 +131,6 @@ type APIClient struct {
 	ServicePortProfilesAPI *ServicePortProfilesAPIService
 
 	ServicesAPI *ServicesAPIService
-
-	SitesAPI *SitesAPIService
 
 	SpinePlanesAPI *SpinePlanesAPIService
 
@@ -180,6 +184,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.EthPortProfilesAPI = (*EthPortProfilesAPIService)(&c.common)
 	c.EthPortSettingsAPI = (*EthPortSettingsAPIService)(&c.common)
 	c.ExtendedCommunityListsAPI = (*ExtendedCommunityListsAPIService)(&c.common)
+	c.FabricsAPI = (*FabricsAPIService)(&c.common)
 	c.GatewayProfilesAPI = (*GatewayProfilesAPIService)(&c.common)
 	c.GatewaysAPI = (*GatewaysAPIService)(&c.common)
 	c.GroupingRulesAPI = (*GroupingRulesAPIService)(&c.common)
@@ -195,8 +200,10 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.PBRoutingACLAPI = (*PBRoutingACLAPIService)(&c.common)
 	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
 	c.PacketQueuesAPI = (*PacketQueuesAPIService)(&c.common)
+	c.PlanesAPI = (*PlanesAPIService)(&c.common)
 	c.PodsAPI = (*PodsAPIService)(&c.common)
 	c.PortACLsAPI = (*PortACLsAPIService)(&c.common)
+	c.RacksAPI = (*RacksAPIService)(&c.common)
 	c.RouteMapClausesAPI = (*RouteMapClausesAPIService)(&c.common)
 	c.RouteMapsAPI = (*RouteMapsAPIService)(&c.common)
 	c.SFPBreakoutsAPI = (*SFPBreakoutsAPIService)(&c.common)
@@ -204,7 +211,6 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.SUsAPI = (*SUsAPIService)(&c.common)
 	c.ServicePortProfilesAPI = (*ServicePortProfilesAPIService)(&c.common)
 	c.ServicesAPI = (*ServicesAPIService)(&c.common)
-	c.SitesAPI = (*SitesAPIService)(&c.common)
 	c.SpinePlanesAPI = (*SpinePlanesAPIService)(&c.common)
 	c.SuperSpineGroupsAPI = (*SuperSpineGroupsAPIService)(&c.common)
 	c.SwitchPairsAPI = (*SwitchPairsAPIService)(&c.common)

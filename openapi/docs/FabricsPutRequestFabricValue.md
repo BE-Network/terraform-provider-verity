@@ -1,4 +1,4 @@
-# SitesPutRequestSiteValue
+# FabricsPutRequestFabricValue
 
 ## Properties
 
@@ -6,6 +6,15 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
+**SwitchUsername** | Pointer to **string** | Default username for managed switches in this Fabric | [optional] [default to ""]
+**SwitchPassword** | Pointer to **string** | Default password for managed switches in this Fabric | [optional] [default to ""]
+**SwitchPasswordEncrypted** | Pointer to **string** | Default password for managed switches in this Fabric | [optional] [default to ""]
+**HgxUsername** | Pointer to **string** | Default username for HGX devices in this Fabric | [optional] [default to ""]
+**HgxPassword** | Pointer to **string** | Default password for HGX devices in this Fabric | [optional] [default to ""]
+**HgxPasswordEncrypted** | Pointer to **string** | Default password for HGX devices in this Fabric | [optional] [default to ""]
+**SwitchGateway** | Pointer to **string** | Default switch management gateway IP for devices in this Fabric | [optional] [default to ""]
+**ControllerGateway** | Pointer to **string** | Default Device Management VM gateway IP for devices in this Fabric | [optional] [default to ""]
+**HgxGateway** | Pointer to **string** | Default HGX management gateway IP for devices in this Fabric | [optional] [default to ""]
 **PlaneCount** | Pointer to **string** | Number of planes in this Fabric | [optional] [default to "1"]
 **SuSupport** | Pointer to **bool** | Support grouping leaf switches in SUs | [optional] [default to false]
 **ServerManagement** | Pointer to **bool** | Support managing servers | [optional] [default to true]
@@ -44,7 +53,7 @@ Name | Type | Description | Notes
 **EvpnMacHoldtime** | Pointer to **NullableInt32** | MAC Holdtime | [optional] [default to 1080]
 **AggressiveReporting** | Pointer to **bool** | Fast Reporting of Switch Communications, Link Up/Down, and BGP Status | [optional] [default to true]
 **SwitchIpBase** | Pointer to **string** | Base IPv4 address for switch IPs in this Fabric | [optional] [default to ""]
-**ControllerIpBase** | Pointer to **string** | Base IPv4 address for controller IPs in this Fabric | [optional] [default to ""]
+**ControllerIpBase** | Pointer to **string** | Base IPv4 address for the Device Management VM IPs in this Fabric | [optional] [default to ""]
 **MultiTenant** | Pointer to **bool** | Allow multiple tenants to HGX endpoints on this fabric. | [optional] [default to true]
 **BaseBgpAsNumber** | Pointer to **string** | Base BGP Autonomous System Number used for switches in the fabric  | [optional] [default to "61000"]
 **RouterIdBasePrefix** | Pointer to **string** | Router ID starting IP address  | [optional] [default to "172.16.0.0"]
@@ -55,1830 +64,1847 @@ Name | Type | Description | Notes
 **StartingOctet** | Pointer to **NullableInt32** | Starting Octet for HGX Port IPs | [optional] 
 **MaxSus** | Pointer to **NullableInt32** | Maximum number of SUs allowed per POD | [optional] 
 **MaxPods** | Pointer to **NullableInt32** | Maximum number of PODs allowed in the Fabric | [optional] 
-**ObjectProperties** | Pointer to [**SitesPutRequestSiteValueObjectProperties**](SitesPutRequestSiteValueObjectProperties.md) |  | [optional] 
-**SwitchUsername** | Pointer to **string** | Default username for managed switches in this Fabric | [optional] [default to ""]
-**SwitchPassword** | Pointer to **string** | Default password for managed switches in this Fabric | [optional] [default to ""]
-**SwitchPasswordEncrypted** | Pointer to **string** | Default password for managed switches in this Fabric | [optional] [default to ""]
-**HgxUsername** | Pointer to **string** | Default username for HGX devices in this Fabric | [optional] [default to ""]
-**HgxPassword** | Pointer to **string** | Default password for HGX devices in this Fabric | [optional] [default to ""]
-**HgxPasswordEncrypted** | Pointer to **string** | Default password for HGX devices in this Fabric | [optional] [default to ""]
-**SwitchGateway** | Pointer to **string** | Default switch management gateway IP for devices in this Fabric | [optional] [default to ""]
-**ControllerGateway** | Pointer to **string** | Default controller gateway IP for devices in this Fabric | [optional] [default to ""]
-**HgxGateway** | Pointer to **string** | Default HGX management gateway IP for devices in this Fabric | [optional] [default to ""]
+**ObjectProperties** | Pointer to [**FabricsPutRequestFabricValueObjectProperties**](FabricsPutRequestFabricValueObjectProperties.md) |  | [optional] 
+**GpuArchitecture** | Pointer to **string** | GPU Architecture used within this Fabric | [optional] [default to "hgx"]
 **IpSourceGuard** | Pointer to **bool** | On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings | [optional] [default to false]
 **EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
 
 ## Methods
 
-### NewSitesPutRequestSiteValue
+### NewFabricsPutRequestFabricValue
 
-`func NewSitesPutRequestSiteValue() *SitesPutRequestSiteValue`
+`func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue`
 
-NewSitesPutRequestSiteValue instantiates a new SitesPutRequestSiteValue object
+NewFabricsPutRequestFabricValue instantiates a new FabricsPutRequestFabricValue object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewSitesPutRequestSiteValueWithDefaults
+### NewFabricsPutRequestFabricValueWithDefaults
 
-`func NewSitesPutRequestSiteValueWithDefaults() *SitesPutRequestSiteValue`
+`func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue`
 
-NewSitesPutRequestSiteValueWithDefaults instantiates a new SitesPutRequestSiteValue object
+NewFabricsPutRequestFabricValueWithDefaults instantiates a new FabricsPutRequestFabricValue object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetName
 
-`func (o *SitesPutRequestSiteValue) GetName() string`
+`func (o *FabricsPutRequestFabricValue) GetName() string`
 
 GetName returns the Name field if non-nil, zero value otherwise.
 
 ### GetNameOk
 
-`func (o *SitesPutRequestSiteValue) GetNameOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetNameOk() (*string, bool)`
 
 GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetName
 
-`func (o *SitesPutRequestSiteValue) SetName(v string)`
+`func (o *FabricsPutRequestFabricValue) SetName(v string)`
 
 SetName sets Name field to given value.
 
 ### HasName
 
-`func (o *SitesPutRequestSiteValue) HasName() bool`
+`func (o *FabricsPutRequestFabricValue) HasName() bool`
 
 HasName returns a boolean if a field has been set.
 
 ### GetEnable
 
-`func (o *SitesPutRequestSiteValue) GetEnable() bool`
+`func (o *FabricsPutRequestFabricValue) GetEnable() bool`
 
 GetEnable returns the Enable field if non-nil, zero value otherwise.
 
 ### GetEnableOk
 
-`func (o *SitesPutRequestSiteValue) GetEnableOk() (*bool, bool)`
+`func (o *FabricsPutRequestFabricValue) GetEnableOk() (*bool, bool)`
 
 GetEnableOk returns a tuple with the Enable field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEnable
 
-`func (o *SitesPutRequestSiteValue) SetEnable(v bool)`
+`func (o *FabricsPutRequestFabricValue) SetEnable(v bool)`
 
 SetEnable sets Enable field to given value.
 
 ### HasEnable
 
-`func (o *SitesPutRequestSiteValue) HasEnable() bool`
+`func (o *FabricsPutRequestFabricValue) HasEnable() bool`
 
 HasEnable returns a boolean if a field has been set.
 
-### GetPlaneCount
-
-`func (o *SitesPutRequestSiteValue) GetPlaneCount() string`
-
-GetPlaneCount returns the PlaneCount field if non-nil, zero value otherwise.
-
-### GetPlaneCountOk
-
-`func (o *SitesPutRequestSiteValue) GetPlaneCountOk() (*string, bool)`
-
-GetPlaneCountOk returns a tuple with the PlaneCount field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPlaneCount
-
-`func (o *SitesPutRequestSiteValue) SetPlaneCount(v string)`
-
-SetPlaneCount sets PlaneCount field to given value.
-
-### HasPlaneCount
-
-`func (o *SitesPutRequestSiteValue) HasPlaneCount() bool`
-
-HasPlaneCount returns a boolean if a field has been set.
-
-### GetSuSupport
-
-`func (o *SitesPutRequestSiteValue) GetSuSupport() bool`
-
-GetSuSupport returns the SuSupport field if non-nil, zero value otherwise.
-
-### GetSuSupportOk
-
-`func (o *SitesPutRequestSiteValue) GetSuSupportOk() (*bool, bool)`
-
-GetSuSupportOk returns a tuple with the SuSupport field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSuSupport
-
-`func (o *SitesPutRequestSiteValue) SetSuSupport(v bool)`
-
-SetSuSupport sets SuSupport field to given value.
-
-### HasSuSupport
-
-`func (o *SitesPutRequestSiteValue) HasSuSupport() bool`
-
-HasSuSupport returns a boolean if a field has been set.
-
-### GetServerManagement
-
-`func (o *SitesPutRequestSiteValue) GetServerManagement() bool`
-
-GetServerManagement returns the ServerManagement field if non-nil, zero value otherwise.
-
-### GetServerManagementOk
-
-`func (o *SitesPutRequestSiteValue) GetServerManagementOk() (*bool, bool)`
-
-GetServerManagementOk returns a tuple with the ServerManagement field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetServerManagement
-
-`func (o *SitesPutRequestSiteValue) SetServerManagement(v bool)`
-
-SetServerManagement sets ServerManagement field to given value.
-
-### HasServerManagement
-
-`func (o *SitesPutRequestSiteValue) HasServerManagement() bool`
-
-HasServerManagement returns a boolean if a field has been set.
-
-### GetAllowAllUnderlayConnections
-
-`func (o *SitesPutRequestSiteValue) GetAllowAllUnderlayConnections() bool`
-
-GetAllowAllUnderlayConnections returns the AllowAllUnderlayConnections field if non-nil, zero value otherwise.
-
-### GetAllowAllUnderlayConnectionsOk
-
-`func (o *SitesPutRequestSiteValue) GetAllowAllUnderlayConnectionsOk() (*bool, bool)`
-
-GetAllowAllUnderlayConnectionsOk returns a tuple with the AllowAllUnderlayConnections field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetAllowAllUnderlayConnections
-
-`func (o *SitesPutRequestSiteValue) SetAllowAllUnderlayConnections(v bool)`
-
-SetAllowAllUnderlayConnections sets AllowAllUnderlayConnections field to given value.
-
-### HasAllowAllUnderlayConnections
-
-`func (o *SitesPutRequestSiteValue) HasAllowAllUnderlayConnections() bool`
-
-HasAllowAllUnderlayConnections returns a boolean if a field has been set.
-
-### GetSiteType
-
-`func (o *SitesPutRequestSiteValue) GetSiteType() string`
-
-GetSiteType returns the SiteType field if non-nil, zero value otherwise.
-
-### GetSiteTypeOk
-
-`func (o *SitesPutRequestSiteValue) GetSiteTypeOk() (*string, bool)`
-
-GetSiteTypeOk returns a tuple with the SiteType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSiteType
-
-`func (o *SitesPutRequestSiteValue) SetSiteType(v string)`
-
-SetSiteType sets SiteType field to given value.
-
-### HasSiteType
-
-`func (o *SitesPutRequestSiteValue) HasSiteType() bool`
-
-HasSiteType returns a boolean if a field has been set.
-
-### GetDuplicateAddressDetectionMaxNumberOfMoves
-
-`func (o *SitesPutRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int32`
-
-GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field if non-nil, zero value otherwise.
-
-### GetDuplicateAddressDetectionMaxNumberOfMovesOk
-
-`func (o *SitesPutRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int32, bool)`
-
-GetDuplicateAddressDetectionMaxNumberOfMovesOk returns a tuple with the DuplicateAddressDetectionMaxNumberOfMoves field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDuplicateAddressDetectionMaxNumberOfMoves
-
-`func (o *SitesPutRequestSiteValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int32)`
-
-SetDuplicateAddressDetectionMaxNumberOfMoves sets DuplicateAddressDetectionMaxNumberOfMoves field to given value.
-
-### HasDuplicateAddressDetectionMaxNumberOfMoves
-
-`func (o *SitesPutRequestSiteValue) HasDuplicateAddressDetectionMaxNumberOfMoves() bool`
-
-HasDuplicateAddressDetectionMaxNumberOfMoves returns a boolean if a field has been set.
-
-### SetDuplicateAddressDetectionMaxNumberOfMovesNil
-
-`func (o *SitesPutRequestSiteValue) SetDuplicateAddressDetectionMaxNumberOfMovesNil(b bool)`
-
- SetDuplicateAddressDetectionMaxNumberOfMovesNil sets the value for DuplicateAddressDetectionMaxNumberOfMoves to be an explicit nil
-
-### UnsetDuplicateAddressDetectionMaxNumberOfMoves
-`func (o *SitesPutRequestSiteValue) UnsetDuplicateAddressDetectionMaxNumberOfMoves()`
-
-UnsetDuplicateAddressDetectionMaxNumberOfMoves ensures that no value is present for DuplicateAddressDetectionMaxNumberOfMoves, not even an explicit nil
-### GetDuplicateAddressDetectionTime
-
-`func (o *SitesPutRequestSiteValue) GetDuplicateAddressDetectionTime() int32`
-
-GetDuplicateAddressDetectionTime returns the DuplicateAddressDetectionTime field if non-nil, zero value otherwise.
-
-### GetDuplicateAddressDetectionTimeOk
-
-`func (o *SitesPutRequestSiteValue) GetDuplicateAddressDetectionTimeOk() (*int32, bool)`
-
-GetDuplicateAddressDetectionTimeOk returns a tuple with the DuplicateAddressDetectionTime field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDuplicateAddressDetectionTime
-
-`func (o *SitesPutRequestSiteValue) SetDuplicateAddressDetectionTime(v int32)`
-
-SetDuplicateAddressDetectionTime sets DuplicateAddressDetectionTime field to given value.
-
-### HasDuplicateAddressDetectionTime
-
-`func (o *SitesPutRequestSiteValue) HasDuplicateAddressDetectionTime() bool`
-
-HasDuplicateAddressDetectionTime returns a boolean if a field has been set.
-
-### SetDuplicateAddressDetectionTimeNil
-
-`func (o *SitesPutRequestSiteValue) SetDuplicateAddressDetectionTimeNil(b bool)`
-
- SetDuplicateAddressDetectionTimeNil sets the value for DuplicateAddressDetectionTime to be an explicit nil
-
-### UnsetDuplicateAddressDetectionTime
-`func (o *SitesPutRequestSiteValue) UnsetDuplicateAddressDetectionTime()`
-
-UnsetDuplicateAddressDetectionTime ensures that no value is present for DuplicateAddressDetectionTime, not even an explicit nil
-### GetPortAdminPollingInterval
-
-`func (o *SitesPutRequestSiteValue) GetPortAdminPollingInterval() int32`
-
-GetPortAdminPollingInterval returns the PortAdminPollingInterval field if non-nil, zero value otherwise.
-
-### GetPortAdminPollingIntervalOk
-
-`func (o *SitesPutRequestSiteValue) GetPortAdminPollingIntervalOk() (*int32, bool)`
-
-GetPortAdminPollingIntervalOk returns a tuple with the PortAdminPollingInterval field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPortAdminPollingInterval
-
-`func (o *SitesPutRequestSiteValue) SetPortAdminPollingInterval(v int32)`
-
-SetPortAdminPollingInterval sets PortAdminPollingInterval field to given value.
-
-### HasPortAdminPollingInterval
-
-`func (o *SitesPutRequestSiteValue) HasPortAdminPollingInterval() bool`
-
-HasPortAdminPollingInterval returns a boolean if a field has been set.
-
-### SetPortAdminPollingIntervalNil
-
-`func (o *SitesPutRequestSiteValue) SetPortAdminPollingIntervalNil(b bool)`
-
- SetPortAdminPollingIntervalNil sets the value for PortAdminPollingInterval to be an explicit nil
-
-### UnsetPortAdminPollingInterval
-`func (o *SitesPutRequestSiteValue) UnsetPortAdminPollingInterval()`
-
-UnsetPortAdminPollingInterval ensures that no value is present for PortAdminPollingInterval, not even an explicit nil
-### GetPortStatusPollingInterval
-
-`func (o *SitesPutRequestSiteValue) GetPortStatusPollingInterval() int32`
-
-GetPortStatusPollingInterval returns the PortStatusPollingInterval field if non-nil, zero value otherwise.
-
-### GetPortStatusPollingIntervalOk
-
-`func (o *SitesPutRequestSiteValue) GetPortStatusPollingIntervalOk() (*int32, bool)`
-
-GetPortStatusPollingIntervalOk returns a tuple with the PortStatusPollingInterval field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPortStatusPollingInterval
-
-`func (o *SitesPutRequestSiteValue) SetPortStatusPollingInterval(v int32)`
-
-SetPortStatusPollingInterval sets PortStatusPollingInterval field to given value.
-
-### HasPortStatusPollingInterval
-
-`func (o *SitesPutRequestSiteValue) HasPortStatusPollingInterval() bool`
-
-HasPortStatusPollingInterval returns a boolean if a field has been set.
-
-### SetPortStatusPollingIntervalNil
-
-`func (o *SitesPutRequestSiteValue) SetPortStatusPollingIntervalNil(b bool)`
-
- SetPortStatusPollingIntervalNil sets the value for PortStatusPollingInterval to be an explicit nil
-
-### UnsetPortStatusPollingInterval
-`func (o *SitesPutRequestSiteValue) UnsetPortStatusPollingInterval()`
-
-UnsetPortStatusPollingInterval ensures that no value is present for PortStatusPollingInterval, not even an explicit nil
-### GetServiceForSite
-
-`func (o *SitesPutRequestSiteValue) GetServiceForSite() string`
-
-GetServiceForSite returns the ServiceForSite field if non-nil, zero value otherwise.
-
-### GetServiceForSiteOk
-
-`func (o *SitesPutRequestSiteValue) GetServiceForSiteOk() (*string, bool)`
-
-GetServiceForSiteOk returns a tuple with the ServiceForSite field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetServiceForSite
-
-`func (o *SitesPutRequestSiteValue) SetServiceForSite(v string)`
-
-SetServiceForSite sets ServiceForSite field to given value.
-
-### HasServiceForSite
-
-`func (o *SitesPutRequestSiteValue) HasServiceForSite() bool`
-
-HasServiceForSite returns a boolean if a field has been set.
-
-### GetServiceForSiteRefType
-
-`func (o *SitesPutRequestSiteValue) GetServiceForSiteRefType() string`
-
-GetServiceForSiteRefType returns the ServiceForSiteRefType field if non-nil, zero value otherwise.
-
-### GetServiceForSiteRefTypeOk
-
-`func (o *SitesPutRequestSiteValue) GetServiceForSiteRefTypeOk() (*string, bool)`
-
-GetServiceForSiteRefTypeOk returns a tuple with the ServiceForSiteRefType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetServiceForSiteRefType
-
-`func (o *SitesPutRequestSiteValue) SetServiceForSiteRefType(v string)`
-
-SetServiceForSiteRefType sets ServiceForSiteRefType field to given value.
-
-### HasServiceForSiteRefType
-
-`func (o *SitesPutRequestSiteValue) HasServiceForSiteRefType() bool`
-
-HasServiceForSiteRefType returns a boolean if a field has been set.
-
-### GetSpanningTreeType
-
-`func (o *SitesPutRequestSiteValue) GetSpanningTreeType() string`
-
-GetSpanningTreeType returns the SpanningTreeType field if non-nil, zero value otherwise.
-
-### GetSpanningTreeTypeOk
-
-`func (o *SitesPutRequestSiteValue) GetSpanningTreeTypeOk() (*string, bool)`
-
-GetSpanningTreeTypeOk returns a tuple with the SpanningTreeType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSpanningTreeType
-
-`func (o *SitesPutRequestSiteValue) SetSpanningTreeType(v string)`
-
-SetSpanningTreeType sets SpanningTreeType field to given value.
-
-### HasSpanningTreeType
-
-`func (o *SitesPutRequestSiteValue) HasSpanningTreeType() bool`
-
-HasSpanningTreeType returns a boolean if a field has been set.
-
-### GetRegionName
-
-`func (o *SitesPutRequestSiteValue) GetRegionName() string`
-
-GetRegionName returns the RegionName field if non-nil, zero value otherwise.
-
-### GetRegionNameOk
-
-`func (o *SitesPutRequestSiteValue) GetRegionNameOk() (*string, bool)`
-
-GetRegionNameOk returns a tuple with the RegionName field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetRegionName
-
-`func (o *SitesPutRequestSiteValue) SetRegionName(v string)`
-
-SetRegionName sets RegionName field to given value.
-
-### HasRegionName
-
-`func (o *SitesPutRequestSiteValue) HasRegionName() bool`
-
-HasRegionName returns a boolean if a field has been set.
-
-### GetRevision
-
-`func (o *SitesPutRequestSiteValue) GetRevision() int32`
-
-GetRevision returns the Revision field if non-nil, zero value otherwise.
-
-### GetRevisionOk
-
-`func (o *SitesPutRequestSiteValue) GetRevisionOk() (*int32, bool)`
-
-GetRevisionOk returns a tuple with the Revision field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetRevision
-
-`func (o *SitesPutRequestSiteValue) SetRevision(v int32)`
-
-SetRevision sets Revision field to given value.
-
-### HasRevision
-
-`func (o *SitesPutRequestSiteValue) HasRevision() bool`
-
-HasRevision returns a boolean if a field has been set.
-
-### SetRevisionNil
-
-`func (o *SitesPutRequestSiteValue) SetRevisionNil(b bool)`
-
- SetRevisionNil sets the value for Revision to be an explicit nil
-
-### UnsetRevision
-`func (o *SitesPutRequestSiteValue) UnsetRevision()`
-
-UnsetRevision ensures that no value is present for Revision, not even an explicit nil
-### GetForceSpanningTreeOnFabricPorts
-
-`func (o *SitesPutRequestSiteValue) GetForceSpanningTreeOnFabricPorts() bool`
-
-GetForceSpanningTreeOnFabricPorts returns the ForceSpanningTreeOnFabricPorts field if non-nil, zero value otherwise.
-
-### GetForceSpanningTreeOnFabricPortsOk
-
-`func (o *SitesPutRequestSiteValue) GetForceSpanningTreeOnFabricPortsOk() (*bool, bool)`
-
-GetForceSpanningTreeOnFabricPortsOk returns a tuple with the ForceSpanningTreeOnFabricPorts field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetForceSpanningTreeOnFabricPorts
-
-`func (o *SitesPutRequestSiteValue) SetForceSpanningTreeOnFabricPorts(v bool)`
-
-SetForceSpanningTreeOnFabricPorts sets ForceSpanningTreeOnFabricPorts field to given value.
-
-### HasForceSpanningTreeOnFabricPorts
-
-`func (o *SitesPutRequestSiteValue) HasForceSpanningTreeOnFabricPorts() bool`
-
-HasForceSpanningTreeOnFabricPorts returns a boolean if a field has been set.
-
-### GetReadOnlyMode
-
-`func (o *SitesPutRequestSiteValue) GetReadOnlyMode() bool`
-
-GetReadOnlyMode returns the ReadOnlyMode field if non-nil, zero value otherwise.
-
-### GetReadOnlyModeOk
-
-`func (o *SitesPutRequestSiteValue) GetReadOnlyModeOk() (*bool, bool)`
-
-GetReadOnlyModeOk returns a tuple with the ReadOnlyMode field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetReadOnlyMode
-
-`func (o *SitesPutRequestSiteValue) SetReadOnlyMode(v bool)`
-
-SetReadOnlyMode sets ReadOnlyMode field to given value.
-
-### HasReadOnlyMode
-
-`func (o *SitesPutRequestSiteValue) HasReadOnlyMode() bool`
-
-HasReadOnlyMode returns a boolean if a field has been set.
-
-### GetDomainForSite
-
-`func (o *SitesPutRequestSiteValue) GetDomainForSite() string`
-
-GetDomainForSite returns the DomainForSite field if non-nil, zero value otherwise.
-
-### GetDomainForSiteOk
-
-`func (o *SitesPutRequestSiteValue) GetDomainForSiteOk() (*string, bool)`
-
-GetDomainForSiteOk returns a tuple with the DomainForSite field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDomainForSite
-
-`func (o *SitesPutRequestSiteValue) SetDomainForSite(v string)`
-
-SetDomainForSite sets DomainForSite field to given value.
-
-### HasDomainForSite
-
-`func (o *SitesPutRequestSiteValue) HasDomainForSite() bool`
-
-HasDomainForSite returns a boolean if a field has been set.
-
-### GetDomainForSiteRefType
-
-`func (o *SitesPutRequestSiteValue) GetDomainForSiteRefType() string`
-
-GetDomainForSiteRefType returns the DomainForSiteRefType field if non-nil, zero value otherwise.
-
-### GetDomainForSiteRefTypeOk
-
-`func (o *SitesPutRequestSiteValue) GetDomainForSiteRefTypeOk() (*string, bool)`
-
-GetDomainForSiteRefTypeOk returns a tuple with the DomainForSiteRefType field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDomainForSiteRefType
-
-`func (o *SitesPutRequestSiteValue) SetDomainForSiteRefType(v string)`
-
-SetDomainForSiteRefType sets DomainForSiteRefType field to given value.
-
-### HasDomainForSiteRefType
-
-`func (o *SitesPutRequestSiteValue) HasDomainForSiteRefType() bool`
-
-HasDomainForSiteRefType returns a boolean if a field has been set.
-
-### GetEnableDscp
-
-`func (o *SitesPutRequestSiteValue) GetEnableDscp() bool`
-
-GetEnableDscp returns the EnableDscp field if non-nil, zero value otherwise.
-
-### GetEnableDscpOk
-
-`func (o *SitesPutRequestSiteValue) GetEnableDscpOk() (*bool, bool)`
-
-GetEnableDscpOk returns a tuple with the EnableDscp field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEnableDscp
-
-`func (o *SitesPutRequestSiteValue) SetEnableDscp(v bool)`
-
-SetEnableDscp sets EnableDscp field to given value.
-
-### HasEnableDscp
-
-`func (o *SitesPutRequestSiteValue) HasEnableDscp() bool`
-
-HasEnableDscp returns a boolean if a field has been set.
-
-### GetDscpToPBitMap
-
-`func (o *SitesPutRequestSiteValue) GetDscpToPBitMap() string`
-
-GetDscpToPBitMap returns the DscpToPBitMap field if non-nil, zero value otherwise.
-
-### GetDscpToPBitMapOk
-
-`func (o *SitesPutRequestSiteValue) GetDscpToPBitMapOk() (*string, bool)`
-
-GetDscpToPBitMapOk returns a tuple with the DscpToPBitMap field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDscpToPBitMap
-
-`func (o *SitesPutRequestSiteValue) SetDscpToPBitMap(v string)`
-
-SetDscpToPBitMap sets DscpToPBitMap field to given value.
-
-### HasDscpToPBitMap
-
-`func (o *SitesPutRequestSiteValue) HasDscpToPBitMap() bool`
-
-HasDscpToPBitMap returns a boolean if a field has been set.
-
-### GetAnycastMacAddress
-
-`func (o *SitesPutRequestSiteValue) GetAnycastMacAddress() string`
-
-GetAnycastMacAddress returns the AnycastMacAddress field if non-nil, zero value otherwise.
-
-### GetAnycastMacAddressOk
-
-`func (o *SitesPutRequestSiteValue) GetAnycastMacAddressOk() (*string, bool)`
-
-GetAnycastMacAddressOk returns a tuple with the AnycastMacAddress field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetAnycastMacAddress
-
-`func (o *SitesPutRequestSiteValue) SetAnycastMacAddress(v string)`
-
-SetAnycastMacAddress sets AnycastMacAddress field to given value.
-
-### HasAnycastMacAddress
-
-`func (o *SitesPutRequestSiteValue) HasAnycastMacAddress() bool`
-
-HasAnycastMacAddress returns a boolean if a field has been set.
-
-### GetAnycastMacAddressAutoAssigned
-
-`func (o *SitesPutRequestSiteValue) GetAnycastMacAddressAutoAssigned() bool`
-
-GetAnycastMacAddressAutoAssigned returns the AnycastMacAddressAutoAssigned field if non-nil, zero value otherwise.
-
-### GetAnycastMacAddressAutoAssignedOk
-
-`func (o *SitesPutRequestSiteValue) GetAnycastMacAddressAutoAssignedOk() (*bool, bool)`
-
-GetAnycastMacAddressAutoAssignedOk returns a tuple with the AnycastMacAddressAutoAssigned field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetAnycastMacAddressAutoAssigned
-
-`func (o *SitesPutRequestSiteValue) SetAnycastMacAddressAutoAssigned(v bool)`
-
-SetAnycastMacAddressAutoAssigned sets AnycastMacAddressAutoAssigned field to given value.
-
-### HasAnycastMacAddressAutoAssigned
-
-`func (o *SitesPutRequestSiteValue) HasAnycastMacAddressAutoAssigned() bool`
-
-HasAnycastMacAddressAutoAssigned returns a boolean if a field has been set.
-
-### GetMacAddressAgingTime
-
-`func (o *SitesPutRequestSiteValue) GetMacAddressAgingTime() int32`
-
-GetMacAddressAgingTime returns the MacAddressAgingTime field if non-nil, zero value otherwise.
-
-### GetMacAddressAgingTimeOk
-
-`func (o *SitesPutRequestSiteValue) GetMacAddressAgingTimeOk() (*int32, bool)`
-
-GetMacAddressAgingTimeOk returns a tuple with the MacAddressAgingTime field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMacAddressAgingTime
-
-`func (o *SitesPutRequestSiteValue) SetMacAddressAgingTime(v int32)`
-
-SetMacAddressAgingTime sets MacAddressAgingTime field to given value.
-
-### HasMacAddressAgingTime
-
-`func (o *SitesPutRequestSiteValue) HasMacAddressAgingTime() bool`
-
-HasMacAddressAgingTime returns a boolean if a field has been set.
-
-### SetMacAddressAgingTimeNil
-
-`func (o *SitesPutRequestSiteValue) SetMacAddressAgingTimeNil(b bool)`
-
- SetMacAddressAgingTimeNil sets the value for MacAddressAgingTime to be an explicit nil
-
-### UnsetMacAddressAgingTime
-`func (o *SitesPutRequestSiteValue) UnsetMacAddressAgingTime()`
-
-UnsetMacAddressAgingTime ensures that no value is present for MacAddressAgingTime, not even an explicit nil
-### GetMlagDelayRestoreTimer
-
-`func (o *SitesPutRequestSiteValue) GetMlagDelayRestoreTimer() int32`
-
-GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field if non-nil, zero value otherwise.
-
-### GetMlagDelayRestoreTimerOk
-
-`func (o *SitesPutRequestSiteValue) GetMlagDelayRestoreTimerOk() (*int32, bool)`
-
-GetMlagDelayRestoreTimerOk returns a tuple with the MlagDelayRestoreTimer field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMlagDelayRestoreTimer
-
-`func (o *SitesPutRequestSiteValue) SetMlagDelayRestoreTimer(v int32)`
-
-SetMlagDelayRestoreTimer sets MlagDelayRestoreTimer field to given value.
-
-### HasMlagDelayRestoreTimer
-
-`func (o *SitesPutRequestSiteValue) HasMlagDelayRestoreTimer() bool`
-
-HasMlagDelayRestoreTimer returns a boolean if a field has been set.
-
-### SetMlagDelayRestoreTimerNil
-
-`func (o *SitesPutRequestSiteValue) SetMlagDelayRestoreTimerNil(b bool)`
-
- SetMlagDelayRestoreTimerNil sets the value for MlagDelayRestoreTimer to be an explicit nil
-
-### UnsetMlagDelayRestoreTimer
-`func (o *SitesPutRequestSiteValue) UnsetMlagDelayRestoreTimer()`
-
-UnsetMlagDelayRestoreTimer ensures that no value is present for MlagDelayRestoreTimer, not even an explicit nil
-### GetBgpKeepaliveTimer
-
-`func (o *SitesPutRequestSiteValue) GetBgpKeepaliveTimer() int32`
-
-GetBgpKeepaliveTimer returns the BgpKeepaliveTimer field if non-nil, zero value otherwise.
-
-### GetBgpKeepaliveTimerOk
-
-`func (o *SitesPutRequestSiteValue) GetBgpKeepaliveTimerOk() (*int32, bool)`
-
-GetBgpKeepaliveTimerOk returns a tuple with the BgpKeepaliveTimer field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetBgpKeepaliveTimer
-
-`func (o *SitesPutRequestSiteValue) SetBgpKeepaliveTimer(v int32)`
-
-SetBgpKeepaliveTimer sets BgpKeepaliveTimer field to given value.
-
-### HasBgpKeepaliveTimer
-
-`func (o *SitesPutRequestSiteValue) HasBgpKeepaliveTimer() bool`
-
-HasBgpKeepaliveTimer returns a boolean if a field has been set.
-
-### SetBgpKeepaliveTimerNil
-
-`func (o *SitesPutRequestSiteValue) SetBgpKeepaliveTimerNil(b bool)`
-
- SetBgpKeepaliveTimerNil sets the value for BgpKeepaliveTimer to be an explicit nil
-
-### UnsetBgpKeepaliveTimer
-`func (o *SitesPutRequestSiteValue) UnsetBgpKeepaliveTimer()`
-
-UnsetBgpKeepaliveTimer ensures that no value is present for BgpKeepaliveTimer, not even an explicit nil
-### GetBgpHoldDownTimer
-
-`func (o *SitesPutRequestSiteValue) GetBgpHoldDownTimer() int32`
-
-GetBgpHoldDownTimer returns the BgpHoldDownTimer field if non-nil, zero value otherwise.
-
-### GetBgpHoldDownTimerOk
-
-`func (o *SitesPutRequestSiteValue) GetBgpHoldDownTimerOk() (*int32, bool)`
-
-GetBgpHoldDownTimerOk returns a tuple with the BgpHoldDownTimer field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetBgpHoldDownTimer
-
-`func (o *SitesPutRequestSiteValue) SetBgpHoldDownTimer(v int32)`
-
-SetBgpHoldDownTimer sets BgpHoldDownTimer field to given value.
-
-### HasBgpHoldDownTimer
-
-`func (o *SitesPutRequestSiteValue) HasBgpHoldDownTimer() bool`
-
-HasBgpHoldDownTimer returns a boolean if a field has been set.
-
-### SetBgpHoldDownTimerNil
-
-`func (o *SitesPutRequestSiteValue) SetBgpHoldDownTimerNil(b bool)`
-
- SetBgpHoldDownTimerNil sets the value for BgpHoldDownTimer to be an explicit nil
-
-### UnsetBgpHoldDownTimer
-`func (o *SitesPutRequestSiteValue) UnsetBgpHoldDownTimer()`
-
-UnsetBgpHoldDownTimer ensures that no value is present for BgpHoldDownTimer, not even an explicit nil
-### GetSpineBgpAdvertisementInterval
-
-`func (o *SitesPutRequestSiteValue) GetSpineBgpAdvertisementInterval() int32`
-
-GetSpineBgpAdvertisementInterval returns the SpineBgpAdvertisementInterval field if non-nil, zero value otherwise.
-
-### GetSpineBgpAdvertisementIntervalOk
-
-`func (o *SitesPutRequestSiteValue) GetSpineBgpAdvertisementIntervalOk() (*int32, bool)`
-
-GetSpineBgpAdvertisementIntervalOk returns a tuple with the SpineBgpAdvertisementInterval field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSpineBgpAdvertisementInterval
-
-`func (o *SitesPutRequestSiteValue) SetSpineBgpAdvertisementInterval(v int32)`
-
-SetSpineBgpAdvertisementInterval sets SpineBgpAdvertisementInterval field to given value.
-
-### HasSpineBgpAdvertisementInterval
-
-`func (o *SitesPutRequestSiteValue) HasSpineBgpAdvertisementInterval() bool`
-
-HasSpineBgpAdvertisementInterval returns a boolean if a field has been set.
-
-### SetSpineBgpAdvertisementIntervalNil
-
-`func (o *SitesPutRequestSiteValue) SetSpineBgpAdvertisementIntervalNil(b bool)`
-
- SetSpineBgpAdvertisementIntervalNil sets the value for SpineBgpAdvertisementInterval to be an explicit nil
-
-### UnsetSpineBgpAdvertisementInterval
-`func (o *SitesPutRequestSiteValue) UnsetSpineBgpAdvertisementInterval()`
-
-UnsetSpineBgpAdvertisementInterval ensures that no value is present for SpineBgpAdvertisementInterval, not even an explicit nil
-### GetSpineBgpConnectTimer
-
-`func (o *SitesPutRequestSiteValue) GetSpineBgpConnectTimer() int32`
-
-GetSpineBgpConnectTimer returns the SpineBgpConnectTimer field if non-nil, zero value otherwise.
-
-### GetSpineBgpConnectTimerOk
-
-`func (o *SitesPutRequestSiteValue) GetSpineBgpConnectTimerOk() (*int32, bool)`
-
-GetSpineBgpConnectTimerOk returns a tuple with the SpineBgpConnectTimer field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSpineBgpConnectTimer
-
-`func (o *SitesPutRequestSiteValue) SetSpineBgpConnectTimer(v int32)`
-
-SetSpineBgpConnectTimer sets SpineBgpConnectTimer field to given value.
-
-### HasSpineBgpConnectTimer
-
-`func (o *SitesPutRequestSiteValue) HasSpineBgpConnectTimer() bool`
-
-HasSpineBgpConnectTimer returns a boolean if a field has been set.
-
-### SetSpineBgpConnectTimerNil
-
-`func (o *SitesPutRequestSiteValue) SetSpineBgpConnectTimerNil(b bool)`
-
- SetSpineBgpConnectTimerNil sets the value for SpineBgpConnectTimer to be an explicit nil
-
-### UnsetSpineBgpConnectTimer
-`func (o *SitesPutRequestSiteValue) UnsetSpineBgpConnectTimer()`
-
-UnsetSpineBgpConnectTimer ensures that no value is present for SpineBgpConnectTimer, not even an explicit nil
-### GetSpineAsNumber
-
-`func (o *SitesPutRequestSiteValue) GetSpineAsNumber() int32`
-
-GetSpineAsNumber returns the SpineAsNumber field if non-nil, zero value otherwise.
-
-### GetSpineAsNumberOk
-
-`func (o *SitesPutRequestSiteValue) GetSpineAsNumberOk() (*int32, bool)`
-
-GetSpineAsNumberOk returns a tuple with the SpineAsNumber field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSpineAsNumber
-
-`func (o *SitesPutRequestSiteValue) SetSpineAsNumber(v int32)`
-
-SetSpineAsNumber sets SpineAsNumber field to given value.
-
-### HasSpineAsNumber
-
-`func (o *SitesPutRequestSiteValue) HasSpineAsNumber() bool`
-
-HasSpineAsNumber returns a boolean if a field has been set.
-
-### SetSpineAsNumberNil
-
-`func (o *SitesPutRequestSiteValue) SetSpineAsNumberNil(b bool)`
-
- SetSpineAsNumberNil sets the value for SpineAsNumber to be an explicit nil
-
-### UnsetSpineAsNumber
-`func (o *SitesPutRequestSiteValue) UnsetSpineAsNumber()`
-
-UnsetSpineAsNumber ensures that no value is present for SpineAsNumber, not even an explicit nil
-### GetLeafBgpKeepAliveTimer
-
-`func (o *SitesPutRequestSiteValue) GetLeafBgpKeepAliveTimer() int32`
-
-GetLeafBgpKeepAliveTimer returns the LeafBgpKeepAliveTimer field if non-nil, zero value otherwise.
-
-### GetLeafBgpKeepAliveTimerOk
-
-`func (o *SitesPutRequestSiteValue) GetLeafBgpKeepAliveTimerOk() (*int32, bool)`
-
-GetLeafBgpKeepAliveTimerOk returns a tuple with the LeafBgpKeepAliveTimer field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetLeafBgpKeepAliveTimer
-
-`func (o *SitesPutRequestSiteValue) SetLeafBgpKeepAliveTimer(v int32)`
-
-SetLeafBgpKeepAliveTimer sets LeafBgpKeepAliveTimer field to given value.
-
-### HasLeafBgpKeepAliveTimer
-
-`func (o *SitesPutRequestSiteValue) HasLeafBgpKeepAliveTimer() bool`
-
-HasLeafBgpKeepAliveTimer returns a boolean if a field has been set.
-
-### SetLeafBgpKeepAliveTimerNil
-
-`func (o *SitesPutRequestSiteValue) SetLeafBgpKeepAliveTimerNil(b bool)`
-
- SetLeafBgpKeepAliveTimerNil sets the value for LeafBgpKeepAliveTimer to be an explicit nil
-
-### UnsetLeafBgpKeepAliveTimer
-`func (o *SitesPutRequestSiteValue) UnsetLeafBgpKeepAliveTimer()`
-
-UnsetLeafBgpKeepAliveTimer ensures that no value is present for LeafBgpKeepAliveTimer, not even an explicit nil
-### GetLeafBgpHoldDownTimer
-
-`func (o *SitesPutRequestSiteValue) GetLeafBgpHoldDownTimer() int32`
-
-GetLeafBgpHoldDownTimer returns the LeafBgpHoldDownTimer field if non-nil, zero value otherwise.
-
-### GetLeafBgpHoldDownTimerOk
-
-`func (o *SitesPutRequestSiteValue) GetLeafBgpHoldDownTimerOk() (*int32, bool)`
-
-GetLeafBgpHoldDownTimerOk returns a tuple with the LeafBgpHoldDownTimer field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetLeafBgpHoldDownTimer
-
-`func (o *SitesPutRequestSiteValue) SetLeafBgpHoldDownTimer(v int32)`
-
-SetLeafBgpHoldDownTimer sets LeafBgpHoldDownTimer field to given value.
-
-### HasLeafBgpHoldDownTimer
-
-`func (o *SitesPutRequestSiteValue) HasLeafBgpHoldDownTimer() bool`
-
-HasLeafBgpHoldDownTimer returns a boolean if a field has been set.
-
-### SetLeafBgpHoldDownTimerNil
-
-`func (o *SitesPutRequestSiteValue) SetLeafBgpHoldDownTimerNil(b bool)`
-
- SetLeafBgpHoldDownTimerNil sets the value for LeafBgpHoldDownTimer to be an explicit nil
-
-### UnsetLeafBgpHoldDownTimer
-`func (o *SitesPutRequestSiteValue) UnsetLeafBgpHoldDownTimer()`
-
-UnsetLeafBgpHoldDownTimer ensures that no value is present for LeafBgpHoldDownTimer, not even an explicit nil
-### GetLeafBgpAdvertisementInterval
-
-`func (o *SitesPutRequestSiteValue) GetLeafBgpAdvertisementInterval() int32`
-
-GetLeafBgpAdvertisementInterval returns the LeafBgpAdvertisementInterval field if non-nil, zero value otherwise.
-
-### GetLeafBgpAdvertisementIntervalOk
-
-`func (o *SitesPutRequestSiteValue) GetLeafBgpAdvertisementIntervalOk() (*int32, bool)`
-
-GetLeafBgpAdvertisementIntervalOk returns a tuple with the LeafBgpAdvertisementInterval field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetLeafBgpAdvertisementInterval
-
-`func (o *SitesPutRequestSiteValue) SetLeafBgpAdvertisementInterval(v int32)`
-
-SetLeafBgpAdvertisementInterval sets LeafBgpAdvertisementInterval field to given value.
-
-### HasLeafBgpAdvertisementInterval
-
-`func (o *SitesPutRequestSiteValue) HasLeafBgpAdvertisementInterval() bool`
-
-HasLeafBgpAdvertisementInterval returns a boolean if a field has been set.
-
-### SetLeafBgpAdvertisementIntervalNil
-
-`func (o *SitesPutRequestSiteValue) SetLeafBgpAdvertisementIntervalNil(b bool)`
-
- SetLeafBgpAdvertisementIntervalNil sets the value for LeafBgpAdvertisementInterval to be an explicit nil
-
-### UnsetLeafBgpAdvertisementInterval
-`func (o *SitesPutRequestSiteValue) UnsetLeafBgpAdvertisementInterval()`
-
-UnsetLeafBgpAdvertisementInterval ensures that no value is present for LeafBgpAdvertisementInterval, not even an explicit nil
-### GetLeafBgpConnectTimer
-
-`func (o *SitesPutRequestSiteValue) GetLeafBgpConnectTimer() int32`
-
-GetLeafBgpConnectTimer returns the LeafBgpConnectTimer field if non-nil, zero value otherwise.
-
-### GetLeafBgpConnectTimerOk
-
-`func (o *SitesPutRequestSiteValue) GetLeafBgpConnectTimerOk() (*int32, bool)`
-
-GetLeafBgpConnectTimerOk returns a tuple with the LeafBgpConnectTimer field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetLeafBgpConnectTimer
-
-`func (o *SitesPutRequestSiteValue) SetLeafBgpConnectTimer(v int32)`
-
-SetLeafBgpConnectTimer sets LeafBgpConnectTimer field to given value.
-
-### HasLeafBgpConnectTimer
-
-`func (o *SitesPutRequestSiteValue) HasLeafBgpConnectTimer() bool`
-
-HasLeafBgpConnectTimer returns a boolean if a field has been set.
-
-### SetLeafBgpConnectTimerNil
-
-`func (o *SitesPutRequestSiteValue) SetLeafBgpConnectTimerNil(b bool)`
-
- SetLeafBgpConnectTimerNil sets the value for LeafBgpConnectTimer to be an explicit nil
-
-### UnsetLeafBgpConnectTimer
-`func (o *SitesPutRequestSiteValue) UnsetLeafBgpConnectTimer()`
-
-UnsetLeafBgpConnectTimer ensures that no value is present for LeafBgpConnectTimer, not even an explicit nil
-### GetLinkStateTimeoutValue
-
-`func (o *SitesPutRequestSiteValue) GetLinkStateTimeoutValue() int32`
-
-GetLinkStateTimeoutValue returns the LinkStateTimeoutValue field if non-nil, zero value otherwise.
-
-### GetLinkStateTimeoutValueOk
-
-`func (o *SitesPutRequestSiteValue) GetLinkStateTimeoutValueOk() (*int32, bool)`
-
-GetLinkStateTimeoutValueOk returns a tuple with the LinkStateTimeoutValue field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetLinkStateTimeoutValue
-
-`func (o *SitesPutRequestSiteValue) SetLinkStateTimeoutValue(v int32)`
-
-SetLinkStateTimeoutValue sets LinkStateTimeoutValue field to given value.
-
-### HasLinkStateTimeoutValue
-
-`func (o *SitesPutRequestSiteValue) HasLinkStateTimeoutValue() bool`
-
-HasLinkStateTimeoutValue returns a boolean if a field has been set.
-
-### SetLinkStateTimeoutValueNil
-
-`func (o *SitesPutRequestSiteValue) SetLinkStateTimeoutValueNil(b bool)`
-
- SetLinkStateTimeoutValueNil sets the value for LinkStateTimeoutValue to be an explicit nil
-
-### UnsetLinkStateTimeoutValue
-`func (o *SitesPutRequestSiteValue) UnsetLinkStateTimeoutValue()`
-
-UnsetLinkStateTimeoutValue ensures that no value is present for LinkStateTimeoutValue, not even an explicit nil
-### GetEvpnMultihomingStartupDelay
-
-`func (o *SitesPutRequestSiteValue) GetEvpnMultihomingStartupDelay() int32`
-
-GetEvpnMultihomingStartupDelay returns the EvpnMultihomingStartupDelay field if non-nil, zero value otherwise.
-
-### GetEvpnMultihomingStartupDelayOk
-
-`func (o *SitesPutRequestSiteValue) GetEvpnMultihomingStartupDelayOk() (*int32, bool)`
-
-GetEvpnMultihomingStartupDelayOk returns a tuple with the EvpnMultihomingStartupDelay field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEvpnMultihomingStartupDelay
-
-`func (o *SitesPutRequestSiteValue) SetEvpnMultihomingStartupDelay(v int32)`
-
-SetEvpnMultihomingStartupDelay sets EvpnMultihomingStartupDelay field to given value.
-
-### HasEvpnMultihomingStartupDelay
-
-`func (o *SitesPutRequestSiteValue) HasEvpnMultihomingStartupDelay() bool`
-
-HasEvpnMultihomingStartupDelay returns a boolean if a field has been set.
-
-### SetEvpnMultihomingStartupDelayNil
-
-`func (o *SitesPutRequestSiteValue) SetEvpnMultihomingStartupDelayNil(b bool)`
-
- SetEvpnMultihomingStartupDelayNil sets the value for EvpnMultihomingStartupDelay to be an explicit nil
-
-### UnsetEvpnMultihomingStartupDelay
-`func (o *SitesPutRequestSiteValue) UnsetEvpnMultihomingStartupDelay()`
-
-UnsetEvpnMultihomingStartupDelay ensures that no value is present for EvpnMultihomingStartupDelay, not even an explicit nil
-### GetEvpnMacHoldtime
-
-`func (o *SitesPutRequestSiteValue) GetEvpnMacHoldtime() int32`
-
-GetEvpnMacHoldtime returns the EvpnMacHoldtime field if non-nil, zero value otherwise.
-
-### GetEvpnMacHoldtimeOk
-
-`func (o *SitesPutRequestSiteValue) GetEvpnMacHoldtimeOk() (*int32, bool)`
-
-GetEvpnMacHoldtimeOk returns a tuple with the EvpnMacHoldtime field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetEvpnMacHoldtime
-
-`func (o *SitesPutRequestSiteValue) SetEvpnMacHoldtime(v int32)`
-
-SetEvpnMacHoldtime sets EvpnMacHoldtime field to given value.
-
-### HasEvpnMacHoldtime
-
-`func (o *SitesPutRequestSiteValue) HasEvpnMacHoldtime() bool`
-
-HasEvpnMacHoldtime returns a boolean if a field has been set.
-
-### SetEvpnMacHoldtimeNil
-
-`func (o *SitesPutRequestSiteValue) SetEvpnMacHoldtimeNil(b bool)`
-
- SetEvpnMacHoldtimeNil sets the value for EvpnMacHoldtime to be an explicit nil
-
-### UnsetEvpnMacHoldtime
-`func (o *SitesPutRequestSiteValue) UnsetEvpnMacHoldtime()`
-
-UnsetEvpnMacHoldtime ensures that no value is present for EvpnMacHoldtime, not even an explicit nil
-### GetAggressiveReporting
-
-`func (o *SitesPutRequestSiteValue) GetAggressiveReporting() bool`
-
-GetAggressiveReporting returns the AggressiveReporting field if non-nil, zero value otherwise.
-
-### GetAggressiveReportingOk
-
-`func (o *SitesPutRequestSiteValue) GetAggressiveReportingOk() (*bool, bool)`
-
-GetAggressiveReportingOk returns a tuple with the AggressiveReporting field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetAggressiveReporting
-
-`func (o *SitesPutRequestSiteValue) SetAggressiveReporting(v bool)`
-
-SetAggressiveReporting sets AggressiveReporting field to given value.
-
-### HasAggressiveReporting
-
-`func (o *SitesPutRequestSiteValue) HasAggressiveReporting() bool`
-
-HasAggressiveReporting returns a boolean if a field has been set.
-
-### GetSwitchIpBase
-
-`func (o *SitesPutRequestSiteValue) GetSwitchIpBase() string`
-
-GetSwitchIpBase returns the SwitchIpBase field if non-nil, zero value otherwise.
-
-### GetSwitchIpBaseOk
-
-`func (o *SitesPutRequestSiteValue) GetSwitchIpBaseOk() (*string, bool)`
-
-GetSwitchIpBaseOk returns a tuple with the SwitchIpBase field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetSwitchIpBase
-
-`func (o *SitesPutRequestSiteValue) SetSwitchIpBase(v string)`
-
-SetSwitchIpBase sets SwitchIpBase field to given value.
-
-### HasSwitchIpBase
-
-`func (o *SitesPutRequestSiteValue) HasSwitchIpBase() bool`
-
-HasSwitchIpBase returns a boolean if a field has been set.
-
-### GetControllerIpBase
-
-`func (o *SitesPutRequestSiteValue) GetControllerIpBase() string`
-
-GetControllerIpBase returns the ControllerIpBase field if non-nil, zero value otherwise.
-
-### GetControllerIpBaseOk
-
-`func (o *SitesPutRequestSiteValue) GetControllerIpBaseOk() (*string, bool)`
-
-GetControllerIpBaseOk returns a tuple with the ControllerIpBase field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetControllerIpBase
-
-`func (o *SitesPutRequestSiteValue) SetControllerIpBase(v string)`
-
-SetControllerIpBase sets ControllerIpBase field to given value.
-
-### HasControllerIpBase
-
-`func (o *SitesPutRequestSiteValue) HasControllerIpBase() bool`
-
-HasControllerIpBase returns a boolean if a field has been set.
-
-### GetMultiTenant
-
-`func (o *SitesPutRequestSiteValue) GetMultiTenant() bool`
-
-GetMultiTenant returns the MultiTenant field if non-nil, zero value otherwise.
-
-### GetMultiTenantOk
-
-`func (o *SitesPutRequestSiteValue) GetMultiTenantOk() (*bool, bool)`
-
-GetMultiTenantOk returns a tuple with the MultiTenant field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMultiTenant
-
-`func (o *SitesPutRequestSiteValue) SetMultiTenant(v bool)`
-
-SetMultiTenant sets MultiTenant field to given value.
-
-### HasMultiTenant
-
-`func (o *SitesPutRequestSiteValue) HasMultiTenant() bool`
-
-HasMultiTenant returns a boolean if a field has been set.
-
-### GetBaseBgpAsNumber
-
-`func (o *SitesPutRequestSiteValue) GetBaseBgpAsNumber() string`
-
-GetBaseBgpAsNumber returns the BaseBgpAsNumber field if non-nil, zero value otherwise.
-
-### GetBaseBgpAsNumberOk
-
-`func (o *SitesPutRequestSiteValue) GetBaseBgpAsNumberOk() (*string, bool)`
-
-GetBaseBgpAsNumberOk returns a tuple with the BaseBgpAsNumber field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetBaseBgpAsNumber
-
-`func (o *SitesPutRequestSiteValue) SetBaseBgpAsNumber(v string)`
-
-SetBaseBgpAsNumber sets BaseBgpAsNumber field to given value.
-
-### HasBaseBgpAsNumber
-
-`func (o *SitesPutRequestSiteValue) HasBaseBgpAsNumber() bool`
-
-HasBaseBgpAsNumber returns a boolean if a field has been set.
-
-### GetRouterIdBasePrefix
-
-`func (o *SitesPutRequestSiteValue) GetRouterIdBasePrefix() string`
-
-GetRouterIdBasePrefix returns the RouterIdBasePrefix field if non-nil, zero value otherwise.
-
-### GetRouterIdBasePrefixOk
-
-`func (o *SitesPutRequestSiteValue) GetRouterIdBasePrefixOk() (*string, bool)`
-
-GetRouterIdBasePrefixOk returns a tuple with the RouterIdBasePrefix field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetRouterIdBasePrefix
-
-`func (o *SitesPutRequestSiteValue) SetRouterIdBasePrefix(v string)`
-
-SetRouterIdBasePrefix sets RouterIdBasePrefix field to given value.
-
-### HasRouterIdBasePrefix
-
-`func (o *SitesPutRequestSiteValue) HasRouterIdBasePrefix() bool`
-
-HasRouterIdBasePrefix returns a boolean if a field has been set.
-
-### GetVtepIdBasePrefix
-
-`func (o *SitesPutRequestSiteValue) GetVtepIdBasePrefix() string`
-
-GetVtepIdBasePrefix returns the VtepIdBasePrefix field if non-nil, zero value otherwise.
-
-### GetVtepIdBasePrefixOk
-
-`func (o *SitesPutRequestSiteValue) GetVtepIdBasePrefixOk() (*string, bool)`
-
-GetVtepIdBasePrefixOk returns a tuple with the VtepIdBasePrefix field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetVtepIdBasePrefix
-
-`func (o *SitesPutRequestSiteValue) SetVtepIdBasePrefix(v string)`
-
-SetVtepIdBasePrefix sets VtepIdBasePrefix field to given value.
-
-### HasVtepIdBasePrefix
-
-`func (o *SitesPutRequestSiteValue) HasVtepIdBasePrefix() bool`
-
-HasVtepIdBasePrefix returns a boolean if a field has been set.
-
-### GetPairedIpSubnet
-
-`func (o *SitesPutRequestSiteValue) GetPairedIpSubnet() string`
-
-GetPairedIpSubnet returns the PairedIpSubnet field if non-nil, zero value otherwise.
-
-### GetPairedIpSubnetOk
-
-`func (o *SitesPutRequestSiteValue) GetPairedIpSubnetOk() (*string, bool)`
-
-GetPairedIpSubnetOk returns a tuple with the PairedIpSubnet field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPairedIpSubnet
-
-`func (o *SitesPutRequestSiteValue) SetPairedIpSubnet(v string)`
-
-SetPairedIpSubnet sets PairedIpSubnet field to given value.
-
-### HasPairedIpSubnet
-
-`func (o *SitesPutRequestSiteValue) HasPairedIpSubnet() bool`
-
-HasPairedIpSubnet returns a boolean if a field has been set.
-
-### GetMaxSwitches
-
-`func (o *SitesPutRequestSiteValue) GetMaxSwitches() string`
-
-GetMaxSwitches returns the MaxSwitches field if non-nil, zero value otherwise.
-
-### GetMaxSwitchesOk
-
-`func (o *SitesPutRequestSiteValue) GetMaxSwitchesOk() (*string, bool)`
-
-GetMaxSwitchesOk returns a tuple with the MaxSwitches field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMaxSwitches
-
-`func (o *SitesPutRequestSiteValue) SetMaxSwitches(v string)`
-
-SetMaxSwitches sets MaxSwitches field to given value.
-
-### HasMaxSwitches
-
-`func (o *SitesPutRequestSiteValue) HasMaxSwitches() bool`
-
-HasMaxSwitches returns a boolean if a field has been set.
-
-### GetPauseValidationAlarms
-
-`func (o *SitesPutRequestSiteValue) GetPauseValidationAlarms() bool`
-
-GetPauseValidationAlarms returns the PauseValidationAlarms field if non-nil, zero value otherwise.
-
-### GetPauseValidationAlarmsOk
-
-`func (o *SitesPutRequestSiteValue) GetPauseValidationAlarmsOk() (*bool, bool)`
-
-GetPauseValidationAlarmsOk returns a tuple with the PauseValidationAlarms field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPauseValidationAlarms
-
-`func (o *SitesPutRequestSiteValue) SetPauseValidationAlarms(v bool)`
-
-SetPauseValidationAlarms sets PauseValidationAlarms field to given value.
-
-### HasPauseValidationAlarms
-
-`func (o *SitesPutRequestSiteValue) HasPauseValidationAlarms() bool`
-
-HasPauseValidationAlarms returns a boolean if a field has been set.
-
-### GetStartingOctet
-
-`func (o *SitesPutRequestSiteValue) GetStartingOctet() int32`
-
-GetStartingOctet returns the StartingOctet field if non-nil, zero value otherwise.
-
-### GetStartingOctetOk
-
-`func (o *SitesPutRequestSiteValue) GetStartingOctetOk() (*int32, bool)`
-
-GetStartingOctetOk returns a tuple with the StartingOctet field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetStartingOctet
-
-`func (o *SitesPutRequestSiteValue) SetStartingOctet(v int32)`
-
-SetStartingOctet sets StartingOctet field to given value.
-
-### HasStartingOctet
-
-`func (o *SitesPutRequestSiteValue) HasStartingOctet() bool`
-
-HasStartingOctet returns a boolean if a field has been set.
-
-### SetStartingOctetNil
-
-`func (o *SitesPutRequestSiteValue) SetStartingOctetNil(b bool)`
-
- SetStartingOctetNil sets the value for StartingOctet to be an explicit nil
-
-### UnsetStartingOctet
-`func (o *SitesPutRequestSiteValue) UnsetStartingOctet()`
-
-UnsetStartingOctet ensures that no value is present for StartingOctet, not even an explicit nil
-### GetMaxSus
-
-`func (o *SitesPutRequestSiteValue) GetMaxSus() int32`
-
-GetMaxSus returns the MaxSus field if non-nil, zero value otherwise.
-
-### GetMaxSusOk
-
-`func (o *SitesPutRequestSiteValue) GetMaxSusOk() (*int32, bool)`
-
-GetMaxSusOk returns a tuple with the MaxSus field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMaxSus
-
-`func (o *SitesPutRequestSiteValue) SetMaxSus(v int32)`
-
-SetMaxSus sets MaxSus field to given value.
-
-### HasMaxSus
-
-`func (o *SitesPutRequestSiteValue) HasMaxSus() bool`
-
-HasMaxSus returns a boolean if a field has been set.
-
-### SetMaxSusNil
-
-`func (o *SitesPutRequestSiteValue) SetMaxSusNil(b bool)`
-
- SetMaxSusNil sets the value for MaxSus to be an explicit nil
-
-### UnsetMaxSus
-`func (o *SitesPutRequestSiteValue) UnsetMaxSus()`
-
-UnsetMaxSus ensures that no value is present for MaxSus, not even an explicit nil
-### GetMaxPods
-
-`func (o *SitesPutRequestSiteValue) GetMaxPods() int32`
-
-GetMaxPods returns the MaxPods field if non-nil, zero value otherwise.
-
-### GetMaxPodsOk
-
-`func (o *SitesPutRequestSiteValue) GetMaxPodsOk() (*int32, bool)`
-
-GetMaxPodsOk returns a tuple with the MaxPods field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMaxPods
-
-`func (o *SitesPutRequestSiteValue) SetMaxPods(v int32)`
-
-SetMaxPods sets MaxPods field to given value.
-
-### HasMaxPods
-
-`func (o *SitesPutRequestSiteValue) HasMaxPods() bool`
-
-HasMaxPods returns a boolean if a field has been set.
-
-### SetMaxPodsNil
-
-`func (o *SitesPutRequestSiteValue) SetMaxPodsNil(b bool)`
-
- SetMaxPodsNil sets the value for MaxPods to be an explicit nil
-
-### UnsetMaxPods
-`func (o *SitesPutRequestSiteValue) UnsetMaxPods()`
-
-UnsetMaxPods ensures that no value is present for MaxPods, not even an explicit nil
-### GetObjectProperties
-
-`func (o *SitesPutRequestSiteValue) GetObjectProperties() SitesPutRequestSiteValueObjectProperties`
-
-GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
-
-### GetObjectPropertiesOk
-
-`func (o *SitesPutRequestSiteValue) GetObjectPropertiesOk() (*SitesPutRequestSiteValueObjectProperties, bool)`
-
-GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetObjectProperties
-
-`func (o *SitesPutRequestSiteValue) SetObjectProperties(v SitesPutRequestSiteValueObjectProperties)`
-
-SetObjectProperties sets ObjectProperties field to given value.
-
-### HasObjectProperties
-
-`func (o *SitesPutRequestSiteValue) HasObjectProperties() bool`
-
-HasObjectProperties returns a boolean if a field has been set.
-
 ### GetSwitchUsername
 
-`func (o *SitesPutRequestSiteValue) GetSwitchUsername() string`
+`func (o *FabricsPutRequestFabricValue) GetSwitchUsername() string`
 
 GetSwitchUsername returns the SwitchUsername field if non-nil, zero value otherwise.
 
 ### GetSwitchUsernameOk
 
-`func (o *SitesPutRequestSiteValue) GetSwitchUsernameOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetSwitchUsernameOk() (*string, bool)`
 
 GetSwitchUsernameOk returns a tuple with the SwitchUsername field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSwitchUsername
 
-`func (o *SitesPutRequestSiteValue) SetSwitchUsername(v string)`
+`func (o *FabricsPutRequestFabricValue) SetSwitchUsername(v string)`
 
 SetSwitchUsername sets SwitchUsername field to given value.
 
 ### HasSwitchUsername
 
-`func (o *SitesPutRequestSiteValue) HasSwitchUsername() bool`
+`func (o *FabricsPutRequestFabricValue) HasSwitchUsername() bool`
 
 HasSwitchUsername returns a boolean if a field has been set.
 
 ### GetSwitchPassword
 
-`func (o *SitesPutRequestSiteValue) GetSwitchPassword() string`
+`func (o *FabricsPutRequestFabricValue) GetSwitchPassword() string`
 
 GetSwitchPassword returns the SwitchPassword field if non-nil, zero value otherwise.
 
 ### GetSwitchPasswordOk
 
-`func (o *SitesPutRequestSiteValue) GetSwitchPasswordOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetSwitchPasswordOk() (*string, bool)`
 
 GetSwitchPasswordOk returns a tuple with the SwitchPassword field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSwitchPassword
 
-`func (o *SitesPutRequestSiteValue) SetSwitchPassword(v string)`
+`func (o *FabricsPutRequestFabricValue) SetSwitchPassword(v string)`
 
 SetSwitchPassword sets SwitchPassword field to given value.
 
 ### HasSwitchPassword
 
-`func (o *SitesPutRequestSiteValue) HasSwitchPassword() bool`
+`func (o *FabricsPutRequestFabricValue) HasSwitchPassword() bool`
 
 HasSwitchPassword returns a boolean if a field has been set.
 
 ### GetSwitchPasswordEncrypted
 
-`func (o *SitesPutRequestSiteValue) GetSwitchPasswordEncrypted() string`
+`func (o *FabricsPutRequestFabricValue) GetSwitchPasswordEncrypted() string`
 
 GetSwitchPasswordEncrypted returns the SwitchPasswordEncrypted field if non-nil, zero value otherwise.
 
 ### GetSwitchPasswordEncryptedOk
 
-`func (o *SitesPutRequestSiteValue) GetSwitchPasswordEncryptedOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetSwitchPasswordEncryptedOk() (*string, bool)`
 
 GetSwitchPasswordEncryptedOk returns a tuple with the SwitchPasswordEncrypted field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSwitchPasswordEncrypted
 
-`func (o *SitesPutRequestSiteValue) SetSwitchPasswordEncrypted(v string)`
+`func (o *FabricsPutRequestFabricValue) SetSwitchPasswordEncrypted(v string)`
 
 SetSwitchPasswordEncrypted sets SwitchPasswordEncrypted field to given value.
 
 ### HasSwitchPasswordEncrypted
 
-`func (o *SitesPutRequestSiteValue) HasSwitchPasswordEncrypted() bool`
+`func (o *FabricsPutRequestFabricValue) HasSwitchPasswordEncrypted() bool`
 
 HasSwitchPasswordEncrypted returns a boolean if a field has been set.
 
 ### GetHgxUsername
 
-`func (o *SitesPutRequestSiteValue) GetHgxUsername() string`
+`func (o *FabricsPutRequestFabricValue) GetHgxUsername() string`
 
 GetHgxUsername returns the HgxUsername field if non-nil, zero value otherwise.
 
 ### GetHgxUsernameOk
 
-`func (o *SitesPutRequestSiteValue) GetHgxUsernameOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetHgxUsernameOk() (*string, bool)`
 
 GetHgxUsernameOk returns a tuple with the HgxUsername field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetHgxUsername
 
-`func (o *SitesPutRequestSiteValue) SetHgxUsername(v string)`
+`func (o *FabricsPutRequestFabricValue) SetHgxUsername(v string)`
 
 SetHgxUsername sets HgxUsername field to given value.
 
 ### HasHgxUsername
 
-`func (o *SitesPutRequestSiteValue) HasHgxUsername() bool`
+`func (o *FabricsPutRequestFabricValue) HasHgxUsername() bool`
 
 HasHgxUsername returns a boolean if a field has been set.
 
 ### GetHgxPassword
 
-`func (o *SitesPutRequestSiteValue) GetHgxPassword() string`
+`func (o *FabricsPutRequestFabricValue) GetHgxPassword() string`
 
 GetHgxPassword returns the HgxPassword field if non-nil, zero value otherwise.
 
 ### GetHgxPasswordOk
 
-`func (o *SitesPutRequestSiteValue) GetHgxPasswordOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetHgxPasswordOk() (*string, bool)`
 
 GetHgxPasswordOk returns a tuple with the HgxPassword field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetHgxPassword
 
-`func (o *SitesPutRequestSiteValue) SetHgxPassword(v string)`
+`func (o *FabricsPutRequestFabricValue) SetHgxPassword(v string)`
 
 SetHgxPassword sets HgxPassword field to given value.
 
 ### HasHgxPassword
 
-`func (o *SitesPutRequestSiteValue) HasHgxPassword() bool`
+`func (o *FabricsPutRequestFabricValue) HasHgxPassword() bool`
 
 HasHgxPassword returns a boolean if a field has been set.
 
 ### GetHgxPasswordEncrypted
 
-`func (o *SitesPutRequestSiteValue) GetHgxPasswordEncrypted() string`
+`func (o *FabricsPutRequestFabricValue) GetHgxPasswordEncrypted() string`
 
 GetHgxPasswordEncrypted returns the HgxPasswordEncrypted field if non-nil, zero value otherwise.
 
 ### GetHgxPasswordEncryptedOk
 
-`func (o *SitesPutRequestSiteValue) GetHgxPasswordEncryptedOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetHgxPasswordEncryptedOk() (*string, bool)`
 
 GetHgxPasswordEncryptedOk returns a tuple with the HgxPasswordEncrypted field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetHgxPasswordEncrypted
 
-`func (o *SitesPutRequestSiteValue) SetHgxPasswordEncrypted(v string)`
+`func (o *FabricsPutRequestFabricValue) SetHgxPasswordEncrypted(v string)`
 
 SetHgxPasswordEncrypted sets HgxPasswordEncrypted field to given value.
 
 ### HasHgxPasswordEncrypted
 
-`func (o *SitesPutRequestSiteValue) HasHgxPasswordEncrypted() bool`
+`func (o *FabricsPutRequestFabricValue) HasHgxPasswordEncrypted() bool`
 
 HasHgxPasswordEncrypted returns a boolean if a field has been set.
 
 ### GetSwitchGateway
 
-`func (o *SitesPutRequestSiteValue) GetSwitchGateway() string`
+`func (o *FabricsPutRequestFabricValue) GetSwitchGateway() string`
 
 GetSwitchGateway returns the SwitchGateway field if non-nil, zero value otherwise.
 
 ### GetSwitchGatewayOk
 
-`func (o *SitesPutRequestSiteValue) GetSwitchGatewayOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetSwitchGatewayOk() (*string, bool)`
 
 GetSwitchGatewayOk returns a tuple with the SwitchGateway field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSwitchGateway
 
-`func (o *SitesPutRequestSiteValue) SetSwitchGateway(v string)`
+`func (o *FabricsPutRequestFabricValue) SetSwitchGateway(v string)`
 
 SetSwitchGateway sets SwitchGateway field to given value.
 
 ### HasSwitchGateway
 
-`func (o *SitesPutRequestSiteValue) HasSwitchGateway() bool`
+`func (o *FabricsPutRequestFabricValue) HasSwitchGateway() bool`
 
 HasSwitchGateway returns a boolean if a field has been set.
 
 ### GetControllerGateway
 
-`func (o *SitesPutRequestSiteValue) GetControllerGateway() string`
+`func (o *FabricsPutRequestFabricValue) GetControllerGateway() string`
 
 GetControllerGateway returns the ControllerGateway field if non-nil, zero value otherwise.
 
 ### GetControllerGatewayOk
 
-`func (o *SitesPutRequestSiteValue) GetControllerGatewayOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetControllerGatewayOk() (*string, bool)`
 
 GetControllerGatewayOk returns a tuple with the ControllerGateway field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetControllerGateway
 
-`func (o *SitesPutRequestSiteValue) SetControllerGateway(v string)`
+`func (o *FabricsPutRequestFabricValue) SetControllerGateway(v string)`
 
 SetControllerGateway sets ControllerGateway field to given value.
 
 ### HasControllerGateway
 
-`func (o *SitesPutRequestSiteValue) HasControllerGateway() bool`
+`func (o *FabricsPutRequestFabricValue) HasControllerGateway() bool`
 
 HasControllerGateway returns a boolean if a field has been set.
 
 ### GetHgxGateway
 
-`func (o *SitesPutRequestSiteValue) GetHgxGateway() string`
+`func (o *FabricsPutRequestFabricValue) GetHgxGateway() string`
 
 GetHgxGateway returns the HgxGateway field if non-nil, zero value otherwise.
 
 ### GetHgxGatewayOk
 
-`func (o *SitesPutRequestSiteValue) GetHgxGatewayOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetHgxGatewayOk() (*string, bool)`
 
 GetHgxGatewayOk returns a tuple with the HgxGateway field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetHgxGateway
 
-`func (o *SitesPutRequestSiteValue) SetHgxGateway(v string)`
+`func (o *FabricsPutRequestFabricValue) SetHgxGateway(v string)`
 
 SetHgxGateway sets HgxGateway field to given value.
 
 ### HasHgxGateway
 
-`func (o *SitesPutRequestSiteValue) HasHgxGateway() bool`
+`func (o *FabricsPutRequestFabricValue) HasHgxGateway() bool`
 
 HasHgxGateway returns a boolean if a field has been set.
 
+### GetPlaneCount
+
+`func (o *FabricsPutRequestFabricValue) GetPlaneCount() string`
+
+GetPlaneCount returns the PlaneCount field if non-nil, zero value otherwise.
+
+### GetPlaneCountOk
+
+`func (o *FabricsPutRequestFabricValue) GetPlaneCountOk() (*string, bool)`
+
+GetPlaneCountOk returns a tuple with the PlaneCount field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPlaneCount
+
+`func (o *FabricsPutRequestFabricValue) SetPlaneCount(v string)`
+
+SetPlaneCount sets PlaneCount field to given value.
+
+### HasPlaneCount
+
+`func (o *FabricsPutRequestFabricValue) HasPlaneCount() bool`
+
+HasPlaneCount returns a boolean if a field has been set.
+
+### GetSuSupport
+
+`func (o *FabricsPutRequestFabricValue) GetSuSupport() bool`
+
+GetSuSupport returns the SuSupport field if non-nil, zero value otherwise.
+
+### GetSuSupportOk
+
+`func (o *FabricsPutRequestFabricValue) GetSuSupportOk() (*bool, bool)`
+
+GetSuSupportOk returns a tuple with the SuSupport field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSuSupport
+
+`func (o *FabricsPutRequestFabricValue) SetSuSupport(v bool)`
+
+SetSuSupport sets SuSupport field to given value.
+
+### HasSuSupport
+
+`func (o *FabricsPutRequestFabricValue) HasSuSupport() bool`
+
+HasSuSupport returns a boolean if a field has been set.
+
+### GetServerManagement
+
+`func (o *FabricsPutRequestFabricValue) GetServerManagement() bool`
+
+GetServerManagement returns the ServerManagement field if non-nil, zero value otherwise.
+
+### GetServerManagementOk
+
+`func (o *FabricsPutRequestFabricValue) GetServerManagementOk() (*bool, bool)`
+
+GetServerManagementOk returns a tuple with the ServerManagement field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetServerManagement
+
+`func (o *FabricsPutRequestFabricValue) SetServerManagement(v bool)`
+
+SetServerManagement sets ServerManagement field to given value.
+
+### HasServerManagement
+
+`func (o *FabricsPutRequestFabricValue) HasServerManagement() bool`
+
+HasServerManagement returns a boolean if a field has been set.
+
+### GetAllowAllUnderlayConnections
+
+`func (o *FabricsPutRequestFabricValue) GetAllowAllUnderlayConnections() bool`
+
+GetAllowAllUnderlayConnections returns the AllowAllUnderlayConnections field if non-nil, zero value otherwise.
+
+### GetAllowAllUnderlayConnectionsOk
+
+`func (o *FabricsPutRequestFabricValue) GetAllowAllUnderlayConnectionsOk() (*bool, bool)`
+
+GetAllowAllUnderlayConnectionsOk returns a tuple with the AllowAllUnderlayConnections field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAllowAllUnderlayConnections
+
+`func (o *FabricsPutRequestFabricValue) SetAllowAllUnderlayConnections(v bool)`
+
+SetAllowAllUnderlayConnections sets AllowAllUnderlayConnections field to given value.
+
+### HasAllowAllUnderlayConnections
+
+`func (o *FabricsPutRequestFabricValue) HasAllowAllUnderlayConnections() bool`
+
+HasAllowAllUnderlayConnections returns a boolean if a field has been set.
+
+### GetSiteType
+
+`func (o *FabricsPutRequestFabricValue) GetSiteType() string`
+
+GetSiteType returns the SiteType field if non-nil, zero value otherwise.
+
+### GetSiteTypeOk
+
+`func (o *FabricsPutRequestFabricValue) GetSiteTypeOk() (*string, bool)`
+
+GetSiteTypeOk returns a tuple with the SiteType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSiteType
+
+`func (o *FabricsPutRequestFabricValue) SetSiteType(v string)`
+
+SetSiteType sets SiteType field to given value.
+
+### HasSiteType
+
+`func (o *FabricsPutRequestFabricValue) HasSiteType() bool`
+
+HasSiteType returns a boolean if a field has been set.
+
+### GetDuplicateAddressDetectionMaxNumberOfMoves
+
+`func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int32`
+
+GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field if non-nil, zero value otherwise.
+
+### GetDuplicateAddressDetectionMaxNumberOfMovesOk
+
+`func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int32, bool)`
+
+GetDuplicateAddressDetectionMaxNumberOfMovesOk returns a tuple with the DuplicateAddressDetectionMaxNumberOfMoves field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDuplicateAddressDetectionMaxNumberOfMoves
+
+`func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int32)`
+
+SetDuplicateAddressDetectionMaxNumberOfMoves sets DuplicateAddressDetectionMaxNumberOfMoves field to given value.
+
+### HasDuplicateAddressDetectionMaxNumberOfMoves
+
+`func (o *FabricsPutRequestFabricValue) HasDuplicateAddressDetectionMaxNumberOfMoves() bool`
+
+HasDuplicateAddressDetectionMaxNumberOfMoves returns a boolean if a field has been set.
+
+### SetDuplicateAddressDetectionMaxNumberOfMovesNil
+
+`func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionMaxNumberOfMovesNil(b bool)`
+
+ SetDuplicateAddressDetectionMaxNumberOfMovesNil sets the value for DuplicateAddressDetectionMaxNumberOfMoves to be an explicit nil
+
+### UnsetDuplicateAddressDetectionMaxNumberOfMoves
+`func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionMaxNumberOfMoves()`
+
+UnsetDuplicateAddressDetectionMaxNumberOfMoves ensures that no value is present for DuplicateAddressDetectionMaxNumberOfMoves, not even an explicit nil
+### GetDuplicateAddressDetectionTime
+
+`func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTime() int32`
+
+GetDuplicateAddressDetectionTime returns the DuplicateAddressDetectionTime field if non-nil, zero value otherwise.
+
+### GetDuplicateAddressDetectionTimeOk
+
+`func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTimeOk() (*int32, bool)`
+
+GetDuplicateAddressDetectionTimeOk returns a tuple with the DuplicateAddressDetectionTime field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDuplicateAddressDetectionTime
+
+`func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTime(v int32)`
+
+SetDuplicateAddressDetectionTime sets DuplicateAddressDetectionTime field to given value.
+
+### HasDuplicateAddressDetectionTime
+
+`func (o *FabricsPutRequestFabricValue) HasDuplicateAddressDetectionTime() bool`
+
+HasDuplicateAddressDetectionTime returns a boolean if a field has been set.
+
+### SetDuplicateAddressDetectionTimeNil
+
+`func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTimeNil(b bool)`
+
+ SetDuplicateAddressDetectionTimeNil sets the value for DuplicateAddressDetectionTime to be an explicit nil
+
+### UnsetDuplicateAddressDetectionTime
+`func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionTime()`
+
+UnsetDuplicateAddressDetectionTime ensures that no value is present for DuplicateAddressDetectionTime, not even an explicit nil
+### GetPortAdminPollingInterval
+
+`func (o *FabricsPutRequestFabricValue) GetPortAdminPollingInterval() int32`
+
+GetPortAdminPollingInterval returns the PortAdminPollingInterval field if non-nil, zero value otherwise.
+
+### GetPortAdminPollingIntervalOk
+
+`func (o *FabricsPutRequestFabricValue) GetPortAdminPollingIntervalOk() (*int32, bool)`
+
+GetPortAdminPollingIntervalOk returns a tuple with the PortAdminPollingInterval field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPortAdminPollingInterval
+
+`func (o *FabricsPutRequestFabricValue) SetPortAdminPollingInterval(v int32)`
+
+SetPortAdminPollingInterval sets PortAdminPollingInterval field to given value.
+
+### HasPortAdminPollingInterval
+
+`func (o *FabricsPutRequestFabricValue) HasPortAdminPollingInterval() bool`
+
+HasPortAdminPollingInterval returns a boolean if a field has been set.
+
+### SetPortAdminPollingIntervalNil
+
+`func (o *FabricsPutRequestFabricValue) SetPortAdminPollingIntervalNil(b bool)`
+
+ SetPortAdminPollingIntervalNil sets the value for PortAdminPollingInterval to be an explicit nil
+
+### UnsetPortAdminPollingInterval
+`func (o *FabricsPutRequestFabricValue) UnsetPortAdminPollingInterval()`
+
+UnsetPortAdminPollingInterval ensures that no value is present for PortAdminPollingInterval, not even an explicit nil
+### GetPortStatusPollingInterval
+
+`func (o *FabricsPutRequestFabricValue) GetPortStatusPollingInterval() int32`
+
+GetPortStatusPollingInterval returns the PortStatusPollingInterval field if non-nil, zero value otherwise.
+
+### GetPortStatusPollingIntervalOk
+
+`func (o *FabricsPutRequestFabricValue) GetPortStatusPollingIntervalOk() (*int32, bool)`
+
+GetPortStatusPollingIntervalOk returns a tuple with the PortStatusPollingInterval field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPortStatusPollingInterval
+
+`func (o *FabricsPutRequestFabricValue) SetPortStatusPollingInterval(v int32)`
+
+SetPortStatusPollingInterval sets PortStatusPollingInterval field to given value.
+
+### HasPortStatusPollingInterval
+
+`func (o *FabricsPutRequestFabricValue) HasPortStatusPollingInterval() bool`
+
+HasPortStatusPollingInterval returns a boolean if a field has been set.
+
+### SetPortStatusPollingIntervalNil
+
+`func (o *FabricsPutRequestFabricValue) SetPortStatusPollingIntervalNil(b bool)`
+
+ SetPortStatusPollingIntervalNil sets the value for PortStatusPollingInterval to be an explicit nil
+
+### UnsetPortStatusPollingInterval
+`func (o *FabricsPutRequestFabricValue) UnsetPortStatusPollingInterval()`
+
+UnsetPortStatusPollingInterval ensures that no value is present for PortStatusPollingInterval, not even an explicit nil
+### GetServiceForSite
+
+`func (o *FabricsPutRequestFabricValue) GetServiceForSite() string`
+
+GetServiceForSite returns the ServiceForSite field if non-nil, zero value otherwise.
+
+### GetServiceForSiteOk
+
+`func (o *FabricsPutRequestFabricValue) GetServiceForSiteOk() (*string, bool)`
+
+GetServiceForSiteOk returns a tuple with the ServiceForSite field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetServiceForSite
+
+`func (o *FabricsPutRequestFabricValue) SetServiceForSite(v string)`
+
+SetServiceForSite sets ServiceForSite field to given value.
+
+### HasServiceForSite
+
+`func (o *FabricsPutRequestFabricValue) HasServiceForSite() bool`
+
+HasServiceForSite returns a boolean if a field has been set.
+
+### GetServiceForSiteRefType
+
+`func (o *FabricsPutRequestFabricValue) GetServiceForSiteRefType() string`
+
+GetServiceForSiteRefType returns the ServiceForSiteRefType field if non-nil, zero value otherwise.
+
+### GetServiceForSiteRefTypeOk
+
+`func (o *FabricsPutRequestFabricValue) GetServiceForSiteRefTypeOk() (*string, bool)`
+
+GetServiceForSiteRefTypeOk returns a tuple with the ServiceForSiteRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetServiceForSiteRefType
+
+`func (o *FabricsPutRequestFabricValue) SetServiceForSiteRefType(v string)`
+
+SetServiceForSiteRefType sets ServiceForSiteRefType field to given value.
+
+### HasServiceForSiteRefType
+
+`func (o *FabricsPutRequestFabricValue) HasServiceForSiteRefType() bool`
+
+HasServiceForSiteRefType returns a boolean if a field has been set.
+
+### GetSpanningTreeType
+
+`func (o *FabricsPutRequestFabricValue) GetSpanningTreeType() string`
+
+GetSpanningTreeType returns the SpanningTreeType field if non-nil, zero value otherwise.
+
+### GetSpanningTreeTypeOk
+
+`func (o *FabricsPutRequestFabricValue) GetSpanningTreeTypeOk() (*string, bool)`
+
+GetSpanningTreeTypeOk returns a tuple with the SpanningTreeType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpanningTreeType
+
+`func (o *FabricsPutRequestFabricValue) SetSpanningTreeType(v string)`
+
+SetSpanningTreeType sets SpanningTreeType field to given value.
+
+### HasSpanningTreeType
+
+`func (o *FabricsPutRequestFabricValue) HasSpanningTreeType() bool`
+
+HasSpanningTreeType returns a boolean if a field has been set.
+
+### GetRegionName
+
+`func (o *FabricsPutRequestFabricValue) GetRegionName() string`
+
+GetRegionName returns the RegionName field if non-nil, zero value otherwise.
+
+### GetRegionNameOk
+
+`func (o *FabricsPutRequestFabricValue) GetRegionNameOk() (*string, bool)`
+
+GetRegionNameOk returns a tuple with the RegionName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRegionName
+
+`func (o *FabricsPutRequestFabricValue) SetRegionName(v string)`
+
+SetRegionName sets RegionName field to given value.
+
+### HasRegionName
+
+`func (o *FabricsPutRequestFabricValue) HasRegionName() bool`
+
+HasRegionName returns a boolean if a field has been set.
+
+### GetRevision
+
+`func (o *FabricsPutRequestFabricValue) GetRevision() int32`
+
+GetRevision returns the Revision field if non-nil, zero value otherwise.
+
+### GetRevisionOk
+
+`func (o *FabricsPutRequestFabricValue) GetRevisionOk() (*int32, bool)`
+
+GetRevisionOk returns a tuple with the Revision field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRevision
+
+`func (o *FabricsPutRequestFabricValue) SetRevision(v int32)`
+
+SetRevision sets Revision field to given value.
+
+### HasRevision
+
+`func (o *FabricsPutRequestFabricValue) HasRevision() bool`
+
+HasRevision returns a boolean if a field has been set.
+
+### SetRevisionNil
+
+`func (o *FabricsPutRequestFabricValue) SetRevisionNil(b bool)`
+
+ SetRevisionNil sets the value for Revision to be an explicit nil
+
+### UnsetRevision
+`func (o *FabricsPutRequestFabricValue) UnsetRevision()`
+
+UnsetRevision ensures that no value is present for Revision, not even an explicit nil
+### GetForceSpanningTreeOnFabricPorts
+
+`func (o *FabricsPutRequestFabricValue) GetForceSpanningTreeOnFabricPorts() bool`
+
+GetForceSpanningTreeOnFabricPorts returns the ForceSpanningTreeOnFabricPorts field if non-nil, zero value otherwise.
+
+### GetForceSpanningTreeOnFabricPortsOk
+
+`func (o *FabricsPutRequestFabricValue) GetForceSpanningTreeOnFabricPortsOk() (*bool, bool)`
+
+GetForceSpanningTreeOnFabricPortsOk returns a tuple with the ForceSpanningTreeOnFabricPorts field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetForceSpanningTreeOnFabricPorts
+
+`func (o *FabricsPutRequestFabricValue) SetForceSpanningTreeOnFabricPorts(v bool)`
+
+SetForceSpanningTreeOnFabricPorts sets ForceSpanningTreeOnFabricPorts field to given value.
+
+### HasForceSpanningTreeOnFabricPorts
+
+`func (o *FabricsPutRequestFabricValue) HasForceSpanningTreeOnFabricPorts() bool`
+
+HasForceSpanningTreeOnFabricPorts returns a boolean if a field has been set.
+
+### GetReadOnlyMode
+
+`func (o *FabricsPutRequestFabricValue) GetReadOnlyMode() bool`
+
+GetReadOnlyMode returns the ReadOnlyMode field if non-nil, zero value otherwise.
+
+### GetReadOnlyModeOk
+
+`func (o *FabricsPutRequestFabricValue) GetReadOnlyModeOk() (*bool, bool)`
+
+GetReadOnlyModeOk returns a tuple with the ReadOnlyMode field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReadOnlyMode
+
+`func (o *FabricsPutRequestFabricValue) SetReadOnlyMode(v bool)`
+
+SetReadOnlyMode sets ReadOnlyMode field to given value.
+
+### HasReadOnlyMode
+
+`func (o *FabricsPutRequestFabricValue) HasReadOnlyMode() bool`
+
+HasReadOnlyMode returns a boolean if a field has been set.
+
+### GetDomainForSite
+
+`func (o *FabricsPutRequestFabricValue) GetDomainForSite() string`
+
+GetDomainForSite returns the DomainForSite field if non-nil, zero value otherwise.
+
+### GetDomainForSiteOk
+
+`func (o *FabricsPutRequestFabricValue) GetDomainForSiteOk() (*string, bool)`
+
+GetDomainForSiteOk returns a tuple with the DomainForSite field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDomainForSite
+
+`func (o *FabricsPutRequestFabricValue) SetDomainForSite(v string)`
+
+SetDomainForSite sets DomainForSite field to given value.
+
+### HasDomainForSite
+
+`func (o *FabricsPutRequestFabricValue) HasDomainForSite() bool`
+
+HasDomainForSite returns a boolean if a field has been set.
+
+### GetDomainForSiteRefType
+
+`func (o *FabricsPutRequestFabricValue) GetDomainForSiteRefType() string`
+
+GetDomainForSiteRefType returns the DomainForSiteRefType field if non-nil, zero value otherwise.
+
+### GetDomainForSiteRefTypeOk
+
+`func (o *FabricsPutRequestFabricValue) GetDomainForSiteRefTypeOk() (*string, bool)`
+
+GetDomainForSiteRefTypeOk returns a tuple with the DomainForSiteRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDomainForSiteRefType
+
+`func (o *FabricsPutRequestFabricValue) SetDomainForSiteRefType(v string)`
+
+SetDomainForSiteRefType sets DomainForSiteRefType field to given value.
+
+### HasDomainForSiteRefType
+
+`func (o *FabricsPutRequestFabricValue) HasDomainForSiteRefType() bool`
+
+HasDomainForSiteRefType returns a boolean if a field has been set.
+
+### GetEnableDscp
+
+`func (o *FabricsPutRequestFabricValue) GetEnableDscp() bool`
+
+GetEnableDscp returns the EnableDscp field if non-nil, zero value otherwise.
+
+### GetEnableDscpOk
+
+`func (o *FabricsPutRequestFabricValue) GetEnableDscpOk() (*bool, bool)`
+
+GetEnableDscpOk returns a tuple with the EnableDscp field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnableDscp
+
+`func (o *FabricsPutRequestFabricValue) SetEnableDscp(v bool)`
+
+SetEnableDscp sets EnableDscp field to given value.
+
+### HasEnableDscp
+
+`func (o *FabricsPutRequestFabricValue) HasEnableDscp() bool`
+
+HasEnableDscp returns a boolean if a field has been set.
+
+### GetDscpToPBitMap
+
+`func (o *FabricsPutRequestFabricValue) GetDscpToPBitMap() string`
+
+GetDscpToPBitMap returns the DscpToPBitMap field if non-nil, zero value otherwise.
+
+### GetDscpToPBitMapOk
+
+`func (o *FabricsPutRequestFabricValue) GetDscpToPBitMapOk() (*string, bool)`
+
+GetDscpToPBitMapOk returns a tuple with the DscpToPBitMap field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDscpToPBitMap
+
+`func (o *FabricsPutRequestFabricValue) SetDscpToPBitMap(v string)`
+
+SetDscpToPBitMap sets DscpToPBitMap field to given value.
+
+### HasDscpToPBitMap
+
+`func (o *FabricsPutRequestFabricValue) HasDscpToPBitMap() bool`
+
+HasDscpToPBitMap returns a boolean if a field has been set.
+
+### GetAnycastMacAddress
+
+`func (o *FabricsPutRequestFabricValue) GetAnycastMacAddress() string`
+
+GetAnycastMacAddress returns the AnycastMacAddress field if non-nil, zero value otherwise.
+
+### GetAnycastMacAddressOk
+
+`func (o *FabricsPutRequestFabricValue) GetAnycastMacAddressOk() (*string, bool)`
+
+GetAnycastMacAddressOk returns a tuple with the AnycastMacAddress field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAnycastMacAddress
+
+`func (o *FabricsPutRequestFabricValue) SetAnycastMacAddress(v string)`
+
+SetAnycastMacAddress sets AnycastMacAddress field to given value.
+
+### HasAnycastMacAddress
+
+`func (o *FabricsPutRequestFabricValue) HasAnycastMacAddress() bool`
+
+HasAnycastMacAddress returns a boolean if a field has been set.
+
+### GetAnycastMacAddressAutoAssigned
+
+`func (o *FabricsPutRequestFabricValue) GetAnycastMacAddressAutoAssigned() bool`
+
+GetAnycastMacAddressAutoAssigned returns the AnycastMacAddressAutoAssigned field if non-nil, zero value otherwise.
+
+### GetAnycastMacAddressAutoAssignedOk
+
+`func (o *FabricsPutRequestFabricValue) GetAnycastMacAddressAutoAssignedOk() (*bool, bool)`
+
+GetAnycastMacAddressAutoAssignedOk returns a tuple with the AnycastMacAddressAutoAssigned field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAnycastMacAddressAutoAssigned
+
+`func (o *FabricsPutRequestFabricValue) SetAnycastMacAddressAutoAssigned(v bool)`
+
+SetAnycastMacAddressAutoAssigned sets AnycastMacAddressAutoAssigned field to given value.
+
+### HasAnycastMacAddressAutoAssigned
+
+`func (o *FabricsPutRequestFabricValue) HasAnycastMacAddressAutoAssigned() bool`
+
+HasAnycastMacAddressAutoAssigned returns a boolean if a field has been set.
+
+### GetMacAddressAgingTime
+
+`func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTime() int32`
+
+GetMacAddressAgingTime returns the MacAddressAgingTime field if non-nil, zero value otherwise.
+
+### GetMacAddressAgingTimeOk
+
+`func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTimeOk() (*int32, bool)`
+
+GetMacAddressAgingTimeOk returns a tuple with the MacAddressAgingTime field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMacAddressAgingTime
+
+`func (o *FabricsPutRequestFabricValue) SetMacAddressAgingTime(v int32)`
+
+SetMacAddressAgingTime sets MacAddressAgingTime field to given value.
+
+### HasMacAddressAgingTime
+
+`func (o *FabricsPutRequestFabricValue) HasMacAddressAgingTime() bool`
+
+HasMacAddressAgingTime returns a boolean if a field has been set.
+
+### SetMacAddressAgingTimeNil
+
+`func (o *FabricsPutRequestFabricValue) SetMacAddressAgingTimeNil(b bool)`
+
+ SetMacAddressAgingTimeNil sets the value for MacAddressAgingTime to be an explicit nil
+
+### UnsetMacAddressAgingTime
+`func (o *FabricsPutRequestFabricValue) UnsetMacAddressAgingTime()`
+
+UnsetMacAddressAgingTime ensures that no value is present for MacAddressAgingTime, not even an explicit nil
+### GetMlagDelayRestoreTimer
+
+`func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimer() int32`
+
+GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field if non-nil, zero value otherwise.
+
+### GetMlagDelayRestoreTimerOk
+
+`func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimerOk() (*int32, bool)`
+
+GetMlagDelayRestoreTimerOk returns a tuple with the MlagDelayRestoreTimer field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMlagDelayRestoreTimer
+
+`func (o *FabricsPutRequestFabricValue) SetMlagDelayRestoreTimer(v int32)`
+
+SetMlagDelayRestoreTimer sets MlagDelayRestoreTimer field to given value.
+
+### HasMlagDelayRestoreTimer
+
+`func (o *FabricsPutRequestFabricValue) HasMlagDelayRestoreTimer() bool`
+
+HasMlagDelayRestoreTimer returns a boolean if a field has been set.
+
+### SetMlagDelayRestoreTimerNil
+
+`func (o *FabricsPutRequestFabricValue) SetMlagDelayRestoreTimerNil(b bool)`
+
+ SetMlagDelayRestoreTimerNil sets the value for MlagDelayRestoreTimer to be an explicit nil
+
+### UnsetMlagDelayRestoreTimer
+`func (o *FabricsPutRequestFabricValue) UnsetMlagDelayRestoreTimer()`
+
+UnsetMlagDelayRestoreTimer ensures that no value is present for MlagDelayRestoreTimer, not even an explicit nil
+### GetBgpKeepaliveTimer
+
+`func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimer() int32`
+
+GetBgpKeepaliveTimer returns the BgpKeepaliveTimer field if non-nil, zero value otherwise.
+
+### GetBgpKeepaliveTimerOk
+
+`func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimerOk() (*int32, bool)`
+
+GetBgpKeepaliveTimerOk returns a tuple with the BgpKeepaliveTimer field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetBgpKeepaliveTimer
+
+`func (o *FabricsPutRequestFabricValue) SetBgpKeepaliveTimer(v int32)`
+
+SetBgpKeepaliveTimer sets BgpKeepaliveTimer field to given value.
+
+### HasBgpKeepaliveTimer
+
+`func (o *FabricsPutRequestFabricValue) HasBgpKeepaliveTimer() bool`
+
+HasBgpKeepaliveTimer returns a boolean if a field has been set.
+
+### SetBgpKeepaliveTimerNil
+
+`func (o *FabricsPutRequestFabricValue) SetBgpKeepaliveTimerNil(b bool)`
+
+ SetBgpKeepaliveTimerNil sets the value for BgpKeepaliveTimer to be an explicit nil
+
+### UnsetBgpKeepaliveTimer
+`func (o *FabricsPutRequestFabricValue) UnsetBgpKeepaliveTimer()`
+
+UnsetBgpKeepaliveTimer ensures that no value is present for BgpKeepaliveTimer, not even an explicit nil
+### GetBgpHoldDownTimer
+
+`func (o *FabricsPutRequestFabricValue) GetBgpHoldDownTimer() int32`
+
+GetBgpHoldDownTimer returns the BgpHoldDownTimer field if non-nil, zero value otherwise.
+
+### GetBgpHoldDownTimerOk
+
+`func (o *FabricsPutRequestFabricValue) GetBgpHoldDownTimerOk() (*int32, bool)`
+
+GetBgpHoldDownTimerOk returns a tuple with the BgpHoldDownTimer field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetBgpHoldDownTimer
+
+`func (o *FabricsPutRequestFabricValue) SetBgpHoldDownTimer(v int32)`
+
+SetBgpHoldDownTimer sets BgpHoldDownTimer field to given value.
+
+### HasBgpHoldDownTimer
+
+`func (o *FabricsPutRequestFabricValue) HasBgpHoldDownTimer() bool`
+
+HasBgpHoldDownTimer returns a boolean if a field has been set.
+
+### SetBgpHoldDownTimerNil
+
+`func (o *FabricsPutRequestFabricValue) SetBgpHoldDownTimerNil(b bool)`
+
+ SetBgpHoldDownTimerNil sets the value for BgpHoldDownTimer to be an explicit nil
+
+### UnsetBgpHoldDownTimer
+`func (o *FabricsPutRequestFabricValue) UnsetBgpHoldDownTimer()`
+
+UnsetBgpHoldDownTimer ensures that no value is present for BgpHoldDownTimer, not even an explicit nil
+### GetSpineBgpAdvertisementInterval
+
+`func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementInterval() int32`
+
+GetSpineBgpAdvertisementInterval returns the SpineBgpAdvertisementInterval field if non-nil, zero value otherwise.
+
+### GetSpineBgpAdvertisementIntervalOk
+
+`func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementIntervalOk() (*int32, bool)`
+
+GetSpineBgpAdvertisementIntervalOk returns a tuple with the SpineBgpAdvertisementInterval field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpineBgpAdvertisementInterval
+
+`func (o *FabricsPutRequestFabricValue) SetSpineBgpAdvertisementInterval(v int32)`
+
+SetSpineBgpAdvertisementInterval sets SpineBgpAdvertisementInterval field to given value.
+
+### HasSpineBgpAdvertisementInterval
+
+`func (o *FabricsPutRequestFabricValue) HasSpineBgpAdvertisementInterval() bool`
+
+HasSpineBgpAdvertisementInterval returns a boolean if a field has been set.
+
+### SetSpineBgpAdvertisementIntervalNil
+
+`func (o *FabricsPutRequestFabricValue) SetSpineBgpAdvertisementIntervalNil(b bool)`
+
+ SetSpineBgpAdvertisementIntervalNil sets the value for SpineBgpAdvertisementInterval to be an explicit nil
+
+### UnsetSpineBgpAdvertisementInterval
+`func (o *FabricsPutRequestFabricValue) UnsetSpineBgpAdvertisementInterval()`
+
+UnsetSpineBgpAdvertisementInterval ensures that no value is present for SpineBgpAdvertisementInterval, not even an explicit nil
+### GetSpineBgpConnectTimer
+
+`func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimer() int32`
+
+GetSpineBgpConnectTimer returns the SpineBgpConnectTimer field if non-nil, zero value otherwise.
+
+### GetSpineBgpConnectTimerOk
+
+`func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimerOk() (*int32, bool)`
+
+GetSpineBgpConnectTimerOk returns a tuple with the SpineBgpConnectTimer field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpineBgpConnectTimer
+
+`func (o *FabricsPutRequestFabricValue) SetSpineBgpConnectTimer(v int32)`
+
+SetSpineBgpConnectTimer sets SpineBgpConnectTimer field to given value.
+
+### HasSpineBgpConnectTimer
+
+`func (o *FabricsPutRequestFabricValue) HasSpineBgpConnectTimer() bool`
+
+HasSpineBgpConnectTimer returns a boolean if a field has been set.
+
+### SetSpineBgpConnectTimerNil
+
+`func (o *FabricsPutRequestFabricValue) SetSpineBgpConnectTimerNil(b bool)`
+
+ SetSpineBgpConnectTimerNil sets the value for SpineBgpConnectTimer to be an explicit nil
+
+### UnsetSpineBgpConnectTimer
+`func (o *FabricsPutRequestFabricValue) UnsetSpineBgpConnectTimer()`
+
+UnsetSpineBgpConnectTimer ensures that no value is present for SpineBgpConnectTimer, not even an explicit nil
+### GetSpineAsNumber
+
+`func (o *FabricsPutRequestFabricValue) GetSpineAsNumber() int32`
+
+GetSpineAsNumber returns the SpineAsNumber field if non-nil, zero value otherwise.
+
+### GetSpineAsNumberOk
+
+`func (o *FabricsPutRequestFabricValue) GetSpineAsNumberOk() (*int32, bool)`
+
+GetSpineAsNumberOk returns a tuple with the SpineAsNumber field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSpineAsNumber
+
+`func (o *FabricsPutRequestFabricValue) SetSpineAsNumber(v int32)`
+
+SetSpineAsNumber sets SpineAsNumber field to given value.
+
+### HasSpineAsNumber
+
+`func (o *FabricsPutRequestFabricValue) HasSpineAsNumber() bool`
+
+HasSpineAsNumber returns a boolean if a field has been set.
+
+### SetSpineAsNumberNil
+
+`func (o *FabricsPutRequestFabricValue) SetSpineAsNumberNil(b bool)`
+
+ SetSpineAsNumberNil sets the value for SpineAsNumber to be an explicit nil
+
+### UnsetSpineAsNumber
+`func (o *FabricsPutRequestFabricValue) UnsetSpineAsNumber()`
+
+UnsetSpineAsNumber ensures that no value is present for SpineAsNumber, not even an explicit nil
+### GetLeafBgpKeepAliveTimer
+
+`func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimer() int32`
+
+GetLeafBgpKeepAliveTimer returns the LeafBgpKeepAliveTimer field if non-nil, zero value otherwise.
+
+### GetLeafBgpKeepAliveTimerOk
+
+`func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimerOk() (*int32, bool)`
+
+GetLeafBgpKeepAliveTimerOk returns a tuple with the LeafBgpKeepAliveTimer field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLeafBgpKeepAliveTimer
+
+`func (o *FabricsPutRequestFabricValue) SetLeafBgpKeepAliveTimer(v int32)`
+
+SetLeafBgpKeepAliveTimer sets LeafBgpKeepAliveTimer field to given value.
+
+### HasLeafBgpKeepAliveTimer
+
+`func (o *FabricsPutRequestFabricValue) HasLeafBgpKeepAliveTimer() bool`
+
+HasLeafBgpKeepAliveTimer returns a boolean if a field has been set.
+
+### SetLeafBgpKeepAliveTimerNil
+
+`func (o *FabricsPutRequestFabricValue) SetLeafBgpKeepAliveTimerNil(b bool)`
+
+ SetLeafBgpKeepAliveTimerNil sets the value for LeafBgpKeepAliveTimer to be an explicit nil
+
+### UnsetLeafBgpKeepAliveTimer
+`func (o *FabricsPutRequestFabricValue) UnsetLeafBgpKeepAliveTimer()`
+
+UnsetLeafBgpKeepAliveTimer ensures that no value is present for LeafBgpKeepAliveTimer, not even an explicit nil
+### GetLeafBgpHoldDownTimer
+
+`func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimer() int32`
+
+GetLeafBgpHoldDownTimer returns the LeafBgpHoldDownTimer field if non-nil, zero value otherwise.
+
+### GetLeafBgpHoldDownTimerOk
+
+`func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimerOk() (*int32, bool)`
+
+GetLeafBgpHoldDownTimerOk returns a tuple with the LeafBgpHoldDownTimer field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLeafBgpHoldDownTimer
+
+`func (o *FabricsPutRequestFabricValue) SetLeafBgpHoldDownTimer(v int32)`
+
+SetLeafBgpHoldDownTimer sets LeafBgpHoldDownTimer field to given value.
+
+### HasLeafBgpHoldDownTimer
+
+`func (o *FabricsPutRequestFabricValue) HasLeafBgpHoldDownTimer() bool`
+
+HasLeafBgpHoldDownTimer returns a boolean if a field has been set.
+
+### SetLeafBgpHoldDownTimerNil
+
+`func (o *FabricsPutRequestFabricValue) SetLeafBgpHoldDownTimerNil(b bool)`
+
+ SetLeafBgpHoldDownTimerNil sets the value for LeafBgpHoldDownTimer to be an explicit nil
+
+### UnsetLeafBgpHoldDownTimer
+`func (o *FabricsPutRequestFabricValue) UnsetLeafBgpHoldDownTimer()`
+
+UnsetLeafBgpHoldDownTimer ensures that no value is present for LeafBgpHoldDownTimer, not even an explicit nil
+### GetLeafBgpAdvertisementInterval
+
+`func (o *FabricsPutRequestFabricValue) GetLeafBgpAdvertisementInterval() int32`
+
+GetLeafBgpAdvertisementInterval returns the LeafBgpAdvertisementInterval field if non-nil, zero value otherwise.
+
+### GetLeafBgpAdvertisementIntervalOk
+
+`func (o *FabricsPutRequestFabricValue) GetLeafBgpAdvertisementIntervalOk() (*int32, bool)`
+
+GetLeafBgpAdvertisementIntervalOk returns a tuple with the LeafBgpAdvertisementInterval field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLeafBgpAdvertisementInterval
+
+`func (o *FabricsPutRequestFabricValue) SetLeafBgpAdvertisementInterval(v int32)`
+
+SetLeafBgpAdvertisementInterval sets LeafBgpAdvertisementInterval field to given value.
+
+### HasLeafBgpAdvertisementInterval
+
+`func (o *FabricsPutRequestFabricValue) HasLeafBgpAdvertisementInterval() bool`
+
+HasLeafBgpAdvertisementInterval returns a boolean if a field has been set.
+
+### SetLeafBgpAdvertisementIntervalNil
+
+`func (o *FabricsPutRequestFabricValue) SetLeafBgpAdvertisementIntervalNil(b bool)`
+
+ SetLeafBgpAdvertisementIntervalNil sets the value for LeafBgpAdvertisementInterval to be an explicit nil
+
+### UnsetLeafBgpAdvertisementInterval
+`func (o *FabricsPutRequestFabricValue) UnsetLeafBgpAdvertisementInterval()`
+
+UnsetLeafBgpAdvertisementInterval ensures that no value is present for LeafBgpAdvertisementInterval, not even an explicit nil
+### GetLeafBgpConnectTimer
+
+`func (o *FabricsPutRequestFabricValue) GetLeafBgpConnectTimer() int32`
+
+GetLeafBgpConnectTimer returns the LeafBgpConnectTimer field if non-nil, zero value otherwise.
+
+### GetLeafBgpConnectTimerOk
+
+`func (o *FabricsPutRequestFabricValue) GetLeafBgpConnectTimerOk() (*int32, bool)`
+
+GetLeafBgpConnectTimerOk returns a tuple with the LeafBgpConnectTimer field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLeafBgpConnectTimer
+
+`func (o *FabricsPutRequestFabricValue) SetLeafBgpConnectTimer(v int32)`
+
+SetLeafBgpConnectTimer sets LeafBgpConnectTimer field to given value.
+
+### HasLeafBgpConnectTimer
+
+`func (o *FabricsPutRequestFabricValue) HasLeafBgpConnectTimer() bool`
+
+HasLeafBgpConnectTimer returns a boolean if a field has been set.
+
+### SetLeafBgpConnectTimerNil
+
+`func (o *FabricsPutRequestFabricValue) SetLeafBgpConnectTimerNil(b bool)`
+
+ SetLeafBgpConnectTimerNil sets the value for LeafBgpConnectTimer to be an explicit nil
+
+### UnsetLeafBgpConnectTimer
+`func (o *FabricsPutRequestFabricValue) UnsetLeafBgpConnectTimer()`
+
+UnsetLeafBgpConnectTimer ensures that no value is present for LeafBgpConnectTimer, not even an explicit nil
+### GetLinkStateTimeoutValue
+
+`func (o *FabricsPutRequestFabricValue) GetLinkStateTimeoutValue() int32`
+
+GetLinkStateTimeoutValue returns the LinkStateTimeoutValue field if non-nil, zero value otherwise.
+
+### GetLinkStateTimeoutValueOk
+
+`func (o *FabricsPutRequestFabricValue) GetLinkStateTimeoutValueOk() (*int32, bool)`
+
+GetLinkStateTimeoutValueOk returns a tuple with the LinkStateTimeoutValue field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLinkStateTimeoutValue
+
+`func (o *FabricsPutRequestFabricValue) SetLinkStateTimeoutValue(v int32)`
+
+SetLinkStateTimeoutValue sets LinkStateTimeoutValue field to given value.
+
+### HasLinkStateTimeoutValue
+
+`func (o *FabricsPutRequestFabricValue) HasLinkStateTimeoutValue() bool`
+
+HasLinkStateTimeoutValue returns a boolean if a field has been set.
+
+### SetLinkStateTimeoutValueNil
+
+`func (o *FabricsPutRequestFabricValue) SetLinkStateTimeoutValueNil(b bool)`
+
+ SetLinkStateTimeoutValueNil sets the value for LinkStateTimeoutValue to be an explicit nil
+
+### UnsetLinkStateTimeoutValue
+`func (o *FabricsPutRequestFabricValue) UnsetLinkStateTimeoutValue()`
+
+UnsetLinkStateTimeoutValue ensures that no value is present for LinkStateTimeoutValue, not even an explicit nil
+### GetEvpnMultihomingStartupDelay
+
+`func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelay() int32`
+
+GetEvpnMultihomingStartupDelay returns the EvpnMultihomingStartupDelay field if non-nil, zero value otherwise.
+
+### GetEvpnMultihomingStartupDelayOk
+
+`func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelayOk() (*int32, bool)`
+
+GetEvpnMultihomingStartupDelayOk returns a tuple with the EvpnMultihomingStartupDelay field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEvpnMultihomingStartupDelay
+
+`func (o *FabricsPutRequestFabricValue) SetEvpnMultihomingStartupDelay(v int32)`
+
+SetEvpnMultihomingStartupDelay sets EvpnMultihomingStartupDelay field to given value.
+
+### HasEvpnMultihomingStartupDelay
+
+`func (o *FabricsPutRequestFabricValue) HasEvpnMultihomingStartupDelay() bool`
+
+HasEvpnMultihomingStartupDelay returns a boolean if a field has been set.
+
+### SetEvpnMultihomingStartupDelayNil
+
+`func (o *FabricsPutRequestFabricValue) SetEvpnMultihomingStartupDelayNil(b bool)`
+
+ SetEvpnMultihomingStartupDelayNil sets the value for EvpnMultihomingStartupDelay to be an explicit nil
+
+### UnsetEvpnMultihomingStartupDelay
+`func (o *FabricsPutRequestFabricValue) UnsetEvpnMultihomingStartupDelay()`
+
+UnsetEvpnMultihomingStartupDelay ensures that no value is present for EvpnMultihomingStartupDelay, not even an explicit nil
+### GetEvpnMacHoldtime
+
+`func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtime() int32`
+
+GetEvpnMacHoldtime returns the EvpnMacHoldtime field if non-nil, zero value otherwise.
+
+### GetEvpnMacHoldtimeOk
+
+`func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtimeOk() (*int32, bool)`
+
+GetEvpnMacHoldtimeOk returns a tuple with the EvpnMacHoldtime field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEvpnMacHoldtime
+
+`func (o *FabricsPutRequestFabricValue) SetEvpnMacHoldtime(v int32)`
+
+SetEvpnMacHoldtime sets EvpnMacHoldtime field to given value.
+
+### HasEvpnMacHoldtime
+
+`func (o *FabricsPutRequestFabricValue) HasEvpnMacHoldtime() bool`
+
+HasEvpnMacHoldtime returns a boolean if a field has been set.
+
+### SetEvpnMacHoldtimeNil
+
+`func (o *FabricsPutRequestFabricValue) SetEvpnMacHoldtimeNil(b bool)`
+
+ SetEvpnMacHoldtimeNil sets the value for EvpnMacHoldtime to be an explicit nil
+
+### UnsetEvpnMacHoldtime
+`func (o *FabricsPutRequestFabricValue) UnsetEvpnMacHoldtime()`
+
+UnsetEvpnMacHoldtime ensures that no value is present for EvpnMacHoldtime, not even an explicit nil
+### GetAggressiveReporting
+
+`func (o *FabricsPutRequestFabricValue) GetAggressiveReporting() bool`
+
+GetAggressiveReporting returns the AggressiveReporting field if non-nil, zero value otherwise.
+
+### GetAggressiveReportingOk
+
+`func (o *FabricsPutRequestFabricValue) GetAggressiveReportingOk() (*bool, bool)`
+
+GetAggressiveReportingOk returns a tuple with the AggressiveReporting field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAggressiveReporting
+
+`func (o *FabricsPutRequestFabricValue) SetAggressiveReporting(v bool)`
+
+SetAggressiveReporting sets AggressiveReporting field to given value.
+
+### HasAggressiveReporting
+
+`func (o *FabricsPutRequestFabricValue) HasAggressiveReporting() bool`
+
+HasAggressiveReporting returns a boolean if a field has been set.
+
+### GetSwitchIpBase
+
+`func (o *FabricsPutRequestFabricValue) GetSwitchIpBase() string`
+
+GetSwitchIpBase returns the SwitchIpBase field if non-nil, zero value otherwise.
+
+### GetSwitchIpBaseOk
+
+`func (o *FabricsPutRequestFabricValue) GetSwitchIpBaseOk() (*string, bool)`
+
+GetSwitchIpBaseOk returns a tuple with the SwitchIpBase field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchIpBase
+
+`func (o *FabricsPutRequestFabricValue) SetSwitchIpBase(v string)`
+
+SetSwitchIpBase sets SwitchIpBase field to given value.
+
+### HasSwitchIpBase
+
+`func (o *FabricsPutRequestFabricValue) HasSwitchIpBase() bool`
+
+HasSwitchIpBase returns a boolean if a field has been set.
+
+### GetControllerIpBase
+
+`func (o *FabricsPutRequestFabricValue) GetControllerIpBase() string`
+
+GetControllerIpBase returns the ControllerIpBase field if non-nil, zero value otherwise.
+
+### GetControllerIpBaseOk
+
+`func (o *FabricsPutRequestFabricValue) GetControllerIpBaseOk() (*string, bool)`
+
+GetControllerIpBaseOk returns a tuple with the ControllerIpBase field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetControllerIpBase
+
+`func (o *FabricsPutRequestFabricValue) SetControllerIpBase(v string)`
+
+SetControllerIpBase sets ControllerIpBase field to given value.
+
+### HasControllerIpBase
+
+`func (o *FabricsPutRequestFabricValue) HasControllerIpBase() bool`
+
+HasControllerIpBase returns a boolean if a field has been set.
+
+### GetMultiTenant
+
+`func (o *FabricsPutRequestFabricValue) GetMultiTenant() bool`
+
+GetMultiTenant returns the MultiTenant field if non-nil, zero value otherwise.
+
+### GetMultiTenantOk
+
+`func (o *FabricsPutRequestFabricValue) GetMultiTenantOk() (*bool, bool)`
+
+GetMultiTenantOk returns a tuple with the MultiTenant field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMultiTenant
+
+`func (o *FabricsPutRequestFabricValue) SetMultiTenant(v bool)`
+
+SetMultiTenant sets MultiTenant field to given value.
+
+### HasMultiTenant
+
+`func (o *FabricsPutRequestFabricValue) HasMultiTenant() bool`
+
+HasMultiTenant returns a boolean if a field has been set.
+
+### GetBaseBgpAsNumber
+
+`func (o *FabricsPutRequestFabricValue) GetBaseBgpAsNumber() string`
+
+GetBaseBgpAsNumber returns the BaseBgpAsNumber field if non-nil, zero value otherwise.
+
+### GetBaseBgpAsNumberOk
+
+`func (o *FabricsPutRequestFabricValue) GetBaseBgpAsNumberOk() (*string, bool)`
+
+GetBaseBgpAsNumberOk returns a tuple with the BaseBgpAsNumber field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetBaseBgpAsNumber
+
+`func (o *FabricsPutRequestFabricValue) SetBaseBgpAsNumber(v string)`
+
+SetBaseBgpAsNumber sets BaseBgpAsNumber field to given value.
+
+### HasBaseBgpAsNumber
+
+`func (o *FabricsPutRequestFabricValue) HasBaseBgpAsNumber() bool`
+
+HasBaseBgpAsNumber returns a boolean if a field has been set.
+
+### GetRouterIdBasePrefix
+
+`func (o *FabricsPutRequestFabricValue) GetRouterIdBasePrefix() string`
+
+GetRouterIdBasePrefix returns the RouterIdBasePrefix field if non-nil, zero value otherwise.
+
+### GetRouterIdBasePrefixOk
+
+`func (o *FabricsPutRequestFabricValue) GetRouterIdBasePrefixOk() (*string, bool)`
+
+GetRouterIdBasePrefixOk returns a tuple with the RouterIdBasePrefix field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRouterIdBasePrefix
+
+`func (o *FabricsPutRequestFabricValue) SetRouterIdBasePrefix(v string)`
+
+SetRouterIdBasePrefix sets RouterIdBasePrefix field to given value.
+
+### HasRouterIdBasePrefix
+
+`func (o *FabricsPutRequestFabricValue) HasRouterIdBasePrefix() bool`
+
+HasRouterIdBasePrefix returns a boolean if a field has been set.
+
+### GetVtepIdBasePrefix
+
+`func (o *FabricsPutRequestFabricValue) GetVtepIdBasePrefix() string`
+
+GetVtepIdBasePrefix returns the VtepIdBasePrefix field if non-nil, zero value otherwise.
+
+### GetVtepIdBasePrefixOk
+
+`func (o *FabricsPutRequestFabricValue) GetVtepIdBasePrefixOk() (*string, bool)`
+
+GetVtepIdBasePrefixOk returns a tuple with the VtepIdBasePrefix field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVtepIdBasePrefix
+
+`func (o *FabricsPutRequestFabricValue) SetVtepIdBasePrefix(v string)`
+
+SetVtepIdBasePrefix sets VtepIdBasePrefix field to given value.
+
+### HasVtepIdBasePrefix
+
+`func (o *FabricsPutRequestFabricValue) HasVtepIdBasePrefix() bool`
+
+HasVtepIdBasePrefix returns a boolean if a field has been set.
+
+### GetPairedIpSubnet
+
+`func (o *FabricsPutRequestFabricValue) GetPairedIpSubnet() string`
+
+GetPairedIpSubnet returns the PairedIpSubnet field if non-nil, zero value otherwise.
+
+### GetPairedIpSubnetOk
+
+`func (o *FabricsPutRequestFabricValue) GetPairedIpSubnetOk() (*string, bool)`
+
+GetPairedIpSubnetOk returns a tuple with the PairedIpSubnet field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPairedIpSubnet
+
+`func (o *FabricsPutRequestFabricValue) SetPairedIpSubnet(v string)`
+
+SetPairedIpSubnet sets PairedIpSubnet field to given value.
+
+### HasPairedIpSubnet
+
+`func (o *FabricsPutRequestFabricValue) HasPairedIpSubnet() bool`
+
+HasPairedIpSubnet returns a boolean if a field has been set.
+
+### GetMaxSwitches
+
+`func (o *FabricsPutRequestFabricValue) GetMaxSwitches() string`
+
+GetMaxSwitches returns the MaxSwitches field if non-nil, zero value otherwise.
+
+### GetMaxSwitchesOk
+
+`func (o *FabricsPutRequestFabricValue) GetMaxSwitchesOk() (*string, bool)`
+
+GetMaxSwitchesOk returns a tuple with the MaxSwitches field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMaxSwitches
+
+`func (o *FabricsPutRequestFabricValue) SetMaxSwitches(v string)`
+
+SetMaxSwitches sets MaxSwitches field to given value.
+
+### HasMaxSwitches
+
+`func (o *FabricsPutRequestFabricValue) HasMaxSwitches() bool`
+
+HasMaxSwitches returns a boolean if a field has been set.
+
+### GetPauseValidationAlarms
+
+`func (o *FabricsPutRequestFabricValue) GetPauseValidationAlarms() bool`
+
+GetPauseValidationAlarms returns the PauseValidationAlarms field if non-nil, zero value otherwise.
+
+### GetPauseValidationAlarmsOk
+
+`func (o *FabricsPutRequestFabricValue) GetPauseValidationAlarmsOk() (*bool, bool)`
+
+GetPauseValidationAlarmsOk returns a tuple with the PauseValidationAlarms field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPauseValidationAlarms
+
+`func (o *FabricsPutRequestFabricValue) SetPauseValidationAlarms(v bool)`
+
+SetPauseValidationAlarms sets PauseValidationAlarms field to given value.
+
+### HasPauseValidationAlarms
+
+`func (o *FabricsPutRequestFabricValue) HasPauseValidationAlarms() bool`
+
+HasPauseValidationAlarms returns a boolean if a field has been set.
+
+### GetStartingOctet
+
+`func (o *FabricsPutRequestFabricValue) GetStartingOctet() int32`
+
+GetStartingOctet returns the StartingOctet field if non-nil, zero value otherwise.
+
+### GetStartingOctetOk
+
+`func (o *FabricsPutRequestFabricValue) GetStartingOctetOk() (*int32, bool)`
+
+GetStartingOctetOk returns a tuple with the StartingOctet field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetStartingOctet
+
+`func (o *FabricsPutRequestFabricValue) SetStartingOctet(v int32)`
+
+SetStartingOctet sets StartingOctet field to given value.
+
+### HasStartingOctet
+
+`func (o *FabricsPutRequestFabricValue) HasStartingOctet() bool`
+
+HasStartingOctet returns a boolean if a field has been set.
+
+### SetStartingOctetNil
+
+`func (o *FabricsPutRequestFabricValue) SetStartingOctetNil(b bool)`
+
+ SetStartingOctetNil sets the value for StartingOctet to be an explicit nil
+
+### UnsetStartingOctet
+`func (o *FabricsPutRequestFabricValue) UnsetStartingOctet()`
+
+UnsetStartingOctet ensures that no value is present for StartingOctet, not even an explicit nil
+### GetMaxSus
+
+`func (o *FabricsPutRequestFabricValue) GetMaxSus() int32`
+
+GetMaxSus returns the MaxSus field if non-nil, zero value otherwise.
+
+### GetMaxSusOk
+
+`func (o *FabricsPutRequestFabricValue) GetMaxSusOk() (*int32, bool)`
+
+GetMaxSusOk returns a tuple with the MaxSus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMaxSus
+
+`func (o *FabricsPutRequestFabricValue) SetMaxSus(v int32)`
+
+SetMaxSus sets MaxSus field to given value.
+
+### HasMaxSus
+
+`func (o *FabricsPutRequestFabricValue) HasMaxSus() bool`
+
+HasMaxSus returns a boolean if a field has been set.
+
+### SetMaxSusNil
+
+`func (o *FabricsPutRequestFabricValue) SetMaxSusNil(b bool)`
+
+ SetMaxSusNil sets the value for MaxSus to be an explicit nil
+
+### UnsetMaxSus
+`func (o *FabricsPutRequestFabricValue) UnsetMaxSus()`
+
+UnsetMaxSus ensures that no value is present for MaxSus, not even an explicit nil
+### GetMaxPods
+
+`func (o *FabricsPutRequestFabricValue) GetMaxPods() int32`
+
+GetMaxPods returns the MaxPods field if non-nil, zero value otherwise.
+
+### GetMaxPodsOk
+
+`func (o *FabricsPutRequestFabricValue) GetMaxPodsOk() (*int32, bool)`
+
+GetMaxPodsOk returns a tuple with the MaxPods field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMaxPods
+
+`func (o *FabricsPutRequestFabricValue) SetMaxPods(v int32)`
+
+SetMaxPods sets MaxPods field to given value.
+
+### HasMaxPods
+
+`func (o *FabricsPutRequestFabricValue) HasMaxPods() bool`
+
+HasMaxPods returns a boolean if a field has been set.
+
+### SetMaxPodsNil
+
+`func (o *FabricsPutRequestFabricValue) SetMaxPodsNil(b bool)`
+
+ SetMaxPodsNil sets the value for MaxPods to be an explicit nil
+
+### UnsetMaxPods
+`func (o *FabricsPutRequestFabricValue) UnsetMaxPods()`
+
+UnsetMaxPods ensures that no value is present for MaxPods, not even an explicit nil
+### GetObjectProperties
+
+`func (o *FabricsPutRequestFabricValue) GetObjectProperties() FabricsPutRequestFabricValueObjectProperties`
+
+GetObjectProperties returns the ObjectProperties field if non-nil, zero value otherwise.
+
+### GetObjectPropertiesOk
+
+`func (o *FabricsPutRequestFabricValue) GetObjectPropertiesOk() (*FabricsPutRequestFabricValueObjectProperties, bool)`
+
+GetObjectPropertiesOk returns a tuple with the ObjectProperties field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetObjectProperties
+
+`func (o *FabricsPutRequestFabricValue) SetObjectProperties(v FabricsPutRequestFabricValueObjectProperties)`
+
+SetObjectProperties sets ObjectProperties field to given value.
+
+### HasObjectProperties
+
+`func (o *FabricsPutRequestFabricValue) HasObjectProperties() bool`
+
+HasObjectProperties returns a boolean if a field has been set.
+
+### GetGpuArchitecture
+
+`func (o *FabricsPutRequestFabricValue) GetGpuArchitecture() string`
+
+GetGpuArchitecture returns the GpuArchitecture field if non-nil, zero value otherwise.
+
+### GetGpuArchitectureOk
+
+`func (o *FabricsPutRequestFabricValue) GetGpuArchitectureOk() (*string, bool)`
+
+GetGpuArchitectureOk returns a tuple with the GpuArchitecture field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetGpuArchitecture
+
+`func (o *FabricsPutRequestFabricValue) SetGpuArchitecture(v string)`
+
+SetGpuArchitecture sets GpuArchitecture field to given value.
+
+### HasGpuArchitecture
+
+`func (o *FabricsPutRequestFabricValue) HasGpuArchitecture() bool`
+
+HasGpuArchitecture returns a boolean if a field has been set.
+
 ### GetIpSourceGuard
 
-`func (o *SitesPutRequestSiteValue) GetIpSourceGuard() bool`
+`func (o *FabricsPutRequestFabricValue) GetIpSourceGuard() bool`
 
 GetIpSourceGuard returns the IpSourceGuard field if non-nil, zero value otherwise.
 
 ### GetIpSourceGuardOk
 
-`func (o *SitesPutRequestSiteValue) GetIpSourceGuardOk() (*bool, bool)`
+`func (o *FabricsPutRequestFabricValue) GetIpSourceGuardOk() (*bool, bool)`
 
 GetIpSourceGuardOk returns a tuple with the IpSourceGuard field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpSourceGuard
 
-`func (o *SitesPutRequestSiteValue) SetIpSourceGuard(v bool)`
+`func (o *FabricsPutRequestFabricValue) SetIpSourceGuard(v bool)`
 
 SetIpSourceGuard sets IpSourceGuard field to given value.
 
 ### HasIpSourceGuard
 
-`func (o *SitesPutRequestSiteValue) HasIpSourceGuard() bool`
+`func (o *FabricsPutRequestFabricValue) HasIpSourceGuard() bool`
 
 HasIpSourceGuard returns a boolean if a field has been set.
 
 ### GetEnableDhcpSnooping
 
-`func (o *SitesPutRequestSiteValue) GetEnableDhcpSnooping() bool`
+`func (o *FabricsPutRequestFabricValue) GetEnableDhcpSnooping() bool`
 
 GetEnableDhcpSnooping returns the EnableDhcpSnooping field if non-nil, zero value otherwise.
 
 ### GetEnableDhcpSnoopingOk
 
-`func (o *SitesPutRequestSiteValue) GetEnableDhcpSnoopingOk() (*bool, bool)`
+`func (o *FabricsPutRequestFabricValue) GetEnableDhcpSnoopingOk() (*bool, bool)`
 
 GetEnableDhcpSnoopingOk returns a tuple with the EnableDhcpSnooping field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEnableDhcpSnooping
 
-`func (o *SitesPutRequestSiteValue) SetEnableDhcpSnooping(v bool)`
+`func (o *FabricsPutRequestFabricValue) SetEnableDhcpSnooping(v bool)`
 
 SetEnableDhcpSnooping sets EnableDhcpSnooping field to given value.
 
 ### HasEnableDhcpSnooping
 
-`func (o *SitesPutRequestSiteValue) HasEnableDhcpSnooping() bool`
+`func (o *FabricsPutRequestFabricValue) HasEnableDhcpSnooping() bool`
 
 HasEnableDhcpSnooping returns a boolean if a field has been set.
 

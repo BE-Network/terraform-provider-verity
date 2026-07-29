@@ -49,7 +49,7 @@ func NewLdapprofilesPutRequestLdapProfileValueLdapServersInner() *LdapprofilesPu
 	this.Server = &server
 	var useType string = "all"
 	this.UseType = &useType
-	var sslTlsMode string = ""
+	var sslTlsMode string = "off"
 	this.SslTlsMode = &sslTlsMode
 	return &this
 }
@@ -65,7 +65,7 @@ func NewLdapprofilesPutRequestLdapProfileValueLdapServersInnerWithDefaults() *Ld
 	this.Server = &server
 	var useType string = "all"
 	this.UseType = &useType
-	var sslTlsMode string = ""
+	var sslTlsMode string = "off"
 	this.SslTlsMode = &sslTlsMode
 	return &this
 }

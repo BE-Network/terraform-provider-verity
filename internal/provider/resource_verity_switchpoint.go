@@ -64,7 +64,9 @@ type veritySwitchpointResourceModel struct {
 	SuRefType                        types.String                             `tfsdk:"su_ref_type_"`
 	SspGroup                         types.String                             `tfsdk:"ssp_group"`
 	SspGroupRefType                  types.String                             `tfsdk:"ssp_group_ref_type_"`
+	RackInfo                         types.String                             `tfsdk:"rack_info"`
 	Rack                             types.String                             `tfsdk:"rack"`
+	RackRefType                      types.String                             `tfsdk:"rack_ref_type_"`
 	Position                         types.Number                             `tfsdk:"position"`
 	RailGroup                        types.Number                             `tfsdk:"rail_group"`
 	SwitchRouterIdIpMask             types.String                             `tfsdk:"switch_router_id_ip_mask"`
@@ -348,8 +350,18 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 				Computed:    true,
 			},
-			"rack": schema.StringAttribute{
+			"rack_info": schema.StringAttribute{
 				Description: "Physical Rack location of the Switch",
+				Optional:    true,
+				Computed:    true,
+			},
+			"rack": schema.StringAttribute{
+				Description: "Rack",
+				Optional:    true,
+				Computed:    true,
+			},
+			"rack_ref_type_": schema.StringAttribute{
+				Description: "Object type for rack field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -935,7 +947,9 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "SuRefType", APIField: &spProps.SuRefType, TFValue: plan.SuRefType},
 		{FieldName: "SspGroup", APIField: &spProps.SspGroup, TFValue: plan.SspGroup},
 		{FieldName: "SspGroupRefType", APIField: &spProps.SspGroupRefType, TFValue: plan.SspGroupRefType},
+		{FieldName: "RackInfo", APIField: &spProps.RackInfo, TFValue: plan.RackInfo},
 		{FieldName: "Rack", APIField: &spProps.Rack, TFValue: plan.Rack},
+		{FieldName: "RackRefType", APIField: &spProps.RackRefType, TFValue: plan.RackRefType},
 		{FieldName: "SwitchRouterIdIpMask", APIField: &spProps.SwitchRouterIdIpMask, TFValue: plan.SwitchRouterIdIpMask},
 		{FieldName: "SwitchVtepIdIpMask", APIField: &spProps.SwitchVtepIdIpMask, TFValue: plan.SwitchVtepIdIpMask},
 		{FieldName: "PasswordEncrypted", APIField: &spProps.PasswordEncrypted, TFValue: plan.PasswordEncrypted},
@@ -1392,7 +1406,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	utils.CompareAndSetStringField(plan.DeviceSerialNumber, state.DeviceSerialNumber, func(v *string) { spProps.DeviceSerialNumber = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ExpectedSite, state.ExpectedSite, func(v *string) { spProps.ExpectedSite = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { spProps.Type = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.Rack, state.Rack, func(v *string) { spProps.Rack = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RackInfo, state.RackInfo, func(v *string) { spProps.RackInfo = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PasswordEncrypted, state.PasswordEncrypted, func(v *string) { spProps.PasswordEncrypted = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.EnablePasswordEncrypted, state.EnablePasswordEncrypted, func(v *string) { spProps.EnablePasswordEncrypted = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SshKeyOrPasswordEncrypted, state.SshKeyOrPasswordEncrypted, func(v *string) { spProps.SshKeyOrPasswordEncrypted = v }, &hasChanges)
@@ -1517,6 +1531,16 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		func(v *string) { spProps.SspGroup = v },
 		func(v *string) { spProps.SspGroupRefType = v },
 		"ssp_group", "ssp_group_ref_type_",
+		&hasChanges, &resp.Diagnostics,
+	) {
+		return
+	}
+
+	if !utils.HandleOneRefTypeSupported(
+		plan.Rack, state.Rack, plan.RackRefType, state.RackRefType,
+		func(v *string) { spProps.Rack = v },
+		func(v *string) { spProps.RackRefType = v },
+		"rack", "rack_ref_type_",
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
@@ -2239,7 +2263,9 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	state.SuRefType = utils.MapStringWithMode(switchpointData, "su_ref_type_", resourceType, mode)
 	state.SspGroup = utils.MapStringWithMode(switchpointData, "ssp_group", resourceType, mode)
 	state.SspGroupRefType = utils.MapStringWithMode(switchpointData, "ssp_group_ref_type_", resourceType, mode)
+	state.RackInfo = utils.MapStringWithMode(switchpointData, "rack_info", resourceType, mode)
 	state.Rack = utils.MapStringWithMode(switchpointData, "rack", resourceType, mode)
+	state.RackRefType = utils.MapStringWithMode(switchpointData, "rack_ref_type_", resourceType, mode)
 	state.SwitchRouterIdIpMask = utils.MapStringWithMode(switchpointData, "switch_router_id_ip_mask", resourceType, mode)
 	state.SwitchVtepIdIpMask = utils.MapStringWithMode(switchpointData, "switch_vtep_id_ip_mask", resourceType, mode)
 	state.PasswordEncrypted = utils.MapStringWithMode(switchpointData, "password_encrypted", resourceType, mode)
@@ -2471,7 +2497,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		"expected_site", "expected_site_ref_type_",
 		"type", "plane", "plane_ref_type_", "spine_plane", "spine_plane_ref_type_",
 		"pod", "pod_ref_type_", "su", "su_ref_type_",
-		"ssp_group", "ssp_group_ref_type_", "rack",
+		"ssp_group", "ssp_group_ref_type_", "rack_info", "rack", "rack_ref_type_",
 		"switch_router_id_ip_mask", "switch_vtep_id_ip_mask",
 		"password_encrypted", "enable_password_encrypted",
 		"ssh_key_or_password_encrypted", "passphrase_encrypted",

@@ -1,5 +1,5 @@
 {
-  "site": {
+  "fabric": {
     "TOR Complex": {
       "name": "TOR Complex",
       "enable": true,
