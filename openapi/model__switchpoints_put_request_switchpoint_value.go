@@ -227,7 +227,7 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
-	var bbSwitch bool = false
+	var bbSwitch bool = true
 	this.BbSwitch = &bbSwitch
 	var passwordEncrypted string = ""
 	this.PasswordEncrypted = &passwordEncrypted
@@ -351,7 +351,7 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.SwitchRouterIdIpMask = &switchRouterIdIpMask
 	var switchVtepIdIpMask string = "(auto)"
 	this.SwitchVtepIdIpMask = &switchVtepIdIpMask
-	var bbSwitch bool = false
+	var bbSwitch bool = true
 	this.BbSwitch = &bbSwitch
 	var passwordEncrypted string = ""
 	this.PasswordEncrypted = &passwordEncrypted

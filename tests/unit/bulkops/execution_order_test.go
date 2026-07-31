@@ -2,7 +2,6 @@ package bulkops_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -72,83 +71,81 @@ var resourceAPIPath = map[string]string{
 }
 
 var dcPutOrder = []string{
+	"extended_community_list",
 	"ipv6_prefix_list",
 	"community_list",
-	"ipv4_prefix_list",
-	"extended_community_list",
 	"as_path_access_list",
+	"ipv4_prefix_list",
 	"route_map_clause",
 	"acl",
 	"route_map",
 	"pb_routing_acl",
 	"tenant",
 	"pb_routing",
-	"ipv4_list",
-	"ipv6_list",
 	"service",
-	"port_acl",
-	"tacacs_profile",
 	"ldap_profile",
+	"tacacs_profile",
+	"ipv6_list",
+	"ipv4_list",
+	"port_acl",
+	"fabric",
+	"packet_queue",
+	"device_aaa_profile",
+	"sflow_collector",
 	"packet_broker",
 	"eth_port_profile",
-	"packet_queue",
-	"sflow_collector",
 	"gateway",
-	"device_aaa_profile",
-	"lag",
-	"eth_port_settings",
-	"diagnostics_profile",
-	"gateway_profile",
+	"pod",
 	"device_settings",
 	"diagnostics_port_profile",
-	"bundle",
-	"pod",
-	"badge",
+	"diagnostics_profile",
+	"eth_port_settings",
+	"lag",
+	"gateway_profile",
 	"su",
-	"rack",
+	"plane",
+	"bundle",
 	"ssp_group",
+	"badge",
+	"rack",
 	"spine_plane",
 	"switchpoint",
 	"threshold",
 	"grouping_rule",
 	"threshold_group",
 	"pair",
-	"fabric",
-	"plane",
 }
 
 var campusPutOrder = []string{
 	"ipv4_list",
 	"ipv6_list",
-	"tacacs_profile",
-	"ldap_profile",
 	"acl",
-	"port_acl",
 	"service",
+	"port_acl",
 	"mac_filter",
-	"eth_port_profile",
-	"sflow_collector",
-	"packet_queue",
-	"device_aaa_profile",
+	"ldap_profile",
+	"tacacs_profile",
 	"service_port_profile",
+	"fabric",
+	"eth_port_profile",
+	"device_aaa_profile",
+	"packet_queue",
+	"sflow_collector",
 	"diagnostics_port_profile",
-	"device_voice_settings",
-	"authenticated_eth_port",
-	"diagnostics_profile",
-	"eth_port_settings",
+	"lag",
 	"voice_port_profile",
 	"device_settings",
-	"lag",
+	"eth_port_settings",
+	"authenticated_eth_port",
+	"device_voice_settings",
+	"diagnostics_profile",
 	"bundle",
 	"badge",
-	"rack",
 	"switchpoint",
-	"threshold",
 	"grouping_rule",
+	"threshold",
 	"threshold_group",
 	"pair",
-	"fabric",
-	"plane",
 }
 
 var dcDeleteOrder = func() []string {
@@ -175,7 +172,7 @@ var dcPatchOrder = func() []string {
 	return result
 }()
 
-var campusPatchOrder = append([]string(nil), campusPutOrder...)
+var campusPatchOrder = append([]string{"sfp_breakout"}, campusPutOrder...)
 
 func orderTrackingServer(t *testing.T) (*httptest.Server, *[]requestRecord, *sync.Mutex) {
 	t.Helper()
@@ -476,6 +473,25 @@ func TestDatacenterPutOrder(t *testing.T) {
 	assertOrderedSubset(t, "DC PUT order", putPaths, toPaths(dcPutOrder))
 }
 
+func TestDatacenterFabricPrecedesGateway(t *testing.T) {
+	t.Parallel()
+	server, records, mu := orderTrackingServer(t)
+	client := newTestClient(server.URL)
+	mgr := bulkops.GetManager(client, nopClearCache, nil, "datacenter")
+
+	ctx := context.Background()
+	mgr.AddPut(ctx, "gateway", "test_gateway", zeroPutValue("gateway"))
+	mgr.AddPut(ctx, "fabric", "test_fabric", zeroPutValue("fabric"))
+
+	diags, _ := mgr.ExecuteDatacenterOperations(ctx)
+	if diags.HasError() {
+		t.Fatalf("ExecuteDatacenterOperations returned errors: %v", diags)
+	}
+
+	putPaths := filterRecords(snapshotRecords(mu, records), http.MethodPut)
+	assertOrderedSubset(t, "DC Fabric/Gateway dependency", putPaths, []string{"/fabrics", "/gateways"})
+}
+
 func TestDatacenterDeleteOrder(t *testing.T) {
 	t.Parallel()
 	server, records, mu := orderTrackingServer(t)
@@ -609,131 +625,6 @@ func TestErrorAbortsRemainingOperations(t *testing.T) {
 	}
 }
 
-// TestCircularReferencePutFix verifies that when route_map_clauses reference tenants
-// being created in the same batch, the circular reference fix is applied:
-// 1. route_map_clause PUT with empty match_vrf
-// 2. tenant PUT
-// 3. route_map_clause PATCH to restore match_vrf
-func TestCircularReferencePutFix(t *testing.T) {
-	t.Parallel()
-	var mu sync.Mutex
-	var records []requestRecord
-	var capturedBodies []struct {
-		Method string
-		Path   string
-		Body   map[string]interface{}
-	}
-
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		mu.Lock()
-		records = append(records, requestRecord{Method: r.Method, Path: r.URL.Path})
-
-		if r.URL.Path == "/routemapclauses" && (r.Method == http.MethodPut || r.Method == http.MethodPatch) {
-			var body map[string]interface{}
-			if err := json.NewDecoder(r.Body).Decode(&body); err == nil {
-				capturedBodies = append(capturedBodies, struct {
-					Method string
-					Path   string
-					Body   map[string]interface{}
-				}{Method: r.Method, Path: r.URL.Path, Body: body})
-			}
-		}
-		mu.Unlock()
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{}`))
-	}))
-	defer server.Close()
-
-	client := newTestClient(server.URL)
-	mgr := bulkops.GetManager(client, nopClearCache, nil, "datacenter")
-
-	ctx := context.Background()
-
-	// Add a route_map_clause with match_vrf referencing a tenant being created
-	clauseVal := openapi.RoutemapclausesPutRequestRouteMapClauseValue{
-		Name:     openapi.PtrString("clause_1"),
-		MatchVrf: openapi.PtrString("tenant_1"),
-	}
-	mgr.AddPut(ctx, "route_map_clause", "clause_1", clauseVal)
-
-	// Add the tenant that the clause references
-	tenantVal := openapi.TenantsPutRequestTenantValue{
-		Name: openapi.PtrString("tenant_1"),
-	}
-	mgr.AddPut(ctx, "tenant", "tenant_1", tenantVal)
-
-	diags, _ := mgr.ExecuteDatacenterOperations(ctx)
-	if diags.HasError() {
-		t.Fatalf("ExecuteDatacenterOperations returned errors: %v", diags)
-	}
-
-	mu.Lock()
-	allRecords := make([]requestRecord, len(records))
-	copy(allRecords, records)
-	bodies := make([]struct {
-		Method string
-		Path   string
-		Body   map[string]interface{}
-	}, len(capturedBodies))
-	copy(bodies, capturedBodies)
-	mu.Unlock()
-
-	var clausePutIdx, tenantPutIdx, clausePatchIdx int
-	clausePutIdx, tenantPutIdx, clausePatchIdx = -1, -1, -1
-
-	for i, r := range allRecords {
-		if r.Method == http.MethodPut && r.Path == "/routemapclauses" {
-			clausePutIdx = i
-		}
-		if r.Method == http.MethodPut && r.Path == "/tenants" {
-			tenantPutIdx = i
-		}
-		if r.Method == http.MethodPatch && r.Path == "/routemapclauses" {
-			clausePatchIdx = i
-		}
-	}
-
-	if clausePutIdx == -1 {
-		t.Fatal("route_map_clause PUT not found")
-	}
-	if tenantPutIdx == -1 {
-		t.Fatal("tenant PUT not found")
-	}
-	if clausePatchIdx == -1 {
-		t.Fatal("route_map_clause PATCH not found (circular ref fix should restore match_vrf)")
-	}
-
-	if clausePutIdx >= tenantPutIdx {
-		t.Errorf("route_map_clause PUT (idx %d) should come before tenant PUT (idx %d)", clausePutIdx, tenantPutIdx)
-	}
-
-	if tenantPutIdx >= clausePatchIdx {
-		t.Errorf("tenant PUT (idx %d) should come before route_map_clause PATCH (idx %d)", tenantPutIdx, clausePatchIdx)
-	}
-
-	if len(bodies) > 0 {
-		for _, b := range bodies {
-			if b.Method == http.MethodPut {
-				if clause, ok := b.Body["route_map_clause"]; ok {
-					if clauseMap, ok := clause.(map[string]interface{}); ok {
-						for _, v := range clauseMap {
-							if vMap, ok := v.(map[string]interface{}); ok {
-								if vrf, exists := vMap["match_vrf"]; exists {
-									if vrfStr, ok := vrf.(string); ok && vrfStr != "" {
-										t.Errorf("route_map_clause PUT should have empty match_vrf, got %q", vrfStr)
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
 func TestMixedOperationsOrder(t *testing.T) {
 	t.Parallel()
 	server, records, mu := orderTrackingServer(t)
@@ -758,71 +649,71 @@ func TestMixedOperationsOrder(t *testing.T) {
 	assertPhaseOrder(t, snapshotRecords(mu, records))
 }
 
-func TestACLHeaderSplitExecution(t *testing.T) {
+func TestACLHeaderSplitOrder(t *testing.T) {
 	t.Parallel()
-	var mu sync.Mutex
-	var records []requestRecord
-	var aclHeaders []string
-
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		mu.Lock()
-		records = append(records, requestRecord{Method: r.Method, Path: r.URL.Path})
-		if r.URL.Path == "/acls" && r.Method == http.MethodPut {
-			aclHeaders = append(aclHeaders, r.URL.Query().Get("ip_version"))
-		}
-		mu.Unlock()
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{}`))
-	}))
-	defer server.Close()
-
-	client := newTestClient(server.URL)
-	mgr := bulkops.GetManager(client, nopClearCache, nil, "datacenter")
-
-	ctx := context.Background()
-
-	mgr.AddPut(ctx, "acl", "v4_filter", zeroPutValue("acl"), map[string]string{"ip_version": "4"})
-	mgr.AddPut(ctx, "acl", "v6_filter", zeroPutValue("acl"), map[string]string{"ip_version": "6"})
-
-	diags, _ := mgr.ExecuteDatacenterOperations(ctx)
-	if diags.HasError() {
-		t.Fatalf("ExecuteDatacenterOperations returned errors: %v", diags)
+	tests := []struct {
+		name      string
+		mode      string
+		operation string
+		want      []string
+	}{
+		{"datacenter put", "datacenter", "PUT", []string{"4", "6"}},
+		{"campus put", "campus", "PUT", []string{"6", "4"}},
+		{"datacenter delete", "datacenter", "DELETE", []string{"6", "4"}},
+		{"campus delete", "campus", "DELETE", []string{"4", "6"}},
 	}
 
-	mu.Lock()
-	headersCopy := make([]string, len(aclHeaders))
-	copy(headersCopy, aclHeaders)
-	allRecords := make([]requestRecord, len(records))
-	copy(allRecords, records)
-	mu.Unlock()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var mu sync.Mutex
+			var aclHeaders []string
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path == "/acls" && r.Method == tt.operation {
+					mu.Lock()
+					aclHeaders = append(aclHeaders, r.URL.Query().Get("ip_version"))
+					mu.Unlock()
+				}
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write([]byte(`{}`))
+			}))
+			t.Cleanup(server.Close)
 
-	aclPutCount := 0
-	for _, r := range allRecords {
-		if r.Path == "/acls" && r.Method == http.MethodPut {
-			aclPutCount++
-		}
-	}
+			client := newTestClient(server.URL)
+			mgr := bulkops.GetManager(client, nopClearCache, nil, tt.mode)
+			ctx := context.Background()
+			for _, version := range []string{"4", "6"} {
+				if tt.operation == "PUT" {
+					mgr.AddPut(ctx, "acl", "filter_v"+version, zeroPutValue("acl"), map[string]string{"ip_version": version})
+				} else {
+					mgr.AddDelete(ctx, "acl", "filter_v"+version, map[string]string{"ip_version": version})
+				}
+			}
 
-	if aclPutCount != 2 {
-		t.Errorf("expected 2 ACL PUT calls (one per ip_version), got %d", aclPutCount)
-	}
+			var diags interface{ HasError() bool }
+			if tt.mode == "datacenter" {
+				d, _ := mgr.ExecuteDatacenterOperations(ctx)
+				diags = d
+			} else {
+				d, _ := mgr.ExecuteCampusOperations(ctx)
+				diags = d
+			}
+			if diags.HasError() {
+				t.Fatalf("execution returned errors")
+			}
 
-	has4, has6 := false, false
-	for _, h := range headersCopy {
-		if h == "4" {
-			has4 = true
-		}
-		if h == "6" {
-			has6 = true
-		}
-	}
-	if !has4 {
-		t.Error("expected ACL PUT with ip_version=4")
-	}
-	if !has6 {
-		t.Error("expected ACL PUT with ip_version=6")
+			mu.Lock()
+			got := append([]string(nil), aclHeaders...)
+			mu.Unlock()
+			if len(got) != len(tt.want) {
+				t.Fatalf("ACL %s request count = %d, want %d (%v)", tt.operation, len(got), len(tt.want), got)
+			}
+			for i := range tt.want {
+				if got[i] != tt.want[i] {
+					t.Fatalf("ACL %s header order = %v, want %v", tt.operation, got, tt.want)
+				}
+			}
+		})
 	}
 }
 

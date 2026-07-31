@@ -16,6 +16,7 @@ Name | Type | Description | Notes
 **ControllerGateway** | Pointer to **string** | Default Device Management VM gateway IP for devices in this Fabric | [optional] [default to ""]
 **HgxGateway** | Pointer to **string** | Default HGX management gateway IP for devices in this Fabric | [optional] [default to ""]
 **PlaneCount** | Pointer to **string** | Number of planes in this Fabric | [optional] [default to "1"]
+**SuSize** | Pointer to **string** | Number of HGXs per SU | [optional] [default to "32"]
 **SuSupport** | Pointer to **bool** | Support grouping leaf switches in SUs | [optional] [default to false]
 **ServerManagement** | Pointer to **bool** | Support managing servers | [optional] [default to true]
 **AllowAllUnderlayConnections** | Pointer to **bool** | Allows underlay connections between PODs | [optional] [default to false]
@@ -387,6 +388,31 @@ SetPlaneCount sets PlaneCount field to given value.
 `func (o *FabricsPutRequestFabricValue) HasPlaneCount() bool`
 
 HasPlaneCount returns a boolean if a field has been set.
+
+### GetSuSize
+
+`func (o *FabricsPutRequestFabricValue) GetSuSize() string`
+
+GetSuSize returns the SuSize field if non-nil, zero value otherwise.
+
+### GetSuSizeOk
+
+`func (o *FabricsPutRequestFabricValue) GetSuSizeOk() (*string, bool)`
+
+GetSuSizeOk returns a tuple with the SuSize field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSuSize
+
+`func (o *FabricsPutRequestFabricValue) SetSuSize(v string)`
+
+SetSuSize sets SuSize field to given value.
+
+### HasSuSize
+
+`func (o *FabricsPutRequestFabricValue) HasSuSize() bool`
+
+HasSuSize returns a boolean if a field has been set.
 
 ### GetSuSupport
 

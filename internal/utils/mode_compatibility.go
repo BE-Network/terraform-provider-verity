@@ -48,9 +48,10 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_packet_broker":           ResourceModeDatacenter,
 	"verity_pb_routing":              ResourceModeDatacenter,
 	"verity_pb_routing_acl":          ResourceModeDatacenter,
-	"verity_sfp_breakout":            ResourceModeDatacenter,
 	"verity_ssp_group":               ResourceModeDatacenter,
 	"verity_su":                      ResourceModeDatacenter,
+	"verity_plane":                   ResourceModeDatacenter,
+	"verity_rack":                    ResourceModeDatacenter,
 
 	// Campus-only resources
 	"verity_authenticated_eth_port": ResourceModeCampus,
@@ -80,8 +81,8 @@ var ResourceCompatibility = map[string]ResourceMode{
 	"verity_service":                  ResourceModeBoth,
 	"verity_sflow_collector":          ResourceModeBoth,
 	"verity_fabric":                   ResourceModeBoth,
-	"verity_plane":                    ResourceModeBoth,
-	"verity_rack":                     ResourceModeBoth,
+	"verity_sfp_breakout":             ResourceModeBoth,
+	"verity_operation_stage":          ResourceModeBoth,
 	"verity_switchpoint":              ResourceModeBoth,
 	"verity_tacacs_profile":           ResourceModeBoth,
 	"verity_threshold_group":          ResourceModeBoth,

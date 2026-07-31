@@ -9,6 +9,7 @@ resource "verity_fabric" "example" {
   name = "example"
   enable = true
   plane_count = "1"
+  su_size = "32"
   server_management = true
   site_type = "enterprise"
   service_for_site = "Management"
@@ -82,6 +83,7 @@ resource "verity_fabric" "example" {
 * `name` (String) - Template Name. Must be unique within type.
 * `enable` (Boolean) - Enable object.
 * `plane_count` (String) - Number of planes in this Fabric.
+* `su_size` (String) - Number of HGXs per SU. Valid values are `32` and `64`; the API default is `32`.
 * `su_support` (Boolean) - Support grouping leaf switches in SUs.
 * `server_management` (Boolean) - Support managing servers.
 * `allow_all_underlay_connections` (Boolean) - Allows underlay connections between PODs.

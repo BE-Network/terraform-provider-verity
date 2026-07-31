@@ -319,7 +319,7 @@ The provider includes a unit test suite that runs fully offline using a mock HTT
 
 **`tests/unit/bulkops/`** — Tests for the bulk operations manager:
 - Delete batching: large delete sets are split into batches of ≤100; each batch contains the correct resource names with none missing or duplicated across batches; a batch failure aborts remaining batches immediately; ACL header parameters handling
-- Execution ordering: correct PUT/PATCH/DELETE sequencing for datacenter and campus modes, circular reference resolution, mixed operations, resource types with no queued operations generate no API calls; ACL v4 and v6 operations are dispatched as two separate PUT calls each carrying the correct `ip_version` query param; a PUT/PATCH/DELETE API failure stops all subsequent operations in the ordered sequence — resources scheduled after the failing type are never sent to the API, while those that already executed are unaffected
+- Execution ordering: correct PUT/PATCH/DELETE sequencing for datacenter and campus modes, mixed operations, resource types with no queued operations generate no API calls; ACL v4 and v6 operations are dispatched as two separate PUT calls each carrying the correct `ip_version` query param; a PUT/PATCH/DELETE API failure stops all subsequent operations in the ordered sequence — resources scheduled after the failing type are never sent to the API, while those that already executed are unaffected
 
 **`tests/unit/lifecycle/`** — Generic resource lifecycle tests run against every registered provider resource:
 - Schema discovery: all resources expose a `name` attribute and discoverable fields/blocks

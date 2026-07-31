@@ -39,7 +39,7 @@ Name | Type | Description | Notes
 **SwitchVtepIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit. | [optional] 
 **BgpAsNumber** | Pointer to **NullableInt32** | BGP Autonomous System Number for the Fabric Underlay  | [optional] 
 **BgpAsNumberAutoAssigned** | Pointer to **bool** | Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit. | [optional] 
-**BbSwitch** | Pointer to **bool** | Expose fields for Device Management | [optional] [default to false]
+**BbSwitch** | Pointer to **bool** | Expose fields for Device Management | [optional] [default to true]
 **PasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
 **EnablePasswordEncrypted** | Pointer to **string** | Enable Password - to enable privileged CLI operations | [optional] [default to ""]
 **SshKeyOrPasswordEncrypted** | Pointer to **string** | SSH Key or Password | [optional] [default to ""]

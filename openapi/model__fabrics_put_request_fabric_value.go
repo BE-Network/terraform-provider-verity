@@ -43,6 +43,8 @@ type FabricsPutRequestFabricValue struct {
 	HgxGateway *string `json:"hgx_gateway,omitempty"`
 	// Number of planes in this Fabric
 	PlaneCount *string `json:"plane_count,omitempty"`
+	// Number of HGXs per SU
+	SuSize *string `json:"su_size,omitempty"`
 	// Support grouping leaf switches in SUs
 	SuSupport *bool `json:"su_support,omitempty"`
 	// Support managing servers
@@ -178,6 +180,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.HgxGateway = &hgxGateway
 	var planeCount string = "1"
 	this.PlaneCount = &planeCount
+	var suSize string = "32"
+	this.SuSize = &suSize
 	var suSupport bool = false
 	this.SuSupport = &suSupport
 	var serverManagement bool = true
@@ -298,6 +302,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.HgxGateway = &hgxGateway
 	var planeCount string = "1"
 	this.PlaneCount = &planeCount
+	var suSize string = "32"
+	this.SuSize = &suSize
 	var suSupport bool = false
 	this.SuSupport = &suSupport
 	var serverManagement bool = true
@@ -771,6 +777,38 @@ func (o *FabricsPutRequestFabricValue) HasPlaneCount() bool {
 // SetPlaneCount gets a reference to the given string and assigns it to the PlaneCount field.
 func (o *FabricsPutRequestFabricValue) SetPlaneCount(v string) {
 	o.PlaneCount = &v
+}
+
+// GetSuSize returns the SuSize field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSuSize() string {
+	if o == nil || IsNil(o.SuSize) {
+		var ret string
+		return ret
+	}
+	return *o.SuSize
+}
+
+// GetSuSizeOk returns a tuple with the SuSize field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSuSizeOk() (*string, bool) {
+	if o == nil || IsNil(o.SuSize) {
+		return nil, false
+	}
+	return o.SuSize, true
+}
+
+// HasSuSize returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSuSize() bool {
+	if o != nil && !IsNil(o.SuSize) {
+		return true
+	}
+
+	return false
+}
+
+// SetSuSize gets a reference to the given string and assigns it to the SuSize field.
+func (o *FabricsPutRequestFabricValue) SetSuSize(v string) {
+	o.SuSize = &v
 }
 
 // GetSuSupport returns the SuSupport field value if set, zero value otherwise.
@@ -2702,6 +2740,9 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PlaneCount) {
 		toSerialize["plane_count"] = o.PlaneCount
+	}
+	if !IsNil(o.SuSize) {
+		toSerialize["su_size"] = o.SuSize
 	}
 	if !IsNil(o.SuSupport) {
 		toSerialize["su_support"] = o.SuSupport

@@ -73,64 +73,51 @@ var finalCacheRefreshKeys = []string{
 	"thresholds",
 }
 
-// Datacenter PUT order is split around the circular route-map-clause workaround.
-var datacenterPutPrefix = []string{
+var datacenterPutOrder = []string{
+	"extended_community_list",
 	"ipv6_prefix_list",
 	"community_list",
-	"ipv4_prefix_list",
-	"extended_community_list",
 	"as_path_access_list",
-}
-
-var datacenterPutBeforeCircularRestore = []string{
+	"ipv4_prefix_list",
 	"route_map_clause",
 	"acl",
 	"route_map",
 	"pb_routing_acl",
 	"tenant",
-}
-
-var datacenterPutAfterCircularRestore = []string{
 	"pb_routing",
-	"ipv4_list",
-	"ipv6_list",
 	"service",
-	"port_acl",
-	"tacacs_profile",
 	"ldap_profile",
+	"tacacs_profile",
+	"ipv6_list",
+	"ipv4_list",
+	"port_acl",
+	"fabric",
+	"packet_queue",
+	"device_aaa_profile",
+	"sflow_collector",
 	"packet_broker",
 	"eth_port_profile",
-	"packet_queue",
-	"sflow_collector",
 	"gateway",
-	"device_aaa_profile",
-	"lag",
-	"eth_port_settings",
-	"diagnostics_profile",
-	"gateway_profile",
+	"pod",
 	"device_settings",
 	"diagnostics_port_profile",
-	"bundle",
-	"pod",
-	"badge",
+	"diagnostics_profile",
+	"eth_port_settings",
+	"lag",
+	"gateway_profile",
 	"su",
-	"rack",
+	"plane",
+	"bundle",
 	"ssp_group",
+	"badge",
+	"rack",
 	"spine_plane",
 	"switchpoint",
 	"threshold",
 	"grouping_rule",
 	"threshold_group",
 	"pair",
-	"fabric",
-	"plane",
 }
-
-var datacenterPutOrder = joinOperationOrders(
-	datacenterPutPrefix,
-	datacenterPutBeforeCircularRestore,
-	datacenterPutAfterCircularRestore,
-)
 
 var datacenterPatchOrder = joinOperationOrders([]string{"sfp_breakout"}, datacenterPutOrder)
 var datacenterDeleteOrder = reverseOperationOrder(datacenterPutOrder)
@@ -138,37 +125,36 @@ var datacenterDeleteOrder = reverseOperationOrder(datacenterPutOrder)
 var campusPutOrder = []string{
 	"ipv4_list",
 	"ipv6_list",
-	"tacacs_profile",
-	"ldap_profile",
 	"acl",
-	"port_acl",
 	"service",
+	"port_acl",
 	"mac_filter",
-	"eth_port_profile",
-	"sflow_collector",
-	"packet_queue",
-	"device_aaa_profile",
+	"ldap_profile",
+	"tacacs_profile",
 	"service_port_profile",
+	"fabric",
+	"eth_port_profile",
+	"device_aaa_profile",
+	"packet_queue",
+	"sflow_collector",
 	"diagnostics_port_profile",
-	"device_voice_settings",
-	"authenticated_eth_port",
-	"diagnostics_profile",
-	"eth_port_settings",
+	"lag",
 	"voice_port_profile",
 	"device_settings",
-	"lag",
+	"eth_port_settings",
+	"authenticated_eth_port",
+	"device_voice_settings",
+	"diagnostics_profile",
 	"bundle",
 	"badge",
-	"rack",
 	"switchpoint",
-	"threshold",
 	"grouping_rule",
+	"threshold",
 	"threshold_group",
 	"pair",
-	"fabric",
-	"plane",
 }
 
+var campusPatchOrder = joinOperationOrders([]string{"sfp_breakout"}, campusPutOrder)
 var campusDeleteOrder = reverseOperationOrder(campusPutOrder)
 
 // GetResourceOperationData returns operation data for a resource type
@@ -868,86 +854,9 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	var diagnostics diag.Diagnostics
 	operationsPerformed := false
 	execution := orderedExecutionState{m, ctx, &diagnostics, &operationsPerformed}
-
 	// PUT operations - DC Order
-	// sfp_breakout is intentionally omitted here because it only supports PATCH, not PUT or DELETE.
-	if !execution.executeSequence("PUT", datacenterPutPrefix) {
-		return diagnostics, operationsPerformed
-	}
-
-	// BEFORE executing route_map_clause PUT, check for circular reference scenario
-	circularPutInfo := m.detectCircularReferenceScenario(ctx)
-
-	if circularPutInfo.NeedsFix {
-		tflog.Info(ctx, "Applying circular reference fix for route_map_clause and tenant", map[string]interface{}{
-			"affected_clauses":   circularPutInfo.ClauseNames,
-			"referenced_tenants": circularPutInfo.TenantNames,
-		})
-
-		// Temporarily replace affected route_map_clause PUT data with versions having empty match_vrf
-		m.mutex.Lock()
-		routeMapClauseOps := m.resources["route_map_clause"]
-		for name, data := range circularPutInfo.AffectedClauses {
-			modifiedData := m.createRouteMapClauseWithEmptyMatchVrf(data)
-			routeMapClauseOps.Put[name] = modifiedData
-			tflog.Debug(ctx, fmt.Sprintf("Temporarily setting match_vrf to empty for route_map_clause: %s", name))
-		}
-		m.mutex.Unlock()
-	}
-
-	if !execution.executeSequence("PUT", datacenterPutBeforeCircularRestore) {
-		return diagnostics, operationsPerformed
-	}
-
-	// If circular reference fix was applied, now PATCH route_map_clause with match_vrf
-	if circularPutInfo.NeedsFix && len(circularPutInfo.AffectedClauses) > 0 {
-		tflog.Info(ctx, "Applying PATCH to restore match_vrf fields in route_map_clause")
-
-		m.mutex.Lock()
-		// Add PATCH operations for the affected route_map_clauses
-		routeMapClauseOps := m.resources["route_map_clause"]
-		if routeMapClauseOps.Patch == nil {
-			routeMapClauseOps.Patch = make(map[string]interface{})
-		}
-
-		affectedNames := make([]string, 0, len(circularPutInfo.AffectedClauses))
-		for name, originalData := range circularPutInfo.AffectedClauses {
-			// Extract the original match_vrf value to restore
-			matchVrfValue := m.getMatchVrfValue(originalData)
-
-			// Create PATCH data to restore the match_vrf
-			patchData := m.createMatchVrfPatchData(originalData, matchVrfValue)
-			if patchData != nil {
-				routeMapClauseOps.Patch[name] = patchData
-				affectedNames = append(affectedNames, name)
-				tflog.Debug(ctx, fmt.Sprintf("Prepared PATCH for route_map_clause: %s", name))
-			}
-
-			// Restore original PUT data for future reference
-			routeMapClauseOps.Put[name] = originalData
-		}
-		m.mutex.Unlock()
-
-		tflog.Info(ctx, "Executing PATCH to restore match_vrf", map[string]interface{}{
-			"affected_resources": affectedNames,
-		})
-		if !execution.execute("PATCH", m.getOperationCount("route_map_clause", "PATCH"), func(ctx context.Context) diag.Diagnostics {
-			return m.ExecuteBulk(ctx, "route_map_clause", "PATCH")
-		}, "Route Map Clause (match_vrf restore)") {
-			return diagnostics, operationsPerformed
-		}
-
-		// Clean up the PATCH operations
-		m.mutex.Lock()
-		for name := range circularPutInfo.AffectedClauses {
-			delete(routeMapClauseOps.Patch, name)
-		}
-		m.mutex.Unlock()
-
-		tflog.Info(ctx, "Successfully restored match_vrf fields via PATCH")
-	}
-
-	if !execution.executeSequence("PUT", datacenterPutAfterCircularRestore) {
+	// sfp_breakout is intentionally omitted because it only supports PATCH.
+	if !execution.executeSequence("PUT", datacenterPutOrder) {
 		return diagnostics, operationsPerformed
 	}
 
@@ -956,63 +865,8 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 		return diagnostics, operationsPerformed
 	}
 
-	// DELETE operations - Reverse DC Order
-	// sfp_breakout is intentionally omitted here because it only supports PATCH, not PUT or DELETE.
-
-	// CIRCULAR REFERENCE FIX FOR DELETE OPERATIONS
-	// Before starting DELETE operations, check if we need to handle circular references
-	// between route_map_clause (match_vrf) and tenant (export/import_route_map)
-	circularInfo := m.detectCompleteCircularDeleteSet(ctx)
-
-	if circularInfo.IsCompleteSet {
-		tflog.Info(ctx, "Complete circular reference set detected in DELETE operations - applying fix")
-		tflog.Info(ctx, "Clearing match_vrf references before deletion", map[string]interface{}{
-			"affected_clauses": circularInfo.ClauseNames,
-			"affected_tenants": circularInfo.TenantNames,
-		})
-
-		m.mutex.Lock()
-		// Add PATCH operations to clear match_vrf from route_map_clauses being deleted
-		routeMapClauseOps := m.resources["route_map_clause"]
-		if routeMapClauseOps.Patch == nil {
-			routeMapClauseOps.Patch = make(map[string]interface{})
-		}
-
-		// For each clause in the circular set, create PATCH to clear match_vrf
-		for _, clauseName := range circularInfo.ClauseNames {
-			// Get the clause data from circularInfo.AffectedClauses (fetched from API)
-			var originalData interface{}
-			if clauseData, exists := circularInfo.AffectedClauses[clauseName]; exists {
-				originalData = clauseData
-			} else if putData, exists := routeMapClauseOps.Put[clauseName]; exists {
-				originalData = putData
-			}
-
-			// Create PATCH data with empty match_vrf
-			patchData := m.createMatchVrfPatchData(originalData, "")
-			routeMapClauseOps.Patch[clauseName] = patchData
-			tflog.Debug(ctx, fmt.Sprintf("Clearing match_vrf for route_map_clause: %s before deletion", clauseName))
-		}
-		m.mutex.Unlock()
-
-		tflog.Info(ctx, "Executing PATCH to clear match_vrf references")
-		if !execution.execute("PATCH", m.getOperationCount("route_map_clause", "PATCH"),
-			func(ctx context.Context) diag.Diagnostics {
-				return m.ExecuteBulk(ctx, "route_map_clause", "PATCH")
-			}, "Route Map Clause (clear match_vrf before deletion)") {
-			return diagnostics, operationsPerformed
-		}
-
-		// Clean up PATCH operations
-		m.mutex.Lock()
-		for _, clauseName := range circularInfo.ClauseNames {
-			delete(routeMapClauseOps.Patch, clauseName)
-		}
-		m.mutex.Unlock()
-
-		tflog.Info(ctx, "Successfully cleared match_vrf references, proceeding with deletions")
-	}
-
+	// DELETE operations - reverse normal Data Center staging order.
+	// sfp_breakout is intentionally omitted because it only supports PATCH.
 	if !execution.executeSequence("DELETE", datacenterDeleteOrder) {
 		return diagnostics, operationsPerformed
 	}
@@ -1031,7 +885,7 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 	}
 
 	// PATCH operations - Campus Order
-	if !execution.executeSequence("PATCH", campusPutOrder) {
+	if !execution.executeSequence("PATCH", campusPatchOrder) {
 		return diagnostics, operationsPerformed
 	}
 

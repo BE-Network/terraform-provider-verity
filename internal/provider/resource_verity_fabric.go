@@ -43,6 +43,7 @@ type verityFabricResourceModel struct {
 	Name                                      types.String                        `tfsdk:"name"`
 	Enable                                    types.Bool                          `tfsdk:"enable"`
 	PlaneCount                                types.String                        `tfsdk:"plane_count"`
+	SuSize                                    types.String                        `tfsdk:"su_size"`
 	SuSupport                                 types.Bool                          `tfsdk:"su_support"`
 	ServerManagement                          types.Bool                          `tfsdk:"server_management"`
 	AllowAllUnderlayConnections               types.Bool                          `tfsdk:"allow_all_underlay_connections"`
@@ -160,6 +161,11 @@ func (r *verityFabricResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"plane_count": schema.StringAttribute{
 				Description: "Number of planes in this Fabric",
+				Optional:    true,
+				Computed:    true,
+			},
+			"su_size": schema.StringAttribute{
+				Description: "Number of HGXs per SU. Valid values are \"32\" and \"64\".",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -528,6 +534,7 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "PlaneCount", APIField: &fabricReq.PlaneCount, TFValue: plan.PlaneCount},
+		{FieldName: "SuSize", APIField: &fabricReq.SuSize, TFValue: plan.SuSize},
 		{FieldName: "SiteType", APIField: &fabricReq.SiteType, TFValue: plan.SiteType},
 		{FieldName: "ServiceForSite", APIField: &fabricReq.ServiceForSite, TFValue: plan.ServiceForSite},
 		{FieldName: "ServiceForSiteRefType", APIField: &fabricReq.ServiceForSiteRefType, TFValue: plan.ServiceForSiteRefType},
@@ -823,6 +830,7 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { fabricReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PlaneCount, state.PlaneCount, func(v *string) { fabricReq.PlaneCount = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.SuSize, state.SuSize, func(v *string) { fabricReq.SuSize = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SiteType, state.SiteType, func(v *string) { fabricReq.SiteType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SpanningTreeType, state.SpanningTreeType, func(v *string) { fabricReq.SpanningTreeType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RegionName, state.RegionName, func(v *string) { fabricReq.RegionName = v }, &hasChanges)
@@ -1134,6 +1142,7 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 	// String fields
 	state.SiteType = utils.MapStringWithMode(fabricData, "site_type", resourceType, mode)
 	state.PlaneCount = utils.MapStringWithMode(fabricData, "plane_count", resourceType, mode)
+	state.SuSize = utils.MapStringWithMode(fabricData, "su_size", resourceType, mode)
 	state.ServiceForSite = utils.MapStringWithMode(fabricData, "service_for_site", resourceType, mode)
 	state.ServiceForSiteRefType = utils.MapStringWithMode(fabricData, "service_for_site_ref_type_", resourceType, mode)
 	state.SpanningTreeType = utils.MapStringWithMode(fabricData, "spanning_tree_type", resourceType, mode)
@@ -1224,7 +1233,7 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 	}
 
 	nullifier.NullifyStrings(
-		"site_type", "plane_count",
+		"site_type", "plane_count", "su_size",
 		"service_for_site", "service_for_site_ref_type_",
 		"spanning_tree_type", "region_name",
 		"domain_for_site", "domain_for_site_ref_type_",

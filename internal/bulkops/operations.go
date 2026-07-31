@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -187,8 +188,11 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 		groupedOps[headerValue][originalName] = props
 	}
 
-	// Execute operations for each header value group
-	for headerValue, ops := range groupedOps {
+	// Execute operations for each header value group in a deterministic order.
+	// ACLs have an API dependency between IP versions; all other header-aware
+	// resources use lexical ordering for reproducible requests.
+	for _, headerValue := range m.orderedHeaderValues(resourceType, operationType, groupedOps) {
+		ops := groupedOps[headerValue]
 		headers := map[string]string{config.HeaderSplitKey: headerValue}
 		groupDiags := m.executeOperationsWithHeaders(ctx, resourceType, operationType, ops, headers, config)
 		diagnostics = append(diagnostics, groupDiags...)
@@ -199,6 +203,42 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 	res.RecentOpTime = time.Now()
 
 	return diagnostics
+}
+
+func (m *Manager) orderedHeaderValues(resourceType, operationType string, groupedOps map[string]map[string]interface{}) []string {
+	values := make([]string, 0, len(groupedOps))
+	for value := range groupedOps {
+		values = append(values, value)
+	}
+	sort.Strings(values)
+
+	if resourceType != "acl" {
+		return values
+	}
+
+	preferred := []string{"4", "6"}
+	if m.mode == "campus" {
+		preferred = []string{"6", "4"}
+	}
+	if operationType == "DELETE" {
+		preferred[0], preferred[1] = preferred[1], preferred[0]
+	}
+
+	ordered := make([]string, 0, len(values))
+	seen := make(map[string]bool, len(values))
+	for _, value := range preferred {
+		if _, exists := groupedOps[value]; exists {
+			ordered = append(ordered, value)
+			seen[value] = true
+		}
+	}
+	for _, value := range values {
+		if !seen[value] {
+			ordered = append(ordered, value)
+		}
+	}
+
+	return ordered
 }
 
 // executeOperationsWithHeaders executes a batch of operations with specific header parameters
