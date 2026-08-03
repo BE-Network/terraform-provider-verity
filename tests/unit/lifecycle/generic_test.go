@@ -838,6 +838,7 @@ func TestGeneric_PatchSingleStringField(t *testing.T) {
 
 			rs := inspectSchema(tc.Factory)
 			modeKey := tc.modeFieldsKey()
+			autoAssigned := detectAutoAssignedPairs(rs)
 
 			refBases := make(map[string]bool)
 			for _, pair := range detectRefPairs(rs) {
@@ -905,7 +906,15 @@ func TestGeneric_PatchSingleStringField(t *testing.T) {
 							}
 							body := patches[len(patches)-1].Body
 							mock.AssertFieldEquals(t, body, basePath+"."+target, "updated_value")
-							mock.AssertOnlyFields(t, body, basePath, []string{target})
+							allowedFields := []string{target}
+							for flag, value := range autoAssigned {
+								if value == target {
+									mock.AssertFieldEquals(t, body, basePath+"."+flag, false)
+									allowedFields = append(allowedFields, flag)
+									break
+								}
+							}
+							mock.AssertOnlyFields(t, body, basePath, allowedFields)
 							return nil
 						},
 					},

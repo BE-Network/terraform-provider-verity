@@ -623,8 +623,8 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
 		fabricReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(true)
 		// Don't include the specific MAC in the request
-	} else if !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() && plan.AnycastMacAddress.ValueString() != "" {
-		// User explicitly specified a value
+	} else if configuredAttrs.IsConfigured("anycast_mac_address") && !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() {
+		// Preserve an explicitly configured value, including an explicit empty string.
 		fabricReq.AnycastMacAddress = openapi.PtrString(plan.AnycastMacAddress.ValueString())
 		if !plan.AnycastMacAddressAutoAssigned.IsNull() {
 			fabricReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
