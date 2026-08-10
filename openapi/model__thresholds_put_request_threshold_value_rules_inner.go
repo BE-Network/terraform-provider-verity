@@ -29,7 +29,7 @@ type ThresholdsPutRequestThresholdValueRulesInner struct {
 	Operation *string `json:"operation,omitempty"`
 	// Value to compare the metric to
 	Value *string `json:"value,omitempty"`
-	// How to compare the metric to the value
+	// Nested threshold to evaluate (when Type is Threshold)
 	Threshold *string `json:"threshold,omitempty"`
 	// Object type for threshold field
 	ThresholdRefType *string `json:"threshold_ref_type_,omitempty"`

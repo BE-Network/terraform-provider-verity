@@ -9,7 +9,7 @@ resource "verity_diagnostics_profile" "example" {
   name = "example"
   enable = false
   enable_sflow = true
-  usesatori = false
+  use_internal_collector = false
   flow_collector = ""
   flow_collector_ref_type_ = "sflow_collector"
   poll_interval = 20
@@ -22,7 +22,7 @@ resource "verity_diagnostics_profile" "example" {
 * `name` (String) - Object Name. Must be unique.
 * `enable` (Boolean) - Enable object.
 * `enable_sflow` (Boolean) - Enable sFlow for this Diagnostics Profile.
-* `usesatori` (Boolean) - Use Verity as the flow collector.
+* `use_internal_collector` (Boolean) - Use the internal Collector as the flow collector.
 * `flow_collector` (String) - Flow Collector for this Diagnostics Profile.
 * `flow_collector_ref_type_` (String) - Object type for flow_collector field.
 * `poll_interval` (Integer) - The sampling rate for sFlow polling (seconds).

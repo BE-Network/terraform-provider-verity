@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **Metric** | Pointer to **string** | Metric threshold is on | [optional] [default to ""]
 **Operation** | Pointer to **string** | How to compare the metric to the value | [optional] [default to "eq"]
 **Value** | Pointer to **string** | Value to compare the metric to | [optional] [default to ""]
-**Threshold** | Pointer to **string** | How to compare the metric to the value | [optional] [default to ""]
+**Threshold** | Pointer to **string** | Nested threshold to evaluate (when Type is Threshold) | [optional] [default to ""]
 **ThresholdRefType** | Pointer to **string** | Object type for threshold field | [optional] 
 **Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 

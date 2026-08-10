@@ -47,6 +47,8 @@ type FabricsPutRequestFabricValue struct {
 	SuSize *string `json:"su_size,omitempty"`
 	// Support grouping leaf switches in SUs
 	SuSupport *bool `json:"su_support,omitempty"`
+	// GPU Architecture used within this Fabric
+	GpuArchitecture *string `json:"gpu_architecture,omitempty"`
 	// Support managing servers
 	ServerManagement *bool `json:"server_management,omitempty"`
 	// Allows underlay connections between PODs
@@ -142,8 +144,6 @@ type FabricsPutRequestFabricValue struct {
 	// Maximum number of PODs allowed in the Fabric
 	MaxPods NullableInt32 `json:"max_pods,omitempty"`
 	ObjectProperties *FabricsPutRequestFabricValueObjectProperties `json:"object_properties,omitempty"`
-	// GPU Architecture used within this Fabric
-	GpuArchitecture *string `json:"gpu_architecture,omitempty"`
 	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
 	IpSourceGuard *bool `json:"ip_source_guard,omitempty"`
 	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
@@ -184,6 +184,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.SuSize = &suSize
 	var suSupport bool = false
 	this.SuSupport = &suSupport
+	var gpuArchitecture string = "hgx"
+	this.GpuArchitecture = &gpuArchitecture
 	var serverManagement bool = true
 	this.ServerManagement = &serverManagement
 	var allowAllUnderlayConnections bool = false
@@ -264,8 +266,6 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
-	var gpuArchitecture string = "hgx"
-	this.GpuArchitecture = &gpuArchitecture
 	var ipSourceGuard bool = false
 	this.IpSourceGuard = &ipSourceGuard
 	var enableDhcpSnooping bool = false
@@ -306,6 +306,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.SuSize = &suSize
 	var suSupport bool = false
 	this.SuSupport = &suSupport
+	var gpuArchitecture string = "hgx"
+	this.GpuArchitecture = &gpuArchitecture
 	var serverManagement bool = true
 	this.ServerManagement = &serverManagement
 	var allowAllUnderlayConnections bool = false
@@ -386,8 +388,6 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
-	var gpuArchitecture string = "hgx"
-	this.GpuArchitecture = &gpuArchitecture
 	var ipSourceGuard bool = false
 	this.IpSourceGuard = &ipSourceGuard
 	var enableDhcpSnooping bool = false
@@ -841,6 +841,38 @@ func (o *FabricsPutRequestFabricValue) HasSuSupport() bool {
 // SetSuSupport gets a reference to the given bool and assigns it to the SuSupport field.
 func (o *FabricsPutRequestFabricValue) SetSuSupport(v bool) {
 	o.SuSupport = &v
+}
+
+// GetGpuArchitecture returns the GpuArchitecture field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetGpuArchitecture() string {
+	if o == nil || IsNil(o.GpuArchitecture) {
+		var ret string
+		return ret
+	}
+	return *o.GpuArchitecture
+}
+
+// GetGpuArchitectureOk returns a tuple with the GpuArchitecture field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetGpuArchitectureOk() (*string, bool) {
+	if o == nil || IsNil(o.GpuArchitecture) {
+		return nil, false
+	}
+	return o.GpuArchitecture, true
+}
+
+// HasGpuArchitecture returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasGpuArchitecture() bool {
+	if o != nil && !IsNil(o.GpuArchitecture) {
+		return true
+	}
+
+	return false
+}
+
+// SetGpuArchitecture gets a reference to the given string and assigns it to the GpuArchitecture field.
+func (o *FabricsPutRequestFabricValue) SetGpuArchitecture(v string) {
+	o.GpuArchitecture = &v
 }
 
 // GetServerManagement returns the ServerManagement field value if set, zero value otherwise.
@@ -2599,38 +2631,6 @@ func (o *FabricsPutRequestFabricValue) SetObjectProperties(v FabricsPutRequestFa
 	o.ObjectProperties = &v
 }
 
-// GetGpuArchitecture returns the GpuArchitecture field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetGpuArchitecture() string {
-	if o == nil || IsNil(o.GpuArchitecture) {
-		var ret string
-		return ret
-	}
-	return *o.GpuArchitecture
-}
-
-// GetGpuArchitectureOk returns a tuple with the GpuArchitecture field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetGpuArchitectureOk() (*string, bool) {
-	if o == nil || IsNil(o.GpuArchitecture) {
-		return nil, false
-	}
-	return o.GpuArchitecture, true
-}
-
-// HasGpuArchitecture returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasGpuArchitecture() bool {
-	if o != nil && !IsNil(o.GpuArchitecture) {
-		return true
-	}
-
-	return false
-}
-
-// SetGpuArchitecture gets a reference to the given string and assigns it to the GpuArchitecture field.
-func (o *FabricsPutRequestFabricValue) SetGpuArchitecture(v string) {
-	o.GpuArchitecture = &v
-}
-
 // GetIpSourceGuard returns the IpSourceGuard field value if set, zero value otherwise.
 func (o *FabricsPutRequestFabricValue) GetIpSourceGuard() bool {
 	if o == nil || IsNil(o.IpSourceGuard) {
@@ -2746,6 +2746,9 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SuSupport) {
 		toSerialize["su_support"] = o.SuSupport
+	}
+	if !IsNil(o.GpuArchitecture) {
+		toSerialize["gpu_architecture"] = o.GpuArchitecture
 	}
 	if !IsNil(o.ServerManagement) {
 		toSerialize["server_management"] = o.ServerManagement
@@ -2890,9 +2893,6 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.GpuArchitecture) {
-		toSerialize["gpu_architecture"] = o.GpuArchitecture
 	}
 	if !IsNil(o.IpSourceGuard) {
 		toSerialize["ip_source_guard"] = o.IpSourceGuard

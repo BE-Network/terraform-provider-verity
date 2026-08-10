@@ -286,7 +286,7 @@ var ModeFields = map[string]map[string]FieldMode{
 		"flow_collector_ref_type_": FieldModeBoth,
 		"name":                     FieldModeBoth,
 		"poll_interval":            FieldModeBoth,
-		"usesatori":                FieldModeBoth,
+		"use_internal_collector":   FieldModeBoth,
 		"vrf_type":                 FieldModeBoth,
 	},
 	"ethportprofiles": {

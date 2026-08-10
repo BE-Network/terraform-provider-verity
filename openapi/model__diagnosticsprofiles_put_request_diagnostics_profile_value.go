@@ -26,7 +26,7 @@ type DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct {
 	// Enable sFlow for this Diagnostics Profile 
 	EnableSflow *bool `json:"enable_sflow,omitempty"`
 	// Use the internal Collector as the flow collector
-	Usesatori *bool `json:"usesatori,omitempty"`
+	UseInternalCollector *bool `json:"use_internal_collector,omitempty"`
 	// Flow Collector for this Diagnostics Profile 
 	FlowCollector *string `json:"flow_collector,omitempty"`
 	// Object type for flow_collector field
@@ -49,8 +49,8 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue() *Diagnosticsprofi
 	this.Enable = &enable
 	var enableSflow bool = false
 	this.EnableSflow = &enableSflow
-	var usesatori bool = false
-	this.Usesatori = &usesatori
+	var useInternalCollector bool = false
+	this.UseInternalCollector = &useInternalCollector
 	var flowCollector string = ""
 	this.FlowCollector = &flowCollector
 	var pollInterval int32 = 20
@@ -71,8 +71,8 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValueWithDefaults() *Diag
 	this.Enable = &enable
 	var enableSflow bool = false
 	this.EnableSflow = &enableSflow
-	var usesatori bool = false
-	this.Usesatori = &usesatori
+	var useInternalCollector bool = false
+	this.UseInternalCollector = &useInternalCollector
 	var flowCollector string = ""
 	this.FlowCollector = &flowCollector
 	var pollInterval int32 = 20
@@ -178,36 +178,36 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetEnableSflow(v 
 	o.EnableSflow = &v
 }
 
-// GetUsesatori returns the Usesatori field value if set, zero value otherwise.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUsesatori() bool {
-	if o == nil || IsNil(o.Usesatori) {
+// GetUseInternalCollector returns the UseInternalCollector field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUseInternalCollector() bool {
+	if o == nil || IsNil(o.UseInternalCollector) {
 		var ret bool
 		return ret
 	}
-	return *o.Usesatori
+	return *o.UseInternalCollector
 }
 
-// GetUsesatoriOk returns a tuple with the Usesatori field value if set, nil otherwise
+// GetUseInternalCollectorOk returns a tuple with the UseInternalCollector field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUsesatoriOk() (*bool, bool) {
-	if o == nil || IsNil(o.Usesatori) {
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUseInternalCollectorOk() (*bool, bool) {
+	if o == nil || IsNil(o.UseInternalCollector) {
 		return nil, false
 	}
-	return o.Usesatori, true
+	return o.UseInternalCollector, true
 }
 
-// HasUsesatori returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasUsesatori() bool {
-	if o != nil && !IsNil(o.Usesatori) {
+// HasUseInternalCollector returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasUseInternalCollector() bool {
+	if o != nil && !IsNil(o.UseInternalCollector) {
 		return true
 	}
 
 	return false
 }
 
-// SetUsesatori gets a reference to the given bool and assigns it to the Usesatori field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetUsesatori(v bool) {
-	o.Usesatori = &v
+// SetUseInternalCollector gets a reference to the given bool and assigns it to the UseInternalCollector field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetUseInternalCollector(v bool) {
+	o.UseInternalCollector = &v
 }
 
 // GetFlowCollector returns the FlowCollector field value if set, zero value otherwise.
@@ -367,8 +367,8 @@ func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) ToMap() (map[strin
 	if !IsNil(o.EnableSflow) {
 		toSerialize["enable_sflow"] = o.EnableSflow
 	}
-	if !IsNil(o.Usesatori) {
-		toSerialize["usesatori"] = o.Usesatori
+	if !IsNil(o.UseInternalCollector) {
+		toSerialize["use_internal_collector"] = o.UseInternalCollector
 	}
 	if !IsNil(o.FlowCollector) {
 		toSerialize["flow_collector"] = o.FlowCollector

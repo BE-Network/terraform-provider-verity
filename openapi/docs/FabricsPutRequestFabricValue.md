@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **PlaneCount** | Pointer to **string** | Number of planes in this Fabric | [optional] [default to "1"]
 **SuSize** | Pointer to **string** | Number of HGXs per SU | [optional] [default to "32"]
 **SuSupport** | Pointer to **bool** | Support grouping leaf switches in SUs | [optional] [default to false]
+**GpuArchitecture** | Pointer to **string** | GPU Architecture used within this Fabric | [optional] [default to "hgx"]
 **ServerManagement** | Pointer to **bool** | Support managing servers | [optional] [default to true]
 **AllowAllUnderlayConnections** | Pointer to **bool** | Allows underlay connections between PODs | [optional] [default to false]
 **SiteType** | Pointer to **string** | Type of Fabric | [optional] [default to "enterprise"]
@@ -66,7 +67,6 @@ Name | Type | Description | Notes
 **MaxSus** | Pointer to **NullableInt32** | Maximum number of SUs allowed per POD | [optional] 
 **MaxPods** | Pointer to **NullableInt32** | Maximum number of PODs allowed in the Fabric | [optional] 
 **ObjectProperties** | Pointer to [**FabricsPutRequestFabricValueObjectProperties**](FabricsPutRequestFabricValueObjectProperties.md) |  | [optional] 
-**GpuArchitecture** | Pointer to **string** | GPU Architecture used within this Fabric | [optional] [default to "hgx"]
 **IpSourceGuard** | Pointer to **bool** | On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings | [optional] [default to false]
 **EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
 
@@ -438,6 +438,31 @@ SetSuSupport sets SuSupport field to given value.
 `func (o *FabricsPutRequestFabricValue) HasSuSupport() bool`
 
 HasSuSupport returns a boolean if a field has been set.
+
+### GetGpuArchitecture
+
+`func (o *FabricsPutRequestFabricValue) GetGpuArchitecture() string`
+
+GetGpuArchitecture returns the GpuArchitecture field if non-nil, zero value otherwise.
+
+### GetGpuArchitectureOk
+
+`func (o *FabricsPutRequestFabricValue) GetGpuArchitectureOk() (*string, bool)`
+
+GetGpuArchitectureOk returns a tuple with the GpuArchitecture field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetGpuArchitecture
+
+`func (o *FabricsPutRequestFabricValue) SetGpuArchitecture(v string)`
+
+SetGpuArchitecture sets GpuArchitecture field to given value.
+
+### HasGpuArchitecture
+
+`func (o *FabricsPutRequestFabricValue) HasGpuArchitecture() bool`
+
+HasGpuArchitecture returns a boolean if a field has been set.
 
 ### GetServerManagement
 
@@ -1858,31 +1883,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *FabricsPutRequestFabricValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetGpuArchitecture
-
-`func (o *FabricsPutRequestFabricValue) GetGpuArchitecture() string`
-
-GetGpuArchitecture returns the GpuArchitecture field if non-nil, zero value otherwise.
-
-### GetGpuArchitectureOk
-
-`func (o *FabricsPutRequestFabricValue) GetGpuArchitectureOk() (*string, bool)`
-
-GetGpuArchitectureOk returns a tuple with the GpuArchitecture field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetGpuArchitecture
-
-`func (o *FabricsPutRequestFabricValue) SetGpuArchitecture(v string)`
-
-SetGpuArchitecture sets GpuArchitecture field to given value.
-
-### HasGpuArchitecture
-
-`func (o *FabricsPutRequestFabricValue) HasGpuArchitecture() bool`
-
-HasGpuArchitecture returns a boolean if a field has been set.
 
 ### GetIpSourceGuard
 

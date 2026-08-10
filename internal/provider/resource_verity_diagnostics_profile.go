@@ -43,7 +43,7 @@ type verityDiagnosticsProfileResourceModel struct {
 	Name                 types.String `tfsdk:"name"`
 	Enable               types.Bool   `tfsdk:"enable"`
 	EnableSflow          types.Bool   `tfsdk:"enable_sflow"`
-	Usesatori            types.Bool   `tfsdk:"usesatori"`
+	UseInternalCollector types.Bool   `tfsdk:"use_internal_collector"`
 	FlowCollector        types.String `tfsdk:"flow_collector"`
 	FlowCollectorRefType types.String `tfsdk:"flow_collector_ref_type_"`
 	PollInterval         types.Int64  `tfsdk:"poll_interval"`
@@ -95,8 +95,8 @@ func (r *verityDiagnosticsProfileResource) Schema(ctx context.Context, req resou
 				Optional:    true,
 				Computed:    true,
 			},
-			"usesatori": schema.BoolAttribute{
-				Description: "Use Verity as the flow collector",
+			"use_internal_collector": schema.BoolAttribute{
+				Description: "Use the internal Collector as the flow collector",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -163,7 +163,7 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &diagnosticsProfileProps.Enable, TFValue: plan.Enable},
 		{FieldName: "EnableSflow", APIField: &diagnosticsProfileProps.EnableSflow, TFValue: plan.EnableSflow},
-		{FieldName: "Usesatori", APIField: &diagnosticsProfileProps.Usesatori, TFValue: plan.Usesatori},
+		{FieldName: "UseInternalCollector", APIField: &diagnosticsProfileProps.UseInternalCollector, TFValue: plan.UseInternalCollector},
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
@@ -357,7 +357,7 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { diagnosticsProfileProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EnableSflow, state.EnableSflow, func(v *bool) { diagnosticsProfileProps.EnableSflow = v }, &hasChanges)
-	utils.CompareAndSetBoolField(plan.Usesatori, state.Usesatori, func(v *bool) { diagnosticsProfileProps.Usesatori = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.UseInternalCollector, state.UseInternalCollector, func(v *bool) { diagnosticsProfileProps.UseInternalCollector = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.PollInterval, state.PollInterval, configuredAttrs.IsConfigured("poll_interval"), func(v *openapi.NullableInt32) { diagnosticsProfileProps.PollInterval = *v }, &hasChanges)
@@ -456,7 +456,7 @@ func populateDiagnosticsProfileState(ctx context.Context, state verityDiagnostic
 	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.EnableSflow = utils.MapBoolWithMode(data, "enable_sflow", resourceType, mode)
-	state.Usesatori = utils.MapBoolWithMode(data, "usesatori", resourceType, mode)
+	state.UseInternalCollector = utils.MapBoolWithMode(data, "use_internal_collector", resourceType, mode)
 
 	// String fields
 	state.FlowCollector = utils.MapStringWithMode(data, "flow_collector", resourceType, mode)
@@ -503,7 +503,7 @@ func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req r
 	)
 
 	nullifier.NullifyBools(
-		"enable", "enable_sflow", "usesatori",
+		"enable", "enable_sflow", "use_internal_collector",
 	)
 
 	nullifier.NullifyInt64s(
