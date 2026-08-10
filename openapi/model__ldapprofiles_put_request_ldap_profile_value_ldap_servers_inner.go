@@ -24,17 +24,17 @@ type LdapprofilesPutRequestLdapProfileValueLdapServersInner struct {
 	// IPv4, IPv6, or DNS hostname for LDAP server
 	Server *string `json:"server,omitempty"`
 	// Server port (overrides global default port)
-	Port NullableInt32 `json:"port,omitempty"`
+	Port NullableInt64 `json:"port,omitempty"`
 	// Which LDAP client(s) use this server
 	UseType *string `json:"use_type,omitempty"`
 	// Server priority (1-99, lower = higher priority)
-	Priority NullableInt32 `json:"priority,omitempty"`
+	Priority NullableInt64 `json:"priority,omitempty"`
 	// Per-server TLS mode (overrides global setting)
 	SslTlsMode *string `json:"ssl_tls_mode,omitempty"`
 	// Per-server retransmit attempts (0-10)
-	RetransmitAttempts NullableInt32 `json:"retransmit_attempts,omitempty"`
+	RetransmitAttempts NullableInt64 `json:"retransmit_attempts,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewLdapprofilesPutRequestLdapProfileValueLdapServersInner instantiates a new LdapprofilesPutRequestLdapProfileValueLdapServersInner object
@@ -135,9 +135,9 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetServer(v str
 }
 
 // GetPort returns the Port field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPort() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPort() int64 {
 	if o == nil || IsNil(o.Port.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Port.Get()
@@ -146,7 +146,7 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPort() int32
 // GetPortOk returns a tuple with the Port field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPortOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -162,8 +162,8 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasPort() bool 
 	return false
 }
 
-// SetPort gets a reference to the given NullableInt32 and assigns it to the Port field.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPort(v int32) {
+// SetPort gets a reference to the given NullableInt64 and assigns it to the Port field.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPort(v int64) {
 	o.Port.Set(&v)
 }
 // SetPortNil sets the value for Port to be an explicit nil
@@ -209,9 +209,9 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetUseType(v st
 }
 
 // GetPriority returns the Priority field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriority() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriority() int64 {
 	if o == nil || IsNil(o.Priority.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Priority.Get()
@@ -220,7 +220,7 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriority() i
 // GetPriorityOk returns a tuple with the Priority field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriorityOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriorityOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -236,8 +236,8 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasPriority() b
 	return false
 }
 
-// SetPriority gets a reference to the given NullableInt32 and assigns it to the Priority field.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPriority(v int32) {
+// SetPriority gets a reference to the given NullableInt64 and assigns it to the Priority field.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPriority(v int64) {
 	o.Priority.Set(&v)
 }
 // SetPriorityNil sets the value for Priority to be an explicit nil
@@ -283,9 +283,9 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetSslTlsMode(v
 }
 
 // GetRetransmitAttempts returns the RetransmitAttempts field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAttempts() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAttempts() int64 {
 	if o == nil || IsNil(o.RetransmitAttempts.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RetransmitAttempts.Get()
@@ -294,7 +294,7 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAt
 // GetRetransmitAttemptsOk returns a tuple with the RetransmitAttempts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAttemptsOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAttemptsOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -310,8 +310,8 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasRetransmitAt
 	return false
 }
 
-// SetRetransmitAttempts gets a reference to the given NullableInt32 and assigns it to the RetransmitAttempts field.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetRetransmitAttempts(v int32) {
+// SetRetransmitAttempts gets a reference to the given NullableInt64 and assigns it to the RetransmitAttempts field.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetRetransmitAttempts(v int64) {
 	o.RetransmitAttempts.Set(&v)
 }
 // SetRetransmitAttemptsNil sets the value for RetransmitAttempts to be an explicit nil
@@ -325,9 +325,9 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) UnsetRetransmit
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndex() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -335,7 +335,7 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndex() int3
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndexOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -351,8 +351,8 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasIndex() bool
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

@@ -364,7 +364,7 @@ func (r *verityRackResource) Update(ctx context.Context, req resource.UpdateRequ
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { rackReq.Enable = v }, &hasChanges)
 
 	// Handle nullable number field changes
-	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat32) { rackReq.Position = *v }, &hasChanges)
+	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { rackReq.Position = *v }, &hasChanges)
 
 	// Handle Su and SuRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(

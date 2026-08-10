@@ -32,7 +32,7 @@ type DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct {
 	// Object type for flow_collector field
 	FlowCollectorRefType *string `json:"flow_collector_ref_type_,omitempty"`
 	// The sampling rate for sFlow polling (seconds)
-	PollInterval NullableInt32 `json:"poll_interval,omitempty"`
+	PollInterval NullableInt64 `json:"poll_interval,omitempty"`
 	// Management or Underlay
 	VrfType *string `json:"vrf_type,omitempty"`
 }
@@ -53,8 +53,8 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue() *Diagnosticsprofi
 	this.UseInternalCollector = &useInternalCollector
 	var flowCollector string = ""
 	this.FlowCollector = &flowCollector
-	var pollInterval int32 = 20
-	this.PollInterval = *NewNullableInt32(&pollInterval)
+	var pollInterval int64 = 20
+	this.PollInterval = *NewNullableInt64(&pollInterval)
 	var vrfType string = "management"
 	this.VrfType = &vrfType
 	return &this
@@ -75,8 +75,8 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValueWithDefaults() *Diag
 	this.UseInternalCollector = &useInternalCollector
 	var flowCollector string = ""
 	this.FlowCollector = &flowCollector
-	var pollInterval int32 = 20
-	this.PollInterval = *NewNullableInt32(&pollInterval)
+	var pollInterval int64 = 20
+	this.PollInterval = *NewNullableInt64(&pollInterval)
 	var vrfType string = "management"
 	this.VrfType = &vrfType
 	return &this
@@ -275,9 +275,9 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetFlowCollectorR
 }
 
 // GetPollInterval returns the PollInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollInterval() int32 {
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollInterval() int64 {
 	if o == nil || IsNil(o.PollInterval.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PollInterval.Get()
@@ -286,7 +286,7 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollInterval()
 // GetPollIntervalOk returns a tuple with the PollInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollIntervalOk() (*int32, bool) {
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -302,8 +302,8 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasPollInterval()
 	return false
 }
 
-// SetPollInterval gets a reference to the given NullableInt32 and assigns it to the PollInterval field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollInterval(v int32) {
+// SetPollInterval gets a reference to the given NullableInt64 and assigns it to the PollInterval field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollInterval(v int64) {
 	o.PollInterval.Set(&v)
 }
 // SetPollIntervalNil sets the value for PollInterval to be an explicit nil

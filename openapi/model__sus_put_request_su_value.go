@@ -28,7 +28,7 @@ type SusPutRequestSuValue struct {
 	// Object type for pod field
 	PodRefType *string `json:"pod_ref_type_,omitempty"`
 	// Position of the Switch
-	Position NullableFloat32 `json:"position,omitempty"`
+	Position NullableFloat64 `json:"position,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -190,9 +190,9 @@ func (o *SusPutRequestSuValue) SetPodRefType(v string) {
 }
 
 // GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SusPutRequestSuValue) GetPosition() float32 {
+func (o *SusPutRequestSuValue) GetPosition() float64 {
 	if o == nil || IsNil(o.Position.Get()) {
-		var ret float32
+		var ret float64
 		return ret
 	}
 	return *o.Position.Get()
@@ -201,7 +201,7 @@ func (o *SusPutRequestSuValue) GetPosition() float32 {
 // GetPositionOk returns a tuple with the Position field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SusPutRequestSuValue) GetPositionOk() (*float32, bool) {
+func (o *SusPutRequestSuValue) GetPositionOk() (*float64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -217,8 +217,8 @@ func (o *SusPutRequestSuValue) HasPosition() bool {
 	return false
 }
 
-// SetPosition gets a reference to the given NullableFloat32 and assigns it to the Position field.
-func (o *SusPutRequestSuValue) SetPosition(v float32) {
+// SetPosition gets a reference to the given NullableFloat64 and assigns it to the Position field.
+func (o *SusPutRequestSuValue) SetPosition(v float64) {
 	o.Position.Set(&v)
 }
 // SetPositionNil sets the value for Position to be an explicit nil

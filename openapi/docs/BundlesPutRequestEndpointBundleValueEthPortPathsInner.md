@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **EthPortNumGatewayProfileRefType** | Pointer to **string** | Object type for eth_port_num_gateway_profile field | [optional] 
 **EthPortNumDiagnosticsPortProfile** | Pointer to **string** | Diagnostics Port Profile for port | [optional] [default to ""]
 **EthPortNumDiagnosticsPortProfileRefType** | Pointer to **string** | Object type for eth_port_num_diagnostics_port_profile field | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 **PortName** | Pointer to **string** | The name identifying the port. Used for reference only, it won&#39;t actually change the port name. | [optional] 
 
 ## Methods
@@ -236,20 +236,20 @@ HasEthPortNumDiagnosticsPortProfileRefType returns a boolean if a field has been
 
 ### GetIndex
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndex() int32`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndexOk() (*int32, bool)`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetIndex(v int32)`
+`func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

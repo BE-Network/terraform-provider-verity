@@ -373,8 +373,8 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { podReq.Enable = v }, &hasChanges)
 
 	// Handle nullable int64 and number field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.ExpectedSpineCount, state.ExpectedSpineCount, configuredAttrs.IsConfigured("expected_spine_count"), func(v *openapi.NullableInt32) { podReq.ExpectedSpineCount = *v }, &hasChanges)
-	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat32) { podReq.Position = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ExpectedSpineCount, state.ExpectedSpineCount, configuredAttrs.IsConfigured("expected_spine_count"), func(v *openapi.NullableInt64) { podReq.ExpectedSpineCount = *v }, &hasChanges)
+	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { podReq.Position = *v }, &hasChanges)
 
 	// Handle site and site_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(

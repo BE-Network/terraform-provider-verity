@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **UserNotes** | Pointer to **string** | Notes writen by User about the fabric | [optional] [default to ""]
 **ExpectedParentEndpoint** | Pointer to **string** | Expected Parent Endpoint | [optional] [default to ""]
 **ExpectedParentEndpointRefType** | Pointer to **string** | Object type for expected_parent_endpoint field | [optional] 
-**NumberOfMultipoints** | Pointer to **NullableInt32** | Number of Multipoints | [optional] [default to 0]
+**NumberOfMultipoints** | Pointer to **NullableInt64** | Number of Multipoints | [optional] [default to 0]
 **Aggregate** | Pointer to **bool** | For Switch Endpoints. Denotes switch aggregated with all of its sub switches | [optional] [default to false]
 **IsHost** | Pointer to **bool** | For Switch Endpoints. Denotes the Host Switch | [optional] [default to false]
 **EmulateRfVideoPort** | Pointer to **bool** | Emulate RF Video Port | [optional] [default to false]
@@ -109,20 +109,20 @@ HasExpectedParentEndpointRefType returns a boolean if a field has been set.
 
 ### GetNumberOfMultipoints
 
-`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipoints() int32`
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipoints() int64`
 
 GetNumberOfMultipoints returns the NumberOfMultipoints field if non-nil, zero value otherwise.
 
 ### GetNumberOfMultipointsOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipointsOk() (*int32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipointsOk() (*int64, bool)`
 
 GetNumberOfMultipointsOk returns a tuple with the NumberOfMultipoints field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetNumberOfMultipoints
 
-`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipoints(v int32)`
+`func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipoints(v int64)`
 
 SetNumberOfMultipoints sets NumberOfMultipoints field to given value.
 

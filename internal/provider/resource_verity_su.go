@@ -341,7 +341,7 @@ func (r *veritySuResource) Update(ctx context.Context, req resource.UpdateReques
 
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { suReq.Name = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { suReq.Enable = v }, &hasChanges)
-	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat32) { suReq.Position = *v }, &hasChanges)
+	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { suReq.Position = *v }, &hasChanges)
 
 	if !utils.HandleOneRefTypeSupported(
 		plan.Pod, state.Pod, plan.PodRefType, state.PodRefType,

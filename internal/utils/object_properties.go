@@ -9,7 +9,7 @@ import (
 type ObjectPropertiesField struct {
 	Name     string
 	TFValue  interface{} // Can be types.String, types.Bool, types.Int64
-	APIValue interface{} // Pointer to API field (e.g., **string, **bool, **int32)
+	APIValue interface{} // Pointer to API field (e.g., **string, **bool, **int64)
 }
 
 // SetObjectPropertiesFields sets API fields from TF values for object_properties
@@ -33,21 +33,21 @@ func SetObjectPropertiesFields(fields []ObjectPropertiesField) {
 				}
 			}
 		case types.Int64:
-			// Try regular **int32 pointer first
-			if apiPtr, ok := field.APIValue.(**int32); ok {
+			// Try regular **int64 pointer first
+			if apiPtr, ok := field.APIValue.(**int64); ok {
 				if !tfVal.IsNull() {
-					val := int32(tfVal.ValueInt64())
-					*apiPtr = openapi.PtrInt32(val)
+					val := tfVal.ValueInt64()
+					*apiPtr = openapi.PtrInt64(val)
 				} else {
 					*apiPtr = nil
 				}
-			} else if apiNullablePtr, ok := field.APIValue.(*openapi.NullableInt32); ok {
-				// Handle NullableInt32 type
+			} else if apiNullablePtr, ok := field.APIValue.(*openapi.NullableInt64); ok {
+				// Handle NullableInt64 type
 				if !tfVal.IsNull() {
-					val := int32(tfVal.ValueInt64())
-					*apiNullablePtr = *openapi.NewNullableInt32(&val)
+					val := tfVal.ValueInt64()
+					*apiNullablePtr = *openapi.NewNullableInt64(&val)
 				} else {
-					*apiNullablePtr = *openapi.NewNullableInt32(nil)
+					*apiNullablePtr = *openapi.NewNullableInt64(nil)
 				}
 			}
 		}
@@ -129,22 +129,22 @@ func CompareAndSetObjectPropertiesFields(fields []ObjectPropertiesFieldWithCompa
 		case types.Int64:
 			if stateVal, ok := field.StateValue.(types.Int64); ok {
 				if !planVal.Equal(stateVal) {
-					// Try regular **int32 pointer first
-					if apiPtr, ok := field.APIValue.(**int32); ok {
+					// Try regular **int64 pointer first
+					if apiPtr, ok := field.APIValue.(**int64); ok {
 						if !planVal.IsNull() {
-							val := int32(planVal.ValueInt64())
-							*apiPtr = openapi.PtrInt32(val)
+							val := planVal.ValueInt64()
+							*apiPtr = openapi.PtrInt64(val)
 						} else {
 							*apiPtr = nil
 						}
 						*hasChanges = true
-					} else if apiNullablePtr, ok := field.APIValue.(*openapi.NullableInt32); ok {
-						// Handle NullableInt32 type
+					} else if apiNullablePtr, ok := field.APIValue.(*openapi.NullableInt64); ok {
+						// Handle NullableInt64 type
 						if !planVal.IsNull() {
-							val := int32(planVal.ValueInt64())
-							*apiNullablePtr = *openapi.NewNullableInt32(&val)
+							val := planVal.ValueInt64()
+							*apiNullablePtr = *openapi.NewNullableInt64(&val)
 						} else {
-							*apiNullablePtr = *openapi.NewNullableInt32(nil)
+							*apiNullablePtr = *openapi.NewNullableInt64(nil)
 						}
 						*hasChanges = true
 					}

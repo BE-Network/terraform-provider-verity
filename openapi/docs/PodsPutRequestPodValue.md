@@ -6,10 +6,10 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
-**ExpectedSpineCount** | Pointer to **NullableInt32** | Number of spine switches expected in this pod | [optional] [default to 1]
+**ExpectedSpineCount** | Pointer to **NullableInt64** | Number of spine switches expected in this pod | [optional] [default to 1]
 **Site** | Pointer to **string** | Fabric this Pod is assigned to | [optional] [default to ""]
 **SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
-**Position** | Pointer to **NullableFloat32** | Position of the Switch | [optional] 
+**Position** | Pointer to **NullableFloat64** | Position of the Switch | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -83,20 +83,20 @@ HasEnable returns a boolean if a field has been set.
 
 ### GetExpectedSpineCount
 
-`func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int32`
+`func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int64`
 
 GetExpectedSpineCount returns the ExpectedSpineCount field if non-nil, zero value otherwise.
 
 ### GetExpectedSpineCountOk
 
-`func (o *PodsPutRequestPodValue) GetExpectedSpineCountOk() (*int32, bool)`
+`func (o *PodsPutRequestPodValue) GetExpectedSpineCountOk() (*int64, bool)`
 
 GetExpectedSpineCountOk returns a tuple with the ExpectedSpineCount field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetExpectedSpineCount
 
-`func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int32)`
+`func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int64)`
 
 SetExpectedSpineCount sets ExpectedSpineCount field to given value.
 
@@ -168,20 +168,20 @@ HasSiteRefType returns a boolean if a field has been set.
 
 ### GetPosition
 
-`func (o *PodsPutRequestPodValue) GetPosition() float32`
+`func (o *PodsPutRequestPodValue) GetPosition() float64`
 
 GetPosition returns the Position field if non-nil, zero value otherwise.
 
 ### GetPositionOk
 
-`func (o *PodsPutRequestPodValue) GetPositionOk() (*float32, bool)`
+`func (o *PodsPutRequestPodValue) GetPositionOk() (*float64, bool)`
 
 GetPositionOk returns a tuple with the Position field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPosition
 
-`func (o *PodsPutRequestPodValue) SetPosition(v float32)`
+`func (o *PodsPutRequestPodValue) SetPosition(v float64)`
 
 SetPosition sets Position field to given value.
 

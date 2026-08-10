@@ -433,8 +433,8 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	utils.CompareAndSetBoolField(plan.Uplink, state.Uplink, func(v *bool) { lagReq.Uplink = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.PeerLinkVlan, state.PeerLinkVlan, configuredAttrs.IsConfigured("peer_link_vlan"), func(v *openapi.NullableInt32) { lagReq.PeerLinkVlan = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.CrcFailureThreshold, state.CrcFailureThreshold, configuredAttrs.IsConfigured("crc_failure_threshold"), func(v *openapi.NullableInt32) { lagReq.CrcFailureThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PeerLinkVlan, state.PeerLinkVlan, configuredAttrs.IsConfigured("peer_link_vlan"), func(v *openapi.NullableInt64) { lagReq.PeerLinkVlan = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.CrcFailureThreshold, state.CrcFailureThreshold, configuredAttrs.IsConfigured("crc_failure_threshold"), func(v *openapi.NullableInt64) { lagReq.CrcFailureThreshold = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

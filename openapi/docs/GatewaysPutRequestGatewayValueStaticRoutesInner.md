@@ -7,8 +7,8 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable of this static route | [optional] [default to false]
 **Ipv4RoutePrefix** | Pointer to **string** | IPv4 unicast IP address followed by a subnet mask length | [optional] [default to ""]
 **NextHopIpAddress** | Pointer to **string** | Next Hop IP Address. Must be a unicast IP address | [optional] [default to ""]
-**AdValue** | Pointer to **NullableInt32** | Administrative distancing value, also known as route preference - values from 0-255 | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**AdValue** | Pointer to **NullableInt64** | Administrative distancing value, also known as route preference - values from 0-255 | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -106,20 +106,20 @@ HasNextHopIpAddress returns a boolean if a field has been set.
 
 ### GetAdValue
 
-`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetAdValue() int32`
+`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetAdValue() int64`
 
 GetAdValue returns the AdValue field if non-nil, zero value otherwise.
 
 ### GetAdValueOk
 
-`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetAdValueOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetAdValueOk() (*int64, bool)`
 
 GetAdValueOk returns a tuple with the AdValue field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAdValue
 
-`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetAdValue(v int32)`
+`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetAdValue(v int64)`
 
 SetAdValue sets AdValue field to given value.
 
@@ -141,20 +141,20 @@ HasAdValue returns a boolean if a field has been set.
 UnsetAdValue ensures that no value is present for AdValue, not even an explicit nil
 ### GetIndex
 
-`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetIndex() int32`
+`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetIndexOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetIndex(v int32)`
+`func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

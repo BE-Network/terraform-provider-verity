@@ -12,10 +12,10 @@ Name | Type | Description | Notes
 **Lacp** | Pointer to **bool** | LACP | [optional] [default to true]
 **EthPortProfile** | Pointer to **string** | Choose an Eth Port Profile | [optional] [default to ""]
 **EthPortProfileRefType** | Pointer to **string** | Object type for eth_port_profile field | [optional] 
-**PeerLinkVlan** | Pointer to **NullableInt32** | For peer-peer LAGs. The VLAN used for control | [optional] 
+**PeerLinkVlan** | Pointer to **NullableInt64** | For peer-peer LAGs. The VLAN used for control | [optional] 
 **Fallback** | Pointer to **bool** | Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer. | [optional] [default to false]
 **FastRate** | Pointer to **bool** | Send LACP packets every second (if disabled, packets are sent every 30 seconds) | [optional] [default to false]
-**CrcFailureThreshold** | Pointer to **NullableInt32** | Threshold in Errors per second that when met will disable this LAG&#39;s links | [optional] 
+**CrcFailureThreshold** | Pointer to **NullableInt64** | Threshold in Errors per second that when met will disable this LAG&#39;s links | [optional] 
 **ObjectProperties** | Pointer to [**LagsPutRequestLagValueObjectProperties**](LagsPutRequestLagValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -239,20 +239,20 @@ HasEthPortProfileRefType returns a boolean if a field has been set.
 
 ### GetPeerLinkVlan
 
-`func (o *LagsPutRequestLagValue) GetPeerLinkVlan() int32`
+`func (o *LagsPutRequestLagValue) GetPeerLinkVlan() int64`
 
 GetPeerLinkVlan returns the PeerLinkVlan field if non-nil, zero value otherwise.
 
 ### GetPeerLinkVlanOk
 
-`func (o *LagsPutRequestLagValue) GetPeerLinkVlanOk() (*int32, bool)`
+`func (o *LagsPutRequestLagValue) GetPeerLinkVlanOk() (*int64, bool)`
 
 GetPeerLinkVlanOk returns a tuple with the PeerLinkVlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPeerLinkVlan
 
-`func (o *LagsPutRequestLagValue) SetPeerLinkVlan(v int32)`
+`func (o *LagsPutRequestLagValue) SetPeerLinkVlan(v int64)`
 
 SetPeerLinkVlan sets PeerLinkVlan field to given value.
 
@@ -324,20 +324,20 @@ HasFastRate returns a boolean if a field has been set.
 
 ### GetCrcFailureThreshold
 
-`func (o *LagsPutRequestLagValue) GetCrcFailureThreshold() int32`
+`func (o *LagsPutRequestLagValue) GetCrcFailureThreshold() int64`
 
 GetCrcFailureThreshold returns the CrcFailureThreshold field if non-nil, zero value otherwise.
 
 ### GetCrcFailureThresholdOk
 
-`func (o *LagsPutRequestLagValue) GetCrcFailureThresholdOk() (*int32, bool)`
+`func (o *LagsPutRequestLagValue) GetCrcFailureThresholdOk() (*int64, bool)`
 
 GetCrcFailureThresholdOk returns a tuple with the CrcFailureThreshold field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCrcFailureThreshold
 
-`func (o *LagsPutRequestLagValue) SetCrcFailureThreshold(v int32)`
+`func (o *LagsPutRequestLagValue) SetCrcFailureThreshold(v int64)`
 
 SetCrcFailureThreshold sets CrcFailureThreshold field to given value.
 

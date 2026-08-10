@@ -160,11 +160,11 @@ func CompareAndSetBoolField(plan, state types.Bool, setter func(*bool), hasChang
 	}
 }
 
-// CompareAndSetInt64Field compares plan vs state and sets API field if changed (converts to int32)
-func CompareAndSetInt64Field(plan, state types.Int64, setter func(*int32), hasChanges *bool) {
+// CompareAndSetInt64Field compares plan vs state and sets API field if changed (converts to int64)
+func CompareAndSetInt64Field(plan, state types.Int64, setter func(*int64), hasChanges *bool) {
 	if !plan.Equal(state) {
-		val := int32(plan.ValueInt64())
-		setter(openapi.PtrInt32(val))
+		val := plan.ValueInt64()
+		setter(openapi.PtrInt64(val))
 		*hasChanges = true
 	}
 }
@@ -172,7 +172,7 @@ func CompareAndSetInt64Field(plan, state types.Int64, setter func(*int32), hasCh
 // CompareAndSetNullableInt64Field compares config vs state and sets API nullable field if changed.
 // Only processes the field if isConfigured is true (field is explicitly written in HCL).
 // If isConfigured is false, the field is omitted from HCL and should not be sent in the PATCH request.
-func CompareAndSetNullableInt64Field(configVal, stateVal types.Int64, isConfigured bool, setter func(*openapi.NullableInt32), hasChanges *bool) {
+func CompareAndSetNullableInt64Field(configVal, stateVal types.Int64, isConfigured bool, setter func(*openapi.NullableInt64), hasChanges *bool) {
 	// Skip if field is not configured in HCL
 	if !isConfigured {
 		return
@@ -181,11 +181,11 @@ func CompareAndSetNullableInt64Field(configVal, stateVal types.Int64, isConfigur
 	// Only send if value differs from state
 	if !configVal.Equal(stateVal) {
 		if !configVal.IsNull() {
-			val := int32(configVal.ValueInt64())
-			nullableVal := *openapi.NewNullableInt32(&val)
+			val := configVal.ValueInt64()
+			nullableVal := *openapi.NewNullableInt64(&val)
 			setter(&nullableVal)
 		} else {
-			nullableVal := *openapi.NewNullableInt32(nil)
+			nullableVal := *openapi.NewNullableInt64(nil)
 			setter(&nullableVal)
 		}
 		*hasChanges = true
@@ -196,7 +196,7 @@ func CompareAndSetNullableInt64Field(configVal, stateVal types.Int64, isConfigur
 // Uses types.Number (backed by big.Float) to avoid float precision issues.
 // Only processes the field if isConfigured is true (field is explicitly written in HCL).
 // If isConfigured is false, the field is omitted from HCL and should not be sent in the PATCH request.
-func CompareAndSetNullableNumberField(configVal, stateVal types.Number, isConfigured bool, setter func(*openapi.NullableFloat32), hasChanges *bool) {
+func CompareAndSetNullableNumberField(configVal, stateVal types.Number, isConfigured bool, setter func(*openapi.NullableFloat64), hasChanges *bool) {
 	// Skip if field is not configured in HCL
 	if !isConfigured {
 		return
@@ -207,11 +207,11 @@ func CompareAndSetNullableNumberField(configVal, stateVal types.Number, isConfig
 		if !configVal.IsNull() {
 			bigVal := configVal.ValueBigFloat()
 			float64Val, _ := bigVal.Float64()
-			val := float32(float64Val)
-			nullableVal := *openapi.NewNullableFloat32(&val)
+			val := float64Val
+			nullableVal := *openapi.NewNullableFloat64(&val)
 			setter(&nullableVal)
 		} else {
-			nullableVal := *openapi.NewNullableFloat32(nil)
+			nullableVal := *openapi.NewNullableFloat64(nil)
 			setter(&nullableVal)
 		}
 		*hasChanges = true

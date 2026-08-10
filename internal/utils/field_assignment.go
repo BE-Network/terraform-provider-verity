@@ -20,10 +20,10 @@ type BoolFieldMapping struct {
 	TFValue   types.Bool
 }
 
-// Int64FieldMapping represents a mapping between a Terraform int64 field and an API int32 field
+// Int64FieldMapping represents a mapping between a Terraform int64 field and an API int64 field
 type Int64FieldMapping struct {
 	FieldName string
-	APIField  **int32
+	APIField  **int64
 	TFValue   types.Int64
 }
 
@@ -31,17 +31,17 @@ type Int64FieldMapping struct {
 // IsConfigured should be set using ConfiguredAttributes.IsConfigured() from HCL parsing.
 type NullableInt64FieldMapping struct {
 	FieldName    string
-	APIField     *openapi.NullableInt32
+	APIField     *openapi.NullableInt64
 	TFValue      types.Int64 // From plan or config - used to get the actual value
 	IsConfigured bool        // From HCL parsing - true if key exists in .tf file
 }
 
 // NullableNumberFieldMapping represents a mapping for nullable number fields (using big.Float).
-// This avoids float32/float64 precision issues by using types.Number backed by big.Float.
+// This avoids floating-point precision issues by using types.Number backed by big.Float.
 // IsConfigured should be set using ConfiguredAttributes.IsConfigured() from HCL parsing.
 type NullableNumberFieldMapping struct {
 	FieldName    string
-	APIField     *openapi.NullableFloat32
+	APIField     *openapi.NullableFloat64
 	TFValue      types.Number // From plan or config - uses big.Float for precision
 	IsConfigured bool         // From HCL parsing - true if key exists in .tf file
 }
@@ -66,13 +66,13 @@ func SetBoolFields(fields []BoolFieldMapping) {
 	}
 }
 
-// SetInt64Fields processes a slice of int64 field mappings (API uses int32).
+// SetInt64Fields processes a slice of int64 field mappings (API uses int64).
 // Skips fields that are null or unknown (known after apply) - these should not be sent to the API.
 func SetInt64Fields(fields []Int64FieldMapping) {
 	for _, field := range fields {
 		if !field.TFValue.IsNull() && !field.TFValue.IsUnknown() {
-			val := int32(field.TFValue.ValueInt64())
-			*field.APIField = openapi.PtrInt32(val)
+			val := field.TFValue.ValueInt64()
+			*field.APIField = openapi.PtrInt64(val)
 		}
 	}
 }
@@ -90,11 +90,11 @@ func SetNullableInt64Fields(fields []NullableInt64FieldMapping) {
 
 		if !field.TFValue.IsNull() {
 			// Explicit value
-			val := int32(field.TFValue.ValueInt64())
-			*field.APIField = *openapi.NewNullableInt32(&val)
+			val := field.TFValue.ValueInt64()
+			*field.APIField = *openapi.NewNullableInt64(&val)
 		} else {
 			// Explicit null
-			*field.APIField = *openapi.NewNullableInt32(nil)
+			*field.APIField = *openapi.NewNullableInt64(nil)
 		}
 	}
 }
@@ -112,14 +112,14 @@ func SetNullableNumberFields(fields []NullableNumberFieldMapping) {
 		}
 
 		if !field.TFValue.IsNull() {
-			// Explicit value - convert big.Float to float32 for API
+			// Explicit value - convert big.Float to float64 for API
 			bigVal := field.TFValue.ValueBigFloat()
 			float64Val, _ := bigVal.Float64()
-			val := float32(float64Val)
-			*field.APIField = *openapi.NewNullableFloat32(&val)
+			val := float64Val
+			*field.APIField = *openapi.NewNullableFloat64(&val)
 		} else {
 			// Explicit null
-			*field.APIField = *openapi.NewNullableFloat32(nil)
+			*field.APIField = *openapi.NewNullableFloat64(nil)
 		}
 	}
 }

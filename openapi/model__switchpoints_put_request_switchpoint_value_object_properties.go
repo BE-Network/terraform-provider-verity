@@ -26,7 +26,7 @@ type SwitchpointsPutRequestSwitchpointValueObjectProperties struct {
 	// Object type for expected_parent_endpoint field
 	ExpectedParentEndpointRefType *string `json:"expected_parent_endpoint_ref_type_,omitempty"`
 	// Number of Multipoints
-	NumberOfMultipoints NullableInt32 `json:"number_of_multipoints,omitempty"`
+	NumberOfMultipoints NullableInt64 `json:"number_of_multipoints,omitempty"`
 	// For Switch Endpoints. Denotes switch aggregated with all of its sub switches
 	Aggregate *bool `json:"aggregate,omitempty"`
 	// For Switch Endpoints. Denotes the Host Switch
@@ -47,8 +47,8 @@ func NewSwitchpointsPutRequestSwitchpointValueObjectProperties() *SwitchpointsPu
 	this.UserNotes = &userNotes
 	var expectedParentEndpoint string = ""
 	this.ExpectedParentEndpoint = &expectedParentEndpoint
-	var numberOfMultipoints int32 = 0
-	this.NumberOfMultipoints = *NewNullableInt32(&numberOfMultipoints)
+	var numberOfMultipoints int64 = 0
+	this.NumberOfMultipoints = *NewNullableInt64(&numberOfMultipoints)
 	var aggregate bool = false
 	this.Aggregate = &aggregate
 	var isHost bool = false
@@ -69,8 +69,8 @@ func NewSwitchpointsPutRequestSwitchpointValueObjectPropertiesWithDefaults() *Sw
 	this.UserNotes = &userNotes
 	var expectedParentEndpoint string = ""
 	this.ExpectedParentEndpoint = &expectedParentEndpoint
-	var numberOfMultipoints int32 = 0
-	this.NumberOfMultipoints = *NewNullableInt32(&numberOfMultipoints)
+	var numberOfMultipoints int64 = 0
+	this.NumberOfMultipoints = *NewNullableInt64(&numberOfMultipoints)
 	var aggregate bool = false
 	this.Aggregate = &aggregate
 	var isHost bool = false
@@ -179,9 +179,9 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetExpectedPare
 }
 
 // GetNumberOfMultipoints returns the NumberOfMultipoints field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipoints() int32 {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipoints() int64 {
 	if o == nil || IsNil(o.NumberOfMultipoints.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.NumberOfMultipoints.Get()
@@ -190,7 +190,7 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMult
 // GetNumberOfMultipointsOk returns a tuple with the NumberOfMultipoints field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipointsOk() (*int32, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipointsOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -206,8 +206,8 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasNumberOfMult
 	return false
 }
 
-// SetNumberOfMultipoints gets a reference to the given NullableInt32 and assigns it to the NumberOfMultipoints field.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipoints(v int32) {
+// SetNumberOfMultipoints gets a reference to the given NullableInt64 and assigns it to the NumberOfMultipoints field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipoints(v int64) {
 	o.NumberOfMultipoints.Set(&v)
 }
 // SetNumberOfMultipointsNil sets the value for NumberOfMultipoints to be an explicit nil

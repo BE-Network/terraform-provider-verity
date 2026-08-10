@@ -44,21 +44,21 @@ type GatewaysPutRequestGatewayValue struct {
 	// IP address of remote BGP peer
 	NeighborIpAddress *string `json:"neighbor_ip_address,omitempty"`
 	// Autonomous System Number of remote BGP peer 
-	NeighborAsNumber NullableInt32 `json:"neighbor_as_number,omitempty"`
+	NeighborAsNumber NullableInt64 `json:"neighbor_as_number,omitempty"`
 	// 
 	FabricInterconnect *bool `json:"fabric_interconnect,omitempty"`
 	// Interval in seconds between Keepalive messages sent to remote BGP peer
-	KeepaliveTimer NullableInt32 `json:"keepalive_timer,omitempty"`
+	KeepaliveTimer NullableInt64 `json:"keepalive_timer,omitempty"`
 	// Time, in seconds,  used to determine failure of session Keepalive messages received from remote BGP peer 
-	HoldTimer NullableInt32 `json:"hold_timer,omitempty"`
+	HoldTimer NullableInt64 `json:"hold_timer,omitempty"`
 	// Time in seconds between sucessive attempts to Establish BGP session
-	ConnectTimer NullableInt32 `json:"connect_timer,omitempty"`
+	ConnectTimer NullableInt64 `json:"connect_timer,omitempty"`
 	// The minimum time in seconds between sending route updates to BGP neighbor 
-	AdvertisementInterval NullableInt32 `json:"advertisement_interval,omitempty"`
+	AdvertisementInterval NullableInt64 `json:"advertisement_interval,omitempty"`
 	// Allows external BGP neighbors to establish peering session multiple network hops away. 
-	EbgpMultihop NullableInt32 `json:"ebgp_multihop,omitempty"`
+	EbgpMultihop NullableInt64 `json:"ebgp_multihop,omitempty"`
 	// VLAN used to carry BGP TCP session
-	EgressVlan NullableInt32 `json:"egress_vlan,omitempty"`
+	EgressVlan NullableInt64 `json:"egress_vlan,omitempty"`
 	// Source IP address used to override the default source address calculation for BGP TCP session
 	SourceIpAddress *string `json:"source_ip_address,omitempty"`
 	// The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
@@ -76,9 +76,9 @@ type GatewaysPutRequestGatewayValue struct {
 	// Gateway Mode is the method used for defining routes for the Tenant
 	GatewayMode *string `json:"gateway_mode,omitempty"`
 	// Override the switch's AS number used in the Tenant router definition where this Gateway is applied
-	BgpInstanceAsNumber NullableInt32 `json:"bgp_instance_as_number,omitempty"`
+	BgpInstanceAsNumber NullableInt64 `json:"bgp_instance_as_number,omitempty"`
 	// Local AS Number to use as an override to switch AS number
-	LocalAsNumber NullableInt32 `json:"local_as_number,omitempty"`
+	LocalAsNumber NullableInt64 `json:"local_as_number,omitempty"`
 	// Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
 	LocalAsNoPrepend *bool `json:"local_as_no_prepend,omitempty"`
 	// Remove all private AS numbers from AS-PATH attributes for routes advertised through this BGP gateway.
@@ -86,23 +86,23 @@ type GatewaysPutRequestGatewayValue struct {
 	// Prepend only Local AS in updates to EBGP peers.
 	ReplaceAs *bool `json:"replace_as,omitempty"`
 	// Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or '0' to disable.
-	MaxLocalAsOccurrences NullableInt32 `json:"max_local_as_occurrences,omitempty"`
+	MaxLocalAsOccurrences NullableInt64 `json:"max_local_as_occurrences,omitempty"`
 	// Only accept the current AS in the as-path if the route was originated in the Local AS
 	AllowasInOrigin *bool `json:"allowas_in_origin,omitempty"`
 	// Dynamic BGP Subnet
 	DynamicBgpSubnet *string `json:"dynamic_bgp_subnet,omitempty"`
 	// Dynamic BGP Limits
-	DynamicBgpLimits NullableInt32 `json:"dynamic_bgp_limits,omitempty"`
+	DynamicBgpLimits NullableInt64 `json:"dynamic_bgp_limits,omitempty"`
 	// Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection
 	HelperHopIpAddress *string `json:"helper_hop_ip_address,omitempty"`
 	// Enable BFD(Bi-Directional Forwarding)
 	EnableBfd *bool `json:"enable_bfd,omitempty"`
 	// Configure the minimum interval during which the system can receive BFD control packets
-	BfdReceiveInterval NullableInt32 `json:"bfd_receive_interval,omitempty"`
+	BfdReceiveInterval NullableInt64 `json:"bfd_receive_interval,omitempty"`
 	// Configure the minimum transmission interval during which the system can send BFD control packets
-	BfdTransmissionInterval NullableInt32 `json:"bfd_transmission_interval,omitempty"`
+	BfdTransmissionInterval NullableInt64 `json:"bfd_transmission_interval,omitempty"`
 	// Configure the detection multiplier to determine packet loss
-	BfdDetectMultiplier NullableInt32 `json:"bfd_detect_multiplier,omitempty"`
+	BfdDetectMultiplier NullableInt64 `json:"bfd_detect_multiplier,omitempty"`
 	// Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself.
 	NextHopSelf *bool `json:"next_hop_self,omitempty"`
 	StaticRoutes []GatewaysPutRequestGatewayValueStaticRoutesInner `json:"static_routes,omitempty"`
@@ -136,16 +136,16 @@ func NewGatewaysPutRequestGatewayValue() *GatewaysPutRequestGatewayValue {
 	this.NeighborIpAddress = &neighborIpAddress
 	var fabricInterconnect bool = false
 	this.FabricInterconnect = &fabricInterconnect
-	var keepaliveTimer int32 = 60
-	this.KeepaliveTimer = *NewNullableInt32(&keepaliveTimer)
-	var holdTimer int32 = 180
-	this.HoldTimer = *NewNullableInt32(&holdTimer)
-	var connectTimer int32 = 120
-	this.ConnectTimer = *NewNullableInt32(&connectTimer)
-	var advertisementInterval int32 = 30
-	this.AdvertisementInterval = *NewNullableInt32(&advertisementInterval)
-	var ebgpMultihop int32 = 255
-	this.EbgpMultihop = *NewNullableInt32(&ebgpMultihop)
+	var keepaliveTimer int64 = 60
+	this.KeepaliveTimer = *NewNullableInt64(&keepaliveTimer)
+	var holdTimer int64 = 180
+	this.HoldTimer = *NewNullableInt64(&holdTimer)
+	var connectTimer int64 = 120
+	this.ConnectTimer = *NewNullableInt64(&connectTimer)
+	var advertisementInterval int64 = 30
+	this.AdvertisementInterval = *NewNullableInt64(&advertisementInterval)
+	var ebgpMultihop int64 = 255
+	this.EbgpMultihop = *NewNullableInt64(&ebgpMultihop)
 	var sourceIpAddress string = ""
 	this.SourceIpAddress = &sourceIpAddress
 	var anycastIpMask string = ""
@@ -164,24 +164,24 @@ func NewGatewaysPutRequestGatewayValue() *GatewaysPutRequestGatewayValue {
 	this.RemovePrivateAs = &removePrivateAs
 	var replaceAs bool = false
 	this.ReplaceAs = &replaceAs
-	var maxLocalAsOccurrences int32 = 0
-	this.MaxLocalAsOccurrences = *NewNullableInt32(&maxLocalAsOccurrences)
+	var maxLocalAsOccurrences int64 = 0
+	this.MaxLocalAsOccurrences = *NewNullableInt64(&maxLocalAsOccurrences)
 	var allowasInOrigin bool = false
 	this.AllowasInOrigin = &allowasInOrigin
 	var dynamicBgpSubnet string = ""
 	this.DynamicBgpSubnet = &dynamicBgpSubnet
-	var dynamicBgpLimits int32 = 0
-	this.DynamicBgpLimits = *NewNullableInt32(&dynamicBgpLimits)
+	var dynamicBgpLimits int64 = 0
+	this.DynamicBgpLimits = *NewNullableInt64(&dynamicBgpLimits)
 	var helperHopIpAddress string = ""
 	this.HelperHopIpAddress = &helperHopIpAddress
 	var enableBfd bool = false
 	this.EnableBfd = &enableBfd
-	var bfdReceiveInterval int32 = 300
-	this.BfdReceiveInterval = *NewNullableInt32(&bfdReceiveInterval)
-	var bfdTransmissionInterval int32 = 300
-	this.BfdTransmissionInterval = *NewNullableInt32(&bfdTransmissionInterval)
-	var bfdDetectMultiplier int32 = 3
-	this.BfdDetectMultiplier = *NewNullableInt32(&bfdDetectMultiplier)
+	var bfdReceiveInterval int64 = 300
+	this.BfdReceiveInterval = *NewNullableInt64(&bfdReceiveInterval)
+	var bfdTransmissionInterval int64 = 300
+	this.BfdTransmissionInterval = *NewNullableInt64(&bfdTransmissionInterval)
+	var bfdDetectMultiplier int64 = 3
+	this.BfdDetectMultiplier = *NewNullableInt64(&bfdDetectMultiplier)
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
 	return &this
@@ -214,16 +214,16 @@ func NewGatewaysPutRequestGatewayValueWithDefaults() *GatewaysPutRequestGatewayV
 	this.NeighborIpAddress = &neighborIpAddress
 	var fabricInterconnect bool = false
 	this.FabricInterconnect = &fabricInterconnect
-	var keepaliveTimer int32 = 60
-	this.KeepaliveTimer = *NewNullableInt32(&keepaliveTimer)
-	var holdTimer int32 = 180
-	this.HoldTimer = *NewNullableInt32(&holdTimer)
-	var connectTimer int32 = 120
-	this.ConnectTimer = *NewNullableInt32(&connectTimer)
-	var advertisementInterval int32 = 30
-	this.AdvertisementInterval = *NewNullableInt32(&advertisementInterval)
-	var ebgpMultihop int32 = 255
-	this.EbgpMultihop = *NewNullableInt32(&ebgpMultihop)
+	var keepaliveTimer int64 = 60
+	this.KeepaliveTimer = *NewNullableInt64(&keepaliveTimer)
+	var holdTimer int64 = 180
+	this.HoldTimer = *NewNullableInt64(&holdTimer)
+	var connectTimer int64 = 120
+	this.ConnectTimer = *NewNullableInt64(&connectTimer)
+	var advertisementInterval int64 = 30
+	this.AdvertisementInterval = *NewNullableInt64(&advertisementInterval)
+	var ebgpMultihop int64 = 255
+	this.EbgpMultihop = *NewNullableInt64(&ebgpMultihop)
 	var sourceIpAddress string = ""
 	this.SourceIpAddress = &sourceIpAddress
 	var anycastIpMask string = ""
@@ -242,24 +242,24 @@ func NewGatewaysPutRequestGatewayValueWithDefaults() *GatewaysPutRequestGatewayV
 	this.RemovePrivateAs = &removePrivateAs
 	var replaceAs bool = false
 	this.ReplaceAs = &replaceAs
-	var maxLocalAsOccurrences int32 = 0
-	this.MaxLocalAsOccurrences = *NewNullableInt32(&maxLocalAsOccurrences)
+	var maxLocalAsOccurrences int64 = 0
+	this.MaxLocalAsOccurrences = *NewNullableInt64(&maxLocalAsOccurrences)
 	var allowasInOrigin bool = false
 	this.AllowasInOrigin = &allowasInOrigin
 	var dynamicBgpSubnet string = ""
 	this.DynamicBgpSubnet = &dynamicBgpSubnet
-	var dynamicBgpLimits int32 = 0
-	this.DynamicBgpLimits = *NewNullableInt32(&dynamicBgpLimits)
+	var dynamicBgpLimits int64 = 0
+	this.DynamicBgpLimits = *NewNullableInt64(&dynamicBgpLimits)
 	var helperHopIpAddress string = ""
 	this.HelperHopIpAddress = &helperHopIpAddress
 	var enableBfd bool = false
 	this.EnableBfd = &enableBfd
-	var bfdReceiveInterval int32 = 300
-	this.BfdReceiveInterval = *NewNullableInt32(&bfdReceiveInterval)
-	var bfdTransmissionInterval int32 = 300
-	this.BfdTransmissionInterval = *NewNullableInt32(&bfdTransmissionInterval)
-	var bfdDetectMultiplier int32 = 3
-	this.BfdDetectMultiplier = *NewNullableInt32(&bfdDetectMultiplier)
+	var bfdReceiveInterval int64 = 300
+	this.BfdReceiveInterval = *NewNullableInt64(&bfdReceiveInterval)
+	var bfdTransmissionInterval int64 = 300
+	this.BfdTransmissionInterval = *NewNullableInt64(&bfdTransmissionInterval)
+	var bfdDetectMultiplier int64 = 3
+	this.BfdDetectMultiplier = *NewNullableInt64(&bfdDetectMultiplier)
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
 	return &this
@@ -650,9 +650,9 @@ func (o *GatewaysPutRequestGatewayValue) SetNeighborIpAddress(v string) {
 }
 
 // GetNeighborAsNumber returns the NeighborAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumber() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumber() int64 {
 	if o == nil || IsNil(o.NeighborAsNumber.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.NeighborAsNumber.Get()
@@ -661,7 +661,7 @@ func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumber() int32 {
 // GetNeighborAsNumberOk returns a tuple with the NeighborAsNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumberOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumberOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -677,8 +677,8 @@ func (o *GatewaysPutRequestGatewayValue) HasNeighborAsNumber() bool {
 	return false
 }
 
-// SetNeighborAsNumber gets a reference to the given NullableInt32 and assigns it to the NeighborAsNumber field.
-func (o *GatewaysPutRequestGatewayValue) SetNeighborAsNumber(v int32) {
+// SetNeighborAsNumber gets a reference to the given NullableInt64 and assigns it to the NeighborAsNumber field.
+func (o *GatewaysPutRequestGatewayValue) SetNeighborAsNumber(v int64) {
 	o.NeighborAsNumber.Set(&v)
 }
 // SetNeighborAsNumberNil sets the value for NeighborAsNumber to be an explicit nil
@@ -724,9 +724,9 @@ func (o *GatewaysPutRequestGatewayValue) SetFabricInterconnect(v bool) {
 }
 
 // GetKeepaliveTimer returns the KeepaliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimer() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimer() int64 {
 	if o == nil || IsNil(o.KeepaliveTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.KeepaliveTimer.Get()
@@ -735,7 +735,7 @@ func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimer() int32 {
 // GetKeepaliveTimerOk returns a tuple with the KeepaliveTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimerOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -751,8 +751,8 @@ func (o *GatewaysPutRequestGatewayValue) HasKeepaliveTimer() bool {
 	return false
 }
 
-// SetKeepaliveTimer gets a reference to the given NullableInt32 and assigns it to the KeepaliveTimer field.
-func (o *GatewaysPutRequestGatewayValue) SetKeepaliveTimer(v int32) {
+// SetKeepaliveTimer gets a reference to the given NullableInt64 and assigns it to the KeepaliveTimer field.
+func (o *GatewaysPutRequestGatewayValue) SetKeepaliveTimer(v int64) {
 	o.KeepaliveTimer.Set(&v)
 }
 // SetKeepaliveTimerNil sets the value for KeepaliveTimer to be an explicit nil
@@ -766,9 +766,9 @@ func (o *GatewaysPutRequestGatewayValue) UnsetKeepaliveTimer() {
 }
 
 // GetHoldTimer returns the HoldTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetHoldTimer() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetHoldTimer() int64 {
 	if o == nil || IsNil(o.HoldTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.HoldTimer.Get()
@@ -777,7 +777,7 @@ func (o *GatewaysPutRequestGatewayValue) GetHoldTimer() int32 {
 // GetHoldTimerOk returns a tuple with the HoldTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetHoldTimerOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetHoldTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -793,8 +793,8 @@ func (o *GatewaysPutRequestGatewayValue) HasHoldTimer() bool {
 	return false
 }
 
-// SetHoldTimer gets a reference to the given NullableInt32 and assigns it to the HoldTimer field.
-func (o *GatewaysPutRequestGatewayValue) SetHoldTimer(v int32) {
+// SetHoldTimer gets a reference to the given NullableInt64 and assigns it to the HoldTimer field.
+func (o *GatewaysPutRequestGatewayValue) SetHoldTimer(v int64) {
 	o.HoldTimer.Set(&v)
 }
 // SetHoldTimerNil sets the value for HoldTimer to be an explicit nil
@@ -808,9 +808,9 @@ func (o *GatewaysPutRequestGatewayValue) UnsetHoldTimer() {
 }
 
 // GetConnectTimer returns the ConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetConnectTimer() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetConnectTimer() int64 {
 	if o == nil || IsNil(o.ConnectTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConnectTimer.Get()
@@ -819,7 +819,7 @@ func (o *GatewaysPutRequestGatewayValue) GetConnectTimer() int32 {
 // GetConnectTimerOk returns a tuple with the ConnectTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetConnectTimerOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetConnectTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -835,8 +835,8 @@ func (o *GatewaysPutRequestGatewayValue) HasConnectTimer() bool {
 	return false
 }
 
-// SetConnectTimer gets a reference to the given NullableInt32 and assigns it to the ConnectTimer field.
-func (o *GatewaysPutRequestGatewayValue) SetConnectTimer(v int32) {
+// SetConnectTimer gets a reference to the given NullableInt64 and assigns it to the ConnectTimer field.
+func (o *GatewaysPutRequestGatewayValue) SetConnectTimer(v int64) {
 	o.ConnectTimer.Set(&v)
 }
 // SetConnectTimerNil sets the value for ConnectTimer to be an explicit nil
@@ -850,9 +850,9 @@ func (o *GatewaysPutRequestGatewayValue) UnsetConnectTimer() {
 }
 
 // GetAdvertisementInterval returns the AdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetAdvertisementInterval() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetAdvertisementInterval() int64 {
 	if o == nil || IsNil(o.AdvertisementInterval.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.AdvertisementInterval.Get()
@@ -861,7 +861,7 @@ func (o *GatewaysPutRequestGatewayValue) GetAdvertisementInterval() int32 {
 // GetAdvertisementIntervalOk returns a tuple with the AdvertisementInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetAdvertisementIntervalOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetAdvertisementIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -877,8 +877,8 @@ func (o *GatewaysPutRequestGatewayValue) HasAdvertisementInterval() bool {
 	return false
 }
 
-// SetAdvertisementInterval gets a reference to the given NullableInt32 and assigns it to the AdvertisementInterval field.
-func (o *GatewaysPutRequestGatewayValue) SetAdvertisementInterval(v int32) {
+// SetAdvertisementInterval gets a reference to the given NullableInt64 and assigns it to the AdvertisementInterval field.
+func (o *GatewaysPutRequestGatewayValue) SetAdvertisementInterval(v int64) {
 	o.AdvertisementInterval.Set(&v)
 }
 // SetAdvertisementIntervalNil sets the value for AdvertisementInterval to be an explicit nil
@@ -892,9 +892,9 @@ func (o *GatewaysPutRequestGatewayValue) UnsetAdvertisementInterval() {
 }
 
 // GetEbgpMultihop returns the EbgpMultihop field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihop() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihop() int64 {
 	if o == nil || IsNil(o.EbgpMultihop.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.EbgpMultihop.Get()
@@ -903,7 +903,7 @@ func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihop() int32 {
 // GetEbgpMultihopOk returns a tuple with the EbgpMultihop field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihopOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihopOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -919,8 +919,8 @@ func (o *GatewaysPutRequestGatewayValue) HasEbgpMultihop() bool {
 	return false
 }
 
-// SetEbgpMultihop gets a reference to the given NullableInt32 and assigns it to the EbgpMultihop field.
-func (o *GatewaysPutRequestGatewayValue) SetEbgpMultihop(v int32) {
+// SetEbgpMultihop gets a reference to the given NullableInt64 and assigns it to the EbgpMultihop field.
+func (o *GatewaysPutRequestGatewayValue) SetEbgpMultihop(v int64) {
 	o.EbgpMultihop.Set(&v)
 }
 // SetEbgpMultihopNil sets the value for EbgpMultihop to be an explicit nil
@@ -934,9 +934,9 @@ func (o *GatewaysPutRequestGatewayValue) UnsetEbgpMultihop() {
 }
 
 // GetEgressVlan returns the EgressVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetEgressVlan() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetEgressVlan() int64 {
 	if o == nil || IsNil(o.EgressVlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.EgressVlan.Get()
@@ -945,7 +945,7 @@ func (o *GatewaysPutRequestGatewayValue) GetEgressVlan() int32 {
 // GetEgressVlanOk returns a tuple with the EgressVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetEgressVlanOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetEgressVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -961,8 +961,8 @@ func (o *GatewaysPutRequestGatewayValue) HasEgressVlan() bool {
 	return false
 }
 
-// SetEgressVlan gets a reference to the given NullableInt32 and assigns it to the EgressVlan field.
-func (o *GatewaysPutRequestGatewayValue) SetEgressVlan(v int32) {
+// SetEgressVlan gets a reference to the given NullableInt64 and assigns it to the EgressVlan field.
+func (o *GatewaysPutRequestGatewayValue) SetEgressVlan(v int64) {
 	o.EgressVlan.Set(&v)
 }
 // SetEgressVlanNil sets the value for EgressVlan to be an explicit nil
@@ -1232,9 +1232,9 @@ func (o *GatewaysPutRequestGatewayValue) SetGatewayMode(v string) {
 }
 
 // GetBgpInstanceAsNumber returns the BgpInstanceAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int64 {
 	if o == nil || IsNil(o.BgpInstanceAsNumber.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BgpInstanceAsNumber.Get()
@@ -1243,7 +1243,7 @@ func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int32 {
 // GetBgpInstanceAsNumberOk returns a tuple with the BgpInstanceAsNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumberOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumberOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1259,8 +1259,8 @@ func (o *GatewaysPutRequestGatewayValue) HasBgpInstanceAsNumber() bool {
 	return false
 }
 
-// SetBgpInstanceAsNumber gets a reference to the given NullableInt32 and assigns it to the BgpInstanceAsNumber field.
-func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumber(v int32) {
+// SetBgpInstanceAsNumber gets a reference to the given NullableInt64 and assigns it to the BgpInstanceAsNumber field.
+func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumber(v int64) {
 	o.BgpInstanceAsNumber.Set(&v)
 }
 // SetBgpInstanceAsNumberNil sets the value for BgpInstanceAsNumber to be an explicit nil
@@ -1274,9 +1274,9 @@ func (o *GatewaysPutRequestGatewayValue) UnsetBgpInstanceAsNumber() {
 }
 
 // GetLocalAsNumber returns the LocalAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumber() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumber() int64 {
 	if o == nil || IsNil(o.LocalAsNumber.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LocalAsNumber.Get()
@@ -1285,7 +1285,7 @@ func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumber() int32 {
 // GetLocalAsNumberOk returns a tuple with the LocalAsNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumberOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumberOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1301,8 +1301,8 @@ func (o *GatewaysPutRequestGatewayValue) HasLocalAsNumber() bool {
 	return false
 }
 
-// SetLocalAsNumber gets a reference to the given NullableInt32 and assigns it to the LocalAsNumber field.
-func (o *GatewaysPutRequestGatewayValue) SetLocalAsNumber(v int32) {
+// SetLocalAsNumber gets a reference to the given NullableInt64 and assigns it to the LocalAsNumber field.
+func (o *GatewaysPutRequestGatewayValue) SetLocalAsNumber(v int64) {
 	o.LocalAsNumber.Set(&v)
 }
 // SetLocalAsNumberNil sets the value for LocalAsNumber to be an explicit nil
@@ -1412,9 +1412,9 @@ func (o *GatewaysPutRequestGatewayValue) SetReplaceAs(v bool) {
 }
 
 // GetMaxLocalAsOccurrences returns the MaxLocalAsOccurrences field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrences() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrences() int64 {
 	if o == nil || IsNil(o.MaxLocalAsOccurrences.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MaxLocalAsOccurrences.Get()
@@ -1423,7 +1423,7 @@ func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrences() int32 {
 // GetMaxLocalAsOccurrencesOk returns a tuple with the MaxLocalAsOccurrences field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrencesOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrencesOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1439,8 +1439,8 @@ func (o *GatewaysPutRequestGatewayValue) HasMaxLocalAsOccurrences() bool {
 	return false
 }
 
-// SetMaxLocalAsOccurrences gets a reference to the given NullableInt32 and assigns it to the MaxLocalAsOccurrences field.
-func (o *GatewaysPutRequestGatewayValue) SetMaxLocalAsOccurrences(v int32) {
+// SetMaxLocalAsOccurrences gets a reference to the given NullableInt64 and assigns it to the MaxLocalAsOccurrences field.
+func (o *GatewaysPutRequestGatewayValue) SetMaxLocalAsOccurrences(v int64) {
 	o.MaxLocalAsOccurrences.Set(&v)
 }
 // SetMaxLocalAsOccurrencesNil sets the value for MaxLocalAsOccurrences to be an explicit nil
@@ -1518,9 +1518,9 @@ func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpSubnet(v string) {
 }
 
 // GetDynamicBgpLimits returns the DynamicBgpLimits field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimits() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimits() int64 {
 	if o == nil || IsNil(o.DynamicBgpLimits.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DynamicBgpLimits.Get()
@@ -1529,7 +1529,7 @@ func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimits() int32 {
 // GetDynamicBgpLimitsOk returns a tuple with the DynamicBgpLimits field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimitsOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimitsOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1545,8 +1545,8 @@ func (o *GatewaysPutRequestGatewayValue) HasDynamicBgpLimits() bool {
 	return false
 }
 
-// SetDynamicBgpLimits gets a reference to the given NullableInt32 and assigns it to the DynamicBgpLimits field.
-func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpLimits(v int32) {
+// SetDynamicBgpLimits gets a reference to the given NullableInt64 and assigns it to the DynamicBgpLimits field.
+func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpLimits(v int64) {
 	o.DynamicBgpLimits.Set(&v)
 }
 // SetDynamicBgpLimitsNil sets the value for DynamicBgpLimits to be an explicit nil
@@ -1624,9 +1624,9 @@ func (o *GatewaysPutRequestGatewayValue) SetEnableBfd(v bool) {
 }
 
 // GetBfdReceiveInterval returns the BfdReceiveInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveInterval() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveInterval() int64 {
 	if o == nil || IsNil(o.BfdReceiveInterval.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BfdReceiveInterval.Get()
@@ -1635,7 +1635,7 @@ func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveInterval() int32 {
 // GetBfdReceiveIntervalOk returns a tuple with the BfdReceiveInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveIntervalOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1651,8 +1651,8 @@ func (o *GatewaysPutRequestGatewayValue) HasBfdReceiveInterval() bool {
 	return false
 }
 
-// SetBfdReceiveInterval gets a reference to the given NullableInt32 and assigns it to the BfdReceiveInterval field.
-func (o *GatewaysPutRequestGatewayValue) SetBfdReceiveInterval(v int32) {
+// SetBfdReceiveInterval gets a reference to the given NullableInt64 and assigns it to the BfdReceiveInterval field.
+func (o *GatewaysPutRequestGatewayValue) SetBfdReceiveInterval(v int64) {
 	o.BfdReceiveInterval.Set(&v)
 }
 // SetBfdReceiveIntervalNil sets the value for BfdReceiveInterval to be an explicit nil
@@ -1666,9 +1666,9 @@ func (o *GatewaysPutRequestGatewayValue) UnsetBfdReceiveInterval() {
 }
 
 // GetBfdTransmissionInterval returns the BfdTransmissionInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionInterval() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionInterval() int64 {
 	if o == nil || IsNil(o.BfdTransmissionInterval.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BfdTransmissionInterval.Get()
@@ -1677,7 +1677,7 @@ func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionInterval() int32 {
 // GetBfdTransmissionIntervalOk returns a tuple with the BfdTransmissionInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionIntervalOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1693,8 +1693,8 @@ func (o *GatewaysPutRequestGatewayValue) HasBfdTransmissionInterval() bool {
 	return false
 }
 
-// SetBfdTransmissionInterval gets a reference to the given NullableInt32 and assigns it to the BfdTransmissionInterval field.
-func (o *GatewaysPutRequestGatewayValue) SetBfdTransmissionInterval(v int32) {
+// SetBfdTransmissionInterval gets a reference to the given NullableInt64 and assigns it to the BfdTransmissionInterval field.
+func (o *GatewaysPutRequestGatewayValue) SetBfdTransmissionInterval(v int64) {
 	o.BfdTransmissionInterval.Set(&v)
 }
 // SetBfdTransmissionIntervalNil sets the value for BfdTransmissionInterval to be an explicit nil
@@ -1708,9 +1708,9 @@ func (o *GatewaysPutRequestGatewayValue) UnsetBfdTransmissionInterval() {
 }
 
 // GetBfdDetectMultiplier returns the BfdDetectMultiplier field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplier() int32 {
+func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplier() int64 {
 	if o == nil || IsNil(o.BfdDetectMultiplier.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BfdDetectMultiplier.Get()
@@ -1719,7 +1719,7 @@ func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplier() int32 {
 // GetBfdDetectMultiplierOk returns a tuple with the BfdDetectMultiplier field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplierOk() (*int32, bool) {
+func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplierOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1735,8 +1735,8 @@ func (o *GatewaysPutRequestGatewayValue) HasBfdDetectMultiplier() bool {
 	return false
 }
 
-// SetBfdDetectMultiplier gets a reference to the given NullableInt32 and assigns it to the BfdDetectMultiplier field.
-func (o *GatewaysPutRequestGatewayValue) SetBfdDetectMultiplier(v int32) {
+// SetBfdDetectMultiplier gets a reference to the given NullableInt64 and assigns it to the BfdDetectMultiplier field.
+func (o *GatewaysPutRequestGatewayValue) SetBfdDetectMultiplier(v int64) {
 	o.BfdDetectMultiplier.Set(&v)
 }
 // SetBfdDetectMultiplierNil sets the value for BfdDetectMultiplier to be an explicit nil

@@ -28,7 +28,7 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner struct {
 	// Specifies whether silence suppression is on or off. Valid values are 0 = off and 1 = on
 	CodecNumSilenceSuppression *bool `json:"codec_num_silence_suppression,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner instantiates a new DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner object
@@ -193,9 +193,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetCo
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIndex() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -203,7 +203,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIn
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIndexOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -219,8 +219,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) HasIn
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

@@ -744,15 +744,15 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetBoolField(plan.LldpMedEnable, state.LldpMedEnable, func(v *bool) { ethPortSettingsProps.LldpMedEnable = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.MaxAllowedValue, state.MaxAllowedValue, configuredAttrs.IsConfigured("max_allowed_value"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MaxAllowedValue = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MinimumWredThreshold, state.MinimumWredThreshold, configuredAttrs.IsConfigured("minimum_wred_threshold"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MinimumWredThreshold = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MaximumWredThreshold, state.MaximumWredThreshold, configuredAttrs.IsConfigured("maximum_wred_threshold"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MaximumWredThreshold = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.WredDropProbability, state.WredDropProbability, configuredAttrs.IsConfigured("wred_drop_probability"), func(v *openapi.NullableInt32) { ethPortSettingsProps.WredDropProbability = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, configuredAttrs.IsConfigured("priority_flow_control_watchdog_detect_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, configuredAttrs.IsConfigured("priority_flow_control_watchdog_restore_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.Mtu, state.Mtu, configuredAttrs.IsConfigured("mtu"), func(v *openapi.NullableInt32) { ethPortSettingsProps.Mtu = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MacLimit, state.MacLimit, configuredAttrs.IsConfigured("mac_limit"), func(v *openapi.NullableInt32) { ethPortSettingsProps.MacLimit = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.AgingTime, state.AgingTime, configuredAttrs.IsConfigured("aging_time"), func(v *openapi.NullableInt32) { ethPortSettingsProps.AgingTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxAllowedValue, state.MaxAllowedValue, configuredAttrs.IsConfigured("max_allowed_value"), func(v *openapi.NullableInt64) { ethPortSettingsProps.MaxAllowedValue = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MinimumWredThreshold, state.MinimumWredThreshold, configuredAttrs.IsConfigured("minimum_wred_threshold"), func(v *openapi.NullableInt64) { ethPortSettingsProps.MinimumWredThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaximumWredThreshold, state.MaximumWredThreshold, configuredAttrs.IsConfigured("maximum_wred_threshold"), func(v *openapi.NullableInt64) { ethPortSettingsProps.MaximumWredThreshold = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.WredDropProbability, state.WredDropProbability, configuredAttrs.IsConfigured("wred_drop_probability"), func(v *openapi.NullableInt64) { ethPortSettingsProps.WredDropProbability = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PriorityFlowControlWatchdogDetectTime, state.PriorityFlowControlWatchdogDetectTime, configuredAttrs.IsConfigured("priority_flow_control_watchdog_detect_time"), func(v *openapi.NullableInt64) { ethPortSettingsProps.PriorityFlowControlWatchdogDetectTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PriorityFlowControlWatchdogRestoreTime, state.PriorityFlowControlWatchdogRestoreTime, configuredAttrs.IsConfigured("priority_flow_control_watchdog_restore_time"), func(v *openapi.NullableInt64) { ethPortSettingsProps.PriorityFlowControlWatchdogRestoreTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.Mtu, state.Mtu, configuredAttrs.IsConfigured("mtu"), func(v *openapi.NullableInt64) { ethPortSettingsProps.Mtu = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MacLimit, state.MacLimit, configuredAttrs.IsConfigured("mac_limit"), func(v *openapi.NullableInt64) { ethPortSettingsProps.MacLimit = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.AgingTime, state.AgingTime, configuredAttrs.IsConfigured("aging_time"), func(v *openapi.NullableInt64) { ethPortSettingsProps.AgingTime = *v }, &hasChanges)
 
 	// Handle packet_queue and packet_queue_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
@@ -813,8 +813,8 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 
 			// Handle nullable int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, lldpMedConfigMap, "lldp_med", configuredAttrs)
-			utils.CompareAndSetNullableInt64Field(configItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark"), func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumDscpMark = *v }, &hasChanges)
-			utils.CompareAndSetNullableInt64Field(configItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, cfg.IsFieldConfigured("lldp_med_row_num_priority"), func(v *openapi.NullableInt32) { lldpMedItem.LldpMedRowNumPriority = *v }, &hasChanges)
+			utils.CompareAndSetNullableInt64Field(configItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark"), func(v *openapi.NullableInt64) { lldpMedItem.LldpMedRowNumDscpMark = *v }, &hasChanges)
+			utils.CompareAndSetNullableInt64Field(configItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, cfg.IsFieldConfigured("lldp_med_row_num_priority"), func(v *openapi.NullableInt64) { lldpMedItem.LldpMedRowNumPriority = *v }, &hasChanges)
 
 			// Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(

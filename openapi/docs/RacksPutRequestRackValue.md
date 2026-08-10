@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
-**Position** | Pointer to **NullableFloat32** | Position of the Rack | [optional] 
+**Position** | Pointer to **NullableFloat64** | Position of the Rack | [optional] 
 **Su** | Pointer to **string** | SU this Rack is assigned to | [optional] [default to ""]
 **SuRefType** | Pointer to **string** | Object type for su field | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
@@ -82,20 +82,20 @@ HasEnable returns a boolean if a field has been set.
 
 ### GetPosition
 
-`func (o *RacksPutRequestRackValue) GetPosition() float32`
+`func (o *RacksPutRequestRackValue) GetPosition() float64`
 
 GetPosition returns the Position field if non-nil, zero value otherwise.
 
 ### GetPositionOk
 
-`func (o *RacksPutRequestRackValue) GetPositionOk() (*float32, bool)`
+`func (o *RacksPutRequestRackValue) GetPositionOk() (*float64, bool)`
 
 GetPositionOk returns a tuple with the Position field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPosition
 
-`func (o *RacksPutRequestRackValue) SetPosition(v float32)`
+`func (o *RacksPutRequestRackValue) SetPosition(v float64)`
 
 SetPosition sets Position field to given value.
 

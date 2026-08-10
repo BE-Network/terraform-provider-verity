@@ -56,13 +56,13 @@ type FabricsPutRequestFabricValue struct {
 	// Type of Fabric
 	SiteType *string `json:"site_type,omitempty"`
 	// Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank)
-	DuplicateAddressDetectionMaxNumberOfMoves NullableInt32 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
+	DuplicateAddressDetectionMaxNumberOfMoves NullableInt64 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
 	// Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
-	DuplicateAddressDetectionTime NullableInt32 `json:"duplicate_address_detection_time,omitempty"`
+	DuplicateAddressDetectionTime NullableInt64 `json:"duplicate_address_detection_time,omitempty"`
 	// polling interval values in seconds, set if aggressive reporting is not enabled
-	PortAdminPollingInterval NullableInt32 `json:"port_admin_polling_interval,omitempty"`
+	PortAdminPollingInterval NullableInt64 `json:"port_admin_polling_interval,omitempty"`
 	// polling interval values in seconds, set if aggressive reporting is not enabled
-	PortStatusPollingInterval NullableInt32 `json:"port_status_polling_interval,omitempty"`
+	PortStatusPollingInterval NullableInt64 `json:"port_status_polling_interval,omitempty"`
 	// Service for Fabric
 	ServiceForSite *string `json:"service_for_site,omitempty"`
 	// Object type for service_for_site field
@@ -72,7 +72,7 @@ type FabricsPutRequestFabricValue struct {
 	// Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name
 	RegionName *string `json:"region_name,omitempty"`
 	// A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number
-	Revision NullableInt32 `json:"revision,omitempty"`
+	Revision NullableInt64 `json:"revision,omitempty"`
 	// Enable spanning tree on all fabric connections.  This overrides the Eth Port Settings for Fabric ports
 	ForceSpanningTreeOnFabricPorts *bool `json:"force_spanning_tree_on_fabric_ports,omitempty"`
 	// When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware
@@ -90,33 +90,33 @@ type FabricsPutRequestFabricValue struct {
 	// Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit.
 	AnycastMacAddressAutoAssigned *bool `json:"anycast_mac_address_auto_assigned_,omitempty"`
 	// MAC Address Aging Time (between 1-100000)
-	MacAddressAgingTime NullableInt32 `json:"mac_address_aging_time,omitempty"`
+	MacAddressAgingTime NullableInt64 `json:"mac_address_aging_time,omitempty"`
 	// MLAG Delay Restore Timer
-	MlagDelayRestoreTimer NullableInt32 `json:"mlag_delay_restore_timer,omitempty"`
+	MlagDelayRestoreTimer NullableInt64 `json:"mlag_delay_restore_timer,omitempty"`
 	// Spine BGP Keepalive Timer
-	BgpKeepaliveTimer NullableInt32 `json:"bgp_keepalive_timer,omitempty"`
+	BgpKeepaliveTimer NullableInt64 `json:"bgp_keepalive_timer,omitempty"`
 	// Spine BGP Hold Down Timer
-	BgpHoldDownTimer NullableInt32 `json:"bgp_hold_down_timer,omitempty"`
+	BgpHoldDownTimer NullableInt64 `json:"bgp_hold_down_timer,omitempty"`
 	// BGP Advertisement Interval for spines/superspines. Use \"0\" for immediate updates
-	SpineBgpAdvertisementInterval NullableInt32 `json:"spine_bgp_advertisement_interval,omitempty"`
+	SpineBgpAdvertisementInterval NullableInt64 `json:"spine_bgp_advertisement_interval,omitempty"`
 	// BGP Connect Timer
-	SpineBgpConnectTimer NullableInt32 `json:"spine_bgp_connect_timer,omitempty"`
+	SpineBgpConnectTimer NullableInt64 `json:"spine_bgp_connect_timer,omitempty"`
 	// BGP AS number applied uniformly to all spine endpoints in this CLOS fabric on save. Leave blank to manage spine AS numbers individually.
-	SpineAsNumber NullableInt32 `json:"spine_as_number,omitempty"`
+	SpineAsNumber NullableInt64 `json:"spine_as_number,omitempty"`
 	// Leaf BGP Keep Alive Timer
-	LeafBgpKeepAliveTimer NullableInt32 `json:"leaf_bgp_keep_alive_timer,omitempty"`
+	LeafBgpKeepAliveTimer NullableInt64 `json:"leaf_bgp_keep_alive_timer,omitempty"`
 	// Leaf BGP Hold Down Timer
-	LeafBgpHoldDownTimer NullableInt32 `json:"leaf_bgp_hold_down_timer,omitempty"`
+	LeafBgpHoldDownTimer NullableInt64 `json:"leaf_bgp_hold_down_timer,omitempty"`
 	// BGP Advertisement Interval for leafs. Use \"0\" for immediate updates
-	LeafBgpAdvertisementInterval NullableInt32 `json:"leaf_bgp_advertisement_interval,omitempty"`
+	LeafBgpAdvertisementInterval NullableInt64 `json:"leaf_bgp_advertisement_interval,omitempty"`
 	// BGP Connect Timer
-	LeafBgpConnectTimer NullableInt32 `json:"leaf_bgp_connect_timer,omitempty"`
+	LeafBgpConnectTimer NullableInt64 `json:"leaf_bgp_connect_timer,omitempty"`
 	// Link State Timeout Value
-	LinkStateTimeoutValue NullableInt32 `json:"link_state_timeout_value,omitempty"`
+	LinkStateTimeoutValue NullableInt64 `json:"link_state_timeout_value,omitempty"`
 	// Startup Delay
-	EvpnMultihomingStartupDelay NullableInt32 `json:"evpn_multihoming_startup_delay,omitempty"`
+	EvpnMultihomingStartupDelay NullableInt64 `json:"evpn_multihoming_startup_delay,omitempty"`
 	// MAC Holdtime
-	EvpnMacHoldtime NullableInt32 `json:"evpn_mac_holdtime,omitempty"`
+	EvpnMacHoldtime NullableInt64 `json:"evpn_mac_holdtime,omitempty"`
 	// Fast Reporting of Switch Communications, Link Up/Down, and BGP Status
 	AggressiveReporting *bool `json:"aggressive_reporting,omitempty"`
 	// Base IPv4 address for switch IPs in this Fabric
@@ -138,11 +138,11 @@ type FabricsPutRequestFabricValue struct {
 	// Validation still runs, but validation alarms are not raised for this Fabric while enabled.
 	PauseValidationAlarms *bool `json:"pause_validation_alarms,omitempty"`
 	// Starting Octet for HGX Port IPs
-	StartingOctet NullableInt32 `json:"starting_octet,omitempty"`
+	StartingOctet NullableInt64 `json:"starting_octet,omitempty"`
 	// Maximum number of SUs allowed per POD
-	MaxSus NullableInt32 `json:"max_sus,omitempty"`
+	MaxSus NullableInt64 `json:"max_sus,omitempty"`
 	// Maximum number of PODs allowed in the Fabric
-	MaxPods NullableInt32 `json:"max_pods,omitempty"`
+	MaxPods NullableInt64 `json:"max_pods,omitempty"`
 	ObjectProperties *FabricsPutRequestFabricValueObjectProperties `json:"object_properties,omitempty"`
 	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
 	IpSourceGuard *bool `json:"ip_source_guard,omitempty"`
@@ -192,22 +192,22 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.AllowAllUnderlayConnections = &allowAllUnderlayConnections
 	var siteType string = "enterprise"
 	this.SiteType = &siteType
-	var duplicateAddressDetectionMaxNumberOfMoves int32 = 5
-	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt32(&duplicateAddressDetectionMaxNumberOfMoves)
-	var duplicateAddressDetectionTime int32 = 180
-	this.DuplicateAddressDetectionTime = *NewNullableInt32(&duplicateAddressDetectionTime)
-	var portAdminPollingInterval int32 = 0
-	this.PortAdminPollingInterval = *NewNullableInt32(&portAdminPollingInterval)
-	var portStatusPollingInterval int32 = 0
-	this.PortStatusPollingInterval = *NewNullableInt32(&portStatusPollingInterval)
+	var duplicateAddressDetectionMaxNumberOfMoves int64 = 5
+	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt64(&duplicateAddressDetectionMaxNumberOfMoves)
+	var duplicateAddressDetectionTime int64 = 180
+	this.DuplicateAddressDetectionTime = *NewNullableInt64(&duplicateAddressDetectionTime)
+	var portAdminPollingInterval int64 = 0
+	this.PortAdminPollingInterval = *NewNullableInt64(&portAdminPollingInterval)
+	var portStatusPollingInterval int64 = 0
+	this.PortStatusPollingInterval = *NewNullableInt64(&portStatusPollingInterval)
 	var serviceForSite string = "(predefined):Management"
 	this.ServiceForSite = &serviceForSite
 	var spanningTreeType string = "pvst"
 	this.SpanningTreeType = &spanningTreeType
 	var regionName string = ""
 	this.RegionName = &regionName
-	var revision int32 = 0
-	this.Revision = *NewNullableInt32(&revision)
+	var revision int64 = 0
+	this.Revision = *NewNullableInt64(&revision)
 	var forceSpanningTreeOnFabricPorts bool = false
 	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
 	var readOnlyMode bool = false
@@ -220,32 +220,32 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.DscpToPBitMap = &dscpToPBitMap
 	var anycastMacAddress string = "(auto)"
 	this.AnycastMacAddress = &anycastMacAddress
-	var macAddressAgingTime int32 = 600
-	this.MacAddressAgingTime = *NewNullableInt32(&macAddressAgingTime)
-	var mlagDelayRestoreTimer int32 = 300
-	this.MlagDelayRestoreTimer = *NewNullableInt32(&mlagDelayRestoreTimer)
-	var bgpKeepaliveTimer int32 = 60
-	this.BgpKeepaliveTimer = *NewNullableInt32(&bgpKeepaliveTimer)
-	var bgpHoldDownTimer int32 = 180
-	this.BgpHoldDownTimer = *NewNullableInt32(&bgpHoldDownTimer)
-	var spineBgpAdvertisementInterval int32 = 1
-	this.SpineBgpAdvertisementInterval = *NewNullableInt32(&spineBgpAdvertisementInterval)
-	var spineBgpConnectTimer int32 = 120
-	this.SpineBgpConnectTimer = *NewNullableInt32(&spineBgpConnectTimer)
-	var leafBgpKeepAliveTimer int32 = 60
-	this.LeafBgpKeepAliveTimer = *NewNullableInt32(&leafBgpKeepAliveTimer)
-	var leafBgpHoldDownTimer int32 = 180
-	this.LeafBgpHoldDownTimer = *NewNullableInt32(&leafBgpHoldDownTimer)
-	var leafBgpAdvertisementInterval int32 = 1
-	this.LeafBgpAdvertisementInterval = *NewNullableInt32(&leafBgpAdvertisementInterval)
-	var leafBgpConnectTimer int32 = 120
-	this.LeafBgpConnectTimer = *NewNullableInt32(&leafBgpConnectTimer)
-	var linkStateTimeoutValue int32 = 60
-	this.LinkStateTimeoutValue = *NewNullableInt32(&linkStateTimeoutValue)
-	var evpnMultihomingStartupDelay int32 = 300
-	this.EvpnMultihomingStartupDelay = *NewNullableInt32(&evpnMultihomingStartupDelay)
-	var evpnMacHoldtime int32 = 1080
-	this.EvpnMacHoldtime = *NewNullableInt32(&evpnMacHoldtime)
+	var macAddressAgingTime int64 = 600
+	this.MacAddressAgingTime = *NewNullableInt64(&macAddressAgingTime)
+	var mlagDelayRestoreTimer int64 = 300
+	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
+	var bgpKeepaliveTimer int64 = 60
+	this.BgpKeepaliveTimer = *NewNullableInt64(&bgpKeepaliveTimer)
+	var bgpHoldDownTimer int64 = 180
+	this.BgpHoldDownTimer = *NewNullableInt64(&bgpHoldDownTimer)
+	var spineBgpAdvertisementInterval int64 = 1
+	this.SpineBgpAdvertisementInterval = *NewNullableInt64(&spineBgpAdvertisementInterval)
+	var spineBgpConnectTimer int64 = 120
+	this.SpineBgpConnectTimer = *NewNullableInt64(&spineBgpConnectTimer)
+	var leafBgpKeepAliveTimer int64 = 60
+	this.LeafBgpKeepAliveTimer = *NewNullableInt64(&leafBgpKeepAliveTimer)
+	var leafBgpHoldDownTimer int64 = 180
+	this.LeafBgpHoldDownTimer = *NewNullableInt64(&leafBgpHoldDownTimer)
+	var leafBgpAdvertisementInterval int64 = 1
+	this.LeafBgpAdvertisementInterval = *NewNullableInt64(&leafBgpAdvertisementInterval)
+	var leafBgpConnectTimer int64 = 120
+	this.LeafBgpConnectTimer = *NewNullableInt64(&leafBgpConnectTimer)
+	var linkStateTimeoutValue int64 = 60
+	this.LinkStateTimeoutValue = *NewNullableInt64(&linkStateTimeoutValue)
+	var evpnMultihomingStartupDelay int64 = 300
+	this.EvpnMultihomingStartupDelay = *NewNullableInt64(&evpnMultihomingStartupDelay)
+	var evpnMacHoldtime int64 = 1080
+	this.EvpnMacHoldtime = *NewNullableInt64(&evpnMacHoldtime)
 	var aggressiveReporting bool = true
 	this.AggressiveReporting = &aggressiveReporting
 	var switchIpBase string = ""
@@ -314,22 +314,22 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.AllowAllUnderlayConnections = &allowAllUnderlayConnections
 	var siteType string = "enterprise"
 	this.SiteType = &siteType
-	var duplicateAddressDetectionMaxNumberOfMoves int32 = 5
-	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt32(&duplicateAddressDetectionMaxNumberOfMoves)
-	var duplicateAddressDetectionTime int32 = 180
-	this.DuplicateAddressDetectionTime = *NewNullableInt32(&duplicateAddressDetectionTime)
-	var portAdminPollingInterval int32 = 0
-	this.PortAdminPollingInterval = *NewNullableInt32(&portAdminPollingInterval)
-	var portStatusPollingInterval int32 = 0
-	this.PortStatusPollingInterval = *NewNullableInt32(&portStatusPollingInterval)
+	var duplicateAddressDetectionMaxNumberOfMoves int64 = 5
+	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt64(&duplicateAddressDetectionMaxNumberOfMoves)
+	var duplicateAddressDetectionTime int64 = 180
+	this.DuplicateAddressDetectionTime = *NewNullableInt64(&duplicateAddressDetectionTime)
+	var portAdminPollingInterval int64 = 0
+	this.PortAdminPollingInterval = *NewNullableInt64(&portAdminPollingInterval)
+	var portStatusPollingInterval int64 = 0
+	this.PortStatusPollingInterval = *NewNullableInt64(&portStatusPollingInterval)
 	var serviceForSite string = "(predefined):Management"
 	this.ServiceForSite = &serviceForSite
 	var spanningTreeType string = "pvst"
 	this.SpanningTreeType = &spanningTreeType
 	var regionName string = ""
 	this.RegionName = &regionName
-	var revision int32 = 0
-	this.Revision = *NewNullableInt32(&revision)
+	var revision int64 = 0
+	this.Revision = *NewNullableInt64(&revision)
 	var forceSpanningTreeOnFabricPorts bool = false
 	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
 	var readOnlyMode bool = false
@@ -342,32 +342,32 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.DscpToPBitMap = &dscpToPBitMap
 	var anycastMacAddress string = "(auto)"
 	this.AnycastMacAddress = &anycastMacAddress
-	var macAddressAgingTime int32 = 600
-	this.MacAddressAgingTime = *NewNullableInt32(&macAddressAgingTime)
-	var mlagDelayRestoreTimer int32 = 300
-	this.MlagDelayRestoreTimer = *NewNullableInt32(&mlagDelayRestoreTimer)
-	var bgpKeepaliveTimer int32 = 60
-	this.BgpKeepaliveTimer = *NewNullableInt32(&bgpKeepaliveTimer)
-	var bgpHoldDownTimer int32 = 180
-	this.BgpHoldDownTimer = *NewNullableInt32(&bgpHoldDownTimer)
-	var spineBgpAdvertisementInterval int32 = 1
-	this.SpineBgpAdvertisementInterval = *NewNullableInt32(&spineBgpAdvertisementInterval)
-	var spineBgpConnectTimer int32 = 120
-	this.SpineBgpConnectTimer = *NewNullableInt32(&spineBgpConnectTimer)
-	var leafBgpKeepAliveTimer int32 = 60
-	this.LeafBgpKeepAliveTimer = *NewNullableInt32(&leafBgpKeepAliveTimer)
-	var leafBgpHoldDownTimer int32 = 180
-	this.LeafBgpHoldDownTimer = *NewNullableInt32(&leafBgpHoldDownTimer)
-	var leafBgpAdvertisementInterval int32 = 1
-	this.LeafBgpAdvertisementInterval = *NewNullableInt32(&leafBgpAdvertisementInterval)
-	var leafBgpConnectTimer int32 = 120
-	this.LeafBgpConnectTimer = *NewNullableInt32(&leafBgpConnectTimer)
-	var linkStateTimeoutValue int32 = 60
-	this.LinkStateTimeoutValue = *NewNullableInt32(&linkStateTimeoutValue)
-	var evpnMultihomingStartupDelay int32 = 300
-	this.EvpnMultihomingStartupDelay = *NewNullableInt32(&evpnMultihomingStartupDelay)
-	var evpnMacHoldtime int32 = 1080
-	this.EvpnMacHoldtime = *NewNullableInt32(&evpnMacHoldtime)
+	var macAddressAgingTime int64 = 600
+	this.MacAddressAgingTime = *NewNullableInt64(&macAddressAgingTime)
+	var mlagDelayRestoreTimer int64 = 300
+	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
+	var bgpKeepaliveTimer int64 = 60
+	this.BgpKeepaliveTimer = *NewNullableInt64(&bgpKeepaliveTimer)
+	var bgpHoldDownTimer int64 = 180
+	this.BgpHoldDownTimer = *NewNullableInt64(&bgpHoldDownTimer)
+	var spineBgpAdvertisementInterval int64 = 1
+	this.SpineBgpAdvertisementInterval = *NewNullableInt64(&spineBgpAdvertisementInterval)
+	var spineBgpConnectTimer int64 = 120
+	this.SpineBgpConnectTimer = *NewNullableInt64(&spineBgpConnectTimer)
+	var leafBgpKeepAliveTimer int64 = 60
+	this.LeafBgpKeepAliveTimer = *NewNullableInt64(&leafBgpKeepAliveTimer)
+	var leafBgpHoldDownTimer int64 = 180
+	this.LeafBgpHoldDownTimer = *NewNullableInt64(&leafBgpHoldDownTimer)
+	var leafBgpAdvertisementInterval int64 = 1
+	this.LeafBgpAdvertisementInterval = *NewNullableInt64(&leafBgpAdvertisementInterval)
+	var leafBgpConnectTimer int64 = 120
+	this.LeafBgpConnectTimer = *NewNullableInt64(&leafBgpConnectTimer)
+	var linkStateTimeoutValue int64 = 60
+	this.LinkStateTimeoutValue = *NewNullableInt64(&linkStateTimeoutValue)
+	var evpnMultihomingStartupDelay int64 = 300
+	this.EvpnMultihomingStartupDelay = *NewNullableInt64(&evpnMultihomingStartupDelay)
+	var evpnMacHoldtime int64 = 1080
+	this.EvpnMacHoldtime = *NewNullableInt64(&evpnMacHoldtime)
 	var aggressiveReporting bool = true
 	this.AggressiveReporting = &aggressiveReporting
 	var switchIpBase string = ""
@@ -972,9 +972,9 @@ func (o *FabricsPutRequestFabricValue) SetSiteType(v string) {
 }
 
 // GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int32 {
+func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int64 {
 	if o == nil || IsNil(o.DuplicateAddressDetectionMaxNumberOfMoves.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DuplicateAddressDetectionMaxNumberOfMoves.Get()
@@ -983,7 +983,7 @@ func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMo
 // GetDuplicateAddressDetectionMaxNumberOfMovesOk returns a tuple with the DuplicateAddressDetectionMaxNumberOfMoves field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -999,8 +999,8 @@ func (o *FabricsPutRequestFabricValue) HasDuplicateAddressDetectionMaxNumberOfMo
 	return false
 }
 
-// SetDuplicateAddressDetectionMaxNumberOfMoves gets a reference to the given NullableInt32 and assigns it to the DuplicateAddressDetectionMaxNumberOfMoves field.
-func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int32) {
+// SetDuplicateAddressDetectionMaxNumberOfMoves gets a reference to the given NullableInt64 and assigns it to the DuplicateAddressDetectionMaxNumberOfMoves field.
+func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int64) {
 	o.DuplicateAddressDetectionMaxNumberOfMoves.Set(&v)
 }
 // SetDuplicateAddressDetectionMaxNumberOfMovesNil sets the value for DuplicateAddressDetectionMaxNumberOfMoves to be an explicit nil
@@ -1014,9 +1014,9 @@ func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionMaxNumberOf
 }
 
 // GetDuplicateAddressDetectionTime returns the DuplicateAddressDetectionTime field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTime() int32 {
+func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTime() int64 {
 	if o == nil || IsNil(o.DuplicateAddressDetectionTime.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DuplicateAddressDetectionTime.Get()
@@ -1025,7 +1025,7 @@ func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTime() int32 
 // GetDuplicateAddressDetectionTimeOk returns a tuple with the DuplicateAddressDetectionTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTimeOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTimeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1041,8 +1041,8 @@ func (o *FabricsPutRequestFabricValue) HasDuplicateAddressDetectionTime() bool {
 	return false
 }
 
-// SetDuplicateAddressDetectionTime gets a reference to the given NullableInt32 and assigns it to the DuplicateAddressDetectionTime field.
-func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTime(v int32) {
+// SetDuplicateAddressDetectionTime gets a reference to the given NullableInt64 and assigns it to the DuplicateAddressDetectionTime field.
+func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTime(v int64) {
 	o.DuplicateAddressDetectionTime.Set(&v)
 }
 // SetDuplicateAddressDetectionTimeNil sets the value for DuplicateAddressDetectionTime to be an explicit nil
@@ -1056,9 +1056,9 @@ func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionTime() {
 }
 
 // GetPortAdminPollingInterval returns the PortAdminPollingInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetPortAdminPollingInterval() int32 {
+func (o *FabricsPutRequestFabricValue) GetPortAdminPollingInterval() int64 {
 	if o == nil || IsNil(o.PortAdminPollingInterval.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PortAdminPollingInterval.Get()
@@ -1067,7 +1067,7 @@ func (o *FabricsPutRequestFabricValue) GetPortAdminPollingInterval() int32 {
 // GetPortAdminPollingIntervalOk returns a tuple with the PortAdminPollingInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetPortAdminPollingIntervalOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetPortAdminPollingIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1083,8 +1083,8 @@ func (o *FabricsPutRequestFabricValue) HasPortAdminPollingInterval() bool {
 	return false
 }
 
-// SetPortAdminPollingInterval gets a reference to the given NullableInt32 and assigns it to the PortAdminPollingInterval field.
-func (o *FabricsPutRequestFabricValue) SetPortAdminPollingInterval(v int32) {
+// SetPortAdminPollingInterval gets a reference to the given NullableInt64 and assigns it to the PortAdminPollingInterval field.
+func (o *FabricsPutRequestFabricValue) SetPortAdminPollingInterval(v int64) {
 	o.PortAdminPollingInterval.Set(&v)
 }
 // SetPortAdminPollingIntervalNil sets the value for PortAdminPollingInterval to be an explicit nil
@@ -1098,9 +1098,9 @@ func (o *FabricsPutRequestFabricValue) UnsetPortAdminPollingInterval() {
 }
 
 // GetPortStatusPollingInterval returns the PortStatusPollingInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetPortStatusPollingInterval() int32 {
+func (o *FabricsPutRequestFabricValue) GetPortStatusPollingInterval() int64 {
 	if o == nil || IsNil(o.PortStatusPollingInterval.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PortStatusPollingInterval.Get()
@@ -1109,7 +1109,7 @@ func (o *FabricsPutRequestFabricValue) GetPortStatusPollingInterval() int32 {
 // GetPortStatusPollingIntervalOk returns a tuple with the PortStatusPollingInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetPortStatusPollingIntervalOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetPortStatusPollingIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1125,8 +1125,8 @@ func (o *FabricsPutRequestFabricValue) HasPortStatusPollingInterval() bool {
 	return false
 }
 
-// SetPortStatusPollingInterval gets a reference to the given NullableInt32 and assigns it to the PortStatusPollingInterval field.
-func (o *FabricsPutRequestFabricValue) SetPortStatusPollingInterval(v int32) {
+// SetPortStatusPollingInterval gets a reference to the given NullableInt64 and assigns it to the PortStatusPollingInterval field.
+func (o *FabricsPutRequestFabricValue) SetPortStatusPollingInterval(v int64) {
 	o.PortStatusPollingInterval.Set(&v)
 }
 // SetPortStatusPollingIntervalNil sets the value for PortStatusPollingInterval to be an explicit nil
@@ -1268,9 +1268,9 @@ func (o *FabricsPutRequestFabricValue) SetRegionName(v string) {
 }
 
 // GetRevision returns the Revision field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetRevision() int32 {
+func (o *FabricsPutRequestFabricValue) GetRevision() int64 {
 	if o == nil || IsNil(o.Revision.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Revision.Get()
@@ -1279,7 +1279,7 @@ func (o *FabricsPutRequestFabricValue) GetRevision() int32 {
 // GetRevisionOk returns a tuple with the Revision field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetRevisionOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetRevisionOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1295,8 +1295,8 @@ func (o *FabricsPutRequestFabricValue) HasRevision() bool {
 	return false
 }
 
-// SetRevision gets a reference to the given NullableInt32 and assigns it to the Revision field.
-func (o *FabricsPutRequestFabricValue) SetRevision(v int32) {
+// SetRevision gets a reference to the given NullableInt64 and assigns it to the Revision field.
+func (o *FabricsPutRequestFabricValue) SetRevision(v int64) {
 	o.Revision.Set(&v)
 }
 // SetRevisionNil sets the value for Revision to be an explicit nil
@@ -1566,9 +1566,9 @@ func (o *FabricsPutRequestFabricValue) SetAnycastMacAddressAutoAssigned(v bool) 
 }
 
 // GetMacAddressAgingTime returns the MacAddressAgingTime field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTime() int32 {
+func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTime() int64 {
 	if o == nil || IsNil(o.MacAddressAgingTime.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MacAddressAgingTime.Get()
@@ -1577,7 +1577,7 @@ func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTime() int32 {
 // GetMacAddressAgingTimeOk returns a tuple with the MacAddressAgingTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTimeOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTimeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1593,8 +1593,8 @@ func (o *FabricsPutRequestFabricValue) HasMacAddressAgingTime() bool {
 	return false
 }
 
-// SetMacAddressAgingTime gets a reference to the given NullableInt32 and assigns it to the MacAddressAgingTime field.
-func (o *FabricsPutRequestFabricValue) SetMacAddressAgingTime(v int32) {
+// SetMacAddressAgingTime gets a reference to the given NullableInt64 and assigns it to the MacAddressAgingTime field.
+func (o *FabricsPutRequestFabricValue) SetMacAddressAgingTime(v int64) {
 	o.MacAddressAgingTime.Set(&v)
 }
 // SetMacAddressAgingTimeNil sets the value for MacAddressAgingTime to be an explicit nil
@@ -1608,9 +1608,9 @@ func (o *FabricsPutRequestFabricValue) UnsetMacAddressAgingTime() {
 }
 
 // GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimer() int32 {
+func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimer() int64 {
 	if o == nil || IsNil(o.MlagDelayRestoreTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MlagDelayRestoreTimer.Get()
@@ -1619,7 +1619,7 @@ func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimer() int32 {
 // GetMlagDelayRestoreTimerOk returns a tuple with the MlagDelayRestoreTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimerOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1635,8 +1635,8 @@ func (o *FabricsPutRequestFabricValue) HasMlagDelayRestoreTimer() bool {
 	return false
 }
 
-// SetMlagDelayRestoreTimer gets a reference to the given NullableInt32 and assigns it to the MlagDelayRestoreTimer field.
-func (o *FabricsPutRequestFabricValue) SetMlagDelayRestoreTimer(v int32) {
+// SetMlagDelayRestoreTimer gets a reference to the given NullableInt64 and assigns it to the MlagDelayRestoreTimer field.
+func (o *FabricsPutRequestFabricValue) SetMlagDelayRestoreTimer(v int64) {
 	o.MlagDelayRestoreTimer.Set(&v)
 }
 // SetMlagDelayRestoreTimerNil sets the value for MlagDelayRestoreTimer to be an explicit nil
@@ -1650,9 +1650,9 @@ func (o *FabricsPutRequestFabricValue) UnsetMlagDelayRestoreTimer() {
 }
 
 // GetBgpKeepaliveTimer returns the BgpKeepaliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimer() int32 {
+func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimer() int64 {
 	if o == nil || IsNil(o.BgpKeepaliveTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BgpKeepaliveTimer.Get()
@@ -1661,7 +1661,7 @@ func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimer() int32 {
 // GetBgpKeepaliveTimerOk returns a tuple with the BgpKeepaliveTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimerOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1677,8 +1677,8 @@ func (o *FabricsPutRequestFabricValue) HasBgpKeepaliveTimer() bool {
 	return false
 }
 
-// SetBgpKeepaliveTimer gets a reference to the given NullableInt32 and assigns it to the BgpKeepaliveTimer field.
-func (o *FabricsPutRequestFabricValue) SetBgpKeepaliveTimer(v int32) {
+// SetBgpKeepaliveTimer gets a reference to the given NullableInt64 and assigns it to the BgpKeepaliveTimer field.
+func (o *FabricsPutRequestFabricValue) SetBgpKeepaliveTimer(v int64) {
 	o.BgpKeepaliveTimer.Set(&v)
 }
 // SetBgpKeepaliveTimerNil sets the value for BgpKeepaliveTimer to be an explicit nil
@@ -1692,9 +1692,9 @@ func (o *FabricsPutRequestFabricValue) UnsetBgpKeepaliveTimer() {
 }
 
 // GetBgpHoldDownTimer returns the BgpHoldDownTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetBgpHoldDownTimer() int32 {
+func (o *FabricsPutRequestFabricValue) GetBgpHoldDownTimer() int64 {
 	if o == nil || IsNil(o.BgpHoldDownTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BgpHoldDownTimer.Get()
@@ -1703,7 +1703,7 @@ func (o *FabricsPutRequestFabricValue) GetBgpHoldDownTimer() int32 {
 // GetBgpHoldDownTimerOk returns a tuple with the BgpHoldDownTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetBgpHoldDownTimerOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetBgpHoldDownTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1719,8 +1719,8 @@ func (o *FabricsPutRequestFabricValue) HasBgpHoldDownTimer() bool {
 	return false
 }
 
-// SetBgpHoldDownTimer gets a reference to the given NullableInt32 and assigns it to the BgpHoldDownTimer field.
-func (o *FabricsPutRequestFabricValue) SetBgpHoldDownTimer(v int32) {
+// SetBgpHoldDownTimer gets a reference to the given NullableInt64 and assigns it to the BgpHoldDownTimer field.
+func (o *FabricsPutRequestFabricValue) SetBgpHoldDownTimer(v int64) {
 	o.BgpHoldDownTimer.Set(&v)
 }
 // SetBgpHoldDownTimerNil sets the value for BgpHoldDownTimer to be an explicit nil
@@ -1734,9 +1734,9 @@ func (o *FabricsPutRequestFabricValue) UnsetBgpHoldDownTimer() {
 }
 
 // GetSpineBgpAdvertisementInterval returns the SpineBgpAdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementInterval() int32 {
+func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementInterval() int64 {
 	if o == nil || IsNil(o.SpineBgpAdvertisementInterval.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.SpineBgpAdvertisementInterval.Get()
@@ -1745,7 +1745,7 @@ func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementInterval() int32 
 // GetSpineBgpAdvertisementIntervalOk returns a tuple with the SpineBgpAdvertisementInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementIntervalOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1761,8 +1761,8 @@ func (o *FabricsPutRequestFabricValue) HasSpineBgpAdvertisementInterval() bool {
 	return false
 }
 
-// SetSpineBgpAdvertisementInterval gets a reference to the given NullableInt32 and assigns it to the SpineBgpAdvertisementInterval field.
-func (o *FabricsPutRequestFabricValue) SetSpineBgpAdvertisementInterval(v int32) {
+// SetSpineBgpAdvertisementInterval gets a reference to the given NullableInt64 and assigns it to the SpineBgpAdvertisementInterval field.
+func (o *FabricsPutRequestFabricValue) SetSpineBgpAdvertisementInterval(v int64) {
 	o.SpineBgpAdvertisementInterval.Set(&v)
 }
 // SetSpineBgpAdvertisementIntervalNil sets the value for SpineBgpAdvertisementInterval to be an explicit nil
@@ -1776,9 +1776,9 @@ func (o *FabricsPutRequestFabricValue) UnsetSpineBgpAdvertisementInterval() {
 }
 
 // GetSpineBgpConnectTimer returns the SpineBgpConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimer() int32 {
+func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimer() int64 {
 	if o == nil || IsNil(o.SpineBgpConnectTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.SpineBgpConnectTimer.Get()
@@ -1787,7 +1787,7 @@ func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimer() int32 {
 // GetSpineBgpConnectTimerOk returns a tuple with the SpineBgpConnectTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimerOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1803,8 +1803,8 @@ func (o *FabricsPutRequestFabricValue) HasSpineBgpConnectTimer() bool {
 	return false
 }
 
-// SetSpineBgpConnectTimer gets a reference to the given NullableInt32 and assigns it to the SpineBgpConnectTimer field.
-func (o *FabricsPutRequestFabricValue) SetSpineBgpConnectTimer(v int32) {
+// SetSpineBgpConnectTimer gets a reference to the given NullableInt64 and assigns it to the SpineBgpConnectTimer field.
+func (o *FabricsPutRequestFabricValue) SetSpineBgpConnectTimer(v int64) {
 	o.SpineBgpConnectTimer.Set(&v)
 }
 // SetSpineBgpConnectTimerNil sets the value for SpineBgpConnectTimer to be an explicit nil
@@ -1818,9 +1818,9 @@ func (o *FabricsPutRequestFabricValue) UnsetSpineBgpConnectTimer() {
 }
 
 // GetSpineAsNumber returns the SpineAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetSpineAsNumber() int32 {
+func (o *FabricsPutRequestFabricValue) GetSpineAsNumber() int64 {
 	if o == nil || IsNil(o.SpineAsNumber.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.SpineAsNumber.Get()
@@ -1829,7 +1829,7 @@ func (o *FabricsPutRequestFabricValue) GetSpineAsNumber() int32 {
 // GetSpineAsNumberOk returns a tuple with the SpineAsNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetSpineAsNumberOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetSpineAsNumberOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1845,8 +1845,8 @@ func (o *FabricsPutRequestFabricValue) HasSpineAsNumber() bool {
 	return false
 }
 
-// SetSpineAsNumber gets a reference to the given NullableInt32 and assigns it to the SpineAsNumber field.
-func (o *FabricsPutRequestFabricValue) SetSpineAsNumber(v int32) {
+// SetSpineAsNumber gets a reference to the given NullableInt64 and assigns it to the SpineAsNumber field.
+func (o *FabricsPutRequestFabricValue) SetSpineAsNumber(v int64) {
 	o.SpineAsNumber.Set(&v)
 }
 // SetSpineAsNumberNil sets the value for SpineAsNumber to be an explicit nil
@@ -1860,9 +1860,9 @@ func (o *FabricsPutRequestFabricValue) UnsetSpineAsNumber() {
 }
 
 // GetLeafBgpKeepAliveTimer returns the LeafBgpKeepAliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimer() int32 {
+func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimer() int64 {
 	if o == nil || IsNil(o.LeafBgpKeepAliveTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LeafBgpKeepAliveTimer.Get()
@@ -1871,7 +1871,7 @@ func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimer() int32 {
 // GetLeafBgpKeepAliveTimerOk returns a tuple with the LeafBgpKeepAliveTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimerOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1887,8 +1887,8 @@ func (o *FabricsPutRequestFabricValue) HasLeafBgpKeepAliveTimer() bool {
 	return false
 }
 
-// SetLeafBgpKeepAliveTimer gets a reference to the given NullableInt32 and assigns it to the LeafBgpKeepAliveTimer field.
-func (o *FabricsPutRequestFabricValue) SetLeafBgpKeepAliveTimer(v int32) {
+// SetLeafBgpKeepAliveTimer gets a reference to the given NullableInt64 and assigns it to the LeafBgpKeepAliveTimer field.
+func (o *FabricsPutRequestFabricValue) SetLeafBgpKeepAliveTimer(v int64) {
 	o.LeafBgpKeepAliveTimer.Set(&v)
 }
 // SetLeafBgpKeepAliveTimerNil sets the value for LeafBgpKeepAliveTimer to be an explicit nil
@@ -1902,9 +1902,9 @@ func (o *FabricsPutRequestFabricValue) UnsetLeafBgpKeepAliveTimer() {
 }
 
 // GetLeafBgpHoldDownTimer returns the LeafBgpHoldDownTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimer() int32 {
+func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimer() int64 {
 	if o == nil || IsNil(o.LeafBgpHoldDownTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LeafBgpHoldDownTimer.Get()
@@ -1913,7 +1913,7 @@ func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimer() int32 {
 // GetLeafBgpHoldDownTimerOk returns a tuple with the LeafBgpHoldDownTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimerOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1929,8 +1929,8 @@ func (o *FabricsPutRequestFabricValue) HasLeafBgpHoldDownTimer() bool {
 	return false
 }
 
-// SetLeafBgpHoldDownTimer gets a reference to the given NullableInt32 and assigns it to the LeafBgpHoldDownTimer field.
-func (o *FabricsPutRequestFabricValue) SetLeafBgpHoldDownTimer(v int32) {
+// SetLeafBgpHoldDownTimer gets a reference to the given NullableInt64 and assigns it to the LeafBgpHoldDownTimer field.
+func (o *FabricsPutRequestFabricValue) SetLeafBgpHoldDownTimer(v int64) {
 	o.LeafBgpHoldDownTimer.Set(&v)
 }
 // SetLeafBgpHoldDownTimerNil sets the value for LeafBgpHoldDownTimer to be an explicit nil
@@ -1944,9 +1944,9 @@ func (o *FabricsPutRequestFabricValue) UnsetLeafBgpHoldDownTimer() {
 }
 
 // GetLeafBgpAdvertisementInterval returns the LeafBgpAdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetLeafBgpAdvertisementInterval() int32 {
+func (o *FabricsPutRequestFabricValue) GetLeafBgpAdvertisementInterval() int64 {
 	if o == nil || IsNil(o.LeafBgpAdvertisementInterval.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LeafBgpAdvertisementInterval.Get()
@@ -1955,7 +1955,7 @@ func (o *FabricsPutRequestFabricValue) GetLeafBgpAdvertisementInterval() int32 {
 // GetLeafBgpAdvertisementIntervalOk returns a tuple with the LeafBgpAdvertisementInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetLeafBgpAdvertisementIntervalOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetLeafBgpAdvertisementIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1971,8 +1971,8 @@ func (o *FabricsPutRequestFabricValue) HasLeafBgpAdvertisementInterval() bool {
 	return false
 }
 
-// SetLeafBgpAdvertisementInterval gets a reference to the given NullableInt32 and assigns it to the LeafBgpAdvertisementInterval field.
-func (o *FabricsPutRequestFabricValue) SetLeafBgpAdvertisementInterval(v int32) {
+// SetLeafBgpAdvertisementInterval gets a reference to the given NullableInt64 and assigns it to the LeafBgpAdvertisementInterval field.
+func (o *FabricsPutRequestFabricValue) SetLeafBgpAdvertisementInterval(v int64) {
 	o.LeafBgpAdvertisementInterval.Set(&v)
 }
 // SetLeafBgpAdvertisementIntervalNil sets the value for LeafBgpAdvertisementInterval to be an explicit nil
@@ -1986,9 +1986,9 @@ func (o *FabricsPutRequestFabricValue) UnsetLeafBgpAdvertisementInterval() {
 }
 
 // GetLeafBgpConnectTimer returns the LeafBgpConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetLeafBgpConnectTimer() int32 {
+func (o *FabricsPutRequestFabricValue) GetLeafBgpConnectTimer() int64 {
 	if o == nil || IsNil(o.LeafBgpConnectTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LeafBgpConnectTimer.Get()
@@ -1997,7 +1997,7 @@ func (o *FabricsPutRequestFabricValue) GetLeafBgpConnectTimer() int32 {
 // GetLeafBgpConnectTimerOk returns a tuple with the LeafBgpConnectTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetLeafBgpConnectTimerOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetLeafBgpConnectTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -2013,8 +2013,8 @@ func (o *FabricsPutRequestFabricValue) HasLeafBgpConnectTimer() bool {
 	return false
 }
 
-// SetLeafBgpConnectTimer gets a reference to the given NullableInt32 and assigns it to the LeafBgpConnectTimer field.
-func (o *FabricsPutRequestFabricValue) SetLeafBgpConnectTimer(v int32) {
+// SetLeafBgpConnectTimer gets a reference to the given NullableInt64 and assigns it to the LeafBgpConnectTimer field.
+func (o *FabricsPutRequestFabricValue) SetLeafBgpConnectTimer(v int64) {
 	o.LeafBgpConnectTimer.Set(&v)
 }
 // SetLeafBgpConnectTimerNil sets the value for LeafBgpConnectTimer to be an explicit nil
@@ -2028,9 +2028,9 @@ func (o *FabricsPutRequestFabricValue) UnsetLeafBgpConnectTimer() {
 }
 
 // GetLinkStateTimeoutValue returns the LinkStateTimeoutValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetLinkStateTimeoutValue() int32 {
+func (o *FabricsPutRequestFabricValue) GetLinkStateTimeoutValue() int64 {
 	if o == nil || IsNil(o.LinkStateTimeoutValue.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LinkStateTimeoutValue.Get()
@@ -2039,7 +2039,7 @@ func (o *FabricsPutRequestFabricValue) GetLinkStateTimeoutValue() int32 {
 // GetLinkStateTimeoutValueOk returns a tuple with the LinkStateTimeoutValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetLinkStateTimeoutValueOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetLinkStateTimeoutValueOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -2055,8 +2055,8 @@ func (o *FabricsPutRequestFabricValue) HasLinkStateTimeoutValue() bool {
 	return false
 }
 
-// SetLinkStateTimeoutValue gets a reference to the given NullableInt32 and assigns it to the LinkStateTimeoutValue field.
-func (o *FabricsPutRequestFabricValue) SetLinkStateTimeoutValue(v int32) {
+// SetLinkStateTimeoutValue gets a reference to the given NullableInt64 and assigns it to the LinkStateTimeoutValue field.
+func (o *FabricsPutRequestFabricValue) SetLinkStateTimeoutValue(v int64) {
 	o.LinkStateTimeoutValue.Set(&v)
 }
 // SetLinkStateTimeoutValueNil sets the value for LinkStateTimeoutValue to be an explicit nil
@@ -2070,9 +2070,9 @@ func (o *FabricsPutRequestFabricValue) UnsetLinkStateTimeoutValue() {
 }
 
 // GetEvpnMultihomingStartupDelay returns the EvpnMultihomingStartupDelay field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelay() int32 {
+func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelay() int64 {
 	if o == nil || IsNil(o.EvpnMultihomingStartupDelay.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.EvpnMultihomingStartupDelay.Get()
@@ -2081,7 +2081,7 @@ func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelay() int32 {
 // GetEvpnMultihomingStartupDelayOk returns a tuple with the EvpnMultihomingStartupDelay field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelayOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelayOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -2097,8 +2097,8 @@ func (o *FabricsPutRequestFabricValue) HasEvpnMultihomingStartupDelay() bool {
 	return false
 }
 
-// SetEvpnMultihomingStartupDelay gets a reference to the given NullableInt32 and assigns it to the EvpnMultihomingStartupDelay field.
-func (o *FabricsPutRequestFabricValue) SetEvpnMultihomingStartupDelay(v int32) {
+// SetEvpnMultihomingStartupDelay gets a reference to the given NullableInt64 and assigns it to the EvpnMultihomingStartupDelay field.
+func (o *FabricsPutRequestFabricValue) SetEvpnMultihomingStartupDelay(v int64) {
 	o.EvpnMultihomingStartupDelay.Set(&v)
 }
 // SetEvpnMultihomingStartupDelayNil sets the value for EvpnMultihomingStartupDelay to be an explicit nil
@@ -2112,9 +2112,9 @@ func (o *FabricsPutRequestFabricValue) UnsetEvpnMultihomingStartupDelay() {
 }
 
 // GetEvpnMacHoldtime returns the EvpnMacHoldtime field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtime() int32 {
+func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtime() int64 {
 	if o == nil || IsNil(o.EvpnMacHoldtime.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.EvpnMacHoldtime.Get()
@@ -2123,7 +2123,7 @@ func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtime() int32 {
 // GetEvpnMacHoldtimeOk returns a tuple with the EvpnMacHoldtime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtimeOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtimeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -2139,8 +2139,8 @@ func (o *FabricsPutRequestFabricValue) HasEvpnMacHoldtime() bool {
 	return false
 }
 
-// SetEvpnMacHoldtime gets a reference to the given NullableInt32 and assigns it to the EvpnMacHoldtime field.
-func (o *FabricsPutRequestFabricValue) SetEvpnMacHoldtime(v int32) {
+// SetEvpnMacHoldtime gets a reference to the given NullableInt64 and assigns it to the EvpnMacHoldtime field.
+func (o *FabricsPutRequestFabricValue) SetEvpnMacHoldtime(v int64) {
 	o.EvpnMacHoldtime.Set(&v)
 }
 // SetEvpnMacHoldtimeNil sets the value for EvpnMacHoldtime to be an explicit nil
@@ -2474,9 +2474,9 @@ func (o *FabricsPutRequestFabricValue) SetPauseValidationAlarms(v bool) {
 }
 
 // GetStartingOctet returns the StartingOctet field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetStartingOctet() int32 {
+func (o *FabricsPutRequestFabricValue) GetStartingOctet() int64 {
 	if o == nil || IsNil(o.StartingOctet.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.StartingOctet.Get()
@@ -2485,7 +2485,7 @@ func (o *FabricsPutRequestFabricValue) GetStartingOctet() int32 {
 // GetStartingOctetOk returns a tuple with the StartingOctet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetStartingOctetOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetStartingOctetOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -2501,8 +2501,8 @@ func (o *FabricsPutRequestFabricValue) HasStartingOctet() bool {
 	return false
 }
 
-// SetStartingOctet gets a reference to the given NullableInt32 and assigns it to the StartingOctet field.
-func (o *FabricsPutRequestFabricValue) SetStartingOctet(v int32) {
+// SetStartingOctet gets a reference to the given NullableInt64 and assigns it to the StartingOctet field.
+func (o *FabricsPutRequestFabricValue) SetStartingOctet(v int64) {
 	o.StartingOctet.Set(&v)
 }
 // SetStartingOctetNil sets the value for StartingOctet to be an explicit nil
@@ -2516,9 +2516,9 @@ func (o *FabricsPutRequestFabricValue) UnsetStartingOctet() {
 }
 
 // GetMaxSus returns the MaxSus field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetMaxSus() int32 {
+func (o *FabricsPutRequestFabricValue) GetMaxSus() int64 {
 	if o == nil || IsNil(o.MaxSus.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MaxSus.Get()
@@ -2527,7 +2527,7 @@ func (o *FabricsPutRequestFabricValue) GetMaxSus() int32 {
 // GetMaxSusOk returns a tuple with the MaxSus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetMaxSusOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetMaxSusOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -2543,8 +2543,8 @@ func (o *FabricsPutRequestFabricValue) HasMaxSus() bool {
 	return false
 }
 
-// SetMaxSus gets a reference to the given NullableInt32 and assigns it to the MaxSus field.
-func (o *FabricsPutRequestFabricValue) SetMaxSus(v int32) {
+// SetMaxSus gets a reference to the given NullableInt64 and assigns it to the MaxSus field.
+func (o *FabricsPutRequestFabricValue) SetMaxSus(v int64) {
 	o.MaxSus.Set(&v)
 }
 // SetMaxSusNil sets the value for MaxSus to be an explicit nil
@@ -2558,9 +2558,9 @@ func (o *FabricsPutRequestFabricValue) UnsetMaxSus() {
 }
 
 // GetMaxPods returns the MaxPods field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetMaxPods() int32 {
+func (o *FabricsPutRequestFabricValue) GetMaxPods() int64 {
 	if o == nil || IsNil(o.MaxPods.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MaxPods.Get()
@@ -2569,7 +2569,7 @@ func (o *FabricsPutRequestFabricValue) GetMaxPods() int32 {
 // GetMaxPodsOk returns a tuple with the MaxPods field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetMaxPodsOk() (*int32, bool) {
+func (o *FabricsPutRequestFabricValue) GetMaxPodsOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -2585,8 +2585,8 @@ func (o *FabricsPutRequestFabricValue) HasMaxPods() bool {
 	return false
 }
 
-// SetMaxPods gets a reference to the given NullableInt32 and assigns it to the MaxPods field.
-func (o *FabricsPutRequestFabricValue) SetMaxPods(v int32) {
+// SetMaxPods gets a reference to the given NullableInt64 and assigns it to the MaxPods field.
+func (o *FabricsPutRequestFabricValue) SetMaxPods(v int64) {
 	o.MaxPods.Set(&v)
 }
 // SetMaxPodsNil sets the value for MaxPods to be an explicit nil

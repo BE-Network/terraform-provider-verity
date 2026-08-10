@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
 **Pod** | Pointer to **string** | Pod this SU is assigned to | [optional] [default to ""]
 **PodRefType** | Pointer to **string** | Object type for pod field | [optional] 
-**Position** | Pointer to **NullableFloat32** | Position of the Switch | [optional] 
+**Position** | Pointer to **NullableFloat64** | Position of the Switch | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -132,20 +132,20 @@ HasPodRefType returns a boolean if a field has been set.
 
 ### GetPosition
 
-`func (o *SusPutRequestSuValue) GetPosition() float32`
+`func (o *SusPutRequestSuValue) GetPosition() float64`
 
 GetPosition returns the Position field if non-nil, zero value otherwise.
 
 ### GetPositionOk
 
-`func (o *SusPutRequestSuValue) GetPositionOk() (*float32, bool)`
+`func (o *SusPutRequestSuValue) GetPositionOk() (*float64, bool)`
 
 GetPositionOk returns a tuple with the Position field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPosition
 
-`func (o *SusPutRequestSuValue) SetPosition(v float32)`
+`func (o *SusPutRequestSuValue) SetPosition(v float64)`
 
 SetPosition sets Position field to given value.
 

@@ -6,9 +6,9 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to true]
-**Layer3Vni** | Pointer to **NullableInt32** | VNI value used to transport traffic between services of a Tenant  | [optional] 
+**Layer3Vni** | Pointer to **NullableInt64** | VNI value used to transport traffic between services of a Tenant  | [optional] 
 **Layer3VniAutoAssigned** | Pointer to **bool** | Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit. | [optional] 
-**Layer3Vlan** | Pointer to **NullableInt32** | VLAN value used to transport traffic between services of a Tenant  | [optional] 
+**Layer3Vlan** | Pointer to **NullableInt64** | VLAN value used to transport traffic between services of a Tenant  | [optional] 
 **Layer3VlanAutoAssigned** | Pointer to **bool** | Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit. | [optional] 
 **DhcpRelaySourceIpv4sSubnet** | Pointer to **string** | Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on. | [optional] [default to ""]
 **DhcpRelaySourceIpv6sSubnet** | Pointer to **string** | Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on. | [optional] [default to ""]
@@ -96,20 +96,20 @@ HasEnable returns a boolean if a field has been set.
 
 ### GetLayer3Vni
 
-`func (o *TenantsPutRequestTenantValue) GetLayer3Vni() int32`
+`func (o *TenantsPutRequestTenantValue) GetLayer3Vni() int64`
 
 GetLayer3Vni returns the Layer3Vni field if non-nil, zero value otherwise.
 
 ### GetLayer3VniOk
 
-`func (o *TenantsPutRequestTenantValue) GetLayer3VniOk() (*int32, bool)`
+`func (o *TenantsPutRequestTenantValue) GetLayer3VniOk() (*int64, bool)`
 
 GetLayer3VniOk returns a tuple with the Layer3Vni field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLayer3Vni
 
-`func (o *TenantsPutRequestTenantValue) SetLayer3Vni(v int32)`
+`func (o *TenantsPutRequestTenantValue) SetLayer3Vni(v int64)`
 
 SetLayer3Vni sets Layer3Vni field to given value.
 
@@ -156,20 +156,20 @@ HasLayer3VniAutoAssigned returns a boolean if a field has been set.
 
 ### GetLayer3Vlan
 
-`func (o *TenantsPutRequestTenantValue) GetLayer3Vlan() int32`
+`func (o *TenantsPutRequestTenantValue) GetLayer3Vlan() int64`
 
 GetLayer3Vlan returns the Layer3Vlan field if non-nil, zero value otherwise.
 
 ### GetLayer3VlanOk
 
-`func (o *TenantsPutRequestTenantValue) GetLayer3VlanOk() (*int32, bool)`
+`func (o *TenantsPutRequestTenantValue) GetLayer3VlanOk() (*int64, bool)`
 
 GetLayer3VlanOk returns a tuple with the Layer3Vlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLayer3Vlan
 
-`func (o *TenantsPutRequestTenantValue) SetLayer3Vlan(v int32)`
+`func (o *TenantsPutRequestTenantValue) SetLayer3Vlan(v int64)`
 
 SetLayer3Vlan sets Layer3Vlan field to given value.
 

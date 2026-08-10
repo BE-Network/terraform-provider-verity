@@ -454,13 +454,13 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 
 				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, pbitConfigMap, "pbit", configuredAttrs)
-				utils.CompareAndSetNullableInt64Field(configItem.PacketQueueForPBit, stateItem.PacketQueueForPBit, cfg.IsFieldConfigured("packet_queue_for_p_bit"), func(v *openapi.NullableInt32) { updatePbit.PacketQueueForPBit = *v }, &fieldChanged)
+				utils.CompareAndSetNullableInt64Field(configItem.PacketQueueForPBit, stateItem.PacketQueueForPBit, cfg.IsFieldConfigured("packet_queue_for_p_bit"), func(v *openapi.NullableInt64) { updatePbit.PacketQueueForPBit = *v }, &fieldChanged)
 
 				return updatePbit, fieldChanged
 			},
 			CreateDeleted: func(index int64) openapi.PacketqueuesPutRequestPacketQueueValuePbitInner {
 				return openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -505,8 +505,8 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 
 				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, queueConfigMap, "queue", configuredAttrs)
-				utils.CompareAndSetNullableInt64Field(configItem.BandwidthForQueue, stateItem.BandwidthForQueue, cfg.IsFieldConfigured("bandwidth_for_queue"), func(v *openapi.NullableInt32) { updateQueue.BandwidthForQueue = *v }, &fieldChanged)
-				utils.CompareAndSetNullableInt64Field(configItem.SchedulerWeight, stateItem.SchedulerWeight, cfg.IsFieldConfigured("scheduler_weight"), func(v *openapi.NullableInt32) { updateQueue.SchedulerWeight = *v }, &fieldChanged)
+				utils.CompareAndSetNullableInt64Field(configItem.BandwidthForQueue, stateItem.BandwidthForQueue, cfg.IsFieldConfigured("bandwidth_for_queue"), func(v *openapi.NullableInt64) { updateQueue.BandwidthForQueue = *v }, &fieldChanged)
+				utils.CompareAndSetNullableInt64Field(configItem.SchedulerWeight, stateItem.SchedulerWeight, cfg.IsFieldConfigured("scheduler_weight"), func(v *openapi.NullableInt64) { updateQueue.SchedulerWeight = *v }, &fieldChanged)
 
 				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.SchedulerType, stateItem.SchedulerType, func(v *string) { updateQueue.SchedulerType = v }, &fieldChanged)
@@ -515,7 +515,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 			},
 			CreateDeleted: func(idx int64) openapi.PacketqueuesPutRequestPacketQueueValueQueueInner {
 				return openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{
-					Index: openapi.PtrInt32(int32(idx)),
+					Index: openapi.PtrInt64(int64(idx)),
 				}
 			},
 		})

@@ -671,11 +671,11 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 	utils.CompareAndSetBoolField(plan.NssSkipMembers, state.NssSkipMembers, func(v *bool) { ldapProfileProps.NssSkipMembers = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.DefaultPort, state.DefaultPort, configuredAttrs.IsConfigured("default_port"), func(v *openapi.NullableInt32) { ldapProfileProps.DefaultPort = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.SearchTimeLimit, state.SearchTimeLimit, configuredAttrs.IsConfigured("search_time_limit"), func(v *openapi.NullableInt32) { ldapProfileProps.SearchTimeLimit = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.BindTimeLimit, state.BindTimeLimit, configuredAttrs.IsConfigured("bind_time_limit"), func(v *openapi.NullableInt32) { ldapProfileProps.BindTimeLimit = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.IdleTimeLimit, state.IdleTimeLimit, configuredAttrs.IsConfigured("idle_time_limit"), func(v *openapi.NullableInt32) { ldapProfileProps.IdleTimeLimit = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.RetransmitAttempts, state.RetransmitAttempts, configuredAttrs.IsConfigured("retransmit_attempts"), func(v *openapi.NullableInt32) { ldapProfileProps.RetransmitAttempts = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DefaultPort, state.DefaultPort, configuredAttrs.IsConfigured("default_port"), func(v *openapi.NullableInt64) { ldapProfileProps.DefaultPort = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SearchTimeLimit, state.SearchTimeLimit, configuredAttrs.IsConfigured("search_time_limit"), func(v *openapi.NullableInt64) { ldapProfileProps.SearchTimeLimit = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BindTimeLimit, state.BindTimeLimit, configuredAttrs.IsConfigured("bind_time_limit"), func(v *openapi.NullableInt64) { ldapProfileProps.BindTimeLimit = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.IdleTimeLimit, state.IdleTimeLimit, configuredAttrs.IsConfigured("idle_time_limit"), func(v *openapi.NullableInt64) { ldapProfileProps.IdleTimeLimit = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.RetransmitAttempts, state.RetransmitAttempts, configuredAttrs.IsConfigured("retransmit_attempts"), func(v *openapi.NullableInt64) { ldapProfileProps.RetransmitAttempts = *v }, &hasChanges)
 
 	// Handle LDAP servers
 	ldapServersConfigMap := utils.BuildIndexedConfigMap(config.LdapServers)
@@ -727,9 +727,9 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 
 			// Handle nullable int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, ldapServersConfigMap, "ldap_servers", configuredAttrs)
-			utils.CompareAndSetNullableInt64Field(configItem.Port, stateItem.Port, cfg.IsFieldConfigured("port"), func(v *openapi.NullableInt32) { server.Port = *v }, &fieldChanged)
-			utils.CompareAndSetNullableInt64Field(configItem.Priority, stateItem.Priority, cfg.IsFieldConfigured("priority"), func(v *openapi.NullableInt32) { server.Priority = *v }, &fieldChanged)
-			utils.CompareAndSetNullableInt64Field(configItem.RetransmitAttempts, stateItem.RetransmitAttempts, cfg.IsFieldConfigured("retransmit_attempts"), func(v *openapi.NullableInt32) { server.RetransmitAttempts = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(configItem.Port, stateItem.Port, cfg.IsFieldConfigured("port"), func(v *openapi.NullableInt64) { server.Port = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(configItem.Priority, stateItem.Priority, cfg.IsFieldConfigured("priority"), func(v *openapi.NullableInt64) { server.Priority = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(configItem.RetransmitAttempts, stateItem.RetransmitAttempts, cfg.IsFieldConfigured("retransmit_attempts"), func(v *openapi.NullableInt64) { server.RetransmitAttempts = *v }, &fieldChanged)
 
 			return server, fieldChanged
 		},

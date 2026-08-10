@@ -28,13 +28,13 @@ type TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner struct {
 	// TACACS+ server port
 	Port *string `json:"port,omitempty"`
 	// TACACS+ server timeout in seconds
-	Timeout NullableInt32 `json:"timeout,omitempty"`
+	Timeout NullableInt64 `json:"timeout,omitempty"`
 	// TACACS+ shared secret
 	Secret *string `json:"secret,omitempty"`
 	// TACACS+ shared secret (encrypted)
 	EncSecret *string `json:"enc_secret,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner instantiates a new TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner object
@@ -207,9 +207,9 @@ func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetPort(v
 }
 
 // GetTimeout returns the Timeout field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeout() int32 {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeout() int64 {
 	if o == nil || IsNil(o.Timeout.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Timeout.Get()
@@ -218,7 +218,7 @@ func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeou
 // GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeoutOk() (*int32, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeoutOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -234,8 +234,8 @@ func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasTimeou
 	return false
 }
 
-// SetTimeout gets a reference to the given NullableInt32 and assigns it to the Timeout field.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetTimeout(v int32) {
+// SetTimeout gets a reference to the given NullableInt64 and assigns it to the Timeout field.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetTimeout(v int64) {
 	o.Timeout.Set(&v)
 }
 // SetTimeoutNil sets the value for Timeout to be an explicit nil
@@ -313,9 +313,9 @@ func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetEncSec
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetIndex() int32 {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -323,7 +323,7 @@ func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetIndex(
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetIndexOk() (*int32, bool) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -339,8 +339,8 @@ func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasIndex(
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

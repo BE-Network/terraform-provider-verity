@@ -28,7 +28,7 @@ type LdapprofilesPutRequestLdapProfileValueAttributeMapsInner struct {
 	// Replacement attribute/class name or value to map to
 	To *string `json:"to,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewLdapprofilesPutRequestLdapProfileValueAttributeMapsInner instantiates a new LdapprofilesPutRequestLdapProfileValueAttributeMapsInner object
@@ -193,9 +193,9 @@ func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetTo(v strin
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetIndex() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -203,7 +203,7 @@ func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetIndex() in
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetIndexOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -219,8 +219,8 @@ func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) HasIndex() bo
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

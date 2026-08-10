@@ -869,28 +869,28 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetBoolField(plan.IpSourceGuard, state.IpSourceGuard, func(v *bool) { fabricReq.IpSourceGuard = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.PortAdminPollingInterval, state.PortAdminPollingInterval, configuredAttrs.IsConfigured("port_admin_polling_interval"), func(v *openapi.NullableInt32) { fabricReq.PortAdminPollingInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.PortStatusPollingInterval, state.PortStatusPollingInterval, configuredAttrs.IsConfigured("port_status_polling_interval"), func(v *openapi.NullableInt32) { fabricReq.PortStatusPollingInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MacAddressAgingTime, state.MacAddressAgingTime, configuredAttrs.IsConfigured("mac_address_aging_time"), func(v *openapi.NullableInt32) { fabricReq.MacAddressAgingTime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MlagDelayRestoreTimer, state.MlagDelayRestoreTimer, configuredAttrs.IsConfigured("mlag_delay_restore_timer"), func(v *openapi.NullableInt32) { fabricReq.MlagDelayRestoreTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.BgpKeepaliveTimer, state.BgpKeepaliveTimer, configuredAttrs.IsConfigured("bgp_keepalive_timer"), func(v *openapi.NullableInt32) { fabricReq.BgpKeepaliveTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.BgpHoldDownTimer, state.BgpHoldDownTimer, configuredAttrs.IsConfigured("bgp_hold_down_timer"), func(v *openapi.NullableInt32) { fabricReq.BgpHoldDownTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.SpineBgpAdvertisementInterval, state.SpineBgpAdvertisementInterval, configuredAttrs.IsConfigured("spine_bgp_advertisement_interval"), func(v *openapi.NullableInt32) { fabricReq.SpineBgpAdvertisementInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.SpineBgpConnectTimer, state.SpineBgpConnectTimer, configuredAttrs.IsConfigured("spine_bgp_connect_timer"), func(v *openapi.NullableInt32) { fabricReq.SpineBgpConnectTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.SpineAsNumber, state.SpineAsNumber, configuredAttrs.IsConfigured("spine_as_number"), func(v *openapi.NullableInt32) { fabricReq.SpineAsNumber = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.LeafBgpKeepAliveTimer, state.LeafBgpKeepAliveTimer, configuredAttrs.IsConfigured("leaf_bgp_keep_alive_timer"), func(v *openapi.NullableInt32) { fabricReq.LeafBgpKeepAliveTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.LeafBgpHoldDownTimer, state.LeafBgpHoldDownTimer, configuredAttrs.IsConfigured("leaf_bgp_hold_down_timer"), func(v *openapi.NullableInt32) { fabricReq.LeafBgpHoldDownTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.LeafBgpAdvertisementInterval, state.LeafBgpAdvertisementInterval, configuredAttrs.IsConfigured("leaf_bgp_advertisement_interval"), func(v *openapi.NullableInt32) { fabricReq.LeafBgpAdvertisementInterval = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.LeafBgpConnectTimer, state.LeafBgpConnectTimer, configuredAttrs.IsConfigured("leaf_bgp_connect_timer"), func(v *openapi.NullableInt32) { fabricReq.LeafBgpConnectTimer = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.Revision, state.Revision, configuredAttrs.IsConfigured("revision"), func(v *openapi.NullableInt32) { fabricReq.Revision = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.LinkStateTimeoutValue, state.LinkStateTimeoutValue, configuredAttrs.IsConfigured("link_state_timeout_value"), func(v *openapi.NullableInt32) { fabricReq.LinkStateTimeoutValue = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.EvpnMultihomingStartupDelay, state.EvpnMultihomingStartupDelay, configuredAttrs.IsConfigured("evpn_multihoming_startup_delay"), func(v *openapi.NullableInt32) { fabricReq.EvpnMultihomingStartupDelay = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.EvpnMacHoldtime, state.EvpnMacHoldtime, configuredAttrs.IsConfigured("evpn_mac_holdtime"), func(v *openapi.NullableInt32) { fabricReq.EvpnMacHoldtime = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.StartingOctet, state.StartingOctet, configuredAttrs.IsConfigured("starting_octet"), func(v *openapi.NullableInt32) { fabricReq.StartingOctet = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MaxSus, state.MaxSus, configuredAttrs.IsConfigured("max_sus"), func(v *openapi.NullableInt32) { fabricReq.MaxSus = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MaxPods, state.MaxPods, configuredAttrs.IsConfigured("max_pods"), func(v *openapi.NullableInt32) { fabricReq.MaxPods = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionMaxNumberOfMoves, state.DuplicateAddressDetectionMaxNumberOfMoves, configuredAttrs.IsConfigured("duplicate_address_detection_max_number_of_moves"), func(v *openapi.NullableInt32) { fabricReq.DuplicateAddressDetectionMaxNumberOfMoves = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, configuredAttrs.IsConfigured("duplicate_address_detection_time"), func(v *openapi.NullableInt32) { fabricReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PortAdminPollingInterval, state.PortAdminPollingInterval, configuredAttrs.IsConfigured("port_admin_polling_interval"), func(v *openapi.NullableInt64) { fabricReq.PortAdminPollingInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PortStatusPollingInterval, state.PortStatusPollingInterval, configuredAttrs.IsConfigured("port_status_polling_interval"), func(v *openapi.NullableInt64) { fabricReq.PortStatusPollingInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MacAddressAgingTime, state.MacAddressAgingTime, configuredAttrs.IsConfigured("mac_address_aging_time"), func(v *openapi.NullableInt64) { fabricReq.MacAddressAgingTime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MlagDelayRestoreTimer, state.MlagDelayRestoreTimer, configuredAttrs.IsConfigured("mlag_delay_restore_timer"), func(v *openapi.NullableInt64) { fabricReq.MlagDelayRestoreTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BgpKeepaliveTimer, state.BgpKeepaliveTimer, configuredAttrs.IsConfigured("bgp_keepalive_timer"), func(v *openapi.NullableInt64) { fabricReq.BgpKeepaliveTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.BgpHoldDownTimer, state.BgpHoldDownTimer, configuredAttrs.IsConfigured("bgp_hold_down_timer"), func(v *openapi.NullableInt64) { fabricReq.BgpHoldDownTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SpineBgpAdvertisementInterval, state.SpineBgpAdvertisementInterval, configuredAttrs.IsConfigured("spine_bgp_advertisement_interval"), func(v *openapi.NullableInt64) { fabricReq.SpineBgpAdvertisementInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SpineBgpConnectTimer, state.SpineBgpConnectTimer, configuredAttrs.IsConfigured("spine_bgp_connect_timer"), func(v *openapi.NullableInt64) { fabricReq.SpineBgpConnectTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SpineAsNumber, state.SpineAsNumber, configuredAttrs.IsConfigured("spine_as_number"), func(v *openapi.NullableInt64) { fabricReq.SpineAsNumber = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LeafBgpKeepAliveTimer, state.LeafBgpKeepAliveTimer, configuredAttrs.IsConfigured("leaf_bgp_keep_alive_timer"), func(v *openapi.NullableInt64) { fabricReq.LeafBgpKeepAliveTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LeafBgpHoldDownTimer, state.LeafBgpHoldDownTimer, configuredAttrs.IsConfigured("leaf_bgp_hold_down_timer"), func(v *openapi.NullableInt64) { fabricReq.LeafBgpHoldDownTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LeafBgpAdvertisementInterval, state.LeafBgpAdvertisementInterval, configuredAttrs.IsConfigured("leaf_bgp_advertisement_interval"), func(v *openapi.NullableInt64) { fabricReq.LeafBgpAdvertisementInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LeafBgpConnectTimer, state.LeafBgpConnectTimer, configuredAttrs.IsConfigured("leaf_bgp_connect_timer"), func(v *openapi.NullableInt64) { fabricReq.LeafBgpConnectTimer = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.Revision, state.Revision, configuredAttrs.IsConfigured("revision"), func(v *openapi.NullableInt64) { fabricReq.Revision = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.LinkStateTimeoutValue, state.LinkStateTimeoutValue, configuredAttrs.IsConfigured("link_state_timeout_value"), func(v *openapi.NullableInt64) { fabricReq.LinkStateTimeoutValue = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.EvpnMultihomingStartupDelay, state.EvpnMultihomingStartupDelay, configuredAttrs.IsConfigured("evpn_multihoming_startup_delay"), func(v *openapi.NullableInt64) { fabricReq.EvpnMultihomingStartupDelay = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.EvpnMacHoldtime, state.EvpnMacHoldtime, configuredAttrs.IsConfigured("evpn_mac_holdtime"), func(v *openapi.NullableInt64) { fabricReq.EvpnMacHoldtime = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.StartingOctet, state.StartingOctet, configuredAttrs.IsConfigured("starting_octet"), func(v *openapi.NullableInt64) { fabricReq.StartingOctet = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxSus, state.MaxSus, configuredAttrs.IsConfigured("max_sus"), func(v *openapi.NullableInt64) { fabricReq.MaxSus = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxPods, state.MaxPods, configuredAttrs.IsConfigured("max_pods"), func(v *openapi.NullableInt64) { fabricReq.MaxPods = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionMaxNumberOfMoves, state.DuplicateAddressDetectionMaxNumberOfMoves, configuredAttrs.IsConfigured("duplicate_address_detection_max_number_of_moves"), func(v *openapi.NullableInt64) { fabricReq.DuplicateAddressDetectionMaxNumberOfMoves = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, configuredAttrs.IsConfigured("duplicate_address_detection_time"), func(v *openapi.NullableInt64) { fabricReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
 
 	// Handle object properties with nested system_graphs
 	if len(plan.ObjectProperties) > 0 || len(state.ObjectProperties) > 0 {
@@ -922,7 +922,7 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 				},
 				CreateDeleted: func(index int64) openapi.FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner {
 					return openapi.FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner{
-						Index: openapi.PtrInt32(int32(index)),
+						Index: openapi.PtrInt64(int64(index)),
 					}
 				},
 			})

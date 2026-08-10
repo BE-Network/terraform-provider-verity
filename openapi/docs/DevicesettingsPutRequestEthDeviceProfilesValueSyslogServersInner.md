@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Scheme** | Pointer to **string** | Syslog connection scheme | [optional] [default to "udp_bsd"]
 **Server** | Pointer to **string** | IPv4, IPv6, or DNS name for syslog server | [optional] [default to ""]
 **Port** | Pointer to **string** | Syslog server port | [optional] [default to ""]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -131,20 +131,20 @@ HasPort returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetIndex() int32`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetIndexOk() (*int32, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) SetIndex(v int32)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

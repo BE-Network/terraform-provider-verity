@@ -30,7 +30,7 @@ type GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner struct {
 	// Setting for paired switches only. Flag indicating that this gateway is a peer gateway. For each gateway profile referencing a BGP session on a member of a leaf pair, the peer should have a gateway profile entry indicating the IP address for the peers gateway.
 	PeerGw *bool `json:"peer_gw,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewGatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner instantiates a new GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner object
@@ -227,9 +227,9 @@ func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetP
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndex() int32 {
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -237,7 +237,7 @@ func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetI
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndexOk() (*int32, bool) {
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -253,8 +253,8 @@ func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) HasI
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

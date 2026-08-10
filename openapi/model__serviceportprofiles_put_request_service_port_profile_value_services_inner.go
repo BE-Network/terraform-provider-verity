@@ -26,13 +26,13 @@ type ServiceportprofilesPutRequestServicePortProfileValueServicesInner struct {
 	// Object type for row_num_service field
 	RowNumServiceRefType *string `json:"row_num_service_ref_type_,omitempty"`
 	// Choose an external vlan
-	RowNumExternalVlan NullableInt32 `json:"row_num_external_vlan,omitempty"`
+	RowNumExternalVlan NullableInt64 `json:"row_num_external_vlan,omitempty"`
 	// Speed of ingress (Mbps)
-	RowNumLimitIn NullableInt32 `json:"row_num_limit_in,omitempty"`
+	RowNumLimitIn NullableInt64 `json:"row_num_limit_in,omitempty"`
 	// Speed of egress (Mbps)
-	RowNumLimitOut NullableInt32 `json:"row_num_limit_out,omitempty"`
+	RowNumLimitOut NullableInt64 `json:"row_num_limit_out,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewServiceportprofilesPutRequestServicePortProfileValueServicesInner instantiates a new ServiceportprofilesPutRequestServicePortProfileValueServicesInner object
@@ -45,8 +45,8 @@ func NewServiceportprofilesPutRequestServicePortProfileValueServicesInner() *Ser
 	this.RowNumEnable = &rowNumEnable
 	var rowNumService string = ""
 	this.RowNumService = &rowNumService
-	var rowNumLimitOut int32 = 1000
-	this.RowNumLimitOut = *NewNullableInt32(&rowNumLimitOut)
+	var rowNumLimitOut int64 = 1000
+	this.RowNumLimitOut = *NewNullableInt64(&rowNumLimitOut)
 	return &this
 }
 
@@ -59,8 +59,8 @@ func NewServiceportprofilesPutRequestServicePortProfileValueServicesInnerWithDef
 	this.RowNumEnable = &rowNumEnable
 	var rowNumService string = ""
 	this.RowNumService = &rowNumService
-	var rowNumLimitOut int32 = 1000
-	this.RowNumLimitOut = *NewNullableInt32(&rowNumLimitOut)
+	var rowNumLimitOut int64 = 1000
+	this.RowNumLimitOut = *NewNullableInt64(&rowNumLimitOut)
 	return &this
 }
 
@@ -161,9 +161,9 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetR
 }
 
 // GetRowNumExternalVlan returns the RowNumExternalVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlan() int32 {
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlan() int64 {
 	if o == nil || IsNil(o.RowNumExternalVlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RowNumExternalVlan.Get()
@@ -172,7 +172,7 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetR
 // GetRowNumExternalVlanOk returns a tuple with the RowNumExternalVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int32, bool) {
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -188,8 +188,8 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasR
 	return false
 }
 
-// SetRowNumExternalVlan gets a reference to the given NullableInt32 and assigns it to the RowNumExternalVlan field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumExternalVlan(v int32) {
+// SetRowNumExternalVlan gets a reference to the given NullableInt64 and assigns it to the RowNumExternalVlan field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumExternalVlan(v int64) {
 	o.RowNumExternalVlan.Set(&v)
 }
 // SetRowNumExternalVlanNil sets the value for RowNumExternalVlan to be an explicit nil
@@ -203,9 +203,9 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) Unse
 }
 
 // GetRowNumLimitIn returns the RowNumLimitIn field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitIn() int32 {
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitIn() int64 {
 	if o == nil || IsNil(o.RowNumLimitIn.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RowNumLimitIn.Get()
@@ -214,7 +214,7 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetR
 // GetRowNumLimitInOk returns a tuple with the RowNumLimitIn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitInOk() (*int32, bool) {
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitInOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -230,8 +230,8 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasR
 	return false
 }
 
-// SetRowNumLimitIn gets a reference to the given NullableInt32 and assigns it to the RowNumLimitIn field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitIn(v int32) {
+// SetRowNumLimitIn gets a reference to the given NullableInt64 and assigns it to the RowNumLimitIn field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitIn(v int64) {
 	o.RowNumLimitIn.Set(&v)
 }
 // SetRowNumLimitInNil sets the value for RowNumLimitIn to be an explicit nil
@@ -245,9 +245,9 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) Unse
 }
 
 // GetRowNumLimitOut returns the RowNumLimitOut field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOut() int32 {
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOut() int64 {
 	if o == nil || IsNil(o.RowNumLimitOut.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RowNumLimitOut.Get()
@@ -256,7 +256,7 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetR
 // GetRowNumLimitOutOk returns a tuple with the RowNumLimitOut field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOutOk() (*int32, bool) {
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOutOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -272,8 +272,8 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasR
 	return false
 }
 
-// SetRowNumLimitOut gets a reference to the given NullableInt32 and assigns it to the RowNumLimitOut field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitOut(v int32) {
+// SetRowNumLimitOut gets a reference to the given NullableInt64 and assigns it to the RowNumLimitOut field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitOut(v int64) {
 	o.RowNumLimitOut.Set(&v)
 }
 // SetRowNumLimitOutNil sets the value for RowNumLimitOut to be an explicit nil
@@ -287,9 +287,9 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) Unse
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndex() int32 {
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -297,7 +297,7 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetI
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndexOk() (*int32, bool) {
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -313,8 +313,8 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasI
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

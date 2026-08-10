@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **GatewayRefType** | Pointer to **string** | Object type for gateway field | [optional] 
 **SourceIpMask** | Pointer to **string** | Source address on the port if untagged or on the VLAN if tagged used for the outgoing BGP session  | [optional] [default to ""]
 **PeerGw** | Pointer to **bool** | Setting for paired switches only. Flag indicating that this gateway is a peer gateway. For each gateway profile referencing a BGP session on a member of a leaf pair, the peer should have a gateway profile entry indicating the IP address for the peers gateway. | [optional] [default to false]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -157,20 +157,20 @@ HasPeerGw returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndex() int32`
+`func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndexOk() (*int32, bool)`
+`func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetIndex(v int32)`
+`func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

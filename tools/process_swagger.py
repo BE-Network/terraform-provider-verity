@@ -2,11 +2,12 @@
 """
 Unified Swagger Processing Pipeline
 
-This script combines four operations into one seamless workflow:
+This script combines five operations into one seamless workflow:
 1. Merge multiple Swagger/OpenAPI specification files
 2. Remove unwanted endpoints from the merged specification
 3. Make all number and integer fields nullable
-4. Transform the schema for proper Go SDK generation
+4. Mark all integer and number fields with 64-bit Go-compatible formats
+5. Transform the schema for proper Go SDK generation
 
 Usage:
     python3 process_swagger.py <file1.json> <file2.json> [options]
@@ -17,7 +18,7 @@ Arguments:
 
 Options:
     --output, -o: Output filename (default: merged_transformed.json)
-    --keep-intermediate: Keep intermediate files (merged, cleaned, nullable versions)
+    --keep-intermediate: Keep intermediate files (merged, cleaned, nullable, 64-bit versions)
 
 Output:
     A fully processed Swagger file ready for Go SDK generation
@@ -489,6 +490,60 @@ def process_nullable_fields(swagger_data):
 
 
 # ============================================================================
+# SECTION 5: MARK NUMERIC FIELDS WITH 64-BIT FORMATS
+# ============================================================================
+
+def make_numeric_fields_64bit(obj):
+    """
+    Recursively set a 64-bit format on every OpenAPI numeric schema.
+
+    OpenAPI Generator maps an unformatted ``integer`` to Go ``int32``. The
+    Verity API permits values such as four-byte BGP AS numbers, which exceed
+    the signed int32 range, so integer schemas must explicitly be ``int64``.
+    It maps an unformatted ``number`` to Go ``float32``; decimal schemas use
+    ``double`` to generate Go ``float64``.
+
+    Args:
+        obj: The object to traverse (dict, list, or other).
+
+    Returns:
+        tuple: (modified object, integer count, number count)
+    """
+    int64_count = 0
+    double_count = 0
+
+    if isinstance(obj, dict):
+        numeric_formats = {
+            'integer': ('int64', 'int64'),
+            'number': ('double', 'double'),
+        }
+        numeric_type = obj.get('type')
+        if isinstance(numeric_type, str) and numeric_type in numeric_formats:
+            required_format, count_type = numeric_formats[numeric_type]
+            if obj.get('format') != required_format:
+                obj['format'] = required_format
+                if count_type == 'int64':
+                    int64_count += 1
+                else:
+                    double_count += 1
+
+        for value in obj.values():
+            if isinstance(value, (dict, list)):
+                _, integer_count, number_count = make_numeric_fields_64bit(value)
+                int64_count += integer_count
+                double_count += number_count
+
+    elif isinstance(obj, list):
+        for item in obj:
+            if isinstance(item, (dict, list)):
+                _, integer_count, number_count = make_numeric_fields_64bit(item)
+                int64_count += integer_count
+                double_count += number_count
+
+    return obj, int64_count, double_count
+
+
+# ============================================================================
 # MAIN PIPELINE
 # ============================================================================
 
@@ -530,7 +585,7 @@ Examples:
     print("=" * 70)
     
     # Step 1: Merge Swagger files
-    print("\n[STEP 1/4] Merging Swagger files...")
+    print("\n[STEP 1/5] Merging Swagger files...")
     merged_swagger = merge_swagger_files(args.file1, args.file2)
     print(f"  ✓ Successfully merged {args.file1} and {args.file2}")
     
@@ -542,7 +597,7 @@ Examples:
         print(f"  ✓ Intermediate file saved: {intermediate_merged}")
     
     # Step 2: Remove unwanted endpoints
-    print("\n[STEP 2/4] Removing unwanted endpoints...")
+    print("\n[STEP 2/5] Removing unwanted endpoints...")
     endpoints_to_remove = [
         "/alarms/mask",
         "/config",
@@ -570,7 +625,7 @@ Examples:
         print(f"  ✓ Intermediate file saved: {intermediate_cleaned}")
     
     # Step 3: Make numeric fields nullable
-    print("\n[STEP 3/4] Making number and integer fields nullable...")
+    print("\n[STEP 3/5] Making number and integer fields nullable...")
     nullable_swagger, nullable_count = process_nullable_fields(cleaned_swagger)
     print(f"  ✓ Made {nullable_count} numeric fields nullable")
     
@@ -581,9 +636,21 @@ Examples:
             json.dump(nullable_swagger, f, indent=2)
         print(f"  ✓ Intermediate file saved: {intermediate_nullable}")
     
-    # Step 4: Transform schema
-    print("\n[STEP 4/4] Transforming schema for Go SDK generation...")
-    transformed_swagger, transform_count = transform_schema(nullable_swagger)
+    # Step 4: Explicitly use 64-bit formats for all numeric fields.
+    print("\n[STEP 4/5] Marking numeric fields with 64-bit formats...")
+    numeric_swagger, int64_count, double_count = make_numeric_fields_64bit(nullable_swagger)
+    print(f"  ✓ Marked {int64_count} integer fields as int64")
+    print(f"  ✓ Marked {double_count} number fields as double")
+
+    if args.keep_intermediate:
+        intermediate_numeric = args.output.replace('.json', '_64bit_numeric_only.json')
+        with open(intermediate_numeric, 'w') as f:
+            json.dump(numeric_swagger, f, indent=2)
+        print(f"  ✓ Intermediate file saved: {intermediate_numeric}")
+
+    # Step 5: Transform schema
+    print("\n[STEP 5/5] Transforming schema for Go SDK generation...")
+    transformed_swagger, transform_count = transform_schema(numeric_swagger)
     print(f"  ✓ Applied {transform_count} schema transformations")
     
     # Save final output
@@ -598,6 +665,8 @@ Examples:
     print(f"Total paths: {len(transformed_swagger.get('paths', {}))}")
     print(f"Endpoints removed: {len(removed)}")
     print(f"Numeric fields made nullable: {nullable_count}")
+    print(f"Integer fields marked as int64: {int64_count}")
+    print(f"Number fields marked as double: {double_count}")
     print(f"Schema transformations: {transform_count}")
     print("=" * 70)
 

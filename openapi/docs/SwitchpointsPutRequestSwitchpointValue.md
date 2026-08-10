@@ -31,13 +31,13 @@ Name | Type | Description | Notes
 **RackInfo** | Pointer to **string** | Physical Rack location of the Switch  | [optional] [default to ""]
 **Rack** | Pointer to **string** | Rack | [optional] [default to ""]
 **RackRefType** | Pointer to **string** | Object type for rack field | [optional] 
-**Position** | Pointer to **NullableFloat32** | Position of the Switch | [optional] 
-**RailGroup** | Pointer to **NullableFloat32** | Rail Group the Switch is part of | [optional] 
+**Position** | Pointer to **NullableFloat64** | Position of the Switch | [optional] 
+**RailGroup** | Pointer to **NullableFloat64** | Rail Group the Switch is part of | [optional] 
 **SwitchRouterIdIpMask** | Pointer to **string** | Switch BGP Router Identifier | [optional] [default to "(auto)"]
 **SwitchRouterIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit. | [optional] 
 **SwitchVtepIdIpMask** | Pointer to **string** | Switch VETP Identifier | [optional] [default to "(auto)"]
 **SwitchVtepIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit. | [optional] 
-**BgpAsNumber** | Pointer to **NullableInt32** | BGP Autonomous System Number for the Fabric Underlay  | [optional] 
+**BgpAsNumber** | Pointer to **NullableInt64** | BGP Autonomous System Number for the Fabric Underlay  | [optional] 
 **BgpAsNumberAutoAssigned** | Pointer to **bool** | Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit. | [optional] 
 **BbSwitch** | Pointer to **bool** | Expose fields for Device Management | [optional] [default to true]
 **PasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
@@ -784,20 +784,20 @@ HasRackRefType returns a boolean if a field has been set.
 
 ### GetPosition
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetPosition() float32`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPosition() float64`
 
 GetPosition returns the Position field if non-nil, zero value otherwise.
 
 ### GetPositionOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetPositionOk() (*float32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetPositionOk() (*float64, bool)`
 
 GetPositionOk returns a tuple with the Position field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPosition
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetPosition(v float32)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetPosition(v float64)`
 
 SetPosition sets Position field to given value.
 
@@ -819,20 +819,20 @@ HasPosition returns a boolean if a field has been set.
 UnsetPosition ensures that no value is present for Position, not even an explicit nil
 ### GetRailGroup
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroup() float32`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroup() float64`
 
 GetRailGroup returns the RailGroup field if non-nil, zero value otherwise.
 
 ### GetRailGroupOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroupOk() (*float32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroupOk() (*float64, bool)`
 
 GetRailGroupOk returns a tuple with the RailGroup field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRailGroup
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetRailGroup(v float32)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetRailGroup(v float64)`
 
 SetRailGroup sets RailGroup field to given value.
 
@@ -954,20 +954,20 @@ HasSwitchVtepIdIpMaskAutoAssigned returns a boolean if a field has been set.
 
 ### GetBgpAsNumber
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int32`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int64`
 
 GetBgpAsNumber returns the BgpAsNumber field if non-nil, zero value otherwise.
 
 ### GetBgpAsNumberOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumberOk() (*int32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumberOk() (*int64, bool)`
 
 GetBgpAsNumberOk returns a tuple with the BgpAsNumber field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBgpAsNumber
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumber(v int32)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumber(v int64)`
 
 SetBgpAsNumber sets BgpAsNumber field to given value.
 

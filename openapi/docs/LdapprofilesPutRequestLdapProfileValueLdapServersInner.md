@@ -6,12 +6,12 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Enabled** | Pointer to **bool** | Enable this LDAP server entry | [optional] [default to false]
 **Server** | Pointer to **string** | IPv4, IPv6, or DNS hostname for LDAP server | [optional] [default to ""]
-**Port** | Pointer to **NullableInt32** | Server port (overrides global default port) | [optional] 
+**Port** | Pointer to **NullableInt64** | Server port (overrides global default port) | [optional] 
 **UseType** | Pointer to **string** | Which LDAP client(s) use this server | [optional] [default to "all"]
-**Priority** | Pointer to **NullableInt32** | Server priority (1-99, lower &#x3D; higher priority) | [optional] 
+**Priority** | Pointer to **NullableInt64** | Server priority (1-99, lower &#x3D; higher priority) | [optional] 
 **SslTlsMode** | Pointer to **string** | Per-server TLS mode (overrides global setting) | [optional] [default to "off"]
-**RetransmitAttempts** | Pointer to **NullableInt32** | Per-server retransmit attempts (0-10) | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**RetransmitAttempts** | Pointer to **NullableInt64** | Per-server retransmit attempts (0-10) | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -84,20 +84,20 @@ HasServer returns a boolean if a field has been set.
 
 ### GetPort
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPort() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPort() int64`
 
 GetPort returns the Port field if non-nil, zero value otherwise.
 
 ### GetPortOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPortOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPortOk() (*int64, bool)`
 
 GetPortOk returns a tuple with the Port field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPort
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPort(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPort(v int64)`
 
 SetPort sets Port field to given value.
 
@@ -144,20 +144,20 @@ HasUseType returns a boolean if a field has been set.
 
 ### GetPriority
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriority() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriority() int64`
 
 GetPriority returns the Priority field if non-nil, zero value otherwise.
 
 ### GetPriorityOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriorityOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetPriorityOk() (*int64, bool)`
 
 GetPriorityOk returns a tuple with the Priority field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPriority
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPriority(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPriority(v int64)`
 
 SetPriority sets Priority field to given value.
 
@@ -204,20 +204,20 @@ HasSslTlsMode returns a boolean if a field has been set.
 
 ### GetRetransmitAttempts
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAttempts() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAttempts() int64`
 
 GetRetransmitAttempts returns the RetransmitAttempts field if non-nil, zero value otherwise.
 
 ### GetRetransmitAttemptsOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAttemptsOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetRetransmitAttemptsOk() (*int64, bool)`
 
 GetRetransmitAttemptsOk returns a tuple with the RetransmitAttempts field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRetransmitAttempts
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetRetransmitAttempts(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetRetransmitAttempts(v int64)`
 
 SetRetransmitAttempts sets RetransmitAttempts field to given value.
 
@@ -239,20 +239,20 @@ HasRetransmitAttempts returns a boolean if a field has been set.
 UnsetRetransmitAttempts ensures that no value is present for RetransmitAttempts, not even an explicit nil
 ### GetIndex
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndex() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndexOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetIndex(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

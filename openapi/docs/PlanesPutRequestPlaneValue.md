@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
 **Site** | Pointer to **string** | Fabric this Plane is assigned to | [optional] [default to ""]
 **SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
-**Position** | Pointer to **NullableFloat32** | Position of the Plane | [optional] 
+**Position** | Pointer to **NullableFloat64** | Position of the Plane | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -132,20 +132,20 @@ HasSiteRefType returns a boolean if a field has been set.
 
 ### GetPosition
 
-`func (o *PlanesPutRequestPlaneValue) GetPosition() float32`
+`func (o *PlanesPutRequestPlaneValue) GetPosition() float64`
 
 GetPosition returns the Position field if non-nil, zero value otherwise.
 
 ### GetPositionOk
 
-`func (o *PlanesPutRequestPlaneValue) GetPositionOk() (*float32, bool)`
+`func (o *PlanesPutRequestPlaneValue) GetPositionOk() (*float64, bool)`
 
 GetPositionOk returns a tuple with the Position field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPosition
 
-`func (o *PlanesPutRequestPlaneValue) SetPosition(v float32)`
+`func (o *PlanesPutRequestPlaneValue) SetPosition(v float64)`
 
 SetPosition sets Position field to given value.
 

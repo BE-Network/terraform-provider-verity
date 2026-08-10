@@ -364,7 +364,7 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { planeReq.Enable = v }, &hasChanges)
 
 	// Handle nullable number field changes
-	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat32) { planeReq.Position = *v }, &hasChanges)
+	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { planeReq.Position = *v }, &hasChanges)
 
 	// Handle Site and SiteRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(

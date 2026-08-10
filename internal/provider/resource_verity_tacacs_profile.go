@@ -431,7 +431,7 @@ func (r *verityTacacsProfileResource) Update(ctx context.Context, req resource.U
 			utils.CompareAndSetStringField(planItem.EncSecret, stateItem.EncSecret, func(v *string) { server.EncSecret = v }, &fieldChanged)
 
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, tacacsServersConfigMap, "tacacs_servers", configuredAttrs)
-			utils.CompareAndSetNullableInt64Field(configItem.Timeout, stateItem.Timeout, cfg.IsFieldConfigured("timeout"), func(v *openapi.NullableInt32) { server.Timeout = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(configItem.Timeout, stateItem.Timeout, cfg.IsFieldConfigured("timeout"), func(v *openapi.NullableInt64) { server.Timeout = *v }, &fieldChanged)
 
 			return server, fieldChanged
 		},

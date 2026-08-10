@@ -43,10 +43,10 @@ type verityPBRoutingACLResourceModel struct {
 	Enable     types.Bool                      `tfsdk:"enable"`
 	IpVersion  types.String                    `tfsdk:"ip_version"`
 	NextHopIps types.String                    `tfsdk:"next_hop_ips"`
-	Ipv4Permit  []verityPBRoutingACLFilterModel `tfsdk:"ipv4_permit"`
-	Ipv4Deny    []verityPBRoutingACLFilterModel `tfsdk:"ipv4_deny"`
-	Ipv6Permit  []verityPBRoutingACLFilterModel `tfsdk:"ipv6_permit"`
-	Ipv6Deny    []verityPBRoutingACLFilterModel `tfsdk:"ipv6_deny"`
+	Ipv4Permit []verityPBRoutingACLFilterModel `tfsdk:"ipv4_permit"`
+	Ipv4Deny   []verityPBRoutingACLFilterModel `tfsdk:"ipv4_deny"`
+	Ipv6Permit []verityPBRoutingACLFilterModel `tfsdk:"ipv6_permit"`
+	Ipv6Deny   []verityPBRoutingACLFilterModel `tfsdk:"ipv6_deny"`
 }
 
 type verityPBRoutingACLFilterModel struct {

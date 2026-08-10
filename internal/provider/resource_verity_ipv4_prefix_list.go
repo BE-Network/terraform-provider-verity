@@ -468,8 +468,8 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 
 			// Handle nullable int64 field changes
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, listsConfigMap, "lists", configuredAttrs)
-			utils.CompareAndSetNullableInt64Field(configItem.GreaterThanEqualValue, stateItem.GreaterThanEqualValue, cfg.IsFieldConfigured("greater_than_equal_value"), func(v *openapi.NullableInt32) { updateItem.GreaterThanEqualValue = *v }, &fieldChanged)
-			utils.CompareAndSetNullableInt64Field(configItem.LessThanEqualValue, stateItem.LessThanEqualValue, cfg.IsFieldConfigured("less_than_equal_value"), func(v *openapi.NullableInt32) { updateItem.LessThanEqualValue = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(configItem.GreaterThanEqualValue, stateItem.GreaterThanEqualValue, cfg.IsFieldConfigured("greater_than_equal_value"), func(v *openapi.NullableInt64) { updateItem.GreaterThanEqualValue = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(configItem.LessThanEqualValue, stateItem.LessThanEqualValue, cfg.IsFieldConfigured("less_than_equal_value"), func(v *openapi.NullableInt64) { updateItem.LessThanEqualValue = *v }, &fieldChanged)
 
 			// Always include index — API requires it to identify which array element to modify
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
@@ -480,7 +480,7 @@ func (r *verityIpv4PrefixListResource) Update(ctx context.Context, req resource.
 		},
 		CreateDeleted: func(index int64) openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner {
 			return openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{
-				Index: openapi.PtrInt32(int32(index)),
+				Index: openapi.PtrInt64(int64(index)),
 			}
 		},
 	}

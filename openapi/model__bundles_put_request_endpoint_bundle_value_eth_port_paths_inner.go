@@ -36,7 +36,7 @@ type BundlesPutRequestEndpointBundleValueEthPortPathsInner struct {
 	// Object type for eth_port_num_diagnostics_port_profile field
 	EthPortNumDiagnosticsPortProfileRefType *string `json:"eth_port_num_diagnostics_port_profile_ref_type_,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 	// The name identifying the port. Used for reference only, it won't actually change the port name.
 	PortName *string `json:"port_name,omitempty"`
 }
@@ -331,9 +331,9 @@ func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumDia
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndex() int32 {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -341,7 +341,7 @@ func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndex() int32
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndexOk() (*int32, bool) {
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -357,8 +357,8 @@ func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasIndex() bool 
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

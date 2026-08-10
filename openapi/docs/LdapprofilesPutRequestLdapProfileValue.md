@@ -12,11 +12,11 @@ Name | Type | Description | Notes
 **EncryptedBindPassword** | Pointer to **string** | System-generated encrypted version of Bind Password | [optional] [default to ""]
 **LdapVersion** | Pointer to **string** | LDAP protocol version | [optional] [default to "3"]
 **SslTlsMode** | Pointer to **string** | Global TLS mode for LDAP connections | [optional] [default to "off"]
-**DefaultPort** | Pointer to **NullableInt32** | Default LDAP server port (389 for plain/StartTLS, 636 for LDAPS) | [optional] 
-**SearchTimeLimit** | Pointer to **NullableInt32** | Search time limit, in seconds | [optional] 
-**BindTimeLimit** | Pointer to **NullableInt32** | Bind/connect time limit, in seconds | [optional] 
-**IdleTimeLimit** | Pointer to **NullableInt32** | NSS idle connection time limit, in seconds | [optional] 
-**RetransmitAttempts** | Pointer to **NullableInt32** | Number of retransmit attempts (0-10) | [optional] 
+**DefaultPort** | Pointer to **NullableInt64** | Default LDAP server port (389 for plain/StartTLS, 636 for LDAPS) | [optional] 
+**SearchTimeLimit** | Pointer to **NullableInt64** | Search time limit, in seconds | [optional] 
+**BindTimeLimit** | Pointer to **NullableInt64** | Bind/connect time limit, in seconds | [optional] 
+**IdleTimeLimit** | Pointer to **NullableInt64** | NSS idle connection time limit, in seconds | [optional] 
+**RetransmitAttempts** | Pointer to **NullableInt64** | Number of retransmit attempts (0-10) | [optional] 
 **SearchScope** | Pointer to **string** | Default LDAP search scope | [optional] [default to "sub"]
 **NssBasePasswd** | Pointer to **string** | NSS search base for passwd map | [optional] [default to ""]
 **NssBaseGroup** | Pointer to **string** | NSS search base for group map | [optional] [default to ""]
@@ -256,20 +256,20 @@ HasSslTlsMode returns a boolean if a field has been set.
 
 ### GetDefaultPort
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPort() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPort() int64`
 
 GetDefaultPort returns the DefaultPort field if non-nil, zero value otherwise.
 
 ### GetDefaultPortOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPortOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPortOk() (*int64, bool)`
 
 GetDefaultPortOk returns a tuple with the DefaultPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDefaultPort
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) SetDefaultPort(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) SetDefaultPort(v int64)`
 
 SetDefaultPort sets DefaultPort field to given value.
 
@@ -291,20 +291,20 @@ HasDefaultPort returns a boolean if a field has been set.
 UnsetDefaultPort ensures that no value is present for DefaultPort, not even an explicit nil
 ### GetSearchTimeLimit
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimit() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimit() int64`
 
 GetSearchTimeLimit returns the SearchTimeLimit field if non-nil, zero value otherwise.
 
 ### GetSearchTimeLimitOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimitOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimitOk() (*int64, bool)`
 
 GetSearchTimeLimitOk returns a tuple with the SearchTimeLimit field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSearchTimeLimit
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchTimeLimit(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchTimeLimit(v int64)`
 
 SetSearchTimeLimit sets SearchTimeLimit field to given value.
 
@@ -326,20 +326,20 @@ HasSearchTimeLimit returns a boolean if a field has been set.
 UnsetSearchTimeLimit ensures that no value is present for SearchTimeLimit, not even an explicit nil
 ### GetBindTimeLimit
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimit() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimit() int64`
 
 GetBindTimeLimit returns the BindTimeLimit field if non-nil, zero value otherwise.
 
 ### GetBindTimeLimitOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimitOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimitOk() (*int64, bool)`
 
 GetBindTimeLimitOk returns a tuple with the BindTimeLimit field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBindTimeLimit
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) SetBindTimeLimit(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) SetBindTimeLimit(v int64)`
 
 SetBindTimeLimit sets BindTimeLimit field to given value.
 
@@ -361,20 +361,20 @@ HasBindTimeLimit returns a boolean if a field has been set.
 UnsetBindTimeLimit ensures that no value is present for BindTimeLimit, not even an explicit nil
 ### GetIdleTimeLimit
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimit() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimit() int64`
 
 GetIdleTimeLimit returns the IdleTimeLimit field if non-nil, zero value otherwise.
 
 ### GetIdleTimeLimitOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimitOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimitOk() (*int64, bool)`
 
 GetIdleTimeLimitOk returns a tuple with the IdleTimeLimit field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIdleTimeLimit
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) SetIdleTimeLimit(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) SetIdleTimeLimit(v int64)`
 
 SetIdleTimeLimit sets IdleTimeLimit field to given value.
 
@@ -396,20 +396,20 @@ HasIdleTimeLimit returns a boolean if a field has been set.
 UnsetIdleTimeLimit ensures that no value is present for IdleTimeLimit, not even an explicit nil
 ### GetRetransmitAttempts
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttempts() int32`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttempts() int64`
 
 GetRetransmitAttempts returns the RetransmitAttempts field if non-nil, zero value otherwise.
 
 ### GetRetransmitAttemptsOk
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttemptsOk() (*int32, bool)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttemptsOk() (*int64, bool)`
 
 GetRetransmitAttemptsOk returns a tuple with the RetransmitAttempts field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRetransmitAttempts
 
-`func (o *LdapprofilesPutRequestLdapProfileValue) SetRetransmitAttempts(v int32)`
+`func (o *LdapprofilesPutRequestLdapProfileValue) SetRetransmitAttempts(v int64)`
 
 SetRetransmitAttempts sets RetransmitAttempts field to given value.
 

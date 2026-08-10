@@ -7,10 +7,10 @@ Name | Type | Description | Notes
 **RowNumEnable** | Pointer to **bool** | Enable row | [optional] [default to false]
 **RowNumService** | Pointer to **string** | Connect a Service | [optional] [default to ""]
 **RowNumServiceRefType** | Pointer to **string** | Object type for row_num_service field | [optional] 
-**RowNumExternalVlan** | Pointer to **NullableInt32** | Choose an external vlan | [optional] 
-**RowNumLimitIn** | Pointer to **NullableInt32** | Speed of ingress (Mbps) | [optional] 
-**RowNumLimitOut** | Pointer to **NullableInt32** | Speed of egress (Mbps) | [optional] [default to 1000]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**RowNumExternalVlan** | Pointer to **NullableInt64** | Choose an external vlan | [optional] 
+**RowNumLimitIn** | Pointer to **NullableInt64** | Speed of ingress (Mbps) | [optional] 
+**RowNumLimitOut** | Pointer to **NullableInt64** | Speed of egress (Mbps) | [optional] [default to 1000]
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -108,20 +108,20 @@ HasRowNumServiceRefType returns a boolean if a field has been set.
 
 ### GetRowNumExternalVlan
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlan() int32`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlan() int64`
 
 GetRowNumExternalVlan returns the RowNumExternalVlan field if non-nil, zero value otherwise.
 
 ### GetRowNumExternalVlanOk
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int32, bool)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int64, bool)`
 
 GetRowNumExternalVlanOk returns a tuple with the RowNumExternalVlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRowNumExternalVlan
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumExternalVlan(v int32)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumExternalVlan(v int64)`
 
 SetRowNumExternalVlan sets RowNumExternalVlan field to given value.
 
@@ -143,20 +143,20 @@ HasRowNumExternalVlan returns a boolean if a field has been set.
 UnsetRowNumExternalVlan ensures that no value is present for RowNumExternalVlan, not even an explicit nil
 ### GetRowNumLimitIn
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitIn() int32`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitIn() int64`
 
 GetRowNumLimitIn returns the RowNumLimitIn field if non-nil, zero value otherwise.
 
 ### GetRowNumLimitInOk
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitInOk() (*int32, bool)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitInOk() (*int64, bool)`
 
 GetRowNumLimitInOk returns a tuple with the RowNumLimitIn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRowNumLimitIn
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitIn(v int32)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitIn(v int64)`
 
 SetRowNumLimitIn sets RowNumLimitIn field to given value.
 
@@ -178,20 +178,20 @@ HasRowNumLimitIn returns a boolean if a field has been set.
 UnsetRowNumLimitIn ensures that no value is present for RowNumLimitIn, not even an explicit nil
 ### GetRowNumLimitOut
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOut() int32`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOut() int64`
 
 GetRowNumLimitOut returns the RowNumLimitOut field if non-nil, zero value otherwise.
 
 ### GetRowNumLimitOutOk
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOutOk() (*int32, bool)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOutOk() (*int64, bool)`
 
 GetRowNumLimitOutOk returns a tuple with the RowNumLimitOut field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRowNumLimitOut
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitOut(v int32)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitOut(v int64)`
 
 SetRowNumLimitOut sets RowNumLimitOut field to given value.
 
@@ -213,20 +213,20 @@ HasRowNumLimitOut returns a boolean if a field has been set.
 UnsetRowNumLimitOut ensures that no value is present for RowNumLimitOut, not even an explicit nil
 ### GetIndex
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndex() int32`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndexOk() (*int32, bool)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetIndex(v int32)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

@@ -74,9 +74,9 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	// Object type for rack field
 	RackRefType *string `json:"rack_ref_type_,omitempty"`
 	// Position of the Switch
-	Position NullableFloat32 `json:"position,omitempty"`
+	Position NullableFloat64 `json:"position,omitempty"`
 	// Rail Group the Switch is part of
-	RailGroup NullableFloat32 `json:"rail_group,omitempty"`
+	RailGroup NullableFloat64 `json:"rail_group,omitempty"`
 	// Switch BGP Router Identifier
 	SwitchRouterIdIpMask *string `json:"switch_router_id_ip_mask,omitempty"`
 	// Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit.
@@ -86,7 +86,7 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	// Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit.
 	SwitchVtepIdIpMaskAutoAssigned *bool `json:"switch_vtep_id_ip_mask_auto_assigned_,omitempty"`
 	// BGP Autonomous System Number for the Fabric Underlay 
-	BgpAsNumber NullableInt32 `json:"bgp_as_number,omitempty"`
+	BgpAsNumber NullableInt64 `json:"bgp_as_number,omitempty"`
 	// Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit.
 	BgpAsNumberAutoAssigned *bool `json:"bgp_as_number_auto_assigned_,omitempty"`
 	// Expose fields for Device Management
@@ -1295,9 +1295,9 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetRackRefType(v string) {
 }
 
 // GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SwitchpointsPutRequestSwitchpointValue) GetPosition() float32 {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPosition() float64 {
 	if o == nil || IsNil(o.Position.Get()) {
-		var ret float32
+		var ret float64
 		return ret
 	}
 	return *o.Position.Get()
@@ -1306,7 +1306,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetPosition() float32 {
 // GetPositionOk returns a tuple with the Position field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SwitchpointsPutRequestSwitchpointValue) GetPositionOk() (*float32, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetPositionOk() (*float64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1322,8 +1322,8 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasPosition() bool {
 	return false
 }
 
-// SetPosition gets a reference to the given NullableFloat32 and assigns it to the Position field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetPosition(v float32) {
+// SetPosition gets a reference to the given NullableFloat64 and assigns it to the Position field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetPosition(v float64) {
 	o.Position.Set(&v)
 }
 // SetPositionNil sets the value for Position to be an explicit nil
@@ -1337,9 +1337,9 @@ func (o *SwitchpointsPutRequestSwitchpointValue) UnsetPosition() {
 }
 
 // GetRailGroup returns the RailGroup field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroup() float32 {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroup() float64 {
 	if o == nil || IsNil(o.RailGroup.Get()) {
-		var ret float32
+		var ret float64
 		return ret
 	}
 	return *o.RailGroup.Get()
@@ -1348,7 +1348,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroup() float32 {
 // GetRailGroupOk returns a tuple with the RailGroup field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroupOk() (*float32, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetRailGroupOk() (*float64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1364,8 +1364,8 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasRailGroup() bool {
 	return false
 }
 
-// SetRailGroup gets a reference to the given NullableFloat32 and assigns it to the RailGroup field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetRailGroup(v float32) {
+// SetRailGroup gets a reference to the given NullableFloat64 and assigns it to the RailGroup field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetRailGroup(v float64) {
 	o.RailGroup.Set(&v)
 }
 // SetRailGroupNil sets the value for RailGroup to be an explicit nil
@@ -1507,9 +1507,9 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchVtepIdIpMaskAutoAssign
 }
 
 // GetBgpAsNumber returns the BgpAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int32 {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int64 {
 	if o == nil || IsNil(o.BgpAsNumber.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BgpAsNumber.Get()
@@ -1518,7 +1518,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int32 {
 // GetBgpAsNumberOk returns a tuple with the BgpAsNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumberOk() (*int32, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumberOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1534,8 +1534,8 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasBgpAsNumber() bool {
 	return false
 }
 
-// SetBgpAsNumber gets a reference to the given NullableInt32 and assigns it to the BgpAsNumber field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumber(v int32) {
+// SetBgpAsNumber gets a reference to the given NullableInt64 and assigns it to the BgpAsNumber field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumber(v int64) {
 	o.BgpAsNumber.Set(&v)
 }
 // SetBgpAsNumberNil sets the value for BgpAsNumber to be an explicit nil

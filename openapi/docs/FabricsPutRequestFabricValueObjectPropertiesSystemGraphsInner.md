@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetIndex
 
-`func (o *FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner) GetIndex() int32`
+`func (o *FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner) GetIndexOk() (*int32, bool)`
+`func (o *FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner) SetIndex(v int32)`
+`func (o *FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

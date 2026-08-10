@@ -491,7 +491,7 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { sppProps.TrustedPort = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.TlsLimitIn, state.TlsLimitIn, configuredAttrs.IsConfigured("tls_limit_in"), func(v *openapi.NullableInt32) { sppProps.TlsLimitIn = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.TlsLimitIn, state.TlsLimitIn, configuredAttrs.IsConfigured("tls_limit_in"), func(v *openapi.NullableInt64) { sppProps.TlsLimitIn = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
@@ -582,15 +582,15 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 
 				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)
-				utils.CompareAndSetNullableInt64Field(configItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, cfg.IsFieldConfigured("row_num_external_vlan"), func(v *openapi.NullableInt32) { updateService.RowNumExternalVlan = *v }, &fieldChanged)
-				utils.CompareAndSetNullableInt64Field(configItem.RowNumLimitIn, stateItem.RowNumLimitIn, cfg.IsFieldConfigured("row_num_limit_in"), func(v *openapi.NullableInt32) { updateService.RowNumLimitIn = *v }, &fieldChanged)
-				utils.CompareAndSetNullableInt64Field(configItem.RowNumLimitOut, stateItem.RowNumLimitOut, cfg.IsFieldConfigured("row_num_limit_out"), func(v *openapi.NullableInt32) { updateService.RowNumLimitOut = *v }, &fieldChanged)
+				utils.CompareAndSetNullableInt64Field(configItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, cfg.IsFieldConfigured("row_num_external_vlan"), func(v *openapi.NullableInt64) { updateService.RowNumExternalVlan = *v }, &fieldChanged)
+				utils.CompareAndSetNullableInt64Field(configItem.RowNumLimitIn, stateItem.RowNumLimitIn, cfg.IsFieldConfigured("row_num_limit_in"), func(v *openapi.NullableInt64) { updateService.RowNumLimitIn = *v }, &fieldChanged)
+				utils.CompareAndSetNullableInt64Field(configItem.RowNumLimitOut, stateItem.RowNumLimitOut, cfg.IsFieldConfigured("row_num_limit_out"), func(v *openapi.NullableInt64) { updateService.RowNumLimitOut = *v }, &fieldChanged)
 
 				return updateService, fieldChanged
 			},
 			CreateDeleted: func(index int64) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
 				return openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})

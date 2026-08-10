@@ -565,14 +565,14 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetBoolField(plan.MatchEvpnRouteTypeDefault, state.MatchEvpnRouteTypeDefault, func(v *bool) { routeMapClauseProps.MatchEvpnRouteTypeDefault = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.MatchInterfaceNumber, state.MatchInterfaceNumber, configuredAttrs.IsConfigured("match_interface_number"), func(v *openapi.NullableInt32) { routeMapClauseProps.MatchInterfaceNumber = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MatchInterfaceVlan, state.MatchInterfaceVlan, configuredAttrs.IsConfigured("match_interface_vlan"), func(v *openapi.NullableInt32) { routeMapClauseProps.MatchInterfaceVlan = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MatchLocalPreference, state.MatchLocalPreference, configuredAttrs.IsConfigured("match_local_preference"), func(v *openapi.NullableInt32) { routeMapClauseProps.MatchLocalPreference = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MatchMetric, state.MatchMetric, configuredAttrs.IsConfigured("match_metric"), func(v *openapi.NullableInt32) { routeMapClauseProps.MatchMetric = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MatchPeerInterface, state.MatchPeerInterface, configuredAttrs.IsConfigured("match_peer_interface"), func(v *openapi.NullableInt32) { routeMapClauseProps.MatchPeerInterface = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MatchPeerVlan, state.MatchPeerVlan, configuredAttrs.IsConfigured("match_peer_vlan"), func(v *openapi.NullableInt32) { routeMapClauseProps.MatchPeerVlan = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MatchTag, state.MatchTag, configuredAttrs.IsConfigured("match_tag"), func(v *openapi.NullableInt32) { routeMapClauseProps.MatchTag = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MatchVni, state.MatchVni, configuredAttrs.IsConfigured("match_vni"), func(v *openapi.NullableInt32) { routeMapClauseProps.MatchVni = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MatchInterfaceNumber, state.MatchInterfaceNumber, configuredAttrs.IsConfigured("match_interface_number"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchInterfaceNumber = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MatchInterfaceVlan, state.MatchInterfaceVlan, configuredAttrs.IsConfigured("match_interface_vlan"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchInterfaceVlan = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MatchLocalPreference, state.MatchLocalPreference, configuredAttrs.IsConfigured("match_local_preference"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchLocalPreference = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MatchMetric, state.MatchMetric, configuredAttrs.IsConfigured("match_metric"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchMetric = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MatchPeerInterface, state.MatchPeerInterface, configuredAttrs.IsConfigured("match_peer_interface"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchPeerInterface = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MatchPeerVlan, state.MatchPeerVlan, configuredAttrs.IsConfigured("match_peer_vlan"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchPeerVlan = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MatchTag, state.MatchTag, configuredAttrs.IsConfigured("match_tag"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchTag = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MatchVni, state.MatchVni, configuredAttrs.IsConfigured("match_vni"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchVni = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

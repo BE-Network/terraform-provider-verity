@@ -341,7 +341,7 @@ func (r *veritySspGroupResource) Update(ctx context.Context, req resource.Update
 
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sspGroupReq.Name = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sspGroupReq.Enable = v }, &hasChanges)
-	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat32) { sspGroupReq.Position = *v }, &hasChanges)
+	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { sspGroupReq.Position = *v }, &hasChanges)
 
 	if !utils.HandleOneRefTypeSupported(
 		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,

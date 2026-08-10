@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable | [optional] [default to false]
 **Filter** | Pointer to **string** | Filter | [optional] [default to ""]
 **FilterRefType** | Pointer to **string** | Object type for filter field | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -105,20 +105,20 @@ HasFilterRefType returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetIndex() int32`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetIndexOk() (*int32, bool)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetIndex(v int32)`
+`func (o *PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

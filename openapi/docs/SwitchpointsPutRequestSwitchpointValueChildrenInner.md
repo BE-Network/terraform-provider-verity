@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **ChildNumEndpoint** | Pointer to **string** | Switchpoint associated with the Child | [optional] [default to ""]
 **ChildNumEndpointRefType** | Pointer to **string** | Object type for child_num_endpoint field | [optional] 
 **ChildNumDevice** | Pointer to **string** | Device associated with the Child | [optional] [default to ""]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -105,20 +105,20 @@ HasChildNumDevice returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetIndex() int32`
+`func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetIndexOk() (*int32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) SetIndex(v int32)`
+`func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

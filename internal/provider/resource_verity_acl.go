@@ -438,10 +438,10 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 	utils.CompareAndSetBoolField(plan.Bidirectional, state.Bidirectional, func(v *bool) { aclProps.Bidirectional = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.SourcePort1, state.SourcePort1, configuredAttrs.IsConfigured("source_port_1"), func(v *openapi.NullableInt32) { aclProps.SourcePort1 = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.SourcePort2, state.SourcePort2, configuredAttrs.IsConfigured("source_port_2"), func(v *openapi.NullableInt32) { aclProps.SourcePort2 = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.DestinationPort1, state.DestinationPort1, configuredAttrs.IsConfigured("destination_port_1"), func(v *openapi.NullableInt32) { aclProps.DestinationPort1 = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.DestinationPort2, state.DestinationPort2, configuredAttrs.IsConfigured("destination_port_2"), func(v *openapi.NullableInt32) { aclProps.DestinationPort2 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SourcePort1, state.SourcePort1, configuredAttrs.IsConfigured("source_port_1"), func(v *openapi.NullableInt64) { aclProps.SourcePort1 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.SourcePort2, state.SourcePort2, configuredAttrs.IsConfigured("source_port_2"), func(v *openapi.NullableInt64) { aclProps.SourcePort2 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DestinationPort1, state.DestinationPort1, configuredAttrs.IsConfigured("destination_port_1"), func(v *openapi.NullableInt64) { aclProps.DestinationPort1 = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DestinationPort2, state.DestinationPort2, configuredAttrs.IsConfigured("destination_port_2"), func(v *openapi.NullableInt64) { aclProps.DestinationPort2 = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

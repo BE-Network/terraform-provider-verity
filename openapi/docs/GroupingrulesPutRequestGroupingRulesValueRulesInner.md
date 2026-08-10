@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **RuleValue** | Pointer to **string** | Value to compare | [optional] [default to ""]
 **RuleValuePath** | Pointer to **string** | Object to compare | [optional] [default to ""]
 **RuleValuePathRefType** | Pointer to **string** | Object type for rule_value_path field | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -183,20 +183,20 @@ HasRuleValuePathRefType returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) GetIndex() int32`
+`func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) GetIndexOk() (*int32, bool)`
+`func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) SetIndex(v int32)`
+`func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

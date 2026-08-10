@@ -338,7 +338,7 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 			},
 			CreateDeleted: func(index int64) openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
 				return openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})

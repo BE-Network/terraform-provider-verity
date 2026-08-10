@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **FilterNumMac** | Pointer to **string** | MAC address descriptor including colons example 01:23:45:67:9a:ab. and * notation accepted example 12:* | [optional] [default to ""]
 **FilterNumMask** | Pointer to **string** | Hexidecimal mask including colons example ff:ff:fe:00:00:00. /n and * notation accepted example /16 or 12:* | [optional] [default to ""]
 **FilterNumEnable** | Pointer to **bool** | Enable of this MAC Filter  | [optional] [default to false]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -105,20 +105,20 @@ HasFilterNumEnable returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetIndex() int32`
+`func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetIndexOk() (*int32, bool)`
+`func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *MacfiltersPutRequestMacFilterValueFiltersInner) SetIndex(v int32)`
+`func (o *MacfiltersPutRequestMacFilterValueFiltersInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

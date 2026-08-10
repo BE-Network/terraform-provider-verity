@@ -24,13 +24,13 @@ type PodsPutRequestPodValue struct {
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Number of spine switches expected in this pod
-	ExpectedSpineCount NullableInt32 `json:"expected_spine_count,omitempty"`
+	ExpectedSpineCount NullableInt64 `json:"expected_spine_count,omitempty"`
 	// Fabric this Pod is assigned to
 	Site *string `json:"site,omitempty"`
 	// Object type for site field
 	SiteRefType *string `json:"site_ref_type_,omitempty"`
 	// Position of the Switch
-	Position NullableFloat32 `json:"position,omitempty"`
+	Position NullableFloat64 `json:"position,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -44,8 +44,8 @@ func NewPodsPutRequestPodValue() *PodsPutRequestPodValue {
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var expectedSpineCount int32 = 1
-	this.ExpectedSpineCount = *NewNullableInt32(&expectedSpineCount)
+	var expectedSpineCount int64 = 1
+	this.ExpectedSpineCount = *NewNullableInt64(&expectedSpineCount)
 	var site string = ""
 	this.Site = &site
 	return &this
@@ -60,8 +60,8 @@ func NewPodsPutRequestPodValueWithDefaults() *PodsPutRequestPodValue {
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var expectedSpineCount int32 = 1
-	this.ExpectedSpineCount = *NewNullableInt32(&expectedSpineCount)
+	var expectedSpineCount int64 = 1
+	this.ExpectedSpineCount = *NewNullableInt64(&expectedSpineCount)
 	var site string = ""
 	this.Site = &site
 	return &this
@@ -132,9 +132,9 @@ func (o *PodsPutRequestPodValue) SetEnable(v bool) {
 }
 
 // GetExpectedSpineCount returns the ExpectedSpineCount field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int32 {
+func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int64 {
 	if o == nil || IsNil(o.ExpectedSpineCount.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ExpectedSpineCount.Get()
@@ -143,7 +143,7 @@ func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int32 {
 // GetExpectedSpineCountOk returns a tuple with the ExpectedSpineCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PodsPutRequestPodValue) GetExpectedSpineCountOk() (*int32, bool) {
+func (o *PodsPutRequestPodValue) GetExpectedSpineCountOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -159,8 +159,8 @@ func (o *PodsPutRequestPodValue) HasExpectedSpineCount() bool {
 	return false
 }
 
-// SetExpectedSpineCount gets a reference to the given NullableInt32 and assigns it to the ExpectedSpineCount field.
-func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int32) {
+// SetExpectedSpineCount gets a reference to the given NullableInt64 and assigns it to the ExpectedSpineCount field.
+func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int64) {
 	o.ExpectedSpineCount.Set(&v)
 }
 // SetExpectedSpineCountNil sets the value for ExpectedSpineCount to be an explicit nil
@@ -238,9 +238,9 @@ func (o *PodsPutRequestPodValue) SetSiteRefType(v string) {
 }
 
 // GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PodsPutRequestPodValue) GetPosition() float32 {
+func (o *PodsPutRequestPodValue) GetPosition() float64 {
 	if o == nil || IsNil(o.Position.Get()) {
-		var ret float32
+		var ret float64
 		return ret
 	}
 	return *o.Position.Get()
@@ -249,7 +249,7 @@ func (o *PodsPutRequestPodValue) GetPosition() float32 {
 // GetPositionOk returns a tuple with the Position field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PodsPutRequestPodValue) GetPositionOk() (*float32, bool) {
+func (o *PodsPutRequestPodValue) GetPositionOk() (*float64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -265,8 +265,8 @@ func (o *PodsPutRequestPodValue) HasPosition() bool {
 	return false
 }
 
-// SetPosition gets a reference to the given NullableFloat32 and assigns it to the Position field.
-func (o *PodsPutRequestPodValue) SetPosition(v float32) {
+// SetPosition gets a reference to the given NullableFloat64 and assigns it to the Position field.
+func (o *PodsPutRequestPodValue) SetPosition(v float64) {
 	o.Position.Set(&v)
 }
 // SetPositionNil sets the value for Position to be an explicit nil

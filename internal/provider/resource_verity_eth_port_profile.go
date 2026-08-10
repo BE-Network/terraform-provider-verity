@@ -639,7 +639,7 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 			// Handle nullable int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)
-			utils.CompareAndSetNullableInt64Field(configItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, cfg.IsFieldConfigured("row_num_external_vlan"), func(v *openapi.NullableInt32) { service.RowNumExternalVlan = *v }, &fieldChanged)
+			utils.CompareAndSetNullableInt64Field(configItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, cfg.IsFieldConfigured("row_num_external_vlan"), func(v *openapi.NullableInt64) { service.RowNumExternalVlan = *v }, &fieldChanged)
 
 			// Handle row_num_service and row_num_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(

@@ -36,15 +36,15 @@ type LdapprofilesPutRequestLdapProfileValue struct {
 	// Global TLS mode for LDAP connections
 	SslTlsMode *string `json:"ssl_tls_mode,omitempty"`
 	// Default LDAP server port (389 for plain/StartTLS, 636 for LDAPS)
-	DefaultPort NullableInt32 `json:"default_port,omitempty"`
+	DefaultPort NullableInt64 `json:"default_port,omitempty"`
 	// Search time limit, in seconds
-	SearchTimeLimit NullableInt32 `json:"search_time_limit,omitempty"`
+	SearchTimeLimit NullableInt64 `json:"search_time_limit,omitempty"`
 	// Bind/connect time limit, in seconds
-	BindTimeLimit NullableInt32 `json:"bind_time_limit,omitempty"`
+	BindTimeLimit NullableInt64 `json:"bind_time_limit,omitempty"`
 	// NSS idle connection time limit, in seconds
-	IdleTimeLimit NullableInt32 `json:"idle_time_limit,omitempty"`
+	IdleTimeLimit NullableInt64 `json:"idle_time_limit,omitempty"`
 	// Number of retransmit attempts (0-10)
-	RetransmitAttempts NullableInt32 `json:"retransmit_attempts,omitempty"`
+	RetransmitAttempts NullableInt64 `json:"retransmit_attempts,omitempty"`
 	// Default LDAP search scope
 	SearchScope *string `json:"search_scope,omitempty"`
 	// NSS search base for passwd map
@@ -440,9 +440,9 @@ func (o *LdapprofilesPutRequestLdapProfileValue) SetSslTlsMode(v string) {
 }
 
 // GetDefaultPort returns the DefaultPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPort() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPort() int64 {
 	if o == nil || IsNil(o.DefaultPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DefaultPort.Get()
@@ -451,7 +451,7 @@ func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPort() int32 {
 // GetDefaultPortOk returns a tuple with the DefaultPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPortOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetDefaultPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -467,8 +467,8 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasDefaultPort() bool {
 	return false
 }
 
-// SetDefaultPort gets a reference to the given NullableInt32 and assigns it to the DefaultPort field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetDefaultPort(v int32) {
+// SetDefaultPort gets a reference to the given NullableInt64 and assigns it to the DefaultPort field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetDefaultPort(v int64) {
 	o.DefaultPort.Set(&v)
 }
 // SetDefaultPortNil sets the value for DefaultPort to be an explicit nil
@@ -482,9 +482,9 @@ func (o *LdapprofilesPutRequestLdapProfileValue) UnsetDefaultPort() {
 }
 
 // GetSearchTimeLimit returns the SearchTimeLimit field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimit() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimit() int64 {
 	if o == nil || IsNil(o.SearchTimeLimit.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.SearchTimeLimit.Get()
@@ -493,7 +493,7 @@ func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimit() int32 {
 // GetSearchTimeLimitOk returns a tuple with the SearchTimeLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimitOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimitOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -509,8 +509,8 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasSearchTimeLimit() bool {
 	return false
 }
 
-// SetSearchTimeLimit gets a reference to the given NullableInt32 and assigns it to the SearchTimeLimit field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchTimeLimit(v int32) {
+// SetSearchTimeLimit gets a reference to the given NullableInt64 and assigns it to the SearchTimeLimit field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchTimeLimit(v int64) {
 	o.SearchTimeLimit.Set(&v)
 }
 // SetSearchTimeLimitNil sets the value for SearchTimeLimit to be an explicit nil
@@ -524,9 +524,9 @@ func (o *LdapprofilesPutRequestLdapProfileValue) UnsetSearchTimeLimit() {
 }
 
 // GetBindTimeLimit returns the BindTimeLimit field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimit() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimit() int64 {
 	if o == nil || IsNil(o.BindTimeLimit.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BindTimeLimit.Get()
@@ -535,7 +535,7 @@ func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimit() int32 {
 // GetBindTimeLimitOk returns a tuple with the BindTimeLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimitOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimitOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -551,8 +551,8 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasBindTimeLimit() bool {
 	return false
 }
 
-// SetBindTimeLimit gets a reference to the given NullableInt32 and assigns it to the BindTimeLimit field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetBindTimeLimit(v int32) {
+// SetBindTimeLimit gets a reference to the given NullableInt64 and assigns it to the BindTimeLimit field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetBindTimeLimit(v int64) {
 	o.BindTimeLimit.Set(&v)
 }
 // SetBindTimeLimitNil sets the value for BindTimeLimit to be an explicit nil
@@ -566,9 +566,9 @@ func (o *LdapprofilesPutRequestLdapProfileValue) UnsetBindTimeLimit() {
 }
 
 // GetIdleTimeLimit returns the IdleTimeLimit field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimit() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimit() int64 {
 	if o == nil || IsNil(o.IdleTimeLimit.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.IdleTimeLimit.Get()
@@ -577,7 +577,7 @@ func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimit() int32 {
 // GetIdleTimeLimitOk returns a tuple with the IdleTimeLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimitOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetIdleTimeLimitOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -593,8 +593,8 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasIdleTimeLimit() bool {
 	return false
 }
 
-// SetIdleTimeLimit gets a reference to the given NullableInt32 and assigns it to the IdleTimeLimit field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetIdleTimeLimit(v int32) {
+// SetIdleTimeLimit gets a reference to the given NullableInt64 and assigns it to the IdleTimeLimit field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetIdleTimeLimit(v int64) {
 	o.IdleTimeLimit.Set(&v)
 }
 // SetIdleTimeLimitNil sets the value for IdleTimeLimit to be an explicit nil
@@ -608,9 +608,9 @@ func (o *LdapprofilesPutRequestLdapProfileValue) UnsetIdleTimeLimit() {
 }
 
 // GetRetransmitAttempts returns the RetransmitAttempts field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttempts() int32 {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttempts() int64 {
 	if o == nil || IsNil(o.RetransmitAttempts.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RetransmitAttempts.Get()
@@ -619,7 +619,7 @@ func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttempts() int32 {
 // GetRetransmitAttemptsOk returns a tuple with the RetransmitAttempts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttemptsOk() (*int32, bool) {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttemptsOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -635,8 +635,8 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasRetransmitAttempts() bool {
 	return false
 }
 
-// SetRetransmitAttempts gets a reference to the given NullableInt32 and assigns it to the RetransmitAttempts field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetRetransmitAttempts(v int32) {
+// SetRetransmitAttempts gets a reference to the given NullableInt64 and assigns it to the RetransmitAttempts field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetRetransmitAttempts(v int64) {
 	o.RetransmitAttempts.Set(&v)
 }
 // SetRetransmitAttemptsNil sets the value for RetransmitAttempts to be an explicit nil

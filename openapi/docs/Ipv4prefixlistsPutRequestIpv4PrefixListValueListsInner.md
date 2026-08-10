@@ -7,9 +7,9 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable of this IPv4 Prefix List | [optional] [default to false]
 **PermitDeny** | Pointer to **string** | Action upon match of Community Strings. | [optional] [default to "permit"]
 **Ipv4Prefix** | Pointer to **string** | IPv4 address and subnet to match against  | [optional] [default to ""]
-**GreaterThanEqualValue** | Pointer to **NullableInt32** | Match IP routes with a subnet mask greater than or equal to the value indicated  | [optional] 
-**LessThanEqualValue** | Pointer to **NullableInt32** | Match IP routes with a subnet mask less than or equal to the value indicated | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**GreaterThanEqualValue** | Pointer to **NullableInt64** | Match IP routes with a subnet mask greater than or equal to the value indicated  | [optional] 
+**LessThanEqualValue** | Pointer to **NullableInt64** | Match IP routes with a subnet mask less than or equal to the value indicated | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -107,20 +107,20 @@ HasIpv4Prefix returns a boolean if a field has been set.
 
 ### GetGreaterThanEqualValue
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetGreaterThanEqualValue() int32`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetGreaterThanEqualValue() int64`
 
 GetGreaterThanEqualValue returns the GreaterThanEqualValue field if non-nil, zero value otherwise.
 
 ### GetGreaterThanEqualValueOk
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetGreaterThanEqualValueOk() (*int32, bool)`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetGreaterThanEqualValueOk() (*int64, bool)`
 
 GetGreaterThanEqualValueOk returns a tuple with the GreaterThanEqualValue field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetGreaterThanEqualValue
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetGreaterThanEqualValue(v int32)`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetGreaterThanEqualValue(v int64)`
 
 SetGreaterThanEqualValue sets GreaterThanEqualValue field to given value.
 
@@ -142,20 +142,20 @@ HasGreaterThanEqualValue returns a boolean if a field has been set.
 UnsetGreaterThanEqualValue ensures that no value is present for GreaterThanEqualValue, not even an explicit nil
 ### GetLessThanEqualValue
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetLessThanEqualValue() int32`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetLessThanEqualValue() int64`
 
 GetLessThanEqualValue returns the LessThanEqualValue field if non-nil, zero value otherwise.
 
 ### GetLessThanEqualValueOk
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetLessThanEqualValueOk() (*int32, bool)`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetLessThanEqualValueOk() (*int64, bool)`
 
 GetLessThanEqualValueOk returns a tuple with the LessThanEqualValue field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLessThanEqualValue
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetLessThanEqualValue(v int32)`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetLessThanEqualValue(v int64)`
 
 SetLessThanEqualValue sets LessThanEqualValue field to given value.
 
@@ -177,20 +177,20 @@ HasLessThanEqualValue returns a boolean if a field has been set.
 UnsetLessThanEqualValue ensures that no value is present for LessThanEqualValue, not even an explicit nil
 ### GetIndex
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetIndex() int32`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetIndexOk() (*int32, bool)`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetIndex(v int32)`
+`func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

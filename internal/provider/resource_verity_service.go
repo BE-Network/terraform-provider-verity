@@ -355,14 +355,14 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		// Don't include the specific VNI in the request
 	} else if !plan.Vni.IsNull() {
 		// User explicitly specified a value
-		vniVal := int32(plan.Vni.ValueInt64())
-		serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+		vniVal := plan.Vni.ValueInt64()
+		serviceReq.Vni = *openapi.NewNullableInt64(&vniVal)
 		if !plan.VniAutoAssigned.IsNull() {
 			serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
 		}
 	} else {
 		if configuredAttrs.IsConfigured("vni") {
-			serviceReq.Vni = *openapi.NewNullableInt32(nil)
+			serviceReq.Vni = *openapi.NewNullableInt64(nil)
 		}
 		if !plan.VniAutoAssigned.IsNull() {
 			serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
@@ -593,15 +593,15 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetBoolField(plan.AllowFastLeave, state.AllowFastLeave, func(v *bool) { serviceReq.AllowFastLeave = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.Mtu, state.Mtu, configuredAttrs.IsConfigured("mtu"), func(v *openapi.NullableInt32) { serviceReq.Mtu = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.IpAttachHostAdvertise, state.IpAttachHostAdvertise, configuredAttrs.IsConfigured("ip_attach_host_advertise"), func(v *openapi.NullableInt32) { serviceReq.IpAttachHostAdvertise = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, configuredAttrs.IsConfigured("max_upstream_rate_mbps"), func(v *openapi.NullableInt32) { serviceReq.MaxUpstreamRateMbps = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, configuredAttrs.IsConfigured("max_downstream_rate_mbps"), func(v *openapi.NullableInt32) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MstInstance, state.MstInstance, configuredAttrs.IsConfigured("mst_instance"), func(v *openapi.NullableInt32) { serviceReq.MstInstance = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.Mtu, state.Mtu, configuredAttrs.IsConfigured("mtu"), func(v *openapi.NullableInt64) { serviceReq.Mtu = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.IpAttachHostAdvertise, state.IpAttachHostAdvertise, configuredAttrs.IsConfigured("ip_attach_host_advertise"), func(v *openapi.NullableInt64) { serviceReq.IpAttachHostAdvertise = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, configuredAttrs.IsConfigured("max_upstream_rate_mbps"), func(v *openapi.NullableInt64) { serviceReq.MaxUpstreamRateMbps = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, configuredAttrs.IsConfigured("max_downstream_rate_mbps"), func(v *openapi.NullableInt64) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MstInstance, state.MstInstance, configuredAttrs.IsConfigured("mst_instance"), func(v *openapi.NullableInt64) { serviceReq.MstInstance = *v }, &hasChanges)
 
 	// Handle VLAN changes (preserve special handling for Unknown state)
 	if !plan.Vlan.IsUnknown() && !plan.Vlan.Equal(state.Vlan) {
-		utils.CompareAndSetNullableInt64Field(config.Vlan, state.Vlan, configuredAttrs.IsConfigured("vlan"), func(v *openapi.NullableInt32) { serviceReq.Vlan = *v }, &hasChanges)
+		utils.CompareAndSetNullableInt64Field(config.Vlan, state.Vlan, configuredAttrs.IsConfigured("vlan"), func(v *openapi.NullableInt64) { serviceReq.Vlan = *v }, &hasChanges)
 	}
 
 	// Handle VNI and VniAutoAssigned changes
@@ -611,10 +611,10 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	if vniChanged || vniAutoAssignedChanged {
 		if vniChanged {
 			if !plan.Vni.IsNull() {
-				vniVal := int32(plan.Vni.ValueInt64())
-				serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+				vniVal := plan.Vni.ValueInt64()
+				serviceReq.Vni = *openapi.NewNullableInt64(&vniVal)
 			} else {
-				serviceReq.Vni = *openapi.NewNullableInt32(nil)
+				serviceReq.Vni = *openapi.NewNullableInt64(nil)
 			}
 		}
 
@@ -639,12 +639,12 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 					// Changing from auto-assigned=true to auto-assigned=false
 					// Must include VNI value in the request for the change to take effect
 					if !plan.Vni.IsNull() {
-						vniVal := int32(plan.Vni.ValueInt64())
-						serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+						vniVal := plan.Vni.ValueInt64()
+						serviceReq.Vni = *openapi.NewNullableInt64(&vniVal)
 					} else if !state.Vni.IsNull() {
 						// Use current state VNI if plan doesn't specify one
-						vniVal := int32(state.Vni.ValueInt64())
-						serviceReq.Vni = *openapi.NewNullableInt32(&vniVal)
+						vniVal := state.Vni.ValueInt64()
+						serviceReq.Vni = *openapi.NewNullableInt64(&vniVal)
 					}
 				}
 			}

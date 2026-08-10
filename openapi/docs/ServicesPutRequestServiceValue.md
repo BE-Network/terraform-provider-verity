@@ -8,8 +8,8 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable object. It&#39;s highly recommended to set this value to true so that validation on the object will be ran. | [optional] [default to false]
 **PolicyBasedRouting** | Pointer to **string** | Policy Based Routing | [optional] [default to ""]
 **PolicyBasedRoutingRefType** | Pointer to **string** | Object type for policy_based_routing field | [optional] 
-**Vlan** | Pointer to **NullableInt32** | Layer 2 Virtual Network Identifier. A Value between 1 and 4096. &lt;br&gt; Some switches have reserved values within the range | [optional] 
-**Vni** | Pointer to **NullableInt32** | Identifies the service within the VXLAN fabric - Range is 1-16777215. If not using auto, must be outside of the reserved range settings | [optional] 
+**Vlan** | Pointer to **NullableInt64** | Layer 2 Virtual Network Identifier. A Value between 1 and 4096. &lt;br&gt; Some switches have reserved values within the range | [optional] 
+**Vni** | Pointer to **NullableInt64** | Identifies the service within the VXLAN fabric - Range is 1-16777215. If not using auto, must be outside of the reserved range settings | [optional] 
 **VniAutoAssigned** | Pointer to **bool** | Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit. | [optional] 
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
@@ -17,11 +17,11 @@ Name | Type | Description | Notes
 **AnycastIpv6Mask** | Pointer to **string** | Comma separated list of Static anycast gateway addresses(IPv6) for service  | [optional] [default to ""]
 **DhcpServerIpv4** | Pointer to **string** | IPv4 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
 **DhcpServerIpv6** | Pointer to **string** | IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas. | [optional] [default to ""]
-**IpAttachHostAdvertise** | Pointer to **NullableInt32** | Converts IP addresses learned via ARP and ND into host routes and adds them to the routing table. Sets the administrative distance of the attached route (range 0-250). | [optional] 
-**Mtu** | Pointer to **NullableInt32** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] 
+**IpAttachHostAdvertise** | Pointer to **NullableInt64** | Converts IP addresses learned via ARP and ND into host routes and adds them to the routing table. Sets the administrative distance of the attached route (range 0-250). | [optional] 
+**Mtu** | Pointer to **NullableInt64** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] 
 **ObjectProperties** | Pointer to [**ServicesPutRequestServiceValueObjectProperties**](ServicesPutRequestServiceValueObjectProperties.md) |  | [optional] 
-**MaxUpstreamRateMbps** | Pointer to **NullableInt32** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
-**MaxDownstreamRateMbps** | Pointer to **NullableInt32** | Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps) | [optional] 
+**MaxUpstreamRateMbps** | Pointer to **NullableInt64** | Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps) | [optional] 
+**MaxDownstreamRateMbps** | Pointer to **NullableInt64** | Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps) | [optional] 
 **PacketPriority** | Pointer to **string** | Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped | [optional] [default to "0"]
 **MulticastManagementMode** | Pointer to **string** | Determines how undefined handle multicast packet for Service&lt;ul&gt;&lt;li&gt;* \&quot;Multicast Flooding (Normal)\&quot; Multicast packets are broadcast&lt;/li&gt;&lt;li&gt;* \&quot;Multicast Flooding (AVB/PTP/Cobranet)\&quot; Multicast packets are broadcast with special treatment for critical latency packets such as used by AVB, PTP, and Cobranet&lt;/li&gt;&lt;li&gt;* \&quot;IPTV Filtering (IGMP Snooping)\&quot; Multicast packets are propagated via IGMP Snooping&lt;/li&gt;&lt;li&gt;* \&quot;IPTV Filtering (IGMP Report/Leave Flooding)\&quot; Multicast packets are propagated via IGMP Snooping. except that IGMP Report/Leave packets are broadcast&lt;/li&gt;&lt;/ul&gt; | [optional] [default to "flooding"]
 **TaggedPackets** | Pointer to **bool** | Overrides priority bits on incoming tagged packets. Always done for untagged packets | [optional] [default to false]
@@ -33,7 +33,7 @@ Name | Type | Description | Notes
 **IsManagementService** | Pointer to **bool** | Denotes a Management Service | [optional] [default to false]
 **UseDscpToPBitMappingForL3PacketsIfAvailable** | Pointer to **bool** | use DSCP to p-bit Mapping for L3 packets if available | [optional] [default to false]
 **AllowFastLeave** | Pointer to **bool** | The Fast Leave feature causes the switch to immediately remove a port from the forwarding list for a IGMP multicast group when the port receives a leave message. Not recommended unless there is only a single receiver present on every point in the VLAN | [optional] [default to false]
-**MstInstance** | Pointer to **NullableInt32** | MST Instance ID (0-4094) | [optional] [default to 0]
+**MstInstance** | Pointer to **NullableInt64** | MST Instance ID (0-4094) | [optional] [default to 0]
 
 ## Methods
 
@@ -156,20 +156,20 @@ HasPolicyBasedRoutingRefType returns a boolean if a field has been set.
 
 ### GetVlan
 
-`func (o *ServicesPutRequestServiceValue) GetVlan() int32`
+`func (o *ServicesPutRequestServiceValue) GetVlan() int64`
 
 GetVlan returns the Vlan field if non-nil, zero value otherwise.
 
 ### GetVlanOk
 
-`func (o *ServicesPutRequestServiceValue) GetVlanOk() (*int32, bool)`
+`func (o *ServicesPutRequestServiceValue) GetVlanOk() (*int64, bool)`
 
 GetVlanOk returns a tuple with the Vlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetVlan
 
-`func (o *ServicesPutRequestServiceValue) SetVlan(v int32)`
+`func (o *ServicesPutRequestServiceValue) SetVlan(v int64)`
 
 SetVlan sets Vlan field to given value.
 
@@ -191,20 +191,20 @@ HasVlan returns a boolean if a field has been set.
 UnsetVlan ensures that no value is present for Vlan, not even an explicit nil
 ### GetVni
 
-`func (o *ServicesPutRequestServiceValue) GetVni() int32`
+`func (o *ServicesPutRequestServiceValue) GetVni() int64`
 
 GetVni returns the Vni field if non-nil, zero value otherwise.
 
 ### GetVniOk
 
-`func (o *ServicesPutRequestServiceValue) GetVniOk() (*int32, bool)`
+`func (o *ServicesPutRequestServiceValue) GetVniOk() (*int64, bool)`
 
 GetVniOk returns a tuple with the Vni field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetVni
 
-`func (o *ServicesPutRequestServiceValue) SetVni(v int32)`
+`func (o *ServicesPutRequestServiceValue) SetVni(v int64)`
 
 SetVni sets Vni field to given value.
 
@@ -401,20 +401,20 @@ HasDhcpServerIpv6 returns a boolean if a field has been set.
 
 ### GetIpAttachHostAdvertise
 
-`func (o *ServicesPutRequestServiceValue) GetIpAttachHostAdvertise() int32`
+`func (o *ServicesPutRequestServiceValue) GetIpAttachHostAdvertise() int64`
 
 GetIpAttachHostAdvertise returns the IpAttachHostAdvertise field if non-nil, zero value otherwise.
 
 ### GetIpAttachHostAdvertiseOk
 
-`func (o *ServicesPutRequestServiceValue) GetIpAttachHostAdvertiseOk() (*int32, bool)`
+`func (o *ServicesPutRequestServiceValue) GetIpAttachHostAdvertiseOk() (*int64, bool)`
 
 GetIpAttachHostAdvertiseOk returns a tuple with the IpAttachHostAdvertise field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpAttachHostAdvertise
 
-`func (o *ServicesPutRequestServiceValue) SetIpAttachHostAdvertise(v int32)`
+`func (o *ServicesPutRequestServiceValue) SetIpAttachHostAdvertise(v int64)`
 
 SetIpAttachHostAdvertise sets IpAttachHostAdvertise field to given value.
 
@@ -436,20 +436,20 @@ HasIpAttachHostAdvertise returns a boolean if a field has been set.
 UnsetIpAttachHostAdvertise ensures that no value is present for IpAttachHostAdvertise, not even an explicit nil
 ### GetMtu
 
-`func (o *ServicesPutRequestServiceValue) GetMtu() int32`
+`func (o *ServicesPutRequestServiceValue) GetMtu() int64`
 
 GetMtu returns the Mtu field if non-nil, zero value otherwise.
 
 ### GetMtuOk
 
-`func (o *ServicesPutRequestServiceValue) GetMtuOk() (*int32, bool)`
+`func (o *ServicesPutRequestServiceValue) GetMtuOk() (*int64, bool)`
 
 GetMtuOk returns a tuple with the Mtu field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMtu
 
-`func (o *ServicesPutRequestServiceValue) SetMtu(v int32)`
+`func (o *ServicesPutRequestServiceValue) SetMtu(v int64)`
 
 SetMtu sets Mtu field to given value.
 
@@ -496,20 +496,20 @@ HasObjectProperties returns a boolean if a field has been set.
 
 ### GetMaxUpstreamRateMbps
 
-`func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbps() int32`
+`func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbps() int64`
 
 GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field if non-nil, zero value otherwise.
 
 ### GetMaxUpstreamRateMbpsOk
 
-`func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbpsOk() (*int32, bool)`
+`func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbpsOk() (*int64, bool)`
 
 GetMaxUpstreamRateMbpsOk returns a tuple with the MaxUpstreamRateMbps field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMaxUpstreamRateMbps
 
-`func (o *ServicesPutRequestServiceValue) SetMaxUpstreamRateMbps(v int32)`
+`func (o *ServicesPutRequestServiceValue) SetMaxUpstreamRateMbps(v int64)`
 
 SetMaxUpstreamRateMbps sets MaxUpstreamRateMbps field to given value.
 
@@ -531,20 +531,20 @@ HasMaxUpstreamRateMbps returns a boolean if a field has been set.
 UnsetMaxUpstreamRateMbps ensures that no value is present for MaxUpstreamRateMbps, not even an explicit nil
 ### GetMaxDownstreamRateMbps
 
-`func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbps() int32`
+`func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbps() int64`
 
 GetMaxDownstreamRateMbps returns the MaxDownstreamRateMbps field if non-nil, zero value otherwise.
 
 ### GetMaxDownstreamRateMbpsOk
 
-`func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbpsOk() (*int32, bool)`
+`func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbpsOk() (*int64, bool)`
 
 GetMaxDownstreamRateMbpsOk returns a tuple with the MaxDownstreamRateMbps field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMaxDownstreamRateMbps
 
-`func (o *ServicesPutRequestServiceValue) SetMaxDownstreamRateMbps(v int32)`
+`func (o *ServicesPutRequestServiceValue) SetMaxDownstreamRateMbps(v int64)`
 
 SetMaxDownstreamRateMbps sets MaxDownstreamRateMbps field to given value.
 
@@ -841,20 +841,20 @@ HasAllowFastLeave returns a boolean if a field has been set.
 
 ### GetMstInstance
 
-`func (o *ServicesPutRequestServiceValue) GetMstInstance() int32`
+`func (o *ServicesPutRequestServiceValue) GetMstInstance() int64`
 
 GetMstInstance returns the MstInstance field if non-nil, zero value otherwise.
 
 ### GetMstInstanceOk
 
-`func (o *ServicesPutRequestServiceValue) GetMstInstanceOk() (*int32, bool)`
+`func (o *ServicesPutRequestServiceValue) GetMstInstanceOk() (*int64, bool)`
 
 GetMstInstanceOk returns a tuple with the MstInstance field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMstInstance
 
-`func (o *ServicesPutRequestServiceValue) SetMstInstance(v int32)`
+`func (o *ServicesPutRequestServiceValue) SetMstInstance(v int64)`
 
 SetMstInstance sets MstInstance field to given value.
 

@@ -543,7 +543,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 			},
 			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
 				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -603,7 +603,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 			},
 			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
 				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -662,7 +662,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 			},
 			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
 				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -722,7 +722,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 			},
 			CreateDeleted: func(index int64) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
 				return openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})

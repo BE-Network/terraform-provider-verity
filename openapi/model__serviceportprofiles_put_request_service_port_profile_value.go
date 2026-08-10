@@ -26,7 +26,7 @@ type ServiceportprofilesPutRequestServicePortProfileValue struct {
 	// Determines what Service are provisioned on the port and if those Services are propagated upstream<ul><li>* \"Upstream Switchport\" Services specified below.  Services are not propagated.</li><li>* \"Downstream Switchport\" Services specified below. Services are propagated.</li><li>* \"Crosslink Switchport\" Services is union of all Services on each switch.  Services are not propagated.</li><li>* \"Upstream L3 (L2/L3 Switches Only\" No Services.</li></ul>
 	PortType *string `json:"port_type,omitempty"`
 	// Speed of ingress (Mbps) for TLS (Transparent LAN Service)
-	TlsLimitIn NullableInt32 `json:"tls_limit_in,omitempty"`
+	TlsLimitIn NullableInt64 `json:"tls_limit_in,omitempty"`
 	// Service used for TLS (Transparent LAN Service)
 	TlsService *string `json:"tls_service,omitempty"`
 	// Object type for tls_service field
@@ -51,8 +51,8 @@ func NewServiceportprofilesPutRequestServicePortProfileValue() *Serviceportprofi
 	this.Enable = &enable
 	var portType string = "up"
 	this.PortType = &portType
-	var tlsLimitIn int32 = 1000
-	this.TlsLimitIn = *NewNullableInt32(&tlsLimitIn)
+	var tlsLimitIn int64 = 1000
+	this.TlsLimitIn = *NewNullableInt64(&tlsLimitIn)
 	var tlsService string = ""
 	this.TlsService = &tlsService
 	var trustedPort bool = false
@@ -73,8 +73,8 @@ func NewServiceportprofilesPutRequestServicePortProfileValueWithDefaults() *Serv
 	this.Enable = &enable
 	var portType string = "up"
 	this.PortType = &portType
-	var tlsLimitIn int32 = 1000
-	this.TlsLimitIn = *NewNullableInt32(&tlsLimitIn)
+	var tlsLimitIn int64 = 1000
+	this.TlsLimitIn = *NewNullableInt64(&tlsLimitIn)
 	var tlsService string = ""
 	this.TlsService = &tlsService
 	var trustedPort bool = false
@@ -181,9 +181,9 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetPortType(v str
 }
 
 // GetTlsLimitIn returns the TlsLimitIn field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitIn() int32 {
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitIn() int64 {
 	if o == nil || IsNil(o.TlsLimitIn.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.TlsLimitIn.Get()
@@ -192,7 +192,7 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitIn() i
 // GetTlsLimitInOk returns a tuple with the TlsLimitIn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitInOk() (*int32, bool) {
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitInOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -208,8 +208,8 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasTlsLimitIn() b
 	return false
 }
 
-// SetTlsLimitIn gets a reference to the given NullableInt32 and assigns it to the TlsLimitIn field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetTlsLimitIn(v int32) {
+// SetTlsLimitIn gets a reference to the given NullableInt64 and assigns it to the TlsLimitIn field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetTlsLimitIn(v int64) {
 	o.TlsLimitIn.Set(&v)
 }
 // SetTlsLimitInNil sets the value for TlsLimitIn to be an explicit nil

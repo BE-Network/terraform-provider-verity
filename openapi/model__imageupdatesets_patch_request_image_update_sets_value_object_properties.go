@@ -20,7 +20,7 @@ var _ MappedNullable = &ImageupdatesetsPatchRequestImageUpdateSetsValueObjectPro
 // ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties struct for ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties
 type ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties struct {
 	// Firmware Count
-	FirmwareCount NullableInt32 `json:"firmware_count,omitempty"`
+	FirmwareCount NullableInt64 `json:"firmware_count,omitempty"`
 }
 
 // NewImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties instantiates a new ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties object
@@ -29,8 +29,8 @@ type ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties() *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties {
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties{}
-	var firmwareCount int32 = 0
-	this.FirmwareCount = *NewNullableInt32(&firmwareCount)
+	var firmwareCount int64 = 0
+	this.FirmwareCount = *NewNullableInt64(&firmwareCount)
 	return &this
 }
 
@@ -39,15 +39,15 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties() *Image
 // but it doesn't guarantee that properties required by API are set
 func NewImageupdatesetsPatchRequestImageUpdateSetsValueObjectPropertiesWithDefaults() *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties {
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties{}
-	var firmwareCount int32 = 0
-	this.FirmwareCount = *NewNullableInt32(&firmwareCount)
+	var firmwareCount int64 = 0
+	this.FirmwareCount = *NewNullableInt64(&firmwareCount)
 	return &this
 }
 
 // GetFirmwareCount returns the FirmwareCount field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFirmwareCount() int32 {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFirmwareCount() int64 {
 	if o == nil || IsNil(o.FirmwareCount.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.FirmwareCount.Get()
@@ -56,7 +56,7 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFir
 // GetFirmwareCountOk returns a tuple with the FirmwareCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFirmwareCountOk() (*int32, bool) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFirmwareCountOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -72,8 +72,8 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) HasFir
 	return false
 }
 
-// SetFirmwareCount gets a reference to the given NullableInt32 and assigns it to the FirmwareCount field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) SetFirmwareCount(v int32) {
+// SetFirmwareCount gets a reference to the given NullableInt64 and assigns it to the FirmwareCount field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) SetFirmwareCount(v int64) {
 	o.FirmwareCount.Set(&v)
 }
 // SetFirmwareCountNil sets the value for FirmwareCount to be an explicit nil
