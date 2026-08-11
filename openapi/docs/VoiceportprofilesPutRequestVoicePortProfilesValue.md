@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 **CallWaitingEnable** | Pointer to **bool** | Call Waiting | [optional] [default to false]
 **CallForwardUnconditionalEnable** | Pointer to **bool** | Call Forward Unconditional | [optional] [default to false]
 **CallForwardOnBusyEnable** | Pointer to **bool** | Call Forward On Busy | [optional] [default to false]
-**CallForwardOnNoAnswerRingCount** | Pointer to **NullableInt32** | Call Forward on number of rings | [optional] [default to 4]
+**CallForwardOnNoAnswerRingCount** | Pointer to **NullableInt64** | Call Forward on number of rings | [optional] [default to 4]
 **CallTransferEnable** | Pointer to **bool** | Call Transfer | [optional] [default to false]
 **AudioMwiEnable** | Pointer to **bool** | Audio Message Waiting Indicator | [optional] [default to false]
 **AnonymousCallBlockEnable** | Pointer to **bool** | Block all anonymous calls | [optional] [default to false]
@@ -25,19 +25,19 @@ Name | Type | Description | Notes
 **CallWaitingCallerIdEnable** | Pointer to **bool** | Call Waiting Caller ID | [optional] [default to false]
 **CallHoldEnable** | Pointer to **bool** | Call Hold | [optional] [default to false]
 **VisualMwiEnable** | Pointer to **bool** | Visual Message Waiting Indicator | [optional] [default to false]
-**MwiRefreshTimer** | Pointer to **NullableInt32** | Message Waiting Indicator Refresh | [optional] [default to 30]
+**MwiRefreshTimer** | Pointer to **NullableInt64** | Message Waiting Indicator Refresh | [optional] [default to 30]
 **HotlineEnable** | Pointer to **bool** | Direct Connect | [optional] [default to false]
-**DialToneFeatureDelay** | Pointer to **NullableInt32** | Dial Tone Feature Delay | [optional] [default to 4]
+**DialToneFeatureDelay** | Pointer to **NullableInt64** | Dial Tone Feature Delay | [optional] [default to 4]
 **IntercomEnable** | Pointer to **bool** | Intercom | [optional] [default to false]
 **IntercomTransferEnable** | Pointer to **bool** | Intercom Transfer | [optional] [default to false]
-**TransmitGain** | Pointer to **NullableInt32** | Transmit Gain in tenths of a dB.Example -30 would equal -3.0db | [optional] [default to -30]
-**ReceiveGain** | Pointer to **NullableInt32** | Receive Gainin tenths of a dB. Example -30 would equal -3.0db | [optional] [default to -30]
+**TransmitGain** | Pointer to **NullableInt64** | Transmit Gain in tenths of a dB.Example -30 would equal -3.0db | [optional] [default to -30]
+**ReceiveGain** | Pointer to **NullableInt64** | Receive Gainin tenths of a dB. Example -30 would equal -3.0db | [optional] [default to -30]
 **EchoCancellationEnable** | Pointer to **bool** | Echo Cancellation Enable | [optional] [default to true]
-**JitterTarget** | Pointer to **NullableInt32** | The target value of the jitter buffer in milliseconds | [optional] [default to 40]
-**JitterBufferMax** | Pointer to **NullableInt32** | The maximum depth of the jitter buffer in milliseconds | [optional] [default to 180]
+**JitterTarget** | Pointer to **NullableInt64** | The target value of the jitter buffer in milliseconds | [optional] [default to 40]
+**JitterBufferMax** | Pointer to **NullableInt64** | The maximum depth of the jitter buffer in milliseconds | [optional] [default to 180]
 **SignalingCode** | Pointer to **string** | Signaling Code | [optional] [default to "LoopStart"]
-**ReleaseTimer** | Pointer to **NullableInt32** | Release timer defined in seconds. The default value of this attribute is 10 seconds | [optional] [default to 10]
-**RohTimer** | Pointer to **NullableInt32** | Time in seconds for the receiver is off-hook before ROH tone is applied. The value 0 disables ROH timing. The default value is 15 seconds | [optional] [default to 15]
+**ReleaseTimer** | Pointer to **NullableInt64** | Release timer defined in seconds. The default value of this attribute is 10 seconds | [optional] [default to 10]
+**RohTimer** | Pointer to **NullableInt64** | Time in seconds for the receiver is off-hook before ROH tone is applied. The value 0 disables ROH timing. The default value is 15 seconds | [optional] [default to 15]
 **ObjectProperties** | Pointer to [**VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties**](VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -311,20 +311,20 @@ HasCallForwardOnBusyEnable returns a boolean if a field has been set.
 
 ### GetCallForwardOnNoAnswerRingCount
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAnswerRingCount() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAnswerRingCount() int64`
 
 GetCallForwardOnNoAnswerRingCount returns the CallForwardOnNoAnswerRingCount field if non-nil, zero value otherwise.
 
 ### GetCallForwardOnNoAnswerRingCountOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAnswerRingCountOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAnswerRingCountOk() (*int64, bool)`
 
 GetCallForwardOnNoAnswerRingCountOk returns a tuple with the CallForwardOnNoAnswerRingCount field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCallForwardOnNoAnswerRingCount
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardOnNoAnswerRingCount(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardOnNoAnswerRingCount(v int64)`
 
 SetCallForwardOnNoAnswerRingCount sets CallForwardOnNoAnswerRingCount field to given value.
 
@@ -596,20 +596,20 @@ HasVisualMwiEnable returns a boolean if a field has been set.
 
 ### GetMwiRefreshTimer
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimer() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimer() int64`
 
 GetMwiRefreshTimer returns the MwiRefreshTimer field if non-nil, zero value otherwise.
 
 ### GetMwiRefreshTimerOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimerOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimerOk() (*int64, bool)`
 
 GetMwiRefreshTimerOk returns a tuple with the MwiRefreshTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMwiRefreshTimer
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetMwiRefreshTimer(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetMwiRefreshTimer(v int64)`
 
 SetMwiRefreshTimer sets MwiRefreshTimer field to given value.
 
@@ -656,20 +656,20 @@ HasHotlineEnable returns a boolean if a field has been set.
 
 ### GetDialToneFeatureDelay
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDelay() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDelay() int64`
 
 GetDialToneFeatureDelay returns the DialToneFeatureDelay field if non-nil, zero value otherwise.
 
 ### GetDialToneFeatureDelayOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDelayOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDelayOk() (*int64, bool)`
 
 GetDialToneFeatureDelayOk returns a tuple with the DialToneFeatureDelay field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDialToneFeatureDelay
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDialToneFeatureDelay(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDialToneFeatureDelay(v int64)`
 
 SetDialToneFeatureDelay sets DialToneFeatureDelay field to given value.
 
@@ -741,20 +741,20 @@ HasIntercomTransferEnable returns a boolean if a field has been set.
 
 ### GetTransmitGain
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGain() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGain() int64`
 
 GetTransmitGain returns the TransmitGain field if non-nil, zero value otherwise.
 
 ### GetTransmitGainOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGainOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGainOk() (*int64, bool)`
 
 GetTransmitGainOk returns a tuple with the TransmitGain field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTransmitGain
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetTransmitGain(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetTransmitGain(v int64)`
 
 SetTransmitGain sets TransmitGain field to given value.
 
@@ -776,20 +776,20 @@ HasTransmitGain returns a boolean if a field has been set.
 UnsetTransmitGain ensures that no value is present for TransmitGain, not even an explicit nil
 ### GetReceiveGain
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGain() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGain() int64`
 
 GetReceiveGain returns the ReceiveGain field if non-nil, zero value otherwise.
 
 ### GetReceiveGainOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGainOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGainOk() (*int64, bool)`
 
 GetReceiveGainOk returns a tuple with the ReceiveGain field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetReceiveGain
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReceiveGain(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReceiveGain(v int64)`
 
 SetReceiveGain sets ReceiveGain field to given value.
 
@@ -836,20 +836,20 @@ HasEchoCancellationEnable returns a boolean if a field has been set.
 
 ### GetJitterTarget
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTarget() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTarget() int64`
 
 GetJitterTarget returns the JitterTarget field if non-nil, zero value otherwise.
 
 ### GetJitterTargetOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTargetOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTargetOk() (*int64, bool)`
 
 GetJitterTargetOk returns a tuple with the JitterTarget field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetJitterTarget
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterTarget(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterTarget(v int64)`
 
 SetJitterTarget sets JitterTarget field to given value.
 
@@ -871,20 +871,20 @@ HasJitterTarget returns a boolean if a field has been set.
 UnsetJitterTarget ensures that no value is present for JitterTarget, not even an explicit nil
 ### GetJitterBufferMax
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMax() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMax() int64`
 
 GetJitterBufferMax returns the JitterBufferMax field if non-nil, zero value otherwise.
 
 ### GetJitterBufferMaxOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMaxOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMaxOk() (*int64, bool)`
 
 GetJitterBufferMaxOk returns a tuple with the JitterBufferMax field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetJitterBufferMax
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterBufferMax(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterBufferMax(v int64)`
 
 SetJitterBufferMax sets JitterBufferMax field to given value.
 
@@ -931,20 +931,20 @@ HasSignalingCode returns a boolean if a field has been set.
 
 ### GetReleaseTimer
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimer() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimer() int64`
 
 GetReleaseTimer returns the ReleaseTimer field if non-nil, zero value otherwise.
 
 ### GetReleaseTimerOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimerOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimerOk() (*int64, bool)`
 
 GetReleaseTimerOk returns a tuple with the ReleaseTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetReleaseTimer
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReleaseTimer(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReleaseTimer(v int64)`
 
 SetReleaseTimer sets ReleaseTimer field to given value.
 
@@ -966,20 +966,20 @@ HasReleaseTimer returns a boolean if a field has been set.
 UnsetReleaseTimer ensures that no value is present for ReleaseTimer, not even an explicit nil
 ### GetRohTimer
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimer() int32`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimer() int64`
 
 GetRohTimer returns the RohTimer field if non-nil, zero value otherwise.
 
 ### GetRohTimerOk
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimerOk() (*int32, bool)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimerOk() (*int64, bool)`
 
 GetRohTimerOk returns a tuple with the RohTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRohTimer
 
-`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetRohTimer(v int32)`
+`func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetRohTimer(v int64)`
 
 SetRohTimer sets RohTimer field to given value.
 

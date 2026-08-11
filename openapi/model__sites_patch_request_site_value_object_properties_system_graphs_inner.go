@@ -22,7 +22,7 @@ type SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner struct {
 	// The graph data detailing this graph choice
 	GraphNumData *string `json:"graph_num_data,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewSitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner instantiates a new SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner object
@@ -79,9 +79,9 @@ func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) SetGraphNu
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndex() int32 {
+func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -89,7 +89,7 @@ func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndex()
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndexOk() (*int32, bool) {
+func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -105,8 +105,8 @@ func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) HasIndex()
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

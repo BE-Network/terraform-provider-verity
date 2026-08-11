@@ -38,9 +38,9 @@ type RoutemapclausesPutRequestRouteMapClauseValue struct {
 	// Object type for match_extended_community_list field
 	MatchExtendedCommunityListRefType *string `json:"match_extended_community_list_ref_type_,omitempty"`
 	// Match Interface Number
-	MatchInterfaceNumber NullableInt32 `json:"match_interface_number,omitempty"`
+	MatchInterfaceNumber NullableInt64 `json:"match_interface_number,omitempty"`
 	// Match Interface VLAN
-	MatchInterfaceVlan NullableInt32 `json:"match_interface_vlan,omitempty"`
+	MatchInterfaceVlan NullableInt64 `json:"match_interface_vlan,omitempty"`
 	// Match IPv4 Address IPv4 Prefix List
 	MatchIpv4AddressIpPrefixList *string `json:"match_ipv4_address_ip_prefix_list,omitempty"`
 	// Object type for match_ipv4_address_ip_prefix_list field
@@ -50,17 +50,17 @@ type RoutemapclausesPutRequestRouteMapClauseValue struct {
 	// Object type for match_ipv4_next_hop_ip_prefix_list field
 	MatchIpv4NextHopIpPrefixListRefType *string `json:"match_ipv4_next_hop_ip_prefix_list_ref_type_,omitempty"`
 	// Match BGP Local Preference value on the route 
-	MatchLocalPreference NullableInt32 `json:"match_local_preference,omitempty"`
+	MatchLocalPreference NullableInt64 `json:"match_local_preference,omitempty"`
 	// Match Metric of the IP route entry 
-	MatchMetric NullableInt32 `json:"match_metric,omitempty"`
+	MatchMetric NullableInt64 `json:"match_metric,omitempty"`
 	// Match routes based on the value of the BGP Origin attribute 
 	MatchOrigin *string `json:"match_origin,omitempty"`
 	// Match BGP Peer IP Address the route was learned from 
 	MatchPeerIpAddress *string `json:"match_peer_ip_address,omitempty"`
 	// Match BGP Peer port the route was learned from 
-	MatchPeerInterface NullableInt32 `json:"match_peer_interface,omitempty"`
+	MatchPeerInterface NullableInt64 `json:"match_peer_interface,omitempty"`
 	// Match BGP Peer VLAN over which the route was learned 
-	MatchPeerVlan NullableInt32 `json:"match_peer_vlan,omitempty"`
+	MatchPeerVlan NullableInt64 `json:"match_peer_vlan,omitempty"`
 	// Match Routing  Protocol the route originated from 
 	MatchSourceProtocol *string `json:"match_source_protocol,omitempty"`
 	// Match VRF the route is associated with 
@@ -68,13 +68,13 @@ type RoutemapclausesPutRequestRouteMapClauseValue struct {
 	// Object type for match_vrf field
 	MatchVrfRefType *string `json:"match_vrf_ref_type_,omitempty"`
 	// Match routes that have this value for a Tag attribute
-	MatchTag NullableInt32 `json:"match_tag,omitempty"`
+	MatchTag NullableInt64 `json:"match_tag,omitempty"`
 	// Match based on the type of EVPN Route Type being Default\"
 	MatchEvpnRouteTypeDefault *bool `json:"match_evpn_route_type_default,omitempty"`
 	// Match based on the indicated EVPN Route Type
 	MatchEvpnRouteType *string `json:"match_evpn_route_type,omitempty"`
 	// Match based on the VNI value 
-	MatchVni NullableInt32 `json:"match_vni,omitempty"`
+	MatchVni NullableInt64 `json:"match_vni,omitempty"`
 	ObjectProperties *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties `json:"object_properties,omitempty"`
 	// Match IPv4 Address IPv6 Prefix List
 	MatchIpv6AddressIpv6PrefixList *string `json:"match_ipv6_address_ipv6_prefix_list,omitempty"`
@@ -452,9 +452,9 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchExtendedCommunity
 }
 
 // GetMatchInterfaceNumber returns the MatchInterfaceNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumber() int32 {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumber() int64 {
 	if o == nil || IsNil(o.MatchInterfaceNumber.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MatchInterfaceNumber.Get()
@@ -463,7 +463,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumber()
 // GetMatchInterfaceNumberOk returns a tuple with the MatchInterfaceNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumberOk() (*int32, bool) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumberOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -479,8 +479,8 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchInterfaceNumber()
 	return false
 }
 
-// SetMatchInterfaceNumber gets a reference to the given NullableInt32 and assigns it to the MatchInterfaceNumber field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceNumber(v int32) {
+// SetMatchInterfaceNumber gets a reference to the given NullableInt64 and assigns it to the MatchInterfaceNumber field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceNumber(v int64) {
 	o.MatchInterfaceNumber.Set(&v)
 }
 // SetMatchInterfaceNumberNil sets the value for MatchInterfaceNumber to be an explicit nil
@@ -494,9 +494,9 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) UnsetMatchInterfaceNumber
 }
 
 // GetMatchInterfaceVlan returns the MatchInterfaceVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlan() int32 {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlan() int64 {
 	if o == nil || IsNil(o.MatchInterfaceVlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MatchInterfaceVlan.Get()
@@ -505,7 +505,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlan() i
 // GetMatchInterfaceVlanOk returns a tuple with the MatchInterfaceVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlanOk() (*int32, bool) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -521,8 +521,8 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchInterfaceVlan() b
 	return false
 }
 
-// SetMatchInterfaceVlan gets a reference to the given NullableInt32 and assigns it to the MatchInterfaceVlan field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceVlan(v int32) {
+// SetMatchInterfaceVlan gets a reference to the given NullableInt64 and assigns it to the MatchInterfaceVlan field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceVlan(v int64) {
 	o.MatchInterfaceVlan.Set(&v)
 }
 // SetMatchInterfaceVlanNil sets the value for MatchInterfaceVlan to be an explicit nil
@@ -664,9 +664,9 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchIpv4NextHopIpPref
 }
 
 // GetMatchLocalPreference returns the MatchLocalPreference field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreference() int32 {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreference() int64 {
 	if o == nil || IsNil(o.MatchLocalPreference.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MatchLocalPreference.Get()
@@ -675,7 +675,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreference()
 // GetMatchLocalPreferenceOk returns a tuple with the MatchLocalPreference field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreferenceOk() (*int32, bool) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreferenceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -691,8 +691,8 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchLocalPreference()
 	return false
 }
 
-// SetMatchLocalPreference gets a reference to the given NullableInt32 and assigns it to the MatchLocalPreference field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchLocalPreference(v int32) {
+// SetMatchLocalPreference gets a reference to the given NullableInt64 and assigns it to the MatchLocalPreference field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchLocalPreference(v int64) {
 	o.MatchLocalPreference.Set(&v)
 }
 // SetMatchLocalPreferenceNil sets the value for MatchLocalPreference to be an explicit nil
@@ -706,9 +706,9 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) UnsetMatchLocalPreference
 }
 
 // GetMatchMetric returns the MatchMetric field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetric() int32 {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetric() int64 {
 	if o == nil || IsNil(o.MatchMetric.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MatchMetric.Get()
@@ -717,7 +717,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetric() int32 {
 // GetMatchMetricOk returns a tuple with the MatchMetric field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetricOk() (*int32, bool) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetricOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -733,8 +733,8 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchMetric() bool {
 	return false
 }
 
-// SetMatchMetric gets a reference to the given NullableInt32 and assigns it to the MatchMetric field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchMetric(v int32) {
+// SetMatchMetric gets a reference to the given NullableInt64 and assigns it to the MatchMetric field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchMetric(v int64) {
 	o.MatchMetric.Set(&v)
 }
 // SetMatchMetricNil sets the value for MatchMetric to be an explicit nil
@@ -812,9 +812,9 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerIpAddress(v s
 }
 
 // GetMatchPeerInterface returns the MatchPeerInterface field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterface() int32 {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterface() int64 {
 	if o == nil || IsNil(o.MatchPeerInterface.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MatchPeerInterface.Get()
@@ -823,7 +823,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterface() i
 // GetMatchPeerInterfaceOk returns a tuple with the MatchPeerInterface field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterfaceOk() (*int32, bool) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterfaceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -839,8 +839,8 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchPeerInterface() b
 	return false
 }
 
-// SetMatchPeerInterface gets a reference to the given NullableInt32 and assigns it to the MatchPeerInterface field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerInterface(v int32) {
+// SetMatchPeerInterface gets a reference to the given NullableInt64 and assigns it to the MatchPeerInterface field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerInterface(v int64) {
 	o.MatchPeerInterface.Set(&v)
 }
 // SetMatchPeerInterfaceNil sets the value for MatchPeerInterface to be an explicit nil
@@ -854,9 +854,9 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) UnsetMatchPeerInterface()
 }
 
 // GetMatchPeerVlan returns the MatchPeerVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlan() int32 {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlan() int64 {
 	if o == nil || IsNil(o.MatchPeerVlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MatchPeerVlan.Get()
@@ -865,7 +865,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlan() int32 
 // GetMatchPeerVlanOk returns a tuple with the MatchPeerVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlanOk() (*int32, bool) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -881,8 +881,8 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchPeerVlan() bool {
 	return false
 }
 
-// SetMatchPeerVlan gets a reference to the given NullableInt32 and assigns it to the MatchPeerVlan field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerVlan(v int32) {
+// SetMatchPeerVlan gets a reference to the given NullableInt64 and assigns it to the MatchPeerVlan field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerVlan(v int64) {
 	o.MatchPeerVlan.Set(&v)
 }
 // SetMatchPeerVlanNil sets the value for MatchPeerVlan to be an explicit nil
@@ -992,9 +992,9 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVrfRefType(v stri
 }
 
 // GetMatchTag returns the MatchTag field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTag() int32 {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTag() int64 {
 	if o == nil || IsNil(o.MatchTag.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MatchTag.Get()
@@ -1003,7 +1003,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTag() int32 {
 // GetMatchTagOk returns a tuple with the MatchTag field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTagOk() (*int32, bool) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTagOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1019,8 +1019,8 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchTag() bool {
 	return false
 }
 
-// SetMatchTag gets a reference to the given NullableInt32 and assigns it to the MatchTag field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchTag(v int32) {
+// SetMatchTag gets a reference to the given NullableInt64 and assigns it to the MatchTag field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchTag(v int64) {
 	o.MatchTag.Set(&v)
 }
 // SetMatchTagNil sets the value for MatchTag to be an explicit nil
@@ -1098,9 +1098,9 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchEvpnRouteType(v s
 }
 
 // GetMatchVni returns the MatchVni field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVni() int32 {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVni() int64 {
 	if o == nil || IsNil(o.MatchVni.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MatchVni.Get()
@@ -1109,7 +1109,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVni() int32 {
 // GetMatchVniOk returns a tuple with the MatchVni field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVniOk() (*int32, bool) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVniOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1125,8 +1125,8 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchVni() bool {
 	return false
 }
 
-// SetMatchVni gets a reference to the given NullableInt32 and assigns it to the MatchVni field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVni(v int32) {
+// SetMatchVni gets a reference to the given NullableInt64 and assigns it to the MatchVni field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVni(v int64) {
 	o.MatchVni.Set(&v)
 }
 // SetMatchVniNil sets the value for MatchVni to be an explicit nil

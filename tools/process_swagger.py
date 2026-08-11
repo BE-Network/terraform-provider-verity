@@ -2,11 +2,12 @@
 """
 Unified Swagger Processing Pipeline
 
-This script combines four operations into one seamless workflow:
+This script combines five operations into one seamless workflow:
 1. Merge multiple Swagger/OpenAPI specification files
 2. Remove unwanted endpoints from the merged specification
 3. Make all number and integer fields nullable
-4. Transform the schema for proper Go SDK generation
+4. Mark integer fields as int64 and number fields as double
+5. Transform the schema for proper Go SDK generation
 
 Usage:
     python3 process_swagger.py <file1.json> <file2.json> [options]
@@ -489,6 +490,58 @@ def process_nullable_fields(swagger_data):
 
 
 # ============================================================================
+# SECTION 5: MARK NUMERIC FIELDS AS 64-BIT
+# ============================================================================
+
+def make_numeric_fields_64bit(obj):
+    """
+    Recursively traverse the schema and set formats that generate 64-bit Go
+    numeric types: integers become int64 and numbers become double.
+
+    Some source schemas contain non-string values in ``type``. Those nodes are
+    traversed but are not treated as numeric schema properties.
+
+    Args:
+        obj: The object to traverse (dict, list, or other)
+
+    Returns:
+        tuple: (modified object, integer count, number count)
+    """
+    integer_count = 0
+    number_count = 0
+    numeric_formats = {
+        'integer': 'int64',
+        'number': 'double',
+    }
+
+    if isinstance(obj, dict):
+        numeric_type = obj.get('type')
+        if isinstance(numeric_type, str) and numeric_type in numeric_formats:
+            target_format = numeric_formats[numeric_type]
+            if obj.get('format') != target_format:
+                obj['format'] = target_format
+                if numeric_type == 'integer':
+                    integer_count += 1
+                else:
+                    number_count += 1
+
+        for value in obj.values():
+            if isinstance(value, (dict, list)):
+                _, nested_integer_count, nested_number_count = make_numeric_fields_64bit(value)
+                integer_count += nested_integer_count
+                number_count += nested_number_count
+
+    elif isinstance(obj, list):
+        for item in obj:
+            if isinstance(item, (dict, list)):
+                _, nested_integer_count, nested_number_count = make_numeric_fields_64bit(item)
+                integer_count += nested_integer_count
+                number_count += nested_number_count
+
+    return obj, integer_count, number_count
+
+
+# ============================================================================
 # MAIN PIPELINE
 # ============================================================================
 
@@ -530,7 +583,7 @@ Examples:
     print("=" * 70)
     
     # Step 1: Merge Swagger files
-    print("\n[STEP 1/4] Merging Swagger files...")
+    print("\n[STEP 1/5] Merging Swagger files...")
     merged_swagger = merge_swagger_files(args.file1, args.file2)
     print(f"  ✓ Successfully merged {args.file1} and {args.file2}")
     
@@ -542,7 +595,7 @@ Examples:
         print(f"  ✓ Intermediate file saved: {intermediate_merged}")
     
     # Step 2: Remove unwanted endpoints
-    print("\n[STEP 2/4] Removing unwanted endpoints...")
+    print("\n[STEP 2/5] Removing unwanted endpoints...")
     endpoints_to_remove = [
         "/alarms/mask",
         "/config",
@@ -570,7 +623,7 @@ Examples:
         print(f"  ✓ Intermediate file saved: {intermediate_cleaned}")
     
     # Step 3: Make numeric fields nullable
-    print("\n[STEP 3/4] Making number and integer fields nullable...")
+    print("\n[STEP 3/5] Making number and integer fields nullable...")
     nullable_swagger, nullable_count = process_nullable_fields(cleaned_swagger)
     print(f"  ✓ Made {nullable_count} numeric fields nullable")
     
@@ -581,9 +634,14 @@ Examples:
             json.dump(nullable_swagger, f, indent=2)
         print(f"  ✓ Intermediate file saved: {intermediate_nullable}")
     
-    # Step 4: Transform schema
-    print("\n[STEP 4/4] Transforming schema for Go SDK generation...")
-    transformed_swagger, transform_count = transform_schema(nullable_swagger)
+    # Step 4: Mark numeric fields as 64-bit
+    print("\n[STEP 4/5] Marking numeric fields with 64-bit formats...")
+    numeric_swagger, int64_count, double_count = make_numeric_fields_64bit(nullable_swagger)
+    print(f"  ✓ Marked {int64_count} integer fields as int64 and {double_count} number fields as double")
+
+    # Step 5: Transform schema
+    print("\n[STEP 5/5] Transforming schema for Go SDK generation...")
+    transformed_swagger, transform_count = transform_schema(numeric_swagger)
     print(f"  ✓ Applied {transform_count} schema transformations")
     
     # Save final output
@@ -598,6 +656,8 @@ Examples:
     print(f"Total paths: {len(transformed_swagger.get('paths', {}))}")
     print(f"Endpoints removed: {len(removed)}")
     print(f"Numeric fields made nullable: {nullable_count}")
+    print(f"Integer fields marked as int64: {int64_count}")
+    print(f"Number fields marked as double: {double_count}")
     print(f"Schema transformations: {transform_count}")
     print("=" * 70)
 

@@ -13,25 +13,25 @@ Name | Type | Description | Notes
 **MatchCommunityListRefType** | Pointer to **string** | Object type for match_community_list field | [optional] 
 **MatchExtendedCommunityList** | Pointer to **string** | Match Extended Community List | [optional] [default to ""]
 **MatchExtendedCommunityListRefType** | Pointer to **string** | Object type for match_extended_community_list field | [optional] 
-**MatchInterfaceNumber** | Pointer to **NullableInt32** | Match Interface Number | [optional] 
-**MatchInterfaceVlan** | Pointer to **NullableInt32** | Match Interface VLAN | [optional] 
+**MatchInterfaceNumber** | Pointer to **NullableInt64** | Match Interface Number | [optional] 
+**MatchInterfaceVlan** | Pointer to **NullableInt64** | Match Interface VLAN | [optional] 
 **MatchIpv4AddressIpPrefixList** | Pointer to **string** | Match IPv4 Address IPv4 Prefix List | [optional] [default to ""]
 **MatchIpv4AddressIpPrefixListRefType** | Pointer to **string** | Object type for match_ipv4_address_ip_prefix_list field | [optional] 
 **MatchIpv4NextHopIpPrefixList** | Pointer to **string** | Match IPv4 Next Hop IPv4 Prefix List | [optional] [default to ""]
 **MatchIpv4NextHopIpPrefixListRefType** | Pointer to **string** | Object type for match_ipv4_next_hop_ip_prefix_list field | [optional] 
-**MatchLocalPreference** | Pointer to **NullableInt32** | Match BGP Local Preference value on the route  | [optional] 
-**MatchMetric** | Pointer to **NullableInt32** | Match Metric of the IP route entry  | [optional] 
+**MatchLocalPreference** | Pointer to **NullableInt64** | Match BGP Local Preference value on the route  | [optional] 
+**MatchMetric** | Pointer to **NullableInt64** | Match Metric of the IP route entry  | [optional] 
 **MatchOrigin** | Pointer to **string** | Match routes based on the value of the BGP Origin attribute  | [optional] [default to ""]
 **MatchPeerIpAddress** | Pointer to **string** | Match BGP Peer IP Address the route was learned from  | [optional] [default to ""]
-**MatchPeerInterface** | Pointer to **NullableInt32** | Match BGP Peer port the route was learned from  | [optional] 
-**MatchPeerVlan** | Pointer to **NullableInt32** | Match BGP Peer VLAN over which the route was learned  | [optional] 
+**MatchPeerInterface** | Pointer to **NullableInt64** | Match BGP Peer port the route was learned from  | [optional] 
+**MatchPeerVlan** | Pointer to **NullableInt64** | Match BGP Peer VLAN over which the route was learned  | [optional] 
 **MatchSourceProtocol** | Pointer to **string** | Match Routing  Protocol the route originated from  | [optional] [default to ""]
 **MatchVrf** | Pointer to **string** | Match VRF the route is associated with  | [optional] [default to ""]
 **MatchVrfRefType** | Pointer to **string** | Object type for match_vrf field | [optional] 
-**MatchTag** | Pointer to **NullableInt32** | Match routes that have this value for a Tag attribute | [optional] 
+**MatchTag** | Pointer to **NullableInt64** | Match routes that have this value for a Tag attribute | [optional] 
 **MatchEvpnRouteTypeDefault** | Pointer to **bool** | Match based on the type of EVPN Route Type being Default\&quot; | [optional] 
 **MatchEvpnRouteType** | Pointer to **string** | Match based on the indicated EVPN Route Type | [optional] [default to ""]
-**MatchVni** | Pointer to **NullableInt32** | Match based on the VNI value  | [optional] 
+**MatchVni** | Pointer to **NullableInt64** | Match based on the VNI value  | [optional] 
 **ObjectProperties** | Pointer to [**RoutemapclausesPutRequestRouteMapClauseValueObjectProperties**](RoutemapclausesPutRequestRouteMapClauseValueObjectProperties.md) |  | [optional] 
 **MatchIpv6AddressIpv6PrefixList** | Pointer to **string** | Match IPv4 Address IPv6 Prefix List | [optional] [default to ""]
 **MatchIpv6AddressIpv6PrefixListRefType** | Pointer to **string** | Object type for match_ipv6_address_ipv6_prefix_list field | [optional] 
@@ -284,20 +284,20 @@ HasMatchExtendedCommunityListRefType returns a boolean if a field has been set.
 
 ### GetMatchInterfaceNumber
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumber() int32`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumber() int64`
 
 GetMatchInterfaceNumber returns the MatchInterfaceNumber field if non-nil, zero value otherwise.
 
 ### GetMatchInterfaceNumberOk
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumberOk() (*int32, bool)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceNumberOk() (*int64, bool)`
 
 GetMatchInterfaceNumberOk returns a tuple with the MatchInterfaceNumber field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMatchInterfaceNumber
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceNumber(v int32)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceNumber(v int64)`
 
 SetMatchInterfaceNumber sets MatchInterfaceNumber field to given value.
 
@@ -319,20 +319,20 @@ HasMatchInterfaceNumber returns a boolean if a field has been set.
 UnsetMatchInterfaceNumber ensures that no value is present for MatchInterfaceNumber, not even an explicit nil
 ### GetMatchInterfaceVlan
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlan() int32`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlan() int64`
 
 GetMatchInterfaceVlan returns the MatchInterfaceVlan field if non-nil, zero value otherwise.
 
 ### GetMatchInterfaceVlanOk
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlanOk() (*int32, bool)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchInterfaceVlanOk() (*int64, bool)`
 
 GetMatchInterfaceVlanOk returns a tuple with the MatchInterfaceVlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMatchInterfaceVlan
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceVlan(v int32)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceVlan(v int64)`
 
 SetMatchInterfaceVlan sets MatchInterfaceVlan field to given value.
 
@@ -454,20 +454,20 @@ HasMatchIpv4NextHopIpPrefixListRefType returns a boolean if a field has been set
 
 ### GetMatchLocalPreference
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreference() int32`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreference() int64`
 
 GetMatchLocalPreference returns the MatchLocalPreference field if non-nil, zero value otherwise.
 
 ### GetMatchLocalPreferenceOk
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreferenceOk() (*int32, bool)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchLocalPreferenceOk() (*int64, bool)`
 
 GetMatchLocalPreferenceOk returns a tuple with the MatchLocalPreference field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMatchLocalPreference
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchLocalPreference(v int32)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchLocalPreference(v int64)`
 
 SetMatchLocalPreference sets MatchLocalPreference field to given value.
 
@@ -489,20 +489,20 @@ HasMatchLocalPreference returns a boolean if a field has been set.
 UnsetMatchLocalPreference ensures that no value is present for MatchLocalPreference, not even an explicit nil
 ### GetMatchMetric
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetric() int32`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetric() int64`
 
 GetMatchMetric returns the MatchMetric field if non-nil, zero value otherwise.
 
 ### GetMatchMetricOk
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetricOk() (*int32, bool)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchMetricOk() (*int64, bool)`
 
 GetMatchMetricOk returns a tuple with the MatchMetric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMatchMetric
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchMetric(v int32)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchMetric(v int64)`
 
 SetMatchMetric sets MatchMetric field to given value.
 
@@ -574,20 +574,20 @@ HasMatchPeerIpAddress returns a boolean if a field has been set.
 
 ### GetMatchPeerInterface
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterface() int32`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterface() int64`
 
 GetMatchPeerInterface returns the MatchPeerInterface field if non-nil, zero value otherwise.
 
 ### GetMatchPeerInterfaceOk
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterfaceOk() (*int32, bool)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterfaceOk() (*int64, bool)`
 
 GetMatchPeerInterfaceOk returns a tuple with the MatchPeerInterface field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMatchPeerInterface
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerInterface(v int32)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerInterface(v int64)`
 
 SetMatchPeerInterface sets MatchPeerInterface field to given value.
 
@@ -609,20 +609,20 @@ HasMatchPeerInterface returns a boolean if a field has been set.
 UnsetMatchPeerInterface ensures that no value is present for MatchPeerInterface, not even an explicit nil
 ### GetMatchPeerVlan
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlan() int32`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlan() int64`
 
 GetMatchPeerVlan returns the MatchPeerVlan field if non-nil, zero value otherwise.
 
 ### GetMatchPeerVlanOk
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlanOk() (*int32, bool)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerVlanOk() (*int64, bool)`
 
 GetMatchPeerVlanOk returns a tuple with the MatchPeerVlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMatchPeerVlan
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerVlan(v int32)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerVlan(v int64)`
 
 SetMatchPeerVlan sets MatchPeerVlan field to given value.
 
@@ -719,20 +719,20 @@ HasMatchVrfRefType returns a boolean if a field has been set.
 
 ### GetMatchTag
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTag() int32`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTag() int64`
 
 GetMatchTag returns the MatchTag field if non-nil, zero value otherwise.
 
 ### GetMatchTagOk
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTagOk() (*int32, bool)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTagOk() (*int64, bool)`
 
 GetMatchTagOk returns a tuple with the MatchTag field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMatchTag
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchTag(v int32)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchTag(v int64)`
 
 SetMatchTag sets MatchTag field to given value.
 
@@ -804,20 +804,20 @@ HasMatchEvpnRouteType returns a boolean if a field has been set.
 
 ### GetMatchVni
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVni() int32`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVni() int64`
 
 GetMatchVni returns the MatchVni field if non-nil, zero value otherwise.
 
 ### GetMatchVniOk
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVniOk() (*int32, bool)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVniOk() (*int64, bool)`
 
 GetMatchVniOk returns a tuple with the MatchVni field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMatchVni
 
-`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVni(v int32)`
+`func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVni(v int64)`
 
 SetMatchVni sets MatchVni field to given value.
 

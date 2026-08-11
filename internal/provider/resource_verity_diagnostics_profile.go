@@ -352,7 +352,7 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	utils.CompareAndSetBoolField(plan.EnableSflow, state.EnableSflow, func(v *bool) { diagnosticsProfileProps.EnableSflow = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.PollInterval, state.PollInterval, configuredAttrs.IsConfigured("poll_interval"), func(v *openapi.NullableInt32) { diagnosticsProfileProps.PollInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.PollInterval, state.PollInterval, configuredAttrs.IsConfigured("poll_interval"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.PollInterval = *v }, &hasChanges)
 
 	// Handle FlowCollector and FlowCollectorRefType fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(

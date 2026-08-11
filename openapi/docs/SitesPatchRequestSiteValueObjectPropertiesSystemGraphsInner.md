@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **GraphNumData** | Pointer to **string** | The graph data detailing this graph choice | [optional] [default to ""]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -53,20 +53,20 @@ HasGraphNumData returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndex() int32`
+`func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndexOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) SetIndex(v int32)`
+`func (o *SitesPatchRequestSiteValueObjectPropertiesSystemGraphsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

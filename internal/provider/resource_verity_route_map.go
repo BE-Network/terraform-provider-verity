@@ -446,7 +446,7 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 			},
 			CreateDeleted: func(index int64) openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
 				return openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})

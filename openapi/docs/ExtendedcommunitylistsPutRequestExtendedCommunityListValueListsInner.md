@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Enable** | Pointer to **bool** | Enable of this Extended Community List | [optional] [default to false]
 **Mode** | Pointer to **string** | Mode | [optional] [default to "route"]
 **RouteTargetExpandedExpression** | Pointer to **string** | Match against a BGP extended community of type Route Target | [optional] [default to ""]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -105,20 +105,20 @@ HasRouteTargetExpandedExpression returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) GetIndex() int32`
+`func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) GetIndexOk() (*int32, bool)`
+`func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) SetIndex(v int32)`
+`func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

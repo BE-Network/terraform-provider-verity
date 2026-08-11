@@ -20,9 +20,9 @@ var _ MappedNullable = &PacketqueuesPutRequestPacketQueueValuePbitInner{}
 // PacketqueuesPutRequestPacketQueueValuePbitInner struct for PacketqueuesPutRequestPacketQueueValuePbitInner
 type PacketqueuesPutRequestPacketQueueValuePbitInner struct {
 	// Flag indicating this Traffic Class' Queue
-	PacketQueueForPBit NullableInt32 `json:"packet_queue_for_p_bit,omitempty"`
+	PacketQueueForPBit NullableInt64 `json:"packet_queue_for_p_bit,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewPacketqueuesPutRequestPacketQueueValuePbitInner instantiates a new PacketqueuesPutRequestPacketQueueValuePbitInner object
@@ -31,8 +31,8 @@ type PacketqueuesPutRequestPacketQueueValuePbitInner struct {
 // will change when the set of required properties is changed
 func NewPacketqueuesPutRequestPacketQueueValuePbitInner() *PacketqueuesPutRequestPacketQueueValuePbitInner {
 	this := PacketqueuesPutRequestPacketQueueValuePbitInner{}
-	var packetQueueForPBit int32 = 0
-	this.PacketQueueForPBit = *NewNullableInt32(&packetQueueForPBit)
+	var packetQueueForPBit int64 = 0
+	this.PacketQueueForPBit = *NewNullableInt64(&packetQueueForPBit)
 	return &this
 }
 
@@ -41,15 +41,15 @@ func NewPacketqueuesPutRequestPacketQueueValuePbitInner() *PacketqueuesPutReques
 // but it doesn't guarantee that properties required by API are set
 func NewPacketqueuesPutRequestPacketQueueValuePbitInnerWithDefaults() *PacketqueuesPutRequestPacketQueueValuePbitInner {
 	this := PacketqueuesPutRequestPacketQueueValuePbitInner{}
-	var packetQueueForPBit int32 = 0
-	this.PacketQueueForPBit = *NewNullableInt32(&packetQueueForPBit)
+	var packetQueueForPBit int64 = 0
+	this.PacketQueueForPBit = *NewNullableInt64(&packetQueueForPBit)
 	return &this
 }
 
 // GetPacketQueueForPBit returns the PacketQueueForPBit field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBit() int32 {
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBit() int64 {
 	if o == nil || IsNil(o.PacketQueueForPBit.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PacketQueueForPBit.Get()
@@ -58,7 +58,7 @@ func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBit(
 // GetPacketQueueForPBitOk returns a tuple with the PacketQueueForPBit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBitOk() (*int32, bool) {
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBitOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,8 +74,8 @@ func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) HasPacketQueueForPBit(
 	return false
 }
 
-// SetPacketQueueForPBit gets a reference to the given NullableInt32 and assigns it to the PacketQueueForPBit field.
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetPacketQueueForPBit(v int32) {
+// SetPacketQueueForPBit gets a reference to the given NullableInt64 and assigns it to the PacketQueueForPBit field.
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetPacketQueueForPBit(v int64) {
 	o.PacketQueueForPBit.Set(&v)
 }
 // SetPacketQueueForPBitNil sets the value for PacketQueueForPBit to be an explicit nil
@@ -89,9 +89,9 @@ func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) UnsetPacketQueueForPBi
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetIndex() int32 {
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -99,7 +99,7 @@ func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetIndex() int32 {
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetIndexOk() (*int32, bool) {
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -115,8 +115,8 @@ func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) HasIndex() bool {
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

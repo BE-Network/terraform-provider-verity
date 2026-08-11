@@ -24,9 +24,9 @@ type ServicesPutRequestServiceValue struct {
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	// Layer 2 Virtual Network Identifier. A Value between 1 and 4096. <br> Some switches have reserved values within the range
-	Vlan NullableInt32 `json:"vlan,omitempty"`
+	Vlan NullableInt64 `json:"vlan,omitempty"`
 	// Identifies the service within the VXLAN fabric
-	Vni NullableInt32 `json:"vni,omitempty"`
+	Vni NullableInt64 `json:"vni,omitempty"`
 	// Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit.
 	VniAutoAssigned *bool `json:"vni_auto_assigned_,omitempty"`
 	// Tenant
@@ -42,16 +42,16 @@ type ServicesPutRequestServiceValue struct {
 	// IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas.
 	DhcpServerIpv6 *string `json:"dhcp_server_ipv6,omitempty"`
 	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
-	Mtu NullableInt32 `json:"mtu,omitempty"`
+	Mtu NullableInt64 `json:"mtu,omitempty"`
 	ObjectProperties *ServicesPutRequestServiceValueObjectProperties `json:"object_properties,omitempty"`
 	// Policy Based Routing
 	PolicyBasedRouting *string `json:"policy_based_routing,omitempty"`
 	// Object type for policy_based_routing field
 	PolicyBasedRoutingRefType *string `json:"policy_based_routing_ref_type_,omitempty"`
 	// Bandwidth allocated per port in the upstream direction. (Max 10000 Mbps)
-	MaxUpstreamRateMbps NullableInt32 `json:"max_upstream_rate_mbps,omitempty"`
+	MaxUpstreamRateMbps NullableInt64 `json:"max_upstream_rate_mbps,omitempty"`
 	// Bandwidth allocated per port in the downstream direction. (Max 10000 Mbps)
-	MaxDownstreamRateMbps NullableInt32 `json:"max_downstream_rate_mbps,omitempty"`
+	MaxDownstreamRateMbps NullableInt64 `json:"max_downstream_rate_mbps,omitempty"`
 	// Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped
 	PacketPriority *string `json:"packet_priority,omitempty"`
 	// Determines how undefined handle multicast packet for Service<ul><li>* \"Multicast Flooding (Normal)\" Multicast packets are broadcast</li><li>* \"Multicast Flooding (AVB/PTP/Cobranet)\" Multicast packets are broadcast with special treatment for critical latency packets such as used by AVB, PTP, and Cobranet</li><li>* \"IPTV Filtering (IGMP Snooping)\" Multicast packets are propagated via IGMP Snooping</li><li>* \"IPTV Filtering (IGMP Report/Leave Flooding)\" Multicast packets are propagated via IGMP Snooping. except that IGMP Report/Leave packets are broadcast</li></ul>
@@ -75,7 +75,7 @@ type ServicesPutRequestServiceValue struct {
 	// The Fast Leave feature causes the switch to immediately remove a port from the forwarding list for a IGMP multicast group when the port receives a leave message. Not recommended unless there is only a single receiver present on every point in the VLAN
 	AllowFastLeave *bool `json:"allow_fast_leave,omitempty"`
 	// MST Instance ID (0-4094)
-	MstInstance NullableInt32 `json:"mst_instance,omitempty"`
+	MstInstance NullableInt64 `json:"mst_instance,omitempty"`
 }
 
 // NewServicesPutRequestServiceValue instantiates a new ServicesPutRequestServiceValue object
@@ -98,8 +98,8 @@ func NewServicesPutRequestServiceValue() *ServicesPutRequestServiceValue {
 	this.DhcpServerIpv4 = &dhcpServerIpv4
 	var dhcpServerIpv6 string = ""
 	this.DhcpServerIpv6 = &dhcpServerIpv6
-	var mtu int32 = 1500
-	this.Mtu = *NewNullableInt32(&mtu)
+	var mtu int64 = 1500
+	this.Mtu = *NewNullableInt64(&mtu)
 	var policyBasedRouting string = ""
 	this.PolicyBasedRouting = &policyBasedRouting
 	var packetPriority string = "0"
@@ -124,8 +124,8 @@ func NewServicesPutRequestServiceValue() *ServicesPutRequestServiceValue {
 	this.UseDscpToPBitMappingForL3PacketsIfAvailable = &useDscpToPBitMappingForL3PacketsIfAvailable
 	var allowFastLeave bool = false
 	this.AllowFastLeave = &allowFastLeave
-	var mstInstance int32 = 0
-	this.MstInstance = *NewNullableInt32(&mstInstance)
+	var mstInstance int64 = 0
+	this.MstInstance = *NewNullableInt64(&mstInstance)
 	return &this
 }
 
@@ -148,8 +148,8 @@ func NewServicesPutRequestServiceValueWithDefaults() *ServicesPutRequestServiceV
 	this.DhcpServerIpv4 = &dhcpServerIpv4
 	var dhcpServerIpv6 string = ""
 	this.DhcpServerIpv6 = &dhcpServerIpv6
-	var mtu int32 = 1500
-	this.Mtu = *NewNullableInt32(&mtu)
+	var mtu int64 = 1500
+	this.Mtu = *NewNullableInt64(&mtu)
 	var policyBasedRouting string = ""
 	this.PolicyBasedRouting = &policyBasedRouting
 	var packetPriority string = "0"
@@ -174,8 +174,8 @@ func NewServicesPutRequestServiceValueWithDefaults() *ServicesPutRequestServiceV
 	this.UseDscpToPBitMappingForL3PacketsIfAvailable = &useDscpToPBitMappingForL3PacketsIfAvailable
 	var allowFastLeave bool = false
 	this.AllowFastLeave = &allowFastLeave
-	var mstInstance int32 = 0
-	this.MstInstance = *NewNullableInt32(&mstInstance)
+	var mstInstance int64 = 0
+	this.MstInstance = *NewNullableInt64(&mstInstance)
 	return &this
 }
 
@@ -244,9 +244,9 @@ func (o *ServicesPutRequestServiceValue) SetEnable(v bool) {
 }
 
 // GetVlan returns the Vlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServicesPutRequestServiceValue) GetVlan() int32 {
+func (o *ServicesPutRequestServiceValue) GetVlan() int64 {
 	if o == nil || IsNil(o.Vlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vlan.Get()
@@ -255,7 +255,7 @@ func (o *ServicesPutRequestServiceValue) GetVlan() int32 {
 // GetVlanOk returns a tuple with the Vlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServicesPutRequestServiceValue) GetVlanOk() (*int32, bool) {
+func (o *ServicesPutRequestServiceValue) GetVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -271,8 +271,8 @@ func (o *ServicesPutRequestServiceValue) HasVlan() bool {
 	return false
 }
 
-// SetVlan gets a reference to the given NullableInt32 and assigns it to the Vlan field.
-func (o *ServicesPutRequestServiceValue) SetVlan(v int32) {
+// SetVlan gets a reference to the given NullableInt64 and assigns it to the Vlan field.
+func (o *ServicesPutRequestServiceValue) SetVlan(v int64) {
 	o.Vlan.Set(&v)
 }
 // SetVlanNil sets the value for Vlan to be an explicit nil
@@ -286,9 +286,9 @@ func (o *ServicesPutRequestServiceValue) UnsetVlan() {
 }
 
 // GetVni returns the Vni field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServicesPutRequestServiceValue) GetVni() int32 {
+func (o *ServicesPutRequestServiceValue) GetVni() int64 {
 	if o == nil || IsNil(o.Vni.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vni.Get()
@@ -297,7 +297,7 @@ func (o *ServicesPutRequestServiceValue) GetVni() int32 {
 // GetVniOk returns a tuple with the Vni field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServicesPutRequestServiceValue) GetVniOk() (*int32, bool) {
+func (o *ServicesPutRequestServiceValue) GetVniOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -313,8 +313,8 @@ func (o *ServicesPutRequestServiceValue) HasVni() bool {
 	return false
 }
 
-// SetVni gets a reference to the given NullableInt32 and assigns it to the Vni field.
-func (o *ServicesPutRequestServiceValue) SetVni(v int32) {
+// SetVni gets a reference to the given NullableInt64 and assigns it to the Vni field.
+func (o *ServicesPutRequestServiceValue) SetVni(v int64) {
 	o.Vni.Set(&v)
 }
 // SetVniNil sets the value for Vni to be an explicit nil
@@ -552,9 +552,9 @@ func (o *ServicesPutRequestServiceValue) SetDhcpServerIpv6(v string) {
 }
 
 // GetMtu returns the Mtu field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServicesPutRequestServiceValue) GetMtu() int32 {
+func (o *ServicesPutRequestServiceValue) GetMtu() int64 {
 	if o == nil || IsNil(o.Mtu.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Mtu.Get()
@@ -563,7 +563,7 @@ func (o *ServicesPutRequestServiceValue) GetMtu() int32 {
 // GetMtuOk returns a tuple with the Mtu field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServicesPutRequestServiceValue) GetMtuOk() (*int32, bool) {
+func (o *ServicesPutRequestServiceValue) GetMtuOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -579,8 +579,8 @@ func (o *ServicesPutRequestServiceValue) HasMtu() bool {
 	return false
 }
 
-// SetMtu gets a reference to the given NullableInt32 and assigns it to the Mtu field.
-func (o *ServicesPutRequestServiceValue) SetMtu(v int32) {
+// SetMtu gets a reference to the given NullableInt64 and assigns it to the Mtu field.
+func (o *ServicesPutRequestServiceValue) SetMtu(v int64) {
 	o.Mtu.Set(&v)
 }
 // SetMtuNil sets the value for Mtu to be an explicit nil
@@ -690,9 +690,9 @@ func (o *ServicesPutRequestServiceValue) SetPolicyBasedRoutingRefType(v string) 
 }
 
 // GetMaxUpstreamRateMbps returns the MaxUpstreamRateMbps field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbps() int32 {
+func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbps() int64 {
 	if o == nil || IsNil(o.MaxUpstreamRateMbps.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MaxUpstreamRateMbps.Get()
@@ -701,7 +701,7 @@ func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbps() int32 {
 // GetMaxUpstreamRateMbpsOk returns a tuple with the MaxUpstreamRateMbps field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbpsOk() (*int32, bool) {
+func (o *ServicesPutRequestServiceValue) GetMaxUpstreamRateMbpsOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -717,8 +717,8 @@ func (o *ServicesPutRequestServiceValue) HasMaxUpstreamRateMbps() bool {
 	return false
 }
 
-// SetMaxUpstreamRateMbps gets a reference to the given NullableInt32 and assigns it to the MaxUpstreamRateMbps field.
-func (o *ServicesPutRequestServiceValue) SetMaxUpstreamRateMbps(v int32) {
+// SetMaxUpstreamRateMbps gets a reference to the given NullableInt64 and assigns it to the MaxUpstreamRateMbps field.
+func (o *ServicesPutRequestServiceValue) SetMaxUpstreamRateMbps(v int64) {
 	o.MaxUpstreamRateMbps.Set(&v)
 }
 // SetMaxUpstreamRateMbpsNil sets the value for MaxUpstreamRateMbps to be an explicit nil
@@ -732,9 +732,9 @@ func (o *ServicesPutRequestServiceValue) UnsetMaxUpstreamRateMbps() {
 }
 
 // GetMaxDownstreamRateMbps returns the MaxDownstreamRateMbps field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbps() int32 {
+func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbps() int64 {
 	if o == nil || IsNil(o.MaxDownstreamRateMbps.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MaxDownstreamRateMbps.Get()
@@ -743,7 +743,7 @@ func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbps() int32 {
 // GetMaxDownstreamRateMbpsOk returns a tuple with the MaxDownstreamRateMbps field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbpsOk() (*int32, bool) {
+func (o *ServicesPutRequestServiceValue) GetMaxDownstreamRateMbpsOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -759,8 +759,8 @@ func (o *ServicesPutRequestServiceValue) HasMaxDownstreamRateMbps() bool {
 	return false
 }
 
-// SetMaxDownstreamRateMbps gets a reference to the given NullableInt32 and assigns it to the MaxDownstreamRateMbps field.
-func (o *ServicesPutRequestServiceValue) SetMaxDownstreamRateMbps(v int32) {
+// SetMaxDownstreamRateMbps gets a reference to the given NullableInt64 and assigns it to the MaxDownstreamRateMbps field.
+func (o *ServicesPutRequestServiceValue) SetMaxDownstreamRateMbps(v int64) {
 	o.MaxDownstreamRateMbps.Set(&v)
 }
 // SetMaxDownstreamRateMbpsNil sets the value for MaxDownstreamRateMbps to be an explicit nil
@@ -1126,9 +1126,9 @@ func (o *ServicesPutRequestServiceValue) SetAllowFastLeave(v bool) {
 }
 
 // GetMstInstance returns the MstInstance field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServicesPutRequestServiceValue) GetMstInstance() int32 {
+func (o *ServicesPutRequestServiceValue) GetMstInstance() int64 {
 	if o == nil || IsNil(o.MstInstance.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MstInstance.Get()
@@ -1137,7 +1137,7 @@ func (o *ServicesPutRequestServiceValue) GetMstInstance() int32 {
 // GetMstInstanceOk returns a tuple with the MstInstance field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServicesPutRequestServiceValue) GetMstInstanceOk() (*int32, bool) {
+func (o *ServicesPutRequestServiceValue) GetMstInstanceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1153,8 +1153,8 @@ func (o *ServicesPutRequestServiceValue) HasMstInstance() bool {
 	return false
 }
 
-// SetMstInstance gets a reference to the given NullableInt32 and assigns it to the MstInstance field.
-func (o *ServicesPutRequestServiceValue) SetMstInstance(v int32) {
+// SetMstInstance gets a reference to the given NullableInt64 and assigns it to the MstInstance field.
+func (o *ServicesPutRequestServiceValue) SetMstInstance(v int64) {
 	o.MstInstance.Set(&v)
 }
 // SetMstInstanceNil sets the value for MstInstance to be an explicit nil

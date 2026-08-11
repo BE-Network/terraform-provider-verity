@@ -22,7 +22,7 @@ Name | Type | Description | Notes
 **SwitchRouterIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit. | [optional] 
 **SwitchVtepIdIpMask** | Pointer to **string** | Switch VETP Identifier | [optional] [default to "(auto)"]
 **SwitchVtepIdIpMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit. | [optional] 
-**BgpAsNumber** | Pointer to **NullableInt32** | BGP Autonomous System Number for the site underlay  | [optional] 
+**BgpAsNumber** | Pointer to **NullableInt64** | BGP Autonomous System Number for the site underlay  | [optional] 
 **BgpAsNumberAutoAssigned** | Pointer to **bool** | Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit. | [optional] 
 **Badges** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueBadgesInner**](SwitchpointsPutRequestSwitchpointValueBadgesInner.md) |  | [optional] 
 **Children** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueChildrenInner**](SwitchpointsPutRequestSwitchpointValueChildrenInner.md) |  | [optional] 
@@ -504,20 +504,20 @@ HasSwitchVtepIdIpMaskAutoAssigned returns a boolean if a field has been set.
 
 ### GetBgpAsNumber
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int32`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int64`
 
 GetBgpAsNumber returns the BgpAsNumber field if non-nil, zero value otherwise.
 
 ### GetBgpAsNumberOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumberOk() (*int32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumberOk() (*int64, bool)`
 
 GetBgpAsNumberOk returns a tuple with the BgpAsNumber field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBgpAsNumber
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumber(v int32)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumber(v int64)`
 
 SetBgpAsNumber sets BgpAsNumber field to given value.
 

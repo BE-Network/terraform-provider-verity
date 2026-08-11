@@ -7,12 +7,12 @@ Name | Type | Description | Notes
 **RowNumEnable** | Pointer to **bool** | Enable row | [optional] [default to false]
 **RowNumService** | Pointer to **string** | Choose a Service to connect | [optional] [default to ""]
 **RowNumServiceRefType** | Pointer to **string** | Object type for row_num_service field | [optional] 
-**RowNumExternalVlan** | Pointer to **NullableInt32** | Choose an external vlan A value of 0 will make the VLAN untagged, while in case null is provided, the VLAN will be the one associated with the service. | [optional] 
+**RowNumExternalVlan** | Pointer to **NullableInt64** | Choose an external vlan A value of 0 will make the VLAN untagged, while in case null is provided, the VLAN will be the one associated with the service. | [optional] 
 **RowNumIngressAcl** | Pointer to **string** | Choose an ingress access control list | [optional] [default to ""]
 **RowNumIngressAclRefType** | Pointer to **string** | Object type for row_num_ingress_acl field | [optional] 
 **RowNumEgressAcl** | Pointer to **string** | Choose an egress access control list | [optional] [default to ""]
 **RowNumEgressAclRefType** | Pointer to **string** | Object type for row_num_egress_acl field | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 **RowNumMacFilter** | Pointer to **string** | Choose an access control list | [optional] [default to ""]
 **RowNumMacFilterRefType** | Pointer to **string** | Object type for row_num_mac_filter field | [optional] 
 **RowNumLanIptv** | Pointer to **string** | Denotes a LAN or IPTV service | [optional] [default to ""]
@@ -113,20 +113,20 @@ HasRowNumServiceRefType returns a boolean if a field has been set.
 
 ### GetRowNumExternalVlan
 
-`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlan() int32`
+`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlan() int64`
 
 GetRowNumExternalVlan returns the RowNumExternalVlan field if non-nil, zero value otherwise.
 
 ### GetRowNumExternalVlanOk
 
-`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int32, bool)`
+`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int64, bool)`
 
 GetRowNumExternalVlanOk returns a tuple with the RowNumExternalVlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRowNumExternalVlan
 
-`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumExternalVlan(v int32)`
+`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumExternalVlan(v int64)`
 
 SetRowNumExternalVlan sets RowNumExternalVlan field to given value.
 
@@ -248,20 +248,20 @@ HasRowNumEgressAclRefType returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndex() int32`
+`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndexOk() (*int32, bool)`
+`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetIndex(v int32)`
+`func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

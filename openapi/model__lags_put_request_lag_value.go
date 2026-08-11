@@ -34,7 +34,7 @@ type LagsPutRequestLagValue struct {
 	// Object type for eth_port_profile field
 	EthPortProfileRefType *string `json:"eth_port_profile_ref_type_,omitempty"`
 	// For peer-peer LAGs. The VLAN used for control
-	PeerLinkVlan NullableInt32 `json:"peer_link_vlan,omitempty"`
+	PeerLinkVlan NullableInt64 `json:"peer_link_vlan,omitempty"`
 	// Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer.
 	Fallback *bool `json:"fallback,omitempty"`
 	// Send LACP packets every second (if disabled, packets are sent every 30 seconds)
@@ -322,9 +322,9 @@ func (o *LagsPutRequestLagValue) SetEthPortProfileRefType(v string) {
 }
 
 // GetPeerLinkVlan returns the PeerLinkVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LagsPutRequestLagValue) GetPeerLinkVlan() int32 {
+func (o *LagsPutRequestLagValue) GetPeerLinkVlan() int64 {
 	if o == nil || IsNil(o.PeerLinkVlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PeerLinkVlan.Get()
@@ -333,7 +333,7 @@ func (o *LagsPutRequestLagValue) GetPeerLinkVlan() int32 {
 // GetPeerLinkVlanOk returns a tuple with the PeerLinkVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LagsPutRequestLagValue) GetPeerLinkVlanOk() (*int32, bool) {
+func (o *LagsPutRequestLagValue) GetPeerLinkVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -349,8 +349,8 @@ func (o *LagsPutRequestLagValue) HasPeerLinkVlan() bool {
 	return false
 }
 
-// SetPeerLinkVlan gets a reference to the given NullableInt32 and assigns it to the PeerLinkVlan field.
-func (o *LagsPutRequestLagValue) SetPeerLinkVlan(v int32) {
+// SetPeerLinkVlan gets a reference to the given NullableInt64 and assigns it to the PeerLinkVlan field.
+func (o *LagsPutRequestLagValue) SetPeerLinkVlan(v int64) {
 	o.PeerLinkVlan.Set(&v)
 }
 // SetPeerLinkVlanNil sets the value for PeerLinkVlan to be an explicit nil

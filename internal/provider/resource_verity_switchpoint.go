@@ -963,10 +963,10 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		// Handle BgpAsNumber field changes
 		if bgpAsNumberChanged {
 			if !plan.BgpAsNumber.IsNull() {
-				val := int32(plan.BgpAsNumber.ValueInt64())
-				spProps.BgpAsNumber = *openapi.NewNullableInt32(&val)
+				val := int64(plan.BgpAsNumber.ValueInt64())
+				spProps.BgpAsNumber = *openapi.NewNullableInt64(&val)
 			} else {
-				spProps.BgpAsNumber = *openapi.NewNullableInt32(nil)
+				spProps.BgpAsNumber = *openapi.NewNullableInt64(nil)
 			}
 		}
 
@@ -991,12 +991,12 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 					// Changing from auto-assigned=true to auto-assigned=false
 					// Must include BgpAsNumber value in the request for the change to take effect
 					if !plan.BgpAsNumber.IsNull() {
-						val := int32(plan.BgpAsNumber.ValueInt64())
-						spProps.BgpAsNumber = *openapi.NewNullableInt32(&val)
+						val := int64(plan.BgpAsNumber.ValueInt64())
+						spProps.BgpAsNumber = *openapi.NewNullableInt64(&val)
 					} else if !state.BgpAsNumber.IsNull() {
 						// Use current state BgpAsNumber if plan doesn't specify one
-						val := int32(state.BgpAsNumber.ValueInt64())
-						spProps.BgpAsNumber = *openapi.NewNullableInt32(&val)
+						val := int64(state.BgpAsNumber.ValueInt64())
+						spProps.BgpAsNumber = *openapi.NewNullableInt64(&val)
 					}
 				}
 			}
@@ -1165,7 +1165,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			},
 			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner {
 				return openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -1222,7 +1222,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			},
 			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner {
 				return openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -1281,7 +1281,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			},
 			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner {
 				return openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -1338,7 +1338,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			},
 			CreateDeleted: func(index int64) openapi.SwitchpointsPutRequestSwitchpointValueEthsInner {
 				return openapi.SwitchpointsPutRequestSwitchpointValueEthsInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -1379,7 +1379,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		}
 
 		// Handle nullable field in object_properties
-		utils.CompareAndSetNullableInt64Field(configOp.NumberOfMultipoints, st.NumberOfMultipoints, objPropsCfg.IsFieldConfigured("number_of_multipoints"), func(v *openapi.NullableInt32) { objProps.NumberOfMultipoints = *v }, &objPropsChanged)
+		utils.CompareAndSetNullableInt64Field(configOp.NumberOfMultipoints, st.NumberOfMultipoints, objPropsCfg.IsFieldConfigured("number_of_multipoints"), func(v *openapi.NullableInt64) { objProps.NumberOfMultipoints = *v }, &objPropsChanged)
 
 		if objPropsChanged {
 			spProps.ObjectProperties = &objProps

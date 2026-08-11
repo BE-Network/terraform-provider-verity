@@ -358,7 +358,7 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { badgeProps.Enable = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.Number, state.Number, configuredAttrs.IsConfigured("number"), func(v *openapi.NullableInt32) { badgeProps.Number = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.Number, state.Number, configuredAttrs.IsConfigured("number"), func(v *openapi.NullableInt64) { badgeProps.Number = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

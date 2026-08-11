@@ -7,19 +7,19 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Mode** | Pointer to **string** | Mode | [optional] [default to "IEEE 802.3af"]
-**UsageThreshold** | Pointer to **NullableFloat32** | Usage Threshold | [optional] 
-**ExternalBatteryPowerAvailable** | Pointer to **NullableInt32** | External Battery Power Available | [optional] [default to 40]
-**ExternalPowerAvailable** | Pointer to **NullableInt32** | External Power Available | [optional] [default to 75]
+**UsageThreshold** | Pointer to **NullableFloat64** | Usage Threshold | [optional] 
+**ExternalBatteryPowerAvailable** | Pointer to **NullableInt64** | External Battery Power Available | [optional] [default to 40]
+**ExternalPowerAvailable** | Pointer to **NullableInt64** | External Power Available | [optional] [default to 75]
 **DisableTcpUdpLearnedPacketAcceleration** | Pointer to **bool** | Required for AVB, PTP and Cobranet Support for ONT Devices | [optional] [default to false]
 **PacketQueue** | Pointer to **string** | Packet Queue for device | [optional] [default to "packet_queue|(Packet Queue)|"]
 **PacketQueueRefType** | Pointer to **string** | Object type for packet_queue field | [optional] 
-**SecurityAuditInterval** | Pointer to **NullableInt32** | Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 &lt;br&gt;if the value is blank, audit will use default switch settings.                                                 &lt;br&gt;if the value is 0, audit will be turned off.                                                  | [optional] [default to 60]
-**CommitToFlashInterval** | Pointer to **NullableInt32** | Time delay in minutes to write the Switch configuration to flash after a change is made.                                                 &lt;br&gt;if the value is blank, commit will use default switch settings of 12 hours.                                                 &lt;br&gt;if the value is 0, commit will be turned off. | [optional] [default to 60]
+**SecurityAuditInterval** | Pointer to **NullableInt64** | Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 &lt;br&gt;if the value is blank, audit will use default switch settings.                                                 &lt;br&gt;if the value is 0, audit will be turned off.                                                  | [optional] [default to 60]
+**CommitToFlashInterval** | Pointer to **NullableInt64** | Time delay in minutes to write the Switch configuration to flash after a change is made.                                                 &lt;br&gt;if the value is blank, commit will use default switch settings of 12 hours.                                                 &lt;br&gt;if the value is 0, commit will be turned off. | [optional] [default to 60]
 **Rocev2** | Pointer to **bool** | Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs. | [optional] [default to false]
 **CutThroughSwitching** | Pointer to **bool** | Enable Cut-through Switching on all Switches | [optional] [default to false]
 **ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
-**HoldTimer** | Pointer to **NullableInt32** | Hold Timer | [optional] [default to 0]
-**MacAgingTimerOverride** | Pointer to **NullableInt32** | Blank uses the Device&#39;s default; otherwise an integer between 1 to 1,000,000 seconds | [optional] 
+**HoldTimer** | Pointer to **NullableInt64** | Hold Timer | [optional] [default to 0]
+**MacAgingTimerOverride** | Pointer to **NullableInt64** | Blank uses the Device&#39;s default; otherwise an integer between 1 to 1,000,000 seconds | [optional] 
 **SpanningTreePriority** | Pointer to **string** | STP per switch, priority are in 4096 increments, the lower the number, the higher the priority. | [optional] [default to "byLevel"]
 
 ## Methods
@@ -118,20 +118,20 @@ HasMode returns a boolean if a field has been set.
 
 ### GetUsageThreshold
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThreshold() float32`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThreshold() float64`
 
 GetUsageThreshold returns the UsageThreshold field if non-nil, zero value otherwise.
 
 ### GetUsageThresholdOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThresholdOk() (*float32, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThresholdOk() (*float64, bool)`
 
 GetUsageThresholdOk returns a tuple with the UsageThreshold field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetUsageThreshold
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThreshold(v float32)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThreshold(v float64)`
 
 SetUsageThreshold sets UsageThreshold field to given value.
 
@@ -153,20 +153,20 @@ HasUsageThreshold returns a boolean if a field has been set.
 UnsetUsageThreshold ensures that no value is present for UsageThreshold, not even an explicit nil
 ### GetExternalBatteryPowerAvailable
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailable() int32`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailable() int64`
 
 GetExternalBatteryPowerAvailable returns the ExternalBatteryPowerAvailable field if non-nil, zero value otherwise.
 
 ### GetExternalBatteryPowerAvailableOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailableOk() (*int32, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailableOk() (*int64, bool)`
 
 GetExternalBatteryPowerAvailableOk returns a tuple with the ExternalBatteryPowerAvailable field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetExternalBatteryPowerAvailable
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailable(v int32)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailable(v int64)`
 
 SetExternalBatteryPowerAvailable sets ExternalBatteryPowerAvailable field to given value.
 
@@ -188,20 +188,20 @@ HasExternalBatteryPowerAvailable returns a boolean if a field has been set.
 UnsetExternalBatteryPowerAvailable ensures that no value is present for ExternalBatteryPowerAvailable, not even an explicit nil
 ### GetExternalPowerAvailable
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailable() int32`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailable() int64`
 
 GetExternalPowerAvailable returns the ExternalPowerAvailable field if non-nil, zero value otherwise.
 
 ### GetExternalPowerAvailableOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailableOk() (*int32, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailableOk() (*int64, bool)`
 
 GetExternalPowerAvailableOk returns a tuple with the ExternalPowerAvailable field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetExternalPowerAvailable
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailable(v int32)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailable(v int64)`
 
 SetExternalPowerAvailable sets ExternalPowerAvailable field to given value.
 
@@ -298,20 +298,20 @@ HasPacketQueueRefType returns a boolean if a field has been set.
 
 ### GetSecurityAuditInterval
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSecurityAuditInterval() int32`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSecurityAuditInterval() int64`
 
 GetSecurityAuditInterval returns the SecurityAuditInterval field if non-nil, zero value otherwise.
 
 ### GetSecurityAuditIntervalOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSecurityAuditIntervalOk() (*int32, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSecurityAuditIntervalOk() (*int64, bool)`
 
 GetSecurityAuditIntervalOk returns a tuple with the SecurityAuditInterval field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSecurityAuditInterval
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSecurityAuditInterval(v int32)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSecurityAuditInterval(v int64)`
 
 SetSecurityAuditInterval sets SecurityAuditInterval field to given value.
 
@@ -333,20 +333,20 @@ HasSecurityAuditInterval returns a boolean if a field has been set.
 UnsetSecurityAuditInterval ensures that no value is present for SecurityAuditInterval, not even an explicit nil
 ### GetCommitToFlashInterval
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCommitToFlashInterval() int32`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCommitToFlashInterval() int64`
 
 GetCommitToFlashInterval returns the CommitToFlashInterval field if non-nil, zero value otherwise.
 
 ### GetCommitToFlashIntervalOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCommitToFlashIntervalOk() (*int32, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCommitToFlashIntervalOk() (*int64, bool)`
 
 GetCommitToFlashIntervalOk returns a tuple with the CommitToFlashInterval field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCommitToFlashInterval
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCommitToFlashInterval(v int32)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCommitToFlashInterval(v int64)`
 
 SetCommitToFlashInterval sets CommitToFlashInterval field to given value.
 
@@ -443,20 +443,20 @@ HasObjectProperties returns a boolean if a field has been set.
 
 ### GetHoldTimer
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetHoldTimer() int32`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetHoldTimer() int64`
 
 GetHoldTimer returns the HoldTimer field if non-nil, zero value otherwise.
 
 ### GetHoldTimerOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetHoldTimerOk() (*int32, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetHoldTimerOk() (*int64, bool)`
 
 GetHoldTimerOk returns a tuple with the HoldTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetHoldTimer
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetHoldTimer(v int32)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetHoldTimer(v int64)`
 
 SetHoldTimer sets HoldTimer field to given value.
 
@@ -478,20 +478,20 @@ HasHoldTimer returns a boolean if a field has been set.
 UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
 ### GetMacAgingTimerOverride
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverride() int32`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverride() int64`
 
 GetMacAgingTimerOverride returns the MacAgingTimerOverride field if non-nil, zero value otherwise.
 
 ### GetMacAgingTimerOverrideOk
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverrideOk() (*int32, bool)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverrideOk() (*int64, bool)`
 
 GetMacAgingTimerOverrideOk returns a tuple with the MacAgingTimerOverride field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMacAgingTimerOverride
 
-`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMacAgingTimerOverride(v int32)`
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMacAgingTimerOverride(v int64)`
 
 SetMacAgingTimerOverride sets MacAgingTimerOverride field to given value.
 

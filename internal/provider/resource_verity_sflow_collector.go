@@ -330,7 +330,7 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sflowCollectorProps.Enable = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.Port, state.Port, configuredAttrs.IsConfigured("port"), func(v *openapi.NullableInt32) { sflowCollectorProps.Port = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.Port, state.Port, configuredAttrs.IsConfigured("port"), func(v *openapi.NullableInt64) { sflowCollectorProps.Port = *v }, &hasChanges)
 
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)

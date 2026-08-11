@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **CodecNumEnable** | Pointer to **bool** | Enable Codec | [optional] [default to true]
 **CodecNumPacketizationPeriod** | Pointer to **string** | Packet period selection interval in milliseconds | [optional] [default to "20"]
 **CodecNumSilenceSuppression** | Pointer to **bool** | Specifies whether silence suppression is on or off. Valid values are 0 &#x3D; off and 1 &#x3D; on | [optional] [default to false]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -131,20 +131,20 @@ HasCodecNumSilenceSuppression returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIndex() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIndexOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetIndex(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

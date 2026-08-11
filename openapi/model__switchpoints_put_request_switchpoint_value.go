@@ -56,7 +56,7 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	// Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit.
 	SwitchVtepIdIpMaskAutoAssigned *bool `json:"switch_vtep_id_ip_mask_auto_assigned_,omitempty"`
 	// BGP Autonomous System Number for the site underlay 
-	BgpAsNumber NullableInt32 `json:"bgp_as_number,omitempty"`
+	BgpAsNumber NullableInt64 `json:"bgp_as_number,omitempty"`
 	// Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit.
 	BgpAsNumberAutoAssigned *bool `json:"bgp_as_number_auto_assigned_,omitempty"`
 	Badges []SwitchpointsPutRequestSwitchpointValueBadgesInner `json:"badges,omitempty"`
@@ -726,9 +726,9 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchVtepIdIpMaskAutoAssign
 }
 
 // GetBgpAsNumber returns the BgpAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int32 {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int64 {
 	if o == nil || IsNil(o.BgpAsNumber.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BgpAsNumber.Get()
@@ -737,7 +737,7 @@ func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumber() int32 {
 // GetBgpAsNumberOk returns a tuple with the BgpAsNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumberOk() (*int32, bool) {
+func (o *SwitchpointsPutRequestSwitchpointValue) GetBgpAsNumberOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -753,8 +753,8 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasBgpAsNumber() bool {
 	return false
 }
 
-// SetBgpAsNumber gets a reference to the given NullableInt32 and assigns it to the BgpAsNumber field.
-func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumber(v int32) {
+// SetBgpAsNumber gets a reference to the given NullableInt64 and assigns it to the BgpAsNumber field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetBgpAsNumber(v int64) {
 	o.BgpAsNumber.Set(&v)
 }
 // SetBgpAsNumberNil sets the value for BgpAsNumber to be an explicit nil

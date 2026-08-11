@@ -24,7 +24,7 @@ type Ipv6listsPutRequestIpv6ListFilterValue struct {
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Comma separated list of IPv6 addresses
-	Ipv6List *string `json:"ipv6_list,omitempty" validate:"regexp=^.*$"`
+	Ipv6List *string `json:"ipv6_list,omitempty" validate:"regexp=/^.*$/"`
 }
 
 // NewIpv6listsPutRequestIpv6ListFilterValue instantiates a new Ipv6listsPutRequestIpv6ListFilterValue object

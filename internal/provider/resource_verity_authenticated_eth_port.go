@@ -461,8 +461,8 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { aepProps.TrustedPort = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.ReauthorizationPeriodSec, state.ReauthorizationPeriodSec, configuredAttrs.IsConfigured("reauthorization_period_sec"), func(v *openapi.NullableInt32) { aepProps.ReauthorizationPeriodSec = *v }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, configuredAttrs.IsConfigured("mac_authentication_holdoff_sec"), func(v *openapi.NullableInt32) { aepProps.MacAuthenticationHoldoffSec = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ReauthorizationPeriodSec, state.ReauthorizationPeriodSec, configuredAttrs.IsConfigured("reauthorization_period_sec"), func(v *openapi.NullableInt64) { aepProps.ReauthorizationPeriodSec = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, configuredAttrs.IsConfigured("mac_authentication_holdoff_sec"), func(v *openapi.NullableInt64) { aepProps.MacAuthenticationHoldoffSec = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

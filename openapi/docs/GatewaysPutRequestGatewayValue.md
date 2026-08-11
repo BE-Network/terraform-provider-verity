@@ -9,14 +9,14 @@ Name | Type | Description | Notes
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
 **NeighborIpAddress** | Pointer to **string** | IP address of remote BGP peer | [optional] [default to ""]
-**NeighborAsNumber** | Pointer to **NullableInt32** | Autonomous System Number of remote BGP peer  | [optional] 
+**NeighborAsNumber** | Pointer to **NullableInt64** | Autonomous System Number of remote BGP peer  | [optional] 
 **FabricInterconnect** | Pointer to **bool** |  | [optional] [default to false]
-**KeepaliveTimer** | Pointer to **NullableInt32** | Interval in seconds between Keepalive messages sent to remote BGP peer | [optional] [default to 60]
-**HoldTimer** | Pointer to **NullableInt32** | Time, in seconds,  used to determine failure of session Keepalive messages received from remote BGP peer  | [optional] [default to 180]
-**ConnectTimer** | Pointer to **NullableInt32** | Time in seconds between sucessive attempts to Establish BGP session | [optional] [default to 120]
-**AdvertisementInterval** | Pointer to **NullableInt32** | The minimum time in seconds between sending route updates to BGP neighbor  | [optional] [default to 30]
-**EbgpMultihop** | Pointer to **NullableInt32** | Allows external BGP neighbors to establish peering session multiple network hops away.  | [optional] [default to 255]
-**EgressVlan** | Pointer to **NullableInt32** | VLAN used to carry BGP TCP session | [optional] 
+**KeepaliveTimer** | Pointer to **NullableInt64** | Interval in seconds between Keepalive messages sent to remote BGP peer | [optional] [default to 60]
+**HoldTimer** | Pointer to **NullableInt64** | Time, in seconds,  used to determine failure of session Keepalive messages received from remote BGP peer  | [optional] [default to 180]
+**ConnectTimer** | Pointer to **NullableInt64** | Time in seconds between sucessive attempts to Establish BGP session | [optional] [default to 120]
+**AdvertisementInterval** | Pointer to **NullableInt64** | The minimum time in seconds between sending route updates to BGP neighbor  | [optional] [default to 30]
+**EbgpMultihop** | Pointer to **NullableInt64** | Allows external BGP neighbors to establish peering session multiple network hops away.  | [optional] [default to 255]
+**EgressVlan** | Pointer to **NullableInt64** | VLAN used to carry BGP TCP session | [optional] 
 **SourceIpAddress** | Pointer to **string** | Source IP address used to override the default source address calculation for BGP TCP session | [optional] [default to ""]
 **AnycastIpMask** | Pointer to **string** | The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router. | [optional] [default to ""]
 **Md5Password** | Pointer to **string** | MD5 Password used in the BGP session | [optional] [default to ""]
@@ -25,18 +25,18 @@ Name | Type | Description | Notes
 **ExportRouteMap** | Pointer to **string** | A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes | [optional] [default to ""]
 **ExportRouteMapRefType** | Pointer to **string** | Object type for export_route_map field | [optional] 
 **GatewayMode** | Pointer to **string** | Gateway Mode is the method used for defining routes for the Tenant | [optional] [default to "Static BGP"]
-**BgpInstanceAsNumber** | Pointer to **NullableInt32** | Override the switch&#39;s AS number used in the Tenant router definition where this Gateway is applied | [optional] 
-**LocalAsNumber** | Pointer to **NullableInt32** | Local AS Number to use as an override to switch AS number | [optional] 
+**BgpInstanceAsNumber** | Pointer to **NullableInt64** | Override the switch&#39;s AS number used in the Tenant router definition where this Gateway is applied | [optional] 
+**LocalAsNumber** | Pointer to **NullableInt64** | Local AS Number to use as an override to switch AS number | [optional] 
 **LocalAsNoPrepend** | Pointer to **bool** | Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set. | [optional] [default to false]
 **ReplaceAs** | Pointer to **bool** | Prepend only Local AS in updates to EBGP peers. | [optional] [default to false]
-**MaxLocalAsOccurrences** | Pointer to **NullableInt32** | Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or &#39;0&#39; to disable. | [optional] [default to 0]
+**MaxLocalAsOccurrences** | Pointer to **NullableInt64** | Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or &#39;0&#39; to disable. | [optional] [default to 0]
 **DynamicBgpSubnet** | Pointer to **string** | Dynamic BGP Subnet | [optional] [default to ""]
-**DynamicBgpLimits** | Pointer to **NullableInt32** | Dynamic BGP Limits | [optional] [default to 0]
+**DynamicBgpLimits** | Pointer to **NullableInt64** | Dynamic BGP Limits | [optional] [default to 0]
 **HelperHopIpAddress** | Pointer to **string** | Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection | [optional] [default to ""]
 **EnableBfd** | Pointer to **bool** | Enable BFD(Bi-Directional Forwarding) | [optional] [default to false]
-**BfdReceiveInterval** | Pointer to **NullableInt32** | Configure the minimum interval during which the system can receive BFD control packets | [optional] [default to 300]
-**BfdTransmissionInterval** | Pointer to **NullableInt32** | Configure the minimum transmission interval during which the system can send BFD control packets | [optional] [default to 300]
-**BfdDetectMultiplier** | Pointer to **NullableInt32** | Configure the detection multiplier to determine packet loss | [optional] [default to 3]
+**BfdReceiveInterval** | Pointer to **NullableInt64** | Configure the minimum interval during which the system can receive BFD control packets | [optional] [default to 300]
+**BfdTransmissionInterval** | Pointer to **NullableInt64** | Configure the minimum transmission interval during which the system can send BFD control packets | [optional] [default to 300]
+**BfdDetectMultiplier** | Pointer to **NullableInt64** | Configure the detection multiplier to determine packet loss | [optional] [default to 3]
 **NextHopSelf** | Pointer to **bool** | Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself. | [optional] [default to false]
 **StaticRoutes** | Pointer to [**[]GatewaysPutRequestGatewayValueStaticRoutesInner**](GatewaysPutRequestGatewayValueStaticRoutesInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties**](DevicesettingsPutRequestEthDeviceProfilesValueObjectProperties.md) |  | [optional] 
@@ -191,20 +191,20 @@ HasNeighborIpAddress returns a boolean if a field has been set.
 
 ### GetNeighborAsNumber
 
-`func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumber() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumber() int64`
 
 GetNeighborAsNumber returns the NeighborAsNumber field if non-nil, zero value otherwise.
 
 ### GetNeighborAsNumberOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumberOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumberOk() (*int64, bool)`
 
 GetNeighborAsNumberOk returns a tuple with the NeighborAsNumber field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetNeighborAsNumber
 
-`func (o *GatewaysPutRequestGatewayValue) SetNeighborAsNumber(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetNeighborAsNumber(v int64)`
 
 SetNeighborAsNumber sets NeighborAsNumber field to given value.
 
@@ -251,20 +251,20 @@ HasFabricInterconnect returns a boolean if a field has been set.
 
 ### GetKeepaliveTimer
 
-`func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimer() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimer() int64`
 
 GetKeepaliveTimer returns the KeepaliveTimer field if non-nil, zero value otherwise.
 
 ### GetKeepaliveTimerOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimerOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimerOk() (*int64, bool)`
 
 GetKeepaliveTimerOk returns a tuple with the KeepaliveTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetKeepaliveTimer
 
-`func (o *GatewaysPutRequestGatewayValue) SetKeepaliveTimer(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetKeepaliveTimer(v int64)`
 
 SetKeepaliveTimer sets KeepaliveTimer field to given value.
 
@@ -286,20 +286,20 @@ HasKeepaliveTimer returns a boolean if a field has been set.
 UnsetKeepaliveTimer ensures that no value is present for KeepaliveTimer, not even an explicit nil
 ### GetHoldTimer
 
-`func (o *GatewaysPutRequestGatewayValue) GetHoldTimer() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetHoldTimer() int64`
 
 GetHoldTimer returns the HoldTimer field if non-nil, zero value otherwise.
 
 ### GetHoldTimerOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetHoldTimerOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetHoldTimerOk() (*int64, bool)`
 
 GetHoldTimerOk returns a tuple with the HoldTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetHoldTimer
 
-`func (o *GatewaysPutRequestGatewayValue) SetHoldTimer(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetHoldTimer(v int64)`
 
 SetHoldTimer sets HoldTimer field to given value.
 
@@ -321,20 +321,20 @@ HasHoldTimer returns a boolean if a field has been set.
 UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
 ### GetConnectTimer
 
-`func (o *GatewaysPutRequestGatewayValue) GetConnectTimer() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetConnectTimer() int64`
 
 GetConnectTimer returns the ConnectTimer field if non-nil, zero value otherwise.
 
 ### GetConnectTimerOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetConnectTimerOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetConnectTimerOk() (*int64, bool)`
 
 GetConnectTimerOk returns a tuple with the ConnectTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetConnectTimer
 
-`func (o *GatewaysPutRequestGatewayValue) SetConnectTimer(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetConnectTimer(v int64)`
 
 SetConnectTimer sets ConnectTimer field to given value.
 
@@ -356,20 +356,20 @@ HasConnectTimer returns a boolean if a field has been set.
 UnsetConnectTimer ensures that no value is present for ConnectTimer, not even an explicit nil
 ### GetAdvertisementInterval
 
-`func (o *GatewaysPutRequestGatewayValue) GetAdvertisementInterval() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetAdvertisementInterval() int64`
 
 GetAdvertisementInterval returns the AdvertisementInterval field if non-nil, zero value otherwise.
 
 ### GetAdvertisementIntervalOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetAdvertisementIntervalOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetAdvertisementIntervalOk() (*int64, bool)`
 
 GetAdvertisementIntervalOk returns a tuple with the AdvertisementInterval field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAdvertisementInterval
 
-`func (o *GatewaysPutRequestGatewayValue) SetAdvertisementInterval(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetAdvertisementInterval(v int64)`
 
 SetAdvertisementInterval sets AdvertisementInterval field to given value.
 
@@ -391,20 +391,20 @@ HasAdvertisementInterval returns a boolean if a field has been set.
 UnsetAdvertisementInterval ensures that no value is present for AdvertisementInterval, not even an explicit nil
 ### GetEbgpMultihop
 
-`func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihop() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihop() int64`
 
 GetEbgpMultihop returns the EbgpMultihop field if non-nil, zero value otherwise.
 
 ### GetEbgpMultihopOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihopOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetEbgpMultihopOk() (*int64, bool)`
 
 GetEbgpMultihopOk returns a tuple with the EbgpMultihop field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEbgpMultihop
 
-`func (o *GatewaysPutRequestGatewayValue) SetEbgpMultihop(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetEbgpMultihop(v int64)`
 
 SetEbgpMultihop sets EbgpMultihop field to given value.
 
@@ -426,20 +426,20 @@ HasEbgpMultihop returns a boolean if a field has been set.
 UnsetEbgpMultihop ensures that no value is present for EbgpMultihop, not even an explicit nil
 ### GetEgressVlan
 
-`func (o *GatewaysPutRequestGatewayValue) GetEgressVlan() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetEgressVlan() int64`
 
 GetEgressVlan returns the EgressVlan field if non-nil, zero value otherwise.
 
 ### GetEgressVlanOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetEgressVlanOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetEgressVlanOk() (*int64, bool)`
 
 GetEgressVlanOk returns a tuple with the EgressVlan field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEgressVlan
 
-`func (o *GatewaysPutRequestGatewayValue) SetEgressVlan(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetEgressVlan(v int64)`
 
 SetEgressVlan sets EgressVlan field to given value.
 
@@ -661,20 +661,20 @@ HasGatewayMode returns a boolean if a field has been set.
 
 ### GetBgpInstanceAsNumber
 
-`func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int64`
 
 GetBgpInstanceAsNumber returns the BgpInstanceAsNumber field if non-nil, zero value otherwise.
 
 ### GetBgpInstanceAsNumberOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumberOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumberOk() (*int64, bool)`
 
 GetBgpInstanceAsNumberOk returns a tuple with the BgpInstanceAsNumber field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBgpInstanceAsNumber
 
-`func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumber(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumber(v int64)`
 
 SetBgpInstanceAsNumber sets BgpInstanceAsNumber field to given value.
 
@@ -696,20 +696,20 @@ HasBgpInstanceAsNumber returns a boolean if a field has been set.
 UnsetBgpInstanceAsNumber ensures that no value is present for BgpInstanceAsNumber, not even an explicit nil
 ### GetLocalAsNumber
 
-`func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumber() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumber() int64`
 
 GetLocalAsNumber returns the LocalAsNumber field if non-nil, zero value otherwise.
 
 ### GetLocalAsNumberOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumberOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetLocalAsNumberOk() (*int64, bool)`
 
 GetLocalAsNumberOk returns a tuple with the LocalAsNumber field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLocalAsNumber
 
-`func (o *GatewaysPutRequestGatewayValue) SetLocalAsNumber(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetLocalAsNumber(v int64)`
 
 SetLocalAsNumber sets LocalAsNumber field to given value.
 
@@ -781,20 +781,20 @@ HasReplaceAs returns a boolean if a field has been set.
 
 ### GetMaxLocalAsOccurrences
 
-`func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrences() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrences() int64`
 
 GetMaxLocalAsOccurrences returns the MaxLocalAsOccurrences field if non-nil, zero value otherwise.
 
 ### GetMaxLocalAsOccurrencesOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrencesOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrencesOk() (*int64, bool)`
 
 GetMaxLocalAsOccurrencesOk returns a tuple with the MaxLocalAsOccurrences field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMaxLocalAsOccurrences
 
-`func (o *GatewaysPutRequestGatewayValue) SetMaxLocalAsOccurrences(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetMaxLocalAsOccurrences(v int64)`
 
 SetMaxLocalAsOccurrences sets MaxLocalAsOccurrences field to given value.
 
@@ -841,20 +841,20 @@ HasDynamicBgpSubnet returns a boolean if a field has been set.
 
 ### GetDynamicBgpLimits
 
-`func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimits() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimits() int64`
 
 GetDynamicBgpLimits returns the DynamicBgpLimits field if non-nil, zero value otherwise.
 
 ### GetDynamicBgpLimitsOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimitsOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimitsOk() (*int64, bool)`
 
 GetDynamicBgpLimitsOk returns a tuple with the DynamicBgpLimits field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDynamicBgpLimits
 
-`func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpLimits(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpLimits(v int64)`
 
 SetDynamicBgpLimits sets DynamicBgpLimits field to given value.
 
@@ -926,20 +926,20 @@ HasEnableBfd returns a boolean if a field has been set.
 
 ### GetBfdReceiveInterval
 
-`func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveInterval() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveInterval() int64`
 
 GetBfdReceiveInterval returns the BfdReceiveInterval field if non-nil, zero value otherwise.
 
 ### GetBfdReceiveIntervalOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveIntervalOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveIntervalOk() (*int64, bool)`
 
 GetBfdReceiveIntervalOk returns a tuple with the BfdReceiveInterval field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBfdReceiveInterval
 
-`func (o *GatewaysPutRequestGatewayValue) SetBfdReceiveInterval(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetBfdReceiveInterval(v int64)`
 
 SetBfdReceiveInterval sets BfdReceiveInterval field to given value.
 
@@ -961,20 +961,20 @@ HasBfdReceiveInterval returns a boolean if a field has been set.
 UnsetBfdReceiveInterval ensures that no value is present for BfdReceiveInterval, not even an explicit nil
 ### GetBfdTransmissionInterval
 
-`func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionInterval() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionInterval() int64`
 
 GetBfdTransmissionInterval returns the BfdTransmissionInterval field if non-nil, zero value otherwise.
 
 ### GetBfdTransmissionIntervalOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionIntervalOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionIntervalOk() (*int64, bool)`
 
 GetBfdTransmissionIntervalOk returns a tuple with the BfdTransmissionInterval field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBfdTransmissionInterval
 
-`func (o *GatewaysPutRequestGatewayValue) SetBfdTransmissionInterval(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetBfdTransmissionInterval(v int64)`
 
 SetBfdTransmissionInterval sets BfdTransmissionInterval field to given value.
 
@@ -996,20 +996,20 @@ HasBfdTransmissionInterval returns a boolean if a field has been set.
 UnsetBfdTransmissionInterval ensures that no value is present for BfdTransmissionInterval, not even an explicit nil
 ### GetBfdDetectMultiplier
 
-`func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplier() int32`
+`func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplier() int64`
 
 GetBfdDetectMultiplier returns the BfdDetectMultiplier field if non-nil, zero value otherwise.
 
 ### GetBfdDetectMultiplierOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplierOk() (*int32, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplierOk() (*int64, bool)`
 
 GetBfdDetectMultiplierOk returns a tuple with the BfdDetectMultiplier field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBfdDetectMultiplier
 
-`func (o *GatewaysPutRequestGatewayValue) SetBfdDetectMultiplier(v int32)`
+`func (o *GatewaysPutRequestGatewayValue) SetBfdDetectMultiplier(v int64)`
 
 SetBfdDetectMultiplier sets BfdDetectMultiplier field to given value.
 

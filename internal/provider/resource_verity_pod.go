@@ -345,7 +345,7 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { podReq.Enable = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.ExpectedSpineCount, state.ExpectedSpineCount, configuredAttrs.IsConfigured("expected_spine_count"), func(v *openapi.NullableInt32) { podReq.ExpectedSpineCount = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ExpectedSpineCount, state.ExpectedSpineCount, configuredAttrs.IsConfigured("expected_spine_count"), func(v *openapi.NullableInt64) { podReq.ExpectedSpineCount = *v }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

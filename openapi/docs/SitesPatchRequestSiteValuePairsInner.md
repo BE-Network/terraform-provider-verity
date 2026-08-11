@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **LagGroup** | Pointer to **string** | LAG Group | [optional] [default to ""]
 **LagGroupRefType** | Pointer to **string** | Object type for lag_group field | [optional] 
 **IsWhiteboxPair** | Pointer to **bool** | LAG Pair | [optional] [default to false]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -235,20 +235,20 @@ HasIsWhiteboxPair returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *SitesPatchRequestSiteValuePairsInner) GetIndex() int32`
+`func (o *SitesPatchRequestSiteValuePairsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *SitesPatchRequestSiteValuePairsInner) GetIndexOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValuePairsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *SitesPatchRequestSiteValuePairsInner) SetIndex(v int32)`
+`func (o *SitesPatchRequestSiteValuePairsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

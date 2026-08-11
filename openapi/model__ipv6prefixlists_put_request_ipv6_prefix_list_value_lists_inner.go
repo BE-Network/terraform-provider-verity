@@ -26,11 +26,11 @@ type Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner struct {
 	// IPv6 address and subnet to match against 
 	Ipv6Prefix *string `json:"ipv6_prefix,omitempty"`
 	// Match IP routes with a subnet mask greater than or equal to the value indicated 
-	GreaterThanEqualValue NullableInt32 `json:"greater_than_equal_value,omitempty"`
+	GreaterThanEqualValue NullableInt64 `json:"greater_than_equal_value,omitempty"`
 	// Match IP routes with a subnet mask less than or equal to the value indicated
-	LessThanEqualValue NullableInt32 `json:"less_than_equal_value,omitempty"`
+	LessThanEqualValue NullableInt64 `json:"less_than_equal_value,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewIpv6prefixlistsPutRequestIpv6PrefixListValueListsInner instantiates a new Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner object
@@ -159,9 +159,9 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetIpv6Prefix(v
 }
 
 // GetGreaterThanEqualValue returns the GreaterThanEqualValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetGreaterThanEqualValue() int32 {
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetGreaterThanEqualValue() int64 {
 	if o == nil || IsNil(o.GreaterThanEqualValue.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.GreaterThanEqualValue.Get()
@@ -170,7 +170,7 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetGreaterThanE
 // GetGreaterThanEqualValueOk returns a tuple with the GreaterThanEqualValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetGreaterThanEqualValueOk() (*int32, bool) {
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetGreaterThanEqualValueOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -186,8 +186,8 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) HasGreaterThanE
 	return false
 }
 
-// SetGreaterThanEqualValue gets a reference to the given NullableInt32 and assigns it to the GreaterThanEqualValue field.
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetGreaterThanEqualValue(v int32) {
+// SetGreaterThanEqualValue gets a reference to the given NullableInt64 and assigns it to the GreaterThanEqualValue field.
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetGreaterThanEqualValue(v int64) {
 	o.GreaterThanEqualValue.Set(&v)
 }
 // SetGreaterThanEqualValueNil sets the value for GreaterThanEqualValue to be an explicit nil
@@ -201,9 +201,9 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) UnsetGreaterTha
 }
 
 // GetLessThanEqualValue returns the LessThanEqualValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetLessThanEqualValue() int32 {
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetLessThanEqualValue() int64 {
 	if o == nil || IsNil(o.LessThanEqualValue.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LessThanEqualValue.Get()
@@ -212,7 +212,7 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetLessThanEqua
 // GetLessThanEqualValueOk returns a tuple with the LessThanEqualValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetLessThanEqualValueOk() (*int32, bool) {
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetLessThanEqualValueOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -228,8 +228,8 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) HasLessThanEqua
 	return false
 }
 
-// SetLessThanEqualValue gets a reference to the given NullableInt32 and assigns it to the LessThanEqualValue field.
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetLessThanEqualValue(v int32) {
+// SetLessThanEqualValue gets a reference to the given NullableInt64 and assigns it to the LessThanEqualValue field.
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetLessThanEqualValue(v int64) {
 	o.LessThanEqualValue.Set(&v)
 }
 // SetLessThanEqualValueNil sets the value for LessThanEqualValue to be an explicit nil
@@ -243,9 +243,9 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) UnsetLessThanEq
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndex() int32 {
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -253,7 +253,7 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndex() int3
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndexOk() (*int32, bool) {
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -269,8 +269,8 @@ func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) HasIndex() bool
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

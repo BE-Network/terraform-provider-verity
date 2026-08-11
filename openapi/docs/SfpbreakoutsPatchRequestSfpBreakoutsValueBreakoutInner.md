@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Vendor** | Pointer to **string** | Vendor | [optional] [default to ""]
 **PartNumber** | Pointer to **string** | Part Number | [optional] [default to ""]
 **Breakout** | Pointer to **string** | Breakout definition; defines number of ports of what speed this port is brokenout to. | [optional] [default to "1x100G"]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -131,20 +131,20 @@ HasBreakout returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetIndex() int32`
+`func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetIndexOk() (*int32, bool)`
+`func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetIndex(v int32)`
+`func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Breakout** | Pointer to **string** | Breakout Port Override. Available options determined by Switch capability, Installed SFP and the capacity of the pipeline. | [optional] [default to ""]
 **EthNumIcon** | Pointer to **string** | Icon of this Eth Port | [optional] [default to "empty"]
 **EthNumLabel** | Pointer to **string** | Label of this Eth Port | [optional] [default to ""]
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 **Enable** | Pointer to **bool** | Enable port.  | [optional] [default to true]
 **PortName** | Pointer to **string** | The name identifying the port. Used for reference only, it won&#39;t actually change the port name. | [optional] 
 
@@ -107,20 +107,20 @@ HasEthNumLabel returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int32`
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndexOk() (*int32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int32)`
+`func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

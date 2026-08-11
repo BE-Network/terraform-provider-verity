@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **EnableSflow** | Pointer to **bool** | Enable sFlow for this Diagnostics Profile  | [optional] [default to false]
 **FlowCollector** | Pointer to **string** | Flow Collector for this Diagnostics Profile  | [optional] [default to ""]
 **FlowCollectorRefType** | Pointer to **string** | Object type for flow_collector field | [optional] 
-**PollInterval** | Pointer to **NullableInt32** | The sampling rate for sFlow polling (seconds) | [optional] [default to 20]
+**PollInterval** | Pointer to **NullableInt64** | The sampling rate for sFlow polling (seconds) | [optional] [default to 20]
 **VrfType** | Pointer to **string** | Management or Underlay | [optional] [default to "management"]
 
 ## Methods
@@ -158,20 +158,20 @@ HasFlowCollectorRefType returns a boolean if a field has been set.
 
 ### GetPollInterval
 
-`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollInterval() int32`
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollInterval() int64`
 
 GetPollInterval returns the PollInterval field if non-nil, zero value otherwise.
 
 ### GetPollIntervalOk
 
-`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollIntervalOk() (*int32, bool)`
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollIntervalOk() (*int64, bool)`
 
 GetPollIntervalOk returns a tuple with the PollInterval field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPollInterval
 
-`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollInterval(v int32)`
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollInterval(v int64)`
 
 SetPollInterval sets PollInterval field to given value.
 

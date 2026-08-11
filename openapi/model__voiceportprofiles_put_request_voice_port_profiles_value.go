@@ -40,7 +40,7 @@ type VoiceportprofilesPutRequestVoicePortProfilesValue struct {
 	// Call Forward On Busy
 	CallForwardOnBusyEnable *bool `json:"call_forward_on_busy_enable,omitempty"`
 	// Call Forward on number of rings
-	CallForwardOnNoAnswerRingCount NullableInt32 `json:"call_forward_on_no_answer_ring_count,omitempty"`
+	CallForwardOnNoAnswerRingCount NullableInt64 `json:"call_forward_on_no_answer_ring_count,omitempty"`
 	// Call Transfer
 	CallTransferEnable *bool `json:"call_transfer_enable,omitempty"`
 	// Audio Message Waiting Indicator
@@ -62,31 +62,31 @@ type VoiceportprofilesPutRequestVoicePortProfilesValue struct {
 	// Visual Message Waiting Indicator
 	VisualMwiEnable *bool `json:"visual_mwi_enable,omitempty"`
 	// Message Waiting Indicator Refresh
-	MwiRefreshTimer NullableInt32 `json:"mwi_refresh_timer,omitempty"`
+	MwiRefreshTimer NullableInt64 `json:"mwi_refresh_timer,omitempty"`
 	// Direct Connect
 	HotlineEnable *bool `json:"hotline_enable,omitempty"`
 	// Dial Tone Feature Delay
-	DialToneFeatureDelay NullableInt32 `json:"dial_tone_feature_delay,omitempty"`
+	DialToneFeatureDelay NullableInt64 `json:"dial_tone_feature_delay,omitempty"`
 	// Intercom
 	IntercomEnable *bool `json:"intercom_enable,omitempty"`
 	// Intercom Transfer
 	IntercomTransferEnable *bool `json:"intercom_transfer_enable,omitempty"`
 	// Transmit Gain in tenths of a dB.Example -30 would equal -3.0db
-	TransmitGain NullableInt32 `json:"transmit_gain,omitempty"`
+	TransmitGain NullableInt64 `json:"transmit_gain,omitempty"`
 	// Receive Gainin tenths of a dB. Example -30 would equal -3.0db
-	ReceiveGain NullableInt32 `json:"receive_gain,omitempty"`
+	ReceiveGain NullableInt64 `json:"receive_gain,omitempty"`
 	// Echo Cancellation Enable
 	EchoCancellationEnable *bool `json:"echo_cancellation_enable,omitempty"`
 	// The target value of the jitter buffer in milliseconds
-	JitterTarget NullableInt32 `json:"jitter_target,omitempty"`
+	JitterTarget NullableInt64 `json:"jitter_target,omitempty"`
 	// The maximum depth of the jitter buffer in milliseconds
-	JitterBufferMax NullableInt32 `json:"jitter_buffer_max,omitempty"`
+	JitterBufferMax NullableInt64 `json:"jitter_buffer_max,omitempty"`
 	// Signaling Code
 	SignalingCode *string `json:"signaling_code,omitempty"`
 	// Release timer defined in seconds. The default value of this attribute is 10 seconds
-	ReleaseTimer NullableInt32 `json:"release_timer,omitempty"`
+	ReleaseTimer NullableInt64 `json:"release_timer,omitempty"`
 	// Time in seconds for the receiver is off-hook before ROH tone is applied. The value 0 disables ROH timing. The default value is 15 seconds
-	RohTimer NullableInt32 `json:"roh_timer,omitempty"`
+	RohTimer NullableInt64 `json:"roh_timer,omitempty"`
 	ObjectProperties *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -116,8 +116,8 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValue() *VoiceportprofilesPu
 	this.CallForwardUnconditionalEnable = &callForwardUnconditionalEnable
 	var callForwardOnBusyEnable bool = false
 	this.CallForwardOnBusyEnable = &callForwardOnBusyEnable
-	var callForwardOnNoAnswerRingCount int32 = 4
-	this.CallForwardOnNoAnswerRingCount = *NewNullableInt32(&callForwardOnNoAnswerRingCount)
+	var callForwardOnNoAnswerRingCount int64 = 4
+	this.CallForwardOnNoAnswerRingCount = *NewNullableInt64(&callForwardOnNoAnswerRingCount)
 	var callTransferEnable bool = false
 	this.CallTransferEnable = &callTransferEnable
 	var audioMwiEnable bool = false
@@ -138,32 +138,32 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValue() *VoiceportprofilesPu
 	this.CallHoldEnable = &callHoldEnable
 	var visualMwiEnable bool = false
 	this.VisualMwiEnable = &visualMwiEnable
-	var mwiRefreshTimer int32 = 30
-	this.MwiRefreshTimer = *NewNullableInt32(&mwiRefreshTimer)
+	var mwiRefreshTimer int64 = 30
+	this.MwiRefreshTimer = *NewNullableInt64(&mwiRefreshTimer)
 	var hotlineEnable bool = false
 	this.HotlineEnable = &hotlineEnable
-	var dialToneFeatureDelay int32 = 4
-	this.DialToneFeatureDelay = *NewNullableInt32(&dialToneFeatureDelay)
+	var dialToneFeatureDelay int64 = 4
+	this.DialToneFeatureDelay = *NewNullableInt64(&dialToneFeatureDelay)
 	var intercomEnable bool = false
 	this.IntercomEnable = &intercomEnable
 	var intercomTransferEnable bool = false
 	this.IntercomTransferEnable = &intercomTransferEnable
-	var transmitGain int32 = -30
-	this.TransmitGain = *NewNullableInt32(&transmitGain)
-	var receiveGain int32 = -30
-	this.ReceiveGain = *NewNullableInt32(&receiveGain)
+	var transmitGain int64 = -30
+	this.TransmitGain = *NewNullableInt64(&transmitGain)
+	var receiveGain int64 = -30
+	this.ReceiveGain = *NewNullableInt64(&receiveGain)
 	var echoCancellationEnable bool = true
 	this.EchoCancellationEnable = &echoCancellationEnable
-	var jitterTarget int32 = 40
-	this.JitterTarget = *NewNullableInt32(&jitterTarget)
-	var jitterBufferMax int32 = 180
-	this.JitterBufferMax = *NewNullableInt32(&jitterBufferMax)
+	var jitterTarget int64 = 40
+	this.JitterTarget = *NewNullableInt64(&jitterTarget)
+	var jitterBufferMax int64 = 180
+	this.JitterBufferMax = *NewNullableInt64(&jitterBufferMax)
 	var signalingCode string = "LoopStart"
 	this.SignalingCode = &signalingCode
-	var releaseTimer int32 = 10
-	this.ReleaseTimer = *NewNullableInt32(&releaseTimer)
-	var rohTimer int32 = 15
-	this.RohTimer = *NewNullableInt32(&rohTimer)
+	var releaseTimer int64 = 10
+	this.ReleaseTimer = *NewNullableInt64(&releaseTimer)
+	var rohTimer int64 = 15
+	this.RohTimer = *NewNullableInt64(&rohTimer)
 	return &this
 }
 
@@ -192,8 +192,8 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValueWithDefaults() *Voicepo
 	this.CallForwardUnconditionalEnable = &callForwardUnconditionalEnable
 	var callForwardOnBusyEnable bool = false
 	this.CallForwardOnBusyEnable = &callForwardOnBusyEnable
-	var callForwardOnNoAnswerRingCount int32 = 4
-	this.CallForwardOnNoAnswerRingCount = *NewNullableInt32(&callForwardOnNoAnswerRingCount)
+	var callForwardOnNoAnswerRingCount int64 = 4
+	this.CallForwardOnNoAnswerRingCount = *NewNullableInt64(&callForwardOnNoAnswerRingCount)
 	var callTransferEnable bool = false
 	this.CallTransferEnable = &callTransferEnable
 	var audioMwiEnable bool = false
@@ -214,32 +214,32 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValueWithDefaults() *Voicepo
 	this.CallHoldEnable = &callHoldEnable
 	var visualMwiEnable bool = false
 	this.VisualMwiEnable = &visualMwiEnable
-	var mwiRefreshTimer int32 = 30
-	this.MwiRefreshTimer = *NewNullableInt32(&mwiRefreshTimer)
+	var mwiRefreshTimer int64 = 30
+	this.MwiRefreshTimer = *NewNullableInt64(&mwiRefreshTimer)
 	var hotlineEnable bool = false
 	this.HotlineEnable = &hotlineEnable
-	var dialToneFeatureDelay int32 = 4
-	this.DialToneFeatureDelay = *NewNullableInt32(&dialToneFeatureDelay)
+	var dialToneFeatureDelay int64 = 4
+	this.DialToneFeatureDelay = *NewNullableInt64(&dialToneFeatureDelay)
 	var intercomEnable bool = false
 	this.IntercomEnable = &intercomEnable
 	var intercomTransferEnable bool = false
 	this.IntercomTransferEnable = &intercomTransferEnable
-	var transmitGain int32 = -30
-	this.TransmitGain = *NewNullableInt32(&transmitGain)
-	var receiveGain int32 = -30
-	this.ReceiveGain = *NewNullableInt32(&receiveGain)
+	var transmitGain int64 = -30
+	this.TransmitGain = *NewNullableInt64(&transmitGain)
+	var receiveGain int64 = -30
+	this.ReceiveGain = *NewNullableInt64(&receiveGain)
 	var echoCancellationEnable bool = true
 	this.EchoCancellationEnable = &echoCancellationEnable
-	var jitterTarget int32 = 40
-	this.JitterTarget = *NewNullableInt32(&jitterTarget)
-	var jitterBufferMax int32 = 180
-	this.JitterBufferMax = *NewNullableInt32(&jitterBufferMax)
+	var jitterTarget int64 = 40
+	this.JitterTarget = *NewNullableInt64(&jitterTarget)
+	var jitterBufferMax int64 = 180
+	this.JitterBufferMax = *NewNullableInt64(&jitterBufferMax)
 	var signalingCode string = "LoopStart"
 	this.SignalingCode = &signalingCode
-	var releaseTimer int32 = 10
-	this.ReleaseTimer = *NewNullableInt32(&releaseTimer)
-	var rohTimer int32 = 15
-	this.RohTimer = *NewNullableInt32(&rohTimer)
+	var releaseTimer int64 = 10
+	this.ReleaseTimer = *NewNullableInt64(&releaseTimer)
+	var rohTimer int64 = 15
+	this.RohTimer = *NewNullableInt64(&rohTimer)
 	return &this
 }
 
@@ -564,9 +564,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardOnBusy
 }
 
 // GetCallForwardOnNoAnswerRingCount returns the CallForwardOnNoAnswerRingCount field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAnswerRingCount() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAnswerRingCount() int64 {
 	if o == nil || IsNil(o.CallForwardOnNoAnswerRingCount.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CallForwardOnNoAnswerRingCount.Get()
@@ -575,7 +575,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAn
 // GetCallForwardOnNoAnswerRingCountOk returns a tuple with the CallForwardOnNoAnswerRingCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAnswerRingCountOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardOnNoAnswerRingCountOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -591,8 +591,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallForwardOnNoAn
 	return false
 }
 
-// SetCallForwardOnNoAnswerRingCount gets a reference to the given NullableInt32 and assigns it to the CallForwardOnNoAnswerRingCount field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardOnNoAnswerRingCount(v int32) {
+// SetCallForwardOnNoAnswerRingCount gets a reference to the given NullableInt64 and assigns it to the CallForwardOnNoAnswerRingCount field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardOnNoAnswerRingCount(v int64) {
 	o.CallForwardOnNoAnswerRingCount.Set(&v)
 }
 // SetCallForwardOnNoAnswerRingCountNil sets the value for CallForwardOnNoAnswerRingCount to be an explicit nil
@@ -926,9 +926,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetVisualMwiEnable(v
 }
 
 // GetMwiRefreshTimer returns the MwiRefreshTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimer() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimer() int64 {
 	if o == nil || IsNil(o.MwiRefreshTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MwiRefreshTimer.Get()
@@ -937,7 +937,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimer()
 // GetMwiRefreshTimerOk returns a tuple with the MwiRefreshTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimerOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -953,8 +953,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasMwiRefreshTimer()
 	return false
 }
 
-// SetMwiRefreshTimer gets a reference to the given NullableInt32 and assigns it to the MwiRefreshTimer field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetMwiRefreshTimer(v int32) {
+// SetMwiRefreshTimer gets a reference to the given NullableInt64 and assigns it to the MwiRefreshTimer field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetMwiRefreshTimer(v int64) {
 	o.MwiRefreshTimer.Set(&v)
 }
 // SetMwiRefreshTimerNil sets the value for MwiRefreshTimer to be an explicit nil
@@ -1000,9 +1000,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetHotlineEnable(v b
 }
 
 // GetDialToneFeatureDelay returns the DialToneFeatureDelay field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDelay() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDelay() int64 {
 	if o == nil || IsNil(o.DialToneFeatureDelay.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DialToneFeatureDelay.Get()
@@ -1011,7 +1011,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDe
 // GetDialToneFeatureDelayOk returns a tuple with the DialToneFeatureDelay field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDelayOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDialToneFeatureDelayOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1027,8 +1027,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasDialToneFeatureDe
 	return false
 }
 
-// SetDialToneFeatureDelay gets a reference to the given NullableInt32 and assigns it to the DialToneFeatureDelay field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDialToneFeatureDelay(v int32) {
+// SetDialToneFeatureDelay gets a reference to the given NullableInt64 and assigns it to the DialToneFeatureDelay field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDialToneFeatureDelay(v int64) {
 	o.DialToneFeatureDelay.Set(&v)
 }
 // SetDialToneFeatureDelayNil sets the value for DialToneFeatureDelay to be an explicit nil
@@ -1106,9 +1106,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetIntercomTransferE
 }
 
 // GetTransmitGain returns the TransmitGain field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGain() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGain() int64 {
 	if o == nil || IsNil(o.TransmitGain.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.TransmitGain.Get()
@@ -1117,7 +1117,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGain() in
 // GetTransmitGainOk returns a tuple with the TransmitGain field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGainOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGainOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1133,8 +1133,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasTransmitGain() bo
 	return false
 }
 
-// SetTransmitGain gets a reference to the given NullableInt32 and assigns it to the TransmitGain field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetTransmitGain(v int32) {
+// SetTransmitGain gets a reference to the given NullableInt64 and assigns it to the TransmitGain field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetTransmitGain(v int64) {
 	o.TransmitGain.Set(&v)
 }
 // SetTransmitGainNil sets the value for TransmitGain to be an explicit nil
@@ -1148,9 +1148,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetTransmitGain() 
 }
 
 // GetReceiveGain returns the ReceiveGain field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGain() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGain() int64 {
 	if o == nil || IsNil(o.ReceiveGain.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ReceiveGain.Get()
@@ -1159,7 +1159,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGain() int
 // GetReceiveGainOk returns a tuple with the ReceiveGain field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGainOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGainOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1175,8 +1175,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasReceiveGain() boo
 	return false
 }
 
-// SetReceiveGain gets a reference to the given NullableInt32 and assigns it to the ReceiveGain field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReceiveGain(v int32) {
+// SetReceiveGain gets a reference to the given NullableInt64 and assigns it to the ReceiveGain field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReceiveGain(v int64) {
 	o.ReceiveGain.Set(&v)
 }
 // SetReceiveGainNil sets the value for ReceiveGain to be an explicit nil
@@ -1222,9 +1222,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetEchoCancellationE
 }
 
 // GetJitterTarget returns the JitterTarget field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTarget() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTarget() int64 {
 	if o == nil || IsNil(o.JitterTarget.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.JitterTarget.Get()
@@ -1233,7 +1233,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTarget() in
 // GetJitterTargetOk returns a tuple with the JitterTarget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTargetOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterTargetOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1249,8 +1249,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasJitterTarget() bo
 	return false
 }
 
-// SetJitterTarget gets a reference to the given NullableInt32 and assigns it to the JitterTarget field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterTarget(v int32) {
+// SetJitterTarget gets a reference to the given NullableInt64 and assigns it to the JitterTarget field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterTarget(v int64) {
 	o.JitterTarget.Set(&v)
 }
 // SetJitterTargetNil sets the value for JitterTarget to be an explicit nil
@@ -1264,9 +1264,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetJitterTarget() 
 }
 
 // GetJitterBufferMax returns the JitterBufferMax field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMax() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMax() int64 {
 	if o == nil || IsNil(o.JitterBufferMax.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.JitterBufferMax.Get()
@@ -1275,7 +1275,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMax()
 // GetJitterBufferMaxOk returns a tuple with the JitterBufferMax field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMaxOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMaxOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1291,8 +1291,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasJitterBufferMax()
 	return false
 }
 
-// SetJitterBufferMax gets a reference to the given NullableInt32 and assigns it to the JitterBufferMax field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterBufferMax(v int32) {
+// SetJitterBufferMax gets a reference to the given NullableInt64 and assigns it to the JitterBufferMax field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterBufferMax(v int64) {
 	o.JitterBufferMax.Set(&v)
 }
 // SetJitterBufferMaxNil sets the value for JitterBufferMax to be an explicit nil
@@ -1338,9 +1338,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetSignalingCode(v s
 }
 
 // GetReleaseTimer returns the ReleaseTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimer() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimer() int64 {
 	if o == nil || IsNil(o.ReleaseTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ReleaseTimer.Get()
@@ -1349,7 +1349,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimer() in
 // GetReleaseTimerOk returns a tuple with the ReleaseTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimerOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReleaseTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1365,8 +1365,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasReleaseTimer() bo
 	return false
 }
 
-// SetReleaseTimer gets a reference to the given NullableInt32 and assigns it to the ReleaseTimer field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReleaseTimer(v int32) {
+// SetReleaseTimer gets a reference to the given NullableInt64 and assigns it to the ReleaseTimer field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReleaseTimer(v int64) {
 	o.ReleaseTimer.Set(&v)
 }
 // SetReleaseTimerNil sets the value for ReleaseTimer to be an explicit nil
@@ -1380,9 +1380,9 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetReleaseTimer() 
 }
 
 // GetRohTimer returns the RohTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimer() int32 {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimer() int64 {
 	if o == nil || IsNil(o.RohTimer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RohTimer.Get()
@@ -1391,7 +1391,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimer() int32 
 // GetRohTimerOk returns a tuple with the RohTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimerOk() (*int32, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetRohTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1407,8 +1407,8 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasRohTimer() bool {
 	return false
 }
 
-// SetRohTimer gets a reference to the given NullableInt32 and assigns it to the RohTimer field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetRohTimer(v int32) {
+// SetRohTimer gets a reference to the given NullableInt64 and assigns it to the RohTimer field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetRohTimer(v int64) {
 	o.RohTimer.Set(&v)
 }
 // SetRohTimerNil sets the value for RohTimer to be an explicit nil

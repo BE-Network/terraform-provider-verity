@@ -10,32 +10,32 @@ Name | Type | Description | Notes
 **ServiceForSiteRefType** | Pointer to **string** | Object type for service_for_site field | [optional] 
 **SpanningTreeType** | Pointer to **string** | Sets the spanning tree type for all Ports in this Site with Spanning Tree enabled | [optional] [default to "pvst"]
 **RegionName** | Pointer to **string** | Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name | [optional] [default to ""]
-**Revision** | Pointer to **NullableInt32** | A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number | [optional] [default to 0]
+**Revision** | Pointer to **NullableInt64** | A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number | [optional] [default to 0]
 **ForceSpanningTreeOnFabricPorts** | Pointer to **bool** | Enable spanning tree on all fabric connections.  This overrides the Eth Port Settings for Fabric ports | [optional] [default to false]
 **ReadOnlyMode** | Pointer to **bool** | When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware | [optional] [default to false]
 **DscpToPBitMap** | Pointer to **string** | For any Service that is using DSCP to p-bit map packet prioritization. A string of length 64 with a 0-7 in each position | [optional] [default to "0000000011111111222222223333333344444444555555556666666677777777"]
 **AnycastMacAddress** | Pointer to **string** | Site Level MAC Address for Anycast | [optional] [default to "(auto)"]
 **AnycastMacAddressAutoAssigned** | Pointer to **bool** | Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit. | [optional] 
-**MacAddressAgingTime** | Pointer to **NullableInt32** | MAC Address Aging Time (between 1-100000) | [optional] [default to 600]
-**MlagDelayRestoreTimer** | Pointer to **NullableInt32** | MLAG Delay Restore Timer | [optional] [default to 300]
-**BgpKeepaliveTimer** | Pointer to **NullableInt32** | Spine BGP Keepalive Timer | [optional] [default to 60]
-**BgpHoldDownTimer** | Pointer to **NullableInt32** | Spine BGP Hold Down Timer | [optional] [default to 180]
-**SpineBgpAdvertisementInterval** | Pointer to **NullableInt32** | BGP Advertisement Interval for spines/superspines. Use \&quot;0\&quot; for immediate updates | [optional] [default to 1]
-**SpineBgpConnectTimer** | Pointer to **NullableInt32** | BGP Connect Timer | [optional] [default to 120]
-**LeafBgpKeepAliveTimer** | Pointer to **NullableInt32** | Leaf BGP Keep Alive Timer | [optional] [default to 60]
-**LeafBgpHoldDownTimer** | Pointer to **NullableInt32** | Leaf BGP Hold Down Timer | [optional] [default to 180]
-**LeafBgpAdvertisementInterval** | Pointer to **NullableInt32** | BGP Advertisement Interval for leafs. Use \&quot;0\&quot; for immediate updates | [optional] [default to 1]
-**LeafBgpConnectTimer** | Pointer to **NullableInt32** | BGP Connect Timer | [optional] [default to 120]
-**LinkStateTimeoutValue** | Pointer to **NullableInt32** | Link State Timeout Value | [optional] [default to 60]
-**EvpnMultihomingStartupDelay** | Pointer to **NullableInt32** | Startup Delay | [optional] [default to 300]
-**EvpnMacHoldtime** | Pointer to **NullableInt32** | MAC Holdtime | [optional] [default to 1080]
+**MacAddressAgingTime** | Pointer to **NullableInt64** | MAC Address Aging Time (between 1-100000) | [optional] [default to 600]
+**MlagDelayRestoreTimer** | Pointer to **NullableInt64** | MLAG Delay Restore Timer | [optional] [default to 300]
+**BgpKeepaliveTimer** | Pointer to **NullableInt64** | Spine BGP Keepalive Timer | [optional] [default to 60]
+**BgpHoldDownTimer** | Pointer to **NullableInt64** | Spine BGP Hold Down Timer | [optional] [default to 180]
+**SpineBgpAdvertisementInterval** | Pointer to **NullableInt64** | BGP Advertisement Interval for spines/superspines. Use \&quot;0\&quot; for immediate updates | [optional] [default to 1]
+**SpineBgpConnectTimer** | Pointer to **NullableInt64** | BGP Connect Timer | [optional] [default to 120]
+**LeafBgpKeepAliveTimer** | Pointer to **NullableInt64** | Leaf BGP Keep Alive Timer | [optional] [default to 60]
+**LeafBgpHoldDownTimer** | Pointer to **NullableInt64** | Leaf BGP Hold Down Timer | [optional] [default to 180]
+**LeafBgpAdvertisementInterval** | Pointer to **NullableInt64** | BGP Advertisement Interval for leafs. Use \&quot;0\&quot; for immediate updates | [optional] [default to 1]
+**LeafBgpConnectTimer** | Pointer to **NullableInt64** | BGP Connect Timer | [optional] [default to 120]
+**LinkStateTimeoutValue** | Pointer to **NullableInt64** | Link State Timeout Value | [optional] [default to 60]
+**EvpnMultihomingStartupDelay** | Pointer to **NullableInt64** | Startup Delay | [optional] [default to 300]
+**EvpnMacHoldtime** | Pointer to **NullableInt64** | MAC Holdtime | [optional] [default to 1080]
 **AggressiveReporting** | Pointer to **bool** | Fast Reporting of Switch Communications, Link Up/Down, and BGP Status | [optional] [default to true]
-**CrcFailureThreshold** | Pointer to **NullableInt32** | Threshold in Errors per second that when met will disable the links as part of LAGs | [optional] [default to 5]
+**CrcFailureThreshold** | Pointer to **NullableInt64** | Threshold in Errors per second that when met will disable the links as part of LAGs | [optional] [default to 5]
 **Islands** | Pointer to [**[]SitesPatchRequestSiteValueIslandsInner**](SitesPatchRequestSiteValueIslandsInner.md) |  | [optional] 
 **Pairs** | Pointer to [**[]SitesPatchRequestSiteValuePairsInner**](SitesPatchRequestSiteValuePairsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SitesPatchRequestSiteValueObjectProperties**](SitesPatchRequestSiteValueObjectProperties.md) |  | [optional] 
-**DuplicateAddressDetectionMaxNumberOfMoves** | Pointer to **NullableInt32** | Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank) | [optional] [default to 5]
-**DuplicateAddressDetectionTime** | Pointer to **NullableInt32** | Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank) | [optional] [default to 180]
+**DuplicateAddressDetectionMaxNumberOfMoves** | Pointer to **NullableInt64** | Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank) | [optional] [default to 5]
+**DuplicateAddressDetectionTime** | Pointer to **NullableInt64** | Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank) | [optional] [default to 180]
 **DomainForSite** | Pointer to **string** | Domain for Site | [optional] [default to ""]
 **DomainForSiteRefType** | Pointer to **string** | Object type for domain_for_site field | [optional] 
 **EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
@@ -212,20 +212,20 @@ HasRegionName returns a boolean if a field has been set.
 
 ### GetRevision
 
-`func (o *SitesPatchRequestSiteValue) GetRevision() int32`
+`func (o *SitesPatchRequestSiteValue) GetRevision() int64`
 
 GetRevision returns the Revision field if non-nil, zero value otherwise.
 
 ### GetRevisionOk
 
-`func (o *SitesPatchRequestSiteValue) GetRevisionOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetRevisionOk() (*int64, bool)`
 
 GetRevisionOk returns a tuple with the Revision field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRevision
 
-`func (o *SitesPatchRequestSiteValue) SetRevision(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetRevision(v int64)`
 
 SetRevision sets Revision field to given value.
 
@@ -372,20 +372,20 @@ HasAnycastMacAddressAutoAssigned returns a boolean if a field has been set.
 
 ### GetMacAddressAgingTime
 
-`func (o *SitesPatchRequestSiteValue) GetMacAddressAgingTime() int32`
+`func (o *SitesPatchRequestSiteValue) GetMacAddressAgingTime() int64`
 
 GetMacAddressAgingTime returns the MacAddressAgingTime field if non-nil, zero value otherwise.
 
 ### GetMacAddressAgingTimeOk
 
-`func (o *SitesPatchRequestSiteValue) GetMacAddressAgingTimeOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetMacAddressAgingTimeOk() (*int64, bool)`
 
 GetMacAddressAgingTimeOk returns a tuple with the MacAddressAgingTime field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMacAddressAgingTime
 
-`func (o *SitesPatchRequestSiteValue) SetMacAddressAgingTime(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetMacAddressAgingTime(v int64)`
 
 SetMacAddressAgingTime sets MacAddressAgingTime field to given value.
 
@@ -407,20 +407,20 @@ HasMacAddressAgingTime returns a boolean if a field has been set.
 UnsetMacAddressAgingTime ensures that no value is present for MacAddressAgingTime, not even an explicit nil
 ### GetMlagDelayRestoreTimer
 
-`func (o *SitesPatchRequestSiteValue) GetMlagDelayRestoreTimer() int32`
+`func (o *SitesPatchRequestSiteValue) GetMlagDelayRestoreTimer() int64`
 
 GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field if non-nil, zero value otherwise.
 
 ### GetMlagDelayRestoreTimerOk
 
-`func (o *SitesPatchRequestSiteValue) GetMlagDelayRestoreTimerOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetMlagDelayRestoreTimerOk() (*int64, bool)`
 
 GetMlagDelayRestoreTimerOk returns a tuple with the MlagDelayRestoreTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMlagDelayRestoreTimer
 
-`func (o *SitesPatchRequestSiteValue) SetMlagDelayRestoreTimer(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetMlagDelayRestoreTimer(v int64)`
 
 SetMlagDelayRestoreTimer sets MlagDelayRestoreTimer field to given value.
 
@@ -442,20 +442,20 @@ HasMlagDelayRestoreTimer returns a boolean if a field has been set.
 UnsetMlagDelayRestoreTimer ensures that no value is present for MlagDelayRestoreTimer, not even an explicit nil
 ### GetBgpKeepaliveTimer
 
-`func (o *SitesPatchRequestSiteValue) GetBgpKeepaliveTimer() int32`
+`func (o *SitesPatchRequestSiteValue) GetBgpKeepaliveTimer() int64`
 
 GetBgpKeepaliveTimer returns the BgpKeepaliveTimer field if non-nil, zero value otherwise.
 
 ### GetBgpKeepaliveTimerOk
 
-`func (o *SitesPatchRequestSiteValue) GetBgpKeepaliveTimerOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetBgpKeepaliveTimerOk() (*int64, bool)`
 
 GetBgpKeepaliveTimerOk returns a tuple with the BgpKeepaliveTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBgpKeepaliveTimer
 
-`func (o *SitesPatchRequestSiteValue) SetBgpKeepaliveTimer(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetBgpKeepaliveTimer(v int64)`
 
 SetBgpKeepaliveTimer sets BgpKeepaliveTimer field to given value.
 
@@ -477,20 +477,20 @@ HasBgpKeepaliveTimer returns a boolean if a field has been set.
 UnsetBgpKeepaliveTimer ensures that no value is present for BgpKeepaliveTimer, not even an explicit nil
 ### GetBgpHoldDownTimer
 
-`func (o *SitesPatchRequestSiteValue) GetBgpHoldDownTimer() int32`
+`func (o *SitesPatchRequestSiteValue) GetBgpHoldDownTimer() int64`
 
 GetBgpHoldDownTimer returns the BgpHoldDownTimer field if non-nil, zero value otherwise.
 
 ### GetBgpHoldDownTimerOk
 
-`func (o *SitesPatchRequestSiteValue) GetBgpHoldDownTimerOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetBgpHoldDownTimerOk() (*int64, bool)`
 
 GetBgpHoldDownTimerOk returns a tuple with the BgpHoldDownTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetBgpHoldDownTimer
 
-`func (o *SitesPatchRequestSiteValue) SetBgpHoldDownTimer(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetBgpHoldDownTimer(v int64)`
 
 SetBgpHoldDownTimer sets BgpHoldDownTimer field to given value.
 
@@ -512,20 +512,20 @@ HasBgpHoldDownTimer returns a boolean if a field has been set.
 UnsetBgpHoldDownTimer ensures that no value is present for BgpHoldDownTimer, not even an explicit nil
 ### GetSpineBgpAdvertisementInterval
 
-`func (o *SitesPatchRequestSiteValue) GetSpineBgpAdvertisementInterval() int32`
+`func (o *SitesPatchRequestSiteValue) GetSpineBgpAdvertisementInterval() int64`
 
 GetSpineBgpAdvertisementInterval returns the SpineBgpAdvertisementInterval field if non-nil, zero value otherwise.
 
 ### GetSpineBgpAdvertisementIntervalOk
 
-`func (o *SitesPatchRequestSiteValue) GetSpineBgpAdvertisementIntervalOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetSpineBgpAdvertisementIntervalOk() (*int64, bool)`
 
 GetSpineBgpAdvertisementIntervalOk returns a tuple with the SpineBgpAdvertisementInterval field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSpineBgpAdvertisementInterval
 
-`func (o *SitesPatchRequestSiteValue) SetSpineBgpAdvertisementInterval(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetSpineBgpAdvertisementInterval(v int64)`
 
 SetSpineBgpAdvertisementInterval sets SpineBgpAdvertisementInterval field to given value.
 
@@ -547,20 +547,20 @@ HasSpineBgpAdvertisementInterval returns a boolean if a field has been set.
 UnsetSpineBgpAdvertisementInterval ensures that no value is present for SpineBgpAdvertisementInterval, not even an explicit nil
 ### GetSpineBgpConnectTimer
 
-`func (o *SitesPatchRequestSiteValue) GetSpineBgpConnectTimer() int32`
+`func (o *SitesPatchRequestSiteValue) GetSpineBgpConnectTimer() int64`
 
 GetSpineBgpConnectTimer returns the SpineBgpConnectTimer field if non-nil, zero value otherwise.
 
 ### GetSpineBgpConnectTimerOk
 
-`func (o *SitesPatchRequestSiteValue) GetSpineBgpConnectTimerOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetSpineBgpConnectTimerOk() (*int64, bool)`
 
 GetSpineBgpConnectTimerOk returns a tuple with the SpineBgpConnectTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSpineBgpConnectTimer
 
-`func (o *SitesPatchRequestSiteValue) SetSpineBgpConnectTimer(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetSpineBgpConnectTimer(v int64)`
 
 SetSpineBgpConnectTimer sets SpineBgpConnectTimer field to given value.
 
@@ -582,20 +582,20 @@ HasSpineBgpConnectTimer returns a boolean if a field has been set.
 UnsetSpineBgpConnectTimer ensures that no value is present for SpineBgpConnectTimer, not even an explicit nil
 ### GetLeafBgpKeepAliveTimer
 
-`func (o *SitesPatchRequestSiteValue) GetLeafBgpKeepAliveTimer() int32`
+`func (o *SitesPatchRequestSiteValue) GetLeafBgpKeepAliveTimer() int64`
 
 GetLeafBgpKeepAliveTimer returns the LeafBgpKeepAliveTimer field if non-nil, zero value otherwise.
 
 ### GetLeafBgpKeepAliveTimerOk
 
-`func (o *SitesPatchRequestSiteValue) GetLeafBgpKeepAliveTimerOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetLeafBgpKeepAliveTimerOk() (*int64, bool)`
 
 GetLeafBgpKeepAliveTimerOk returns a tuple with the LeafBgpKeepAliveTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLeafBgpKeepAliveTimer
 
-`func (o *SitesPatchRequestSiteValue) SetLeafBgpKeepAliveTimer(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetLeafBgpKeepAliveTimer(v int64)`
 
 SetLeafBgpKeepAliveTimer sets LeafBgpKeepAliveTimer field to given value.
 
@@ -617,20 +617,20 @@ HasLeafBgpKeepAliveTimer returns a boolean if a field has been set.
 UnsetLeafBgpKeepAliveTimer ensures that no value is present for LeafBgpKeepAliveTimer, not even an explicit nil
 ### GetLeafBgpHoldDownTimer
 
-`func (o *SitesPatchRequestSiteValue) GetLeafBgpHoldDownTimer() int32`
+`func (o *SitesPatchRequestSiteValue) GetLeafBgpHoldDownTimer() int64`
 
 GetLeafBgpHoldDownTimer returns the LeafBgpHoldDownTimer field if non-nil, zero value otherwise.
 
 ### GetLeafBgpHoldDownTimerOk
 
-`func (o *SitesPatchRequestSiteValue) GetLeafBgpHoldDownTimerOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetLeafBgpHoldDownTimerOk() (*int64, bool)`
 
 GetLeafBgpHoldDownTimerOk returns a tuple with the LeafBgpHoldDownTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLeafBgpHoldDownTimer
 
-`func (o *SitesPatchRequestSiteValue) SetLeafBgpHoldDownTimer(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetLeafBgpHoldDownTimer(v int64)`
 
 SetLeafBgpHoldDownTimer sets LeafBgpHoldDownTimer field to given value.
 
@@ -652,20 +652,20 @@ HasLeafBgpHoldDownTimer returns a boolean if a field has been set.
 UnsetLeafBgpHoldDownTimer ensures that no value is present for LeafBgpHoldDownTimer, not even an explicit nil
 ### GetLeafBgpAdvertisementInterval
 
-`func (o *SitesPatchRequestSiteValue) GetLeafBgpAdvertisementInterval() int32`
+`func (o *SitesPatchRequestSiteValue) GetLeafBgpAdvertisementInterval() int64`
 
 GetLeafBgpAdvertisementInterval returns the LeafBgpAdvertisementInterval field if non-nil, zero value otherwise.
 
 ### GetLeafBgpAdvertisementIntervalOk
 
-`func (o *SitesPatchRequestSiteValue) GetLeafBgpAdvertisementIntervalOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetLeafBgpAdvertisementIntervalOk() (*int64, bool)`
 
 GetLeafBgpAdvertisementIntervalOk returns a tuple with the LeafBgpAdvertisementInterval field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLeafBgpAdvertisementInterval
 
-`func (o *SitesPatchRequestSiteValue) SetLeafBgpAdvertisementInterval(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetLeafBgpAdvertisementInterval(v int64)`
 
 SetLeafBgpAdvertisementInterval sets LeafBgpAdvertisementInterval field to given value.
 
@@ -687,20 +687,20 @@ HasLeafBgpAdvertisementInterval returns a boolean if a field has been set.
 UnsetLeafBgpAdvertisementInterval ensures that no value is present for LeafBgpAdvertisementInterval, not even an explicit nil
 ### GetLeafBgpConnectTimer
 
-`func (o *SitesPatchRequestSiteValue) GetLeafBgpConnectTimer() int32`
+`func (o *SitesPatchRequestSiteValue) GetLeafBgpConnectTimer() int64`
 
 GetLeafBgpConnectTimer returns the LeafBgpConnectTimer field if non-nil, zero value otherwise.
 
 ### GetLeafBgpConnectTimerOk
 
-`func (o *SitesPatchRequestSiteValue) GetLeafBgpConnectTimerOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetLeafBgpConnectTimerOk() (*int64, bool)`
 
 GetLeafBgpConnectTimerOk returns a tuple with the LeafBgpConnectTimer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLeafBgpConnectTimer
 
-`func (o *SitesPatchRequestSiteValue) SetLeafBgpConnectTimer(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetLeafBgpConnectTimer(v int64)`
 
 SetLeafBgpConnectTimer sets LeafBgpConnectTimer field to given value.
 
@@ -722,20 +722,20 @@ HasLeafBgpConnectTimer returns a boolean if a field has been set.
 UnsetLeafBgpConnectTimer ensures that no value is present for LeafBgpConnectTimer, not even an explicit nil
 ### GetLinkStateTimeoutValue
 
-`func (o *SitesPatchRequestSiteValue) GetLinkStateTimeoutValue() int32`
+`func (o *SitesPatchRequestSiteValue) GetLinkStateTimeoutValue() int64`
 
 GetLinkStateTimeoutValue returns the LinkStateTimeoutValue field if non-nil, zero value otherwise.
 
 ### GetLinkStateTimeoutValueOk
 
-`func (o *SitesPatchRequestSiteValue) GetLinkStateTimeoutValueOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetLinkStateTimeoutValueOk() (*int64, bool)`
 
 GetLinkStateTimeoutValueOk returns a tuple with the LinkStateTimeoutValue field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLinkStateTimeoutValue
 
-`func (o *SitesPatchRequestSiteValue) SetLinkStateTimeoutValue(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetLinkStateTimeoutValue(v int64)`
 
 SetLinkStateTimeoutValue sets LinkStateTimeoutValue field to given value.
 
@@ -757,20 +757,20 @@ HasLinkStateTimeoutValue returns a boolean if a field has been set.
 UnsetLinkStateTimeoutValue ensures that no value is present for LinkStateTimeoutValue, not even an explicit nil
 ### GetEvpnMultihomingStartupDelay
 
-`func (o *SitesPatchRequestSiteValue) GetEvpnMultihomingStartupDelay() int32`
+`func (o *SitesPatchRequestSiteValue) GetEvpnMultihomingStartupDelay() int64`
 
 GetEvpnMultihomingStartupDelay returns the EvpnMultihomingStartupDelay field if non-nil, zero value otherwise.
 
 ### GetEvpnMultihomingStartupDelayOk
 
-`func (o *SitesPatchRequestSiteValue) GetEvpnMultihomingStartupDelayOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetEvpnMultihomingStartupDelayOk() (*int64, bool)`
 
 GetEvpnMultihomingStartupDelayOk returns a tuple with the EvpnMultihomingStartupDelay field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEvpnMultihomingStartupDelay
 
-`func (o *SitesPatchRequestSiteValue) SetEvpnMultihomingStartupDelay(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetEvpnMultihomingStartupDelay(v int64)`
 
 SetEvpnMultihomingStartupDelay sets EvpnMultihomingStartupDelay field to given value.
 
@@ -792,20 +792,20 @@ HasEvpnMultihomingStartupDelay returns a boolean if a field has been set.
 UnsetEvpnMultihomingStartupDelay ensures that no value is present for EvpnMultihomingStartupDelay, not even an explicit nil
 ### GetEvpnMacHoldtime
 
-`func (o *SitesPatchRequestSiteValue) GetEvpnMacHoldtime() int32`
+`func (o *SitesPatchRequestSiteValue) GetEvpnMacHoldtime() int64`
 
 GetEvpnMacHoldtime returns the EvpnMacHoldtime field if non-nil, zero value otherwise.
 
 ### GetEvpnMacHoldtimeOk
 
-`func (o *SitesPatchRequestSiteValue) GetEvpnMacHoldtimeOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetEvpnMacHoldtimeOk() (*int64, bool)`
 
 GetEvpnMacHoldtimeOk returns a tuple with the EvpnMacHoldtime field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEvpnMacHoldtime
 
-`func (o *SitesPatchRequestSiteValue) SetEvpnMacHoldtime(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetEvpnMacHoldtime(v int64)`
 
 SetEvpnMacHoldtime sets EvpnMacHoldtime field to given value.
 
@@ -852,20 +852,20 @@ HasAggressiveReporting returns a boolean if a field has been set.
 
 ### GetCrcFailureThreshold
 
-`func (o *SitesPatchRequestSiteValue) GetCrcFailureThreshold() int32`
+`func (o *SitesPatchRequestSiteValue) GetCrcFailureThreshold() int64`
 
 GetCrcFailureThreshold returns the CrcFailureThreshold field if non-nil, zero value otherwise.
 
 ### GetCrcFailureThresholdOk
 
-`func (o *SitesPatchRequestSiteValue) GetCrcFailureThresholdOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetCrcFailureThresholdOk() (*int64, bool)`
 
 GetCrcFailureThresholdOk returns a tuple with the CrcFailureThreshold field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCrcFailureThreshold
 
-`func (o *SitesPatchRequestSiteValue) SetCrcFailureThreshold(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetCrcFailureThreshold(v int64)`
 
 SetCrcFailureThreshold sets CrcFailureThreshold field to given value.
 
@@ -962,20 +962,20 @@ HasObjectProperties returns a boolean if a field has been set.
 
 ### GetDuplicateAddressDetectionMaxNumberOfMoves
 
-`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int32`
+`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int64`
 
 GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field if non-nil, zero value otherwise.
 
 ### GetDuplicateAddressDetectionMaxNumberOfMovesOk
 
-`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int64, bool)`
 
 GetDuplicateAddressDetectionMaxNumberOfMovesOk returns a tuple with the DuplicateAddressDetectionMaxNumberOfMoves field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDuplicateAddressDetectionMaxNumberOfMoves
 
-`func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int64)`
 
 SetDuplicateAddressDetectionMaxNumberOfMoves sets DuplicateAddressDetectionMaxNumberOfMoves field to given value.
 
@@ -997,20 +997,20 @@ HasDuplicateAddressDetectionMaxNumberOfMoves returns a boolean if a field has be
 UnsetDuplicateAddressDetectionMaxNumberOfMoves ensures that no value is present for DuplicateAddressDetectionMaxNumberOfMoves, not even an explicit nil
 ### GetDuplicateAddressDetectionTime
 
-`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionTime() int32`
+`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionTime() int64`
 
 GetDuplicateAddressDetectionTime returns the DuplicateAddressDetectionTime field if non-nil, zero value otherwise.
 
 ### GetDuplicateAddressDetectionTimeOk
 
-`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionTimeOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValue) GetDuplicateAddressDetectionTimeOk() (*int64, bool)`
 
 GetDuplicateAddressDetectionTimeOk returns a tuple with the DuplicateAddressDetectionTime field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDuplicateAddressDetectionTime
 
-`func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionTime(v int32)`
+`func (o *SitesPatchRequestSiteValue) SetDuplicateAddressDetectionTime(v int64)`
 
 SetDuplicateAddressDetectionTime sets DuplicateAddressDetectionTime field to given value.
 

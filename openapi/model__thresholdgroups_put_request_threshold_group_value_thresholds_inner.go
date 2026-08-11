@@ -28,7 +28,7 @@ type ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner struct {
 	// Object type for threshold field
 	ThresholdRefType *string `json:"threshold_ref_type_,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewThresholdgroupsPutRequestThresholdGroupValueThresholdsInner instantiates a new ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner object
@@ -189,9 +189,9 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) SetThresho
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndex() int32 {
+func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -199,7 +199,7 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndex()
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndexOk() (*int32, bool) {
+func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -215,8 +215,8 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) HasIndex()
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

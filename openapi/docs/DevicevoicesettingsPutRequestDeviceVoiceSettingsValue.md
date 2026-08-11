@@ -10,38 +10,38 @@ Name | Type | Description | Notes
 **Region** | Pointer to **string** | Region | [optional] [default to "US"]
 **Protocol** | Pointer to **string** | Voice Protocol: MGCP or SIP | [optional] [default to "SIP"]
 **ProxyServer** | Pointer to **string** | IP address or URI of the SIP proxy server for SIP signalling messages | [optional] [default to ""]
-**ProxyServerPort** | Pointer to **NullableInt32** | Proxy Server Port | [optional] [default to 0]
+**ProxyServerPort** | Pointer to **NullableInt64** | Proxy Server Port | [optional] [default to 0]
 **ProxyServerSecondary** | Pointer to **string** | IP address or URI of the secondary SIP proxy server for SIP signalling messages | [optional] [default to ""]
-**ProxyServerSecondaryPort** | Pointer to **NullableInt32** | Secondary Proxy Server Port | [optional] [default to 0]
+**ProxyServerSecondaryPort** | Pointer to **NullableInt64** | Secondary Proxy Server Port | [optional] [default to 0]
 **RegistrarServer** | Pointer to **string** | Name or IP address or resolved name of the registrar server for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net | [optional] [default to ""]
-**RegistrarServerPort** | Pointer to **NullableInt32** | Registrar Server Port | [optional] [default to 0]
+**RegistrarServerPort** | Pointer to **NullableInt64** | Registrar Server Port | [optional] [default to 0]
 **RegistrarServerSecondary** | Pointer to **string** | Name or IP address or resolved name of the secondary registrar server for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net | [optional] [default to ""]
-**RegistrarServerSecondaryPort** | Pointer to **NullableInt32** | Secondary Registrar Server Port | [optional] [default to 0]
+**RegistrarServerSecondaryPort** | Pointer to **NullableInt64** | Secondary Registrar Server Port | [optional] [default to 0]
 **UserAgentDomain** | Pointer to **string** | User Agent Domain | [optional] [default to ""]
 **UserAgentTransport** | Pointer to **string** | User Agent Transport | [optional] [default to "UDP"]
-**UserAgentPort** | Pointer to **NullableInt32** | User Agent Port | [optional] [default to 0]
+**UserAgentPort** | Pointer to **NullableInt64** | User Agent Port | [optional] [default to 0]
 **OutboundProxy** | Pointer to **string** | IP address or URI of the outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network | [optional] [default to ""]
-**OutboundProxyPort** | Pointer to **NullableInt32** | Outbound Proxy Port | [optional] [default to 0]
+**OutboundProxyPort** | Pointer to **NullableInt64** | Outbound Proxy Port | [optional] [default to 0]
 **OutboundProxySecondary** | Pointer to **string** | IP address or URI of the secondary outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network | [optional] [default to ""]
-**OutboundProxySecondaryPort** | Pointer to **NullableInt32** | Secondary Outbound Proxy Port | [optional] [default to 0]
-**RegistrationPeriod** | Pointer to **NullableInt32** | Specifies the time in seconds to start the re-registration process. The default value is 3240 seconds | [optional] [default to 3240]
-**RegisterExpires** | Pointer to **NullableInt32** | SIP registration expiration time in seconds. If value is 0, the SIP agent does not add an expiration time to the registration requests and does not perform re-registration. The default value is 3600 seconds | [optional] [default to 3600]
+**OutboundProxySecondaryPort** | Pointer to **NullableInt64** | Secondary Outbound Proxy Port | [optional] [default to 0]
+**RegistrationPeriod** | Pointer to **NullableInt64** | Specifies the time in seconds to start the re-registration process. The default value is 3240 seconds | [optional] [default to 3240]
+**RegisterExpires** | Pointer to **NullableInt64** | SIP registration expiration time in seconds. If value is 0, the SIP agent does not add an expiration time to the registration requests and does not perform re-registration. The default value is 3600 seconds | [optional] [default to 3600]
 **VoicemailServer** | Pointer to **string** | Name or IP address or resolved name of the external voicemail server if not provided by SIP server for MWI control. Examples: 10.10.10.10 and proxy.voip.net | [optional] [default to ""]
-**VoicemailServerPort** | Pointer to **NullableInt32** | Voicemail Server Port | [optional] [default to 0]
-**VoicemailServerExpires** | Pointer to **NullableInt32** | Voicemail server expiration time in seconds. If value is 0, the Register Expires time is used instead. The default value is 3600 seconds | [optional] [default to 3600]
-**SipDscpMark** | Pointer to **NullableInt32** | Sip Differentiated Services Code point (DSCP) | [optional] [default to 0]
+**VoicemailServerPort** | Pointer to **NullableInt64** | Voicemail Server Port | [optional] [default to 0]
+**VoicemailServerExpires** | Pointer to **NullableInt64** | Voicemail server expiration time in seconds. If value is 0, the Register Expires time is used instead. The default value is 3600 seconds | [optional] [default to 3600]
+**SipDscpMark** | Pointer to **NullableInt64** | Sip Differentiated Services Code point (DSCP) | [optional] [default to 0]
 **CallAgent1** | Pointer to **string** | Call Agent 1 | [optional] [default to ""]
-**CallAgentPort1** | Pointer to **NullableInt32** | Call Agent Port 1 | [optional] [default to 0]
+**CallAgentPort1** | Pointer to **NullableInt64** | Call Agent Port 1 | [optional] [default to 0]
 **CallAgent2** | Pointer to **string** | Call Agent 2 | [optional] [default to ""]
-**CallAgentPort2** | Pointer to **NullableInt32** | Call Agent Port 2 | [optional] [default to 0]
+**CallAgentPort2** | Pointer to **NullableInt64** | Call Agent Port 2 | [optional] [default to 0]
 **Domain** | Pointer to **string** | Domain | [optional] [default to ""]
-**MgcpDscpMark** | Pointer to **NullableInt32** | MGCP Differentiated Services Code point (DSCP) | [optional] [default to 0]
+**MgcpDscpMark** | Pointer to **NullableInt64** | MGCP Differentiated Services Code point (DSCP) | [optional] [default to 0]
 **TerminationBase** | Pointer to **string** | Base string for the MGCP physical termination id(s) | [optional] [default to "aaln/"]
-**LocalPortMin** | Pointer to **NullableInt32** | Defines the base RTP port that should be used for voice traffic | [optional] [default to 30000]
-**LocalPortMax** | Pointer to **NullableInt32** | Defines the highest RTP port used for voice traffic, must be greater than local Local Port Min | [optional] [default to 30200]
-**EventPayloadType** | Pointer to **NullableInt32** | Telephone Event Payload Type | [optional] [default to 101]
-**CasEvents** | Pointer to **NullableInt32** | Enables or disables handling of CAS via RTP CAS events. Valid values are 0 &#x3D; off and 1 &#x3D; on | [optional] [default to 0]
-**DscpMark** | Pointer to **NullableInt32** | Differentiated Services Code Point (DSCP) to be used for outgoing RTP packets | [optional] [default to 0]
+**LocalPortMin** | Pointer to **NullableInt64** | Defines the base RTP port that should be used for voice traffic | [optional] [default to 30000]
+**LocalPortMax** | Pointer to **NullableInt64** | Defines the highest RTP port used for voice traffic, must be greater than local Local Port Min | [optional] [default to 30200]
+**EventPayloadType** | Pointer to **NullableInt64** | Telephone Event Payload Type | [optional] [default to 101]
+**CasEvents** | Pointer to **NullableInt64** | Enables or disables handling of CAS via RTP CAS events. Valid values are 0 &#x3D; off and 1 &#x3D; on | [optional] [default to 0]
+**DscpMark** | Pointer to **NullableInt64** | Differentiated Services Code Point (DSCP) to be used for outgoing RTP packets | [optional] [default to 0]
 **Rtcp** | Pointer to **bool** | RTCP Enable | [optional] [default to true]
 **FaxT38** | Pointer to **bool** | Fax T.38 Enable | [optional] [default to false]
 **BitRate** | Pointer to **string** | T.38 Bit Rate in bps. Most available fax machines support up to 14,400bps | [optional] [default to "14400"]
@@ -238,20 +238,20 @@ HasProxyServer returns a boolean if a field has been set.
 
 ### GetProxyServerPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPort() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPort() int64`
 
 GetProxyServerPort returns the ProxyServerPort field if non-nil, zero value otherwise.
 
 ### GetProxyServerPortOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPortOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPortOk() (*int64, bool)`
 
 GetProxyServerPortOk returns a tuple with the ProxyServerPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetProxyServerPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerPort(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerPort(v int64)`
 
 SetProxyServerPort sets ProxyServerPort field to given value.
 
@@ -298,20 +298,20 @@ HasProxyServerSecondary returns a boolean if a field has been set.
 
 ### GetProxyServerSecondaryPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPort() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPort() int64`
 
 GetProxyServerSecondaryPort returns the ProxyServerSecondaryPort field if non-nil, zero value otherwise.
 
 ### GetProxyServerSecondaryPortOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPortOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPortOk() (*int64, bool)`
 
 GetProxyServerSecondaryPortOk returns a tuple with the ProxyServerSecondaryPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetProxyServerSecondaryPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondaryPort(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondaryPort(v int64)`
 
 SetProxyServerSecondaryPort sets ProxyServerSecondaryPort field to given value.
 
@@ -358,20 +358,20 @@ HasRegistrarServer returns a boolean if a field has been set.
 
 ### GetRegistrarServerPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPort() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPort() int64`
 
 GetRegistrarServerPort returns the RegistrarServerPort field if non-nil, zero value otherwise.
 
 ### GetRegistrarServerPortOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPortOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPortOk() (*int64, bool)`
 
 GetRegistrarServerPortOk returns a tuple with the RegistrarServerPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRegistrarServerPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerPort(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerPort(v int64)`
 
 SetRegistrarServerPort sets RegistrarServerPort field to given value.
 
@@ -418,20 +418,20 @@ HasRegistrarServerSecondary returns a boolean if a field has been set.
 
 ### GetRegistrarServerSecondaryPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPort() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPort() int64`
 
 GetRegistrarServerSecondaryPort returns the RegistrarServerSecondaryPort field if non-nil, zero value otherwise.
 
 ### GetRegistrarServerSecondaryPortOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPortOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPortOk() (*int64, bool)`
 
 GetRegistrarServerSecondaryPortOk returns a tuple with the RegistrarServerSecondaryPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRegistrarServerSecondaryPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondaryPort(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondaryPort(v int64)`
 
 SetRegistrarServerSecondaryPort sets RegistrarServerSecondaryPort field to given value.
 
@@ -503,20 +503,20 @@ HasUserAgentTransport returns a boolean if a field has been set.
 
 ### GetUserAgentPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPort() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPort() int64`
 
 GetUserAgentPort returns the UserAgentPort field if non-nil, zero value otherwise.
 
 ### GetUserAgentPortOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPortOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPortOk() (*int64, bool)`
 
 GetUserAgentPortOk returns a tuple with the UserAgentPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetUserAgentPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentPort(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentPort(v int64)`
 
 SetUserAgentPort sets UserAgentPort field to given value.
 
@@ -563,20 +563,20 @@ HasOutboundProxy returns a boolean if a field has been set.
 
 ### GetOutboundProxyPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPort() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPort() int64`
 
 GetOutboundProxyPort returns the OutboundProxyPort field if non-nil, zero value otherwise.
 
 ### GetOutboundProxyPortOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPortOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPortOk() (*int64, bool)`
 
 GetOutboundProxyPortOk returns a tuple with the OutboundProxyPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetOutboundProxyPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxyPort(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxyPort(v int64)`
 
 SetOutboundProxyPort sets OutboundProxyPort field to given value.
 
@@ -623,20 +623,20 @@ HasOutboundProxySecondary returns a boolean if a field has been set.
 
 ### GetOutboundProxySecondaryPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPort() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPort() int64`
 
 GetOutboundProxySecondaryPort returns the OutboundProxySecondaryPort field if non-nil, zero value otherwise.
 
 ### GetOutboundProxySecondaryPortOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPortOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPortOk() (*int64, bool)`
 
 GetOutboundProxySecondaryPortOk returns a tuple with the OutboundProxySecondaryPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetOutboundProxySecondaryPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondaryPort(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondaryPort(v int64)`
 
 SetOutboundProxySecondaryPort sets OutboundProxySecondaryPort field to given value.
 
@@ -658,20 +658,20 @@ HasOutboundProxySecondaryPort returns a boolean if a field has been set.
 UnsetOutboundProxySecondaryPort ensures that no value is present for OutboundProxySecondaryPort, not even an explicit nil
 ### GetRegistrationPeriod
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriod() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriod() int64`
 
 GetRegistrationPeriod returns the RegistrationPeriod field if non-nil, zero value otherwise.
 
 ### GetRegistrationPeriodOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriodOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriodOk() (*int64, bool)`
 
 GetRegistrationPeriodOk returns a tuple with the RegistrationPeriod field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRegistrationPeriod
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrationPeriod(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrationPeriod(v int64)`
 
 SetRegistrationPeriod sets RegistrationPeriod field to given value.
 
@@ -693,20 +693,20 @@ HasRegistrationPeriod returns a boolean if a field has been set.
 UnsetRegistrationPeriod ensures that no value is present for RegistrationPeriod, not even an explicit nil
 ### GetRegisterExpires
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpires() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpires() int64`
 
 GetRegisterExpires returns the RegisterExpires field if non-nil, zero value otherwise.
 
 ### GetRegisterExpiresOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpiresOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpiresOk() (*int64, bool)`
 
 GetRegisterExpiresOk returns a tuple with the RegisterExpires field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRegisterExpires
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegisterExpires(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegisterExpires(v int64)`
 
 SetRegisterExpires sets RegisterExpires field to given value.
 
@@ -753,20 +753,20 @@ HasVoicemailServer returns a boolean if a field has been set.
 
 ### GetVoicemailServerPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPort() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPort() int64`
 
 GetVoicemailServerPort returns the VoicemailServerPort field if non-nil, zero value otherwise.
 
 ### GetVoicemailServerPortOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPortOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPortOk() (*int64, bool)`
 
 GetVoicemailServerPortOk returns a tuple with the VoicemailServerPort field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetVoicemailServerPort
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerPort(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerPort(v int64)`
 
 SetVoicemailServerPort sets VoicemailServerPort field to given value.
 
@@ -788,20 +788,20 @@ HasVoicemailServerPort returns a boolean if a field has been set.
 UnsetVoicemailServerPort ensures that no value is present for VoicemailServerPort, not even an explicit nil
 ### GetVoicemailServerExpires
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpires() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpires() int64`
 
 GetVoicemailServerExpires returns the VoicemailServerExpires field if non-nil, zero value otherwise.
 
 ### GetVoicemailServerExpiresOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpiresOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpiresOk() (*int64, bool)`
 
 GetVoicemailServerExpiresOk returns a tuple with the VoicemailServerExpires field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetVoicemailServerExpires
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerExpires(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerExpires(v int64)`
 
 SetVoicemailServerExpires sets VoicemailServerExpires field to given value.
 
@@ -823,20 +823,20 @@ HasVoicemailServerExpires returns a boolean if a field has been set.
 UnsetVoicemailServerExpires ensures that no value is present for VoicemailServerExpires, not even an explicit nil
 ### GetSipDscpMark
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMark() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMark() int64`
 
 GetSipDscpMark returns the SipDscpMark field if non-nil, zero value otherwise.
 
 ### GetSipDscpMarkOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMarkOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMarkOk() (*int64, bool)`
 
 GetSipDscpMarkOk returns a tuple with the SipDscpMark field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetSipDscpMark
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetSipDscpMark(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetSipDscpMark(v int64)`
 
 SetSipDscpMark sets SipDscpMark field to given value.
 
@@ -883,20 +883,20 @@ HasCallAgent1 returns a boolean if a field has been set.
 
 ### GetCallAgentPort1
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1() int64`
 
 GetCallAgentPort1 returns the CallAgentPort1 field if non-nil, zero value otherwise.
 
 ### GetCallAgentPort1Ok
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1Ok() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1Ok() (*int64, bool)`
 
 GetCallAgentPort1Ok returns a tuple with the CallAgentPort1 field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCallAgentPort1
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort1(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort1(v int64)`
 
 SetCallAgentPort1 sets CallAgentPort1 field to given value.
 
@@ -943,20 +943,20 @@ HasCallAgent2 returns a boolean if a field has been set.
 
 ### GetCallAgentPort2
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2() int64`
 
 GetCallAgentPort2 returns the CallAgentPort2 field if non-nil, zero value otherwise.
 
 ### GetCallAgentPort2Ok
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2Ok() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2Ok() (*int64, bool)`
 
 GetCallAgentPort2Ok returns a tuple with the CallAgentPort2 field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCallAgentPort2
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort2(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort2(v int64)`
 
 SetCallAgentPort2 sets CallAgentPort2 field to given value.
 
@@ -1003,20 +1003,20 @@ HasDomain returns a boolean if a field has been set.
 
 ### GetMgcpDscpMark
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMark() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMark() int64`
 
 GetMgcpDscpMark returns the MgcpDscpMark field if non-nil, zero value otherwise.
 
 ### GetMgcpDscpMarkOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMarkOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMarkOk() (*int64, bool)`
 
 GetMgcpDscpMarkOk returns a tuple with the MgcpDscpMark field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetMgcpDscpMark
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetMgcpDscpMark(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetMgcpDscpMark(v int64)`
 
 SetMgcpDscpMark sets MgcpDscpMark field to given value.
 
@@ -1063,20 +1063,20 @@ HasTerminationBase returns a boolean if a field has been set.
 
 ### GetLocalPortMin
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMin() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMin() int64`
 
 GetLocalPortMin returns the LocalPortMin field if non-nil, zero value otherwise.
 
 ### GetLocalPortMinOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMinOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMinOk() (*int64, bool)`
 
 GetLocalPortMinOk returns a tuple with the LocalPortMin field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLocalPortMin
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMin(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMin(v int64)`
 
 SetLocalPortMin sets LocalPortMin field to given value.
 
@@ -1098,20 +1098,20 @@ HasLocalPortMin returns a boolean if a field has been set.
 UnsetLocalPortMin ensures that no value is present for LocalPortMin, not even an explicit nil
 ### GetLocalPortMax
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMax() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMax() int64`
 
 GetLocalPortMax returns the LocalPortMax field if non-nil, zero value otherwise.
 
 ### GetLocalPortMaxOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMaxOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMaxOk() (*int64, bool)`
 
 GetLocalPortMaxOk returns a tuple with the LocalPortMax field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLocalPortMax
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMax(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMax(v int64)`
 
 SetLocalPortMax sets LocalPortMax field to given value.
 
@@ -1133,20 +1133,20 @@ HasLocalPortMax returns a boolean if a field has been set.
 UnsetLocalPortMax ensures that no value is present for LocalPortMax, not even an explicit nil
 ### GetEventPayloadType
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadType() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadType() int64`
 
 GetEventPayloadType returns the EventPayloadType field if non-nil, zero value otherwise.
 
 ### GetEventPayloadTypeOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadTypeOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadTypeOk() (*int64, bool)`
 
 GetEventPayloadTypeOk returns a tuple with the EventPayloadType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetEventPayloadType
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEventPayloadType(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEventPayloadType(v int64)`
 
 SetEventPayloadType sets EventPayloadType field to given value.
 
@@ -1168,20 +1168,20 @@ HasEventPayloadType returns a boolean if a field has been set.
 UnsetEventPayloadType ensures that no value is present for EventPayloadType, not even an explicit nil
 ### GetCasEvents
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEvents() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEvents() int64`
 
 GetCasEvents returns the CasEvents field if non-nil, zero value otherwise.
 
 ### GetCasEventsOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEventsOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEventsOk() (*int64, bool)`
 
 GetCasEventsOk returns a tuple with the CasEvents field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCasEvents
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEvents(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEvents(v int64)`
 
 SetCasEvents sets CasEvents field to given value.
 
@@ -1203,20 +1203,20 @@ HasCasEvents returns a boolean if a field has been set.
 UnsetCasEvents ensures that no value is present for CasEvents, not even an explicit nil
 ### GetDscpMark
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMark() int32`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMark() int64`
 
 GetDscpMark returns the DscpMark field if non-nil, zero value otherwise.
 
 ### GetDscpMarkOk
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMarkOk() (*int32, bool)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMarkOk() (*int64, bool)`
 
 GetDscpMarkOk returns a tuple with the DscpMark field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDscpMark
 
-`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDscpMark(v int32)`
+`func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDscpMark(v int64)`
 
 SetDscpMark sets DscpMark field to given value.
 

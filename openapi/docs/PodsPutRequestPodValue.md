@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
-**ExpectedSpineCount** | Pointer to **NullableInt32** | Number of spine switches expected in this pod | [optional] [default to 1]
+**ExpectedSpineCount** | Pointer to **NullableInt64** | Number of spine switches expected in this pod | [optional] [default to 1]
 
 ## Methods
 
@@ -105,20 +105,20 @@ HasObjectProperties returns a boolean if a field has been set.
 
 ### GetExpectedSpineCount
 
-`func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int32`
+`func (o *PodsPutRequestPodValue) GetExpectedSpineCount() int64`
 
 GetExpectedSpineCount returns the ExpectedSpineCount field if non-nil, zero value otherwise.
 
 ### GetExpectedSpineCountOk
 
-`func (o *PodsPutRequestPodValue) GetExpectedSpineCountOk() (*int32, bool)`
+`func (o *PodsPutRequestPodValue) GetExpectedSpineCountOk() (*int64, bool)`
 
 GetExpectedSpineCountOk returns a tuple with the ExpectedSpineCount field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetExpectedSpineCount
 
-`func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int32)`
+`func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int64)`
 
 SetExpectedSpineCount sets ExpectedSpineCount field to given value.
 

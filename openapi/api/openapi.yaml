@@ -6214,17 +6214,20 @@ components:
           type: string
         usage_threshold:
           description: Usage Threshold
+          format: double
           nullable: true
           type: number
         external_battery_power_available:
           default: 40
           description: External Battery Power Available
+          format: int64
           maximum: 2000
           nullable: true
           type: integer
         external_power_available:
           default: 75
           description: External Power Available
+          format: int64
           maximum: 2000
           nullable: true
           type: integer
@@ -6249,6 +6252,7 @@ components:
             \ switch settings.\n                                                <br>if\
             \ the value is 0, audit will be turned off.\n                        \
             \                        "
+          format: int64
           maximum: 1440
           nullable: true
           type: integer
@@ -6258,6 +6262,7 @@ components:
             Time delay in minutes to write the Switch configuration to flash after a change is made.
                                                             <br>if the value is blank, commit will use default switch settings of 12 hours.
                                                             <br>if the value is 0, commit will be turned off.
+          format: int64
           maximum: 1440
           nullable: true
           type: integer
@@ -6276,12 +6281,14 @@ components:
         hold_timer:
           default: 0
           description: Hold Timer
+          format: int64
           maximum: 86400
           nullable: true
           type: integer
         mac_aging_timer_override:
           description: "Blank uses the Device's default; otherwise an integer between\
             \ 1 to 1,000,000 seconds"
+          format: int64
           maximum: 1000000
           minimum: 1
           nullable: true
@@ -6316,6 +6323,7 @@ components:
         firmware_count:
           default: 0
           description: Firmware Count
+          format: int64
           nullable: true
           type: integer
       type: object
@@ -6362,6 +6370,7 @@ components:
         poll_interval:
           default: 20
           description: The sampling rate for sFlow polling (seconds)
+          format: int64
           maximum: 300
           minimum: 5
           nullable: true
@@ -6388,6 +6397,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _routemapclauses_put_request_route_map_clause_value_object_properties:
@@ -6469,6 +6479,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _bundles_put_request_endpoint_bundle_value_object_properties:
@@ -6508,6 +6519,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _acls_put_request_ip_filter_value:
@@ -6545,15 +6557,16 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
-          - equal
+          - greater
           - less
           - range
-          - greater
+          - equal
           type: string
         source_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
             \ port value in match operation. This field is also used for the lower\
             \ value in the range port match operation."
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -6561,6 +6574,7 @@ components:
         source_port_2:
           description: This field will only be used in the range TCP/UDP port value
             match operation to define the top value in the range.
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -6576,15 +6590,16 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
-          - equal
+          - greater
           - less
           - range
-          - greater
+          - equal
           type: string
         destination_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
             \ port value in match operation. This field is also used for the lower\
             \ value in the range port match operation."
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -6592,6 +6607,7 @@ components:
         destination_port_2:
           description: This field will only be used in the range TCP/UDP port value
             match operation to define the top value in the range.
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -6612,6 +6628,7 @@ components:
         bandwidth_for_queue:
           default: 0
           description: Percentage bandwidth allocated to Queue. 0 is no limit
+          format: int64
           maximum: 100
           nullable: true
           type: integer
@@ -6620,19 +6637,21 @@ components:
           description: Scheduler Type for Queue
           enum:
           - ""
+          - DWRR
           - WRR
           - SP
-          - DWRR
           type: string
         scheduler_weight:
           default: 0
           description: Weight associated with WRR or DWRR scheduler
+          format: int64
           maximum: 100
           nullable: true
           type: integer
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _policybasedrouting_put_request:
@@ -6659,27 +6678,28 @@ components:
           default: next available color
           description: Color of Badge
           enum:
-          - red
+          - yellow
+          - purple
           - orange
           - green
-          - yellow
           - blue
-          - purple
+          - red
           minLength: 1
           type: string
         number:
           description: Number of Badge
           enum:
-          - 5
-          - 8
-          - 0
           - 7
+          - 0
           - 4
           - 1
-          - 9
-          - 6
           - 2
+          - 6
+          - 9
+          - 8
+          - 5
           - 3
+          format: int64
           maximum: 9
           nullable: true
           type: integer
@@ -6772,8 +6792,8 @@ components:
           default: whitebox
           description: Type of Image Update Sets
           enum:
-          - whitebox
           - blackbox
+          - whitebox
           type: string
         section_pointless:
           items:
@@ -6839,6 +6859,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _pods_put_request:
@@ -6875,6 +6896,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _policybasedroutingacl_put_request:
@@ -6903,6 +6925,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _devicevoicesettings_put_request_device_voice_settings_value_codecs_inner:
@@ -6937,6 +6960,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _packetbroker_put_request_pb_egress_profile_value_ipv6_permit_inner:
@@ -6958,6 +6982,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _ethportsettings_put_request_eth_port_settings_value_lldp_med_inner:
@@ -6983,12 +7008,14 @@ components:
         lldp_med_row_num_dscp_mark:
           default: 0
           description: LLDP DSCP Mark
+          format: int64
           maximum: 63
           nullable: true
           type: integer
         lldp_med_row_num_priority:
           default: 0
           description: LLDP Priority
+          format: int64
           maximum: 7
           nullable: true
           type: integer
@@ -7004,6 +7031,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _packetbroker_put_request:
@@ -7081,6 +7109,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _sfpbreakouts_patch_request:
@@ -7184,6 +7213,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _extendedcommunitylists_put_request_extended_community_list_value:
@@ -7238,6 +7268,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _sites_patch_request_site_value:
@@ -7268,8 +7299,8 @@ components:
           enum:
           - ""
           - mstp
-          - pvst
           - port
+          - pvst
           minLength: 1
           type: string
         region_name:
@@ -7281,6 +7312,7 @@ components:
           default: 0
           description: A logical number that signifies a revision for the MSTP configuration.
             All switches in an MSTP region must have the same revision number
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -7313,6 +7345,7 @@ components:
         mac_address_aging_time:
           default: 600
           description: MAC Address Aging Time (between 1-100000)
+          format: int64
           maximum: 100000
           minimum: 1
           nullable: true
@@ -7320,6 +7353,7 @@ components:
         mlag_delay_restore_timer:
           default: 300
           description: MLAG Delay Restore Timer
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -7327,6 +7361,7 @@ components:
         bgp_keepalive_timer:
           default: 60
           description: Spine BGP Keepalive Timer
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -7334,6 +7369,7 @@ components:
         bgp_hold_down_timer:
           default: 180
           description: Spine BGP Hold Down Timer
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -7342,12 +7378,14 @@ components:
           default: 1
           description: BGP Advertisement Interval for spines/superspines. Use "0"
             for immediate updates
+          format: int64
           maximum: 3600
           nullable: true
           type: integer
         spine_bgp_connect_timer:
           default: 120
           description: BGP Connect Timer
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -7355,6 +7393,7 @@ components:
         leaf_bgp_keep_alive_timer:
           default: 60
           description: Leaf BGP Keep Alive Timer
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -7362,6 +7401,7 @@ components:
         leaf_bgp_hold_down_timer:
           default: 180
           description: Leaf BGP Hold Down Timer
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -7370,12 +7410,14 @@ components:
           default: 1
           description: BGP Advertisement Interval for leafs. Use "0" for immediate
             updates
+          format: int64
           maximum: 3600
           nullable: true
           type: integer
         leaf_bgp_connect_timer:
           default: 120
           description: BGP Connect Timer
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -7383,16 +7425,19 @@ components:
         link_state_timeout_value:
           default: 60
           description: Link State Timeout Value
+          format: int64
           nullable: true
           type: integer
         evpn_multihoming_startup_delay:
           default: 300
           description: Startup Delay
+          format: int64
           nullable: true
           type: integer
         evpn_mac_holdtime:
           default: 1080
           description: MAC Holdtime
+          format: int64
           nullable: true
           type: integer
         aggressive_reporting:
@@ -7404,6 +7449,7 @@ components:
           default: 5
           description: Threshold in Errors per second that when met will disable the
             links as part of LAGs
+          format: int64
           maximum: 4294967296
           minimum: 1
           nullable: true
@@ -7423,6 +7469,7 @@ components:
           description: Controls duplicate MAC address detection (DAD) Max Number of
             Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of
             moves (2 to 1000; default 5 if left blank)
+          format: int64
           maximum: 1000
           minimum: 2
           nullable: true
@@ -7432,6 +7479,7 @@ components:
           description: Controls duplicate MAC address detection (DAD) time for EVPN
             (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800;
             default 180 if left blank)
+          format: int64
           maximum: 1800
           minimum: 2
           nullable: true
@@ -7501,6 +7549,7 @@ components:
         greater_than_equal_value:
           description: 'Match IP routes with a subnet mask greater than or equal to
             the value indicated '
+          format: int64
           maximum: 32
           nullable: true
           type: integer
@@ -7508,6 +7557,7 @@ components:
         less_than_equal_value:
           description: Match IP routes with a subnet mask less than or equal to the
             value indicated
+          format: int64
           maximum: 32
           nullable: true
           type: integer
@@ -7515,6 +7565,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _imageupdatesets_patch_request_image_update_sets_value_section_inner:
@@ -7527,11 +7578,11 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - unmanaged
           - 1.8.1.73
+          - unmanaged
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17822707549121"
+          default: "17833603510441"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -7551,14 +7602,14 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
-          - badge_color
-          - badge
-          - endpoint
-          - bundle_id
           - pod
           - deviceSerialNumber
-          - productClass
+          - badge
+          - bundle_id
+          - badge_color
+          - endpoint
           - endpoint_type
+          - productClass
           type: string
         endpoint_set_num_subrule_1_value:
           default: ""
@@ -7580,14 +7631,14 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
-          - badge_color
-          - badge
-          - endpoint
-          - bundle_id
           - pod
           - deviceSerialNumber
-          - productClass
+          - badge
+          - bundle_id
+          - badge_color
+          - endpoint
           - endpoint_type
+          - productClass
           type: string
         endpoint_set_num_subrule_2_value:
           default: ""
@@ -7609,14 +7660,14 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
-          - badge_color
-          - badge
-          - endpoint
-          - bundle_id
           - pod
           - deviceSerialNumber
-          - productClass
+          - badge
+          - bundle_id
+          - badge_color
+          - endpoint
           - endpoint_type
+          - productClass
           type: string
         endpoint_set_num_subrule_3_value:
           default: ""
@@ -7686,8 +7737,8 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - unmanaged
           - 1.8.1.73
+          - unmanaged
           type: string
         endpoint_set_for_endpointless_unique_identifier:
           default: pointless
@@ -7712,8 +7763,8 @@ components:
           default: grouping_rules
           description: Specific element or Grouping Rules to apply thresholds to
           enum:
-          - grouping_rules
           - element
+          - grouping_rules
           type: string
         grouping_rules:
           default: ""
@@ -7740,6 +7791,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _authenticatedethports_put_request:
@@ -7802,9 +7854,9 @@ components:
           default: snmpv2
           description: Comm Type
           enum:
+          - snmpv2
           - gnmi
           - snmpv3
-          - snmpv2
           minLength: 1
           type: string
         snmp_community_string:
@@ -7835,11 +7887,11 @@ components:
           default: LLDP
           description: Controls how the system locates this Device within its LAN
           enum:
-          - LAG
-          - LLDP
-          - LAG_IDL
-          - Static Port
           - as_site
+          - LAG_IDL
+          - LAG
+          - Static Port
+          - LLDP
           minLength: 1
           type: string
         power_state:
@@ -7850,22 +7902,22 @@ components:
           default: generic_snmp
           description: Communication Mode
           enum:
-          - cisco_catalyst_c3xxx
-          - eltex_ltp_gpon_olt
-          - generic_snmp
-          - arista_7050_series
-          - cisco_small_business_sgxxx
-          - generic_advanced_snmp
-          - cisco_nexus_9xxx
+          - edgecore_ecs21000
+          - tibit_xgs_olt_sfp
+          - sonic
           - adtran_netvanta_series
           - ruckus_icx7150
-          - juniper_acx5048
-          - netgear_prosafe_series
-          - tibit_xgs_olt_sfp
-          - edgecore_ecs21000
-          - microtik_routeros_telnet
-          - sonic
           - hpe_aruba_2530_series
+          - generic_snmp
+          - generic_advanced_snmp
+          - cisco_small_business_sgxxx
+          - juniper_acx5048
+          - arista_7050_series
+          - eltex_ltp_gpon_olt
+          - cisco_nexus_9xxx
+          - cisco_catalyst_c3xxx
+          - microtik_routeros_telnet
+          - netgear_prosafe_series
           minLength: 1
           type: string
         cli_access_mode:
@@ -7917,9 +7969,9 @@ components:
           default: noAuthNoPriv
           description: Security level
           enum:
-          - authPriv
-          - noAuthNoPriv
           - authNoPriv
+          - noAuthNoPriv
+          - authPriv
           type: string
         snmpv3_username:
           default: ""
@@ -7930,8 +7982,8 @@ components:
           default: MD5
           description: Protocol
           enum:
-          - MD5
           - SHA
+          - MD5
           minLength: 1
           type: string
         passphrase:
@@ -8046,6 +8098,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _voiceportprofiles_put_request_voice_port_profiles_value_object_properties:
@@ -8077,8 +8130,8 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - unmanaged
           - 1.8.1.73
+          - unmanaged
           type: string
         endpoint_set_for_all_others_unique_identifier:
           default: else
@@ -8194,6 +8247,7 @@ components:
           type: boolean
         bgp_as_number:
           description: 'BGP Autonomous System Number for the site underlay '
+          format: int64
           maximum: 4294967295
           minimum: 1
           nullable: true
@@ -8276,6 +8330,7 @@ components:
         port:
           default: 6343
           description: Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -8304,9 +8359,9 @@ components:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
+          - ""
           - high
           - critical
-          - ""
           type: string
         sort_by_name:
           default: false
@@ -8408,25 +8463,25 @@ components:
           default: device
           description: Type of elements threshold applies to
           enum:
-          - device
           - interface
+          - device
           type: string
         operation:
           default: and
           description: How to combine rules
           enum:
-          - or
-          - and
           - escalation
+          - and
+          - or
           type: string
         severity:
           default: notice
           description: Severity of the alarm when the threshold is met
           enum:
-          - critical
           - notice
-          - warning
           - error
+          - critical
+          - warning
           type: string
         for:
           default: "5"
@@ -8443,48 +8498,48 @@ components:
           description: Metric threshold is on
           enum:
           - ""
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
-          - prometheus_Switch_system_memory_free_percent
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
-          - prometheus_Switch_system_cpu_percent
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
           - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_system_memory_free_percent
           - prometheus_Switch_system_uptime
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
           - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
-          - prometheus_Switch_interfaces_sfp_info_Temperature_C
-          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
-          - prometheus_Switch_system_virtual_chassis_sync_uptime
-          - prometheus_Switch_system_memory_free_MB
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
           - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
+          - prometheus_Switch_system_memory_free_MB
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
+          - prometheus_Switch_system_cpu_percent
+          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
+          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_system_virtual_chassis_sync_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
           - prometheus_Switch_sensors_sensor_value
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
-          - prometheus_Switch_bgp_status_neighbors_uptime
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
           type: string
         escalation_operation:
           default: eq
           description: How to compare the metric to the value
           enum:
-          - lt
-          - eq
-          - le
           - ge
+          - lt
+          - le
+          - eq
           - gt
           type: string
         critical_escalation_value:
@@ -8555,6 +8610,7 @@ components:
           default: 3600
           description: Amount of time in seconds before 802.1X requires reauthorization
             of an active session. "0" disables reauthorization (not recommended)
+          format: int64
           maximum: 3600
           nullable: true
           type: integer
@@ -8568,6 +8624,7 @@ components:
           default: 60
           description: Amount of time in seconds 802.1X authentication is allowed
             to run before MAC-based authentication has begun
+          format: int64
           maximum: 60
           minimum: 10
           nullable: true
@@ -8614,6 +8671,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _packetqueues_put_request_packet_queue_value_pbit_inner:
@@ -8621,12 +8679,14 @@ components:
         packet_queue_for_p_bit:
           default: 0
           description: Flag indicating this Traffic Class' Queue
+          format: int64
           maximum: 7
           nullable: true
           type: integer
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _switchpoints_put_request_switchpoint_value_traffic_mirrors_inner:
@@ -8660,6 +8720,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _groupingrules_put_request_grouping_rules_value_rules_inner:
@@ -8677,18 +8738,18 @@ components:
           description: Which type of rule to apply
           enum:
           - ""
-          - groupingRule
-          - endpoint
-          - ethPort
-          - pod
-          - externalGatewayProfile
           - portImportance
+          - pod
           - deviceSerialNumber
-          - portUsage
+          - groupingRule
+          - externalGatewayProfile
           - portNumber
-          - diagnosticsPortProfile
+          - ethPort
+          - portUsage
           - archipelago
+          - endpoint
           - endpoint_type
+          - diagnosticsPortProfile
           type: string
         rule_value:
           default: ""
@@ -8704,6 +8765,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _thresholds_put_request:
@@ -8737,6 +8799,7 @@ components:
         greater_than_equal_value:
           description: 'Match IP routes with a subnet mask greater than or equal to
             the value indicated '
+          format: int64
           maximum: 128
           minimum: 1
           nullable: true
@@ -8745,6 +8808,7 @@ components:
         less_than_equal_value:
           description: Match IP routes with a subnet mask less than or equal to the
             value indicated
+          format: int64
           maximum: 128
           minimum: 1
           nullable: true
@@ -8753,6 +8817,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _bundles_put_request_endpoint_bundle_value_voice_port_profile_paths_inner:
@@ -8769,6 +8834,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _switchpoints_put_request:
@@ -8810,6 +8876,7 @@ components:
           type: string
         neighbor_as_number:
           description: 'Autonomous System Number of remote BGP peer '
+          format: int64
           maximum: 4294967295
           nullable: true
           type: integer
@@ -8822,6 +8889,7 @@ components:
           default: 60
           description: Interval in seconds between Keepalive messages sent to remote
             BGP peer
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -8830,6 +8898,7 @@ components:
           default: 180
           description: "Time, in seconds,  used to determine failure of session Keepalive\
             \ messages received from remote BGP peer "
+          format: int64
           maximum: 3600
           minimum: 1
           nullable: true
@@ -8838,6 +8907,7 @@ components:
           default: 120
           description: Time in seconds between sucessive attempts to Establish BGP
             session
+          format: int64
           maximum: 65535
           minimum: 1
           nullable: true
@@ -8846,6 +8916,7 @@ components:
           default: 30
           description: 'The minimum time in seconds between sending route updates
             to BGP neighbor '
+          format: int64
           maximum: 600
           nullable: true
           type: integer
@@ -8853,12 +8924,14 @@ components:
           default: 255
           description: 'Allows external BGP neighbors to establish peering session
             multiple network hops away. '
+          format: int64
           maximum: 255
           minimum: 1
           nullable: true
           type: integer
         egress_vlan:
           description: VLAN used to carry BGP TCP session
+          format: int64
           maximum: 4096
           minimum: 1
           nullable: true
@@ -8919,6 +8992,7 @@ components:
         bgp_instance_as_number:
           description: Override the switch's AS number used in the Tenant router definition
             where this Gateway is applied
+          format: int64
           maximum: 4294967295
           minimum: 1
           nullable: true
@@ -8926,6 +9000,7 @@ components:
           default: null
         local_as_number:
           description: Local AS Number to use as an override to switch AS number
+          format: int64
           maximum: 4294967295
           minimum: 1
           nullable: true
@@ -8946,6 +9021,7 @@ components:
           description: "Allow routes with the local AS number in the AS-path, specifying\
             \ the maximum occurrences permitted before declaring a routing loop. Leave\
             \ blank or '0' to disable."
+          format: int64
           maximum: 10
           nullable: true
           type: integer
@@ -8957,6 +9033,7 @@ components:
         dynamic_bgp_limits:
           default: 0
           description: Dynamic BGP Limits
+          format: int64
           maximum: 5000
           nullable: true
           type: integer
@@ -8974,6 +9051,7 @@ components:
           default: 300
           description: Configure the minimum interval during which the system can
             receive BFD control packets
+          format: int64
           maximum: 60000
           minimum: 10
           nullable: true
@@ -8982,6 +9060,7 @@ components:
           default: 300
           description: Configure the minimum transmission interval during which the
             system can send BFD control packets
+          format: int64
           maximum: 60000
           minimum: 10
           nullable: true
@@ -8989,6 +9068,7 @@ components:
         bfd_detect_multiplier:
           default: 3
           description: Configure the detection multiplier to determine packet loss
+          format: int64
           maximum: 128
           minimum: 2
           nullable: true
@@ -9079,6 +9159,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _lags_put_request_lag_value:
@@ -9103,12 +9184,12 @@ components:
           default: anakiwa
           description: Choose the color to display the connectors on the network view
           enum:
-          - emerald
-          - chardonnay
-          - starship
           - anakiwa
+          - chardonnay
+          - emerald
           - lavender
           - cornflower
+          - starship
           minLength: 1
           type: string
         lacp:
@@ -9122,13 +9203,14 @@ components:
         eth_port_profile_ref_type_:
           description: Object type for eth_port_profile field
           enum:
+          - gateway_profile
           - pb_egress_profile
           - service_port_profile
           - eth_port_profile_
-          - gateway_profile
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
+          format: int64
           maximum: 4096
           minimum: 1
           nullable: true
@@ -9172,6 +9254,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _bundles_put_request_endpoint_bundle_value_eth_port_paths_inner:
@@ -9183,13 +9266,13 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
+          - authenticated_eth_port
           - pb_egress_profile
+          - eth_port_profile_
+          - type
+          - nbi_eth_port
           - lag
           - service_port_profile
-          - eth_port_profile_
-          - nbi_eth_port
-          - authenticated_eth_port
-          - type
           type: string
         eth_port_num_eth_port_settings:
           default: ""
@@ -9222,6 +9305,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
         port_name:
           description: "The name identifying the port. Used for reference only, it\
@@ -9252,6 +9336,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _ethportprofiles_put_request_eth_port_profile__value_services_inner:
@@ -9273,6 +9358,7 @@ components:
           description: |-
             Choose an external vlan
             A value of 0 will make the VLAN untagged, while in case null is provided, the VLAN will be the one associated with the service.
+          format: int64
           maximum: 4096
           minimum: 2
           nullable: true
@@ -9299,6 +9385,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
         row_num_mac_filter:
           default: ""
@@ -9330,15 +9417,15 @@ components:
           default: device
           description: Type of elements to group
           enum:
-          - device
           - interface
+          - device
           type: string
         operation:
           default: and
           description: How to combine rules
           enum:
-          - or
           - and
+          - or
           type: string
         rules:
           items:
@@ -9394,6 +9481,7 @@ components:
           type: string
         match_interface_number:
           description: Match Interface Number
+          format: int64
           maximum: 256
           minimum: 1
           nullable: true
@@ -9401,6 +9489,7 @@ components:
           default: null
         match_interface_vlan:
           description: Match Interface VLAN
+          format: int64
           maximum: 4094
           minimum: 1
           nullable: true
@@ -9426,12 +9515,14 @@ components:
           type: string
         match_local_preference:
           description: 'Match BGP Local Preference value on the route '
+          format: int64
           maximum: 4294967295
           nullable: true
           type: integer
           default: null
         match_metric:
           description: 'Match Metric of the IP route entry '
+          format: int64
           maximum: 4294967295
           minimum: 1
           nullable: true
@@ -9453,6 +9544,7 @@ components:
           type: string
         match_peer_interface:
           description: 'Match BGP Peer port the route was learned from '
+          format: int64
           maximum: 256
           minimum: 1
           nullable: true
@@ -9460,6 +9552,7 @@ components:
           default: null
         match_peer_vlan:
           description: 'Match BGP Peer VLAN over which the route was learned '
+          format: int64
           maximum: 4094
           minimum: 1
           nullable: true
@@ -9486,6 +9579,7 @@ components:
           type: string
         match_tag:
           description: Match routes that have this value for a Tag attribute
+          format: int64
           maximum: 4294967295
           minimum: 1
           nullable: true
@@ -9506,6 +9600,7 @@ components:
           type: string
         match_vni:
           description: 'Match based on the VNI value '
+          format: int64
           maximum: 16777215
           minimum: 1
           nullable: true
@@ -9547,52 +9642,52 @@ components:
           description: "Breakout Port Override. Available options determined by Switch\
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
-          - 1x200G
           - ""
-          - 8x25G
-          - 1x50G
-          - 8x10G
-          - 1x10G
-          - 1x100G
-          - 8x1G
-          - 2x400G
-          - 4x200G
-          - 4x100G
-          - 1x1G
-          - 2x10G
-          - 1x40G
-          - pg100G
-          - 4x50G
-          - 1x400G
-          - 8x400G
-          - 2x40G
           - 2x25G
-          - 4x1G
-          - 2x200G
-          - pg25G
-          - 8x40G
-          - 2x100G
-          - 4x800G
-          - pg200G
+          - 4x100G
+          - 4x40G
           - pg800G
+          - 4x200G
+          - 1x40G
+          - 4x400G
+          - pg400G
+          - 8x1G
+          - pg50G
+          - pg200G
+          - 8x40G
+          - pg10G
+          - 4x50G
+          - 8x200G
+          - 4x800G
+          - 1x800G
+          - 2x1G
+          - pg1G
+          - 8x800G
+          - 2x200G
+          - 2x50G
+          - 4x25G
+          - 4x1G
+          - 2x800G
+          - pg100G
+          - 8x100G
+          - 2x40G
+          - 1x10G
+          - 1x50G
+          - 2x400G
+          - 2x10G
+          - 8x10G
+          - 1x200G
+          - 2x100G
+          - 4x10G
+          - pg40G
+          - pg25G
+          - 1x400G
           - 8x50G
           - 1x25G
-          - 8x200G
-          - pg40G
-          - 4x10G
-          - 8x100G
-          - pg10G
-          - 2x800G
-          - pg50G
-          - 4x25G
-          - 2x50G
-          - 1x800G
-          - pg400G
-          - 2x1G
-          - 4x400G
-          - 8x800G
-          - pg1G
-          - 4x40G
+          - 8x400G
+          - 1x1G
+          - 8x25G
+          - 1x100G
           type: string
         eth_num_icon:
           default: empty
@@ -9605,6 +9700,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
         enable:
           default: true
@@ -9634,6 +9730,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _sflowcollectors_put_request:
@@ -9660,8 +9757,8 @@ components:
           default: device
           description: Type of elements to apply thresholds to
           enum:
-          - device
           - interface
+          - device
           type: string
         targets:
           items:
@@ -9706,27 +9803,27 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "50000"
-          - "1000"
+          - "40000"
+          - "2500"
+          - "10"
           - "100"
           - "-1"
-          - "400000"
-          - "100000"
-          - "40000"
-          - "10000"
-          - "2500"
           - "25000"
+          - "50000"
+          - "100000"
+          - "1000"
+          - "400000"
           - "5000"
-          - "10"
+          - "10000"
           minLength: 1
           type: string
         duplex_mode:
           default: Auto
           description: Duplex Mode
           enum:
+          - Full
           - Half
           - Auto
-          - Full
           minLength: 1
           type: string
         stp_enable:
@@ -9758,9 +9855,9 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
-          - High
-          - Critical
           - Low
+          - Critical
+          - High
           minLength: 1
           type: string
         allocated_power:
@@ -9784,6 +9881,7 @@ components:
           default: 1000
           description: Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast
             traffic before invoking the protective action
+          format: int64
           maximum: 9999
           minimum: 1
           nullable: true
@@ -9803,9 +9901,9 @@ components:
             \                                      </div>\n                      \
             \                          "
           enum:
-          - Kpps
-          - pps
           - '%'
+          - pps
+          - Kpps
           minLength: 1
           type: string
         action:
@@ -9845,11 +9943,11 @@ components:
             \ the Switch Value.<br>\n                                            \
             \    </div>\n                                            "
           enum:
-          - rs-custom
-          - auto
+          - none
           - unaltered
           - fc
-          - none
+          - rs-custom
+          - auto
           - rs
           minLength: 1
           type: string
@@ -9861,6 +9959,7 @@ components:
         minimum_wred_threshold:
           default: 1
           description: A value between 1 to 12480(in KiloBytes)
+          format: int64
           maximum: 12480
           minimum: 1
           nullable: true
@@ -9868,6 +9967,7 @@ components:
         maximum_wred_threshold:
           default: 1
           description: A value between 1 to 12480(in KiloBytes)
+          format: int64
           maximum: 12480
           minimum: 1
           nullable: true
@@ -9875,6 +9975,7 @@ components:
         wred_drop_probability:
           default: 0
           description: A value between 0 to 100
+          format: int64
           maximum: 100
           nullable: true
           type: integer
@@ -9890,6 +9991,7 @@ components:
         priority_flow_control_watchdog_detect_time:
           default: 100
           description: A value between 100 to 5000
+          format: int64
           maximum: 5000
           minimum: 100
           nullable: true
@@ -9897,6 +9999,7 @@ components:
         priority_flow_control_watchdog_restore_time:
           default: 100
           description: A value between 100 to 60000
+          format: int64
           maximum: 60000
           minimum: 100
           nullable: true
@@ -9963,6 +10066,7 @@ components:
         mac_limit:
           default: 1000
           description: Between 1-1000
+          format: int64
           maximum: 1000
           minimum: 1
           nullable: true
@@ -10001,6 +10105,7 @@ components:
           default: 0
           description: "In minutes, how long the client will stay authenticated. See\
             \ Also Aging Type"
+          format: int64
           maximum: 1440
           nullable: true
           type: integer
@@ -10046,6 +10151,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _packetqueues_put_request:
@@ -10098,6 +10204,7 @@ components:
         number_of_multipoints:
           default: 0
           description: Number of Multipoints
+          format: int64
           nullable: true
           type: integer
         aggregate:
@@ -10191,6 +10298,7 @@ components:
         proxy_server_port:
           default: 0
           description: Proxy Server Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -10202,6 +10310,7 @@ components:
         proxy_server_secondary_port:
           default: 0
           description: Secondary Proxy Server Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -10213,6 +10322,7 @@ components:
         registrar_server_port:
           default: 0
           description: Registrar Server Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -10224,6 +10334,7 @@ components:
         registrar_server_secondary_port:
           default: 0
           description: Secondary Registrar Server Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -10243,6 +10354,7 @@ components:
         user_agent_port:
           default: 0
           description: User Agent Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -10255,6 +10367,7 @@ components:
         outbound_proxy_port:
           default: 0
           description: Outbound Proxy Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -10267,6 +10380,7 @@ components:
         outbound_proxy_secondary_port:
           default: 0
           description: Secondary Outbound Proxy Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -10274,6 +10388,7 @@ components:
           default: 3240
           description: Specifies the time in seconds to start the re-registration
             process. The default value is 3240 seconds
+          format: int64
           nullable: true
           type: integer
         register_expires:
@@ -10281,6 +10396,7 @@ components:
           description: "SIP registration expiration time in seconds. If value is 0,\
             \ the SIP agent does not add an expiration time to the registration requests\
             \ and does not perform re-registration. The default value is 3600 seconds"
+          format: int64
           nullable: true
           type: integer
         voicemail_server:
@@ -10292,6 +10408,7 @@ components:
         voicemail_server_port:
           default: 0
           description: Voicemail Server Port
+          format: int64
           maximum: 65535
           nullable: true
           type: integer
@@ -10300,11 +10417,13 @@ components:
           description: "Voicemail server expiration time in seconds. If value is 0,\
             \ the Register Expires time is used instead. The default value is 3600\
             \ seconds"
+          format: int64
           nullable: true
           type: integer
         sip_dscp_mark:
           default: 0
           description: Sip Differentiated Services Code point (DSCP)
+          format: int64
           maximum: 63
           nullable: true
           type: integer
@@ -10315,6 +10434,7 @@ components:
         call_agent_port_1:
           default: 0
           description: Call Agent Port 1
+          format: int64
           nullable: true
           type: integer
         call_agent_2:
@@ -10324,6 +10444,7 @@ components:
         call_agent_port_2:
           default: 0
           description: Call Agent Port 2
+          format: int64
           nullable: true
           type: integer
         domain:
@@ -10333,6 +10454,7 @@ components:
         mgcp_dscp_mark:
           default: 0
           description: MGCP Differentiated Services Code point (DSCP)
+          format: int64
           maximum: 63
           nullable: true
           type: integer
@@ -10343,23 +10465,27 @@ components:
         local_port_min:
           default: 30000
           description: Defines the base RTP port that should be used for voice traffic
+          format: int64
           nullable: true
           type: integer
         local_port_max:
           default: 30200
           description: "Defines the highest RTP port used for voice traffic, must\
             \ be greater than local Local Port Min"
+          format: int64
           nullable: true
           type: integer
         event_payload_type:
           default: 101
           description: Telephone Event Payload Type
+          format: int64
           nullable: true
           type: integer
         cas_events:
           default: 0
           description: Enables or disables handling of CAS via RTP CAS events. Valid
             values are 0 = off and 1 = on
+          format: int64
           maximum: 1
           nullable: true
           type: integer
@@ -10367,6 +10493,7 @@ components:
           default: 0
           description: Differentiated Services Code Point (DSCP) to be used for outgoing
             RTP packets
+          format: int64
           maximum: 63
           nullable: true
           type: integer
@@ -10559,50 +10686,50 @@ components:
           description: Metric threshold is on
           enum:
           - ""
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
-          - prometheus_Switch_system_memory_free_percent
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
-          - prometheus_Switch_system_cpu_percent
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
           - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_system_memory_free_percent
           - prometheus_Switch_system_uptime
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
           - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
-          - prometheus_Switch_interfaces_sfp_info_Temperature_C
-          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
-          - prometheus_Switch_system_virtual_chassis_sync_uptime
-          - prometheus_Switch_system_memory_free_MB
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
           - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
+          - prometheus_Switch_system_memory_free_MB
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
+          - prometheus_Switch_system_cpu_percent
+          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
+          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_system_virtual_chassis_sync_uptime
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
           - prometheus_Switch_sensors_sensor_value
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
-          - prometheus_Switch_bgp_status_neighbors_uptime
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
           type: string
         operation:
           default: ==
           description: How to compare the metric to the value
           enum:
           - ""
-          - eq
-          - lt
-          - le
-          - ne
           - ge
+          - lt
+          - ne
+          - le
+          - eq
           - gt
           type: string
         value:
@@ -10621,6 +10748,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _devicecontrollers_put_request:
@@ -10656,6 +10784,7 @@ components:
         vlan:
           description: Layer 2 Virtual Network Identifier. A Value between 1 and 4096.
             <br> Some switches have reserved values within the range
+          format: int64
           maximum: 4096
           minimum: 1
           nullable: true
@@ -10663,6 +10792,7 @@ components:
           default: null
         vni:
           description: Identifies the service within the VXLAN fabric
+          format: int64
           maximum: 16777215
           minimum: 1
           nullable: true
@@ -10709,6 +10839,7 @@ components:
             \ to determine when large packets must be broken up into smaller packets\
             \ for delivery. If mismatched within a single vlan network, can cause\
             \ dropped packets."
+          format: int64
           maximum: 9216
           minimum: 1312
           nullable: true
@@ -10727,6 +10858,7 @@ components:
         max_upstream_rate_mbps:
           description: Bandwidth allocated per port in the upstream direction. (Max
             10000 Mbps)
+          format: int64
           maximum: 10000
           nullable: true
           type: integer
@@ -10734,6 +10866,7 @@ components:
         max_downstream_rate_mbps:
           description: Bandwidth allocated per port in the downstream direction. (Max
             10000 Mbps)
+          format: int64
           maximum: 10000
           nullable: true
           type: integer
@@ -10815,6 +10948,7 @@ components:
         mst_instance:
           default: 0
           description: MST Instance ID (0-4094)
+          format: int64
           maximum: 4094
           nullable: true
           type: integer
@@ -10865,6 +10999,7 @@ components:
         tls_limit_in:
           default: 1000
           description: Speed of ingress (Mbps) for TLS (Transparent LAN Service)
+          format: int64
           maximum: 10000
           minimum: 1
           nullable: true
@@ -10943,6 +11078,7 @@ components:
         ad_value:
           description: "Administrative distancing value, also known as route preference\
             \ - values from 0-255"
+          format: int64
           maximum: 255
           nullable: true
           type: integer
@@ -10950,6 +11086,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _policybasedroutingacl_put_request_pb_routing_acl_value:
@@ -10968,8 +11105,8 @@ components:
           default: ipv4
           description: IPv4 or IPv6
           enum:
-          - ipv6
           - ipv4
+          - ipv6
           type: string
         next_hop_ips:
           default: ""
@@ -11050,6 +11187,7 @@ components:
         call_forward_on_no_answer_ring_count:
           default: 4
           description: Call Forward on number of rings
+          format: int64
           minimum: 1
           nullable: true
           type: integer
@@ -11102,6 +11240,7 @@ components:
         mwi_refresh_timer:
           default: 30
           description: Message Waiting Indicator Refresh
+          format: int64
           nullable: true
           type: integer
         hotline_enable:
@@ -11111,6 +11250,7 @@ components:
         dial_tone_feature_delay:
           default: 4
           description: Dial Tone Feature Delay
+          format: int64
           minimum: 1
           nullable: true
           type: integer
@@ -11125,12 +11265,14 @@ components:
         transmit_gain:
           default: -30
           description: Transmit Gain in tenths of a dB.Example -30 would equal -3.0db
+          format: int64
           minimum: -80
           nullable: true
           type: integer
         receive_gain:
           default: -30
           description: Receive Gainin tenths of a dB. Example -30 would equal -3.0db
+          format: int64
           minimum: -110
           nullable: true
           type: integer
@@ -11141,12 +11283,14 @@ components:
         jitter_target:
           default: 40
           description: The target value of the jitter buffer in milliseconds
+          format: int64
           maximum: 200
           nullable: true
           type: integer
         jitter_buffer_max:
           default: 180
           description: The maximum depth of the jitter buffer in milliseconds
+          format: int64
           maximum: 200
           nullable: true
           type: integer
@@ -11158,12 +11302,14 @@ components:
           default: 10
           description: Release timer defined in seconds. The default value of this
             attribute is 10 seconds
+          format: int64
           nullable: true
           type: integer
         roh_timer:
           default: 15
           description: Time in seconds for the receiver is off-hook before ROH tone
             is applied. The value 0 disables ROH timing. The default value is 15 seconds
+          format: int64
           nullable: true
           type: integer
         object_properties:
@@ -11228,6 +11374,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _authenticatedethports_put_request_authenticated_eth_port_value_eth_ports_inner:
@@ -11258,6 +11405,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _acls_put_request_ip_filter_value_object_properties:
@@ -11313,6 +11461,7 @@ components:
         expected_spine_count:
           default: 1
           description: Number of spine switches expected in this pod
+          format: int64
           minimum: 1
           nullable: true
           type: integer
@@ -11357,6 +11506,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
     _communitylists_put_request_community_list_value:
@@ -11428,6 +11578,7 @@ components:
         layer_3_vni:
           description: 'VNI value used to transport traffic between services of a
             Tenant '
+          format: int64
           maximum: 16777215
           minimum: 1
           nullable: true
@@ -11440,6 +11591,7 @@ components:
         layer_3_vlan:
           description: 'VLAN value used to transport traffic between services of a
             Tenant '
+          format: int64
           maximum: 4096
           minimum: 1
           nullable: true
@@ -11583,6 +11735,7 @@ components:
           type: string
         row_num_external_vlan:
           description: Choose an external vlan
+          format: int64
           maximum: 4096
           minimum: 1
           nullable: true
@@ -11590,6 +11743,7 @@ components:
           default: null
         row_num_limit_in:
           description: Speed of ingress (Mbps)
+          format: int64
           maximum: 10000
           minimum: 1
           nullable: true
@@ -11598,6 +11752,7 @@ components:
         row_num_limit_out:
           default: 1000
           description: Speed of egress (Mbps)
+          format: int64
           maximum: 10000
           minimum: 1
           nullable: true
@@ -11605,6 +11760,7 @@ components:
         index:
           description: The index identifying the object. Zero if you want to add an
             object to the list.
+          format: int64
           type: integer
       type: object
   securitySchemes:

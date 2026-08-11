@@ -565,7 +565,7 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 			},
 			CreateDeleted: func(index int64) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
 				return openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -625,7 +625,7 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 			},
 			CreateDeleted: func(index int64) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
 				return openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -685,7 +685,7 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 			},
 			CreateDeleted: func(index int64) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
 				return openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})
@@ -745,7 +745,7 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 			},
 			CreateDeleted: func(index int64) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
 				return openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{
-					Index: openapi.PtrInt32(int32(index)),
+					Index: openapi.PtrInt64(int64(index)),
 				}
 			},
 		})

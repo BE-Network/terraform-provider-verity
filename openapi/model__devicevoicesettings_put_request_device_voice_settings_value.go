@@ -32,69 +32,69 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
 	// IP address or URI of the SIP proxy server for SIP signalling messages
 	ProxyServer *string `json:"proxy_server,omitempty"`
 	// Proxy Server Port
-	ProxyServerPort NullableInt32 `json:"proxy_server_port,omitempty"`
+	ProxyServerPort NullableInt64 `json:"proxy_server_port,omitempty"`
 	// IP address or URI of the secondary SIP proxy server for SIP signalling messages
 	ProxyServerSecondary *string `json:"proxy_server_secondary,omitempty"`
 	// Secondary Proxy Server Port
-	ProxyServerSecondaryPort NullableInt32 `json:"proxy_server_secondary_port,omitempty"`
+	ProxyServerSecondaryPort NullableInt64 `json:"proxy_server_secondary_port,omitempty"`
 	// Name or IP address or resolved name of the registrar server for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net
 	RegistrarServer *string `json:"registrar_server,omitempty"`
 	// Registrar Server Port
-	RegistrarServerPort NullableInt32 `json:"registrar_server_port,omitempty"`
+	RegistrarServerPort NullableInt64 `json:"registrar_server_port,omitempty"`
 	// Name or IP address or resolved name of the secondary registrar server for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net
 	RegistrarServerSecondary *string `json:"registrar_server_secondary,omitempty"`
 	// Secondary Registrar Server Port
-	RegistrarServerSecondaryPort NullableInt32 `json:"registrar_server_secondary_port,omitempty"`
+	RegistrarServerSecondaryPort NullableInt64 `json:"registrar_server_secondary_port,omitempty"`
 	// User Agent Domain
 	UserAgentDomain *string `json:"user_agent_domain,omitempty"`
 	// User Agent Transport
 	UserAgentTransport *string `json:"user_agent_transport,omitempty"`
 	// User Agent Port
-	UserAgentPort NullableInt32 `json:"user_agent_port,omitempty"`
+	UserAgentPort NullableInt64 `json:"user_agent_port,omitempty"`
 	// IP address or URI of the outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network
 	OutboundProxy *string `json:"outbound_proxy,omitempty"`
 	// Outbound Proxy Port
-	OutboundProxyPort NullableInt32 `json:"outbound_proxy_port,omitempty"`
+	OutboundProxyPort NullableInt64 `json:"outbound_proxy_port,omitempty"`
 	// IP address or URI of the secondary outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network
 	OutboundProxySecondary *string `json:"outbound_proxy_secondary,omitempty"`
 	// Secondary Outbound Proxy Port
-	OutboundProxySecondaryPort NullableInt32 `json:"outbound_proxy_secondary_port,omitempty"`
+	OutboundProxySecondaryPort NullableInt64 `json:"outbound_proxy_secondary_port,omitempty"`
 	// Specifies the time in seconds to start the re-registration process. The default value is 3240 seconds
-	RegistrationPeriod NullableInt32 `json:"registration_period,omitempty"`
+	RegistrationPeriod NullableInt64 `json:"registration_period,omitempty"`
 	// SIP registration expiration time in seconds. If value is 0, the SIP agent does not add an expiration time to the registration requests and does not perform re-registration. The default value is 3600 seconds
-	RegisterExpires NullableInt32 `json:"register_expires,omitempty"`
+	RegisterExpires NullableInt64 `json:"register_expires,omitempty"`
 	// Name or IP address or resolved name of the external voicemail server if not provided by SIP server for MWI control. Examples: 10.10.10.10 and proxy.voip.net
 	VoicemailServer *string `json:"voicemail_server,omitempty"`
 	// Voicemail Server Port
-	VoicemailServerPort NullableInt32 `json:"voicemail_server_port,omitempty"`
+	VoicemailServerPort NullableInt64 `json:"voicemail_server_port,omitempty"`
 	// Voicemail server expiration time in seconds. If value is 0, the Register Expires time is used instead. The default value is 3600 seconds
-	VoicemailServerExpires NullableInt32 `json:"voicemail_server_expires,omitempty"`
+	VoicemailServerExpires NullableInt64 `json:"voicemail_server_expires,omitempty"`
 	// Sip Differentiated Services Code point (DSCP)
-	SipDscpMark NullableInt32 `json:"sip_dscp_mark,omitempty"`
+	SipDscpMark NullableInt64 `json:"sip_dscp_mark,omitempty"`
 	// Call Agent 1
 	CallAgent1 *string `json:"call_agent_1,omitempty"`
 	// Call Agent Port 1
-	CallAgentPort1 NullableInt32 `json:"call_agent_port_1,omitempty"`
+	CallAgentPort1 NullableInt64 `json:"call_agent_port_1,omitempty"`
 	// Call Agent 2
 	CallAgent2 *string `json:"call_agent_2,omitempty"`
 	// Call Agent Port 2
-	CallAgentPort2 NullableInt32 `json:"call_agent_port_2,omitempty"`
+	CallAgentPort2 NullableInt64 `json:"call_agent_port_2,omitempty"`
 	// Domain
 	Domain *string `json:"domain,omitempty"`
 	// MGCP Differentiated Services Code point (DSCP)
-	MgcpDscpMark NullableInt32 `json:"mgcp_dscp_mark,omitempty"`
+	MgcpDscpMark NullableInt64 `json:"mgcp_dscp_mark,omitempty"`
 	// Base string for the MGCP physical termination id(s)
 	TerminationBase *string `json:"termination_base,omitempty"`
 	// Defines the base RTP port that should be used for voice traffic
-	LocalPortMin NullableInt32 `json:"local_port_min,omitempty"`
+	LocalPortMin NullableInt64 `json:"local_port_min,omitempty"`
 	// Defines the highest RTP port used for voice traffic, must be greater than local Local Port Min
-	LocalPortMax NullableInt32 `json:"local_port_max,omitempty"`
+	LocalPortMax NullableInt64 `json:"local_port_max,omitempty"`
 	// Telephone Event Payload Type
-	EventPayloadType NullableInt32 `json:"event_payload_type,omitempty"`
+	EventPayloadType NullableInt64 `json:"event_payload_type,omitempty"`
 	// Enables or disables handling of CAS via RTP CAS events. Valid values are 0 = off and 1 = on
-	CasEvents NullableInt32 `json:"cas_events,omitempty"`
+	CasEvents NullableInt64 `json:"cas_events,omitempty"`
 	// Differentiated Services Code Point (DSCP) to be used for outgoing RTP packets
-	DscpMark NullableInt32 `json:"dscp_mark,omitempty"`
+	DscpMark NullableInt64 `json:"dscp_mark,omitempty"`
 	// RTCP Enable
 	Rtcp *bool `json:"rtcp,omitempty"`
 	// Fax T.38 Enable
@@ -161,70 +161,70 @@ func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValue() *Devicevoicesett
 	this.Protocol = &protocol
 	var proxyServer string = ""
 	this.ProxyServer = &proxyServer
-	var proxyServerPort int32 = 0
-	this.ProxyServerPort = *NewNullableInt32(&proxyServerPort)
+	var proxyServerPort int64 = 0
+	this.ProxyServerPort = *NewNullableInt64(&proxyServerPort)
 	var proxyServerSecondary string = ""
 	this.ProxyServerSecondary = &proxyServerSecondary
-	var proxyServerSecondaryPort int32 = 0
-	this.ProxyServerSecondaryPort = *NewNullableInt32(&proxyServerSecondaryPort)
+	var proxyServerSecondaryPort int64 = 0
+	this.ProxyServerSecondaryPort = *NewNullableInt64(&proxyServerSecondaryPort)
 	var registrarServer string = ""
 	this.RegistrarServer = &registrarServer
-	var registrarServerPort int32 = 0
-	this.RegistrarServerPort = *NewNullableInt32(&registrarServerPort)
+	var registrarServerPort int64 = 0
+	this.RegistrarServerPort = *NewNullableInt64(&registrarServerPort)
 	var registrarServerSecondary string = ""
 	this.RegistrarServerSecondary = &registrarServerSecondary
-	var registrarServerSecondaryPort int32 = 0
-	this.RegistrarServerSecondaryPort = *NewNullableInt32(&registrarServerSecondaryPort)
+	var registrarServerSecondaryPort int64 = 0
+	this.RegistrarServerSecondaryPort = *NewNullableInt64(&registrarServerSecondaryPort)
 	var userAgentDomain string = ""
 	this.UserAgentDomain = &userAgentDomain
 	var userAgentTransport string = "UDP"
 	this.UserAgentTransport = &userAgentTransport
-	var userAgentPort int32 = 0
-	this.UserAgentPort = *NewNullableInt32(&userAgentPort)
+	var userAgentPort int64 = 0
+	this.UserAgentPort = *NewNullableInt64(&userAgentPort)
 	var outboundProxy string = ""
 	this.OutboundProxy = &outboundProxy
-	var outboundProxyPort int32 = 0
-	this.OutboundProxyPort = *NewNullableInt32(&outboundProxyPort)
+	var outboundProxyPort int64 = 0
+	this.OutboundProxyPort = *NewNullableInt64(&outboundProxyPort)
 	var outboundProxySecondary string = ""
 	this.OutboundProxySecondary = &outboundProxySecondary
-	var outboundProxySecondaryPort int32 = 0
-	this.OutboundProxySecondaryPort = *NewNullableInt32(&outboundProxySecondaryPort)
-	var registrationPeriod int32 = 3240
-	this.RegistrationPeriod = *NewNullableInt32(&registrationPeriod)
-	var registerExpires int32 = 3600
-	this.RegisterExpires = *NewNullableInt32(&registerExpires)
+	var outboundProxySecondaryPort int64 = 0
+	this.OutboundProxySecondaryPort = *NewNullableInt64(&outboundProxySecondaryPort)
+	var registrationPeriod int64 = 3240
+	this.RegistrationPeriod = *NewNullableInt64(&registrationPeriod)
+	var registerExpires int64 = 3600
+	this.RegisterExpires = *NewNullableInt64(&registerExpires)
 	var voicemailServer string = ""
 	this.VoicemailServer = &voicemailServer
-	var voicemailServerPort int32 = 0
-	this.VoicemailServerPort = *NewNullableInt32(&voicemailServerPort)
-	var voicemailServerExpires int32 = 3600
-	this.VoicemailServerExpires = *NewNullableInt32(&voicemailServerExpires)
-	var sipDscpMark int32 = 0
-	this.SipDscpMark = *NewNullableInt32(&sipDscpMark)
+	var voicemailServerPort int64 = 0
+	this.VoicemailServerPort = *NewNullableInt64(&voicemailServerPort)
+	var voicemailServerExpires int64 = 3600
+	this.VoicemailServerExpires = *NewNullableInt64(&voicemailServerExpires)
+	var sipDscpMark int64 = 0
+	this.SipDscpMark = *NewNullableInt64(&sipDscpMark)
 	var callAgent1 string = ""
 	this.CallAgent1 = &callAgent1
-	var callAgentPort1 int32 = 0
-	this.CallAgentPort1 = *NewNullableInt32(&callAgentPort1)
+	var callAgentPort1 int64 = 0
+	this.CallAgentPort1 = *NewNullableInt64(&callAgentPort1)
 	var callAgent2 string = ""
 	this.CallAgent2 = &callAgent2
-	var callAgentPort2 int32 = 0
-	this.CallAgentPort2 = *NewNullableInt32(&callAgentPort2)
+	var callAgentPort2 int64 = 0
+	this.CallAgentPort2 = *NewNullableInt64(&callAgentPort2)
 	var domain string = ""
 	this.Domain = &domain
-	var mgcpDscpMark int32 = 0
-	this.MgcpDscpMark = *NewNullableInt32(&mgcpDscpMark)
+	var mgcpDscpMark int64 = 0
+	this.MgcpDscpMark = *NewNullableInt64(&mgcpDscpMark)
 	var terminationBase string = "aaln/"
 	this.TerminationBase = &terminationBase
-	var localPortMin int32 = 30000
-	this.LocalPortMin = *NewNullableInt32(&localPortMin)
-	var localPortMax int32 = 30200
-	this.LocalPortMax = *NewNullableInt32(&localPortMax)
-	var eventPayloadType int32 = 101
-	this.EventPayloadType = *NewNullableInt32(&eventPayloadType)
-	var casEvents int32 = 0
-	this.CasEvents = *NewNullableInt32(&casEvents)
-	var dscpMark int32 = 0
-	this.DscpMark = *NewNullableInt32(&dscpMark)
+	var localPortMin int64 = 30000
+	this.LocalPortMin = *NewNullableInt64(&localPortMin)
+	var localPortMax int64 = 30200
+	this.LocalPortMax = *NewNullableInt64(&localPortMax)
+	var eventPayloadType int64 = 101
+	this.EventPayloadType = *NewNullableInt64(&eventPayloadType)
+	var casEvents int64 = 0
+	this.CasEvents = *NewNullableInt64(&casEvents)
+	var dscpMark int64 = 0
+	this.DscpMark = *NewNullableInt64(&dscpMark)
 	var rtcp bool = true
 	this.Rtcp = &rtcp
 	var faxT38 bool = false
@@ -289,70 +289,70 @@ func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValueWithDefaults() *Dev
 	this.Protocol = &protocol
 	var proxyServer string = ""
 	this.ProxyServer = &proxyServer
-	var proxyServerPort int32 = 0
-	this.ProxyServerPort = *NewNullableInt32(&proxyServerPort)
+	var proxyServerPort int64 = 0
+	this.ProxyServerPort = *NewNullableInt64(&proxyServerPort)
 	var proxyServerSecondary string = ""
 	this.ProxyServerSecondary = &proxyServerSecondary
-	var proxyServerSecondaryPort int32 = 0
-	this.ProxyServerSecondaryPort = *NewNullableInt32(&proxyServerSecondaryPort)
+	var proxyServerSecondaryPort int64 = 0
+	this.ProxyServerSecondaryPort = *NewNullableInt64(&proxyServerSecondaryPort)
 	var registrarServer string = ""
 	this.RegistrarServer = &registrarServer
-	var registrarServerPort int32 = 0
-	this.RegistrarServerPort = *NewNullableInt32(&registrarServerPort)
+	var registrarServerPort int64 = 0
+	this.RegistrarServerPort = *NewNullableInt64(&registrarServerPort)
 	var registrarServerSecondary string = ""
 	this.RegistrarServerSecondary = &registrarServerSecondary
-	var registrarServerSecondaryPort int32 = 0
-	this.RegistrarServerSecondaryPort = *NewNullableInt32(&registrarServerSecondaryPort)
+	var registrarServerSecondaryPort int64 = 0
+	this.RegistrarServerSecondaryPort = *NewNullableInt64(&registrarServerSecondaryPort)
 	var userAgentDomain string = ""
 	this.UserAgentDomain = &userAgentDomain
 	var userAgentTransport string = "UDP"
 	this.UserAgentTransport = &userAgentTransport
-	var userAgentPort int32 = 0
-	this.UserAgentPort = *NewNullableInt32(&userAgentPort)
+	var userAgentPort int64 = 0
+	this.UserAgentPort = *NewNullableInt64(&userAgentPort)
 	var outboundProxy string = ""
 	this.OutboundProxy = &outboundProxy
-	var outboundProxyPort int32 = 0
-	this.OutboundProxyPort = *NewNullableInt32(&outboundProxyPort)
+	var outboundProxyPort int64 = 0
+	this.OutboundProxyPort = *NewNullableInt64(&outboundProxyPort)
 	var outboundProxySecondary string = ""
 	this.OutboundProxySecondary = &outboundProxySecondary
-	var outboundProxySecondaryPort int32 = 0
-	this.OutboundProxySecondaryPort = *NewNullableInt32(&outboundProxySecondaryPort)
-	var registrationPeriod int32 = 3240
-	this.RegistrationPeriod = *NewNullableInt32(&registrationPeriod)
-	var registerExpires int32 = 3600
-	this.RegisterExpires = *NewNullableInt32(&registerExpires)
+	var outboundProxySecondaryPort int64 = 0
+	this.OutboundProxySecondaryPort = *NewNullableInt64(&outboundProxySecondaryPort)
+	var registrationPeriod int64 = 3240
+	this.RegistrationPeriod = *NewNullableInt64(&registrationPeriod)
+	var registerExpires int64 = 3600
+	this.RegisterExpires = *NewNullableInt64(&registerExpires)
 	var voicemailServer string = ""
 	this.VoicemailServer = &voicemailServer
-	var voicemailServerPort int32 = 0
-	this.VoicemailServerPort = *NewNullableInt32(&voicemailServerPort)
-	var voicemailServerExpires int32 = 3600
-	this.VoicemailServerExpires = *NewNullableInt32(&voicemailServerExpires)
-	var sipDscpMark int32 = 0
-	this.SipDscpMark = *NewNullableInt32(&sipDscpMark)
+	var voicemailServerPort int64 = 0
+	this.VoicemailServerPort = *NewNullableInt64(&voicemailServerPort)
+	var voicemailServerExpires int64 = 3600
+	this.VoicemailServerExpires = *NewNullableInt64(&voicemailServerExpires)
+	var sipDscpMark int64 = 0
+	this.SipDscpMark = *NewNullableInt64(&sipDscpMark)
 	var callAgent1 string = ""
 	this.CallAgent1 = &callAgent1
-	var callAgentPort1 int32 = 0
-	this.CallAgentPort1 = *NewNullableInt32(&callAgentPort1)
+	var callAgentPort1 int64 = 0
+	this.CallAgentPort1 = *NewNullableInt64(&callAgentPort1)
 	var callAgent2 string = ""
 	this.CallAgent2 = &callAgent2
-	var callAgentPort2 int32 = 0
-	this.CallAgentPort2 = *NewNullableInt32(&callAgentPort2)
+	var callAgentPort2 int64 = 0
+	this.CallAgentPort2 = *NewNullableInt64(&callAgentPort2)
 	var domain string = ""
 	this.Domain = &domain
-	var mgcpDscpMark int32 = 0
-	this.MgcpDscpMark = *NewNullableInt32(&mgcpDscpMark)
+	var mgcpDscpMark int64 = 0
+	this.MgcpDscpMark = *NewNullableInt64(&mgcpDscpMark)
 	var terminationBase string = "aaln/"
 	this.TerminationBase = &terminationBase
-	var localPortMin int32 = 30000
-	this.LocalPortMin = *NewNullableInt32(&localPortMin)
-	var localPortMax int32 = 30200
-	this.LocalPortMax = *NewNullableInt32(&localPortMax)
-	var eventPayloadType int32 = 101
-	this.EventPayloadType = *NewNullableInt32(&eventPayloadType)
-	var casEvents int32 = 0
-	this.CasEvents = *NewNullableInt32(&casEvents)
-	var dscpMark int32 = 0
-	this.DscpMark = *NewNullableInt32(&dscpMark)
+	var localPortMin int64 = 30000
+	this.LocalPortMin = *NewNullableInt64(&localPortMin)
+	var localPortMax int64 = 30200
+	this.LocalPortMax = *NewNullableInt64(&localPortMax)
+	var eventPayloadType int64 = 101
+	this.EventPayloadType = *NewNullableInt64(&eventPayloadType)
+	var casEvents int64 = 0
+	this.CasEvents = *NewNullableInt64(&casEvents)
+	var dscpMark int64 = 0
+	this.DscpMark = *NewNullableInt64(&dscpMark)
 	var rtcp bool = true
 	this.Rtcp = &rtcp
 	var faxT38 bool = false
@@ -593,9 +593,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServer(v
 }
 
 // GetProxyServerPort returns the ProxyServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPort() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPort() int64 {
 	if o == nil || IsNil(o.ProxyServerPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ProxyServerPort.Get()
@@ -604,7 +604,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPo
 // GetProxyServerPortOk returns a tuple with the ProxyServerPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPortOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -620,8 +620,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServerPo
 	return false
 }
 
-// SetProxyServerPort gets a reference to the given NullableInt32 and assigns it to the ProxyServerPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerPort(v int32) {
+// SetProxyServerPort gets a reference to the given NullableInt64 and assigns it to the ProxyServerPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerPort(v int64) {
 	o.ProxyServerPort.Set(&v)
 }
 // SetProxyServerPortNil sets the value for ProxyServerPort to be an explicit nil
@@ -667,9 +667,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSe
 }
 
 // GetProxyServerSecondaryPort returns the ProxyServerSecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPort() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPort() int64 {
 	if o == nil || IsNil(o.ProxyServerSecondaryPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ProxyServerSecondaryPort.Get()
@@ -678,7 +678,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSe
 // GetProxyServerSecondaryPortOk returns a tuple with the ProxyServerSecondaryPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPortOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -694,8 +694,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServerSe
 	return false
 }
 
-// SetProxyServerSecondaryPort gets a reference to the given NullableInt32 and assigns it to the ProxyServerSecondaryPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondaryPort(v int32) {
+// SetProxyServerSecondaryPort gets a reference to the given NullableInt64 and assigns it to the ProxyServerSecondaryPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondaryPort(v int64) {
 	o.ProxyServerSecondaryPort.Set(&v)
 }
 // SetProxyServerSecondaryPortNil sets the value for ProxyServerSecondaryPort to be an explicit nil
@@ -741,9 +741,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServ
 }
 
 // GetRegistrarServerPort returns the RegistrarServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPort() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPort() int64 {
 	if o == nil || IsNil(o.RegistrarServerPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RegistrarServerPort.Get()
@@ -752,7 +752,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServ
 // GetRegistrarServerPortOk returns a tuple with the RegistrarServerPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPortOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -768,8 +768,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServ
 	return false
 }
 
-// SetRegistrarServerPort gets a reference to the given NullableInt32 and assigns it to the RegistrarServerPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerPort(v int32) {
+// SetRegistrarServerPort gets a reference to the given NullableInt64 and assigns it to the RegistrarServerPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerPort(v int64) {
 	o.RegistrarServerPort.Set(&v)
 }
 // SetRegistrarServerPortNil sets the value for RegistrarServerPort to be an explicit nil
@@ -815,9 +815,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServ
 }
 
 // GetRegistrarServerSecondaryPort returns the RegistrarServerSecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPort() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPort() int64 {
 	if o == nil || IsNil(o.RegistrarServerSecondaryPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RegistrarServerSecondaryPort.Get()
@@ -826,7 +826,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServ
 // GetRegistrarServerSecondaryPortOk returns a tuple with the RegistrarServerSecondaryPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPortOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -842,8 +842,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServ
 	return false
 }
 
-// SetRegistrarServerSecondaryPort gets a reference to the given NullableInt32 and assigns it to the RegistrarServerSecondaryPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondaryPort(v int32) {
+// SetRegistrarServerSecondaryPort gets a reference to the given NullableInt64 and assigns it to the RegistrarServerSecondaryPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondaryPort(v int64) {
 	o.RegistrarServerSecondaryPort.Set(&v)
 }
 // SetRegistrarServerSecondaryPortNil sets the value for RegistrarServerSecondaryPort to be an explicit nil
@@ -921,9 +921,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentTran
 }
 
 // GetUserAgentPort returns the UserAgentPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPort() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPort() int64 {
 	if o == nil || IsNil(o.UserAgentPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.UserAgentPort.Get()
@@ -932,7 +932,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPort
 // GetUserAgentPortOk returns a tuple with the UserAgentPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPortOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -948,8 +948,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasUserAgentPort
 	return false
 }
 
-// SetUserAgentPort gets a reference to the given NullableInt32 and assigns it to the UserAgentPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentPort(v int32) {
+// SetUserAgentPort gets a reference to the given NullableInt64 and assigns it to the UserAgentPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentPort(v int64) {
 	o.UserAgentPort.Set(&v)
 }
 // SetUserAgentPortNil sets the value for UserAgentPort to be an explicit nil
@@ -995,9 +995,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxy
 }
 
 // GetOutboundProxyPort returns the OutboundProxyPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPort() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPort() int64 {
 	if o == nil || IsNil(o.OutboundProxyPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.OutboundProxyPort.Get()
@@ -1006,7 +1006,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxy
 // GetOutboundProxyPortOk returns a tuple with the OutboundProxyPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPortOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1022,8 +1022,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxy
 	return false
 }
 
-// SetOutboundProxyPort gets a reference to the given NullableInt32 and assigns it to the OutboundProxyPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxyPort(v int32) {
+// SetOutboundProxyPort gets a reference to the given NullableInt64 and assigns it to the OutboundProxyPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxyPort(v int64) {
 	o.OutboundProxyPort.Set(&v)
 }
 // SetOutboundProxyPortNil sets the value for OutboundProxyPort to be an explicit nil
@@ -1069,9 +1069,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxy
 }
 
 // GetOutboundProxySecondaryPort returns the OutboundProxySecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPort() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPort() int64 {
 	if o == nil || IsNil(o.OutboundProxySecondaryPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.OutboundProxySecondaryPort.Get()
@@ -1080,7 +1080,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxy
 // GetOutboundProxySecondaryPortOk returns a tuple with the OutboundProxySecondaryPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPortOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1096,8 +1096,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxy
 	return false
 }
 
-// SetOutboundProxySecondaryPort gets a reference to the given NullableInt32 and assigns it to the OutboundProxySecondaryPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondaryPort(v int32) {
+// SetOutboundProxySecondaryPort gets a reference to the given NullableInt64 and assigns it to the OutboundProxySecondaryPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondaryPort(v int64) {
 	o.OutboundProxySecondaryPort.Set(&v)
 }
 // SetOutboundProxySecondaryPortNil sets the value for OutboundProxySecondaryPort to be an explicit nil
@@ -1111,9 +1111,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetOutboundPro
 }
 
 // GetRegistrationPeriod returns the RegistrationPeriod field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriod() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriod() int64 {
 	if o == nil || IsNil(o.RegistrationPeriod.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RegistrationPeriod.Get()
@@ -1122,7 +1122,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationP
 // GetRegistrationPeriodOk returns a tuple with the RegistrationPeriod field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriodOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriodOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1138,8 +1138,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrationP
 	return false
 }
 
-// SetRegistrationPeriod gets a reference to the given NullableInt32 and assigns it to the RegistrationPeriod field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrationPeriod(v int32) {
+// SetRegistrationPeriod gets a reference to the given NullableInt64 and assigns it to the RegistrationPeriod field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrationPeriod(v int64) {
 	o.RegistrationPeriod.Set(&v)
 }
 // SetRegistrationPeriodNil sets the value for RegistrationPeriod to be an explicit nil
@@ -1153,9 +1153,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegistratio
 }
 
 // GetRegisterExpires returns the RegisterExpires field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpires() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpires() int64 {
 	if o == nil || IsNil(o.RegisterExpires.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RegisterExpires.Get()
@@ -1164,7 +1164,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpir
 // GetRegisterExpiresOk returns a tuple with the RegisterExpires field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpiresOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpiresOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1180,8 +1180,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegisterExpir
 	return false
 }
 
-// SetRegisterExpires gets a reference to the given NullableInt32 and assigns it to the RegisterExpires field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegisterExpires(v int32) {
+// SetRegisterExpires gets a reference to the given NullableInt64 and assigns it to the RegisterExpires field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegisterExpires(v int64) {
 	o.RegisterExpires.Set(&v)
 }
 // SetRegisterExpiresNil sets the value for RegisterExpires to be an explicit nil
@@ -1227,9 +1227,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServ
 }
 
 // GetVoicemailServerPort returns the VoicemailServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPort() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPort() int64 {
 	if o == nil || IsNil(o.VoicemailServerPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VoicemailServerPort.Get()
@@ -1238,7 +1238,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServ
 // GetVoicemailServerPortOk returns a tuple with the VoicemailServerPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPortOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1254,8 +1254,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasVoicemailServ
 	return false
 }
 
-// SetVoicemailServerPort gets a reference to the given NullableInt32 and assigns it to the VoicemailServerPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerPort(v int32) {
+// SetVoicemailServerPort gets a reference to the given NullableInt64 and assigns it to the VoicemailServerPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerPort(v int64) {
 	o.VoicemailServerPort.Set(&v)
 }
 // SetVoicemailServerPortNil sets the value for VoicemailServerPort to be an explicit nil
@@ -1269,9 +1269,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetVoicemailSe
 }
 
 // GetVoicemailServerExpires returns the VoicemailServerExpires field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpires() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpires() int64 {
 	if o == nil || IsNil(o.VoicemailServerExpires.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VoicemailServerExpires.Get()
@@ -1280,7 +1280,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServ
 // GetVoicemailServerExpiresOk returns a tuple with the VoicemailServerExpires field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpiresOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpiresOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1296,8 +1296,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasVoicemailServ
 	return false
 }
 
-// SetVoicemailServerExpires gets a reference to the given NullableInt32 and assigns it to the VoicemailServerExpires field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerExpires(v int32) {
+// SetVoicemailServerExpires gets a reference to the given NullableInt64 and assigns it to the VoicemailServerExpires field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerExpires(v int64) {
 	o.VoicemailServerExpires.Set(&v)
 }
 // SetVoicemailServerExpiresNil sets the value for VoicemailServerExpires to be an explicit nil
@@ -1311,9 +1311,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetVoicemailSe
 }
 
 // GetSipDscpMark returns the SipDscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMark() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMark() int64 {
 	if o == nil || IsNil(o.SipDscpMark.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.SipDscpMark.Get()
@@ -1322,7 +1322,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMark()
 // GetSipDscpMarkOk returns a tuple with the SipDscpMark field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMarkOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMarkOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1338,8 +1338,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasSipDscpMark()
 	return false
 }
 
-// SetSipDscpMark gets a reference to the given NullableInt32 and assigns it to the SipDscpMark field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetSipDscpMark(v int32) {
+// SetSipDscpMark gets a reference to the given NullableInt64 and assigns it to the SipDscpMark field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetSipDscpMark(v int64) {
 	o.SipDscpMark.Set(&v)
 }
 // SetSipDscpMarkNil sets the value for SipDscpMark to be an explicit nil
@@ -1385,9 +1385,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgent1(v 
 }
 
 // GetCallAgentPort1 returns the CallAgentPort1 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1() int64 {
 	if o == nil || IsNil(o.CallAgentPort1.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CallAgentPort1.Get()
@@ -1396,7 +1396,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort
 // GetCallAgentPort1Ok returns a tuple with the CallAgentPort1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1Ok() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1412,8 +1412,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgentPort
 	return false
 }
 
-// SetCallAgentPort1 gets a reference to the given NullableInt32 and assigns it to the CallAgentPort1 field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort1(v int32) {
+// SetCallAgentPort1 gets a reference to the given NullableInt64 and assigns it to the CallAgentPort1 field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort1(v int64) {
 	o.CallAgentPort1.Set(&v)
 }
 // SetCallAgentPort1Nil sets the value for CallAgentPort1 to be an explicit nil
@@ -1459,9 +1459,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgent2(v 
 }
 
 // GetCallAgentPort2 returns the CallAgentPort2 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2() int64 {
 	if o == nil || IsNil(o.CallAgentPort2.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CallAgentPort2.Get()
@@ -1470,7 +1470,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort
 // GetCallAgentPort2Ok returns a tuple with the CallAgentPort2 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2Ok() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1486,8 +1486,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgentPort
 	return false
 }
 
-// SetCallAgentPort2 gets a reference to the given NullableInt32 and assigns it to the CallAgentPort2 field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort2(v int32) {
+// SetCallAgentPort2 gets a reference to the given NullableInt64 and assigns it to the CallAgentPort2 field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort2(v int64) {
 	o.CallAgentPort2.Set(&v)
 }
 // SetCallAgentPort2Nil sets the value for CallAgentPort2 to be an explicit nil
@@ -1533,9 +1533,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDomain(v stri
 }
 
 // GetMgcpDscpMark returns the MgcpDscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMark() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMark() int64 {
 	if o == nil || IsNil(o.MgcpDscpMark.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MgcpDscpMark.Get()
@@ -1544,7 +1544,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMark(
 // GetMgcpDscpMarkOk returns a tuple with the MgcpDscpMark field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMarkOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMarkOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1560,8 +1560,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasMgcpDscpMark(
 	return false
 }
 
-// SetMgcpDscpMark gets a reference to the given NullableInt32 and assigns it to the MgcpDscpMark field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetMgcpDscpMark(v int32) {
+// SetMgcpDscpMark gets a reference to the given NullableInt64 and assigns it to the MgcpDscpMark field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetMgcpDscpMark(v int64) {
 	o.MgcpDscpMark.Set(&v)
 }
 // SetMgcpDscpMarkNil sets the value for MgcpDscpMark to be an explicit nil
@@ -1607,9 +1607,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetTerminationBa
 }
 
 // GetLocalPortMin returns the LocalPortMin field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMin() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMin() int64 {
 	if o == nil || IsNil(o.LocalPortMin.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LocalPortMin.Get()
@@ -1618,7 +1618,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMin(
 // GetLocalPortMinOk returns a tuple with the LocalPortMin field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMinOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMinOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1634,8 +1634,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasLocalPortMin(
 	return false
 }
 
-// SetLocalPortMin gets a reference to the given NullableInt32 and assigns it to the LocalPortMin field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMin(v int32) {
+// SetLocalPortMin gets a reference to the given NullableInt64 and assigns it to the LocalPortMin field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMin(v int64) {
 	o.LocalPortMin.Set(&v)
 }
 // SetLocalPortMinNil sets the value for LocalPortMin to be an explicit nil
@@ -1649,9 +1649,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetLocalPortMi
 }
 
 // GetLocalPortMax returns the LocalPortMax field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMax() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMax() int64 {
 	if o == nil || IsNil(o.LocalPortMax.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.LocalPortMax.Get()
@@ -1660,7 +1660,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMax(
 // GetLocalPortMaxOk returns a tuple with the LocalPortMax field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMaxOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMaxOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1676,8 +1676,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasLocalPortMax(
 	return false
 }
 
-// SetLocalPortMax gets a reference to the given NullableInt32 and assigns it to the LocalPortMax field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMax(v int32) {
+// SetLocalPortMax gets a reference to the given NullableInt64 and assigns it to the LocalPortMax field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMax(v int64) {
 	o.LocalPortMax.Set(&v)
 }
 // SetLocalPortMaxNil sets the value for LocalPortMax to be an explicit nil
@@ -1691,9 +1691,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetLocalPortMa
 }
 
 // GetEventPayloadType returns the EventPayloadType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadType() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadType() int64 {
 	if o == nil || IsNil(o.EventPayloadType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.EventPayloadType.Get()
@@ -1702,7 +1702,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadT
 // GetEventPayloadTypeOk returns a tuple with the EventPayloadType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadTypeOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1718,8 +1718,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasEventPayloadT
 	return false
 }
 
-// SetEventPayloadType gets a reference to the given NullableInt32 and assigns it to the EventPayloadType field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEventPayloadType(v int32) {
+// SetEventPayloadType gets a reference to the given NullableInt64 and assigns it to the EventPayloadType field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEventPayloadType(v int64) {
 	o.EventPayloadType.Set(&v)
 }
 // SetEventPayloadTypeNil sets the value for EventPayloadType to be an explicit nil
@@ -1733,9 +1733,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetEventPayloa
 }
 
 // GetCasEvents returns the CasEvents field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEvents() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEvents() int64 {
 	if o == nil || IsNil(o.CasEvents.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CasEvents.Get()
@@ -1744,7 +1744,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEvents() i
 // GetCasEventsOk returns a tuple with the CasEvents field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEventsOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEventsOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1760,8 +1760,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCasEvents() b
 	return false
 }
 
-// SetCasEvents gets a reference to the given NullableInt32 and assigns it to the CasEvents field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEvents(v int32) {
+// SetCasEvents gets a reference to the given NullableInt64 and assigns it to the CasEvents field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEvents(v int64) {
 	o.CasEvents.Set(&v)
 }
 // SetCasEventsNil sets the value for CasEvents to be an explicit nil
@@ -1775,9 +1775,9 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCasEvents()
 }
 
 // GetDscpMark returns the DscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMark() int32 {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMark() int64 {
 	if o == nil || IsNil(o.DscpMark.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DscpMark.Get()
@@ -1786,7 +1786,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMark() in
 // GetDscpMarkOk returns a tuple with the DscpMark field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMarkOk() (*int32, bool) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMarkOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1802,8 +1802,8 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDscpMark() bo
 	return false
 }
 
-// SetDscpMark gets a reference to the given NullableInt32 and assigns it to the DscpMark field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDscpMark(v int32) {
+// SetDscpMark gets a reference to the given NullableInt64 and assigns it to the DscpMark field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDscpMark(v int64) {
 	o.DscpMark.Set(&v)
 }
 // SetDscpMarkNil sets the value for DscpMark to be an explicit nil

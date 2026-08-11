@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **Ip** | Pointer to **string** | IP address of the sFlow Collector  | [optional] [default to ""]
-**Port** | Pointer to **NullableInt32** | Port | [optional] [default to 6343]
+**Port** | Pointer to **NullableInt64** | Port | [optional] [default to 6343]
 
 ## Methods
 
@@ -105,20 +105,20 @@ HasIp returns a boolean if a field has been set.
 
 ### GetPort
 
-`func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPort() int32`
+`func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPort() int64`
 
 GetPort returns the Port field if non-nil, zero value otherwise.
 
 ### GetPortOk
 
-`func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPortOk() (*int32, bool)`
+`func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPortOk() (*int64, bool)`
 
 GetPortOk returns a tuple with the Port field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPort
 
-`func (o *SflowcollectorsPutRequestSflowCollectorValue) SetPort(v int32)`
+`func (o *SflowcollectorsPutRequestSflowCollectorValue) SetPort(v int64)`
 
 SetPort sets Port field to given value.
 

@@ -26,7 +26,7 @@ type SflowcollectorsPutRequestSflowCollectorValue struct {
 	// IP address of the sFlow Collector 
 	Ip *string `json:"ip,omitempty"`
 	// Port
-	Port NullableInt32 `json:"port,omitempty"`
+	Port NullableInt64 `json:"port,omitempty"`
 }
 
 // NewSflowcollectorsPutRequestSflowCollectorValue instantiates a new SflowcollectorsPutRequestSflowCollectorValue object
@@ -41,8 +41,8 @@ func NewSflowcollectorsPutRequestSflowCollectorValue() *SflowcollectorsPutReques
 	this.Enable = &enable
 	var ip string = ""
 	this.Ip = &ip
-	var port int32 = 6343
-	this.Port = *NewNullableInt32(&port)
+	var port int64 = 6343
+	this.Port = *NewNullableInt64(&port)
 	return &this
 }
 
@@ -57,8 +57,8 @@ func NewSflowcollectorsPutRequestSflowCollectorValueWithDefaults() *Sflowcollect
 	this.Enable = &enable
 	var ip string = ""
 	this.Ip = &ip
-	var port int32 = 6343
-	this.Port = *NewNullableInt32(&port)
+	var port int64 = 6343
+	this.Port = *NewNullableInt64(&port)
 	return &this
 }
 
@@ -159,9 +159,9 @@ func (o *SflowcollectorsPutRequestSflowCollectorValue) SetIp(v string) {
 }
 
 // GetPort returns the Port field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPort() int32 {
+func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPort() int64 {
 	if o == nil || IsNil(o.Port.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Port.Get()
@@ -170,7 +170,7 @@ func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPort() int32 {
 // GetPortOk returns a tuple with the Port field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPortOk() (*int32, bool) {
+func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -186,8 +186,8 @@ func (o *SflowcollectorsPutRequestSflowCollectorValue) HasPort() bool {
 	return false
 }
 
-// SetPort gets a reference to the given NullableInt32 and assigns it to the Port field.
-func (o *SflowcollectorsPutRequestSflowCollectorValue) SetPort(v int32) {
+// SetPort gets a reference to the given NullableInt64 and assigns it to the Port field.
+func (o *SflowcollectorsPutRequestSflowCollectorValue) SetPort(v int64) {
 	o.Port.Set(&v)
 }
 // SetPortNil sets the value for Port to be an explicit nil

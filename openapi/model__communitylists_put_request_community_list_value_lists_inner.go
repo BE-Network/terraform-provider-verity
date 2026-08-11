@@ -26,7 +26,7 @@ type CommunitylistsPutRequestCommunityListValueListsInner struct {
 	// Community String in standard mode and Expanded Expression in Expanded mode
 	CommunityStringExpandedExpression *string `json:"community_string_expanded_expression,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewCommunitylistsPutRequestCommunityListValueListsInner instantiates a new CommunitylistsPutRequestCommunityListValueListsInner object
@@ -155,9 +155,9 @@ func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetCommunityStrin
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetIndex() int32 {
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -165,7 +165,7 @@ func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetIndex() int32 
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetIndexOk() (*int32, bool) {
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -181,8 +181,8 @@ func (o *CommunitylistsPutRequestCommunityListValueListsInner) HasIndex() bool {
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

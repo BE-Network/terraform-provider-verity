@@ -26,7 +26,7 @@ type BadgesPutRequestBadgeValue struct {
 	// Color of Badge
 	Color *string `json:"color,omitempty"`
 	// Number of Badge
-	Number NullableInt32 `json:"number,omitempty"`
+	Number NullableInt64 `json:"number,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -156,9 +156,9 @@ func (o *BadgesPutRequestBadgeValue) SetColor(v string) {
 }
 
 // GetNumber returns the Number field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BadgesPutRequestBadgeValue) GetNumber() int32 {
+func (o *BadgesPutRequestBadgeValue) GetNumber() int64 {
 	if o == nil || IsNil(o.Number.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Number.Get()
@@ -167,7 +167,7 @@ func (o *BadgesPutRequestBadgeValue) GetNumber() int32 {
 // GetNumberOk returns a tuple with the Number field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BadgesPutRequestBadgeValue) GetNumberOk() (*int32, bool) {
+func (o *BadgesPutRequestBadgeValue) GetNumberOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -183,8 +183,8 @@ func (o *BadgesPutRequestBadgeValue) HasNumber() bool {
 	return false
 }
 
-// SetNumber gets a reference to the given NullableInt32 and assigns it to the Number field.
-func (o *BadgesPutRequestBadgeValue) SetNumber(v int32) {
+// SetNumber gets a reference to the given NullableInt64 and assigns it to the Number field.
+func (o *BadgesPutRequestBadgeValue) SetNumber(v int64) {
 	o.Number.Set(&v)
 }
 // SetNumberNil sets the value for Number to be an explicit nil

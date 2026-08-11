@@ -20,13 +20,13 @@ var _ MappedNullable = &PacketqueuesPutRequestPacketQueueValueQueueInner{}
 // PacketqueuesPutRequestPacketQueueValueQueueInner struct for PacketqueuesPutRequestPacketQueueValueQueueInner
 type PacketqueuesPutRequestPacketQueueValueQueueInner struct {
 	// Percentage bandwidth allocated to Queue. 0 is no limit
-	BandwidthForQueue NullableInt32 `json:"bandwidth_for_queue,omitempty"`
+	BandwidthForQueue NullableInt64 `json:"bandwidth_for_queue,omitempty"`
 	// Scheduler Type for Queue
 	SchedulerType *string `json:"scheduler_type,omitempty"`
 	// Weight associated with WRR or DWRR scheduler
-	SchedulerWeight NullableInt32 `json:"scheduler_weight,omitempty"`
+	SchedulerWeight NullableInt64 `json:"scheduler_weight,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewPacketqueuesPutRequestPacketQueueValueQueueInner instantiates a new PacketqueuesPutRequestPacketQueueValueQueueInner object
@@ -35,12 +35,12 @@ type PacketqueuesPutRequestPacketQueueValueQueueInner struct {
 // will change when the set of required properties is changed
 func NewPacketqueuesPutRequestPacketQueueValueQueueInner() *PacketqueuesPutRequestPacketQueueValueQueueInner {
 	this := PacketqueuesPutRequestPacketQueueValueQueueInner{}
-	var bandwidthForQueue int32 = 0
-	this.BandwidthForQueue = *NewNullableInt32(&bandwidthForQueue)
+	var bandwidthForQueue int64 = 0
+	this.BandwidthForQueue = *NewNullableInt64(&bandwidthForQueue)
 	var schedulerType string = "SP"
 	this.SchedulerType = &schedulerType
-	var schedulerWeight int32 = 0
-	this.SchedulerWeight = *NewNullableInt32(&schedulerWeight)
+	var schedulerWeight int64 = 0
+	this.SchedulerWeight = *NewNullableInt64(&schedulerWeight)
 	return &this
 }
 
@@ -49,19 +49,19 @@ func NewPacketqueuesPutRequestPacketQueueValueQueueInner() *PacketqueuesPutReque
 // but it doesn't guarantee that properties required by API are set
 func NewPacketqueuesPutRequestPacketQueueValueQueueInnerWithDefaults() *PacketqueuesPutRequestPacketQueueValueQueueInner {
 	this := PacketqueuesPutRequestPacketQueueValueQueueInner{}
-	var bandwidthForQueue int32 = 0
-	this.BandwidthForQueue = *NewNullableInt32(&bandwidthForQueue)
+	var bandwidthForQueue int64 = 0
+	this.BandwidthForQueue = *NewNullableInt64(&bandwidthForQueue)
 	var schedulerType string = "SP"
 	this.SchedulerType = &schedulerType
-	var schedulerWeight int32 = 0
-	this.SchedulerWeight = *NewNullableInt32(&schedulerWeight)
+	var schedulerWeight int64 = 0
+	this.SchedulerWeight = *NewNullableInt64(&schedulerWeight)
 	return &this
 }
 
 // GetBandwidthForQueue returns the BandwidthForQueue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetBandwidthForQueue() int32 {
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetBandwidthForQueue() int64 {
 	if o == nil || IsNil(o.BandwidthForQueue.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.BandwidthForQueue.Get()
@@ -70,7 +70,7 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetBandwidthForQueue(
 // GetBandwidthForQueueOk returns a tuple with the BandwidthForQueue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetBandwidthForQueueOk() (*int32, bool) {
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetBandwidthForQueueOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -86,8 +86,8 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) HasBandwidthForQueue(
 	return false
 }
 
-// SetBandwidthForQueue gets a reference to the given NullableInt32 and assigns it to the BandwidthForQueue field.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetBandwidthForQueue(v int32) {
+// SetBandwidthForQueue gets a reference to the given NullableInt64 and assigns it to the BandwidthForQueue field.
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetBandwidthForQueue(v int64) {
 	o.BandwidthForQueue.Set(&v)
 }
 // SetBandwidthForQueueNil sets the value for BandwidthForQueue to be an explicit nil
@@ -133,9 +133,9 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetSchedulerType(v st
 }
 
 // GetSchedulerWeight returns the SchedulerWeight field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetSchedulerWeight() int32 {
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetSchedulerWeight() int64 {
 	if o == nil || IsNil(o.SchedulerWeight.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.SchedulerWeight.Get()
@@ -144,7 +144,7 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetSchedulerWeight() 
 // GetSchedulerWeightOk returns a tuple with the SchedulerWeight field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetSchedulerWeightOk() (*int32, bool) {
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetSchedulerWeightOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -160,8 +160,8 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) HasSchedulerWeight() 
 	return false
 }
 
-// SetSchedulerWeight gets a reference to the given NullableInt32 and assigns it to the SchedulerWeight field.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetSchedulerWeight(v int32) {
+// SetSchedulerWeight gets a reference to the given NullableInt64 and assigns it to the SchedulerWeight field.
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetSchedulerWeight(v int64) {
 	o.SchedulerWeight.Set(&v)
 }
 // SetSchedulerWeightNil sets the value for SchedulerWeight to be an explicit nil
@@ -175,9 +175,9 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) UnsetSchedulerWeight(
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndex() int32 {
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -185,7 +185,7 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndex() int32 {
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndexOk() (*int32, bool) {
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -201,8 +201,8 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) HasIndex() bool {
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

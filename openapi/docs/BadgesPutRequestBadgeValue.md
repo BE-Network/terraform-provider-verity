@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
 **Color** | Pointer to **string** | Color of Badge | [optional] [default to "next available color"]
-**Number** | Pointer to **NullableInt32** | Number of Badge | [optional] 
+**Number** | Pointer to **NullableInt64** | Number of Badge | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -106,20 +106,20 @@ HasColor returns a boolean if a field has been set.
 
 ### GetNumber
 
-`func (o *BadgesPutRequestBadgeValue) GetNumber() int32`
+`func (o *BadgesPutRequestBadgeValue) GetNumber() int64`
 
 GetNumber returns the Number field if non-nil, zero value otherwise.
 
 ### GetNumberOk
 
-`func (o *BadgesPutRequestBadgeValue) GetNumberOk() (*int32, bool)`
+`func (o *BadgesPutRequestBadgeValue) GetNumberOk() (*int64, bool)`
 
 GetNumberOk returns a tuple with the Number field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetNumber
 
-`func (o *BadgesPutRequestBadgeValue) SetNumber(v int32)`
+`func (o *BadgesPutRequestBadgeValue) SetNumber(v int64)`
 
 SetNumber sets Number field to given value.
 

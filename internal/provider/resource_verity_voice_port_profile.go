@@ -604,15 +604,15 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	utils.CompareAndSetBoolField(plan.EchoCancellationEnable, state.EchoCancellationEnable, func(val *bool) { vppProps.EchoCancellationEnable = val }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
-	utils.CompareAndSetNullableInt64Field(config.CallForwardOnNoAnswerRingCount, state.CallForwardOnNoAnswerRingCount, configuredAttrs.IsConfigured("call_forward_on_no_answer_ring_count"), func(val *openapi.NullableInt32) { vppProps.CallForwardOnNoAnswerRingCount = *val }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.MwiRefreshTimer, state.MwiRefreshTimer, configuredAttrs.IsConfigured("mwi_refresh_timer"), func(val *openapi.NullableInt32) { vppProps.MwiRefreshTimer = *val }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.DialToneFeatureDelay, state.DialToneFeatureDelay, configuredAttrs.IsConfigured("dial_tone_feature_delay"), func(val *openapi.NullableInt32) { vppProps.DialToneFeatureDelay = *val }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.TransmitGain, state.TransmitGain, configuredAttrs.IsConfigured("transmit_gain"), func(val *openapi.NullableInt32) { vppProps.TransmitGain = *val }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.ReceiveGain, state.ReceiveGain, configuredAttrs.IsConfigured("receive_gain"), func(val *openapi.NullableInt32) { vppProps.ReceiveGain = *val }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.JitterTarget, state.JitterTarget, configuredAttrs.IsConfigured("jitter_target"), func(val *openapi.NullableInt32) { vppProps.JitterTarget = *val }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.JitterBufferMax, state.JitterBufferMax, configuredAttrs.IsConfigured("jitter_buffer_max"), func(val *openapi.NullableInt32) { vppProps.JitterBufferMax = *val }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.ReleaseTimer, state.ReleaseTimer, configuredAttrs.IsConfigured("release_timer"), func(val *openapi.NullableInt32) { vppProps.ReleaseTimer = *val }, &hasChanges)
-	utils.CompareAndSetNullableInt64Field(config.RohTimer, state.RohTimer, configuredAttrs.IsConfigured("roh_timer"), func(val *openapi.NullableInt32) { vppProps.RohTimer = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.CallForwardOnNoAnswerRingCount, state.CallForwardOnNoAnswerRingCount, configuredAttrs.IsConfigured("call_forward_on_no_answer_ring_count"), func(val *openapi.NullableInt64) { vppProps.CallForwardOnNoAnswerRingCount = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.MwiRefreshTimer, state.MwiRefreshTimer, configuredAttrs.IsConfigured("mwi_refresh_timer"), func(val *openapi.NullableInt64) { vppProps.MwiRefreshTimer = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.DialToneFeatureDelay, state.DialToneFeatureDelay, configuredAttrs.IsConfigured("dial_tone_feature_delay"), func(val *openapi.NullableInt64) { vppProps.DialToneFeatureDelay = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.TransmitGain, state.TransmitGain, configuredAttrs.IsConfigured("transmit_gain"), func(val *openapi.NullableInt64) { vppProps.TransmitGain = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ReceiveGain, state.ReceiveGain, configuredAttrs.IsConfigured("receive_gain"), func(val *openapi.NullableInt64) { vppProps.ReceiveGain = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.JitterTarget, state.JitterTarget, configuredAttrs.IsConfigured("jitter_target"), func(val *openapi.NullableInt64) { vppProps.JitterTarget = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.JitterBufferMax, state.JitterBufferMax, configuredAttrs.IsConfigured("jitter_buffer_max"), func(val *openapi.NullableInt64) { vppProps.JitterBufferMax = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ReleaseTimer, state.ReleaseTimer, configuredAttrs.IsConfigured("release_timer"), func(val *openapi.NullableInt64) { vppProps.ReleaseTimer = *val }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.RohTimer, state.RohTimer, configuredAttrs.IsConfigured("roh_timer"), func(val *openapi.NullableInt64) { vppProps.RohTimer = *val }, &hasChanges)
 
 	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {

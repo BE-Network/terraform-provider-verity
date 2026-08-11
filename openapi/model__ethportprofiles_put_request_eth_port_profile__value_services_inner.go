@@ -26,7 +26,7 @@ type EthportprofilesPutRequestEthPortProfileValueServicesInner struct {
 	// Object type for row_num_service field
 	RowNumServiceRefType *string `json:"row_num_service_ref_type_,omitempty"`
 	// Choose an external vlan A value of 0 will make the VLAN untagged, while in case null is provided, the VLAN will be the one associated with the service.
-	RowNumExternalVlan NullableInt32 `json:"row_num_external_vlan,omitempty"`
+	RowNumExternalVlan NullableInt64 `json:"row_num_external_vlan,omitempty"`
 	// Choose an ingress access control list
 	RowNumIngressAcl *string `json:"row_num_ingress_acl,omitempty"`
 	// Object type for row_num_ingress_acl field
@@ -36,7 +36,7 @@ type EthportprofilesPutRequestEthPortProfileValueServicesInner struct {
 	// Object type for row_num_egress_acl field
 	RowNumEgressAclRefType *string `json:"row_num_egress_acl_ref_type_,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 	// Choose an access control list
 	RowNumMacFilter *string `json:"row_num_mac_filter,omitempty"`
 	// Object type for row_num_mac_filter field
@@ -183,9 +183,9 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumSer
 }
 
 // GetRowNumExternalVlan returns the RowNumExternalVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlan() int32 {
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlan() int64 {
 	if o == nil || IsNil(o.RowNumExternalVlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RowNumExternalVlan.Get()
@@ -194,7 +194,7 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExt
 // GetRowNumExternalVlanOk returns a tuple with the RowNumExternalVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int32, bool) {
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -210,8 +210,8 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumExt
 	return false
 }
 
-// SetRowNumExternalVlan gets a reference to the given NullableInt32 and assigns it to the RowNumExternalVlan field.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumExternalVlan(v int32) {
+// SetRowNumExternalVlan gets a reference to the given NullableInt64 and assigns it to the RowNumExternalVlan field.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumExternalVlan(v int64) {
 	o.RowNumExternalVlan.Set(&v)
 }
 // SetRowNumExternalVlanNil sets the value for RowNumExternalVlan to be an explicit nil
@@ -353,9 +353,9 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumEgr
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndex() int32 {
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -363,7 +363,7 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndex() i
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndexOk() (*int32, bool) {
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -379,8 +379,8 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasIndex() b
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

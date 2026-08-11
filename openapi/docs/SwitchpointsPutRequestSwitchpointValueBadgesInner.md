@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Badge** | Pointer to **string** | Enable of this POTS port | [optional] [default to ""]
 **BadgeRefType** | Pointer to **string** | Object type for badge field | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -79,20 +79,20 @@ HasBadgeRefType returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *SwitchpointsPutRequestSwitchpointValueBadgesInner) GetIndex() int32`
+`func (o *SwitchpointsPutRequestSwitchpointValueBadgesInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValueBadgesInner) GetIndexOk() (*int32, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValueBadgesInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *SwitchpointsPutRequestSwitchpointValueBadgesInner) SetIndex(v int32)`
+`func (o *SwitchpointsPutRequestSwitchpointValueBadgesInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

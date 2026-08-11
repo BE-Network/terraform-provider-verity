@@ -40,12 +40,8 @@ func MapInt64FromAPI(apiValue interface{}) types.Int64 {
 	switch v := apiValue.(type) {
 	case int:
 		return types.Int64Value(int64(v))
-	case int32:
-		return types.Int64Value(int64(v))
 	case int64:
 		return types.Int64Value(v)
-	case float32:
-		return types.Int64Value(int64(v))
 	case float64:
 		return types.Int64Value(int64(v))
 	case string:
@@ -63,7 +59,7 @@ func MapNullableInt64FromAPI(apiValue interface{}) types.Int64 {
 }
 
 // MapNumberFromAPI converts an API interface{} value to types.Number
-// Uses string parsing to avoid float32/float64 precision issues
+// Uses string parsing to avoid floating-point precision issues
 // This is the recommended way to handle decimal numbers in Terraform
 //
 // NOTE: We must parse floats as strings to match how Terraform parses HCL.
@@ -75,13 +71,6 @@ func MapNumberFromAPI(apiValue interface{}) types.Number {
 	}
 
 	switch v := apiValue.(type) {
-	case float32:
-		// Convert to string first to preserve decimal representation
-		// Use %g to get the shortest representation that round-trips
-		str := fmt.Sprintf("%g", v)
-		if bf, _, err := big.ParseFloat(str, 10, 256, big.ToNearestEven); err == nil {
-			return types.NumberValue(bf)
-		}
 	case float64:
 		// Convert to string first to preserve decimal representation
 		// Use %g to get the shortest representation that round-trips
@@ -90,9 +79,6 @@ func MapNumberFromAPI(apiValue interface{}) types.Number {
 			return types.NumberValue(bf)
 		}
 	case int:
-		bf := big.NewFloat(float64(v))
-		return types.NumberValue(bf)
-	case int32:
 		bf := big.NewFloat(float64(v))
 		return types.NumberValue(bf)
 	case int64:

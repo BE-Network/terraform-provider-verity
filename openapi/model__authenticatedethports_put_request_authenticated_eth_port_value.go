@@ -26,11 +26,11 @@ type AuthenticatedethportsPutRequestAuthenticatedEthPortValue struct {
 	// Choose connection mode for Authenticated Eth-Port<br><b>Port Mode</b>  Standard mode. The last authenticated clients VLAN access is applied.<br><b>Single Client Mode</b>  MAC filtered client. Only the authenticated clients traffic can pass. No traffic from a second client may pass. Only when the first client deauthenticates can a new authentication take place.<br><b>Multiple Client Mode</b>  MAC filtered clients. Only authenticated client traffic can pass. Multiple clients can authenticate and gain access to individual service offerings. MAC-based authentication is not supported.
 	ConnectionMode *string `json:"connection_mode,omitempty"`
 	// Amount of time in seconds before 802.1X requires reauthorization of an active session. \"0\" disables reauthorization (not recommended)
-	ReauthorizationPeriodSec NullableInt32 `json:"reauthorization_period_sec,omitempty"`
+	ReauthorizationPeriodSec NullableInt64 `json:"reauthorization_period_sec,omitempty"`
 	// Enables 802.1x to capture the connected MAC address and send it tothe Radius Server instead of requesting credentials.  Useful for printers and similar devices
 	AllowMacBasedAuthentication *bool `json:"allow_mac_based_authentication,omitempty"`
 	// Amount of time in seconds 802.1X authentication is allowed to run before MAC-based authentication has begun
-	MacAuthenticationHoldoffSec NullableInt32 `json:"mac_authentication_holdoff_sec,omitempty"`
+	MacAuthenticationHoldoffSec NullableInt64 `json:"mac_authentication_holdoff_sec,omitempty"`
 	// Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.
 	TrustedPort *bool `json:"trusted_port,omitempty"`
 	EthPorts []AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner `json:"eth_ports,omitempty"`
@@ -49,12 +49,12 @@ func NewAuthenticatedethportsPutRequestAuthenticatedEthPortValue() *Authenticate
 	this.Enable = &enable
 	var connectionMode string = "PortMode"
 	this.ConnectionMode = &connectionMode
-	var reauthorizationPeriodSec int32 = 3600
-	this.ReauthorizationPeriodSec = *NewNullableInt32(&reauthorizationPeriodSec)
+	var reauthorizationPeriodSec int64 = 3600
+	this.ReauthorizationPeriodSec = *NewNullableInt64(&reauthorizationPeriodSec)
 	var allowMacBasedAuthentication bool = false
 	this.AllowMacBasedAuthentication = &allowMacBasedAuthentication
-	var macAuthenticationHoldoffSec int32 = 60
-	this.MacAuthenticationHoldoffSec = *NewNullableInt32(&macAuthenticationHoldoffSec)
+	var macAuthenticationHoldoffSec int64 = 60
+	this.MacAuthenticationHoldoffSec = *NewNullableInt64(&macAuthenticationHoldoffSec)
 	var trustedPort bool = false
 	this.TrustedPort = &trustedPort
 	return &this
@@ -71,12 +71,12 @@ func NewAuthenticatedethportsPutRequestAuthenticatedEthPortValueWithDefaults() *
 	this.Enable = &enable
 	var connectionMode string = "PortMode"
 	this.ConnectionMode = &connectionMode
-	var reauthorizationPeriodSec int32 = 3600
-	this.ReauthorizationPeriodSec = *NewNullableInt32(&reauthorizationPeriodSec)
+	var reauthorizationPeriodSec int64 = 3600
+	this.ReauthorizationPeriodSec = *NewNullableInt64(&reauthorizationPeriodSec)
 	var allowMacBasedAuthentication bool = false
 	this.AllowMacBasedAuthentication = &allowMacBasedAuthentication
-	var macAuthenticationHoldoffSec int32 = 60
-	this.MacAuthenticationHoldoffSec = *NewNullableInt32(&macAuthenticationHoldoffSec)
+	var macAuthenticationHoldoffSec int64 = 60
+	this.MacAuthenticationHoldoffSec = *NewNullableInt64(&macAuthenticationHoldoffSec)
 	var trustedPort bool = false
 	this.TrustedPort = &trustedPort
 	return &this
@@ -179,9 +179,9 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) SetConnection
 }
 
 // GetReauthorizationPeriodSec returns the ReauthorizationPeriodSec field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetReauthorizationPeriodSec() int32 {
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetReauthorizationPeriodSec() int64 {
 	if o == nil || IsNil(o.ReauthorizationPeriodSec.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ReauthorizationPeriodSec.Get()
@@ -190,7 +190,7 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetReauthoriz
 // GetReauthorizationPeriodSecOk returns a tuple with the ReauthorizationPeriodSec field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetReauthorizationPeriodSecOk() (*int32, bool) {
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetReauthorizationPeriodSecOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -206,8 +206,8 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) HasReauthoriz
 	return false
 }
 
-// SetReauthorizationPeriodSec gets a reference to the given NullableInt32 and assigns it to the ReauthorizationPeriodSec field.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) SetReauthorizationPeriodSec(v int32) {
+// SetReauthorizationPeriodSec gets a reference to the given NullableInt64 and assigns it to the ReauthorizationPeriodSec field.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) SetReauthorizationPeriodSec(v int64) {
 	o.ReauthorizationPeriodSec.Set(&v)
 }
 // SetReauthorizationPeriodSecNil sets the value for ReauthorizationPeriodSec to be an explicit nil
@@ -253,9 +253,9 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) SetAllowMacBa
 }
 
 // GetMacAuthenticationHoldoffSec returns the MacAuthenticationHoldoffSec field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetMacAuthenticationHoldoffSec() int32 {
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetMacAuthenticationHoldoffSec() int64 {
 	if o == nil || IsNil(o.MacAuthenticationHoldoffSec.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MacAuthenticationHoldoffSec.Get()
@@ -264,7 +264,7 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetMacAuthent
 // GetMacAuthenticationHoldoffSecOk returns a tuple with the MacAuthenticationHoldoffSec field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetMacAuthenticationHoldoffSecOk() (*int32, bool) {
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) GetMacAuthenticationHoldoffSecOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -280,8 +280,8 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) HasMacAuthent
 	return false
 }
 
-// SetMacAuthenticationHoldoffSec gets a reference to the given NullableInt32 and assigns it to the MacAuthenticationHoldoffSec field.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) SetMacAuthenticationHoldoffSec(v int32) {
+// SetMacAuthenticationHoldoffSec gets a reference to the given NullableInt64 and assigns it to the MacAuthenticationHoldoffSec field.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValue) SetMacAuthenticationHoldoffSec(v int64) {
 	o.MacAuthenticationHoldoffSec.Set(&v)
 }
 // SetMacAuthenticationHoldoffSecNil sets the value for MacAuthenticationHoldoffSec to be an explicit nil

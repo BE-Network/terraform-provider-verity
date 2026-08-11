@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Object Name. Must be unique. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to false]
 **PortType** | Pointer to **string** | Determines what Service are provisioned on the port and if those Services are propagated upstream&lt;ul&gt;&lt;li&gt;* \&quot;Upstream Switchport\&quot; Services specified below.  Services are not propagated.&lt;/li&gt;&lt;li&gt;* \&quot;Downstream Switchport\&quot; Services specified below. Services are propagated.&lt;/li&gt;&lt;li&gt;* \&quot;Crosslink Switchport\&quot; Services is union of all Services on each switch.  Services are not propagated.&lt;/li&gt;&lt;li&gt;* \&quot;Upstream L3 (L2/L3 Switches Only\&quot; No Services.&lt;/li&gt;&lt;/ul&gt; | [optional] [default to "up"]
-**TlsLimitIn** | Pointer to **NullableInt32** | Speed of ingress (Mbps) for TLS (Transparent LAN Service) | [optional] [default to 1000]
+**TlsLimitIn** | Pointer to **NullableInt64** | Speed of ingress (Mbps) for TLS (Transparent LAN Service) | [optional] [default to 1000]
 **TlsService** | Pointer to **string** | Service used for TLS (Transparent LAN Service) | [optional] [default to ""]
 **TlsServiceRefType** | Pointer to **string** | Object type for tls_service field | [optional] 
 **TrustedPort** | Pointer to **bool** | Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks. | [optional] [default to false]
@@ -111,20 +111,20 @@ HasPortType returns a boolean if a field has been set.
 
 ### GetTlsLimitIn
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitIn() int32`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitIn() int64`
 
 GetTlsLimitIn returns the TlsLimitIn field if non-nil, zero value otherwise.
 
 ### GetTlsLimitInOk
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitInOk() (*int32, bool)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetTlsLimitInOk() (*int64, bool)`
 
 GetTlsLimitInOk returns a tuple with the TlsLimitIn field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTlsLimitIn
 
-`func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetTlsLimitIn(v int32)`
+`func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetTlsLimitIn(v int64)`
 
 SetTlsLimitIn sets TlsLimitIn field to given value.
 

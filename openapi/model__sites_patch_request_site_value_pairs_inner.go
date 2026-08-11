@@ -36,7 +36,7 @@ type SitesPatchRequestSiteValuePairsInner struct {
 	// LAG Pair
 	IsWhiteboxPair *bool `json:"is_whitebox_pair,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewSitesPatchRequestSiteValuePairsInner instantiates a new SitesPatchRequestSiteValuePairsInner object
@@ -333,9 +333,9 @@ func (o *SitesPatchRequestSiteValuePairsInner) SetIsWhiteboxPair(v bool) {
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *SitesPatchRequestSiteValuePairsInner) GetIndex() int32 {
+func (o *SitesPatchRequestSiteValuePairsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -343,7 +343,7 @@ func (o *SitesPatchRequestSiteValuePairsInner) GetIndex() int32 {
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SitesPatchRequestSiteValuePairsInner) GetIndexOk() (*int32, bool) {
+func (o *SitesPatchRequestSiteValuePairsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -359,8 +359,8 @@ func (o *SitesPatchRequestSiteValuePairsInner) HasIndex() bool {
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *SitesPatchRequestSiteValuePairsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *SitesPatchRequestSiteValuePairsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

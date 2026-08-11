@@ -6,11 +6,11 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **LldpMedRowNumEnable** | Pointer to **bool** | Per LLDP Med row enable | [optional] [default to false]
 **LldpMedRowNumAdvertisedApplicatio** | Pointer to **string** | Advertised application | [optional] [default to ""]
-**LldpMedRowNumDscpMark** | Pointer to **NullableInt32** | LLDP DSCP Mark | [optional] [default to 0]
-**LldpMedRowNumPriority** | Pointer to **NullableInt32** | LLDP Priority | [optional] [default to 0]
+**LldpMedRowNumDscpMark** | Pointer to **NullableInt64** | LLDP DSCP Mark | [optional] [default to 0]
+**LldpMedRowNumPriority** | Pointer to **NullableInt64** | LLDP Priority | [optional] [default to 0]
 **LldpMedRowNumService** | Pointer to **string** | LLDP Service | [optional] [default to ""]
 **LldpMedRowNumServiceRefType** | Pointer to **string** | Object type for lldp_med_row_num_service field | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -83,20 +83,20 @@ HasLldpMedRowNumAdvertisedApplicatio returns a boolean if a field has been set.
 
 ### GetLldpMedRowNumDscpMark
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumDscpMark() int32`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumDscpMark() int64`
 
 GetLldpMedRowNumDscpMark returns the LldpMedRowNumDscpMark field if non-nil, zero value otherwise.
 
 ### GetLldpMedRowNumDscpMarkOk
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumDscpMarkOk() (*int32, bool)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumDscpMarkOk() (*int64, bool)`
 
 GetLldpMedRowNumDscpMarkOk returns a tuple with the LldpMedRowNumDscpMark field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLldpMedRowNumDscpMark
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumDscpMark(v int32)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumDscpMark(v int64)`
 
 SetLldpMedRowNumDscpMark sets LldpMedRowNumDscpMark field to given value.
 
@@ -118,20 +118,20 @@ HasLldpMedRowNumDscpMark returns a boolean if a field has been set.
 UnsetLldpMedRowNumDscpMark ensures that no value is present for LldpMedRowNumDscpMark, not even an explicit nil
 ### GetLldpMedRowNumPriority
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumPriority() int32`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumPriority() int64`
 
 GetLldpMedRowNumPriority returns the LldpMedRowNumPriority field if non-nil, zero value otherwise.
 
 ### GetLldpMedRowNumPriorityOk
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumPriorityOk() (*int32, bool)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumPriorityOk() (*int64, bool)`
 
 GetLldpMedRowNumPriorityOk returns a tuple with the LldpMedRowNumPriority field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLldpMedRowNumPriority
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumPriority(v int32)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumPriority(v int64)`
 
 SetLldpMedRowNumPriority sets LldpMedRowNumPriority field to given value.
 
@@ -203,20 +203,20 @@ HasLldpMedRowNumServiceRefType returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetIndex() int32`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetIndexOk() (*int32, bool)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetIndex(v int32)`
+`func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

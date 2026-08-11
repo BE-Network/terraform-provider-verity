@@ -30,7 +30,7 @@ type AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner struc
 	// The value of filter-id in the RADIUS response which will evoke this Eth Port Profile
 	EthPortProfileNumRadiusFilterId *string `json:"eth_port_profile_num_radius_filter_id,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int32 `json:"index,omitempty"`
+	Index *int64 `json:"index,omitempty"`
 }
 
 // NewAuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner instantiates a new AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner object
@@ -227,9 +227,9 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) 
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetIndex() int32 {
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Index
@@ -237,7 +237,7 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) 
 
 // GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetIndexOk() (*int32, bool) {
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetIndexOk() (*int64, bool) {
 	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
@@ -253,8 +253,8 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) 
 	return false
 }
 
-// SetIndex gets a reference to the given int32 and assigns it to the Index field.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) SetIndex(v int32) {
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 

@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ToiSwitchpoint** | Pointer to **string** | TOI Switchpoint | [optional] [default to ""]
 **ToiSwitchpointRefType** | Pointer to **string** | Object type for toi_switchpoint field | [optional] 
-**Index** | Pointer to **int32** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
+**Index** | Pointer to **int64** | The index identifying the object. Zero if you want to add an object to the list. | [optional] 
 
 ## Methods
 
@@ -79,20 +79,20 @@ HasToiSwitchpointRefType returns a boolean if a field has been set.
 
 ### GetIndex
 
-`func (o *SitesPatchRequestSiteValueIslandsInner) GetIndex() int32`
+`func (o *SitesPatchRequestSiteValueIslandsInner) GetIndex() int64`
 
 GetIndex returns the Index field if non-nil, zero value otherwise.
 
 ### GetIndexOk
 
-`func (o *SitesPatchRequestSiteValueIslandsInner) GetIndexOk() (*int32, bool)`
+`func (o *SitesPatchRequestSiteValueIslandsInner) GetIndexOk() (*int64, bool)`
 
 GetIndexOk returns a tuple with the Index field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIndex
 
-`func (o *SitesPatchRequestSiteValueIslandsInner) SetIndex(v int32)`
+`func (o *SitesPatchRequestSiteValueIslandsInner) SetIndex(v int64)`
 
 SetIndex sets Index field to given value.
 

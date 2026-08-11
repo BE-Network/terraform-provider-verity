@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**FirmwareCount** | Pointer to **NullableInt32** | Firmware Count | [optional] [default to 0]
+**FirmwareCount** | Pointer to **NullableInt64** | Firmware Count | [optional] [default to 0]
 
 ## Methods
 
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetFirmwareCount
 
-`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFirmwareCount() int32`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFirmwareCount() int64`
 
 GetFirmwareCount returns the FirmwareCount field if non-nil, zero value otherwise.
 
 ### GetFirmwareCountOk
 
-`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFirmwareCountOk() (*int32, bool)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) GetFirmwareCountOk() (*int64, bool)`
 
 GetFirmwareCountOk returns a tuple with the FirmwareCount field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetFirmwareCount
 
-`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) SetFirmwareCount(v int32)`
+`func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) SetFirmwareCount(v int64)`
 
 SetFirmwareCount sets FirmwareCount field to given value.
 
