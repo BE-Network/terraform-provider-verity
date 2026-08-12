@@ -58,6 +58,7 @@ resource "verity_fabric" "example" {
   paired_ip_subnet = "192.168.254.0/24"
   max_switches = "2000"
   pause_validation_alarms = false
+  route_aggregation = "manual"
   starting_octet = null
   max_sus = null
   max_pods = null
@@ -69,6 +70,12 @@ resource "verity_fabric" "example" {
   ip_source_guard = false
   duplicate_address_detection_max_number_of_moves = 5
   duplicate_address_detection_time = 180
+
+  route_aggregators {
+    index = 1
+    route_aggregation_num_enable = true
+    route_aggregation_num_ip_and_mask = "10.0.0.0/8"
+  }
 
   object_properties {
     system_graphs {
@@ -136,6 +143,11 @@ resource "verity_fabric" "example" {
 * `paired_ip_subnet` (String) - IP address range reserved for communication between paired switches.
 * `max_switches` (String) - Maximum number of switches to support in this site.
 * `pause_validation_alarms` (Boolean) - Validation still runs, but validation alarms are not raised while enabled.
+* `route_aggregation` (String) - Route aggregation configuration. Valid values are `manual` and `automated`; omit or set to an empty string to disable it.
+* `route_aggregators` (Array) - Route aggregation entries.
+  * `index` (Integer) - The index identifying the object. Set to `0` to add an entry.
+  * `route_aggregation_num_enable` (Boolean) - Enable this route aggregation entry.
+  * `route_aggregation_num_ip_and_mask` (String) - IP address and mask for route aggregation.
 * `starting_octet` (Integer) - Starting Octet for HGX Port IPs.
 * `max_sus` (Integer) - Maximum number of SUs allowed per POD.
 * `max_pods` (Integer) - Maximum number of PODs allowed in the Fabric.

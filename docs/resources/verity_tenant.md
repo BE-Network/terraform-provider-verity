@@ -10,6 +10,7 @@ resource "verity_tenant" "example" {
   dhcp_relay_source_ipv4s_subnet = ""
   dhcp_relay_source_ipv6s_subnet = ""
   route_distinguisher = ""
+  route_aggregation = "manual"
   import_route_map = ""
   vrf_name = "Vrf_9"
   layer_3_vni = 102009
@@ -28,6 +29,12 @@ resource "verity_tenant" "example" {
     enable = true
     tenant = ""
   }
+
+  route_aggregators {
+    index = 1
+    route_aggregation_num_enable = true
+    route_aggregation_num_ip_and_mask = "10.0.0.0/8"
+  }
 }
 ```
 
@@ -42,6 +49,11 @@ resource "verity_tenant" "example" {
 * `dhcp_relay_source_ipv4s_subnet` (String) - Range of IPv4 addresses used for DHCP relay source IPs
 * `dhcp_relay_source_ipv6s_subnet` (String) - Range of IPv6 addresses used for DHCP relay source IPs
 * `route_distinguisher` (String) - Route distinguisher for BGP
+* `route_aggregation` (String) - Route aggregation configuration. Valid values are `manual` and `automated`; omit or set to an empty string to disable it.
+* `route_aggregators` (Array) - Route aggregation entries
+  * `index` (Integer) - The index identifying the object. Set to `0` to add an entry
+  * `route_aggregation_num_enable` (Boolean) - Enable this route aggregation entry
+  * `route_aggregation_num_ip_and_mask` (String) - IP address and mask for route aggregation
 * `route_target_import` (String) - Route target import value for BGP
 * `route_target_export` (String) - Route target export value for BGP
 * `import_route_map` (String) - Import route map

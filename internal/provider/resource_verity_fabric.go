@@ -104,7 +104,19 @@ type verityFabricResourceModel struct {
 	IpSourceGuard                             types.Bool                          `tfsdk:"ip_source_guard"`
 	DuplicateAddressDetectionMaxNumberOfMoves types.Int64                         `tfsdk:"duplicate_address_detection_max_number_of_moves"`
 	DuplicateAddressDetectionTime             types.Int64                         `tfsdk:"duplicate_address_detection_time"`
+	RouteAggregation                          types.String                        `tfsdk:"route_aggregation"`
+	RouteAggregators                          []verityFabricRouteAggregatorModel  `tfsdk:"route_aggregators"`
 	ObjectProperties                          []verityFabricObjectPropertiesModel `tfsdk:"object_properties"`
+}
+
+type verityFabricRouteAggregatorModel struct {
+	RouteAggregationNumEnable    types.Bool   `tfsdk:"route_aggregation_num_enable"`
+	RouteAggregationNumIpAndMask types.String `tfsdk:"route_aggregation_num_ip_and_mask"`
+	Index                        types.Int64  `tfsdk:"index"`
+}
+
+func (m verityFabricRouteAggregatorModel) GetIndex() types.Int64 {
+	return m.Index
 }
 
 type verityFabricObjectPropertiesModel struct {
@@ -469,8 +481,35 @@ func (r *verityFabricResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
+			"route_aggregation": schema.StringAttribute{
+				Description: "Route Aggregation configuration for this fabric",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
+			"route_aggregators": schema.ListNestedBlock{
+				Description: "Route aggregation entries",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"route_aggregation_num_enable": schema.BoolAttribute{
+							Description: "Enable",
+							Optional:    true,
+							Computed:    true,
+						},
+						"route_aggregation_num_ip_and_mask": schema.StringAttribute{
+							Description: "IP address and mask for route aggregation",
+							Optional:    true,
+							Computed:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
+							Optional:    true,
+							Computed:    true,
+						},
+					},
+				},
+			},
 			"object_properties": schema.ListNestedBlock{
 				Description: "Object properties for the Fabric",
 				NestedObject: schema.NestedBlockObject{
@@ -560,6 +599,7 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 		{FieldName: "VtepIdBasePrefix", APIField: &fabricReq.VtepIdBasePrefix, TFValue: plan.VtepIdBasePrefix},
 		{FieldName: "PairedIpSubnet", APIField: &fabricReq.PairedIpSubnet, TFValue: plan.PairedIpSubnet},
 		{FieldName: "MaxSwitches", APIField: &fabricReq.MaxSwitches, TFValue: plan.MaxSwitches},
+		{FieldName: "RouteAggregation", APIField: &fabricReq.RouteAggregation, TFValue: plan.RouteAggregation},
 	})
 
 	utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -618,6 +658,24 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 		fabricReq.SetObjectProperties(openapi.FabricsPutRequestFabricValueObjectProperties{
 			SystemGraphs: systemGraphs,
 		})
+	}
+
+	if len(plan.RouteAggregators) > 0 {
+		routeAggregators := make([]openapi.FabricsPutRequestFabricValueRouteAggregatorsInner, len(plan.RouteAggregators))
+		for i, aggregator := range plan.RouteAggregators {
+			routeAggregator := openapi.FabricsPutRequestFabricValueRouteAggregatorsInner{}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RouteAggregationNumEnable", APIField: &routeAggregator.RouteAggregationNumEnable, TFValue: aggregator.RouteAggregationNumEnable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RouteAggregationNumIpAndMask", APIField: &routeAggregator.RouteAggregationNumIpAndMask, TFValue: aggregator.RouteAggregationNumIpAndMask},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &routeAggregator.Index, TFValue: aggregator.Index},
+			})
+			routeAggregators[i] = routeAggregator
+		}
+		fabricReq.RouteAggregators = routeAggregators
 	}
 
 	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
@@ -863,6 +921,7 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetStringField(plan.VtepIdBasePrefix, state.VtepIdBasePrefix, func(v *string) { fabricReq.VtepIdBasePrefix = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PairedIpSubnet, state.PairedIpSubnet, func(v *string) { fabricReq.PairedIpSubnet = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.MaxSwitches, state.MaxSwitches, func(v *string) { fabricReq.MaxSwitches = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RouteAggregation, state.RouteAggregation, func(v *string) { fabricReq.RouteAggregation = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { fabricReq.Enable = v }, &hasChanges)
@@ -944,6 +1003,40 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 			fabricReq.SetObjectProperties(fabricObjProps)
 			hasChanges = true
 		}
+	}
+
+	changedRouteAggregators, routeAggregatorsChanged := utils.ProcessIndexedArrayUpdates(plan.RouteAggregators, state.RouteAggregators,
+		utils.IndexedItemHandler[verityFabricRouteAggregatorModel, openapi.FabricsPutRequestFabricValueRouteAggregatorsInner]{
+			CreateNew: func(planItem verityFabricRouteAggregatorModel) openapi.FabricsPutRequestFabricValueRouteAggregatorsInner {
+				routeAggregator := openapi.FabricsPutRequestFabricValueRouteAggregatorsInner{}
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "RouteAggregationNumEnable", APIField: &routeAggregator.RouteAggregationNumEnable, TFValue: planItem.RouteAggregationNumEnable},
+				})
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "RouteAggregationNumIpAndMask", APIField: &routeAggregator.RouteAggregationNumIpAndMask, TFValue: planItem.RouteAggregationNumIpAndMask},
+				})
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &routeAggregator.Index, TFValue: planItem.Index},
+				})
+				return routeAggregator
+			},
+			UpdateExisting: func(planItem verityFabricRouteAggregatorModel, stateItem verityFabricRouteAggregatorModel) (openapi.FabricsPutRequestFabricValueRouteAggregatorsInner, bool) {
+				routeAggregator := openapi.FabricsPutRequestFabricValueRouteAggregatorsInner{}
+				fieldChanged := false
+				utils.CompareAndSetBoolField(planItem.RouteAggregationNumEnable, stateItem.RouteAggregationNumEnable, func(v *bool) { routeAggregator.RouteAggregationNumEnable = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.RouteAggregationNumIpAndMask, stateItem.RouteAggregationNumIpAndMask, func(v *string) { routeAggregator.RouteAggregationNumIpAndMask = v }, &fieldChanged)
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &routeAggregator.Index, TFValue: planItem.Index},
+				})
+				return routeAggregator, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.FabricsPutRequestFabricValueRouteAggregatorsInner {
+				return openapi.FabricsPutRequestFabricValueRouteAggregatorsInner{Index: openapi.PtrInt64(index)}
+			},
+		})
+	if routeAggregatorsChanged {
+		fabricReq.RouteAggregators = changedRouteAggregators
+		hasChanges = true
 	}
 
 	// Handle service_for_site and service_for_site_ref_type_ fields using "One ref type supported" pattern
@@ -1185,6 +1278,28 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 	state.VtepIdBasePrefix = utils.MapStringWithMode(fabricData, "vtep_id_base_prefix", resourceType, mode)
 	state.PairedIpSubnet = utils.MapStringWithMode(fabricData, "paired_ip_subnet", resourceType, mode)
 	state.MaxSwitches = utils.MapStringWithMode(fabricData, "max_switches", resourceType, mode)
+	state.RouteAggregation = utils.MapStringWithMode(fabricData, "route_aggregation", resourceType, mode)
+
+	if utils.FieldAppliesToMode(resourceType, "route_aggregators", mode) {
+		if aggregators, ok := fabricData["route_aggregators"].([]interface{}); ok {
+			state.RouteAggregators = make([]verityFabricRouteAggregatorModel, 0, len(aggregators))
+			for _, aggregator := range aggregators {
+				aggregatorMap, ok := aggregator.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				state.RouteAggregators = append(state.RouteAggregators, verityFabricRouteAggregatorModel{
+					RouteAggregationNumEnable:    utils.MapBoolWithModeNested(aggregatorMap, "route_aggregation_num_enable", resourceType, "route_aggregators.route_aggregation_num_enable", mode),
+					RouteAggregationNumIpAndMask: utils.MapStringWithModeNested(aggregatorMap, "route_aggregation_num_ip_and_mask", resourceType, "route_aggregators.route_aggregation_num_ip_and_mask", mode),
+					Index:                        utils.MapInt64WithModeNested(aggregatorMap, "index", resourceType, "route_aggregators.index", mode),
+				})
+			}
+		} else {
+			state.RouteAggregators = nil
+		}
+	} else {
+		state.RouteAggregators = nil
+	}
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
@@ -1260,7 +1375,7 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		"hgx_username", "hgx_password", "hgx_password_encrypted",
 		"switch_gateway", "controller_gateway", "hgx_gateway", "gpu_architecture",
 		"base_bgp_as_number", "router_id_base_prefix",
-		"vtep_id_base_prefix", "paired_ip_subnet", "max_switches",
+		"vtep_id_base_prefix", "paired_ip_subnet", "max_switches", "route_aggregation",
 	)
 
 	nullifier.NullifyBools(
@@ -1293,6 +1408,14 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 	for i, op := range plan.ObjectProperties {
 		systemGraphsCounts[i] = len(op.SystemGraphs)
 	}
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "route_aggregators",
+		ItemCount:    len(plan.RouteAggregators),
+		StringFields: []string{"route_aggregation_num_ip_and_mask"},
+		BoolFields:   []string{"route_aggregation_num_enable"},
+		Int64Fields:  []string{"index"},
+	})
+
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName: "object_properties",
 		ItemCount: len(plan.ObjectProperties),

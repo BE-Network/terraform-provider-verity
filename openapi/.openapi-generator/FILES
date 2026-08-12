@@ -1,4 +1,5 @@
 .gitignore
+.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -125,6 +126,7 @@ docs/FabricsPutRequest.md
 docs/FabricsPutRequestFabricValue.md
 docs/FabricsPutRequestFabricValueObjectProperties.md
 docs/FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner.md
+docs/FabricsPutRequestFabricValueRouteAggregatorsInner.md
 docs/GatewayProfilesAPI.md
 docs/GatewayprofilesPutRequest.md
 docs/GatewayprofilesPutRequestGatewayProfileValue.md
@@ -327,6 +329,7 @@ model__fabrics_put_request.go
 model__fabrics_put_request_fabric_value.go
 model__fabrics_put_request_fabric_value_object_properties.go
 model__fabrics_put_request_fabric_value_object_properties_system_graphs_inner.go
+model__fabrics_put_request_fabric_value_route_aggregators_inner.go
 model__gatewayprofiles_put_request.go
 model__gatewayprofiles_put_request_gateway_profile_value.go
 model__gatewayprofiles_put_request_gateway_profile_value_external_gateways_inner.go

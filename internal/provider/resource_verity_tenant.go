@@ -40,26 +40,28 @@ type verityTenantResource struct {
 }
 
 type verityTenantResourceModel struct {
-	Name                       types.String                   `tfsdk:"name"`
-	Enable                     types.Bool                     `tfsdk:"enable"`
-	Layer3Vni                  types.Int64                    `tfsdk:"layer_3_vni"`
-	Layer3VniAutoAssigned      types.Bool                     `tfsdk:"layer_3_vni_auto_assigned_"`
-	Layer3Vlan                 types.Int64                    `tfsdk:"layer_3_vlan"`
-	Layer3VlanAutoAssigned     types.Bool                     `tfsdk:"layer_3_vlan_auto_assigned_"`
-	DhcpRelaySourceIpv4sSubnet types.String                   `tfsdk:"dhcp_relay_source_ipv4s_subnet"`
-	DhcpRelaySourceIpv6sSubnet types.String                   `tfsdk:"dhcp_relay_source_ipv6s_subnet"`
-	RouteDistinguisher         types.String                   `tfsdk:"route_distinguisher"`
-	RouteTargetImport          types.String                   `tfsdk:"route_target_import"`
-	RouteTargetExport          types.String                   `tfsdk:"route_target_export"`
-	ImportRouteMap             types.String                   `tfsdk:"import_route_map"`
-	ImportRouteMapRefType      types.String                   `tfsdk:"import_route_map_ref_type_"`
-	ExportRouteMap             types.String                   `tfsdk:"export_route_map"`
-	ExportRouteMapRefType      types.String                   `tfsdk:"export_route_map_ref_type_"`
-	VrfName                    types.String                   `tfsdk:"vrf_name"`
-	VrfNameAutoAssigned        types.Bool                     `tfsdk:"vrf_name_auto_assigned_"`
-	RouteTenants               []verityTenantRouteTenantModel `tfsdk:"route_tenants"`
-	DefaultOriginate           types.Bool                     `tfsdk:"default_originate"`
-	TenantType                 types.String                   `tfsdk:"tenant_type"`
+	Name                       types.String                       `tfsdk:"name"`
+	Enable                     types.Bool                         `tfsdk:"enable"`
+	Layer3Vni                  types.Int64                        `tfsdk:"layer_3_vni"`
+	Layer3VniAutoAssigned      types.Bool                         `tfsdk:"layer_3_vni_auto_assigned_"`
+	Layer3Vlan                 types.Int64                        `tfsdk:"layer_3_vlan"`
+	Layer3VlanAutoAssigned     types.Bool                         `tfsdk:"layer_3_vlan_auto_assigned_"`
+	DhcpRelaySourceIpv4sSubnet types.String                       `tfsdk:"dhcp_relay_source_ipv4s_subnet"`
+	DhcpRelaySourceIpv6sSubnet types.String                       `tfsdk:"dhcp_relay_source_ipv6s_subnet"`
+	RouteDistinguisher         types.String                       `tfsdk:"route_distinguisher"`
+	RouteTargetImport          types.String                       `tfsdk:"route_target_import"`
+	RouteTargetExport          types.String                       `tfsdk:"route_target_export"`
+	ImportRouteMap             types.String                       `tfsdk:"import_route_map"`
+	ImportRouteMapRefType      types.String                       `tfsdk:"import_route_map_ref_type_"`
+	ExportRouteMap             types.String                       `tfsdk:"export_route_map"`
+	ExportRouteMapRefType      types.String                       `tfsdk:"export_route_map_ref_type_"`
+	VrfName                    types.String                       `tfsdk:"vrf_name"`
+	VrfNameAutoAssigned        types.Bool                         `tfsdk:"vrf_name_auto_assigned_"`
+	RouteTenants               []verityTenantRouteTenantModel     `tfsdk:"route_tenants"`
+	RouteAggregation           types.String                       `tfsdk:"route_aggregation"`
+	RouteAggregators           []verityTenantRouteAggregatorModel `tfsdk:"route_aggregators"`
+	DefaultOriginate           types.Bool                         `tfsdk:"default_originate"`
+	TenantType                 types.String                       `tfsdk:"tenant_type"`
 }
 
 type verityTenantRouteTenantModel struct {
@@ -70,6 +72,16 @@ type verityTenantRouteTenantModel struct {
 
 func (rt verityTenantRouteTenantModel) GetIndex() types.Int64 {
 	return rt.Index
+}
+
+type verityTenantRouteAggregatorModel struct {
+	RouteAggregationNumEnable    types.Bool   `tfsdk:"route_aggregation_num_enable"`
+	RouteAggregationNumIpAndMask types.String `tfsdk:"route_aggregation_num_ip_and_mask"`
+	Index                        types.Int64  `tfsdk:"index"`
+}
+
+func (m verityTenantRouteAggregatorModel) GetIndex() types.Int64 {
+	return m.Index
 }
 
 func (r *verityTenantResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -195,6 +207,11 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
+			"route_aggregation": schema.StringAttribute{
+				Description: "Route Aggregation configuration for this tenant",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"route_tenants": schema.ListNestedBlock{
@@ -213,6 +230,28 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 						},
 						"index": schema.Int64Attribute{
 							Description: "The index identifying the object",
+							Optional:    true,
+							Computed:    true,
+						},
+					},
+				},
+			},
+			"route_aggregators": schema.ListNestedBlock{
+				Description: "Route aggregation entries",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"route_aggregation_num_enable": schema.BoolAttribute{
+							Description: "Enable",
+							Optional:    true,
+							Computed:    true,
+						},
+						"route_aggregation_num_ip_and_mask": schema.StringAttribute{
+							Description: "IP address and mask for route aggregation",
+							Optional:    true,
+							Computed:    true,
+						},
+						"index": schema.Int64Attribute{
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -287,6 +326,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		{FieldName: "ExportRouteMap", APIField: &tenantReq.ExportRouteMap, TFValue: plan.ExportRouteMap},
 		{FieldName: "ExportRouteMapRefType", APIField: &tenantReq.ExportRouteMapRefType, TFValue: plan.ExportRouteMapRefType},
 		{FieldName: "TenantType", APIField: &tenantReq.TenantType, TFValue: plan.TenantType},
+		{FieldName: "RouteAggregation", APIField: &tenantReq.RouteAggregation, TFValue: plan.RouteAggregation},
 	})
 
 	// Handle boolean fields
@@ -366,6 +406,24 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 			routeTenants[i] = rItem
 		}
 		tenantReq.RouteTenants = routeTenants
+	}
+
+	if len(plan.RouteAggregators) > 0 {
+		routeAggregators := make([]openapi.FabricsPutRequestFabricValueRouteAggregatorsInner, len(plan.RouteAggregators))
+		for i, aggregator := range plan.RouteAggregators {
+			routeAggregator := openapi.FabricsPutRequestFabricValueRouteAggregatorsInner{}
+			utils.SetBoolFields([]utils.BoolFieldMapping{
+				{FieldName: "RouteAggregationNumEnable", APIField: &routeAggregator.RouteAggregationNumEnable, TFValue: aggregator.RouteAggregationNumEnable},
+			})
+			utils.SetStringFields([]utils.StringFieldMapping{
+				{FieldName: "RouteAggregationNumIpAndMask", APIField: &routeAggregator.RouteAggregationNumIpAndMask, TFValue: aggregator.RouteAggregationNumIpAndMask},
+			})
+			utils.SetInt64Fields([]utils.Int64FieldMapping{
+				{FieldName: "Index", APIField: &routeAggregator.Index, TFValue: aggregator.Index},
+			})
+			routeAggregators[i] = routeAggregator
+		}
+		tenantReq.RouteAggregators = routeAggregators
 	}
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "tenant", name, *tenantReq, &resp.Diagnostics)
@@ -587,6 +645,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetStringField(plan.RouteTargetImport, state.RouteTargetImport, func(v *string) { tenantReq.RouteTargetImport = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouteTargetExport, state.RouteTargetExport, func(v *string) { tenantReq.RouteTargetExport = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.TenantType, state.TenantType, func(v *string) { tenantReq.TenantType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.RouteAggregation, state.RouteAggregation, func(v *string) { tenantReq.RouteAggregation = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { tenantReq.Enable = v }, &hasChanges)
@@ -841,6 +900,40 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
+	changedRouteAggregators, routeAggregatorsChanged := utils.ProcessIndexedArrayUpdates(plan.RouteAggregators, state.RouteAggregators,
+		utils.IndexedItemHandler[verityTenantRouteAggregatorModel, openapi.FabricsPutRequestFabricValueRouteAggregatorsInner]{
+			CreateNew: func(planItem verityTenantRouteAggregatorModel) openapi.FabricsPutRequestFabricValueRouteAggregatorsInner {
+				routeAggregator := openapi.FabricsPutRequestFabricValueRouteAggregatorsInner{}
+				utils.SetBoolFields([]utils.BoolFieldMapping{
+					{FieldName: "RouteAggregationNumEnable", APIField: &routeAggregator.RouteAggregationNumEnable, TFValue: planItem.RouteAggregationNumEnable},
+				})
+				utils.SetStringFields([]utils.StringFieldMapping{
+					{FieldName: "RouteAggregationNumIpAndMask", APIField: &routeAggregator.RouteAggregationNumIpAndMask, TFValue: planItem.RouteAggregationNumIpAndMask},
+				})
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &routeAggregator.Index, TFValue: planItem.Index},
+				})
+				return routeAggregator
+			},
+			UpdateExisting: func(planItem verityTenantRouteAggregatorModel, stateItem verityTenantRouteAggregatorModel) (openapi.FabricsPutRequestFabricValueRouteAggregatorsInner, bool) {
+				routeAggregator := openapi.FabricsPutRequestFabricValueRouteAggregatorsInner{}
+				fieldChanged := false
+				utils.CompareAndSetBoolField(planItem.RouteAggregationNumEnable, stateItem.RouteAggregationNumEnable, func(v *bool) { routeAggregator.RouteAggregationNumEnable = v }, &fieldChanged)
+				utils.CompareAndSetStringField(planItem.RouteAggregationNumIpAndMask, stateItem.RouteAggregationNumIpAndMask, func(v *string) { routeAggregator.RouteAggregationNumIpAndMask = v }, &fieldChanged)
+				utils.SetInt64Fields([]utils.Int64FieldMapping{
+					{FieldName: "Index", APIField: &routeAggregator.Index, TFValue: planItem.Index},
+				})
+				return routeAggregator, fieldChanged
+			},
+			CreateDeleted: func(index int64) openapi.FabricsPutRequestFabricValueRouteAggregatorsInner {
+				return openapi.FabricsPutRequestFabricValueRouteAggregatorsInner{Index: openapi.PtrInt64(index)}
+			},
+		})
+	if routeAggregatorsChanged {
+		tenantReq.RouteAggregators = changedRouteAggregators
+		hasChanges = true
+	}
+
 	if !hasChanges {
 		resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 		return
@@ -949,6 +1042,28 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 	state.ExportRouteMapRefType = utils.MapStringWithMode(tenantData, "export_route_map_ref_type_", resourceType, mode)
 	state.VrfName = utils.MapStringWithMode(tenantData, "vrf_name", resourceType, mode)
 	state.TenantType = utils.MapStringWithMode(tenantData, "tenant_type", resourceType, mode)
+	state.RouteAggregation = utils.MapStringWithMode(tenantData, "route_aggregation", resourceType, mode)
+
+	if utils.FieldAppliesToMode(resourceType, "route_aggregators", mode) {
+		if aggregators, ok := tenantData["route_aggregators"].([]interface{}); ok {
+			state.RouteAggregators = make([]verityTenantRouteAggregatorModel, 0, len(aggregators))
+			for _, aggregator := range aggregators {
+				aggregatorMap, ok := aggregator.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				state.RouteAggregators = append(state.RouteAggregators, verityTenantRouteAggregatorModel{
+					RouteAggregationNumEnable:    utils.MapBoolWithModeNested(aggregatorMap, "route_aggregation_num_enable", resourceType, "route_aggregators.route_aggregation_num_enable", mode),
+					RouteAggregationNumIpAndMask: utils.MapStringWithModeNested(aggregatorMap, "route_aggregation_num_ip_and_mask", resourceType, "route_aggregators.route_aggregation_num_ip_and_mask", mode),
+					Index:                        utils.MapInt64WithModeNested(aggregatorMap, "index", resourceType, "route_aggregators.index", mode),
+				})
+			}
+		} else {
+			state.RouteAggregators = nil
+		}
+	} else {
+		state.RouteAggregators = nil
+	}
 
 	// Handle route_tenants block
 	if utils.FieldAppliesToMode(resourceType, "route_tenants", mode) {
@@ -1011,7 +1126,7 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		"route_distinguisher", "route_target_import", "route_target_export",
 		"import_route_map", "import_route_map_ref_type_",
 		"export_route_map", "export_route_map_ref_type_",
-		"vrf_name", "tenant_type",
+		"vrf_name", "tenant_type", "route_aggregation",
 	)
 
 	nullifier.NullifyBools(
@@ -1029,6 +1144,14 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		ItemCount:    len(plan.RouteTenants),
 		StringFields: []string{"tenant"},
 		BoolFields:   []string{"enable"},
+		Int64Fields:  []string{"index"},
+	})
+
+	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
+		BlockName:    "route_aggregators",
+		ItemCount:    len(plan.RouteAggregators),
+		StringFields: []string{"route_aggregation_num_ip_and_mask"},
+		BoolFields:   []string{"route_aggregation_num_enable"},
 		Int64Fields:  []string{"index"},
 	})
 

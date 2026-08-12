@@ -260,7 +260,7 @@ var resourceConfigs = map[string]ResourceConfig{
 		HeaderNameLineFormat:      "    name = \"%s\"\n",
 		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"route_tenants": true},
+		NestedBlockFields:         map[string]bool{"route_tenants": true, "route_aggregators": true},
 	},
 	"gateway": {
 		ResourceType:              "gateway",
@@ -575,6 +575,7 @@ var resourceConfigs = map[string]ResourceConfig{
 		HeaderNameLineFormat:         "    name = \"%s\"\n",
 		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
 		ObjectPropsHandler:           universalObjectPropsHandler,
+		NestedBlockFields:            map[string]bool{"route_aggregators": true},
 		ObjectPropsNestedBlockFields: map[string]bool{"system_graphs": true},
 	},
 	"plane": {

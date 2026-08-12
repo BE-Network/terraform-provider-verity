@@ -331,6 +331,7 @@ Class | Method | HTTP request | Description
  - [FabricsPutRequestFabricValue](docs/FabricsPutRequestFabricValue.md)
  - [FabricsPutRequestFabricValueObjectProperties](docs/FabricsPutRequestFabricValueObjectProperties.md)
  - [FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner](docs/FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner.md)
+ - [FabricsPutRequestFabricValueRouteAggregatorsInner](docs/FabricsPutRequestFabricValueRouteAggregatorsInner.md)
  - [GatewayprofilesPutRequest](docs/GatewayprofilesPutRequest.md)
  - [GatewayprofilesPutRequestGatewayProfileValue](docs/GatewayprofilesPutRequestGatewayProfileValue.md)
  - [GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner](docs/GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner.md)

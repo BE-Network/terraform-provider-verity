@@ -67,6 +67,8 @@ Name | Type | Description | Notes
 **MaxSus** | Pointer to **NullableInt64** | Maximum number of SUs allowed per POD | [optional] 
 **MaxPods** | Pointer to **NullableInt64** | Maximum number of PODs allowed in the Fabric | [optional] 
 **ObjectProperties** | Pointer to [**FabricsPutRequestFabricValueObjectProperties**](FabricsPutRequestFabricValueObjectProperties.md) |  | [optional] 
+**RouteAggregation** | Pointer to **string** | Route Aggregation configuration for this fabric | [optional] [default to ""]
+**RouteAggregators** | Pointer to [**[]FabricsPutRequestFabricValueRouteAggregatorsInner**](FabricsPutRequestFabricValueRouteAggregatorsInner.md) |  | [optional] 
 **IpSourceGuard** | Pointer to **bool** | On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings | [optional] [default to false]
 **EnableDhcpSnooping** | Pointer to **bool** | Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. | [optional] [default to false]
 
@@ -1883,6 +1885,56 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *FabricsPutRequestFabricValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetRouteAggregation
+
+`func (o *FabricsPutRequestFabricValue) GetRouteAggregation() string`
+
+GetRouteAggregation returns the RouteAggregation field if non-nil, zero value otherwise.
+
+### GetRouteAggregationOk
+
+`func (o *FabricsPutRequestFabricValue) GetRouteAggregationOk() (*string, bool)`
+
+GetRouteAggregationOk returns a tuple with the RouteAggregation field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRouteAggregation
+
+`func (o *FabricsPutRequestFabricValue) SetRouteAggregation(v string)`
+
+SetRouteAggregation sets RouteAggregation field to given value.
+
+### HasRouteAggregation
+
+`func (o *FabricsPutRequestFabricValue) HasRouteAggregation() bool`
+
+HasRouteAggregation returns a boolean if a field has been set.
+
+### GetRouteAggregators
+
+`func (o *FabricsPutRequestFabricValue) GetRouteAggregators() []FabricsPutRequestFabricValueRouteAggregatorsInner`
+
+GetRouteAggregators returns the RouteAggregators field if non-nil, zero value otherwise.
+
+### GetRouteAggregatorsOk
+
+`func (o *FabricsPutRequestFabricValue) GetRouteAggregatorsOk() (*[]FabricsPutRequestFabricValueRouteAggregatorsInner, bool)`
+
+GetRouteAggregatorsOk returns a tuple with the RouteAggregators field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRouteAggregators
+
+`func (o *FabricsPutRequestFabricValue) SetRouteAggregators(v []FabricsPutRequestFabricValueRouteAggregatorsInner)`
+
+SetRouteAggregators sets RouteAggregators field to given value.
+
+### HasRouteAggregators
+
+`func (o *FabricsPutRequestFabricValue) HasRouteAggregators() bool`
+
+HasRouteAggregators returns a boolean if a field has been set.
 
 ### GetIpSourceGuard
 

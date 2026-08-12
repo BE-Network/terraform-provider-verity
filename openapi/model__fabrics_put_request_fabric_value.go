@@ -144,6 +144,9 @@ type FabricsPutRequestFabricValue struct {
 	// Maximum number of PODs allowed in the Fabric
 	MaxPods NullableInt64 `json:"max_pods,omitempty"`
 	ObjectProperties *FabricsPutRequestFabricValueObjectProperties `json:"object_properties,omitempty"`
+	// Route Aggregation configuration for this fabric
+	RouteAggregation *string `json:"route_aggregation,omitempty"`
+	RouteAggregators []FabricsPutRequestFabricValueRouteAggregatorsInner `json:"route_aggregators,omitempty"`
 	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
 	IpSourceGuard *bool `json:"ip_source_guard,omitempty"`
 	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
@@ -266,6 +269,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
+	var routeAggregation string = ""
+	this.RouteAggregation = &routeAggregation
 	var ipSourceGuard bool = false
 	this.IpSourceGuard = &ipSourceGuard
 	var enableDhcpSnooping bool = false
@@ -388,6 +393,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
+	var routeAggregation string = ""
+	this.RouteAggregation = &routeAggregation
 	var ipSourceGuard bool = false
 	this.IpSourceGuard = &ipSourceGuard
 	var enableDhcpSnooping bool = false
@@ -2631,6 +2638,70 @@ func (o *FabricsPutRequestFabricValue) SetObjectProperties(v FabricsPutRequestFa
 	o.ObjectProperties = &v
 }
 
+// GetRouteAggregation returns the RouteAggregation field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetRouteAggregation() string {
+	if o == nil || IsNil(o.RouteAggregation) {
+		var ret string
+		return ret
+	}
+	return *o.RouteAggregation
+}
+
+// GetRouteAggregationOk returns a tuple with the RouteAggregation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetRouteAggregationOk() (*string, bool) {
+	if o == nil || IsNil(o.RouteAggregation) {
+		return nil, false
+	}
+	return o.RouteAggregation, true
+}
+
+// HasRouteAggregation returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasRouteAggregation() bool {
+	if o != nil && !IsNil(o.RouteAggregation) {
+		return true
+	}
+
+	return false
+}
+
+// SetRouteAggregation gets a reference to the given string and assigns it to the RouteAggregation field.
+func (o *FabricsPutRequestFabricValue) SetRouteAggregation(v string) {
+	o.RouteAggregation = &v
+}
+
+// GetRouteAggregators returns the RouteAggregators field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetRouteAggregators() []FabricsPutRequestFabricValueRouteAggregatorsInner {
+	if o == nil || IsNil(o.RouteAggregators) {
+		var ret []FabricsPutRequestFabricValueRouteAggregatorsInner
+		return ret
+	}
+	return o.RouteAggregators
+}
+
+// GetRouteAggregatorsOk returns a tuple with the RouteAggregators field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetRouteAggregatorsOk() ([]FabricsPutRequestFabricValueRouteAggregatorsInner, bool) {
+	if o == nil || IsNil(o.RouteAggregators) {
+		return nil, false
+	}
+	return o.RouteAggregators, true
+}
+
+// HasRouteAggregators returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasRouteAggregators() bool {
+	if o != nil && !IsNil(o.RouteAggregators) {
+		return true
+	}
+
+	return false
+}
+
+// SetRouteAggregators gets a reference to the given []FabricsPutRequestFabricValueRouteAggregatorsInner and assigns it to the RouteAggregators field.
+func (o *FabricsPutRequestFabricValue) SetRouteAggregators(v []FabricsPutRequestFabricValueRouteAggregatorsInner) {
+	o.RouteAggregators = v
+}
+
 // GetIpSourceGuard returns the IpSourceGuard field value if set, zero value otherwise.
 func (o *FabricsPutRequestFabricValue) GetIpSourceGuard() bool {
 	if o == nil || IsNil(o.IpSourceGuard) {
@@ -2893,6 +2964,12 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.RouteAggregation) {
+		toSerialize["route_aggregation"] = o.RouteAggregation
+	}
+	if !IsNil(o.RouteAggregators) {
+		toSerialize["route_aggregators"] = o.RouteAggregators
 	}
 	if !IsNil(o.IpSourceGuard) {
 		toSerialize["ip_source_guard"] = o.IpSourceGuard

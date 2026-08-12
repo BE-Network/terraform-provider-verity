@@ -58,6 +58,9 @@ type TenantsPutRequestTenantValue struct {
 	// Type of Tenant. To Provision on Spectrum-X sites, select East-West.
 	TenantType *string `json:"tenant_type,omitempty"`
 	RouteTenants []TenantsPutRequestTenantValueRouteTenantsInner `json:"route_tenants,omitempty"`
+	// Route Aggregation configuration for this tenant
+	RouteAggregation *string `json:"route_aggregation,omitempty"`
+	RouteAggregators []FabricsPutRequestFabricValueRouteAggregatorsInner `json:"route_aggregators,omitempty"`
 }
 
 // NewTenantsPutRequestTenantValue instantiates a new TenantsPutRequestTenantValue object
@@ -90,6 +93,8 @@ func NewTenantsPutRequestTenantValue() *TenantsPutRequestTenantValue {
 	this.DefaultOriginate = &defaultOriginate
 	var tenantType string = "NorthSouth"
 	this.TenantType = &tenantType
+	var routeAggregation string = ""
+	this.RouteAggregation = &routeAggregation
 	return &this
 }
 
@@ -122,6 +127,8 @@ func NewTenantsPutRequestTenantValueWithDefaults() *TenantsPutRequestTenantValue
 	this.DefaultOriginate = &defaultOriginate
 	var tenantType string = "NorthSouth"
 	this.TenantType = &tenantType
+	var routeAggregation string = ""
+	this.RouteAggregation = &routeAggregation
 	return &this
 }
 
@@ -785,6 +792,70 @@ func (o *TenantsPutRequestTenantValue) SetRouteTenants(v []TenantsPutRequestTena
 	o.RouteTenants = v
 }
 
+// GetRouteAggregation returns the RouteAggregation field value if set, zero value otherwise.
+func (o *TenantsPutRequestTenantValue) GetRouteAggregation() string {
+	if o == nil || IsNil(o.RouteAggregation) {
+		var ret string
+		return ret
+	}
+	return *o.RouteAggregation
+}
+
+// GetRouteAggregationOk returns a tuple with the RouteAggregation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TenantsPutRequestTenantValue) GetRouteAggregationOk() (*string, bool) {
+	if o == nil || IsNil(o.RouteAggregation) {
+		return nil, false
+	}
+	return o.RouteAggregation, true
+}
+
+// HasRouteAggregation returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValue) HasRouteAggregation() bool {
+	if o != nil && !IsNil(o.RouteAggregation) {
+		return true
+	}
+
+	return false
+}
+
+// SetRouteAggregation gets a reference to the given string and assigns it to the RouteAggregation field.
+func (o *TenantsPutRequestTenantValue) SetRouteAggregation(v string) {
+	o.RouteAggregation = &v
+}
+
+// GetRouteAggregators returns the RouteAggregators field value if set, zero value otherwise.
+func (o *TenantsPutRequestTenantValue) GetRouteAggregators() []FabricsPutRequestFabricValueRouteAggregatorsInner {
+	if o == nil || IsNil(o.RouteAggregators) {
+		var ret []FabricsPutRequestFabricValueRouteAggregatorsInner
+		return ret
+	}
+	return o.RouteAggregators
+}
+
+// GetRouteAggregatorsOk returns a tuple with the RouteAggregators field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TenantsPutRequestTenantValue) GetRouteAggregatorsOk() ([]FabricsPutRequestFabricValueRouteAggregatorsInner, bool) {
+	if o == nil || IsNil(o.RouteAggregators) {
+		return nil, false
+	}
+	return o.RouteAggregators, true
+}
+
+// HasRouteAggregators returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValue) HasRouteAggregators() bool {
+	if o != nil && !IsNil(o.RouteAggregators) {
+		return true
+	}
+
+	return false
+}
+
+// SetRouteAggregators gets a reference to the given []FabricsPutRequestFabricValueRouteAggregatorsInner and assigns it to the RouteAggregators field.
+func (o *TenantsPutRequestTenantValue) SetRouteAggregators(v []FabricsPutRequestFabricValueRouteAggregatorsInner) {
+	o.RouteAggregators = v
+}
+
 func (o TenantsPutRequestTenantValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -854,6 +925,12 @@ func (o TenantsPutRequestTenantValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RouteTenants) {
 		toSerialize["route_tenants"] = o.RouteTenants
+	}
+	if !IsNil(o.RouteAggregation) {
+		toSerialize["route_aggregation"] = o.RouteAggregation
+	}
+	if !IsNil(o.RouteAggregators) {
+		toSerialize["route_aggregators"] = o.RouteAggregators
 	}
 	return toSerialize, nil
 }
