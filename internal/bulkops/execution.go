@@ -353,7 +353,7 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 	}
 
 	if opErr == nil && apiResp != nil && config.ProcessResponse != nil {
-		if processErr := config.ProcessResponse(ctx, apiResp); processErr != nil {
+		if processErr := config.ProcessResponse(ctx, apiResp, filteredOperations); processErr != nil {
 			tflog.Warn(ctx, fmt.Sprintf("Post-processing failed for bulk %s %s operation: %v",
 				config.ResourceType, config.OperationType, processErr))
 		}
@@ -495,7 +495,7 @@ func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOpera
 	}
 
 	if opErr == nil && apiResp != nil && config.ProcessResponse != nil {
-		if processErr := config.ProcessResponse(ctx, apiResp); processErr != nil {
+		if processErr := config.ProcessResponse(ctx, apiResp, operations); processErr != nil {
 			tflog.Warn(ctx, fmt.Sprintf("Post-processing failed for bulk %s %s operation: %v",
 				config.ResourceType, config.OperationType, processErr))
 		}

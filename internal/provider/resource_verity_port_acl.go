@@ -364,7 +364,7 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if portAclData, exists := bulkMgr.GetResourceResponse("port_acl", name); exists {
-			state := populatePortAclState(ctx, minState, portAclData, r.provCtx.mode)
+			state := populatePortAclState(ctx, minState, utils.MergeMissingPlanScalars(portAclData, plan, portAclResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -379,7 +379,14 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, portAclResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPortAclResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -404,7 +411,7 @@ func (r *verityPortAclResource) Read(ctx context.Context, req resource.ReadReque
 	if r.bulkOpsMgr != nil {
 		if portAclData, exists := r.bulkOpsMgr.GetResourceResponse("port_acl", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached port_acl data for %s from recent operation", name))
-			state = populatePortAclState(ctx, state, portAclData, r.provCtx.mode)
+			state = populatePortAclState(ctx, state, utils.ApplyPostOperationFallback(ctx, portAclData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -412,6 +419,9 @@ func (r *verityPortAclResource) Read(ctx context.Context, req resource.ReadReque
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("port_acl") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Port ACL %s verification – trusting recent successful API operation", name))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -478,7 +488,7 @@ func (r *verityPortAclResource) Read(ctx context.Context, req resource.ReadReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Port ACL '%s' under API key '%s'", name, actualAPIName))
 
-	state = populatePortAclState(ctx, state, portAclMap, r.provCtx.mode)
+	state = populatePortAclState(ctx, state, utils.ApplyPostOperationFallback(ctx, portAclMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -778,7 +788,7 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if portAclData, exists := bulkMgr.GetResourceResponse("port_acl", name); exists {
-			newState := populatePortAclState(ctx, minState, portAclData, r.provCtx.mode)
+			newState := populatePortAclState(ctx, minState, utils.MergeMissingPlanScalars(portAclData, plan, portAclResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -793,7 +803,14 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, portAclResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPortAclResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

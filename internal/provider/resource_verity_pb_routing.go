@@ -192,7 +192,7 @@ func (r *verityPBRoutingResource) Create(ctx context.Context, req resource.Creat
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbRoutingData, exists := bulkMgr.GetResourceResponse("pb_routing", name); exists {
-			state := populatePBRoutingState(ctx, minState, pbRoutingData, r.provCtx.mode)
+			state := populatePBRoutingState(ctx, minState, utils.MergeMissingPlanScalars(pbRoutingData, plan, pbRoutingResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -207,7 +207,14 @@ func (r *verityPBRoutingResource) Create(ctx context.Context, req resource.Creat
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, pbRoutingResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPBRoutingResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -232,7 +239,7 @@ func (r *verityPBRoutingResource) Read(ctx context.Context, req resource.ReadReq
 	if r.bulkOpsMgr != nil {
 		if pbRoutingData, exists := r.bulkOpsMgr.GetResourceResponse("pb_routing", pbRoutingName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached pb routing data for %s from recent operation", pbRoutingName))
-			state = populatePBRoutingState(ctx, state, pbRoutingData, r.provCtx.mode)
+			state = populatePBRoutingState(ctx, state, utils.ApplyPostOperationFallback(ctx, pbRoutingData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -240,6 +247,9 @@ func (r *verityPBRoutingResource) Read(ctx context.Context, req resource.ReadReq
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("pb_routing") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping PB Routing %s verification – trusting recent successful API operation", pbRoutingName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -308,7 +318,7 @@ func (r *verityPBRoutingResource) Read(ctx context.Context, req resource.ReadReq
 
 	tflog.Debug(ctx, fmt.Sprintf("Found PB Routing '%s' under API key '%s'", pbRoutingName, actualAPIName))
 
-	state = populatePBRoutingState(ctx, state, pbRoutingMap, r.provCtx.mode)
+	state = populatePBRoutingState(ctx, state, utils.ApplyPostOperationFallback(ctx, pbRoutingMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -429,7 +439,7 @@ func (r *verityPBRoutingResource) Update(ctx context.Context, req resource.Updat
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbRoutingData, exists := bulkMgr.GetResourceResponse("pb_routing", name); exists {
-			newState := populatePBRoutingState(ctx, minState, pbRoutingData, r.provCtx.mode)
+			newState := populatePBRoutingState(ctx, minState, utils.MergeMissingPlanScalars(pbRoutingData, plan, pbRoutingResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -444,7 +454,14 @@ func (r *verityPBRoutingResource) Update(ctx context.Context, req resource.Updat
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, pbRoutingResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPBRoutingResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

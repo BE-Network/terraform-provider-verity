@@ -206,7 +206,7 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if gatewayProfileData, exists := bulkMgr.GetResourceResponse("gateway_profile", name); exists {
-			state := populateGatewayProfileState(ctx, minState, gatewayProfileData, r.provCtx.mode)
+			state := populateGatewayProfileState(ctx, minState, utils.MergeMissingPlanScalars(gatewayProfileData, plan, gatewayProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -221,7 +221,14 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, gatewayProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -246,7 +253,7 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 	if r.bulkOpsMgr != nil {
 		if gatewayProfileData, exists := r.bulkOpsMgr.GetResourceResponse("gateway_profile", profileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached gateway profile data for %s from recent operation", profileName))
-			state = populateGatewayProfileState(ctx, state, gatewayProfileData, r.provCtx.mode)
+			state = populateGatewayProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, gatewayProfileData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -254,6 +261,9 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gateway_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping gateway profile %s verification – trusting recent successful API operation", profileName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -322,7 +332,7 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found gateway profile '%s' under API key '%s'", profileName, actualAPIName))
 
-	state = populateGatewayProfileState(ctx, state, profileMap, r.provCtx.mode)
+	state = populateGatewayProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, profileMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -450,7 +460,7 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if gatewayProfileData, exists := bulkMgr.GetResourceResponse("gateway_profile", name); exists {
-			newState := populateGatewayProfileState(ctx, minState, gatewayProfileData, r.provCtx.mode)
+			newState := populateGatewayProfileState(ctx, minState, utils.MergeMissingPlanScalars(gatewayProfileData, plan, gatewayProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -465,7 +475,14 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, gatewayProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityGatewayProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

@@ -397,7 +397,7 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
-			state := populateServiceState(ctx, minState, serviceData, r.provCtx.mode)
+			state := populateServiceState(ctx, minState, utils.MergeMissingPlanScalars(serviceData, plan, serviceResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -412,7 +412,14 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, serviceResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -437,7 +444,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 	if r.bulkOpsMgr != nil {
 		if serviceData, exists := r.bulkOpsMgr.GetResourceResponse("service", serviceName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached service data for %s from recent operation", serviceName))
-			state = populateServiceState(ctx, state, serviceData, r.provCtx.mode)
+			state = populateServiceState(ctx, state, utils.ApplyPostOperationFallback(ctx, serviceData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -445,6 +452,9 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("service") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping service %s verification – trusting recent successful API operation", serviceName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -513,7 +523,7 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Found service '%s' under API key '%s'", serviceName, actualAPIName))
 
-	state = populateServiceState(ctx, state, serviceMap, r.provCtx.mode)
+	state = populateServiceState(ctx, state, utils.ApplyPostOperationFallback(ctx, serviceMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -725,7 +735,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if serviceData, exists := bulkMgr.GetResourceResponse("service", name); exists {
-			state := populateServiceState(ctx, minState, serviceData, r.provCtx.mode)
+			state := populateServiceState(ctx, minState, utils.MergeMissingPlanScalars(serviceData, plan, serviceResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -740,7 +750,14 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, serviceResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityServiceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

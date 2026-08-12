@@ -226,7 +226,7 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if routeMapData, exists := bulkMgr.GetResourceResponse("route_map", name); exists {
-			state := populateRouteMapState(ctx, minState, routeMapData, r.provCtx.mode)
+			state := populateRouteMapState(ctx, minState, utils.MergeMissingPlanScalars(routeMapData, plan, routeMapResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -241,7 +241,14 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, routeMapResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -266,7 +273,7 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 	if r.bulkOpsMgr != nil {
 		if routeMapData, exists := r.bulkOpsMgr.GetResourceResponse("route_map", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached route_map data for %s from recent operation", name))
-			state = populateRouteMapState(ctx, state, routeMapData, r.provCtx.mode)
+			state = populateRouteMapState(ctx, state, utils.ApplyPostOperationFallback(ctx, routeMapData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -274,6 +281,9 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("route_map") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Route Map %s verification – trusting recent successful API operation", name))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -342,7 +352,7 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Route Map '%s' under API key '%s'", name, actualAPIName))
 
-	state = populateRouteMapState(ctx, state, routeMapMap, r.provCtx.mode)
+	state = populateRouteMapState(ctx, state, utils.ApplyPostOperationFallback(ctx, routeMapMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -479,7 +489,7 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if routeMapData, exists := bulkMgr.GetResourceResponse("route_map", name); exists {
-			newState := populateRouteMapState(ctx, minState, routeMapData, r.provCtx.mode)
+			newState := populateRouteMapState(ctx, minState, utils.MergeMissingPlanScalars(routeMapData, plan, routeMapResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -494,7 +504,14 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, routeMapResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityRouteMapResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

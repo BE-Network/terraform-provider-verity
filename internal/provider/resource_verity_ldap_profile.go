@@ -486,7 +486,7 @@ func (r *verityLdapProfileResource) Create(ctx context.Context, req resource.Cre
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if profileData, exists := bulkMgr.GetResourceResponse("ldap_profile", name); exists {
-			state := populateLdapProfileState(ctx, minState, profileData, r.provCtx.mode)
+			state := populateLdapProfileState(ctx, minState, utils.MergeMissingPlanScalars(profileData, plan, ldapProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -501,7 +501,14 @@ func (r *verityLdapProfileResource) Create(ctx context.Context, req resource.Cre
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, ldapProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityLdapProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -526,7 +533,7 @@ func (r *verityLdapProfileResource) Read(ctx context.Context, req resource.ReadR
 	if r.bulkOpsMgr != nil {
 		if profileData, exists := r.bulkOpsMgr.GetResourceResponse("ldap_profile", profileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached LDAP profile data for %s from recent operation", profileName))
-			state = populateLdapProfileState(ctx, state, profileData, r.provCtx.mode)
+			state = populateLdapProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, profileData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -534,6 +541,9 @@ func (r *verityLdapProfileResource) Read(ctx context.Context, req resource.ReadR
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ldap_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping LDAP profile %s verification – trusting recent successful API operation", profileName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -602,7 +612,7 @@ func (r *verityLdapProfileResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Found LDAP profile '%s' under API key '%s'", profileName, actualAPIName))
 
-	state = populateLdapProfileState(ctx, state, profileMap, r.provCtx.mode)
+	state = populateLdapProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, profileMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -827,7 +837,7 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if profileData, exists := bulkMgr.GetResourceResponse("ldap_profile", name); exists {
-			newState := populateLdapProfileState(ctx, minState, profileData, r.provCtx.mode)
+			newState := populateLdapProfileState(ctx, minState, utils.MergeMissingPlanScalars(profileData, plan, ldapProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -842,7 +852,14 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, ldapProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityLdapProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

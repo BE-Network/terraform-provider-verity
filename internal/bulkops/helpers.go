@@ -1317,22 +1317,22 @@ func (m *Manager) createRequestExecutor(config ResourceConfig, operationType str
 	}
 }
 
-func (m *Manager) createResponseProcessor(config ResourceConfig, operationType string) func(context.Context, *http.Response) error {
+func (m *Manager) createResponseProcessor(config ResourceConfig, operationType string) func(context.Context, *http.Response, map[string]interface{}) error {
 	// Unified processor with nil headers for standard resources
 	return m.createResponseProcessorWithHeaders(config, operationType, nil)
 }
 
 // createHeaderAwareResponseProcessor creates a response processor for header-split resources
 // (ACLs with ip_version header)
-func (m *Manager) createHeaderAwareResponseProcessor(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response) error {
+func (m *Manager) createHeaderAwareResponseProcessor(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response, map[string]interface{}) error {
 	return m.createResponseProcessorWithHeaders(config, operationType, headers)
 }
 
 // createResponseProcessorWithHeaders is a unified response processor that handles both
 // standard resources and header-split resources (like ACLs with ip_version).
 // When headers is nil, it uses GetFunc; when headers is provided, it uses HeaderGetFunc.
-func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response) error {
-	return func(ctx context.Context, resp *http.Response) error {
+func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response, map[string]interface{}) error {
+	return func(ctx context.Context, resp *http.Response, operations map[string]interface{}) error {
 		delayTime := ResponseProcessorDelay
 		tflog.Debug(ctx, fmt.Sprintf("Waiting %v for server values to be assigned before fetching %s", delayTime, config.ResourceType))
 		time.Sleep(delayTime)
@@ -1351,12 +1351,44 @@ func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, oper
 			return fmt.Errorf("resource type %s not found in unified structure", config.ResourceType)
 		}
 
-		return m.fetchAndCacheResourceResponse(fetchCtx, ctx, config, res, headers)
+		return m.fetchVerifyAndCacheResourceResponse(fetchCtx, ctx, config, res, headers, operationType, operations)
 	}
 }
 
-// fetchAndCacheResourceResponse fetches resource data and caches it.
-func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string) error {
+// fetchVerifyAndCacheResourceResponse retries a successful-but-incomplete verification
+// response. This is deliberately separate from transport retries: it addresses backend
+// propagation, not an unsuccessful GET.
+func (m *Manager) fetchVerifyAndCacheResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string, operationType string, operations map[string]interface{}) error {
+	resourceData, err := m.fetchResourceResponse(fetchCtx, logCtx, config, headers)
+	if err != nil {
+		return err
+	}
+
+	if (operationType == "PUT" || operationType == "PATCH") && resourceData != nil {
+		for attempt := 1; attempt <= PostOperationVerificationRetries; attempt++ {
+			missing := missingSubmittedResponseKeys(operations, resourceData)
+			if len(missing) == 0 {
+				break
+			}
+			tflog.Warn(logCtx, fmt.Sprintf("Post-operation %s verification response is incomplete; retrying", config.ResourceType), map[string]interface{}{
+				"attempt":      attempt,
+				"max_retries":  PostOperationVerificationRetries,
+				"missing_keys": missing,
+			})
+			time.Sleep(PostOperationVerificationBackoff)
+			resourceData, err = m.fetchResourceResponse(fetchCtx, logCtx, config, headers)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	m.cacheResourceResponse(logCtx, config, res, headers, resourceData)
+	return nil
+}
+
+// fetchResourceResponse fetches and extracts resource data without modifying the cache.
+func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, headers map[string]string) (map[string]interface{}, error) {
 	var getResp *http.Response
 	var fetchErr error
 
@@ -1364,14 +1396,14 @@ func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx
 		// Header-aware fetch for resources like ACLs with ip_version
 		if config.HeaderGetFunc == nil {
 			tflog.Debug(logCtx, fmt.Sprintf("No HeaderGetFunc defined for %s, skipping response caching", config.ResourceType))
-			return nil
+			return nil, nil
 		}
 		getResp, fetchErr = config.HeaderGetFunc(m.client, fetchCtx, headers)
 	} else {
 		// Standard fetch for regular resources
 		if config.GetFunc == nil {
 			tflog.Debug(logCtx, fmt.Sprintf("No GetFunc defined for %s, skipping response caching", config.ResourceType))
-			return nil
+			return nil, nil
 		}
 		getResp, fetchErr = config.GetFunc(m.client, fetchCtx)
 	}
@@ -1382,7 +1414,7 @@ func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx
 			logFields["headers"] = headers
 		}
 		tflog.Error(logCtx, fmt.Sprintf("Failed to fetch %s after operation", config.ResourceType), logFields)
-		return fetchErr
+		return nil, fetchErr
 	}
 	defer getResp.Body.Close()
 
@@ -1392,7 +1424,7 @@ func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx
 		tflog.Error(logCtx, fmt.Sprintf("Failed to decode %s response", config.ResourceType), map[string]interface{}{
 			"error": respErr.Error(),
 		})
-		return respErr
+		return nil, respErr
 	}
 
 	// Extract resource data - use HeaderResponseExtractor if available and headers provided
@@ -1404,23 +1436,27 @@ func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx
 			tflog.Error(logCtx, fmt.Sprintf("Failed to extract %s response data", config.ResourceType), map[string]interface{}{
 				"error": err.Error(),
 			})
-			return err
+			return nil, err
 		}
 	} else {
 		// Standard JSON key lookup
 		jsonKey := utils.GetResourceJSONKey(config.ResourceType)
 		if jsonKey == "" {
 			tflog.Warn(logCtx, fmt.Sprintf("No JSON key mapping found for resource type: %s", config.ResourceType))
-			return nil
+			return nil, nil
 		}
 		var ok bool
 		resourceData, ok = rawResponse[jsonKey].(map[string]interface{})
 		if !ok {
 			tflog.Debug(logCtx, fmt.Sprintf("No %s data found in response or unexpected format", jsonKey))
-			return nil
+			return nil, nil
 		}
 	}
+	return resourceData, nil
+}
 
+// cacheResourceResponse stores the final verification response.
+func (m *Manager) cacheResourceResponse(logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string, resourceData map[string]interface{}) {
 	// Cache the response data
 	res.ResponsesMutex.Lock()
 	for resourceName, data := range resourceData {
@@ -1444,7 +1480,55 @@ func (m *Manager) fetchAndCacheResourceResponse(fetchCtx context.Context, logCtx
 		})
 	}
 
-	return nil
+}
+
+// missingSubmittedResponseKeys compares the JSON shape actually sent to the API with
+// the raw verification response. A JSON null is intentionally not expected: it was
+// not a non-null submitted value and must not cause a readiness retry.
+func missingSubmittedResponseKeys(operations map[string]interface{}, resourceData map[string]interface{}) map[string][]string {
+	missing := make(map[string][]string)
+	// Responses are normally keyed by name, but some endpoints use an API map
+	// key that differs from the object's name. Match cacheResourceResponse's
+	// alias behavior so that does not cause pointless readiness retries.
+	responseByName := make(map[string]map[string]interface{}, len(resourceData))
+	for responseKey, data := range resourceData {
+		response, ok := data.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		responseByName[responseKey] = response
+		if name, ok := response["name"].(string); ok {
+			responseByName[name] = response
+		}
+	}
+	for name, operation := range operations {
+		encoded, err := json.Marshal(operation)
+		if err != nil {
+			// The request was already successfully serialized and sent. Do not turn an
+			// unexpected diagnostic serialization failure into a post-operation failure.
+			continue
+		}
+
+		var submitted map[string]interface{}
+		if err := json.Unmarshal(encoded, &submitted); err != nil {
+			continue
+		}
+
+		response, found := responseByName[name]
+		for key, value := range submitted {
+			if value == nil {
+				continue
+			}
+			if !found {
+				missing[name] = append(missing[name], key)
+				continue
+			}
+			if _, present := response[key]; !present {
+				missing[name] = append(missing[name], key)
+			}
+		}
+	}
+	return missing
 }
 
 func (m *Manager) createRecentOpsUpdater(resourceType string) func() {

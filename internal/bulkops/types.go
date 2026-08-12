@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"strconv"
 	"sync"
 	"terraform-provider-verity/openapi"
 	"time"
@@ -48,7 +49,7 @@ type BulkOperationConfig struct {
 	CheckPreExistence func(ctx context.Context, resourceNames []string, originalOperations map[string]interface{}) ([]string, map[string]interface{}, error) // Filters out existing resources
 	PrepareRequest    func(filteredData map[string]interface{}) interface{}                                                                                  // Prepares API request
 	ExecuteRequest    func(ctx context.Context, request interface{}) (*http.Response, error)                                                                 // Executes API request
-	ProcessResponse   func(ctx context.Context, resp *http.Response) error                                                                                   // Processes API response
+	ProcessResponse   func(ctx context.Context, resp *http.Response, operations map[string]interface{}) error                                                // Processes API response
 	UpdateRecentOps   func()                                                                                                                                 // Updates recent operation tracking
 }
 
@@ -131,11 +132,13 @@ const (
 
 // Timing variables (configurable for CI/testing).
 var (
-	DefaultBatchDelay      = parseDuration("VERITY_DEFAULT_BATCH_DELAY", 2*time.Second)
-	BatchCollectionWindow  = parseDuration("VERITY_BATCH_COLLECTION_WINDOW", 2000*time.Millisecond)
-	MaxBatchDelay          = parseDuration("VERITY_MAX_BATCH_DELAY", 5*time.Second)
-	ResponseProcessorDelay = parseDuration("VERITY_RESPONSE_PROCESSOR_DELAY", 5*time.Second)
-	DebounceDelay          = parseDuration("VERITY_DEBOUNCE_DELAY", 15*time.Second)
+	DefaultBatchDelay                = parseDuration("VERITY_DEFAULT_BATCH_DELAY", 2*time.Second)
+	BatchCollectionWindow            = parseDuration("VERITY_BATCH_COLLECTION_WINDOW", 2000*time.Millisecond)
+	MaxBatchDelay                    = parseDuration("VERITY_MAX_BATCH_DELAY", 5*time.Second)
+	ResponseProcessorDelay           = parseDuration("VERITY_RESPONSE_PROCESSOR_DELAY", 5*time.Second)
+	PostOperationVerificationRetries = parseInt("VERITY_POST_OPERATION_VERIFICATION_RETRIES", 2)
+	PostOperationVerificationBackoff = parseDuration("VERITY_POST_OPERATION_VERIFICATION_BACKOFF", 2500*time.Millisecond)
+	DebounceDelay                    = parseDuration("VERITY_DEBOUNCE_DELAY", 15*time.Second)
 )
 
 // parseDuration reads a Go duration string from the environment variable.
@@ -144,6 +147,15 @@ func parseDuration(envVar string, defaultVal time.Duration) time.Duration {
 	if v := os.Getenv(envVar); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			return d
+		}
+	}
+	return defaultVal
+}
+
+func parseInt(envVar string, defaultVal int) int {
+	if v := os.Getenv(envVar); v != "" {
+		if parsed, err := strconv.Atoi(v); err == nil && parsed >= 0 {
+			return parsed
 		}
 	}
 	return defaultVal

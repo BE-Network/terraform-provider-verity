@@ -8,9 +8,49 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
+	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/tests/unit/mock"
 )
+
+func TestSwitchpointPostOperationMissingAutoAssignedFields(t *testing.T) {
+	oldDelay, oldBackoff := bulkops.ResponseProcessorDelay, bulkops.PostOperationVerificationBackoff
+	bulkops.ResponseProcessorDelay, bulkops.PostOperationVerificationBackoff = 0, 0
+	t.Cleanup(func() {
+		bulkops.ResponseProcessorDelay, bulkops.PostOperationVerificationBackoff = oldDelay, oldBackoff
+	})
+
+	ms := mock.NewMockServer("datacenter")
+	defer ms.Close()
+	if err := ms.LoadResponsesFromDir(mock.ResponsesDir("datacenter")); err != nil {
+		t.Fatal(err)
+	}
+	name := "missing-auto-assigned"
+	fields := []string{"bgp_as_number_auto_assigned_", "switch_vtep_id_ip_mask_auto_assigned_", "switch_router_id_ip_mask_auto_assigned_", "controller_ip_and_mask_auto_assigned_", "switch_ip_and_mask_auto_assigned_"}
+	ms.SetPostGetOmissions("/api/switchpoints", "switchpoint", name, fields, 3)
+
+	config := mock.ProviderConfig(ms.URL(), "datacenter") + fmt.Sprintf(`
+resource "verity_switchpoint" "test" {
+  name = %q
+  bgp_as_number_auto_assigned_ = true
+  switch_vtep_id_ip_mask_auto_assigned_ = true
+  switch_router_id_ip_mask_auto_assigned_ = true
+  controller_ip_and_mask_auto_assigned_ = true
+  switch_ip_and_mask_auto_assigned_ = false
+}
+`, name)
+	resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(), Steps: []resource.TestStep{{
+		Config:             config,
+		ExpectNonEmptyPlan: true, // unset Optional+Computed fields are intentionally absent from this minimal mock response
+		Check: resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "bgp_as_number_auto_assigned_", "true"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "switch_vtep_id_ip_mask_auto_assigned_", "true"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "switch_router_id_ip_mask_auto_assigned_", "true"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "controller_ip_and_mask_auto_assigned_", "true"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "switch_ip_and_mask_auto_assigned_", "false"),
+		),
+	}}})
+}
 
 // deleteParamOverrides maps WrapperKey to the DELETE query parameter name
 // for resources where it doesn't follow the convention of wrapperKey+"_name".

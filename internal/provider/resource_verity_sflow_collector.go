@@ -164,7 +164,7 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sflowCollectorData, exists := bulkMgr.GetResourceResponse("sflow_collector", name); exists {
-			state := populateSflowCollectorState(ctx, minState, sflowCollectorData, r.provCtx.mode)
+			state := populateSflowCollectorState(ctx, minState, utils.MergeMissingPlanScalars(sflowCollectorData, plan, sflowCollectorResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -179,7 +179,14 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, sflowCollectorResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -204,7 +211,7 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 	if r.bulkOpsMgr != nil {
 		if sflowCollectorData, exists := r.bulkOpsMgr.GetResourceResponse("sflow_collector", sflowCollectorName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached sflow_collector data for %s from recent operation", sflowCollectorName))
-			state = populateSflowCollectorState(ctx, state, sflowCollectorData, r.provCtx.mode)
+			state = populateSflowCollectorState(ctx, state, utils.ApplyPostOperationFallback(ctx, sflowCollectorData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -212,6 +219,9 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("sflow_collector") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping sflow collector %s verification – trusting recent successful API operation", sflowCollectorName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -280,7 +290,7 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found sflow collector '%s' under API key '%s'", sflowCollectorName, actualAPIName))
 
-	state = populateSflowCollectorState(ctx, state, sflowCollectorMap, r.provCtx.mode)
+	state = populateSflowCollectorState(ctx, state, utils.ApplyPostOperationFallback(ctx, sflowCollectorMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -356,7 +366,7 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sflowCollectorData, exists := bulkMgr.GetResourceResponse("sflow_collector", name); exists {
-			newState := populateSflowCollectorState(ctx, minState, sflowCollectorData, r.provCtx.mode)
+			newState := populateSflowCollectorState(ctx, minState, utils.MergeMissingPlanScalars(sflowCollectorData, plan, sflowCollectorResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -371,7 +381,14 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, sflowCollectorResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *veritySflowCollectorResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

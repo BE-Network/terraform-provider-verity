@@ -193,7 +193,7 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if badgeData, exists := bulkMgr.GetResourceResponse("badge", name); exists {
-			state := populateBadgeState(ctx, minState, badgeData, r.provCtx.mode)
+			state := populateBadgeState(ctx, minState, utils.MergeMissingPlanScalars(badgeData, plan, badgeResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -208,7 +208,14 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, badgeResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -233,7 +240,7 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 	if r.bulkOpsMgr != nil {
 		if badgeData, exists := r.bulkOpsMgr.GetResourceResponse("badge", badgeName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached badge data for %s from recent operation", badgeName))
-			state = populateBadgeState(ctx, state, badgeData, r.provCtx.mode)
+			state = populateBadgeState(ctx, state, utils.ApplyPostOperationFallback(ctx, badgeData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -241,6 +248,9 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("badge") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping badge %s verification – trusting recent successful API operation", badgeName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -308,7 +318,7 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 
 	tflog.Debug(ctx, fmt.Sprintf("Found badge '%s' under API key '%s'", badgeName, actualAPIName))
 
-	state = populateBadgeState(ctx, state, badgeMap, r.provCtx.mode)
+	state = populateBadgeState(ctx, state, utils.ApplyPostOperationFallback(ctx, badgeMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -401,7 +411,7 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if badgeData, exists := bulkMgr.GetResourceResponse("badge", name); exists {
-			newState := populateBadgeState(ctx, minState, badgeData, r.provCtx.mode)
+			newState := populateBadgeState(ctx, minState, utils.MergeMissingPlanScalars(badgeData, plan, badgeResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -416,7 +426,14 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, badgeResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityBadgeResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

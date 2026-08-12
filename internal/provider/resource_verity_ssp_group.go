@@ -196,7 +196,7 @@ func (r *veritySspGroupResource) Create(ctx context.Context, req resource.Create
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sspGroupData, exists := bulkMgr.GetResourceResponse("ssp_group", name); exists {
-			newState := populateSspGroupState(ctx, minState, sspGroupData, r.provCtx.mode)
+			newState := populateSspGroupState(ctx, minState, utils.MergeMissingPlanScalars(sspGroupData, plan, sspGroupResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -210,7 +210,14 @@ func (r *veritySspGroupResource) Create(ctx context.Context, req resource.Create
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, sspGroupResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *veritySspGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -234,7 +241,7 @@ func (r *veritySspGroupResource) Read(ctx context.Context, req resource.ReadRequ
 	if r.bulkOpsMgr != nil {
 		if sspGroupData, exists := r.bulkOpsMgr.GetResourceResponse("ssp_group", sspGroupName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached ssp_group data for %s from recent operation", sspGroupName))
-			state = populateSspGroupState(ctx, state, sspGroupData, r.provCtx.mode)
+			state = populateSspGroupState(ctx, state, utils.ApplyPostOperationFallback(ctx, sspGroupData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -242,6 +249,9 @@ func (r *veritySspGroupResource) Read(ctx context.Context, req resource.ReadRequ
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ssp_group") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping SSP Group %s verification - trusting recent successful API operation", sspGroupName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -299,7 +309,7 @@ func (r *veritySspGroupResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	state = populateSspGroupState(ctx, state, sspGroupMap, r.provCtx.mode)
+	state = populateSspGroupState(ctx, state, utils.ApplyPostOperationFallback(ctx, sspGroupMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -392,7 +402,7 @@ func (r *veritySspGroupResource) Update(ctx context.Context, req resource.Update
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sspGroupData, exists := bulkMgr.GetResourceResponse("ssp_group", name); exists {
-			newState := populateSspGroupState(ctx, minState, sspGroupData, r.provCtx.mode)
+			newState := populateSspGroupState(ctx, minState, utils.MergeMissingPlanScalars(sspGroupData, plan, sspGroupResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -406,7 +416,14 @@ func (r *veritySspGroupResource) Update(ctx context.Context, req resource.Update
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, sspGroupResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *veritySspGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

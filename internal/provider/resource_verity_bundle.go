@@ -522,7 +522,7 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if bundleData, exists := bulkMgr.GetResourceResponse("bundle", name); exists {
-			state := populateBundleState(ctx, minState, bundleData, r.provCtx.mode)
+			state := populateBundleState(ctx, minState, utils.MergeMissingPlanScalars(bundleData, plan, bundleResourceType, r.provCtx.mode), r.provCtx.mode)
 			preserveBundlePortNames(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -538,9 +538,16 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, bundleResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 
-	if !readResp.Diagnostics.HasError() {
+	if !resp.Diagnostics.HasError() {
 		var readState verityBundleResourceModel
 		readResp.State.Get(ctx, &readState)
 		preserveBundlePortNames(&readState, &plan)
@@ -571,7 +578,7 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 	if r.bulkOpsMgr != nil {
 		if bundleData, exists := r.bulkOpsMgr.GetResourceResponse("bundle", bundleName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached bundle data for %s from recent operation", bundleName))
-			state = populateBundleState(ctx, state, bundleData, r.provCtx.mode)
+			state = populateBundleState(ctx, state, utils.ApplyPostOperationFallback(ctx, bundleData), r.provCtx.mode)
 			preserveBundlePortNames(&state, &priorState)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -580,6 +587,9 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("bundle") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping bundle %s verification – trusting recent successful API operation", bundleName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -647,7 +657,7 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 
 	tflog.Debug(ctx, fmt.Sprintf("Found bundle '%s' under API key '%s'", bundleName, actualAPIName))
 
-	state = populateBundleState(ctx, state, bundleMap, r.provCtx.mode)
+	state = populateBundleState(ctx, state, utils.ApplyPostOperationFallback(ctx, bundleMap), r.provCtx.mode)
 	preserveBundlePortNames(&state, &priorState)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -1052,7 +1062,7 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if bundleData, exists := bulkMgr.GetResourceResponse("bundle", name); exists {
-			newState := populateBundleState(ctx, minState, bundleData, r.provCtx.mode)
+			newState := populateBundleState(ctx, minState, utils.MergeMissingPlanScalars(bundleData, plan, bundleResourceType, r.provCtx.mode), r.provCtx.mode)
 			preserveBundlePortNames(&newState, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
@@ -1068,9 +1078,16 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, bundleResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 
-	if !readResp.Diagnostics.HasError() {
+	if !resp.Diagnostics.HasError() {
 		var readState verityBundleResourceModel
 		readResp.State.Get(ctx, &readState)
 		preserveBundlePortNames(&readState, &plan)

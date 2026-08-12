@@ -171,7 +171,7 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 	if r.bulkOpsMgr != nil {
 		if sfpBreakoutData, exists := r.bulkOpsMgr.GetResourceResponse("sfp_breakout", sfpBreakoutName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached sfp_breakout data for %s from recent operation", sfpBreakoutName))
-			state = populateSfpBreakoutState(ctx, state, sfpBreakoutData, r.provCtx.mode)
+			state = populateSfpBreakoutState(ctx, state, utils.ApplyPostOperationFallback(ctx, sfpBreakoutData), r.provCtx.mode)
 			filterSfpBreakoutEntries(&state, &priorState)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -180,6 +180,9 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("sfp_breakout") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping SFP Breakout %s verification – trusting recent successful API operation", sfpBreakoutName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -248,7 +251,7 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Found SFP Breakout '%s' under API key '%s'", sfpBreakoutName, actualAPIName))
 
-	state = populateSfpBreakoutState(ctx, state, sfpBreakoutMap, r.provCtx.mode)
+	state = populateSfpBreakoutState(ctx, state, utils.ApplyPostOperationFallback(ctx, sfpBreakoutMap), r.provCtx.mode)
 	filterSfpBreakoutEntries(&state, &priorState)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -371,7 +374,7 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sfpBreakoutData, exists := bulkMgr.GetResourceResponse("sfp_breakout", name); exists {
-			newState := populateSfpBreakoutState(ctx, minState, sfpBreakoutData, r.provCtx.mode)
+			newState := populateSfpBreakoutState(ctx, minState, utils.MergeMissingPlanScalars(sfpBreakoutData, plan, sfpBreakoutResourceType, r.provCtx.mode), r.provCtx.mode)
 			filterSfpBreakoutEntries(&newState, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
@@ -387,9 +390,16 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, sfpBreakoutResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 
-	if !readResp.Diagnostics.HasError() {
+	if !resp.Diagnostics.HasError() {
 		var readState veritySfpBreakoutResourceModel
 		readResp.State.Get(ctx, &readState)
 		filterSfpBreakoutEntries(&readState, &plan)

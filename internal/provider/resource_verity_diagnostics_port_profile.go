@@ -138,7 +138,7 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if diagnosticsPortProfileData, exists := bulkMgr.GetResourceResponse("diagnostics_port_profile", name); exists {
-			state := populateDiagnosticsPortProfileState(ctx, minState, diagnosticsPortProfileData, r.provCtx.mode)
+			state := populateDiagnosticsPortProfileState(ctx, minState, utils.MergeMissingPlanScalars(diagnosticsPortProfileData, plan, diagnosticsPortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -153,7 +153,14 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, diagnosticsPortProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -178,7 +185,7 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 	if r.bulkOpsMgr != nil {
 		if diagnosticsPortProfileData, exists := r.bulkOpsMgr.GetResourceResponse("diagnostics_port_profile", diagnosticsPortProfileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached diagnostics port profile data for %s from recent operation", diagnosticsPortProfileName))
-			state = populateDiagnosticsPortProfileState(ctx, state, diagnosticsPortProfileData, r.provCtx.mode)
+			state = populateDiagnosticsPortProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, diagnosticsPortProfileData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -186,6 +193,9 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("diagnostics_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping diagnostics port profile %s verification – trusting recent successful API operation", diagnosticsPortProfileName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -254,7 +264,7 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 
 	tflog.Debug(ctx, fmt.Sprintf("Found diagnostics port profile '%s' under API key '%s'", diagnosticsPortProfileName, actualAPIName))
 
-	state = populateDiagnosticsPortProfileState(ctx, state, diagnosticsPortProfileMap, r.provCtx.mode)
+	state = populateDiagnosticsPortProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, diagnosticsPortProfileMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -315,7 +325,7 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if diagnosticsPortProfileData, exists := bulkMgr.GetResourceResponse("diagnostics_port_profile", name); exists {
-			newState := populateDiagnosticsPortProfileState(ctx, minState, diagnosticsPortProfileData, r.provCtx.mode)
+			newState := populateDiagnosticsPortProfileState(ctx, minState, utils.MergeMissingPlanScalars(diagnosticsPortProfileData, plan, diagnosticsPortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -330,7 +340,14 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, diagnosticsPortProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityDiagnosticsPortProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

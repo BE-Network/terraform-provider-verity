@@ -244,7 +244,7 @@ func (r *verityCommunityListResource) Create(ctx context.Context, req resource.C
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if communityListData, exists := bulkMgr.GetResourceResponse("community_list", name); exists {
-			state := populateCommunityListState(ctx, minState, communityListData, r.provCtx.mode)
+			state := populateCommunityListState(ctx, minState, utils.MergeMissingPlanScalars(communityListData, plan, communityListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -259,7 +259,14 @@ func (r *verityCommunityListResource) Create(ctx context.Context, req resource.C
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, communityListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityCommunityListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -284,7 +291,7 @@ func (r *verityCommunityListResource) Read(ctx context.Context, req resource.Rea
 	if r.bulkOpsMgr != nil {
 		if communityListData, exists := r.bulkOpsMgr.GetResourceResponse("community_list", communityListName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached community list data for %s from recent operation", communityListName))
-			state = populateCommunityListState(ctx, state, communityListData, r.provCtx.mode)
+			state = populateCommunityListState(ctx, state, utils.ApplyPostOperationFallback(ctx, communityListData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -292,6 +299,9 @@ func (r *verityCommunityListResource) Read(ctx context.Context, req resource.Rea
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("community_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Community List %s verification – trusting recent successful API operation", communityListName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -360,7 +370,7 @@ func (r *verityCommunityListResource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Community List '%s' under API key '%s'", communityListName, actualAPIName))
 
-	state = populateCommunityListState(ctx, state, communityListMap, r.provCtx.mode)
+	state = populateCommunityListState(ctx, state, utils.ApplyPostOperationFallback(ctx, communityListMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -493,7 +503,7 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if communityListData, exists := bulkMgr.GetResourceResponse("community_list", name); exists {
-			newState := populateCommunityListState(ctx, minState, communityListData, r.provCtx.mode)
+			newState := populateCommunityListState(ctx, minState, utils.MergeMissingPlanScalars(communityListData, plan, communityListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -508,7 +518,14 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, communityListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityCommunityListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

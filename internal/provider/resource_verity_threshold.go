@@ -305,7 +305,7 @@ func (r *verityThresholdResource) Create(ctx context.Context, req resource.Creat
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if thresholdData, exists := bulkMgr.GetResourceResponse("threshold", name); exists {
-			newState := populateThresholdState(ctx, minState, thresholdData, r.provCtx.mode)
+			newState := populateThresholdState(ctx, minState, utils.MergeMissingPlanScalars(thresholdData, plan, thresholdResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -320,7 +320,14 @@ func (r *verityThresholdResource) Create(ctx context.Context, req resource.Creat
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, thresholdResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -345,7 +352,7 @@ func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadReq
 	if r.bulkOpsMgr != nil {
 		if thresholdData, exists := r.bulkOpsMgr.GetResourceResponse("threshold", thresholdName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached threshold data for %s from recent operation", thresholdName))
-			state = populateThresholdState(ctx, state, thresholdData, r.provCtx.mode)
+			state = populateThresholdState(ctx, state, utils.ApplyPostOperationFallback(ctx, thresholdData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -353,6 +360,9 @@ func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadReq
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("threshold") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping threshold %s verification – trusting recent successful API operation", thresholdName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -421,7 +431,7 @@ func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadReq
 
 	tflog.Debug(ctx, fmt.Sprintf("Found threshold '%s' under API key '%s'", thresholdName, actualAPIName))
 
-	state = populateThresholdState(ctx, state, thresholdMap, r.provCtx.mode)
+	state = populateThresholdState(ctx, state, utils.ApplyPostOperationFallback(ctx, thresholdMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -562,7 +572,7 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if thresholdData, exists := bulkMgr.GetResourceResponse("threshold", name); exists {
-			newState := populateThresholdState(ctx, minState, thresholdData, r.provCtx.mode)
+			newState := populateThresholdState(ctx, minState, utils.MergeMissingPlanScalars(thresholdData, plan, thresholdResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -577,7 +587,14 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, thresholdResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityThresholdResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

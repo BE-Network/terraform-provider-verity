@@ -264,7 +264,7 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if lagData, exists := bulkMgr.GetResourceResponse("lag", name); exists {
-			state := populateLagState(ctx, minState, lagData, r.provCtx.mode)
+			state := populateLagState(ctx, minState, utils.MergeMissingPlanScalars(lagData, plan, lagResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -279,7 +279,14 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, lagResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -304,7 +311,7 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if r.bulkOpsMgr != nil {
 		if lagData, exists := r.bulkOpsMgr.GetResourceResponse("lag", lagName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached lag data for %s from recent operation", lagName))
-			state = populateLagState(ctx, state, lagData, r.provCtx.mode)
+			state = populateLagState(ctx, state, utils.ApplyPostOperationFallback(ctx, lagData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -312,6 +319,9 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("lag") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping LAG %s verification – trusting recent successful API operation", lagName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -378,7 +388,7 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	tflog.Debug(ctx, fmt.Sprintf("Found LAG '%s' under API key '%s'", lagName, actualAPIName))
 
-	state = populateLagState(ctx, state, lagMap, r.provCtx.mode)
+	state = populateLagState(ctx, state, utils.ApplyPostOperationFallback(ctx, lagMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -499,7 +509,7 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if lagData, exists := bulkMgr.GetResourceResponse("lag", name); exists {
-			newState := populateLagState(ctx, minState, lagData, r.provCtx.mode)
+			newState := populateLagState(ctx, minState, utils.MergeMissingPlanScalars(lagData, plan, lagResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -514,7 +524,14 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, lagResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityLagResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

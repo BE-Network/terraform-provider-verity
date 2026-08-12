@@ -396,7 +396,7 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if routeMapClauseData, exists := bulkMgr.GetResourceResponse("route_map_clause", name); exists {
-			state := populateRouteMapClauseState(ctx, minState, routeMapClauseData, r.provCtx.mode)
+			state := populateRouteMapClauseState(ctx, minState, utils.MergeMissingPlanScalars(routeMapClauseData, plan, routeMapClauseResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -411,7 +411,14 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, routeMapClauseResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -436,7 +443,7 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 	if r.bulkOpsMgr != nil {
 		if routeMapClauseData, exists := r.bulkOpsMgr.GetResourceResponse("route_map_clause", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached route_map_clause data for %s from recent operation", name))
-			state = populateRouteMapClauseState(ctx, state, routeMapClauseData, r.provCtx.mode)
+			state = populateRouteMapClauseState(ctx, state, utils.ApplyPostOperationFallback(ctx, routeMapClauseData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -444,6 +451,9 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("route_map_clause") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Route Map Clause %s verification – trusting recent successful API operation", name))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -510,7 +520,7 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Route Map Clause '%s' under API key '%s'", name, actualAPIName))
 
-	state = populateRouteMapClauseState(ctx, state, routeMapClauseMap, r.provCtx.mode)
+	state = populateRouteMapClauseState(ctx, state, utils.ApplyPostOperationFallback(ctx, routeMapClauseMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -712,7 +722,7 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if routeMapClauseData, exists := bulkMgr.GetResourceResponse("route_map_clause", name); exists {
-			newState := populateRouteMapClauseState(ctx, minState, routeMapClauseData, r.provCtx.mode)
+			newState := populateRouteMapClauseState(ctx, minState, utils.MergeMissingPlanScalars(routeMapClauseData, plan, routeMapClauseResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -727,7 +737,14 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, routeMapClauseResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityRouteMapClauseResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

@@ -1201,7 +1201,8 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
-			state := populateSwitchpointState(ctx, minState, switchpointData, r.provCtx.mode)
+			effectiveData := utils.MergeMissingPlanScalars(switchpointData, plan, switchpointResourceType, r.provCtx.mode)
+			state := populateSwitchpointState(ctx, minState, effectiveData, r.provCtx.mode)
 			preserveSwitchpointPortNames(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -1217,14 +1218,25 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
-
-	if !readResp.Diagnostics.HasError() {
-		var readState veritySwitchpointResourceModel
-		readResp.State.Get(ctx, &readState)
-		preserveSwitchpointPortNames(&readState, &plan)
-		resp.State.Set(ctx, &readState)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, switchpointResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
 	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var readState veritySwitchpointResourceModel
+	resp.Diagnostics.Append(readResp.State.Get(ctx, &readState)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	preserveSwitchpointPortNames(&readState, &plan)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &readState)...)
 }
 
 func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -1250,7 +1262,7 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 	if r.bulkOpsMgr != nil {
 		if switchpointData, exists := r.bulkOpsMgr.GetResourceResponse("switchpoint", spName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached switchpoint data for %s from recent operation", spName))
-			state = populateSwitchpointState(ctx, state, switchpointData, r.provCtx.mode)
+			state = populateSwitchpointState(ctx, state, utils.ApplyPostOperationFallback(ctx, switchpointData), r.provCtx.mode)
 			preserveSwitchpointPortNames(&state, &priorState)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -1259,6 +1271,9 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("switchpoint") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping switchpoint %s verification – trusting recent successful API operation", spName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -1327,7 +1342,7 @@ func (r *veritySwitchpointResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Found switchpoint '%s' under API key '%s'", spName, actualAPIName))
 
-	state = populateSwitchpointState(ctx, state, switchpointMap, r.provCtx.mode)
+	state = populateSwitchpointState(ctx, state, utils.ApplyPostOperationFallback(ctx, switchpointMap), r.provCtx.mode)
 	preserveSwitchpointPortNames(&state, &priorState)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -2159,7 +2174,8 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if switchpointData, exists := bulkMgr.GetResourceResponse("switchpoint", name); exists {
-			state := populateSwitchpointState(ctx, minState, switchpointData, r.provCtx.mode)
+			effectiveData := utils.MergeMissingPlanScalars(switchpointData, plan, switchpointResourceType, r.provCtx.mode)
+			state := populateSwitchpointState(ctx, minState, effectiveData, r.provCtx.mode)
 			preserveSwitchpointPortNames(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -2175,14 +2191,25 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
-
-	if !readResp.Diagnostics.HasError() {
-		var readState veritySwitchpointResourceModel
-		readResp.State.Get(ctx, &readState)
-		preserveSwitchpointPortNames(&readState, &plan)
-		resp.State.Set(ctx, &readState)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, switchpointResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
 	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var readState veritySwitchpointResourceModel
+	resp.Diagnostics.Append(readResp.State.Get(ctx, &readState)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	preserveSwitchpointPortNames(&readState, &plan)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &readState)...)
 }
 
 func (r *veritySwitchpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

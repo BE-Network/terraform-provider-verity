@@ -340,7 +340,7 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbData, exists := bulkMgr.GetResourceResponse("packet_broker", name); exists {
-			state := populatePacketBrokerState(ctx, minState, pbData, r.provCtx.mode)
+			state := populatePacketBrokerState(ctx, minState, utils.MergeMissingPlanScalars(pbData, plan, packetBrokerResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -355,7 +355,14 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, packetBrokerResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -380,7 +387,7 @@ func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.Read
 	if r.bulkOpsMgr != nil {
 		if pbData, exists := r.bulkOpsMgr.GetResourceResponse("packet_broker", pbName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached packet broker data for %s from recent operation", pbName))
-			state = populatePacketBrokerState(ctx, state, pbData, r.provCtx.mode)
+			state = populatePacketBrokerState(ctx, state, utils.ApplyPostOperationFallback(ctx, pbData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -388,6 +395,9 @@ func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.Read
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packet_broker") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Packet Broker %s verification – trusting recent successful API operation", pbName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -456,7 +466,7 @@ func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.Read
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Packet Broker '%s' under API key '%s'", pbName, actualAPIName))
 
-	state = populatePacketBrokerState(ctx, state, pbMap, r.provCtx.mode)
+	state = populatePacketBrokerState(ctx, state, utils.ApplyPostOperationFallback(ctx, pbMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -755,7 +765,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbData, exists := bulkMgr.GetResourceResponse("packet_broker", name); exists {
-			newState := populatePacketBrokerState(ctx, minState, pbData, r.provCtx.mode)
+			newState := populatePacketBrokerState(ctx, minState, utils.MergeMissingPlanScalars(pbData, plan, packetBrokerResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -770,7 +780,14 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, packetBrokerResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPacketBrokerResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

@@ -410,7 +410,7 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if voicePortProfileData, exists := bulkMgr.GetResourceResponse("voice_port_profile", name); exists {
-			state := populateVoicePortProfileState(ctx, minState, voicePortProfileData, r.provCtx.mode)
+			state := populateVoicePortProfileState(ctx, minState, utils.MergeMissingPlanScalars(voicePortProfileData, plan, voicePortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -425,7 +425,14 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, voicePortProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -450,7 +457,7 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 	if r.bulkOpsMgr != nil {
 		if voicePortProfileData, exists := r.bulkOpsMgr.GetResourceResponse("voice_port_profile", vppName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached voice port profile data for %s from recent operation", vppName))
-			state = populateVoicePortProfileState(ctx, state, voicePortProfileData, r.provCtx.mode)
+			state = populateVoicePortProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, voicePortProfileData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -458,6 +465,9 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("voice_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Voice Port Profile %s verification – trusting recent successful API operation", vppName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -525,7 +535,7 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Voice Port Profile '%s' under API key '%s'", vppName, actualAPIName))
 
-	state = populateVoicePortProfileState(ctx, state, vppMap, r.provCtx.mode)
+	state = populateVoicePortProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, vppMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -649,7 +659,7 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if voicePortProfileData, exists := bulkMgr.GetResourceResponse("voice_port_profile", name); exists {
-			updatedState := populateVoicePortProfileState(ctx, minState, voicePortProfileData, r.provCtx.mode)
+			updatedState := populateVoicePortProfileState(ctx, minState, utils.MergeMissingPlanScalars(voicePortProfileData, plan, voicePortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &updatedState)...)
 			return
 		}
@@ -664,7 +674,14 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, voicePortProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityVoicePortProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

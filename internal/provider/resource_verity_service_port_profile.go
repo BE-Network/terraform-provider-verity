@@ -321,7 +321,7 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sppData, exists := bulkMgr.GetResourceResponse("service_port_profile", name); exists {
-			state := populateServicePortProfileState(ctx, minState, sppData, r.provCtx.mode)
+			state := populateServicePortProfileState(ctx, minState, utils.MergeMissingPlanScalars(sppData, plan, servicePortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -336,7 +336,14 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, servicePortProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityServicePortProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -361,7 +368,7 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 	if r.bulkOpsMgr != nil {
 		if sppData, exists := r.bulkOpsMgr.GetResourceResponse("service_port_profile", sppName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached service_port_profile data for %s from recent operation", sppName))
-			state = populateServicePortProfileState(ctx, state, sppData, r.provCtx.mode)
+			state = populateServicePortProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, sppData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -369,6 +376,9 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("service_port_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Service Port Profile %s verification – trusting recent successful API operation", sppName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -437,7 +447,7 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Service Port Profile '%s' under API key '%s'", sppName, actualAPIName))
 
-	state = populateServicePortProfileState(ctx, state, sppMap, r.provCtx.mode)
+	state = populateServicePortProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, sppMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -623,7 +633,7 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sppData, exists := bulkMgr.GetResourceResponse("service_port_profile", name); exists {
-			newState := populateServicePortProfileState(ctx, minState, sppData, r.provCtx.mode)
+			newState := populateServicePortProfileState(ctx, minState, utils.MergeMissingPlanScalars(sppData, plan, servicePortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -638,7 +648,14 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, servicePortProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityServicePortProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

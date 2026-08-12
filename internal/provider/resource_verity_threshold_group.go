@@ -314,7 +314,7 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if thresholdGroupData, exists := bulkMgr.GetResourceResponse("threshold_group", name); exists {
-			newState := populateThresholdGroupState(ctx, minState, thresholdGroupData, r.provCtx.mode)
+			newState := populateThresholdGroupState(ctx, minState, utils.MergeMissingPlanScalars(thresholdGroupData, plan, thresholdGroupResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -329,7 +329,14 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, thresholdGroupResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityThresholdGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -354,7 +361,7 @@ func (r *verityThresholdGroupResource) Read(ctx context.Context, req resource.Re
 	if r.bulkOpsMgr != nil {
 		if thresholdGroupData, exists := r.bulkOpsMgr.GetResourceResponse("threshold_group", thresholdGroupName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached threshold_group data for %s from recent operation", thresholdGroupName))
-			state = populateThresholdGroupState(ctx, state, thresholdGroupData, r.provCtx.mode)
+			state = populateThresholdGroupState(ctx, state, utils.ApplyPostOperationFallback(ctx, thresholdGroupData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -362,6 +369,9 @@ func (r *verityThresholdGroupResource) Read(ctx context.Context, req resource.Re
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("threshold_group") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping threshold group %s verification – trusting recent successful API operation", thresholdGroupName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -430,7 +440,7 @@ func (r *verityThresholdGroupResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found threshold group '%s' under API key '%s'", thresholdGroupName, actualAPIName))
 
-	state = populateThresholdGroupState(ctx, state, thresholdGroupMap, r.provCtx.mode)
+	state = populateThresholdGroupState(ctx, state, utils.ApplyPostOperationFallback(ctx, thresholdGroupMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -636,7 +646,7 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if thresholdGroupData, exists := bulkMgr.GetResourceResponse("threshold_group", name); exists {
-			newState := populateThresholdGroupState(ctx, minState, thresholdGroupData, r.provCtx.mode)
+			newState := populateThresholdGroupState(ctx, minState, utils.MergeMissingPlanScalars(thresholdGroupData, plan, thresholdGroupResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -651,7 +661,14 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, thresholdGroupResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityThresholdGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

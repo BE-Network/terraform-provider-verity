@@ -510,7 +510,7 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if gatewayData, exists := bulkMgr.GetResourceResponse("gateway", name); exists {
-			state := populateGatewayState(ctx, minState, gatewayData, r.provCtx.mode)
+			state := populateGatewayState(ctx, minState, utils.MergeMissingPlanScalars(gatewayData, plan, gatewayResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -525,7 +525,14 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, gatewayResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -550,7 +557,7 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 	if r.bulkOpsMgr != nil {
 		if gatewayData, exists := r.bulkOpsMgr.GetResourceResponse("gateway", gatewayName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached gateway data for %s from recent operation", gatewayName))
-			state = populateGatewayState(ctx, state, gatewayData, r.provCtx.mode)
+			state = populateGatewayState(ctx, state, utils.ApplyPostOperationFallback(ctx, gatewayData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -558,6 +565,9 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("gateway") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping gateway %s verification – trusting recent successful API operation", gatewayName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -626,7 +636,7 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 
 	tflog.Debug(ctx, fmt.Sprintf("Found gateway '%s' under API key '%s'", gatewayName, actualAPIName))
 
-	state = populateGatewayState(ctx, state, gatewayMap, r.provCtx.mode)
+	state = populateGatewayState(ctx, state, utils.ApplyPostOperationFallback(ctx, gatewayMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -846,7 +856,7 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if gatewayData, exists := bulkMgr.GetResourceResponse("gateway", name); exists {
-			newState := populateGatewayState(ctx, minState, gatewayData, r.provCtx.mode)
+			newState := populateGatewayState(ctx, minState, utils.MergeMissingPlanScalars(gatewayData, plan, gatewayResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -861,7 +871,14 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, gatewayResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityGatewayResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

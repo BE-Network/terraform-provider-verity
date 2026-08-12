@@ -30,8 +30,32 @@ type MockServer struct {
 	getResponses      map[string][]byte
 	resourceState     map[string]map[string]map[string]interface{}
 	postPutEnrichment map[string]map[string]map[string]map[string]interface{}
+	postGetOmissions  map[string]map[string]map[string]postGetOmission
 	testLogger        testing.TB
 	versionResponse   []byte
+}
+
+type postGetOmission struct {
+	fields    []string
+	remaining int
+}
+
+// SetPostGetOmissions removes selected fields from every GET response for one
+// resource. It simulates an eventually consistent API that accepted a PUT but
+// has not yet serialized all fields back to a verification read.
+func (ms *MockServer) SetPostGetOmissions(path, wrapperKey, resourceName string, fields []string, responseCount int) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.postGetOmissions == nil {
+		ms.postGetOmissions = make(map[string]map[string]map[string]postGetOmission)
+	}
+	if ms.postGetOmissions[path] == nil {
+		ms.postGetOmissions[path] = make(map[string]map[string]postGetOmission)
+	}
+	if ms.postGetOmissions[path][wrapperKey] == nil {
+		ms.postGetOmissions[path][wrapperKey] = make(map[string]postGetOmission)
+	}
+	ms.postGetOmissions[path][wrapperKey][resourceName] = postGetOmission{fields: append([]string(nil), fields...), remaining: responseCount}
 }
 
 func NewMockServer(mode string) *MockServer {
@@ -451,6 +475,23 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 				}
 			}
 			baseResponse[wrapperKey] = existing
+		}
+	}
+	if pathOmissions := ms.postGetOmissions[path]; pathOmissions != nil {
+		for wrapperKey, resources := range pathOmissions {
+			wrapper, _ := baseResponse[wrapperKey].(map[string]interface{})
+			for resourceName, omission := range resources {
+				if omission.remaining == 0 {
+					continue
+				}
+				if resource, ok := wrapper[resourceName].(map[string]interface{}); ok {
+					for _, field := range omission.fields {
+						delete(resource, field)
+					}
+				}
+				omission.remaining--
+				resources[resourceName] = omission
+			}
 		}
 	}
 

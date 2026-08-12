@@ -240,7 +240,7 @@ func (r *verityTacacsProfileResource) Create(ctx context.Context, req resource.C
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if tacacsProfileData, exists := bulkMgr.GetResourceResponse("tacacs_profile", name); exists {
-			state := populateTacacsProfileState(ctx, minState, tacacsProfileData, r.provCtx.mode)
+			state := populateTacacsProfileState(ctx, minState, utils.MergeMissingPlanScalars(tacacsProfileData, plan, tacacsProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -254,7 +254,14 @@ func (r *verityTacacsProfileResource) Create(ctx context.Context, req resource.C
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, tacacsProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityTacacsProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -278,7 +285,7 @@ func (r *verityTacacsProfileResource) Read(ctx context.Context, req resource.Rea
 	if r.bulkOpsMgr != nil {
 		if tacacsProfileData, exists := r.bulkOpsMgr.GetResourceResponse("tacacs_profile", tacacsProfileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached TACACS profile data for %s from recent operation", tacacsProfileName))
-			state = populateTacacsProfileState(ctx, state, tacacsProfileData, r.provCtx.mode)
+			state = populateTacacsProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, tacacsProfileData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -286,6 +293,9 @@ func (r *verityTacacsProfileResource) Read(ctx context.Context, req resource.Rea
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("tacacs_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping TACACS profile %s verification - trusting recent successful API operation", tacacsProfileName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -343,7 +353,7 @@ func (r *verityTacacsProfileResource) Read(ctx context.Context, req resource.Rea
 		return
 	}
 
-	state = populateTacacsProfileState(ctx, state, tacacsProfileMap, r.provCtx.mode)
+	state = populateTacacsProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, tacacsProfileMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -473,7 +483,7 @@ func (r *verityTacacsProfileResource) Update(ctx context.Context, req resource.U
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if tacacsProfileData, exists := bulkMgr.GetResourceResponse("tacacs_profile", name); exists {
-			newState := populateTacacsProfileState(ctx, minState, tacacsProfileData, r.provCtx.mode)
+			newState := populateTacacsProfileState(ctx, minState, utils.MergeMissingPlanScalars(tacacsProfileData, plan, tacacsProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -487,7 +497,14 @@ func (r *verityTacacsProfileResource) Update(ctx context.Context, req resource.U
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, tacacsProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityTacacsProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

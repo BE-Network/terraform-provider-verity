@@ -178,7 +178,7 @@ func (r *veritySpinePlaneResource) Create(ctx context.Context, req resource.Crea
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if spinePlaneData, exists := bulkMgr.GetResourceResponse("spine_plane", name); exists {
-			newState := populateSpinePlaneState(ctx, minState, spinePlaneData, r.provCtx.mode)
+			newState := populateSpinePlaneState(ctx, minState, utils.MergeMissingPlanScalars(spinePlaneData, plan, spinePlaneResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -193,7 +193,14 @@ func (r *veritySpinePlaneResource) Create(ctx context.Context, req resource.Crea
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, spinePlaneResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *veritySpinePlaneResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -218,7 +225,7 @@ func (r *veritySpinePlaneResource) Read(ctx context.Context, req resource.ReadRe
 	if r.bulkOpsMgr != nil {
 		if spinePlaneData, exists := r.bulkOpsMgr.GetResourceResponse("spine_plane", spinePlaneName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached spine_plane data for %s from recent operation", spinePlaneName))
-			state = populateSpinePlaneState(ctx, state, spinePlaneData, r.provCtx.mode)
+			state = populateSpinePlaneState(ctx, state, utils.ApplyPostOperationFallback(ctx, spinePlaneData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -226,6 +233,9 @@ func (r *veritySpinePlaneResource) Read(ctx context.Context, req resource.ReadRe
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("spine_plane") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Spine Plane %s verification - trusting recent successful API operation", spinePlaneName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -292,7 +302,7 @@ func (r *veritySpinePlaneResource) Read(ctx context.Context, req resource.ReadRe
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Spine Plane '%s' under API key '%s'", spinePlaneName, actualAPIName))
 
-	state = populateSpinePlaneState(ctx, state, spinePlaneMap, r.provCtx.mode)
+	state = populateSpinePlaneState(ctx, state, utils.ApplyPostOperationFallback(ctx, spinePlaneMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -380,7 +390,7 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if spinePlaneData, exists := bulkMgr.GetResourceResponse("spine_plane", name); exists {
-			newState := populateSpinePlaneState(ctx, minState, spinePlaneData, r.provCtx.mode)
+			newState := populateSpinePlaneState(ctx, minState, utils.MergeMissingPlanScalars(spinePlaneData, plan, spinePlaneResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -395,7 +405,14 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, spinePlaneResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *veritySpinePlaneResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

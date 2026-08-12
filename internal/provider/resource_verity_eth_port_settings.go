@@ -546,7 +546,7 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ethPortSettingsData, exists := bulkMgr.GetResourceResponse("eth_port_settings", name); exists {
-			state := populateEthPortSettingsState(ctx, minState, ethPortSettingsData, r.provCtx.mode)
+			state := populateEthPortSettingsState(ctx, minState, utils.MergeMissingPlanScalars(ethPortSettingsData, plan, ethPortSettingsResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -561,7 +561,14 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, ethPortSettingsResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -586,7 +593,7 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 	if r.bulkOpsMgr != nil {
 		if ethPortSettingsData, exists := r.bulkOpsMgr.GetResourceResponse("eth_port_settings", ethPortSettingsName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached eth port settings data for %s from recent operation", ethPortSettingsName))
-			state = populateEthPortSettingsState(ctx, state, ethPortSettingsData, r.provCtx.mode)
+			state = populateEthPortSettingsState(ctx, state, utils.ApplyPostOperationFallback(ctx, ethPortSettingsData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -594,6 +601,9 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("eth_port_settings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping eth port settings %s verification – trusting recent successful API operation", ethPortSettingsName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -662,7 +672,7 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 
 	tflog.Debug(ctx, fmt.Sprintf("Found eth port settings '%s' under API key '%s'", ethPortSettingsName, actualAPIName))
 
-	state = populateEthPortSettingsState(ctx, state, ethPortSettingsMap, r.provCtx.mode)
+	state = populateEthPortSettingsState(ctx, state, utils.ApplyPostOperationFallback(ctx, ethPortSettingsMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -870,7 +880,7 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ethPortSettingsData, exists := bulkMgr.GetResourceResponse("eth_port_settings", name); exists {
-			newState := populateEthPortSettingsState(ctx, minState, ethPortSettingsData, r.provCtx.mode)
+			newState := populateEthPortSettingsState(ctx, minState, utils.MergeMissingPlanScalars(ethPortSettingsData, plan, ethPortSettingsResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -885,7 +895,14 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, ethPortSettingsResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityEthPortSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

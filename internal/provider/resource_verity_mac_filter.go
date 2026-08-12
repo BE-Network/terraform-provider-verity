@@ -204,7 +204,7 @@ func (r *verityMacFilterResource) Create(ctx context.Context, req resource.Creat
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if macFilterData, exists := bulkMgr.GetResourceResponse("mac_filter", name); exists {
-			state := populateMacFilterState(ctx, minState, macFilterData, r.provCtx.mode)
+			state := populateMacFilterState(ctx, minState, utils.MergeMissingPlanScalars(macFilterData, plan, macFilterResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -218,7 +218,14 @@ func (r *verityMacFilterResource) Create(ctx context.Context, req resource.Creat
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, macFilterResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityMacFilterResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -242,7 +249,7 @@ func (r *verityMacFilterResource) Read(ctx context.Context, req resource.ReadReq
 	if r.bulkOpsMgr != nil {
 		if macFilterData, exists := r.bulkOpsMgr.GetResourceResponse("mac_filter", macFilterName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached MAC filter data for %s from recent operation", macFilterName))
-			state = populateMacFilterState(ctx, state, macFilterData, r.provCtx.mode)
+			state = populateMacFilterState(ctx, state, utils.ApplyPostOperationFallback(ctx, macFilterData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -250,6 +257,9 @@ func (r *verityMacFilterResource) Read(ctx context.Context, req resource.ReadReq
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("mac_filter") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping MAC Filter %s verification – trusting recent successful API operation", macFilterName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -316,7 +326,7 @@ func (r *verityMacFilterResource) Read(ctx context.Context, req resource.ReadReq
 
 	tflog.Debug(ctx, fmt.Sprintf("Found MAC Filter '%s' under API key '%s'", macFilterName, actualAPIName))
 
-	state = populateMacFilterState(ctx, state, macFilterMap, r.provCtx.mode)
+	state = populateMacFilterState(ctx, state, utils.ApplyPostOperationFallback(ctx, macFilterMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -422,7 +432,7 @@ func (r *verityMacFilterResource) Update(ctx context.Context, req resource.Updat
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if macFilterData, exists := bulkMgr.GetResourceResponse("mac_filter", name); exists {
-			newState := populateMacFilterState(ctx, minState, macFilterData, r.provCtx.mode)
+			newState := populateMacFilterState(ctx, minState, utils.MergeMissingPlanScalars(macFilterData, plan, macFilterResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -436,7 +446,14 @@ func (r *verityMacFilterResource) Update(ctx context.Context, req resource.Updat
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, macFilterResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityMacFilterResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

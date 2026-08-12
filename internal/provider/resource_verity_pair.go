@@ -182,7 +182,7 @@ func (r *verityPairResource) Create(ctx context.Context, req resource.CreateRequ
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pairData, exists := bulkMgr.GetResourceResponse("pair", name); exists {
-			state := populatePairState(ctx, minState, pairData, r.provCtx.mode)
+			state := populatePairState(ctx, minState, utils.MergeMissingPlanScalars(pairData, plan, pairResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -196,7 +196,14 @@ func (r *verityPairResource) Create(ctx context.Context, req resource.CreateRequ
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, pairResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPairResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -220,7 +227,7 @@ func (r *verityPairResource) Read(ctx context.Context, req resource.ReadRequest,
 	if r.bulkOpsMgr != nil {
 		if pairData, exists := r.bulkOpsMgr.GetResourceResponse("pair", pairName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached pair data for %s from recent operation", pairName))
-			state = populatePairState(ctx, state, pairData, r.provCtx.mode)
+			state = populatePairState(ctx, state, utils.ApplyPostOperationFallback(ctx, pairData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -228,6 +235,9 @@ func (r *verityPairResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("pair") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Pair %s verification – trusting recent successful API operation", pairName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -294,7 +304,7 @@ func (r *verityPairResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Pair '%s' under API key '%s'", pairName, actualAPIName))
 
-	state = populatePairState(ctx, state, pairMap, r.provCtx.mode)
+	state = populatePairState(ctx, state, utils.ApplyPostOperationFallback(ctx, pairMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -381,7 +391,7 @@ func (r *verityPairResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pairData, exists := bulkMgr.GetResourceResponse("pair", name); exists {
-			newState := populatePairState(ctx, minState, pairData, r.provCtx.mode)
+			newState := populatePairState(ctx, minState, utils.MergeMissingPlanScalars(pairData, plan, pairResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -395,7 +405,14 @@ func (r *verityPairResource) Update(ctx context.Context, req resource.UpdateRequ
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, pairResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPairResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

@@ -386,7 +386,7 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", name); exists {
-			state := populateTenantState(ctx, minState, tenantData, r.provCtx.mode)
+			state := populateTenantState(ctx, minState, utils.MergeMissingPlanScalars(tenantData, plan, tenantResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -401,7 +401,14 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, tenantResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -426,7 +433,7 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 	if r.bulkOpsMgr != nil {
 		if tenantData, exists := r.bulkOpsMgr.GetResourceResponse("tenant", tenantName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached tenant data for %s from recent operation", tenantName))
-			state = populateTenantState(ctx, state, tenantData, r.provCtx.mode)
+			state = populateTenantState(ctx, state, utils.ApplyPostOperationFallback(ctx, tenantData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -434,6 +441,9 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("tenant") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping tenant %s verification – trusting recent successful API operation", tenantName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -502,7 +512,7 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 
 	tflog.Debug(ctx, fmt.Sprintf("Found tenant '%s' under API key '%s'", tenantName, actualAPIName))
 
-	state = populateTenantState(ctx, state, tenantMap, r.provCtx.mode)
+	state = populateTenantState(ctx, state, utils.ApplyPostOperationFallback(ctx, tenantMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -854,7 +864,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if tenantData, exists := bulkMgr.GetResourceResponse("tenant", name); exists {
-			state := populateTenantState(ctx, minState, tenantData, r.provCtx.mode)
+			state := populateTenantState(ctx, minState, utils.MergeMissingPlanScalars(tenantData, plan, tenantResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -869,7 +879,14 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, tenantResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityTenantResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

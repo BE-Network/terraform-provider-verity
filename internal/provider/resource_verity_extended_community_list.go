@@ -246,7 +246,7 @@ func (r *verityExtendedCommunityListResource) Create(ctx context.Context, req re
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if extCommListData, exists := bulkMgr.GetResourceResponse("extended_community_list", name); exists {
-			state := populateExtendedCommunityListState(ctx, minState, extCommListData, r.provCtx.mode)
+			state := populateExtendedCommunityListState(ctx, minState, utils.MergeMissingPlanScalars(extCommListData, plan, extendedCommunityListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -261,7 +261,14 @@ func (r *verityExtendedCommunityListResource) Create(ctx context.Context, req re
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, extendedCommunityListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -286,7 +293,7 @@ func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req reso
 	if r.bulkOpsMgr != nil {
 		if extCommListData, exists := r.bulkOpsMgr.GetResourceResponse("extended_community_list", extCommListName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached extended community list data for %s from recent operation", extCommListName))
-			state = populateExtendedCommunityListState(ctx, state, extCommListData, r.provCtx.mode)
+			state = populateExtendedCommunityListState(ctx, state, utils.ApplyPostOperationFallback(ctx, extCommListData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -294,6 +301,9 @@ func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req reso
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("extended_community_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Extended Community List %s verification – trusting recent successful API operation", extCommListName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -362,7 +372,7 @@ func (r *verityExtendedCommunityListResource) Read(ctx context.Context, req reso
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Extended Community List '%s' under API key '%s'", extCommListName, actualAPIName))
 
-	state = populateExtendedCommunityListState(ctx, state, extCommListMap, r.provCtx.mode)
+	state = populateExtendedCommunityListState(ctx, state, utils.ApplyPostOperationFallback(ctx, extCommListMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -495,7 +505,7 @@ func (r *verityExtendedCommunityListResource) Update(ctx context.Context, req re
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if extCommListData, exists := bulkMgr.GetResourceResponse("extended_community_list", name); exists {
-			newState := populateExtendedCommunityListState(ctx, minState, extCommListData, r.provCtx.mode)
+			newState := populateExtendedCommunityListState(ctx, minState, utils.MergeMissingPlanScalars(extCommListData, plan, extendedCommunityListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -510,7 +520,14 @@ func (r *verityExtendedCommunityListResource) Update(ctx context.Context, req re
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, extendedCommunityListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityExtendedCommunityListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

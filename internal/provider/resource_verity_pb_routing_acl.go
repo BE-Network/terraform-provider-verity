@@ -354,7 +354,7 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbRoutingACLData, exists := bulkMgr.GetResourceResponse("pb_routing_acl", name); exists {
-			state := populatePBRoutingACLState(ctx, minState, pbRoutingACLData, r.provCtx.mode)
+			state := populatePBRoutingACLState(ctx, minState, utils.MergeMissingPlanScalars(pbRoutingACLData, plan, pbRoutingAclResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -369,7 +369,14 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, pbRoutingAclResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPBRoutingACLResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -394,7 +401,7 @@ func (r *verityPBRoutingACLResource) Read(ctx context.Context, req resource.Read
 	if r.bulkOpsMgr != nil {
 		if pbRoutingACLData, exists := r.bulkOpsMgr.GetResourceResponse("pb_routing_acl", pbRoutingACLName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached pb routing acl data for %s from recent operation", pbRoutingACLName))
-			state = populatePBRoutingACLState(ctx, state, pbRoutingACLData, r.provCtx.mode)
+			state = populatePBRoutingACLState(ctx, state, utils.ApplyPostOperationFallback(ctx, pbRoutingACLData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -402,6 +409,9 @@ func (r *verityPBRoutingACLResource) Read(ctx context.Context, req resource.Read
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("pb_routing_acl") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping PB Routing ACL %s verification – trusting recent successful API operation", pbRoutingACLName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -470,7 +480,7 @@ func (r *verityPBRoutingACLResource) Read(ctx context.Context, req resource.Read
 
 	tflog.Debug(ctx, fmt.Sprintf("Found PB Routing ACL '%s' under API key '%s'", pbRoutingACLName, actualAPIName))
 
-	state = populatePBRoutingACLState(ctx, state, pbRoutingACLMap, r.provCtx.mode)
+	state = populatePBRoutingACLState(ctx, state, utils.ApplyPostOperationFallback(ctx, pbRoutingACLMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -776,7 +786,7 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbRoutingACLData, exists := bulkMgr.GetResourceResponse("pb_routing_acl", name); exists {
-			newState := populatePBRoutingACLState(ctx, minState, pbRoutingACLData, r.provCtx.mode)
+			newState := populatePBRoutingACLState(ctx, minState, utils.MergeMissingPlanScalars(pbRoutingACLData, plan, pbRoutingAclResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -791,7 +801,14 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, pbRoutingAclResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPBRoutingACLResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

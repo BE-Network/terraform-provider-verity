@@ -142,7 +142,7 @@ func (r *verityIpv6ListResource) Create(ctx context.Context, req resource.Create
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ipv6ListData, exists := bulkMgr.GetResourceResponse("ipv6_list", name); exists {
-			state := populateIpv6ListState(ctx, minState, ipv6ListData, r.provCtx.mode)
+			state := populateIpv6ListState(ctx, minState, utils.MergeMissingPlanScalars(ipv6ListData, plan, ipv6ListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -157,7 +157,14 @@ func (r *verityIpv6ListResource) Create(ctx context.Context, req resource.Create
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, ipv6ListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -182,7 +189,7 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 	if r.bulkOpsMgr != nil {
 		if ipv6ListData, exists := r.bulkOpsMgr.GetResourceResponse("ipv6_list", ipv6ListName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached IPv6 List data for %s from recent operation", ipv6ListName))
-			state = populateIpv6ListState(ctx, state, ipv6ListData, r.provCtx.mode)
+			state = populateIpv6ListState(ctx, state, utils.ApplyPostOperationFallback(ctx, ipv6ListData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -190,6 +197,9 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv6_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping IPv6 List %s verification – trusting recent successful API operation", ipv6ListName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -258,7 +268,7 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 
 	tflog.Debug(ctx, fmt.Sprintf("Found IPv6 List '%s' under API key '%s'", ipv6ListName, actualAPIName))
 
-	state = populateIpv6ListState(ctx, state, ipv6ListMap, r.provCtx.mode)
+	state = populateIpv6ListState(ctx, state, utils.ApplyPostOperationFallback(ctx, ipv6ListMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -319,7 +329,7 @@ func (r *verityIpv6ListResource) Update(ctx context.Context, req resource.Update
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ipv6ListData, exists := bulkMgr.GetResourceResponse("ipv6_list", name); exists {
-			newState := populateIpv6ListState(ctx, minState, ipv6ListData, r.provCtx.mode)
+			newState := populateIpv6ListState(ctx, minState, utils.MergeMissingPlanScalars(ipv6ListData, plan, ipv6ListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -334,7 +344,14 @@ func (r *verityIpv6ListResource) Update(ctx context.Context, req resource.Update
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, ipv6ListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityIpv6ListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

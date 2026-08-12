@@ -652,7 +652,7 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if fabricData, exists := bulkMgr.GetResourceResponse("fabric", name); exists {
-			state := populateFabricState(ctx, minState, fabricData, r.provCtx.mode)
+			state := populateFabricState(ctx, minState, utils.MergeMissingPlanScalars(fabricData, plan, fabricResourceType, r.provCtx.mode), r.provCtx.mode)
 			filterFabricIndexedEntries(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -667,7 +667,14 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, fabricResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityFabricResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -693,7 +700,7 @@ func (r *verityFabricResource) Read(ctx context.Context, req resource.ReadReques
 	if r.bulkOpsMgr != nil {
 		if fabricData, exists := r.bulkOpsMgr.GetResourceResponse("fabric", fabricName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached fabric data for %s from recent operation", fabricName))
-			state = populateFabricState(ctx, state, fabricData, r.provCtx.mode)
+			state = populateFabricState(ctx, state, utils.ApplyPostOperationFallback(ctx, fabricData), r.provCtx.mode)
 			filterFabricIndexedEntries(&state, &priorState)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -702,6 +709,9 @@ func (r *verityFabricResource) Read(ctx context.Context, req resource.ReadReques
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("fabric") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping fabric %s verification – trusting recent successful API operation", fabricName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -769,7 +779,7 @@ func (r *verityFabricResource) Read(ctx context.Context, req resource.ReadReques
 
 	tflog.Debug(ctx, fmt.Sprintf("Found fabric '%s' under API key '%s'", fabricName, actualAPIName))
 
-	state = populateFabricState(ctx, state, fabricMap, r.provCtx.mode)
+	state = populateFabricState(ctx, state, utils.ApplyPostOperationFallback(ctx, fabricMap), r.provCtx.mode)
 	filterFabricIndexedEntries(&state, &priorState)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -1037,7 +1047,7 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if fabricData, exists := bulkMgr.GetResourceResponse("fabric", name); exists {
-			state := populateFabricState(ctx, minState, fabricData, r.provCtx.mode)
+			state := populateFabricState(ctx, minState, utils.MergeMissingPlanScalars(fabricData, plan, fabricResourceType, r.provCtx.mode), r.provCtx.mode)
 			filterFabricIndexedEntries(&state, &plan)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
@@ -1053,9 +1063,16 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, fabricResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 
-	if !readResp.Diagnostics.HasError() {
+	if !resp.Diagnostics.HasError() {
 		var readState verityFabricResourceModel
 		readResp.State.Get(ctx, &readState)
 		filterFabricIndexedEntries(&readState, &plan)

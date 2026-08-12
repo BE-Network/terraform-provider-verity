@@ -287,7 +287,7 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if aepData, exists := bulkMgr.GetResourceResponse("authenticated_eth_port", name); exists {
-			state := populateAuthenticatedEthPortState(ctx, minState, aepData, r.provCtx.mode)
+			state := populateAuthenticatedEthPortState(ctx, minState, utils.MergeMissingPlanScalars(aepData, plan, authenticatedEthPortResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -302,7 +302,14 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, authenticatedEthPortResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -327,7 +334,7 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 	if r.bulkOpsMgr != nil {
 		if authenticatedEthPortData, exists := r.bulkOpsMgr.GetResourceResponse("authenticated_eth_port", aepName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached authenticated eth port data for %s from recent operation", aepName))
-			state = populateAuthenticatedEthPortState(ctx, state, authenticatedEthPortData, r.provCtx.mode)
+			state = populateAuthenticatedEthPortState(ctx, state, utils.ApplyPostOperationFallback(ctx, authenticatedEthPortData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -335,6 +342,9 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("authenticated_eth_port") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Authenticated Eth-Port %s verification – trusting recent successful API operation", aepName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -402,7 +412,7 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Authenticated Eth-Port '%s' under API key '%s'", aepName, actualAPIName))
 
-	state = populateAuthenticatedEthPortState(ctx, state, aepMap, r.provCtx.mode)
+	state = populateAuthenticatedEthPortState(ctx, state, utils.ApplyPostOperationFallback(ctx, aepMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -564,7 +574,7 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if aepData, exists := bulkMgr.GetResourceResponse("authenticated_eth_port", name); exists {
-			newState := populateAuthenticatedEthPortState(ctx, minState, aepData, r.provCtx.mode)
+			newState := populateAuthenticatedEthPortState(ctx, minState, utils.MergeMissingPlanScalars(aepData, plan, authenticatedEthPortResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -579,7 +589,14 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, authenticatedEthPortResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityAuthenticatedEthPortResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

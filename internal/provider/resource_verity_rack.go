@@ -199,7 +199,7 @@ func (r *verityRackResource) Create(ctx context.Context, req resource.CreateRequ
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if rackData, exists := bulkMgr.GetResourceResponse("rack", name); exists {
-			state := populateRackState(ctx, minState, rackData, r.provCtx.mode)
+			state := populateRackState(ctx, minState, utils.MergeMissingPlanScalars(rackData, plan, rackResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -214,7 +214,14 @@ func (r *verityRackResource) Create(ctx context.Context, req resource.CreateRequ
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, rackResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityRackResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -239,7 +246,7 @@ func (r *verityRackResource) Read(ctx context.Context, req resource.ReadRequest,
 	if r.bulkOpsMgr != nil {
 		if rackData, exists := r.bulkOpsMgr.GetResourceResponse("rack", rackName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached rack data for %s from recent operation", rackName))
-			state = populateRackState(ctx, state, rackData, r.provCtx.mode)
+			state = populateRackState(ctx, state, utils.ApplyPostOperationFallback(ctx, rackData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -247,6 +254,9 @@ func (r *verityRackResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("rack") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping rack %s verification – trusting recent successful API operation", rackName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -315,7 +325,7 @@ func (r *verityRackResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Debug(ctx, fmt.Sprintf("Found rack '%s' under API key '%s'", rackName, actualAPIName))
 
-	state = populateRackState(ctx, state, rackMap, r.provCtx.mode)
+	state = populateRackState(ctx, state, utils.ApplyPostOperationFallback(ctx, rackMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -415,7 +425,7 @@ func (r *verityRackResource) Update(ctx context.Context, req resource.UpdateRequ
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if rackData, exists := bulkMgr.GetResourceResponse("rack", name); exists {
-			newState := populateRackState(ctx, minState, rackData, r.provCtx.mode)
+			newState := populateRackState(ctx, minState, utils.MergeMissingPlanScalars(rackData, plan, rackResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -430,7 +440,14 @@ func (r *verityRackResource) Update(ctx context.Context, req resource.UpdateRequ
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, rackResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityRackResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

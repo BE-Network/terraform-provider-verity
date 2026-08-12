@@ -253,7 +253,7 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ipv6PrefixListData, exists := bulkMgr.GetResourceResponse("ipv6_prefix_list", name); exists {
-			state := populateIpv6PrefixListState(ctx, minState, ipv6PrefixListData, r.provCtx.mode)
+			state := populateIpv6PrefixListState(ctx, minState, utils.MergeMissingPlanScalars(ipv6PrefixListData, plan, ipv6PrefixListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -268,7 +268,14 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, ipv6PrefixListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityIpv6PrefixListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -293,7 +300,7 @@ func (r *verityIpv6PrefixListResource) Read(ctx context.Context, req resource.Re
 	if r.bulkOpsMgr != nil {
 		if ipv6PrefixListData, exists := r.bulkOpsMgr.GetResourceResponse("ipv6_prefix_list", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached IPv6 Prefix List data for %s from recent operation", name))
-			state = populateIpv6PrefixListState(ctx, state, ipv6PrefixListData, r.provCtx.mode)
+			state = populateIpv6PrefixListState(ctx, state, utils.ApplyPostOperationFallback(ctx, ipv6PrefixListData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -301,6 +308,9 @@ func (r *verityIpv6PrefixListResource) Read(ctx context.Context, req resource.Re
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("ipv6_prefix_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping IPv6 prefix list %s verification – trusting recent successful API operation", name))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -367,7 +377,7 @@ func (r *verityIpv6PrefixListResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found IPv6 prefix list '%s' under API key '%s'", name, actualAPIName))
 
-	state = populateIpv6PrefixListState(ctx, state, ipv6PrefixListMap, r.provCtx.mode)
+	state = populateIpv6PrefixListState(ctx, state, utils.ApplyPostOperationFallback(ctx, ipv6PrefixListMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -516,7 +526,7 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ipv6PrefixListData, exists := bulkMgr.GetResourceResponse("ipv6_prefix_list", name); exists {
-			newState := populateIpv6PrefixListState(ctx, minState, ipv6PrefixListData, r.provCtx.mode)
+			newState := populateIpv6PrefixListState(ctx, minState, utils.MergeMissingPlanScalars(ipv6PrefixListData, plan, ipv6PrefixListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -531,7 +541,14 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, ipv6PrefixListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityIpv6PrefixListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

@@ -199,7 +199,7 @@ func (r *verityPlaneResource) Create(ctx context.Context, req resource.CreateReq
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if planeData, exists := bulkMgr.GetResourceResponse("plane", name); exists {
-			state := populatePlaneState(ctx, minState, planeData, r.provCtx.mode)
+			state := populatePlaneState(ctx, minState, utils.MergeMissingPlanScalars(planeData, plan, planeResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -214,7 +214,14 @@ func (r *verityPlaneResource) Create(ctx context.Context, req resource.CreateReq
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, planeResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPlaneResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -239,7 +246,7 @@ func (r *verityPlaneResource) Read(ctx context.Context, req resource.ReadRequest
 	if r.bulkOpsMgr != nil {
 		if planeData, exists := r.bulkOpsMgr.GetResourceResponse("plane", planeName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached plane data for %s from recent operation", planeName))
-			state = populatePlaneState(ctx, state, planeData, r.provCtx.mode)
+			state = populatePlaneState(ctx, state, utils.ApplyPostOperationFallback(ctx, planeData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -247,6 +254,9 @@ func (r *verityPlaneResource) Read(ctx context.Context, req resource.ReadRequest
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("plane") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping plane %s verification – trusting recent successful API operation", planeName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -315,7 +325,7 @@ func (r *verityPlaneResource) Read(ctx context.Context, req resource.ReadRequest
 
 	tflog.Debug(ctx, fmt.Sprintf("Found plane '%s' under API key '%s'", planeName, actualAPIName))
 
-	state = populatePlaneState(ctx, state, planeMap, r.provCtx.mode)
+	state = populatePlaneState(ctx, state, utils.ApplyPostOperationFallback(ctx, planeMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -415,7 +425,7 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if planeData, exists := bulkMgr.GetResourceResponse("plane", name); exists {
-			newState := populatePlaneState(ctx, minState, planeData, r.provCtx.mode)
+			newState := populatePlaneState(ctx, minState, utils.MergeMissingPlanScalars(planeData, plan, planeResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -430,7 +440,14 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, planeResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPlaneResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

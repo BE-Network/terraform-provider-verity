@@ -228,7 +228,7 @@ func (r *verityAaaProfileResource) Create(ctx context.Context, req resource.Crea
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if aaaProfileData, exists := bulkMgr.GetResourceResponse("device_aaa_profile", name); exists {
-			state := populateAaaProfileState(ctx, minState, aaaProfileData, r.provCtx.mode)
+			state := populateAaaProfileState(ctx, minState, utils.MergeMissingPlanScalars(aaaProfileData, plan, aaaProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -242,7 +242,14 @@ func (r *verityAaaProfileResource) Create(ctx context.Context, req resource.Crea
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, aaaProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityAaaProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -266,7 +273,7 @@ func (r *verityAaaProfileResource) Read(ctx context.Context, req resource.ReadRe
 	if r.bulkOpsMgr != nil {
 		if aaaProfileData, exists := r.bulkOpsMgr.GetResourceResponse("device_aaa_profile", aaaProfileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached AAA profile data for %s from recent operation", aaaProfileName))
-			state = populateAaaProfileState(ctx, state, aaaProfileData, r.provCtx.mode)
+			state = populateAaaProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, aaaProfileData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -274,6 +281,9 @@ func (r *verityAaaProfileResource) Read(ctx context.Context, req resource.ReadRe
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("device_aaa_profile") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping AAA profile %s verification – trusting recent successful API operation", aaaProfileName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -338,7 +348,7 @@ func (r *verityAaaProfileResource) Read(ctx context.Context, req resource.ReadRe
 
 	tflog.Debug(ctx, fmt.Sprintf("Found AAA profile '%s' under API key '%s'", aaaProfileName, actualAPIName))
 
-	state = populateAaaProfileState(ctx, state, aaaProfileMap, r.provCtx.mode)
+	state = populateAaaProfileState(ctx, state, utils.ApplyPostOperationFallback(ctx, aaaProfileMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -464,7 +474,7 @@ func (r *verityAaaProfileResource) Update(ctx context.Context, req resource.Upda
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if aaaProfileData, exists := bulkMgr.GetResourceResponse("device_aaa_profile", name); exists {
-			newState := populateAaaProfileState(ctx, minState, aaaProfileData, r.provCtx.mode)
+			newState := populateAaaProfileState(ctx, minState, utils.MergeMissingPlanScalars(aaaProfileData, plan, aaaProfileResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -478,7 +488,14 @@ func (r *verityAaaProfileResource) Update(ctx context.Context, req resource.Upda
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, aaaProfileResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityAaaProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

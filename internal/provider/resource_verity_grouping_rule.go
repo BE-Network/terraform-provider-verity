@@ -235,7 +235,7 @@ func (r *verityGroupingRuleResource) Create(ctx context.Context, req resource.Cr
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if groupingRuleData, exists := bulkMgr.GetResourceResponse("grouping_rule", name); exists {
-			state := populateGroupingRuleState(ctx, minState, groupingRuleData, r.provCtx.mode)
+			state := populateGroupingRuleState(ctx, minState, utils.MergeMissingPlanScalars(groupingRuleData, plan, groupingRuleResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -250,7 +250,14 @@ func (r *verityGroupingRuleResource) Create(ctx context.Context, req resource.Cr
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, groupingRuleResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityGroupingRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -275,7 +282,7 @@ func (r *verityGroupingRuleResource) Read(ctx context.Context, req resource.Read
 	if r.bulkOpsMgr != nil {
 		if groupingRuleData, exists := r.bulkOpsMgr.GetResourceResponse("grouping_rule", groupingRuleName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached grouping rule data for %s from recent operation", groupingRuleName))
-			state = populateGroupingRuleState(ctx, state, groupingRuleData, r.provCtx.mode)
+			state = populateGroupingRuleState(ctx, state, utils.ApplyPostOperationFallback(ctx, groupingRuleData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -283,6 +290,9 @@ func (r *verityGroupingRuleResource) Read(ctx context.Context, req resource.Read
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("grouping_rule") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping grouping rule %s verification – trusting recent successful API operation", groupingRuleName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -351,7 +361,7 @@ func (r *verityGroupingRuleResource) Read(ctx context.Context, req resource.Read
 
 	tflog.Debug(ctx, fmt.Sprintf("Found grouping rule '%s' under API key '%s'", groupingRuleName, actualAPIName))
 
-	state = populateGroupingRuleState(ctx, state, groupingRuleMap, r.provCtx.mode)
+	state = populateGroupingRuleState(ctx, state, utils.ApplyPostOperationFallback(ctx, groupingRuleMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -481,7 +491,7 @@ func (r *verityGroupingRuleResource) Update(ctx context.Context, req resource.Up
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if groupingRuleData, exists := bulkMgr.GetResourceResponse("grouping_rule", name); exists {
-			newState := populateGroupingRuleState(ctx, minState, groupingRuleData, r.provCtx.mode)
+			newState := populateGroupingRuleState(ctx, minState, utils.MergeMissingPlanScalars(groupingRuleData, plan, groupingRuleResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -496,7 +506,14 @@ func (r *verityGroupingRuleResource) Update(ctx context.Context, req resource.Up
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, groupingRuleResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityGroupingRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

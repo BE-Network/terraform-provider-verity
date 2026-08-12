@@ -489,7 +489,7 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if deviceSettingsData, exists := bulkMgr.GetResourceResponse("device_settings", name); exists {
-			state := populateDeviceSettingsState(ctx, minState, deviceSettingsData, r.provCtx.mode)
+			state := populateDeviceSettingsState(ctx, minState, utils.MergeMissingPlanScalars(deviceSettingsData, plan, deviceSettingsResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -504,7 +504,14 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, deviceSettingsResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -529,7 +536,7 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 	if r.bulkOpsMgr != nil {
 		if deviceSettingsData, exists := r.bulkOpsMgr.GetResourceResponse("device_settings", deviceSettingsName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached device settings data for %s from recent operation", deviceSettingsName))
-			state = populateDeviceSettingsState(ctx, state, deviceSettingsData, r.provCtx.mode)
+			state = populateDeviceSettingsState(ctx, state, utils.ApplyPostOperationFallback(ctx, deviceSettingsData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -537,6 +544,9 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("device_settings") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Device Settings %s verification – trusting recent successful API operation", deviceSettingsName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -604,7 +614,7 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 
 	tflog.Debug(ctx, fmt.Sprintf("Found device settings '%s' under API key '%s'", deviceSettingsName, actualAPIName))
 
-	state = populateDeviceSettingsState(ctx, state, deviceMap, r.provCtx.mode)
+	state = populateDeviceSettingsState(ctx, state, utils.ApplyPostOperationFallback(ctx, deviceMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -880,7 +890,7 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if deviceSettingsData, exists := bulkMgr.GetResourceResponse("device_settings", name); exists {
-			newState := populateDeviceSettingsState(ctx, minState, deviceSettingsData, r.provCtx.mode)
+			newState := populateDeviceSettingsState(ctx, minState, utils.MergeMissingPlanScalars(deviceSettingsData, plan, deviceSettingsResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -895,7 +905,14 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, deviceSettingsResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityDeviceSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

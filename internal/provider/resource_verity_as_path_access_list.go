@@ -223,7 +223,7 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if asPathAccessListData, exists := bulkMgr.GetResourceResponse("as_path_access_list", name); exists {
-			state := populateAsPathAccessListState(ctx, minState, asPathAccessListData, r.provCtx.mode)
+			state := populateAsPathAccessListState(ctx, minState, utils.MergeMissingPlanScalars(asPathAccessListData, plan, asPathAccessListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -238,7 +238,14 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, asPathAccessListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -263,7 +270,7 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 	if r.bulkOpsMgr != nil {
 		if asPathAccessListData, exists := r.bulkOpsMgr.GetResourceResponse("as_path_access_list", asPathAccessListName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached as path access list data for %s from recent operation", asPathAccessListName))
-			state = populateAsPathAccessListState(ctx, state, asPathAccessListData, r.provCtx.mode)
+			state = populateAsPathAccessListState(ctx, state, utils.ApplyPostOperationFallback(ctx, asPathAccessListData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -271,6 +278,9 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("as_path_access_list") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping AS Path Access List %s verification – trusting recent successful API operation", asPathAccessListName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -339,7 +349,7 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 
 	tflog.Debug(ctx, fmt.Sprintf("Found AS Path Access List '%s' under API key '%s'", asPathAccessListName, actualAPIName))
 
-	state = populateAsPathAccessListState(ctx, state, asPathAccessListMap, r.provCtx.mode)
+	state = populateAsPathAccessListState(ctx, state, utils.ApplyPostOperationFallback(ctx, asPathAccessListMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -474,7 +484,7 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if asPathAccessListData, exists := bulkMgr.GetResourceResponse("as_path_access_list", name); exists {
-			newState := populateAsPathAccessListState(ctx, minState, asPathAccessListData, r.provCtx.mode)
+			newState := populateAsPathAccessListState(ctx, minState, utils.MergeMissingPlanScalars(asPathAccessListData, plan, asPathAccessListResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -489,7 +499,14 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, asPathAccessListResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityAsPathAccessListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

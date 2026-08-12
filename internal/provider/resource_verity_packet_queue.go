@@ -265,7 +265,7 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pqData, exists := bulkMgr.GetResourceResponse("packet_queue", name); exists {
-			state := populatePacketQueueState(ctx, minState, pqData, r.provCtx.mode)
+			state := populatePacketQueueState(ctx, minState, utils.MergeMissingPlanScalars(pqData, plan, packetQueueResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -280,7 +280,14 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, packetQueueResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -305,7 +312,7 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 	if r.bulkOpsMgr != nil {
 		if pqData, exists := r.bulkOpsMgr.GetResourceResponse("packet_queue", pqName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached packet queue data for %s from recent operation", pqName))
-			state = populatePacketQueueState(ctx, state, pqData, r.provCtx.mode)
+			state = populatePacketQueueState(ctx, state, utils.ApplyPostOperationFallback(ctx, pqData), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 			return
 		}
@@ -313,6 +320,9 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 
 	if r.bulkOpsMgr != nil && r.bulkOpsMgr.HasPendingOrRecentOperations("packet_queue") {
 		tflog.Info(ctx, fmt.Sprintf("Skipping Packet Queue %s verification – trusting recent successful API operation", pqName))
+		if handled, diags := utils.SetPostOperationFallbackState(ctx, &resp.State); handled {
+			resp.Diagnostics.Append(diags...)
+		}
 		return
 	}
 
@@ -381,7 +391,7 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("Found Packet Queue '%s' under API key '%s'", pqName, actualAPIName))
 
-	state = populatePacketQueueState(ctx, state, pqMap, r.provCtx.mode)
+	state = populatePacketQueueState(ctx, state, utils.ApplyPostOperationFallback(ctx, pqMap), r.provCtx.mode)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -548,7 +558,7 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pqData, exists := bulkMgr.GetResourceResponse("packet_queue", name); exists {
-			newState := populatePacketQueueState(ctx, minState, pqData, r.provCtx.mode)
+			newState := populatePacketQueueState(ctx, minState, utils.MergeMissingPlanScalars(pqData, plan, packetQueueResourceType, r.provCtx.mode), r.provCtx.mode)
 			resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 			return
 		}
@@ -563,7 +573,14 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		Diagnostics: resp.Diagnostics,
 	}
 
-	r.Read(ctx, readReq, &readResp)
+	postOpCtx := utils.WithPostOperationFallback(ctx, plan, packetQueueResourceType, r.provCtx.mode)
+	r.Read(postOpCtx, readReq, &readResp)
+	if readResp.State.Raw.IsNull() {
+		_, diags := utils.SetPostOperationFallbackState(postOpCtx, &readResp.State)
+		readResp.Diagnostics.Append(diags...)
+	}
+	resp.State = readResp.State
+	resp.Diagnostics = readResp.Diagnostics
 }
 
 func (r *verityPacketQueueResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
