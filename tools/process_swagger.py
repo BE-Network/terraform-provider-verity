@@ -611,7 +611,8 @@ Examples:
         "/sdlcs",
         "/sdlcs/upgrade",
         "/systemconfig",
-        "/users"
+        "/users",
+        "/radiusserver"
     ]
     
     cleaned_swagger, removed = remove_endpoints(merged_swagger, endpoints_to_remove)

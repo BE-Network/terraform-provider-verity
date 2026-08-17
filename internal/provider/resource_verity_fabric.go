@@ -93,6 +93,7 @@ type verityFabricResourceModel struct {
 	MultiTenant                               types.Bool                          `tfsdk:"multi_tenant"`
 	BaseBgpAsNumber                           types.String                        `tfsdk:"base_bgp_as_number"`
 	RouterIdBasePrefix                        types.String                        `tfsdk:"router_id_base_prefix"`
+	SetLeafRouterIdOnBgp                      types.Bool                          `tfsdk:"set_leaf_router_id_on_bgp"`
 	VtepIdBasePrefix                          types.String                        `tfsdk:"vtep_id_base_prefix"`
 	PairedIpSubnet                            types.String                        `tfsdk:"paired_ip_subnet"`
 	MaxSwitches                               types.String                        `tfsdk:"max_switches"`
@@ -426,6 +427,11 @@ func (r *verityFabricResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
+			"set_leaf_router_id_on_bgp": schema.BoolAttribute{
+				Description: "Use the endpoint loopback0 address as the router ID for all BGP sessions on leaf switches",
+				Optional:    true,
+				Computed:    true,
+			},
 			"vtep_id_base_prefix": schema.StringAttribute{
 				Description: "Vtep ID starting IP address",
 				Optional:    true,
@@ -615,6 +621,7 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 		{FieldName: "PauseValidationAlarms", APIField: &fabricReq.PauseValidationAlarms, TFValue: plan.PauseValidationAlarms},
 		{FieldName: "EnableDhcpSnooping", APIField: &fabricReq.EnableDhcpSnooping, TFValue: plan.EnableDhcpSnooping},
 		{FieldName: "IpSourceGuard", APIField: &fabricReq.IpSourceGuard, TFValue: plan.IpSourceGuard},
+		{FieldName: "SetLeafRouterIdOnBgp", APIField: &fabricReq.SetLeafRouterIdOnBgp, TFValue: plan.SetLeafRouterIdOnBgp},
 	})
 
 	workDir := r.provCtx.workDir
@@ -936,6 +943,7 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetBoolField(plan.PauseValidationAlarms, state.PauseValidationAlarms, func(v *bool) { fabricReq.PauseValidationAlarms = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EnableDhcpSnooping, state.EnableDhcpSnooping, func(v *bool) { fabricReq.EnableDhcpSnooping = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.IpSourceGuard, state.IpSourceGuard, func(v *bool) { fabricReq.IpSourceGuard = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.SetLeafRouterIdOnBgp, state.SetLeafRouterIdOnBgp, func(v *bool) { fabricReq.SetLeafRouterIdOnBgp = v }, &hasChanges)
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.PortAdminPollingInterval, state.PortAdminPollingInterval, configuredAttrs.IsConfigured("port_admin_polling_interval"), func(v *openapi.NullableInt64) { fabricReq.PortAdminPollingInterval = *v }, &hasChanges)
@@ -1247,6 +1255,7 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 	state.PauseValidationAlarms = utils.MapBoolWithMode(fabricData, "pause_validation_alarms", resourceType, mode)
 	state.EnableDhcpSnooping = utils.MapBoolWithMode(fabricData, "enable_dhcp_snooping", resourceType, mode)
 	state.IpSourceGuard = utils.MapBoolWithMode(fabricData, "ip_source_guard", resourceType, mode)
+	state.SetLeafRouterIdOnBgp = utils.MapBoolWithMode(fabricData, "set_leaf_router_id_on_bgp", resourceType, mode)
 	state.AnycastMacAddressAutoAssigned = utils.MapBoolWithMode(fabricData, "anycast_mac_address_auto_assigned_", resourceType, mode)
 
 	// String fields
@@ -1384,6 +1393,7 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		"read_only_mode", "enable_dscp", "aggressive_reporting",
 		"multi_tenant", "pause_validation_alarms",
 		"enable_dhcp_snooping", "ip_source_guard",
+		"set_leaf_router_id_on_bgp",
 		"anycast_mac_address_auto_assigned_",
 	)
 

@@ -162,6 +162,10 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	TrafficMirrors []SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner `json:"traffic_mirrors,omitempty"`
 	Eths []SwitchpointsPutRequestSwitchpointValueEthsInner `json:"eths,omitempty"`
 	ObjectProperties *SwitchpointsPutRequestSwitchpointValueObjectProperties `json:"object_properties,omitempty"`
+	// Specify the uplink port for ZTP to set into the switch if using an SFP based port. Otherwise, the first 32 copper ports are programmed by ZTP to be used for uplinks. Uplink port is 1 relative index, identifying the first breakout port. This is switch model dependent and you should consult switch vendor documentation to ensure it is correct.
+	ExpectedUplinkPort NullableInt64 `json:"expected_uplink_port,omitempty"`
+	// Full breakout configuration for the SFP being used as the uplink.
+	ExpectedBreakout *string `json:"expected_breakout,omitempty"`
 	// For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device
 	IsFabric *bool `json:"is_fabric,omitempty"`
 	// Device managed as
@@ -291,6 +295,8 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.PrivateProtocol = &privateProtocol
 	var privatePassword string = ""
 	this.PrivatePassword = &privatePassword
+	var expectedBreakout string = ""
+	this.ExpectedBreakout = &expectedBreakout
 	var isFabric bool = false
 	this.IsFabric = &isFabric
 	var deviceManagedAs string = "switch"
@@ -415,6 +421,8 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.PrivateProtocol = &privateProtocol
 	var privatePassword string = ""
 	this.PrivatePassword = &privatePassword
+	var expectedBreakout string = ""
+	this.ExpectedBreakout = &expectedBreakout
 	var isFabric bool = false
 	this.IsFabric = &isFabric
 	var deviceManagedAs string = "switch"
@@ -2828,6 +2836,80 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetObjectProperties(v Switchpoi
 	o.ObjectProperties = &v
 }
 
+// GetExpectedUplinkPort returns the ExpectedUplinkPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedUplinkPort() int64 {
+	if o == nil || IsNil(o.ExpectedUplinkPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ExpectedUplinkPort.Get()
+}
+
+// GetExpectedUplinkPortOk returns a tuple with the ExpectedUplinkPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedUplinkPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ExpectedUplinkPort.Get(), o.ExpectedUplinkPort.IsSet()
+}
+
+// HasExpectedUplinkPort returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedUplinkPort() bool {
+	if o != nil && o.ExpectedUplinkPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExpectedUplinkPort gets a reference to the given NullableInt64 and assigns it to the ExpectedUplinkPort field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedUplinkPort(v int64) {
+	o.ExpectedUplinkPort.Set(&v)
+}
+// SetExpectedUplinkPortNil sets the value for ExpectedUplinkPort to be an explicit nil
+func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedUplinkPortNil() {
+	o.ExpectedUplinkPort.Set(nil)
+}
+
+// UnsetExpectedUplinkPort ensures that no value is present for ExpectedUplinkPort, not even an explicit nil
+func (o *SwitchpointsPutRequestSwitchpointValue) UnsetExpectedUplinkPort() {
+	o.ExpectedUplinkPort.Unset()
+}
+
+// GetExpectedBreakout returns the ExpectedBreakout field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedBreakout() string {
+	if o == nil || IsNil(o.ExpectedBreakout) {
+		var ret string
+		return ret
+	}
+	return *o.ExpectedBreakout
+}
+
+// GetExpectedBreakoutOk returns a tuple with the ExpectedBreakout field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedBreakoutOk() (*string, bool) {
+	if o == nil || IsNil(o.ExpectedBreakout) {
+		return nil, false
+	}
+	return o.ExpectedBreakout, true
+}
+
+// HasExpectedBreakout returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedBreakout() bool {
+	if o != nil && !IsNil(o.ExpectedBreakout) {
+		return true
+	}
+
+	return false
+}
+
+// SetExpectedBreakout gets a reference to the given string and assigns it to the ExpectedBreakout field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedBreakout(v string) {
+	o.ExpectedBreakout = &v
+}
+
 // GetIsFabric returns the IsFabric field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetIsFabric() bool {
 	if o == nil || IsNil(o.IsFabric) {
@@ -3347,6 +3429,12 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if o.ExpectedUplinkPort.IsSet() {
+		toSerialize["expected_uplink_port"] = o.ExpectedUplinkPort.Get()
+	}
+	if !IsNil(o.ExpectedBreakout) {
+		toSerialize["expected_breakout"] = o.ExpectedBreakout
 	}
 	if !IsNil(o.IsFabric) {
 		toSerialize["is_fabric"] = o.IsFabric

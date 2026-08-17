@@ -46,7 +46,8 @@ EXCLUDED_ENDPOINTS = {
     "/sdlcs",
     "/sdlcs/upgrade",
     "/systemconfig",
-    "/users"
+    "/users",
+    "/radiusserver"
 }
 
 

@@ -91,6 +91,8 @@ type veritySwitchpointResourceModel struct {
 	CommType                         types.String                             `tfsdk:"comm_type"`
 	SnmpCommunityString              types.String                             `tfsdk:"snmp_community_string"`
 	UplinkPort                       types.String                             `tfsdk:"uplink_port"`
+	ExpectedUplinkPort               types.Int64                              `tfsdk:"expected_uplink_port"`
+	ExpectedBreakout                 types.String                             `tfsdk:"expected_breakout"`
 	LldpSearchString                 types.String                             `tfsdk:"lldp_search_string"`
 	ZtpIdentification                types.String                             `tfsdk:"ztp_identification"`
 	LocatedBy                        types.String                             `tfsdk:"located_by"`
@@ -482,6 +484,16 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"uplink_port": schema.StringAttribute{
 				Description: "Uplink Port of Managed Device",
+				Optional:    true,
+				Computed:    true,
+			},
+			"expected_uplink_port": schema.Int64Attribute{
+				Description: "First breakout port, using a one-based index, that ZTP configures as an uplink for SFP-based ports",
+				Optional:    true,
+				Computed:    true,
+			},
+			"expected_breakout": schema.StringAttribute{
+				Description: "Full breakout configuration for the SFP used as the uplink",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -965,6 +977,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "CommType", APIField: &spProps.CommType, TFValue: plan.CommType},
 		{FieldName: "SnmpCommunityString", APIField: &spProps.SnmpCommunityString, TFValue: plan.SnmpCommunityString},
 		{FieldName: "UplinkPort", APIField: &spProps.UplinkPort, TFValue: plan.UplinkPort},
+		{FieldName: "ExpectedBreakout", APIField: &spProps.ExpectedBreakout, TFValue: plan.ExpectedBreakout},
 		{FieldName: "LldpSearchString", APIField: &spProps.LldpSearchString, TFValue: plan.LldpSearchString},
 		{FieldName: "ZtpIdentification", APIField: &spProps.ZtpIdentification, TFValue: plan.ZtpIdentification},
 		{FieldName: "LocatedBy", APIField: &spProps.LocatedBy, TFValue: plan.LocatedBy},
@@ -1014,6 +1027,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "BgpAsNumber", APIField: &spProps.BgpAsNumber, TFValue: config.BgpAsNumber, IsConfigured: configuredAttrs.IsConfigured("bgp_as_number")},
+		{FieldName: "ExpectedUplinkPort", APIField: &spProps.ExpectedUplinkPort, TFValue: config.ExpectedUplinkPort, IsConfigured: configuredAttrs.IsConfigured("expected_uplink_port")},
 	})
 	utils.SetNullableNumberFields([]utils.NullableNumberFieldMapping{
 		{FieldName: "Position", APIField: &spProps.Position, TFValue: config.Position, IsConfigured: configuredAttrs.IsConfigured("position")},
@@ -1433,6 +1447,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	utils.CompareAndSetStringField(plan.CommType, state.CommType, func(v *string) { spProps.CommType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SnmpCommunityString, state.SnmpCommunityString, func(v *string) { spProps.SnmpCommunityString = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.UplinkPort, state.UplinkPort, func(v *string) { spProps.UplinkPort = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ExpectedBreakout, state.ExpectedBreakout, func(v *string) { spProps.ExpectedBreakout = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.LldpSearchString, state.LldpSearchString, func(v *string) { spProps.LldpSearchString = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ZtpIdentification, state.ZtpIdentification, func(v *string) { spProps.ZtpIdentification = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.LocatedBy, state.LocatedBy, func(v *string) { spProps.LocatedBy = v }, &hasChanges)
@@ -1583,6 +1598,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 
 	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { spProps.Position = *v }, &hasChanges)
 	utils.CompareAndSetNullableNumberField(config.RailGroup, state.RailGroup, configuredAttrs.IsConfigured("rail_group"), func(v *openapi.NullableFloat64) { spProps.RailGroup = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ExpectedUplinkPort, state.ExpectedUplinkPort, configuredAttrs.IsConfigured("expected_uplink_port"), func(v *openapi.NullableInt64) { spProps.ExpectedUplinkPort = *v }, &hasChanges)
 
 	// Handle BgpAsNumber and BgpAsNumberAutoAssigned changes
 	bgpAsNumberChanged := !plan.BgpAsNumber.IsUnknown() && !plan.BgpAsNumber.Equal(state.BgpAsNumber)
@@ -2251,6 +2267,7 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 
 	// Int fields
 	state.BgpAsNumber = utils.MapInt64WithMode(switchpointData, "bgp_as_number", resourceType, mode)
+	state.ExpectedUplinkPort = utils.MapInt64WithMode(switchpointData, "expected_uplink_port", resourceType, mode)
 
 	// Number fields
 	state.Position = utils.MapNumberWithMode(switchpointData, "position", resourceType, mode)
@@ -2308,6 +2325,7 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	state.CommType = utils.MapStringWithMode(switchpointData, "comm_type", resourceType, mode)
 	state.SnmpCommunityString = utils.MapStringWithMode(switchpointData, "snmp_community_string", resourceType, mode)
 	state.UplinkPort = utils.MapStringWithMode(switchpointData, "uplink_port", resourceType, mode)
+	state.ExpectedBreakout = utils.MapStringWithMode(switchpointData, "expected_breakout", resourceType, mode)
 	state.LldpSearchString = utils.MapStringWithMode(switchpointData, "lldp_search_string", resourceType, mode)
 	state.ZtpIdentification = utils.MapStringWithMode(switchpointData, "ztp_identification", resourceType, mode)
 	state.LocatedBy = utils.MapStringWithMode(switchpointData, "located_by", resourceType, mode)
@@ -2531,7 +2549,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		"private_password_encrypted", "ip_source",
 		"controller_ip_and_mask", "gateway", "switch_ip_and_mask",
 		"switch_gateway", "comm_type", "snmp_community_string",
-		"uplink_port", "lldp_search_string", "ztp_identification",
+		"uplink_port", "expected_breakout", "lldp_search_string", "ztp_identification",
 		"located_by", "power_state", "communication_mode",
 		"cli_access_mode", "username", "password", "enable_password",
 		"ssh_key_or_password", "sdlc", "security_type",
@@ -2553,7 +2571,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 	)
 
 	nullifier.NullifyInt64s(
-		"bgp_as_number",
+		"bgp_as_number", "expected_uplink_port",
 	)
 	nullifier.NullifyNumbers(
 		"position", "rail_group",

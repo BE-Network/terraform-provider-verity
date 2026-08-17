@@ -59,9 +59,9 @@ type FabricsPutRequestFabricValue struct {
 	DuplicateAddressDetectionMaxNumberOfMoves NullableInt64 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
 	// Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
 	DuplicateAddressDetectionTime NullableInt64 `json:"duplicate_address_detection_time,omitempty"`
-	// polling interval values in seconds, set if aggressive reporting is not enabled
+	// Polling interval values in seconds, set if aggressive reporting is not enabled
 	PortAdminPollingInterval NullableInt64 `json:"port_admin_polling_interval,omitempty"`
-	// polling interval values in seconds, set if aggressive reporting is not enabled
+	// Polling interval values in seconds, set if aggressive reporting is not enabled
 	PortStatusPollingInterval NullableInt64 `json:"port_status_polling_interval,omitempty"`
 	// Service for Fabric
 	ServiceForSite *string `json:"service_for_site,omitempty"`
@@ -144,6 +144,8 @@ type FabricsPutRequestFabricValue struct {
 	// Maximum number of PODs allowed in the Fabric
 	MaxPods NullableInt64 `json:"max_pods,omitempty"`
 	ObjectProperties *FabricsPutRequestFabricValueObjectProperties `json:"object_properties,omitempty"`
+	// Enabling this will use the endpoint loopback0 address as the router ID for all BGP sessions on leaf switches
+	SetLeafRouterIdOnBgp *bool `json:"set_leaf_router_id_on_bgp,omitempty"`
 	// Route Aggregation configuration for this fabric
 	RouteAggregation *string `json:"route_aggregation,omitempty"`
 	RouteAggregators []FabricsPutRequestFabricValueRouteAggregatorsInner `json:"route_aggregators,omitempty"`
@@ -269,6 +271,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
+	var setLeafRouterIdOnBgp bool = false
+	this.SetLeafRouterIdOnBgp = &setLeafRouterIdOnBgp
 	var routeAggregation string = ""
 	this.RouteAggregation = &routeAggregation
 	var ipSourceGuard bool = false
@@ -393,6 +397,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.MaxSwitches = &maxSwitches
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
+	var setLeafRouterIdOnBgp bool = false
+	this.SetLeafRouterIdOnBgp = &setLeafRouterIdOnBgp
 	var routeAggregation string = ""
 	this.RouteAggregation = &routeAggregation
 	var ipSourceGuard bool = false
@@ -2638,6 +2644,38 @@ func (o *FabricsPutRequestFabricValue) SetObjectProperties(v FabricsPutRequestFa
 	o.ObjectProperties = &v
 }
 
+// GetSetLeafRouterIdOnBgp returns the SetLeafRouterIdOnBgp field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSetLeafRouterIdOnBgp() bool {
+	if o == nil || IsNil(o.SetLeafRouterIdOnBgp) {
+		var ret bool
+		return ret
+	}
+	return *o.SetLeafRouterIdOnBgp
+}
+
+// GetSetLeafRouterIdOnBgpOk returns a tuple with the SetLeafRouterIdOnBgp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSetLeafRouterIdOnBgpOk() (*bool, bool) {
+	if o == nil || IsNil(o.SetLeafRouterIdOnBgp) {
+		return nil, false
+	}
+	return o.SetLeafRouterIdOnBgp, true
+}
+
+// HasSetLeafRouterIdOnBgp returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSetLeafRouterIdOnBgp() bool {
+	if o != nil && !IsNil(o.SetLeafRouterIdOnBgp) {
+		return true
+	}
+
+	return false
+}
+
+// SetSetLeafRouterIdOnBgp gets a reference to the given bool and assigns it to the SetLeafRouterIdOnBgp field.
+func (o *FabricsPutRequestFabricValue) SetSetLeafRouterIdOnBgp(v bool) {
+	o.SetLeafRouterIdOnBgp = &v
+}
+
 // GetRouteAggregation returns the RouteAggregation field value if set, zero value otherwise.
 func (o *FabricsPutRequestFabricValue) GetRouteAggregation() string {
 	if o == nil || IsNil(o.RouteAggregation) {
@@ -2964,6 +3002,9 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.SetLeafRouterIdOnBgp) {
+		toSerialize["set_leaf_router_id_on_bgp"] = o.SetLeafRouterIdOnBgp
 	}
 	if !IsNil(o.RouteAggregation) {
 		toSerialize["route_aggregation"] = o.RouteAggregation

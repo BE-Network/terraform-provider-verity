@@ -45,6 +45,8 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	MaxBitRate *string `json:"max_bit_rate,omitempty"`
 	// Duplex Mode
 	DuplexMode *string `json:"duplex_mode,omitempty"`
+	// CLI Commands
+	CliCommands *string `json:"cli_commands,omitempty"`
 	// Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Fabric Settings
 	StpEnable *bool `json:"stp_enable,omitempty"`
 	// Enable Immediate Transition to Forwarding
@@ -90,8 +92,6 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	// A value between 100 to 60000
 	PriorityFlowControlWatchdogRestoreTime NullableInt64 `json:"priority_flow_control_watchdog_restore_time,omitempty"`
 	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
-	// CLI Commands
-	CliCommands *string `json:"cli_commands,omitempty"`
 	// Enable Detection of Bridging Loops
 	DetectBridgingLoops *bool `json:"detect_bridging_loops,omitempty"`
 	// Enable Detection of Unidirectional Link
@@ -143,6 +143,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	this.MaxBitRate = &maxBitRate
 	var duplexMode string = "Auto"
 	this.DuplexMode = &duplexMode
+	var cliCommands string = ""
+	this.CliCommands = &cliCommands
 	var stpEnable bool = false
 	this.StpEnable = &stpEnable
 	var fastLearningMode bool = true
@@ -187,8 +189,6 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	this.PriorityFlowControlWatchdogDetectTime = *NewNullableInt64(&priorityFlowControlWatchdogDetectTime)
 	var priorityFlowControlWatchdogRestoreTime int64 = 100
 	this.PriorityFlowControlWatchdogRestoreTime = *NewNullableInt64(&priorityFlowControlWatchdogRestoreTime)
-	var cliCommands string = ""
-	this.CliCommands = &cliCommands
 	var detectBridgingLoops bool = false
 	this.DetectBridgingLoops = &detectBridgingLoops
 	var unidirectionalLinkDetection bool = false
@@ -239,6 +239,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	this.MaxBitRate = &maxBitRate
 	var duplexMode string = "Auto"
 	this.DuplexMode = &duplexMode
+	var cliCommands string = ""
+	this.CliCommands = &cliCommands
 	var stpEnable bool = false
 	this.StpEnable = &stpEnable
 	var fastLearningMode bool = true
@@ -283,8 +285,6 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	this.PriorityFlowControlWatchdogDetectTime = *NewNullableInt64(&priorityFlowControlWatchdogDetectTime)
 	var priorityFlowControlWatchdogRestoreTime int64 = 100
 	this.PriorityFlowControlWatchdogRestoreTime = *NewNullableInt64(&priorityFlowControlWatchdogRestoreTime)
-	var cliCommands string = ""
-	this.CliCommands = &cliCommands
 	var detectBridgingLoops bool = false
 	this.DetectBridgingLoops = &detectBridgingLoops
 	var unidirectionalLinkDetection bool = false
@@ -732,6 +732,38 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasDuplexMode() bool {
 // SetDuplexMode gets a reference to the given string and assigns it to the DuplexMode field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetDuplexMode(v string) {
 	o.DuplexMode = &v
+}
+
+// GetCliCommands returns the CliCommands field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommands() string {
+	if o == nil || IsNil(o.CliCommands) {
+		var ret string
+		return ret
+	}
+	return *o.CliCommands
+}
+
+// GetCliCommandsOk returns a tuple with the CliCommands field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommandsOk() (*string, bool) {
+	if o == nil || IsNil(o.CliCommands) {
+		return nil, false
+	}
+	return o.CliCommands, true
+}
+
+// HasCliCommands returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasCliCommands() bool {
+	if o != nil && !IsNil(o.CliCommands) {
+		return true
+	}
+
+	return false
+}
+
+// SetCliCommands gets a reference to the given string and assigns it to the CliCommands field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetCliCommands(v string) {
+	o.CliCommands = &v
 }
 
 // GetStpEnable returns the StpEnable field value if set, zero value otherwise.
@@ -1530,38 +1562,6 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v ma
 	o.ObjectProperties = v
 }
 
-// GetCliCommands returns the CliCommands field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommands() string {
-	if o == nil || IsNil(o.CliCommands) {
-		var ret string
-		return ret
-	}
-	return *o.CliCommands
-}
-
-// GetCliCommandsOk returns a tuple with the CliCommands field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommandsOk() (*string, bool) {
-	if o == nil || IsNil(o.CliCommands) {
-		return nil, false
-	}
-	return o.CliCommands, true
-}
-
-// HasCliCommands returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasCliCommands() bool {
-	if o != nil && !IsNil(o.CliCommands) {
-		return true
-	}
-
-	return false
-}
-
-// SetCliCommands gets a reference to the given string and assigns it to the CliCommands field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetCliCommands(v string) {
-	o.CliCommands = &v
-}
-
 // GetDetectBridgingLoops returns the DetectBridgingLoops field value if set, zero value otherwise.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDetectBridgingLoops() bool {
 	if o == nil || IsNil(o.DetectBridgingLoops) {
@@ -1983,6 +1983,9 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if !IsNil(o.DuplexMode) {
 		toSerialize["duplex_mode"] = o.DuplexMode
 	}
+	if !IsNil(o.CliCommands) {
+		toSerialize["cli_commands"] = o.CliCommands
+	}
 	if !IsNil(o.StpEnable) {
 		toSerialize["stp_enable"] = o.StpEnable
 	}
@@ -2051,9 +2054,6 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if !IsNil(o.CliCommands) {
-		toSerialize["cli_commands"] = o.CliCommands
 	}
 	if !IsNil(o.DetectBridgingLoops) {
 		toSerialize["detect_bridging_loops"] = o.DetectBridgingLoops

@@ -17,6 +17,7 @@ Name | Type | Description | Notes
 **Mtu** | Pointer to **NullableInt64** | MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets. | [optional] 
 **MaxBitRate** | Pointer to **string** | Maximum Bit Rate allowed | [optional] [default to "-1"]
 **DuplexMode** | Pointer to **string** | Duplex Mode | [optional] [default to "Auto"]
+**CliCommands** | Pointer to **string** | CLI Commands | [optional] [default to ""]
 **StpEnable** | Pointer to **bool** | Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Fabric Settings | [optional] [default to false]
 **FastLearningMode** | Pointer to **bool** | Enable Immediate Transition to Forwarding | [optional] [default to true]
 **BpduGuard** | Pointer to **bool** | Block port on BPDU Receive | [optional] [default to false]
@@ -40,7 +41,6 @@ Name | Type | Description | Notes
 **PriorityFlowControlWatchdogDetectTime** | Pointer to **NullableInt64** | A value between 100 to 5000 | [optional] [default to 100]
 **PriorityFlowControlWatchdogRestoreTime** | Pointer to **NullableInt64** | A value between 100 to 60000 | [optional] [default to 100]
 **ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
-**CliCommands** | Pointer to **string** | CLI Commands | [optional] [default to ""]
 **DetectBridgingLoops** | Pointer to **bool** | Enable Detection of Bridging Loops | [optional] [default to false]
 **UnidirectionalLinkDetection** | Pointer to **bool** | Enable Detection of Unidirectional Link | [optional] [default to false]
 **MacSecurityMode** | Pointer to **string** | Dynamic - MACs are learned and aged normally up to the limit. &lt;br&gt;        &lt;div class&#x3D;\&quot;tab\&quot;&gt;         Packets will be dropped from clients exceeding the limit. &lt;br&gt;         Once a client ages out, a new client can take its slot. &lt;br&gt;         When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.&lt;br&gt;        &lt;/div&gt;       Sticky - Semi permenant learning. &lt;br&gt;        &lt;div class&#x3D;\&quot;tab\&quot;&gt;         Packets will be dropped from clients exceeding the limit. &lt;br&gt;         Addresses do not age out or move within the same switch. &lt;br&gt;         Operationally downing a port (disconnecting) does NOT flush the entries. &lt;br&gt;         Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.        &lt;/div&gt; | [optional] [default to "disabled"]
@@ -406,6 +406,31 @@ SetDuplexMode sets DuplexMode field to given value.
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) HasDuplexMode() bool`
 
 HasDuplexMode returns a boolean if a field has been set.
+
+### GetCliCommands
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommands() string`
+
+GetCliCommands returns the CliCommands field if non-nil, zero value otherwise.
+
+### GetCliCommandsOk
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommandsOk() (*string, bool)`
+
+GetCliCommandsOk returns a tuple with the CliCommands field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCliCommands
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetCliCommands(v string)`
+
+SetCliCommands sets CliCommands field to given value.
+
+### HasCliCommands
+
+`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasCliCommands() bool`
+
+HasCliCommands returns a boolean if a field has been set.
 
 ### GetStpEnable
 
@@ -1041,31 +1066,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *EthportsettingsPutRequestEthPortSettingsValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetCliCommands
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommands() string`
-
-GetCliCommands returns the CliCommands field if non-nil, zero value otherwise.
-
-### GetCliCommandsOk
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommandsOk() (*string, bool)`
-
-GetCliCommandsOk returns a tuple with the CliCommands field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetCliCommands
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) SetCliCommands(v string)`
-
-SetCliCommands sets CliCommands field to given value.
-
-### HasCliCommands
-
-`func (o *EthportsettingsPutRequestEthPortSettingsValue) HasCliCommands() bool`
-
-HasCliCommands returns a boolean if a field has been set.
 
 ### GetDetectBridgingLoops
 

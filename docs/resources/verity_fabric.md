@@ -139,6 +139,7 @@ resource "verity_fabric" "example" {
 * `multi_tenant` (Boolean) - Allow multiple tenants to HGX endpoints on this fabric.
 * `base_bgp_as_number` (String) - Base BGP Autonomous System Number used for switches in the fabric.
 * `router_id_base_prefix` (String) - Router ID starting IP address.
+* `set_leaf_router_id_on_bgp` (Boolean) - Use the endpoint loopback0 address as the router ID for all BGP sessions on leaf switches.
 * `vtep_id_base_prefix` (String) - VTEP ID starting IP address.
 * `paired_ip_subnet` (String) - IP address range reserved for communication between paired switches.
 * `max_switches` (String) - Maximum number of switches to support in this site.

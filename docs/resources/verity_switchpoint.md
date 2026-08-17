@@ -153,6 +153,8 @@ resource "verity_switchpoint" "example" {
 * `comm_type` (String) - Comm Type
 * `snmp_community_string` (String) - Comm Credentials
 * `uplink_port` (String) - Uplink Port of Managed Device
+* `expected_uplink_port` (Integer) - First breakout port, using a one-based index, that ZTP configures as an uplink for SFP-based ports.
+* `expected_breakout` (String) - Full breakout configuration for the SFP used as the uplink.
 * `lldp_search_string` (String) - LLDP search string used to detect managed-device connections
 * `ztp_identification` (String) - Service Tag or Serial Number for Zero Touch Provisioning
 * `located_by` (String) - Controls how the system locates this Device within its LAN

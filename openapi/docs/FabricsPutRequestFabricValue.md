@@ -24,8 +24,8 @@ Name | Type | Description | Notes
 **SiteType** | Pointer to **string** | Type of Fabric | [optional] [default to "enterprise"]
 **DuplicateAddressDetectionMaxNumberOfMoves** | Pointer to **NullableInt64** | Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank) | [optional] [default to 5]
 **DuplicateAddressDetectionTime** | Pointer to **NullableInt64** | Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank) | [optional] [default to 180]
-**PortAdminPollingInterval** | Pointer to **NullableInt64** | polling interval values in seconds, set if aggressive reporting is not enabled | [optional] [default to 0]
-**PortStatusPollingInterval** | Pointer to **NullableInt64** | polling interval values in seconds, set if aggressive reporting is not enabled | [optional] [default to 0]
+**PortAdminPollingInterval** | Pointer to **NullableInt64** | Polling interval values in seconds, set if aggressive reporting is not enabled | [optional] [default to 0]
+**PortStatusPollingInterval** | Pointer to **NullableInt64** | Polling interval values in seconds, set if aggressive reporting is not enabled | [optional] [default to 0]
 **ServiceForSite** | Pointer to **string** | Service for Fabric | [optional] [default to "(predefined):Management"]
 **ServiceForSiteRefType** | Pointer to **string** | Object type for service_for_site field | [optional] 
 **SpanningTreeType** | Pointer to **string** | Sets the spanning tree type for all Ports in this Fabric with Spanning Tree enabled | [optional] [default to "pvst"]
@@ -67,6 +67,7 @@ Name | Type | Description | Notes
 **MaxSus** | Pointer to **NullableInt64** | Maximum number of SUs allowed per POD | [optional] 
 **MaxPods** | Pointer to **NullableInt64** | Maximum number of PODs allowed in the Fabric | [optional] 
 **ObjectProperties** | Pointer to [**FabricsPutRequestFabricValueObjectProperties**](FabricsPutRequestFabricValueObjectProperties.md) |  | [optional] 
+**SetLeafRouterIdOnBgp** | Pointer to **bool** | Enabling this will use the endpoint loopback0 address as the router ID for all BGP sessions on leaf switches | [optional] [default to false]
 **RouteAggregation** | Pointer to **string** | Route Aggregation configuration for this fabric | [optional] [default to ""]
 **RouteAggregators** | Pointer to [**[]FabricsPutRequestFabricValueRouteAggregatorsInner**](FabricsPutRequestFabricValueRouteAggregatorsInner.md) |  | [optional] 
 **IpSourceGuard** | Pointer to **bool** | On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings | [optional] [default to false]
@@ -1885,6 +1886,31 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *FabricsPutRequestFabricValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
+
+### GetSetLeafRouterIdOnBgp
+
+`func (o *FabricsPutRequestFabricValue) GetSetLeafRouterIdOnBgp() bool`
+
+GetSetLeafRouterIdOnBgp returns the SetLeafRouterIdOnBgp field if non-nil, zero value otherwise.
+
+### GetSetLeafRouterIdOnBgpOk
+
+`func (o *FabricsPutRequestFabricValue) GetSetLeafRouterIdOnBgpOk() (*bool, bool)`
+
+GetSetLeafRouterIdOnBgpOk returns a tuple with the SetLeafRouterIdOnBgp field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSetLeafRouterIdOnBgp
+
+`func (o *FabricsPutRequestFabricValue) SetSetLeafRouterIdOnBgp(v bool)`
+
+SetSetLeafRouterIdOnBgp sets SetLeafRouterIdOnBgp field to given value.
+
+### HasSetLeafRouterIdOnBgp
+
+`func (o *FabricsPutRequestFabricValue) HasSetLeafRouterIdOnBgp() bool`
+
+HasSetLeafRouterIdOnBgp returns a boolean if a field has been set.
 
 ### GetRouteAggregation
 
