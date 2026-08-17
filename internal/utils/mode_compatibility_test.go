@@ -16,6 +16,10 @@ func TestResourceCompatibilityForSwaggerModeChanges(t *testing.T) {
 		{"verity_rack", "campus", false},
 		{"verity_operation_stage", "datacenter", true},
 		{"verity_operation_stage", "campus", true},
+		{"verity_ipv4_list", "datacenter", true},
+		{"verity_ipv4_list", "campus", false},
+		{"verity_ipv6_list", "datacenter", true},
+		{"verity_ipv6_list", "campus", false},
 	}
 
 	for _, tt := range tests {

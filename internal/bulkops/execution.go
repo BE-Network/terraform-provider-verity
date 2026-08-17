@@ -123,8 +123,6 @@ var datacenterPatchOrder = joinOperationOrders([]string{"sfp_breakout"}, datacen
 var datacenterDeleteOrder = reverseOperationOrder(datacenterPutOrder)
 
 var campusPutOrder = []string{
-	"ipv4_list",
-	"ipv6_list",
 	"acl",
 	"service",
 	"port_acl",

@@ -117,8 +117,6 @@ var dcPutOrder = []string{
 }
 
 var campusPutOrder = []string{
-	"ipv4_list",
-	"ipv6_list",
 	"acl",
 	"service",
 	"port_acl",
@@ -348,6 +346,18 @@ func assertOrderedSubset(t *testing.T, label string, actual, expected []string) 
 	}
 }
 
+func assertPathsAbsent(t *testing.T, label string, actual, forbidden []string) {
+	t.Helper()
+	for _, path := range forbidden {
+		for _, actualPath := range actual {
+			if actualPath == path {
+				t.Errorf("%s: unexpected request to %q", label, path)
+				break
+			}
+		}
+	}
+}
+
 func snapshotRecords(mu *sync.Mutex, records *[]requestRecord) []requestRecord {
 	mu.Lock()
 	defer mu.Unlock()
@@ -520,6 +530,8 @@ func TestCampusPutOrder(t *testing.T) {
 	ctx := context.Background()
 
 	addPutsForResources(ctx, mgr, campusPutOrder)
+	mgr.AddPut(ctx, "ipv4_list", "test_ipv4_list", zeroPutValue("ipv4_list"))
+	mgr.AddPut(ctx, "ipv6_list", "test_ipv6_list", zeroPutValue("ipv6_list"))
 
 	diags, _ := mgr.ExecuteCampusOperations(ctx)
 	if diags.HasError() {
@@ -528,6 +540,7 @@ func TestCampusPutOrder(t *testing.T) {
 
 	putPaths := filterRecords(snapshotRecords(mu, records), http.MethodPut)
 	assertOrderedSubset(t, "campus PUT order", putPaths, toPaths(campusPutOrder))
+	assertPathsAbsent(t, "campus PUT order", putPaths, []string{"/ipv4lists", "/ipv6lists"})
 }
 
 func TestCampusDeleteOrder(t *testing.T) {
@@ -539,6 +552,8 @@ func TestCampusDeleteOrder(t *testing.T) {
 	ctx := context.Background()
 
 	addDeletesForResources(ctx, mgr, campusDeleteOrder)
+	mgr.AddDelete(ctx, "ipv4_list", "test_ipv4_list")
+	mgr.AddDelete(ctx, "ipv6_list", "test_ipv6_list")
 
 	diags, _ := mgr.ExecuteCampusOperations(ctx)
 	if diags.HasError() {
@@ -547,6 +562,7 @@ func TestCampusDeleteOrder(t *testing.T) {
 
 	deletePaths := filterRecords(snapshotRecords(mu, records), http.MethodDelete)
 	assertOrderedSubset(t, "campus DELETE order", deletePaths, toPaths(campusDeleteOrder))
+	assertPathsAbsent(t, "campus DELETE order", deletePaths, []string{"/ipv4lists", "/ipv6lists"})
 }
 
 func TestDatacenterPatchOrder(t *testing.T) {
@@ -762,6 +778,8 @@ func TestCampusPatchOrder(t *testing.T) {
 	ctx := context.Background()
 
 	addPatchesForResources(ctx, mgr, campusPatchOrder)
+	mgr.AddPatch(ctx, "ipv4_list", "test_ipv4_list", zeroPatchValue("ipv4_list"))
+	mgr.AddPatch(ctx, "ipv6_list", "test_ipv6_list", zeroPatchValue("ipv6_list"))
 
 	diags, _ := mgr.ExecuteCampusOperations(ctx)
 	if diags.HasError() {
@@ -770,6 +788,7 @@ func TestCampusPatchOrder(t *testing.T) {
 
 	patchPaths := filterRecords(snapshotRecords(mu, records), http.MethodPatch)
 	assertOrderedSubset(t, "campus PATCH order", patchPaths, toPaths(campusPatchOrder))
+	assertPathsAbsent(t, "campus PATCH order", patchPaths, []string{"/ipv4lists", "/ipv6lists"})
 }
 
 func TestCampusMixedOperationsOrder(t *testing.T) {

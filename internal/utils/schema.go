@@ -541,9 +541,9 @@ var ModeFields = map[string]map[string]FieldMode{
 		"type":                            FieldModeBoth,
 	},
 	"ipv4lists": {
-		"enable":    FieldModeBoth,
-		"ipv4_list": FieldModeBoth,
-		"name":      FieldModeBoth,
+		"enable":    FieldModeDatacenter,
+		"ipv4_list": FieldModeDatacenter,
+		"name":      FieldModeDatacenter,
 	},
 	"ipv4prefixlists": {
 		"enable":                         FieldModeDatacenter,
@@ -559,9 +559,9 @@ var ModeFields = map[string]map[string]FieldMode{
 		"object_properties.notes":        FieldModeDatacenter,
 	},
 	"ipv6lists": {
-		"enable":    FieldModeBoth,
-		"ipv6_list": FieldModeBoth,
-		"name":      FieldModeBoth,
+		"enable":    FieldModeDatacenter,
+		"ipv6_list": FieldModeDatacenter,
+		"name":      FieldModeDatacenter,
 	},
 	"ipv6prefixlists": {
 		"enable":                         FieldModeDatacenter,
