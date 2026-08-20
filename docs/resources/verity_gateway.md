@@ -8,8 +8,8 @@
 resource "verity_gateway" "example" {
   name = "example"
   tenant = ""
-  site = ""
-  site_ref_type_ = "site"
+  fabric = ""
+  fabric_ref_type_ = "fabric"
   md5_password = ""
   md5_password_encrypted = ""
   switch_encrypted_md5_password = false
@@ -67,8 +67,8 @@ resource "verity_gateway" "example" {
 * `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 * `tenant` (String) - Tenant.
 * `tenant_ref_type_` (String) - Object type for tenant field.
-* `site` (String) - Fabric this Gateway is assigned to.
-* `site_ref_type_` (String) - Object type for site field.
+* `fabric` (String) - Fabric this Gateway is assigned to.
+* `fabric_ref_type_` (String) - Object type for fabric field.
 * `neighbor_ip_address` (String) - IP address of remote BGP peer.
 * `neighbor_as_number` (Integer) - Autonomous System Number of remote BGP peer.
 * `fabric_interconnect` (Boolean) - .

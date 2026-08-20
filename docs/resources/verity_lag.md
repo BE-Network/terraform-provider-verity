@@ -20,8 +20,8 @@ resource "verity_lag" "example" {
   eth_port_profile_ref_type_ = ""
 
   object_properties {
-    site = ""
-    site_ref_type_ = "site"
+    fabric = ""
+    fabric_ref_type_ = "fabric"
   }
 }
 ```
@@ -41,8 +41,8 @@ resource "verity_lag" "example" {
 * `crc_failure_threshold` (Integer) - Threshold in errors per second that disables this LAG's links when met.
 * `uplink` (Boolean) - Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN.
 * `object_properties` (Object) -
-  * `site` (String) - Choose a Fabric.
-  * `site_ref_type_` (String) - Object type for site field.
+  * `fabric` (String) - Choose a Fabric.
+  * `fabric_ref_type_` (String) - Object type for fabric field.
 
 ## Import
 

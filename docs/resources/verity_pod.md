@@ -9,8 +9,8 @@ resource "verity_pod" "example" {
   name = "example"
   enable = true
   expected_spine_count = 2
-  site = ""
-  site_ref_type_ = "site"
+  fabric = ""
+  fabric_ref_type_ = "fabric"
   position = 0
 
   object_properties {
@@ -23,8 +23,8 @@ resource "verity_pod" "example" {
 
 * `name` (String) - Object Name. Must be unique.
 * `enable` (Boolean) - Enable object.
-* `site` (String) - Fabric this Pod is assigned to.
-* `site_ref_type_` (String) - Object type for site field.
+* `fabric` (String) - Fabric this Pod is assigned to.
+* `fabric_ref_type_` (String) - Object type for fabric field.
 * `position` (Number) - Position of the Switch.
 * `object_properties` (Object) - 
   * `notes` (String) - User Notes.

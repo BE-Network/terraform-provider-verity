@@ -50,8 +50,8 @@ type veritySwitchpointResourceModel struct {
 	IsTopOfIsland                    types.Bool                               `tfsdk:"is_top_of_island"`
 	ReadOnlyMode                     types.Bool                               `tfsdk:"read_only_mode"`
 	Locked                           types.Bool                               `tfsdk:"locked"`
-	ExpectedSite                     types.String                             `tfsdk:"expected_site"`
-	ExpectedSiteRefType              types.String                             `tfsdk:"expected_site_ref_type_"`
+	ExpectedFabric                   types.String                             `tfsdk:"expected_fabric"`
+	ExpectedFabricRefType            types.String                             `tfsdk:"expected_fabric_ref_type_"`
 	OutOfBandManagement              types.Bool                               `tfsdk:"out_of_band_management"`
 	Type                             types.String                             `tfsdk:"type"`
 	Plane                            types.String                             `tfsdk:"plane"`
@@ -93,6 +93,7 @@ type veritySwitchpointResourceModel struct {
 	UplinkPort                       types.String                             `tfsdk:"uplink_port"`
 	ExpectedUplinkPort               types.Int64                              `tfsdk:"expected_uplink_port"`
 	ExpectedBreakout                 types.String                             `tfsdk:"expected_breakout"`
+	ExpectedBreakoutUplinkPort       types.String                             `tfsdk:"expected_breakout_uplink_port"`
 	LldpSearchString                 types.String                             `tfsdk:"lldp_search_string"`
 	ZtpIdentification                types.String                             `tfsdk:"ztp_identification"`
 	LocatedBy                        types.String                             `tfsdk:"located_by"`
@@ -282,13 +283,13 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 				Computed:    true,
 			},
-			"expected_site": schema.StringAttribute{
+			"expected_fabric": schema.StringAttribute{
 				Description: "Expected Fabric",
 				Optional:    true,
 				Computed:    true,
 			},
-			"expected_site_ref_type_": schema.StringAttribute{
-				Description: "Object type for expected_site field",
+			"expected_fabric_ref_type_": schema.StringAttribute{
+				Description: "Object type for expected_fabric field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -494,6 +495,11 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"expected_breakout": schema.StringAttribute{
 				Description: "Full breakout configuration for the SFP used as the uplink",
+				Optional:    true,
+				Computed:    true,
+			},
+			"expected_breakout_uplink_port": schema.StringAttribute{
+				Description: "Breakout uplink port identifier in the format 1/#/#.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -946,8 +952,8 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "DeviceSerialNumber", APIField: &spProps.DeviceSerialNumber, TFValue: plan.DeviceSerialNumber},
 		{FieldName: "ConnectedBundle", APIField: &spProps.ConnectedBundle, TFValue: plan.ConnectedBundle},
 		{FieldName: "ConnectedBundleRefType", APIField: &spProps.ConnectedBundleRefType, TFValue: plan.ConnectedBundleRefType},
-		{FieldName: "ExpectedSite", APIField: &spProps.ExpectedSite, TFValue: plan.ExpectedSite},
-		{FieldName: "ExpectedSiteRefType", APIField: &spProps.ExpectedSiteRefType, TFValue: plan.ExpectedSiteRefType},
+		{FieldName: "ExpectedFabric", APIField: &spProps.ExpectedFabric, TFValue: plan.ExpectedFabric},
+		{FieldName: "ExpectedFabricRefType", APIField: &spProps.ExpectedFabricRefType, TFValue: plan.ExpectedFabricRefType},
 		{FieldName: "Type", APIField: &spProps.Type, TFValue: plan.Type},
 		{FieldName: "Plane", APIField: &spProps.Plane, TFValue: plan.Plane},
 		{FieldName: "PlaneRefType", APIField: &spProps.PlaneRefType, TFValue: plan.PlaneRefType},
@@ -978,6 +984,7 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "SnmpCommunityString", APIField: &spProps.SnmpCommunityString, TFValue: plan.SnmpCommunityString},
 		{FieldName: "UplinkPort", APIField: &spProps.UplinkPort, TFValue: plan.UplinkPort},
 		{FieldName: "ExpectedBreakout", APIField: &spProps.ExpectedBreakout, TFValue: plan.ExpectedBreakout},
+		{FieldName: "ExpectedBreakoutUplinkPort", APIField: &spProps.ExpectedBreakoutUplinkPort, TFValue: plan.ExpectedBreakoutUplinkPort},
 		{FieldName: "LldpSearchString", APIField: &spProps.LldpSearchString, TFValue: plan.LldpSearchString},
 		{FieldName: "ZtpIdentification", APIField: &spProps.ZtpIdentification, TFValue: plan.ZtpIdentification},
 		{FieldName: "LocatedBy", APIField: &spProps.LocatedBy, TFValue: plan.LocatedBy},
@@ -1433,7 +1440,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { spProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DeviceSerialNumber, state.DeviceSerialNumber, func(v *string) { spProps.DeviceSerialNumber = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.ExpectedSite, state.ExpectedSite, func(v *string) { spProps.ExpectedSite = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ExpectedFabric, state.ExpectedFabric, func(v *string) { spProps.ExpectedFabric = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { spProps.Type = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RackInfo, state.RackInfo, func(v *string) { spProps.RackInfo = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PasswordEncrypted, state.PasswordEncrypted, func(v *string) { spProps.PasswordEncrypted = v }, &hasChanges)
@@ -1448,6 +1455,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	utils.CompareAndSetStringField(plan.SnmpCommunityString, state.SnmpCommunityString, func(v *string) { spProps.SnmpCommunityString = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.UplinkPort, state.UplinkPort, func(v *string) { spProps.UplinkPort = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ExpectedBreakout, state.ExpectedBreakout, func(v *string) { spProps.ExpectedBreakout = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ExpectedBreakoutUplinkPort, state.ExpectedBreakoutUplinkPort, func(v *string) { spProps.ExpectedBreakoutUplinkPort = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.LldpSearchString, state.LldpSearchString, func(v *string) { spProps.LldpSearchString = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ZtpIdentification, state.ZtpIdentification, func(v *string) { spProps.ZtpIdentification = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.LocatedBy, state.LocatedBy, func(v *string) { spProps.LocatedBy = v }, &hasChanges)
@@ -1537,10 +1545,10 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	}
 
 	if !utils.HandleOneRefTypeSupported(
-		plan.ExpectedSite, state.ExpectedSite, plan.ExpectedSiteRefType, state.ExpectedSiteRefType,
-		func(v *string) { spProps.ExpectedSite = v },
-		func(v *string) { spProps.ExpectedSiteRefType = v },
-		"expected_site", "expected_site_ref_type_",
+		plan.ExpectedFabric, state.ExpectedFabric, plan.ExpectedFabricRefType, state.ExpectedFabricRefType,
+		func(v *string) { spProps.ExpectedFabric = v },
+		func(v *string) { spProps.ExpectedFabricRefType = v },
+		"expected_fabric", "expected_fabric_ref_type_",
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
@@ -2294,8 +2302,8 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	state.DeviceSerialNumber = utils.MapStringWithMode(switchpointData, "device_serial_number", resourceType, mode)
 	state.ConnectedBundle = utils.MapStringWithMode(switchpointData, "connected_bundle", resourceType, mode)
 	state.ConnectedBundleRefType = utils.MapStringWithMode(switchpointData, "connected_bundle_ref_type_", resourceType, mode)
-	state.ExpectedSite = utils.MapStringWithMode(switchpointData, "expected_site", resourceType, mode)
-	state.ExpectedSiteRefType = utils.MapStringWithMode(switchpointData, "expected_site_ref_type_", resourceType, mode)
+	state.ExpectedFabric = utils.MapStringWithMode(switchpointData, "expected_fabric", resourceType, mode)
+	state.ExpectedFabricRefType = utils.MapStringWithMode(switchpointData, "expected_fabric_ref_type_", resourceType, mode)
 	state.Type = utils.MapStringWithMode(switchpointData, "type", resourceType, mode)
 	state.Plane = utils.MapStringWithMode(switchpointData, "plane", resourceType, mode)
 	state.PlaneRefType = utils.MapStringWithMode(switchpointData, "plane_ref_type_", resourceType, mode)
@@ -2326,6 +2334,7 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	state.SnmpCommunityString = utils.MapStringWithMode(switchpointData, "snmp_community_string", resourceType, mode)
 	state.UplinkPort = utils.MapStringWithMode(switchpointData, "uplink_port", resourceType, mode)
 	state.ExpectedBreakout = utils.MapStringWithMode(switchpointData, "expected_breakout", resourceType, mode)
+	state.ExpectedBreakoutUplinkPort = utils.MapStringWithMode(switchpointData, "expected_breakout_uplink_port", resourceType, mode)
 	state.LldpSearchString = utils.MapStringWithMode(switchpointData, "lldp_search_string", resourceType, mode)
 	state.ZtpIdentification = utils.MapStringWithMode(switchpointData, "ztp_identification", resourceType, mode)
 	state.LocatedBy = utils.MapStringWithMode(switchpointData, "located_by", resourceType, mode)
@@ -2539,7 +2548,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 	nullifier.NullifyStrings(
 		"tenant", "tenant_ref_type_", "device_serial_number",
 		"connected_bundle", "connected_bundle_ref_type_",
-		"expected_site", "expected_site_ref_type_",
+		"expected_fabric", "expected_fabric_ref_type_",
 		"type", "plane", "plane_ref_type_", "spine_plane", "spine_plane_ref_type_",
 		"pod", "pod_ref_type_", "su", "su_ref_type_",
 		"ssp_group", "ssp_group_ref_type_", "rack_info", "rack", "rack_ref_type_",
@@ -2549,7 +2558,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		"private_password_encrypted", "ip_source",
 		"controller_ip_and_mask", "gateway", "switch_ip_and_mask",
 		"switch_gateway", "comm_type", "snmp_community_string",
-		"uplink_port", "expected_breakout", "lldp_search_string", "ztp_identification",
+		"uplink_port", "expected_breakout", "expected_breakout_uplink_port", "lldp_search_string", "ztp_identification",
 		"located_by", "power_state", "communication_mode",
 		"cli_access_mode", "username", "password", "enable_password",
 		"ssh_key_or_password", "sdlc", "security_type",

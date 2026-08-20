@@ -16,8 +16,8 @@ resource "verity_switchpoint" "example" {
   is_top_of_island = false
   read_only_mode = false
   locked = false
-  expected_site = "dc-fabric"
-  expected_site_ref_type_ = "fabric"
+  expected_fabric = "dc-fabric"
+  expected_fabric_ref_type_ = "fabric"
   out_of_band_management = true
   type = "leaf"
   plane = "plane-a"
@@ -116,8 +116,8 @@ resource "verity_switchpoint" "example" {
 * `is_top_of_island` (Boolean) - Mark this Switchpoint as Top of Island
 * `read_only_mode` (Boolean) - Whether the device is in read-only mode
 * `locked` (Boolean) - Whether the device is locked
-* `expected_site` (String) - Expected Fabric
-* `expected_site_ref_type_` (String) - Object type for expected_site field
+* `expected_fabric` (String) - Expected Fabric
+* `expected_fabric_ref_type_` (String) - Object type for expected_fabric field
 * `out_of_band_management` (Boolean) - Whether out-of-band management is enabled
 * `type` (String) - Type of switchpoint
 * `plane` (String) - Plane
@@ -153,8 +153,9 @@ resource "verity_switchpoint" "example" {
 * `comm_type` (String) - Comm Type
 * `snmp_community_string` (String) - Comm Credentials
 * `uplink_port` (String) - Uplink Port of Managed Device
-* `expected_uplink_port` (Integer) - First breakout port, using a one-based index, that ZTP configures as an uplink for SFP-based ports.
+* `expected_uplink_port` (Integer) - Uplink port that ZTP configures for SFP-based ports. If unset, ZTP uses the first 32 copper ports as uplinks; valid breakout uplinks depend on the switch model.
 * `expected_breakout` (String) - Full breakout configuration for the SFP used as the uplink.
+* `expected_breakout_uplink_port` (String) - Breakout uplink port identifier in the format `1/#/#`.
 * `lldp_search_string` (String) - LLDP search string used to detect managed-device connections
 * `ztp_identification` (String) - Service Tag or Serial Number for Zero Touch Provisioning
 * `located_by` (String) - Controls how the system locates this Device within its LAN

@@ -24,9 +24,9 @@ type PlanesPutRequestPlaneValue struct {
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Fabric this Plane is assigned to
-	Site *string `json:"site,omitempty"`
-	// Object type for site field
-	SiteRefType *string `json:"site_ref_type_,omitempty"`
+	Fabric *string `json:"fabric,omitempty"`
+	// Object type for fabric field
+	FabricRefType *string `json:"fabric_ref_type_,omitempty"`
 	// Position of the Plane
 	Position NullableFloat64 `json:"position,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
@@ -42,8 +42,8 @@ func NewPlanesPutRequestPlaneValue() *PlanesPutRequestPlaneValue {
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var site string = ""
-	this.Site = &site
+	var fabric string = ""
+	this.Fabric = &fabric
 	return &this
 }
 
@@ -56,8 +56,8 @@ func NewPlanesPutRequestPlaneValueWithDefaults() *PlanesPutRequestPlaneValue {
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var site string = ""
-	this.Site = &site
+	var fabric string = ""
+	this.Fabric = &fabric
 	return &this
 }
 
@@ -125,68 +125,68 @@ func (o *PlanesPutRequestPlaneValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetSite returns the Site field value if set, zero value otherwise.
-func (o *PlanesPutRequestPlaneValue) GetSite() string {
-	if o == nil || IsNil(o.Site) {
+// GetFabric returns the Fabric field value if set, zero value otherwise.
+func (o *PlanesPutRequestPlaneValue) GetFabric() string {
+	if o == nil || IsNil(o.Fabric) {
 		var ret string
 		return ret
 	}
-	return *o.Site
+	return *o.Fabric
 }
 
-// GetSiteOk returns a tuple with the Site field value if set, nil otherwise
+// GetFabricOk returns a tuple with the Fabric field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PlanesPutRequestPlaneValue) GetSiteOk() (*string, bool) {
-	if o == nil || IsNil(o.Site) {
+func (o *PlanesPutRequestPlaneValue) GetFabricOk() (*string, bool) {
+	if o == nil || IsNil(o.Fabric) {
 		return nil, false
 	}
-	return o.Site, true
+	return o.Fabric, true
 }
 
-// HasSite returns a boolean if a field has been set.
-func (o *PlanesPutRequestPlaneValue) HasSite() bool {
-	if o != nil && !IsNil(o.Site) {
+// HasFabric returns a boolean if a field has been set.
+func (o *PlanesPutRequestPlaneValue) HasFabric() bool {
+	if o != nil && !IsNil(o.Fabric) {
 		return true
 	}
 
 	return false
 }
 
-// SetSite gets a reference to the given string and assigns it to the Site field.
-func (o *PlanesPutRequestPlaneValue) SetSite(v string) {
-	o.Site = &v
+// SetFabric gets a reference to the given string and assigns it to the Fabric field.
+func (o *PlanesPutRequestPlaneValue) SetFabric(v string) {
+	o.Fabric = &v
 }
 
-// GetSiteRefType returns the SiteRefType field value if set, zero value otherwise.
-func (o *PlanesPutRequestPlaneValue) GetSiteRefType() string {
-	if o == nil || IsNil(o.SiteRefType) {
+// GetFabricRefType returns the FabricRefType field value if set, zero value otherwise.
+func (o *PlanesPutRequestPlaneValue) GetFabricRefType() string {
+	if o == nil || IsNil(o.FabricRefType) {
 		var ret string
 		return ret
 	}
-	return *o.SiteRefType
+	return *o.FabricRefType
 }
 
-// GetSiteRefTypeOk returns a tuple with the SiteRefType field value if set, nil otherwise
+// GetFabricRefTypeOk returns a tuple with the FabricRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PlanesPutRequestPlaneValue) GetSiteRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.SiteRefType) {
+func (o *PlanesPutRequestPlaneValue) GetFabricRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.FabricRefType) {
 		return nil, false
 	}
-	return o.SiteRefType, true
+	return o.FabricRefType, true
 }
 
-// HasSiteRefType returns a boolean if a field has been set.
-func (o *PlanesPutRequestPlaneValue) HasSiteRefType() bool {
-	if o != nil && !IsNil(o.SiteRefType) {
+// HasFabricRefType returns a boolean if a field has been set.
+func (o *PlanesPutRequestPlaneValue) HasFabricRefType() bool {
+	if o != nil && !IsNil(o.FabricRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetSiteRefType gets a reference to the given string and assigns it to the SiteRefType field.
-func (o *PlanesPutRequestPlaneValue) SetSiteRefType(v string) {
-	o.SiteRefType = &v
+// SetFabricRefType gets a reference to the given string and assigns it to the FabricRefType field.
+func (o *PlanesPutRequestPlaneValue) SetFabricRefType(v string) {
+	o.FabricRefType = &v
 }
 
 // GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -279,11 +279,11 @@ func (o PlanesPutRequestPlaneValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Site) {
-		toSerialize["site"] = o.Site
+	if !IsNil(o.Fabric) {
+		toSerialize["fabric"] = o.Fabric
 	}
-	if !IsNil(o.SiteRefType) {
-		toSerialize["site_ref_type_"] = o.SiteRefType
+	if !IsNil(o.FabricRefType) {
+		toSerialize["fabric_ref_type_"] = o.FabricRefType
 	}
 	if o.Position.IsSet() {
 		toSerialize["position"] = o.Position.Get()

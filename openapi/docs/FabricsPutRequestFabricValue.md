@@ -21,20 +21,20 @@ Name | Type | Description | Notes
 **GpuArchitecture** | Pointer to **string** | GPU Architecture used within this Fabric | [optional] [default to "hgx"]
 **ServerManagement** | Pointer to **bool** | Support managing servers | [optional] [default to true]
 **AllowAllUnderlayConnections** | Pointer to **bool** | Allows underlay connections between PODs | [optional] [default to false]
-**SiteType** | Pointer to **string** | Type of Fabric | [optional] [default to "enterprise"]
+**FabricType** | Pointer to **string** | Type of Fabric | [optional] [default to "enterprise"]
 **DuplicateAddressDetectionMaxNumberOfMoves** | Pointer to **NullableInt64** | Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank) | [optional] [default to 5]
 **DuplicateAddressDetectionTime** | Pointer to **NullableInt64** | Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank) | [optional] [default to 180]
 **PortAdminPollingInterval** | Pointer to **NullableInt64** | Polling interval values in seconds, set if aggressive reporting is not enabled | [optional] [default to 0]
 **PortStatusPollingInterval** | Pointer to **NullableInt64** | Polling interval values in seconds, set if aggressive reporting is not enabled | [optional] [default to 0]
-**ServiceForSite** | Pointer to **string** | Service for Fabric | [optional] [default to "(predefined):Management"]
-**ServiceForSiteRefType** | Pointer to **string** | Object type for service_for_site field | [optional] 
+**ServiceForFabric** | Pointer to **string** | Service for Fabric | [optional] [default to "(predefined):Management"]
+**ServiceForFabricRefType** | Pointer to **string** | Object type for service_for_fabric field | [optional] 
 **SpanningTreeType** | Pointer to **string** | Sets the spanning tree type for all Ports in this Fabric with Spanning Tree enabled | [optional] [default to "pvst"]
 **RegionName** | Pointer to **string** | Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name | [optional] [default to ""]
 **Revision** | Pointer to **NullableInt64** | A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number | [optional] [default to 0]
 **ForceSpanningTreeOnFabricPorts** | Pointer to **bool** | Enable spanning tree on all fabric connections.  This overrides the Eth Port Settings for Fabric ports | [optional] [default to false]
 **ReadOnlyMode** | Pointer to **bool** | When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware | [optional] [default to false]
-**DomainForSite** | Pointer to **string** | Fabric Collection for Fabric | [optional] [default to ""]
-**DomainForSiteRefType** | Pointer to **string** | Object type for domain_for_site field | [optional] 
+**DomainForFabric** | Pointer to **string** | Fabric Collection for Fabric | [optional] [default to ""]
+**DomainForFabricRefType** | Pointer to **string** | Object type for domain_for_fabric field | [optional] 
 **EnableDscp** | Pointer to **bool** | Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied. | [optional] [default to true]
 **DscpToPBitMap** | Pointer to **string** | For any Service that is using DSCP to p-bit map packet prioritization. A string of length 64 with a 0-7 in each position | [optional] [default to "0000000011111111222222223333333344444444555555556666666677777777"]
 **AnycastMacAddress** | Pointer to **string** | Fabric Level MAC Address for Anycast | [optional] [default to "(auto)"]
@@ -517,30 +517,30 @@ SetAllowAllUnderlayConnections sets AllowAllUnderlayConnections field to given v
 
 HasAllowAllUnderlayConnections returns a boolean if a field has been set.
 
-### GetSiteType
+### GetFabricType
 
-`func (o *FabricsPutRequestFabricValue) GetSiteType() string`
+`func (o *FabricsPutRequestFabricValue) GetFabricType() string`
 
-GetSiteType returns the SiteType field if non-nil, zero value otherwise.
+GetFabricType returns the FabricType field if non-nil, zero value otherwise.
 
-### GetSiteTypeOk
+### GetFabricTypeOk
 
-`func (o *FabricsPutRequestFabricValue) GetSiteTypeOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetFabricTypeOk() (*string, bool)`
 
-GetSiteTypeOk returns a tuple with the SiteType field if it's non-nil, zero value otherwise
+GetFabricTypeOk returns a tuple with the FabricType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSiteType
+### SetFabricType
 
-`func (o *FabricsPutRequestFabricValue) SetSiteType(v string)`
+`func (o *FabricsPutRequestFabricValue) SetFabricType(v string)`
 
-SetSiteType sets SiteType field to given value.
+SetFabricType sets FabricType field to given value.
 
-### HasSiteType
+### HasFabricType
 
-`func (o *FabricsPutRequestFabricValue) HasSiteType() bool`
+`func (o *FabricsPutRequestFabricValue) HasFabricType() bool`
 
-HasSiteType returns a boolean if a field has been set.
+HasFabricType returns a boolean if a field has been set.
 
 ### GetDuplicateAddressDetectionMaxNumberOfMoves
 
@@ -682,55 +682,55 @@ HasPortStatusPollingInterval returns a boolean if a field has been set.
 `func (o *FabricsPutRequestFabricValue) UnsetPortStatusPollingInterval()`
 
 UnsetPortStatusPollingInterval ensures that no value is present for PortStatusPollingInterval, not even an explicit nil
-### GetServiceForSite
+### GetServiceForFabric
 
-`func (o *FabricsPutRequestFabricValue) GetServiceForSite() string`
+`func (o *FabricsPutRequestFabricValue) GetServiceForFabric() string`
 
-GetServiceForSite returns the ServiceForSite field if non-nil, zero value otherwise.
+GetServiceForFabric returns the ServiceForFabric field if non-nil, zero value otherwise.
 
-### GetServiceForSiteOk
+### GetServiceForFabricOk
 
-`func (o *FabricsPutRequestFabricValue) GetServiceForSiteOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetServiceForFabricOk() (*string, bool)`
 
-GetServiceForSiteOk returns a tuple with the ServiceForSite field if it's non-nil, zero value otherwise
+GetServiceForFabricOk returns a tuple with the ServiceForFabric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetServiceForSite
+### SetServiceForFabric
 
-`func (o *FabricsPutRequestFabricValue) SetServiceForSite(v string)`
+`func (o *FabricsPutRequestFabricValue) SetServiceForFabric(v string)`
 
-SetServiceForSite sets ServiceForSite field to given value.
+SetServiceForFabric sets ServiceForFabric field to given value.
 
-### HasServiceForSite
+### HasServiceForFabric
 
-`func (o *FabricsPutRequestFabricValue) HasServiceForSite() bool`
+`func (o *FabricsPutRequestFabricValue) HasServiceForFabric() bool`
 
-HasServiceForSite returns a boolean if a field has been set.
+HasServiceForFabric returns a boolean if a field has been set.
 
-### GetServiceForSiteRefType
+### GetServiceForFabricRefType
 
-`func (o *FabricsPutRequestFabricValue) GetServiceForSiteRefType() string`
+`func (o *FabricsPutRequestFabricValue) GetServiceForFabricRefType() string`
 
-GetServiceForSiteRefType returns the ServiceForSiteRefType field if non-nil, zero value otherwise.
+GetServiceForFabricRefType returns the ServiceForFabricRefType field if non-nil, zero value otherwise.
 
-### GetServiceForSiteRefTypeOk
+### GetServiceForFabricRefTypeOk
 
-`func (o *FabricsPutRequestFabricValue) GetServiceForSiteRefTypeOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetServiceForFabricRefTypeOk() (*string, bool)`
 
-GetServiceForSiteRefTypeOk returns a tuple with the ServiceForSiteRefType field if it's non-nil, zero value otherwise
+GetServiceForFabricRefTypeOk returns a tuple with the ServiceForFabricRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetServiceForSiteRefType
+### SetServiceForFabricRefType
 
-`func (o *FabricsPutRequestFabricValue) SetServiceForSiteRefType(v string)`
+`func (o *FabricsPutRequestFabricValue) SetServiceForFabricRefType(v string)`
 
-SetServiceForSiteRefType sets ServiceForSiteRefType field to given value.
+SetServiceForFabricRefType sets ServiceForFabricRefType field to given value.
 
-### HasServiceForSiteRefType
+### HasServiceForFabricRefType
 
-`func (o *FabricsPutRequestFabricValue) HasServiceForSiteRefType() bool`
+`func (o *FabricsPutRequestFabricValue) HasServiceForFabricRefType() bool`
 
-HasServiceForSiteRefType returns a boolean if a field has been set.
+HasServiceForFabricRefType returns a boolean if a field has been set.
 
 ### GetSpanningTreeType
 
@@ -867,55 +867,55 @@ SetReadOnlyMode sets ReadOnlyMode field to given value.
 
 HasReadOnlyMode returns a boolean if a field has been set.
 
-### GetDomainForSite
+### GetDomainForFabric
 
-`func (o *FabricsPutRequestFabricValue) GetDomainForSite() string`
+`func (o *FabricsPutRequestFabricValue) GetDomainForFabric() string`
 
-GetDomainForSite returns the DomainForSite field if non-nil, zero value otherwise.
+GetDomainForFabric returns the DomainForFabric field if non-nil, zero value otherwise.
 
-### GetDomainForSiteOk
+### GetDomainForFabricOk
 
-`func (o *FabricsPutRequestFabricValue) GetDomainForSiteOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetDomainForFabricOk() (*string, bool)`
 
-GetDomainForSiteOk returns a tuple with the DomainForSite field if it's non-nil, zero value otherwise
+GetDomainForFabricOk returns a tuple with the DomainForFabric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetDomainForSite
+### SetDomainForFabric
 
-`func (o *FabricsPutRequestFabricValue) SetDomainForSite(v string)`
+`func (o *FabricsPutRequestFabricValue) SetDomainForFabric(v string)`
 
-SetDomainForSite sets DomainForSite field to given value.
+SetDomainForFabric sets DomainForFabric field to given value.
 
-### HasDomainForSite
+### HasDomainForFabric
 
-`func (o *FabricsPutRequestFabricValue) HasDomainForSite() bool`
+`func (o *FabricsPutRequestFabricValue) HasDomainForFabric() bool`
 
-HasDomainForSite returns a boolean if a field has been set.
+HasDomainForFabric returns a boolean if a field has been set.
 
-### GetDomainForSiteRefType
+### GetDomainForFabricRefType
 
-`func (o *FabricsPutRequestFabricValue) GetDomainForSiteRefType() string`
+`func (o *FabricsPutRequestFabricValue) GetDomainForFabricRefType() string`
 
-GetDomainForSiteRefType returns the DomainForSiteRefType field if non-nil, zero value otherwise.
+GetDomainForFabricRefType returns the DomainForFabricRefType field if non-nil, zero value otherwise.
 
-### GetDomainForSiteRefTypeOk
+### GetDomainForFabricRefTypeOk
 
-`func (o *FabricsPutRequestFabricValue) GetDomainForSiteRefTypeOk() (*string, bool)`
+`func (o *FabricsPutRequestFabricValue) GetDomainForFabricRefTypeOk() (*string, bool)`
 
-GetDomainForSiteRefTypeOk returns a tuple with the DomainForSiteRefType field if it's non-nil, zero value otherwise
+GetDomainForFabricRefTypeOk returns a tuple with the DomainForFabricRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetDomainForSiteRefType
+### SetDomainForFabricRefType
 
-`func (o *FabricsPutRequestFabricValue) SetDomainForSiteRefType(v string)`
+`func (o *FabricsPutRequestFabricValue) SetDomainForFabricRefType(v string)`
 
-SetDomainForSiteRefType sets DomainForSiteRefType field to given value.
+SetDomainForFabricRefType sets DomainForFabricRefType field to given value.
 
-### HasDomainForSiteRefType
+### HasDomainForFabricRefType
 
-`func (o *FabricsPutRequestFabricValue) HasDomainForSiteRefType() bool`
+`func (o *FabricsPutRequestFabricValue) HasDomainForFabricRefType() bool`
 
-HasDomainForSiteRefType returns a boolean if a field has been set.
+HasDomainForFabricRefType returns a boolean if a field has been set.
 
 ### GetEnableDscp
 

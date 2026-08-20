@@ -47,9 +47,9 @@ type verityFabricResourceModel struct {
 	SuSupport                                 types.Bool                          `tfsdk:"su_support"`
 	ServerManagement                          types.Bool                          `tfsdk:"server_management"`
 	AllowAllUnderlayConnections               types.Bool                          `tfsdk:"allow_all_underlay_connections"`
-	SiteType                                  types.String                        `tfsdk:"site_type"`
-	ServiceForSite                            types.String                        `tfsdk:"service_for_site"`
-	ServiceForSiteRefType                     types.String                        `tfsdk:"service_for_site_ref_type_"`
+	FabricType                                types.String                        `tfsdk:"fabric_type"`
+	ServiceForFabric                          types.String                        `tfsdk:"service_for_fabric"`
+	ServiceForFabricRefType                   types.String                        `tfsdk:"service_for_fabric_ref_type_"`
 	PortAdminPollingInterval                  types.Int64                         `tfsdk:"port_admin_polling_interval"`
 	PortStatusPollingInterval                 types.Int64                         `tfsdk:"port_status_polling_interval"`
 	SpanningTreeType                          types.String                        `tfsdk:"spanning_tree_type"`
@@ -57,8 +57,8 @@ type verityFabricResourceModel struct {
 	Revision                                  types.Int64                         `tfsdk:"revision"`
 	ForceSpanningTreeOnFabricPorts            types.Bool                          `tfsdk:"force_spanning_tree_on_fabric_ports"`
 	ReadOnlyMode                              types.Bool                          `tfsdk:"read_only_mode"`
-	DomainForSite                             types.String                        `tfsdk:"domain_for_site"`
-	DomainForSiteRefType                      types.String                        `tfsdk:"domain_for_site_ref_type_"`
+	DomainForFabric                           types.String                        `tfsdk:"domain_for_fabric"`
+	DomainForFabricRefType                    types.String                        `tfsdk:"domain_for_fabric_ref_type_"`
 	EnableDscp                                types.Bool                          `tfsdk:"enable_dscp"`
 	DscpToPBitMap                             types.String                        `tfsdk:"dscp_to_p_bit_map"`
 	AnycastMacAddress                         types.String                        `tfsdk:"anycast_mac_address"`
@@ -197,18 +197,18 @@ func (r *verityFabricResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
-			"site_type": schema.StringAttribute{
+			"fabric_type": schema.StringAttribute{
 				Description: "Type of Fabric",
 				Optional:    true,
 				Computed:    true,
 			},
-			"service_for_site": schema.StringAttribute{
+			"service_for_fabric": schema.StringAttribute{
 				Description: "Service for Fabric",
 				Optional:    true,
 				Computed:    true,
 			},
-			"service_for_site_ref_type_": schema.StringAttribute{
-				Description: "Object type for service_for_site field",
+			"service_for_fabric_ref_type_": schema.StringAttribute{
+				Description: "Object type for service_for_fabric field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -247,13 +247,13 @@ func (r *verityFabricResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
-			"domain_for_site": schema.StringAttribute{
+			"domain_for_fabric": schema.StringAttribute{
 				Description: "Fabric Collection for Fabric",
 				Optional:    true,
 				Computed:    true,
 			},
-			"domain_for_site_ref_type_": schema.StringAttribute{
-				Description: "Object type for domain_for_site field",
+			"domain_for_fabric_ref_type_": schema.StringAttribute{
+				Description: "Object type for domain_for_fabric field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -580,13 +580,13 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "PlaneCount", APIField: &fabricReq.PlaneCount, TFValue: plan.PlaneCount},
 		{FieldName: "SuSize", APIField: &fabricReq.SuSize, TFValue: plan.SuSize},
-		{FieldName: "SiteType", APIField: &fabricReq.SiteType, TFValue: plan.SiteType},
-		{FieldName: "ServiceForSite", APIField: &fabricReq.ServiceForSite, TFValue: plan.ServiceForSite},
-		{FieldName: "ServiceForSiteRefType", APIField: &fabricReq.ServiceForSiteRefType, TFValue: plan.ServiceForSiteRefType},
+		{FieldName: "FabricType", APIField: &fabricReq.FabricType, TFValue: plan.FabricType},
+		{FieldName: "ServiceForFabric", APIField: &fabricReq.ServiceForFabric, TFValue: plan.ServiceForFabric},
+		{FieldName: "ServiceForFabricRefType", APIField: &fabricReq.ServiceForFabricRefType, TFValue: plan.ServiceForFabricRefType},
 		{FieldName: "SpanningTreeType", APIField: &fabricReq.SpanningTreeType, TFValue: plan.SpanningTreeType},
 		{FieldName: "RegionName", APIField: &fabricReq.RegionName, TFValue: plan.RegionName},
-		{FieldName: "DomainForSite", APIField: &fabricReq.DomainForSite, TFValue: plan.DomainForSite},
-		{FieldName: "DomainForSiteRefType", APIField: &fabricReq.DomainForSiteRefType, TFValue: plan.DomainForSiteRefType},
+		{FieldName: "DomainForFabric", APIField: &fabricReq.DomainForFabric, TFValue: plan.DomainForFabric},
+		{FieldName: "DomainForFabricRefType", APIField: &fabricReq.DomainForFabricRefType, TFValue: plan.DomainForFabricRefType},
 		{FieldName: "DscpToPBitMap", APIField: &fabricReq.DscpToPBitMap, TFValue: plan.DscpToPBitMap},
 		{FieldName: "SwitchIpBase", APIField: &fabricReq.SwitchIpBase, TFValue: plan.SwitchIpBase},
 		{FieldName: "ControllerIpBase", APIField: &fabricReq.ControllerIpBase, TFValue: plan.ControllerIpBase},
@@ -906,10 +906,10 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { fabricReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PlaneCount, state.PlaneCount, func(v *string) { fabricReq.PlaneCount = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SuSize, state.SuSize, func(v *string) { fabricReq.SuSize = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.SiteType, state.SiteType, func(v *string) { fabricReq.SiteType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.FabricType, state.FabricType, func(v *string) { fabricReq.FabricType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SpanningTreeType, state.SpanningTreeType, func(v *string) { fabricReq.SpanningTreeType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RegionName, state.RegionName, func(v *string) { fabricReq.RegionName = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.DomainForSite, state.DomainForSite, func(v *string) { fabricReq.DomainForSite = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.DomainForFabric, state.DomainForFabric, func(v *string) { fabricReq.DomainForFabric = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DscpToPBitMap, state.DscpToPBitMap, func(v *string) { fabricReq.DscpToPBitMap = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SwitchIpBase, state.SwitchIpBase, func(v *string) { fabricReq.SwitchIpBase = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ControllerIpBase, state.ControllerIpBase, func(v *string) { fabricReq.ControllerIpBase = v }, &hasChanges)
@@ -1047,22 +1047,22 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle service_for_site and service_for_site_ref_type_ fields using "One ref type supported" pattern
+	// Handle service_for_fabric and service_for_fabric_ref_type_ fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
-		plan.ServiceForSite, state.ServiceForSite, plan.ServiceForSiteRefType, state.ServiceForSiteRefType,
-		func(v *string) { fabricReq.ServiceForSite = v },
-		func(v *string) { fabricReq.ServiceForSiteRefType = v },
-		"service_for_site", "service_for_site_ref_type_",
+		plan.ServiceForFabric, state.ServiceForFabric, plan.ServiceForFabricRefType, state.ServiceForFabricRefType,
+		func(v *string) { fabricReq.ServiceForFabric = v },
+		func(v *string) { fabricReq.ServiceForFabricRefType = v },
+		"service_for_fabric", "service_for_fabric_ref_type_",
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
 	}
 
 	if !utils.HandleOneRefTypeSupported(
-		plan.DomainForSite, state.DomainForSite, plan.DomainForSiteRefType, state.DomainForSiteRefType,
-		func(v *string) { fabricReq.DomainForSite = v },
-		func(v *string) { fabricReq.DomainForSiteRefType = v },
-		"domain_for_site", "domain_for_site_ref_type_",
+		plan.DomainForFabric, state.DomainForFabric, plan.DomainForFabricRefType, state.DomainForFabricRefType,
+		func(v *string) { fabricReq.DomainForFabric = v },
+		func(v *string) { fabricReq.DomainForFabricRefType = v },
+		"domain_for_fabric", "domain_for_fabric_ref_type_",
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
@@ -1259,15 +1259,15 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 	state.AnycastMacAddressAutoAssigned = utils.MapBoolWithMode(fabricData, "anycast_mac_address_auto_assigned_", resourceType, mode)
 
 	// String fields
-	state.SiteType = utils.MapStringWithMode(fabricData, "site_type", resourceType, mode)
+	state.FabricType = utils.MapStringWithMode(fabricData, "fabric_type", resourceType, mode)
 	state.PlaneCount = utils.MapStringWithMode(fabricData, "plane_count", resourceType, mode)
 	state.SuSize = utils.MapStringWithMode(fabricData, "su_size", resourceType, mode)
-	state.ServiceForSite = utils.MapStringWithMode(fabricData, "service_for_site", resourceType, mode)
-	state.ServiceForSiteRefType = utils.MapStringWithMode(fabricData, "service_for_site_ref_type_", resourceType, mode)
+	state.ServiceForFabric = utils.MapStringWithMode(fabricData, "service_for_fabric", resourceType, mode)
+	state.ServiceForFabricRefType = utils.MapStringWithMode(fabricData, "service_for_fabric_ref_type_", resourceType, mode)
 	state.SpanningTreeType = utils.MapStringWithMode(fabricData, "spanning_tree_type", resourceType, mode)
 	state.RegionName = utils.MapStringWithMode(fabricData, "region_name", resourceType, mode)
-	state.DomainForSite = utils.MapStringWithMode(fabricData, "domain_for_site", resourceType, mode)
-	state.DomainForSiteRefType = utils.MapStringWithMode(fabricData, "domain_for_site_ref_type_", resourceType, mode)
+	state.DomainForFabric = utils.MapStringWithMode(fabricData, "domain_for_fabric", resourceType, mode)
+	state.DomainForFabricRefType = utils.MapStringWithMode(fabricData, "domain_for_fabric_ref_type_", resourceType, mode)
 	state.DscpToPBitMap = utils.MapStringWithMode(fabricData, "dscp_to_p_bit_map", resourceType, mode)
 	state.AnycastMacAddress = utils.MapStringWithMode(fabricData, "anycast_mac_address", resourceType, mode)
 	state.SwitchIpBase = utils.MapStringWithMode(fabricData, "switch_ip_base", resourceType, mode)
@@ -1374,10 +1374,10 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 	}
 
 	nullifier.NullifyStrings(
-		"site_type", "plane_count", "su_size",
-		"service_for_site", "service_for_site_ref_type_",
+		"fabric_type", "plane_count", "su_size",
+		"service_for_fabric", "service_for_fabric_ref_type_",
 		"spanning_tree_type", "region_name",
-		"domain_for_site", "domain_for_site_ref_type_",
+		"domain_for_fabric", "domain_for_fabric_ref_type_",
 		"dscp_to_p_bit_map", "anycast_mac_address",
 		"switch_ip_base", "controller_ip_base",
 		"switch_username", "switch_password", "switch_password_encrypted",

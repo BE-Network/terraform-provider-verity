@@ -3,7 +3,7 @@
     "TOR Complex": {
       "name": "TOR Complex",
       "enable": true,
-      "service_for_site": "Management",
+      "service_for_fabric": "Management",
       "spanning_tree_type": "",
       "region_name": "",
       "revision": 0,
@@ -29,7 +29,7 @@
       "duplicate_address_detection_max_number_of_moves": 5,
       "duplicate_address_detection_time": 180,
       "anycast_mac_address_auto_assigned_": true,
-      "service_for_site_ref_type_": "service",
+      "service_for_fabric_ref_type_": "service",
       "pairs": [
         {
           "name": "12",

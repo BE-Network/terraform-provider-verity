@@ -42,8 +42,8 @@ type verityPlaneResource struct {
 type verityPlaneResourceModel struct {
 	Name             types.String                       `tfsdk:"name"`
 	Enable           types.Bool                         `tfsdk:"enable"`
-	Site             types.String                       `tfsdk:"site"`
-	SiteRefType      types.String                       `tfsdk:"site_ref_type_"`
+	Fabric           types.String                       `tfsdk:"fabric"`
+	FabricRefType    types.String                       `tfsdk:"fabric_ref_type_"`
 	Position         types.Number                       `tfsdk:"position"`
 	ObjectProperties []verityPlaneObjectPropertiesModel `tfsdk:"object_properties"`
 }
@@ -92,13 +92,13 @@ func (r *verityPlaneResource) Schema(ctx context.Context, req resource.SchemaReq
 				Optional:    true,
 				Computed:    true,
 			},
-			"site": schema.StringAttribute{
+			"fabric": schema.StringAttribute{
 				Description: "Fabric this Plane is assigned to",
 				Optional:    true,
 				Computed:    true,
 			},
-			"site_ref_type_": schema.StringAttribute{
-				Description: "Object type for site field",
+			"fabric_ref_type_": schema.StringAttribute{
+				Description: "Object type for fabric field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -155,8 +155,8 @@ func (r *verityPlaneResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
-		{FieldName: "Site", APIField: &planeReq.Site, TFValue: plan.Site},
-		{FieldName: "SiteRefType", APIField: &planeReq.SiteRefType, TFValue: plan.SiteRefType},
+		{FieldName: "Fabric", APIField: &planeReq.Fabric, TFValue: plan.Fabric},
+		{FieldName: "FabricRefType", APIField: &planeReq.FabricRefType, TFValue: plan.FabricRefType},
 	})
 
 	// Handle boolean fields
@@ -376,12 +376,12 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 	// Handle nullable number field changes
 	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { planeReq.Position = *v }, &hasChanges)
 
-	// Handle Site and SiteRefType using "One ref type supported" pattern
+	// Handle Fabric and FabricRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
-		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,
-		func(v *string) { planeReq.Site = v },
-		func(v *string) { planeReq.SiteRefType = v },
-		"site", "site_ref_type_",
+		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
+		func(v *string) { planeReq.Fabric = v },
+		func(v *string) { planeReq.FabricRefType = v },
+		"fabric", "fabric_ref_type_",
 		&hasChanges,
 		&resp.Diagnostics,
 	) {
@@ -494,8 +494,8 @@ func populatePlaneState(ctx context.Context, state verityPlaneResourceModel, dat
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
 	// String fields
-	state.Site = utils.MapStringWithMode(data, "site", resourceType, mode)
-	state.SiteRefType = utils.MapStringWithMode(data, "site_ref_type_", resourceType, mode)
+	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
+	state.FabricRefType = utils.MapStringWithMode(data, "fabric_ref_type_", resourceType, mode)
 
 	// Handle object_properties list block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
@@ -549,7 +549,7 @@ func (r *verityPlaneResource) ModifyPlan(ctx context.Context, req resource.Modif
 		Plan:         &resp.Plan,
 	}
 
-	nullifier.NullifyStrings("site", "site_ref_type_")
+	nullifier.NullifyStrings("fabric", "fabric_ref_type_")
 	nullifier.NullifyBools("enable")
 	nullifier.NullifyNumbers("position")
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{

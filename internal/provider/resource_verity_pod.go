@@ -43,8 +43,8 @@ type verityPodResourceModel struct {
 	Name               types.String                     `tfsdk:"name"`
 	Enable             types.Bool                       `tfsdk:"enable"`
 	ExpectedSpineCount types.Int64                      `tfsdk:"expected_spine_count"`
-	Site               types.String                     `tfsdk:"site"`
-	SiteRefType        types.String                     `tfsdk:"site_ref_type_"`
+	Fabric             types.String                     `tfsdk:"fabric"`
+	FabricRefType      types.String                     `tfsdk:"fabric_ref_type_"`
 	Position           types.Number                     `tfsdk:"position"`
 	ObjectProperties   []verityPodObjectPropertiesModel `tfsdk:"object_properties"`
 }
@@ -98,13 +98,13 @@ func (r *verityPodResource) Schema(ctx context.Context, req resource.SchemaReque
 				Optional:    true,
 				Computed:    true,
 			},
-			"site": schema.StringAttribute{
+			"fabric": schema.StringAttribute{
 				Description: "Fabric this Pod is assigned to",
 				Optional:    true,
 				Computed:    true,
 			},
-			"site_ref_type_": schema.StringAttribute{
-				Description: "Object type for site field",
+			"fabric_ref_type_": schema.StringAttribute{
+				Description: "Object type for fabric field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -161,8 +161,8 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 
 	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
-		{FieldName: "Site", APIField: &podReq.Site, TFValue: plan.Site},
-		{FieldName: "SiteRefType", APIField: &podReq.SiteRefType, TFValue: plan.SiteRefType},
+		{FieldName: "Fabric", APIField: &podReq.Fabric, TFValue: plan.Fabric},
+		{FieldName: "FabricRefType", APIField: &podReq.FabricRefType, TFValue: plan.FabricRefType},
 	})
 
 	// Handle boolean fields
@@ -386,12 +386,12 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	utils.CompareAndSetNullableInt64Field(config.ExpectedSpineCount, state.ExpectedSpineCount, configuredAttrs.IsConfigured("expected_spine_count"), func(v *openapi.NullableInt64) { podReq.ExpectedSpineCount = *v }, &hasChanges)
 	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { podReq.Position = *v }, &hasChanges)
 
-	// Handle site and site_ref_type_ using "One ref type supported" pattern
+	// Handle fabric and fabric_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
-		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,
-		func(v *string) { podReq.Site = v },
-		func(v *string) { podReq.SiteRefType = v },
-		"site", "site_ref_type_",
+		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
+		func(v *string) { podReq.Fabric = v },
+		func(v *string) { podReq.FabricRefType = v },
+		"fabric", "fabric_ref_type_",
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
@@ -510,8 +510,8 @@ func populatePodState(ctx context.Context, state verityPodResourceModel, data ma
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
 	// String fields
-	state.Site = utils.MapStringWithMode(data, "site", resourceType, mode)
-	state.SiteRefType = utils.MapStringWithMode(data, "site_ref_type_", resourceType, mode)
+	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
+	state.FabricRefType = utils.MapStringWithMode(data, "fabric_ref_type_", resourceType, mode)
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
@@ -560,7 +560,7 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	}
 
 	nullifier.NullifyStrings(
-		"site", "site_ref_type_",
+		"fabric", "fabric_ref_type_",
 	)
 
 	nullifier.NullifyBools(

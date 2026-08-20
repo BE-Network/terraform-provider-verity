@@ -44,8 +44,8 @@ type verityGatewayResourceModel struct {
 	Enable                     types.Bool                       `tfsdk:"enable"`
 	Tenant                     types.String                     `tfsdk:"tenant"`
 	TenantRefType              types.String                     `tfsdk:"tenant_ref_type_"`
-	Site                       types.String                     `tfsdk:"site"`
-	SiteRefType                types.String                     `tfsdk:"site_ref_type_"`
+	Fabric                     types.String                     `tfsdk:"fabric"`
+	FabricRefType              types.String                     `tfsdk:"fabric_ref_type_"`
 	NeighborIpAddress          types.String                     `tfsdk:"neighbor_ip_address"`
 	NeighborAsNumber           types.Int64                      `tfsdk:"neighbor_as_number"`
 	FabricInterconnect         types.Bool                       `tfsdk:"fabric_interconnect"`
@@ -148,13 +148,13 @@ func (r *verityGatewayResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:    true,
 				Computed:    true,
 			},
-			"site": schema.StringAttribute{
+			"fabric": schema.StringAttribute{
 				Description: "Fabric this Gateway is assigned to",
 				Optional:    true,
 				Computed:    true,
 			},
-			"site_ref_type_": schema.StringAttribute{
-				Description: "Object type for site field",
+			"fabric_ref_type_": schema.StringAttribute{
+				Description: "Object type for fabric field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -412,8 +412,8 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Tenant", APIField: &gatewayProps.Tenant, TFValue: plan.Tenant},
 		{FieldName: "TenantRefType", APIField: &gatewayProps.TenantRefType, TFValue: plan.TenantRefType},
-		{FieldName: "Site", APIField: &gatewayProps.Site, TFValue: plan.Site},
-		{FieldName: "SiteRefType", APIField: &gatewayProps.SiteRefType, TFValue: plan.SiteRefType},
+		{FieldName: "Fabric", APIField: &gatewayProps.Fabric, TFValue: plan.Fabric},
+		{FieldName: "FabricRefType", APIField: &gatewayProps.FabricRefType, TFValue: plan.FabricRefType},
 		{FieldName: "NeighborIpAddress", APIField: &gatewayProps.NeighborIpAddress, TFValue: plan.NeighborIpAddress},
 		{FieldName: "SourceIpAddress", APIField: &gatewayProps.SourceIpAddress, TFValue: plan.SourceIpAddress},
 		{FieldName: "AnycastIpMask", APIField: &gatewayProps.AnycastIpMask, TFValue: plan.AnycastIpMask},
@@ -731,12 +731,12 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Handle Site and SiteRefType using "One ref type supported" pattern
+	// Handle Fabric and FabricRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
-		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,
-		func(v *string) { gatewayProps.Site = v },
-		func(v *string) { gatewayProps.SiteRefType = v },
-		"site", "site_ref_type_",
+		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
+		func(v *string) { gatewayProps.Fabric = v },
+		func(v *string) { gatewayProps.FabricRefType = v },
+		"fabric", "fabric_ref_type_",
 		&hasChanges,
 		&resp.Diagnostics,
 	) {
@@ -950,8 +950,8 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 	// String fields
 	state.Tenant = utils.MapStringWithMode(data, "tenant", resourceType, mode)
 	state.TenantRefType = utils.MapStringWithMode(data, "tenant_ref_type_", resourceType, mode)
-	state.Site = utils.MapStringWithMode(data, "site", resourceType, mode)
-	state.SiteRefType = utils.MapStringWithMode(data, "site_ref_type_", resourceType, mode)
+	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
+	state.FabricRefType = utils.MapStringWithMode(data, "fabric_ref_type_", resourceType, mode)
 	state.NeighborIpAddress = utils.MapStringWithMode(data, "neighbor_ip_address", resourceType, mode)
 	state.SourceIpAddress = utils.MapStringWithMode(data, "source_ip_address", resourceType, mode)
 	state.AnycastIpMask = utils.MapStringWithMode(data, "anycast_ip_mask", resourceType, mode)
@@ -1029,7 +1029,7 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 	}
 
 	nullifier.NullifyStrings(
-		"tenant", "tenant_ref_type_", "site", "site_ref_type_", "neighbor_ip_address", "source_ip_address",
+		"tenant", "tenant_ref_type_", "fabric", "fabric_ref_type_", "neighbor_ip_address", "source_ip_address",
 		"anycast_ip_mask", "md5_password", "md5_password_encrypted",
 		"import_route_map", "export_route_map", "gateway_mode",
 		"dynamic_bgp_subnet", "helper_hop_ip_address",

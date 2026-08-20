@@ -8,8 +8,8 @@
 resource "verity_plane" "example" {
   name           = "plane-a"
   enable         = true
-  site           = "fabric-a"
-  site_ref_type_ = "fabric"
+  fabric           = "fabric-a"
+  fabric_ref_type_ = "fabric"
   position       = 1
 
   object_properties {
@@ -22,8 +22,8 @@ resource "verity_plane" "example" {
 
 * `name` (String) - Template Name. Must be unique within type.
 * `enable` (Boolean) - Enable object.
-* `site` (String) - Fabric this Plane is assigned to.
-* `site_ref_type_` (String) - Object type for `site` field.
+* `fabric` (String) - Fabric this Plane is assigned to.
+* `fabric_ref_type_` (String) - Object type for `fabric` field.
 * `position` (Number) - Position of the Plane.
 * `object_properties` (Object) -
   * `notes` (String) - User Notes.

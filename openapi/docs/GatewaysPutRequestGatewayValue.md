@@ -12,8 +12,8 @@ Name | Type | Description | Notes
 **BfdMultihop** | Pointer to **bool** | Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers. | [optional] [default to false]
 **Tenant** | Pointer to **string** | Tenant | [optional] [default to ""]
 **TenantRefType** | Pointer to **string** | Object type for tenant field | [optional] 
-**Site** | Pointer to **string** | Fabric this Gateway is assigned to | [optional] [default to ""]
-**SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
+**Fabric** | Pointer to **string** | Fabric this Gateway is assigned to | [optional] [default to ""]
+**FabricRefType** | Pointer to **string** | Object type for fabric field | [optional] 
 **Type** | Pointer to **string** | Gateway classification | [optional] [default to "tenant"]
 **NeighborIpAddress** | Pointer to **string** | IP address of remote BGP peer | [optional] [default to ""]
 **NeighborAsNumber** | Pointer to **NullableInt64** | Autonomous System Number of remote BGP peer  | [optional] 
@@ -268,55 +268,55 @@ SetTenantRefType sets TenantRefType field to given value.
 
 HasTenantRefType returns a boolean if a field has been set.
 
-### GetSite
+### GetFabric
 
-`func (o *GatewaysPutRequestGatewayValue) GetSite() string`
+`func (o *GatewaysPutRequestGatewayValue) GetFabric() string`
 
-GetSite returns the Site field if non-nil, zero value otherwise.
+GetFabric returns the Fabric field if non-nil, zero value otherwise.
 
-### GetSiteOk
+### GetFabricOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetSiteOk() (*string, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetFabricOk() (*string, bool)`
 
-GetSiteOk returns a tuple with the Site field if it's non-nil, zero value otherwise
+GetFabricOk returns a tuple with the Fabric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSite
+### SetFabric
 
-`func (o *GatewaysPutRequestGatewayValue) SetSite(v string)`
+`func (o *GatewaysPutRequestGatewayValue) SetFabric(v string)`
 
-SetSite sets Site field to given value.
+SetFabric sets Fabric field to given value.
 
-### HasSite
+### HasFabric
 
-`func (o *GatewaysPutRequestGatewayValue) HasSite() bool`
+`func (o *GatewaysPutRequestGatewayValue) HasFabric() bool`
 
-HasSite returns a boolean if a field has been set.
+HasFabric returns a boolean if a field has been set.
 
-### GetSiteRefType
+### GetFabricRefType
 
-`func (o *GatewaysPutRequestGatewayValue) GetSiteRefType() string`
+`func (o *GatewaysPutRequestGatewayValue) GetFabricRefType() string`
 
-GetSiteRefType returns the SiteRefType field if non-nil, zero value otherwise.
+GetFabricRefType returns the FabricRefType field if non-nil, zero value otherwise.
 
-### GetSiteRefTypeOk
+### GetFabricRefTypeOk
 
-`func (o *GatewaysPutRequestGatewayValue) GetSiteRefTypeOk() (*string, bool)`
+`func (o *GatewaysPutRequestGatewayValue) GetFabricRefTypeOk() (*string, bool)`
 
-GetSiteRefTypeOk returns a tuple with the SiteRefType field if it's non-nil, zero value otherwise
+GetFabricRefTypeOk returns a tuple with the FabricRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSiteRefType
+### SetFabricRefType
 
-`func (o *GatewaysPutRequestGatewayValue) SetSiteRefType(v string)`
+`func (o *GatewaysPutRequestGatewayValue) SetFabricRefType(v string)`
 
-SetSiteRefType sets SiteRefType field to given value.
+SetFabricRefType sets FabricRefType field to given value.
 
-### HasSiteRefType
+### HasFabricRefType
 
-`func (o *GatewaysPutRequestGatewayValue) HasSiteRefType() bool`
+`func (o *GatewaysPutRequestGatewayValue) HasFabricRefType() bool`
 
-HasSiteRefType returns a boolean if a field has been set.
+HasFabricRefType returns a boolean if a field has been set.
 
 ### GetType
 

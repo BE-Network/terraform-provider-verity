@@ -20,9 +20,9 @@ var _ MappedNullable = &LagsPutRequestLagValueObjectProperties{}
 // LagsPutRequestLagValueObjectProperties struct for LagsPutRequestLagValueObjectProperties
 type LagsPutRequestLagValueObjectProperties struct {
 	// Choose a Fabric
-	Site *string `json:"site,omitempty"`
-	// Object type for site field
-	SiteRefType *string `json:"site_ref_type_,omitempty"`
+	Fabric *string `json:"fabric,omitempty"`
+	// Object type for fabric field
+	FabricRefType *string `json:"fabric_ref_type_,omitempty"`
 }
 
 // NewLagsPutRequestLagValueObjectProperties instantiates a new LagsPutRequestLagValueObjectProperties object
@@ -31,8 +31,8 @@ type LagsPutRequestLagValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewLagsPutRequestLagValueObjectProperties() *LagsPutRequestLagValueObjectProperties {
 	this := LagsPutRequestLagValueObjectProperties{}
-	var site string = ""
-	this.Site = &site
+	var fabric string = ""
+	this.Fabric = &fabric
 	return &this
 }
 
@@ -41,73 +41,73 @@ func NewLagsPutRequestLagValueObjectProperties() *LagsPutRequestLagValueObjectPr
 // but it doesn't guarantee that properties required by API are set
 func NewLagsPutRequestLagValueObjectPropertiesWithDefaults() *LagsPutRequestLagValueObjectProperties {
 	this := LagsPutRequestLagValueObjectProperties{}
-	var site string = ""
-	this.Site = &site
+	var fabric string = ""
+	this.Fabric = &fabric
 	return &this
 }
 
-// GetSite returns the Site field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValueObjectProperties) GetSite() string {
-	if o == nil || IsNil(o.Site) {
+// GetFabric returns the Fabric field value if set, zero value otherwise.
+func (o *LagsPutRequestLagValueObjectProperties) GetFabric() string {
+	if o == nil || IsNil(o.Fabric) {
 		var ret string
 		return ret
 	}
-	return *o.Site
+	return *o.Fabric
 }
 
-// GetSiteOk returns a tuple with the Site field value if set, nil otherwise
+// GetFabricOk returns a tuple with the Fabric field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValueObjectProperties) GetSiteOk() (*string, bool) {
-	if o == nil || IsNil(o.Site) {
+func (o *LagsPutRequestLagValueObjectProperties) GetFabricOk() (*string, bool) {
+	if o == nil || IsNil(o.Fabric) {
 		return nil, false
 	}
-	return o.Site, true
+	return o.Fabric, true
 }
 
-// HasSite returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValueObjectProperties) HasSite() bool {
-	if o != nil && !IsNil(o.Site) {
+// HasFabric returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValueObjectProperties) HasFabric() bool {
+	if o != nil && !IsNil(o.Fabric) {
 		return true
 	}
 
 	return false
 }
 
-// SetSite gets a reference to the given string and assigns it to the Site field.
-func (o *LagsPutRequestLagValueObjectProperties) SetSite(v string) {
-	o.Site = &v
+// SetFabric gets a reference to the given string and assigns it to the Fabric field.
+func (o *LagsPutRequestLagValueObjectProperties) SetFabric(v string) {
+	o.Fabric = &v
 }
 
-// GetSiteRefType returns the SiteRefType field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValueObjectProperties) GetSiteRefType() string {
-	if o == nil || IsNil(o.SiteRefType) {
+// GetFabricRefType returns the FabricRefType field value if set, zero value otherwise.
+func (o *LagsPutRequestLagValueObjectProperties) GetFabricRefType() string {
+	if o == nil || IsNil(o.FabricRefType) {
 		var ret string
 		return ret
 	}
-	return *o.SiteRefType
+	return *o.FabricRefType
 }
 
-// GetSiteRefTypeOk returns a tuple with the SiteRefType field value if set, nil otherwise
+// GetFabricRefTypeOk returns a tuple with the FabricRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValueObjectProperties) GetSiteRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.SiteRefType) {
+func (o *LagsPutRequestLagValueObjectProperties) GetFabricRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.FabricRefType) {
 		return nil, false
 	}
-	return o.SiteRefType, true
+	return o.FabricRefType, true
 }
 
-// HasSiteRefType returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValueObjectProperties) HasSiteRefType() bool {
-	if o != nil && !IsNil(o.SiteRefType) {
+// HasFabricRefType returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValueObjectProperties) HasFabricRefType() bool {
+	if o != nil && !IsNil(o.FabricRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetSiteRefType gets a reference to the given string and assigns it to the SiteRefType field.
-func (o *LagsPutRequestLagValueObjectProperties) SetSiteRefType(v string) {
-	o.SiteRefType = &v
+// SetFabricRefType gets a reference to the given string and assigns it to the FabricRefType field.
+func (o *LagsPutRequestLagValueObjectProperties) SetFabricRefType(v string) {
+	o.FabricRefType = &v
 }
 
 func (o LagsPutRequestLagValueObjectProperties) MarshalJSON() ([]byte, error) {
@@ -120,11 +120,11 @@ func (o LagsPutRequestLagValueObjectProperties) MarshalJSON() ([]byte, error) {
 
 func (o LagsPutRequestLagValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Site) {
-		toSerialize["site"] = o.Site
+	if !IsNil(o.Fabric) {
+		toSerialize["fabric"] = o.Fabric
 	}
-	if !IsNil(o.SiteRefType) {
-		toSerialize["site_ref_type_"] = o.SiteRefType
+	if !IsNil(o.FabricRefType) {
+		toSerialize["fabric_ref_type_"] = o.FabricRefType
 	}
 	return toSerialize, nil
 }

@@ -42,8 +42,8 @@ type veritySspGroupResource struct {
 type veritySspGroupResourceModel struct {
 	Name             types.String                          `tfsdk:"name"`
 	Enable           types.Bool                            `tfsdk:"enable"`
-	Site             types.String                          `tfsdk:"site"`
-	SiteRefType      types.String                          `tfsdk:"site_ref_type_"`
+	Fabric           types.String                          `tfsdk:"fabric"`
+	FabricRefType    types.String                          `tfsdk:"fabric_ref_type_"`
 	Position         types.Number                          `tfsdk:"position"`
 	ObjectProperties []veritySspGroupObjectPropertiesModel `tfsdk:"object_properties"`
 }
@@ -92,13 +92,13 @@ func (r *veritySspGroupResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 			},
-			"site": schema.StringAttribute{
+			"fabric": schema.StringAttribute{
 				Description: "Fabric this SuperSpine Group is assigned to",
 				Optional:    true,
 				Computed:    true,
 			},
-			"site_ref_type_": schema.StringAttribute{
-				Description: "Object type for site field",
+			"fabric_ref_type_": schema.StringAttribute{
+				Description: "Object type for fabric field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -154,8 +154,8 @@ func (r *veritySspGroupResource) Create(ctx context.Context, req resource.Create
 	}
 
 	utils.SetStringFields([]utils.StringFieldMapping{
-		{FieldName: "Site", APIField: &sspGroupReq.Site, TFValue: plan.Site},
-		{FieldName: "SiteRefType", APIField: &sspGroupReq.SiteRefType, TFValue: plan.SiteRefType},
+		{FieldName: "Fabric", APIField: &sspGroupReq.Fabric, TFValue: plan.Fabric},
+		{FieldName: "FabricRefType", APIField: &sspGroupReq.FabricRefType, TFValue: plan.FabricRefType},
 	})
 
 	utils.SetBoolFields([]utils.BoolFieldMapping{
@@ -354,10 +354,10 @@ func (r *veritySspGroupResource) Update(ctx context.Context, req resource.Update
 	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { sspGroupReq.Position = *v }, &hasChanges)
 
 	if !utils.HandleOneRefTypeSupported(
-		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,
-		func(v *string) { sspGroupReq.Site = v },
-		func(v *string) { sspGroupReq.SiteRefType = v },
-		"site", "site_ref_type_",
+		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
+		func(v *string) { sspGroupReq.Fabric = v },
+		func(v *string) { sspGroupReq.FabricRefType = v },
+		"fabric", "fabric_ref_type_",
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
@@ -463,8 +463,8 @@ func populateSspGroupState(ctx context.Context, state veritySspGroupResourceMode
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
-	state.Site = utils.MapStringWithMode(data, "site", resourceType, mode)
-	state.SiteRefType = utils.MapStringWithMode(data, "site_ref_type_", resourceType, mode)
+	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
+	state.FabricRefType = utils.MapStringWithMode(data, "fabric_ref_type_", resourceType, mode)
 	state.Position = utils.MapNumberWithMode(data, "position", resourceType, mode)
 
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
@@ -506,7 +506,7 @@ func (r *veritySspGroupResource) ModifyPlan(ctx context.Context, req resource.Mo
 	}
 
 	nullifier.NullifyStrings(
-		"site", "site_ref_type_",
+		"fabric", "fabric_ref_type_",
 	)
 
 	nullifier.NullifyBools(

@@ -7,8 +7,8 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
 **ExpectedSpineCount** | Pointer to **NullableInt64** | Number of spine switches expected in this pod | [optional] [default to 1]
-**Site** | Pointer to **string** | Fabric this Pod is assigned to | [optional] [default to ""]
-**SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
+**Fabric** | Pointer to **string** | Fabric this Pod is assigned to | [optional] [default to ""]
+**FabricRefType** | Pointer to **string** | Object type for fabric field | [optional] 
 **Position** | Pointer to **NullableFloat64** | Position of the Switch | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
@@ -116,55 +116,55 @@ HasExpectedSpineCount returns a boolean if a field has been set.
 `func (o *PodsPutRequestPodValue) UnsetExpectedSpineCount()`
 
 UnsetExpectedSpineCount ensures that no value is present for ExpectedSpineCount, not even an explicit nil
-### GetSite
+### GetFabric
 
-`func (o *PodsPutRequestPodValue) GetSite() string`
+`func (o *PodsPutRequestPodValue) GetFabric() string`
 
-GetSite returns the Site field if non-nil, zero value otherwise.
+GetFabric returns the Fabric field if non-nil, zero value otherwise.
 
-### GetSiteOk
+### GetFabricOk
 
-`func (o *PodsPutRequestPodValue) GetSiteOk() (*string, bool)`
+`func (o *PodsPutRequestPodValue) GetFabricOk() (*string, bool)`
 
-GetSiteOk returns a tuple with the Site field if it's non-nil, zero value otherwise
+GetFabricOk returns a tuple with the Fabric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSite
+### SetFabric
 
-`func (o *PodsPutRequestPodValue) SetSite(v string)`
+`func (o *PodsPutRequestPodValue) SetFabric(v string)`
 
-SetSite sets Site field to given value.
+SetFabric sets Fabric field to given value.
 
-### HasSite
+### HasFabric
 
-`func (o *PodsPutRequestPodValue) HasSite() bool`
+`func (o *PodsPutRequestPodValue) HasFabric() bool`
 
-HasSite returns a boolean if a field has been set.
+HasFabric returns a boolean if a field has been set.
 
-### GetSiteRefType
+### GetFabricRefType
 
-`func (o *PodsPutRequestPodValue) GetSiteRefType() string`
+`func (o *PodsPutRequestPodValue) GetFabricRefType() string`
 
-GetSiteRefType returns the SiteRefType field if non-nil, zero value otherwise.
+GetFabricRefType returns the FabricRefType field if non-nil, zero value otherwise.
 
-### GetSiteRefTypeOk
+### GetFabricRefTypeOk
 
-`func (o *PodsPutRequestPodValue) GetSiteRefTypeOk() (*string, bool)`
+`func (o *PodsPutRequestPodValue) GetFabricRefTypeOk() (*string, bool)`
 
-GetSiteRefTypeOk returns a tuple with the SiteRefType field if it's non-nil, zero value otherwise
+GetFabricRefTypeOk returns a tuple with the FabricRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSiteRefType
+### SetFabricRefType
 
-`func (o *PodsPutRequestPodValue) SetSiteRefType(v string)`
+`func (o *PodsPutRequestPodValue) SetFabricRefType(v string)`
 
-SetSiteRefType sets SiteRefType field to given value.
+SetFabricRefType sets FabricRefType field to given value.
 
-### HasSiteRefType
+### HasFabricRefType
 
-`func (o *PodsPutRequestPodValue) HasSiteRefType() bool`
+`func (o *PodsPutRequestPodValue) HasFabricRefType() bool`
 
-HasSiteRefType returns a boolean if a field has been set.
+HasFabricRefType returns a boolean if a field has been set.
 
 ### GetPosition
 

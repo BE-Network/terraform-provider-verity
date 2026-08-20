@@ -11,16 +11,16 @@ resource "verity_fabric" "example" {
   plane_count = "1"
   su_size = "32"
   server_management = true
-  site_type = "enterprise"
-  service_for_site = "Management"
-  service_for_site_ref_type_ = "service"
+  fabric_type = "enterprise"
+  service_for_fabric = "Management"
+  service_for_fabric_ref_type_ = "service"
   spanning_tree_type = "pvst"
   region_name = ""
   revision = 0
   force_spanning_tree_on_fabric_ports = false
   read_only_mode = false
-  domain_for_site = ""
-  domain_for_site_ref_type_ = "site_collection"
+  domain_for_fabric = ""
+  domain_for_fabric_ref_type_ = "site_collection"
   enable_dscp = true
   dscp_to_p_bit_map = "0000000011111111222222223333333344444444555555556666666677777777"
   anycast_mac_address_auto_assigned_ = true
@@ -94,9 +94,9 @@ resource "verity_fabric" "example" {
 * `su_support` (Boolean) - Support grouping leaf switches in SUs.
 * `server_management` (Boolean) - Support managing servers.
 * `allow_all_underlay_connections` (Boolean) - Allows underlay connections between PODs.
-* `site_type` (String) - Type of Fabric.
-* `service_for_site` (String) - Service for Fabric.
-* `service_for_site_ref_type_` (String) - Object type for `service_for_site` field.
+* `fabric_type` (String) - Type of Fabric.
+* `service_for_fabric` (String) - Service for Fabric.
+* `service_for_fabric_ref_type_` (String) - Object type for `service_for_fabric` field.
 * `port_admin_polling_interval` (Integer) - Polling interval value in seconds used when aggressive reporting is disabled.
 * `port_status_polling_interval` (Integer) - Polling interval value in seconds used when aggressive reporting is disabled.
 * `spanning_tree_type` (String) - Sets the spanning tree type for all Ports in this Fabric with Spanning Tree enabled.
@@ -104,8 +104,8 @@ resource "verity_fabric" "example" {
 * `revision` (Integer) - Revision for the MSTP configuration.
 * `force_spanning_tree_on_fabric_ports` (Boolean) - Enable spanning tree on all fabric connections.
 * `read_only_mode` (Boolean) - When enabled, vNetC will perform all functions except writing database updates to target hardware.
-* `domain_for_site` (String) - Fabric Collection for Fabric.
-* `domain_for_site_ref_type_` (String) - Object type for `domain_for_site` field.
+* `domain_for_fabric` (String) - Fabric Collection for Fabric.
+* `domain_for_fabric_ref_type_` (String) - Object type for `domain_for_fabric` field.
 * `enable_dscp` (Boolean) - Enable DSCP to p-bit/TC configuration.
 * `dscp_to_p_bit_map` (String) - DSCP to TC map string of length 64.
 * `anycast_mac_address` (String) - Anycast MAC address to use.

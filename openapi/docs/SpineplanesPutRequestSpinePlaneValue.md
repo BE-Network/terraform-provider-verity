@@ -6,8 +6,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
-**Site** | Pointer to **string** | Fabric this Spine Plane is assigned to | [optional] [default to ""]
-**SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
+**Fabric** | Pointer to **string** | Fabric this Spine Plane is assigned to | [optional] [default to ""]
+**FabricRefType** | Pointer to **string** | Object type for fabric field | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
 ## Methods
@@ -79,55 +79,55 @@ SetEnable sets Enable field to given value.
 
 HasEnable returns a boolean if a field has been set.
 
-### GetSite
+### GetFabric
 
-`func (o *SpineplanesPutRequestSpinePlaneValue) GetSite() string`
+`func (o *SpineplanesPutRequestSpinePlaneValue) GetFabric() string`
 
-GetSite returns the Site field if non-nil, zero value otherwise.
+GetFabric returns the Fabric field if non-nil, zero value otherwise.
 
-### GetSiteOk
+### GetFabricOk
 
-`func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteOk() (*string, bool)`
+`func (o *SpineplanesPutRequestSpinePlaneValue) GetFabricOk() (*string, bool)`
 
-GetSiteOk returns a tuple with the Site field if it's non-nil, zero value otherwise
+GetFabricOk returns a tuple with the Fabric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSite
+### SetFabric
 
-`func (o *SpineplanesPutRequestSpinePlaneValue) SetSite(v string)`
+`func (o *SpineplanesPutRequestSpinePlaneValue) SetFabric(v string)`
 
-SetSite sets Site field to given value.
+SetFabric sets Fabric field to given value.
 
-### HasSite
+### HasFabric
 
-`func (o *SpineplanesPutRequestSpinePlaneValue) HasSite() bool`
+`func (o *SpineplanesPutRequestSpinePlaneValue) HasFabric() bool`
 
-HasSite returns a boolean if a field has been set.
+HasFabric returns a boolean if a field has been set.
 
-### GetSiteRefType
+### GetFabricRefType
 
-`func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteRefType() string`
+`func (o *SpineplanesPutRequestSpinePlaneValue) GetFabricRefType() string`
 
-GetSiteRefType returns the SiteRefType field if non-nil, zero value otherwise.
+GetFabricRefType returns the FabricRefType field if non-nil, zero value otherwise.
 
-### GetSiteRefTypeOk
+### GetFabricRefTypeOk
 
-`func (o *SpineplanesPutRequestSpinePlaneValue) GetSiteRefTypeOk() (*string, bool)`
+`func (o *SpineplanesPutRequestSpinePlaneValue) GetFabricRefTypeOk() (*string, bool)`
 
-GetSiteRefTypeOk returns a tuple with the SiteRefType field if it's non-nil, zero value otherwise
+GetFabricRefTypeOk returns a tuple with the FabricRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSiteRefType
+### SetFabricRefType
 
-`func (o *SpineplanesPutRequestSpinePlaneValue) SetSiteRefType(v string)`
+`func (o *SpineplanesPutRequestSpinePlaneValue) SetFabricRefType(v string)`
 
-SetSiteRefType sets SiteRefType field to given value.
+SetFabricRefType sets FabricRefType field to given value.
 
-### HasSiteRefType
+### HasFabricRefType
 
-`func (o *SpineplanesPutRequestSpinePlaneValue) HasSiteRefType() bool`
+`func (o *SpineplanesPutRequestSpinePlaneValue) HasFabricRefType() bool`
 
-HasSiteRefType returns a boolean if a field has been set.
+HasFabricRefType returns a boolean if a field has been set.
 
 ### GetObjectProperties
 

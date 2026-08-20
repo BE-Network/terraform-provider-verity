@@ -54,7 +54,7 @@ type FabricsPutRequestFabricValue struct {
 	// Allows underlay connections between PODs
 	AllowAllUnderlayConnections *bool `json:"allow_all_underlay_connections,omitempty"`
 	// Type of Fabric
-	SiteType *string `json:"site_type,omitempty"`
+	FabricType *string `json:"fabric_type,omitempty"`
 	// Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank)
 	DuplicateAddressDetectionMaxNumberOfMoves NullableInt64 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
 	// Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
@@ -64,9 +64,9 @@ type FabricsPutRequestFabricValue struct {
 	// Polling interval values in seconds, set if aggressive reporting is not enabled
 	PortStatusPollingInterval NullableInt64 `json:"port_status_polling_interval,omitempty"`
 	// Service for Fabric
-	ServiceForSite *string `json:"service_for_site,omitempty"`
-	// Object type for service_for_site field
-	ServiceForSiteRefType *string `json:"service_for_site_ref_type_,omitempty"`
+	ServiceForFabric *string `json:"service_for_fabric,omitempty"`
+	// Object type for service_for_fabric field
+	ServiceForFabricRefType *string `json:"service_for_fabric_ref_type_,omitempty"`
 	// Sets the spanning tree type for all Ports in this Fabric with Spanning Tree enabled
 	SpanningTreeType *string `json:"spanning_tree_type,omitempty"`
 	// Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name
@@ -78,9 +78,9 @@ type FabricsPutRequestFabricValue struct {
 	// When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware
 	ReadOnlyMode *bool `json:"read_only_mode,omitempty"`
 	// Fabric Collection for Fabric
-	DomainForSite *string `json:"domain_for_site,omitempty"`
-	// Object type for domain_for_site field
-	DomainForSiteRefType *string `json:"domain_for_site_ref_type_,omitempty"`
+	DomainForFabric *string `json:"domain_for_fabric,omitempty"`
+	// Object type for domain_for_fabric field
+	DomainForFabricRefType *string `json:"domain_for_fabric_ref_type_,omitempty"`
 	// Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.
 	EnableDscp *bool `json:"enable_dscp,omitempty"`
 	// For any Service that is using DSCP to p-bit map packet prioritization. A string of length 64 with a 0-7 in each position
@@ -195,8 +195,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.ServerManagement = &serverManagement
 	var allowAllUnderlayConnections bool = false
 	this.AllowAllUnderlayConnections = &allowAllUnderlayConnections
-	var siteType string = "enterprise"
-	this.SiteType = &siteType
+	var fabricType string = "enterprise"
+	this.FabricType = &fabricType
 	var duplicateAddressDetectionMaxNumberOfMoves int64 = 5
 	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt64(&duplicateAddressDetectionMaxNumberOfMoves)
 	var duplicateAddressDetectionTime int64 = 180
@@ -205,8 +205,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.PortAdminPollingInterval = *NewNullableInt64(&portAdminPollingInterval)
 	var portStatusPollingInterval int64 = 0
 	this.PortStatusPollingInterval = *NewNullableInt64(&portStatusPollingInterval)
-	var serviceForSite string = "(predefined):Management"
-	this.ServiceForSite = &serviceForSite
+	var serviceForFabric string = "(predefined):Management"
+	this.ServiceForFabric = &serviceForFabric
 	var spanningTreeType string = "pvst"
 	this.SpanningTreeType = &spanningTreeType
 	var regionName string = ""
@@ -217,8 +217,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
 	var readOnlyMode bool = false
 	this.ReadOnlyMode = &readOnlyMode
-	var domainForSite string = ""
-	this.DomainForSite = &domainForSite
+	var domainForFabric string = ""
+	this.DomainForFabric = &domainForFabric
 	var enableDscp bool = true
 	this.EnableDscp = &enableDscp
 	var dscpToPBitMap string = "0000000011111111222222223333333344444444555555556666666677777777"
@@ -321,8 +321,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.ServerManagement = &serverManagement
 	var allowAllUnderlayConnections bool = false
 	this.AllowAllUnderlayConnections = &allowAllUnderlayConnections
-	var siteType string = "enterprise"
-	this.SiteType = &siteType
+	var fabricType string = "enterprise"
+	this.FabricType = &fabricType
 	var duplicateAddressDetectionMaxNumberOfMoves int64 = 5
 	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt64(&duplicateAddressDetectionMaxNumberOfMoves)
 	var duplicateAddressDetectionTime int64 = 180
@@ -331,8 +331,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.PortAdminPollingInterval = *NewNullableInt64(&portAdminPollingInterval)
 	var portStatusPollingInterval int64 = 0
 	this.PortStatusPollingInterval = *NewNullableInt64(&portStatusPollingInterval)
-	var serviceForSite string = "(predefined):Management"
-	this.ServiceForSite = &serviceForSite
+	var serviceForFabric string = "(predefined):Management"
+	this.ServiceForFabric = &serviceForFabric
 	var spanningTreeType string = "pvst"
 	this.SpanningTreeType = &spanningTreeType
 	var regionName string = ""
@@ -343,8 +343,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
 	var readOnlyMode bool = false
 	this.ReadOnlyMode = &readOnlyMode
-	var domainForSite string = ""
-	this.DomainForSite = &domainForSite
+	var domainForFabric string = ""
+	this.DomainForFabric = &domainForFabric
 	var enableDscp bool = true
 	this.EnableDscp = &enableDscp
 	var dscpToPBitMap string = "0000000011111111222222223333333344444444555555556666666677777777"
@@ -952,36 +952,36 @@ func (o *FabricsPutRequestFabricValue) SetAllowAllUnderlayConnections(v bool) {
 	o.AllowAllUnderlayConnections = &v
 }
 
-// GetSiteType returns the SiteType field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSiteType() string {
-	if o == nil || IsNil(o.SiteType) {
+// GetFabricType returns the FabricType field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetFabricType() string {
+	if o == nil || IsNil(o.FabricType) {
 		var ret string
 		return ret
 	}
-	return *o.SiteType
+	return *o.FabricType
 }
 
-// GetSiteTypeOk returns a tuple with the SiteType field value if set, nil otherwise
+// GetFabricTypeOk returns a tuple with the FabricType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSiteTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.SiteType) {
+func (o *FabricsPutRequestFabricValue) GetFabricTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.FabricType) {
 		return nil, false
 	}
-	return o.SiteType, true
+	return o.FabricType, true
 }
 
-// HasSiteType returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSiteType() bool {
-	if o != nil && !IsNil(o.SiteType) {
+// HasFabricType returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasFabricType() bool {
+	if o != nil && !IsNil(o.FabricType) {
 		return true
 	}
 
 	return false
 }
 
-// SetSiteType gets a reference to the given string and assigns it to the SiteType field.
-func (o *FabricsPutRequestFabricValue) SetSiteType(v string) {
-	o.SiteType = &v
+// SetFabricType gets a reference to the given string and assigns it to the FabricType field.
+func (o *FabricsPutRequestFabricValue) SetFabricType(v string) {
+	o.FabricType = &v
 }
 
 // GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1152,68 +1152,68 @@ func (o *FabricsPutRequestFabricValue) UnsetPortStatusPollingInterval() {
 	o.PortStatusPollingInterval.Unset()
 }
 
-// GetServiceForSite returns the ServiceForSite field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetServiceForSite() string {
-	if o == nil || IsNil(o.ServiceForSite) {
+// GetServiceForFabric returns the ServiceForFabric field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetServiceForFabric() string {
+	if o == nil || IsNil(o.ServiceForFabric) {
 		var ret string
 		return ret
 	}
-	return *o.ServiceForSite
+	return *o.ServiceForFabric
 }
 
-// GetServiceForSiteOk returns a tuple with the ServiceForSite field value if set, nil otherwise
+// GetServiceForFabricOk returns a tuple with the ServiceForFabric field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetServiceForSiteOk() (*string, bool) {
-	if o == nil || IsNil(o.ServiceForSite) {
+func (o *FabricsPutRequestFabricValue) GetServiceForFabricOk() (*string, bool) {
+	if o == nil || IsNil(o.ServiceForFabric) {
 		return nil, false
 	}
-	return o.ServiceForSite, true
+	return o.ServiceForFabric, true
 }
 
-// HasServiceForSite returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasServiceForSite() bool {
-	if o != nil && !IsNil(o.ServiceForSite) {
+// HasServiceForFabric returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasServiceForFabric() bool {
+	if o != nil && !IsNil(o.ServiceForFabric) {
 		return true
 	}
 
 	return false
 }
 
-// SetServiceForSite gets a reference to the given string and assigns it to the ServiceForSite field.
-func (o *FabricsPutRequestFabricValue) SetServiceForSite(v string) {
-	o.ServiceForSite = &v
+// SetServiceForFabric gets a reference to the given string and assigns it to the ServiceForFabric field.
+func (o *FabricsPutRequestFabricValue) SetServiceForFabric(v string) {
+	o.ServiceForFabric = &v
 }
 
-// GetServiceForSiteRefType returns the ServiceForSiteRefType field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetServiceForSiteRefType() string {
-	if o == nil || IsNil(o.ServiceForSiteRefType) {
+// GetServiceForFabricRefType returns the ServiceForFabricRefType field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetServiceForFabricRefType() string {
+	if o == nil || IsNil(o.ServiceForFabricRefType) {
 		var ret string
 		return ret
 	}
-	return *o.ServiceForSiteRefType
+	return *o.ServiceForFabricRefType
 }
 
-// GetServiceForSiteRefTypeOk returns a tuple with the ServiceForSiteRefType field value if set, nil otherwise
+// GetServiceForFabricRefTypeOk returns a tuple with the ServiceForFabricRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetServiceForSiteRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.ServiceForSiteRefType) {
+func (o *FabricsPutRequestFabricValue) GetServiceForFabricRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ServiceForFabricRefType) {
 		return nil, false
 	}
-	return o.ServiceForSiteRefType, true
+	return o.ServiceForFabricRefType, true
 }
 
-// HasServiceForSiteRefType returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasServiceForSiteRefType() bool {
-	if o != nil && !IsNil(o.ServiceForSiteRefType) {
+// HasServiceForFabricRefType returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasServiceForFabricRefType() bool {
+	if o != nil && !IsNil(o.ServiceForFabricRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetServiceForSiteRefType gets a reference to the given string and assigns it to the ServiceForSiteRefType field.
-func (o *FabricsPutRequestFabricValue) SetServiceForSiteRefType(v string) {
-	o.ServiceForSiteRefType = &v
+// SetServiceForFabricRefType gets a reference to the given string and assigns it to the ServiceForFabricRefType field.
+func (o *FabricsPutRequestFabricValue) SetServiceForFabricRefType(v string) {
+	o.ServiceForFabricRefType = &v
 }
 
 // GetSpanningTreeType returns the SpanningTreeType field value if set, zero value otherwise.
@@ -1386,68 +1386,68 @@ func (o *FabricsPutRequestFabricValue) SetReadOnlyMode(v bool) {
 	o.ReadOnlyMode = &v
 }
 
-// GetDomainForSite returns the DomainForSite field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetDomainForSite() string {
-	if o == nil || IsNil(o.DomainForSite) {
+// GetDomainForFabric returns the DomainForFabric field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetDomainForFabric() string {
+	if o == nil || IsNil(o.DomainForFabric) {
 		var ret string
 		return ret
 	}
-	return *o.DomainForSite
+	return *o.DomainForFabric
 }
 
-// GetDomainForSiteOk returns a tuple with the DomainForSite field value if set, nil otherwise
+// GetDomainForFabricOk returns a tuple with the DomainForFabric field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetDomainForSiteOk() (*string, bool) {
-	if o == nil || IsNil(o.DomainForSite) {
+func (o *FabricsPutRequestFabricValue) GetDomainForFabricOk() (*string, bool) {
+	if o == nil || IsNil(o.DomainForFabric) {
 		return nil, false
 	}
-	return o.DomainForSite, true
+	return o.DomainForFabric, true
 }
 
-// HasDomainForSite returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasDomainForSite() bool {
-	if o != nil && !IsNil(o.DomainForSite) {
+// HasDomainForFabric returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasDomainForFabric() bool {
+	if o != nil && !IsNil(o.DomainForFabric) {
 		return true
 	}
 
 	return false
 }
 
-// SetDomainForSite gets a reference to the given string and assigns it to the DomainForSite field.
-func (o *FabricsPutRequestFabricValue) SetDomainForSite(v string) {
-	o.DomainForSite = &v
+// SetDomainForFabric gets a reference to the given string and assigns it to the DomainForFabric field.
+func (o *FabricsPutRequestFabricValue) SetDomainForFabric(v string) {
+	o.DomainForFabric = &v
 }
 
-// GetDomainForSiteRefType returns the DomainForSiteRefType field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetDomainForSiteRefType() string {
-	if o == nil || IsNil(o.DomainForSiteRefType) {
+// GetDomainForFabricRefType returns the DomainForFabricRefType field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetDomainForFabricRefType() string {
+	if o == nil || IsNil(o.DomainForFabricRefType) {
 		var ret string
 		return ret
 	}
-	return *o.DomainForSiteRefType
+	return *o.DomainForFabricRefType
 }
 
-// GetDomainForSiteRefTypeOk returns a tuple with the DomainForSiteRefType field value if set, nil otherwise
+// GetDomainForFabricRefTypeOk returns a tuple with the DomainForFabricRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetDomainForSiteRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.DomainForSiteRefType) {
+func (o *FabricsPutRequestFabricValue) GetDomainForFabricRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.DomainForFabricRefType) {
 		return nil, false
 	}
-	return o.DomainForSiteRefType, true
+	return o.DomainForFabricRefType, true
 }
 
-// HasDomainForSiteRefType returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasDomainForSiteRefType() bool {
-	if o != nil && !IsNil(o.DomainForSiteRefType) {
+// HasDomainForFabricRefType returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasDomainForFabricRefType() bool {
+	if o != nil && !IsNil(o.DomainForFabricRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetDomainForSiteRefType gets a reference to the given string and assigns it to the DomainForSiteRefType field.
-func (o *FabricsPutRequestFabricValue) SetDomainForSiteRefType(v string) {
-	o.DomainForSiteRefType = &v
+// SetDomainForFabricRefType gets a reference to the given string and assigns it to the DomainForFabricRefType field.
+func (o *FabricsPutRequestFabricValue) SetDomainForFabricRefType(v string) {
+	o.DomainForFabricRefType = &v
 }
 
 // GetEnableDscp returns the EnableDscp field value if set, zero value otherwise.
@@ -2865,8 +2865,8 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AllowAllUnderlayConnections) {
 		toSerialize["allow_all_underlay_connections"] = o.AllowAllUnderlayConnections
 	}
-	if !IsNil(o.SiteType) {
-		toSerialize["site_type"] = o.SiteType
+	if !IsNil(o.FabricType) {
+		toSerialize["fabric_type"] = o.FabricType
 	}
 	if o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet() {
 		toSerialize["duplicate_address_detection_max_number_of_moves"] = o.DuplicateAddressDetectionMaxNumberOfMoves.Get()
@@ -2880,11 +2880,11 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	if o.PortStatusPollingInterval.IsSet() {
 		toSerialize["port_status_polling_interval"] = o.PortStatusPollingInterval.Get()
 	}
-	if !IsNil(o.ServiceForSite) {
-		toSerialize["service_for_site"] = o.ServiceForSite
+	if !IsNil(o.ServiceForFabric) {
+		toSerialize["service_for_fabric"] = o.ServiceForFabric
 	}
-	if !IsNil(o.ServiceForSiteRefType) {
-		toSerialize["service_for_site_ref_type_"] = o.ServiceForSiteRefType
+	if !IsNil(o.ServiceForFabricRefType) {
+		toSerialize["service_for_fabric_ref_type_"] = o.ServiceForFabricRefType
 	}
 	if !IsNil(o.SpanningTreeType) {
 		toSerialize["spanning_tree_type"] = o.SpanningTreeType
@@ -2901,11 +2901,11 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ReadOnlyMode) {
 		toSerialize["read_only_mode"] = o.ReadOnlyMode
 	}
-	if !IsNil(o.DomainForSite) {
-		toSerialize["domain_for_site"] = o.DomainForSite
+	if !IsNil(o.DomainForFabric) {
+		toSerialize["domain_for_fabric"] = o.DomainForFabric
 	}
-	if !IsNil(o.DomainForSiteRefType) {
-		toSerialize["domain_for_site_ref_type_"] = o.DomainForSiteRefType
+	if !IsNil(o.DomainForFabricRefType) {
+		toSerialize["domain_for_fabric_ref_type_"] = o.DomainForFabricRefType
 	}
 	if !IsNil(o.EnableDscp) {
 		toSerialize["enable_dscp"] = o.EnableDscp

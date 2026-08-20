@@ -8,8 +8,8 @@ Manages a Spine Plane configuration in Verity. This resource allows you to defin
 resource "verity_spine_plane" "example" {
   name   = "example"
   enable = true
-  site = ""
-  site_ref_type_ = "site"
+  fabric = ""
+  fabric_ref_type_ = "fabric"
 
   object_properties {
     notes = ""
@@ -21,8 +21,8 @@ resource "verity_spine_plane" "example" {
 
 * `name` (String) - Object Name. Must be unique
 * `enable` (Boolean) - Enable object
-* `site` (String) - Fabric this Spine Plane is assigned to
-* `site_ref_type_` (String) - Object type for site field
+* `fabric` (String) - Fabric this Spine Plane is assigned to
+* `fabric_ref_type_` (String) - Object type for fabric field
 * `object_properties` (Object) - Additional properties for the spine plane
   * `notes` (String) - User Notes
 

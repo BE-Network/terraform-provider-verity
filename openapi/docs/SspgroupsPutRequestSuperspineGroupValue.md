@@ -6,8 +6,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Name** | Pointer to **string** | Template Name. Must be unique within type. | [optional] [default to ""]
 **Enable** | Pointer to **bool** | Enable object. | [optional] [default to true]
-**Site** | Pointer to **string** | Fabric this SuperSpine Group is assigned to | [optional] [default to ""]
-**SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
+**Fabric** | Pointer to **string** | Fabric this SuperSpine Group is assigned to | [optional] [default to ""]
+**FabricRefType** | Pointer to **string** | Object type for fabric field | [optional] 
 **Position** | Pointer to **NullableFloat64** | Position of the Switch | [optional] 
 **ObjectProperties** | Pointer to [**AclsPutRequestIpFilterValueObjectProperties**](AclsPutRequestIpFilterValueObjectProperties.md) |  | [optional] 
 
@@ -80,55 +80,55 @@ SetEnable sets Enable field to given value.
 
 HasEnable returns a boolean if a field has been set.
 
-### GetSite
+### GetFabric
 
-`func (o *SspgroupsPutRequestSuperspineGroupValue) GetSite() string`
+`func (o *SspgroupsPutRequestSuperspineGroupValue) GetFabric() string`
 
-GetSite returns the Site field if non-nil, zero value otherwise.
+GetFabric returns the Fabric field if non-nil, zero value otherwise.
 
-### GetSiteOk
+### GetFabricOk
 
-`func (o *SspgroupsPutRequestSuperspineGroupValue) GetSiteOk() (*string, bool)`
+`func (o *SspgroupsPutRequestSuperspineGroupValue) GetFabricOk() (*string, bool)`
 
-GetSiteOk returns a tuple with the Site field if it's non-nil, zero value otherwise
+GetFabricOk returns a tuple with the Fabric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSite
+### SetFabric
 
-`func (o *SspgroupsPutRequestSuperspineGroupValue) SetSite(v string)`
+`func (o *SspgroupsPutRequestSuperspineGroupValue) SetFabric(v string)`
 
-SetSite sets Site field to given value.
+SetFabric sets Fabric field to given value.
 
-### HasSite
+### HasFabric
 
-`func (o *SspgroupsPutRequestSuperspineGroupValue) HasSite() bool`
+`func (o *SspgroupsPutRequestSuperspineGroupValue) HasFabric() bool`
 
-HasSite returns a boolean if a field has been set.
+HasFabric returns a boolean if a field has been set.
 
-### GetSiteRefType
+### GetFabricRefType
 
-`func (o *SspgroupsPutRequestSuperspineGroupValue) GetSiteRefType() string`
+`func (o *SspgroupsPutRequestSuperspineGroupValue) GetFabricRefType() string`
 
-GetSiteRefType returns the SiteRefType field if non-nil, zero value otherwise.
+GetFabricRefType returns the FabricRefType field if non-nil, zero value otherwise.
 
-### GetSiteRefTypeOk
+### GetFabricRefTypeOk
 
-`func (o *SspgroupsPutRequestSuperspineGroupValue) GetSiteRefTypeOk() (*string, bool)`
+`func (o *SspgroupsPutRequestSuperspineGroupValue) GetFabricRefTypeOk() (*string, bool)`
 
-GetSiteRefTypeOk returns a tuple with the SiteRefType field if it's non-nil, zero value otherwise
+GetFabricRefTypeOk returns a tuple with the FabricRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSiteRefType
+### SetFabricRefType
 
-`func (o *SspgroupsPutRequestSuperspineGroupValue) SetSiteRefType(v string)`
+`func (o *SspgroupsPutRequestSuperspineGroupValue) SetFabricRefType(v string)`
 
-SetSiteRefType sets SiteRefType field to given value.
+SetFabricRefType sets FabricRefType field to given value.
 
-### HasSiteRefType
+### HasFabricRefType
 
-`func (o *SspgroupsPutRequestSuperspineGroupValue) HasSiteRefType() bool`
+`func (o *SspgroupsPutRequestSuperspineGroupValue) HasFabricRefType() bool`
 
-HasSiteRefType returns a boolean if a field has been set.
+HasFabricRefType returns a boolean if a field has been set.
 
 ### GetPosition
 

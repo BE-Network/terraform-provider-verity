@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Site** | Pointer to **string** | Choose a Fabric | [optional] [default to ""]
-**SiteRefType** | Pointer to **string** | Object type for site field | [optional] 
+**Fabric** | Pointer to **string** | Choose a Fabric | [optional] [default to ""]
+**FabricRefType** | Pointer to **string** | Object type for fabric field | [optional] 
 
 ## Methods
 
@@ -26,55 +26,55 @@ NewLagsPutRequestLagValueObjectPropertiesWithDefaults instantiates a new LagsPut
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
-### GetSite
+### GetFabric
 
-`func (o *LagsPutRequestLagValueObjectProperties) GetSite() string`
+`func (o *LagsPutRequestLagValueObjectProperties) GetFabric() string`
 
-GetSite returns the Site field if non-nil, zero value otherwise.
+GetFabric returns the Fabric field if non-nil, zero value otherwise.
 
-### GetSiteOk
+### GetFabricOk
 
-`func (o *LagsPutRequestLagValueObjectProperties) GetSiteOk() (*string, bool)`
+`func (o *LagsPutRequestLagValueObjectProperties) GetFabricOk() (*string, bool)`
 
-GetSiteOk returns a tuple with the Site field if it's non-nil, zero value otherwise
+GetFabricOk returns a tuple with the Fabric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSite
+### SetFabric
 
-`func (o *LagsPutRequestLagValueObjectProperties) SetSite(v string)`
+`func (o *LagsPutRequestLagValueObjectProperties) SetFabric(v string)`
 
-SetSite sets Site field to given value.
+SetFabric sets Fabric field to given value.
 
-### HasSite
+### HasFabric
 
-`func (o *LagsPutRequestLagValueObjectProperties) HasSite() bool`
+`func (o *LagsPutRequestLagValueObjectProperties) HasFabric() bool`
 
-HasSite returns a boolean if a field has been set.
+HasFabric returns a boolean if a field has been set.
 
-### GetSiteRefType
+### GetFabricRefType
 
-`func (o *LagsPutRequestLagValueObjectProperties) GetSiteRefType() string`
+`func (o *LagsPutRequestLagValueObjectProperties) GetFabricRefType() string`
 
-GetSiteRefType returns the SiteRefType field if non-nil, zero value otherwise.
+GetFabricRefType returns the FabricRefType field if non-nil, zero value otherwise.
 
-### GetSiteRefTypeOk
+### GetFabricRefTypeOk
 
-`func (o *LagsPutRequestLagValueObjectProperties) GetSiteRefTypeOk() (*string, bool)`
+`func (o *LagsPutRequestLagValueObjectProperties) GetFabricRefTypeOk() (*string, bool)`
 
-GetSiteRefTypeOk returns a tuple with the SiteRefType field if it's non-nil, zero value otherwise
+GetFabricRefTypeOk returns a tuple with the FabricRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetSiteRefType
+### SetFabricRefType
 
-`func (o *LagsPutRequestLagValueObjectProperties) SetSiteRefType(v string)`
+`func (o *LagsPutRequestLagValueObjectProperties) SetFabricRefType(v string)`
 
-SetSiteRefType sets SiteRefType field to given value.
+SetFabricRefType sets FabricRefType field to given value.
 
-### HasSiteRefType
+### HasFabricRefType
 
-`func (o *LagsPutRequestLagValueObjectProperties) HasSiteRefType() bool`
+`func (o *LagsPutRequestLagValueObjectProperties) HasFabricRefType() bool`
 
-HasSiteRefType returns a boolean if a field has been set.
+HasFabricRefType returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -14,9 +14,12 @@ Name | Type | Description | Notes
 **IsTopOfIsland** | Pointer to **bool** | Mark this Switchpoint as Top of Island | [optional] [default to false]
 **ReadOnlyMode** | Pointer to **bool** | When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware | [optional] [default to false]
 **Locked** | Pointer to **bool** | Permission lock | [optional] [default to false]
-**ExpectedSite** | Pointer to **string** | Expected Fabric | [optional] [default to ""]
-**ExpectedSiteRefType** | Pointer to **string** | Object type for expected_site field | [optional] 
+**ExpectedFabric** | Pointer to **string** | Expected Fabric | [optional] [default to ""]
+**ExpectedFabricRefType** | Pointer to **string** | Object type for expected_fabric field | [optional] 
 **OutOfBandManagement** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch is managed out of band via the management port | [optional] [default to false]
+**ExpectedUplinkPort** | Pointer to **NullableInt64** | Specify the uplink port for ZTP to set into the switch if using an SFP based port. Otherwise, the first 32 copper ports are programmed by ZTP to be used for uplinks. Breakout Uplink port is switch model dependent and you should consult switch vendor documentation to ensure it is correct. | [optional] 
+**ExpectedBreakout** | Pointer to **string** | Full breakout configuration for the SFP being used as the uplink. | [optional] [default to ""]
+**ExpectedBreakoutUplinkPort** | Pointer to **string** | Breakout uplink port identifier in the format 1/#/#. | [optional] [default to ""]
 **Type** | Pointer to **string** | Type of Switchpoint | [optional] [default to "leaf"]
 **Plane** | Pointer to **string** | Plane | [optional] [default to ""]
 **PlaneRefType** | Pointer to **string** | Object type for plane field | [optional] 
@@ -78,8 +81,6 @@ Name | Type | Description | Notes
 **TrafficMirrors** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner**](SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner.md) |  | [optional] 
 **Eths** | Pointer to [**[]SwitchpointsPutRequestSwitchpointValueEthsInner**](SwitchpointsPutRequestSwitchpointValueEthsInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to [**SwitchpointsPutRequestSwitchpointValueObjectProperties**](SwitchpointsPutRequestSwitchpointValueObjectProperties.md) |  | [optional] 
-**ExpectedUplinkPort** | Pointer to **NullableInt64** | Specify the uplink port for ZTP to set into the switch if using an SFP based port. Otherwise, the first 32 copper ports are programmed by ZTP to be used for uplinks. Uplink port is 1 relative index, identifying the first breakout port. This is switch model dependent and you should consult switch vendor documentation to ensure it is correct. | [optional] 
-**ExpectedBreakout** | Pointer to **string** | Full breakout configuration for the SFP being used as the uplink. | [optional] [default to ""]
 **IsFabric** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch that is Fabric rather than an Edge Device | [optional] [default to false]
 **DeviceManagedAs** | Pointer to **string** | Device managed as | [optional] [default to "switch"]
 **Switch** | Pointer to **string** | Switchpoint locating the Switch to be controlled | [optional] [default to ""]
@@ -359,55 +360,55 @@ SetLocked sets Locked field to given value.
 
 HasLocked returns a boolean if a field has been set.
 
-### GetExpectedSite
+### GetExpectedFabric
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSite() string`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedFabric() string`
 
-GetExpectedSite returns the ExpectedSite field if non-nil, zero value otherwise.
+GetExpectedFabric returns the ExpectedFabric field if non-nil, zero value otherwise.
 
-### GetExpectedSiteOk
+### GetExpectedFabricOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteOk() (*string, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedFabricOk() (*string, bool)`
 
-GetExpectedSiteOk returns a tuple with the ExpectedSite field if it's non-nil, zero value otherwise
+GetExpectedFabricOk returns a tuple with the ExpectedFabric field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetExpectedSite
+### SetExpectedFabric
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSite(v string)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedFabric(v string)`
 
-SetExpectedSite sets ExpectedSite field to given value.
+SetExpectedFabric sets ExpectedFabric field to given value.
 
-### HasExpectedSite
+### HasExpectedFabric
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSite() bool`
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedFabric() bool`
 
-HasExpectedSite returns a boolean if a field has been set.
+HasExpectedFabric returns a boolean if a field has been set.
 
-### GetExpectedSiteRefType
+### GetExpectedFabricRefType
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefType() string`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedFabricRefType() string`
 
-GetExpectedSiteRefType returns the ExpectedSiteRefType field if non-nil, zero value otherwise.
+GetExpectedFabricRefType returns the ExpectedFabricRefType field if non-nil, zero value otherwise.
 
-### GetExpectedSiteRefTypeOk
+### GetExpectedFabricRefTypeOk
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedSiteRefTypeOk() (*string, bool)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedFabricRefTypeOk() (*string, bool)`
 
-GetExpectedSiteRefTypeOk returns a tuple with the ExpectedSiteRefType field if it's non-nil, zero value otherwise
+GetExpectedFabricRefTypeOk returns a tuple with the ExpectedFabricRefType field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetExpectedSiteRefType
+### SetExpectedFabricRefType
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedSiteRefType(v string)`
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedFabricRefType(v string)`
 
-SetExpectedSiteRefType sets ExpectedSiteRefType field to given value.
+SetExpectedFabricRefType sets ExpectedFabricRefType field to given value.
 
-### HasExpectedSiteRefType
+### HasExpectedFabricRefType
 
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedSiteRefType() bool`
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedFabricRefType() bool`
 
-HasExpectedSiteRefType returns a boolean if a field has been set.
+HasExpectedFabricRefType returns a boolean if a field has been set.
 
 ### GetOutOfBandManagement
 
@@ -433,6 +434,91 @@ SetOutOfBandManagement sets OutOfBandManagement field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasOutOfBandManagement() bool`
 
 HasOutOfBandManagement returns a boolean if a field has been set.
+
+### GetExpectedUplinkPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedUplinkPort() int64`
+
+GetExpectedUplinkPort returns the ExpectedUplinkPort field if non-nil, zero value otherwise.
+
+### GetExpectedUplinkPortOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedUplinkPortOk() (*int64, bool)`
+
+GetExpectedUplinkPortOk returns a tuple with the ExpectedUplinkPort field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExpectedUplinkPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedUplinkPort(v int64)`
+
+SetExpectedUplinkPort sets ExpectedUplinkPort field to given value.
+
+### HasExpectedUplinkPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedUplinkPort() bool`
+
+HasExpectedUplinkPort returns a boolean if a field has been set.
+
+### SetExpectedUplinkPortNil
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedUplinkPortNil(b bool)`
+
+ SetExpectedUplinkPortNil sets the value for ExpectedUplinkPort to be an explicit nil
+
+### UnsetExpectedUplinkPort
+`func (o *SwitchpointsPutRequestSwitchpointValue) UnsetExpectedUplinkPort()`
+
+UnsetExpectedUplinkPort ensures that no value is present for ExpectedUplinkPort, not even an explicit nil
+### GetExpectedBreakout
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedBreakout() string`
+
+GetExpectedBreakout returns the ExpectedBreakout field if non-nil, zero value otherwise.
+
+### GetExpectedBreakoutOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedBreakoutOk() (*string, bool)`
+
+GetExpectedBreakoutOk returns a tuple with the ExpectedBreakout field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExpectedBreakout
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedBreakout(v string)`
+
+SetExpectedBreakout sets ExpectedBreakout field to given value.
+
+### HasExpectedBreakout
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedBreakout() bool`
+
+HasExpectedBreakout returns a boolean if a field has been set.
+
+### GetExpectedBreakoutUplinkPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedBreakoutUplinkPort() string`
+
+GetExpectedBreakoutUplinkPort returns the ExpectedBreakoutUplinkPort field if non-nil, zero value otherwise.
+
+### GetExpectedBreakoutUplinkPortOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedBreakoutUplinkPortOk() (*string, bool)`
+
+GetExpectedBreakoutUplinkPortOk returns a tuple with the ExpectedBreakoutUplinkPort field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExpectedBreakoutUplinkPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedBreakoutUplinkPort(v string)`
+
+SetExpectedBreakoutUplinkPort sets ExpectedBreakoutUplinkPort field to given value.
+
+### HasExpectedBreakoutUplinkPort
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedBreakoutUplinkPort() bool`
+
+HasExpectedBreakoutUplinkPort returns a boolean if a field has been set.
 
 ### GetType
 
@@ -1988,66 +2074,6 @@ SetObjectProperties sets ObjectProperties field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasObjectProperties() bool`
 
 HasObjectProperties returns a boolean if a field has been set.
-
-### GetExpectedUplinkPort
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedUplinkPort() int64`
-
-GetExpectedUplinkPort returns the ExpectedUplinkPort field if non-nil, zero value otherwise.
-
-### GetExpectedUplinkPortOk
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedUplinkPortOk() (*int64, bool)`
-
-GetExpectedUplinkPortOk returns a tuple with the ExpectedUplinkPort field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetExpectedUplinkPort
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedUplinkPort(v int64)`
-
-SetExpectedUplinkPort sets ExpectedUplinkPort field to given value.
-
-### HasExpectedUplinkPort
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedUplinkPort() bool`
-
-HasExpectedUplinkPort returns a boolean if a field has been set.
-
-### SetExpectedUplinkPortNil
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedUplinkPortNil(b bool)`
-
- SetExpectedUplinkPortNil sets the value for ExpectedUplinkPort to be an explicit nil
-
-### UnsetExpectedUplinkPort
-`func (o *SwitchpointsPutRequestSwitchpointValue) UnsetExpectedUplinkPort()`
-
-UnsetExpectedUplinkPort ensures that no value is present for ExpectedUplinkPort, not even an explicit nil
-### GetExpectedBreakout
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedBreakout() string`
-
-GetExpectedBreakout returns the ExpectedBreakout field if non-nil, zero value otherwise.
-
-### GetExpectedBreakoutOk
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) GetExpectedBreakoutOk() (*string, bool)`
-
-GetExpectedBreakoutOk returns a tuple with the ExpectedBreakout field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetExpectedBreakout
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) SetExpectedBreakout(v string)`
-
-SetExpectedBreakout sets ExpectedBreakout field to given value.
-
-### HasExpectedBreakout
-
-`func (o *SwitchpointsPutRequestSwitchpointValue) HasExpectedBreakout() bool`
-
-HasExpectedBreakout returns a boolean if a field has been set.
 
 ### GetIsFabric
 

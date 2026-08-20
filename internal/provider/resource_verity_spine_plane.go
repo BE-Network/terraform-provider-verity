@@ -41,8 +41,8 @@ type veritySpinePlaneResource struct {
 type veritySpinePlaneResourceModel struct {
 	Name             types.String                            `tfsdk:"name"`
 	Enable           types.Bool                              `tfsdk:"enable"`
-	Site             types.String                            `tfsdk:"site"`
-	SiteRefType      types.String                            `tfsdk:"site_ref_type_"`
+	Fabric           types.String                            `tfsdk:"fabric"`
+	FabricRefType    types.String                            `tfsdk:"fabric_ref_type_"`
 	ObjectProperties []veritySpinePlaneObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
@@ -90,13 +90,13 @@ func (r *veritySpinePlaneResource) Schema(ctx context.Context, req resource.Sche
 				Optional:    true,
 				Computed:    true,
 			},
-			"site": schema.StringAttribute{
+			"fabric": schema.StringAttribute{
 				Description: "Fabric this Spine Plane is assigned to",
 				Optional:    true,
 				Computed:    true,
 			},
-			"site_ref_type_": schema.StringAttribute{
-				Description: "Object type for site field",
+			"fabric_ref_type_": schema.StringAttribute{
+				Description: "Object type for fabric field",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -141,8 +141,8 @@ func (r *veritySpinePlaneResource) Create(ctx context.Context, req resource.Crea
 
 	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
-		{FieldName: "Site", APIField: &spinePlaneReq.Site, TFValue: plan.Site},
-		{FieldName: "SiteRefType", APIField: &spinePlaneReq.SiteRefType, TFValue: plan.SiteRefType},
+		{FieldName: "Fabric", APIField: &spinePlaneReq.Fabric, TFValue: plan.Fabric},
+		{FieldName: "FabricRefType", APIField: &spinePlaneReq.FabricRefType, TFValue: plan.FabricRefType},
 	})
 
 	// Handle boolean fields
@@ -338,12 +338,12 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { spinePlaneReq.Enable = v }, &hasChanges)
 
-	// Handle site and site_ref_type_ using "One ref type supported" pattern
+	// Handle fabric and fabric_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
-		plan.Site, state.Site, plan.SiteRefType, state.SiteRefType,
-		func(v *string) { spinePlaneReq.Site = v },
-		func(v *string) { spinePlaneReq.SiteRefType = v },
-		"site", "site_ref_type_",
+		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
+		func(v *string) { spinePlaneReq.Fabric = v },
+		func(v *string) { spinePlaneReq.FabricRefType = v },
+		"fabric", "fabric_ref_type_",
 		&hasChanges, &resp.Diagnostics,
 	) {
 		return
@@ -456,8 +456,8 @@ func populateSpinePlaneState(ctx context.Context, state veritySpinePlaneResource
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
 	// String fields
-	state.Site = utils.MapStringWithMode(data, "site", resourceType, mode)
-	state.SiteRefType = utils.MapStringWithMode(data, "site_ref_type_", resourceType, mode)
+	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
+	state.FabricRefType = utils.MapStringWithMode(data, "fabric_ref_type_", resourceType, mode)
 
 	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
@@ -507,7 +507,7 @@ func (r *veritySpinePlaneResource) ModifyPlan(ctx context.Context, req resource.
 	}
 
 	nullifier.NullifyStrings(
-		"site", "site_ref_type_",
+		"fabric", "fabric_ref_type_",
 	)
 
 	nullifier.NullifyBools(

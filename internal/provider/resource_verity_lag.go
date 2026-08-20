@@ -115,13 +115,13 @@ func (r *verityLagResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "Object properties.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"site": schema.StringAttribute{
+						"fabric": schema.StringAttribute{
 							Description: "Choose a Fabric",
 							Optional:    true,
 							Computed:    true,
 						},
-						"site_ref_type_": schema.StringAttribute{
-							Description: "Object type for site field",
+						"fabric_ref_type_": schema.StringAttribute{
+							Description: "Object type for fabric field",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -169,8 +169,8 @@ type verityLagResourceModel struct {
 }
 
 type verityLagObjectPropertiesModel struct {
-	Site        types.String `tfsdk:"site"`
-	SiteRefType types.String `tfsdk:"site_ref_type_"`
+	Fabric        types.String `tfsdk:"fabric"`
+	FabricRefType types.String `tfsdk:"fabric_ref_type_"`
 }
 
 func (r *verityLagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -233,12 +233,12 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		objProps := openapi.LagsPutRequestLagValueObjectProperties{}
 		utils.SetRefTypeFields([]utils.RefTypeFieldMapping{
 			{
-				FieldName:        "site",
-				RefTypeFieldName: "site_ref_type_",
-				APIField:         &objProps.Site,
-				RefTypeAPIField:  &objProps.SiteRefType,
-				TFValue:          op.Site,
-				RefTypeTFValue:   op.SiteRefType,
+				FieldName:        "fabric",
+				RefTypeFieldName: "fabric_ref_type_",
+				APIField:         &objProps.Fabric,
+				RefTypeAPIField:  &objProps.FabricRefType,
+				TFValue:          op.Fabric,
+				RefTypeTFValue:   op.FabricRefType,
 			},
 		})
 		lagReq.ObjectProperties = &objProps
@@ -454,14 +454,14 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		objPropsChanged := false
 
 		if !utils.CompareAndSetRefTypeFields([]utils.RefTypeFieldWithComparison{{
-			FieldName:         "site",
-			RefTypeFieldName:  "site_ref_type_",
-			APIField:          func(v *string) { objProps.Site = v },
-			RefTypeAPIField:   func(v *string) { objProps.SiteRefType = v },
-			PlanValue:         op.Site,
-			StateValue:        st.Site,
-			PlanRefTypeValue:  op.SiteRefType,
-			StateRefTypeValue: st.SiteRefType,
+			FieldName:         "fabric",
+			RefTypeFieldName:  "fabric_ref_type_",
+			APIField:          func(v *string) { objProps.Fabric = v },
+			RefTypeAPIField:   func(v *string) { objProps.FabricRefType = v },
+			PlanValue:         op.Fabric,
+			StateValue:        st.Fabric,
+			PlanRefTypeValue:  op.FabricRefType,
+			StateRefTypeValue: st.FabricRefType,
 			SupportMode:       utils.RefTypeSupportOne,
 		}}, &objPropsChanged, &resp.Diagnostics) {
 			return
@@ -592,8 +592,8 @@ func populateLagState(ctx context.Context, state verityLagResourceModel, data ma
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityLagObjectPropertiesModel{
-				Site:        utils.MapStringWithModeNested(objProps, "site", resourceType, "object_properties.site", mode),
-				SiteRefType: utils.MapStringWithModeNested(objProps, "site_ref_type_", resourceType, "object_properties.site_ref_type_", mode),
+				Fabric:        utils.MapStringWithModeNested(objProps, "fabric", resourceType, "object_properties.fabric", mode),
+				FabricRefType: utils.MapStringWithModeNested(objProps, "fabric_ref_type_", resourceType, "object_properties.fabric_ref_type_", mode),
 			}
 			state.ObjectProperties = []verityLagObjectPropertiesModel{objPropsModel}
 		} else {
@@ -650,7 +650,7 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	nullifier.NullifyNestedBlockFields(utils.NestedBlockFieldConfig{
 		BlockName:    "object_properties",
 		ItemCount:    len(plan.ObjectProperties),
-		StringFields: []string{"site", "site_ref_type_"},
+		StringFields: []string{"fabric", "fabric_ref_type_"},
 	})
 
 	// =========================================================================

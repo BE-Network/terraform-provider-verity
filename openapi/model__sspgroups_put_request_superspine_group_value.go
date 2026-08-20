@@ -24,9 +24,9 @@ type SspgroupsPutRequestSuperspineGroupValue struct {
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Fabric this SuperSpine Group is assigned to
-	Site *string `json:"site,omitempty"`
-	// Object type for site field
-	SiteRefType *string `json:"site_ref_type_,omitempty"`
+	Fabric *string `json:"fabric,omitempty"`
+	// Object type for fabric field
+	FabricRefType *string `json:"fabric_ref_type_,omitempty"`
 	// Position of the Switch
 	Position NullableFloat64 `json:"position,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
@@ -42,8 +42,8 @@ func NewSspgroupsPutRequestSuperspineGroupValue() *SspgroupsPutRequestSuperspine
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var site string = ""
-	this.Site = &site
+	var fabric string = ""
+	this.Fabric = &fabric
 	return &this
 }
 
@@ -56,8 +56,8 @@ func NewSspgroupsPutRequestSuperspineGroupValueWithDefaults() *SspgroupsPutReque
 	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
-	var site string = ""
-	this.Site = &site
+	var fabric string = ""
+	this.Fabric = &fabric
 	return &this
 }
 
@@ -125,68 +125,68 @@ func (o *SspgroupsPutRequestSuperspineGroupValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetSite returns the Site field value if set, zero value otherwise.
-func (o *SspgroupsPutRequestSuperspineGroupValue) GetSite() string {
-	if o == nil || IsNil(o.Site) {
+// GetFabric returns the Fabric field value if set, zero value otherwise.
+func (o *SspgroupsPutRequestSuperspineGroupValue) GetFabric() string {
+	if o == nil || IsNil(o.Fabric) {
 		var ret string
 		return ret
 	}
-	return *o.Site
+	return *o.Fabric
 }
 
-// GetSiteOk returns a tuple with the Site field value if set, nil otherwise
+// GetFabricOk returns a tuple with the Fabric field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SspgroupsPutRequestSuperspineGroupValue) GetSiteOk() (*string, bool) {
-	if o == nil || IsNil(o.Site) {
+func (o *SspgroupsPutRequestSuperspineGroupValue) GetFabricOk() (*string, bool) {
+	if o == nil || IsNil(o.Fabric) {
 		return nil, false
 	}
-	return o.Site, true
+	return o.Fabric, true
 }
 
-// HasSite returns a boolean if a field has been set.
-func (o *SspgroupsPutRequestSuperspineGroupValue) HasSite() bool {
-	if o != nil && !IsNil(o.Site) {
+// HasFabric returns a boolean if a field has been set.
+func (o *SspgroupsPutRequestSuperspineGroupValue) HasFabric() bool {
+	if o != nil && !IsNil(o.Fabric) {
 		return true
 	}
 
 	return false
 }
 
-// SetSite gets a reference to the given string and assigns it to the Site field.
-func (o *SspgroupsPutRequestSuperspineGroupValue) SetSite(v string) {
-	o.Site = &v
+// SetFabric gets a reference to the given string and assigns it to the Fabric field.
+func (o *SspgroupsPutRequestSuperspineGroupValue) SetFabric(v string) {
+	o.Fabric = &v
 }
 
-// GetSiteRefType returns the SiteRefType field value if set, zero value otherwise.
-func (o *SspgroupsPutRequestSuperspineGroupValue) GetSiteRefType() string {
-	if o == nil || IsNil(o.SiteRefType) {
+// GetFabricRefType returns the FabricRefType field value if set, zero value otherwise.
+func (o *SspgroupsPutRequestSuperspineGroupValue) GetFabricRefType() string {
+	if o == nil || IsNil(o.FabricRefType) {
 		var ret string
 		return ret
 	}
-	return *o.SiteRefType
+	return *o.FabricRefType
 }
 
-// GetSiteRefTypeOk returns a tuple with the SiteRefType field value if set, nil otherwise
+// GetFabricRefTypeOk returns a tuple with the FabricRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SspgroupsPutRequestSuperspineGroupValue) GetSiteRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.SiteRefType) {
+func (o *SspgroupsPutRequestSuperspineGroupValue) GetFabricRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.FabricRefType) {
 		return nil, false
 	}
-	return o.SiteRefType, true
+	return o.FabricRefType, true
 }
 
-// HasSiteRefType returns a boolean if a field has been set.
-func (o *SspgroupsPutRequestSuperspineGroupValue) HasSiteRefType() bool {
-	if o != nil && !IsNil(o.SiteRefType) {
+// HasFabricRefType returns a boolean if a field has been set.
+func (o *SspgroupsPutRequestSuperspineGroupValue) HasFabricRefType() bool {
+	if o != nil && !IsNil(o.FabricRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetSiteRefType gets a reference to the given string and assigns it to the SiteRefType field.
-func (o *SspgroupsPutRequestSuperspineGroupValue) SetSiteRefType(v string) {
-	o.SiteRefType = &v
+// SetFabricRefType gets a reference to the given string and assigns it to the FabricRefType field.
+func (o *SspgroupsPutRequestSuperspineGroupValue) SetFabricRefType(v string) {
+	o.FabricRefType = &v
 }
 
 // GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -279,11 +279,11 @@ func (o SspgroupsPutRequestSuperspineGroupValue) ToMap() (map[string]interface{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Site) {
-		toSerialize["site"] = o.Site
+	if !IsNil(o.Fabric) {
+		toSerialize["fabric"] = o.Fabric
 	}
-	if !IsNil(o.SiteRefType) {
-		toSerialize["site_ref_type_"] = o.SiteRefType
+	if !IsNil(o.FabricRefType) {
+		toSerialize["fabric_ref_type_"] = o.FabricRefType
 	}
 	if o.Position.IsSet() {
 		toSerialize["position"] = o.Position.Get()

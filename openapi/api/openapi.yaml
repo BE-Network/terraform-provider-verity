@@ -7674,8 +7674,8 @@ components:
           default: management
           description: Management or Underlay
           enum:
-          - management
           - underlay
+          - management
           type: string
       type: object
     _switchpoints_put_request_switchpoint_value_badges_inner:
@@ -7725,51 +7725,51 @@ components:
           description: Breakout definition; defines number of ports of what speed
             this port is brokenout to.
           enum:
-          - 2x40G
-          - pg400G
-          - 2x10G
-          - pg25G
-          - 4x200G
-          - 2x25G
-          - 1x25G
-          - 8x1G
           - 2x1G
-          - 4x1G
-          - 8x400G
-          - 8x25G
-          - pg100G
-          - 2x400G
-          - 8x200G
+          - 8x800G
           - 2x50G
-          - 4x400G
           - 1x400G
-          - 1x800G
-          - 2x200G
+          - 4x200G
+          - 1x1G
+          - 1x200G
+          - 1x50G
+          - 8x200G
+          - 2x25G
+          - 2x10G
+          - 1x40G
+          - 2x40G
+          - 4x400G
+          - pg100G
+          - 4x100G
+          - 4x1G
+          - 2x800G
+          - 2x100G
+          - 8x1G
+          - 8x100G
+          - pg400G
+          - pg40G
+          - 8x50G
+          - 1x100G
+          - pg1G
+          - 4x50G
           - 8x10G
           - pg200G
-          - 8x100G
-          - 1x200G
-          - 8x800G
-          - 1x1G
           - 4x25G
-          - 1x100G
-          - 4x40G
-          - 1x10G
-          - pg10G
-          - 2x100G
+          - 2x400G
           - pg800G
-          - pg40G
-          - 4x800G
-          - pg1G
-          - pg50G
-          - 4x50G
-          - 1x50G
-          - 4x10G
           - 8x40G
-          - 2x800G
-          - 4x100G
-          - 8x50G
-          - 1x40G
+          - 8x25G
+          - pg10G
+          - 1x800G
+          - 4x800G
+          - 4x10G
+          - 1x25G
+          - 8x400G
+          - pg50G
+          - 2x200G
+          - 1x10G
+          - pg25G
+          - 4x40G
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -7848,16 +7848,16 @@ components:
           default: "1"
           description: Number of planes in this Fabric
           enum:
-          - "1"
-          - "2"
           - "4"
+          - "2"
+          - "1"
           type: string
         su_size:
           default: "32"
           description: Number of HGXs per SU
           enum:
-          - "32"
           - "64"
+          - "32"
           type: string
         su_support:
           default: false
@@ -7867,8 +7867,8 @@ components:
           default: hgx
           description: GPU Architecture used within this Fabric
           enum:
-          - hgx
           - gb200
+          - hgx
           type: string
         server_management:
           default: true
@@ -7878,18 +7878,18 @@ components:
           default: false
           description: Allows underlay connections between PODs
           type: boolean
-        site_type:
+        fabric_type:
           default: enterprise
           description: Type of Fabric
           enum:
-          - packet_broker
           - datacenter_5
-          - management
-          - enterprise
-          - hyperscale_architecture
-          - spx_3t
-          - spx_2t
           - datacenter
+          - management
+          - spx_2t
+          - enterprise
+          - spx_3t
+          - packet_broker
+          - hyperscale_architecture
           type: string
         duplicate_address_detection_max_number_of_moves:
           default: 5
@@ -7925,12 +7925,12 @@ components:
           format: int64
           nullable: true
           type: integer
-        service_for_site:
+        service_for_fabric:
           default: (predefined):Management
           description: Service for Fabric
           type: string
-        service_for_site_ref_type_:
-          description: Object type for service_for_site field
+        service_for_fabric_ref_type_:
+          description: Object type for service_for_fabric field
           enum:
           - service
           type: string
@@ -7940,9 +7940,9 @@ components:
             Spanning Tree enabled
           enum:
           - ""
-          - pvst
           - port
           - mstp
+          - pvst
           minLength: 1
           type: string
         region_name:
@@ -7968,12 +7968,12 @@ components:
           description: "When Read Only Mode is checked, vNetC will perform all functions\
             \ except writing database updates to the target hardware"
           type: boolean
-        domain_for_site:
+        domain_for_fabric:
           default: ""
           description: Fabric Collection for Fabric
           type: string
-        domain_for_site_ref_type_:
-          description: Object type for domain_for_site field
+        domain_for_fabric_ref_type_:
+          description: Object type for domain_for_fabric field
           enum:
           - site_collection
           type: string
@@ -8183,9 +8183,9 @@ components:
           default: ""
           description: Route Aggregation configuration for this fabric
           enum:
+          - manual
           - ""
           - automated
-          - manual
           type: string
         route_aggregators:
           items:
@@ -8288,10 +8288,10 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
-          - greater
           - range
-          - less
           - equal
+          - less
+          - greater
           type: string
         source_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -8321,10 +8321,10 @@ components:
             \ to TCP/UDP ports. The choices are equal, greater, less or range."
           enum:
           - ""
-          - greater
           - range
-          - less
           - equal
+          - less
+          - greater
           type: string
         destination_port_1:
           description: "This field is used for equal, greater-than or less-than TCP/UDP\
@@ -8368,8 +8368,8 @@ components:
           description: Scheduler Type for Queue
           enum:
           - ""
-          - WRR
           - DWRR
+          - WRR
           - SP
           type: string
         scheduler_weight:
@@ -8403,11 +8403,11 @@ components:
           default: attribute
           description: Category of mapping override
           enum:
-          - remote-groups-override-to-sonic-roles
-          - attribute
-          - default-attribute-value
-          - objectclass
           - override-attribute-value
+          - default-attribute-value
+          - remote-groups-override-to-sonic-roles
+          - objectclass
+          - attribute
           type: string
         from:
           default: ""
@@ -8439,27 +8439,27 @@ components:
           default: next available color
           description: Color of Badge
           enum:
-          - orange
           - yellow
+          - orange
           - red
-          - green
           - blue
           - purple
+          - green
           minLength: 1
           type: string
         number:
           description: Number of Badge
           enum:
-          - 8
-          - 6
-          - 0
-          - 2
-          - 5
           - 9
-          - 3
+          - 8
+          - 7
+          - 6
           - 1
           - 4
-          - 7
+          - 0
+          - 5
+          - 2
+          - 3
           format: int64
           maximum: 9
           nullable: true
@@ -8577,8 +8577,8 @@ components:
           default: whitebox
           description: Type of Image Update Sets
           enum:
-          - whitebox
           - blackbox
+          - whitebox
           type: string
         section_pointless:
           items:
@@ -8615,12 +8615,12 @@ components:
           default: true
           description: Enable object.
           type: boolean
-        site:
+        fabric:
           default: ""
           description: Fabric this SuperSpine Group is assigned to
           type: string
-        site_ref_type_:
-          description: Object type for site field
+        fabric_ref_type_:
+          description: Object type for fabric field
           enum:
           - fabric
           type: string
@@ -8803,9 +8803,9 @@ components:
           default: "off"
           description: Global TLS mode for LDAP connections
           enum:
-          - "off"
           - "on"
           - start-tls
+          - "off"
           type: string
         default_port:
           description: "Default LDAP server port (389 for plain/StartTLS, 636 for\
@@ -8844,9 +8844,9 @@ components:
           default: sub
           description: Default LDAP search scope
           enum:
+          - sub
           - base
           - one
-          - sub
           type: string
         nss_base_passwd:
           default: ""
@@ -9009,12 +9009,12 @@ components:
           default: true
           description: Enable object.
           type: boolean
-        site:
+        fabric:
           default: ""
           description: Fabric this Spine Plane is assigned to
           type: string
-        site_ref_type_:
-          description: Object type for site field
+        fabric_ref_type_:
+          description: Object type for fabric field
           enum:
           - fabric
           type: string
@@ -9388,11 +9388,12 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.9.1.21
           - unmanaged
+          - 1.9.1.22
+          - 1.9.1.23
           type: string
         endpoint_set_num_unique_identifier:
-          default: "17869620897981"
+          default: "17872238625431"
           description: Unique Identifier - not editable
           type: string
         endpoint_set_num_on_summary:
@@ -9412,13 +9413,13 @@ components:
           description: Subrule 1 Type of the Endpoint Set
           enum:
           - ""
-          - bundle_id
-          - badge
-          - productClass
           - endpoint_type
+          - badge
           - endpoint
-          - badge_color
+          - productClass
           - deviceSerialNumber
+          - bundle_id
+          - badge_color
           - pod
           type: string
         endpoint_set_num_subrule_1_value:
@@ -9441,13 +9442,13 @@ components:
           description: Subrule 2 Type of the Endpoint Set
           enum:
           - ""
-          - bundle_id
-          - badge
-          - productClass
           - endpoint_type
+          - badge
           - endpoint
-          - badge_color
+          - productClass
           - deviceSerialNumber
+          - bundle_id
+          - badge_color
           - pod
           type: string
         endpoint_set_num_subrule_2_value:
@@ -9470,13 +9471,13 @@ components:
           description: Subrule 3 Type of the Endpoint Set
           enum:
           - ""
-          - bundle_id
-          - badge
-          - productClass
           - endpoint_type
+          - badge
           - endpoint
-          - badge_color
+          - productClass
           - deviceSerialNumber
+          - bundle_id
+          - badge_color
           - pod
           type: string
         endpoint_set_num_subrule_3_value:
@@ -9555,8 +9556,9 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.9.1.21
           - unmanaged
+          - 1.9.1.22
+          - 1.9.1.23
           type: string
         endpoint_set_for_endpointless_unique_identifier:
           default: pointless
@@ -9601,8 +9603,8 @@ components:
           description: Object type for element field
           enum:
           - ai_service
-          - type
           - switchpoint
+          - type
           type: string
         sdlc:
           default: ""
@@ -9691,8 +9693,8 @@ components:
           description: "Authentication method for remote access (SSH, etc.)"
           enum:
           - tacacs+
-          - ldap
           - local
+          - ldap
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -9729,9 +9731,9 @@ components:
           default: pap
           description: TACACS+ authentication type
           enum:
+          - chap
           - mschap
           - pap
-          - chap
           type: string
         port:
           default: ""
@@ -9768,8 +9770,9 @@ components:
           default: unmanaged
           description: The target SW version for member devices of the Endpoint Set
           enum:
-          - 1.9.1.21
           - unmanaged
+          - 1.9.1.22
+          - 1.9.1.23
           type: string
         endpoint_set_for_all_others_unique_identifier:
           default: else
@@ -9885,12 +9888,12 @@ components:
           default: false
           description: Permission lock
           type: boolean
-        expected_site:
+        expected_fabric:
           default: ""
           description: Expected Fabric
           type: string
-        expected_site_ref_type_:
-          description: Object type for expected_site field
+        expected_fabric_ref_type_:
+          description: Object type for expected_fabric field
           enum:
           - fabric
           type: string
@@ -9899,6 +9902,64 @@ components:
           description: For Switch Endpoints. Denotes a Switch is managed out of band
             via the management port
           type: boolean
+        expected_uplink_port:
+          description: "Specify the uplink port for ZTP to set into the switch if\
+            \ using an SFP based port. Otherwise, the first 32 copper ports are programmed\
+            \ by ZTP to be used for uplinks. Breakout Uplink port is switch model\
+            \ dependent and you should consult switch vendor documentation to ensure\
+            \ it is correct."
+          format: int64
+          maximum: 512
+          minimum: 1
+          nullable: true
+          type: integer
+          default: null
+        expected_breakout:
+          default: ""
+          description: Full breakout configuration for the SFP being used as the uplink.
+          enum:
+          - ""
+          - 2x1G
+          - 8x800G
+          - 2x50G
+          - 1x400G
+          - 4x200G
+          - 1x1G
+          - 1x200G
+          - 1x50G
+          - 2x25G
+          - 2x10G
+          - 1x40G
+          - 2x40G
+          - 4x400G
+          - 4x100G
+          - 4x1G
+          - 2x800G
+          - 2x100G
+          - 8x1G
+          - 8x100G
+          - 8x50G
+          - 1x100G
+          - 4x50G
+          - 8x10G
+          - 4x25G
+          - 2x400G
+          - 8x40G
+          - 4x40G
+          - 8x25G
+          - 1x800G
+          - 4x800G
+          - 4x10G
+          - 1x25G
+          - 8x400G
+          - 2x200G
+          - 1x10G
+          - 8x200G
+          type: string
+        expected_breakout_uplink_port:
+          default: ""
+          description: Breakout uplink port identifier in the format 1/#/#.
+          type: string
         type:
           default: leaf
           description: Type of Switchpoint
@@ -10088,10 +10149,10 @@ components:
           description: Comm Type
           enum:
           - cli
-          - gnmi
-          - snmpv2
-          - restconf
           - snmpv3
+          - snmpv2
+          - gnmi
+          - restconf
           minLength: 1
           type: string
         snmp_community_string:
@@ -10124,9 +10185,9 @@ components:
           enum:
           - as_site
           - LAG_IDL
-          - LLDP
           - LAG
           - Static Port
+          - LLDP
           minLength: 1
           type: string
         power_state:
@@ -10139,21 +10200,21 @@ components:
           description: Select the network operating system (NOS) type for this endpoint.
           enum:
           - microtik_routeros_telnet
-          - juniper_acx5048
-          - generic_advanced_snmp
-          - hpe_aruba_2530_series
-          - netgear_prosafe_series
-          - generic_snmp
-          - edgecore_ecs21000
-          - tibit_xgs_olt_sfp
-          - cisco_small_business_sgxxx
-          - cisco_catalyst_c3xxx
-          - cisco_nexus_9xxx
-          - eltex_ltp_gpon_olt
-          - sonic
-          - adtran_netvanta_series
           - arista_7050_series
           - ruckus_icx7150
+          - cisco_nexus_9xxx
+          - tibit_xgs_olt_sfp
+          - juniper_acx5048
+          - netgear_prosafe_series
+          - cisco_catalyst_c3xxx
+          - generic_advanced_snmp
+          - sonic
+          - cisco_small_business_sgxxx
+          - hpe_aruba_2530_series
+          - generic_snmp
+          - adtran_netvanta_series
+          - eltex_ltp_gpon_olt
+          - edgecore_ecs21000
           minLength: 1
           type: string
         cli_access_mode:
@@ -10209,8 +10270,8 @@ components:
           default: MD5
           description: Protocol
           enum:
-          - MD5
           - SHA
+          - MD5
           minLength: 1
           type: string
         passphrase:
@@ -10249,69 +10310,6 @@ components:
           type: array
         object_properties:
           $ref: "#/components/schemas/_switchpoints_put_request_switchpoint_value_object_properties"
-        expected_uplink_port:
-          description: "Specify the uplink port for ZTP to set into the switch if\
-            \ using an SFP based port. Otherwise, the first 32 copper ports are programmed\
-            \ by ZTP to be used for uplinks. Uplink port is 1 relative index, identifying\
-            \ the first breakout port. This is switch model dependent and you should\
-            \ consult switch vendor documentation to ensure it is correct."
-          format: int64
-          maximum: 512
-          minimum: 1
-          nullable: true
-          type: integer
-          default: null
-        expected_breakout:
-          default: ""
-          description: Full breakout configuration for the SFP being used as the uplink.
-          enum:
-          - 2x40G
-          - ""
-          - pg400G
-          - 2x10G
-          - pg25G
-          - 4x200G
-          - 2x25G
-          - 1x25G
-          - 8x1G
-          - 2x1G
-          - 4x1G
-          - 8x400G
-          - 8x25G
-          - pg100G
-          - 2x400G
-          - 8x200G
-          - 2x50G
-          - 4x400G
-          - 1x400G
-          - 1x800G
-          - 2x200G
-          - 8x10G
-          - pg200G
-          - 8x100G
-          - 1x200G
-          - 8x800G
-          - 1x1G
-          - 4x25G
-          - 1x100G
-          - 4x40G
-          - 1x10G
-          - pg10G
-          - 2x100G
-          - pg800G
-          - pg40G
-          - 4x800G
-          - pg1G
-          - pg50G
-          - 4x50G
-          - 1x50G
-          - 4x10G
-          - 8x40G
-          - 2x800G
-          - 4x100G
-          - 8x50G
-          - 1x40G
-          type: string
         is_fabric:
           default: false
           description: For Switch Endpoints. Denotes a Switch that is Fabric rather
@@ -10430,9 +10428,9 @@ components:
           default: ""
           description: Defines importance of Link Down on this port
           enum:
-          - high
           - critical
           - ""
+          - high
           type: string
         sort_by_name:
           default: false
@@ -10534,20 +10532,20 @@ components:
           default: device
           description: Type of elements threshold applies to
           enum:
-          - interface
-          - sdlc
-          - sdlc_container
           - satori
           - device
+          - interface
           - vnc
+          - sdlc_container
+          - sdlc
           type: string
         operation:
           default: and
           description: How to combine rules
           enum:
-          - escalation
           - or
           - and
+          - escalation
           type: string
         severity:
           default: notice
@@ -10573,69 +10571,69 @@ components:
           description: Metric threshold is on
           enum:
           - ""
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
-          - prometheus_Switch_system_cpu_percent
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
-          - node_filesystem_free_bytes
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
-          - prometheus_Switch_sensors_sensor_value
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
-          - prometheus_Switch_interfaces_interface_stats_link_state_changes
-          - prometheus_Switch_system_load_average
-          - prometheus_Infrastructure_host_loadavg
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
-          - container_memory_usage_bytes
-          - prometheus_Infrastructure_host_mem_used_percent
-          - prometheus_Switch_system_memory_free_MB
-          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
-          - prometheus_Switch_interfaces_sfp_info_Temperature_C
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
-          - container_cpu_system_seconds_total
-          - prometheus_Switch_system_controller_memory_inuse_MB
-          - prometheus_Switch_system_memory_available_MB
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
-          - prometheus_Switch_system_virtual_chassis_sync_uptime
-          - prometheus_Switch_system_controller_cpu_percent
-          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
-          - prometheus_Switch_system_memory_free_percent
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
-          - prometheus_Switch_bgp_status_neighbors_uptime
-          - prometheus_Switch_system_uptime
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
-          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
-          - prometheus_Switch_system_controller_uptime
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
-          - prometheus_Infrastructure_host_mem_free_percent
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
           - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_bytes
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - prometheus_Switch_system_uptime
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
+          - prometheus_Switch_system_memory_free_percent
+          - prometheus_Switch_system_controller_cpu_percent
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
+          - prometheus_Infrastructure_host_loadavg
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
+          - prometheus_Infrastructure_host_mem_used_percent
+          - container_memory_usage_bytes
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
+          - prometheus_Switch_system_controller_uptime
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - node_filesystem_free_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
+          - prometheus_Switch_sensors_sensor_value
+          - prometheus_Infrastructure_host_mem_free_percent
+          - prometheus_Switch_system_cpu_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
+          - container_cpu_system_seconds_total
+          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_system_controller_memory_inuse_MB
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_system_load_average
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
+          - prometheus_Switch_system_virtual_chassis_sync_uptime
+          - prometheus_Switch_system_memory_available_MB
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
+          - prometheus_Switch_interfaces_interface_stats_link_state_changes
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
+          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
+          - prometheus_Switch_system_memory_free_MB
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
+          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
           type: string
         escalation_operation:
           default: eq
           description: How to compare the metric to the value
           enum:
-          - lt
           - le
+          - lt
           - ge
           - gt
           - eq
@@ -10801,9 +10799,9 @@ components:
             only
           enum:
           - ""
-          - warning
           - notice
           - critical
+          - warning
           - error
           type: string
         threshold:
@@ -10876,8 +10874,8 @@ components:
           default: udp_bsd
           description: Syslog connection scheme
           enum:
-          - udp_bsd
           - tcp_bsd
+          - udp_bsd
           - tcp_tls
           type: string
         server:
@@ -10945,15 +10943,15 @@ components:
           - ""
           - ethPort
           - endpoint_type
+          - groupingRule
+          - archipelago
           - endpoint
           - externalGatewayProfile
-          - diagnosticsPortProfile
-          - portNumber
           - portUsage
-          - groupingRule
+          - portNumber
           - portImportance
-          - archipelago
           - deviceSerialNumber
+          - diagnosticsPortProfile
           - pod
           type: string
         rule_value:
@@ -10967,17 +10965,17 @@ components:
         rule_value_path_ref_type_:
           description: Object type for rule_value_path field
           enum:
-          - nac_port_profile
-          - type
           - authenticated_eth_port
+          - grouping_rules
+          - diagnostics_port_profile
           - fabric
           - gateway_profile
+          - nac_port_profile
+          - lag
           - service_port_profile
           - eth_port_profile_
-          - grouping_rules
-          - lag
-          - diagnostics_port_profile
           - pod
+          - type
           type: string
         index:
           description: The index identifying the object. Zero if you want to add an
@@ -11104,12 +11102,12 @@ components:
           enum:
           - tenant
           type: string
-        site:
+        fabric:
           default: ""
           description: Fabric this Gateway is assigned to
           type: string
-        site_ref_type_:
-          description: Object type for site field
+        fabric_ref_type_:
+          description: Object type for fabric field
           enum:
           - fabric
           type: string
@@ -11425,11 +11423,11 @@ components:
           description: Choose the color to display the connectors on the network view
           enum:
           - cornflower
+          - emerald
           - anakiwa
-          - chardonnay
           - lavender
           - starship
-          - emerald
+          - chardonnay
           minLength: 1
           type: string
         lacp:
@@ -11443,9 +11441,9 @@ components:
         eth_port_profile_ref_type_:
           description: Object type for eth_port_profile field
           enum:
+          - eth_port_profile_
           - service_port_profile
           - pb_egress_profile
-          - eth_port_profile_
           type: string
         peer_link_vlan:
           description: For peer-peer LAGs. The VLAN used for control
@@ -11507,13 +11505,13 @@ components:
           default: all
           description: Which LDAP client(s) use this server
           enum:
-          - pam
-          - nss
           - nss-sudo
+          - nss
+          - pam
           - sudo-pam
           - all
-          - sudo
           - nss-pam
+          - sudo
           type: string
         priority:
           description: "Server priority (1-99, lower = higher priority)"
@@ -11527,9 +11525,9 @@ components:
           default: "off"
           description: Per-server TLS mode (overrides global setting)
           enum:
-          - "off"
           - "on"
           - start-tls
+          - "off"
           type: string
         retransmit_attempts:
           description: Per-server retransmit attempts (0-10)
@@ -11574,13 +11572,13 @@ components:
         eth_port_num_eth_port_profile_ref_type_:
           description: Object type for eth_port_num_eth_port_profile field
           enum:
-          - nac_port_profile
-          - type
           - authenticated_eth_port
-          - pb_egress_profile
+          - nac_port_profile
           - service_port_profile
-          - eth_port_profile_
           - lag
+          - pb_egress_profile
+          - eth_port_profile_
+          - type
           type: string
         eth_port_num_eth_port_settings:
           default: ""
@@ -11725,12 +11723,12 @@ components:
           default: true
           description: Enable object.
           type: boolean
-        site:
+        fabric:
           default: ""
           description: Fabric this Plane is assigned to
           type: string
-        site_ref_type_:
-          description: Object type for site field
+        fabric_ref_type_:
+          description: Object type for fabric field
           enum:
           - fabric
           type: string
@@ -11758,12 +11756,12 @@ components:
           default: device
           description: Type of elements to group
           enum:
-          - interface
-          - sdlc
-          - sdlc_container
           - satori
           - device
+          - interface
           - vnc
+          - sdlc_container
+          - sdlc
           type: string
         operation:
           default: and
@@ -12009,52 +12007,52 @@ components:
           description: "Breakout Port Override. Available options determined by Switch\
             \ capability, Installed SFP and the capacity of the pipeline."
           enum:
-          - 2x40G
           - ""
-          - pg400G
-          - 2x10G
-          - pg25G
-          - 4x200G
-          - 2x25G
-          - 1x25G
-          - 8x1G
           - 2x1G
-          - 4x1G
-          - 8x400G
-          - 8x25G
-          - pg100G
-          - 2x400G
-          - 8x200G
+          - 8x800G
           - 2x50G
-          - 4x400G
           - 1x400G
-          - 1x800G
-          - 2x200G
+          - 4x200G
+          - 1x1G
+          - 1x200G
+          - 1x50G
+          - 8x200G
+          - 2x25G
+          - 2x10G
+          - 1x40G
+          - 2x40G
+          - 4x400G
+          - pg100G
+          - 4x100G
+          - 4x1G
+          - 2x800G
+          - 2x100G
+          - 8x1G
+          - 8x100G
+          - pg400G
+          - pg40G
+          - 8x50G
+          - 1x100G
+          - pg1G
+          - 4x50G
           - 8x10G
           - pg200G
-          - 8x100G
-          - 1x200G
-          - 8x800G
-          - 1x1G
           - 4x25G
-          - 1x100G
-          - 4x40G
-          - 1x10G
-          - pg10G
-          - 2x100G
+          - 2x400G
           - pg800G
-          - pg40G
-          - 4x800G
-          - pg1G
-          - pg50G
-          - 4x50G
-          - 1x50G
-          - 4x10G
           - 8x40G
-          - 2x800G
-          - 4x100G
-          - 8x50G
-          - 1x40G
+          - 8x25G
+          - pg10G
+          - 1x800G
+          - 4x800G
+          - 4x10G
+          - 1x25G
+          - 8x400G
+          - pg50G
+          - 2x200G
+          - 1x10G
+          - pg25G
+          - 4x40G
           type: string
         customer_vlan:
           default: ""
@@ -12128,12 +12126,12 @@ components:
           default: device
           description: Type of elements to apply thresholds to
           enum:
-          - interface
-          - sdlc
-          - sdlc_container
           - satori
           - device
+          - interface
           - vnc
+          - sdlc_container
+          - sdlc
           type: string
         targets:
           items:
@@ -12218,26 +12216,26 @@ components:
           default: "-1"
           description: Maximum Bit Rate allowed
           enum:
-          - "10"
-          - "10000"
           - "100"
-          - "25000"
           - "-1"
+          - "25000"
+          - "100000"
+          - "5000"
           - "1000"
           - "40000"
-          - "100000"
-          - "50000"
-          - "5000"
+          - "10"
           - "2500"
+          - "10000"
           - "400000"
+          - "50000"
           minLength: 1
           type: string
         duplex_mode:
           default: Auto
           description: Duplex Mode
           enum:
-          - Half
           - Auto
+          - Half
           - Full
           minLength: 1
           type: string
@@ -12274,9 +12272,9 @@ components:
           default: High
           description: Priority given when assigning power in a limited power situation
           enum:
-          - Low
-          - Critical
           - High
+          - Critical
+          - Low
           minLength: 1
           type: string
         allocated_power:
@@ -12317,8 +12315,8 @@ components:
             \t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t"
           enum:
           - Kpps
-          - pps
           - '%'
+          - pps
           minLength: 1
           type: string
         action:
@@ -12336,9 +12334,9 @@ components:
             \ restore service. <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\
             \t\t"
           enum:
-          - Restrict
           - Shutdown
           - Protect
+          - Restrict
           minLength: 1
           type: string
         fec:
@@ -12353,12 +12351,12 @@ components:
             \t\t\tNone: VnetC doesn't alter the Switch Value.<br>\n\t\t\t\t\t\t\t\t\
             \t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t"
           enum:
+          - rs-custom
+          - fc
           - rs
           - auto
-          - fc
-          - unaltered
-          - rs-custom
           - none
+          - unaltered
           minLength: 1
           type: string
         single_link:
@@ -13007,12 +13005,12 @@ components:
       type: object
     _lags_put_request_lag_value_object_properties:
       properties:
-        site:
+        fabric:
           default: ""
           description: Choose a Fabric
           type: string
-        site_ref_type_:
-          description: Object type for site field
+        fabric_ref_type_:
+          description: Object type for fabric field
           enum:
           - fabric
           type: string
@@ -13081,81 +13079,81 @@ components:
           default: metric
           description: Use a metric or a nested threshold
           enum:
-          - threshold
           - metric
+          - threshold
           type: string
         metric:
           default: ""
           description: Metric threshold is on
           enum:
           - ""
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
-          - prometheus_Switch_system_cpu_percent
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
-          - node_filesystem_free_bytes
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
-          - prometheus_Switch_sensors_sensor_value
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
-          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
-          - prometheus_Switch_interfaces_interface_stats_link_state_changes
-          - prometheus_Switch_system_load_average
-          - prometheus_Infrastructure_host_loadavg
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
-          - container_memory_usage_bytes
-          - prometheus_Infrastructure_host_mem_used_percent
-          - prometheus_Switch_system_memory_free_MB
-          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
-          - prometheus_Switch_interfaces_sfp_info_Temperature_C
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
-          - container_cpu_system_seconds_total
-          - prometheus_Switch_system_controller_memory_inuse_MB
-          - prometheus_Switch_system_memory_available_MB
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
-          - prometheus_Switch_system_virtual_chassis_sync_uptime
-          - prometheus_Switch_system_controller_cpu_percent
-          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
-          - prometheus_Switch_system_memory_free_percent
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
-          - prometheus_Switch_bgp_status_neighbors_uptime
-          - prometheus_Switch_system_uptime
-          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
-          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
-          - prometheus_Switch_system_controller_uptime
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
-          - prometheus_Infrastructure_host_mem_free_percent
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
-          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
-          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
           - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_bytes
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
-          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - prometheus_Switch_system_uptime
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_errors
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_drop
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Power_dBm
+          - prometheus_Switch_system_memory_free_percent
+          - prometheus_Switch_system_controller_cpu_percent
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_crc_errors
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_packets
+          - prometheus_Infrastructure_host_loadavg
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_collisions
+          - prometheus_Infrastructure_host_mem_used_percent
+          - container_memory_usage_bytes
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_restored
+          - prometheus_Switch_system_controller_uptime
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_marked_pkts
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_other_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_vlan_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_other_dropped
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_fec_non_correctable
           - prometheus_Switch_interfaces_interface_stats_transmit_tx_bytes
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_rl_dropped
+          - node_filesystem_free_bytes
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_packets
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_rl_dropped
+          - prometheus_Switch_sensors_sensor_value
+          - prometheus_Infrastructure_host_mem_free_percent
+          - prometheus_Switch_system_cpu_percent
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_errors
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast
+          - container_cpu_system_seconds_total
+          - prometheus_Switch_interfaces_sfp_info_Temperature_C
+          - prometheus_Switch_bgp_status_neighbors_uptime
+          - prometheus_Switch_system_controller_memory_inuse_MB
+          - prometheus_Switch_interfaces_sfp_stats_lanes_transmit_Bias_mA
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_drop
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_multicast
+          - prometheus_Switch_system_load_average
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_dropped
+          - prometheus_Switch_system_virtual_chassis_sync_uptime
+          - prometheus_Switch_system_memory_available_MB
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_qos_dropped
+          - prometheus_Switch_interfaces_sfp_stats_lanes_receive_Power_dBm
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_rx_ok
+          - prometheus_Switch_interfaces_interface_stats_ecn_queue_wred_dropped_pkts
+          - prometheus_Switch_interfaces_interface_stats_link_state_changes
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_vlan_dropped
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_qos_dropped
+          - prometheus_Switch_interfaces_interface_stats_transmit_tx_dropped
+          - prometheus_Switch_interfaces_interface_stats_lldp_state_changes
+          - prometheus_Switch_system_memory_free_MB
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_storm_detected
+          - prometheus_Switch_interfaces_interface_stats_pfc_queue_tx_ok
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_bytes
+          - prometheus_Infrastructure_host_filesystems_filesystem_avail_percent
+          - prometheus_Switch_interfaces_interface_stats_receive_rx_multicast_dropped
           type: string
         operation:
           default: eq
           description: How to compare the metric to the value
           enum:
           - ""
-          - lt
           - le
+          - ne
+          - lt
           - ge
           - gt
-          - ne
           - eq
           type: string
         value:
@@ -13889,12 +13887,12 @@ components:
           minimum: 1
           nullable: true
           type: integer
-        site:
+        fabric:
           default: ""
           description: Fabric this Pod is assigned to
           type: string
-        site_ref_type_:
-          description: Object type for site field
+        fabric_ref_type_:
+          description: Object type for fabric field
           enum:
           - fabric
           type: string
