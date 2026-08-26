@@ -67,4 +67,5 @@ func WriteTFConfig(t *testing.T, serverURL, config string) {
 	if err := os.WriteFile(filepath.Join(dir.(string), "test.tf"), []byte(config), 0600); err != nil {
 		t.Fatalf("failed to write test config: %v", err)
 	}
+	utils.InvalidateConfigIndex(dir.(string))
 }

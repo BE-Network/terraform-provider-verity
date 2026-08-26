@@ -96,17 +96,9 @@ func (c *ConfiguredAttributes) IsIndexedBlockAttributeConfigured(blockType strin
 	return false
 }
 
-// ParseResourceConfiguredAttributes parses all .tf files in the given directory
-// and returns the set of attributes that were explicitly configured for the
+// ParseResourceConfiguredAttributes returns the set of attributes that were
+// explicitly configured in the .tf files of the given directory for the
 // specified resource type and name.
-//
-// This is the ONLY reliable way to distinguish between:
-//   - Field not in .tf file → omit from API request (use server default)
-//   - `field = null` in .tf file → send null to API (explicit null)
-//   - `field = value` in .tf file → send value to API
-//
-// The terraform plugin framework does not provide this distinction - it fills
-// all schema attributes with null for unspecified fields.
 func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, resourceType string, resourceName string) *ConfiguredAttributes {
 	result := &ConfiguredAttributes{
 		Attributes:             make(map[string]bool),
@@ -115,17 +107,180 @@ func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, reso
 		IndexedBlockAttributes: make(map[string]map[int64]map[string]bool),
 	}
 
-	// Find all .tf files in the working directory
+	index := getWorkDirIndex(ctx, workDir)
+	if index == nil {
+		return result
+	}
+
+	sanitizedName := SanitizeResourceName(resourceName)
+
+	for _, file := range index.files {
+		for _, block := range file.byType[resourceType] {
+			if block.nameAttrOK {
+				if block.nameAttr != resourceName {
+					continue
+				}
+			} else if block.label != resourceName && block.label != sanitizedName {
+				continue
+			}
+
+			mergeConfiguredAttributes(result, block.attrs)
+			logMatchedResource(ctx, resourceType, resourceName, sanitizedName, block)
+			break // first match in this file wins
+		}
+	}
+
+	return result
+}
+
+// mergeConfiguredAttributes merges src into dst.
+func mergeConfiguredAttributes(dst, src *ConfiguredAttributes) {
+	for attr := range src.Attributes {
+		dst.Attributes[attr] = true
+	}
+	for attr := range src.BlockAttributes {
+		dst.BlockAttributes[attr] = true
+	}
+	for block := range src.Blocks {
+		dst.Blocks[block] = true
+	}
+	for blockType, indexMap := range src.IndexedBlockAttributes {
+		if _, exists := dst.IndexedBlockAttributes[blockType]; !exists {
+			dst.IndexedBlockAttributes[blockType] = make(map[int64]map[string]bool)
+		}
+		for idx, attrMap := range indexMap {
+			if _, exists := dst.IndexedBlockAttributes[blockType][idx]; !exists {
+				dst.IndexedBlockAttributes[blockType][idx] = make(map[string]bool)
+			}
+			for attrName := range attrMap {
+				dst.IndexedBlockAttributes[blockType][idx][attrName] = true
+			}
+		}
+	}
+}
+
+// logMatchedResource reproduces the per-match debug output of the original parser.
+func logMatchedResource(ctx context.Context, resourceType, resourceName, sanitizedName string, block *parsedResourceBlock) {
+	indexedAttrsStr := ""
+	for blockType, indexMap := range block.attrs.IndexedBlockAttributes {
+		for idx, attrMap := range indexMap {
+			attrs := make([]string, 0, len(attrMap))
+			for attr := range attrMap {
+				attrs = append(attrs, attr)
+			}
+			indexedAttrsStr += fmt.Sprintf("%s[%d]:{%s} ", blockType, idx, strings.Join(attrs, ","))
+		}
+	}
+
+	tflog.Debug(ctx, "HCL parser found resource", map[string]interface{}{
+		"resource":            resourceType + "." + resourceName,
+		"matched_label":       block.label,
+		"sanitized_name":      sanitizedName,
+		"attributes":          mapKeysToString(block.attrs.Attributes),
+		"blocks":              mapKeysToString(block.attrs.Blocks),
+		"indexed_block_attrs": indexedAttrsStr,
+	})
+}
+
+func mapKeysToString(m map[string]bool) string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return strings.Join(keys, ", ")
+}
+
+// parsedResourceBlock is a single `resource` block reduced to what matching and
+// lookup need. The HCL syntax tree it came from is released after extraction.
+type parsedResourceBlock struct {
+	label      string
+	nameAttr   string
+	nameAttrOK bool
+	attrs      *ConfiguredAttributes
+}
+
+// parsedFile holds the resource blocks of one .tf file, grouped by resource type
+// and kept in source order within each group.
+type parsedFile struct {
+	byType map[string][]*parsedResourceBlock
+}
+
+// workDirIndex is the parsed form of every .tf file in one working directory.
+type workDirIndex struct {
+	fingerprint string
+	files       []*parsedFile
+}
+
+var (
+	configIndexMutex sync.Mutex
+	configIndexCache = make(map[string]*workDirIndex)
+)
+
+// ClearConfigIndexCache drops every parsed configuration index.
+func ClearConfigIndexCache() {
+	configIndexMutex.Lock()
+	defer configIndexMutex.Unlock()
+	configIndexCache = make(map[string]*workDirIndex)
+}
+
+// InvalidateConfigIndex drops the parsed configuration index for one working
+// directory. The fingerprint already covers ordinary edits; call this when .tf
+// files are rewritten in place faster than filesystem timestamp resolution can
+// distinguish, as tests do between steps.
+func InvalidateConfigIndex(workDir string) {
+	configIndexMutex.Lock()
+	defer configIndexMutex.Unlock()
+	delete(configIndexCache, workDir)
+}
+
+// fingerprintTfFiles builds a cheap change token for the .tf file set.
+func fingerprintTfFiles(tfFiles []string) string {
+	var b strings.Builder
+	for _, f := range tfFiles {
+		info, err := os.Stat(f)
+		if err != nil {
+			fmt.Fprintf(&b, "%s|missing\n", f)
+			continue
+		}
+		fmt.Fprintf(&b, "%s|%d|%d\n", f, info.Size(), info.ModTime().UnixNano())
+	}
+	return b.String()
+}
+
+// getWorkDirIndex returns the parsed index for workDir, building it if the .tf
+// files changed since it was last built. Returns nil if the directory cannot be
+// listed.
+func getWorkDirIndex(ctx context.Context, workDir string) *workDirIndex {
 	tfFiles, err := filepath.Glob(filepath.Join(workDir, "*.tf"))
 	if err != nil {
 		tflog.Warn(ctx, "Failed to find .tf files", map[string]interface{}{
 			"error":   err.Error(),
 			"workDir": workDir,
 		})
-		return result
+		return nil
 	}
 
-	parser := hclparse.NewParser()
+	fingerprint := fingerprintTfFiles(tfFiles)
+
+	configIndexMutex.Lock()
+	defer configIndexMutex.Unlock()
+
+	if cached, ok := configIndexCache[workDir]; ok && cached.fingerprint == fingerprint {
+		return cached
+	}
+
+	index := buildWorkDirIndex(ctx, tfFiles, fingerprint)
+	configIndexCache[workDir] = index
+	return index
+}
+
+// buildWorkDirIndex parses every .tf file once and extracts the configured
+// attributes of every resource block it contains.
+func buildWorkDirIndex(ctx context.Context, tfFiles []string, fingerprint string) *workDirIndex {
+	index := &workDirIndex{
+		fingerprint: fingerprint,
+		files:       make([]*parsedFile, 0, len(tfFiles)),
+	}
 
 	for _, tfFile := range tfFiles {
 		src, err := os.ReadFile(tfFile)
@@ -137,7 +292,7 @@ func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, reso
 			continue
 		}
 
-		file, diags := parser.ParseHCL(src, tfFile)
+		file, diags := hclparse.NewParser().ParseHCL(src, tfFile)
 		if diags.HasErrors() {
 			tflog.Debug(ctx, "Failed to parse .tf file", map[string]interface{}{
 				"file":  tfFile,
@@ -146,139 +301,70 @@ func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, reso
 			continue
 		}
 
-		// Find the resource block and extract all configured attributes
-		found := findResourceAttributes(ctx, file.Body, resourceType, resourceName)
-		if found != nil {
-			// Merge found attributes
-			for attr := range found.Attributes {
-				result.Attributes[attr] = true
-			}
-			for attr := range found.BlockAttributes {
-				result.BlockAttributes[attr] = true
-			}
-			for block := range found.Blocks {
-				result.Blocks[block] = true
-			}
-			// Merge IndexedBlockAttributes
-			for blockType, indexMap := range found.IndexedBlockAttributes {
-				if _, exists := result.IndexedBlockAttributes[blockType]; !exists {
-					result.IndexedBlockAttributes[blockType] = make(map[int64]map[string]bool)
-				}
-				for idx, attrMap := range indexMap {
-					if _, exists := result.IndexedBlockAttributes[blockType][idx]; !exists {
-						result.IndexedBlockAttributes[blockType][idx] = make(map[string]bool)
-					}
-					for attrName := range attrMap {
-						result.IndexedBlockAttributes[blockType][idx][attrName] = true
-					}
-				}
-			}
+		if parsed := indexResourceBlocks(ctx, file.Body); parsed != nil {
+			index.files = append(index.files, parsed)
 		}
 	}
 
-	return result
+	tflog.Debug(ctx, "HCL parser built configuration index", map[string]interface{}{
+		"files": len(index.files),
+	})
+
+	return index
 }
 
-// findResourceAttributes looks for a resource block with the given type and name
-// and returns all attributes and blocks that are explicitly set in it.
-// Returns nil if the resource is not found or cannot be fully parsed.
-//
-// Matching priority:
-//  1. First, check the "name" attribute inside the block - this is the authoritative
-//     resource identifier in the API and should be the primary matching mechanism.
-//  2. If "name" attribute is missing or cannot be evaluated, fall back to checking
-//     if the block label matches the resource name (or its sanitized version).
-func findResourceAttributes(ctx context.Context, body hcl.Body, resourceType string, resourceName string) *ConfiguredAttributes {
+// indexResourceBlocks reduces one parsed file to its resource blocks.
+func indexResourceBlocks(ctx context.Context, body hcl.Body) *parsedFile {
 	syntaxBody, ok := body.(*hclsyntax.Body)
 	if !ok {
 		tflog.Warn(ctx, "HCL parser: body is not hclsyntax.Body, cannot parse")
 		return nil
 	}
 
-	// Also try the sanitized version of the name for label matching fallback,
-	// since HCL resource labels use sanitized names while the API uses the original names.
-	// Example: API name "(Device Settings)" -> HCL label "_Device_Settings_"
-	sanitizedName := SanitizeResourceName(resourceName)
+	parsed := &parsedFile{byType: make(map[string][]*parsedResourceBlock)}
 
 	for _, block := range syntaxBody.Blocks {
-		if block.Type == "resource" && len(block.Labels) >= 2 {
-			blockType := block.Labels[0]
-			blockName := block.Labels[1]
-
-			// Skip if resource type doesn't match
-			if blockType != resourceType {
-				continue
-			}
-
-			// Primary matching: check the "name" attribute inside the block
-			nameAttrMatches := false
-			nameAttrFound := false
-			if nameAttr, hasName := block.Body.Attributes["name"]; hasName {
-				val, diags := nameAttr.Expr.Value(nil)
-				if !diags.HasErrors() && val.Type() == cty.String && !val.IsNull() && val.IsKnown() {
-					nameAttrFound = true
-					nameAttrValue := val.AsString()
-					if nameAttrValue == resourceName {
-						nameAttrMatches = true
-					}
-				}
-			}
-
-			// If name attribute was found and evaluated, use it as the sole matching criteria
-			if nameAttrFound {
-				if !nameAttrMatches {
-					continue // name attribute didn't match, skip this block
-				}
-				// name attribute matched, proceed to extract attributes
-			} else {
-				// Fallback: if name attribute is missing or can't be evaluated,
-				// check if block label matches
-				labelMatches := blockName == resourceName || blockName == sanitizedName
-				if !labelMatches {
-					continue
-				}
-			}
-
-			result := &ConfiguredAttributes{
-				Attributes:             make(map[string]bool),
-				BlockAttributes:        make(map[string]bool),
-				Blocks:                 make(map[string]bool),
-				IndexedBlockAttributes: make(map[string]map[int64]map[string]bool),
-			}
-
-			// Extract top-level attributes
-			for name := range block.Body.Attributes {
-				result.Attributes[name] = true
-			}
-
-			// Extract nested blocks and their attributes
-			extractNestedBlocks(block.Body.Blocks, result, "")
-
-			// Build a string representation of IndexedBlockAttributes for debugging
-			indexedAttrsStr := ""
-			for blockType, indexMap := range result.IndexedBlockAttributes {
-				for idx, attrMap := range indexMap {
-					attrs := make([]string, 0, len(attrMap))
-					for attr := range attrMap {
-						attrs = append(attrs, attr)
-					}
-					indexedAttrsStr += fmt.Sprintf("%s[%d]:{%s} ", blockType, idx, strings.Join(attrs, ","))
-				}
-			}
-
-			tflog.Debug(ctx, "HCL parser found resource", map[string]interface{}{
-				"resource":            resourceType + "." + resourceName,
-				"matched_label":       blockName,
-				"sanitized_name":      sanitizedName,
-				"attributes":          mapKeysToString(result.Attributes),
-				"blocks":              mapKeysToString(result.Blocks),
-				"indexed_block_attrs": indexedAttrsStr,
-			})
-			return result
+		if block.Type != "resource" || len(block.Labels) < 2 {
+			continue
 		}
+
+		entry := &parsedResourceBlock{
+			label: block.Labels[1],
+			attrs: extractBlockAttributes(block.Body),
+		}
+
+		if nameAttr, hasName := block.Body.Attributes["name"]; hasName {
+			val, diags := nameAttr.Expr.Value(nil)
+			if !diags.HasErrors() && val.Type() == cty.String && !val.IsNull() && val.IsKnown() {
+				entry.nameAttr = val.AsString()
+				entry.nameAttrOK = true
+			}
+		}
+
+		resourceType := block.Labels[0]
+		parsed.byType[resourceType] = append(parsed.byType[resourceType], entry)
 	}
 
-	return nil
+	return parsed
+}
+
+// extractBlockAttributes collects the attributes and nested blocks written in a
+// single resource block.
+func extractBlockAttributes(body *hclsyntax.Body) *ConfiguredAttributes {
+	result := &ConfiguredAttributes{
+		Attributes:             make(map[string]bool),
+		BlockAttributes:        make(map[string]bool),
+		Blocks:                 make(map[string]bool),
+		IndexedBlockAttributes: make(map[string]map[int64]map[string]bool),
+	}
+
+	for name := range body.Attributes {
+		result.Attributes[name] = true
+	}
+
+	extractNestedBlocks(body.Blocks, result, "")
+
+	return result
 }
 
 // extractNestedBlocks recursively extracts block names and their attributes.
@@ -345,12 +431,4 @@ func extractNestedBlocks(blocks []*hclsyntax.Block, result *ConfiguredAttributes
 			extractNestedBlocks(block.Body.Blocks, result, fullBlockPath)
 		}
 	}
-}
-
-func mapKeysToString(m map[string]bool) string {
-	keys := make([]string, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-	return strings.Join(keys, ", ")
 }
