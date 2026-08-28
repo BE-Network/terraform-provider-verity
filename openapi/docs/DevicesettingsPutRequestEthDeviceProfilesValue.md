@@ -22,6 +22,9 @@ Name | Type | Description | Notes
 **CutThroughSwitching** | Pointer to **bool** | Enable Cut-through Switching on all Switches | [optional] [default to false]
 **LoginBanner** | Pointer to **string** | Banner message displayed at login | [optional] [default to ""]
 **DnsServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner.md) |  | [optional] 
+**NtpVrf** | Pointer to **string** | VRF used for NTP Servers | [optional] [default to "mgmt"]
+**NtpVrfTenant** | Pointer to **string** | Tenant used for NTP Servers | [optional] [default to ""]
+**NtpVrfTenantRefType** | Pointer to **string** | Object type for ntp_vrf_tenant field | [optional] 
 **NtpServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner.md) |  | [optional] 
 **SyslogServers** | Pointer to [**[]DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner**](DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner.md) |  | [optional] 
 **ObjectProperties** | Pointer to **map[string]interface{}** |  | [optional] 
@@ -547,6 +550,81 @@ SetDnsServers sets DnsServers field to given value.
 `func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDnsServers() bool`
 
 HasDnsServers returns a boolean if a field has been set.
+
+### GetNtpVrf
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrf() string`
+
+GetNtpVrf returns the NtpVrf field if non-nil, zero value otherwise.
+
+### GetNtpVrfOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfOk() (*string, bool)`
+
+GetNtpVrfOk returns a tuple with the NtpVrf field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNtpVrf
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpVrf(v string)`
+
+SetNtpVrf sets NtpVrf field to given value.
+
+### HasNtpVrf
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpVrf() bool`
+
+HasNtpVrf returns a boolean if a field has been set.
+
+### GetNtpVrfTenant
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfTenant() string`
+
+GetNtpVrfTenant returns the NtpVrfTenant field if non-nil, zero value otherwise.
+
+### GetNtpVrfTenantOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfTenantOk() (*string, bool)`
+
+GetNtpVrfTenantOk returns a tuple with the NtpVrfTenant field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNtpVrfTenant
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpVrfTenant(v string)`
+
+SetNtpVrfTenant sets NtpVrfTenant field to given value.
+
+### HasNtpVrfTenant
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpVrfTenant() bool`
+
+HasNtpVrfTenant returns a boolean if a field has been set.
+
+### GetNtpVrfTenantRefType
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfTenantRefType() string`
+
+GetNtpVrfTenantRefType returns the NtpVrfTenantRefType field if non-nil, zero value otherwise.
+
+### GetNtpVrfTenantRefTypeOk
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfTenantRefTypeOk() (*string, bool)`
+
+GetNtpVrfTenantRefTypeOk returns a tuple with the NtpVrfTenantRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNtpVrfTenantRefType
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpVrfTenantRefType(v string)`
+
+SetNtpVrfTenantRefType sets NtpVrfTenantRefType field to given value.
+
+### HasNtpVrfTenantRefType
+
+`func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpVrfTenantRefType() bool`
+
+HasNtpVrfTenantRefType returns a boolean if a field has been set.
 
 ### GetNtpServers
 

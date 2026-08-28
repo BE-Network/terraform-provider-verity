@@ -26,6 +26,9 @@ resource "verity_device_settings" "example" {
   hold_timer = 0
   mac_aging_timer_override = null
   spanning_tree_priority = "byLevel"
+  ntp_vrf = "tenant"
+  ntp_vrf_tenant = "tenant-a"
+  ntp_vrf_tenant_ref_type_ = "tenant"
 
   dns_servers {
     index = 1
@@ -71,6 +74,9 @@ resource "verity_device_settings" "example" {
 * `packet_queue` (String) - Packet Queue for device.
 * `packet_queue_ref_type_` (String) - Object type for `packet_queue` field.
 * `hold_timer` (Integer) - Hold Timer.
+* `ntp_vrf` (String) - VRF used for NTP servers. Valid values are `default/underlay`, `mgmt` and `tenant`. Defaults to `mgmt`.
+* `ntp_vrf_tenant` (String) - Tenant used for NTP servers. Applies when `ntp_vrf` is `tenant`.
+* `ntp_vrf_tenant_ref_type_` (String) - Object type for `ntp_vrf_tenant` field.
 * `dns_servers` (Array) - DNS servers.
   * `enabled` (Boolean) - Enable DNS name server.
   * `server` (String) - IPv4 or IPv6 DNS name server address.

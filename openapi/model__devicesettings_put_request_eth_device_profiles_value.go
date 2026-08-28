@@ -54,6 +54,12 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	// Banner message displayed at login
 	LoginBanner *string `json:"login_banner,omitempty"`
 	DnsServers []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner `json:"dns_servers,omitempty"`
+	// VRF used for NTP Servers
+	NtpVrf *string `json:"ntp_vrf,omitempty"`
+	// Tenant used for NTP Servers
+	NtpVrfTenant *string `json:"ntp_vrf_tenant,omitempty"`
+	// Object type for ntp_vrf_tenant field
+	NtpVrfTenantRefType *string `json:"ntp_vrf_tenant_ref_type_,omitempty"`
 	NtpServers []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner `json:"ntp_servers,omitempty"`
 	SyslogServers []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner `json:"syslog_servers,omitempty"`
 	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
@@ -99,6 +105,10 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.CutThroughSwitching = &cutThroughSwitching
 	var loginBanner string = ""
 	this.LoginBanner = &loginBanner
+	var ntpVrf string = "mgmt"
+	this.NtpVrf = &ntpVrf
+	var ntpVrfTenant string = ""
+	this.NtpVrfTenant = &ntpVrfTenant
 	var holdTimer int64 = 0
 	this.HoldTimer = *NewNullableInt64(&holdTimer)
 	var spanningTreePriority string = "byLevel"
@@ -139,6 +149,10 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.CutThroughSwitching = &cutThroughSwitching
 	var loginBanner string = ""
 	this.LoginBanner = &loginBanner
+	var ntpVrf string = "mgmt"
+	this.NtpVrf = &ntpVrf
+	var ntpVrfTenant string = ""
+	this.NtpVrfTenant = &ntpVrfTenant
 	var holdTimer int64 = 0
 	this.HoldTimer = *NewNullableInt64(&holdTimer)
 	var spanningTreePriority string = "byLevel"
@@ -772,6 +786,102 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDnsServers(v []Devic
 	o.DnsServers = v
 }
 
+// GetNtpVrf returns the NtpVrf field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrf() string {
+	if o == nil || IsNil(o.NtpVrf) {
+		var ret string
+		return ret
+	}
+	return *o.NtpVrf
+}
+
+// GetNtpVrfOk returns a tuple with the NtpVrf field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfOk() (*string, bool) {
+	if o == nil || IsNil(o.NtpVrf) {
+		return nil, false
+	}
+	return o.NtpVrf, true
+}
+
+// HasNtpVrf returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpVrf() bool {
+	if o != nil && !IsNil(o.NtpVrf) {
+		return true
+	}
+
+	return false
+}
+
+// SetNtpVrf gets a reference to the given string and assigns it to the NtpVrf field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpVrf(v string) {
+	o.NtpVrf = &v
+}
+
+// GetNtpVrfTenant returns the NtpVrfTenant field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfTenant() string {
+	if o == nil || IsNil(o.NtpVrfTenant) {
+		var ret string
+		return ret
+	}
+	return *o.NtpVrfTenant
+}
+
+// GetNtpVrfTenantOk returns a tuple with the NtpVrfTenant field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfTenantOk() (*string, bool) {
+	if o == nil || IsNil(o.NtpVrfTenant) {
+		return nil, false
+	}
+	return o.NtpVrfTenant, true
+}
+
+// HasNtpVrfTenant returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpVrfTenant() bool {
+	if o != nil && !IsNil(o.NtpVrfTenant) {
+		return true
+	}
+
+	return false
+}
+
+// SetNtpVrfTenant gets a reference to the given string and assigns it to the NtpVrfTenant field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpVrfTenant(v string) {
+	o.NtpVrfTenant = &v
+}
+
+// GetNtpVrfTenantRefType returns the NtpVrfTenantRefType field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfTenantRefType() string {
+	if o == nil || IsNil(o.NtpVrfTenantRefType) {
+		var ret string
+		return ret
+	}
+	return *o.NtpVrfTenantRefType
+}
+
+// GetNtpVrfTenantRefTypeOk returns a tuple with the NtpVrfTenantRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpVrfTenantRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.NtpVrfTenantRefType) {
+		return nil, false
+	}
+	return o.NtpVrfTenantRefType, true
+}
+
+// HasNtpVrfTenantRefType returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpVrfTenantRefType() bool {
+	if o != nil && !IsNil(o.NtpVrfTenantRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetNtpVrfTenantRefType gets a reference to the given string and assigns it to the NtpVrfTenantRefType field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpVrfTenantRefType(v string) {
+	o.NtpVrfTenantRefType = &v
+}
+
 // GetNtpServers returns the NtpServers field value if set, zero value otherwise.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
 	if o == nil || IsNil(o.NtpServers) {
@@ -1047,6 +1157,15 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	}
 	if !IsNil(o.DnsServers) {
 		toSerialize["dns_servers"] = o.DnsServers
+	}
+	if !IsNil(o.NtpVrf) {
+		toSerialize["ntp_vrf"] = o.NtpVrf
+	}
+	if !IsNil(o.NtpVrfTenant) {
+		toSerialize["ntp_vrf_tenant"] = o.NtpVrfTenant
+	}
+	if !IsNil(o.NtpVrfTenantRefType) {
+		toSerialize["ntp_vrf_tenant_ref_type_"] = o.NtpVrfTenantRefType
 	}
 	if !IsNil(o.NtpServers) {
 		toSerialize["ntp_servers"] = o.NtpServers

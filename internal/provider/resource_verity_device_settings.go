@@ -54,6 +54,9 @@ type verityDeviceSettingsResourceModel struct {
 	LoginBanner                            types.String                                `tfsdk:"login_banner"`
 	DnsServers                             []verityDeviceSettingsDnsServerModel        `tfsdk:"dns_servers"`
 	NtpServers                             []verityDeviceSettingsNtpServerModel        `tfsdk:"ntp_servers"`
+	NtpVrf                                 types.String                                `tfsdk:"ntp_vrf"`
+	NtpVrfTenant                           types.String                                `tfsdk:"ntp_vrf_tenant"`
+	NtpVrfTenantRefType                    types.String                                `tfsdk:"ntp_vrf_tenant_ref_type_"`
 	SyslogServers                          []verityDeviceSettingsSyslogServerModel     `tfsdk:"syslog_servers"`
 	HoldTimer                              types.Int64                                 `tfsdk:"hold_timer"`
 	DeviceAaaProfile                       types.String                                `tfsdk:"device_aaa_profile"`
@@ -230,6 +233,21 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 				Optional:    true,
 				Computed:    true,
 			},
+			"ntp_vrf": schema.StringAttribute{
+				Description: "VRF used for NTP Servers. Valid values are `default/underlay`, `mgmt` and `tenant`.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ntp_vrf_tenant": schema.StringAttribute{
+				Description: "Tenant used for NTP Servers",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ntp_vrf_tenant_ref_type_": schema.StringAttribute{
+				Description: "Object type for ntp_vrf_tenant field",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"dns_servers": schema.ListNestedBlock{
@@ -358,6 +376,9 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		{FieldName: "SpanningTreePriority", APIField: &deviceSettingsProps.SpanningTreePriority, TFValue: plan.SpanningTreePriority},
 		{FieldName: "PacketQueue", APIField: &deviceSettingsProps.PacketQueue, TFValue: plan.PacketQueue},
 		{FieldName: "PacketQueueRefType", APIField: &deviceSettingsProps.PacketQueueRefType, TFValue: plan.PacketQueueRefType},
+		{FieldName: "NtpVrf", APIField: &deviceSettingsProps.NtpVrf, TFValue: plan.NtpVrf},
+		{FieldName: "NtpVrfTenant", APIField: &deviceSettingsProps.NtpVrfTenant, TFValue: plan.NtpVrfTenant},
+		{FieldName: "NtpVrfTenantRefType", APIField: &deviceSettingsProps.NtpVrfTenantRefType, TFValue: plan.NtpVrfTenantRefType},
 	})
 
 	// Handle boolean fields
@@ -662,6 +683,7 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetStringField(plan.Mode, state.Mode, func(v *string) { deviceSettingsProps.Mode = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.LoginBanner, state.LoginBanner, func(v *string) { deviceSettingsProps.LoginBanner = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SpanningTreePriority, state.SpanningTreePriority, func(v *string) { deviceSettingsProps.SpanningTreePriority = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.NtpVrf, state.NtpVrf, func(v *string) { deviceSettingsProps.NtpVrf = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { deviceSettingsProps.Enable = v }, &hasChanges)
@@ -706,6 +728,18 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		func(v *string) { deviceSettingsProps.DeviceAaaProfile = v },
 		func(v *string) { deviceSettingsProps.DeviceAaaProfileRefType = v },
 		"device_aaa_profile", "device_aaa_profile_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle NtpVrfTenant and NtpVrfTenantRefType using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.NtpVrfTenant, state.NtpVrfTenant, plan.NtpVrfTenantRefType, state.NtpVrfTenantRefType,
+		func(v *string) { deviceSettingsProps.NtpVrfTenant = v },
+		func(v *string) { deviceSettingsProps.NtpVrfTenantRefType = v },
+		"ntp_vrf_tenant", "ntp_vrf_tenant_ref_type_",
 		&hasChanges,
 		&resp.Diagnostics,
 	) {
@@ -967,6 +1001,9 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 	state.PacketQueueRefType = utils.MapStringWithMode(data, "packet_queue_ref_type_", resourceType, mode)
 	state.DeviceAaaProfile = utils.MapStringWithMode(data, "device_aaa_profile", resourceType, mode)
 	state.DeviceAaaProfileRefType = utils.MapStringWithMode(data, "device_aaa_profile_ref_type_", resourceType, mode)
+	state.NtpVrf = utils.MapStringWithMode(data, "ntp_vrf", resourceType, mode)
+	state.NtpVrfTenant = utils.MapStringWithMode(data, "ntp_vrf_tenant", resourceType, mode)
+	state.NtpVrfTenantRefType = utils.MapStringWithMode(data, "ntp_vrf_tenant_ref_type_", resourceType, mode)
 
 	// Int64 fields
 	state.ExternalBatteryPowerAvailable = utils.MapInt64WithMode(data, "external_battery_power_available", resourceType, mode)
@@ -1096,6 +1133,7 @@ func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resou
 
 	nullifier.NullifyStrings(
 		"cli_commands", "mode", "login_banner", "spanning_tree_priority", "packet_queue", "packet_queue_ref_type_", "device_aaa_profile", "device_aaa_profile_ref_type_",
+		"ntp_vrf", "ntp_vrf_tenant", "ntp_vrf_tenant_ref_type_",
 	)
 
 	nullifier.NullifyBools(
