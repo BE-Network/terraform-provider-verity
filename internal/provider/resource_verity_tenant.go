@@ -143,12 +143,12 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:    true,
 			},
 			"dhcp_relay_source_ipv4s_subnet": schema.StringAttribute{
-				Description: "Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.",
+				Description: "IPv4 subnet used to allocate Tenant-specific loopback addresses on each leaf switch for DHCP relay and troubleshooting.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"dhcp_relay_source_ipv6s_subnet": schema.StringAttribute{
-				Description: "Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.",
+				Description: "IPv6 subnet used to allocate Tenant-specific loopback addresses on each leaf switch for DHCP relay and troubleshooting.",
 				Optional:    true,
 				Computed:    true,
 			},

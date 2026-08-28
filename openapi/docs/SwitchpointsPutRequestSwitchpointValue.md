@@ -17,9 +17,9 @@ Name | Type | Description | Notes
 **ExpectedFabric** | Pointer to **string** | Expected Fabric | [optional] [default to ""]
 **ExpectedFabricRefType** | Pointer to **string** | Object type for expected_fabric field | [optional] 
 **OutOfBandManagement** | Pointer to **bool** | For Switch Endpoints. Denotes a Switch is managed out of band via the management port | [optional] [default to false]
-**ExpectedUplinkPort** | Pointer to **NullableInt64** | Specify the uplink port for ZTP to set into the switch if using an SFP based port. Otherwise, the first 32 copper ports are programmed by ZTP to be used for uplinks. Breakout Uplink port is switch model dependent and you should consult switch vendor documentation to ensure it is correct. | [optional] 
+**ExpectedUplinkPort** | Pointer to **NullableInt64** | Specify the uplink port for ZTP when using an SFP-based port. The Uplink Port is 1-indexed relative to the configured Port Group, where 1 represents the first port in the group. Port Group and breakout configurations are switch-model dependent; consult the switch vendor documentation to determine the correct Port Group and Uplink Port values. If an SFP-based uplink is not specified, ZTP programs the first 32 copper ports for use as uplinks. | [optional] 
 **ExpectedBreakout** | Pointer to **string** | Full breakout configuration for the SFP being used as the uplink. | [optional] [default to ""]
-**ExpectedBreakoutUplinkPort** | Pointer to **string** | Breakout uplink port identifier in the format 1/#/#. | [optional] [default to ""]
+**ExpectedBreakoutUplinkPort** | Pointer to **string** | Uplink Ethernet Port identifier in the format 1/# or 1/#/#. | [optional] [default to ""]
 **Type** | Pointer to **string** | Type of Switchpoint | [optional] [default to "leaf"]
 **Plane** | Pointer to **string** | Plane | [optional] [default to ""]
 **PlaneRefType** | Pointer to **string** | Object type for plane field | [optional] 
@@ -46,25 +46,31 @@ Name | Type | Description | Notes
 **PasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
 **EnablePasswordEncrypted** | Pointer to **string** | Enable Password - to enable privileged CLI operations | [optional] [default to ""]
 **SshKeyOrPasswordEncrypted** | Pointer to **string** | SSH Key or Password | [optional] [default to ""]
+**SshKeyOrPasswordEncryptedAutoAssigned** | Pointer to **bool** | Whether or not the value in ssh_key_or_password_encrypted field has been automatically assigned or not. Set to false and change ssh_key_or_password_encrypted value to edit. | [optional] 
 **PassphraseEncrypted** | Pointer to **string** | Passphrase | [optional] [default to ""]
 **PrivatePasswordEncrypted** | Pointer to **string** | Password | [optional] [default to ""]
 **IpSource** | Pointer to **string** | IP Source | [optional] [default to "dhcp"]
 **ControllerIpAndMask** | Pointer to **string** | Controller IP and Mask | [optional] [default to ""]
 **ControllerIpAndMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in controller_ip_and_mask field has been automatically assigned or not. Set to false and change controller_ip_and_mask value to edit. | [optional] 
 **Gateway** | Pointer to **string** | Gateway | [optional] [default to ""]
+**GatewayAutoAssigned** | Pointer to **bool** | Whether or not the value in gateway field has been automatically assigned or not. Set to false and change gateway value to edit. | [optional] 
 **SwitchIpAndMask** | Pointer to **string** | Switch IP and Mask | [optional] [default to ""]
 **SwitchIpAndMaskAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_ip_and_mask field has been automatically assigned or not. Set to false and change switch_ip_and_mask value to edit. | [optional] 
 **SwitchGateway** | Pointer to **string** | Gateway of Managed Device | [optional] [default to ""]
+**SwitchGatewayAutoAssigned** | Pointer to **bool** | Whether or not the value in switch_gateway field has been automatically assigned or not. Set to false and change switch_gateway value to edit. | [optional] 
 **CommType** | Pointer to **string** | Comm Type | [optional] [default to "snmpv2"]
 **SnmpCommunityString** | Pointer to **string** | Comm Credentials | [optional] [default to ""]
 **UplinkPort** | Pointer to **string** | Uplink Port of Managed Device | [optional] [default to ""]
+**UpstreamIsLag** | Pointer to **bool** | If checked, then ZTP will provision the TOR switch with the first 32 ports as a lag to facilitate plug-n-play | [optional] [default to false]
 **LldpSearchString** | Pointer to **string** | Optional unless Located By is \&quot;LLDP\&quot; or Device managed as \&quot;Active SFP\&quot;. Must be either the chassis-id or the hostname of the LLDP from the managed device. Used to detect connections between managed devices. If blank, the chassis-id detected by the Device Controller via SNMP/CLI is used | [optional] [default to ""]
+**LldpSearchStringAutoAssigned** | Pointer to **bool** | Whether or not the value in lldp_search_string field has been automatically assigned or not. Set to false and change lldp_search_string value to edit. | [optional] 
 **ZtpIdentification** | Pointer to **string** | Service Tag or Serial Number to identify device for Zero Touch Provisioning | [optional] [default to ""]
 **LocatedBy** | Pointer to **string** | Controls how the system locates this Device within its LAN | [optional] [default to "LLDP"]
 **PowerState** | Pointer to **string** | Power state of Switch Controller | [optional] [default to "on"]
 **CommunicationMode** | Pointer to **string** | Select the network operating system (NOS) type for this endpoint. | [optional] [default to "generic_snmp"]
 **CliAccessMode** | Pointer to **string** | CLI Access Mode | [optional] [default to "SSH"]
 **Username** | Pointer to **string** | Username | [optional] [default to ""]
+**UsernameAutoAssigned** | Pointer to **bool** | Whether or not the value in username field has been automatically assigned or not. Set to false and change username value to edit. | [optional] 
 **Password** | Pointer to **string** | Password | [optional] [default to ""]
 **EnablePassword** | Pointer to **string** | Enable Password - to enable privileged CLI operations | [optional] [default to ""]
 **SshKeyOrPassword** | Pointer to **string** | SSH Key or Password | [optional] [default to ""]
@@ -1200,6 +1206,31 @@ SetSshKeyOrPasswordEncrypted sets SshKeyOrPasswordEncrypted field to given value
 
 HasSshKeyOrPasswordEncrypted returns a boolean if a field has been set.
 
+### GetSshKeyOrPasswordEncryptedAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSshKeyOrPasswordEncryptedAutoAssigned() bool`
+
+GetSshKeyOrPasswordEncryptedAutoAssigned returns the SshKeyOrPasswordEncryptedAutoAssigned field if non-nil, zero value otherwise.
+
+### GetSshKeyOrPasswordEncryptedAutoAssignedOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSshKeyOrPasswordEncryptedAutoAssignedOk() (*bool, bool)`
+
+GetSshKeyOrPasswordEncryptedAutoAssignedOk returns a tuple with the SshKeyOrPasswordEncryptedAutoAssigned field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSshKeyOrPasswordEncryptedAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetSshKeyOrPasswordEncryptedAutoAssigned(v bool)`
+
+SetSshKeyOrPasswordEncryptedAutoAssigned sets SshKeyOrPasswordEncryptedAutoAssigned field to given value.
+
+### HasSshKeyOrPasswordEncryptedAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasSshKeyOrPasswordEncryptedAutoAssigned() bool`
+
+HasSshKeyOrPasswordEncryptedAutoAssigned returns a boolean if a field has been set.
+
 ### GetPassphraseEncrypted
 
 `func (o *SwitchpointsPutRequestSwitchpointValue) GetPassphraseEncrypted() string`
@@ -1350,6 +1381,31 @@ SetGateway sets Gateway field to given value.
 
 HasGateway returns a boolean if a field has been set.
 
+### GetGatewayAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetGatewayAutoAssigned() bool`
+
+GetGatewayAutoAssigned returns the GatewayAutoAssigned field if non-nil, zero value otherwise.
+
+### GetGatewayAutoAssignedOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetGatewayAutoAssignedOk() (*bool, bool)`
+
+GetGatewayAutoAssignedOk returns a tuple with the GatewayAutoAssigned field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetGatewayAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetGatewayAutoAssigned(v bool)`
+
+SetGatewayAutoAssigned sets GatewayAutoAssigned field to given value.
+
+### HasGatewayAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasGatewayAutoAssigned() bool`
+
+HasGatewayAutoAssigned returns a boolean if a field has been set.
+
 ### GetSwitchIpAndMask
 
 `func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchIpAndMask() string`
@@ -1424,6 +1480,31 @@ SetSwitchGateway sets SwitchGateway field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchGateway() bool`
 
 HasSwitchGateway returns a boolean if a field has been set.
+
+### GetSwitchGatewayAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchGatewayAutoAssigned() bool`
+
+GetSwitchGatewayAutoAssigned returns the SwitchGatewayAutoAssigned field if non-nil, zero value otherwise.
+
+### GetSwitchGatewayAutoAssignedOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchGatewayAutoAssignedOk() (*bool, bool)`
+
+GetSwitchGatewayAutoAssignedOk returns a tuple with the SwitchGatewayAutoAssigned field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchGatewayAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchGatewayAutoAssigned(v bool)`
+
+SetSwitchGatewayAutoAssigned sets SwitchGatewayAutoAssigned field to given value.
+
+### HasSwitchGatewayAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchGatewayAutoAssigned() bool`
+
+HasSwitchGatewayAutoAssigned returns a boolean if a field has been set.
 
 ### GetCommType
 
@@ -1500,6 +1581,31 @@ SetUplinkPort sets UplinkPort field to given value.
 
 HasUplinkPort returns a boolean if a field has been set.
 
+### GetUpstreamIsLag
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetUpstreamIsLag() bool`
+
+GetUpstreamIsLag returns the UpstreamIsLag field if non-nil, zero value otherwise.
+
+### GetUpstreamIsLagOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetUpstreamIsLagOk() (*bool, bool)`
+
+GetUpstreamIsLagOk returns a tuple with the UpstreamIsLag field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUpstreamIsLag
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetUpstreamIsLag(v bool)`
+
+SetUpstreamIsLag sets UpstreamIsLag field to given value.
+
+### HasUpstreamIsLag
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasUpstreamIsLag() bool`
+
+HasUpstreamIsLag returns a boolean if a field has been set.
+
 ### GetLldpSearchString
 
 `func (o *SwitchpointsPutRequestSwitchpointValue) GetLldpSearchString() string`
@@ -1524,6 +1630,31 @@ SetLldpSearchString sets LldpSearchString field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasLldpSearchString() bool`
 
 HasLldpSearchString returns a boolean if a field has been set.
+
+### GetLldpSearchStringAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetLldpSearchStringAutoAssigned() bool`
+
+GetLldpSearchStringAutoAssigned returns the LldpSearchStringAutoAssigned field if non-nil, zero value otherwise.
+
+### GetLldpSearchStringAutoAssignedOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetLldpSearchStringAutoAssignedOk() (*bool, bool)`
+
+GetLldpSearchStringAutoAssignedOk returns a tuple with the LldpSearchStringAutoAssigned field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLldpSearchStringAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetLldpSearchStringAutoAssigned(v bool)`
+
+SetLldpSearchStringAutoAssigned sets LldpSearchStringAutoAssigned field to given value.
+
+### HasLldpSearchStringAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasLldpSearchStringAutoAssigned() bool`
+
+HasLldpSearchStringAutoAssigned returns a boolean if a field has been set.
 
 ### GetZtpIdentification
 
@@ -1674,6 +1805,31 @@ SetUsername sets Username field to given value.
 `func (o *SwitchpointsPutRequestSwitchpointValue) HasUsername() bool`
 
 HasUsername returns a boolean if a field has been set.
+
+### GetUsernameAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetUsernameAutoAssigned() bool`
+
+GetUsernameAutoAssigned returns the UsernameAutoAssigned field if non-nil, zero value otherwise.
+
+### GetUsernameAutoAssignedOk
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) GetUsernameAutoAssignedOk() (*bool, bool)`
+
+GetUsernameAutoAssignedOk returns a tuple with the UsernameAutoAssigned field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUsernameAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) SetUsernameAutoAssigned(v bool)`
+
+SetUsernameAutoAssigned sets UsernameAutoAssigned field to given value.
+
+### HasUsernameAutoAssigned
+
+`func (o *SwitchpointsPutRequestSwitchpointValue) HasUsernameAutoAssigned() bool`
+
+HasUsernameAutoAssigned returns a boolean if a field has been set.
 
 ### GetPassword
 

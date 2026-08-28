@@ -40,92 +40,98 @@ type veritySwitchpointResource struct {
 }
 
 type veritySwitchpointResourceModel struct {
-	Name                             types.String                             `tfsdk:"name"`
-	Enable                           types.Bool                               `tfsdk:"enable"`
-	Tenant                           types.String                             `tfsdk:"tenant"`
-	TenantRefType                    types.String                             `tfsdk:"tenant_ref_type_"`
-	DeviceSerialNumber               types.String                             `tfsdk:"device_serial_number"`
-	ConnectedBundle                  types.String                             `tfsdk:"connected_bundle"`
-	ConnectedBundleRefType           types.String                             `tfsdk:"connected_bundle_ref_type_"`
-	IsTopOfIsland                    types.Bool                               `tfsdk:"is_top_of_island"`
-	ReadOnlyMode                     types.Bool                               `tfsdk:"read_only_mode"`
-	Locked                           types.Bool                               `tfsdk:"locked"`
-	ExpectedFabric                   types.String                             `tfsdk:"expected_fabric"`
-	ExpectedFabricRefType            types.String                             `tfsdk:"expected_fabric_ref_type_"`
-	OutOfBandManagement              types.Bool                               `tfsdk:"out_of_band_management"`
-	Type                             types.String                             `tfsdk:"type"`
-	Plane                            types.String                             `tfsdk:"plane"`
-	PlaneRefType                     types.String                             `tfsdk:"plane_ref_type_"`
-	SpinePlane                       types.String                             `tfsdk:"spine_plane"`
-	SpinePlaneRefType                types.String                             `tfsdk:"spine_plane_ref_type_"`
-	Pod                              types.String                             `tfsdk:"pod"`
-	PodRefType                       types.String                             `tfsdk:"pod_ref_type_"`
-	Su                               types.String                             `tfsdk:"su"`
-	SuRefType                        types.String                             `tfsdk:"su_ref_type_"`
-	SspGroup                         types.String                             `tfsdk:"ssp_group"`
-	SspGroupRefType                  types.String                             `tfsdk:"ssp_group_ref_type_"`
-	RackInfo                         types.String                             `tfsdk:"rack_info"`
-	Rack                             types.String                             `tfsdk:"rack"`
-	RackRefType                      types.String                             `tfsdk:"rack_ref_type_"`
-	Position                         types.Number                             `tfsdk:"position"`
-	RailGroup                        types.Number                             `tfsdk:"rail_group"`
-	SwitchRouterIdIpMask             types.String                             `tfsdk:"switch_router_id_ip_mask"`
-	SwitchRouterIdIpMaskAutoAssigned types.Bool                               `tfsdk:"switch_router_id_ip_mask_auto_assigned_"`
-	SwitchVtepIdIpMask               types.String                             `tfsdk:"switch_vtep_id_ip_mask"`
-	SwitchVtepIdIpMaskAutoAssigned   types.Bool                               `tfsdk:"switch_vtep_id_ip_mask_auto_assigned_"`
-	BgpAsNumber                      types.Int64                              `tfsdk:"bgp_as_number"`
-	BgpAsNumberAutoAssigned          types.Bool                               `tfsdk:"bgp_as_number_auto_assigned_"`
-	BbSwitch                         types.Bool                               `tfsdk:"bb_switch"`
-	PasswordEncrypted                types.String                             `tfsdk:"password_encrypted"`
-	EnablePasswordEncrypted          types.String                             `tfsdk:"enable_password_encrypted"`
-	SshKeyOrPasswordEncrypted        types.String                             `tfsdk:"ssh_key_or_password_encrypted"`
-	PassphraseEncrypted              types.String                             `tfsdk:"passphrase_encrypted"`
-	PrivatePasswordEncrypted         types.String                             `tfsdk:"private_password_encrypted"`
-	IpSource                         types.String                             `tfsdk:"ip_source"`
-	ControllerIpAndMask              types.String                             `tfsdk:"controller_ip_and_mask"`
-	ControllerIpAndMaskAutoAssigned  types.Bool                               `tfsdk:"controller_ip_and_mask_auto_assigned_"`
-	Gateway                          types.String                             `tfsdk:"gateway"`
-	SwitchIpAndMask                  types.String                             `tfsdk:"switch_ip_and_mask"`
-	SwitchIpAndMaskAutoAssigned      types.Bool                               `tfsdk:"switch_ip_and_mask_auto_assigned_"`
-	SwitchGateway                    types.String                             `tfsdk:"switch_gateway"`
-	CommType                         types.String                             `tfsdk:"comm_type"`
-	SnmpCommunityString              types.String                             `tfsdk:"snmp_community_string"`
-	UplinkPort                       types.String                             `tfsdk:"uplink_port"`
-	ExpectedUplinkPort               types.Int64                              `tfsdk:"expected_uplink_port"`
-	ExpectedBreakout                 types.String                             `tfsdk:"expected_breakout"`
-	ExpectedBreakoutUplinkPort       types.String                             `tfsdk:"expected_breakout_uplink_port"`
-	LldpSearchString                 types.String                             `tfsdk:"lldp_search_string"`
-	ZtpIdentification                types.String                             `tfsdk:"ztp_identification"`
-	LocatedBy                        types.String                             `tfsdk:"located_by"`
-	PowerState                       types.String                             `tfsdk:"power_state"`
-	CommunicationMode                types.String                             `tfsdk:"communication_mode"`
-	CliAccessMode                    types.String                             `tfsdk:"cli_access_mode"`
-	Username                         types.String                             `tfsdk:"username"`
-	Password                         types.String                             `tfsdk:"password"`
-	EnablePassword                   types.String                             `tfsdk:"enable_password"`
-	SshKeyOrPassword                 types.String                             `tfsdk:"ssh_key_or_password"`
-	ManagedOnNativeVlan              types.Bool                               `tfsdk:"managed_on_native_vlan"`
-	Sdlc                             types.String                             `tfsdk:"sdlc"`
-	SecurityType                     types.String                             `tfsdk:"security_type"`
-	Snmpv3Username                   types.String                             `tfsdk:"snmpv3_username"`
-	AuthenticationProtocol           types.String                             `tfsdk:"authentication_protocol"`
-	Passphrase                       types.String                             `tfsdk:"passphrase"`
-	PrivateProtocol                  types.String                             `tfsdk:"private_protocol"`
-	PrivatePassword                  types.String                             `tfsdk:"private_password"`
-	IsFabric                         types.Bool                               `tfsdk:"is_fabric"`
-	DeviceManagedAs                  types.String                             `tfsdk:"device_managed_as"`
-	Switch                           types.String                             `tfsdk:"switch"`
-	SwitchRefType                    types.String                             `tfsdk:"switch_ref_type_"`
-	ConnectionService                types.String                             `tfsdk:"connection_service"`
-	ConnectionServiceRefType         types.String                             `tfsdk:"connection_service_ref_type_"`
-	Port                             types.String                             `tfsdk:"port"`
-	UsesTaggedPackets                types.Bool                               `tfsdk:"uses_tagged_packets"`
-	Badges                           []veritySwitchpointBadgeModel            `tfsdk:"badges"`
-	Children                         []veritySwitchpointChildModel            `tfsdk:"children"`
-	TrafficMirrors                   []veritySwitchpointTrafficMirrorModel    `tfsdk:"traffic_mirrors"`
-	Eths                             []veritySwitchpointEthModel              `tfsdk:"eths"`
-	Pots                             []veritySwitchpointPotsModel             `tfsdk:"pots"`
-	ObjectProperties                 []veritySwitchpointObjectPropertiesModel `tfsdk:"object_properties"`
+	Name                                  types.String                             `tfsdk:"name"`
+	Enable                                types.Bool                               `tfsdk:"enable"`
+	Tenant                                types.String                             `tfsdk:"tenant"`
+	TenantRefType                         types.String                             `tfsdk:"tenant_ref_type_"`
+	DeviceSerialNumber                    types.String                             `tfsdk:"device_serial_number"`
+	ConnectedBundle                       types.String                             `tfsdk:"connected_bundle"`
+	ConnectedBundleRefType                types.String                             `tfsdk:"connected_bundle_ref_type_"`
+	IsTopOfIsland                         types.Bool                               `tfsdk:"is_top_of_island"`
+	ReadOnlyMode                          types.Bool                               `tfsdk:"read_only_mode"`
+	Locked                                types.Bool                               `tfsdk:"locked"`
+	ExpectedFabric                        types.String                             `tfsdk:"expected_fabric"`
+	ExpectedFabricRefType                 types.String                             `tfsdk:"expected_fabric_ref_type_"`
+	OutOfBandManagement                   types.Bool                               `tfsdk:"out_of_band_management"`
+	Type                                  types.String                             `tfsdk:"type"`
+	Plane                                 types.String                             `tfsdk:"plane"`
+	PlaneRefType                          types.String                             `tfsdk:"plane_ref_type_"`
+	SpinePlane                            types.String                             `tfsdk:"spine_plane"`
+	SpinePlaneRefType                     types.String                             `tfsdk:"spine_plane_ref_type_"`
+	Pod                                   types.String                             `tfsdk:"pod"`
+	PodRefType                            types.String                             `tfsdk:"pod_ref_type_"`
+	Su                                    types.String                             `tfsdk:"su"`
+	SuRefType                             types.String                             `tfsdk:"su_ref_type_"`
+	SspGroup                              types.String                             `tfsdk:"ssp_group"`
+	SspGroupRefType                       types.String                             `tfsdk:"ssp_group_ref_type_"`
+	RackInfo                              types.String                             `tfsdk:"rack_info"`
+	Rack                                  types.String                             `tfsdk:"rack"`
+	RackRefType                           types.String                             `tfsdk:"rack_ref_type_"`
+	Position                              types.Number                             `tfsdk:"position"`
+	RailGroup                             types.Number                             `tfsdk:"rail_group"`
+	SwitchRouterIdIpMask                  types.String                             `tfsdk:"switch_router_id_ip_mask"`
+	SwitchRouterIdIpMaskAutoAssigned      types.Bool                               `tfsdk:"switch_router_id_ip_mask_auto_assigned_"`
+	SwitchVtepIdIpMask                    types.String                             `tfsdk:"switch_vtep_id_ip_mask"`
+	SwitchVtepIdIpMaskAutoAssigned        types.Bool                               `tfsdk:"switch_vtep_id_ip_mask_auto_assigned_"`
+	BgpAsNumber                           types.Int64                              `tfsdk:"bgp_as_number"`
+	BgpAsNumberAutoAssigned               types.Bool                               `tfsdk:"bgp_as_number_auto_assigned_"`
+	BbSwitch                              types.Bool                               `tfsdk:"bb_switch"`
+	PasswordEncrypted                     types.String                             `tfsdk:"password_encrypted"`
+	EnablePasswordEncrypted               types.String                             `tfsdk:"enable_password_encrypted"`
+	SshKeyOrPasswordEncrypted             types.String                             `tfsdk:"ssh_key_or_password_encrypted"`
+	SshKeyOrPasswordEncryptedAutoAssigned types.Bool                               `tfsdk:"ssh_key_or_password_encrypted_auto_assigned_"`
+	PassphraseEncrypted                   types.String                             `tfsdk:"passphrase_encrypted"`
+	PrivatePasswordEncrypted              types.String                             `tfsdk:"private_password_encrypted"`
+	IpSource                              types.String                             `tfsdk:"ip_source"`
+	ControllerIpAndMask                   types.String                             `tfsdk:"controller_ip_and_mask"`
+	ControllerIpAndMaskAutoAssigned       types.Bool                               `tfsdk:"controller_ip_and_mask_auto_assigned_"`
+	Gateway                               types.String                             `tfsdk:"gateway"`
+	GatewayAutoAssigned                   types.Bool                               `tfsdk:"gateway_auto_assigned_"`
+	SwitchIpAndMask                       types.String                             `tfsdk:"switch_ip_and_mask"`
+	SwitchIpAndMaskAutoAssigned           types.Bool                               `tfsdk:"switch_ip_and_mask_auto_assigned_"`
+	SwitchGateway                         types.String                             `tfsdk:"switch_gateway"`
+	SwitchGatewayAutoAssigned             types.Bool                               `tfsdk:"switch_gateway_auto_assigned_"`
+	CommType                              types.String                             `tfsdk:"comm_type"`
+	SnmpCommunityString                   types.String                             `tfsdk:"snmp_community_string"`
+	UplinkPort                            types.String                             `tfsdk:"uplink_port"`
+	UpstreamIsLag                         types.Bool                               `tfsdk:"upstream_is_lag"`
+	ExpectedUplinkPort                    types.Int64                              `tfsdk:"expected_uplink_port"`
+	ExpectedBreakout                      types.String                             `tfsdk:"expected_breakout"`
+	ExpectedBreakoutUplinkPort            types.String                             `tfsdk:"expected_breakout_uplink_port"`
+	LldpSearchString                      types.String                             `tfsdk:"lldp_search_string"`
+	LldpSearchStringAutoAssigned          types.Bool                               `tfsdk:"lldp_search_string_auto_assigned_"`
+	ZtpIdentification                     types.String                             `tfsdk:"ztp_identification"`
+	LocatedBy                             types.String                             `tfsdk:"located_by"`
+	PowerState                            types.String                             `tfsdk:"power_state"`
+	CommunicationMode                     types.String                             `tfsdk:"communication_mode"`
+	CliAccessMode                         types.String                             `tfsdk:"cli_access_mode"`
+	Username                              types.String                             `tfsdk:"username"`
+	UsernameAutoAssigned                  types.Bool                               `tfsdk:"username_auto_assigned_"`
+	Password                              types.String                             `tfsdk:"password"`
+	EnablePassword                        types.String                             `tfsdk:"enable_password"`
+	SshKeyOrPassword                      types.String                             `tfsdk:"ssh_key_or_password"`
+	ManagedOnNativeVlan                   types.Bool                               `tfsdk:"managed_on_native_vlan"`
+	Sdlc                                  types.String                             `tfsdk:"sdlc"`
+	SecurityType                          types.String                             `tfsdk:"security_type"`
+	Snmpv3Username                        types.String                             `tfsdk:"snmpv3_username"`
+	AuthenticationProtocol                types.String                             `tfsdk:"authentication_protocol"`
+	Passphrase                            types.String                             `tfsdk:"passphrase"`
+	PrivateProtocol                       types.String                             `tfsdk:"private_protocol"`
+	PrivatePassword                       types.String                             `tfsdk:"private_password"`
+	IsFabric                              types.Bool                               `tfsdk:"is_fabric"`
+	DeviceManagedAs                       types.String                             `tfsdk:"device_managed_as"`
+	Switch                                types.String                             `tfsdk:"switch"`
+	SwitchRefType                         types.String                             `tfsdk:"switch_ref_type_"`
+	ConnectionService                     types.String                             `tfsdk:"connection_service"`
+	ConnectionServiceRefType              types.String                             `tfsdk:"connection_service_ref_type_"`
+	Port                                  types.String                             `tfsdk:"port"`
+	UsesTaggedPackets                     types.Bool                               `tfsdk:"uses_tagged_packets"`
+	Badges                                []veritySwitchpointBadgeModel            `tfsdk:"badges"`
+	Children                              []veritySwitchpointChildModel            `tfsdk:"children"`
+	TrafficMirrors                        []veritySwitchpointTrafficMirrorModel    `tfsdk:"traffic_mirrors"`
+	Eths                                  []veritySwitchpointEthModel              `tfsdk:"eths"`
+	Pots                                  []veritySwitchpointPotsModel             `tfsdk:"pots"`
+	ObjectProperties                      []veritySwitchpointObjectPropertiesModel `tfsdk:"object_properties"`
 }
 
 type veritySwitchpointBadgeModel struct {
@@ -424,7 +430,12 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"ssh_key_or_password_encrypted": schema.StringAttribute{
-				Description: "SSH Key or Password",
+				Description: "SSH Key or Password. This field should not be specified when 'ssh_key_or_password_encrypted_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"ssh_key_or_password_encrypted_auto_assigned_": schema.BoolAttribute{
+				Description: "Whether the SSH key or password should be automatically assigned by the API. When set to true, do not specify the 'ssh_key_or_password_encrypted' field in your configuration.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -454,7 +465,12 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"gateway": schema.StringAttribute{
-				Description: "Gateway",
+				Description: "Gateway. This field should not be specified when 'gateway_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"gateway_auto_assigned_": schema.BoolAttribute{
+				Description: "Whether the gateway should be automatically assigned by the API. When set to true, do not specify the 'gateway' field in your configuration.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -469,7 +485,12 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"switch_gateway": schema.StringAttribute{
-				Description: "Gateway of Managed Device",
+				Description: "Gateway of Managed Device. This field should not be specified when 'switch_gateway_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"switch_gateway_auto_assigned_": schema.BoolAttribute{
+				Description: "Whether the managed-device gateway should be automatically assigned by the API. When set to true, do not specify the 'switch_gateway' field in your configuration.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -488,8 +509,13 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Optional:    true,
 				Computed:    true,
 			},
+			"upstream_is_lag": schema.BoolAttribute{
+				Description: "When enabled, ZTP provisions the TOR switch's first 32 ports as a LAG to facilitate plug-and-play.",
+				Optional:    true,
+				Computed:    true,
+			},
 			"expected_uplink_port": schema.Int64Attribute{
-				Description: "First breakout port, using a one-based index, that ZTP configures as an uplink for SFP-based ports",
+				Description: "Uplink port for ZTP when using an SFP-based port. The port is 1-indexed within the configured port group; port-group and breakout settings depend on the switch model. If unset, ZTP uses the first 32 copper ports as uplinks.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -499,12 +525,17 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"expected_breakout_uplink_port": schema.StringAttribute{
-				Description: "Breakout uplink port identifier in the format 1/#/#.",
+				Description: "Uplink Ethernet port identifier in the format 1/# or 1/#/#.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"lldp_search_string": schema.StringAttribute{
-				Description: "Optional unless Located By is LLDP or Device managed as Active SFP",
+				Description: "Optional unless Located By is LLDP or Device managed as Active SFP. This field should not be specified when 'lldp_search_string_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"lldp_search_string_auto_assigned_": schema.BoolAttribute{
+				Description: "Whether the LLDP search string should be automatically assigned by the API. When set to true, do not specify the 'lldp_search_string' field in your configuration.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -534,7 +565,12 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
-				Description: "Username",
+				Description: "Username. This field should not be specified when 'username_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"username_auto_assigned_": schema.BoolAttribute{
+				Description: "Whether the username should be automatically assigned by the API. When set to true, do not specify the 'username' field in your configuration.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -932,6 +968,56 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		}
 	}
 
+	if !plan.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() && plan.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool() {
+		if !plan.SshKeyOrPasswordEncrypted.IsNull() && !plan.SshKeyOrPasswordEncrypted.IsUnknown() && plan.SshKeyOrPasswordEncrypted.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"SSH Key or Password cannot be specified when auto-assigned",
+				"The 'ssh_key_or_password_encrypted' field cannot be specified in the configuration when 'ssh_key_or_password_encrypted_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !plan.GatewayAutoAssigned.IsNull() && plan.GatewayAutoAssigned.ValueBool() {
+		if !plan.Gateway.IsNull() && !plan.Gateway.IsUnknown() && plan.Gateway.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Gateway cannot be specified when auto-assigned",
+				"The 'gateway' field cannot be specified in the configuration when 'gateway_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !plan.SwitchGatewayAutoAssigned.IsNull() && plan.SwitchGatewayAutoAssigned.ValueBool() {
+		if !plan.SwitchGateway.IsNull() && !plan.SwitchGateway.IsUnknown() && plan.SwitchGateway.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Switch Gateway cannot be specified when auto-assigned",
+				"The 'switch_gateway' field cannot be specified in the configuration when 'switch_gateway_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !plan.LldpSearchStringAutoAssigned.IsNull() && plan.LldpSearchStringAutoAssigned.ValueBool() {
+		if !plan.LldpSearchString.IsNull() && !plan.LldpSearchString.IsUnknown() && plan.LldpSearchString.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"LLDP Search String cannot be specified when auto-assigned",
+				"The 'lldp_search_string' field cannot be specified in the configuration when 'lldp_search_string_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
+	if !plan.UsernameAutoAssigned.IsNull() && plan.UsernameAutoAssigned.ValueBool() {
+		if !plan.Username.IsNull() && !plan.Username.IsUnknown() && plan.Username.ValueString() != "" {
+			resp.Diagnostics.AddError(
+				"Username cannot be specified when auto-assigned",
+				"The 'username' field cannot be specified in the configuration when 'username_auto_assigned_' is set to true. The API will assign this value automatically.",
+			)
+			return
+		}
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -1022,10 +1108,16 @@ func (r *veritySwitchpointResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "BgpAsNumberAutoAssigned", APIField: &spProps.BgpAsNumberAutoAssigned, TFValue: plan.BgpAsNumberAutoAssigned},
 		{FieldName: "ControllerIpAndMaskAutoAssigned", APIField: &spProps.ControllerIpAndMaskAutoAssigned, TFValue: plan.ControllerIpAndMaskAutoAssigned},
 		{FieldName: "SwitchIpAndMaskAutoAssigned", APIField: &spProps.SwitchIpAndMaskAutoAssigned, TFValue: plan.SwitchIpAndMaskAutoAssigned},
+		{FieldName: "SshKeyOrPasswordEncryptedAutoAssigned", APIField: &spProps.SshKeyOrPasswordEncryptedAutoAssigned, TFValue: plan.SshKeyOrPasswordEncryptedAutoAssigned},
+		{FieldName: "GatewayAutoAssigned", APIField: &spProps.GatewayAutoAssigned, TFValue: plan.GatewayAutoAssigned},
+		{FieldName: "SwitchGatewayAutoAssigned", APIField: &spProps.SwitchGatewayAutoAssigned, TFValue: plan.SwitchGatewayAutoAssigned},
+		{FieldName: "LldpSearchStringAutoAssigned", APIField: &spProps.LldpSearchStringAutoAssigned, TFValue: plan.LldpSearchStringAutoAssigned},
+		{FieldName: "UsernameAutoAssigned", APIField: &spProps.UsernameAutoAssigned, TFValue: plan.UsernameAutoAssigned},
 		{FieldName: "BbSwitch", APIField: &spProps.BbSwitch, TFValue: plan.BbSwitch},
 		{FieldName: "ManagedOnNativeVlan", APIField: &spProps.ManagedOnNativeVlan, TFValue: plan.ManagedOnNativeVlan},
 		{FieldName: "IsFabric", APIField: &spProps.IsFabric, TFValue: plan.IsFabric},
 		{FieldName: "UsesTaggedPackets", APIField: &spProps.UsesTaggedPackets, TFValue: plan.UsesTaggedPackets},
+		{FieldName: "UpstreamIsLag", APIField: &spProps.UpstreamIsLag, TFValue: plan.UpstreamIsLag},
 	})
 
 	// Handle nullable int64 fields - parse HCL to detect explicit config
@@ -1419,6 +1511,61 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
+	if !plan.SshKeyOrPasswordEncrypted.Equal(state.SshKeyOrPasswordEncrypted) &&
+		!plan.SshKeyOrPasswordEncrypted.IsNull() && !plan.SshKeyOrPasswordEncrypted.IsUnknown() && // User is explicitly setting a value
+		!plan.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() && plan.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool() &&
+		plan.SshKeyOrPasswordEncryptedAutoAssigned.Equal(state.SshKeyOrPasswordEncryptedAutoAssigned) {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'ssh_key_or_password_encrypted' field cannot be modified because 'ssh_key_or_password_encrypted_auto_assigned_' is set to true.",
+		)
+		return
+	}
+
+	if !plan.Gateway.Equal(state.Gateway) &&
+		!plan.Gateway.IsNull() && !plan.Gateway.IsUnknown() && // User is explicitly setting a value
+		!plan.GatewayAutoAssigned.IsNull() && plan.GatewayAutoAssigned.ValueBool() &&
+		plan.GatewayAutoAssigned.Equal(state.GatewayAutoAssigned) {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'gateway' field cannot be modified because 'gateway_auto_assigned_' is set to true.",
+		)
+		return
+	}
+
+	if !plan.SwitchGateway.Equal(state.SwitchGateway) &&
+		!plan.SwitchGateway.IsNull() && !plan.SwitchGateway.IsUnknown() && // User is explicitly setting a value
+		!plan.SwitchGatewayAutoAssigned.IsNull() && plan.SwitchGatewayAutoAssigned.ValueBool() &&
+		plan.SwitchGatewayAutoAssigned.Equal(state.SwitchGatewayAutoAssigned) {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'switch_gateway' field cannot be modified because 'switch_gateway_auto_assigned_' is set to true.",
+		)
+		return
+	}
+
+	if !plan.LldpSearchString.Equal(state.LldpSearchString) &&
+		!plan.LldpSearchString.IsNull() && !plan.LldpSearchString.IsUnknown() && // User is explicitly setting a value
+		!plan.LldpSearchStringAutoAssigned.IsNull() && plan.LldpSearchStringAutoAssigned.ValueBool() &&
+		plan.LldpSearchStringAutoAssigned.Equal(state.LldpSearchStringAutoAssigned) {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'lldp_search_string' field cannot be modified because 'lldp_search_string_auto_assigned_' is set to true.",
+		)
+		return
+	}
+
+	if !plan.Username.Equal(state.Username) &&
+		!plan.Username.IsNull() && !plan.Username.IsUnknown() && // User is explicitly setting a value
+		!plan.UsernameAutoAssigned.IsNull() && plan.UsernameAutoAssigned.ValueBool() &&
+		plan.UsernameAutoAssigned.Equal(state.UsernameAutoAssigned) {
+		resp.Diagnostics.AddError(
+			"Cannot modify auto-assigned field",
+			"The 'username' field cannot be modified because 'username_auto_assigned_' is set to true.",
+		)
+		return
+	}
+
 	if err := ensureAuthenticated(ctx, r.provCtx); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to Authenticate",
@@ -1445,24 +1592,19 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	utils.CompareAndSetStringField(plan.RackInfo, state.RackInfo, func(v *string) { spProps.RackInfo = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PasswordEncrypted, state.PasswordEncrypted, func(v *string) { spProps.PasswordEncrypted = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.EnablePasswordEncrypted, state.EnablePasswordEncrypted, func(v *string) { spProps.EnablePasswordEncrypted = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.SshKeyOrPasswordEncrypted, state.SshKeyOrPasswordEncrypted, func(v *string) { spProps.SshKeyOrPasswordEncrypted = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PassphraseEncrypted, state.PassphraseEncrypted, func(v *string) { spProps.PassphraseEncrypted = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PrivatePasswordEncrypted, state.PrivatePasswordEncrypted, func(v *string) { spProps.PrivatePasswordEncrypted = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.IpSource, state.IpSource, func(v *string) { spProps.IpSource = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.Gateway, state.Gateway, func(v *string) { spProps.Gateway = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.SwitchGateway, state.SwitchGateway, func(v *string) { spProps.SwitchGateway = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.CommType, state.CommType, func(v *string) { spProps.CommType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SnmpCommunityString, state.SnmpCommunityString, func(v *string) { spProps.SnmpCommunityString = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.UplinkPort, state.UplinkPort, func(v *string) { spProps.UplinkPort = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ExpectedBreakout, state.ExpectedBreakout, func(v *string) { spProps.ExpectedBreakout = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ExpectedBreakoutUplinkPort, state.ExpectedBreakoutUplinkPort, func(v *string) { spProps.ExpectedBreakoutUplinkPort = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.LldpSearchString, state.LldpSearchString, func(v *string) { spProps.LldpSearchString = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ZtpIdentification, state.ZtpIdentification, func(v *string) { spProps.ZtpIdentification = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.LocatedBy, state.LocatedBy, func(v *string) { spProps.LocatedBy = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PowerState, state.PowerState, func(v *string) { spProps.PowerState = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.CommunicationMode, state.CommunicationMode, func(v *string) { spProps.CommunicationMode = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.CliAccessMode, state.CliAccessMode, func(v *string) { spProps.CliAccessMode = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.Username, state.Username, func(v *string) { spProps.Username = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Password, state.Password, func(v *string) { spProps.Password = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.EnablePassword, state.EnablePassword, func(v *string) { spProps.EnablePassword = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SshKeyOrPassword, state.SshKeyOrPassword, func(v *string) { spProps.SshKeyOrPassword = v }, &hasChanges)
@@ -1486,6 +1628,7 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 	utils.CompareAndSetBoolField(plan.ManagedOnNativeVlan, state.ManagedOnNativeVlan, func(v *bool) { spProps.ManagedOnNativeVlan = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.IsFabric, state.IsFabric, func(v *bool) { spProps.IsFabric = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.UsesTaggedPackets, state.UsesTaggedPackets, func(v *bool) { spProps.UsesTaggedPackets = v }, &hasChanges)
+	utils.CompareAndSetBoolField(plan.UpstreamIsLag, state.UpstreamIsLag, func(v *bool) { spProps.UpstreamIsLag = v }, &hasChanges)
 
 	// Handle ConnectedBundle and ConnectedBundleRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
@@ -1857,6 +2000,151 @@ func (r *veritySwitchpointResource) Update(ctx context.Context, req resource.Upd
 			}
 		}
 
+		hasChanges = true
+	}
+
+	sshKeyOrPasswordEncryptedChanged := !plan.SshKeyOrPasswordEncrypted.IsUnknown() && !plan.SshKeyOrPasswordEncrypted.Equal(state.SshKeyOrPasswordEncrypted)
+	sshKeyOrPasswordEncryptedAutoAssignedChanged := !plan.SshKeyOrPasswordEncryptedAutoAssigned.Equal(state.SshKeyOrPasswordEncryptedAutoAssigned)
+	if sshKeyOrPasswordEncryptedChanged || sshKeyOrPasswordEncryptedAutoAssignedChanged {
+		if sshKeyOrPasswordEncryptedChanged {
+			spProps.SshKeyOrPasswordEncrypted = openapi.PtrString(plan.SshKeyOrPasswordEncrypted.ValueString())
+		}
+		if sshKeyOrPasswordEncryptedAutoAssignedChanged {
+			if !config.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() {
+				spProps.SshKeyOrPasswordEncryptedAutoAssigned = openapi.PtrBool(plan.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool())
+				if !state.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() && state.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool() && !plan.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool() {
+					if !plan.SshKeyOrPasswordEncrypted.IsNull() && !plan.SshKeyOrPasswordEncrypted.IsUnknown() {
+						spProps.SshKeyOrPasswordEncrypted = openapi.PtrString(plan.SshKeyOrPasswordEncrypted.ValueString())
+					} else if !state.SshKeyOrPasswordEncrypted.IsNull() {
+						spProps.SshKeyOrPasswordEncrypted = openapi.PtrString(state.SshKeyOrPasswordEncrypted.ValueString())
+					}
+				}
+			}
+		} else if sshKeyOrPasswordEncryptedChanged {
+			if !plan.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() {
+				spProps.SshKeyOrPasswordEncryptedAutoAssigned = openapi.PtrBool(plan.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool())
+			} else if !state.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() {
+				spProps.SshKeyOrPasswordEncryptedAutoAssigned = openapi.PtrBool(state.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool())
+			} else {
+				spProps.SshKeyOrPasswordEncryptedAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+		hasChanges = true
+	}
+
+	gatewayChanged := !plan.Gateway.IsUnknown() && !plan.Gateway.Equal(state.Gateway)
+	gatewayAutoAssignedChanged := !plan.GatewayAutoAssigned.Equal(state.GatewayAutoAssigned)
+	if gatewayChanged || gatewayAutoAssignedChanged {
+		if gatewayChanged {
+			spProps.Gateway = openapi.PtrString(plan.Gateway.ValueString())
+		}
+		if gatewayAutoAssignedChanged {
+			if !config.GatewayAutoAssigned.IsNull() {
+				spProps.GatewayAutoAssigned = openapi.PtrBool(plan.GatewayAutoAssigned.ValueBool())
+				if !state.GatewayAutoAssigned.IsNull() && state.GatewayAutoAssigned.ValueBool() && !plan.GatewayAutoAssigned.ValueBool() {
+					if !plan.Gateway.IsNull() && !plan.Gateway.IsUnknown() {
+						spProps.Gateway = openapi.PtrString(plan.Gateway.ValueString())
+					} else if !state.Gateway.IsNull() {
+						spProps.Gateway = openapi.PtrString(state.Gateway.ValueString())
+					}
+				}
+			}
+		} else if gatewayChanged {
+			if !plan.GatewayAutoAssigned.IsNull() {
+				spProps.GatewayAutoAssigned = openapi.PtrBool(plan.GatewayAutoAssigned.ValueBool())
+			} else if !state.GatewayAutoAssigned.IsNull() {
+				spProps.GatewayAutoAssigned = openapi.PtrBool(state.GatewayAutoAssigned.ValueBool())
+			} else {
+				spProps.GatewayAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+		hasChanges = true
+	}
+
+	switchGatewayChanged := !plan.SwitchGateway.IsUnknown() && !plan.SwitchGateway.Equal(state.SwitchGateway)
+	switchGatewayAutoAssignedChanged := !plan.SwitchGatewayAutoAssigned.Equal(state.SwitchGatewayAutoAssigned)
+	if switchGatewayChanged || switchGatewayAutoAssignedChanged {
+		if switchGatewayChanged {
+			spProps.SwitchGateway = openapi.PtrString(plan.SwitchGateway.ValueString())
+		}
+		if switchGatewayAutoAssignedChanged {
+			if !config.SwitchGatewayAutoAssigned.IsNull() {
+				spProps.SwitchGatewayAutoAssigned = openapi.PtrBool(plan.SwitchGatewayAutoAssigned.ValueBool())
+				if !state.SwitchGatewayAutoAssigned.IsNull() && state.SwitchGatewayAutoAssigned.ValueBool() && !plan.SwitchGatewayAutoAssigned.ValueBool() {
+					if !plan.SwitchGateway.IsNull() && !plan.SwitchGateway.IsUnknown() {
+						spProps.SwitchGateway = openapi.PtrString(plan.SwitchGateway.ValueString())
+					} else if !state.SwitchGateway.IsNull() {
+						spProps.SwitchGateway = openapi.PtrString(state.SwitchGateway.ValueString())
+					}
+				}
+			}
+		} else if switchGatewayChanged {
+			if !plan.SwitchGatewayAutoAssigned.IsNull() {
+				spProps.SwitchGatewayAutoAssigned = openapi.PtrBool(plan.SwitchGatewayAutoAssigned.ValueBool())
+			} else if !state.SwitchGatewayAutoAssigned.IsNull() {
+				spProps.SwitchGatewayAutoAssigned = openapi.PtrBool(state.SwitchGatewayAutoAssigned.ValueBool())
+			} else {
+				spProps.SwitchGatewayAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+		hasChanges = true
+	}
+
+	lldpSearchStringChanged := !plan.LldpSearchString.IsUnknown() && !plan.LldpSearchString.Equal(state.LldpSearchString)
+	lldpSearchStringAutoAssignedChanged := !plan.LldpSearchStringAutoAssigned.Equal(state.LldpSearchStringAutoAssigned)
+	if lldpSearchStringChanged || lldpSearchStringAutoAssignedChanged {
+		if lldpSearchStringChanged {
+			spProps.LldpSearchString = openapi.PtrString(plan.LldpSearchString.ValueString())
+		}
+		if lldpSearchStringAutoAssignedChanged {
+			if !config.LldpSearchStringAutoAssigned.IsNull() {
+				spProps.LldpSearchStringAutoAssigned = openapi.PtrBool(plan.LldpSearchStringAutoAssigned.ValueBool())
+				if !state.LldpSearchStringAutoAssigned.IsNull() && state.LldpSearchStringAutoAssigned.ValueBool() && !plan.LldpSearchStringAutoAssigned.ValueBool() {
+					if !plan.LldpSearchString.IsNull() && !plan.LldpSearchString.IsUnknown() {
+						spProps.LldpSearchString = openapi.PtrString(plan.LldpSearchString.ValueString())
+					} else if !state.LldpSearchString.IsNull() {
+						spProps.LldpSearchString = openapi.PtrString(state.LldpSearchString.ValueString())
+					}
+				}
+			}
+		} else if lldpSearchStringChanged {
+			if !plan.LldpSearchStringAutoAssigned.IsNull() {
+				spProps.LldpSearchStringAutoAssigned = openapi.PtrBool(plan.LldpSearchStringAutoAssigned.ValueBool())
+			} else if !state.LldpSearchStringAutoAssigned.IsNull() {
+				spProps.LldpSearchStringAutoAssigned = openapi.PtrBool(state.LldpSearchStringAutoAssigned.ValueBool())
+			} else {
+				spProps.LldpSearchStringAutoAssigned = openapi.PtrBool(false)
+			}
+		}
+		hasChanges = true
+	}
+
+	usernameChanged := !plan.Username.IsUnknown() && !plan.Username.Equal(state.Username)
+	usernameAutoAssignedChanged := !plan.UsernameAutoAssigned.Equal(state.UsernameAutoAssigned)
+	if usernameChanged || usernameAutoAssignedChanged {
+		if usernameChanged {
+			spProps.Username = openapi.PtrString(plan.Username.ValueString())
+		}
+		if usernameAutoAssignedChanged {
+			if !config.UsernameAutoAssigned.IsNull() {
+				spProps.UsernameAutoAssigned = openapi.PtrBool(plan.UsernameAutoAssigned.ValueBool())
+				if !state.UsernameAutoAssigned.IsNull() && state.UsernameAutoAssigned.ValueBool() && !plan.UsernameAutoAssigned.ValueBool() {
+					if !plan.Username.IsNull() && !plan.Username.IsUnknown() {
+						spProps.Username = openapi.PtrString(plan.Username.ValueString())
+					} else if !state.Username.IsNull() {
+						spProps.Username = openapi.PtrString(state.Username.ValueString())
+					}
+				}
+			}
+		} else if usernameChanged {
+			if !plan.UsernameAutoAssigned.IsNull() {
+				spProps.UsernameAutoAssigned = openapi.PtrBool(plan.UsernameAutoAssigned.ValueBool())
+			} else if !state.UsernameAutoAssigned.IsNull() {
+				spProps.UsernameAutoAssigned = openapi.PtrBool(state.UsernameAutoAssigned.ValueBool())
+			} else {
+				spProps.UsernameAutoAssigned = openapi.PtrBool(false)
+			}
+		}
 		hasChanges = true
 	}
 
@@ -2291,11 +2579,17 @@ func populateSwitchpointState(ctx context.Context, state veritySwitchpointResour
 	state.ManagedOnNativeVlan = utils.MapBoolWithMode(switchpointData, "managed_on_native_vlan", resourceType, mode)
 	state.IsFabric = utils.MapBoolWithMode(switchpointData, "is_fabric", resourceType, mode)
 	state.UsesTaggedPackets = utils.MapBoolWithMode(switchpointData, "uses_tagged_packets", resourceType, mode)
+	state.UpstreamIsLag = utils.MapBoolWithMode(switchpointData, "upstream_is_lag", resourceType, mode)
 	state.BgpAsNumberAutoAssigned = utils.MapBoolWithMode(switchpointData, "bgp_as_number_auto_assigned_", resourceType, mode)
 	state.SwitchVtepIdIpMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_vtep_id_ip_mask_auto_assigned_", resourceType, mode)
 	state.SwitchRouterIdIpMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_router_id_ip_mask_auto_assigned_", resourceType, mode)
 	state.ControllerIpAndMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "controller_ip_and_mask_auto_assigned_", resourceType, mode)
 	state.SwitchIpAndMaskAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_ip_and_mask_auto_assigned_", resourceType, mode)
+	state.SshKeyOrPasswordEncryptedAutoAssigned = utils.MapBoolWithMode(switchpointData, "ssh_key_or_password_encrypted_auto_assigned_", resourceType, mode)
+	state.GatewayAutoAssigned = utils.MapBoolWithMode(switchpointData, "gateway_auto_assigned_", resourceType, mode)
+	state.SwitchGatewayAutoAssigned = utils.MapBoolWithMode(switchpointData, "switch_gateway_auto_assigned_", resourceType, mode)
+	state.LldpSearchStringAutoAssigned = utils.MapBoolWithMode(switchpointData, "lldp_search_string_auto_assigned_", resourceType, mode)
+	state.UsernameAutoAssigned = utils.MapBoolWithMode(switchpointData, "username_auto_assigned_", resourceType, mode)
 	// String fields
 	state.Tenant = utils.MapStringWithMode(switchpointData, "tenant", resourceType, mode)
 	state.TenantRefType = utils.MapStringWithMode(switchpointData, "tenant_ref_type_", resourceType, mode)
@@ -2577,6 +2871,10 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		"bgp_as_number_auto_assigned_",
 		"controller_ip_and_mask_auto_assigned_",
 		"switch_ip_and_mask_auto_assigned_",
+		"ssh_key_or_password_encrypted_auto_assigned_",
+		"gateway_auto_assigned_", "switch_gateway_auto_assigned_",
+		"lldp_search_string_auto_assigned_", "username_auto_assigned_",
+		"upstream_is_lag",
 	)
 
 	nullifier.NullifyInt64s(
@@ -2651,6 +2949,21 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		}
 		if !plan.SwitchIpAndMaskAutoAssigned.IsNull() && plan.SwitchIpAndMaskAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("switch_ip_and_mask"), types.StringUnknown())
+		}
+		if !plan.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() && plan.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool() {
+			resp.Plan.SetAttribute(ctx, path.Root("ssh_key_or_password_encrypted"), types.StringUnknown())
+		}
+		if !plan.GatewayAutoAssigned.IsNull() && plan.GatewayAutoAssigned.ValueBool() {
+			resp.Plan.SetAttribute(ctx, path.Root("gateway"), types.StringUnknown())
+		}
+		if !plan.SwitchGatewayAutoAssigned.IsNull() && plan.SwitchGatewayAutoAssigned.ValueBool() {
+			resp.Plan.SetAttribute(ctx, path.Root("switch_gateway"), types.StringUnknown())
+		}
+		if !plan.LldpSearchStringAutoAssigned.IsNull() && plan.LldpSearchStringAutoAssigned.ValueBool() {
+			resp.Plan.SetAttribute(ctx, path.Root("lldp_search_string"), types.StringUnknown())
+		}
+		if !plan.UsernameAutoAssigned.IsNull() && plan.UsernameAutoAssigned.ValueBool() {
+			resp.Plan.SetAttribute(ctx, path.Root("username"), types.StringUnknown())
 		}
 		return
 	}
@@ -2756,6 +3069,27 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 			)
 			return
 		}
+	}
+
+	if !config.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() && config.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool() && !config.SshKeyOrPasswordEncrypted.IsNull() && !config.SshKeyOrPasswordEncrypted.IsUnknown() && config.SshKeyOrPasswordEncrypted.ValueString() != "" {
+		resp.Diagnostics.AddError("SSH Key or Password cannot be specified when auto-assigned", "The 'ssh_key_or_password_encrypted' field cannot be specified in the configuration when 'ssh_key_or_password_encrypted_auto_assigned_' is set to true. The API will assign this value automatically.")
+		return
+	}
+	if !config.GatewayAutoAssigned.IsNull() && config.GatewayAutoAssigned.ValueBool() && !config.Gateway.IsNull() && !config.Gateway.IsUnknown() && config.Gateway.ValueString() != "" {
+		resp.Diagnostics.AddError("Gateway cannot be specified when auto-assigned", "The 'gateway' field cannot be specified in the configuration when 'gateway_auto_assigned_' is set to true. The API will assign this value automatically.")
+		return
+	}
+	if !config.SwitchGatewayAutoAssigned.IsNull() && config.SwitchGatewayAutoAssigned.ValueBool() && !config.SwitchGateway.IsNull() && !config.SwitchGateway.IsUnknown() && config.SwitchGateway.ValueString() != "" {
+		resp.Diagnostics.AddError("Switch Gateway cannot be specified when auto-assigned", "The 'switch_gateway' field cannot be specified in the configuration when 'switch_gateway_auto_assigned_' is set to true. The API will assign this value automatically.")
+		return
+	}
+	if !config.LldpSearchStringAutoAssigned.IsNull() && config.LldpSearchStringAutoAssigned.ValueBool() && !config.LldpSearchString.IsNull() && !config.LldpSearchString.IsUnknown() && config.LldpSearchString.ValueString() != "" {
+		resp.Diagnostics.AddError("LLDP Search String cannot be specified when auto-assigned", "The 'lldp_search_string' field cannot be specified in the configuration when 'lldp_search_string_auto_assigned_' is set to true. The API will assign this value automatically.")
+		return
+	}
+	if !config.UsernameAutoAssigned.IsNull() && config.UsernameAutoAssigned.ValueBool() && !config.Username.IsNull() && !config.Username.IsUnknown() && config.Username.ValueString() != "" {
+		resp.Diagnostics.AddError("Username cannot be specified when auto-assigned", "The 'username' field cannot be specified in the configuration when 'username_auto_assigned_' is set to true. The API will assign this value automatically.")
+		return
 	}
 
 	// =========================================================================
@@ -2865,6 +3199,111 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 			)
 			if !state.SwitchIpAndMask.IsNull() {
 				resp.Plan.SetAttribute(ctx, path.Root("switch_ip_and_mask"), state.SwitchIpAndMask)
+			}
+		}
+	}
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (SshKeyOrPasswordEncrypted)
+	// =========================================================================
+	if !plan.SshKeyOrPasswordEncryptedAutoAssigned.IsNull() && plan.SshKeyOrPasswordEncryptedAutoAssigned.ValueBool() {
+		if !plan.SshKeyOrPasswordEncryptedAutoAssigned.Equal(state.SshKeyOrPasswordEncryptedAutoAssigned) {
+			resp.Plan.SetAttribute(ctx, path.Root("ssh_key_or_password_encrypted"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"SSH Key or Password will be assigned by the API",
+				"The 'ssh_key_or_password_encrypted' field will be automatically assigned by the API because 'ssh_key_or_password_encrypted_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.SshKeyOrPasswordEncrypted.Equal(state.SshKeyOrPasswordEncrypted) {
+			resp.Diagnostics.AddWarning(
+				"Ignoring ssh_key_or_password_encrypted changes with auto-assignment enabled",
+				"The 'ssh_key_or_password_encrypted' field changes will be ignored because 'ssh_key_or_password_encrypted_auto_assigned_' is set to true.",
+			)
+			if !state.SshKeyOrPasswordEncrypted.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("ssh_key_or_password_encrypted"), state.SshKeyOrPasswordEncrypted)
+			}
+		}
+	}
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (Gateway)
+	// =========================================================================
+	if !plan.GatewayAutoAssigned.IsNull() && plan.GatewayAutoAssigned.ValueBool() {
+		if !plan.GatewayAutoAssigned.Equal(state.GatewayAutoAssigned) {
+			resp.Plan.SetAttribute(ctx, path.Root("gateway"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"Gateway will be assigned by the API",
+				"The 'gateway' field will be automatically assigned by the API because 'gateway_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.Gateway.Equal(state.Gateway) {
+			resp.Diagnostics.AddWarning(
+				"Ignoring gateway changes with auto-assignment enabled",
+				"The 'gateway' field changes will be ignored because 'gateway_auto_assigned_' is set to true.",
+			)
+			if !state.Gateway.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("gateway"), state.Gateway)
+			}
+		}
+	}
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (SwitchGateway)
+	// =========================================================================
+	if !plan.SwitchGatewayAutoAssigned.IsNull() && plan.SwitchGatewayAutoAssigned.ValueBool() {
+		if !plan.SwitchGatewayAutoAssigned.Equal(state.SwitchGatewayAutoAssigned) {
+			resp.Plan.SetAttribute(ctx, path.Root("switch_gateway"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"Switch Gateway will be assigned by the API",
+				"The 'switch_gateway' field will be automatically assigned by the API because 'switch_gateway_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.SwitchGateway.Equal(state.SwitchGateway) {
+			resp.Diagnostics.AddWarning(
+				"Ignoring switch_gateway changes with auto-assignment enabled",
+				"The 'switch_gateway' field changes will be ignored because 'switch_gateway_auto_assigned_' is set to true.",
+			)
+			if !state.SwitchGateway.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("switch_gateway"), state.SwitchGateway)
+			}
+		}
+	}
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (LldpSearchString)
+	// =========================================================================
+	if !plan.LldpSearchStringAutoAssigned.IsNull() && plan.LldpSearchStringAutoAssigned.ValueBool() {
+		if !plan.LldpSearchStringAutoAssigned.Equal(state.LldpSearchStringAutoAssigned) {
+			resp.Plan.SetAttribute(ctx, path.Root("lldp_search_string"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"LLDP Search String will be assigned by the API",
+				"The 'lldp_search_string' field will be automatically assigned by the API because 'lldp_search_string_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.LldpSearchString.Equal(state.LldpSearchString) {
+			resp.Diagnostics.AddWarning(
+				"Ignoring lldp_search_string changes with auto-assignment enabled",
+				"The 'lldp_search_string' field changes will be ignored because 'lldp_search_string_auto_assigned_' is set to true.",
+			)
+			if !state.LldpSearchString.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("lldp_search_string"), state.LldpSearchString)
+			}
+		}
+	}
+
+	// =========================================================================
+	// Resource-specific auto-assigned field logic (Username)
+	// =========================================================================
+	if !plan.UsernameAutoAssigned.IsNull() && plan.UsernameAutoAssigned.ValueBool() {
+		if !plan.UsernameAutoAssigned.Equal(state.UsernameAutoAssigned) {
+			resp.Plan.SetAttribute(ctx, path.Root("username"), types.StringUnknown())
+			resp.Diagnostics.AddWarning(
+				"Username will be assigned by the API",
+				"The 'username' field will be automatically assigned by the API because 'username_auto_assigned_' is being set to true.",
+			)
+		} else if !plan.Username.Equal(state.Username) {
+			resp.Diagnostics.AddWarning(
+				"Ignoring username changes with auto-assignment enabled",
+				"The 'username' field changes will be ignored because 'username_auto_assigned_' is set to true.",
+			)
+			if !state.Username.IsNull() {
+				resp.Plan.SetAttribute(ctx, path.Root("username"), state.Username)
 			}
 		}
 	}

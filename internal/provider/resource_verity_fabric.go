@@ -88,7 +88,6 @@ type verityFabricResourceModel struct {
 	HgxPasswordEncrypted                      types.String                        `tfsdk:"hgx_password_encrypted"`
 	SwitchGateway                             types.String                        `tfsdk:"switch_gateway"`
 	ControllerGateway                         types.String                        `tfsdk:"controller_gateway"`
-	HgxGateway                                types.String                        `tfsdk:"hgx_gateway"`
 	GpuArchitecture                           types.String                        `tfsdk:"gpu_architecture"`
 	MultiTenant                               types.Bool                          `tfsdk:"multi_tenant"`
 	BaseBgpAsNumber                           types.String                        `tfsdk:"base_bgp_as_number"`
@@ -402,11 +401,6 @@ func (r *verityFabricResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:    true,
 				Computed:    true,
 			},
-			"hgx_gateway": schema.StringAttribute{
-				Description: "Default HGX management gateway IP for devices in this Fabric",
-				Optional:    true,
-				Computed:    true,
-			},
 			"gpu_architecture": schema.StringAttribute{
 				Description: "GPU Architecture used within this Fabric",
 				Optional:    true,
@@ -598,7 +592,6 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 		{FieldName: "HgxPasswordEncrypted", APIField: &fabricReq.HgxPasswordEncrypted, TFValue: plan.HgxPasswordEncrypted},
 		{FieldName: "SwitchGateway", APIField: &fabricReq.SwitchGateway, TFValue: plan.SwitchGateway},
 		{FieldName: "ControllerGateway", APIField: &fabricReq.ControllerGateway, TFValue: plan.ControllerGateway},
-		{FieldName: "HgxGateway", APIField: &fabricReq.HgxGateway, TFValue: plan.HgxGateway},
 		{FieldName: "GpuArchitecture", APIField: &fabricReq.GpuArchitecture, TFValue: plan.GpuArchitecture},
 		{FieldName: "BaseBgpAsNumber", APIField: &fabricReq.BaseBgpAsNumber, TFValue: plan.BaseBgpAsNumber},
 		{FieldName: "RouterIdBasePrefix", APIField: &fabricReq.RouterIdBasePrefix, TFValue: plan.RouterIdBasePrefix},
@@ -921,7 +914,6 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetStringField(plan.HgxPasswordEncrypted, state.HgxPasswordEncrypted, func(v *string) { fabricReq.HgxPasswordEncrypted = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SwitchGateway, state.SwitchGateway, func(v *string) { fabricReq.SwitchGateway = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ControllerGateway, state.ControllerGateway, func(v *string) { fabricReq.ControllerGateway = v }, &hasChanges)
-	utils.CompareAndSetStringField(plan.HgxGateway, state.HgxGateway, func(v *string) { fabricReq.HgxGateway = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.GpuArchitecture, state.GpuArchitecture, func(v *string) { fabricReq.GpuArchitecture = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.BaseBgpAsNumber, state.BaseBgpAsNumber, func(v *string) { fabricReq.BaseBgpAsNumber = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouterIdBasePrefix, state.RouterIdBasePrefix, func(v *string) { fabricReq.RouterIdBasePrefix = v }, &hasChanges)
@@ -1280,7 +1272,6 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 	state.HgxPasswordEncrypted = utils.MapStringWithMode(fabricData, "hgx_password_encrypted", resourceType, mode)
 	state.SwitchGateway = utils.MapStringWithMode(fabricData, "switch_gateway", resourceType, mode)
 	state.ControllerGateway = utils.MapStringWithMode(fabricData, "controller_gateway", resourceType, mode)
-	state.HgxGateway = utils.MapStringWithMode(fabricData, "hgx_gateway", resourceType, mode)
 	state.GpuArchitecture = utils.MapStringWithMode(fabricData, "gpu_architecture", resourceType, mode)
 	state.BaseBgpAsNumber = utils.MapStringWithMode(fabricData, "base_bgp_as_number", resourceType, mode)
 	state.RouterIdBasePrefix = utils.MapStringWithMode(fabricData, "router_id_base_prefix", resourceType, mode)
@@ -1382,7 +1373,7 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		"switch_ip_base", "controller_ip_base",
 		"switch_username", "switch_password", "switch_password_encrypted",
 		"hgx_username", "hgx_password", "hgx_password_encrypted",
-		"switch_gateway", "controller_gateway", "hgx_gateway", "gpu_architecture",
+		"switch_gateway", "controller_gateway", "gpu_architecture",
 		"base_bgp_as_number", "router_id_base_prefix",
 		"vtep_id_base_prefix", "paired_ip_subnet", "max_switches", "route_aggregation",
 	)

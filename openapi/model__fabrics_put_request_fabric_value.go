@@ -39,8 +39,6 @@ type FabricsPutRequestFabricValue struct {
 	SwitchGateway *string `json:"switch_gateway,omitempty"`
 	// Default Device Management VM gateway IP for devices in this Fabric
 	ControllerGateway *string `json:"controller_gateway,omitempty"`
-	// Default HGX management gateway IP for devices in this Fabric
-	HgxGateway *string `json:"hgx_gateway,omitempty"`
 	// Number of planes in this Fabric
 	PlaneCount *string `json:"plane_count,omitempty"`
 	// Number of HGXs per SU
@@ -181,8 +179,6 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.SwitchGateway = &switchGateway
 	var controllerGateway string = ""
 	this.ControllerGateway = &controllerGateway
-	var hgxGateway string = ""
-	this.HgxGateway = &hgxGateway
 	var planeCount string = "1"
 	this.PlaneCount = &planeCount
 	var suSize string = "32"
@@ -307,8 +303,6 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.SwitchGateway = &switchGateway
 	var controllerGateway string = ""
 	this.ControllerGateway = &controllerGateway
-	var hgxGateway string = ""
-	this.HgxGateway = &hgxGateway
 	var planeCount string = "1"
 	this.PlaneCount = &planeCount
 	var suSize string = "32"
@@ -726,38 +720,6 @@ func (o *FabricsPutRequestFabricValue) HasControllerGateway() bool {
 // SetControllerGateway gets a reference to the given string and assigns it to the ControllerGateway field.
 func (o *FabricsPutRequestFabricValue) SetControllerGateway(v string) {
 	o.ControllerGateway = &v
-}
-
-// GetHgxGateway returns the HgxGateway field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetHgxGateway() string {
-	if o == nil || IsNil(o.HgxGateway) {
-		var ret string
-		return ret
-	}
-	return *o.HgxGateway
-}
-
-// GetHgxGatewayOk returns a tuple with the HgxGateway field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetHgxGatewayOk() (*string, bool) {
-	if o == nil || IsNil(o.HgxGateway) {
-		return nil, false
-	}
-	return o.HgxGateway, true
-}
-
-// HasHgxGateway returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasHgxGateway() bool {
-	if o != nil && !IsNil(o.HgxGateway) {
-		return true
-	}
-
-	return false
-}
-
-// SetHgxGateway gets a reference to the given string and assigns it to the HgxGateway field.
-func (o *FabricsPutRequestFabricValue) SetHgxGateway(v string) {
-	o.HgxGateway = &v
 }
 
 // GetPlaneCount returns the PlaneCount field value if set, zero value otherwise.
@@ -2843,9 +2805,6 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ControllerGateway) {
 		toSerialize["controller_gateway"] = o.ControllerGateway
-	}
-	if !IsNil(o.HgxGateway) {
-		toSerialize["hgx_gateway"] = o.HgxGateway
 	}
 	if !IsNil(o.PlaneCount) {
 		toSerialize["plane_count"] = o.PlaneCount

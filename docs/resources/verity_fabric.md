@@ -49,7 +49,6 @@ resource "verity_fabric" "example" {
   hgx_password_encrypted = ""
   switch_gateway = "192.168.1.1"
   controller_gateway = "192.168.2.1"
-  hgx_gateway = "192.168.3.1"
   gpu_architecture = "hgx"
   multi_tenant = true
   base_bgp_as_number = "61000"
@@ -135,7 +134,6 @@ resource "verity_fabric" "example" {
 * `hgx_password_encrypted` (String) - Default password for HGX devices in this Fabric.
 * `switch_gateway` (String) - Default switch management gateway IP for devices in this Fabric.
 * `controller_gateway` (String) - Default Device Management VM gateway IP for devices in this Fabric.
-* `hgx_gateway` (String) - Default HGX management gateway IP for devices in this Fabric.
 * `multi_tenant` (Boolean) - Allow multiple tenants to HGX endpoints on this fabric.
 * `base_bgp_as_number` (String) - Base BGP Autonomous System Number used for switches in the fabric.
 * `router_id_base_prefix` (String) - Router ID starting IP address.

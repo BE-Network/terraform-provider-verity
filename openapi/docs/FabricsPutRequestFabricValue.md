@@ -14,7 +14,6 @@ Name | Type | Description | Notes
 **HgxPasswordEncrypted** | Pointer to **string** | Default password for HGX devices in this Fabric | [optional] [default to ""]
 **SwitchGateway** | Pointer to **string** | Default switch management gateway IP for devices in this Fabric | [optional] [default to ""]
 **ControllerGateway** | Pointer to **string** | Default Device Management VM gateway IP for devices in this Fabric | [optional] [default to ""]
-**HgxGateway** | Pointer to **string** | Default HGX management gateway IP for devices in this Fabric | [optional] [default to ""]
 **PlaneCount** | Pointer to **string** | Number of planes in this Fabric | [optional] [default to "1"]
 **SuSize** | Pointer to **string** | Number of HGXs per SU | [optional] [default to "32"]
 **SuSupport** | Pointer to **bool** | Support grouping leaf switches in SUs | [optional] [default to false]
@@ -341,31 +340,6 @@ SetControllerGateway sets ControllerGateway field to given value.
 `func (o *FabricsPutRequestFabricValue) HasControllerGateway() bool`
 
 HasControllerGateway returns a boolean if a field has been set.
-
-### GetHgxGateway
-
-`func (o *FabricsPutRequestFabricValue) GetHgxGateway() string`
-
-GetHgxGateway returns the HgxGateway field if non-nil, zero value otherwise.
-
-### GetHgxGatewayOk
-
-`func (o *FabricsPutRequestFabricValue) GetHgxGatewayOk() (*string, bool)`
-
-GetHgxGatewayOk returns a tuple with the HgxGateway field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetHgxGateway
-
-`func (o *FabricsPutRequestFabricValue) SetHgxGateway(v string)`
-
-SetHgxGateway sets HgxGateway field to given value.
-
-### HasHgxGateway
-
-`func (o *FabricsPutRequestFabricValue) HasHgxGateway() bool`
-
-HasHgxGateway returns a boolean if a field has been set.
 
 ### GetPlaneCount
 

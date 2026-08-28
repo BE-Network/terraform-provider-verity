@@ -45,11 +45,11 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	ExpectedFabricRefType *string `json:"expected_fabric_ref_type_,omitempty"`
 	// For Switch Endpoints. Denotes a Switch is managed out of band via the management port
 	OutOfBandManagement *bool `json:"out_of_band_management,omitempty"`
-	// Specify the uplink port for ZTP to set into the switch if using an SFP based port. Otherwise, the first 32 copper ports are programmed by ZTP to be used for uplinks. Breakout Uplink port is switch model dependent and you should consult switch vendor documentation to ensure it is correct.
+	// Specify the uplink port for ZTP when using an SFP-based port. The Uplink Port is 1-indexed relative to the configured Port Group, where 1 represents the first port in the group. Port Group and breakout configurations are switch-model dependent; consult the switch vendor documentation to determine the correct Port Group and Uplink Port values. If an SFP-based uplink is not specified, ZTP programs the first 32 copper ports for use as uplinks.
 	ExpectedUplinkPort NullableInt64 `json:"expected_uplink_port,omitempty"`
 	// Full breakout configuration for the SFP being used as the uplink.
 	ExpectedBreakout *string `json:"expected_breakout,omitempty"`
-	// Breakout uplink port identifier in the format 1/#/#.
+	// Uplink Ethernet Port identifier in the format 1/# or 1/#/#.
 	ExpectedBreakoutUplinkPort *string `json:"expected_breakout_uplink_port,omitempty"`
 	// Type of Switchpoint
 	Type *string `json:"type,omitempty"`
@@ -103,6 +103,8 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	EnablePasswordEncrypted *string `json:"enable_password_encrypted,omitempty"`
 	// SSH Key or Password
 	SshKeyOrPasswordEncrypted *string `json:"ssh_key_or_password_encrypted,omitempty"`
+	// Whether or not the value in ssh_key_or_password_encrypted field has been automatically assigned or not. Set to false and change ssh_key_or_password_encrypted value to edit.
+	SshKeyOrPasswordEncryptedAutoAssigned *bool `json:"ssh_key_or_password_encrypted_auto_assigned_,omitempty"`
 	// Passphrase
 	PassphraseEncrypted *string `json:"passphrase_encrypted,omitempty"`
 	// Password
@@ -115,20 +117,28 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	ControllerIpAndMaskAutoAssigned *bool `json:"controller_ip_and_mask_auto_assigned_,omitempty"`
 	// Gateway
 	Gateway *string `json:"gateway,omitempty"`
+	// Whether or not the value in gateway field has been automatically assigned or not. Set to false and change gateway value to edit.
+	GatewayAutoAssigned *bool `json:"gateway_auto_assigned_,omitempty"`
 	// Switch IP and Mask
 	SwitchIpAndMask *string `json:"switch_ip_and_mask,omitempty"`
 	// Whether or not the value in switch_ip_and_mask field has been automatically assigned or not. Set to false and change switch_ip_and_mask value to edit.
 	SwitchIpAndMaskAutoAssigned *bool `json:"switch_ip_and_mask_auto_assigned_,omitempty"`
 	// Gateway of Managed Device
 	SwitchGateway *string `json:"switch_gateway,omitempty"`
+	// Whether or not the value in switch_gateway field has been automatically assigned or not. Set to false and change switch_gateway value to edit.
+	SwitchGatewayAutoAssigned *bool `json:"switch_gateway_auto_assigned_,omitempty"`
 	// Comm Type
 	CommType *string `json:"comm_type,omitempty"`
 	// Comm Credentials
 	SnmpCommunityString *string `json:"snmp_community_string,omitempty"`
 	// Uplink Port of Managed Device
 	UplinkPort *string `json:"uplink_port,omitempty"`
+	// If checked, then ZTP will provision the TOR switch with the first 32 ports as a lag to facilitate plug-n-play
+	UpstreamIsLag *bool `json:"upstream_is_lag,omitempty"`
 	// Optional unless Located By is \"LLDP\" or Device managed as \"Active SFP\". Must be either the chassis-id or the hostname of the LLDP from the managed device. Used to detect connections between managed devices. If blank, the chassis-id detected by the Device Controller via SNMP/CLI is used
 	LldpSearchString *string `json:"lldp_search_string,omitempty"`
+	// Whether or not the value in lldp_search_string field has been automatically assigned or not. Set to false and change lldp_search_string value to edit.
+	LldpSearchStringAutoAssigned *bool `json:"lldp_search_string_auto_assigned_,omitempty"`
 	// Service Tag or Serial Number to identify device for Zero Touch Provisioning
 	ZtpIdentification *string `json:"ztp_identification,omitempty"`
 	// Controls how the system locates this Device within its LAN
@@ -141,6 +151,8 @@ type SwitchpointsPutRequestSwitchpointValue struct {
 	CliAccessMode *string `json:"cli_access_mode,omitempty"`
 	// Username
 	Username *string `json:"username,omitempty"`
+	// Whether or not the value in username field has been automatically assigned or not. Set to false and change username value to edit.
+	UsernameAutoAssigned *bool `json:"username_auto_assigned_,omitempty"`
 	// Password
 	Password *string `json:"password,omitempty"`
 	// Enable Password - to enable privileged CLI operations
@@ -265,6 +277,8 @@ func NewSwitchpointsPutRequestSwitchpointValue() *SwitchpointsPutRequestSwitchpo
 	this.SnmpCommunityString = &snmpCommunityString
 	var uplinkPort string = ""
 	this.UplinkPort = &uplinkPort
+	var upstreamIsLag bool = false
+	this.UpstreamIsLag = &upstreamIsLag
 	var lldpSearchString string = ""
 	this.LldpSearchString = &lldpSearchString
 	var ztpIdentification string = ""
@@ -393,6 +407,8 @@ func NewSwitchpointsPutRequestSwitchpointValueWithDefaults() *SwitchpointsPutReq
 	this.SnmpCommunityString = &snmpCommunityString
 	var uplinkPort string = ""
 	this.UplinkPort = &uplinkPort
+	var upstreamIsLag bool = false
+	this.UpstreamIsLag = &upstreamIsLag
 	var lldpSearchString string = ""
 	this.LldpSearchString = &lldpSearchString
 	var ztpIdentification string = ""
@@ -1828,6 +1844,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetSshKeyOrPasswordEncrypted(v 
 	o.SshKeyOrPasswordEncrypted = &v
 }
 
+// GetSshKeyOrPasswordEncryptedAutoAssigned returns the SshKeyOrPasswordEncryptedAutoAssigned field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSshKeyOrPasswordEncryptedAutoAssigned() bool {
+	if o == nil || IsNil(o.SshKeyOrPasswordEncryptedAutoAssigned) {
+		var ret bool
+		return ret
+	}
+	return *o.SshKeyOrPasswordEncryptedAutoAssigned
+}
+
+// GetSshKeyOrPasswordEncryptedAutoAssignedOk returns a tuple with the SshKeyOrPasswordEncryptedAutoAssigned field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSshKeyOrPasswordEncryptedAutoAssignedOk() (*bool, bool) {
+	if o == nil || IsNil(o.SshKeyOrPasswordEncryptedAutoAssigned) {
+		return nil, false
+	}
+	return o.SshKeyOrPasswordEncryptedAutoAssigned, true
+}
+
+// HasSshKeyOrPasswordEncryptedAutoAssigned returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSshKeyOrPasswordEncryptedAutoAssigned() bool {
+	if o != nil && !IsNil(o.SshKeyOrPasswordEncryptedAutoAssigned) {
+		return true
+	}
+
+	return false
+}
+
+// SetSshKeyOrPasswordEncryptedAutoAssigned gets a reference to the given bool and assigns it to the SshKeyOrPasswordEncryptedAutoAssigned field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSshKeyOrPasswordEncryptedAutoAssigned(v bool) {
+	o.SshKeyOrPasswordEncryptedAutoAssigned = &v
+}
+
 // GetPassphraseEncrypted returns the PassphraseEncrypted field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetPassphraseEncrypted() string {
 	if o == nil || IsNil(o.PassphraseEncrypted) {
@@ -2020,6 +2068,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetGateway(v string) {
 	o.Gateway = &v
 }
 
+// GetGatewayAutoAssigned returns the GatewayAutoAssigned field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetGatewayAutoAssigned() bool {
+	if o == nil || IsNil(o.GatewayAutoAssigned) {
+		var ret bool
+		return ret
+	}
+	return *o.GatewayAutoAssigned
+}
+
+// GetGatewayAutoAssignedOk returns a tuple with the GatewayAutoAssigned field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetGatewayAutoAssignedOk() (*bool, bool) {
+	if o == nil || IsNil(o.GatewayAutoAssigned) {
+		return nil, false
+	}
+	return o.GatewayAutoAssigned, true
+}
+
+// HasGatewayAutoAssigned returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasGatewayAutoAssigned() bool {
+	if o != nil && !IsNil(o.GatewayAutoAssigned) {
+		return true
+	}
+
+	return false
+}
+
+// SetGatewayAutoAssigned gets a reference to the given bool and assigns it to the GatewayAutoAssigned field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetGatewayAutoAssigned(v bool) {
+	o.GatewayAutoAssigned = &v
+}
+
 // GetSwitchIpAndMask returns the SwitchIpAndMask field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchIpAndMask() string {
 	if o == nil || IsNil(o.SwitchIpAndMask) {
@@ -2114,6 +2194,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchGateway() bool {
 // SetSwitchGateway gets a reference to the given string and assigns it to the SwitchGateway field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchGateway(v string) {
 	o.SwitchGateway = &v
+}
+
+// GetSwitchGatewayAutoAssigned returns the SwitchGatewayAutoAssigned field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchGatewayAutoAssigned() bool {
+	if o == nil || IsNil(o.SwitchGatewayAutoAssigned) {
+		var ret bool
+		return ret
+	}
+	return *o.SwitchGatewayAutoAssigned
+}
+
+// GetSwitchGatewayAutoAssignedOk returns a tuple with the SwitchGatewayAutoAssigned field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetSwitchGatewayAutoAssignedOk() (*bool, bool) {
+	if o == nil || IsNil(o.SwitchGatewayAutoAssigned) {
+		return nil, false
+	}
+	return o.SwitchGatewayAutoAssigned, true
+}
+
+// HasSwitchGatewayAutoAssigned returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasSwitchGatewayAutoAssigned() bool {
+	if o != nil && !IsNil(o.SwitchGatewayAutoAssigned) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchGatewayAutoAssigned gets a reference to the given bool and assigns it to the SwitchGatewayAutoAssigned field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetSwitchGatewayAutoAssigned(v bool) {
+	o.SwitchGatewayAutoAssigned = &v
 }
 
 // GetCommType returns the CommType field value if set, zero value otherwise.
@@ -2212,6 +2324,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) SetUplinkPort(v string) {
 	o.UplinkPort = &v
 }
 
+// GetUpstreamIsLag returns the UpstreamIsLag field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUpstreamIsLag() bool {
+	if o == nil || IsNil(o.UpstreamIsLag) {
+		var ret bool
+		return ret
+	}
+	return *o.UpstreamIsLag
+}
+
+// GetUpstreamIsLagOk returns a tuple with the UpstreamIsLag field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUpstreamIsLagOk() (*bool, bool) {
+	if o == nil || IsNil(o.UpstreamIsLag) {
+		return nil, false
+	}
+	return o.UpstreamIsLag, true
+}
+
+// HasUpstreamIsLag returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasUpstreamIsLag() bool {
+	if o != nil && !IsNil(o.UpstreamIsLag) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpstreamIsLag gets a reference to the given bool and assigns it to the UpstreamIsLag field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetUpstreamIsLag(v bool) {
+	o.UpstreamIsLag = &v
+}
+
 // GetLldpSearchString returns the LldpSearchString field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValue) GetLldpSearchString() string {
 	if o == nil || IsNil(o.LldpSearchString) {
@@ -2242,6 +2386,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasLldpSearchString() bool {
 // SetLldpSearchString gets a reference to the given string and assigns it to the LldpSearchString field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetLldpSearchString(v string) {
 	o.LldpSearchString = &v
+}
+
+// GetLldpSearchStringAutoAssigned returns the LldpSearchStringAutoAssigned field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetLldpSearchStringAutoAssigned() bool {
+	if o == nil || IsNil(o.LldpSearchStringAutoAssigned) {
+		var ret bool
+		return ret
+	}
+	return *o.LldpSearchStringAutoAssigned
+}
+
+// GetLldpSearchStringAutoAssignedOk returns a tuple with the LldpSearchStringAutoAssigned field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetLldpSearchStringAutoAssignedOk() (*bool, bool) {
+	if o == nil || IsNil(o.LldpSearchStringAutoAssigned) {
+		return nil, false
+	}
+	return o.LldpSearchStringAutoAssigned, true
+}
+
+// HasLldpSearchStringAutoAssigned returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasLldpSearchStringAutoAssigned() bool {
+	if o != nil && !IsNil(o.LldpSearchStringAutoAssigned) {
+		return true
+	}
+
+	return false
+}
+
+// SetLldpSearchStringAutoAssigned gets a reference to the given bool and assigns it to the LldpSearchStringAutoAssigned field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetLldpSearchStringAutoAssigned(v bool) {
+	o.LldpSearchStringAutoAssigned = &v
 }
 
 // GetZtpIdentification returns the ZtpIdentification field value if set, zero value otherwise.
@@ -2434,6 +2610,38 @@ func (o *SwitchpointsPutRequestSwitchpointValue) HasUsername() bool {
 // SetUsername gets a reference to the given string and assigns it to the Username field.
 func (o *SwitchpointsPutRequestSwitchpointValue) SetUsername(v string) {
 	o.Username = &v
+}
+
+// GetUsernameAutoAssigned returns the UsernameAutoAssigned field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUsernameAutoAssigned() bool {
+	if o == nil || IsNil(o.UsernameAutoAssigned) {
+		var ret bool
+		return ret
+	}
+	return *o.UsernameAutoAssigned
+}
+
+// GetUsernameAutoAssignedOk returns a tuple with the UsernameAutoAssigned field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) GetUsernameAutoAssignedOk() (*bool, bool) {
+	if o == nil || IsNil(o.UsernameAutoAssigned) {
+		return nil, false
+	}
+	return o.UsernameAutoAssigned, true
+}
+
+// HasUsernameAutoAssigned returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValue) HasUsernameAutoAssigned() bool {
+	if o != nil && !IsNil(o.UsernameAutoAssigned) {
+		return true
+	}
+
+	return false
+}
+
+// SetUsernameAutoAssigned gets a reference to the given bool and assigns it to the UsernameAutoAssigned field.
+func (o *SwitchpointsPutRequestSwitchpointValue) SetUsernameAutoAssigned(v bool) {
+	o.UsernameAutoAssigned = &v
 }
 
 // GetPassword returns the Password field value if set, zero value otherwise.
@@ -3372,6 +3580,9 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.SshKeyOrPasswordEncrypted) {
 		toSerialize["ssh_key_or_password_encrypted"] = o.SshKeyOrPasswordEncrypted
 	}
+	if !IsNil(o.SshKeyOrPasswordEncryptedAutoAssigned) {
+		toSerialize["ssh_key_or_password_encrypted_auto_assigned_"] = o.SshKeyOrPasswordEncryptedAutoAssigned
+	}
 	if !IsNil(o.PassphraseEncrypted) {
 		toSerialize["passphrase_encrypted"] = o.PassphraseEncrypted
 	}
@@ -3390,6 +3601,9 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.Gateway) {
 		toSerialize["gateway"] = o.Gateway
 	}
+	if !IsNil(o.GatewayAutoAssigned) {
+		toSerialize["gateway_auto_assigned_"] = o.GatewayAutoAssigned
+	}
 	if !IsNil(o.SwitchIpAndMask) {
 		toSerialize["switch_ip_and_mask"] = o.SwitchIpAndMask
 	}
@@ -3398,6 +3612,9 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.SwitchGateway) {
 		toSerialize["switch_gateway"] = o.SwitchGateway
+	}
+	if !IsNil(o.SwitchGatewayAutoAssigned) {
+		toSerialize["switch_gateway_auto_assigned_"] = o.SwitchGatewayAutoAssigned
 	}
 	if !IsNil(o.CommType) {
 		toSerialize["comm_type"] = o.CommType
@@ -3408,8 +3625,14 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	if !IsNil(o.UplinkPort) {
 		toSerialize["uplink_port"] = o.UplinkPort
 	}
+	if !IsNil(o.UpstreamIsLag) {
+		toSerialize["upstream_is_lag"] = o.UpstreamIsLag
+	}
 	if !IsNil(o.LldpSearchString) {
 		toSerialize["lldp_search_string"] = o.LldpSearchString
+	}
+	if !IsNil(o.LldpSearchStringAutoAssigned) {
+		toSerialize["lldp_search_string_auto_assigned_"] = o.LldpSearchStringAutoAssigned
 	}
 	if !IsNil(o.ZtpIdentification) {
 		toSerialize["ztp_identification"] = o.ZtpIdentification
@@ -3428,6 +3651,9 @@ func (o SwitchpointsPutRequestSwitchpointValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Username) {
 		toSerialize["username"] = o.Username
+	}
+	if !IsNil(o.UsernameAutoAssigned) {
+		toSerialize["username_auto_assigned_"] = o.UsernameAutoAssigned
 	}
 	if !IsNil(o.Password) {
 		toSerialize["password"] = o.Password

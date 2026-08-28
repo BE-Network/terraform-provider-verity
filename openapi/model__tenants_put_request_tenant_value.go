@@ -31,9 +31,9 @@ type TenantsPutRequestTenantValue struct {
 	Layer3Vlan NullableInt64 `json:"layer_3_vlan,omitempty"`
 	// Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit.
 	Layer3VlanAutoAssigned *bool `json:"layer_3_vlan_auto_assigned_,omitempty"`
-	// Range of IPv4 addresses (represented in IPv4 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
+	// IPv4 subnet used to allocate Tenant-specific loopback addresses on each leaf switch for DHCP relay and troubleshooting.
 	DhcpRelaySourceIpv4sSubnet *string `json:"dhcp_relay_source_ipv4s_subnet,omitempty"`
-	// Range of IPv6 addresses (represented in IPv6 subnet format) used to configure the source IP of each DHCP Relay on each switch that this Tenant is provisioned on.
+	// IPv6 subnet used to allocate Tenant-specific loopback addresses on each leaf switch for DHCP relay and troubleshooting.
 	DhcpRelaySourceIpv6sSubnet *string `json:"dhcp_relay_source_ipv6s_subnet,omitempty"`
 	// Route Distinguishers are used to maintain uniqueness among identical routes from different routers.  If set, then routes from this Tenant will be identified with this Route Distinguisher (BGP Community).  It should be two numbers separated by a colon.
 	RouteDistinguisher *string `json:"route_distinguisher,omitempty"`

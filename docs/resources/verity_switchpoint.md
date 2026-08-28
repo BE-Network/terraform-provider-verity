@@ -46,6 +46,12 @@ resource "verity_switchpoint" "example" {
   controller_ip_and_mask_auto_assigned_ = false
   switch_ip_and_mask = "10.10.10.11"
   switch_ip_and_mask_auto_assigned_ = false
+  gateway_auto_assigned_ = true
+  switch_gateway_auto_assigned_ = true
+  lldp_search_string_auto_assigned_ = true
+  username_auto_assigned_ = true
+  ssh_key_or_password_encrypted_auto_assigned_ = true
+  upstream_is_lag = false
   
   badges {
     badge = "badge1"
@@ -146,23 +152,28 @@ resource "verity_switchpoint" "example" {
 * `ip_source` (String) - IP Source
 * `controller_ip_and_mask` (String) - Controller IP and Mask
 * `controller_ip_and_mask_auto_assigned_` (Boolean) - Whether Controller IP and Mask is auto-assigned
-* `gateway` (String) - Gateway
+* `gateway` (String) - Gateway. Do not specify this field when `gateway_auto_assigned_` is `true`.
+* `gateway_auto_assigned_` (Boolean) - Whether the gateway is automatically assigned by the API.
 * `switch_ip_and_mask` (String) - Switch IP and Mask
 * `switch_ip_and_mask_auto_assigned_` (Boolean) - Whether Switch IP and Mask is auto-assigned
-* `switch_gateway` (String) - Gateway of Managed Device
+* `switch_gateway` (String) - Gateway of Managed Device. Do not specify this field when `switch_gateway_auto_assigned_` is `true`.
+* `switch_gateway_auto_assigned_` (Boolean) - Whether the managed-device gateway is automatically assigned by the API.
 * `comm_type` (String) - Comm Type
 * `snmp_community_string` (String) - Comm Credentials
 * `uplink_port` (String) - Uplink Port of Managed Device
-* `expected_uplink_port` (Integer) - Uplink port that ZTP configures for SFP-based ports. If unset, ZTP uses the first 32 copper ports as uplinks; valid breakout uplinks depend on the switch model.
+* `upstream_is_lag` (Boolean) - When enabled, ZTP provisions the TOR switch's first 32 ports as a LAG to facilitate plug-and-play.
+* `expected_uplink_port` (Integer) - Uplink port for ZTP when using an SFP-based port. The port is 1-indexed within the configured port group; port-group and breakout settings depend on the switch model. If unset, ZTP uses the first 32 copper ports as uplinks.
 * `expected_breakout` (String) - Full breakout configuration for the SFP used as the uplink.
-* `expected_breakout_uplink_port` (String) - Breakout uplink port identifier in the format `1/#/#`.
-* `lldp_search_string` (String) - LLDP search string used to detect managed-device connections
+* `expected_breakout_uplink_port` (String) - Uplink Ethernet port identifier in the format `1/#` or `1/#/#`.
+* `lldp_search_string` (String) - LLDP search string used to detect managed-device connections. Do not specify this field when `lldp_search_string_auto_assigned_` is `true`.
+* `lldp_search_string_auto_assigned_` (Boolean) - Whether the LLDP search string is automatically assigned by the API.
 * `ztp_identification` (String) - Service Tag or Serial Number for Zero Touch Provisioning
 * `located_by` (String) - Controls how the system locates this Device within its LAN
 * `power_state` (String) - Power state of Switch Controller
 * `communication_mode` (String) - Communication Mode
 * `cli_access_mode` (String) - CLI Access Mode
-* `username` (String) - Username
+* `username` (String) - Username. Do not specify this field when `username_auto_assigned_` is `true`.
+* `username_auto_assigned_` (Boolean) - Whether the username is automatically assigned by the API.
 * `password` (String) - Password
 * `enable_password` (String) - Enable Password
 * `ssh_key_or_password` (String) - SSH Key or Password
@@ -176,7 +187,8 @@ resource "verity_switchpoint" "example" {
 * `private_password` (String) - Privacy password
 * `password_encrypted` (String) - Encrypted password
 * `enable_password_encrypted` (String) - Encrypted enable password
-* `ssh_key_or_password_encrypted` (String) - Encrypted SSH key or password
+* `ssh_key_or_password_encrypted` (String) - Encrypted SSH key or password. Do not specify this field when `ssh_key_or_password_encrypted_auto_assigned_` is `true`.
+* `ssh_key_or_password_encrypted_auto_assigned_` (Boolean) - Whether the encrypted SSH key or password is automatically assigned by the API.
 * `passphrase_encrypted` (String) - Encrypted passphrase
 * `private_password_encrypted` (String) - Encrypted privacy password
 * `device_managed_as` (String) - Device managed as

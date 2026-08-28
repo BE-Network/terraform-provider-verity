@@ -26,7 +26,12 @@ func TestSwitchpointPostOperationMissingAutoAssignedFields(t *testing.T) {
 		t.Fatal(err)
 	}
 	name := "missing-auto-assigned"
-	fields := []string{"bgp_as_number_auto_assigned_", "switch_vtep_id_ip_mask_auto_assigned_", "switch_router_id_ip_mask_auto_assigned_", "controller_ip_and_mask_auto_assigned_", "switch_ip_and_mask_auto_assigned_"}
+	fields := []string{
+		"bgp_as_number_auto_assigned_", "switch_vtep_id_ip_mask_auto_assigned_", "switch_router_id_ip_mask_auto_assigned_",
+		"controller_ip_and_mask_auto_assigned_", "switch_ip_and_mask_auto_assigned_",
+		"ssh_key_or_password_encrypted_auto_assigned_", "gateway_auto_assigned_", "switch_gateway_auto_assigned_",
+		"lldp_search_string_auto_assigned_", "username_auto_assigned_",
+	}
 	ms.SetPostGetOmissions("/api/switchpoints", "switchpoint", name, fields, 3)
 
 	config := mock.ProviderConfig(ms.URL(), "datacenter") + fmt.Sprintf(`
@@ -37,8 +42,14 @@ resource "verity_switchpoint" "test" {
   switch_router_id_ip_mask_auto_assigned_ = true
   controller_ip_and_mask_auto_assigned_ = true
   switch_ip_and_mask_auto_assigned_ = false
+  ssh_key_or_password_encrypted_auto_assigned_ = true
+  gateway_auto_assigned_ = true
+  switch_gateway_auto_assigned_ = true
+  lldp_search_string_auto_assigned_ = true
+  username_auto_assigned_ = true
 }
 `, name)
+
 	resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(), Steps: []resource.TestStep{{
 		Config:             config,
 		ExpectNonEmptyPlan: true, // unset Optional+Computed fields are intentionally absent from this minimal mock response
@@ -48,8 +59,88 @@ resource "verity_switchpoint" "test" {
 			resource.TestCheckResourceAttr("verity_switchpoint.test", "switch_router_id_ip_mask_auto_assigned_", "true"),
 			resource.TestCheckResourceAttr("verity_switchpoint.test", "controller_ip_and_mask_auto_assigned_", "true"),
 			resource.TestCheckResourceAttr("verity_switchpoint.test", "switch_ip_and_mask_auto_assigned_", "false"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "ssh_key_or_password_encrypted_auto_assigned_", "true"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "gateway_auto_assigned_", "true"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "switch_gateway_auto_assigned_", "true"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "lldp_search_string_auto_assigned_", "true"),
+			resource.TestCheckResourceAttr("verity_switchpoint.test", "username_auto_assigned_", "true"),
 		),
 	}}})
+}
+
+func TestSwitchpointAutoAssignmentUpdateOmitsPairedValues(t *testing.T) {
+	oldDelay, oldBackoff := bulkops.ResponseProcessorDelay, bulkops.PostOperationVerificationBackoff
+	bulkops.ResponseProcessorDelay, bulkops.PostOperationVerificationBackoff = 0, 0
+	t.Cleanup(func() {
+		bulkops.ResponseProcessorDelay, bulkops.PostOperationVerificationBackoff = oldDelay, oldBackoff
+	})
+
+	ms := mock.NewMockServer("datacenter")
+	defer ms.Close()
+	if err := ms.LoadResponsesFromDir(mock.ResponsesDir("datacenter")); err != nil {
+		t.Fatal(err)
+	}
+
+	const name = "switchpoint-auto-update"
+	manualConfig := mock.ProviderConfig(ms.URL(), "datacenter") + fmt.Sprintf(`
+resource "verity_switchpoint" "test" {
+  name = %q
+  gateway = "10.9.9.9"
+  gateway_auto_assigned_ = false
+  switch_gateway = "10.9.9.1"
+  switch_gateway_auto_assigned_ = false
+  lldp_search_string = "uplink"
+  lldp_search_string_auto_assigned_ = false
+  username = "operator"
+  username_auto_assigned_ = false
+  ssh_key_or_password_encrypted = "encrypted-secret"
+  ssh_key_or_password_encrypted_auto_assigned_ = false
+}
+`, name)
+	autoConfig := mock.ProviderConfig(ms.URL(), "datacenter") + fmt.Sprintf(`
+resource "verity_switchpoint" "test" {
+  name = %q
+  gateway_auto_assigned_ = true
+  switch_gateway_auto_assigned_ = true
+  lldp_search_string_auto_assigned_ = true
+  username_auto_assigned_ = true
+  ssh_key_or_password_encrypted_auto_assigned_ = true
+}
+`, name)
+
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
+		Steps: []resource.TestStep{
+			{
+				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), manualConfig) },
+				Config:    manualConfig,
+			},
+			{
+				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), autoConfig) },
+				Config:    autoConfig,
+				Check: func(_ *terraform.State) error {
+					patches := ms.GetRequestsByMethodAndPath("PATCH", "/api/switchpoints")
+					if len(patches) == 0 {
+						return fmt.Errorf("no PATCH request captured for switchpoint auto-assignment update")
+					}
+
+					body := patches[len(patches)-1].Body
+					basePath := "switchpoint." + name
+					for _, pair := range [][2]string{
+						{"gateway", "gateway_auto_assigned_"},
+						{"switch_gateway", "switch_gateway_auto_assigned_"},
+						{"lldp_search_string", "lldp_search_string_auto_assigned_"},
+						{"username", "username_auto_assigned_"},
+						{"ssh_key_or_password_encrypted", "ssh_key_or_password_encrypted_auto_assigned_"},
+					} {
+						mock.AssertFieldAbsent(t, body, basePath+"."+pair[0])
+						mock.AssertFieldEquals(t, body, basePath+"."+pair[1], true)
+					}
+					return nil
+				},
+			},
+		},
+	})
 }
 
 // deleteParamOverrides maps WrapperKey to the DELETE query parameter name

@@ -46,8 +46,8 @@ resource "verity_tenant" "example" {
 * `layer_3_vni_auto_assigned_` (Boolean) - Whether Layer 3 VNI is auto-assigned
 * `layer_3_vlan` (Integer) - Layer 3 VLAN ID
 * `layer_3_vlan_auto_assigned_` (Boolean) - Whether Layer 3 VLAN ID is auto-assigned
-* `dhcp_relay_source_ipv4s_subnet` (String) - Range of IPv4 addresses used for DHCP relay source IPs
-* `dhcp_relay_source_ipv6s_subnet` (String) - Range of IPv6 addresses used for DHCP relay source IPs
+* `dhcp_relay_source_ipv4s_subnet` (String) - IPv4 subnet used to allocate Tenant-specific loopback addresses on each leaf switch for DHCP relay and troubleshooting.
+* `dhcp_relay_source_ipv6s_subnet` (String) - IPv6 subnet used to allocate Tenant-specific loopback addresses on each leaf switch for DHCP relay and troubleshooting.
 * `route_distinguisher` (String) - Route distinguisher for BGP
 * `route_aggregation` (String) - Route aggregation configuration. Valid values are `manual` and `automated`; omit or set to an empty string to disable it.
 * `route_aggregators` (Array) - Route aggregation entries
