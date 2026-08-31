@@ -2998,6 +2998,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 		ConfiguredAttrs: configuredAttrs,
 		Int64Fields: []utils.NullableInt64Field{
 			{AttrName: "bgp_as_number", ConfigVal: config.BgpAsNumber, StateVal: state.BgpAsNumber},
+			{AttrName: "expected_uplink_port", ConfigVal: config.ExpectedUplinkPort, StateVal: state.ExpectedUplinkPort},
 		},
 		NumberFields: []utils.NullableNumberField{
 			{AttrName: "position", ConfigVal: config.Position, StateVal: state.Position},
