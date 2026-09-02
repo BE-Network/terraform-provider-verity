@@ -13,8 +13,9 @@ import (
 )
 
 type requestRecord struct {
-	Method string
-	Path   string
+	Method    string
+	Path      string
+	IPVersion string
 }
 
 // resourceAPIPath maps resource types to their API paths.
@@ -71,76 +72,76 @@ var resourceAPIPath = map[string]string{
 }
 
 var dcPutOrder = []string{
-	"extended_community_list",
-	"ipv6_prefix_list",
 	"community_list",
 	"as_path_access_list",
+	"ipv6_prefix_list",
 	"ipv4_prefix_list",
-	"route_map_clause",
+	"extended_community_list",
 	"acl",
-	"route_map",
+	"route_map_clause",
 	"pb_routing_acl",
-	"tenant",
+	"route_map",
 	"pb_routing",
+	"tenant",
 	"service",
-	"ldap_profile",
+	"fabric",
 	"tacacs_profile",
+	"ldap_profile",
+	"port_acl",
 	"ipv6_list",
 	"ipv4_list",
-	"port_acl",
-	"fabric",
+	"pod",
 	"packet_queue",
 	"device_aaa_profile",
-	"sflow_collector",
-	"packet_broker",
 	"eth_port_profile",
+	"packet_broker",
+	"sflow_collector",
 	"gateway",
-	"pod",
-	"device_settings",
-	"diagnostics_port_profile",
-	"diagnostics_profile",
-	"eth_port_settings",
-	"lag",
-	"gateway_profile",
 	"su",
+	"diagnostics_port_profile",
+	"device_settings",
+	"lag",
+	"diagnostics_profile",
+	"gateway_profile",
+	"eth_port_settings",
+	"badge",
 	"plane",
+	"spine_plane",
+	"rack",
 	"bundle",
 	"ssp_group",
-	"badge",
-	"rack",
-	"spine_plane",
+	"grouping_rule",
 	"switchpoint",
 	"threshold",
-	"grouping_rule",
 	"threshold_group",
 	"pair",
 }
 
 var campusPutOrder = []string{
 	"acl",
+	"mac_filter",
 	"service",
 	"port_acl",
-	"mac_filter",
-	"ldap_profile",
 	"tacacs_profile",
-	"service_port_profile",
-	"fabric",
-	"eth_port_profile",
-	"device_aaa_profile",
-	"packet_queue",
+	"ldap_profile",
 	"sflow_collector",
-	"diagnostics_port_profile",
-	"lag",
-	"voice_port_profile",
-	"device_settings",
-	"eth_port_settings",
-	"authenticated_eth_port",
-	"device_voice_settings",
+	"eth_port_profile",
+	"packet_queue",
+	"device_aaa_profile",
+	"fabric",
+	"service_port_profile",
 	"diagnostics_profile",
+	"authenticated_eth_port",
+	"device_settings",
+	"voice_port_profile",
+	"lag",
+	"device_voice_settings",
+	"eth_port_settings",
+	"diagnostics_port_profile",
 	"bundle",
 	"badge",
-	"switchpoint",
 	"grouping_rule",
+	"switchpoint",
 	"threshold",
 	"threshold_group",
 	"pair",
@@ -179,7 +180,11 @@ func orderTrackingServer(t *testing.T) (*httptest.Server, *[]requestRecord, *syn
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		mu.Lock()
-		records = append(records, requestRecord{Method: r.Method, Path: r.URL.Path})
+		records = append(records, requestRecord{
+			Method:    r.Method,
+			Path:      r.URL.Path,
+			IPVersion: r.Header.Get("ip_version"),
+		})
 		mu.Unlock()
 
 		w.Header().Set("Content-Type", "application/json")
@@ -481,6 +486,41 @@ func TestDatacenterPutOrder(t *testing.T) {
 
 	putPaths := filterRecords(snapshotRecords(mu, records), http.MethodPut)
 	assertOrderedSubset(t, "DC PUT order", putPaths, toPaths(dcPutOrder))
+}
+
+func TestACLsPutIPv6BeforeIPv4InEveryMode(t *testing.T) {
+	for _, mode := range []string{"campus", "datacenter"} {
+		t.Run(mode, func(t *testing.T) {
+			server, records, mu := orderTrackingServer(t)
+			mgr := bulkops.GetManager(newTestClient(server.URL), nopClearCache, nil, mode)
+			ctx := context.Background()
+
+			mgr.AddPut(ctx, "acl", "ipv4", zeroPutValue("acl"), map[string]string{"ip_version": "4"})
+			mgr.AddPut(ctx, "acl", "ipv6", zeroPutValue("acl"), map[string]string{"ip_version": "6"})
+
+			var hasErrors bool
+			if mode == "campus" {
+				d, _ := mgr.ExecuteCampusOperations(ctx)
+				hasErrors = d.HasError()
+			} else {
+				d, _ := mgr.ExecuteDatacenterOperations(ctx)
+				hasErrors = d.HasError()
+			}
+			if hasErrors {
+				t.Fatalf("ACL PUT execution returned errors")
+			}
+
+			var versions []string
+			for _, record := range snapshotRecords(mu, records) {
+				if record.Method == http.MethodPut && record.Path == "/acls" {
+					versions = append(versions, record.IPVersion)
+				}
+			}
+			if fmt.Sprint(versions) != "[6 4]" {
+				t.Fatalf("expected IPv6 ACL PUT before IPv4, got %v", versions)
+			}
+		})
+	}
 }
 
 func TestDatacenterFabricPrecedesGateway(t *testing.T) {

@@ -216,10 +216,7 @@ func (m *Manager) orderedHeaderValues(resourceType, operationType string, groupe
 		return values
 	}
 
-	preferred := []string{"4", "6"}
-	if m.mode == "campus" {
-		preferred = []string{"6", "4"}
-	}
+	preferred := []string{"6", "4"}
 	if operationType == "DELETE" {
 		preferred[0], preferred[1] = preferred[1], preferred[0]
 	}
