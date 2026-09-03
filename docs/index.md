@@ -1,5 +1,10 @@
 # Verity Terraform Provider Documentation
 
+## Supported Versions
+
+| Provider version | Supported Verity API versions |
+| --- | --- |
+| 6.6.100 | 6.6.0.269 and up |
 
 ## 1. Provider Configuration
 
