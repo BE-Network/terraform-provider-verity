@@ -35,6 +35,20 @@ type DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct {
 	PollInterval NullableInt64 `json:"poll_interval,omitempty"`
 	// Management or Underlay
 	VrfType *string `json:"vrf_type,omitempty"`
+	// Monitoring ACL whose Service VLANs are mirrored to the ERSPAN destination
+	MonitoringAcl *string `json:"monitoring_acl,omitempty"`
+	// Object type for monitoring_acl field
+	MonitoringAclRefType *string `json:"monitoring_acl_ref_type_,omitempty"`
+	// IPv4 address of the remote ERSPAN collector
+	ErspanDestinationIp *string `json:"erspan_destination_ip,omitempty"`
+	// DSCP value for ERSPAN packets (0-63)
+	ErspanDscp NullableInt64 `json:"erspan_dscp,omitempty"`
+	// Time-to-live value for ERSPAN packets (0-255)
+	ErspanTtl NullableInt64 `json:"erspan_ttl,omitempty"`
+	// GRE protocol type as a 0x-prefixed hexadecimal value
+	ErspanGreType *string `json:"erspan_gre_type,omitempty"`
+	// Output queue for ERSPAN packets (0-63)
+	ErspanQueue NullableInt64 `json:"erspan_queue,omitempty"`
 }
 
 // NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue instantiates a new DiagnosticsprofilesPutRequestDiagnosticsProfileValue object
@@ -57,6 +71,12 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue() *Diagnosticsprofi
 	this.PollInterval = *NewNullableInt64(&pollInterval)
 	var vrfType string = "management"
 	this.VrfType = &vrfType
+	var monitoringAcl string = ""
+	this.MonitoringAcl = &monitoringAcl
+	var erspanDestinationIp string = ""
+	this.ErspanDestinationIp = &erspanDestinationIp
+	var erspanGreType string = ""
+	this.ErspanGreType = &erspanGreType
 	return &this
 }
 
@@ -79,6 +99,12 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValueWithDefaults() *Diag
 	this.PollInterval = *NewNullableInt64(&pollInterval)
 	var vrfType string = "management"
 	this.VrfType = &vrfType
+	var monitoringAcl string = ""
+	this.MonitoringAcl = &monitoringAcl
+	var erspanDestinationIp string = ""
+	this.ErspanDestinationIp = &erspanDestinationIp
+	var erspanGreType string = ""
+	this.ErspanGreType = &erspanGreType
 	return &this
 }
 
@@ -348,6 +374,260 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetVrfType(v stri
 	o.VrfType = &v
 }
 
+// GetMonitoringAcl returns the MonitoringAcl field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAcl() string {
+	if o == nil || IsNil(o.MonitoringAcl) {
+		var ret string
+		return ret
+	}
+	return *o.MonitoringAcl
+}
+
+// GetMonitoringAclOk returns a tuple with the MonitoringAcl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclOk() (*string, bool) {
+	if o == nil || IsNil(o.MonitoringAcl) {
+		return nil, false
+	}
+	return o.MonitoringAcl, true
+}
+
+// HasMonitoringAcl returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasMonitoringAcl() bool {
+	if o != nil && !IsNil(o.MonitoringAcl) {
+		return true
+	}
+
+	return false
+}
+
+// SetMonitoringAcl gets a reference to the given string and assigns it to the MonitoringAcl field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetMonitoringAcl(v string) {
+	o.MonitoringAcl = &v
+}
+
+// GetMonitoringAclRefType returns the MonitoringAclRefType field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclRefType() string {
+	if o == nil || IsNil(o.MonitoringAclRefType) {
+		var ret string
+		return ret
+	}
+	return *o.MonitoringAclRefType
+}
+
+// GetMonitoringAclRefTypeOk returns a tuple with the MonitoringAclRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MonitoringAclRefType) {
+		return nil, false
+	}
+	return o.MonitoringAclRefType, true
+}
+
+// HasMonitoringAclRefType returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasMonitoringAclRefType() bool {
+	if o != nil && !IsNil(o.MonitoringAclRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMonitoringAclRefType gets a reference to the given string and assigns it to the MonitoringAclRefType field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetMonitoringAclRefType(v string) {
+	o.MonitoringAclRefType = &v
+}
+
+// GetErspanDestinationIp returns the ErspanDestinationIp field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDestinationIp() string {
+	if o == nil || IsNil(o.ErspanDestinationIp) {
+		var ret string
+		return ret
+	}
+	return *o.ErspanDestinationIp
+}
+
+// GetErspanDestinationIpOk returns a tuple with the ErspanDestinationIp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDestinationIpOk() (*string, bool) {
+	if o == nil || IsNil(o.ErspanDestinationIp) {
+		return nil, false
+	}
+	return o.ErspanDestinationIp, true
+}
+
+// HasErspanDestinationIp returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanDestinationIp() bool {
+	if o != nil && !IsNil(o.ErspanDestinationIp) {
+		return true
+	}
+
+	return false
+}
+
+// SetErspanDestinationIp gets a reference to the given string and assigns it to the ErspanDestinationIp field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDestinationIp(v string) {
+	o.ErspanDestinationIp = &v
+}
+
+// GetErspanDscp returns the ErspanDscp field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDscp() int64 {
+	if o == nil || IsNil(o.ErspanDscp.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ErspanDscp.Get()
+}
+
+// GetErspanDscpOk returns a tuple with the ErspanDscp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDscpOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ErspanDscp.Get(), o.ErspanDscp.IsSet()
+}
+
+// HasErspanDscp returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanDscp() bool {
+	if o != nil && o.ErspanDscp.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetErspanDscp gets a reference to the given NullableInt64 and assigns it to the ErspanDscp field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDscp(v int64) {
+	o.ErspanDscp.Set(&v)
+}
+// SetErspanDscpNil sets the value for ErspanDscp to be an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDscpNil() {
+	o.ErspanDscp.Set(nil)
+}
+
+// UnsetErspanDscp ensures that no value is present for ErspanDscp, not even an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanDscp() {
+	o.ErspanDscp.Unset()
+}
+
+// GetErspanTtl returns the ErspanTtl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanTtl() int64 {
+	if o == nil || IsNil(o.ErspanTtl.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ErspanTtl.Get()
+}
+
+// GetErspanTtlOk returns a tuple with the ErspanTtl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanTtlOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ErspanTtl.Get(), o.ErspanTtl.IsSet()
+}
+
+// HasErspanTtl returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanTtl() bool {
+	if o != nil && o.ErspanTtl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetErspanTtl gets a reference to the given NullableInt64 and assigns it to the ErspanTtl field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanTtl(v int64) {
+	o.ErspanTtl.Set(&v)
+}
+// SetErspanTtlNil sets the value for ErspanTtl to be an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanTtlNil() {
+	o.ErspanTtl.Set(nil)
+}
+
+// UnsetErspanTtl ensures that no value is present for ErspanTtl, not even an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanTtl() {
+	o.ErspanTtl.Unset()
+}
+
+// GetErspanGreType returns the ErspanGreType field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanGreType() string {
+	if o == nil || IsNil(o.ErspanGreType) {
+		var ret string
+		return ret
+	}
+	return *o.ErspanGreType
+}
+
+// GetErspanGreTypeOk returns a tuple with the ErspanGreType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanGreTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ErspanGreType) {
+		return nil, false
+	}
+	return o.ErspanGreType, true
+}
+
+// HasErspanGreType returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanGreType() bool {
+	if o != nil && !IsNil(o.ErspanGreType) {
+		return true
+	}
+
+	return false
+}
+
+// SetErspanGreType gets a reference to the given string and assigns it to the ErspanGreType field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanGreType(v string) {
+	o.ErspanGreType = &v
+}
+
+// GetErspanQueue returns the ErspanQueue field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanQueue() int64 {
+	if o == nil || IsNil(o.ErspanQueue.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ErspanQueue.Get()
+}
+
+// GetErspanQueueOk returns a tuple with the ErspanQueue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanQueueOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ErspanQueue.Get(), o.ErspanQueue.IsSet()
+}
+
+// HasErspanQueue returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanQueue() bool {
+	if o != nil && o.ErspanQueue.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetErspanQueue gets a reference to the given NullableInt64 and assigns it to the ErspanQueue field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanQueue(v int64) {
+	o.ErspanQueue.Set(&v)
+}
+// SetErspanQueueNil sets the value for ErspanQueue to be an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanQueueNil() {
+	o.ErspanQueue.Set(nil)
+}
+
+// UnsetErspanQueue ensures that no value is present for ErspanQueue, not even an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanQueue() {
+	o.ErspanQueue.Unset()
+}
+
 func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -381,6 +661,27 @@ func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) ToMap() (map[strin
 	}
 	if !IsNil(o.VrfType) {
 		toSerialize["vrf_type"] = o.VrfType
+	}
+	if !IsNil(o.MonitoringAcl) {
+		toSerialize["monitoring_acl"] = o.MonitoringAcl
+	}
+	if !IsNil(o.MonitoringAclRefType) {
+		toSerialize["monitoring_acl_ref_type_"] = o.MonitoringAclRefType
+	}
+	if !IsNil(o.ErspanDestinationIp) {
+		toSerialize["erspan_destination_ip"] = o.ErspanDestinationIp
+	}
+	if o.ErspanDscp.IsSet() {
+		toSerialize["erspan_dscp"] = o.ErspanDscp.Get()
+	}
+	if o.ErspanTtl.IsSet() {
+		toSerialize["erspan_ttl"] = o.ErspanTtl.Get()
+	}
+	if !IsNil(o.ErspanGreType) {
+		toSerialize["erspan_gre_type"] = o.ErspanGreType
+	}
+	if o.ErspanQueue.IsSet() {
+		toSerialize["erspan_queue"] = o.ErspanQueue.Get()
 	}
 	return toSerialize, nil
 }

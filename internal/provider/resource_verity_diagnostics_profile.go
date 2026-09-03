@@ -48,6 +48,13 @@ type verityDiagnosticsProfileResourceModel struct {
 	FlowCollectorRefType types.String `tfsdk:"flow_collector_ref_type_"`
 	PollInterval         types.Int64  `tfsdk:"poll_interval"`
 	VrfType              types.String `tfsdk:"vrf_type"`
+	MonitoringAcl        types.String `tfsdk:"monitoring_acl"`
+	MonitoringAclRefType types.String `tfsdk:"monitoring_acl_ref_type_"`
+	ErspanDestinationIp  types.String `tfsdk:"erspan_destination_ip"`
+	ErspanDscp           types.Int64  `tfsdk:"erspan_dscp"`
+	ErspanTtl            types.Int64  `tfsdk:"erspan_ttl"`
+	ErspanGreType        types.String `tfsdk:"erspan_gre_type"`
+	ErspanQueue          types.Int64  `tfsdk:"erspan_queue"`
 }
 
 func (r *verityDiagnosticsProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -120,6 +127,41 @@ func (r *verityDiagnosticsProfileResource) Schema(ctx context.Context, req resou
 				Optional:    true,
 				Computed:    true,
 			},
+			"monitoring_acl": schema.StringAttribute{
+				Description: "Monitoring ACL whose Service VLANs are mirrored to the ERSPAN destination",
+				Optional:    true,
+				Computed:    true,
+			},
+			"monitoring_acl_ref_type_": schema.StringAttribute{
+				Description: "Object type for monitoring_acl field",
+				Optional:    true,
+				Computed:    true,
+			},
+			"erspan_destination_ip": schema.StringAttribute{
+				Description: "IPv4 address of the remote ERSPAN collector",
+				Optional:    true,
+				Computed:    true,
+			},
+			"erspan_dscp": schema.Int64Attribute{
+				Description: "DSCP value for ERSPAN packets (0-63)",
+				Optional:    true,
+				Computed:    true,
+			},
+			"erspan_ttl": schema.Int64Attribute{
+				Description: "Time-to-live value for ERSPAN packets (0-255)",
+				Optional:    true,
+				Computed:    true,
+			},
+			"erspan_gre_type": schema.StringAttribute{
+				Description: "GRE protocol type as a 0x-prefixed hexadecimal value",
+				Optional:    true,
+				Computed:    true,
+			},
+			"erspan_queue": schema.Int64Attribute{
+				Description: "Output queue for ERSPAN packets (0-63)",
+				Optional:    true,
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -157,6 +199,10 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 		{FieldName: "FlowCollector", APIField: &diagnosticsProfileProps.FlowCollector, TFValue: plan.FlowCollector},
 		{FieldName: "FlowCollectorRefType", APIField: &diagnosticsProfileProps.FlowCollectorRefType, TFValue: plan.FlowCollectorRefType},
 		{FieldName: "VrfType", APIField: &diagnosticsProfileProps.VrfType, TFValue: plan.VrfType},
+		{FieldName: "MonitoringAcl", APIField: &diagnosticsProfileProps.MonitoringAcl, TFValue: plan.MonitoringAcl},
+		{FieldName: "MonitoringAclRefType", APIField: &diagnosticsProfileProps.MonitoringAclRefType, TFValue: plan.MonitoringAclRefType},
+		{FieldName: "ErspanDestinationIp", APIField: &diagnosticsProfileProps.ErspanDestinationIp, TFValue: plan.ErspanDestinationIp},
+		{FieldName: "ErspanGreType", APIField: &diagnosticsProfileProps.ErspanGreType, TFValue: plan.ErspanGreType},
 	})
 
 	// Handle boolean fields
@@ -172,6 +218,9 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 
 	utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 		{FieldName: "PollInterval", APIField: &diagnosticsProfileProps.PollInterval, TFValue: config.PollInterval, IsConfigured: configuredAttrs.IsConfigured("poll_interval")},
+		{FieldName: "ErspanDscp", APIField: &diagnosticsProfileProps.ErspanDscp, TFValue: config.ErspanDscp, IsConfigured: configuredAttrs.IsConfigured("erspan_dscp")},
+		{FieldName: "ErspanTtl", APIField: &diagnosticsProfileProps.ErspanTtl, TFValue: config.ErspanTtl, IsConfigured: configuredAttrs.IsConfigured("erspan_ttl")},
+		{FieldName: "ErspanQueue", APIField: &diagnosticsProfileProps.ErspanQueue, TFValue: config.ErspanQueue, IsConfigured: configuredAttrs.IsConfigured("erspan_queue")},
 	})
 
 	success := bulkops.ExecuteResourceOperation(ctx, r.bulkOpsMgr, r.notifyOperationAdded, "create", "diagnostics_profile", name, *diagnosticsProfileProps, &resp.Diagnostics)
@@ -363,6 +412,8 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { diagnosticsProfileProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.VrfType, state.VrfType, func(v *string) { diagnosticsProfileProps.VrfType = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ErspanDestinationIp, state.ErspanDestinationIp, func(v *string) { diagnosticsProfileProps.ErspanDestinationIp = v }, &hasChanges)
+	utils.CompareAndSetStringField(plan.ErspanGreType, state.ErspanGreType, func(v *string) { diagnosticsProfileProps.ErspanGreType = v }, &hasChanges)
 
 	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { diagnosticsProfileProps.Enable = v }, &hasChanges)
@@ -371,6 +422,9 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 
 	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.PollInterval, state.PollInterval, configuredAttrs.IsConfigured("poll_interval"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.PollInterval = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ErspanDscp, state.ErspanDscp, configuredAttrs.IsConfigured("erspan_dscp"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.ErspanDscp = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ErspanTtl, state.ErspanTtl, configuredAttrs.IsConfigured("erspan_ttl"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.ErspanTtl = *v }, &hasChanges)
+	utils.CompareAndSetNullableInt64Field(config.ErspanQueue, state.ErspanQueue, configuredAttrs.IsConfigured("erspan_queue"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.ErspanQueue = *v }, &hasChanges)
 
 	// Handle FlowCollector and FlowCollectorRefType fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
@@ -378,6 +432,18 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		func(v *string) { diagnosticsProfileProps.FlowCollector = v },
 		func(v *string) { diagnosticsProfileProps.FlowCollectorRefType = v },
 		"flow_collector", "flow_collector_ref_type_",
+		&hasChanges,
+		&resp.Diagnostics,
+	) {
+		return
+	}
+
+	// Handle MonitoringAcl and MonitoringAclRefType fields using "One ref type supported" pattern
+	if !utils.HandleOneRefTypeSupported(
+		plan.MonitoringAcl, state.MonitoringAcl, plan.MonitoringAclRefType, state.MonitoringAclRefType,
+		func(v *string) { diagnosticsProfileProps.MonitoringAcl = v },
+		func(v *string) { diagnosticsProfileProps.MonitoringAclRefType = v },
+		"monitoring_acl", "monitoring_acl_ref_type_",
 		&hasChanges,
 		&resp.Diagnostics,
 	) {
@@ -479,9 +545,16 @@ func populateDiagnosticsProfileState(ctx context.Context, state verityDiagnostic
 	state.FlowCollector = utils.MapStringWithMode(data, "flow_collector", resourceType, mode)
 	state.FlowCollectorRefType = utils.MapStringWithMode(data, "flow_collector_ref_type_", resourceType, mode)
 	state.VrfType = utils.MapStringWithMode(data, "vrf_type", resourceType, mode)
+	state.MonitoringAcl = utils.MapStringWithMode(data, "monitoring_acl", resourceType, mode)
+	state.MonitoringAclRefType = utils.MapStringWithMode(data, "monitoring_acl_ref_type_", resourceType, mode)
+	state.ErspanDestinationIp = utils.MapStringWithMode(data, "erspan_destination_ip", resourceType, mode)
+	state.ErspanGreType = utils.MapStringWithMode(data, "erspan_gre_type", resourceType, mode)
 
 	// Int64 fields
 	state.PollInterval = utils.MapInt64WithMode(data, "poll_interval", resourceType, mode)
+	state.ErspanDscp = utils.MapInt64WithMode(data, "erspan_dscp", resourceType, mode)
+	state.ErspanTtl = utils.MapInt64WithMode(data, "erspan_ttl", resourceType, mode)
+	state.ErspanQueue = utils.MapInt64WithMode(data, "erspan_queue", resourceType, mode)
 
 	return state
 }
@@ -517,6 +590,8 @@ func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req r
 
 	nullifier.NullifyStrings(
 		"flow_collector", "flow_collector_ref_type_", "vrf_type",
+		"monitoring_acl", "monitoring_acl_ref_type_", "erspan_destination_ip",
+		"erspan_gre_type",
 	)
 
 	nullifier.NullifyBools(
@@ -524,7 +599,7 @@ func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req r
 	)
 
 	nullifier.NullifyInt64s(
-		"poll_interval",
+		"poll_interval", "erspan_dscp", "erspan_ttl", "erspan_queue",
 	)
 
 	// =========================================================================
@@ -564,6 +639,9 @@ func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req r
 		ConfiguredAttrs: configuredAttrs,
 		Int64Fields: []utils.NullableInt64Field{
 			{AttrName: "poll_interval", ConfigVal: config.PollInterval, StateVal: state.PollInterval},
+			{AttrName: "erspan_dscp", ConfigVal: config.ErspanDscp, StateVal: state.ErspanDscp},
+			{AttrName: "erspan_ttl", ConfigVal: config.ErspanTtl, StateVal: state.ErspanTtl},
+			{AttrName: "erspan_queue", ConfigVal: config.ErspanQueue, StateVal: state.ErspanQueue},
 		},
 	})
 }

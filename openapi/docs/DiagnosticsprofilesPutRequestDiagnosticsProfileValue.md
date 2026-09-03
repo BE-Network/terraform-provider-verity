@@ -12,6 +12,13 @@ Name | Type | Description | Notes
 **FlowCollectorRefType** | Pointer to **string** | Object type for flow_collector field | [optional] 
 **PollInterval** | Pointer to **NullableInt64** | The sampling rate for sFlow polling (seconds) | [optional] [default to 20]
 **VrfType** | Pointer to **string** | Management or Underlay | [optional] [default to "management"]
+**MonitoringAcl** | Pointer to **string** | Monitoring ACL whose Service VLANs are mirrored to the ERSPAN destination | [optional] [default to ""]
+**MonitoringAclRefType** | Pointer to **string** | Object type for monitoring_acl field | [optional] 
+**ErspanDestinationIp** | Pointer to **string** | IPv4 address of the remote ERSPAN collector | [optional] [default to ""]
+**ErspanDscp** | Pointer to **NullableInt64** | DSCP value for ERSPAN packets (0-63) | [optional] 
+**ErspanTtl** | Pointer to **NullableInt64** | Time-to-live value for ERSPAN packets (0-255) | [optional] 
+**ErspanGreType** | Pointer to **string** | GRE protocol type as a 0x-prefixed hexadecimal value | [optional] [default to ""]
+**ErspanQueue** | Pointer to **NullableInt64** | Output queue for ERSPAN packets (0-63) | [optional] 
 
 ## Methods
 
@@ -242,6 +249,211 @@ SetVrfType sets VrfType field to given value.
 
 HasVrfType returns a boolean if a field has been set.
 
+### GetMonitoringAcl
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAcl() string`
+
+GetMonitoringAcl returns the MonitoringAcl field if non-nil, zero value otherwise.
+
+### GetMonitoringAclOk
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclOk() (*string, bool)`
+
+GetMonitoringAclOk returns a tuple with the MonitoringAcl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMonitoringAcl
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetMonitoringAcl(v string)`
+
+SetMonitoringAcl sets MonitoringAcl field to given value.
+
+### HasMonitoringAcl
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasMonitoringAcl() bool`
+
+HasMonitoringAcl returns a boolean if a field has been set.
+
+### GetMonitoringAclRefType
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclRefType() string`
+
+GetMonitoringAclRefType returns the MonitoringAclRefType field if non-nil, zero value otherwise.
+
+### GetMonitoringAclRefTypeOk
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclRefTypeOk() (*string, bool)`
+
+GetMonitoringAclRefTypeOk returns a tuple with the MonitoringAclRefType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMonitoringAclRefType
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetMonitoringAclRefType(v string)`
+
+SetMonitoringAclRefType sets MonitoringAclRefType field to given value.
+
+### HasMonitoringAclRefType
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasMonitoringAclRefType() bool`
+
+HasMonitoringAclRefType returns a boolean if a field has been set.
+
+### GetErspanDestinationIp
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDestinationIp() string`
+
+GetErspanDestinationIp returns the ErspanDestinationIp field if non-nil, zero value otherwise.
+
+### GetErspanDestinationIpOk
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDestinationIpOk() (*string, bool)`
+
+GetErspanDestinationIpOk returns a tuple with the ErspanDestinationIp field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetErspanDestinationIp
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDestinationIp(v string)`
+
+SetErspanDestinationIp sets ErspanDestinationIp field to given value.
+
+### HasErspanDestinationIp
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanDestinationIp() bool`
+
+HasErspanDestinationIp returns a boolean if a field has been set.
+
+### GetErspanDscp
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDscp() int64`
+
+GetErspanDscp returns the ErspanDscp field if non-nil, zero value otherwise.
+
+### GetErspanDscpOk
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDscpOk() (*int64, bool)`
+
+GetErspanDscpOk returns a tuple with the ErspanDscp field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetErspanDscp
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDscp(v int64)`
+
+SetErspanDscp sets ErspanDscp field to given value.
+
+### HasErspanDscp
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanDscp() bool`
+
+HasErspanDscp returns a boolean if a field has been set.
+
+### SetErspanDscpNil
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDscpNil(b bool)`
+
+ SetErspanDscpNil sets the value for ErspanDscp to be an explicit nil
+
+### UnsetErspanDscp
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanDscp()`
+
+UnsetErspanDscp ensures that no value is present for ErspanDscp, not even an explicit nil
+### GetErspanTtl
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanTtl() int64`
+
+GetErspanTtl returns the ErspanTtl field if non-nil, zero value otherwise.
+
+### GetErspanTtlOk
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanTtlOk() (*int64, bool)`
+
+GetErspanTtlOk returns a tuple with the ErspanTtl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetErspanTtl
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanTtl(v int64)`
+
+SetErspanTtl sets ErspanTtl field to given value.
+
+### HasErspanTtl
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanTtl() bool`
+
+HasErspanTtl returns a boolean if a field has been set.
+
+### SetErspanTtlNil
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanTtlNil(b bool)`
+
+ SetErspanTtlNil sets the value for ErspanTtl to be an explicit nil
+
+### UnsetErspanTtl
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanTtl()`
+
+UnsetErspanTtl ensures that no value is present for ErspanTtl, not even an explicit nil
+### GetErspanGreType
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanGreType() string`
+
+GetErspanGreType returns the ErspanGreType field if non-nil, zero value otherwise.
+
+### GetErspanGreTypeOk
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanGreTypeOk() (*string, bool)`
+
+GetErspanGreTypeOk returns a tuple with the ErspanGreType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetErspanGreType
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanGreType(v string)`
+
+SetErspanGreType sets ErspanGreType field to given value.
+
+### HasErspanGreType
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanGreType() bool`
+
+HasErspanGreType returns a boolean if a field has been set.
+
+### GetErspanQueue
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanQueue() int64`
+
+GetErspanQueue returns the ErspanQueue field if non-nil, zero value otherwise.
+
+### GetErspanQueueOk
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanQueueOk() (*int64, bool)`
+
+GetErspanQueueOk returns a tuple with the ErspanQueue field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetErspanQueue
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanQueue(v int64)`
+
+SetErspanQueue sets ErspanQueue field to given value.
+
+### HasErspanQueue
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanQueue() bool`
+
+HasErspanQueue returns a boolean if a field has been set.
+
+### SetErspanQueueNil
+
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanQueueNil(b bool)`
+
+ SetErspanQueueNil sets the value for ErspanQueue to be an explicit nil
+
+### UnsetErspanQueue
+`func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanQueue()`
+
+UnsetErspanQueue ensures that no value is present for ErspanQueue, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
