@@ -183,7 +183,7 @@ func orderTrackingServer(t *testing.T) (*httptest.Server, *[]requestRecord, *syn
 		records = append(records, requestRecord{
 			Method:    r.Method,
 			Path:      r.URL.Path,
-			IPVersion: r.Header.Get("ip_version"),
+			IPVersion: r.URL.Query().Get("ip_version"),
 		})
 		mu.Unlock()
 
@@ -638,9 +638,9 @@ func TestErrorAbortsRemainingOperations(t *testing.T) {
 	// Add PUTs for resources before and after tenant in the DC order
 	mgr.AddPut(ctx, "ipv6_prefix_list", "test_prefix", zeroPutValue("ipv6_prefix_list"))
 	mgr.AddPut(ctx, "route_map_clause", "test_clause", zeroPutValue("route_map_clause"))
-	mgr.AddPut(ctx, "tenant", "test_tenant", zeroPutValue("tenant"))
-	// These come AFTER tenant in the DC order — should NOT execute
 	mgr.AddPut(ctx, "pb_routing", "test_pbr", zeroPutValue("pb_routing"))
+	mgr.AddPut(ctx, "tenant", "test_tenant", zeroPutValue("tenant"))
+	// These come AFTER tenant in the DC order — they should NOT execute.
 	mgr.AddPut(ctx, "service", "test_service", zeroPutValue("service"))
 	mgr.AddPut(ctx, "gateway", "test_gw", zeroPutValue("gateway"))
 
@@ -652,13 +652,14 @@ func TestErrorAbortsRemainingOperations(t *testing.T) {
 	putPaths := filterRecords(snapshotRecords(mu, records), http.MethodPut)
 
 	for _, path := range putPaths {
-		if path == "/policybasedrouting" || path == "/services" || path == "/gateways" {
+		if path == "/services" || path == "/gateways" {
 			t.Errorf("resource at path %q should NOT have been called after tenant failure", path)
 		}
 	}
 
 	foundPrefix := false
 	foundClause := false
+	foundPBRouting := false
 	foundTenant := false
 	for _, path := range putPaths {
 		switch path {
@@ -666,6 +667,8 @@ func TestErrorAbortsRemainingOperations(t *testing.T) {
 			foundPrefix = true
 		case "/routemapclauses":
 			foundClause = true
+		case "/policybasedrouting":
+			foundPBRouting = true
 		case "/tenants":
 			foundTenant = true
 		}
@@ -675,6 +678,9 @@ func TestErrorAbortsRemainingOperations(t *testing.T) {
 	}
 	if !foundClause {
 		t.Error("route_map_clause PUT should have been called before tenant failure")
+	}
+	if !foundPBRouting {
+		t.Error("pb_routing PUT should have been called before tenant failure")
 	}
 	if !foundTenant {
 		t.Error("tenant PUT should have been attempted")
@@ -713,9 +719,9 @@ func TestACLHeaderSplitOrder(t *testing.T) {
 		operation string
 		want      []string
 	}{
-		{"datacenter put", "datacenter", "PUT", []string{"4", "6"}},
+		{"datacenter put", "datacenter", "PUT", []string{"6", "4"}},
 		{"campus put", "campus", "PUT", []string{"6", "4"}},
-		{"datacenter delete", "datacenter", "DELETE", []string{"6", "4"}},
+		{"datacenter delete", "datacenter", "DELETE", []string{"4", "6"}},
 		{"campus delete", "campus", "DELETE", []string{"4", "6"}},
 	}
 
