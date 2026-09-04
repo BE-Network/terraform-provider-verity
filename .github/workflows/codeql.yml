@@ -47,7 +47,7 @@ jobs:
 
       - name: Initialize CodeQL
         id: init
-        uses: github/codeql-action/init@v4.37.7
+        uses: github/codeql-action/init@v4.37.9
         with:
           languages: ${{ matrix.language }}
 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Perform CodeQL Analysis
         if: steps.init.outcome == 'success'
-        uses: github/codeql-action/analyze@v4.37.7
+        uses: github/codeql-action/analyze@v4.37.9
         with:
           upload: false
           upload-database: false
