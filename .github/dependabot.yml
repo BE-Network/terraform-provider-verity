@@ -1,5 +1,6 @@
 version: 2
 updates:
+  # ---------------------------------------------------------------- main
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -12,6 +13,56 @@ updates:
 
   - package-ecosystem: gomod
     directory: /
+    schedule:
+      interval: weekly
+    groups:
+      go-minor:
+        update-types:
+          - minor
+          - patch
+
+  # --------------------------------------------------------- release/6.6
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: release/6.6
+    open-pull-requests-limit: 3
+    schedule:
+      interval: weekly
+    groups:
+      actions-minor:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: gomod
+    directory: /
+    target-branch: release/6.6
+    open-pull-requests-limit: 3
+    schedule:
+      interval: weekly
+    groups:
+      go-minor:
+        update-types:
+          - minor
+          - patch
+
+  # ------------------------------------------------------------ dev/6.5
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: dev/6.5
+    open-pull-requests-limit: 3
+    schedule:
+      interval: weekly
+    groups:
+      actions-minor:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: gomod
+    directory: /
+    target-branch: dev/6.5
+    open-pull-requests-limit: 3
     schedule:
       interval: weekly
     groups:
