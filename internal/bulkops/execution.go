@@ -309,7 +309,15 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 			fmt.Sprintf("%s_names", config.ResourceType): filteredResourceNames,
 		})
 
-	request := config.PrepareRequest(filteredOperations)
+	request, prepareErr := config.prepareRequest(filteredOperations)
+	if prepareErr != nil {
+		m.updateOperationStatuses(ctx, config.ResourceType, config.OperationType, filteredResourceNames, prepareErr)
+		diagnostics.AddError(
+			fmt.Sprintf("Failed to prepare bulk %s %s request", config.ResourceType, config.OperationType),
+			prepareErr.Error(),
+		)
+		return diagnostics
+	}
 
 	// Mark all operations as executing - this sets the ExecutionStartTime so that
 	// WaitForOperation can track timeout from when the API call actually starts
@@ -411,11 +419,12 @@ func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config Bulk
 			ExtractOperations: func() (map[string]interface{}, []string) {
 				return batchOperations, batchNames
 			},
-			CheckPreExistence: config.CheckPreExistence,
-			PrepareRequest:    config.PrepareRequest,
-			ExecuteRequest:    config.ExecuteRequest,
-			ProcessResponse:   config.ProcessResponse,
-			UpdateRecentOps:   func() {}, // Don't update until all batches complete
+			CheckPreExistence:       config.CheckPreExistence,
+			PrepareRequest:          config.PrepareRequest,
+			PrepareRequestWithError: config.PrepareRequestWithError,
+			ExecuteRequest:          config.ExecuteRequest,
+			ProcessResponse:         config.ProcessResponse,
+			UpdateRecentOps:         func() {}, // Don't update until all batches complete
 		}
 
 		// Execute this batch using the standard execution path (won't recurse since batch size <= MaxDeleteBatchSize)
@@ -451,7 +460,15 @@ func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOpera
 			fmt.Sprintf("%s_names", config.ResourceType): resourceNames,
 		})
 
-	request := config.PrepareRequest(operations)
+	request, prepareErr := config.prepareRequest(operations)
+	if prepareErr != nil {
+		m.updateOperationStatuses(ctx, config.ResourceType, config.OperationType, resourceNames, prepareErr)
+		diagnostics.AddError(
+			fmt.Sprintf("Failed to prepare bulk %s %s request", config.ResourceType, config.OperationType),
+			prepareErr.Error(),
+		)
+		return diagnostics
+	}
 
 	// Mark all operations as executing - this sets the ExecutionStartTime so that
 	// WaitForOperation can track timeout from when the API call actually starts

@@ -89,14 +89,15 @@ func (m *Manager) ExecuteBulk(ctx context.Context, resourceType, operationType s
 	}
 
 	return m.executeBulkOperation(ctx, BulkOperationConfig{
-		ResourceType:      resourceType,
-		OperationType:     operationType,
-		ExtractOperations: m.createExtractor(resourceType, operationType),
-		CheckPreExistence: m.createPreExistenceChecker(config, operationType),
-		PrepareRequest:    m.createRequestPreparer(config, operationType),
-		ExecuteRequest:    m.createRequestExecutor(config, operationType),
-		ProcessResponse:   m.createResponseProcessor(config, operationType),
-		UpdateRecentOps:   m.createRecentOpsUpdater(resourceType),
+		ResourceType:            resourceType,
+		OperationType:           operationType,
+		ExtractOperations:       m.createExtractor(resourceType, operationType),
+		CheckPreExistence:       m.createPreExistenceChecker(config, operationType),
+		PrepareRequest:          m.createRequestPreparer(config, operationType),
+		PrepareRequestWithError: m.createRequestPreparerWithError(config, operationType),
+		ExecuteRequest:          m.createRequestExecutor(config, operationType),
+		ProcessResponse:         m.createResponseProcessor(config, operationType),
+		UpdateRecentOps:         m.createRecentOpsUpdater(resourceType),
 	})
 }
 
@@ -308,6 +309,20 @@ func (m *Manager) executeOperationsWithHeaders(ctx context.Context, resourceType
 				return names
 			}
 			return m.createRequestPreparer(config, operationType)(filteredData)
+		},
+
+		PrepareRequestWithError: func(filteredData map[string]interface{}) (interface{}, error) {
+			if operationType == "DELETE" {
+				names := make([]string, 0, len(filteredData))
+				for name := range filteredData {
+					names = append(names, name)
+				}
+				return names, nil
+			}
+			if preparer := m.createRequestPreparerWithError(config, operationType); preparer != nil {
+				return preparer(filteredData)
+			}
+			return m.createRequestPreparer(config, operationType)(filteredData), nil
 		},
 
 		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {

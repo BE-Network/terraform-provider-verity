@@ -2,6 +2,7 @@ package bulkops
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"reflect"
@@ -48,9 +49,20 @@ type BulkOperationConfig struct {
 	ExtractOperations func() (map[string]interface{}, []string)                                                                                              // Extracts pending operations
 	CheckPreExistence func(ctx context.Context, resourceNames []string, originalOperations map[string]interface{}) ([]string, map[string]interface{}, error) // Filters out existing resources
 	PrepareRequest    func(filteredData map[string]interface{}) interface{}                                                                                  // Prepares API request
-	ExecuteRequest    func(ctx context.Context, request interface{}) (*http.Response, error)                                                                 // Executes API request
-	ProcessResponse   func(ctx context.Context, resp *http.Response, operations map[string]interface{}) error                                                // Processes API response
-	UpdateRecentOps   func()                                                                                                                                 // Updates recent operation tracking
+	PrepareRequestWithError func(filteredData map[string]interface{}) (interface{}, error)
+	ExecuteRequest          func(ctx context.Context, request interface{}) (*http.Response, error)                  // Executes API request
+	ProcessResponse         func(ctx context.Context, resp *http.Response, operations map[string]interface{}) error // Processes API response
+	UpdateRecentOps         func()                                                                                  // Updates recent operation tracking
+}
+
+func (c BulkOperationConfig) prepareRequest(filteredData map[string]interface{}) (interface{}, error) {
+	if c.PrepareRequestWithError != nil {
+		return c.PrepareRequestWithError(filteredData)
+	}
+	if c.PrepareRequest == nil {
+		return nil, fmt.Errorf("no request preparer configured for %s %s", c.ResourceType, c.OperationType)
+	}
+	return c.PrepareRequest(filteredData), nil
 }
 
 // ResourceOperations holds all operation data for a single resource type.
