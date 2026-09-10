@@ -26,6 +26,7 @@ var (
 )
 
 const ipv4ListResourceType = "ipv4lists"
+const ipv4ListCacheKey = "ipv4_lists"
 
 func NewVerityIpv4ListResource() resource.Resource {
 	return &verityIpv4ListResource{}
@@ -130,7 +131,7 @@ func (r *verityIpv4ListResource) Create(ctx context.Context, req resource.Create
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv4_lists")
+	clearCache(ctx, r.provCtx, ipv4ListCacheKey)
 
 	var minState verityIpv4ListResourceModel
 	minState.Name = types.StringValue(name)
@@ -209,7 +210,7 @@ func (r *verityIpv4ListResource) Read(ctx context.Context, req resource.ReadRequ
 		Ipv4ListFilter map[string]interface{} `json:"ipv4_list_filter"`
 	}
 
-	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "ipv4_lists", name,
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, ipv4ListCacheKey, name,
 		func() (Ipv4ListResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch IPv4 List Filters")
 			respAPI, err := r.client.IPv4ListFiltersAPI.Ipv4listsGet(ctx).Execute()
@@ -316,7 +317,7 @@ func (r *verityIpv4ListResource) Update(ctx context.Context, req resource.Update
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv4_lists")
+	clearCache(ctx, r.provCtx, ipv4ListCacheKey)
 
 	var minState verityIpv4ListResourceModel
 	minState.Name = types.StringValue(name)
@@ -378,7 +379,7 @@ func (r *verityIpv4ListResource) Delete(ctx context.Context, req resource.Delete
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("IPv4 List %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv4_lists")
+	clearCache(ctx, r.provCtx, ipv4ListCacheKey)
 	resp.State.RemoveResource(ctx)
 }
 

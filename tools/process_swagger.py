@@ -36,6 +36,14 @@ from copy import deepcopy
 from pathlib import Path
 
 
+def merge_primitive_lists(base, overlay):
+    unique = {}
+    for item in base + overlay:
+        key = (type(item).__name__, json.dumps(item, sort_keys=True, separators=(',', ':')))
+        unique[key] = item
+    return [unique[key] for key in sorted(unique)]
+
+
 # ============================================================================
 # SECTION 1: MERGE SWAGGER FILES
 # ============================================================================
@@ -59,7 +67,7 @@ def deep_merge(base, overlay):
             elif isinstance(result[key], list) and isinstance(value, list):
                 # For simple types (strings, numbers, etc.), deduplicate
                 if all(not isinstance(item, (dict, list)) for item in result[key] + value):
-                    result[key] = list(set(result[key] + value))
+                    result[key] = merge_primitive_lists(result[key], value)
                 # For complex types (dicts, lists), deduplicate by converting to JSON strings
                 else:
                     merged_list = result[key].copy()
@@ -303,7 +311,11 @@ def merge_swagger_files(base_file, overlay_file):
             if key in result:
                 # If both values are lists, combine them
                 if isinstance(result[key], list) and isinstance(value, list):
-                    result[key] = list(set(result[key] + value)) if isinstance(value[0], (str, int, float, bool)) else result[key] + value
+                    values = result[key] + value
+                    if all(not isinstance(item, (dict, list)) for item in values):
+                        result[key] = merge_primitive_lists(result[key], value)
+                    else:
+                        result[key] = result[key] + value
                 # If both values are dicts, merge them
                 elif isinstance(result[key], dict) and isinstance(value, dict):
                     result[key] = deep_merge(result[key], value)
@@ -657,7 +669,7 @@ Examples:
     # Save final output
     print(f"\n[FINAL] Writing output to {args.output}...")
     with open(args.output, 'w') as f:
-        json.dump(transformed_swagger, f, indent=2)
+        json.dump(transformed_swagger, f, indent=2, sort_keys=True)
     
     print("\n" + "=" * 70)
     print("✓ PIPELINE COMPLETED SUCCESSFULLY!")

@@ -192,34 +192,58 @@ provider "verity" {
 
 ## Regenerating the OpenAPI Go SDK
 
-To regenerate the OpenAPI SDK for Go:
+### Canonical source inputs
 
-1. Get the latest Swagger JSON files from CAMPUS and DATACENTER systems.
-2. Use `tools/process_swagger.py` script to remove unnecessary endpoints, merge both swagger files, and transform the result into a file ready for the Go SDK generator.
+The build-time OpenAPI inputs are committed under `specs/openapi/<API version>/`.
+CI verifies their checksums and canonical JSON formatting without contacting a Verity
+system. Verify the currently supported inputs locally with:
 
-    ```bash
-    python3 tools/process_swagger.py datacenter.json campus.json --output swagger_transformed.json
-    ```
+```bash
+go run ./tools/specgen verify --input-dir specs/openapi/6.6
 
-3. Install the OpenAPI Generator CLI (if not already installed):
-  ```bash
-  npm install @openapitools/openapi-generator-cli -g
-  ```
+# Regenerate the deterministic API-shape/mode coverage report after a reviewed input update.
+go run ./tools/specgen extract \
+  --input-dir specs/openapi/6.6 \
+  --output specs/generated_manifest.json
+```
 
-4. Remove "openapi" folder completely from the project.
+When preparing a new export, preserve the raw files outside the repository and
+normalize them into a new versioned directory. Record the actual export date and a
+provenance note; the normalizer records the source and canonical checksums in its
+manifest.
 
-5. Generate the Go SDK using openapi-generator-cli:
-  ```bash
-  openapi-generator-cli generate -i swagger_transformed.json -g go -o ./openapi
-  ```
+```bash
+go run ./tools/specgen normalize \
+  --version 6.6 \
+  --datacenter /path/to/datacenter.json \
+  --campus /path/to/campus.json \
+  --output-dir specs/openapi/6.6 \
+  --source-export-date YYYY-MM-DD \
+  --provenance "Verity API export source"
+```
+
+The SDK is regenerated only from those committed inputs. The repository pins
+OpenAPI Generator `v7.25.0` in a Docker image and always generates into a
+temporary directory first:
+
+```bash
+# Verify that the tracked SDK matches the committed 6.6 inputs.
+tools/generate_openapi_sdk.sh --check
+
+# Intentionally replace openapi/ after reviewing the generated change.
+tools/generate_openapi_sdk.sh --write
+```
+
+The command requires Docker, Python 3, Go, and `rsync` for `--write`. Do not
+delete `openapi/` manually and do not install an unpinned global generator.
 
 
 ### Updating Provider Resource Files
 
-After regenerating the SDK, you need to update the provider resource files:
-
-- For fields deleted from the API: Remove them from the corresponding provider resource files
-- For new fields added to the API: Add them to the appropriate provider resource files
+During the migration, SDK changes are reviewed with the generated spec report
+and transport adapters. Do not add/remove provider fields by hand as a normal
+SDK regeneration step; API shape and Terraform lifecycle semantics are being
+moved into the validated resource-spec registry.
 
 ## Using the State Import Scripts
 
