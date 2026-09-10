@@ -366,17 +366,8 @@ func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error
 	return versionPayload.Version, nil
 }
 
-func (p *verityProvider) Resources(ctx context.Context) []func() resource.Resource {
-	providerData, ok := ctx.Value("providerData").(*providerContext)
-	if !ok {
-		tflog.Warn(ctx, "Provider context not available, returning all resources")
-		return getAllResources()
-	}
-
-	allResources := getAllResources()
-	compatibleResources := utils.FilterResourcesByMode(ctx, allResources, providerData.mode, providerData.apiVersion)
-
-	return compatibleResources
+func (p *verityProvider) Resources(_ context.Context) []func() resource.Resource {
+	return getAllResources()
 }
 
 func getAllResources() []func() resource.Resource {
