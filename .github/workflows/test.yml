@@ -12,6 +12,10 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: '1.25'
+      - name: Verify canonical OpenAPI inputs
+        run: go run ./tools/specgen verify --input-dir specs/openapi/6.6
+      - name: Verify OpenAPI coverage manifest
+        run: go run ./tools/specgen extract --input-dir specs/openapi/6.6 --output specs/generated_manifest.json --check
       - uses: hashicorp/setup-terraform@v4
         with:
           terraform_wrapper: false

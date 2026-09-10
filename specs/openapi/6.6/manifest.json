@@ -1,0 +1,25 @@
+{
+  "api_version": "6.6",
+  "format_version": 1,
+  "normalization_tool": "tools/specgen",
+  "normalization_tool_version": "1",
+  "sources": [
+    {
+      "file": "campus.json",
+      "mode": "campus",
+      "provenance": "Pre-existing workspace OpenAPI export; source date inferred from file modification time.",
+      "sha256": "85b9ceca087c3c9acfe8b9059090872b59678d8a145c1035122e3ee32298117e",
+      "source_export_date": "2026-09-03",
+      "source_sha256": "a430fbae02eba8d971478932c411b72ed1787d5e01e011713f8f763bf8f2b096"
+    },
+    {
+      "file": "datacenter.json",
+      "mode": "datacenter",
+      "provenance": "Pre-existing workspace OpenAPI export; source date inferred from file modification time.",
+      "sha256": "f6f8c865f730ed8cf288f63c5ff4f2cf8237941b4e9969ffe37bc551596a02d4",
+      "source_export_date": "2026-09-03",
+      "source_sha256": "33735e1039b93acbe93339bf8eda3cd23d4583f41de78124854e2c8cd74acf5d"
+    }
+  ],
+  "volatile_metadata_allowlist": []
+}
