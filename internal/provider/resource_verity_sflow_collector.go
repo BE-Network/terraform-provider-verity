@@ -27,6 +27,7 @@ var (
 
 const sflowCollectorResourceType = "sflowcollectors"
 const sflowCollectorTerraformType = "verity_sflow_collector"
+const sflowCollectorCacheKey = "sflow_collectors"
 
 func NewVeritySflowCollectorResource() resource.Resource {
 	return &veritySflowCollectorResource{}
@@ -75,7 +76,7 @@ func (r *veritySflowCollectorResource) Schema(ctx context.Context, req resource.
 		Description: "Manages a Verity SFlow Collector",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -87,12 +88,12 @@ func (r *veritySflowCollectorResource) Schema(ctx context.Context, req resource.
 				Computed:    true,
 			},
 			"ip": schema.StringAttribute{
-				Description: "IP address of the sFlow Collector",
+				Description: "IP address of the sFlow Collector ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"port": schema.Int64Attribute{
-				Description: "Port (maximum 65535)",
+				Description: "Port",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -152,7 +153,7 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "sflow_collectors")
+	clearCache(ctx, r.provCtx, sflowCollectorCacheKey)
 
 	var minState veritySflowCollectorResourceModel
 	minState.Name = types.StringValue(name)
@@ -231,7 +232,7 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 		SflowCollector map[string]interface{} `json:"sflow_collector"`
 	}
 
-	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "sflow_collectors", sflowCollectorName,
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, sflowCollectorCacheKey, sflowCollectorName,
 		func() (SflowCollectorsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch sflow collectors")
 			respAPI, err := r.client.SFlowCollectorsAPI.SflowcollectorsGet(ctx).Execute()
@@ -353,7 +354,7 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "sflow_collectors")
+	clearCache(ctx, r.provCtx, sflowCollectorCacheKey)
 
 	var minState veritySflowCollectorResourceModel
 	minState.Name = types.StringValue(name)
@@ -415,7 +416,7 @@ func (r *veritySflowCollectorResource) Delete(ctx context.Context, req resource.
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("SFlow Collector %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "sflow_collectors")
+	clearCache(ctx, r.provCtx, sflowCollectorCacheKey)
 	resp.State.RemoveResource(ctx)
 }
 

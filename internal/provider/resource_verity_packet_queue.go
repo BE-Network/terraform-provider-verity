@@ -95,7 +95,7 @@ func (r *verityPacketQueueResource) Schema(ctx context.Context, req resource.Sch
 		Description: "Manages a Verity Packet Queue",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -113,7 +113,7 @@ func (r *verityPacketQueueResource) Schema(ctx context.Context, req resource.Sch
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"packet_queue_for_p_bit": schema.Int64Attribute{
-							Description: "Flag indicating this p-bit's Queue",
+							Description: "Flag indicating this Traffic Class' Queue",
 							Optional:    true,
 							Computed:    true,
 						},

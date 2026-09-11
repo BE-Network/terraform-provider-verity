@@ -127,7 +127,7 @@ func (r *verityLdapProfileResource) Schema(ctx context.Context, req resource.Sch
 		Description: "Manages a Verity LDAP Profile.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -144,12 +144,12 @@ func (r *verityLdapProfileResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"bind_dn": schema.StringAttribute{
-				Description: "Distinguished Name with which to bind to the LDAP server",
+				Description: "Distinguished Name with which to bind to the LDAP server. Empty value means anonymous bind.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"bind_password": schema.StringAttribute{
-				Description: "Credentials with which to bind to the LDAP server",
+				Description: "Credentials with which to bind to the LDAP server. Only used together with Bind DN.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -169,7 +169,7 @@ func (r *verityLdapProfileResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"default_port": schema.Int64Attribute{
-				Description: "Default LDAP server port",
+				Description: "Default LDAP server port (389 for plain/StartTLS, 636 for LDAPS)",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -189,7 +189,7 @@ func (r *verityLdapProfileResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"retransmit_attempts": schema.Int64Attribute{
-				Description: "Number of retransmit attempts",
+				Description: "Number of retransmit attempts (0-10)",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -224,32 +224,32 @@ func (r *verityLdapProfileResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"nss_initgroups_ignore_users": schema.StringAttribute{
-				Description: "Users for which initgroups lookups are skipped",
+				Description: "Comma-separated list of users for which initgroups() lookups are skipped",
 				Optional:    true,
 				Computed:    true,
 			},
 			"nss_skip_members": schema.BoolAttribute{
-				Description: "Return group entries without member attributes",
+				Description: "If true, the group entry is returned without member attributes",
 				Optional:    true,
 				Computed:    true,
 			},
 			"pam_filter": schema.StringAttribute{
-				Description: "PAM search filter for retrieving user information",
+				Description: "PAM search filter for retrieving user info",
 				Optional:    true,
 				Computed:    true,
 			},
 			"pam_login_attribute": schema.StringAttribute{
-				Description: "Attribute used for the user's login name",
+				Description: "Attribute used to construct the assertion for the user's login name",
 				Optional:    true,
 				Computed:    true,
 			},
 			"pam_group_dn": schema.StringAttribute{
-				Description: "Required PAM group DN",
+				Description: "DN of a group a user must belong to for login authorization to succeed",
 				Optional:    true,
 				Computed:    true,
 			},
 			"pam_member_attribute": schema.StringAttribute{
-				Description: "Attribute used to test PAM group membership",
+				Description: "Attribute used to test a user's membership of the PAM group DN",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -259,7 +259,7 @@ func (r *verityLdapProfileResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"sudoers_search_filter": schema.StringAttribute{
-				Description: "LDAP filter for sudo LDAP queries",
+				Description: "LDAP filter used to restrict records returned for sudo LDAP queries",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -275,37 +275,37 @@ func (r *verityLdapProfileResource) Schema(ctx context.Context, req resource.Sch
 							Computed:    true,
 						},
 						"server": schema.StringAttribute{
-							Description: "LDAP server hostname or address",
+							Description: "IPv4, IPv6, or DNS hostname for LDAP server",
 							Optional:    true,
 							Computed:    true,
 						},
 						"port": schema.Int64Attribute{
-							Description: "Server port",
+							Description: "Server port (overrides global default port)",
 							Optional:    true,
 							Computed:    true,
 						},
 						"use_type": schema.StringAttribute{
-							Description: "LDAP clients using this server",
+							Description: "Which LDAP client(s) use this server",
 							Optional:    true,
 							Computed:    true,
 						},
 						"priority": schema.Int64Attribute{
-							Description: "Server priority",
+							Description: "Server priority (1-99, lower = higher priority)",
 							Optional:    true,
 							Computed:    true,
 						},
 						"ssl_tls_mode": schema.StringAttribute{
-							Description: "Per-server TLS mode",
+							Description: "Per-server TLS mode (overrides global setting)",
 							Optional:    true,
 							Computed:    true,
 						},
 						"retransmit_attempts": schema.Int64Attribute{
-							Description: "Per-server retransmit attempts",
+							Description: "Per-server retransmit attempts (0-10)",
 							Optional:    true,
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object.",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -327,17 +327,17 @@ func (r *verityLdapProfileResource) Schema(ctx context.Context, req resource.Sch
 							Computed:    true,
 						},
 						"from": schema.StringAttribute{
-							Description: "Original attribute or class name",
+							Description: "Original RFC2307 attribute or class name to map from",
 							Optional:    true,
 							Computed:    true,
 						},
 						"to": schema.StringAttribute{
-							Description: "Replacement attribute, class name, or value",
+							Description: "Replacement attribute/class name or value to map to",
 							Optional:    true,
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object.",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},

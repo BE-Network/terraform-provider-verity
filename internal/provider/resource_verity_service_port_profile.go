@@ -100,7 +100,7 @@ func (r *verityServicePortProfileResource) Schema(ctx context.Context, req resou
 		Description: "Manages a Verity Service Port Profile",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -112,7 +112,7 @@ func (r *verityServicePortProfileResource) Schema(ctx context.Context, req resou
 				Computed:    true,
 			},
 			"port_type": schema.StringAttribute{
-				Description: "Determines what Service are provisioned on the port and if those Services are propagated upstream",
+				Description: "Determines what Service are provisioned on the port and if those Services are propagated upstream<ul><li>* \"Upstream Switchport\" Services specified below.  Services are not propagated.</li><li>* \"Downstream Switchport\" Services specified below. Services are propagated.</li><li>* \"Crosslink Switchport\" Services is union of all Services on each switch.  Services are not propagated.</li><li>* \"Upstream L3 (L2/L3 Switches Only\" No Services.</li></ul>",
 				Optional:    true,
 				Computed:    true,
 			},

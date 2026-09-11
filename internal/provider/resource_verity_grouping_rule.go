@@ -89,24 +89,24 @@ func (r *verityGroupingRuleResource) Schema(_ context.Context, _ resource.Schema
 		Description: "Manages a Verity Grouping Rule.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "The name of the grouping rule.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable or disable the grouping rule.",
+				Description: "Enable object.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"type": schema.StringAttribute{
-				Description: "The type of the grouping rule. Valid values: 'and', 'or'.",
+				Description: "Type of elements to group",
 				Optional:    true,
 				Computed:    true,
 			},
 			"operation": schema.StringAttribute{
-				Description: "The operation of the grouping rule. Valid values: 'permit', 'deny'.",
+				Description: "How to combine rules",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -117,37 +117,37 @@ func (r *verityGroupingRuleResource) Schema(_ context.Context, _ resource.Schema
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"enable": schema.BoolAttribute{
-							Description: "Enable or disable the rule.",
+							Description: "Enable",
 							Optional:    true,
 							Computed:    true,
 						},
 						"rule_invert": schema.BoolAttribute{
-							Description: "Invert the rule logic.",
+							Description: "Invert the rule",
 							Optional:    true,
 							Computed:    true,
 						},
 						"rule_type": schema.StringAttribute{
-							Description: "The type of the rule. Valid values: 'device_controller', 'device', 'eth_port', 'lag', 'vlan', 'tenant', 'site', 'pod', 'spineps', 'grouping_rule'.",
+							Description: "Which type of rule to apply",
 							Optional:    true,
 							Computed:    true,
 						},
 						"rule_value": schema.StringAttribute{
-							Description: "The value for the rule.",
+							Description: "Value to compare",
 							Optional:    true,
 							Computed:    true,
 						},
 						"rule_value_path": schema.StringAttribute{
-							Description: "The path reference for the rule value.",
+							Description: "Object to compare",
 							Optional:    true,
 							Computed:    true,
 						},
 						"rule_value_path_ref_type_": schema.StringAttribute{
-							Description: "The reference type for rule_value_path. Valid values: 'device_controller', 'device', 'eth_port', 'lag', 'vlan', 'tenant', 'site', 'pod', 'spineps', 'grouping_rule'.",
+							Description: "Object type for rule_value_path field",
 							Optional:    true,
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index of the rule within the rules list.",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},

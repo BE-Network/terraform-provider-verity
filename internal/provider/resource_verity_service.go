@@ -105,29 +105,29 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 		Description: "Manages a Service resource",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object.",
+				Description: "Enable object.\nIt's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"vlan": schema.Int64Attribute{
-				Description: "A Value between 1 and 4096",
+				Description: "Layer 2 Virtual Network Identifier. A Value between 1 and 4096. <br> Some switches have reserved values within the range",
 				Optional:    true,
 				Computed:    true,
 			},
 			"vni": schema.Int64Attribute{
-				Description: "Indication of the outgoing VLAN layer 2 service. This field should not be specified when 'vni_auto_assigned_' is set to true, as the API will assign this value automatically. When specified, it represents an explicit VNI value.",
+				Description: "Identifies the service within the VXLAN fabric - Range is 1-16777215. If not using auto, must be outside of the reserved range settings",
 				Optional:    true,
 				Computed:    true,
 			},
 			"vni_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the VNI value should be automatically assigned by the API. When set to true, do not specify the 'vni' field in your configuration. The API will assign the VNI value, typically as VLAN + 100000.",
+				Description: "Whether or not the value in vni field has been automatically assigned or not. Set to false and change vni value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -142,32 +142,32 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 				Computed:    true,
 			},
 			"dhcp_server_ipv4": schema.StringAttribute{
-				Description: "IPv4 address(s) of the DHCP server for service. May have up to four separated by commas.",
+				Description: "IPv4 address(s) of the DHCP server for service.  May have up to four separated by commas.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"dhcp_server_ipv6": schema.StringAttribute{
-				Description: "IPv6 address(s) of the DHCP server for service. May have up to four separated by commas.",
+				Description: "IPv6 address(s) of the DHCP server for service.  May have up to four separated by commas.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"ip_attach_host_advertise": schema.Int64Attribute{
-				Description: "IP Attach Host Advertise",
+				Description: "Converts IP addresses learned via ARP and ND into host routes and adds them to the routing table. Sets the administrative distance of the attached route (range 0-250).",
 				Optional:    true,
 				Computed:    true,
 			},
 			"mtu": schema.Int64Attribute{
-				Description: "MTU (Maximum Transmission Unit) - the size used by a switch to determine when large packets must be broken up for delivery.",
+				Description: "MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"anycast_ipv4_mask": schema.StringAttribute{
-				Description: "Static anycast gateway addresses(IPv4) for service",
+				Description: "Comma separated list of Static anycast gateway addresses(IPv4) for service ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"anycast_ipv6_mask": schema.StringAttribute{
-				Description: "Static anycast gateway addresses(IPv6) for service",
+				Description: "Comma separated list of Static anycast gateway addresses(IPv6) for service ",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -182,17 +182,17 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 				Computed:    true,
 			},
 			"packet_priority": schema.StringAttribute{
-				Description: "Priority untagged packets will be tagged with on ingress to the network.",
+				Description: "Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped",
 				Optional:    true,
 				Computed:    true,
 			},
 			"multicast_management_mode": schema.StringAttribute{
-				Description: "Determines how to handle multicast packets for Service",
+				Description: "Determines how undefined handle multicast packet for Service<ul><li>* \"Multicast Flooding (Normal)\" Multicast packets are broadcast</li><li>* \"Multicast Flooding (AVB/PTP/Cobranet)\" Multicast packets are broadcast with special treatment for critical latency packets such as used by AVB, PTP, and Cobranet</li><li>* \"IPTV Filtering (IGMP Snooping)\" Multicast packets are propagated via IGMP Snooping</li><li>* \"IPTV Filtering (IGMP Report/Leave Flooding)\" Multicast packets are propagated via IGMP Snooping. except that IGMP Report/Leave packets are broadcast</li></ul>",
 				Optional:    true,
 				Computed:    true,
 			},
 			"tagged_packets": schema.BoolAttribute{
-				Description: "Overrides priority bits on incoming tagged packets.",
+				Description: "Overrides priority bits on incoming tagged packets. Always done for untagged packets",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -202,17 +202,17 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 				Computed:    true,
 			},
 			"allow_local_switching": schema.BoolAttribute{
-				Description: "Allow Edge Devices to communicate with each other.",
+				Description: "Allow Edge Devices to communicate with each other. Disabling this forces upstream traffic to the router",
 				Optional:    true,
 				Computed:    true,
 			},
 			"act_as_multicast_querier": schema.BoolAttribute{
-				Description: "Multicast management through IGMP requires a multicast querier.",
+				Description: "Multicast managment through IGMP requires a multicast querier. Check this box if SD LAN should provide a multicast querier",
 				Optional:    true,
 				Computed:    true,
 			},
 			"block_unknown_unicast_flood": schema.BoolAttribute{
-				Description: "Block unknown unicast traffic flooding.",
+				Description: "Block unknown unicast traffic flooding and only permits egress traffic with MAC addresses that are known to exit on the port",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -232,7 +232,7 @@ func (r *verityServiceResource) Schema(ctx context.Context, req resource.SchemaR
 				Computed:    true,
 			},
 			"allow_fast_leave": schema.BoolAttribute{
-				Description: "The Fast Leave feature causes the switch to immediately remove a port from the forwarding list.",
+				Description: "The Fast Leave feature causes the switch to immediately remove a port from the forwarding list for a IGMP multicast group when the port receives a leave message. Not recommended unless there is only a single receiver present on every point in the VLAN",
 				Optional:    true,
 				Computed:    true,
 			},

@@ -238,14 +238,14 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 		Description: "Manages a Verity Switchpoint",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
+				Description: "Enable object.\nIt's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -360,7 +360,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"rack_info": schema.StringAttribute{
-				Description: "Physical Rack location of the Switch",
+				Description: "Physical Rack location of the Switch ",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -385,32 +385,32 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"switch_router_id_ip_mask": schema.StringAttribute{
-				Description: "Switch BGP Router Identifier. This field should not be specified when 'switch_router_id_ip_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Switch BGP Router Identifier",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_router_id_ip_mask_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the Switch BGP Router Identifier should be automatically assigned by the API. When set to true, do not specify the 'switch_router_id_ip_mask' field in your configuration.",
+				Description: "Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_vtep_id_ip_mask": schema.StringAttribute{
-				Description: "Switch VTEP Identifier. This field should not be specified when 'switch_vtep_id_ip_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Switch VETP Identifier",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_vtep_id_ip_mask_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the Switch VTEP Identifier should be automatically assigned by the API. When set to true, do not specify the 'switch_vtep_id_ip_mask' field in your configuration.",
+				Description: "Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"bgp_as_number": schema.Int64Attribute{
-				Description: "BGP Autonomous System Number for the site underlay. This field should not be specified when 'bgp_as_number_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "BGP Autonomous System Number for the Fabric Underlay ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"bgp_as_number_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the BGP AS Number should be automatically assigned by the API. When set to true, do not specify the 'bgp_as_number' field in your configuration.",
+				Description: "Whether or not the value in bgp_as_number field has been automatically assigned or not. Set to false and change bgp_as_number value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -430,12 +430,12 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"ssh_key_or_password_encrypted": schema.StringAttribute{
-				Description: "SSH Key or Password. This field should not be specified when 'ssh_key_or_password_encrypted_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "SSH Key or Password",
 				Optional:    true,
 				Computed:    true,
 			},
 			"ssh_key_or_password_encrypted_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the SSH key or password should be automatically assigned by the API. When set to true, do not specify the 'ssh_key_or_password_encrypted' field in your configuration.",
+				Description: "Whether or not the value in ssh_key_or_password_encrypted field has been automatically assigned or not. Set to false and change ssh_key_or_password_encrypted value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -455,42 +455,42 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"controller_ip_and_mask": schema.StringAttribute{
-				Description: "Controller IP and Mask. This field should not be specified when 'controller_ip_and_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Controller IP and Mask",
 				Optional:    true,
 				Computed:    true,
 			},
 			"controller_ip_and_mask_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the Controller IP and Mask should be automatically assigned by the API. When set to true, do not specify the 'controller_ip_and_mask' field in your configuration.",
+				Description: "Whether or not the value in controller_ip_and_mask field has been automatically assigned or not. Set to false and change controller_ip_and_mask value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"gateway": schema.StringAttribute{
-				Description: "Gateway. This field should not be specified when 'gateway_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Gateway",
 				Optional:    true,
 				Computed:    true,
 			},
 			"gateway_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the gateway should be automatically assigned by the API. When set to true, do not specify the 'gateway' field in your configuration.",
+				Description: "Whether or not the value in gateway field has been automatically assigned or not. Set to false and change gateway value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_ip_and_mask": schema.StringAttribute{
-				Description: "Switch IP and Mask. This field should not be specified when 'switch_ip_and_mask_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Switch IP and Mask",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_ip_and_mask_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the Switch IP and Mask should be automatically assigned by the API. When set to true, do not specify the 'switch_ip_and_mask' field in your configuration.",
+				Description: "Whether or not the value in switch_ip_and_mask field has been automatically assigned or not. Set to false and change switch_ip_and_mask value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_gateway": schema.StringAttribute{
-				Description: "Gateway of Managed Device. This field should not be specified when 'switch_gateway_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Gateway of Managed Device",
 				Optional:    true,
 				Computed:    true,
 			},
 			"switch_gateway_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the managed-device gateway should be automatically assigned by the API. When set to true, do not specify the 'switch_gateway' field in your configuration.",
+				Description: "Whether or not the value in switch_gateway field has been automatically assigned or not. Set to false and change switch_gateway value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -510,32 +510,32 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"upstream_is_lag": schema.BoolAttribute{
-				Description: "When enabled, ZTP provisions the TOR switch's first 32 ports as a LAG to facilitate plug-and-play.",
+				Description: "If checked, then ZTP will provision the TOR switch with the first 32 ports as a lag to facilitate plug-n-play",
 				Optional:    true,
 				Computed:    true,
 			},
 			"expected_uplink_port": schema.Int64Attribute{
-				Description: "Uplink port for ZTP when using an SFP-based port. The port is 1-indexed within the configured port group; port-group and breakout settings depend on the switch model. If unset, ZTP uses the first 32 copper ports as uplinks.",
+				Description: "Specify the uplink port for ZTP when using an SFP-based port. The Uplink Port is 1-indexed relative to the configured Port Group, where 1 represents the first port in the group. Port Group and breakout configurations are switch-model dependent; consult the switch vendor documentation to determine the correct Port Group and Uplink Port values. If an SFP-based uplink is not specified, ZTP programs the first 32 copper ports for use as uplinks.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"expected_breakout": schema.StringAttribute{
-				Description: "Full breakout configuration for the SFP used as the uplink",
+				Description: "Full breakout configuration for the SFP being used as the uplink.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"expected_breakout_uplink_port": schema.StringAttribute{
-				Description: "Uplink Ethernet port identifier in the format 1/# or 1/#/#.",
+				Description: "Uplink Ethernet Port identifier in the format 1/# or 1/#/#.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"lldp_search_string": schema.StringAttribute{
-				Description: "Optional unless Located By is LLDP or Device managed as Active SFP. This field should not be specified when 'lldp_search_string_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Optional unless Located By is \"LLDP\" or Device managed as \"Active SFP\". Must be either the chassis-id or the hostname of the LLDP from the managed device. Used to detect connections between managed devices. If blank, the chassis-id detected by the Device Controller via SNMP/CLI is used",
 				Optional:    true,
 				Computed:    true,
 			},
 			"lldp_search_string_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the LLDP search string should be automatically assigned by the API. When set to true, do not specify the 'lldp_search_string' field in your configuration.",
+				Description: "Whether or not the value in lldp_search_string field has been automatically assigned or not. Set to false and change lldp_search_string value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -555,7 +555,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"communication_mode": schema.StringAttribute{
-				Description: "Communication Mode",
+				Description: "Select the network operating system (NOS) type for this endpoint.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -565,12 +565,12 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
-				Description: "Username. This field should not be specified when 'username_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Username",
 				Optional:    true,
 				Computed:    true,
 			},
 			"username_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the username should be automatically assigned by the API. When set to true, do not specify the 'username' field in your configuration.",
+				Description: "Whether or not the value in username field has been automatically assigned or not. Set to false and change username value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -676,7 +676,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"badge": schema.StringAttribute{
-							Description: "Badge name",
+							Description: "Enable of this POTS port",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -686,7 +686,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -713,7 +713,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -767,7 +767,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"breakout": schema.StringAttribute{
-							Description: "Breakout Port Override",
+							Description: "Breakout Port Override. Available options determined by Switch capability, Installed SFP and the capacity of the pipeline.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -777,7 +777,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -792,7 +792,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 							Computed:    true,
 						},
 						"enable": schema.BoolAttribute{
-							Description: "Enable port",
+							Description: "Enable port.\n",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -856,7 +856,7 @@ func (r *veritySwitchpointResource) Schema(ctx context.Context, req resource.Sch
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"user_notes": schema.StringAttribute{
-							Description: "Notes written by User about the site",
+							Description: "Notes writen by User about the fabric",
 							Optional:    true,
 							Computed:    true,
 						},

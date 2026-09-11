@@ -89,7 +89,7 @@ func (r *verityRouteMapResource) Schema(ctx context.Context, req resource.Schema
 		Description: "Manages a Verity Route Map",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

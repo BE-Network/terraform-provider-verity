@@ -89,7 +89,7 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 		Description: "Manages a Policy-Based Routing ACL resource",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -132,7 +132,7 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -159,7 +159,7 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -186,7 +186,7 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -213,7 +213,7 @@ func (r *verityPBRoutingACLResource) Schema(ctx context.Context, req resource.Sc
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},

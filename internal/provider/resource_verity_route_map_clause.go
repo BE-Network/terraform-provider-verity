@@ -109,7 +109,7 @@ func (r *verityRouteMapClauseResource) Schema(ctx context.Context, req resource.
 		Description: "Manages a Verity Route Map Clause",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -156,12 +156,12 @@ func (r *verityRouteMapClauseResource) Schema(ctx context.Context, req resource.
 				Computed:    true,
 			},
 			"match_interface_number": schema.Int64Attribute{
-				Description: "Match Interface Number (minimum: 1, maximum: 256)",
+				Description: "Match Interface Number",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_interface_vlan": schema.Int64Attribute{
-				Description: "Match Interface VLAN (minimum: 1, maximum: 4094)",
+				Description: "Match Interface VLAN",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -186,42 +186,42 @@ func (r *verityRouteMapClauseResource) Schema(ctx context.Context, req resource.
 				Computed:    true,
 			},
 			"match_local_preference": schema.Int64Attribute{
-				Description: "Match BGP Local Preference value on the route (maximum: 4294967295)",
+				Description: "Match BGP Local Preference value on the route ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_metric": schema.Int64Attribute{
-				Description: "Match Metric of the IP route entry (minimum: 1, maximum: 4294967295)",
+				Description: "Match Metric of the IP route entry ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_origin": schema.StringAttribute{
-				Description: "Match routes based on the value of the BGP Origin attribute",
+				Description: "Match routes based on the value of the BGP Origin attribute ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_peer_ip_address": schema.StringAttribute{
-				Description: "Match BGP Peer IP Address the route was learned from",
+				Description: "Match BGP Peer IP Address the route was learned from ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_peer_interface": schema.Int64Attribute{
-				Description: "Match BGP Peer port the route was learned from (minimum: 1, maximum: 256)",
+				Description: "Match BGP Peer port the route was learned from ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_peer_vlan": schema.Int64Attribute{
-				Description: "Match BGP Peer VLAN over which the route was learned (minimum: 1, maximum: 4094)",
+				Description: "Match BGP Peer VLAN over which the route was learned ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_source_protocol": schema.StringAttribute{
-				Description: "Match Routing Protocol the route originated from",
+				Description: "Match Routing  Protocol the route originated from ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_vrf": schema.StringAttribute{
-				Description: "Match VRF the route is associated with",
+				Description: "Match VRF the route is associated with ",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -231,12 +231,12 @@ func (r *verityRouteMapClauseResource) Schema(ctx context.Context, req resource.
 				Computed:    true,
 			},
 			"match_tag": schema.Int64Attribute{
-				Description: "Match routes that have this value for a Tag attribute (minimum: 1, maximum: 4294967295)",
+				Description: "Match routes that have this value for a Tag attribute",
 				Optional:    true,
 				Computed:    true,
 			},
 			"match_evpn_route_type_default": schema.BoolAttribute{
-				Description: "Match based on the type of EVPN Route Type being Default",
+				Description: "Match based on the type of EVPN Route Type being Default\"",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -246,7 +246,7 @@ func (r *verityRouteMapClauseResource) Schema(ctx context.Context, req resource.
 				Computed:    true,
 			},
 			"match_vni": schema.Int64Attribute{
-				Description: "Match based on the VNI value (minimum: 1, maximum: 16777215)",
+				Description: "Match based on the VNI value ",
 				Optional:    true,
 				Computed:    true,
 			},

@@ -97,7 +97,7 @@ func (r *verityAuthenticatedEthPortResource) Schema(ctx context.Context, req res
 		Description: "Manages a Verity Authenticated Eth-Port",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -109,7 +109,7 @@ func (r *verityAuthenticatedEthPortResource) Schema(ctx context.Context, req res
 				Computed:    true,
 			},
 			"connection_mode": schema.StringAttribute{
-				Description: "Choose connection mode for Authenticated Eth-Port",
+				Description: "Choose connection mode for Authenticated Eth-Port<br><b>Port Mode</b>  Standard mode. The last authenticated clients VLAN access is applied.<br><b>Single Client Mode</b>  MAC filtered client. Only the authenticated clients traffic can pass. No traffic from a second client may pass. Only when the first client deauthenticates can a new authentication take place.<br><b>Multiple Client Mode</b>  MAC filtered clients. Only authenticated client traffic can pass. Multiple clients can authenticate and gain access to individual service offerings. MAC-based authentication is not supported.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -119,7 +119,7 @@ func (r *verityAuthenticatedEthPortResource) Schema(ctx context.Context, req res
 				Computed:    true,
 			},
 			"allow_mac_based_authentication": schema.BoolAttribute{
-				Description: "Enables 802.1x to capture the connected MAC address and send it to the Radius Server instead of requesting credentials. Useful for printers and similar devices",
+				Description: "Enables 802.1x to capture the connected MAC address and send it tothe Radius Server instead of requesting credentials.  Useful for printers and similar devices",
 				Optional:    true,
 				Computed:    true,
 			},

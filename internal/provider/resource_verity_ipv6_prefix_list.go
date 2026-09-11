@@ -92,7 +92,7 @@ func (r *verityIpv6PrefixListResource) Schema(ctx context.Context, req resource.
 		Description: "Manages a Verity IPv6 Prefix List",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -120,17 +120,17 @@ func (r *verityIpv6PrefixListResource) Schema(ctx context.Context, req resource.
 							Computed:    true,
 						},
 						"ipv6_prefix": schema.StringAttribute{
-							Description: "IPv6 address and subnet to match against",
+							Description: "IPv6 address and subnet to match against ",
 							Optional:    true,
 							Computed:    true,
 						},
 						"greater_than_equal_value": schema.Int64Attribute{
-							Description: "Match IP routes with a subnet mask greater than or equal to the value indicated (minimum: 1, maximum: 128)",
+							Description: "Match IP routes with a subnet mask greater than or equal to the value indicated ",
 							Optional:    true,
 							Computed:    true,
 						},
 						"less_than_equal_value": schema.Int64Attribute{
-							Description: "Match IP routes with a subnet mask less than or equal to the value indicated (minimum: 1, maximum: 128)",
+							Description: "Match IP routes with a subnet mask less than or equal to the value indicated",
 							Optional:    true,
 							Computed:    true,
 						},

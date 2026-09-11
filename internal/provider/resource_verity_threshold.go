@@ -99,69 +99,69 @@ func (r *verityThresholdResource) Schema(_ context.Context, _ resource.SchemaReq
 		Description: "Manages a Verity Threshold.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "The name of the threshold.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable or disable the threshold.",
+				Description: "Enable object.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"type": schema.StringAttribute{
-				Description: "Type of elements threshold applies to.",
+				Description: "Type of elements threshold applies to",
 				Optional:    true,
 				Computed:    true,
 			},
 			"operation": schema.StringAttribute{
-				Description: "How to combine rules.",
+				Description: "How to combine rules",
 				Optional:    true,
 				Computed:    true,
 			},
 			"severity": schema.StringAttribute{
-				Description: "Severity of the alarm when the threshold is met.",
+				Description: "Severity of the alarm when the threshold is met",
 				Optional:    true,
 				Computed:    true,
 			},
 			"for": schema.StringAttribute{
-				Description: "Duration in minutes the threshold must be met before firing the alarm.",
+				Description: "Duration in minutes the threshold must be met before firing the alarm",
 				Optional:    true,
 				Computed:    true,
 			},
 			"keep_firing_for": schema.StringAttribute{
-				Description: "Duration in minutes to keep firing the alarm after the threshold is no longer met.",
+				Description: "Duration in minutes to keep firing the alarm after the threshold is no longer met",
 				Optional:    true,
 				Computed:    true,
 			},
 			"escalation_metric": schema.StringAttribute{
-				Description: "Metric threshold is on.",
+				Description: "Metric threshold is on",
 				Optional:    true,
 				Computed:    true,
 			},
 			"escalation_operation": schema.StringAttribute{
-				Description: "How to compare the metric to the value. Valid values: 'gt', 'le', 'ge', 'eq', 'lt'.",
+				Description: "How to compare the metric to the value",
 				Optional:    true,
 				Computed:    true,
 			},
 			"critical_escalation_value": schema.StringAttribute{
-				Description: "Value to compare the metric to for critical escalation.",
+				Description: "Value to compare the metric to",
 				Optional:    true,
 				Computed:    true,
 			},
 			"error_escalation_value": schema.StringAttribute{
-				Description: "Value to compare the metric to for error escalation.",
+				Description: "Value to compare the metric to",
 				Optional:    true,
 				Computed:    true,
 			},
 			"warning_escalation_value": schema.StringAttribute{
-				Description: "Value to compare the metric to for warning escalation.",
+				Description: "Value to compare the metric to",
 				Optional:    true,
 				Computed:    true,
 			},
 			"notice_escalation_value": schema.StringAttribute{
-				Description: "Value to compare the metric to for notice escalation.",
+				Description: "Value to compare the metric to",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -172,42 +172,42 @@ func (r *verityThresholdResource) Schema(_ context.Context, _ resource.SchemaReq
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"enable": schema.BoolAttribute{
-							Description: "Enable the rule.",
+							Description: "Enable",
 							Optional:    true,
 							Computed:    true,
 						},
 						"type": schema.StringAttribute{
-							Description: "Use a metric or a nested threshold.",
+							Description: "Use a metric or a nested threshold",
 							Optional:    true,
 							Computed:    true,
 						},
 						"metric": schema.StringAttribute{
-							Description: "Metric threshold is on.",
+							Description: "Metric threshold is on",
 							Optional:    true,
 							Computed:    true,
 						},
 						"operation": schema.StringAttribute{
-							Description: "How to compare the metric to the value.",
+							Description: "How to compare the metric to the value",
 							Optional:    true,
 							Computed:    true,
 						},
 						"value": schema.StringAttribute{
-							Description: "Value to compare the metric to.",
+							Description: "Value to compare the metric to",
 							Optional:    true,
 							Computed:    true,
 						},
 						"threshold": schema.StringAttribute{
-							Description: "Nested threshold reference.",
+							Description: "Nested threshold to evaluate (when Type is Threshold)",
 							Optional:    true,
 							Computed:    true,
 						},
 						"threshold_ref_type_": schema.StringAttribute{
-							Description: "Object type for threshold field. Valid values: 'threshold'.",
+							Description: "Object type for threshold field",
 							Optional:    true,
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index of the rule within the rules list.",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},

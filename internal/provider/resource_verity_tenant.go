@@ -111,34 +111,34 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 		Description: "Manages a Tenant resource",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object.",
+				Description: "Enable object.\nIt's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"layer_3_vni": schema.Int64Attribute{
-				Description: "VNI value used to transport traffic between services of a Tenant. This field should not be specified when 'layer_3_vni_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "VNI value used to transport traffic between services of a Tenant ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"layer_3_vni_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the Layer 3 VNI value should be automatically assigned by the API. When set to true, do not specify the 'layer_3_vni' field in your configuration.",
+				Description: "Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"layer_3_vlan": schema.Int64Attribute{
-				Description: "VLAN value used to transport traffic between services of a Tenant. This field should not be specified when 'layer_3_vlan_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "VLAN value used to transport traffic between services of a Tenant ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"layer_3_vlan_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the Layer 3 VLAN value should be automatically assigned by the API. When set to true, do not specify the 'layer_3_vlan' field in your configuration.",
+				Description: "Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -153,22 +153,22 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:    true,
 			},
 			"route_distinguisher": schema.StringAttribute{
-				Description: "Route Distinguisher (BGP Community) for uniqueness among identical routes",
+				Description: "Route Distinguishers are used to maintain uniqueness among identical routes from different routers.  If set, then routes from this Tenant will be identified with this Route Distinguisher (BGP Community).  It should be two numbers separated by a colon.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"route_target_import": schema.StringAttribute{
-				Description: "Route-target to attach while importing routes into the tenant",
+				Description: "A route-target (BGP Community) to attach while importing routes into the current tenant. It should be a comma-separated list of BGP Communities: each Community being two numbers separated by a colon.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"route_target_export": schema.StringAttribute{
-				Description: "Route-target to attach while exporting routes from the tenant",
+				Description: "A route-target (BGP Community) to attach while exporting routes from the current tenant. It should be a comma-separated list of BGP Communities: each Community being two numbers separated by a colon.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"import_route_map": schema.StringAttribute{
-				Description: "Route-map applied to routes imported into the tenant",
+				Description: "A route-map applied to routes imported into the current tenant from other tenants with the purpose of filtering or modifying the routes",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -178,7 +178,7 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:    true,
 			},
 			"export_route_map": schema.StringAttribute{
-				Description: "Route-map applied to routes exported from the tenant",
+				Description: "A route-map applied to routes exported from the current tenant to other tenants with the purpose of filtering or modifying the routes",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -188,22 +188,22 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:    true,
 			},
 			"vrf_name": schema.StringAttribute{
-				Description: "Virtual Routing and Forwarding instance name. This field should not be specified when 'vrf_name_auto_assigned_' is set to true, as the API will assign this value automatically.",
+				Description: "Virtual Routing and Forwarding instance name associated to tenants ",
 				Optional:    true,
 				Computed:    true,
 			},
 			"vrf_name_auto_assigned_": schema.BoolAttribute{
-				Description: "Whether the VRF name should be automatically assigned by the API. When set to true, do not specify the 'vrf_name' field in your configuration.",
+				Description: "Whether or not the value in vrf_name field has been automatically assigned or not. Set to false and change vrf_name value to edit.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"default_originate": schema.BoolAttribute{
-				Description: "Enables a leaf switch to originate IPv4 default type-5 EVPN routes across the switching fabric.",
+				Description: "When enabled, provision an underlay gateway on the switch for this tenant.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"tenant_type": schema.StringAttribute{
-				Description: "Tenant type classification",
+				Description: "Type of Tenant. To Provision on Spectrum-X sites, select East-West.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -229,7 +229,7 @@ func (r *verityTenantResource) Schema(ctx context.Context, req resource.SchemaRe
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},

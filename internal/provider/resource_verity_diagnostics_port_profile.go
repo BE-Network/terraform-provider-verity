@@ -73,7 +73,7 @@ func (r *verityDiagnosticsPortProfileResource) Schema(ctx context.Context, req r
 		Description: "Manages a Verity Diagnostics Port Profile",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -85,7 +85,7 @@ func (r *verityDiagnosticsPortProfileResource) Schema(ctx context.Context, req r
 				Computed:    true,
 			},
 			"enable_sflow": schema.BoolAttribute{
-				Description: "Enable sFlow for this Diagnostics Profile",
+				Description: "Enable sFlow for this Diagnostics Profile ",
 				Optional:    true,
 				Computed:    true,
 			},

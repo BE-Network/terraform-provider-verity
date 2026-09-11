@@ -84,7 +84,7 @@ func (r *verityPBRoutingResource) Schema(ctx context.Context, req resource.Schem
 		Description: "Manages a Policy-Based Routing resource",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -117,7 +117,7 @@ func (r *verityPBRoutingResource) Schema(ctx context.Context, req resource.Schem
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index identifying the object",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},

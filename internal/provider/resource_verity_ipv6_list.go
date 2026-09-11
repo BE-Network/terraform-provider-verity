@@ -26,6 +26,7 @@ var (
 )
 
 const ipv6ListResourceType = "ipv6lists"
+const ipv6ListCacheKey = "ipv6_lists"
 
 func NewVerityIpv6ListResource() resource.Resource {
 	return &verityIpv6ListResource{}
@@ -73,7 +74,7 @@ func (r *verityIpv6ListResource) Schema(ctx context.Context, req resource.Schema
 		Description: "Manages a Verity IPv6 List Filter",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -130,7 +131,7 @@ func (r *verityIpv6ListResource) Create(ctx context.Context, req resource.Create
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv6_lists")
+	clearCache(ctx, r.provCtx, ipv6ListCacheKey)
 
 	var minState verityIpv6ListResourceModel
 	minState.Name = types.StringValue(name)
@@ -209,7 +210,7 @@ func (r *verityIpv6ListResource) Read(ctx context.Context, req resource.ReadRequ
 		Ipv6ListFilter map[string]interface{} `json:"ipv6_list_filter"`
 	}
 
-	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "ipv6_lists", ipv6ListName,
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, ipv6ListCacheKey, ipv6ListName,
 		func() (Ipv6ListsResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch IPv6 List Filters")
 			respAPI, err := r.client.IPv6ListFiltersAPI.Ipv6listsGet(ctx).Execute()
@@ -316,7 +317,7 @@ func (r *verityIpv6ListResource) Update(ctx context.Context, req resource.Update
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv6_lists")
+	clearCache(ctx, r.provCtx, ipv6ListCacheKey)
 
 	var minState verityIpv6ListResourceModel
 	minState.Name = types.StringValue(name)
@@ -378,7 +379,7 @@ func (r *verityIpv6ListResource) Delete(ctx context.Context, req resource.Delete
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("IPv6 List %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "ipv6_lists")
+	clearCache(ctx, r.provCtx, ipv6ListCacheKey)
 	resp.State.RemoveResource(ctx)
 }
 

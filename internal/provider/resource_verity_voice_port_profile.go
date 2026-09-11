@@ -111,7 +111,7 @@ func (r *verityVoicePortProfileResource) Schema(ctx context.Context, req resourc
 		Description: "Manages a Verity Voice Port Profile",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -243,12 +243,12 @@ func (r *verityVoicePortProfileResource) Schema(ctx context.Context, req resourc
 				Computed:    true,
 			},
 			"transmit_gain": schema.Int64Attribute{
-				Description: "Transmit Gain in tenths of a dB. Example -30 would equal -3.0db",
+				Description: "Transmit Gain in tenths of a dB.Example -30 would equal -3.0db",
 				Optional:    true,
 				Computed:    true,
 			},
 			"receive_gain": schema.Int64Attribute{
-				Description: "Receive Gain in tenths of a dB. Example -30 would equal -3.0db",
+				Description: "Receive Gainin tenths of a dB. Example -30 would equal -3.0db",
 				Optional:    true,
 				Computed:    true,
 			},

@@ -86,14 +86,14 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 		Description: "Manages a Gateway Profile",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object.",
+				Description: "Enable object.\nIt's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -119,12 +119,12 @@ func (r *verityGatewayProfileResource) Schema(_ context.Context, _ resource.Sche
 							Computed:    true,
 						},
 						"source_ip_mask": schema.StringAttribute{
-							Description: "Source address on the port if untagged or on the VLAN if tagged used for the outgoing BGP session",
+							Description: "Source address on the port if untagged or on the VLAN if tagged used for the outgoing BGP session ",
 							Optional:    true,
 							Computed:    true,
 						},
 						"peer_gw": schema.BoolAttribute{
-							Description: "Setting for paired switches only. Flag indicating that this gateway is a peer gateway.",
+							Description: "Setting for paired switches only. Flag indicating that this gateway is a peer gateway. For each gateway profile referencing a BGP session on a member of a leaf pair, the peer should have a gateway profile entry indicating the IP address for the peers gateway.",
 							Optional:    true,
 							Computed:    true,
 						},

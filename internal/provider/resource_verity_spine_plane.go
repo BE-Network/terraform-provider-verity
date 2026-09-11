@@ -79,7 +79,7 @@ func (r *veritySpinePlaneResource) Schema(ctx context.Context, req resource.Sche
 		Description: "Manages a Spine Plane resource",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

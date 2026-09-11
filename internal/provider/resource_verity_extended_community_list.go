@@ -92,7 +92,7 @@ func (r *verityExtendedCommunityListResource) Schema(ctx context.Context, req re
 		Description: "Manages a Verity Extended Community List",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

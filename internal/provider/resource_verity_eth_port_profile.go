@@ -109,14 +109,14 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 		Description: "Manages an Ethernet Port Profile",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object.",
+				Description: "Enable object.\nIt's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -209,7 +209,7 @@ func (r *verityEthPortProfileResource) Schema(_ context.Context, _ resource.Sche
 							Computed:    true,
 						},
 						"row_num_external_vlan": schema.Int64Attribute{
-							Description: "Choose an external vlan. A value of 0 will make the VLAN untagged, while null will use service VLAN.",
+							Description: "Choose an external vlan\nA value of 0 will make the VLAN untagged, while in case null is provided, the VLAN will be the one associated with the service.",
 							Optional:    true,
 							Computed:    true,
 						},

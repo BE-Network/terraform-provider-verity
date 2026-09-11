@@ -80,7 +80,7 @@ func (r *verityBadgeResource) Schema(ctx context.Context, req resource.SchemaReq
 		Description: "Manages a Badge resource",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -92,12 +92,12 @@ func (r *verityBadgeResource) Schema(ctx context.Context, req resource.SchemaReq
 				Computed:    true,
 			},
 			"color": schema.StringAttribute{
-				Description: "Badge color.",
+				Description: "Color of Badge",
 				Optional:    true,
 				Computed:    true,
 			},
 			"number": schema.Int64Attribute{
-				Description: "Badge number.",
+				Description: "Number of Badge",
 				Optional:    true,
 				Computed:    true,
 			},

@@ -143,14 +143,14 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 		Description: "Manages a Verity Bundle",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.",
+				Description: "Enable object.\nIt's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -218,7 +218,7 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"eth_port_num_eth_port_profile": schema.StringAttribute{
-							Description: "Eth Port Profile or LAG for Eth Port",
+							Description: "Eth Port Profile Or LAG for Eth Port",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -238,7 +238,7 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 							Computed:    true,
 						},
 						"eth_port_num_gateway_profile": schema.StringAttribute{
-							Description: "Gateway Profile or LAG for Eth Port",
+							Description: "Gateway Profile for Eth Port",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -258,7 +258,7 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 							Computed:    true,
 						},
 						"port_name": schema.StringAttribute{
-							Description: "The name identifying the port",
+							Description: "The name identifying the port. Used for reference only, it won't actually change the port name.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -295,7 +295,7 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 							Computed:    true,
 						},
 						"row_ip_mask": schema.StringAttribute{
-							Description: "IP/Mask in IPv4 format",
+							Description: "IP/Mask",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -312,7 +312,7 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"voice_port_num_voice_port_profiles": schema.StringAttribute{
-							Description: "Voice Port Profile for Voice Port",
+							Description: " Voice Port Settings for Voice Port",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -354,7 +354,7 @@ func (r *verityBundleResource) Schema(ctx context.Context, req resource.SchemaRe
 							Computed:    true,
 						},
 						"row_ip_mask": schema.StringAttribute{
-							Description: "IP/Mask in IPv4 format",
+							Description: "IP/Mask",
 							Optional:    true,
 							Computed:    true,
 						},

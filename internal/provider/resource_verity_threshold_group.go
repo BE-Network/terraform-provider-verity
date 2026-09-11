@@ -103,19 +103,19 @@ func (r *verityThresholdGroupResource) Schema(_ context.Context, _ resource.Sche
 		Description: "Manages a Verity Threshold Group.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "The name of the threshold group.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable or disable the threshold group.",
+				Description: "Enable object.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"type": schema.StringAttribute{
-				Description: "Type of elements to apply thresholds to. Valid values: 'interface', 'device'.",
+				Description: "Type of elements to apply thresholds to",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -126,47 +126,47 @@ func (r *verityThresholdGroupResource) Schema(_ context.Context, _ resource.Sche
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"enable": schema.BoolAttribute{
-							Description: "Enable the target.",
+							Description: "Enable",
 							Optional:    true,
 							Computed:    true,
 						},
 						"type": schema.StringAttribute{
-							Description: "Specific element or Grouping Rules to apply thresholds to.",
+							Description: "Specific element or Grouping Rules to apply thresholds to",
 							Optional:    true,
 							Computed:    true,
 						},
 						"grouping_rules": schema.StringAttribute{
-							Description: "Elements to apply thresholds to.",
+							Description: "Elements to apply thresholds to",
 							Optional:    true,
 							Computed:    true,
 						},
 						"grouping_rules_ref_type_": schema.StringAttribute{
-							Description: "Object type for grouping_rules field. Valid values: 'grouping_rules'.",
+							Description: "Object type for grouping_rules field",
 							Optional:    true,
 							Computed:    true,
 						},
 						"element": schema.StringAttribute{
-							Description: "Element to apply thresholds to.",
+							Description: "Element to apply thresholds to",
 							Optional:    true,
 							Computed:    true,
 						},
 						"element_ref_type_": schema.StringAttribute{
-							Description: "Object type for element field. Valid values: 'sensai', 'switchpoint', 'type'.",
+							Description: "Object type for element field",
 							Optional:    true,
 							Computed:    true,
 						},
 						"sdlc": schema.StringAttribute{
-							Description: "SDLC to apply thresholds to.",
+							Description: "SDLC to apply thresholds to",
 							Optional:    true,
 							Computed:    true,
 						},
 						"port": schema.StringAttribute{
-							Description: "Port to apply thresholds to.",
+							Description: "Port to apply thresholds to",
 							Optional:    true,
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index of the target within the targets list.",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},
@@ -178,27 +178,27 @@ func (r *verityThresholdGroupResource) Schema(_ context.Context, _ resource.Sche
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"enable": schema.BoolAttribute{
-							Description: "Enable the threshold.",
+							Description: "Enable",
 							Optional:    true,
 							Computed:    true,
 						},
 						"severity_override": schema.StringAttribute{
-							Description: "Override the severity defined in the threshold for this group only. Valid values: '', 'warning', 'notice', 'error', 'critical'.",
+							Description: "Override the severity defined in the thereshold for this group only",
 							Optional:    true,
 							Computed:    true,
 						},
 						"threshold": schema.StringAttribute{
-							Description: "Threshold to apply to this group.",
+							Description: "Threshold to apply to this group",
 							Optional:    true,
 							Computed:    true,
 						},
 						"threshold_ref_type_": schema.StringAttribute{
-							Description: "Object type for threshold field. Valid values: 'threshold'.",
+							Description: "Object type for threshold field",
 							Optional:    true,
 							Computed:    true,
 						},
 						"index": schema.Int64Attribute{
-							Description: "The index of the threshold within the thresholds list.",
+							Description: "The index identifying the object. Zero if you want to add an object to the list.",
 							Optional:    true,
 							Computed:    true,
 						},

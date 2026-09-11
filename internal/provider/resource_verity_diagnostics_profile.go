@@ -86,7 +86,7 @@ func (r *verityDiagnosticsProfileResource) Schema(ctx context.Context, req resou
 		Description: "Manages a Verity Diagnostics Profile",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -98,7 +98,7 @@ func (r *verityDiagnosticsProfileResource) Schema(ctx context.Context, req resou
 				Computed:    true,
 			},
 			"enable_sflow": schema.BoolAttribute{
-				Description: "Enable sFlow for this Diagnostics Profile",
+				Description: "Enable sFlow for this Diagnostics Profile ",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -108,7 +108,7 @@ func (r *verityDiagnosticsProfileResource) Schema(ctx context.Context, req resou
 				Computed:    true,
 			},
 			"flow_collector": schema.StringAttribute{
-				Description: "Flow Collector for this Diagnostics Profile",
+				Description: "Flow Collector for this Diagnostics Profile ",
 				Optional:    true,
 				Computed:    true,
 			},

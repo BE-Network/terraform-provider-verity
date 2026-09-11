@@ -130,19 +130,19 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 		Description: "Manages Ethernet port settings",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"enable": schema.BoolAttribute{
-				Description: "Enable object.",
+				Description: "Enable object.\nIt's highly recommended to set this value to true so that validation on the object will be ran.",
 				Optional:    true,
 				Computed:    true,
 			},
 			"auto_negotiation": schema.BoolAttribute{
-				Description: "Indicates if port speed and duplex mode should be auto negotiated",
+				Description: "Indicates if duplex mode should be auto negotiated",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -167,7 +167,7 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Computed:    true,
 			},
 			"stp_enable": schema.BoolAttribute{
-				Description: "Enable Spanning Tree on the port. Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Site Settings",
+				Description: "Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Fabric Settings",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -192,7 +192,7 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Computed:    true,
 			},
 			"poe_enable": schema.BoolAttribute{
-				Description: "PoE Enable",
+				Description: "Enable PoE on the port",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -222,22 +222,22 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Computed:    true,
 			},
 			"max_allowed_value": schema.Int64Attribute{
-				Description: "Max Percentage of the port's bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action",
+				Description: "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action",
 				Optional:    true,
 				Computed:    true,
 			},
 			"max_allowed_unit": schema.StringAttribute{
-				Description: "Max Percentage unit for broadcast/multicast/unknown-unicast traffic",
+				Description: "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\t%: Percentage.<br>\n\t\t\t\t\t\t\t\t\t\t\t\tkbps: kilobits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tmbps: megabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tgbps: gigabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tpps: packet per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkpps: kilopacket per second <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t",
 				Optional:    true,
 				Computed:    true,
 			},
 			"action": schema.StringAttribute{
-				Description: "Action taken if broadcast/multicast/unknown-unicast traffic exceeds the Max",
+				Description: "Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\tProtect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.<br><br>\n\t\t\t\t\t\t\t\t\t\t\t\tRestrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.\n\t\t\t\t\t\t\t\t\t\t\t\tAlarm is raised . Alarm automatically clears when rate is below configured threshold. <br><br>\n\t\t\t\t\t\t\t\t\t\t\t\tShutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t",
 				Optional:    true,
 				Computed:    true,
 			},
 			"fec": schema.StringAttribute{
-				Description: "FEC is Forward Error Correction which is error correction on the fiber link",
+				Description: "FEC is Forward Error Correction which is error correction on the fiber link.\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\tAny: Allows switch Negotiation between FC and RS <br>\n\t\t\t\t\t\t\t\t\t\t\t\tNone: Disables FEC on an interface.<br>\n\t\t\t\t\t\t\t\t\t\t\t\tFC: Enables FEC on supported interfaces. FC stands for fire code.<br>\n\t\t\t\t\t\t\t\t\t\t\t\tRS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. <br>\n\t\t\t\t\t\t\t\t\t\t\t\tNone: VnetC doesn't alter the Switch Value.<br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -277,7 +277,7 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Computed:    true,
 			},
 			"mtu": schema.Int64Attribute{
-				Description: "MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery.",
+				Description: "MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -322,7 +322,7 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Computed:    true,
 			},
 			"mac_security_mode": schema.StringAttribute{
-				Description: "MAC security mode",
+				Description: "Dynamic - MACs are learned and aged normally up to the limit. <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tPackets will be dropped from clients exceeding the limit. <br>\n\t\t\t\t\t\t\t\tOnce a client ages out, a new client can take its slot. <br>\n\t\t\t\t\t\t\t\tWhen the port goes operationally down (disconnecting or disabling), the MACs will be flushed.<br>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\tSticky - Semi permenant learning. <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tPackets will be dropped from clients exceeding the limit. <br>\n\t\t\t\t\t\t\t\tAddresses do not age out or move within the same switch. <br>\n\t\t\t\t\t\t\t\tOperationally downing a port (disconnecting) does NOT flush the entries. <br>\n\t\t\t\t\t\t\t\tLearned MACs can only be flushed by administratively taking the port down or rebooting the switch.\n\t\t\t\t\t\t\t</div>",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -332,7 +332,7 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Computed:    true,
 			},
 			"security_violation_action": schema.StringAttribute{
-				Description: "Security violation action",
+				Description: "Protect - All packets are dropped from clients above the MAC Limit. <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tExceeding the limit is not alarmed. <br>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\tRestrict - All packets are dropped from clients above the MAC Limit. <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tAlarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. <br>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\tShutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. <br>\n\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\tUser must administratively Disable and Enable the port to restore service.\n\t\t\t\t\t\t\t</div>",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -352,7 +352,7 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 				Computed:    true,
 			},
 			"lldp_mode": schema.StringAttribute{
-				Description: "LLDP mode. Enables LLDP Rx and/or LLDP Tx",
+				Description: "LLDP mode.  Enables LLDP Rx and/or LLDP Tx",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -378,7 +378,7 @@ func (r *verityEthPortSettingsResource) Schema(ctx context.Context, req resource
 							Computed:    true,
 						},
 						"lldp_med_row_num_dscp_mark": schema.Int64Attribute{
-							Description: "LLDP DSCP Mark",
+							Description: "Defines egress LLDP sent when a device is connected to this Eth-Port Settings allowing the device to auto-provision its DSCP marking.",
 							Optional:    true,
 							Computed:    true,
 						},

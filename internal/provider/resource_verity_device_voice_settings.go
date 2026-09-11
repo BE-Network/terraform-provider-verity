@@ -144,7 +144,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 		Description: "Manages a Verity Device Voice Settings",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Object Name. Must be unique.",
+				Description: "Template Name. Must be unique within type.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -191,7 +191,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Computed:    true,
 			},
 			"registrar_server": schema.StringAttribute{
-				Description: "Name or IP address or resolved name of the registrar server for SIP signalling messages",
+				Description: "Name or IP address or resolved name of the registrar server for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -201,7 +201,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Computed:    true,
 			},
 			"registrar_server_secondary": schema.StringAttribute{
-				Description: "Name or IP address or resolved name of the secondary registrar server for SIP signalling messages",
+				Description: "Name or IP address or resolved name of the secondary registrar server for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -226,7 +226,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Computed:    true,
 			},
 			"outbound_proxy": schema.StringAttribute{
-				Description: "IP address or URI of the outbound proxy server for SIP signalling messages",
+				Description: "IP address or URI of the outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -236,7 +236,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Computed:    true,
 			},
 			"outbound_proxy_secondary": schema.StringAttribute{
-				Description: "IP address or URI of the secondary outbound proxy server for SIP signalling messages",
+				Description: "IP address or URI of the secondary outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -256,7 +256,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Computed:    true,
 			},
 			"voicemail_server": schema.StringAttribute{
-				Description: "Name or IP address or resolved name of the external voicemail server if not provided by SIP server for MWI control",
+				Description: "Name or IP address or resolved name of the external voicemail server if not provided by SIP server for MWI control. Examples: 10.10.10.10 and proxy.voip.net",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -271,7 +271,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Computed:    true,
 			},
 			"sip_dscp_mark": schema.Int64Attribute{
-				Description: "SIP Differentiated Services Code point (DSCP)",
+				Description: "Sip Differentiated Services Code point (DSCP)",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -361,7 +361,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Computed:    true,
 			},
 			"cids_activate": schema.StringAttribute{
-				Description: "Caller ID Delivery Blocking (single call) Activate",
+				Description: "Caller ID Delivery Blocking (single call)  Activate",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -391,7 +391,7 @@ func (r *verityDeviceVoiceSettingsResource) Schema(ctx context.Context, req reso
 				Computed:    true,
 			},
 			"anon_cid_block_activate": schema.StringAttribute{
-				Description: "Anonymous Caller ID Block Activate",
+				Description: "Anonymoes Caller ID Block Activate",
 				Optional:    true,
 				Computed:    true,
 			},

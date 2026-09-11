@@ -26,6 +26,7 @@ var (
 )
 
 const macFilterResourceType = "macfilters"
+const macFilterCacheKey = "mac_filters"
 
 func NewVerityMacFilterResource() resource.Resource {
 	return &verityMacFilterResource{}
@@ -192,7 +193,7 @@ func (r *verityMacFilterResource) Create(ctx context.Context, req resource.Creat
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("MAC Filter %s creation operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "mac_filters")
+	clearCache(ctx, r.provCtx, macFilterCacheKey)
 
 	var minState verityMacFilterResourceModel
 	minState.Name = types.StringValue(name)
@@ -269,7 +270,7 @@ func (r *verityMacFilterResource) Read(ctx context.Context, req resource.ReadReq
 		MacFilter map[string]interface{} `json:"mac_filter"`
 	}
 
-	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, "mac_filters", macFilterName,
+	result, err := utils.FetchResourceWithRetry(ctx, r.provCtx, macFilterCacheKey, macFilterName,
 		func() (MacFiltersResponse, error) {
 			tflog.Debug(ctx, "Making API call to fetch MAC Filters")
 			respAPI, err := r.client.MACFiltersAPI.MacfiltersGet(ctx).Execute()
@@ -420,7 +421,7 @@ func (r *verityMacFilterResource) Update(ctx context.Context, req resource.Updat
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("MAC Filter %s update operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "mac_filters")
+	clearCache(ctx, r.provCtx, macFilterCacheKey)
 
 	var minState verityMacFilterResourceModel
 	minState.Name = types.StringValue(name)
@@ -480,7 +481,7 @@ func (r *verityMacFilterResource) Delete(ctx context.Context, req resource.Delet
 	}
 
 	tflog.Info(ctx, fmt.Sprintf("MAC Filter %s deletion operation completed successfully", name))
-	clearCache(ctx, r.provCtx, "mac_filters")
+	clearCache(ctx, r.provCtx, macFilterCacheKey)
 	resp.State.RemoveResource(ctx)
 }
 
